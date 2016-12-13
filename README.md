@@ -14,6 +14,18 @@ $request->getBody()->readAsString();
 $userId = (new HttpRequestMessageParser)->getQueryVar($request, "userId");
 ```
 
+<h3>Get a cookie</h3>
+```php
+// Create request...
+$userId = (new HttpRequestHeaderParser)->getCookie($request->getHeaders(), "userId");
+```
+
+<h3>Get form data</h3>
+```php
+// Create request...
+$email = (new HttpRequestHeaderParser)->getFormData($request, "email");
+```
+
 <h3>Check if the request was JSON</h3>
 ```php
 // Create request...
@@ -31,6 +43,7 @@ $request->getBody()->readAsStream()->read(64);
 <h3>Create a response</h3>
 ```php
 $response = new Response();
+
 // Or, with a custom output stream (wrapper around php://output is the default):
 $response = new Response(new BufferStream());
 ```
@@ -38,6 +51,7 @@ $response = new Response(new BufferStream());
 <h3>Create a JSON response</h3>
 ```php
 $response = (new JsonHttpResponseFactory)->createResponse($someArray);
+
 // Or, manually:
 $response = new Response();
 $response->setBody(new StringBody(json_encode($someArray)));
