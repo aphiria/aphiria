@@ -20,10 +20,16 @@ $userId = (new HttpRequestMessageParser)->getQueryVar($request, "userId");
 $userId = (new HttpRequestHeaderParser)->getCookie($request->getHeaders(), "userId");
 ```
 
-<h3>Get form data</h3>
+<h3>Get all form data</h3>
 ```php
 // Create request...
-$email = (new HttpRequestHeaderParser)->getFormData($request, "email");
+$formData = (new HttpRequestHeaderParser)->getFormData($request);
+```
+
+<h3>Get a specific form input</h3>
+```php
+// Create request...
+$email = (new HttpRequestHeaderParser)->getInput($request, "email");
 ```
 
 <h3>Check if the request was JSON</h3>
