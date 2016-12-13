@@ -1,3 +1,5 @@
+<h1>Opulence's Net Library</h1>
+
 <h2>Requests</h2>
 
 <h3>Read the request body as a string</h3>
