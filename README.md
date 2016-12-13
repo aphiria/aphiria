@@ -8,9 +8,21 @@ $request = (new RequestFactory)->createFromGlobals($_GET, $_POST, $_COOKIE, $_SE
 $request->getBody()->readAsString();
 ```
 
-<h3>Read a chunk of streamed body</h3>
+<h3>Get a query string var</h3>
 ```php
-$request = (new RequestFactory)->createFromGlobals($_GET, $_POST, $_COOKIE, $_SERVER, $_FILES, $_ENV);
+// Create request...
+$userId = (new HttpRequestMessageParser)->getQueryVar($request, "userId");
+```
+
+<h3>Check if the request was JSON</h3>
+```php
+// Create request...
+$isJson = (new HttpRequestHeaderParser)->isJson($request->getHeaders());
+```
+
+<h3>Read a chunk of a stream body</h3>
+```php
+// Create request...
 $request->getBody()->readAsStream()->read(64);
 ```
 

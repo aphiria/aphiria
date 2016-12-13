@@ -14,7 +14,7 @@ interface IHttpRequestMessageParser
     
     public function getInput(IHttpRequestMessage $message, string $name, $default = null);
     
-    public cunfction getQueryVar(IHttpRequestMessage $message, string $name, $default = null);
+    public function getQueryVar(IHttpRequestMessage $message, string $name, $default = null);
     
     public function getQueryVars(IHttpRequestMessage $message) : array;
 }
