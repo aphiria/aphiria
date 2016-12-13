@@ -76,10 +76,18 @@ $cookie = new Cookie("userid", "123");
 (new HttpResponseHeaderFormatter)->setCookie($response->getHeaders(), $cookie);
 ```
 
-<h3>Write the response as a stream</h3>
+<h3>Write the response as a string</h3>
 ```php
 $response = new Response();
 $response->setBody(new StringBody("This is my response"));
+```
+
+<h3>Write the response as a stream</h3>
+```php
+$response = new Response();
+$stream = new OutputStream();
+$stream->write("This is my response");
+$response->setBody(new StreamBody($stream));
 ```
 
 <h3>Actually write the response to the output stream</h3>
