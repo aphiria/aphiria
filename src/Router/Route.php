@@ -65,7 +65,7 @@ class Route
      * 
      * @return bool True if the route is HTTPS-only, otherwise false
      */
-    public function isHttpsOnly() : string
+    public function isHttpsOnly() : bool
     {
         return $this->isHttpsOnly;
     }
