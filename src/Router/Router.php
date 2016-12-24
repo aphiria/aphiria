@@ -6,6 +6,7 @@ namespace Opulence\Router;
  */
 class Router implements IRouter
 {
+    /** @var RouteMap[] The list of route maps */
     private $routeMaps = [];
     
     public function __construct(array $routeMaps)
@@ -15,6 +16,14 @@ class Router implements IRouter
     
     public function route($request)
     {
+        foreach ($this->routeMaps as $routeMap) {
+            if ($routeMap->getParsedRoute()->isMatch($request)) {
+                $controller = $routeMap->getController();
+                
+                return $controller($request);
+            }
+        }
         
+        throw new HttpException(404);
     }
 }

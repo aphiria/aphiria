@@ -2,7 +2,7 @@
 namespace Opulence\Router;
 
 /**
- * 
+ * Defines the route map builder
  */
 class RouteMapBuilder
 {
