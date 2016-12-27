@@ -1,4 +1,6 @@
 <h1>Todo</h1>
+* Need to rethink the `Dispatchers` namespace - I don't really have dispatchers anymore, just classes used while dispatching a route in `Router`
+* Need to actually write code inside `Router::route()` to call the controller
 * I need a `RouteMapRegistry` so I have a place to grab named routes from
   * Should this be injected into `Router`?  Not sure because `Router` only needs the list of all route maps, not the ability to grab named routes
 * Need a way to check if a URI matches the parsed route

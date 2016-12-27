@@ -11,13 +11,13 @@ class Route
     /** @var array The list of methods this route matches on */
     private $methods = [];
     /** @var string The raw path */
-    private $rawPath = "";
+    private $pathTemplate = "";
     /** @var string The raw host */
-    private $rawHost = "";
+    private $hostTemplate = "";
     /** @var bool Whether or not this route is HTTPS-only */
     private $isHttpsOnly = false;
     
-    public function __construct($methods, string $rawPath, string $rawHost = "", bool $isHttpsOnly = false)
+    public function __construct($methods, string $pathTemplate, string $hostTemplate = "", bool $isHttpsOnly = false)
     {
         $this->methods = (array)$methods;
         
@@ -25,8 +25,8 @@ class Route
             throw new InvalidArgumentException("Must specify at least one method");
         }
         
-        $this->rawPath = $rawPath;
-        $this->rawHost = $rawHost;
+        $this->pathTemplate = $pathTemplate;
+        $this->hostTemplate = $hostTemplate;
         $this->isHttpsOnly = $isHttpsOnly;
     }
     
@@ -41,23 +41,23 @@ class Route
     }
     
     /**
-     * Gets the raw host to match on
+     * Gets the host template
      * 
-     * @return The raw host
+     * @return The host template
      */
-    public function getRawHost() : string
+    public function getHostTemplate() : string
     {
-        return $this->rawPath;
+        return $this->hostTemplate;
     }
     
     /**
-     * Gets the raw path to match on
+     * Gets the path template
      * 
-     * @return The raw path
+     * @return The path template
      */
-    public function getRawPath() : string
+    public function getPathTemplate() : string
     {
-        return $this->rawPath;
+        return $this->pathTemplate;
     }
     
     /**
