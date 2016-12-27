@@ -6,27 +6,27 @@ namespace Opulence\Router;
  */
 class RouteGroupOptions
 {
-    private $rawPathPrefix = "";
-    private $rawHost = "";
+    private $pathTemplate = "";
+    private $hostTemplate = "";
     private $middleware = [];
     private $isHttpsOnly = false;
     
-    public function __construct(string $rawPathPrefix, string $rawHost, bool $isHttpsOnly, array $middleware = [])
+    public function __construct(string $pathTemplate, string $hostTemplate, bool $isHttpsOnly, array $middleware = [])
     {
-        $this->rawPathPrefix = $rawPathPrefix;
-        $this->rawHost = $rawHost;
+        $this->pathTemplate = $pathTemplate;
+        $this->hostTemplate = $hostTemplate;
         $this->isHttpsOnly = $isHttpsOnly;
         $this->middleware = $middleware;
     }
     
-    public function getRawHost() : string
+    public function getHostTemplate() : string
     {
-        return $this->rawHost;
+        return $this->hostTemplate;
     }
     
-    public function getRawPathPrefix() : string
+    public function getPathTemplate() : string
     {
-        return $this->rawPathPrefix;
+        return $this->pathTemplate;
     }
     
     public function getMiddleware() : array

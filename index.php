@@ -2,12 +2,17 @@
 use Opulence\IoC\Container;
 use Opulence\Router\Dispatchers\ContainerDependencyResolver;
 use Opulence\Router\Dispatchers\MiddlewarePipeline;
+use Opulence\Router\Dispatchers\RouteDispatcherFactory;
 use Opulence\Router\Route;
 use Opulence\Router\RouteGroupOptions;
 use Opulence\Router\RouteMapBuilderRegistry;
 use Opulence\Router\Router;
 
-$routeMapBuilderRegistry = new RouteMapBuilderRegistry(new RouteParser());
+$routeDispatcherFactory = new RouteDispatcherFactory(
+    new ContainerDependencyResolver(new Container),
+    new MiddlewarePipeline()
+);
+$routeMapBuilderRegistry = new RouteMapBuilderRegistry($routeDispatcherFactory, new RouteParser());
 
 // Add an ordinary route
 $routeMapBuilderRegistry->map(new Route("GET", "users/:userId"))
@@ -26,9 +31,5 @@ $routeMapBuilderRegistry->group(
 });
 
 // Actually route the request
-$router = new Router(
-    new ContainerDependencyResolver(new Container),
-    new MiddlewarePipeline(),
-    $routeMapBuilderRegistry->buildAll()
-);
+$router = new Router($routeMapBuilderRegistry->buildAll());
 $response = $router->route(new stdClass());

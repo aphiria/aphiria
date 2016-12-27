@@ -1,6 +1,10 @@
 <h1>Todo</h1>
-* Need to rethink the `Dispatchers` namespace - I don't really have dispatchers anymore, just classes used while dispatching a route in `Router`
-* Need to actually write code inside `Router::route()` to call the controller
+* Before, I had a dispatcher, which would accept a route and request, and give you a response
+  * This just feels architecturally cleaner than what I'm doing now by having the `RouteMap` have a `dispatch()` method.  Is there any way I can achieve what I'd like to do using something closer to the old method?
+  * Does my new way get me anything?  IE, let's say I never had middleware before, and then introduced it, would my new solution have made that any easier?
+  * Is it wise that the middleware is no longer a property of the `RouteMap`, but instead called from within the route dispatcher's middleware pipeline?
+      * Is being able to grab the `RouteMap`'s middleware really a leaky abstraction?  Honestly, I'm not sure.
+* Need to consider how I'll support parameterized middleware
 * I need a `RouteMapRegistry` so I have a place to grab named routes from
   * Should this be injected into `Router`?  Not sure because `Router` only needs the list of all route maps, not the ability to grab named routes
 * Need a way to check if a URI matches the parsed route

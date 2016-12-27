@@ -1,6 +1,8 @@
 <?php
 namespace Opulence\Router;
 
+use Closure;
+use Opulence\Router\Dispatchers\IRouteDispatcherFactory;
 use Opulence\Router\Parsers\IRouteParser;
 
 /**
@@ -12,12 +14,15 @@ class RouteMapBuilderRegistry
     private $routeMapBuilders = [];
     /** @var IRouteParser The route parser */
     private $routeParser = null;
+    /** @var IRouteDispatcherFactory The route dispatcher factory */
+    private $routeDispatcherFactory = null;
     /** @var RouteGroupOptions The stack of route group options */
     private $groupOptionsStack = [];
     
-    public function __construct(IRouteParser $routeParser)
+    public function __construct(IRouteParser $routeParser, IRouteDispatcherFactory $routeDispatcherFactory)
     {
         $this->routeParser = $routeParser;
+        $this->routeDispatcherFactory = $routeDispatcherFactory;
     }
     
     public function buildAll() : array
@@ -31,17 +36,17 @@ class RouteMapBuilderRegistry
         return $builtRouteMaps;
     }
     
-    public function group(RouteGroupOptions $groupOptions, callable $callable) : RouteMapGroupBuilder
+    public function group(RouteGroupOptions $groupOptions, Closure $callback) : RouteMapGroupBuilder
     {
         array_push($this->groupOptionsStack, $groupOptions);
-        $callable($this);
+        $callback($this);
         array_pop($this->groupOptionsStack);
     }
     
     public function map(Route $route) : RouteMapBuilder
     {
         $parsedRoute = $this->routeParser->parse($this->applyGroupOptionsToRoute($route));
-        $routeMapBuilder = $this->applyGroupOptionsToRouteBuilder(new RouteMapBuilder($parsedRoute));
+        $routeMapBuilder = $this->applyGroupOptionsToRouteBuilder(new RouteMapBuilder($this->routeDispatcherFactory, $parsedRoute));
         
         return $routeMapBuilder;
     }

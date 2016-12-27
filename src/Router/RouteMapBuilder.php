@@ -1,42 +1,60 @@
 <?php
 namespace Opulence\Router;
 
+use Closure;
+use LogicException;
+use Opulence\Router\Dispatchers\IRouteDispatcherFactory;
+
 /**
  * Defines the route map builder
  */
 class RouteMapBuilder
 {
+    /** @var IRouteDispatcherFactory The route dispatcher factory */
+    private $routeDispatcherFactory = null;
+    /** @var ParsedRoute The parsed route */
     private $parsedRoute = null;
-    private $controllerClassName = null;
-    private $controllerMethodName = null;
-    private $callableController = null;
+    /** @var string The name of the controller class to map to */
+    private $controllerClassName = "";
+    /** @var string The name of the method in the controller class to map to */
+    private $controllerMethodName = "";
+    /** @var Closure The callback to map to */
+    private $closureController = null;
+    /** @var array The list of middleware on this route */
     private $middleware = [];
+    /** @var string|null The name of this route */
     private $name = null;
     
-    public function __construct(ParsedRoute $parsedRoute)
+    public function __construct(IRouteDispatcherFactory $routeDispatcherFactory, ParsedRoute $parsedRoute)
     {
+        $this->routeDispatcherFactory = $routeDispatcherFactory;
         $this->parsedRoute = $parsedRoute;
     }
     
     public function build() : RouteMap
     {
-        // Todo: Figure out how to createa callable from controller class
-        // This will require an IRouteDispatcher instance, which I'm not sure where I'd get
-        // Doesn't feel right to inject this in the constructor
-        return new RouteMap($this->parsedRoute, null, $this->middleware, $this->name);
+        if ($this->closureController instanceof Closure) {
+            $controller = $this->routeDispatcherFactory->createRouteDispatcherFromClosure($this->closureController, $this->middleware);
+        } elseif (strlen($this->controllerClassName) > 0 && strlen($this->controllerMethodName) > 0) {
+            $controller = $this->routeDispatcherFactory->createRouteDispatcherFromController($this->controllerClassName, $this->controllerMethodName, $this->middleware);
+        } else {
+            throw new LogicException("No valid controller set");
+        }
+        
+        return new RouteMap($this->parsedRoute, $controller, $this->name);
+    }
+    
+    public function toClosure(Closure $controller) : self
+    {
+        $this->closureController = $controller;
+        
+        return $this;
     }
     
     public function toController(string $controllerClassName, string $controllerMethodName) : self
     {
         $this->controllerClassName = $controllerClassName;
         $this->controllerMethodName = $controllerMethodName;
-        
-        return $this;
-    }
-    
-    public function toControllerCallable(callable $controller) : self
-    {
-        $this->callableController = $controller;
         
         return $this;
     }

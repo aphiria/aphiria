@@ -1,6 +1,7 @@
 <?php
 namespace Opulence\Router\Dispatchers;
 
+use Closure;
 use Opulence\Pipelines\Pipeline;
 use Opulence\Pipelines\PipelineException;
 use Opulence\Router\RouteException;
@@ -13,7 +14,7 @@ class MiddlewarePipeline implements IMiddlewarePipeline
     /**
      * @inheritdoc
      */
-    public function send($request, array $middleware, callable $controller)
+    public function send($request, array $middleware, Closure $controller)
     {
         try {
             $response = (new Pipeline)
