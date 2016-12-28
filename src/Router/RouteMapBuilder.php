@@ -38,7 +38,7 @@ class RouteMapBuilder
         } elseif (strlen($this->controllerClassName) > 0 && strlen($this->controllerMethodName) > 0) {
             $controller = $this->routeDispatcherFactory->createRouteDispatcherFromController($this->controllerClassName, $this->controllerMethodName, $this->middleware);
         } else {
-            throw new LogicException("No valid controller set");
+            throw new LogicException("No controller set");
         }
         
         return new RouteMap($this->parsedRoute, $controller, $this->name);
