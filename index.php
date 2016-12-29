@@ -3,33 +3,32 @@ use Opulence\IoC\Container;
 use Opulence\Router\Dispatchers\ContainerDependencyResolver;
 use Opulence\Router\Dispatchers\MiddlewarePipeline;
 use Opulence\Router\Dispatchers\RouteDispatcherFactory;
-use Opulence\Router\Route;
 use Opulence\Router\RouteGroupOptions;
-use Opulence\Router\RouteMapBuilderRegistry;
+use Opulence\Router\RouteBuilderRegistry;
 use Opulence\Router\Router;
 
 $routeDispatcherFactory = new RouteDispatcherFactory(
     new ContainerDependencyResolver(new Container),
     new MiddlewarePipeline()
 );
-$routeMapBuilderRegistry = new RouteMapBuilderRegistry($routeDispatcherFactory, new RouteParser());
+$routeBuilderRegistry = new RouteBuilderRegistry($routeDispatcherFactory, new RouteParser());
 
 // Add an ordinary route
-$routeMapBuilderRegistry->map(new Route("GET", "users/:userId"))
-        ->toController("UserController", "showProfile")
+$routeBuilderRegistry->map("GET", "users/:userId")
+        ->toMethod("UserController", "showProfile")
         ->withName("UserProfile");
 
 // Add a group of routes that share common options
-$routeMapBuilderRegistry->group(
+$routeBuilderRegistry->group(
     new RouteGroupOptions("users/", "", false, []), 
-    function(RouteMapBuilderRegistry $routeMapBuilderRegistry) {
-        $routeMapBuilderRegistry->map(new Route("GET", ":userId"))
-           ->toController("UserController", "showProfile");
+    function(RouteBuilderRegistry $routeBuilderRegistry) {
+        $routeBuilderRegistry->map("GET", ":userId")
+           ->toMethod("UserController", "showProfile");
         
-        $routeMapBuilderRegistry->map(new Route("GET", "me"))
-           ->toController("UserController", "showMyProfile");
+        $routeBuilderRegistry->map("GET", "me")
+           ->toMethod("UserController", "showMyProfile");
 });
 
 // Actually route the request
-$router = new Router($routeMapBuilderRegistry->buildAll());
+$router = new Router($routeBuilderRegistry->buildAll());
 $response = $router->route(new stdClass());

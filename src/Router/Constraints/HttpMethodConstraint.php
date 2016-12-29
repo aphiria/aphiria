@@ -2,9 +2,9 @@
 namespace Opulence\Router\Constraints;
 
 /**
- * Defines the host constraint
+ * Defines the HTTP method constraint
  */
-class HostConstraint implements IRouteConstraint
+class HttpMethodConstraint implements IRouteConstraint
 {
     /**
      * @inheritdoc

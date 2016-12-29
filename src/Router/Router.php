@@ -6,19 +6,19 @@ namespace Opulence\Router;
  */
 class Router implements IRouter
 {
-    /** @var RouteMap[] The list of route maps */
-    private $routeMaps = [];
+    /** @var Route[] The list of routes */
+    private $routes = [];
     
-    public function __construct(array $routeMaps)
+    public function __construct(array $routes)
     {
-        $this->routeMaps = $routeMaps;
+        $this->routes = $routes;
     }
     
     public function route($request)
     {
-        foreach ($this->routeMaps as $routeMap) {
-            if ($routeMap->getParsedRoute()->tryMatch($request, $routeVars)) {
-                return $routeMap->dispatch($request, $routeVars);
+        foreach ($this->routes as $route) {
+            if ($route->isMatch($request)) {
+                return $route->dispatch($request);
             }
         }
         

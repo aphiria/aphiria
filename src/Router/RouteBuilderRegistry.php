@@ -1,0 +1,83 @@
+<?php
+namespace Opulence\Router;
+
+use Closure;
+use Opulence\Router\Dispatchers\IRouteDispatcherFactory;
+use Opulence\Router\Parsers\IRouteTemplateParser;
+
+/**
+ * Defines the route builder registry
+ */
+class RouteBuilderRegistry
+{
+    /** @var RuteBuilder[] The list of registered route builders */
+    private $routeBuilders = [];
+    /** @var IRouteTemplateParser The route parser */
+    private $routeTemplateParser = null;
+    /** @var IRouteDispatcherFactory The route dispatcher factory */
+    private $routeDispatcherFactory = null;
+    /** @var RouteGroupOptions The stack of route group options */
+    private $groupOptionsStack = [];
+    
+    public function __construct(IRouteTemplateParser $routeTemplateParser, IRouteDispatcherFactory $routeDispatcherFactory)
+    {
+        $this->routeTemplateParser = $routeTemplateParser;
+        $this->routeDispatcherFactory = $routeDispatcherFactory;
+    }
+    
+    public function buildAll() : array
+    {
+        $builtRouteMaps = [];
+        
+        foreach ($this->routeBuilders as $routeMapBuilder) {
+            $builtRouteMaps[] = $routeMapBuilder->build();
+        }
+        
+        return $builtRouteMaps;
+    }
+    
+    public function group(RouteGroupOptions $groupOptions, Closure $callback) : RouteMapGroupBuilder
+    {
+        array_push($this->groupOptionsStack, $groupOptions);
+        $callback($this);
+        array_pop($this->groupOptionsStack);
+    }
+    
+    public function map($methods, string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false) : RouteMapBuilder
+    {
+        $this->applyGroupOptionsToRoute($pathTemplate, $hostTemplate);
+        $parsedPathTemplate = $this->routeTemplateParser->parse($pathTemplate);
+        $parsedHostTemplate = $hostTemplate == null ? $hostTemplate : $this->routeTemplateParser->parse($hostTemplate);
+        $routeBuilder = new RouteBuilder($this->routeDispatcherFactory, (array)$methods, $parsedPathTemplate, $parsedHostTemplate, $isHttpsOnly);
+        $this->applyGroupOptionsToRouteBuilder($routeBuilder);
+        
+        return $routeBuilder;
+    }
+    
+    private function applyGroupOptionsToRoute(string &$pathTemplate, string &$hostTemplate = null)
+    {
+        $groupPathTemplate = "";
+        $groupHostTemplate = "";
+        $groupIsHttpsOnly = false;
+
+        foreach ($this->groupOptionsStack as $groupOptions) {
+            $groupPathTemplate .= $groupOptions->getPathTemplate();
+            $groupHostTemplate = $groupOptions->getHostTemplate() . $groupHostTemplate;
+            $groupIsHttpsOnly = $groupIsHttpsOnly || $groupOptions->isHttpsOnly();
+        }
+
+        $routePathTemplate = $groupPathTemplate . $pathTemplate;
+        $routeHostTemplate = $groupHostTemplate . ($hostTemplate ?? "");
+    }
+    
+    private function applyGroupOptionsToRouteBuilder(RouteBuilder &$routeBuilder)
+    {
+        $groupMiddleware = [];
+        
+        foreach ($this->groupOptionsStack as $groupOptions) {
+            $groupMiddleware = array_merge($groupMiddleware, $groupOptions->getMiddleware());
+        }
+        
+        $routeBuilder->withMiddleware($groupMiddleware);
+    }
+}

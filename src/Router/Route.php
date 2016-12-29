@@ -1,72 +1,62 @@
 <?php
 namespace Opulence\Router;
 
+use Closure;
 use InvalidArgumentException;
 
 /**
- * Defines a route
+ * Defines an HTTP route
  */
-class Route 
+class Route
 {
-    /** @var array The list of methods this route matches on */
-    private $methods = [];
-    /** @var string The raw path */
-    private $pathTemplate = "";
-    /** @var string The raw host */
-    private $hostTemplate = "";
-    /** @var bool Whether or not this route is HTTPS-only */
-    private $isHttpsOnly = false;
+    /** @var Closure The action this route performs */
+    private $action = null;
+    /** @var string|null The name of this route */
+    private $name = null;
+    /** @var IRouteConstraints[] The list of constraints that applies to this route */
+    private $constraints = [];
+    /** @var RouteTemplate The path route template */
+    private $pathTemplate = null;
+    /** @var RouteTemplate The host route template */
+    private $hostTemplate = null;
     
-    public function __construct($methods, string $pathTemplate, string $hostTemplate = "", bool $isHttpsOnly = false)
+    public function __construct(Closure $action, array $constraints, RouteTemplate $pathTemplate, RouteTemplate $hostTemplate = null, string $name = null)
     {
-        $this->methods = (array)$methods;
+        $this->action = $action;
         
-        if (count($this->methods) == 0) {
-            throw new InvalidArgumentException("Must specify at least one method");
+        if (count($constraints) == 0) {
+            throw new InvalidArgumentException("Constraints must not be empty");
         }
         
+        $this->constraints = $constraints;
         $this->pathTemplate = $pathTemplate;
         $this->hostTemplate = $hostTemplate;
-        $this->isHttpsOnly = $isHttpsOnly;
+        $this->name = $name;
     }
     
-    /**
-     * Gets the list of methods this route matches on
-     * 
-     * @return array The list of methods
-     */
-    public function getMethods() : array
+    public function dispatch($request)
     {
-        return $this->methods;
+        return $this->action($request);
     }
     
-    /**
-     * Gets the host template
-     * 
-     * @return The host template
-     */
-    public function getHostTemplate() : string
+    public function getName() : ?string
     {
-        return $this->hostTemplate;
+        return $this->name;
     }
     
-    /**
-     * Gets the path template
-     * 
-     * @return The path template
-     */
-    public function getPathTemplate() : string
+    public function getUri(array $routeVars) : string
     {
-        return $this->pathTemplate;
+        // Todo: Using the host and path templates, piece this together
     }
     
-    /**
-     * Gets whether or not the route is HTTPS-only
-     * 
-     * @return bool True if the route is HTTPS-only, otherwise false
-     */
-    public function isHttpsOnly() : bool
+    public function isMatch($request) : bool
     {
-        return $this->isHttpsOnly;
+        foreach ($this->constraints as $constraint) {
+            if (!$constraint->isMatch($request)) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }

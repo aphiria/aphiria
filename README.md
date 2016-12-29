@@ -1,4 +1,8 @@
 <h1>Todo</h1>
+* I decided to pass constraints AND the `RouteTemplate`s to `Route::__construct()`.  However, if I add an `out` param to `RouteTemplate::tryMatch()` to retrieve the route vars, I'll be double-fetching it
+  * Once is done when checking the constraints, and again when I need to pass those route vars to the route dispatcher
+  * I _could_ have a cache inside `RouteTemplate`, but that feels hacky.  Is there no way to grab this data once and capture it for future use?
+* Need a factory for my constraints
 * Before, I had a dispatcher, which would accept a route and request, and give you a response
   * Issue right now is that, even if I have a `Closure` controller, I still need to do some magic to inject the right objects and route vars into it
       * Similarly, I have to instantiate a controller class and inject route vars into its method

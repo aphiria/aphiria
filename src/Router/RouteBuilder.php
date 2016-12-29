@@ -6,14 +6,20 @@ use LogicException;
 use Opulence\Router\Dispatchers\IRouteDispatcherFactory;
 
 /**
- * Defines the route map builder
+ * Defines the route builder
  */
-class RouteMapBuilder
+class RouteBuilder
 {
     /** @var IRouteDispatcherFactory The route dispatcher factory */
     private $routeDispatcherFactory = null;
-    /** @var ParsedRoute The parsed route */
-    private $parsedRoute = null;
+    /** @var array The list of HTTP methods to match on */
+    private $httpMethods = [];
+    /** @var bool Whether or not the route is HTTPS-only */
+    private $isHttpsOnly = false;
+    /** @var RouteTemplate The path route template */
+    private $pathTemplate = null;
+    /** @var RouteTemplate The host route template */
+    private $hostTemplate = null;
     /** @var string The name of the controller class to map to */
     private $controllerClassName = "";
     /** @var string The name of the method in the controller class to map to */
@@ -25,13 +31,21 @@ class RouteMapBuilder
     /** @var string|null The name of this route */
     private $name = null;
     
-    public function __construct(IRouteDispatcherFactory $routeDispatcherFactory, ParsedRoute $parsedRoute)
-    {
+    public function __construct(
+            IRouteDispatcherFactory $routeDispatcherFactory, 
+            array $httpMethods, 
+            RouteTemplate $pathTemplate, 
+            RouteTemplate $hostTemplate = null, 
+            bool $isHttpsOnly = false
+    ) {
         $this->routeDispatcherFactory = $routeDispatcherFactory;
-        $this->parsedRoute = $parsedRoute;
+        $this->httpMethods = $httpMethods;
+        $this->pathTemplate = $pathTemplate;
+        $this->hostTemplate = $hostTemplate;
+        $this->isHttpsOnly = $isHttpsOnly;
     }
     
-    public function build() : RouteMap
+    public function build() : Route
     {
         if ($this->closureController instanceof Closure) {
             $controller = $this->routeDispatcherFactory->createRouteDispatcherFromClosure($this->closureController, $this->middleware);
@@ -41,7 +55,8 @@ class RouteMapBuilder
             throw new LogicException("No controller set");
         }
         
-        return new RouteMap($this->parsedRoute, $controller, $this->name);
+        // Todo: Need to create constraints
+        return new Route($controller, [], $this->pathTemplate, $this->hostTemplate, $this->isHttpsOnly, $this->name);
     }
     
     public function toClosure(Closure $controller) : self
@@ -51,7 +66,7 @@ class RouteMapBuilder
         return $this;
     }
     
-    public function toController(string $controllerClassName, string $controllerMethodName) : self
+    public function toMethod(string $controllerClassName, string $controllerMethodName) : self
     {
         $this->controllerClassName = $controllerClassName;
         $this->controllerMethodName = $controllerMethodName;
