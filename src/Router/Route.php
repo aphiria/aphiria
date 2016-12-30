@@ -9,34 +9,57 @@ use InvalidArgumentException;
  */
 class Route
 {
+    /** @var array The list of HTTP methods this route handles */
+    private $httpMethods = [];
     /** @var Closure The action this route performs */
     private $action = null;
     /** @var string|null The name of this route */
     private $name = null;
-    /** @var IRouteConstraints[] The list of constraints that applies to this route */
-    private $constraints = [];
-    /** @var RouteTemplate The path route template */
+    /** @var IRouteTemplate The path route template */
     private $pathTemplate = null;
-    /** @var RouteTemplate The host route template */
+    /** @var IRouteTemplate The host route template */
     private $hostTemplate = null;
+    /** @var bool Whether or not this route is HTTPS-only */
+    private $isHttpsOnly = false;
+    /** @var array The list of any middleware on this route */
+    private $middleware = [];
     
-    public function __construct(Closure $action, array $constraints, RouteTemplate $pathTemplate, RouteTemplate $hostTemplate = null, string $name = null)
-    {
+    public function __construct(
+        array $httpMethods, 
+        Closure $action, 
+        IRouteTemplate $pathTemplate,
+        bool $isHttpsOnly, 
+        array $middleware = [], 
+        IRouteTemplate $hostTemplate = null, 
+        string $name = null
+    ) {
+        $this->httpMethods = $httpMethods;
         $this->action = $action;
-        
-        if (count($constraints) == 0) {
-            throw new InvalidArgumentException("Constraints must not be empty");
-        }
-        
-        $this->constraints = $constraints;
         $this->pathTemplate = $pathTemplate;
+        $this->isHttpsOnly = $isHttpsOnly;
+        $this->middleware = $middleware;
         $this->hostTemplate = $hostTemplate;
         $this->name = $name;
     }
     
-    public function dispatch($request)
+    public function getAction() : Closure
     {
-        return $this->action($request);
+        return $this->action;
+    }
+    
+    public function getHostTemplate() : ?IRouteTemplate
+    {
+        return $this->hostTemplate;
+    }
+    
+    public function getHttpMethods() : array
+    {
+        return $this->httpMethods;
+    }
+    
+    public function getMiddleware() : array
+    {
+        return $this->middleware;
     }
     
     public function getName() : ?string
@@ -44,19 +67,13 @@ class Route
         return $this->name;
     }
     
-    public function getUri(array $routeVars) : string
+    public function getPathTemplate() : IRouteTemplate
     {
-        // Todo: Using the host and path templates, piece this together
+        return $this->pathTemplate;
     }
     
-    public function isMatch($request) : bool
+    public function isHttpsOnly() : bool
     {
-        foreach ($this->constraints as $constraint) {
-            if (!$constraint->isMatch($request)) {
-                return false;
-            }
-        }
-        
-        return true;
+        return $this->isHttpsOnly;
     }
 }

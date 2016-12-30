@@ -4,7 +4,7 @@ namespace Opulence\Router;
 /**
  * Defines a route template
  */
-class RouteTemplate
+class RegexRouteTemplate
 {
     private $pathRegex = "";
     private $hostRegex = null;
@@ -22,12 +22,12 @@ class RouteTemplate
         
     }
     
-    public function getDefaultVars() : array
+    public function getDefaultRouteVars() : array
     {
-        
+        return $this->defaultRouteVars;
     }
     
-    public function isMatch(string $value) : bool
+    public function tryMatch(string $value, array &$routeVars = []) : bool
     {
         
     }
