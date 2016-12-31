@@ -17,14 +17,9 @@ class RegexRouteTemplate
         $this->defaultRouteVars = $defaultRouteVars;
     }
     
-    public function buildTemplate(array &$values) : string
+    public function buildTemplate(array $routeVars) : string
     {
         
-    }
-    
-    public function getDefaultRouteVars() : array
-    {
-        return $this->defaultRouteVars;
     }
     
     public function tryMatch(string $value, array &$routeVars = []) : bool

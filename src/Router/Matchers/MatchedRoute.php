@@ -1,5 +1,5 @@
 <?php
-namespace Opulence\Router;
+namespace Opulence\Router\Matchers;
 
 use Closure;
 

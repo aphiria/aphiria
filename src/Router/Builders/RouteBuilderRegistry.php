@@ -1,5 +1,5 @@
 <?php
-namespace Opulence\Router;
+namespace Opulence\Router\Builders;
 
 use Closure;
 use Opulence\Router\Dispatchers\IRouteActionFactory;
@@ -36,7 +36,7 @@ class RouteBuilderRegistry
         return $builtRouteMaps;
     }
     
-    public function group(RouteGroupOptions $groupOptions, Closure $callback) : RouteGroupBuilder
+    public function group(RouteGroupOptions $groupOptions, Closure $callback)
     {
         array_push($this->groupOptionsStack, $groupOptions);
         $callback($this);

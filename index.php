@@ -1,13 +1,13 @@
 <?php
 use Opulence\IoC\Container;
+use Opulence\Router\Builders\RouteBuilderRegistry;
+use Opulence\Router\Builders\RouteGroupOptions;
 use Opulence\Router\Dispatchers\ContainerDependencyResolver;
 use Opulence\Router\Dispatchers\MiddlewarePipeline;
 use Opulence\Router\Dispatchers\RouteActionFactory;
+use Opulence\Router\Matchers\RouteMatcher;
 use Opulence\Router\RegexRouteTemplate;
 use Opulence\Router\Route;
-use Opulence\Router\RouteBuilderRegistry;
-use Opulence\Router\RouteGroupOptions;
-use Opulence\Router\RouteMatcher;
 use Opulence\Router\Router;
 
 $routeActionFactory = new RouteActionFactory(new ContainerDependencyResolver(new Container));
@@ -20,7 +20,7 @@ $routeBuilderRegistry->map("GET", "users/:userId")
 
 // Add a group of routes that share common options
 $routeBuilderRegistry->group(
-    new RouteGroupOptions("users/", "", false, []), 
+    new RouteGroupOptions("users/", "", false, []),
     function(RouteBuilderRegistry $routeBuilderRegistry) {
         $routeBuilderRegistry->map("GET", ":userId")
            ->toMethod("UserController", "showProfile");

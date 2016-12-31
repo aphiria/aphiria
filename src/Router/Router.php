@@ -2,6 +2,7 @@
 namespace Opulence\Router;
 
 use Opulence\Router\Dispatchers\IRouteDispatcher;
+use Opulence\Router\Matchers\IRouteMatcher;
 
 /**
  * Defines the router

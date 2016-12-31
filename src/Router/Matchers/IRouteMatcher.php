@@ -1,5 +1,5 @@
 <?php
-namespace Opulence\Router;
+namespace Opulence\Router\Matchers;
 
 /**
  * Defines the interface for route matchers to implement

@@ -1,5 +1,5 @@
 <?php
-namespace Opulence\Router;
+namespace Opulence\Router\Builders;
 
 /**
  * Defines the route group options
@@ -24,14 +24,14 @@ class RouteGroupOptions
         return $this->hostTemplate;
     }
     
-    public function getPathTemplate() : string
-    {
-        return $this->pathTemplate;
-    }
-    
     public function getMiddleware() : array
     {
         return $this->middleware;
+    }
+    
+    public function getPathTemplate() : string
+    {
+        return $this->pathTemplate;
     }
     
     public function isHttpsOnly() : bool

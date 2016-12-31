@@ -1,5 +1,5 @@
 <?php
-namespace Opulence\Router;
+namespace Opulence\Router\Builders;
 
 use Closure;
 use LogicException;
