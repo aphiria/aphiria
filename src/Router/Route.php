@@ -2,6 +2,8 @@
 namespace Opulence\Router;
 
 use Closure;
+use SuperClosure\Analyzer\AstAnalyzer;
+use SuperClosure\Serializer;
 
 /**
  * Defines an HTTP route
@@ -22,6 +24,8 @@ class Route
     private $isHttpsOnly = false;
     /** @var array The list of any middleware on this route */
     private $middleware = [];
+    /** @var string The serialized action */
+    private $serializedAction = "";
 
     public function __construct(
         $httpMethods,
@@ -39,6 +43,30 @@ class Route
         $this->middleware = $middleware;
         $this->hostTemplate = $hostTemplate;
         $this->name = $name;
+    }
+
+    /**
+     * Serializes the actions
+     *
+     * @return array The list of properties to store
+     */
+    public function __sleep() : array
+    {
+        $serializer = new Serializer(new AstAnalyzer());
+        $this->serializedAction = $serializer->serialize($this->action);
+        $this->action = null;
+
+        return array_keys(get_object_vars($this));
+    }
+
+    /**
+     * Deserializes the actions
+     */
+    public function __wakeup()
+    {
+        $serializer = new Serializer(new AstAnalyzer());
+        $this->action = $serializer->unserialize($this->serializedAction);
+        $this->serializedAction = "";
     }
 
     public function getAction() : Closure

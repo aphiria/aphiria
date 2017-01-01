@@ -1,21 +1,18 @@
 <?php
 namespace Opulence\Router\Matchers;
 
-use Opulence\Router\Route;
+use Opulence\Router\Routes\RouteCollection;
 
 /**
  * Defines a route matcher
  */
 class RouteMatcher implements IRouteMatcher
 {
-    public function tryMatch($request, array $routes, MatchedRoute &$matchedRoute) : bool
+    public function tryMatch($request, RouteCollection $routes, MatchedRoute &$matchedRoute) : bool
     {
-        /** @var Route $route */
-        foreach ($routes as $route) {
-            if (!in_array($route->getHttpMethods(), $request->getMethod())) {
-                continue;
-            }
-
+        $routesByMethod = $routes->get($request->getHttpMethod());
+        
+        foreach ($routesByMethod as $route) {
             if (!$route->getPathTemplate()->tryMatch($request->getPath(), $routeVars)) {
                 continue;
             }

@@ -1,7 +1,4 @@
 <h1>Todo</h1>
-* Need to consider how I'll support parameterized middleware
-* I need a `RouteMapRegistry` so I have a place to grab named routes from
-  * Should this be injected into `Router`?  Not sure because `Router` only needs the list of all route maps, not the ability to grab named routes
 * Need a way to check if a URI matches the parsed route
   * Before, I was requiring `ParsedRoute` to return the regex, which feels like a break in abstraction
 * For integration testing purposes, I need to be able to grab the matched route and controller
@@ -11,4 +8,4 @@
   * How should the cached file be structured?  It'd be neat to have a bunch of nested keys to help you jump to stuff quickly
       * Will this create a jumbo file that could cause concurrency issues if too many requests come in at once?
       * As cool as route match caching would be to have, I've got a feeling it's not worth it
-      * Maybe instead, it's worth just "caching" by HTTP methods (like the old router)
+      * Maybe instead, it's worth just "caching" by HTTP methods (like the old router).  NOTE:  This is how I'm now doing it
