@@ -27,7 +27,7 @@ class Route
         $httpMethods,
         Closure $action,
         IRouteTemplate $pathTemplate,
-        bool $isHttpsOnly,
+        bool $isHttpsOnly = false,
         array $middleware = [],
         IRouteTemplate $hostTemplate = null,
         string $name = null

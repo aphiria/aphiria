@@ -9,8 +9,7 @@ $route = new Route(
     function ($request, $routeVars) {
         return "Hello, {$routeVars["userId"]}";
     },
-    new RegexRouteTemplate('users\/(?P<userId>\d+)'),
-    false
+    new RegexRouteTemplate('users\/(?P<userId>\d+)')
 );
 
 // Actually route the request
