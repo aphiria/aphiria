@@ -1,6 +1,8 @@
 <?php
 namespace Opulence\Router\Matchers;
 
+use Opulence\Router\Route;
+
 /**
  * Defines a route matcher
  */
@@ -30,7 +32,7 @@ class RouteMatcher implements IRouteMatcher
 
             return true;
         }
-        
+
         return false;
     }
 }

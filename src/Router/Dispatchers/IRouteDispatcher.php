@@ -1,7 +1,7 @@
 <?php
 namespace Opulence\Router\Dispatchers;
 
-use Opulence\Router\MatchedRoute;
+use Opulence\Router\Matchers\MatchedRoute;
 
 /**
  * Defines the interface for route dispatchers to implement

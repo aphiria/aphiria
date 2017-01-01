@@ -4,6 +4,8 @@ namespace Opulence\Router\Builders;
 use Closure;
 use LogicException;
 use Opulence\Router\Dispatchers\IRouteActionFactory;
+use Opulence\Router\IRouteTemplate;
+use Opulence\Router\Route;
 
 /**
  * Defines the route builder
@@ -26,13 +28,13 @@ class RouteBuilder
     private $middleware = [];
     /** @var string|null The name of this route */
     private $name = null;
-    
+
     public function __construct(
-            IRouteActionFactory $routeActionFactory, 
-            array $httpMethods, 
-            IRouteTemplate $pathTemplate,  
-            bool $isHttpsOnly = false,
-            IRouteTemplate $hostTemplate = null
+        IRouteActionFactory $routeActionFactory,
+        array $httpMethods,
+        IRouteTemplate $pathTemplate,
+        bool $isHttpsOnly = false,
+        IRouteTemplate $hostTemplate = null
     ) {
         $this->routeActionFactory = $routeActionFactory;
         $this->httpMethods = $httpMethods;
@@ -40,41 +42,43 @@ class RouteBuilder
         $this->isHttpsOnly = $isHttpsOnly;
         $this->hostTemplate = $hostTemplate;
     }
-    
+
     public function build() : Route
     {
         if ($this->action === null) {
             throw new LogicException("No controller specified for route");
         }
-        
-        return new Route($this->httpMethods, $this->action, $this->pathTemplate, $this->isHttpsOnly, $this->middleware, $this->hostTemplate, $this->name);
+
+        return new Route($this->httpMethods, $this->action, $this->pathTemplate, $this->isHttpsOnly, $this->middleware,
+            $this->hostTemplate, $this->name);
     }
-    
+
     public function toClosure(Closure $controller) : self
     {
         $this->action = $this->routeActionFactory->createRouteActionFromClosure($controller);
-        
+
         return $this;
     }
-    
+
     public function toMethod(string $controllerClassName, string $controllerMethodName) : self
     {
-        $this->action = $this->routeActionFactory->createRouteActionFromController($controllerClassName, $controllerMethodName);
-        
+        $this->action = $this->routeActionFactory->createRouteActionFromController($controllerClassName,
+            $controllerMethodName);
+
         return $this;
     }
-    
+
     public function withMiddleware($middleware) : self
     {
         $this->middleware = array_merge($this->middleware, (array)$middleware);
-        
+
         return $this;
     }
-    
+
     public function withName(string $name) : self
     {
         $this->name = $name;
-        
+
         return $this;
     }
 }

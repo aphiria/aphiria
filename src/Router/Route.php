@@ -2,7 +2,6 @@
 namespace Opulence\Router;
 
 use Closure;
-use InvalidArgumentException;
 
 /**
  * Defines an HTTP route
@@ -23,17 +22,17 @@ class Route
     private $isHttpsOnly = false;
     /** @var array The list of any middleware on this route */
     private $middleware = [];
-    
+
     public function __construct(
-        array $httpMethods, 
-        Closure $action, 
+        $httpMethods,
+        Closure $action,
         IRouteTemplate $pathTemplate,
-        bool $isHttpsOnly, 
-        array $middleware = [], 
-        IRouteTemplate $hostTemplate = null, 
+        bool $isHttpsOnly,
+        array $middleware = [],
+        IRouteTemplate $hostTemplate = null,
         string $name = null
     ) {
-        $this->httpMethods = $httpMethods;
+        $this->httpMethods = (array)$httpMethods;
         $this->action = $action;
         $this->pathTemplate = $pathTemplate;
         $this->isHttpsOnly = $isHttpsOnly;
@@ -41,37 +40,37 @@ class Route
         $this->hostTemplate = $hostTemplate;
         $this->name = $name;
     }
-    
+
     public function getAction() : Closure
     {
         return $this->action;
     }
-    
+
     public function getHostTemplate() : ?IRouteTemplate
     {
         return $this->hostTemplate;
     }
-    
+
     public function getHttpMethods() : array
     {
         return $this->httpMethods;
     }
-    
+
     public function getMiddleware() : array
     {
         return $this->middleware;
     }
-    
+
     public function getName() : ?string
     {
         return $this->name;
     }
-    
+
     public function getPathTemplate() : IRouteTemplate
     {
         return $this->pathTemplate;
     }
-    
+
     public function isHttpsOnly() : bool
     {
         return $this->isHttpsOnly;

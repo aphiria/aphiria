@@ -7,7 +7,8 @@
 * For integration testing purposes, I need to be able to grab the matched route and controller
   * Actually, I do not see any usages of `getMatchedRoute()`.  Do I really need this anymore?
   * For view assertions, though, I do use the matched controller.  So, this _does_ need to be implemented.
-* How do I optimize this for performance?  I need to cache the parsing of the routes as well as the mapping to controllers.
-  * Need to allow for caching all the "matchers"'s pieces of data to the matched route
-      * For example, need to cache host and path and map it to the matched route
-* In general, make sure the skeleton project isn't having to do a ton of boilerplate - wrap this up nicely so it appeals to 3rd party users
+* Need to add parsed route caching (would go in place of `$routeBuilder->buildAll()`), and route matcher cache (would keep track of all the pieces of info from the request necessary to make a match)
+  * How should the cached file be structured?  It'd be neat to have a bunch of nested keys to help you jump to stuff quickly
+      * Will this create a jumbo file that could cause concurrency issues if too many requests come in at once?
+      * As cool as route match caching would be to have, I've got a feeling it's not worth it
+      * Maybe instead, it's worth just "caching" by HTTP methods (like the old router)
