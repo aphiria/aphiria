@@ -1,4 +1,9 @@
 <h1>Todo</h1>
+* Make route actions an actual class with a `getClosure()` method
+  * This would let us attach the matched controller instance
+      * This would need to be set by the `RouteDispatcher` during dispatching
+  * Maybe allow you to pass in an optional serializer for the closure
+  * Need to move `__wakeup()` and `__sleep()` to this new class
 * Need a way to check if a URI matches the parsed route
   * Before, I was requiring `ParsedRoute` to return the regex, which feels like a break in abstraction
 * For integration testing purposes, I need to be able to grab the matched route and controller
