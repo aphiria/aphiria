@@ -57,10 +57,8 @@ class RouteBuilderRegistry
         bool $isHttpsOnly = false
     ) : RouteBuilder {
         $this->applyGroupOptionsToRoute($pathTemplate, $hostTemplate);
-        $parsedPathTemplate = $this->routeTemplateParser->parse($pathTemplate);
-        $parsedHostTemplate = $hostTemplate == null ? $hostTemplate : $this->routeTemplateParser->parse($hostTemplate);
-        $routeBuilder = new RouteBuilder($this->routeActionFactory, $methods, $parsedPathTemplate,
-            $parsedHostTemplate, $isHttpsOnly);
+        $parsedRouteTemplate = $this->routeTemplateParser->parse($pathTemplate, $hostTemplate);
+        $routeBuilder = new RouteBuilder($this->routeActionFactory, $methods, $parsedRouteTemplate, $isHttpsOnly);
         $this->applyGroupOptionsToRouteBuilder($routeBuilder);
 
         return $routeBuilder;

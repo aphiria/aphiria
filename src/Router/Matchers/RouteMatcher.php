@@ -13,11 +13,7 @@ class RouteMatcher implements IRouteMatcher
         $routesByMethod = $routes->get($request->getHttpMethod());
         
         foreach ($routesByMethod as $route) {
-            if (!$route->getPathTemplate()->tryMatch($request->getPath(), $routeVars)) {
-                continue;
-            }
-
-            if (!$route->getPathTemplate()->tryMatch($request->getHost(), $routeVars)) {
+            if (!$route->getRouteTemplate()->tryMatch($request->getUri(), $routeVars)) {
                 continue;
             }
 

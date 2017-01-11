@@ -15,10 +15,8 @@ class Route
     private $action = null;
     /** @var string|null The name of this route */
     private $name = null;
-    /** @var IRouteTemplate The path route template */
-    private $pathTemplate = null;
-    /** @var IRouteTemplate The host route template */
-    private $hostTemplate = null;
+    /** @var IRouteTemplate The route template */
+    private $routeTemplate = null;
     /** @var bool Whether or not this route is HTTPS-only */
     private $isHttpsOnly = false;
     /** @var array The list of any middleware on this route */
@@ -27,29 +25,22 @@ class Route
     public function __construct(
         $httpMethods,
         RouteAction $action,
-        IRouteTemplate $pathTemplate,
+        IRouteTemplate $routeTemplate,
         bool $isHttpsOnly = false,
         array $middleware = [],
-        IRouteTemplate $hostTemplate = null,
         string $name = null
     ) {
         $this->httpMethods = (array)$httpMethods;
         $this->action = $action;
-        $this->pathTemplate = $pathTemplate;
+        $this->routeTemplate = $routeTemplate;
         $this->isHttpsOnly = $isHttpsOnly;
         $this->middleware = $middleware;
-        $this->hostTemplate = $hostTemplate;
         $this->name = $name;
     }
 
     public function getAction() : RouteAction
     {
         return $this->action;
-    }
-
-    public function getHostTemplate() : ?IRouteTemplate
-    {
-        return $this->hostTemplate;
     }
 
     public function getHttpMethods() : array
@@ -67,9 +58,9 @@ class Route
         return $this->name;
     }
 
-    public function getPathTemplate() : IRouteTemplate
+    public function getRouteTemplate() : IRouteTemplate
     {
-        return $this->pathTemplate;
+        return $this->routeTemplate;
     }
 
     public function isHttpsOnly() : bool

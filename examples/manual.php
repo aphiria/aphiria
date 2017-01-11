@@ -9,10 +9,9 @@ $route = new Route(
     function ($request, $routeVars) {
         return "Hello, {$routeVars["userId"]}";
     },
-    new RegexRouteTemplate('users\/(?P<userId>\d+)'),
+    new RegexRouteTemplate('users\/(?P<userId>\d+)', 'example\.com'),
     true,
     ["MiddlewareClass"],
-    new RegexRouteTemplate('example\.com'),
     "MyProfile"
 );
 

@@ -8,5 +8,5 @@ use Opulence\Router\IRouteTemplate;
  */
 interface IRouteTemplateParser
 {
-    public function parse(string $routeTemplate) : IRouteTemplate;
+    public function parse(string $pathTemplate, string $hostTemplate = null) : IRouteTemplate;
 }

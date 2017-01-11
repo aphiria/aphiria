@@ -1,7 +1,7 @@
 <h1>Todo</h1>
 
 <h1>Notes</h1>
-* Vars are either `:([a-zA-Z_][a-zA-Z0-9_]*)` or `:{([a-zA-Z_][a-zA-Z0-9_]*)(:[^:}]+)*}`
+* Vars are either `:([a-zA-Z_][a-zA-Z0-9_]*)` or `:{([a-zA-Z_][a-zA-Z0-9_]*)(:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\([^\)]*\)+)*}`
   * It actually may require a parser to parse this syntax and account for escaped ":" and "{" and "}" chars
   * The optional rules include:
       * alpha

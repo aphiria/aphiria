@@ -20,10 +20,8 @@ class RouteBuilder
     private $action = null;
     /** @var bool Whether or not the route is HTTPS-only */
     private $isHttpsOnly = false;
-    /** @var IRouteTemplate The path route template */
-    private $pathTemplate = null;
-    /** @var IRouteTemplate|null The host route template */
-    private $hostTemplate = null;
+    /** @var IRouteTemplate The route template */
+    private $routeTemplate = null;
     /** @var array The list of middleware on this route */
     private $middleware = [];
     /** @var string|null The name of this route */
@@ -32,15 +30,13 @@ class RouteBuilder
     public function __construct(
         IRouteActionFactory $routeActionFactory,
         array $httpMethods,
-        IRouteTemplate $pathTemplate,
-        bool $isHttpsOnly = false,
-        IRouteTemplate $hostTemplate = null
+        IRouteTemplate $routeTemplate,
+        bool $isHttpsOnly = false
     ) {
         $this->routeActionFactory = $routeActionFactory;
         $this->httpMethods = $httpMethods;
-        $this->pathTemplate = $pathTemplate;
+        $this->routeTemplate = $routeTemplate;
         $this->isHttpsOnly = $isHttpsOnly;
-        $this->hostTemplate = $hostTemplate;
     }
 
     public function build() : Route
@@ -49,8 +45,8 @@ class RouteBuilder
             throw new LogicException("No controller specified for route");
         }
 
-        return new Route($this->httpMethods, $this->action, $this->pathTemplate, $this->isHttpsOnly, $this->middleware,
-            $this->hostTemplate, $this->name);
+        return new Route($this->httpMethods, $this->action, $this->routeTemplate, $this->isHttpsOnly, $this->middleware,
+            $this->name);
     }
 
     public function toClosure(Closure $controller) : self
