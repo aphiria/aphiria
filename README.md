@@ -1,4 +1,5 @@
 <h1>Todo</h1>
+* When actually writing this:  Should `IRouteTemplate::tryMatch()` take in a `Uri` instance?  That'd make it easier/less repetitive to grab host and path.
 
 <h1>Notes</h1>
 * Vars are either `:([a-zA-Z_][a-zA-Z0-9_]*)` or `:{([a-zA-Z_][a-zA-Z0-9_]*)(:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\([^\)]*\)+)*}`
