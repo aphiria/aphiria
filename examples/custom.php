@@ -20,6 +20,9 @@ $routeBuilderRegistry = new RouteBuilderRegistry($routeActionFactory, new RouteT
 $routeBuilderRegistry->map("GET", "users/:userId")
     ->toMethod("UserController", "showProfile")
     ->withName("UserProfile");
+$routeBuilderRegistry->map("GET", "users/age/:{minAge:int:min(0)}-:{maxAge:int}")
+    ->toMethod("UserController", "showUsersInAgeRange")
+    ->withName("UsersInAgeRange");
 
 // Actually route the request
 $router = new Router(
