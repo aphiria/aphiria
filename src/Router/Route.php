@@ -2,8 +2,7 @@
 namespace Opulence\Router;
 
 use Closure;
-use SuperClosure\Analyzer\AstAnalyzer;
-use SuperClosure\Serializer;
+use Opulence\Router\Dispatchers\RouteAction;
 
 /**
  * Defines an HTTP route
@@ -12,7 +11,7 @@ class Route
 {
     /** @var array The list of HTTP methods this route handles */
     private $httpMethods = [];
-    /** @var Closure The action this route performs */
+    /** @var RouteAction The action this route performs */
     private $action = null;
     /** @var string|null The name of this route */
     private $name = null;
@@ -24,12 +23,10 @@ class Route
     private $isHttpsOnly = false;
     /** @var array The list of any middleware on this route */
     private $middleware = [];
-    /** @var string The serialized action */
-    private $serializedAction = "";
 
     public function __construct(
         $httpMethods,
-        Closure $action,
+        RouteAction $action,
         IRouteTemplate $pathTemplate,
         bool $isHttpsOnly = false,
         array $middleware = [],
@@ -45,31 +42,7 @@ class Route
         $this->name = $name;
     }
 
-    /**
-     * Serializes the actions
-     *
-     * @return array The list of properties to store
-     */
-    public function __sleep() : array
-    {
-        $serializer = new Serializer(new AstAnalyzer());
-        $this->serializedAction = $serializer->serialize($this->action);
-        $this->action = null;
-
-        return array_keys(get_object_vars($this));
-    }
-
-    /**
-     * Deserializes the actions
-     */
-    public function __wakeup()
-    {
-        $serializer = new Serializer(new AstAnalyzer());
-        $this->action = $serializer->unserialize($this->serializedAction);
-        $this->serializedAction = "";
-    }
-
-    public function getAction() : Closure
+    public function getAction() : RouteAction
     {
         return $this->action;
     }

@@ -8,9 +8,14 @@ use Opulence\Router\Dispatchers\RouteDispatcher;
 use Opulence\Router\Matchers\RouteMatcher;
 use Opulence\Router\Router;
 use Opulence\Router\Parsers\RouteTemplateParser;
+use SuperClosure\Analyzer\AstAnalyzer;
+use SuperClosure\Serializer;
 
 // Add an ordinary route
-$routeActionFactory = new RouteActionFactory(new ContainerDependencyResolver(new Container));
+$routeActionFactory = new RouteActionFactory(
+    new ContainerDependencyResolver(new Container),
+    new Serializer(new AstAnalyzer())
+);
 $routeBuilderRegistry = new RouteBuilderRegistry($routeActionFactory, new RouteTemplateParser());
 $routeBuilderRegistry->map("GET", "users/:userId")
     ->toMethod("UserController", "showProfile")
