@@ -5,9 +5,9 @@ use Opulence\Router\Router;
 
 // Create a route manually
 $route = new Route(
-    "GET",
+    'GET',
     function ($request, $routeVars) {
-        return "Hello, {$routeVars["userId"]}";
+        return "Hello, {$routeVars['userId']}";
     },
     new RegexRouteTemplate('users\/(?P<userId>\d+)')
 );

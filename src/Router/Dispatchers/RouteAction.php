@@ -20,8 +20,8 @@ class RouteAction
     /** @var SerializerInterface The serializer to use for this action */
     private $serializer = null;
     /** @var string The serialized action */
-    private $serializedAction = "";
-    
+    private $serializedAction = '';
+
     /**
      * @param Closure $action The action a route takes
      * @param bool $usesClass Whether or not the action uses a method or a closure
@@ -53,42 +53,42 @@ class RouteAction
     public function __wakeup()
     {
         $this->action = $this->serializer->unserialize($this->serializedAction);
-        $this->serializedAction = "";
+        $this->serializedAction = '';
     }
-    
+
     /**
      * Gets the closure the route takes
-     * 
+     *
      * @return Closure The action the route takes
      */
     public function getClosure() : Closure
     {
         return $this->action;
     }
-    
+
     /**
      * Gets the instance of the class that was used in this action
-     * 
+     *
      * @return object|null The instance of the class that was used in this action if one was set, otherwise null
      */
     public function getClassInstance()
     {
         return $this->classInstance;
     }
-    
+
     /**
      * Sets the instance of the class that was used in this action
-     * 
+     *
      * @param object $instance
      */
     public function setClassInstance($instance)
     {
         $this->classInstance = $instance;
     }
-    
+
     /**
      * Gets whether or not this action used a class instance
-     * 
+     *
      * @return bool True if the action used a class instance, otherwise false
      */
     public function usesClass() : bool

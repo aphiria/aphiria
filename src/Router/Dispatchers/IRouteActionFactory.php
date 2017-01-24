@@ -9,6 +9,6 @@ use Closure;
 interface IRouteActionFactory
 {
     public function createRouteActionFromClosure(Closure $closure) : Closure;
-    
+
     public function createRouteActionFromController(string $controllerName, string $controllerMethodName) : Closure;
 }

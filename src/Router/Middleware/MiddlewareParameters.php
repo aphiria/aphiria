@@ -7,7 +7,7 @@ namespace Opulence\Router\Middleware;
 class MiddlewareParameters
 {
     /** @var string The middleware class name */
-    private $middlewareClassName = "";
+    private $middlewareClassName = '';
     /** @var array The middleware parameters */
     private $parameters = [];
 

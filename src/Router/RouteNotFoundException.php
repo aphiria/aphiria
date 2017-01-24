@@ -9,4 +9,4 @@ use Exception;
 class RouteNotFoundException extends Exception
 {
     // Don't do anything
-} 
+}

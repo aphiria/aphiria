@@ -42,7 +42,7 @@ class RouteBuilder
     public function build() : Route
     {
         if ($this->action === null) {
-            throw new LogicException("No controller specified for route");
+            throw new LogicException('No controller specified for route');
         }
 
         return new Route($this->httpMethods, $this->action, $this->routeTemplate, $this->isHttpsOnly, $this->middleware,

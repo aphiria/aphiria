@@ -10,8 +10,8 @@ class RouteMatcher implements IRouteMatcher
 {
     public function tryMatch($request, RouteCollection $routes, MatchedRoute &$matchedRoute) : bool
     {
-        $routesByMethod = $routes->get($request->getHttpMethod());
-        
+        $routesByMethod = $routes->getByMethod($request->getHttpMethod());
+
         foreach ($routesByMethod as $route) {
             if (!$route->getRouteTemplate()->tryMatch($request->getUri(), $routeVars)) {
                 continue;

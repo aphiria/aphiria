@@ -6,8 +6,8 @@ use Opulence\Router\Dispatchers\MiddlewarePipeline;
 use Opulence\Router\Dispatchers\RouteActionFactory;
 use Opulence\Router\Dispatchers\RouteDispatcher;
 use Opulence\Router\Matchers\RouteMatcher;
-use Opulence\Router\Router;
 use Opulence\Router\Parsers\RouteTemplateParser;
+use Opulence\Router\Router;
 use SuperClosure\Analyzer\AstAnalyzer;
 use SuperClosure\Serializer;
 
@@ -17,12 +17,12 @@ $routeActionFactory = new RouteActionFactory(
     new Serializer(new AstAnalyzer())
 );
 $routeBuilderRegistry = new RouteBuilderRegistry($routeActionFactory, new RouteTemplateParser());
-$routeBuilderRegistry->map("GET", "users/:userId")
-    ->toMethod("UserController", "showProfile")
-    ->withName("UserProfile");
-$routeBuilderRegistry->map("GET", "users/age/:{minAge:int:min(0)}-:{maxAge:int}")
-    ->toMethod("UserController", "showUsersInAgeRange")
-    ->withName("UsersInAgeRange");
+$routeBuilderRegistry->map('GET', 'users/:userId')
+    ->toMethod('UserController', 'showProfile')
+    ->withName('UserProfile');
+$routeBuilderRegistry->map('GET', 'users/age/:{minAge:int:min(0)}-:{maxAge:int}')
+    ->toMethod('UserController', 'showUsersInAgeRange')
+    ->withName('UsersInAgeRange');
 
 // Actually route the request
 $router = new Router(

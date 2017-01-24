@@ -10,13 +10,13 @@ use Opulence\Router\Router;
 $routeActionFactory = new RouteActionFactory(new ContainerDependencyResolver(new Container));
 $routeBuilderRegistry = new RouteBuilderRegistry($routeActionFactory);
 $routeBuilderRegistry->group(
-    new RouteGroupOptions("users/", "", false, []),
+    new RouteGroupOptions('users/', '', false, []),
     function (RouteBuilderRegistry $routeBuilderRegistry) {
-        $routeBuilderRegistry->map("GET", ":userId")
-            ->toMethod("UserController", "showProfile");
+        $routeBuilderRegistry->map('GET', ':userId')
+            ->toMethod('UserController', 'showProfile');
 
-        $routeBuilderRegistry->map("GET", "me")
-            ->toMethod("UserController", "showMyProfile");
+        $routeBuilderRegistry->map('GET', 'me')
+            ->toMethod('UserController', 'showMyProfile');
     });
 
 // Actually route the request

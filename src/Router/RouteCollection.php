@@ -8,13 +8,13 @@ class RouteCollection
 {
     /** @var array The list of methods to their various routes */
     private $routes = [
-        "DELETE" => [],
-        "GET" => [],
-        "POST" => [],
-        "PUT" => [],
-        "HEAD" => [],
-        "OPTIONS" => [],
-        "PATCH" => []
+        'DELETE' => [],
+        'GET' => [],
+        'POST' => [],
+        'PUT' => [],
+        'HEAD' => [],
+        'OPTIONS' => [],
+        'PATCH' => []
     ];
     /** @var ParsedRoute[] The mapping of route names to routes */
     private $namedRoutes = [];
@@ -70,19 +70,22 @@ class RouteCollection
     /**
      * Gets all the routes
      *
-     * @param string|null $method If specified, the list of routes for that method will be returned
-     *      If null, all routes will be returned, keyed by method
      * @return Route[] The list of routes
      */
-    public function get(string $method = null) : array
+    public function getAll() : array
     {
-        if ($method === null) {
-            return $this->routes;
-        } elseif (isset($this->routes[$method])) {
-            return $this->routes[$method];
-        } else {
-            return [];
-        }
+        return $this->routes;
+    }
+
+    /**
+     * Gets all the routes
+     *
+     * @param string The HTTP method whose routes we want
+     * @return Route[] The list of routes
+     */
+    public function getByMethod(string $method) : array
+    {
+        return $this->routes[$method] ?? [];
     }
 
     /**

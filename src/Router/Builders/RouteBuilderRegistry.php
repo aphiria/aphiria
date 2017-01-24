@@ -39,7 +39,7 @@ class RouteBuilderRegistry
 
         $routeCollection = new RouteCollection();
         $routeCollection->addMany($builtRouteMaps);
-        
+
         return $routeCollection;
     }
 
@@ -66,8 +66,8 @@ class RouteBuilderRegistry
 
     private function applyGroupOptionsToRoute(string &$pathTemplate, string &$hostTemplate = null) : void
     {
-        $groupPathTemplate = "";
-        $groupHostTemplate = "";
+        $groupPathTemplate = '';
+        $groupHostTemplate = '';
         $groupIsHttpsOnly = false;
 
         foreach ($this->groupOptionsStack as $groupOptions) {
@@ -77,7 +77,7 @@ class RouteBuilderRegistry
         }
 
         $pathTemplate = $groupPathTemplate . $pathTemplate;
-        $hostTemplate = $groupHostTemplate . ($hostTemplate ?? "");
+        $hostTemplate = $groupHostTemplate . ($hostTemplate ?? '');
     }
 
     private function applyGroupOptionsToRouteBuilder(RouteBuilder &$routeBuilder) : void

@@ -2,7 +2,6 @@
 namespace Opulence\Router\Dispatchers;
 
 use Closure;
-use Opulence\Router\Dispatchers\IDependencyResolver;
 use SuperClosure\Analyzer\AstAnalyzer;
 use SuperClosure\Serializer;
 use SuperClosure\SerializerInterface;

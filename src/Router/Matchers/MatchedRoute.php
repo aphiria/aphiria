@@ -1,7 +1,6 @@
 <?php
 namespace Opulence\Router\Matchers;
 
-use Closure;
 use Opulence\Router\Dispatchers\RouteAction;
 
 /**
@@ -15,24 +14,24 @@ class MatchedRoute
     private $routeVars = [];
     /** @var array The list of middleware on this route */
     private $middleware = [];
-    
+
     public function __construct(RouteAction $action, array $routeVars, array $middleware)
     {
         $this->action = $action;
         $this->routeVars = $routeVars;
         $this->middleware = $middleware;
     }
-    
+
     public function getAction() : RouteAction
     {
         return $this->action;
     }
-    
+
     public function getMiddleware() : array
     {
         return $this->middleware;
     }
-    
+
     public function getRouteVars() : array
     {
         return $this->routeVars;

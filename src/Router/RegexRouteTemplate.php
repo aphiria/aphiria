@@ -6,7 +6,7 @@ namespace Opulence\Router;
  */
 class RegexRouteTemplate implements IRouteTemplate
 {
-    private $pathRegex = "";
+    private $pathRegex = '';
     private $hostRegex = null;
     private $defaultRouteVars = [];
 
@@ -19,11 +19,9 @@ class RegexRouteTemplate implements IRouteTemplate
 
     public function buildTemplate(array $routeVars) : string
     {
-
     }
 
     public function tryMatch(string $value, array &$routeVars = []) : bool
     {
-
     }
 }

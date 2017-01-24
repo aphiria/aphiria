@@ -7,6 +7,6 @@ namespace Opulence\Router;
 interface IRouteTemplate
 {
     public function buildTemplate(array $routeVars) : string;
-    
+
     public function tryMatch(string $value, array &$routeVars = []) : bool;
 }

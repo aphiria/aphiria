@@ -36,9 +36,9 @@ class Router implements IRouter
         } elseif ($routes instanceof RouteCollection) {
             $this->routes = $routes;
         } else {
-            throw new InvalidArgumentException("Routes must either be an array or a RouteCollection");
+            throw new InvalidArgumentException('Routes must either be an array or a RouteCollection');
         }
-        
+
         $this->routes = $routes;
         $this->routeMatcher = $routeMatcher ?? new RouteMatcher();
         $this->routeDispatcher = $routeDispatcher ?? new RouteDispatcher(new MiddlewarePipeline());

@@ -1,7 +1,6 @@
 <?php
 namespace Opulence\Router;
 
-use Closure;
 use Opulence\Router\Dispatchers\RouteAction;
 
 /**
