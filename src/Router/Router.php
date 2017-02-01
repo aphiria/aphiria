@@ -2,9 +2,6 @@
 namespace Opulence\Router;
 
 use InvalidArgumentException;
-use Opulence\Router\Dispatchers\IRouteDispatcher;
-use Opulence\Router\Dispatchers\MiddlewarePipeline;
-use Opulence\Router\Dispatchers\RouteDispatcher;
 use Opulence\Router\Matchers\IRouteMatcher;
 use Opulence\Router\Matchers\RouteMatcher;
 
@@ -17,19 +14,13 @@ class Router implements IRouter
     private $routes = null;
     /** @var IRouteMatcher The route matcher */
     private $routeMatcher = null;
-    /** @var IRouteDispatcher The route dispatcher */
-    private $routeDispatcher = null;
 
     /**
      * @param RouteCollection|array $routes The list of routes
      * @param IRouteMatcher|null $routeMatcher The route matcher
-     * @param IRouteDispatcher|null $routeDispatcher The route dispatcher
      */
-    public function __construct(
-        $routes,
-        IRouteMatcher $routeMatcher = null,
-        IRouteDispatcher $routeDispatcher = null
-    ) {
+    public function __construct($routes, IRouteMatcher $routeMatcher = null)
+    {
         if (is_array($routes)) {
             $this->routes = new RouteCollection();
             $this->routes->addMany($routes);
@@ -41,13 +32,14 @@ class Router implements IRouter
 
         $this->routes = $routes;
         $this->routeMatcher = $routeMatcher ?? new RouteMatcher();
-        $this->routeDispatcher = $routeDispatcher ?? new RouteDispatcher(new MiddlewarePipeline());
     }
 
-    public function route($request)
+    public function route(string $httpMethod, string $uri)
     {
-        if ($this->routeMatcher->tryMatch($request, $this->routes, $matchedRoute = null)) {
-            return $this->routeDispatcher->dispatch($request, $matchedRoute);
+        $uppercaseHttpMethod = strtoupper($httpMethod);
+        
+        if ($this->routeMatcher->tryMatch($uppercaseHttpMethod, $uri, $this->routes, $matchedRoute = null)) {
+            return $matchedRoute;
         }
 
         throw new RouteNotFoundException();

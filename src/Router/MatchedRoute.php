@@ -1,7 +1,5 @@
 <?php
-namespace Opulence\Router\Matchers;
-
-use Opulence\Router\Dispatchers\RouteAction;
+namespace Opulence\Router;
 
 /**
  * Defines a matched route

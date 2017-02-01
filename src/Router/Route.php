@@ -1,8 +1,6 @@
 <?php
 namespace Opulence\Router;
 
-use Opulence\Router\Dispatchers\RouteAction;
-
 /**
  * Defines an HTTP route
  */

@@ -2,10 +2,9 @@
 namespace Opulence\Router\Builders;
 
 use Closure;
-use Opulence\Router\Dispatchers\IRouteActionFactory;
 use Opulence\Router\Parsers\IRouteTemplateParser;
 use Opulence\Router\Parsers\RouteTemplateParser;
-use Opulence\Router\Routes\RouteCollection;
+use Opulence\Router\RouteCollection;
 
 /**
  * Defines the route builder registry
@@ -16,16 +15,10 @@ class RouteBuilderRegistry
     private $routeBuilders = [];
     /** @var IRouteTemplateParser The route parser */
     private $routeTemplateParser = null;
-    /** @var IRouteActionFactory The route action factory */
-    private $routeActionFactory = null;
     /** @var RouteGroupOptions[] The stack of route group options */
     private $groupOptionsStack = [];
 
-    public function __construct(
-        IRouteActionFactory $routeActionFactory,
-        IRouteTemplateParser $routeTemplateParser = null
-    ) {
-        $this->routeActionFactory = $routeActionFactory;
+    public function __construct(IRouteTemplateParser $routeTemplateParser = null) {
         $this->routeTemplateParser = $routeTemplateParser ?? new RouteTemplateParser();
     }
 
@@ -58,7 +51,7 @@ class RouteBuilderRegistry
     ) : RouteBuilder {
         $this->applyGroupOptionsToRoute($pathTemplate, $hostTemplate);
         $parsedRouteTemplate = $this->routeTemplateParser->parse($pathTemplate, $hostTemplate);
-        $routeBuilder = new RouteBuilder($this->routeActionFactory, $methods, $parsedRouteTemplate, $isHttpsOnly);
+        $routeBuilder = new RouteBuilder($methods, $parsedRouteTemplate, $isHttpsOnly);
         $this->applyGroupOptionsToRouteBuilder($routeBuilder);
 
         return $routeBuilder;

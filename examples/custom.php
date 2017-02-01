@@ -1,33 +1,18 @@
 <?php
-use Opulence\IoC\Container;
 use Opulence\Router\Builders\RouteBuilderRegistry;
-use Opulence\Router\Dispatchers\ContainerDependencyResolver;
-use Opulence\Router\Dispatchers\MiddlewarePipeline;
-use Opulence\Router\Dispatchers\RouteActionFactory;
-use Opulence\Router\Dispatchers\RouteDispatcher;
 use Opulence\Router\Matchers\RouteMatcher;
 use Opulence\Router\Parsers\RouteTemplateParser;
 use Opulence\Router\Router;
-use SuperClosure\Analyzer\AstAnalyzer;
-use SuperClosure\Serializer;
 
 // Add an ordinary route
-$routeActionFactory = new RouteActionFactory(
-    new ContainerDependencyResolver(new Container),
-    new Serializer(new AstAnalyzer())
-);
-$routeBuilderRegistry = new RouteBuilderRegistry($routeActionFactory, new RouteTemplateParser());
+$routeBuilderRegistry = new RouteBuilderRegistry(new RouteTemplateParser());
 $routeBuilderRegistry->map('GET', 'users/:userId')
     ->toMethod('UserController', 'showProfile')
     ->withName('UserProfile');
-$routeBuilderRegistry->map('GET', 'users/age/:{minAge:int:min(0)}-:{maxAge:int}')
+$routeBuilderRegistry->map('GET', 'users/age/:{minAge|int|min(0)}-:{maxAge|int}')
     ->toMethod('UserController', 'showUsersInAgeRange')
     ->withName('UsersInAgeRange');
 
 // Actually route the request
-$router = new Router(
-    $routeBuilderRegistry->buildAll(),
-    new RouteMatcher(),
-    new RouteDispatcher(new MiddlewarePipeline())
-);
-$response = $router->route(new stdClass());
+$router = new Router($routeBuilderRegistry->buildAll(),new RouteMatcher());
+$matchedRoute = $router->route($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

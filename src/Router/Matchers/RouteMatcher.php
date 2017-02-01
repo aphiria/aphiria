@@ -1,7 +1,8 @@
 <?php
 namespace Opulence\Router\Matchers;
 
-use Opulence\Router\Routes\RouteCollection;
+use Opulence\Router\MatchedRoute;
+use Opulence\Router\RouteCollection;
 
 /**
  * Defines a route matcher

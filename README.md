@@ -1,8 +1,11 @@
 <h1>Todo</h1>
+* Middleware depend on particular request/responses
+  * I'm not sure it's possible to generalize middleware without specific request/response classes
+  * So, how will middleware fit into this library?
 * When actually writing this:  Should `IRouteTemplate::tryMatch()` take in a `Uri` instance?  That'd make it easier/less repetitive to grab host and path.
 
 <h1>Notes</h1>
-* Vars are either `:([a-zA-Z_][a-zA-Z0-9_]*)` or `:{([a-zA-Z_][a-zA-Z0-9_]*)(:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\([^\)]*\)+)*}`
+* Vars may look like `users/:userId' or `users/:{userId|regex(foo)|int|max(10)}`
   * It actually may require a parser to parse this syntax and account for escaped ":" and "{" and "}" chars
   * The optional rules include:
       * alpha

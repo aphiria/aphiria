@@ -6,5 +6,5 @@ namespace Opulence\Router;
  */
 interface IRouter
 {
-    public function route($request);
+    public function route(string $httpMethod, string $uri) : MatchedRoute;
 }

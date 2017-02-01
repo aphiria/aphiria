@@ -3,17 +3,15 @@ namespace Opulence\Router\Builders;
 
 use Closure;
 use LogicException;
-use Opulence\Router\Dispatchers\IRouteActionFactory;
 use Opulence\Router\IRouteTemplate;
 use Opulence\Router\Route;
+use Opulence\Router\RouteAction;
 
 /**
  * Defines the route builder
  */
 class RouteBuilder
 {
-    /** @var IRouteActionFactory The route action factory */
-    private $routeActionFactory = null;
     /** @var array The list of HTTP methods to match on */
     private $httpMethods = [];
     /** @var Closure The action the route takes */
@@ -28,12 +26,10 @@ class RouteBuilder
     private $name = null;
 
     public function __construct(
-        IRouteActionFactory $routeActionFactory,
         array $httpMethods,
         IRouteTemplate $routeTemplate,
         bool $isHttpsOnly = false
     ) {
-        $this->routeActionFactory = $routeActionFactory;
         $this->httpMethods = $httpMethods;
         $this->routeTemplate = $routeTemplate;
         $this->isHttpsOnly = $isHttpsOnly;
@@ -45,21 +41,26 @@ class RouteBuilder
             throw new LogicException('No controller specified for route');
         }
 
-        return new Route($this->httpMethods, $this->action, $this->routeTemplate, $this->isHttpsOnly, $this->middleware,
-            $this->name);
+        return new Route(
+            $this->httpMethods, 
+            $this->action, 
+            $this->routeTemplate, 
+            $this->isHttpsOnly, 
+            $this->middleware,
+            $this->name
+        );
     }
 
     public function toClosure(Closure $controller) : self
     {
-        $this->action = $this->routeActionFactory->createRouteActionFromClosure($controller);
+        $this->action = new RouteAction(null, null, $controller);
 
         return $this;
     }
 
     public function toMethod(string $controllerClassName, string $controllerMethodName) : self
     {
-        $this->action = $this->routeActionFactory->createRouteActionFromController($controllerClassName,
-            $controllerMethodName);
+        $this->action = new RouteAction($controllerClassName, $controllerMethodName);
 
         return $this;
     }
