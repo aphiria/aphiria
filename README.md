@@ -5,7 +5,7 @@
 * When actually writing this:  Should `IRouteTemplate::tryMatch()` take in a `Uri` instance?  That'd make it easier/less repetitive to grab host and path.
 
 <h1>Notes</h1>
-* Vars may look like `users/:userId' or `users/:{userId|regex(foo)|int|max(10)}`
+* Vars may look like `users/:userId` or `users/:{userId|regex(foo)|int|max(10)}`
   * It actually may require a parser to parse this syntax and account for escaped ":" and "{" and "}" chars
   * The optional rules include:
       * alpha
