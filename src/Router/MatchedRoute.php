@@ -1,6 +1,8 @@
 <?php
 namespace Opulence\Router;
 
+use Opulence\Router\Middleware\MiddlewareMetadata;
+
 /**
  * Defines a matched route
  */
@@ -10,14 +12,14 @@ class MatchedRoute
     private $action = null;
     /** @var array The mapping of route variables to their values */
     private $routeVars = [];
-    /** @var array The list of middleware on this route */
-    private $middleware = [];
+    /** @var MiddlewareMetadata[] The list of middleware metadata on this route */
+    private $middlewareMetadata = [];
 
-    public function __construct(RouteAction $action, array $routeVars, array $middleware)
+    public function __construct(RouteAction $action, array $routeVars, array $middlewareMetadata)
     {
         $this->action = $action;
         $this->routeVars = $routeVars;
-        $this->middleware = $middleware;
+        $this->middlewareMetadata = $middlewareMetadata;
     }
 
     public function getAction() : RouteAction
@@ -25,9 +27,12 @@ class MatchedRoute
         return $this->action;
     }
 
-    public function getMiddleware() : array
+    /**
+     * @return MiddlewareMetadata[]
+     */
+    public function getMiddlewareMetadata() : array
     {
-        return $this->middleware;
+        return $this->middlewareMetadata;
     }
 
     public function getRouteVars() : array

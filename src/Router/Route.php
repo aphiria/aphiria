@@ -1,6 +1,8 @@
 <?php
 namespace Opulence\Router;
 
+use Opulence\Router\Middleware\MiddlewareMetadata;
+
 /**
  * Defines an HTTP route
  */
@@ -16,22 +18,22 @@ class Route
     private $routeTemplate = null;
     /** @var bool Whether or not this route is HTTPS-only */
     private $isHttpsOnly = false;
-    /** @var array The list of any middleware on this route */
-    private $middleware = [];
+    /** @var MiddlewareMetadata[] The list of any middleware metadata on this route */
+    private $middlewareMetadata = [];
 
     public function __construct(
         $httpMethods,
         RouteAction $action,
         IRouteTemplate $routeTemplate,
         bool $isHttpsOnly = false,
-        array $middleware = [],
+        array $middlewareMetadata = [],
         string $name = null
     ) {
         $this->httpMethods = (array)$httpMethods;
         $this->action = $action;
         $this->routeTemplate = $routeTemplate;
         $this->isHttpsOnly = $isHttpsOnly;
-        $this->middleware = $middleware;
+        $this->middlewareMetadata = $middlewareMetadata;
         $this->name = $name;
     }
 
@@ -45,9 +47,12 @@ class Route
         return $this->httpMethods;
     }
 
-    public function getMiddleware() : array
+    /**
+     * @return MiddlewareMetadata[]
+     */
+    public function getMiddlewareMetadata() : array
     {
-        return $this->middleware;
+        return $this->middlewareMetadata;
     }
 
     public function getName() : ?string

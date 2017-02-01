@@ -4,6 +4,7 @@ namespace Opulence\Router\Builders;
 use Closure;
 use LogicException;
 use Opulence\Router\IRouteTemplate;
+use Opulence\Router\Middleware\MiddlewareMetadata;
 use Opulence\Router\Route;
 use Opulence\Router\RouteAction;
 
@@ -20,8 +21,8 @@ class RouteBuilder
     private $isHttpsOnly = false;
     /** @var IRouteTemplate The route template */
     private $routeTemplate = null;
-    /** @var array The list of middleware on this route */
-    private $middleware = [];
+    /** @var MiddlewareMetadata[] The list of middleware metadata on this route */
+    private $middlewareMetadata = [];
     /** @var string|null The name of this route */
     private $name = null;
 
@@ -65,9 +66,33 @@ class RouteBuilder
         return $this;
     }
 
-    public function withMiddleware($middleware) : self
+    /**
+     * Adds many middleware metadata to the route
+     * 
+     * @param MiddlewareMetadata[]|string $middlewareMetadata The list of middleware metadata to add, or a single class name without properties
+     * @return self For chaining
+     * @throws InvalidArgumentException Thrown if the middleware metadata is not the correct type
+     */
+    public function withManyMiddleware(array $middlewareMetadata) : self
     {
-        $this->middleware = array_merge($this->middleware, (array)$middleware);
+        foreach ($middlewareMetadata as $singleMiddlewareMetadata) {
+            if (is_string($singleMiddlewareMetadata)) {
+                $this->middlewareMetadata[] = new MiddlewareMetadata($singleMiddlewareMetadata);
+            } elseif ($singleMiddlewareMetadata instanceof MiddlewareMetadata) {
+                $this->middlewareMetadata[] = $singleMiddlewareMetadata;
+            } else {
+                throw new InvalidArgumentException(
+                    'Middleware metadata must either be a string or an instance of ' . MiddlewareMetadata::class
+                );
+            }
+        }
+
+        return $this;
+    }
+
+    public function withMiddleware(string $middlewareClassName, array $middlewareProperties = []) : self
+    {
+        $this->middlewareMetadata[] = new MiddlewareMetadata($middlewareClassName, $middlewareProperties);
 
         return $this;
     }

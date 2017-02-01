@@ -22,7 +22,7 @@ class RouteMatcher implements IRouteMatcher
                 continue;
             }
 
-            $matchedRoute = new MatchedRoute($route->getAction(), $routeVars, $route->getMiddleware());
+            $matchedRoute = new MatchedRoute($route->getAction(), $routeVars, $route->getMiddlewareMetadata());
 
             return true;
         }

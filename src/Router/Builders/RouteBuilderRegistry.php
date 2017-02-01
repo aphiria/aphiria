@@ -78,7 +78,7 @@ class RouteBuilderRegistry
         $groupMiddleware = [];
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupMiddleware = array_merge($groupMiddleware, $groupOptions->getMiddleware());
+            $groupMiddleware = array_merge($groupMiddleware, $groupOptions->getMiddlewareMetadata());
         }
 
         $routeBuilder->withMiddleware($groupMiddleware);
