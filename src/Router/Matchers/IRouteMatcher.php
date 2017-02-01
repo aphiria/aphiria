@@ -9,5 +9,5 @@ use Opulence\Router\RouteCollection;
  */
 interface IRouteMatcher
 {
-    public function tryMatch($request, RouteCollection $routes, MatchedRoute &$matchedRoute) : bool;
+    public function tryMatch(string $httpMethod, string $uri, RouteCollection $routes, MatchedRoute &$matchedRoute) : bool;
 }

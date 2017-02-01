@@ -14,5 +14,5 @@ $routeBuilderRegistry->map('GET', 'users/age/:{minAge|int|min(0)}-:{maxAge|int}'
     ->withName('UsersInAgeRange');
 
 // Actually route the request
-$router = new Router($routeBuilderRegistry->buildAll(),new RouteMatcher());
+$router = new Router($routeBuilderRegistry->buildAll(), new RouteMatcher());
 $matchedRoute = $router->route($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

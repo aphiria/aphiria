@@ -36,9 +36,7 @@ class Router implements IRouter
 
     public function route(string $httpMethod, string $uri)
     {
-        $uppercaseHttpMethod = strtoupper($httpMethod);
-        
-        if ($this->routeMatcher->tryMatch($uppercaseHttpMethod, $uri, $this->routes, $matchedRoute = null)) {
+        if ($this->routeMatcher->tryMatch($httpMethod, $uri, $this->routes, $matchedRoute = null)) {
             return $matchedRoute;
         }
 

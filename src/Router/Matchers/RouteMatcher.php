@@ -9,16 +9,18 @@ use Opulence\Router\RouteCollection;
  */
 class RouteMatcher implements IRouteMatcher
 {
-    public function tryMatch($request, RouteCollection $routes, MatchedRoute &$matchedRoute) : bool
+    public function tryMatch(string $httpMethod, string $uri, RouteCollection $routes, MatchedRoute &$matchedRoute) : bool
     {
-        $routesByMethod = $routes->getByMethod($request->getHttpMethod());
+        $uppercaseHttpMethod = strtoupper($httpMethod);
+        $routesByMethod = $routes->getByMethod($uppercaseHttpMethod);
+        $routeIsHttps = parse_url($uri, PHP_URL_SCHEME) === 'https';
 
         foreach ($routesByMethod as $route) {
-            if (!$route->getRouteTemplate()->tryMatch($request->getUri(), $routeVars)) {
+            if (!$route->getRouteTemplate()->tryMatch($uri, $routeVars = null)) {
                 continue;
             }
 
-            if ($route->isHttpsOnly() && !$request->isSecure()) {
+            if ($route->isHttpsOnly() && !$routeIsHttps) {
                 continue;
             }
 
