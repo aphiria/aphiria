@@ -4,7 +4,7 @@ use Opulence\Router\Router;
 
 // Add an ordinary route
 $routeBuilderRegistry = new RouteBuilderRegistry();
-$routeBuilderRegistry->map('GET', 'users/:userId=me')
+$routeBuilderRegistry->map('GET', 'users/:userId')
     ->toMethod('UserController', 'showProfile')
     ->withName('UserProfile');
 $routeBuilderRegistry->map('GET', 'users/age/:{minAge|int|min(0)}-:{maxAge|int}')

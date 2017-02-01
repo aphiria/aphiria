@@ -53,7 +53,7 @@ class RouteAction
     }
 
     /**
-     * Serializes the actions
+     * Serializes the action
      *
      * @return array The list of properties to store
      */
@@ -66,7 +66,7 @@ class RouteAction
     }
 
     /**
-     * Deserializes the actions
+     * Deserializes the action
      */
     public function __wakeup()
     {
@@ -95,19 +95,19 @@ class RouteAction
     }
 
     /**
-     * Gets the closure the route takes
+     * Gets the closure the route routes to
      *
-     * @return Closure The action the route takes
+     * @return Closure The closure the route routes to
      */
     public function getClosure() : Closure
     {
-        return $this->action;
+        return $this->closure;
     }
 
     /**
-     * Gets whether or not this action used a class instance
+     * Gets whether or not this action used a class rather than a closure
      *
-     * @return bool True if the action used a class instance, otherwise false
+     * @return bool True if the action used a class, otherwise false
      */
     public function usesClass() : bool
     {

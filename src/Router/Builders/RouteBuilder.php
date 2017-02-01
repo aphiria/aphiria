@@ -47,7 +47,7 @@ class RouteBuilder
             $this->action, 
             $this->routeTemplate, 
             $this->isHttpsOnly, 
-            $this->middleware,
+            $this->middlewareMetadata,
             $this->name
         );
     }

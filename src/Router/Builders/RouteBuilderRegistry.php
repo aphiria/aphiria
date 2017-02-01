@@ -75,12 +75,12 @@ class RouteBuilderRegistry
 
     private function applyGroupOptionsToRouteBuilder(RouteBuilder &$routeBuilder) : void
     {
-        $groupMiddleware = [];
+        $groupMiddlewareMetadata = [];
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupMiddleware = array_merge($groupMiddleware, $groupOptions->getMiddlewareMetadata());
+            $groupMiddlewareMetadata = array_merge($groupMiddlewareMetadata, $groupOptions->getMiddlewareMetadata());
         }
 
-        $routeBuilder->withMiddleware($groupMiddleware);
+        $routeBuilder->withManyMiddleware($groupMiddlewareMetadata);
     }
 }
