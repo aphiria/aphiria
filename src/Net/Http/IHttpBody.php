@@ -6,7 +6,7 @@ use Opulence\IO\Streams;
 /**
  * Defines the interface for all HTTP message bodies to implement
  */
-interface IHttpBody 
+interface IHttpBody
 {
     public function readAsStream() : IStream;
     

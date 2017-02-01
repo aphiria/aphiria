@@ -4,7 +4,7 @@ namespace Opulence\Net\Http;
 /**
  * Defines the interface for all HTTP messages
  */
-interface IHttpMessage 
+interface IHttpMessage
 {
     public function getBody() : IHttpBody;
     

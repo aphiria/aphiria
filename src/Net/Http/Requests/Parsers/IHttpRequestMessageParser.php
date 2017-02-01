@@ -6,7 +6,7 @@ use Opulence\Net\Http\Requests\IHttpRequestMessage;
 /**
  * Defines the interface for HTTP request message parsers to implement
  */
-interface IHttpRequestMessageParser 
+interface IHttpRequestMessageParser
 {
     public function getClientIpAddress(IHttpRequestMessage $message) : string;
     

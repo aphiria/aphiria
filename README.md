@@ -1,5 +1,8 @@
 <h1>Opulence's Net Library</h1>
 
+<h2>Ideas</h2>
+* If using this along with the new routing library, we should set the route variables in the `Request`'s `properties`
+
 <h2>Requests</h2>
 
 <h3>Read the request body as a string</h3>
@@ -76,13 +79,13 @@ $cookie = new Cookie("userid", "123");
 (new HttpResponseHeaderFormatter)->setCookie($response->getHeaders(), $cookie);
 ```
 
-<h3>Write the response as a string</h3>
+<h3>Specify a string body</h3>
 ```php
 $response = new Response();
 $response->setBody(new StringBody("This is my response"));
 ```
 
-<h3>Write the response as a stream</h3>
+<h3>Specify a stream body</h3>
 ```php
 $response = new Response();
 $stream = new OutputStream();

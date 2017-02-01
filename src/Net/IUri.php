@@ -4,7 +4,7 @@ namespace Opulence\Net;
 /**
  * Defines the interface for URIs to implement
  */
-interface IUri 
+interface IUri
 {
     public static function createFromString(string $uri) : IUri;
     

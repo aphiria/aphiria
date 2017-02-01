@@ -4,7 +4,7 @@ namespace Opulence\IO\Streams;
 /**
  * Defines the interface for streams to implement
  */
-interface IStream 
+interface IStream
 {
     public function close() : void;
     
