@@ -19,7 +19,7 @@ class RouteAction
     /** @var Closure|null The closure the route routes to */
     private $closure = null;
     /** @var bool Whether or not the action uses a method or a closure */
-    private $usesClass = false;
+    private $usesMethod = false;
     /** @var SerializerInterface The serializer to use for closures */
     private $serializer = null;
     /** @var string The serialized closure */
@@ -29,7 +29,6 @@ class RouteAction
      * @param string|null $className The name of the class the route routes to
      * @param string|null $methodName The name of the method the route routes to
      * @param Closure|null $closure The closure the route routes to
-     * @param bool $usesClass Whether or not the action uses a method or a closure
      * @param SerializerInterface The serializer to use for this action
      * @throws InvalidArgumentException Thrown if no valid class or closure is specified
      */
@@ -44,11 +43,11 @@ class RouteAction
             ($className === null || $methodName == null) && $closure === null) {
             throw new InvalidArgumentException('Must specify either a class name or closure');
         }
-        
+
         $this->className = $className;
         $this->methodName = $methodName;
         $this->closure = $closure;
-        $this->usesClass = $closure === null;
+        $this->usesMethod = $closure === null;
         $this->serializer = $serializer ?? new Serializer(new AstAnalyzer());
     }
 
@@ -105,12 +104,12 @@ class RouteAction
     }
 
     /**
-     * Gets whether or not this action used a class rather than a closure
+     * Gets whether or not this action used a method rather than a closure
      *
      * @return bool True if the action used a class, otherwise false
      */
-    public function usesClass() : bool
+    public function usesMethod() : bool
     {
-        return $this->usesClass;
+        return $this->usesMethod;
     }
 }

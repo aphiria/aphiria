@@ -1,7 +1,7 @@
 <?php
 namespace Opulence\Router\Builders;
 
-use Opulence\Router\Middleware\MiddlewareMetadata;
+use Opulence\Router\Middleware\MiddlewareBinding;
 
 /**
  * Defines the route group options
@@ -12,8 +12,8 @@ class RouteGroupOptions
     private $pathTemplate = '';
     /** @var string The host template that applies to the entire group */
     private $hostTemplate = '';
-    /** @var MiddlewareMetadata[] The list of middleware metadata that applies to the entire group */
-    private $middlewareMetadata = [];
+    /** @var MiddlewareBinding[] The list of middleware bindings that applies to the entire group */
+    private $middlewareBindings = [];
     /** @var bool Whether or not the entire group is HTTPS-only */
     private $isHttpsOnly = false;
 
@@ -21,35 +21,47 @@ class RouteGroupOptions
      * @param string $pathTemplate The path template that applies to the entire group
      * @param string $hostTemplate The host template that applies to the entire group
      * @param bool $isHttpsOnly Whether or not the entire group is HTTPS-only
-     * @param MiddlewareMetadata[] $middlewareMetadata The list of middleware metadata that applies to the entire group
+     * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings that applies to the entire group
      */
     public function __construct(
-        string $pathTemplate, 
-        string $hostTemplate, 
-        bool $isHttpsOnly, 
-        array $middlewareMetadata = []
+        string $pathTemplate,
+        string $hostTemplate,
+        bool $isHttpsOnly,
+        array $middlewareBindings = []
     ) {
         $this->pathTemplate = $pathTemplate;
         $this->hostTemplate = $hostTemplate;
         $this->isHttpsOnly = $isHttpsOnly;
-        $this->middlewareMetadata = $middlewareMetadata;
+        $this->middlewareBindings = $middlewareBindings;
     }
 
+    /**
+     * @return string
+     */
     public function getHostTemplate() : string
     {
         return $this->hostTemplate;
     }
 
-    public function getMiddlewareMetadata() : array
+    /**
+     * @return MiddlewareBinding[]
+     */
+    public function getMiddlewareBindings() : array
     {
-        return $this->middlewareMetadata;
+        return $this->middlewareBindings;
     }
 
+    /**
+     * @return string
+     */
     public function getPathTemplate() : string
     {
         return $this->pathTemplate;
     }
 
+    /**
+     * @return bool
+     */
     public function isHttpsOnly() : bool
     {
         return $this->isHttpsOnly;

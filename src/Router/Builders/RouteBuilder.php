@@ -3,10 +3,11 @@ namespace Opulence\Router\Builders;
 
 use Closure;
 use LogicException;
-use Opulence\Router\IRouteTemplate;
-use Opulence\Router\Middleware\MiddlewareMetadata;
+use Opulence\Router\ClosureRouteAction;
+use Opulence\Router\MethodRouteAction;
+use Opulence\Router\Middleware\MiddlewareBinding;
 use Opulence\Router\Route;
-use Opulence\Router\RouteAction;
+use Opulence\Router\UriTemplates\IUriTemplate;
 
 /**
  * Defines the route builder
@@ -19,23 +20,34 @@ class RouteBuilder
     private $action = null;
     /** @var bool Whether or not the route is HTTPS-only */
     private $isHttpsOnly = false;
-    /** @var IRouteTemplate The route template */
-    private $routeTemplate = null;
-    /** @var MiddlewareMetadata[] The list of middleware metadata on this route */
-    private $middlewareMetadata = [];
+    /** @var IUriTemplate The URI template */
+    private $uriTemplate = null;
+    /** @var MiddlewareBinding[] The list of middleware bindings on this route */
+    private $middlewareBindings = [];
     /** @var string|null The name of this route */
     private $name = null;
 
+    /**
+     * @param array $httpMethods The list of HTTP methods the route matches on
+     * @param IUriTemplate $uriTemplate The URI template the route matches on
+     * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
+     */
     public function __construct(
         array $httpMethods,
-        IRouteTemplate $routeTemplate,
+        IUriTemplate $uriTemplate,
         bool $isHttpsOnly = false
     ) {
         $this->httpMethods = $httpMethods;
-        $this->routeTemplate = $routeTemplate;
+        $this->uriTemplate = $uriTemplate;
         $this->isHttpsOnly = $isHttpsOnly;
     }
 
+    /**
+     * Builds a route object from all the settings in this builder
+     * 
+     * @return Route The built route
+     * @throws LogicException Thrown if no controller was specified
+     */
     public function build() : Route
     {
         if ($this->action === null) {
@@ -43,46 +55,59 @@ class RouteBuilder
         }
 
         return new Route(
-            $this->httpMethods, 
-            $this->action, 
-            $this->routeTemplate, 
-            $this->isHttpsOnly, 
-            $this->middlewareMetadata,
+            $this->httpMethods,
+            $this->action,
+            $this->uriTemplate,
+            $this->isHttpsOnly,
+            $this->middlewareBindings,
             $this->name
         );
     }
 
+    /**
+     * Binds the controller the route uses to be a closure
+     * 
+     * @param Closure $controller The closure the route uses
+     * @return self For chaining
+     */
     public function toClosure(Closure $controller) : self
     {
-        $this->action = new RouteAction(null, null, $controller);
-
-        return $this;
-    }
-
-    public function toMethod(string $controllerClassName, string $controllerMethodName) : self
-    {
-        $this->action = new RouteAction($controllerClassName, $controllerMethodName);
+        $this->action = new ClosureRouteAction($controller);
 
         return $this;
     }
 
     /**
-     * Adds many middleware metadata to the route
+     * Binds the controller the route uses to be a method
      * 
-     * @param MiddlewareMetadata[]|string $middlewareMetadata The list of middleware metadata to add, or a single class name without properties
+     * @param string $controllerClassName The name of the class the route goes to
+     * @param string $controllerMethodName The name of the method the route goes to
      * @return self For chaining
-     * @throws InvalidArgumentException Thrown if the middleware metadata is not the correct type
      */
-    public function withManyMiddleware(array $middlewareMetadata) : self
+    public function toMethod(string $controllerClassName, string $controllerMethodName) : self
     {
-        foreach ($middlewareMetadata as $singleMiddlewareMetadata) {
-            if (is_string($singleMiddlewareMetadata)) {
-                $this->middlewareMetadata[] = new MiddlewareMetadata($singleMiddlewareMetadata);
-            } elseif ($singleMiddlewareMetadata instanceof MiddlewareMetadata) {
-                $this->middlewareMetadata[] = $singleMiddlewareMetadata;
+        $this->action = new MethodRouteAction($controllerClassName, $controllerMethodName);
+
+        return $this;
+    }
+
+    /**
+     * Binds many middleware bindings to the route
+     *
+     * @param MiddlewareBinding[]|string $middlewareBindings The list of middleware bindings to add, or a single class name without properties
+     * @return self For chaining
+     * @throws InvalidArgumentException Thrown if the middleware bindings are not the correct type
+     */
+    public function withManyMiddleware(array $middlewareBindings) : self
+    {
+        foreach ($middlewareBindings as $middlewareBinding) {
+            if (is_string($middlewareBinding)) {
+                $this->middlewareBindings[] = new MiddlewareBinding($middlewareBinding);
+            } elseif ($middlewareBinding instanceof MiddlewareBinding) {
+                $this->middlewareBindings[] = $middlewareBinding;
             } else {
                 throw new InvalidArgumentException(
-                    'Middleware metadata must either be a string or an instance of ' . MiddlewareMetadata::class
+                    'Middleware binding must either be a string or an instance of ' . MiddlewareBinding::class
                 );
             }
         }
@@ -90,13 +115,26 @@ class RouteBuilder
         return $this;
     }
 
+    /**
+     * Binds a single middleware class to the route
+     * 
+     * @param string $middlewareClassName The name of the middleware class to bind
+     * @param array $middlewareProperties Any properties this method relies on
+     * @return self For chaining
+     */
     public function withMiddleware(string $middlewareClassName, array $middlewareProperties = []) : self
     {
-        $this->middlewareMetadata[] = new MiddlewareMetadata($middlewareClassName, $middlewareProperties);
+        $this->middlewareBindings[] = new MiddlewareBinding($middlewareClassName, $middlewareProperties);
 
         return $this;
     }
 
+    /**
+     * Binds a name to the route
+     * 
+     * @param string $name The name of the route
+     * @return self For chaining
+     */
     public function withName(string $name) : self
     {
         $this->name = $name;

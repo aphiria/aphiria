@@ -1,7 +1,9 @@
 <?php
 namespace Opulence\Router;
 
-use Opulence\Router\Middleware\MiddlewareMetadata;
+use Opulence\Router\Middleware\MiddlewareBinding;
+use Opulence\Router\RouteAction;
+use Opulence\Router\UriTemplates\IUriTemplate;
 
 /**
  * Defines an HTTP route
@@ -14,57 +16,80 @@ class Route
     private $action = null;
     /** @var string|null The name of this route */
     private $name = null;
-    /** @var IRouteTemplate The route template */
-    private $routeTemplate = null;
+    /** @var IUriTemplate The URI template */
+    private $uriTemplate = null;
     /** @var bool Whether or not this route is HTTPS-only */
     private $isHttpsOnly = false;
-    /** @var MiddlewareMetadata[] The list of any middleware metadata on this route */
-    private $middlewareMetadata = [];
+    /** @var MiddlewareBinding[] The list of any middleware bindings on this route */
+    private $middlewareBindings = [];
 
+    /**
+     * @param array|string $httpMethods The HTTP method or list of methods this route matches on
+     * @param RouteAction $action The action this route takes
+     * @param IRouteTemplate $uriTemplate The URI template for this route
+     * @param bool $isHttpsOnly Whether or not this route is HTTPS-only
+     * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings
+     * @param string|null $name The name of this route
+     */
     public function __construct(
         $httpMethods,
         RouteAction $action,
-        IRouteTemplate $routeTemplate,
+        IUriTemplate $uriTemplate,
         bool $isHttpsOnly = false,
-        array $middlewareMetadata = [],
+        array $middlewareBindings = [],
         string $name = null
     ) {
         $this->httpMethods = (array)$httpMethods;
         $this->action = $action;
-        $this->routeTemplate = $routeTemplate;
+        $this->uriTemplate = $uriTemplate;
         $this->isHttpsOnly = $isHttpsOnly;
-        $this->middlewareMetadata = $middlewareMetadata;
+        $this->middlewareBindings = $middlewareBindings;
         $this->name = $name;
     }
 
+    /**
+     * @return RouteAction
+     */
     public function getAction() : RouteAction
     {
         return $this->action;
     }
 
+    /**
+     * @return array
+     */
     public function getHttpMethods() : array
     {
         return $this->httpMethods;
     }
 
     /**
-     * @return MiddlewareMetadata[]
+     * @return MiddlewareBinding[]
      */
-    public function getMiddlewareMetadata() : array
+    public function getMiddlewareBindings() : array
     {
-        return $this->middlewareMetadata;
+        return $this->middlewareBindings;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName() : ?string
     {
         return $this->name;
     }
 
-    public function getRouteTemplate() : IRouteTemplate
+    /**
+     * @return IUriTemplate
+     */
+    public function getUriTemplate() : IUriTemplate
     {
-        return $this->routeTemplate;
+        return $this->uriTemplate;
     }
 
+    /**
+     * @return bool
+     */
     public function isHttpsOnly() : bool
     {
         return $this->isHttpsOnly;

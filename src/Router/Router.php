@@ -34,6 +34,9 @@ class Router implements IRouter
         $this->routeMatcher = $routeMatcher ?? new RouteMatcher();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function route(string $httpMethod, string $uri)
     {
         if ($this->routeMatcher->tryMatch($httpMethod, $uri, $this->routes, $matchedRoute = null)) {

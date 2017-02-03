@@ -9,6 +9,9 @@ use Opulence\Router\RouteCollection;
  */
 class RouteMatcher implements IRouteMatcher
 {
+    /**
+     * @inheritdoc
+     */
     public function tryMatch(string $httpMethod, string $uri, RouteCollection $routes, MatchedRoute &$matchedRoute) : bool
     {
         $uppercaseHttpMethod = strtoupper($httpMethod);
@@ -16,7 +19,7 @@ class RouteMatcher implements IRouteMatcher
         $routeIsHttps = parse_url($uri, PHP_URL_SCHEME) === 'https';
 
         foreach ($routesByMethod as $route) {
-            if (!$route->getRouteTemplate()->tryMatch($uri, $routeVars = null)) {
+            if (!$route->getUriTemplate()->tryMatch($uri, $routeVars = null)) {
                 continue;
             }
 
@@ -24,7 +27,7 @@ class RouteMatcher implements IRouteMatcher
                 continue;
             }
 
-            $matchedRoute = new MatchedRoute($route->getAction(), $routeVars, $route->getMiddlewareMetadata());
+            $matchedRoute = new MatchedRoute($route->getAction(), $routeVars, $route->getMiddlewareBindings());
 
             return true;
         }

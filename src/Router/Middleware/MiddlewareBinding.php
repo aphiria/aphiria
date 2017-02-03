@@ -2,15 +2,15 @@
 namespace Opulence\Router\Middleware;
 
 /**
- * Defines metadata about a middleware
+ * Defines a middleware binding
  */
-class MiddlewareMetadata
+class MiddlewareBinding
 {
     /** @var string The name of the middleware class */
-    private $className = "";
+    private $className = '';
     /** @var array The name => value mapping of parameters bound to the middleware */
     private $properties = [];
-    
+
     /**
      * @param string $className The name of the middleware class
      * @param array $properties The name => value mapping of parameters bound to the middleware
@@ -20,7 +20,7 @@ class MiddlewareMetadata
         $this->className = $className;
         $this->properties = $properties;
     }
-    
+
     /**
      * @return string
      */
@@ -28,7 +28,7 @@ class MiddlewareMetadata
     {
         return $this->className;
     }
-    
+
     /**
      * @return array
      */

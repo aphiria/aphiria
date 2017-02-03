@@ -1,8 +1,8 @@
 <?php
-use Opulence\Router\RegexRouteTemplate;
 use Opulence\Router\Route;
 use Opulence\Router\RouteAction;
 use Opulence\Router\Router;
+use Opulence\Router\UriTemplates\RegexUriTemplate;
 
 // Create a route manually
 $route = new Route(
@@ -10,7 +10,7 @@ $route = new Route(
     new RouteAction(null, null, function ($request, $routeVars) {
         return "Hello, {$routeVars['userId']}";
     }),
-    new RegexRouteTemplate('users\/(?P<userId>\d+)')
+    new RegexUriTemplate('users\/(?P<userId>\d+)')
 );
 
 // Actually route the request
