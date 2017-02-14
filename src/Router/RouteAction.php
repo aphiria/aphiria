@@ -1,5 +1,5 @@
 <?php
-namespace Opulence\Router\Dispatchers;
+namespace Opulence\Router;
 
 use Closure;
 use InvalidArgumentException;
@@ -35,7 +35,7 @@ class RouteAction
     public function __construct(
         ?string $className,
         ?string $methodName,
-        Closure $closure = null,
+        ?Closure $closure,
         SerializerInterface $serializer = null
     ) {
         // Check if everything was set or nothing was set
@@ -98,7 +98,7 @@ class RouteAction
      *
      * @return Closure The closure the route routes to
      */
-    public function getClosure() : Closure
+    public function getClosure() : ?Closure
     {
         return $this->closure;
     }

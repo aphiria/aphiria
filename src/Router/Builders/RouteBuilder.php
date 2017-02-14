@@ -2,6 +2,7 @@
 namespace Opulence\Router\Builders;
 
 use Closure;
+use InvalidArgumentException;
 use LogicException;
 use Opulence\Router\ClosureRouteAction;
 use Opulence\Router\MethodRouteAction;
@@ -94,7 +95,8 @@ class RouteBuilder
     /**
      * Binds many middleware bindings to the route
      *
-     * @param MiddlewareBinding[]|string $middlewareBindings The list of middleware bindings to add, or a single class name without properties
+     * @param MiddlewareBinding[]|string[] $middlewareBindings The list of middleware bindings to add, or a single 
+     *      class name without properties
      * @return self For chaining
      * @throws InvalidArgumentException Thrown if the middleware bindings are not the correct type
      */
