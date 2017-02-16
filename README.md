@@ -1,4 +1,5 @@
 <h1>Todo</h1>
+* I need a registrant for the built-in rules' factories.  If I'm using default classes for stuff like URI template parser, how/where would I register these built-in rules?
 * Make sure URI parser checks for route vars with default values - they should be optional.  This will permit my RegexUriTemplate to work.
 * Need some sort of route cache
 * Probably still need to add ability to chunk matching regexes for URIs rather than try to match one at a time
@@ -6,14 +7,14 @@
   * Not including this makes the architecture cleaner.  Otherwise, I'd have leaky abstraction with named regex groups for route vars, and the weirdness of generating a URI in the template but not matching in the template is bizarre
 
 <h1>Notes</h1>
-* Vars may look like `users/:userId` or `users/:{userId|regex(foo)|int|max(10)}`
+* Vars may look like `users/:userId` or `users/:userId(regex(foo),int,max(10))`
 
 <h3>Variable Grammar</h3>
 ```
-variable             = :routeVarName|:routeVarExpression
+variable             = :routeVarName(routeVarRules)?
 routeVarName         = [a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(=routeVarDefaultValue)?
 routeVarDefaultValue = ([^:\[\]/]+)
-routeVarExpression   = {routeVarName [|rule]*}
+routeVarExpression   = (rule[,rule]*)
 rule                 = ruleName[\(ruleParameters\)]?
 ruleName             = [a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*
 ruleParameters       = [^\)]+

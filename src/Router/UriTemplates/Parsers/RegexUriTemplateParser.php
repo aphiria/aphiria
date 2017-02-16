@@ -2,12 +2,24 @@
 namespace Opulence\Router\UriTemplates\Parsers;
 
 use Opulence\Router\UriTemplates\IUriTemplate;
+use Opulence\Router\UriTemplates\Rules\IRuleFactory;
 
 /**
  * Defines the regex URI template parser
  */
 class RegexUriTemplateParser implements IUriTemplateParser
 {
+    /** @var IRuleFactory The factory for rules found in the routes */
+    private $ruleFactory = null;
+
+    /**
+     * @param IRuleFactory $ruleFactory The factory for rules found in the routes
+     */
+    public function __construct(IRuleFactory $ruleFactory)
+    {
+        $this->ruleFactory = $ruleFactory;
+    }
+
     /**
      * @inheritdoc
      */
