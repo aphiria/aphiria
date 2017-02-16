@@ -19,3 +19,9 @@ $router = new Router($routeBuilderRegistry->buildAll());
 $matchedRoute = $router->route($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 
 // Use your library/framework of choice to dispatch $matchedRoute...
+
+// You can also generate URIs within your views using the route names
+// This would print "books/archives/2013/2"
+$routeCollection->getNamedRoute('GetBooksFromArchives')
+    ->getUriTemplate()
+    ->buildTemplate(['year' => 2013, 'month' => 2]);
