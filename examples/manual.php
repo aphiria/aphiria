@@ -1,16 +1,16 @@
 <?php
+use Opulence\Router\ClosureRouteAction;
 use Opulence\Router\Route;
-use Opulence\Router\RouteAction;
 use Opulence\Router\Router;
 use Opulence\Router\UriTemplates\RegexUriTemplate;
 
 // Create a route manually
 $route = new Route(
     ['GET'],
-    new RouteAction(null, null, function ($request, $routeVars) {
+    new RegexUriTemplate('#^http://foo\.com/users/(?P<userId>\d+)$#'),
+    new ClosureRouteAction(function ($routeVars) {
         return "Hello, {$routeVars['userId']}";
     }),
-    new RegexUriTemplate('#^http://foo\.com/users/(?P<userId>\d+)$#'),
     ['MyMiddlewareClass'],
     'MyProfile'
 );

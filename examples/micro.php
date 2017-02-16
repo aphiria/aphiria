@@ -7,10 +7,10 @@ use Opulence\Router\UriTemplates\RegexUriTemplate;
 // Create a route manually
 $route = new Route(
     'GET',
+    new RegexUriTemplate('#^http://foo\.com/users/(?P<userId>\d+)$#'),
     new ClosureRouteAction(function ($routeVars) {
         return "Hello, {$routeVars['userId']}";
-    }),
-    new RegexUriTemplate('#^http://foo\.com/users/(?P<userId>\d+)$#')
+    })
 );
 
 // Get the matched route

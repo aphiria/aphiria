@@ -50,8 +50,8 @@ class RouteBuilder
 
         return new Route(
             $this->httpMethods,
-            $this->action,
             $this->uriTemplate,
+            $this->action,
             $this->middlewareBindings,
             $this->name
         );

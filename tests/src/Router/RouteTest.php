@@ -29,8 +29,8 @@ class RouteTest extends \PHPUnit\Framework\TestCase
         $this->uriTemplate = $this->createMock(IUriTemplate::class);
         $this->route = new Route(
             ['GET'],
-            $this->routeAction,
             $this->uriTemplate,
+            $this->routeAction,
             $this->middlewareBindings,
             self::ROUTE_NAME
         );
@@ -86,8 +86,8 @@ class RouteTest extends \PHPUnit\Framework\TestCase
         $this->uriTemplate = $this->createMock(IUriTemplate::class);
         $namelessRoute = new Route(
             ['GET'],
-            $this->routeAction,
             $this->uriTemplate,
+            $this->routeAction,
             $this->middlewareBindings
         );
         $this->assertNull($namelessRoute->getName());
