@@ -14,7 +14,7 @@ class MiddlewareBinding extends \PHPUnit\Framework\TestCase
         $middlewareBinding = new MiddlewareBinding('foo', ['bar' => 'baz']);
         $this->assertEquals('foo', $middlewareBinding->getClassName());
     }
-    
+
     /**
      * Tests that the correct properties are returned
      */

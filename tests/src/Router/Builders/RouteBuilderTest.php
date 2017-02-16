@@ -13,7 +13,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /** @var RouteBuilder The route builder to use in tests */
     private $routeBuilder = null;
-    
+
     /**
      * Sets up the tests
      */
@@ -21,7 +21,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
     {
         $this->routeBuilder = new RouteBuilder(['GET'], new RegexUriTemplate('/foo'), false);
     }
-    
+
     /**
      * Tests that building the route before setting an action throws an exception
      */
@@ -30,14 +30,13 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->expectException(LogicException::class);
         $this->routeBuilder->build();
     }
-    
+
     /**
      * Tests that chaining on fluent methods returns the correct instance
      */
     public function testChainingOnFluentMethodsReturnsCorrectInstance() : void
     {
-        $this->assertSame($this->routeBuilder, $this->routeBuilder->toClosure(function () 
-        {
+        $this->assertSame($this->routeBuilder, $this->routeBuilder->toClosure(function () {
             // Don't do anything
         }));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->toMethod('Foo', 'bar'));
@@ -45,7 +44,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withMiddleware('Foo'));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withName('Foo'));
     }
-    
+
     /**
      * Tests that the closure is set when using a closure action
      */
@@ -58,7 +57,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $route = $this->routeBuilder->build();
         $this->assertSame($closure, $route->getAction()->getClosure());
     }
-    
+
     /**
      * Tests that an invalid middleware throws an exception
      */
@@ -67,7 +66,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->routeBuilder->withManyMiddleware([1]);
     }
-    
+
     /**
      * Tests that many middleware bindings are set when passing them in as objects
      */
@@ -87,7 +86,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['bar' => 'baz'], $route->getMiddlewareBindings()[0]->getProperties());
         $this->assertEquals(['young' => 'cool'], $route->getMiddlewareBindings()[1]->getProperties());
     }
-    
+
     /**
      * Tests that many middleware bindings are set when passing them in as strings
      */
@@ -104,7 +103,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([], $route->getMiddlewareBindings()[0]->getProperties());
         $this->assertEquals([], $route->getMiddlewareBindings()[1]->getProperties());
     }
-    
+
     /**
      * Tests that the method is set when using a method action
      */
@@ -115,7 +114,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('foo', $route->getAction()->getClassName());
         $this->assertSame('bar', $route->getAction()->getMethodName());
     }
-    
+
     /**
      * Tests that a middleware binding is set
      */
@@ -129,7 +128,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo', $route->getMiddlewareBindings()[0]->getClassName());
         $this->assertEquals(['bar' => 'baz'], $route->getMiddlewareBindings()[0]->getProperties());
     }
-    
+
     /**
      * Tests that the name is set on the route
      */

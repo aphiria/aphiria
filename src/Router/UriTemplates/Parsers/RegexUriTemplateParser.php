@@ -15,10 +15,10 @@ class RegexUriTemplateParser implements IUriTemplateParser
     {
         // Todo
     }
-    
+
     /**
      * Creates a URI regex
-     * 
+     *
      * @param string $hostRegex The host regex
      * @param string $pathRegex The path regex
      * @param bool $isHttpsOnly Whether or not the URI is HTTPS-only
@@ -27,5 +27,5 @@ class RegexUriTemplateParser implements IUriTemplateParser
     private function createUriRegex(?string $hostRegex, string $pathRegex, bool $isHttpsOnly) : string
     {
         return '#^http' . ($isHttpsOnly ? 's' : '(?:s)?') . '://' . ($hostRegex ?? '[^/]+') . $pathRegex . '$#';
-    }   
+    }
 }

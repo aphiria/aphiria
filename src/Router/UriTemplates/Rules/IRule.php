@@ -15,7 +15,7 @@ interface IRule
 
     /**
      * Gets whether or not the rule passes
-     * 
+     *
      * @param mixed $value The value to validate
      * @return bool True if the rule passes, otherwise false
      */

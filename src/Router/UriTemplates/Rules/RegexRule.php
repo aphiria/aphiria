@@ -7,8 +7,8 @@ namespace Opulence\Router\UriTemplates\Rules;
 class RegexRule implements IRule
 {
     /** @var string The regex the input must match */
-    private $regex = "";
-    
+    private $regex = '';
+
     /**
      * @param string $regex The regex the input must match
      */
@@ -16,7 +16,7 @@ class RegexRule implements IRule
     {
         $this->regex = $regex;
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -24,7 +24,7 @@ class RegexRule implements IRule
     {
         return 'regex';
     }
-    
+
     /**
      * @inheritdoc
      */

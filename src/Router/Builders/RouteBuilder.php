@@ -30,14 +30,15 @@ class RouteBuilder
      * @param array $httpMethods The list of HTTP methods the route matches on
      * @param IUriTemplate $uriTemplate The URI template the route matches on
      */
-    public function __construct(array $httpMethods, IUriTemplate $uriTemplate) {
+    public function __construct(array $httpMethods, IUriTemplate $uriTemplate)
+    {
         $this->httpMethods = $httpMethods;
         $this->uriTemplate = $uriTemplate;
     }
 
     /**
      * Builds a route object from all the settings in this builder
-     * 
+     *
      * @return Route The built route
      * @throws LogicException Thrown if no controller was specified
      */
@@ -58,7 +59,7 @@ class RouteBuilder
 
     /**
      * Binds the controller the route uses to be a closure
-     * 
+     *
      * @param Closure $controller The closure the route uses
      * @return self For chaining
      */
@@ -71,7 +72,7 @@ class RouteBuilder
 
     /**
      * Binds the controller the route uses to be a method
-     * 
+     *
      * @param string $controllerClassName The name of the class the route goes to
      * @param string $controllerMethodName The name of the method the route goes to
      * @return self For chaining
@@ -86,7 +87,7 @@ class RouteBuilder
     /**
      * Binds many middleware bindings to the route
      *
-     * @param MiddlewareBinding[]|string[] $middlewareBindings The list of middleware bindings to add, or a single 
+     * @param MiddlewareBinding[]|string[] $middlewareBindings The list of middleware bindings to add, or a single
      *      class name without properties
      * @return self For chaining
      * @throws InvalidArgumentException Thrown if the middleware bindings are not the correct type
@@ -110,7 +111,7 @@ class RouteBuilder
 
     /**
      * Binds a single middleware class to the route
-     * 
+     *
      * @param string $middlewareClassName The name of the middleware class to bind
      * @param array $middlewareProperties Any properties this method relies on
      * @return self For chaining
@@ -124,7 +125,7 @@ class RouteBuilder
 
     /**
      * Binds a name to the route
-     * 
+     *
      * @param string $name The name of the route
      * @return self For chaining
      */

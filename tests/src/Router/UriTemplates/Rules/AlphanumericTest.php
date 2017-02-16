@@ -17,7 +17,7 @@ class AlphanumericRuleTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($rule->passes('a1'));
         $this->assertTrue($rule->passes('1abc'));
     }
-    
+
     /**
      * Tests that the correct slug is returned
      */
@@ -25,7 +25,7 @@ class AlphanumericRuleTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals('alphanumeric', (new AlphanumericRule)->getSlug());
     }
-    
+
     /**
      * Tests that non-alphabet chars fail
      */

@@ -11,7 +11,7 @@ interface IRouteMatcher
 {
     /**
      * Tries to match a request to the list of routes
-     * 
+     *
      * @param string $httpMethod The HTTP method of the request
      * @param string $uri The URI of the request
      * @param RouteCollection $routes The list of routes to match against

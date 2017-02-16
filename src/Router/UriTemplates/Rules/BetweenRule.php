@@ -14,7 +14,7 @@ class BetweenRule implements IRule
     private $max = 0;
     /** @var bool Whether or not the extremes are inclusive */
     private $isInclusive = true;
-    
+
     /**
      * @param numeric $min The min value
      * @param numeric $max The max value
@@ -26,16 +26,16 @@ class BetweenRule implements IRule
         if (!is_numeric($min)) {
             throw new InvalidArgumentException('Min value must be numeric');
         }
-        
+
         if (!is_numeric($max)) {
             throw new InvalidArgumentException('Max value must be numeric');
         }
-        
+
         $this->min = $min;
         $this->max = $max;
         $this->isInclusive = $isInclusive;
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -43,7 +43,7 @@ class BetweenRule implements IRule
     {
         return 'between';
     }
-    
+
     /**
      * @inheritdoc
      */

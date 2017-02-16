@@ -8,7 +8,7 @@ class NotInRule implements IRule
 {
     /** @var array The list of acceptable values */
     private $acceptableValues = [];
-    
+
     /**
      * @param array $acceptableValues The list of acceptable values
      */
@@ -16,7 +16,7 @@ class NotInRule implements IRule
     {
         $this->acceptableValues = $acceptableValues;
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -24,7 +24,7 @@ class NotInRule implements IRule
     {
         return 'notIn';
     }
-    
+
     /**
      * @inheritdoc
      */

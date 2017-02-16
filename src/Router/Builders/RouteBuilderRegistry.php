@@ -28,7 +28,7 @@ class RouteBuilderRegistry
 
     /**
      * Builds all the route builders in the registry
-     * 
+     *
      * @return RouteCollection The list of routes built by this registry
      */
     public function buildAll() : RouteCollection
@@ -47,7 +47,7 @@ class RouteBuilderRegistry
 
     /**
      * Creates a group of routes that share similar options
-     * 
+     *
      * @param RouteGroupOptions $groupOptions The list of options shared by all routes in the group
      * @param Closure $callback The callback that accepts an instance of this class
      */
@@ -60,7 +60,7 @@ class RouteBuilderRegistry
 
     /**
      * Creates a route builder with some values already set
-     * 
+     *
      * @param array|string $httpMethods The HTTP method or list of methods the route uses
      * @param string $pathTemplate The path template
      * @param string|null $hostTemplate The host template
@@ -83,7 +83,7 @@ class RouteBuilderRegistry
 
     /**
      * Applies a group's middleware to the input route builder
-     * 
+     *
      * @param RouteBuilder $routeBuilder The route builder to bind middleware to
      */
     private function applyGroupMiddleware(RouteBuilder &$routeBuilder) : void
@@ -99,7 +99,7 @@ class RouteBuilderRegistry
 
     /**
      * Applies all the group options to a route
-     * 
+     *
      * @param string $pathTemplate The path template to apply settings to
      * @param string|null $hostTemplate The host template to apply settings to
      * @param bool $isHttpsOnly Whether or not the group is HTTPS-only

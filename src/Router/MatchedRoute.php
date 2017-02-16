@@ -2,7 +2,6 @@
 namespace Opulence\Router;
 
 use Opulence\Router\Middleware\MiddlewareBinding;
-use Opulence\Router\RouteAction;
 
 /**
  * Defines a matched route

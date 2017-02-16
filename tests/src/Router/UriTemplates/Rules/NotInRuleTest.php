@@ -13,7 +13,7 @@ class NotInRuleTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals('notIn', (new NotInRule([1, 2]))->getSlug());
     }
-    
+
     /**
      * Tests that a value in the array fails
      */
@@ -24,7 +24,7 @@ class NotInRuleTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($rule->passes(2));
         $this->assertFalse($rule->passes(3));
     }
-    
+
     /**
      * Tests that a value not in the array passes
      */

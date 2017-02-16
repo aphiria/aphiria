@@ -13,7 +13,7 @@ class NumericRule implements IRule
     {
         return 'numeric';
     }
-    
+
     /**
      * @inheritdoc
      */

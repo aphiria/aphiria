@@ -10,7 +10,7 @@ class DateRule
 {
     /** @var The list of acceptable date formats */
     private $formats = [];
-    
+
     /**
      * @param array|string $formats The format or list of acceptable formats
      */
@@ -18,7 +18,7 @@ class DateRule
     {
         $this->formats = (array)$formats;
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -26,7 +26,7 @@ class DateRule
     {
         return 'date';
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -34,7 +34,7 @@ class DateRule
     {
         foreach ($this->formats as $format) {
             $dateTime = DateTime::createFromFormat($format, $value);
-            
+
             if ($dateTime !== false && $value == $dateTime->format($format)) {
                 return true;
             }

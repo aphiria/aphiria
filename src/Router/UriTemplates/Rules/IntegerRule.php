@@ -13,7 +13,7 @@ class IntegerRule implements IRule
     {
         return 'int';
     }
-    
+
     /**
      * @inheritdoc
      */

@@ -13,7 +13,7 @@ class InRuleTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals('in', (new InRule([1, 2]))->getSlug());
     }
-    
+
     /**
      * Tests that a value in the array passes
      */
@@ -24,7 +24,7 @@ class InRuleTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($rule->passes(2));
         $this->assertTrue($rule->passes(3));
     }
-    
+
     /**
      * Tests that a value not in the array fails
      */

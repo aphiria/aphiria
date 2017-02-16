@@ -13,7 +13,7 @@ class RegexRuleTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals('regex', (new RegexRule('foo'))->getSlug());
     }
-    
+
     /**
      * Tests that matching string pass
      */
@@ -22,7 +22,7 @@ class RegexRuleTest extends \PHPUnit\Framework\TestCase
         $rule = new RegexRule('/^[a-z]{3}$/');
         $this->assertTrue($rule->passes('foo'));
     }
-    
+
     /**
      * Tests non-matching strings fail
      */

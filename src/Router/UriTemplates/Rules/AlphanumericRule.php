@@ -13,7 +13,7 @@ class AlphanumericRule implements IRule
     {
         return 'alphanumeric';
     }
-    
+
     /**
      * @inheritdoc
      */

@@ -13,7 +13,7 @@ class UuidV4RuleTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals('uuidv4', (new UuidV4Rule)->getSlug());
     }
-    
+
     /**
      * Tests that a UUID passes
      */
@@ -27,7 +27,7 @@ class UuidV4RuleTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($rule->passes($uuid));
         $this->assertTrue($rule->passes('{' . $uuid . '}'));
     }
-    
+
     /**
      * Tests non-UUID fails
      */

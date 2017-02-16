@@ -8,7 +8,7 @@ class InRule implements IRule
 {
     /** @var array The list of acceptable values */
     private $acceptableValues = [];
-    
+
     /**
      * @param array $acceptableValues The list of acceptable values
      */
@@ -16,7 +16,7 @@ class InRule implements IRule
     {
         $this->acceptableValues = $acceptableValues;
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -24,7 +24,7 @@ class InRule implements IRule
     {
         return 'in';
     }
-    
+
     /**
      * @inheritdoc
      */

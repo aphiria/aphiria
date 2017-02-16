@@ -21,7 +21,7 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
     private $methodAction = null;
     /** @var SerializerInterface|\PHPUnit_Framework_MockObject_MockObject The mock serializer used by our actions */
     private $serializer = null;
-    
+
     /**
      * Sets up the tests
      */
@@ -34,7 +34,7 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
         $this->closureAction = new RouteAction(null, null, $this->closure, $this->serializer);
         $this->methodAction = new RouteAction(self::CLASS_NAME, self::METHOD_NAME, null, $this->serializer);
     }
-    
+
     /**
      * Tests the correct class name is returned
      */
@@ -42,7 +42,7 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals(self::CLASS_NAME, $this->methodAction->getClassName());
     }
-    
+
     /**
      * Tests the correct method name is returned
      */
@@ -50,7 +50,7 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals(self::METHOD_NAME, $this->methodAction->getMethodName());
     }
-    
+
     /**
      * Tests that the correct instance of the closure is returned by closure instances
      */
@@ -58,7 +58,7 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame($this->closure, $this->closureAction->getClosure());
     }
-    
+
     /**
      * Tests that the method flag is set correctly
      */
@@ -67,7 +67,7 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($this->closureAction->usesMethod());
         $this->assertTrue($this->methodAction->usesMethod());
     }
-    
+
     /**
      * Tests that the closure is null when using a method action
      */

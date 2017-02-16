@@ -8,7 +8,7 @@ class UuidV4Rule implements IRule
 {
     /** @var string The UUIDV4 regex */
     private const UUIDV4_REGEX = '/^\{?[a-f\d]{8}-(?:[a-f\d]{4}-){3}[a-f\d]{12}\}?$/i';
-    
+
     /**
      * @inheritdoc
      */
@@ -16,7 +16,7 @@ class UuidV4Rule implements IRule
     {
         return 'uuidv4';
     }
-    
+
     /**
      * @inheritdoc
      */

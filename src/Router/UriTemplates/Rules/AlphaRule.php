@@ -13,7 +13,7 @@ class AlphaRule implements IRule
     {
         return 'alpha';
     }
-    
+
     /**
      * @inheritdoc
      */

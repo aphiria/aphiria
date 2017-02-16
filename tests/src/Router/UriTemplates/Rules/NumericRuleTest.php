@@ -17,7 +17,7 @@ class NumericRuleTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($rule->passes(1.0));
         $this->assertTrue($rule->passes('1.0'));
     }
-    
+
     /**
      * Tests that the correct slug is returned
      */
@@ -25,7 +25,7 @@ class NumericRuleTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals('numeric', (new NumericRule)->getSlug());
     }
-    
+
     /**
      * Tests that non-alphabet chars fail
      */

@@ -13,7 +13,7 @@ class IntegerRuleTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals('int', (new IntegerRule)->getSlug());
     }
-    
+
     /**
      * Tests that a failing value
      */
@@ -25,7 +25,7 @@ class IntegerRuleTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($rule->passes(1.5));
         $this->assertFalse($rule->passes('1.5'));
     }
-    
+
     /**
      * Tests a passing value
      */

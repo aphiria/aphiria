@@ -15,7 +15,7 @@ class ClosureRouteActionTest extends \PHPUnit\Framework\TestCase
     private $closure = null;
     /** @var SerializerInterface|\PHPUnit_Framework_MockObject_MockObject The mock serializer used by our actions */
     private $serializer = null;
-    
+
     /**
      * Sets up the tests
      */
@@ -27,7 +27,7 @@ class ClosureRouteActionTest extends \PHPUnit\Framework\TestCase
         $this->serializer = $this->createMock(SerializerInterface::class);
         $this->closureAction = new ClosureRouteAction($this->closure, $this->serializer);
     }
-    
+
     /**
      * Tests that the correct instance of the closure is returned by closure instances
      */
@@ -35,7 +35,7 @@ class ClosureRouteActionTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame($this->closure, $this->closureAction->getClosure());
     }
-    
+
     /**
      * Tests that the method flag is set correctly
      */

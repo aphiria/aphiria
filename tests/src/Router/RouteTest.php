@@ -18,7 +18,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     private $routeAction = null;
     /** @var MiddlewareBinding[] The list of middleware bindings in the matched route */
     private $middlewareBindings = [];
-    
+
     /**
      * Sets up the tests
      */
@@ -35,7 +35,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
             self::ROUTE_NAME
         );
     }
-    
+
     /**
      * Tests that the correct action is returned
      */
@@ -43,7 +43,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame($this->routeAction, $this->route->getAction());
     }
-    
+
     /**
      * Tests that the correct HTTP methods are returned
      */
@@ -51,7 +51,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals(['GET'], $this->route->getHttpMethods());
     }
-    
+
     /**
      * Tests that the correct middleware bindings are returned
      */
@@ -59,7 +59,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame($this->middlewareBindings, $this->route->getMiddlewareBindings());
     }
-    
+
     /**
      * Tests that the correct name is returned
      */
@@ -67,7 +67,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals(self::ROUTE_NAME, $this->route->getName());
     }
-    
+
     /**
      * Tests that the correct URI template is returned
      */
@@ -75,7 +75,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame($this->uriTemplate, $this->route->getUriTemplate());
     }
-    
+
     /**
      * Tests that the name defaults to null
      */

@@ -10,7 +10,7 @@ interface IUriTemplateParser
 {
     /**
      * Parses the raw URI templates
-     * 
+     *
      * @param string $pathTemplate The raw path template to parse
      * @param string|null $hostTemplate The raw host template to parse
      * @param bool @isHttpsOnly Whether or not the URI is HTTPS-only

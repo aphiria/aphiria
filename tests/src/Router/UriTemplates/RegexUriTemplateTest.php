@@ -18,7 +18,7 @@ class RegexUriTemplateTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($template->tryMatch('/foo/', $routeVars));
         $this->assertEquals('baz', $routeVars['bar']);
     }
-    
+
     /**
      * Test that a default variable value does not override a defined value
      */
@@ -29,7 +29,7 @@ class RegexUriTemplateTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($template->tryMatch('/foo/blah', $routeVars));
         $this->assertEquals('blah', $routeVars['bar']);
     }
-    
+
     /**
      * Tests a simple matching URI
      */
@@ -40,7 +40,7 @@ class RegexUriTemplateTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($template->tryMatch('/foo/baz', $routeVars));
         $this->assertEquals('baz', $routeVars['bar']);
     }
-    
+
     /**
      * Tests a matching URI but a non-matching rule
      */
@@ -56,7 +56,7 @@ class RegexUriTemplateTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($template->tryMatch('/foo/baz', $routeVars));
         $this->assertEquals([], $routeVars);
     }
-    
+
     /**
      * Tests a matching URI with a matching rule
      */
@@ -72,7 +72,7 @@ class RegexUriTemplateTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($template->tryMatch('/foo/baz', $routeVars));
         $this->assertEquals(['bar' => 'baz'], $routeVars);
     }
-    
+
     /**
      * Tests a matching URI with one matching rule and one failing rule
      */
@@ -93,7 +93,7 @@ class RegexUriTemplateTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($template->tryMatch('/foo/baz', $routeVars));
         $this->assertEquals([], $routeVars);
     }
-    
+
     /**
      * Tests a non-matching URI
      */

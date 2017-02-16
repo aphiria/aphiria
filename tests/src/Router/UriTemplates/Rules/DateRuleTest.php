@@ -15,7 +15,7 @@ class DateRuleTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals('date', (new DateRule('F j'))->getSlug());
     }
-    
+
     /**
      * Tests that a single failing format
      */
@@ -25,7 +25,7 @@ class DateRuleTest extends \PHPUnit\Framework\TestCase
         $rule = new DateRule($format);
         $this->assertFalse($rule->passes((new DateTime)->format('Ymd')));
     }
-    
+
     /**
      * Tests that multiple failing formats
      */
@@ -37,7 +37,7 @@ class DateRuleTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($rule->passes((new DateTime)->format('Ymd')));
         $this->assertFalse($rule->passes((new DateTime)->format('Ymd')));
     }
-    
+
     /**
      * Tests that a single passing format
      */
@@ -47,7 +47,7 @@ class DateRuleTest extends \PHPUnit\Framework\TestCase
         $rule = new DateRule($format);
         $this->assertTrue($rule->passes((new DateTime)->format($format)));
     }
-    
+
     /**
      * Tests that multiple passing formats
      */
