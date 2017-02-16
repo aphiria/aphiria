@@ -7,13 +7,13 @@ use Opulence\Router\UriTemplates\Parsers\RegexUriTemplateParser;
 // Add an ordinary route
 $routeBuilderRegistry = new RouteBuilderRegistry(new RegexUriTemplateParser());
 $routeBuilderRegistry->map('GET', 'users/:userId')
-    ->toMethod('UserController', 'showProfile')
-    ->withName('UserProfile');
+    ->toMethod('UserController', 'getUser')
+    ->withName('GetUser');
 
 // Add a route with rules
-$routeBuilderRegistry->map('GET', 'users/age/:minAge(int,min(0))-:maxAge(int)')
-    ->toMethod('UserController', 'showUsersInAgeRange')
-    ->withName('UsersInAgeRange');
+$routeBuilderRegistry->map('GET', 'books/archives/:year(int,min(1987))[/:month(int,min(1),max(12)]')
+    ->toMethod('BookController', 'getBooksFromArchives')
+    ->withName('GetBooksFromArchives');
 
 // Get the matched route
 $router = new Router($routeBuilderRegistry->buildAll(), new RouteMatcher());

@@ -6,14 +6,14 @@ use Opulence\Router\Router;
 // Add an ordinary route
 $routeBuilderRegistry = new RouteBuilderRegistry();
 $routeBuilderRegistry->map('GET', 'users/:userId=me')
-    ->toMethod('UserController', 'showProfile')
-    ->withName('UserProfile')
+    ->toMethod('UserController', 'getUser')
+    ->withName('GetUser')
     ->withMiddleware('AuthMiddleware', ['roles' => 'admin']);
 
 // Add a route with rules
-$routeBuilderRegistry->map('GET', 'users/age/:minAge(int,min(0))-:maxAge(int)')
-    ->toMethod('UserController', 'showUsersInAgeRange')
-    ->withName('UsersInAgeRange')
+$routeBuilderRegistry->map('GET', 'books/archives/:year(int,min(1987))[/:month(int,min(1),max(12)]')
+    ->toMethod('BookController', 'getBooksFromArchives')
+    ->withName('GetBooksFromArchives')
     ->withManyMiddleware([
         new MiddlewareBinding('AuthMiddleware', ['roles' => 'admin']),
         'SessionMiddleware'

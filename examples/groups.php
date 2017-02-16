@@ -9,7 +9,7 @@ $routeBuilderRegistry->group(
     new RouteGroupOptions('users/', '', false, []),
     function (RouteBuilderRegistry $routeBuilderRegistry) {
         $routeBuilderRegistry->map('GET', ':userId')
-            ->toMethod('UserController', 'showProfile');
+            ->toMethod('UserController', 'getUser');
 
         $routeBuilderRegistry->map('GET', 'me')
             ->toMethod('UserController', 'showMyProfile');
