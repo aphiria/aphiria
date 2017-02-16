@@ -9,8 +9,9 @@ $routeBuilderRegistry->map('GET', 'users/:userId=me')
     ->toMethod('UserController', 'showProfile')
     ->withName('UserProfile')
     ->withMiddleware('AuthMiddleware', ['roles' => 'admin']);
+
 // Add a route with rules
-$routeBuilderRegistry->map('GET', 'users/age/:{minAge|int|min(0)}-:{maxAge|int}')
+$routeBuilderRegistry->map('GET', 'users/age/:minAge(int,min(0))-:maxAge(int)')
     ->toMethod('UserController', 'showUsersInAgeRange')
     ->withName('UsersInAgeRange')
     ->withManyMiddleware([
@@ -18,11 +19,12 @@ $routeBuilderRegistry->map('GET', 'users/age/:{minAge|int|min(0)}-:{maxAge|int}'
         'SessionMiddleware'
     ]);
 
-// Actually route the request
+// Get the matched route
 $router = new Router($routeBuilderRegistry->buildAll());
 $matchedRoute = $router->route($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 
 foreach ($matchedRoute->getMiddlewareBindings() as $middlewareBinding) {
     // Resolve $middlewareBinding->getClassName()
     // Optionally inject $middlewareBinding->getProperties()
+    // Use your library/framework of choice to dispatch $matchedRoute...
 }

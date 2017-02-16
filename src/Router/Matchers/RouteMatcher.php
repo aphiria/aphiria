@@ -12,8 +12,12 @@ class RouteMatcher implements IRouteMatcher
     /**
      * @inheritdoc
      */
-    public function tryMatch(string $httpMethod, string $uri, RouteCollection $routes, MatchedRoute &$matchedRoute) : bool
-    {
+    public function tryMatch(
+        string $httpMethod,
+        string $uri,
+        RouteCollection $routes,
+        MatchedRoute &$matchedRoute
+    ) : bool {
         $uppercaseHttpMethod = strtoupper($httpMethod);
         $routesByMethod = $routes->getByMethod($uppercaseHttpMethod);
 

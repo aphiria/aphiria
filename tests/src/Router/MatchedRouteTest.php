@@ -20,7 +20,7 @@ class MatchedRouteTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp()
+    public function setUp() : void
     {
         $this->routeAction = $this->createMock(RouteAction::class);
         $this->middlewareBindings = [new MiddlewareBinding('Foo')];
@@ -31,7 +31,7 @@ class MatchedRouteTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct action is returned
      */
-    public function testCorrectActionIsReturned()
+    public function testCorrectActionIsReturned() : void
     {
         $this->assertSame($this->routeAction, $this->matchedRoute->getAction());
     }
@@ -39,7 +39,7 @@ class MatchedRouteTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct middleware bindings are returned
      */
-    public function testCorrectMiddlewareBindingsAreReturned()
+    public function testCorrectMiddlewareBindingsAreReturned() : void
     {
         $this->assertSame($this->middlewareBindings, $this->matchedRoute->getMiddlewareBindings());
     }
@@ -47,7 +47,7 @@ class MatchedRouteTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct route vars are returned
      */
-    public function testCorrectRouteVarsAreReturned()
+    public function testCorrectRouteVarsAreReturned() : void
     {
         $this->assertSame($this->routeVars, $this->matchedRoute->getRouteVars());
     }

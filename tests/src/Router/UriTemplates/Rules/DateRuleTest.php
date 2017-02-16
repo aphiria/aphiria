@@ -11,7 +11,7 @@ class DateRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct slug is returned
      */
-    public function testCorrectSlugIsReturned()
+    public function testCorrectSlugIsReturned() : void
     {
         $this->assertEquals('date', (new DateRule('F j'))->getSlug());
     }
@@ -19,7 +19,7 @@ class DateRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a single failing format
      */
-    public function testFailingSingleFormat()
+    public function testFailingSingleFormat() : void
     {
         $format = 'F j';
         $rule = new DateRule($format);
@@ -29,7 +29,7 @@ class DateRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that multiple failing formats
      */
-    public function testFailingMultipleFormats()
+    public function testFailingMultipleFormats() : void
     {
         $format1 = 'F j';
         $format2 = 'j F';
@@ -41,7 +41,7 @@ class DateRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a single passing format
      */
-    public function testPassingSingleFormat()
+    public function testPassingSingleFormat() : void
     {
         $format = 'F j';
         $rule = new DateRule($format);
@@ -51,7 +51,7 @@ class DateRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that multiple passing formats
      */
-    public function testPassingMultipleFormats()
+    public function testPassingMultipleFormats() : void
     {
         $format1 = 'F j';
         $format2 = 'j F';

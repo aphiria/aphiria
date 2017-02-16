@@ -12,7 +12,7 @@ class RegexUriTemplate implements IUriTemplate
     private $uriRegex = '';
     /** @var array The mapping of route var names to their default values */
     private $defaultRouteVars = [];
-    /** @var IRule[] The mapping of route var names to their rules */
+    /** @var IRule[][] The mapping of route var names to their rules */
     private $routeVarRules = [];
 
     /**
@@ -24,7 +24,14 @@ class RegexUriTemplate implements IUriTemplate
     {
         $this->uriRegex = $uriRegex;
         $this->defaultRouteVars = $defaultRouteVars;
-        $this->routeVarRules = $routeVarRules;
+        
+        foreach ($routeVarRules as $name => $rules) {
+            if (!is_array($rules)) {
+                $rules = [$rules];
+            }
+            
+            $this->routeVarRules[$name] = $rules;
+        }
     }
 
     /**
@@ -40,11 +47,34 @@ class RegexUriTemplate implements IUriTemplate
      */
     public function tryMatch(string $uri, array &$routeVars = []) : bool
     {
+        $routeVars = [];
         $matches = [];
         
         if (preg_match($this->uriRegex, $uri, $matches) !== 1) {
             return false;
         }
+        
+        $this->populateRouteVars($routeVars, $matches);
+        
+        if (!$this->routeVarsPassRules($routeVars)) {
+            // Reset the route vars
+            $routeVars = [];
+            
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Populates route vars from matches in the regex
+     * 
+     * @param array $routeVars The route vars to populate
+     * @param array $matches The matches from the regex
+     */
+    private function populateRouteVars(array &$routeVars, array $matches) : void
+    {
+        $routeVars = [];
         
         // Remove the subject
         array_shift($matches);
@@ -60,6 +90,23 @@ class RegexUriTemplate implements IUriTemplate
         foreach ($matches as $name => $value) {
             if (is_string($name)) {
                 $routeVars[$name] = $value;
+            }
+        }
+    }
+    
+    /**
+     * Gets whether or not the route vars pass all the registered rules
+     * 
+     * @param array $routeVars The route vars to validate
+     * @return bool True if all the route vars pass their rules, otherwise false
+     */
+    private function routeVarsPassRules(array $routeVars) : bool
+    {
+        foreach($this->routeVarRules as $name => $rules) {
+            foreach ($rules as $rule) {
+                if (isset($routeVars[$name]) && !$rule->passes($routeVars[$name])) {
+                    return false;
+                }
             }
         }
         

@@ -25,7 +25,7 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp()
+    public function setUp() : void
     {
         $this->closure = function () {
             // Don't do anything
@@ -38,7 +38,7 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests the correct class name is returned
      */
-    public function testCorrectClassNameIsReturned()
+    public function testCorrectClassNameIsReturned() : void
     {
         $this->assertEquals(self::CLASS_NAME, $this->methodAction->getClassName());
     }
@@ -46,7 +46,7 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests the correct method name is returned
      */
-    public function testCorrectMethodNameIsReturned()
+    public function testCorrectMethodNameIsReturned() : void
     {
         $this->assertEquals(self::METHOD_NAME, $this->methodAction->getMethodName());
     }
@@ -54,7 +54,7 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct instance of the closure is returned by closure instances
      */
-    public function testCorrectClosureInstanceIsReturned()
+    public function testCorrectClosureInstanceIsReturned() : void
     {
         $this->assertSame($this->closure, $this->closureAction->getClosure());
     }
@@ -62,7 +62,7 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the method flag is set correctly
      */
-    public function testMethodFlagSetCorrectly()
+    public function testMethodFlagSetCorrectly() : void
     {
         $this->assertFalse($this->closureAction->usesMethod());
         $this->assertTrue($this->methodAction->usesMethod());
@@ -71,7 +71,7 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the closure is null when using a method action
      */
-    public function testNullClosureIsReturnedByMethodAction()
+    public function testNullClosureIsReturnedByMethodAction() : void
     {
         $this->assertNull($this->methodAction->getClosure());
     }

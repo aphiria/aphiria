@@ -9,7 +9,7 @@ class UuidV4RuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct slug is returned
      */
-    public function testCorrectSlugIsReturned()
+    public function testCorrectSlugIsReturned() : void
     {
         $this->assertEquals('uuidv4', (new UuidV4Rule)->getSlug());
     }
@@ -17,7 +17,7 @@ class UuidV4RuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a UUID passes
      */
-    public function testMatchingStringsPass()
+    public function testMatchingStringsPass() : void
     {
         $rule = new UuidV4Rule();
         $string = \random_bytes(16);
@@ -31,7 +31,7 @@ class UuidV4RuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests non-UUID fails
      */
-    public function testNonMatchingStringsFail()
+    public function testNonMatchingStringsFail() : void
     {
         $rule = new UuidV4Rule();
         $this->assertFalse($rule->passes('foo'));

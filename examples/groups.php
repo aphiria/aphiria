@@ -15,6 +15,8 @@ $routeBuilderRegistry->group(
             ->toMethod('UserController', 'showMyProfile');
     });
 
-// Actually route the request
+// Get the matched route
 $router = new Router($routeBuilderRegistry->buildAll());
 $matchedRoute = $router->route($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
+
+// Use your library/framework of choice to dispatch $matchedRoute...

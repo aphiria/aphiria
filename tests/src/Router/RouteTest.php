@@ -22,7 +22,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp()
+    public function setUp() : void
     {
         $this->routeAction = $this->createMock(RouteAction::class);
         $this->middlewareBindings = [new MiddlewareBinding('Foo')];
@@ -39,7 +39,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct action is returned
      */
-    public function testCorrectActionIsReturned()
+    public function testCorrectActionIsReturned() : void
     {
         $this->assertSame($this->routeAction, $this->route->getAction());
     }
@@ -47,7 +47,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct HTTP methods are returned
      */
-    public function testCorrectHttpMethodsAreReturned()
+    public function testCorrectHttpMethodsAreReturned() : void
     {
         $this->assertEquals(['GET'], $this->route->getHttpMethods());
     }
@@ -55,7 +55,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct middleware bindings are returned
      */
-    public function testCorrectMiddlewareBindingsAreReturned()
+    public function testCorrectMiddlewareBindingsAreReturned() : void
     {
         $this->assertSame($this->middlewareBindings, $this->route->getMiddlewareBindings());
     }
@@ -63,7 +63,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct name is returned
      */
-    public function testCorrectNameIsReturned()
+    public function testCorrectNameIsReturned() : void
     {
         $this->assertEquals(self::ROUTE_NAME, $this->route->getName());
     }
@@ -71,7 +71,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct URI template is returned
      */
-    public function testCorrectUriTemplateIsReturned()
+    public function testCorrectUriTemplateIsReturned() : void
     {
         $this->assertSame($this->uriTemplate, $this->route->getUriTemplate());
     }
@@ -79,7 +79,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the name defaults to null
      */
-    public function testNameDefaultsToNull()
+    public function testNameDefaultsToNull() : void
     {
         $this->routeAction = $this->createMock(RouteAction::class);
         $this->middlewareBindings = [new MiddlewareBinding('Foo')];

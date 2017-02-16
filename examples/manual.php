@@ -11,10 +11,12 @@ $route = new Route(
         return "Hello, {$routeVars['userId']}";
     }),
     new RegexUriTemplate('#^http://foo\.com/users/(?P<userId>\d+)$#'),
-    ['MiddlewareClass'],
+    ['MyMiddlewareClass'],
     'MyProfile'
 );
 
-// Actually route the request
+// Get the matched route
 $router = new Router([$route]);
 $matchedRoute = $router->route($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
+
+// Use your library/framework of choice to dispatch $matchedRoute...

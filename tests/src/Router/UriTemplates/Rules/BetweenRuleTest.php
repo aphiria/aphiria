@@ -11,7 +11,7 @@ class BetweenRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct slug is returned
      */
-    public function testCorrectSlugIsReturned()
+    public function testCorrectSlugIsReturned() : void
     {
         $this->assertEquals('between', (new BetweenRule(1, 2))->getSlug());
     }
@@ -19,7 +19,7 @@ class BetweenRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests a failing value with an exclusive range
      */
-    public function testFailingValueWithExclusiveRange()
+    public function testFailingValueWithExclusiveRange() : void
     {
         $rule = new BetweenRule(0, 2, false);
         $this->assertFalse($rule->passes(3));
@@ -28,7 +28,7 @@ class BetweenRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests a failing value with an inclusive range
      */
-    public function testFailingValueWithInclusiveRange()
+    public function testFailingValueWithInclusiveRange() : void
     {
         $rule = new BetweenRule(0, 2, true);
         $this->assertFalse($rule->passes(3));
@@ -37,7 +37,7 @@ class BetweenRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests a passing value with an exclusive range
      */
-    public function testPassingValueWithExclusiveRange()
+    public function testPassingValueWithExclusiveRange() : void
     {
         $rule = new BetweenRule(0, 2, false);
         $this->assertTrue($rule->passes(1));
@@ -46,7 +46,7 @@ class BetweenRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests a passing value with an inclusive range
      */
-    public function testPassingValueWithInclusiveRange()
+    public function testPassingValueWithInclusiveRange() : void
     {
         $rule = new BetweenRule(0, 2, true);
         $this->assertTrue($rule->passes(2));
@@ -55,7 +55,7 @@ class BetweenRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests setting an invalid max value throws an exception
      */
-    public function testInvalidMaxValueThrowsException()
+    public function testInvalidMaxValueThrowsException() : void
     {
         $this->expectException(InvalidArgumentException::class);
         new BetweenRule(1, false);
@@ -64,7 +64,7 @@ class BetweenRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests setting an invalid min value throws an exception
      */
-    public function testInvalidMinValueThrowsException()
+    public function testInvalidMinValueThrowsException() : void
     {
         $this->expectException(InvalidArgumentException::class);
         new BetweenRule(false, 1);

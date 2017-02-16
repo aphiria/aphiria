@@ -18,5 +18,10 @@ interface IRouteMatcher
      * @param MatchedRoute $matchedRoute The matched route, if one is found
      * @return bool True if a match was found, otherwise false
      */
-    public function tryMatch(string $httpMethod, string $uri, RouteCollection $routes, MatchedRoute &$matchedRoute) : bool;
+    public function tryMatch(
+        string $httpMethod,
+        string $uri,
+        RouteCollection $routes,
+        MatchedRoute &$matchedRoute
+    ) : bool;
 }

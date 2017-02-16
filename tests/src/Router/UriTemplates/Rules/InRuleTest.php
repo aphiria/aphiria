@@ -9,7 +9,7 @@ class InRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct slug is returned
      */
-    public function testCorrectSlugIsReturned()
+    public function testCorrectSlugIsReturned() : void
     {
         $this->assertEquals('in', (new InRule([1, 2]))->getSlug());
     }
@@ -17,7 +17,7 @@ class InRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a value in the array passes
      */
-    public function testValueInArrayPasses()
+    public function testValueInArrayPasses() : void
     {
         $rule = new InRule([1, 2, 3]);
         $this->assertTrue($rule->passes(1));
@@ -28,7 +28,7 @@ class InRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a value not in the array fails
      */
-    public function testValueNotInArrayFails()
+    public function testValueNotInArrayFails() : void
     {
         $rule = new InRule([1, 2, 3]);
         $this->assertFalse($rule->passes(4));

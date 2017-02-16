@@ -9,7 +9,7 @@ class NumericRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that alphabet chars pass
      */
-    public function testAlphaCharsPass()
+    public function testAlphaCharsPass() : void
     {
         $rule = new NumericRule();
         $this->assertTrue($rule->passes(0));
@@ -21,7 +21,7 @@ class NumericRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct slug is returned
      */
-    public function testCorrectSlugIsReturned()
+    public function testCorrectSlugIsReturned() : void
     {
         $this->assertEquals('numeric', (new NumericRule)->getSlug());
     }
@@ -29,7 +29,7 @@ class NumericRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that non-alphabet chars fail
      */
-    public function testNonAlphaCharsFail()
+    public function testNonAlphaCharsFail() : void
     {
         $rule = new NumericRule();
         $this->assertFalse($rule->passes(false));

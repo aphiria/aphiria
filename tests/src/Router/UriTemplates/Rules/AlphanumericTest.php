@@ -9,7 +9,7 @@ class AlphanumericRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that alphabet chars pass
      */
-    public function testAlphanumericCharsPass()
+    public function testAlphanumericCharsPass() : void
     {
         $rule = new AlphanumericRule();
         $this->assertTrue($rule->passes('1'));
@@ -21,7 +21,7 @@ class AlphanumericRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct slug is returned
      */
-    public function testCorrectSlugIsReturned()
+    public function testCorrectSlugIsReturned() : void
     {
         $this->assertEquals('alphanumeric', (new AlphanumericRule)->getSlug());
     }
@@ -29,7 +29,7 @@ class AlphanumericRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that non-alphabet chars fail
      */
-    public function testNonAlphanumericCharsFail()
+    public function testNonAlphanumericCharsFail() : void
     {
         $rule = new AlphanumericRule();
         $this->assertFalse($rule->passes(''));

@@ -19,7 +19,7 @@ class ClosureRouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp()
+    public function setUp() : void
     {
         $this->closure = function () {
             // Don't do anything
@@ -31,7 +31,7 @@ class ClosureRouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct instance of the closure is returned by closure instances
      */
-    public function testCorrectClosureInstanceIsReturned()
+    public function testCorrectClosureInstanceIsReturned() : void
     {
         $this->assertSame($this->closure, $this->closureAction->getClosure());
     }
@@ -39,7 +39,7 @@ class ClosureRouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the method flag is set correctly
      */
-    public function testMethodFlagSetCorrectly()
+    public function testMethodFlagSetCorrectly() : void
     {
         $this->assertFalse($this->closureAction->usesMethod());
     }

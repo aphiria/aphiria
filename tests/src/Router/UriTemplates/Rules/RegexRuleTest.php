@@ -9,7 +9,7 @@ class RegexRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct slug is returned
      */
-    public function testCorrectSlugIsReturned()
+    public function testCorrectSlugIsReturned() : void
     {
         $this->assertEquals('regex', (new RegexRule('foo'))->getSlug());
     }
@@ -17,7 +17,7 @@ class RegexRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that matching string pass
      */
-    public function testMatchingStringsPass()
+    public function testMatchingStringsPass() : void
     {
         $rule = new RegexRule('/^[a-z]{3}$/');
         $this->assertTrue($rule->passes('foo'));
@@ -26,7 +26,7 @@ class RegexRuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests non-matching strings fail
      */
-    public function testNonMatchingStringsFail()
+    public function testNonMatchingStringsFail() : void
     {
         $rule = new RegexRule('/^[a-z]{3}$/');
         $this->assertFalse($rule->passes('foobar'));

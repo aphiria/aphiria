@@ -20,7 +20,7 @@ class MethodRouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp()
+    public function setUp() : void
     {
         $this->serializer = $this->createMock(SerializerInterface::class);
         $this->methodAction = new MethodRouteAction(self::CLASS_NAME, self::METHOD_NAME, $this->serializer);
@@ -29,7 +29,7 @@ class MethodRouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests the correct class name is returned
      */
-    public function testCorrectClassNameIsReturned()
+    public function testCorrectClassNameIsReturned() : void
     {
         $this->assertEquals(self::CLASS_NAME, $this->methodAction->getClassName());
     }
@@ -37,7 +37,7 @@ class MethodRouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests the correct method name is returned
      */
-    public function testCorrectMethodNameIsReturned()
+    public function testCorrectMethodNameIsReturned() : void
     {
         $this->assertEquals(self::METHOD_NAME, $this->methodAction->getMethodName());
     }
@@ -45,7 +45,7 @@ class MethodRouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the method flag is set correctly
      */
-    public function testMethodFlagSetCorrectly()
+    public function testMethodFlagSetCorrectly() : void
     {
         $this->assertTrue($this->methodAction->usesMethod());
     }
@@ -53,7 +53,7 @@ class MethodRouteActionTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the closure is null when using a method action
      */
-    public function testNullClosureIsReturnedByMethodAction()
+    public function testNullClosureIsReturnedByMethodAction() : void
     {
         $this->assertNull($this->methodAction->getClosure());
     }
