@@ -2,10 +2,10 @@
 use Opulence\Router\Builders\RouteBuilderRegistry;
 use Opulence\Router\Matchers\RouteMatcher;
 use Opulence\Router\Router;
-use Opulence\Router\UriTemplates\Parsers\UriTemplateParser;
+use Opulence\Router\UriTemplates\Parsers\RegexUriTemplateParser;
 
 // Add an ordinary route
-$routeBuilderRegistry = new RouteBuilderRegistry(new UriTemplateParser());
+$routeBuilderRegistry = new RouteBuilderRegistry(new RegexUriTemplateParser());
 $routeBuilderRegistry->map('GET', 'users/:userId')
     ->toMethod('UserController', 'showProfile')
     ->withName('UserProfile');

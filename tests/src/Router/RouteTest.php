@@ -31,7 +31,6 @@ class RouteTest extends \PHPUnit\Framework\TestCase
             ['GET'],
             $this->routeAction,
             $this->uriTemplate,
-            true,
             $this->middlewareBindings,
             self::ROUTE_NAME
         );
@@ -78,14 +77,6 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     }
     
     /**
-     * Tests that the HTTPS flag is set correctly
-     */
-    public function testHttpsFlagIsSetCorrectly()
-    {
-        $this->assertTrue($this->route->isHttpsOnly());
-    }
-    
-    /**
      * Tests that the name defaults to null
      */
     public function testNameDefaultsToNull()
@@ -97,7 +88,6 @@ class RouteTest extends \PHPUnit\Framework\TestCase
             ['GET'],
             $this->routeAction,
             $this->uriTemplate,
-            true,
             $this->middlewareBindings
         );
         $this->assertNull($namelessRoute->getName());

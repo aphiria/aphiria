@@ -17,9 +17,9 @@ interface IUriTemplate
     /**
      * Tries to match on a value and, if successful, sets the list of matching route vars
      * 
-     * @param string $value The value to try to match on
+     * @param string $uri The URI to try to match on
      * @param array $routeVars The list of route vars found during a successful match
      * @return bool True if the route template matched the input value, otherwise false
      */
-    public function tryMatch(string $value, array &$routeVars = []) : bool;
+    public function tryMatch(string $uri, array &$routeVars = []) : bool;
 }

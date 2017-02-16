@@ -1,28 +1,30 @@
 <?php
 namespace Opulence\Router\UriTemplates;
 
+use Opulence\Router\UriTemplates\Rules\IRule;
+
 /**
  * Defines a URI template that uses regexes for matching
  */
 class RegexUriTemplate implements IUriTemplate
 {
-    /** @var string The path regex to match with */
-    private $pathRegex = '';
-    /** @var string|null The host regex to match with */
-    private $hostRegex = null;
-    /** @var array The list of default values for route vars */
+    /** @var string The regex to use to match URIs */
+    private $uriRegex = '';
+    /** @var array The mapping of route var names to their default values */
     private $defaultRouteVars = [];
+    /** @var IRule[] The mapping of route var names to their rules */
+    private $routeVarRules = [];
 
     /**
-     * @param string $pathRegex The path regex to match with
-     * @param string|null $hostRegex The host regex to match with
-     * @param array $defaultRouteVars The list of default values for route vars
+     * @param string $uriRegex The URI regex
+     * @param array $defaultRouteVars The mapping of route var names to their default values
+     * @param IRule[] $routeVarRules The mapping of route var names to their rules
      */
-    public function __construct(string $pathRegex, string $hostRegex = null, array $defaultRouteVars = [])
+    public function __construct(string $uriRegex, array $defaultRouteVars = [], array $routeVarRules = [])
     {
-        $this->pathRegex = $pathRegex;
-        $this->hostRegex = $hostRegex;
+        $this->uriRegex = $uriRegex;
         $this->defaultRouteVars = $defaultRouteVars;
+        $this->routeVarRules = $routeVarRules;
     }
 
     /**
@@ -36,8 +38,31 @@ class RegexUriTemplate implements IUriTemplate
     /**
      * @inheritdoc
      */
-    public function tryMatch(string $value, array &$routeVars = []) : bool
+    public function tryMatch(string $uri, array &$routeVars = []) : bool
     {
-        // Todo
+        $matches = [];
+        
+        if (preg_match($this->uriRegex, $uri, $matches) !== 1) {
+            return false;
+        }
+        
+        // Remove the subject
+        array_shift($matches);
+        
+        // Set any missing route vars to their default values, if they have any
+        foreach ($this->defaultRouteVars as $name => $defaultValue) {
+            if (!isset($matches[$name])) {
+                $matches[$name] = $defaultValue;
+            }
+        }
+        
+        // The matches will also contain numerical indices - we don't care about them
+        foreach ($matches as $name => $value) {
+            if (is_string($name)) {
+                $routeVars[$name] = $value;
+            }
+        }
+        
+        return true;
     }
 }

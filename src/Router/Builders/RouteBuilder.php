@@ -19,8 +19,6 @@ class RouteBuilder
     private $httpMethods = [];
     /** @var Closure The action the route takes */
     private $action = null;
-    /** @var bool Whether or not the route is HTTPS-only */
-    private $isHttpsOnly = false;
     /** @var IUriTemplate The URI template */
     private $uriTemplate = null;
     /** @var MiddlewareBinding[] The list of middleware bindings on this route */
@@ -31,16 +29,10 @@ class RouteBuilder
     /**
      * @param array $httpMethods The list of HTTP methods the route matches on
      * @param IUriTemplate $uriTemplate The URI template the route matches on
-     * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      */
-    public function __construct(
-        array $httpMethods,
-        IUriTemplate $uriTemplate,
-        bool $isHttpsOnly = false
-    ) {
+    public function __construct(array $httpMethods, IUriTemplate $uriTemplate) {
         $this->httpMethods = $httpMethods;
         $this->uriTemplate = $uriTemplate;
-        $this->isHttpsOnly = $isHttpsOnly;
     }
 
     /**
@@ -59,7 +51,6 @@ class RouteBuilder
             $this->httpMethods,
             $this->action,
             $this->uriTemplate,
-            $this->isHttpsOnly,
             $this->middlewareBindings,
             $this->name
         );

@@ -6,7 +6,7 @@ namespace Opulence\Router\UriTemplates\Parsers;
  */
 class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var UriTemplateParser The URI template parser */
+    /** @var RegexUriTemplateParser The URI template parser */
     private $parser = null;
     
     /**
@@ -14,6 +14,6 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp()
     {
-        $this->parser = new UriTemplateParser();
+        $this->parser = new RegexUriTemplateParser();
     }
 }

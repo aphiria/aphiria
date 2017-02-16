@@ -10,7 +10,7 @@ $route = new Route(
     new RouteAction(null, null, function ($request, $routeVars) {
         return "Hello, {$routeVars['userId']}";
     }),
-    new RegexUriTemplate('users\/(?P<userId>\d+)')
+    new RegexUriTemplate('#^http://foo\.com/users/(?P<userId>\d+)$#')
 );
 
 // Actually route the request

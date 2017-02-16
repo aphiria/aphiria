@@ -4,7 +4,7 @@ namespace Opulence\Router\Builders;
 use Closure;
 use Opulence\Router\RouteCollection;
 use Opulence\Router\UriTemplates\Parsers\IUriTemplateParser;
-use Opulence\Router\UriTemplates\Parsers\UriTemplateParser;
+use Opulence\Router\UriTemplates\Parsers\RegexUriTemplateParser;
 
 /**
  * Defines the route builder registry
@@ -23,7 +23,7 @@ class RouteBuilderRegistry
      */
     public function __construct(IUriTemplateParser $routeTemplateParser = null)
     {
-        $this->routeTemplateParser = $routeTemplateParser ?? new UriTemplateParser();
+        $this->routeTemplateParser = $routeTemplateParser ?? new RegexUriTemplateParser();
     }
 
     /**
@@ -73,9 +73,9 @@ class RouteBuilderRegistry
         string $hostTemplate = null,
         bool $isHttpsOnly = false
     ) : RouteBuilder {
-        $this->applyGroupRouteTemplates($pathTemplate, $hostTemplate);
-        $parsedRouteTemplate = $this->routeTemplateParser->parse($pathTemplate, $hostTemplate);
-        $routeBuilder = new RouteBuilder($httpMethods, $parsedRouteTemplate, $isHttpsOnly);
+        $this->applyGroupRouteTemplates($pathTemplate, $hostTemplate, $isHttpsOnly);
+        $parsedRouteTemplate = $this->routeTemplateParser->parse($pathTemplate, $hostTemplate, $isHttpsOnly);
+        $routeBuilder = new RouteBuilder($httpMethods, $parsedRouteTemplate);
         $this->applyGroupMiddleware($routeBuilder);
 
         return $routeBuilder;
@@ -101,10 +101,14 @@ class RouteBuilderRegistry
      * Applies all the group options to a route
      * 
      * @param string $pathTemplate The path template to apply settings to
-     * @param string $hostTemplate|null The host template to apply settings to
+     * @param string|null $hostTemplate The host template to apply settings to
+     * @param bool $isHttpsOnly Whether or not the group is HTTPS-only
      */
-    private function applyGroupRouteTemplates(string &$pathTemplate, string &$hostTemplate = null) : void
-    {
+    private function applyGroupRouteTemplates(
+        string &$pathTemplate,
+        string &$hostTemplate = null,
+        bool &$isHttpsOnly = false
+    ) : void {
         $groupPathTemplate = '';
         $groupHostTemplate = '';
         $groupIsHttpsOnly = false;
@@ -117,5 +121,6 @@ class RouteBuilderRegistry
 
         $pathTemplate = $groupPathTemplate . $pathTemplate;
         $hostTemplate = $groupHostTemplate . ($hostTemplate ?? '');
+        $isHttpsOnly = $isHttpsOnly || $groupIsHttpsOnly;
     }
 }

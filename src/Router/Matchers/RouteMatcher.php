@@ -16,14 +16,9 @@ class RouteMatcher implements IRouteMatcher
     {
         $uppercaseHttpMethod = strtoupper($httpMethod);
         $routesByMethod = $routes->getByMethod($uppercaseHttpMethod);
-        $routeIsHttps = parse_url($uri, PHP_URL_SCHEME) === 'https';
 
         foreach ($routesByMethod as $route) {
             if (!$route->getUriTemplate()->tryMatch($uri, $routeVars = null)) {
-                continue;
-            }
-
-            if ($route->isHttpsOnly() && !$routeIsHttps) {
                 continue;
             }
 

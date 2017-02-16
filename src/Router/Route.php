@@ -18,8 +18,6 @@ class Route
     private $name = null;
     /** @var IUriTemplate The URI template */
     private $uriTemplate = null;
-    /** @var bool Whether or not this route is HTTPS-only */
-    private $isHttpsOnly = false;
     /** @var MiddlewareBinding[] The list of any middleware bindings on this route */
     private $middlewareBindings = [];
 
@@ -27,7 +25,6 @@ class Route
      * @param array|string $httpMethods The HTTP method or list of methods this route matches on
      * @param RouteAction $action The action this route takes
      * @param IRouteTemplate $uriTemplate The URI template for this route
-     * @param bool $isHttpsOnly Whether or not this route is HTTPS-only
      * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings
      * @param string|null $name The name of this route
      */
@@ -35,14 +32,12 @@ class Route
         $httpMethods,
         RouteAction $action,
         IUriTemplate $uriTemplate,
-        bool $isHttpsOnly = false,
         array $middlewareBindings = [],
         string $name = null
     ) {
         $this->httpMethods = (array)$httpMethods;
         $this->action = $action;
         $this->uriTemplate = $uriTemplate;
-        $this->isHttpsOnly = $isHttpsOnly;
         $this->middlewareBindings = $middlewareBindings;
         $this->name = $name;
     }
@@ -85,13 +80,5 @@ class Route
     public function getUriTemplate() : IUriTemplate
     {
         return $this->uriTemplate;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isHttpsOnly() : bool
-    {
-        return $this->isHttpsOnly;
     }
 }
