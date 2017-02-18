@@ -1,5 +1,4 @@
 <h1>Todo</h1>
-* I need a registrant for the built-in rules' factories.  If I'm using default classes for stuff like URI template parser, how/where would I register these built-in rules?
 * Make sure URI parser checks for route vars with default values - they should be optional.  This will permit my RegexUriTemplate to work.
 * Need some sort of route cache
 * Probably still need to add ability to chunk matching regexes for URIs rather than try to match one at a time

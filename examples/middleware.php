@@ -13,7 +13,7 @@ $routeBuilderRegistry->map('GET', 'users/:userId=me')
 
 // Add a route with rules
 // Matches "books/archives/2013" and "books/archives/2013/2"
-$routeBuilderRegistry->map('GET', 'books/archives/:year(int,min(1987))[/:month(int,min(1),max(12))]')
+$routeBuilderRegistry->map('GET', 'books/archives/:year(int)[/:month(int,min(1),max(12))]')
     ->toMethod('BookController', 'getBooksFromArchives')
     ->withName('GetBooksFromArchives')
     ->withManyMiddleware([
