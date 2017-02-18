@@ -9,7 +9,7 @@ class AlphanumericRule implements IRule
     /**
      * @inheritdoc
      */
-    public function getSlug() : string
+    public static function getSlug() : string
     {
         return 'alphanumeric';
     }

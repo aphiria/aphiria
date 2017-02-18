@@ -3,8 +3,9 @@ use Opulence\Router\Builders\RouteBuilderRegistry;
 use Opulence\Router\Builders\RouteGroupOptions;
 use Opulence\Router\Router;
 
-// Add a group of routes that share common options
 $routeBuilderRegistry = new RouteBuilderRegistry();
+
+// Add a group of routes that share common options
 $routeBuilderRegistry->group(
     new RouteGroupOptions('users/', '', false, []),
     function (RouteBuilderRegistry $routeBuilderRegistry) {

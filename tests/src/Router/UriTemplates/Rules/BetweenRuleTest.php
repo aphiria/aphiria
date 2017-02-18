@@ -13,7 +13,7 @@ class BetweenRuleTest extends \PHPUnit\Framework\TestCase
      */
     public function testCorrectSlugIsReturned() : void
     {
-        $this->assertEquals('between', (new BetweenRule(1, 2))->getSlug());
+        $this->assertEquals('between', BetweenRule::getSlug());
     }
 
     /**

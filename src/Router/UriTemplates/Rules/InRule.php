@@ -20,7 +20,7 @@ class InRule implements IRule
     /**
      * @inheritdoc
      */
-    public function getSlug() : string
+    public static function getSlug() : string
     {
         return 'in';
     }

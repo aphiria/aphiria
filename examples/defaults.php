@@ -2,8 +2,9 @@
 use Opulence\Router\Builders\RouteBuilderRegistry;
 use Opulence\Router\Router;
 
-// Add an ordinary route
 $routeBuilderRegistry = new RouteBuilderRegistry();
+
+// Add an ordinary route
 $routeBuilderRegistry->map('GET', 'users/:userId')
     ->toMethod('UserController', 'getUser')
     ->withName('GetUser');

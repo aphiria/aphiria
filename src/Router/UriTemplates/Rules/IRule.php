@@ -7,13 +7,6 @@ namespace Opulence\Router\UriTemplates\Rules;
 interface IRule
 {
     /**
-     * Gets the slug (short-name) for the rule
-     *
-     * @return string The slug
-     */
-    public function getSlug() : string;
-
-    /**
      * Gets whether or not the rule passes
      *
      * @param mixed $value The value to validate

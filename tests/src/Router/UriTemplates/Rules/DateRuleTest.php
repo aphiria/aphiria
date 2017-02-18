@@ -2,6 +2,7 @@
 namespace Opulence\Router\UriTemplates\Rules;
 
 use DateTime;
+use InvalidArgumentException;
 
 /**
  * Tests the date rule
@@ -13,7 +14,7 @@ class DateRuleTest extends \PHPUnit\Framework\TestCase
      */
     public function testCorrectSlugIsReturned() : void
     {
-        $this->assertEquals('date', (new DateRule('F j'))->getSlug());
+        $this->assertEquals('date', DateRule::getSlug());
     }
 
     /**
@@ -36,6 +37,15 @@ class DateRuleTest extends \PHPUnit\Framework\TestCase
         $rule = new DateRule([$format1, $format2]);
         $this->assertFalse($rule->passes((new DateTime)->format('Ymd')));
         $this->assertFalse($rule->passes((new DateTime)->format('Ymd')));
+    }
+
+    /**
+     * Tests passing an empty list of formats throws an exception
+     */
+    public function testEmptyListOfFormatsThrowsException() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        new DateRule([]);
     }
 
     /**

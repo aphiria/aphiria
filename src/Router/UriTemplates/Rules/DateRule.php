@@ -2,6 +2,7 @@
 namespace Opulence\Router\UriTemplates\Rules;
 
 use DateTime;
+use InvalidArgumentException;
 
 /**
  * Defines the date rule
@@ -16,13 +17,19 @@ class DateRule
      */
     public function __construct($formats)
     {
+        $formatArray = (array)$formats;
+
+        if (count($formatArray) === 0) {
+            throw new InvalidArgumentException('No formats specified for ' . self::class);
+        }
+
         $this->formats = (array)$formats;
     }
 
     /**
      * @inheritdoc
      */
-    public function getSlug() : string
+    public static function getSlug() : string
     {
         return 'date';
     }

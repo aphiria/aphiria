@@ -12,7 +12,7 @@ class UuidV4Rule implements IRule
     /**
      * @inheritdoc
      */
-    public function getSlug() : string
+    public static function getSlug() : string
     {
         return 'uuidv4';
     }

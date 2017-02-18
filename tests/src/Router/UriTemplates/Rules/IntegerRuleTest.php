@@ -11,7 +11,7 @@ class IntegerRuleTest extends \PHPUnit\Framework\TestCase
      */
     public function testCorrectSlugIsReturned() : void
     {
-        $this->assertEquals('int', (new IntegerRule)->getSlug());
+        $this->assertEquals('int', IntegerRule::getSlug());
     }
 
     /**

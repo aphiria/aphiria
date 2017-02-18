@@ -11,7 +11,7 @@ class NotInRuleTest extends \PHPUnit\Framework\TestCase
      */
     public function testCorrectSlugIsReturned() : void
     {
-        $this->assertEquals('notIn', (new NotInRule([1, 2]))->getSlug());
+        $this->assertEquals('notIn', NotInRule::getSlug());
     }
 
     /**

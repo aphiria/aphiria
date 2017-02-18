@@ -5,6 +5,7 @@ use Closure;
 use Opulence\Router\RouteCollection;
 use Opulence\Router\UriTemplates\Parsers\IUriTemplateParser;
 use Opulence\Router\UriTemplates\Parsers\RegexUriTemplateParser;
+use Opulence\Router\UriTemplates\Rules\RuleFactoryRegistrant;
 
 /**
  * Defines the route builder registry
@@ -13,17 +14,22 @@ class RouteBuilderRegistry
 {
     /** @var RouteBuilder[] The list of registered route builders */
     private $routeBuilders = [];
-    /** @var IRouteTemplateParser The route parser */
-    private $routeTemplateParser = null;
+    /** @var IUriTemplateParser The URI template parser */
+    private $uriTemplateParser = null;
     /** @var RouteGroupOptions[] The stack of route group options */
     private $groupOptionsStack = [];
 
     /**
-     * @param IRouteTemplateParser|null $routeTemplateParser The route template parser to use
+     * @param IRouteTemplateParser|null $uriTemplateParser The route template parser to use
      */
-    public function __construct(IUriTemplateParser $routeTemplateParser = null)
+    public function __construct(IUriTemplateParser $uriTemplateParser = null)
     {
-        $this->routeTemplateParser = $routeTemplateParser ?? new RegexUriTemplateParser();
+        if ($uriTemplateParser === null) {
+            // Use the default parser and register the built-in rule factories
+            $this->uriTemplateParser = (new RuleFactoryRegistrant)->registerRuleFactories(new RegexUriTemplateParser);
+        } else {
+            $this->uriTemplateParser = $uriTemplateParser;
+        }
     }
 
     /**
@@ -74,7 +80,7 @@ class RouteBuilderRegistry
         bool $isHttpsOnly = false
     ) : RouteBuilder {
         $this->applyGroupRouteTemplates($pathTemplate, $hostTemplate, $isHttpsOnly);
-        $parsedRouteTemplate = $this->routeTemplateParser->parse($pathTemplate, $hostTemplate, $isHttpsOnly);
+        $parsedRouteTemplate = $this->uriTemplateParser->parse($pathTemplate, $hostTemplate, $isHttpsOnly);
         $routeBuilder = new RouteBuilder($httpMethods, $parsedRouteTemplate);
         $this->applyGroupMiddleware($routeBuilder);
 

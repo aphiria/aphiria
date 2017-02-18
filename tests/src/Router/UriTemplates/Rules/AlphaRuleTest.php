@@ -21,7 +21,7 @@ class AlphaRuleTest extends \PHPUnit\Framework\TestCase
      */
     public function testCorrectSlugIsReturned() : void
     {
-        $this->assertEquals('alpha', (new AlphaRule)->getSlug());
+        $this->assertEquals('alpha', AlphaRule::getSlug());
     }
 
     /**

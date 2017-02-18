@@ -23,7 +23,7 @@ class NumericRuleTest extends \PHPUnit\Framework\TestCase
      */
     public function testCorrectSlugIsReturned() : void
     {
-        $this->assertEquals('numeric', (new NumericRule)->getSlug());
+        $this->assertEquals('numeric', NumericRule::getSlug());
     }
 
     /**

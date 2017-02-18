@@ -3,8 +3,9 @@ use Opulence\Router\Builders\RouteBuilderRegistry;
 use Opulence\Router\Middleware\MiddlewareBinding;
 use Opulence\Router\Router;
 
-// Add an ordinary route
 $routeBuilderRegistry = new RouteBuilderRegistry();
+
+// Add an ordinary route
 $routeBuilderRegistry->map('GET', 'users/:userId=me')
     ->toMethod('UserController', 'getUser')
     ->withName('GetUser')

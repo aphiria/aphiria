@@ -3,9 +3,14 @@ use Opulence\Router\Builders\RouteBuilderRegistry;
 use Opulence\Router\Matchers\RouteMatcher;
 use Opulence\Router\Router;
 use Opulence\Router\UriTemplates\Parsers\RegexUriTemplateParser;
+use Opulence\Router\UriTemplates\Rules\RuleFactory;
+use Opulence\Router\UriTemplates\Rules\RuleFactoryRegistrant;
+
+// Setup our URI template parser manually
+$uriTemplateParser = new RegexUriTemplateParser((new RuleFactoryRegistrant)->registerRuleFactories(new RuleFactory));
+$routeBuilderRegistry = new RouteBuilderRegistry($uriTemplateParser);
 
 // Add an ordinary route
-$routeBuilderRegistry = new RouteBuilderRegistry(new RegexUriTemplateParser());
 $routeBuilderRegistry->map('GET', 'users/:userId')
     ->toMethod('UserController', 'getUser')
     ->withName('GetUser');

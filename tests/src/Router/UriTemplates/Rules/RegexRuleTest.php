@@ -11,7 +11,7 @@ class RegexRuleTest extends \PHPUnit\Framework\TestCase
      */
     public function testCorrectSlugIsReturned() : void
     {
-        $this->assertEquals('regex', (new RegexRule('foo'))->getSlug());
+        $this->assertEquals('regex', RegexRule::getSlug());
     }
 
     /**

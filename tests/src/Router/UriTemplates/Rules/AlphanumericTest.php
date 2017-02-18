@@ -23,7 +23,7 @@ class AlphanumericRuleTest extends \PHPUnit\Framework\TestCase
      */
     public function testCorrectSlugIsReturned() : void
     {
-        $this->assertEquals('alphanumeric', (new AlphanumericRule)->getSlug());
+        $this->assertEquals('alphanumeric', AlphanumericRule::getSlug());
     }
 
     /**

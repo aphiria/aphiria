@@ -11,7 +11,7 @@ class UuidV4RuleTest extends \PHPUnit\Framework\TestCase
      */
     public function testCorrectSlugIsReturned() : void
     {
-        $this->assertEquals('uuidv4', (new UuidV4Rule)->getSlug());
+        $this->assertEquals('uuidv4', UuidV4Rule::getSlug());
     }
 
     /**

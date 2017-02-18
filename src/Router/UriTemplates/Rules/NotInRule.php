@@ -6,21 +6,21 @@ namespace Opulence\Router\UriTemplates\Rules;
  */
 class NotInRule implements IRule
 {
-    /** @var array The list of acceptable values */
-    private $acceptableValues = [];
+    /** @var array The list of unacceptable values */
+    private $unacceptableValues = [];
 
     /**
-     * @param array $acceptableValues The list of acceptable values
+     * @param array $unacceptableValues The list of unacceptable values
      */
-    public function __construct(array $acceptableValues)
+    public function __construct(array $unacceptableValues)
     {
-        $this->acceptableValues = $acceptableValues;
+        $this->unacceptableValues = $unacceptableValues;
     }
 
     /**
      * @inheritdoc
      */
-    public function getSlug() : string
+    public static function getSlug() : string
     {
         return 'notIn';
     }
@@ -30,6 +30,6 @@ class NotInRule implements IRule
      */
     public function passes($value) : bool
     {
-        return !in_array($value, $this->acceptableValues);
+        return !in_array($value, $this->unacceptableValues);
     }
 }
