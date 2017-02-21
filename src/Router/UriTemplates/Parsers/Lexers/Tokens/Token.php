@@ -10,7 +10,7 @@ class Token
     private $type = '';
     /** @var string The token value */
     private $value = '';
-    
+
     /**
      * @param string $type The token type
      * @param string $value The token value
@@ -20,7 +20,7 @@ class Token
         $this->type = $type;
         $this->value = $value;
     }
-    
+
     /**
      * @return string
      */
@@ -28,7 +28,7 @@ class Token
     {
         return $this->type;
     }
-    
+
     /**
      * @return string
      */

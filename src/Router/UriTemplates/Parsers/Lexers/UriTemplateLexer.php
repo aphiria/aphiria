@@ -11,9 +11,9 @@ use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\TokenTypes;
 class UriTemplateLexer implements IUriTemplateLexer
 {
     /** @var string The state representing literal text */
-    private const STATE_TEXT = "TEXT";
+    private const STATE_TEXT = 'TEXT';
     /** @var string The state representing a variable */
-    private const STATE_VARIABLE = "VARIABLE";
+    private const STATE_VARIABLE = 'VARIABLE';
     /** @var string The regex for finding a number */
     private const NUMBER_REGEX = '#[0-9]+(?:\.[0-9]+)?#A';
     /** @var string The regex for finding a quoted string */
@@ -24,7 +24,7 @@ class UriTemplateLexer implements IUriTemplateLexer
     private const VARIABLE_RULE_SLUG_REGEX = '#\s*[a-zA-Z_][a-zA-Z0-9_]*\s*#';
     /** @var The maximum length of a variable name */
     private const VARIABLE_NAME_MAX_LENGTH = 32;
-    
+
     /**
      * @inheritdoc
      */
@@ -34,7 +34,7 @@ class UriTemplateLexer implements IUriTemplateLexer
         $templateLength = mb_strlen($template);
         $states = [self::STATE_TEXT];
         $tokens = [];
-        
+
         while ($cursor < $templateLength) {
             switch (end($states)) {
                 case self::STATE_VARIABLE:
@@ -44,13 +44,13 @@ class UriTemplateLexer implements IUriTemplateLexer
                     $this->lexText($template, $cursor, $states, $tokens);
             }
         }
-        
+
         return $tokens;
     }
-    
+
     /**
      * Lexes plain text
-     * 
+     *
      * @param string $template The template being lexed
      * @param int $cursor The current cursor position
      * @param array $states The stack of states the lexer is in
@@ -60,16 +60,16 @@ class UriTemplateLexer implements IUriTemplateLexer
     {
         $buffer = '';
         $templateLength = mb_strlen($template);
-        
+
         while ($cursor < $templateLength && $template[$cursor] !== ':') {
             $buffer .= $template[$cursor];
             $cursor++;
         }
-        
+
         if ($buffer !== '') {
             $tokens[] = new Token(TokenTypes::T_TEXT, $buffer);
         }
-        
+
         // We must've exited the loop because we hit a variable
         if ($cursor < $templateLength) {
             // Increment for the colon
@@ -77,10 +77,10 @@ class UriTemplateLexer implements IUriTemplateLexer
             $states[] = self::STATE_VARIABLE;
         }
     }
-    
+
     /**
      * Lexes a variable, eg ':year(between(1900, 2000))'
-     * 
+     *
      * @param string $template The template being lexed
      * @param int $cursor The current cursor position
      * @param array $tokens The list of tokens lexed from the template
@@ -88,14 +88,14 @@ class UriTemplateLexer implements IUriTemplateLexer
     private function lexVariable(string $template, int &$cursor, array &$states, array &$tokens) : void
     {
         $matches = [];
-        
+
         if (preg_match(self::VARIABLE_NAME_REGEX, $template, $matches, null, $cursor) !== 1) {
             throw new InvalidArgumentException("Variable name can't be empty");
         }
-        
+
         $variableName = $matches[1];
         $defaultValue = $matches[2] ?? null;
-        
+
         if (strlen($variableName) > self::VARIABLE_NAME_MAX_LENGTH) {
             throw new InvalidArgumentException(sprintf(
                 'Variable name "%s" cannot be longer than %d characters. Please use a shorter name.',
@@ -103,27 +103,27 @@ class UriTemplateLexer implements IUriTemplateLexer
                 self::VARIABLE_NAME_MAX_LENGTH)
             );
         }
-        
+
         $tokens[] = new Token(TokenTypes::T_VARIABLE_NAME, $variableName);
-        
+
         if ($defaultValue !== null) {
             $tokens[] = new Token(TokenTypes::T_PUNCTUATION, '=');
             $tokens[] = new Token(TokenTypes::T_TEXT, $defaultValue);
         }
-        
+
         $cursor += mb_strlen($matches[0]);
         $templateLength = mb_strlen($template);
-        
+
         if ($cursor < $templateLength && $template[$cursor] === '(') {
             $this->lexVariableRuleGroup($template, $cursor, $tokens);
         }
-        
+
         array_pop($states);
     }
-    
+
     /**
      * Lexes a variable, eg 'between(1, 10)'
-     * 
+     *
      * @param string $template The template being lexed
      * @param int $cursor The current cursor position
      * @param array $tokens The list of tokens lexed from the template
@@ -132,33 +132,33 @@ class UriTemplateLexer implements IUriTemplateLexer
     {
         $matches = [];
         $templateLength = mb_strlen($template);
-        
+
         if (preg_match(self::VARIABLE_RULE_SLUG_REGEX, $template, $matches, null, $cursor) !== 1) {
             throw new InvalidArgumentException("Invalid rule slug for template $template");
         }
-        
+
         // We order it this way so we do not lose the untrimmed length
         $cursor += mb_strlen($matches[0]);
         $slug = trim($matches[0]);
         $tokens[] = new Token(TokenTypes::T_VARIABLE_RULE_SLUG, $slug);
-        
+
         if ($template[$cursor] === '(') {
             $tokens[] = new Token(TokenTypes::T_PUNCTUATION, '(');
             $cursor++;
             $this->lexVariableRuleParameters($template, $cursor, $tokens);
             $tokens[] = new Token(TokenTypes::T_PUNCTUATION, ')');
             $cursor++;
-            
+
             // Iterate until we are beyond any whitespace
             while ($cursor < $templateLength && $template[$cursor] === ' ') {
                 $cursor++;
             }
         }
     }
-    
+
     /**
      * Lexes a variable rule group, eg '(int, between(1, 100))'
-     * 
+     *
      * @param string $template The template being lexed
      * @param int $cursor The current cursor position
      * @param array $tokens The list of tokens lexed from the template
@@ -179,7 +179,6 @@ class UriTemplateLexer implements IUriTemplateLexer
                 $tokens[] = new Token(TokenTypes::T_PUNCTUATION, ',');
                 $cursor++;
             }
-
         } while ($moreRulesToLex);
 
         if ($template[$cursor] !== ')') {
@@ -189,10 +188,10 @@ class UriTemplateLexer implements IUriTemplateLexer
         $tokens[] = new Token(TokenTypes::T_PUNCTUATION, ')');
         $cursor++;
     }
-    
+
     /**
      * Lexes a variable rule parameters, eg '1, 100'
-     * 
+     *
      * @param string $template The template being lexed
      * @param int $cursor The current cursor position
      * @param array $tokens The list of tokens lexed from the template

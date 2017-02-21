@@ -1,7 +1,6 @@
 <?php
 namespace Opulence\Router\UriTemplates\Parsers\Lexers;
 
-use InvalidArgumentException;
 use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\Token;
 use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\TokenTypes;
 
@@ -12,7 +11,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
 {
     /** @var UriTemplateLexer The lexer to use in tests */
     private $lexer = null;
-    
+
     /**
      * Sets up the tests
      */
@@ -20,7 +19,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
     {
         $this->lexer = new UriTemplateLexer();
     }
-    
+
     /**
      * Tests lexing a path with no variables
      */
@@ -34,7 +33,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
             $tokens
         );
     }
-    
+
     /**
      * Tests lexing a path a variable at the end
      */
@@ -49,7 +48,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
             $tokens
         );
     }
-    
+
     /**
      * Tests lexing a path a variable in the middle
      */
@@ -65,7 +64,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
             $tokens
         );
     }
-    
+
     /**
      * Tests lexing a path a variable with a single rule
      */
@@ -83,7 +82,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
             $tokens
         );
     }
-    
+
     /**
      * Tests lexing a path a variable with a multiple rules and multiple parameters with spaces in between
      */
@@ -108,7 +107,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
             $tokens
         );
     }
-    
+
     /**
      * Tests lexing a path a variable with a single rule with a mix of string and number parameters
      */
@@ -131,7 +130,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
             $tokens
         );
     }
-    
+
     /**
      * Tests lexing a path a variable with a single rule with multiple parameters
      */
@@ -156,7 +155,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
             $tokens
         );
     }
-    
+
     /**
      * Tests lexing a path a variable with a single rule with a single parameter
      */
@@ -177,7 +176,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
             $tokens
         );
     }
-    
+
     /**
      * Tests lexing a path a variable with multiple rules
      */

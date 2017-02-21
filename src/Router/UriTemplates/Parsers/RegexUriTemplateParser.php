@@ -34,11 +34,11 @@ class RegexUriTemplateParser implements IUriTemplateParser
         $variableNames = [];
         $defaultVariableValues = [];
         $rules = [];
-        $hostRegex = $hostTemplate === null ? 
-            null : 
+        $hostRegex = $hostTemplate === null ?
+            null :
             $this->convertRawStringToRegex($hostTemplate, $variableNames, $defaultVariableValues, $rules);
         $pathRegex = $this->convertRawStringToRegex($pathTemplate, $variableNames, $defaultVariableValues, $rules);
-        
+
         return new RegexUriTemplate(
             $this->createUriRegex($hostRegex, $pathRegex, $isHttpsOnly),
             $defaultVariableValues,
@@ -57,29 +57,29 @@ class RegexUriTemplateParser implements IUriTemplateParser
      * @throws RouteException Thrown if the route variables are not correctly defined
      */
     private function convertRawStringToRegex(
-        string $rawString, 
-        array &$variableNames, 
+        string $rawString,
+        array &$variableNames,
         array &$defaultVariableValues,
         array &$rules
     ) : string {
         if (empty($rawString)) {
             return '#^.*$#';
         }
-        
+
         $bracketDepth = 0;
         $cursor = 0;
         $rawStringLength = mb_strlen($rawString);
         $regex = '';
-        
+
         while ($cursor < $rawStringLength) {
             $char = $rawString[$cursor];
-            
+
             switch ($char) {
                 case ':':
                     $regex .= $this->getVarRegex(
-                        $rawString, 
-                        $cursor, 
-                        $variableNames, 
+                        $rawString,
+                        $cursor,
+                        $variableNames,
                         $defaultVariableValues,
                         $rules
                     );
@@ -99,13 +99,13 @@ class RegexUriTemplateParser implements IUriTemplateParser
                     $cursor++;
             }
         }
-        
+
         if ($bracketDepth != 0) {
             throw new InvalidArgumentException(
                 sprintf('URI template has %s brackets', $bracketDepth > 0 ? 'unclosed' : 'unopened')
             );
         }
-        
+
         return $regex;
     }
 
@@ -121,7 +121,7 @@ class RegexUriTemplateParser implements IUriTemplateParser
     {
         return '#^http' . ($isHttpsOnly ? 's' : '(?:s)?') . '://' . ($hostRegex ?? '[^/]+') . $pathRegex . '$#';
     }
-    
+
     /**
      * Parses a variable and returns the regex
      *
@@ -134,21 +134,21 @@ class RegexUriTemplateParser implements IUriTemplateParser
      * @throws RouteException Thrown if the variable definition is invalid
      */
     private function getVarRegex(
-        string $rawString, 
-        int &$cursor, 
-        array &$variableNames, 
+        string $rawString,
+        int &$cursor,
+        array &$variableNames,
         array &$defaultVariableValues,
         array &$rules
     ) : string {
         $segment = mb_substr($rawString, $cursor);
-        
+
         if (preg_match(self::VARIABLE_REGEX, $segment, $matches) !== 1) {
             throw new InvalidArgumentException("Variable name can't be empty");
         }
-        
+
         $variableName = $matches[1];
         $defaultValue = $matches[2] ?? null;
-        
+
         if (strlen($variableName) > self::VARIABLE_MAXIMUM_LENGTH) {
             throw new InvalidArgumentException(sprintf(
                 'Variable name "%s" cannot be longer than %d characters. Please use a shorter name.',
@@ -156,26 +156,26 @@ class RegexUriTemplateParser implements IUriTemplateParser
                 self::VARIABLE_MAXIMUM_LENGTH)
             );
         }
-        
+
         if (in_array($variableName, $variableNames)) {
             throw new RouteException("URI template uses multiple references to \"$variableName\"");
         }
-        
+
         $variableNames[] = $variableName;
-        
+
         if ($defaultValue !== null) {
             $defaultVariableValues[$variableName] = $defaultValue;
         }
-        
+
         $cursor += mb_strlen($matches[0]);
         $this->parseRules($variableName, $rawString, $cursor, $rules);
-        
+
         return sprintf('(?P<%s>%s)', $variableName, '[^\/:]+');
     }
-    
+
     /**
      * Parses rules for a route variable
-     * 
+     *
      * @param string $variableName The name of the variable whose rules we're parsing
      * @param string $rawString The raw string we're parsing
      * @param int $cursor The current cursor
@@ -186,7 +186,7 @@ class RegexUriTemplateParser implements IUriTemplateParser
         if ($cursor > mb_strlen($rawString) - 1 || $rawString[$cursor] !== '(') {
             return;
         }
-        
+
         // We're starting at the first character after the opening parenthesis
         $cursor++;
         $parenthesesDepth = 1;
@@ -195,30 +195,30 @@ class RegexUriTemplateParser implements IUriTemplateParser
         $bufferedParameters = '';
         $rawRules = [];
         $rules[$variableName] = [];
-        
+
         while ($cursor < $rawStringLength) {
             $char = $rawString[$cursor];
-            
+
             switch ($char) {
                 case '(':
                     $parenthesesDepth++;
                     break;
                 case ')':
                     $parenthesesDepth--;
-                    
+
                     // We're either done with all rules or one specific rule
                     if ($parenthesesDepth <= 1) {
                         if ($bufferedRuleSlug !== '') {
                             $rawRules[$bufferedRuleSlug] = $bufferedParameters;
                         }
-                        
+
                         if ($parenthesesDepth === 0) {
                             break;
                         }
                     } else {
                         $bufferedParameters .= $char;
                     }
-                    
+
                     break;
                 case ',':
                     // If we're at the top-most level of parameters
@@ -230,7 +230,7 @@ class RegexUriTemplateParser implements IUriTemplateParser
                     } else {
                         $bufferedParameters .= $char;
                     }
-                    
+
                     break;
                 default:
                     // If we're at the top-most level of parameters
@@ -240,10 +240,10 @@ class RegexUriTemplateParser implements IUriTemplateParser
                         $bufferedParameters .= $char;
                     }
             }
-            
+
             $cursor++;
         }
-        
+
         foreach ($rawRules as $ruleSlug => $parameterString) {
             $rules[$variableName][] = $this->ruleFactory->createRule($ruleSlug, str_getcsv($parameterString));
         }
