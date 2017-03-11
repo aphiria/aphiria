@@ -3,6 +3,7 @@ namespace Opulence\Router\UriTemplates\Parsers\Lexers;
 
 use InvalidArgumentException;
 use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\Token;
+use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\TokenStream;
 use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\TokenTypes;
 
 /**
@@ -26,12 +27,11 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingFullUri(): void
     {
-        $tokens = $this->lexer->lex('https://example.com/foo/bar');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, 'https://example.com/foo/bar')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('https://example.com/foo/bar')
         );
     }
 
@@ -40,15 +40,14 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithDefaultValue(): void
     {
-        $tokens = $this->lexer->lex('/foo/:bar=baz');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo/'),
                 new Token(TokenTypes::T_VARIABLE, 'bar'),
                 new Token(TokenTypes::T_PUNCTUATION, '='),
                 new Token(TokenTypes::T_TEXT, 'baz')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('/foo/:bar=baz')
         );
     }
 
@@ -57,9 +56,8 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithDefaultValueAndRules(): void
     {
-        $tokens = $this->lexer->lex('/foo/:bar=baz(int)');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo/'),
                 new Token(TokenTypes::T_VARIABLE, 'bar'),
                 new Token(TokenTypes::T_PUNCTUATION, '='),
@@ -67,8 +65,8 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
                 new Token(TokenTypes::T_PUNCTUATION, '('),
                 new Token(TokenTypes::T_TEXT, 'int'),
                 new Token(TokenTypes::T_PUNCTUATION, ')')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('/foo/:bar=baz(int)')
         );
     }
 
@@ -77,12 +75,11 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithNoVariables(): void
     {
-        $tokens = $this->lexer->lex('/foo/bar/baz');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo/bar/baz')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('/foo/bar/baz')
         );
     }
 
@@ -91,13 +88,12 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithVariableAtBeginning(): void
     {
-        $tokens = $this->lexer->lex(':foo/bar/baz');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_VARIABLE, 'foo'),
                 new Token(TokenTypes::T_TEXT, '/bar/baz')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex(':foo/bar/baz')
         );
     }
 
@@ -106,13 +102,12 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithVariableAtEnd(): void
     {
-        $tokens = $this->lexer->lex('/foo/bar/:baz');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo/bar/'),
                 new Token(TokenTypes::T_VARIABLE, 'baz')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('/foo/bar/:baz')
         );
     }
 
@@ -121,14 +116,13 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithVariableInMiddle(): void
     {
-        $tokens = $this->lexer->lex('/foo/:bar/baz');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo/'),
                 new Token(TokenTypes::T_VARIABLE, 'bar'),
                 new Token(TokenTypes::T_TEXT, '/baz')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('/foo/:bar/baz')
         );
     }
 
@@ -137,16 +131,15 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithSingleRule(): void
     {
-        $tokens = $this->lexer->lex('/foo/:bar(int)');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo/'),
                 new Token(TokenTypes::T_VARIABLE, 'bar'),
                 new Token(TokenTypes::T_PUNCTUATION, '('),
                 new Token(TokenTypes::T_TEXT, 'int'),
                 new Token(TokenTypes::T_PUNCTUATION, ')')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('/foo/:bar(int)')
         );
     }
 
@@ -155,17 +148,16 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithSingleRuleInTheMiddle(): void
     {
-        $tokens = $this->lexer->lex('/foo/:bar(int)/baz');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo/'),
                 new Token(TokenTypes::T_VARIABLE, 'bar'),
                 new Token(TokenTypes::T_PUNCTUATION, '('),
                 new Token(TokenTypes::T_TEXT, 'int'),
                 new Token(TokenTypes::T_PUNCTUATION, ')'),
                 new Token(TokenTypes::T_TEXT, '/baz')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('/foo/:bar(int)/baz')
         );
     }
 
@@ -174,9 +166,8 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithSingleRuleWithMixOfStringAndNumberParameters(): void
     {
-        $tokens = $this->lexer->lex('/foo/:bar(baz("1,2",3))');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo/'),
                 new Token(TokenTypes::T_VARIABLE, 'bar'),
                 new Token(TokenTypes::T_PUNCTUATION, '('),
@@ -187,8 +178,8 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
                 new Token(TokenTypes::T_TEXT, '3'),
                 new Token(TokenTypes::T_PUNCTUATION, ')'),
                 new Token(TokenTypes::T_PUNCTUATION, ')')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('/foo/:bar(baz("1,2",3))')
         );
     }
 
@@ -197,9 +188,8 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithSingleRuleWithArrayParameter(): void
     {
-        $tokens = $this->lexer->lex('/foo/:bar(baz([1,2,"foo"]))');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo/'),
                 new Token(TokenTypes::T_VARIABLE, 'bar'),
                 new Token(TokenTypes::T_PUNCTUATION, '('),
@@ -214,8 +204,8 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
                 new Token(TokenTypes::T_PUNCTUATION, ']'),
                 new Token(TokenTypes::T_PUNCTUATION, ')'),
                 new Token(TokenTypes::T_PUNCTUATION, ')')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('/foo/:bar(baz([1,2,"foo"]))')
         );
     }
 
@@ -224,9 +214,8 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithSingleRuleWithMultipleParameters(): void
     {
-        $tokens = $this->lexer->lex('/foo/:bar(in(1,2,3))');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo/'),
                 new Token(TokenTypes::T_VARIABLE, 'bar'),
                 new Token(TokenTypes::T_PUNCTUATION, '('),
@@ -239,8 +228,8 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
                 new Token(TokenTypes::T_TEXT, '3'),
                 new Token(TokenTypes::T_PUNCTUATION, ')'),
                 new Token(TokenTypes::T_PUNCTUATION, ')')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('/foo/:bar(in(1,2,3))')
         );
     }
 
@@ -249,9 +238,8 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithSingleRuleWithSingleParameter(): void
     {
-        $tokens = $this->lexer->lex('/foo/:bar(max(1))');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo/'),
                 new Token(TokenTypes::T_VARIABLE, 'bar'),
                 new Token(TokenTypes::T_PUNCTUATION, '('),
@@ -260,8 +248,8 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
                 new Token(TokenTypes::T_TEXT, '1'),
                 new Token(TokenTypes::T_PUNCTUATION, ')'),
                 new Token(TokenTypes::T_PUNCTUATION, ')')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('/foo/:bar(max(1))')
         );
     }
 
@@ -270,9 +258,8 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithMultipleRule(): void
     {
-        $tokens = $this->lexer->lex('/foo/:bar(int,caf)');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo/'),
                 new Token(TokenTypes::T_VARIABLE, 'bar'),
                 new Token(TokenTypes::T_PUNCTUATION, '('),
@@ -280,8 +267,8 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
                 new Token(TokenTypes::T_PUNCTUATION, ','),
                 new Token(TokenTypes::T_TEXT, 'caf'),
                 new Token(TokenTypes::T_PUNCTUATION, ')')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('/foo/:bar(int,caf)')
         );
     }
 
@@ -290,15 +277,14 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
      */
     public function testLexingPathWithOptionalParts(): void
     {
-        $tokens = $this->lexer->lex('/foo[/bar]');
         $this->assertEquals(
-            [
+            new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo'),
                 new Token(TokenTypes::T_PUNCTUATION, '['),
                 new Token(TokenTypes::T_TEXT, '/bar'),
                 new Token(TokenTypes::T_PUNCTUATION, ']')
-            ],
-            $tokens
+            ]),
+            $this->lexer->lex('/foo[/bar]')
         );
     }
 

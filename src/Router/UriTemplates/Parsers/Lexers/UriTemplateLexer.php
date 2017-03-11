@@ -3,6 +3,7 @@ namespace Opulence\Router\UriTemplates\Parsers\Lexers;
 
 use InvalidArgumentException;
 use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\Token;
+use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\TokenStream;
 use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\TokenTypes;
 
 /**
@@ -19,7 +20,7 @@ class UriTemplateLexer implements IUriTemplateLexer
     /** @var The maximum length of a variable name */
     private const VARIABLE_NAME_MAX_LENGTH = 32;
 
-    public function lex(string $template) : array
+    public function lex(string $template) : TokenStream
     {
         $cursor = 0;
         $templateLength = mb_strlen($template);
@@ -56,7 +57,7 @@ class UriTemplateLexer implements IUriTemplateLexer
         // In case there's anything left in the buffer, flush it
         $this->flushTextBuffer($textBuffer, $tokens);
 
-        return $tokens;
+        return new TokenStream($tokens);
     }
 
     /**
