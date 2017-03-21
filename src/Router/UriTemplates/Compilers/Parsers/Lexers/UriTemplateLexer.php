@@ -18,7 +18,7 @@ class UriTemplateLexer implements IUriTemplateLexer
     /** @var string The regex for finding a quoted string */
     private const QUOTED_STRING_REGEX = '/\s*"([^#"\\\\]*(?:\\\\.[^#"\\\\]*)*)"|\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'\s*/A';
     /** @var string The regex for finding a variable name and default value */
-    private const VARIABLE_NAME_REGEX = '/:([a-zA-Z_][a-zA-Z0-9_]*)/A';
+    private const VARIABLE_NAME_REGEX = '/:[a-zA-Z_][a-zA-Z0-9_]*/A';
     /** @var The maximum length of a variable name */
     private const VARIABLE_NAME_MAX_LENGTH = 32;
 
@@ -37,38 +37,18 @@ class UriTemplateLexer implements IUriTemplateLexer
 
             if (strpos(self::PUNCTUATION, $template[$cursor]) !== false) {
                 $this->flushTextBuffer($textBuffer, $tokens);
-                $tokens[] = new Token(TokenTypes::T_PUNCTUATION, $template[$cursor]);
-                $cursor++;
+                $this->lexPunctuation($template[$cursor], $tokens, $cursor);
             } elseif (preg_match(self::VARIABLE_NAME_REGEX, $template, $matches, 0, $cursor) === 1) {
                 $this->flushTextBuffer($textBuffer, $tokens);
-                $variableName = $matches[1];
-
-                if (mb_strlen($variableName) > self::VARIABLE_NAME_MAX_LENGTH) {
-                    throw new InvalidArgumentException("Variable name \"$variableName\" exceeds the max length limit");
-                }
-
-                $tokens[] = new Token(TokenTypes::T_VARIABLE, $matches[1]);
-                $cursor += mb_strlen($matches[0]);
+                $this->lexVariableName($matches[0], $tokens, $cursor);
             } elseif (preg_match(self::NUMBER_REGEX, $template, $matches, 0, $cursor) === 1) {
                 $this->flushTextBuffer($textBuffer, $tokens);
-                $floatVal = floatval($matches[0]);
-                $intVal = intval($matches[0]);
-
-                // Determine if this was a float or not
-                if ($floatVal && $intVal !== $floatVal) {
-                    $tokens[] = new Token(TokenTypes::T_NUMBER, $floatVal);
-                } else {
-                    $tokens[] = new Token(TokenTypes::T_NUMBER, $intVal);
-                }
-
-                $cursor += mb_strlen($matches[0]);
+                $this->lexNumber($matches[0], $tokens, $cursor);
             } elseif (preg_match(self::QUOTED_STRING_REGEX, $template, $matches, 0, $cursor) === 1) {
                 $this->flushTextBuffer($textBuffer, $tokens);
-                $tokens[] = new Token(TokenTypes::T_QUOTED_STRING, stripcslashes(substr(trim($matches[0]), 1, -1)));
-                $cursor += mb_strlen($matches[0]);
+                $this->lexQuotedString($matches[0], $tokens, $cursor);
             } else {
-                $textBuffer .= $template[$cursor];
-                $cursor++;
+                $this->lexTextChar($template[$cursor], $textBuffer, $cursor);
             }
         }
 
@@ -90,5 +70,87 @@ class UriTemplateLexer implements IUriTemplateLexer
             $tokens[] = new Token(TokenTypes::T_TEXT, $textBuffer);
             $textBuffer = '';
         }
+    }
+
+    /**
+     * Lexes a number lexeme
+     *
+     * @param string $number The lexeme to add
+     * @param Token[] $tokens The list of tokens to add to
+     * @param int $cursor The current cursor
+     */
+    private function lexNumber(string $number, array &$tokens, int &$cursor) : void
+    {
+        $floatVal = floatval($number);
+        $intVal = intval($number);
+
+        // Determine if this was a float or not
+        if ($floatVal && $intVal !== $floatVal) {
+            $tokens[] = new Token(TokenTypes::T_NUMBER, $floatVal);
+        } else {
+            $tokens[] = new Token(TokenTypes::T_NUMBER, $intVal);
+        }
+
+        $cursor += mb_strlen($number);
+    }
+
+    /**
+     * Lexes a punctuation lexeme
+     *
+     * @param string $punctuation The lexeme to add
+     * @param Token[] $tokens The list of tokens to add to
+     * @param int $cursor The current cursor
+     */
+    private function lexPunctuation(string $punctuation, array &$tokens, int &$cursor) : void
+    {
+        $tokens[] = new Token(TokenTypes::T_PUNCTUATION, $punctuation);
+        $cursor++;
+    }
+
+    /**
+     * Lexes a quoted string lexeme
+     *
+     * @param string $quotedString The lexeme to add
+     * @param Token[] $tokens The list of tokens to add to
+     * @param int $cursor The current cursor
+     */
+    private function lexQuotedString(string $quotedString, array &$tokens, int &$cursor) : void
+    {
+        $tokens[] = new Token(TokenTypes::T_QUOTED_STRING, stripcslashes(substr(trim($quotedString), 1, -1)));
+        $cursor += mb_strlen($quotedString);
+    }
+
+    /**
+     * Lexes a text character lexeme
+     *
+     * @param string $char The lexeme to add
+     * @param string $textBuffer The text buffer to add to
+     * @param int $cursor The current cursor
+     */
+    private function lexTextChar(string $char, string &$textBuffer, int &$cursor) : void
+    {
+        $textBuffer .= $char;
+        $cursor++;
+    }
+
+    /**
+     * Lexes a variable name lexeme
+     *
+     * @param string $variableName The lexeme to add
+     * @param Token[] $tokens The list of tokens to add to
+     * @param int $cursor The current cursor
+     */
+    private function lexVariableName(string $variableName, array &$tokens, int &$cursor) : void
+    {
+        // Remove the colon before the variable name
+        $trimmedVariableName = substr($variableName, 1);
+
+        if (mb_strlen($trimmedVariableName) > self::VARIABLE_NAME_MAX_LENGTH) {
+            throw new InvalidArgumentException("Variable name \"$trimmedVariableName\" exceeds the max length limit");
+        }
+
+        $tokens[] = new Token(TokenTypes::T_VARIABLE, $trimmedVariableName);
+        // We have to advance the cursor the length of the untrimmed variable name
+        $cursor += mb_strlen($variableName);
     }
 }
