@@ -1,8 +1,8 @@
 <?php
-namespace Opulence\Router\UriTemplates\Parsers\Lexers;
+namespace Opulence\Router\UriTemplates\Compilers\Parsers\Lexers;
 
 use InvalidArgumentException;
-use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\TokenStream;
+use Opulence\Router\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
 
 /**
  * Defines the interface for URI template lexers to implement

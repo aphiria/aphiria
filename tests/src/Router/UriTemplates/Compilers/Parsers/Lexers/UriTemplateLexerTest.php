@@ -1,10 +1,10 @@
 <?php
-namespace Opulence\Router\UriTemplates\Parsers\Lexers;
+namespace Opulence\Router\UriTemplates\Compilers\Parsers\Lexers;
 
 use InvalidArgumentException;
-use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\Token;
-use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\TokenStream;
-use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\TokenTypes;
+use Opulence\Router\UriTemplates\Compilers\Parsers\Lexers\Tokens\Token;
+use Opulence\Router\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
+use Opulence\Router\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenTypes;
 
 /**
  * Tests the URI template lexer
@@ -67,6 +67,32 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
                 new Token(TokenTypes::T_PUNCTUATION, ')')
             ]),
             $this->lexer->lex('/foo/:bar=baz(int)')
+        );
+    }
+
+    /**
+     * Tests lexing a path with a float
+     */
+    public function testLexingPathWithFloat() : void
+    {
+        $this->assertEquals(
+            new TokenStream([
+                new Token(TokenTypes::T_NUMBER, 1.23)
+            ]),
+            $this->lexer->lex('1.23')
+        );
+    }
+
+    /**
+     * Tests lexing a path with an int
+     */
+    public function testLexingPathWithInt() : void
+    {
+        $this->assertEquals(
+            new TokenStream([
+                new Token(TokenTypes::T_NUMBER, 123)
+            ]),
+            $this->lexer->lex('123')
         );
     }
 
@@ -175,7 +201,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
                 new Token(TokenTypes::T_PUNCTUATION, '('),
                 new Token(TokenTypes::T_QUOTED_STRING, '1,2'),
                 new Token(TokenTypes::T_PUNCTUATION, ','),
-                new Token(TokenTypes::T_TEXT, '3'),
+                new Token(TokenTypes::T_NUMBER, 3),
                 new Token(TokenTypes::T_PUNCTUATION, ')'),
                 new Token(TokenTypes::T_PUNCTUATION, ')')
             ]),
@@ -196,9 +222,9 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
                 new Token(TokenTypes::T_TEXT, 'baz'),
                 new Token(TokenTypes::T_PUNCTUATION, '('),
                 new Token(TokenTypes::T_PUNCTUATION, '['),
-                new Token(TokenTypes::T_TEXT, '1'),
+                new Token(TokenTypes::T_NUMBER, 1),
                 new Token(TokenTypes::T_PUNCTUATION, ','),
-                new Token(TokenTypes::T_TEXT, '2'),
+                new Token(TokenTypes::T_NUMBER, 2),
                 new Token(TokenTypes::T_PUNCTUATION, ','),
                 new Token(TokenTypes::T_QUOTED_STRING, 'foo'),
                 new Token(TokenTypes::T_PUNCTUATION, ']'),
@@ -221,11 +247,11 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
                 new Token(TokenTypes::T_PUNCTUATION, '('),
                 new Token(TokenTypes::T_TEXT, 'in'),
                 new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_TEXT, '1'),
+                new Token(TokenTypes::T_NUMBER, 1),
                 new Token(TokenTypes::T_PUNCTUATION, ','),
-                new Token(TokenTypes::T_TEXT, '2'),
+                new Token(TokenTypes::T_NUMBER, 2),
                 new Token(TokenTypes::T_PUNCTUATION, ','),
-                new Token(TokenTypes::T_TEXT, '3'),
+                new Token(TokenTypes::T_NUMBER, 3),
                 new Token(TokenTypes::T_PUNCTUATION, ')'),
                 new Token(TokenTypes::T_PUNCTUATION, ')')
             ]),
@@ -245,7 +271,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
                 new Token(TokenTypes::T_PUNCTUATION, '('),
                 new Token(TokenTypes::T_TEXT, 'max'),
                 new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_TEXT, '1'),
+                new Token(TokenTypes::T_NUMBER, 1),
                 new Token(TokenTypes::T_PUNCTUATION, ')'),
                 new Token(TokenTypes::T_PUNCTUATION, ')')
             ]),

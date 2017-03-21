@@ -1,5 +1,5 @@
 <?php
-namespace Opulence\Router\UriTemplates\Parsers\Lexers\Tokens;
+namespace Opulence\Router\UriTemplates\Compilers\Parsers\Lexers\Tokens;
 
 /**
  * Defines a token created by a lexer
@@ -8,14 +8,14 @@ class Token
 {
     /** @var string The token type */
     private $type = '';
-    /** @var string The token value */
-    private $value = '';
+    /** @var mixed The token value */
+    private $value = null;
 
     /**
      * @param string $type The token type
-     * @param string $value The token value
+     * @param mixed $value The token value
      */
-    public function __construct(string $type, string $value)
+    public function __construct(string $type, $value)
     {
         $this->type = $type;
         $this->value = $value;
@@ -30,9 +30,9 @@ class Token
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getValue() : string
+    public function getValue()
     {
         return $this->value;
     }

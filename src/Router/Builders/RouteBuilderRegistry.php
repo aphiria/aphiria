@@ -3,8 +3,7 @@ namespace Opulence\Router\Builders;
 
 use Closure;
 use Opulence\Router\RouteCollection;
-use Opulence\Router\UriTemplates\Parsers\IUriTemplateParser;
-use Opulence\Router\UriTemplates\Parsers\RegexUriTemplateParser;
+use Opulence\Router\UriTemplates\Compilers\IUriTemplateCompiler;
 use Opulence\Router\UriTemplates\Rules\RuleFactoryRegistrant;
 
 /**
@@ -14,21 +13,21 @@ class RouteBuilderRegistry
 {
     /** @var RouteBuilder[] The list of registered route builders */
     private $routeBuilders = [];
-    /** @var IUriTemplateParser The URI template parser */
-    private $uriTemplateParser = null;
+    /** @var IUriTemplateCompiler The URI template compiler */
+    private $uriTemplateCompiler = null;
     /** @var RouteGroupOptions[] The stack of route group options */
     private $groupOptionsStack = [];
 
     /**
-     * @param IRouteTemplateParser|null $uriTemplateParser The route template parser to use
+     * @param IUriTemplateCompiler|null $uriTemplateCompiler The URI template compiler to use
      */
-    public function __construct(IUriTemplateParser $uriTemplateParser = null)
+    public function __construct(IUriTemplateCompiler $uriTemplateCompiler = null)
     {
-        if ($uriTemplateParser === null) {
-            // Use the default parser and register the built-in rule factories
-            $this->uriTemplateParser = (new RuleFactoryRegistrant)->registerRuleFactories(new RegexUriTemplateParser);
+        if ($uriTemplateCompiler === null) {
+            // Use the default compiler and register the built-in rule factories
+            $this->uriTemplateCompiler = (new RuleFactoryRegistrant)->registerRuleFactories(new RegexUriTemplateCompiler);
         } else {
-            $this->uriTemplateParser = $uriTemplateParser;
+            $this->uriTemplateCompiler = $uriTemplateCompiler;
         }
     }
 
@@ -80,7 +79,7 @@ class RouteBuilderRegistry
         bool $isHttpsOnly = false
     ) : RouteBuilder {
         $this->applyGroupRouteTemplates($pathTemplate, $hostTemplate, $isHttpsOnly);
-        $parsedRouteTemplate = $this->uriTemplateParser->parse($pathTemplate, $hostTemplate, $isHttpsOnly);
+        $parsedRouteTemplate = $this->uriTemplateCompiler->compile(rtrim($hostTemplate, '/') . ltrim($pathTemplate, '/'));
         $routeBuilder = new RouteBuilder($httpMethods, $parsedRouteTemplate);
         $this->applyGroupMiddleware($routeBuilder);
 

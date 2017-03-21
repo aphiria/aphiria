@@ -1,5 +1,5 @@
 <?php
-namespace Opulence\Router\UriTemplates\Parsers;
+namespace Opulence\Router\UriTemplates\Compilers\Parsers;
 
 use InvalidArgumentException;
 use Opulence\Router\UriTemplates\IUriTemplate;
@@ -9,7 +9,7 @@ use Opulence\Router\UriTemplates\Rules\IRuleFactory;
 /**
  * Defines the regex URI template parser
  */
-class RegexUriTemplateParser implements IUriTemplateParser
+class RegexUriTemplateParser
 {
     /** @var The maximum length of a variable name */
     private const VARIABLE_MAXIMUM_LENGTH = 32;

@@ -1,12 +1,12 @@
 <?php
-namespace Opulence\Router\UriTemplates\Parsers;
+namespace Opulence\Router\UriTemplates\Compilers\Parsers;
 
 use InvalidArgumentException;
-use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\Token;
-use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\TokenStream;
-use Opulence\Router\UriTemplates\Parsers\Lexers\Tokens\TokenTypes;
-use Opulence\Router\UriTemplates\Parsers\Nodes\Node;
-use Opulence\Router\UriTemplates\Parsers\Nodes\NodeTypes;
+use Opulence\Router\UriTemplates\Compilers\Parsers\Lexers\Tokens\Token;
+use Opulence\Router\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
+use Opulence\Router\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenTypes;
+use Opulence\Router\UriTemplates\Compilers\Parsers\Nodes\Node;
+use Opulence\Router\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
 
 /**
  * Tests the URI template parser
@@ -15,7 +15,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
 {
     /** @var UriTemplateParser The parser to use in tests */
     private $parser = null;
-    
+
     /**
      * Sets up the tests
      */
@@ -23,7 +23,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
     {
         $this->parser = new UriTemplateParser();
     }
-    
+
     /**
      * Test parsing optional route parts creates the correct nodes
      */
@@ -38,13 +38,13 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $expectedAst = new AbstractSyntaxTree();
         $expectedAst->getCurrentNode()
             ->addChild(new Node(NodeTypes::TEXT, 'foo'));
-        $optionalRoutePartNode = new Node(NodeTypes::OPTIONAL_ROUTE_PART, null);
+        $optionalRoutePartNode = new Node(NodeTypes::OPTIONAL_ROUTE_PART, '[');
         $optionalRoutePartNode->addChild(new Node(NodeTypes::TEXT, '/bar'));
         $expectedAst->getCurrentNode()
             ->addChild($optionalRoutePartNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
-    
+
     /**
      * Tests parsing a text-only route creates a single text node
      */
@@ -58,7 +58,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
             ->addChild(new Node(NodeTypes::TEXT, '/foo'));
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
-    
+
     /**
      * Tests parsing a variable name creates a variable name node
      */
@@ -72,7 +72,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
             ->addChild(new Node(NodeTypes::VARIABLE, 'foo'));
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
-    
+
     /**
      * Test parsing invalid bracket in middle of rule throws exception
      */
@@ -87,7 +87,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->parser->parse($tokens);
     }
-    
+
     /**
      * Test parsing unclosed rule parenthesis throws exception
      */
@@ -95,14 +95,13 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '['),
             new Token(TokenTypes::T_VARIABLE, 'foo'),
             new Token(TokenTypes::T_PUNCTUATION, '('),
             new Token(TokenTypes::T_TEXT, 'bar'),
         ]);
         $this->parser->parse($tokens);
     }
-    
+
     /**
      * Tests parsing a variable with a default value and rules creates the correct nodes
      */
@@ -122,6 +121,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
             new Token(TokenTypes::T_PUNCTUATION, '('),
             new Token(TokenTypes::T_TEXT, 'p2'),
             new Token(TokenTypes::T_PUNCTUATION, ')'),
+            new Token(TokenTypes::T_PUNCTUATION, ')')
         ]);
         $expectedAst = new AbstractSyntaxTree();
         $variableRule1Node = new Node(NodeTypes::VARIABLE_RULE, 'r1');
@@ -136,7 +136,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
             ->addChild($variableNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
-    
+
     /**
      * Tests parsing a variable with an equal sign but no text throws an exception
      */
@@ -149,7 +149,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->parser->parse($tokens);
     }
-    
+
     /**
      * Tests parsing a variable with a default value creates the correct nodes
      */
@@ -167,7 +167,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
             ->addChild($variableNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
-    
+
     /**
      * Test parsing a variable with a rule with multiple parameters creates the correct nodes
      */
@@ -186,14 +186,14 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         ]);
         $expectedAst = new AbstractSyntaxTree();
         $variableRuleNode = new Node(NodeTypes::VARIABLE_RULE, 'bar');
-        $variableRuleNode->addChild(new Node(NodeTypes::VARIABLE_RULE_PARAMETERS, ['baz']));
+        $variableRuleNode->addChild(new Node(NodeTypes::VARIABLE_RULE_PARAMETERS, ['baz', 'blah']));
         $variableNode = new Node(NodeTypes::VARIABLE, 'foo');
         $variableNode->addChild($variableRuleNode);
         $expectedAst->getCurrentNode()
             ->addChild($variableNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
-    
+
     /**
      * Test parsing a variable with a rule with no parameters creates the correct nodes
      */
@@ -207,14 +207,13 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         ]);
         $expectedAst = new AbstractSyntaxTree();
         $variableRuleNode = new Node(NodeTypes::VARIABLE_RULE, 'bar');
-        $variableRuleNode->addChild(new Node(NodeTypes::VARIABLE_RULE_PARAMETERS, ['baz']));
         $variableNode = new Node(NodeTypes::VARIABLE, 'foo');
         $variableNode->addChild($variableRuleNode);
         $expectedAst->getCurrentNode()
             ->addChild($variableNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
-    
+
     /**
      * Test parsing a variable with a rule with a single parameter creates the correct nodes
      */
@@ -238,7 +237,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
             ->addChild($variableNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
-    
+
     /**
      * Test parsing a variable with a rule but with no slug throws an exception
      */
@@ -252,13 +251,12 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->parser->parse($tokens);
     }
-    
+
     /**
-     * Test parsing a variable with a rule with a trailing comma throws an exception
+     * Test parsing a variable with a rule with a trailing comma does not throw an exception
      */
-    public function testParsingVariableWithRuleWithTrailingCommaThrowsException() : void
+    public function testParsingVariableWithRuleWithTrailingCommaDoesNotThrowException() : void
     {
-        $this->expectException(InvalidArgumentException::class);
         $tokens = new TokenStream([
             new Token(TokenTypes::T_VARIABLE, 'foo'),
             new Token(TokenTypes::T_PUNCTUATION, '('),
@@ -269,6 +267,13 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
             new Token(TokenTypes::T_PUNCTUATION, ')'),
             new Token(TokenTypes::T_PUNCTUATION, ')')
         ]);
-        $this->parser->parse($tokens);
+        $expectedAst = new AbstractSyntaxTree();
+        $variableRuleNode = new Node(NodeTypes::VARIABLE_RULE, 'bar');
+        $variableRuleNode->addChild(new Node(NodeTypes::VARIABLE_RULE_PARAMETERS, ['baz']));
+        $variableNode = new Node(NodeTypes::VARIABLE, 'foo');
+        $variableNode->addChild($variableRuleNode);
+        $expectedAst->getCurrentNode()
+            ->addChild($variableNode);
+        $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 }

@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Router\UriTemplates\Parsers\Nodes;
+namespace Opulence\Router\UriTemplates\Compilers\Parsers\Nodes;
 
 /**
  * Defines a route node
@@ -16,7 +16,7 @@ namespace Opulence\Router\UriTemplates\Parsers\Nodes;
 class Node
 {
     /** @var string The node type */
-    private $type = "";
+    private $type = '';
     /** @var mixed|null The value of the node */
     private $value = null;
     /** @var Node|null The parent node */
@@ -67,10 +67,10 @@ class Node
     {
         return $this->parent;
     }
-    
+
     /**
      * Gets the node type
-     * 
+     *
      * @return string The node type
      */
     public function getType() : string

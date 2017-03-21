@@ -1,8 +1,8 @@
 <?php
-namespace Opulence\Router\UriTemplates\Parsers;
+namespace Opulence\Router\UriTemplates\Compilers\Parsers;
 
-use Opulence\Router\UriTemplates\Parsers\Nodes\Node;
-use Opulence\Router\UriTemplates\Parsers\Nodes\NodeTypes;
+use Opulence\Router\UriTemplates\Compilers\Parsers\Nodes\Node;
+use Opulence\Router\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
 
 /**
  * Tests the route abstract syntax tree

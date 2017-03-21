@@ -1,26 +1,26 @@
 <?php
-namespace Opulence\Router\UriTemplates\Parsers\Lexers\Tokens;
+namespace Opulence\Router\UriTemplates\Compilers\Parsers\Nodes;
 
 /**
- * Tests a lexer token
+ * Tests the URI template parser node
  */
-class TokenTest extends \PHPUnit\Framework\TestCase
+class NodeTest
 {
     /**
      * Tests getting the type returns the correct value
      */
     public function testGettingTypeReturnsCorrectValue() : void
     {
-        $expectedType = 'foo';
-        $this->assertEquals($expectedType, (new Token('foo', 'bar'))->getType());
+        $expectedType = NodeTypes::VARIABLE;
+        $this->assertEquals($expectedType, (new Node($expectedType, 'foo'))->getType());
     }
-    
+
     /**
      * Tests getting the value returns the correct value
      */
     public function testGettingValueReturnsCorrectValue() : void
     {
         $expectedValue = 'bar';
-        $this->assertEquals($expectedValue, (new Token('foo', 'bar'))->getValue());
+        $this->assertEquals($expectedValue, (new Node('foo', $expectedValue))->getValue());
     }
 }

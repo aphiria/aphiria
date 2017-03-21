@@ -1,5 +1,5 @@
 <?php
-namespace Opulence\Router\UriTemplates\Parsers;
+namespace Opulence\Router\UriTemplates\Compilers\Parsers;
 
 use Opulence\Router\UriTemplates\RegexUriTemplate;
 use Opulence\Router\UriTemplates\Rules\IRule;
