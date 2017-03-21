@@ -62,7 +62,7 @@ class UriTemplateLexer implements IUriTemplateLexer
      * Flushes any text from the buffer
      *
      * @param string $textBuffer The current text buffer
-     * @param array $tokens The current list of tokens
+     * @param Token[] $tokens The list of tokens to add to
      */
     private function flushTextBuffer(string &$textBuffer, array &$tokens) : void
     {
