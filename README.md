@@ -1,4 +1,5 @@
 <h1>Todo</h1>
+
 * Write URI template compiler
   * What should `compile()` accept?  If it's a concatenated host and path, how do I handle no host being passed in?
       * Is it better to force you to pass the two in separately?
