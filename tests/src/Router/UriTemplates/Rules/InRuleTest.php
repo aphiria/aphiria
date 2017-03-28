@@ -19,7 +19,7 @@ class InRuleTest extends \PHPUnit\Framework\TestCase
      */
     public function testValueInArrayPasses() : void
     {
-        $rule = new InRule([1, 2, 3]);
+        $rule = new InRule(1, 2, 3);
         $this->assertTrue($rule->passes(1));
         $this->assertTrue($rule->passes(2));
         $this->assertTrue($rule->passes(3));
@@ -30,7 +30,7 @@ class InRuleTest extends \PHPUnit\Framework\TestCase
      */
     public function testValueNotInArrayFails() : void
     {
-        $rule = new InRule([1, 2, 3]);
+        $rule = new InRule(1, 2, 3);
         $this->assertFalse($rule->passes(4));
         $this->assertFalse($rule->passes(5));
         $this->assertFalse($rule->passes(6));

@@ -41,7 +41,7 @@ class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->parser->expects($this->any())->method('parse')->willReturn($this->ast);
         $this->compiler = new RegexUriTemplateCompiler($this->ruleFactory, $this->parser, $this->lexer);
     }
-    
+
     /**
      * Tests compiling a host and path with slashes around them trims the slash between them
      */
@@ -53,7 +53,7 @@ class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $actualUriTemplate = $this->compiler->compile('/bar', 'foo.com/');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
-    
+
     /**
      * Tests that compiling an HTTPS-only route forces HTTPS to be set in the regex
      */

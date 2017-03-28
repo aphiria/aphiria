@@ -12,7 +12,7 @@ class InRule implements IRule
     /**
      * @param array $acceptableValues The list of acceptable values
      */
-    public function __construct(array $acceptableValues)
+    public function __construct(...$acceptableValues)
     {
         $this->acceptableValues = $acceptableValues;
     }

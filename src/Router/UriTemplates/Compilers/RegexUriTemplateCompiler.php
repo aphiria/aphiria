@@ -54,20 +54,20 @@ class RegexUriTemplateCompiler implements IUriTemplateCompiler
         $routeVarRules = [];
         $protocolRegex = 'http' . ($isHttpsOnly ? 's' : '(?:s)?') . '://';
         $routeRegex = $this->compileNodes($ast->getRootNode(), $defaultRouteVars, $routeVarRules);
-        
+
         // Add a default regex for an empty host template
         if ($hostTemplate === null) {
             $routeRegex = '[^/]+' . $routeRegex;
         }
-        
+
         $regex = self::REGEX_DELIMITER . "^{$protocolRegex}{$routeRegex}$" . self::REGEX_DELIMITER;
-        
+
         return new RegexUriTemplate($regex, $defaultRouteVars, $routeVarRules);
     }
-    
+
     /**
      * Compiles an abstract syntax tree
-     * 
+     *
      * @param Node $rootNode The root node to compile
      * @param array $defaultRouteVars The mapping of route var names to their default values
      * @param IRule[] $routeVarRules The mapping of route var names to their rules
@@ -77,7 +77,7 @@ class RegexUriTemplateCompiler implements IUriTemplateCompiler
     private function compileNodes(Node $rootNode, array &$defaultRouteVars, array &$routeVarRules) : string
     {
         $compiledRegex = '';
-        
+
         foreach ($rootNode->getChildren() as $childNode) {
             switch ($childNode->getType()) {
                 case NodeTypes::OPTIONAL_ROUTE_PART:
@@ -93,13 +93,13 @@ class RegexUriTemplateCompiler implements IUriTemplateCompiler
                     throw new InvalidArgumentException("Unexpected node type {$childNode->getType()}");
             }
         }
-        
+
         return $compiledRegex;
     }
-    
+
     /**
      * Compiles an optional route part node
-     * 
+     *
      * @param Node $node The optional route part node to compile
      * @param array $defaultRouteVars The mapping of route var names to their default values
      * @param IRule[] $routeVarRules The mapping of route var names to their rules
@@ -109,10 +109,10 @@ class RegexUriTemplateCompiler implements IUriTemplateCompiler
     {
         return "(?:{$this->compileNodes($node, $defaultRouteVars, $routeVarRules)})?";
     }
-    
+
     /**
      * Compiles a variable node
-     * 
+     *
      * @param Node $node The variable node to compile
      * @param array $defaultRouteVars The mapping of route var names to their default values
      * @param IRule[] $routeVarRules The mapping of route var names to their rules
@@ -123,7 +123,7 @@ class RegexUriTemplateCompiler implements IUriTemplateCompiler
     {
         $variableName = $node->getValue();
         $regex = sprintf('(?P<%s>%s)', $variableName, '[^\/:]+');
-        
+
         foreach ($node->getChildren() as $childNode) {
             switch ($childNode->getType()) {
                 case NodeTypes::VARIABLE_DEFAULT_VALUE:
@@ -139,13 +139,13 @@ class RegexUriTemplateCompiler implements IUriTemplateCompiler
                         $childNode->getValue(),
                         $ruleParams
                     );
-                    
+
                     break;
                 default:
                     throw new InvalidArgumentException("Unexpected node type {$childNode->getType()}");
             }
         }
-        
+
         return $regex;
     }
 }

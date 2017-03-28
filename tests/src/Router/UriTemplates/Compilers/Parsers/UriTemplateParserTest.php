@@ -38,7 +38,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->parser->parse($tokens);
     }
-    
+
     /**
      * Tests parsing nested optional route parts
      */

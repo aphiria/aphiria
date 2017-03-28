@@ -1,8 +1,6 @@
 <?php
 namespace Opulence\Router\UriTemplates\Compilers\Parsers\Nodes;
 
-use Opulence\Router\UriTemplates\Compilers\Parsers\Nodes\Node;
-
 /**
  * Tests the URI template parser node
  */
@@ -18,7 +16,7 @@ class NodeTest extends \PHPUnit\Framework\TestCase
         $node->addChild(new Node('baz', 'blah'));
         $this->assertTrue($node->hasChildren());
     }
-    
+
     /**
      * Tests getting the children returns the correct nodes
      */
@@ -29,7 +27,7 @@ class NodeTest extends \PHPUnit\Framework\TestCase
         $node->addChild($child);
         $this->assertEquals([$child], $node->getChildren());
     }
-    
+
     /**
      * Tests getting the type returns the correct value
      */
@@ -47,7 +45,7 @@ class NodeTest extends \PHPUnit\Framework\TestCase
         $expectedValue = 'bar';
         $this->assertEquals($expectedValue, (new Node('foo', $expectedValue))->getValue());
     }
-    
+
     /**
      * Tests that the a node is the root node only if it has no parent
      */
@@ -59,7 +57,7 @@ class NodeTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($node->isRoot());
         $this->assertFalse($child->isRoot());
     }
-    
+
     /**
      * Tests that the parent node is set on child nodes
      */

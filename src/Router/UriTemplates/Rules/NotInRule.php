@@ -12,7 +12,7 @@ class NotInRule implements IRule
     /**
      * @param array $unacceptableValues The list of unacceptable values
      */
-    public function __construct(array $unacceptableValues)
+    public function __construct(...$unacceptableValues)
     {
         $this->unacceptableValues = $unacceptableValues;
     }
