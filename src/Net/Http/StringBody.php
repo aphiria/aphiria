@@ -6,12 +6,12 @@ namespace Opulence\Net\Http;
  */
 class StringBody implements IHttpBody
 {
-    protected $content = "";
-    
+    protected $content = '';
+
     public function __construct(string $content)
     {
         $this->content = $content;
     }
-    
+
     // Todo
 }

@@ -10,10 +10,10 @@ use Opulence\Net\Http\IHttpMessage;
 interface IHttpResponseMessage extends IHttpMessage
 {
     public function getOutputStream() : IStream;
-    
+
     public function getReasonPhrase() : ?string;
-    
+
     public function getStatusCode() : int;
-    
+
     public function setStatusCode(int $statusCode, ?string $reasonPhrase = null) : void;
 }

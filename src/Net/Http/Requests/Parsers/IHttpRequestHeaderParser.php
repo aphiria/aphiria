@@ -9,10 +9,10 @@ use Opulence\Net\Http\IHttpHeaders;
 interface IHttpRequestHeaderParser
 {
     public function getCookie(IHttpHeaders $headers, string $name);
-    
+
     public function getCookies(IHttpHeaders $headers) : array;
-    
+
     public function isJson(IHttpHeaders $headers) : bool;
-    
+
     public function isXhr(IHttpHeaders $headers) : bool;
 }

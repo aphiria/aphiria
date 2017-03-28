@@ -15,7 +15,7 @@ interface IHttpRequestMessageFactory
         array $env = null,
         string $rawBody = null
     ) : IHttpRequestMessage;
-    
+
     public function createFromUri(
         string $uri,
         string $method,

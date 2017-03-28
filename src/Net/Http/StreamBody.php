@@ -9,11 +9,11 @@ use Opulence\IO\Streams\IStream;
 class StreamBody implements IHttpBody
 {
     protected $stream = null;
-    
+
     public function __construct(IStream $stream)
     {
         $this->stream = $stream;
     }
-    
+
     // Todo
 }

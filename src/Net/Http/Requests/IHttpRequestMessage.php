@@ -10,12 +10,12 @@ use Opulence\Net\IUri;
 interface IHttpRequestMessage extends IHttpMessage
 {
     public function getMethod() : string;
-    
+
     public function getProperties() : array;
-    
+
     public function getRequestUri() : IUri;
-    
+
     public function setMethod(string $method) : void;
-    
+
     public function setRequestUri(IUri $requestUri) : void;
 }
