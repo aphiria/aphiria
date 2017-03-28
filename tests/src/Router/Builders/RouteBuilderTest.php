@@ -19,7 +19,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->routeBuilder = new RouteBuilder(['GET'], new RegexUriTemplate('/foo'), false);
+        $this->routeBuilder = new RouteBuilder(['GET'], new RegexUriTemplate('/foo'), false, ['foo' => 'bar']);
     }
 
     /**

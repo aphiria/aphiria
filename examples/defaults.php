@@ -15,6 +15,10 @@ $routeBuilderRegistry->map('GET', 'books/archives/:year(int)[/:month(int,min(1),
     ->toMethod('BookController', 'getBooksFromArchives')
     ->withName('GetBooksFromArchives');
 
+// Add a route with a header to match on
+$routeBuilderRegistry->map('GET', 'comments', null, false, ['API VERSION' => 'v1.0'])
+    ->toMethod('CommentController', 'getAllComments');
+
 // Get the matched route
 $router = new Router($routeBuilderRegistry->buildAll());
 $matchedRoute = $router->route($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

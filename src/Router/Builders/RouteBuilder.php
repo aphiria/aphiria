@@ -21,6 +21,8 @@ class RouteBuilder
     private $action = null;
     /** @var IUriTemplate The URI template */
     private $uriTemplate = null;
+    /** @var array The list of header values to match on */
+    private $headersToMatch = [];
     /** @var MiddlewareBinding[] The list of middleware bindings on this route */
     private $middlewareBindings = [];
     /** @var string|null The name of this route */
@@ -29,11 +31,13 @@ class RouteBuilder
     /**
      * @param array $httpMethods The list of HTTP methods the route matches on
      * @param IUriTemplate $uriTemplate The URI template the route matches on
+     * @param array $headersToMatch The list of header values to match on
      */
-    public function __construct(array $httpMethods, IUriTemplate $uriTemplate)
+    public function __construct(array $httpMethods, IUriTemplate $uriTemplate, array $headersToMatch)
     {
         $this->httpMethods = $httpMethods;
         $this->uriTemplate = $uriTemplate;
+        $this->headersToMatch = $headersToMatch;
     }
 
     /**
@@ -53,7 +57,8 @@ class RouteBuilder
             $this->uriTemplate,
             $this->action,
             $this->middlewareBindings,
-            $this->name
+            $this->name,
+            $this->headersToMatch
         );
     }
 

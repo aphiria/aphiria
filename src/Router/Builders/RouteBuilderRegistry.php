@@ -70,20 +70,35 @@ class RouteBuilderRegistry
      * @param string $pathTemplate The path template
      * @param string|null $hostTemplate The host template
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
+     * @param array $headersToMatch The header values to match on
      * @return RouteBuilder The configured route builder
      */
     public function map(
         $httpMethods,
         string $pathTemplate,
         string $hostTemplate = null,
-        bool $isHttpsOnly = false
+        bool $isHttpsOnly = false,
+        array $headersToMatch = []
     ) : RouteBuilder {
         $this->applyGroupRouteTemplates($pathTemplate, $hostTemplate, $isHttpsOnly);
         $uriTemplate = $this->uriTemplateCompiler->compile($pathTemplate, $hostTemplate, $isHttpsOnly);
-        $routeBuilder = new RouteBuilder($httpMethods, $uriTemplate);
+        $this->applyGroupHeadersToMatch($headersToMatch);
+        $routeBuilder = new RouteBuilder($httpMethods, $uriTemplate, $headersToMatch);
         $this->applyGroupMiddleware($routeBuilder);
 
         return $routeBuilder;
+    }
+
+    /**
+     * Applies a group's header values to the input array
+     *
+     * @param array $headersToMatch The list of header values to match on
+     */
+    private function applyGroupHeadersToMatch(array &$headersToMatch) : void
+    {
+        foreach ($this->groupOptionsStack as $groupOptions) {
+            $headersToMatch = array_merge($headersToMatch, $groupOptions->getHeadersToMatch());
+        }
     }
 
     /**

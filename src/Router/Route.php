@@ -13,6 +13,8 @@ class Route
     private $httpMethods = [];
     /** @var IUriTemplate The URI template */
     private $uriTemplate = null;
+    /** @var array The list of header values to match on */
+    private $headersToMatch = [];
     /** @var RouteAction The action this route performs */
     private $action = null;
     /** @var string|null The name of this route */
@@ -26,19 +28,22 @@ class Route
      * @param RouteAction $action The action this route takes
      * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings
      * @param string|null $name The name of this route
+     * @param array $headersToMatch The list of header values to match on
      */
     public function __construct(
         $httpMethods,
         IUriTemplate $uriTemplate,
         RouteAction $action,
         array $middlewareBindings = [],
-        string $name = null
+        string $name = null,
+        array $headersToMatch = []
     ) {
         $this->httpMethods = (array)$httpMethods;
         $this->uriTemplate = $uriTemplate;
         $this->action = $action;
         $this->middlewareBindings = $middlewareBindings;
         $this->name = $name;
+        $this->headersToMatch = $headersToMatch;
     }
 
     /**
