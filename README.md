@@ -1,6 +1,7 @@
 <h1>Opulence's Net Library</h1>
 
 <h2>Ideas</h2>
+
 * If using this along with the new routing library, we should set the route variables in the `Request`'s `properties`
 
 <h2>Requests</h2>
@@ -16,14 +17,14 @@ $request->getBody()->readAsString();
 
 ```php
 // Create request...
-$userId = (new HttpRequestMessageParser)->getQueryVar($request, "userId");
+$userId = (new HttpRequestMessageParser)->getQueryVar($request, 'userId');
 ```
 
 <h3>Get a cookie</h3>
 
 ```php
 // Create request...
-$userId = (new HttpRequestHeaderParser)->getCookie($request->getHeaders(), "userId");
+$userId = (new HttpRequestHeaderParser)->getCookie($request->getHeaders(), 'userId');
 ```
 
 <h3>Get all form data</h3>
@@ -37,7 +38,7 @@ $formData = (new HttpRequestMessageParser)->getFormData($request);
 
 ```php
 // Create request...
-$email = (new HttpRequestMessageParser)->getInput($request, "email");
+$email = (new HttpRequestMessageParser)->getInput($request, 'email');
 ```
 
 <h3>Check if the request was JSON</h3>
@@ -73,20 +74,20 @@ $response = (new JsonHttpResponseFactory)->createResponse($someArray);
 // Or, manually:
 $response = new Response();
 $response->setBody(new StringBody(json_encode($someArray)));
-$response->getHeaders()->set("Content-Type", "application/json");
+$response->getHeaders()->set('Content-Type', 'application/json');
 ```
 
 <h3>Create a redirect response</h3>
 
 ```php
-$response = (new RedirectHttpResponseFactory)->createResponse("https://google.com");
+$response = (new RedirectHttpResponseFactory)->createResponse('https://google.com');
 ```
 
 <h3>Set a cookie</h3>
 
 ```php
 $response = new Response();
-$cookie = new Cookie("userid", "123");
+$cookie = new Cookie('userid', '123');
 (new HttpResponseHeaderFormatter)->setCookie($response->getHeaders(), $cookie);
 ```
 
@@ -94,7 +95,7 @@ $cookie = new Cookie("userid", "123");
 
 ```php
 $response = new Response();
-$response->setBody(new StringBody("This is my response"));
+$response->setBody(new StringBody('This is my response'));
 ```
 
 <h3>Specify a stream body</h3>
@@ -102,7 +103,7 @@ $response->setBody(new StringBody("This is my response"));
 ```php
 $response = new Response();
 $stream = new OutputStream();
-$stream->write("This is my response");
+$stream->write('This is my response');
 $response->setBody(new StreamBody($stream));
 ```
 
