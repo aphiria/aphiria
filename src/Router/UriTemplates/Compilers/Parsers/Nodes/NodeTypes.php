@@ -12,8 +12,6 @@ class NodeTypes
     public const ROOT = 'ROOT';
     /** @var string The text node type */
     public const TEXT = 'TEXT';
-    /** @var string The number node type */
-    public const NUMBER = 'NUMBER';
     /** @var string The variable node type */
     public const VARIABLE = 'VARIABLE';
     /** @var string The variable default value node type */

@@ -25,6 +25,45 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Test parsing invalid bracket in middle of rule throws exception
+     */
+    public function testParsingInvalidBracketInMiddleOfRuleThrowsException() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $tokens = new TokenStream([
+            new Token(TokenTypes::T_PUNCTUATION, '['),
+            new Token(TokenTypes::T_VARIABLE, 'foo'),
+            new Token(TokenTypes::T_PUNCTUATION, '('),
+            new Token(TokenTypes::T_PUNCTUATION, ']'),
+        ]);
+        $this->parser->parse($tokens);
+    }
+    
+    /**
+     * Tests parsing nested optional route parts
+     */
+    public function testParsingNestedOptionalRouteParts() : void
+    {
+        $tokens = new TokenStream([
+            new Token(TokenTypes::T_PUNCTUATION, '['),
+            new Token(TokenTypes::T_TEXT, 'foo'),
+            new Token(TokenTypes::T_PUNCTUATION, '['),
+            new Token(TokenTypes::T_TEXT, 'bar'),
+            new Token(TokenTypes::T_PUNCTUATION, ']'),
+            new Token(TokenTypes::T_PUNCTUATION, ']')
+        ]);
+        $innerOptionalRoutePartNode = new Node(NodeTypes::OPTIONAL_ROUTE_PART, '[');
+        $innerOptionalRoutePartNode->addChild(new Node(NodeTypes::TEXT, 'bar'));
+        $outerOptionalRoutePartNode = new Node(NodeTypes::OPTIONAL_ROUTE_PART, '[');
+        $outerOptionalRoutePartNode->addChild(new Node(NodeTypes::TEXT, 'foo'));
+        $outerOptionalRoutePartNode->addChild($innerOptionalRoutePartNode);
+        $expectedAst = new AbstractSyntaxTree();
+        $expectedAst->getCurrentNode()
+            ->addChild($outerOptionalRoutePartNode);
+        $this->assertEquals($expectedAst, $this->parser->parse($tokens));
+    }
+
+    /**
      * Test parsing optional route parts creates the correct nodes
      */
     public function testParsingOptionalRoutePartCreatesCorrectNodes() : void
@@ -60,35 +99,6 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests parsing a variable name creates a variable name node
-     */
-    public function testParsingVariableNameCreatesVariableNameNode() : void
-    {
-        $tokens = new TokenStream([
-            new Token(TokenTypes::T_VARIABLE, 'foo')
-        ]);
-        $expectedAst = new AbstractSyntaxTree();
-        $expectedAst->getCurrentNode()
-            ->addChild(new Node(NodeTypes::VARIABLE, 'foo'));
-        $this->assertEquals($expectedAst, $this->parser->parse($tokens));
-    }
-
-    /**
-     * Test parsing invalid bracket in middle of rule throws exception
-     */
-    public function testParsingInvalidBracketInMiddleOfRuleThrowsException() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '['),
-            new Token(TokenTypes::T_VARIABLE, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '('),
-            new Token(TokenTypes::T_PUNCTUATION, ']'),
-        ]);
-        $this->parser->parse($tokens);
-    }
-
-    /**
      * Test parsing unclosed rule parenthesis throws exception
      */
     public function testParsingUnclosedRuleParenthesisThrowsException() : void
@@ -100,6 +110,20 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
             new Token(TokenTypes::T_TEXT, 'bar'),
         ]);
         $this->parser->parse($tokens);
+    }
+
+    /**
+     * Tests parsing a variable name creates a variable name node
+     */
+    public function testParsingVariableNameCreatesVariableNameNode() : void
+    {
+        $tokens = new TokenStream([
+            new Token(TokenTypes::T_VARIABLE, 'foo')
+        ]);
+        $expectedAst = new AbstractSyntaxTree();
+        $expectedAst->getCurrentNode()
+            ->addChild(new Node(NodeTypes::VARIABLE, 'foo'));
+        $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
     /**

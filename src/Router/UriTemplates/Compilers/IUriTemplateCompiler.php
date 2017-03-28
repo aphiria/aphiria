@@ -12,9 +12,11 @@ interface IUriTemplateCompiler
     /**
      * Compiles a raw URI template
      *
-     * @param string $rawUriTemplate The raw URI template to compile
+     * @param string $pathTemplate The raw path template
+     * @param string|null $hostTemplate The raw host template
+     * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return IUriTemplate The compiled URI template
-     * @throws InvalidArgumentException Thrown if template is invalid
+     * @throws InvalidArgumentException Thrown if the template is invalid
      */
-    public function compile(string $rawUriTemplate) : IUriTemplate;
+    public function compile(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false) : IUriTemplate;
 }

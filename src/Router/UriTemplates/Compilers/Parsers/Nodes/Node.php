@@ -89,13 +89,13 @@ class Node
     }
 
     /**
-     * Gets whether or not this node is a leaf
+     * Gets whether or not this node has children
      *
-     * @return bool True if this is a leaf, otherwise false
+     * @return bool True if this node has children, otherwise false
      */
-    public function isLeaf() : bool
+    public function hasChildren() : bool
     {
-        return count($this->children) === 0;
+        return count($this->children) > 0;
     }
 
     /**

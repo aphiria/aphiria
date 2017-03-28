@@ -25,7 +25,8 @@ class UriTemplateParser implements IUriTemplateParser
                     $this->parseText($tokens, $ast);
                     break;
                 case TokenTypes::T_NUMBER:
-                    $this->parseNumber($tokens, $ast);
+                    // Since we handle a number inside of variables elsewhere, we'll just treat this as text
+                    $this->parseText($tokens, $ast);
                     break;
                 case TokenTypes::T_VARIABLE:
                     $this->parseVariable($tokens, $ast);

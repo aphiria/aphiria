@@ -79,8 +79,8 @@ class RouteBuilderRegistry
         bool $isHttpsOnly = false
     ) : RouteBuilder {
         $this->applyGroupRouteTemplates($pathTemplate, $hostTemplate, $isHttpsOnly);
-        $parsedRouteTemplate = $this->uriTemplateCompiler->compile(rtrim($hostTemplate, '/') . ltrim($pathTemplate, '/'));
-        $routeBuilder = new RouteBuilder($httpMethods, $parsedRouteTemplate);
+        $uriTemplate = $this->uriTemplateCompiler->compile($pathTemplate, $hostTemplate, $isHttpsOnly);
+        $routeBuilder = new RouteBuilder($httpMethods, $uriTemplate);
         $this->applyGroupMiddleware($routeBuilder);
 
         return $routeBuilder;

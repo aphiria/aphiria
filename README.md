@@ -1,9 +1,5 @@
 <h1>Todo</h1>
 
-* Write URI template compiler
-  * What should `compile()` accept?  If it's a concatenated host and path, how do I handle no host being passed in?
-      * Is it better to force you to pass the two in separately?
-  * Use some of the code and tests from `RegexUriTemplateParser` in the compiler
 * Need some sort of route cache
 * Probably still need to add ability to chunk matching regexes for URIs rather than try to match one at a time
   * For now, I think I'll skip doing this until performance proves I need to
