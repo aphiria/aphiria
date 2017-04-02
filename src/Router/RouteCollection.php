@@ -1,5 +1,5 @@
 <?php
-namespace Opulence\Router\Routes;
+namespace Opulence\Router;
 
 /**
  * Defines a list of routes that can be used by a router
@@ -54,8 +54,7 @@ class RouteCollection
      */
     public function addMany(array $routes)
     {
-        // I'm purposely copying the code from add() to reduce method calls with
-        // many routes
+        // I'm purposely copying the code from add() to reduce method calls with many routes
         foreach ($routes as $route) {
             foreach ($route->getHttpMethods() as $method) {
                 $this->routes[$method][] = $route;
