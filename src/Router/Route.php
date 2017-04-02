@@ -57,6 +57,14 @@ class Route
     /**
      * @return array
      */
+    public function getHeadersToMatch() : array
+    {
+        return $this->headersToMatch;
+    }
+
+    /**
+     * @return array
+     */
     public function getHttpMethods() : array
     {
         return $this->httpMethods;

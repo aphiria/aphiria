@@ -19,7 +19,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->routeBuilder = new RouteBuilder(['GET'], new RegexUriTemplate('/foo'), false, ['foo' => 'bar']);
+        $this->routeBuilder = new RouteBuilder(['GET'], new RegexUriTemplate('/foo'), ['foo' => 'bar']);
     }
 
     /**
@@ -56,6 +56,16 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->routeBuilder->toClosure($closure);
         $route = $this->routeBuilder->build();
         $this->assertSame($closure, $route->getAction()->getClosure());
+    }
+
+    /**
+     * Tests that headers to match on are set in the route
+     */
+    public function testHeadersToMatchAreSetOnRoute() : void
+    {
+        $this->routeBuilder->toMethod('class', 'method');
+        $route = $this->routeBuilder->build();
+        $this->assertEquals(['foo' => 'bar'], $route->getHeadersToMatch());
     }
 
     /**

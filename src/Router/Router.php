@@ -39,7 +39,9 @@ class Router implements IRouter
      */
     public function route(string $httpMethod, string $uri, array $headers = [])
     {
-        if ($this->routeMatcher->tryMatch($httpMethod, $uri, $this->routes, $matchedRoute = null)) {
+        $matchedRoute = null;
+
+        if ($this->routeMatcher->tryMatch($httpMethod, $uri, $headers, $this->routes, $matchedRoute)) {
             return $matchedRoute;
         }
 
