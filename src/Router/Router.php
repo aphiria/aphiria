@@ -16,7 +16,7 @@ class Router implements IRouter
     private $routeMatcher = null;
 
     /**
-     * @param RouteCollection|array $routes The list of routes
+     * @param RouteCollection|Route[] $routes The list of routes
      * @param IRouteMatcher|null $routeMatcher The route matcher
      */
     public function __construct($routes, IRouteMatcher $routeMatcher = null)
@@ -30,14 +30,13 @@ class Router implements IRouter
             throw new InvalidArgumentException('Routes must either be an array or a RouteCollection');
         }
 
-        $this->routes = $routes;
         $this->routeMatcher = $routeMatcher ?? new RouteMatcher();
     }
 
     /**
      * @inheritdoc
      */
-    public function route(string $httpMethod, string $uri, array $headers = [])
+    public function route(string $httpMethod, string $uri, array $headers = []) : MatchedRoute
     {
         $matchedRoute = null;
 

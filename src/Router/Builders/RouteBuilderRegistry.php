@@ -141,7 +141,7 @@ class RouteBuilderRegistry
         }
 
         $pathTemplate = $groupPathTemplate . $pathTemplate;
-        $hostTemplate = $groupHostTemplate . ($hostTemplate ?? '');
+        $hostTemplate = ($hostTemplate ?? '') . $groupHostTemplate;
         $isHttpsOnly = $isHttpsOnly || $groupIsHttpsOnly;
     }
 }

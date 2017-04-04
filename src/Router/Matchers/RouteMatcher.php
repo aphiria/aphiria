@@ -17,14 +17,15 @@ class RouteMatcher implements IRouteMatcher
         string $uri,
         array $headers,
         RouteCollection $routes,
-        MatchedRoute &$matchedRoute
+        ?MatchedRoute &$matchedRoute
     ) : bool {
         $uppercaseHttpMethod = strtoupper($httpMethod);
         $routesByMethod = $routes->getByMethod($uppercaseHttpMethod);
+        $routeVars = [];
 
         foreach ($routesByMethod as $route) {
             if (
-                !$route->getUriTemplate()->tryMatch($uri, $routeVars = null)
+                !$route->getUriTemplate()->tryMatch($uri, $routeVars)
                 || !$this->headersMatch($route->getHeadersToMatch(), $headers)
             ) {
                 continue;

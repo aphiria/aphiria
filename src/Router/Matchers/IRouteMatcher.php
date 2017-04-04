@@ -24,6 +24,6 @@ interface IRouteMatcher
         string $uri,
         array $headers,
         RouteCollection $routes,
-        MatchedRoute &$matchedRoute
+        ?MatchedRoute &$matchedRoute
     ) : bool;
 }

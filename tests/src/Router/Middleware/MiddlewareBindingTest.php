@@ -4,7 +4,7 @@ namespace Opulence\Router\Middleware;
 /**
  * Tests middleware bindings
  */
-class MiddlewareBinding extends \PHPUnit\Framework\TestCase
+class MiddlewareBindingTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests that the correct class name is returned
