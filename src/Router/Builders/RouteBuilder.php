@@ -8,7 +8,7 @@ use Opulence\Router\ClosureRouteAction;
 use Opulence\Router\MethodRouteAction;
 use Opulence\Router\Middleware\MiddlewareBinding;
 use Opulence\Router\Route;
-use Opulence\Router\UriTemplates\IUriTemplate;
+use Opulence\Router\UriTemplates\UriTemplate;
 
 /**
  * Defines the route builder
@@ -19,7 +19,7 @@ class RouteBuilder
     private $httpMethods = [];
     /** @var Closure The action the route takes */
     private $action = null;
-    /** @var IUriTemplate The URI template */
+    /** @var UriTemplate The URI template */
     private $uriTemplate = null;
     /** @var array The list of header values to match on */
     private $headersToMatch = [];
@@ -30,10 +30,10 @@ class RouteBuilder
 
     /**
      * @param array $httpMethods The list of HTTP methods the route matches on
-     * @param IUriTemplate $uriTemplate The URI template the route matches on
+     * @param UriTemplate $uriTemplate The URI template the route matches on
      * @param array $headersToMatch The list of header values to match on
      */
-    public function __construct(array $httpMethods, IUriTemplate $uriTemplate, array $headersToMatch)
+    public function __construct(array $httpMethods, UriTemplate $uriTemplate, array $headersToMatch)
     {
         $this->httpMethods = $httpMethods;
         $this->uriTemplate = $uriTemplate;

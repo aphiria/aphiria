@@ -3,7 +3,7 @@ namespace Opulence\Router\Builders;
 
 use Opulence\Router\Middleware\MiddlewareBinding;
 use Opulence\Router\UriTemplates\Compilers\IUriTemplateCompiler;
-use Opulence\Router\UriTemplates\IUriTemplate;
+use Opulence\Router\UriTemplates\UriTemplate;
 
 /**
  * Tests the route builder registry
@@ -53,8 +53,8 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
         // The route we're testing is added second, which is why we're testing at(1)
         $this->uriTemplateCompiler->expects($this->at(1))
             ->method('compile')
-            ->with('rp2', 'rh2', true)
-            ->willReturn($this->createMock(IUriTemplate::class));
+            ->with('rh2', 'rp2', true)
+            ->willReturn($this->createMock(UriTemplate::class));
         $groupOptions = new RouteGroupOptions('gp', 'gh', false);
         $this->registry->group($groupOptions, function (RouteBuilderRegistry $registry) {
             $registry->map('GET', 'rp1')
@@ -88,8 +88,8 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
     {
         $this->uriTemplateCompiler->expects($this->once())
             ->method('compile')
-            ->with('foo', 'barbaz', false)
-            ->willReturn($this->createMock(IUriTemplate::class));
+            ->with('barbaz', 'foo', false)
+            ->willReturn($this->createMock(UriTemplate::class));
         $groupOptions = new RouteGroupOptions('foo', 'baz', false);
         $this->registry->group($groupOptions, function (RouteBuilderRegistry $registry) {
             $registry->map('GET', '', 'bar')
@@ -124,7 +124,7 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
         $this->uriTemplateCompiler->expects($this->once())
             ->method('compile')
             ->with('', '', true)
-            ->willReturn($this->createMock(IUriTemplate::class));
+            ->willReturn($this->createMock(UriTemplate::class));
         $this->registry->group(new RouteGroupOptions('', '', true), function (RouteBuilderRegistry $registry) {
             $registry->map('GET', '', null, false)
                 ->toMethod('foo', 'bar');
@@ -138,8 +138,8 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
     {
         $this->uriTemplateCompiler->expects($this->once())
             ->method('compile')
-            ->with('opiprp', 'rhihoh', true)
-            ->willReturn($this->createMock(IUriTemplate::class));
+            ->with('rhihoh', 'opiprp', true)
+            ->willReturn($this->createMock(UriTemplate::class));
         $outerGroupMiddlewareBinding = new MiddlewareBinding('foo');
         $innerGroupMiddlewareBinding = new MiddlewareBinding('bar');
         $routeMiddlewareBinding = new MiddlewareBinding('baz');
@@ -176,8 +176,8 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
     {
         $this->uriTemplateCompiler->expects($this->once())
             ->method('compile')
-            ->with('foobar', '', false)
-            ->willReturn($this->createMock(IUriTemplate::class));
+            ->with(null, 'foobar', false)
+            ->willReturn($this->createMock(UriTemplate::class));
         $groupOptions = new RouteGroupOptions('foo', '', false);
         $this->registry->group($groupOptions, function (RouteBuilderRegistry $registry) {
             $registry->map('GET', 'bar')

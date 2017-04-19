@@ -13,7 +13,8 @@ interface IRouteMatcher
      * Tries to match a request to the list of routes
      *
      * @param string $httpMethod The HTTP method of the request
-     * @param string $uri The URI of the request
+     * @param string $host The host of the request
+     * @param string $path The path of the request
      * @param array $headers The mapping of header names to values
      * @param RouteCollection $routes The list of routes to match against
      * @param MatchedRoute $matchedRoute The matched route, if one is found
@@ -21,7 +22,8 @@ interface IRouteMatcher
      */
     public function tryMatch(
         string $httpMethod,
-        string $uri,
+        string $host,
+        string $path,
         array $headers,
         RouteCollection $routes,
         ?MatchedRoute &$matchedRoute

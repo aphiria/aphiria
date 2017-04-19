@@ -2,7 +2,7 @@
 namespace Opulence\Router;
 
 use Opulence\Router\Middleware\MiddlewareBinding;
-use Opulence\Router\UriTemplates\IUriTemplate;
+use Opulence\Router\UriTemplates\UriTemplate;
 
 /**
  * Defines an HTTP route
@@ -11,7 +11,7 @@ class Route
 {
     /** @var array The list of HTTP methods this route handles */
     private $httpMethods = [];
-    /** @var IUriTemplate The URI template */
+    /** @var UriTemplate The URI template */
     private $uriTemplate = null;
     /** @var array The list of header values to match on */
     private $headersToMatch = [];
@@ -32,7 +32,7 @@ class Route
      */
     public function __construct(
         $httpMethods,
-        IUriTemplate $uriTemplate,
+        UriTemplate $uriTemplate,
         RouteAction $action,
         array $middlewareBindings = [],
         string $name = null,
@@ -87,9 +87,9 @@ class Route
     }
 
     /**
-     * @return IUriTemplate
+     * @return UriTemplate
      */
-    public function getUriTemplate() : IUriTemplate
+    public function getUriTemplate() : UriTemplate
     {
         return $this->uriTemplate;
     }

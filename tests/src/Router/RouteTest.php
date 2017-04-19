@@ -2,7 +2,7 @@
 namespace Opulence\Router;
 
 use Opulence\Router\Middleware\MiddlewareBinding;
-use Opulence\Router\UriTemplates\IUriTemplate;
+use Opulence\Router\UriTemplates\UriTemplate;
 
 /**
  * Tests the routes
@@ -15,7 +15,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     private static $headersToMatch = ['foo' => 'bar'];
     /** @var Route The route to use in tests */
     private $route = null;
-    /** @var IUriTemplate|\PHPUnit_Framework_MockObject_MockObject The URI template used by the route */
+    /** @var UriTemplate|\PHPUnit_Framework_MockObject_MockObject The URI template used by the route */
     private $uriTemplate = null;
     /** @var RouteAction|\PHPUnit_Framework_MockObject_MockObject The mocked route action */
     private $routeAction = null;
@@ -29,7 +29,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     {
         $this->routeAction = $this->createMock(RouteAction::class);
         $this->middlewareBindings = [new MiddlewareBinding('Foo')];
-        $this->uriTemplate = $this->createMock(IUriTemplate::class);
+        $this->uriTemplate = $this->createMock(UriTemplate::class);
         $this->route = new Route(
             ['GET'],
             $this->uriTemplate,
@@ -95,7 +95,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     {
         $this->routeAction = $this->createMock(RouteAction::class);
         $this->middlewareBindings = [new MiddlewareBinding('Foo')];
-        $this->uriTemplate = $this->createMock(IUriTemplate::class);
+        $this->uriTemplate = $this->createMock(UriTemplate::class);
         $namelessRoute = new Route(
             ['GET'],
             $this->uriTemplate,

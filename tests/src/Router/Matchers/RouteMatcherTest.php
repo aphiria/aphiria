@@ -20,16 +20,16 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    /*public function setUp() : void
     {
         $this->matcher = new RouteMatcher();
         $this->routeCollection = $this->createMock(RouteCollection::class);
-    }
+    }*/
 
     /**
      * Tests that the header names are case-insensitive
      */
-    public function testHeaderNamesAreCaseInsensitive() : void
+    /*public function testHeaderNamesAreCaseInsensitive() : void
     {
         $expectedRoutes = [
             new Route(
@@ -56,12 +56,12 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertSame($expectedRoutes[1]->getAction(), $matchedRoute->getAction());
         $this->assertSame($expectedRoutes[1]->getMiddlewareBindings(), $matchedRoute->getMiddlewareBindings());
-    }
+    }*/
 
     /**
      * Tests a matching URI but no matching header returns no matches
      */
-    public function testMatchingUriButNoMatchingHeaderReturnsNoMatches() : void
+    /*public function testMatchingUriButNoMatchingHeaderReturnsNoMatches() : void
     {
         $expectedRoutes = [
             new Route(
@@ -81,12 +81,12 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(
             $this->matcher->tryMatch('GET', 'uri', ['HEADER' => 'right'], $this->routeCollection, $matchedRoute)
         );
-    }
+    }*/
 
     /**
      * Tests a matching URI with headers to match returns a match
      */
-    public function testMatchingUriWithHeadersToMatchReturnsMatch() : void
+    /*public function testMatchingUriWithHeadersToMatchReturnsMatch() : void
     {
         $expectedRoutes = [
             new Route(
@@ -108,12 +108,12 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertSame($expectedRoutes[0]->getAction(), $matchedRoute->getAction());
         $this->assertSame($expectedRoutes[0]->getMiddlewareBindings(), $matchedRoute->getMiddlewareBindings());
-    }
+    }*/
 
     /**
      * Tests a matching URI with no headers to match returns a match
      */
-    public function testMatchingUriWithNoHeadersToMatchReturnsMatch() : void
+    /*public function testMatchingUriWithNoHeadersToMatchReturnsMatch() : void
     {
         $expectedRoutes = [
             new Route(
@@ -133,12 +133,12 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertSame($expectedRoutes[0]->getAction(), $matchedRoute->getAction());
         $this->assertSame($expectedRoutes[0]->getMiddlewareBindings(), $matchedRoute->getMiddlewareBindings());
-    }
+    }*/
 
     /**
      * Tests no match for a URI returns no matches
      */
-    public function testNoMatchForUriReturnsNoMatches() : void
+    /*public function testNoMatchForUriReturnsNoMatches() : void
     {
         $expectedRoutes = [
             new Route(
@@ -155,7 +155,7 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(
             $this->matcher->tryMatch('GET', 'uri', ['HEADER' => 'value'], $this->routeCollection, $matchedRoute)
         );
-    }
+    }*/
 
     /**
      * Creates a URI template mock

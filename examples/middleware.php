@@ -3,17 +3,17 @@ use Opulence\Router\Builders\RouteBuilderRegistry;
 use Opulence\Router\Middleware\MiddlewareBinding;
 use Opulence\Router\Router;
 
-$routeBuilderRegistry = new RouteBuilderRegistry();
+$routes = new RouteBuilderRegistry();
 
 // Add an ordinary route
-$routeBuilderRegistry->map('GET', 'users/:userId=me')
+$routes->map('GET', 'users/:userId=me')
     ->toMethod('UserController', 'getUser')
     ->withName('GetUser')
     ->withMiddleware('AuthMiddleware', ['roles' => 'admin']);
 
 // Add a route with rules
 // Matches "books/archives/2013" and "books/archives/2013/2"
-$routeBuilderRegistry->map('GET', 'books/archives/:year(int)[/:month(int,min(1),max(12))]')
+$routes->map('GET', 'books/archives/:year(int)[/:month(int,min(1),max(12))]')
     ->toMethod('BookController', 'getBooksFromArchives')
     ->withName('GetBooksFromArchives')
     ->withManyMiddleware([
@@ -22,7 +22,7 @@ $routeBuilderRegistry->map('GET', 'books/archives/:year(int)[/:month(int,min(1),
     ]);
 
 // Get the matched route
-$router = new Router($routeBuilderRegistry->buildAll());
+$router = new Router($routes->buildAll());
 $matchedRoute = $router->route($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 
 foreach ($matchedRoute->getMiddlewareBindings() as $middlewareBinding) {

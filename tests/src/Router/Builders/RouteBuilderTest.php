@@ -4,7 +4,7 @@ namespace Opulence\Router\Builders;
 use InvalidArgumentException;
 use LogicException;
 use Opulence\Router\Middleware\MiddlewareBinding;
-use Opulence\Router\UriTemplates\RegexUriTemplate;
+use Opulence\Router\UriTemplates\UriTemplate;
 
 /**
  * Defines the tests for the route builder
@@ -19,7 +19,11 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->routeBuilder = new RouteBuilder(['GET'], new RegexUriTemplate('/foo'), ['foo' => 'bar']);
+        $this->routeBuilder = new RouteBuilder(
+            ['GET'],
+            new UriTemplate('/foo', 0, false),
+            ['foo' => 'bar']
+        );
     }
 
     /**

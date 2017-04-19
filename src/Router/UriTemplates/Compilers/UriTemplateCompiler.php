@@ -8,14 +8,13 @@ use Opulence\Router\UriTemplates\Compilers\Parsers\Lexers\UriTemplateLexer;
 use Opulence\Router\UriTemplates\Compilers\Parsers\Nodes\Node;
 use Opulence\Router\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
 use Opulence\Router\UriTemplates\Compilers\Parsers\UriTemplateParser;
-use Opulence\Router\UriTemplates\IUriTemplate;
-use Opulence\Router\UriTemplates\RegexUriTemplate;
 use Opulence\Router\UriTemplates\Rules\IRuleFactory;
+use Opulence\Router\UriTemplates\UriTemplate;
 
 /**
- * Defines the URI template compiler that compiles to regex URI templates
+ * Defines the URI template compiler that compiles to URI templates
  */
-class RegexUriTemplateCompiler implements IUriTemplateCompiler
+class UriTemplateCompiler implements IUriTemplateCompiler
 {
     /** @var string The regex delimiter to use */
     private const REGEX_DELIMITER = '#';
@@ -44,50 +43,81 @@ class RegexUriTemplateCompiler implements IUriTemplateCompiler
     /**
      * @inheritdoc
      */
-    public function compile(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false) : IUriTemplate
+    public function compile(?string $hostTemplate, string $pathTemplate, bool $isHttpsOnly = false) : UriTemplate
     {
-        // Join the host and path templates into a URI template
-        $rawUriTemplate = rtrim($hostTemplate ?? '', '/') . '/' . ltrim($pathTemplate, '/');
-        $tokens = $this->lexer->lex($rawUriTemplate);
-        $ast = $this->parser->parse($tokens);
+        $numCapturingGroups = 0;
         $defaultRouteVars = [];
         $routeVarRules = [];
-        $protocolRegex = 'http' . ($isHttpsOnly ? 's' : '(?:s)?') . '://';
-        $routeRegex = $this->compileNodes($ast->getRootNode(), $defaultRouteVars, $routeVarRules);
-
-        // Add a default regex for an empty host template
+        
         if ($hostTemplate === null) {
-            $routeRegex = '[^/]+' . $routeRegex;
+            $pathAst = $this->parser->parse($this->lexer->lex('/' . ltrim($pathTemplate, '/')));
+            $pathRegex = $this->compileNodes(
+                $pathAst->getRootNode(),
+                $numCapturingGroups,
+                $defaultRouteVars,
+                $routeVarRules
+            );
+            $regex = "[^/]+$pathRegex";
+        } else {
+            // Join the host with the path
+            $rawUriTemplate = rtrim($hostTemplate, '/') . '/' . ltrim($pathTemplate, '/');
+            $uriAst = $this->parser->parse($this->lexer->lex($rawUriTemplate));
+            $regex = $this->compileNodes(
+                $uriAst->getRootNode(),
+                $numCapturingGroups,
+                $defaultRouteVars,
+                $routeVarRules
+            );
         }
-
-        $regex = self::REGEX_DELIMITER . "^{$protocolRegex}{$routeRegex}$" . self::REGEX_DELIMITER;
-
-        return new RegexUriTemplate($regex, $defaultRouteVars, $routeVarRules);
+        
+        return new UriTemplate(
+            "^$regex$",
+            $numCapturingGroups,
+            !empty($hostTemplate),
+            $isHttpsOnly,
+            $defaultRouteVars,
+            $routeVarRules
+        );
     }
 
     /**
      * Compiles an abstract syntax tree
      *
      * @param Node $rootNode The root node to compile
+     * @param int $numCapturingGroups The number of capturing groups in the regex
      * @param array $defaultRouteVars The mapping of route var names to their default values
      * @param IRule[] $routeVarRules The mapping of route var names to their rules
      * @return string The compiled regex
      * @throws InvalidArgumentException Thrown if the template is invalid
      */
-    private function compileNodes(Node $rootNode, array &$defaultRouteVars, array &$routeVarRules) : string
-    {
+    private function compileNodes(
+        Node $rootNode,
+        int &$numCapturingGroups,
+        array &$defaultRouteVars,
+        array &$routeVarRules
+    ) : string {
         $compiledRegex = '';
 
         foreach ($rootNode->getChildren() as $childNode) {
             switch ($childNode->getType()) {
                 case NodeTypes::OPTIONAL_ROUTE_PART:
-                    $compiledRegex .= $this->compileOptionalRoutePartNode($childNode, $defaultRouteVars, $routeVarRules);
+                    $compiledRegex .= $this->compileOptionalRoutePartNode(
+                        $childNode,
+                        $numCapturingGroups,
+                        $defaultRouteVars,
+                        $routeVarRules
+                    );
                     break;
                 case NodeTypes::TEXT:
                     $compiledRegex .= preg_quote($childNode->getValue(), self::REGEX_DELIMITER);
                     break;
                 case NodeTypes::VARIABLE:
-                    $compiledRegex .= $this->compileVariableNode($childNode, $defaultRouteVars, $routeVarRules);
+                    $compiledRegex .= $this->compileVariableNode(
+                        $childNode,
+                        $numCapturingGroups,
+                        $defaultRouteVars,
+                        $routeVarRules
+                    );
                     break;
                 default:
                     throw new InvalidArgumentException("Unexpected node type {$childNode->getType()}");
@@ -101,28 +131,39 @@ class RegexUriTemplateCompiler implements IUriTemplateCompiler
      * Compiles an optional route part node
      *
      * @param Node $node The optional route part node to compile
+     * @param int $numCapturingGroups The number of capturing groups in the regex
      * @param array $defaultRouteVars The mapping of route var names to their default values
      * @param IRule[] $routeVarRules The mapping of route var names to their rules
      * @return string The compiled regex
      */
-    private function compileOptionalRoutePartNode(Node $node, array &$defaultRouteVars, array &$routeVarRules) : string
-    {
-        return "(?:{$this->compileNodes($node, $defaultRouteVars, $routeVarRules)})?";
+    private function compileOptionalRoutePartNode(
+        Node $node,
+        int &$numCapturingGroups,
+        array &$defaultRouteVars,
+        array &$routeVarRules
+    ) : string {
+        return "(?:{$this->compileNodes($node, $numCapturingGroups, $defaultRouteVars, $routeVarRules)})?";
     }
 
     /**
      * Compiles a variable node
      *
      * @param Node $node The variable node to compile
+     * @param int $numCapturingGroups The number of capturing groups in the regex
      * @param array $defaultRouteVars The mapping of route var names to their default values
      * @param IRule[] $routeVarRules The mapping of route var names to their rules
      * @return string The compiled regex
      * @throws InvalidArgumentException Thrown if an unexpected node is found
      */
-    private function compileVariableNode(Node $node, array &$defaultRouteVars, array &$routeVarRules) : string
-    {
+    private function compileVariableNode(
+        Node $node,
+        int &$numCapturingGroups,
+        array &$defaultRouteVars,
+        array &$routeVarRules
+    ) : string {
         $variableName = $node->getValue();
         $regex = sprintf('(?P<%s>%s)', $variableName, '[^\/:]+');
+        $numCapturingGroups++;
 
         foreach ($node->getChildren() as $childNode) {
             switch ($childNode->getType()) {

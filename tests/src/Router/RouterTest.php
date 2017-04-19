@@ -38,9 +38,9 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $routeMatcher = $this->createMock(IRouteMatcher::class);
         $routeMatcher->expects($this->once())
             ->method('tryMatch')
-            ->with('GET', 'uri', ['HEADER' => 'value'], $routes, $matchedRoute)
+            ->with('GET', 'host', 'path', ['HEADER' => 'value'], $routes, $matchedRoute)
             ->willReturn(false);
         $router = new Router($routes, $routeMatcher);
-        $router->route('GET', 'uri', ['HEADER' => 'value']);
+        $router->route('GET', 'host', 'path', ['HEADER' => 'value']);
     }
 }

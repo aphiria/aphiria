@@ -3,10 +3,10 @@ use Opulence\Router\Builders\RouteBuilderRegistry;
 use Opulence\Router\Builders\RouteGroupOptions;
 use Opulence\Router\Router;
 
-$routeBuilderRegistry = new RouteBuilderRegistry();
+$routes = new RouteBuilderRegistry();
 
 // Add a group of routes that share common options
-$routeBuilderRegistry->group(
+$routes->group(
     new RouteGroupOptions('users/', '', false, []),
     function (RouteBuilderRegistry $routeBuilderRegistry) {
         $routeBuilderRegistry->map('GET', ':userId')
@@ -17,7 +17,7 @@ $routeBuilderRegistry->group(
     });
 
 // Get the matched route
-$router = new Router($routeBuilderRegistry->buildAll());
+$router = new Router($routes->buildAll());
 $matchedRoute = $router->route($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 
 // Use your library/framework of choice to dispatch $matchedRoute...

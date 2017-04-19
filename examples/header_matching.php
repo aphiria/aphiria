@@ -2,10 +2,10 @@
 use Opulence\Router\Builders\RouteBuilderRegistry;
 use Opulence\Router\Router;
 
-$routeBuilderRegistry = new RouteBuilderRegistry();
+$routes = new RouteBuilderRegistry();
 
 // Add a route with a header to match on
-$routeBuilderRegistry->map('GET', 'comments', null, false, ['API VERSION' => 'v1.0'])
+$routes->map('GET', 'comments', null, false, ['API VERSION' => 'v1.0'])
     ->toMethod('CommentController', 'getAllComments');
 
 // Since PHP doesn't have a native way of grabbing all request headers, we'll build them ourselves
@@ -31,7 +31,7 @@ foreach ($_SERVER as $key => $value) {
 }
 
 // Get the matched route
-$router = new Router($routeBuilderRegistry->buildAll());
+$router = new Router($routes->buildAll());
 $matchedRoute = $router->route($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI'], $headers);
 
 // Use your library/framework of choice to dispatch $matchedRoute...

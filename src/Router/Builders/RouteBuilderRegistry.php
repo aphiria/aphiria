@@ -82,7 +82,7 @@ class RouteBuilderRegistry
     ) : RouteBuilder {
         $this->applyGroupRouteTemplates($pathTemplate, $hostTemplate, $isHttpsOnly);
         $this->applyGroupHeadersToMatch($headersToMatch);
-        $uriTemplate = $this->uriTemplateCompiler->compile($pathTemplate, $hostTemplate, $isHttpsOnly);
+        $uriTemplate = $this->uriTemplateCompiler->compile($hostTemplate, $pathTemplate, $isHttpsOnly);
         $routeBuilder = new RouteBuilder((array)$httpMethods, $uriTemplate, $headersToMatch);
         $this->applyGroupMiddleware($routeBuilder);
         $this->routeBuilders[] = $routeBuilder;

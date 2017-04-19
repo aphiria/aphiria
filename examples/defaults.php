@@ -2,21 +2,21 @@
 use Opulence\Router\Builders\RouteBuilderRegistry;
 use Opulence\Router\Router;
 
-$routeBuilderRegistry = new RouteBuilderRegistry();
+$routes = new RouteBuilderRegistry();
 
 // Add an ordinary route
-$routeBuilderRegistry->map('GET', 'users/:userId')
+$routes->map('GET', 'users/:userId')
     ->toMethod('UserController', 'getUser')
     ->withName('GetUser');
 
 // Add a route with rules
 // Matches "books/archives/2013" and "books/archives/2013/2"
-$routeBuilderRegistry->map('GET', 'books/archives/:year(int)[/:month(int,min(1),max(12))]')
+$routes->map('GET', 'books/archives/:year(int)[/:month(int,min(1),max(12))]')
     ->toMethod('BookController', 'getBooksFromArchives')
     ->withName('GetBooksFromArchives');
 
 // Get the matched route
-$router = new Router($routeBuilderRegistry->buildAll());
+$router = new Router($routes->buildAll());
 $matchedRoute = $router->route($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 
 // Use your library/framework of choice to dispatch $matchedRoute...

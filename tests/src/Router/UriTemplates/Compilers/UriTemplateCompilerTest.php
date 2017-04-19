@@ -7,23 +7,21 @@ use Opulence\Router\UriTemplates\Compilers\Parsers\Lexers\IUriTemplateLexer;
 use Opulence\Router\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
 use Opulence\Router\UriTemplates\Compilers\Parsers\Nodes\Node;
 use Opulence\Router\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
-use Opulence\Router\UriTemplates\RegexUriTemplate;
 use Opulence\Router\UriTemplates\Rules\IRule;
 use Opulence\Router\UriTemplates\Rules\IRuleFactory;
+use Opulence\Router\UriTemplates\UriTemplate;
 
 /**
- * Tests the regex URI template compiler
+ * Tests the URI template compiler
  */
-class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
+class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var RegexUriTemplateCompiler The compiler to use in tests */
+    /** @var UriTemplateCompiler The compiler to use in tests */
     private $compiler = null;
     /** @var IUriTemplateParser|\PHPUnit_Framework_MockObject_MockObject The parser to use in tests */
     private $parser = null;
     /** @var IUriTemplateLexer|\PHPUnit_Framework_MockObject_MockObject The lexer to use in tests */
     private $lexer = null;
-    /** @var AbstractSyntaxTree The abstract syntax tree to use in tests */
-    private $ast = null;
     /** @var IRuleFactory|\PHPUnit_Framework_MockObject_MockObject The rule factory to use in the compiler */
     private $ruleFactory = null;
 
@@ -35,11 +33,9 @@ class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->ruleFactory = $this->createMock(IRuleFactory::class);
         $this->parser = $this->createMock(IUriTemplateParser::class);
         $this->lexer = $this->createMock(IUriTemplateLexer::class);
-        $this->ast = new AbstractSyntaxTree();
         // We don't really care about mocking the output of the lexer
         $this->lexer->expects($this->any())->method('lex')->willReturn(new TokenStream([]));
-        $this->parser->expects($this->any())->method('parse')->willReturn($this->ast);
-        $this->compiler = new RegexUriTemplateCompiler($this->ruleFactory, $this->parser, $this->lexer);
+        $this->compiler = new UriTemplateCompiler($this->ruleFactory, $this->parser, $this->lexer);
     }
 
     /**
@@ -47,10 +43,14 @@ class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
      */
     public function testCompilingHostAndPathWithSlashesTrimsSlashBetweenThem() : void
     {
-        $expectedUriTemplate = new RegexUriTemplate($this->createUriRegex('foo\.com', '/bar'));
-        $this->ast->getCurrentNode()
+        $ast = new AbstractSyntaxTree();
+        $ast->getCurrentNode()
             ->addChild(new Node(NodeTypes::TEXT, 'foo.com/bar'));
-        $actualUriTemplate = $this->compiler->compile('/bar', 'foo.com/');
+        $this->parser->expects($this->once())
+            ->method('parse')
+            ->willReturn($ast);
+        $expectedUriTemplate = new UriTemplate('^foo\.com/bar$', 0, true);
+        $actualUriTemplate = $this->compiler->compile('foo.com/', '/bar');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
@@ -59,22 +59,30 @@ class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
      */
     public function testCompilingHttpsOnlyRouteForcesHttpsToBeSet() : void
     {
-        $expectedUriTemplate = new RegexUriTemplate($this->createUriRegex(null, 'foo', true));
-        $this->ast->getCurrentNode()
-            ->addChild(new Node(NodeTypes::TEXT, 'foo'));
-        $actualUriTemplate = $this->compiler->compile('foo', null, true);
+        $ast = new AbstractSyntaxTree();
+        $ast->getCurrentNode()
+            ->addChild(new Node(NodeTypes::TEXT, '/foo'));
+        $this->parser->expects($this->once())
+            ->method('parse')
+            ->willReturn($ast);
+        $expectedUriTemplate = new UriTemplate('^[^/]+/foo$', 0, false, true);
+        $actualUriTemplate = $this->compiler->compile(null, '/foo', true);
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
-
+    
     /**
      * Tests that compiling a path with no vars creates the correct regex
      */
     public function testCompilingPathWithNoVarsCreatesCorrectRegex() : void
     {
-        $expectedUriTemplate = new RegexUriTemplate($this->createUriRegex(null, '/foo/bar/baz'));
-        $this->ast->getCurrentNode()
+        $ast = new AbstractSyntaxTree();
+        $ast->getCurrentNode()
             ->addChild(new Node(NodeTypes::TEXT, '/foo/bar/baz'));
-        $actualUriTemplate = $this->compiler->compile('/foo/bar/baz');
+        $this->parser->expects($this->once())
+            ->method('parse')
+            ->willReturn($ast);
+        $expectedUriTemplate = new UriTemplate('^[^/]+/foo/bar/baz$', 0, false);
+        $actualUriTemplate = $this->compiler->compile(null, '/foo/bar/baz');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
@@ -83,17 +91,19 @@ class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
      */
     public function testCompilingPathWithSingleOptionalVarCreatesCorrectRegex() : void
     {
-        $expectedUriTemplate = new RegexUriTemplate(
-            $this->createUriRegex(null, "/foo(?:/{$this->createVarRegex('bar', true)})?")
-        );
         $optionalRoutePartNode = new Node(NodeTypes::OPTIONAL_ROUTE_PART, '[');
         $optionalRoutePartNode->addChild(new Node(NodeTypes::TEXT, '/'));
         $optionalRoutePartNode->addChild(new Node(NodeTypes::VARIABLE, 'bar'));
-        $this->ast->getCurrentNode()
+        $ast = new AbstractSyntaxTree();
+        $ast->getCurrentNode()
             ->addChild(new Node(NodeTypes::TEXT, '/foo'));
-        $this->ast->getCurrentNode()
+        $ast->getCurrentNode()
             ->addChild($optionalRoutePartNode);
-        $actualUriTemplate = $this->compiler->compile('/foo[/:bar]');
+        $this->parser->expects($this->once())
+            ->method('parse')
+            ->willReturn($ast);
+        $expectedUriTemplate = new UriTemplate("^[^/]+/foo(?:/{$this->createVarRegex('bar', true)})?$", 1, false);
+        $actualUriTemplate = $this->compiler->compile(null, '/foo[/:bar]');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
@@ -102,16 +112,18 @@ class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
      */
     public function testCompilingPathWithSingleVarCreatesCorrectRegex() : void
     {
-        $expectedUriTemplate = new RegexUriTemplate(
-            $this->createUriRegex(null, "/foo/{$this->createVarRegex('bar')}/baz")
-        );
-        $this->ast->getCurrentNode()
+        $ast = new AbstractSyntaxTree();
+        $ast->getCurrentNode()
             ->addChild(new Node(NodeTypes::TEXT, '/foo/'));
-        $this->ast->getCurrentNode()
+        $ast->getCurrentNode()
             ->addChild(new Node(NodeTypes::VARIABLE, 'bar'));
-        $this->ast->getCurrentNode()
+        $ast->getCurrentNode()
             ->addChild(new Node(NodeTypes::TEXT, '/baz'));
-        $actualUriTemplate = $this->compiler->compile('/foo/:bar/baz');
+        $this->parser->expects($this->once())
+            ->method('parse')
+            ->willReturn($ast);
+        $expectedUriTemplate = new UriTemplate("^[^/]+/foo/{$this->createVarRegex('bar')}/baz$", 1, false);
+        $actualUriTemplate = $this->compiler->compile(null, '/foo/:bar/baz');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
@@ -120,19 +132,26 @@ class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
      */
     public function testCompilingPathWithSingleVarWithDefaultValueCreatesCorrectRegex() : void
     {
-        $expectedUriTemplate = new RegexUriTemplate(
-            $this->createUriRegex(null, "/foo/{$this->createVarRegex('bar')}/baz"),
-            ['bar' => 'blah']
-        );
-        $this->ast->getCurrentNode()
+        $ast = new AbstractSyntaxTree();
+        $ast->getCurrentNode()
             ->addChild(new Node(NodeTypes::TEXT, '/foo/'));
         $variableNode = new Node(NodeTypes::VARIABLE, 'bar');
         $variableNode->addChild(new Node(NodeTypes::VARIABLE_DEFAULT_VALUE, 'blah'));
-        $this->ast->getCurrentNode()
+        $ast->getCurrentNode()
             ->addChild($variableNode);
-        $this->ast->getCurrentNode()
+        $ast->getCurrentNode()
             ->addChild(new Node(NodeTypes::TEXT, '/baz'));
-        $actualUriTemplate = $this->compiler->compile('/foo/:bar=blah/baz');
+        $this->parser->expects($this->once())
+            ->method('parse')
+            ->willReturn($ast);
+        $expectedUriTemplate = new UriTemplate(
+            "^[^/]+/foo/{$this->createVarRegex('bar')}/baz$",
+            1,
+            false,
+            false,
+            ['bar' => 'blah']
+        );
+        $actualUriTemplate = $this->compiler->compile(null, '/foo/:bar=blah/baz');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
@@ -151,19 +170,26 @@ class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
             ->method('createRule')
             ->with('alex')
             ->willReturn($rule2);
-        $expectedUriTemplate = new RegexUriTemplate(
-            $this->createUriRegex(null, "/foo/{$this->createVarRegex('bar')}"),
-            [],
-            ['bar' => [$rule1, $rule2]]
-        );
         $variableNode = new Node(NodeTypes::VARIABLE, 'bar');
         $variableNode->addChild(new Node(NodeTypes::VARIABLE_RULE, 'dave'))
             ->addChild(new Node(NodeTypes::VARIABLE_RULE, 'alex'));
-        $this->ast->getCurrentNode()
+        $ast = new AbstractSyntaxTree();
+        $ast->getCurrentNode()
             ->addChild(new Node(NodeTypes::TEXT, '/foo/'));
-        $this->ast->getCurrentNode()
+        $ast->getCurrentNode()
             ->addChild($variableNode);
-        $actualUriTemplate = $this->compiler->compile('/foo/:bar(dave,alex)');
+        $this->parser->expects($this->once())
+            ->method('parse')
+            ->willReturn($ast);
+        $expectedUriTemplate = new UriTemplate(
+            "^[^/]+/foo/{$this->createVarRegex('bar')}$",
+            1,
+            false,
+            false,
+            [],
+            ['bar' => [$rule1, $rule2]]
+        );
+        $actualUriTemplate = $this->compiler->compile(null, '/foo/:bar(dave,alex)');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
@@ -182,11 +208,6 @@ class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
             ->method('createRule')
             ->with('alex', [3, 4])
             ->willReturn($rule2);
-        $expectedUriTemplate = new RegexUriTemplate(
-            $this->createUriRegex(null, "/foo/{$this->createVarRegex('bar')}"),
-            [],
-            ['bar' => [$rule1, $rule2]]
-        );
         $daveRuleNode = new Node(NodeTypes::VARIABLE_RULE, 'dave');
         $daveRuleNode->addChild(new Node(NodeTypes::VARIABLE_RULE_PARAMETERS, ['1,2']));
         $alexRuleNode = new Node(NodeTypes::VARIABLE_RULE, 'alex');
@@ -194,11 +215,23 @@ class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $variableNode = new Node(NodeTypes::VARIABLE, 'bar');
         $variableNode->addChild($daveRuleNode)
             ->addChild($alexRuleNode);
-        $this->ast->getCurrentNode()
+        $ast = new AbstractSyntaxTree();
+        $ast->getCurrentNode()
             ->addChild(new Node(NodeTypes::TEXT, '/foo/'));
-        $this->ast->getCurrentNode()
+        $ast->getCurrentNode()
             ->addChild($variableNode);
-        $actualUriTemplate = $this->compiler->compile('/foo/:bar(dave("1,2"),alex(3, 4))');
+        $this->parser->expects($this->once())
+            ->method('parse')
+            ->willReturn($ast);
+        $expectedUriTemplate = new UriTemplate(
+            "^[^/]+/foo/{$this->createVarRegex('bar')}$",
+            1,
+            false,
+            false,
+            [],
+            ['bar' => [$rule1, $rule2]]
+        );
+        $actualUriTemplate = $this->compiler->compile(null, '/foo/:bar(dave("1,2"),alex(3, 4))');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
@@ -212,18 +245,25 @@ class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
             ->method('createRule')
             ->with('dave')
             ->willReturn($rule);
-        $expectedUriTemplate = new RegexUriTemplate(
-            $this->createUriRegex(null, "/foo/{$this->createVarRegex('bar')}"),
+        $variableNode = new Node(NodeTypes::VARIABLE, 'bar');
+        $variableNode->addChild(new Node(NodeTypes::VARIABLE_RULE, 'dave'));
+        $ast = new AbstractSyntaxTree();
+        $ast->getCurrentNode()
+            ->addChild(new Node(NodeTypes::TEXT, '/foo/'));
+        $ast->getCurrentNode()
+            ->addChild($variableNode);
+        $this->parser->expects($this->once())
+            ->method('parse')
+            ->willReturn($ast);
+        $expectedUriTemplate = new UriTemplate(
+            "^[^/]+/foo/{$this->createVarRegex('bar')}$",
+            1,
+            false,
+            false,
             [],
             ['bar' => [$rule]]
         );
-        $variableNode = new Node(NodeTypes::VARIABLE, 'bar');
-        $variableNode->addChild(new Node(NodeTypes::VARIABLE_RULE, 'dave'));
-        $this->ast->getCurrentNode()
-            ->addChild(new Node(NodeTypes::TEXT, '/foo/'));
-        $this->ast->getCurrentNode()
-            ->addChild($variableNode);
-        $actualUriTemplate = $this->compiler->compile('/foo/:bar(dave)');
+        $actualUriTemplate = $this->compiler->compile(null, '/foo/:bar(dave)');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
@@ -237,44 +277,38 @@ class RegexUriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
             ->method('createRule')
             ->with('dave', ['alex', 'lindsey'])
             ->willReturn($rule);
-        $expectedUriTemplate = new RegexUriTemplate(
-            $this->createUriRegex(null, "/foo/{$this->createVarRegex('bar')}"),
-            [],
-            ['bar' => [$rule]]
-        );
         $daveRuleNode = new Node(NodeTypes::VARIABLE_RULE, 'dave');
         $daveRuleNode->addChild(new Node(NodeTypes::VARIABLE_RULE_PARAMETERS, ['alex', 'lindsey']));
         $variableNode = new Node(NodeTypes::VARIABLE, 'bar');
         $variableNode->addChild($daveRuleNode);
-        $this->ast->getCurrentNode()
+        $ast = new AbstractSyntaxTree();
+        $ast->getCurrentNode()
             ->addChild(new Node(NodeTypes::TEXT, '/foo/'));
-        $this->ast->getCurrentNode()
+        $ast->getCurrentNode()
             ->addChild($variableNode);
-        $actualUriTemplate = $this->compiler->compile('/foo/:bar(dave("alex","lindsey"))');
+        $this->parser->expects($this->once())
+            ->method('parse')
+            ->willReturn($ast);
+        $expectedUriTemplate = new UriTemplate(
+            "^[^/]+/foo/{$this->createVarRegex('bar')}$",
+            1,
+            false,
+            false,
+            [],
+            ['bar' => [$rule]]
+        );
+        $actualUriTemplate = $this->compiler->compile(null, '/foo/:bar(dave("alex","lindsey"))');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
-    /**
-     * Creates a URI regex
-     *
-     * @param string $hostRegex The host regex
-     * @param string $pathRegex The path regex
-     * @param bool $isHttpsOnly Whether or not the URI is HTTPS-only
-     * @return string The URI regex
-     */
-    private function createUriRegex(?string $hostRegex, string $pathRegex, bool $isHttpsOnly = false) : string
-    {
-        return '#^http' . ($isHttpsOnly ? 's' : '(?:s)?') . '://' . ($hostRegex ?? '[^/]+') . $pathRegex . '$#';
-    }
 
     /**
      * Creates a regex for a route variable
      *
      * @param string $varName The name of the variable
-     * @param bool $isOptional Whether or not the variable is optional
      * @return string The variable regex
      */
-    private function createVarRegex(string $varName, bool $isOptional = false) : string
+    private function createVarRegex(string $varName) : string
     {
         return "(?P<$varName>[^\/:]+)";
     }
