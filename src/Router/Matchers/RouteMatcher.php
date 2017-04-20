@@ -28,21 +28,22 @@ class RouteMatcher implements IRouteMatcher
         $uppercaseHttpMethod = strtoupper($httpMethod);
         $routesByMethod = $routes->getByMethod($uppercaseHttpMethod);
 
-        foreach (array_chunk($routesByMethod, self::ROUTE_CHUNK_SIZE) as $chunkedRoutes) {
+        foreach (array_chunk($routesByMethod, self::ROUTE_CHUNK_SIZE, true) as $chunkedRoutes) {
             /** @var Route[] $routesByCapturingGroupOffsets */
             $routesByCapturingGroupOffsets = [];
-            $capturingGroupOffset = 1;
+            $capturingGroupOffset = 0;
             $regexes = [];
             
             foreach ($chunkedRoutes as $route) {
                 $routesByCapturingGroupOffsets[$capturingGroupOffset] = $route;
-                $capturingGroupOffset += $route->getUriTemplate()->getNumCapturingGroups();
-                $regexes[] = $route->getRegex();
+                $uriTemplate = $route->getUriTemplate();
+                $capturingGroupOffset += $uriTemplate->getNumCapturingGroups();
+                $regexes[] = $uriTemplate->getRegex();
             }
             
             $matches = [];
             
-            if (preg_match('#^(?:' . implode('|', $regexes) . ')$#', $hostAndPath, $matches) !== 1) {
+            if (preg_match('#^(?:(' . implode(')|(', $regexes) . '))$#', $hostAndPath, $matches) !== 1) {
                 continue;
             }
             
@@ -57,7 +58,8 @@ class RouteMatcher implements IRouteMatcher
                     continue;
                 }
                 
-                $matchedGroups = array_slice($matches, $i, $uriTemplate->getNumCapturingGroups());
+                echo var_export($matches, true);ob_flush();
+                $matchedGroups = array_slice($matches, $offset, $uriTemplate->getNumCapturingGroups());
                 $routeVars = [];
                 $this->populateRouteVars($routeVars, $matchedGroups, $uriTemplate->getDefaultRouteVars());
                 

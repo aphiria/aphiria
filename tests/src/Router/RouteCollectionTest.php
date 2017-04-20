@@ -1,7 +1,7 @@
 <?php
 namespace Opulence\Router;
 
-use Opulence\Router\UriTemplates\IUriTemplate;
+use Opulence\Router\UriTemplates\UriTemplate;
 
 /**
  * Tests the route collection
@@ -23,14 +23,14 @@ class RouteCollectionTest extends \PHPUnit\Framework\TestCase
         $this->seededCollection = new RouteCollection();
         $this->getRoute = new Route(
             ['GET'],
-            $this->createMock(IUriTemplate::class),
+            new UriTemplate('regex', 0, false),
             $this->createMock(RouteAction::class),
             [],
             'getRoute'
         );
         $this->getAndPostRoute = new Route(
             ['GET', 'POST'],
-            $this->createMock(IUriTemplate::class),
+            new UriTemplate('regex', 0, false),
             $this->createMock(RouteAction::class),
             [],
             'getAndPostRoute'
