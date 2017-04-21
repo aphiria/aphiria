@@ -12,7 +12,7 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
     private $uriTemplate = null;
     /** @var IRule|\PHPUnit_Framework_MockObject_MockObject The rule to use in tests */
     private $rule = null;
-    
+
     /**
      * Sets up the tests
      */
@@ -28,7 +28,7 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
             ['baz' => [$this->rule]]
         );
     }
-    
+
     /**
      * Tests that the default values are correct
      */
@@ -36,7 +36,7 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals(['foo' => 'bar'], $this->uriTemplate->getDefaultRouteVars());
     }
-    
+
     /**
      * Tests that the HTTPS-only flag is correct
      */
@@ -44,7 +44,7 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertTrue($this->uriTemplate->isHttpsOnly());
     }
-    
+
     /**
      * Tests that the regex is correct
      */
@@ -52,7 +52,7 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals('regex', $this->uriTemplate->getRegex());
     }
-    
+
     /**
      * Tests that the route var names are correct
      */
@@ -60,7 +60,7 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals(['var'], $this->uriTemplate->getRouteVarNames());
     }
-    
+
     /**
      * Tests that the rule is correct
      */
@@ -69,7 +69,7 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
         $expectedRules = ['baz' => [$this->rule]];
         $this->assertEquals($expectedRules, $this->uriTemplate->getRouteVarRules());
     }
-    
+
     /**
      * Tests that a single rule is converted to a list of rules
      */
@@ -86,7 +86,7 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
         $expectedRules = ['baz' => [$this->rule]];
         $this->assertEquals($expectedRules, $uriTemplate->getRouteVarRules());
     }
-    
+
     /**
      * Tests that the uses-host flag returns correctly
      */

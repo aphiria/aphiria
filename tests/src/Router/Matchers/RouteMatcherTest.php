@@ -55,7 +55,7 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expectedRoutes[1]->getAction(), $matchedRoute->getAction());
         $this->assertSame($expectedRoutes[1]->getMiddlewareBindings(), $matchedRoute->getMiddlewareBindings());
     }
-    
+
     /**
      * Tests that matching can occur on URI templates with differing numbers of capturing groups
      */
@@ -87,13 +87,13 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
             'bar234' => ['var2' => '2', 'var3' => '3', 'var4' => '4'],
             'baz56' => ['var5' => '5', 'var6' => '6']
         ];
-        
+
         foreach ($matchingPaths as $matchingPath => $expectedRouteVars) {
             $matchedRoute = $this->matcher->match('GET', '', $matchingPath, [], $this->routeCollection);
             $this->assertEquals($expectedRouteVars, $matchedRoute->getRouteVars());
         }
     }
-    
+
     /**
      * Tests a matching route with vars after a route that has no vars
      */

@@ -31,7 +31,7 @@ try {
         [],
         $routes->buildAll()
     );
-    
+
     // Use your library/framework of choice to dispatch $matchedRoute...
 } catch (RouteNotFoundException $ex) {
     header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found', true, 404);

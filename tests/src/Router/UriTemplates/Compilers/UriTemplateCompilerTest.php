@@ -69,7 +69,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $actualUriTemplate = $this->compiler->compile(null, '/foo', true);
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
-    
+
     /**
      * Tests that compiling a path with no vars creates the correct regex
      */

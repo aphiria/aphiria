@@ -50,7 +50,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
         $routeVarNames = [];
         $defaultRouteVars = [];
         $routeVarRules = [];
-        
+
         if ($hostTemplate === null) {
             $pathAst = $this->parser->parse($this->lexer->lex('/' . ltrim($pathTemplate, '/')));
             $pathRegex = $this->compileNodes(
@@ -71,7 +71,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
                 $routeVarRules
             );
         }
-        
+
         return new UriTemplate(
             "^$regex$",
             !empty($hostTemplate),
