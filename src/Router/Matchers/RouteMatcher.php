@@ -4,6 +4,7 @@ namespace Opulence\Router\Matchers;
 use Opulence\Router\MatchedRoute;
 use Opulence\Router\Route;
 use Opulence\Router\RouteCollection;
+use Opulence\Router\RouteNotFoundException;
 
 /**
  * Defines a route matcher
@@ -16,14 +17,13 @@ class RouteMatcher implements IRouteMatcher
     /**
      * @inheritdoc
      */
-    public function tryMatch(
+    public function match(
         string $httpMethod,
         string $host,
         string $path,
         array $headers,
-        RouteCollection $routes,
-        ?MatchedRoute &$matchedRoute
-    ) : bool {
+        RouteCollection $routes
+    ) : MatchedRoute {
         $hostAndPath = $host . $path;
         $uppercaseHttpMethod = strtoupper($httpMethod);
         $routesByMethod = $routes->getByMethod($uppercaseHttpMethod);
@@ -37,7 +37,7 @@ class RouteMatcher implements IRouteMatcher
             foreach ($chunkedRoutes as $route) {
                 $routesByCapturingGroupOffsets[$capturingGroupOffset] = $route;
                 $uriTemplate = $route->getUriTemplate();
-                $capturingGroupOffset += $uriTemplate->getNumCapturingGroups();
+                $capturingGroupOffset += count($uriTemplate->getRouteVarNames()) + 1;
                 $regexes[] = $uriTemplate->getRegex();
             }
             
@@ -46,6 +46,9 @@ class RouteMatcher implements IRouteMatcher
             if (preg_match('#^(?:(' . implode(')|(', $regexes) . '))$#', $hostAndPath, $matches) !== 1) {
                 continue;
             }
+            
+            // Remove the subject of the matches
+            array_shift($matches);
             
             foreach ($routesByCapturingGroupOffsets as $offset => $route) {
                 if ($matches[$offset] === '') {
@@ -58,26 +61,30 @@ class RouteMatcher implements IRouteMatcher
                     continue;
                 }
                 
-                echo var_export($matches, true);ob_flush();
-                $matchedGroups = array_slice($matches, $offset, $uriTemplate->getNumCapturingGroups());
+                // Since the first value in this route's capturing group is the entire matched route,
+                // start with the next offset, which will contain the route variables
+                $matchedRouteVarValues = array_slice($matches, $offset + 1, count($uriTemplate->getRouteVarNames()));
                 $routeVars = [];
-                $this->populateRouteVars($routeVars, $matchedGroups, $uriTemplate->getDefaultRouteVars());
+                $this->populateRouteVars(
+                    $routeVars,
+                    $uriTemplate->getRouteVarNames(),
+                    $matchedRouteVarValues,
+                    $uriTemplate->getDefaultRouteVars()
+                );
                 
                 if (!$this->routeVarsPassRules($routeVars, $uriTemplate->getRouteVarRules())) {
                     continue;
                 }
                 
-                $matchedRoute = new MatchedRoute(
+                return new MatchedRoute(
                     $route->getAction(),
                     $routeVars,
                     $route->getMiddlewareBindings()
                 );
-                
-                return true;
             }
         }
 
-        return false;
+        throw new RouteNotFoundException();
     }
 
     /**
@@ -108,28 +115,29 @@ class RouteMatcher implements IRouteMatcher
      * Populates route vars from matches in the regex
      *
      * @param array $routeVars The route vars to populate
-     * @param array $matches The matches from the regex
+     * @param array $routeVarNames The list of route var names to expect
+     * @param array $matchedRouteVarValues The matches from the regex
      * @param array $defaultRouteVars The mapping of variable names to their default values
      */
-    private function populateRouteVars(array &$routeVars, array $matches, array $defaultRouteVars) : void
-    {
+    private function populateRouteVars(
+        array &$routeVars,
+        array $routeVarNames,
+        array $matchedRouteVarValues,
+        array $defaultRouteVars
+    ) : void {
         $routeVars = [];
-
-        // Remove the subject
-        array_shift($matches);
 
         // Set any missing route vars to their default values, if they have any
         foreach ($defaultRouteVars as $name => $defaultValue) {
-            if (!isset($matches[$name])) {
-                $matches[$name] = $defaultValue;
+            $routeVarIndex = array_search($name, $routeVarNames);
+            
+            if (!isset($matchedRouteVarValues[$routeVarIndex])) {
+                $matchedRouteVarValues[$routeVarIndex] = $defaultValue;
             }
         }
 
-        // The matches will also contain numerical indices - we don't care about them
-        foreach ($matches as $name => $value) {
-            if (is_string($name)) {
-                $routeVars[$name] = $value;
-            }
+        foreach ($matchedRouteVarValues as $matchIndex => $value) {
+            $routeVars[$routeVarNames[$matchIndex]] = $value;
         }
     }
 

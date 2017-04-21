@@ -49,7 +49,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->parser->expects($this->once())
             ->method('parse')
             ->willReturn($ast);
-        $expectedUriTemplate = new UriTemplate('^foo\.com/bar$', 0, true);
+        $expectedUriTemplate = new UriTemplate('^foo\.com/bar$', true);
         $actualUriTemplate = $this->compiler->compile('foo.com/', '/bar');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
@@ -65,7 +65,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->parser->expects($this->once())
             ->method('parse')
             ->willReturn($ast);
-        $expectedUriTemplate = new UriTemplate('^[^/]+/foo$', 0, false, true);
+        $expectedUriTemplate = new UriTemplate('^[^/]+/foo$', false, [], true);
         $actualUriTemplate = $this->compiler->compile(null, '/foo', true);
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
@@ -81,7 +81,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->parser->expects($this->once())
             ->method('parse')
             ->willReturn($ast);
-        $expectedUriTemplate = new UriTemplate('^[^/]+/foo/bar/baz$', 0, false);
+        $expectedUriTemplate = new UriTemplate('^[^/]+/foo/bar/baz$', false);
         $actualUriTemplate = $this->compiler->compile(null, '/foo/bar/baz');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
@@ -102,7 +102,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->parser->expects($this->once())
             ->method('parse')
             ->willReturn($ast);
-        $expectedUriTemplate = new UriTemplate("^[^/]+/foo(?:/{$this->createVarRegex('bar', true)})?$", 1, false);
+        $expectedUriTemplate = new UriTemplate("^[^/]+/foo(?:/([^\/:]+))?$", false, ['bar']);
         $actualUriTemplate = $this->compiler->compile(null, '/foo[/:bar]');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
@@ -122,7 +122,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->parser->expects($this->once())
             ->method('parse')
             ->willReturn($ast);
-        $expectedUriTemplate = new UriTemplate("^[^/]+/foo/{$this->createVarRegex('bar')}/baz$", 1, false);
+        $expectedUriTemplate = new UriTemplate("^[^/]+/foo/([^\/:]+)/baz$", false, ['bar']);
         $actualUriTemplate = $this->compiler->compile(null, '/foo/:bar/baz');
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
@@ -145,9 +145,9 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
             ->method('parse')
             ->willReturn($ast);
         $expectedUriTemplate = new UriTemplate(
-            "^[^/]+/foo/{$this->createVarRegex('bar')}/baz$",
-            1,
+            "^[^/]+/foo/([^\/:]+)/baz$",
             false,
+            ['bar'],
             false,
             ['bar' => 'blah']
         );
@@ -182,9 +182,9 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
             ->method('parse')
             ->willReturn($ast);
         $expectedUriTemplate = new UriTemplate(
-            "^[^/]+/foo/{$this->createVarRegex('bar')}$",
-            1,
+            "^[^/]+/foo/([^\/:]+)$",
             false,
+            ['bar'],
             false,
             [],
             ['bar' => [$rule1, $rule2]]
@@ -224,9 +224,9 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
             ->method('parse')
             ->willReturn($ast);
         $expectedUriTemplate = new UriTemplate(
-            "^[^/]+/foo/{$this->createVarRegex('bar')}$",
-            1,
+            "^[^/]+/foo/([^\/:]+)$",
             false,
+            ['bar'],
             false,
             [],
             ['bar' => [$rule1, $rule2]]
@@ -256,9 +256,9 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
             ->method('parse')
             ->willReturn($ast);
         $expectedUriTemplate = new UriTemplate(
-            "^[^/]+/foo/{$this->createVarRegex('bar')}$",
-            1,
+            "^[^/]+/foo/([^\/:]+)$",
             false,
+            ['bar'],
             false,
             [],
             ['bar' => [$rule]]
@@ -290,9 +290,9 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
             ->method('parse')
             ->willReturn($ast);
         $expectedUriTemplate = new UriTemplate(
-            "^[^/]+/foo/{$this->createVarRegex('bar')}$",
-            1,
+            "^[^/]+/foo/([^\/:]+)$",
             false,
+            ['bar'],
             false,
             [],
             ['bar' => [$rule]]

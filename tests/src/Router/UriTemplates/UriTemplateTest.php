@@ -21,8 +21,8 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
         $this->rule = $this->createMock(IRule::class);
         $this->uriTemplate = new UriTemplate(
             'regex',
-            5,
             true,
+            ['var'],
             true,
             ['foo' => 'bar'],
             ['baz' => [$this->rule]]
@@ -46,19 +46,19 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
     }
     
     /**
-     * Tests that the number of capturing groups is correct
-     */
-    public function testNumCapturingGroupsIsCorrect() : void
-    {
-        $this->assertEquals(5, $this->uriTemplate->getNumCapturingGroups());
-    }
-    
-    /**
      * Tests that the regex is correct
      */
     public function testRegexIsCorrect() : void
     {
         $this->assertEquals('regex', $this->uriTemplate->getRegex());
+    }
+    
+    /**
+     * Tests that the route var names are correct
+     */
+    public function testRouteVarNamesAreCorrect() : void
+    {
+        $this->assertEquals(['var'], $this->uriTemplate->getRouteVarNames());
     }
     
     /**
@@ -77,8 +77,8 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
     {
         $uriTemplate = new UriTemplate(
             'regex',
-            0,
             false,
+            ['baz'],
             false,
             ['foo' => 'bar'],
             ['baz' => $this->rule]

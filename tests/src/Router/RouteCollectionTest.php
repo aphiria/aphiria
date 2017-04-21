@@ -23,14 +23,14 @@ class RouteCollectionTest extends \PHPUnit\Framework\TestCase
         $this->seededCollection = new RouteCollection();
         $this->getRoute = new Route(
             ['GET'],
-            new UriTemplate('regex', 0, false),
+            new UriTemplate('regex', false),
             $this->createMock(RouteAction::class),
             [],
             'getRoute'
         );
         $this->getAndPostRoute = new Route(
             ['GET', 'POST'],
-            new UriTemplate('regex', 0, false),
+            new UriTemplate('regex', false),
             $this->createMock(RouteAction::class),
             [],
             'getAndPostRoute'

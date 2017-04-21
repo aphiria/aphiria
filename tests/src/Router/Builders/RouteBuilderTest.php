@@ -21,7 +21,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
     {
         $this->routeBuilder = new RouteBuilder(
             ['GET'],
-            new UriTemplate('/foo', 0, false),
+            new UriTemplate('/foo', false),
             ['foo' => 'bar']
         );
     }

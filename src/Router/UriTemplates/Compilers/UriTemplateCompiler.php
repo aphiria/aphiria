@@ -18,6 +18,8 @@ class UriTemplateCompiler implements IUriTemplateCompiler
 {
     /** @var string The regex delimiter to use */
     private const REGEX_DELIMITER = '#';
+    /** @var string The regex used to match route variables */
+    private const ROUTE_VAR_REGEX = '([^\/:]+)';
     /** @var IRuleFactory The factory for rules found in the routes */
     private $ruleFactory = null;
     /** @var IUriTemplateParser The URI template parser to use */
@@ -45,7 +47,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
      */
     public function compile(?string $hostTemplate, string $pathTemplate, bool $isHttpsOnly = false) : UriTemplate
     {
-        $numCapturingGroups = 0;
+        $routeVarNames = [];
         $defaultRouteVars = [];
         $routeVarRules = [];
         
@@ -53,7 +55,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
             $pathAst = $this->parser->parse($this->lexer->lex('/' . ltrim($pathTemplate, '/')));
             $pathRegex = $this->compileNodes(
                 $pathAst->getRootNode(),
-                $numCapturingGroups,
+                $routeVarNames,
                 $defaultRouteVars,
                 $routeVarRules
             );
@@ -64,7 +66,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
             $uriAst = $this->parser->parse($this->lexer->lex($rawUriTemplate));
             $regex = $this->compileNodes(
                 $uriAst->getRootNode(),
-                $numCapturingGroups,
+                $routeVarNames,
                 $defaultRouteVars,
                 $routeVarRules
             );
@@ -72,8 +74,8 @@ class UriTemplateCompiler implements IUriTemplateCompiler
         
         return new UriTemplate(
             "^$regex$",
-            $numCapturingGroups,
             !empty($hostTemplate),
+            $routeVarNames,
             $isHttpsOnly,
             $defaultRouteVars,
             $routeVarRules
@@ -84,7 +86,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
      * Compiles an abstract syntax tree
      *
      * @param Node $rootNode The root node to compile
-     * @param int $numCapturingGroups The number of capturing groups in the regex
+     * @param array $routeVarNames The list of route var names
      * @param array $defaultRouteVars The mapping of route var names to their default values
      * @param IRule[] $routeVarRules The mapping of route var names to their rules
      * @return string The compiled regex
@@ -92,7 +94,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
      */
     private function compileNodes(
         Node $rootNode,
-        int &$numCapturingGroups,
+        array &$routeVarNames,
         array &$defaultRouteVars,
         array &$routeVarRules
     ) : string {
@@ -103,7 +105,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
                 case NodeTypes::OPTIONAL_ROUTE_PART:
                     $compiledRegex .= $this->compileOptionalRoutePartNode(
                         $childNode,
-                        $numCapturingGroups,
+                        $routeVarNames,
                         $defaultRouteVars,
                         $routeVarRules
                     );
@@ -114,7 +116,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
                 case NodeTypes::VARIABLE:
                     $compiledRegex .= $this->compileVariableNode(
                         $childNode,
-                        $numCapturingGroups,
+                        $routeVarNames,
                         $defaultRouteVars,
                         $routeVarRules
                     );
@@ -131,25 +133,25 @@ class UriTemplateCompiler implements IUriTemplateCompiler
      * Compiles an optional route part node
      *
      * @param Node $node The optional route part node to compile
-     * @param int $numCapturingGroups The number of capturing groups in the regex
+     * @param array $routeVarNames The list of route var names
      * @param array $defaultRouteVars The mapping of route var names to their default values
      * @param IRule[] $routeVarRules The mapping of route var names to their rules
      * @return string The compiled regex
      */
     private function compileOptionalRoutePartNode(
         Node $node,
-        int &$numCapturingGroups,
+        array &$routeVarRegexPositions,
         array &$defaultRouteVars,
         array &$routeVarRules
     ) : string {
-        return "(?:{$this->compileNodes($node, $numCapturingGroups, $defaultRouteVars, $routeVarRules)})?";
+        return "(?:{$this->compileNodes($node, $routeVarRegexPositions, $defaultRouteVars, $routeVarRules)})?";
     }
 
     /**
      * Compiles a variable node
      *
      * @param Node $node The variable node to compile
-     * @param int $numCapturingGroups The number of capturing groups in the regex
+     * @param array $routeVarNames The list of route var names
      * @param array $defaultRouteVars The mapping of route var names to their default values
      * @param IRule[] $routeVarRules The mapping of route var names to their rules
      * @return string The compiled regex
@@ -157,13 +159,12 @@ class UriTemplateCompiler implements IUriTemplateCompiler
      */
     private function compileVariableNode(
         Node $node,
-        int &$numCapturingGroups,
+        array &$routeVarNames,
         array &$defaultRouteVars,
         array &$routeVarRules
     ) : string {
         $variableName = $node->getValue();
-        $regex = sprintf('(?P<%s>%s)', $variableName, '[^\/:]+');
-        $numCapturingGroups++;
+        $routeVarNames[] = $variableName;
 
         foreach ($node->getChildren() as $childNode) {
             switch ($childNode->getType()) {
@@ -187,6 +188,6 @@ class UriTemplateCompiler implements IUriTemplateCompiler
             }
         }
 
-        return $regex;
+        return self::ROUTE_VAR_REGEX;
     }
 }

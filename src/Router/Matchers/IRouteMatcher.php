@@ -3,6 +3,7 @@ namespace Opulence\Router\Matchers;
 
 use Opulence\Router\MatchedRoute;
 use Opulence\Router\RouteCollection;
+use Opulence\Router\RouteNotFoundException;
 
 /**
  * Defines the interface for route matchers to implement
@@ -17,15 +18,14 @@ interface IRouteMatcher
      * @param string $path The path of the request
      * @param array $headers The mapping of header names to values
      * @param RouteCollection $routes The list of routes to match against
-     * @param MatchedRoute $matchedRoute The matched route, if one is found
-     * @return bool True if a match was found, otherwise false
+     * @return MatchedRoute The matched route, if one was found
+     * @throws RouteNotFoundException Thrown if no matching route was found
      */
-    public function tryMatch(
+    public function match(
         string $httpMethod,
         string $host,
         string $path,
         array $headers,
-        RouteCollection $routes,
-        ?MatchedRoute &$matchedRoute
-    ) : bool;
+        RouteCollection $routes
+    ) : MatchedRoute;
 }

@@ -1,7 +1,8 @@
 <?php
 use Opulence\Router\Builders\RouteBuilderRegistry;
+use Opulence\Router\Matchers\RouteMatcher;
 use Opulence\Router\Middleware\MiddlewareBinding;
-use Opulence\Router\Router;
+use Opulence\Router\RouteNotFoundException;
 
 $routes = new RouteBuilderRegistry();
 
@@ -22,11 +23,17 @@ $routes->map('GET', 'books/archives/:year(int)[/:month(int,min(1),max(12))]')
     ]);
 
 // Get the matched route
-$router = new Router($routes->buildAll());
-$matchedRoute = $router->route($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
-
-foreach ($matchedRoute->getMiddlewareBindings() as $middlewareBinding) {
-    // Resolve $middlewareBinding->getClassName()
-    // Optionally inject $middlewareBinding->getProperties()
+try {
+    $matchedRoute = (new RouteMatcher)->match(
+        $_SERVER['REQUEST_METHOD'],
+        $_SERVER['HTTP_HOST'],
+        $_SERVER['REQUEST_URI'],
+        [],
+        $routes->buildAll()
+    );
+    
     // Use your library/framework of choice to dispatch $matchedRoute...
+} catch (RouteNotFoundException $ex) {
+    header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found', true, 404);
+    exit;
 }

@@ -1,7 +1,7 @@
 <?php
 use Opulence\Router\Builders\RouteBuilderRegistry;
 use Opulence\Router\Matchers\RouteMatcher;
-use Opulence\Router\Router;
+use Opulence\Router\RouteNotFoundException;
 use Opulence\Router\UriTemplates\Compilers\RegexUriTemplateCompiler;
 use Opulence\Router\UriTemplates\Rules\RuleFactory;
 use Opulence\Router\UriTemplates\Rules\RuleFactoryRegistrant;
@@ -22,7 +22,17 @@ $routes->map('GET', 'books/archives/:year(int)[/:month(int,min(1),max(12))]')
     ->withName('GetBooksFromArchives');
 
 // Get the matched route
-$router = new Router($routes->buildAll(), new RouteMatcher());
-$matchedRoute = $router->route($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
-
-// Use your library/framework of choice to dispatch $matchedRoute...
+try {
+    $matchedRoute = (new RouteMatcher)->match(
+        $_SERVER['REQUEST_METHOD'],
+        $_SERVER['HTTP_HOST'],
+        $_SERVER['REQUEST_URI'], 
+        [], 
+        $routes->buildAll()
+    );
+    
+    // Use your library/framework of choice to dispatch $matchedRoute...
+} catch (RouteNotFoundException $ex) {
+    header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found', true, 404);
+    exit;
+}
