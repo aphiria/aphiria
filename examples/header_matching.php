@@ -33,12 +33,11 @@ foreach ($_SERVER as $key => $value) {
 
 // Get the matched route
 try {
-    $matchedRoute = (new RouteMatcher)->match(
+    $matchedRoute = (new RouteMatcher($routes->buildAll()))->match(
         $_SERVER['REQUEST_METHOD'],
         $_SERVER['HTTP_HOST'],
         $_SERVER['REQUEST_URI'],
-        $headers,
-        $routes->buildAll()
+        $headers
     );
 
     // Use your library/framework of choice to dispatch $matchedRoute...

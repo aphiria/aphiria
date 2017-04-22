@@ -88,10 +88,10 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that the uses-host flag returns correctly
+     * Tests that the is-relative-URI flag returns correctly
      */
-    public function testUsesHostReturnsCorrectValue() : void
+    public function testIsRelataiveUriReturnsCorrectValue() : void
     {
-        $this->assertTrue($this->uriTemplate->usesHost());
+        $this->assertTrue($this->uriTemplate->isAbsoluteUri());
     }
 }

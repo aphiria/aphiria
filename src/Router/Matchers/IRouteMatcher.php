@@ -17,7 +17,6 @@ interface IRouteMatcher
      * @param string $host The host of the request
      * @param string $path The path of the request
      * @param array $headers The mapping of header names to values
-     * @param RouteCollection $routes The list of routes to match against
      * @return MatchedRoute The matched route, if one was found
      * @throws RouteNotFoundException Thrown if no matching route was found
      */
@@ -25,7 +24,6 @@ interface IRouteMatcher
         string $httpMethod,
         string $host,
         string $path,
-        array $headers,
-        RouteCollection $routes
+        array $headers = []
     ) : MatchedRoute;
 }

@@ -23,12 +23,10 @@ $routes->map('GET', 'books/archives/:year(int)[/:month(int,min(1),max(12))]')
 
 // Get the matched route
 try {
-    $matchedRoute = (new RouteMatcher)->match(
+    $matchedRoute = (new RouteMatcher($routes->buildAll()))->match(
         $_SERVER['REQUEST_METHOD'],
         $_SERVER['HTTP_HOST'],
-        $_SERVER['REQUEST_URI'],
-        [],
-        $routes->buildAll()
+        $_SERVER['REQUEST_URI']
     );
 
     // Use your library/framework of choice to dispatch $matchedRoute...

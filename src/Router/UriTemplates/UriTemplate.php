@@ -8,10 +8,10 @@ class UriTemplate
 {
     /** @var string The regex to match with */
     private $regex = '';
-    /** @var bool Whether or not this URI uses a host to match on */
-    private $usesHost = false;
+    /** @var bool Whether or not this URI is an absolute URI */
+    private $isAbsoluteUri = false;
     /** @var array The list of route var names in the order they appear in the regex */
-    private $routeVarNames = 0;
+    private $routeVarNames = [];
     /** @var bool Whether or not the URI is HTTPS-only */
     private $isHttpsOnly = false;
     /** @var array The mapping of route var names to their default values */
@@ -21,7 +21,7 @@ class UriTemplate
 
     /**
      * @param string $regex The regex to match with
-     * @param bool $usesHost Whether or not this URI uses a host to match on
+     * @param bool $isAbsoluteUri Whether or not this URI is an absolute URI
      * @param array $routeVarNames The list of route var names
      * @param bool $isHttpsOnly Whether or not the URI is HTTPS-only
      * @param array $defaultRouteVars The mapping of route var names to their default values
@@ -29,14 +29,14 @@ class UriTemplate
      */
     public function __construct(
             string $regex,
-            bool $usesHost,
+            bool $isAbsoluteUri,
             array $routeVarNames = [],
             bool $isHttpsOnly = false,
             array $defaultRouteVars = [],
             array $routeVarRules = []
     ) {
         $this->regex = $regex;
-        $this->usesHost = $usesHost;
+        $this->isAbsoluteUri = $isAbsoluteUri;
         $this->routeVarNames = $routeVarNames;
         $this->isHttpsOnly = $isHttpsOnly;
         $this->defaultRouteVars = $defaultRouteVars;
@@ -91,6 +91,16 @@ class UriTemplate
     }
 
     /**
+     * Gets whether or not the URI is an absolute URI
+     *
+     * @return bool True if the URI is absolute, otherwise false
+     */
+    public function isAbsoluteUri() : bool
+    {
+        return $this->isAbsoluteUri;
+    }
+
+    /**
      * Gets whether or not the URI is HTTPS-only
      *
      * @return bool True if the URI is HTTPS-only, otherwise false
@@ -98,15 +108,5 @@ class UriTemplate
     public function isHttpsOnly() : bool
     {
         return $this->isHttpsOnly;
-    }
-
-    /**
-     * Gets whether or not the URI uses a host to match on
-     *
-     * @return bool True if the URI uses a host to match on, otherwise false
-     */
-    public function usesHost() : bool
-    {
-        return $this->usesHost;
     }
 }

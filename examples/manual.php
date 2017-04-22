@@ -6,10 +6,10 @@ use Opulence\Router\RouteNotFoundException;
 use Opulence\Router\UriTemplates\UriTemplate;
 
 // Create a route manually
-// The second param in UriTemplate::construct() is the number of capturing groups in the regex
+// The second param in UriTemplate::construct() is whether or not the URI is absolute
 $route = new Route(
     ['GET'],
-    new UriTemplate('foo\.com/users/(\d+)', false, ['userId']),
+    new UriTemplate('foo\.com/users/(\d+)', true, ['userId']),
     new ClosureRouteAction(function ($routeVars) {
         return "Hello, {$routeVars['userId']}";
     }),
@@ -19,12 +19,10 @@ $route = new Route(
 
 // Get the matched route
 try {
-    $matchedRoute = (new RouteMatcher)->match(
+    $matchedRoute = (new RouteMatcher($routes->buildAll()))->match(
         $_SERVER['REQUEST_METHOD'],
         $_SERVER['HTTP_HOST'],
-        $_SERVER['REQUEST_URI'],
-        [],
-        $routes->buildAll()
+        $_SERVER['REQUEST_URI']
     );
 
     // Use your library/framework of choice to dispatch $matchedRoute...

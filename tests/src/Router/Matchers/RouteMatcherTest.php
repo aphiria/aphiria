@@ -23,8 +23,8 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->matcher = new RouteMatcher();
         $this->routeCollection = $this->createMock(RouteCollection::class);
+        $this->matcher = new RouteMatcher($this->routeCollection);
     }
 
     /**
