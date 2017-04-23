@@ -41,7 +41,7 @@ class RouteMatcher implements IRouteMatcher
             $routesByCapturingGroupOffsets = [];
             $regex = $this->buildRegex($chunkedRoutes, $routesByCapturingGroupOffsets);
             $matches = [];
-
+            
             if (preg_match($regex, $hostAndPath, $matches) !== 1) {
                 continue;
             }
@@ -57,6 +57,7 @@ class RouteMatcher implements IRouteMatcher
                 if (!$this->headersMatch($route->getHeadersToMatch(), $headers)) {
                     continue;
                 }
+                
                 // Since the first value in this route's capturing group is the entire matched route,
                 // start with the next offset, which will contain the route variables
                 $routeVarNamesToValues = [];

@@ -13,9 +13,9 @@ require __DIR__ . '/../vendor/autoload.php';
 $routes = new RouteCollection();
 $routes->add(new Route(
     'GET',
-    new UriTemplate('foo\.com/users/(\d+)', true, ['userId']),
-    new ClosureRouteAction(function ($routeVars) {
-        return "Hello, {$routeVars['userId']}";
+    new UriTemplate('^[^/]+/users/(\d+)$', false, ['userId']),
+    new ClosureRouteAction(function () {
+        return "Hello, world";
     })
 ));
 

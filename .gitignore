@@ -2,7 +2,6 @@
 .php_cs.cache
 composer.lock
 composer.phar
-examples/routes.cache
 nbproject/
 phpunit.phar
 vendor/
