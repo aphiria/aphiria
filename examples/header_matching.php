@@ -5,8 +5,6 @@ use Opulence\Router\Matchers\RouteMatcher;
 use Opulence\Router\RouteFactory;
 use Opulence\Router\RouteNotFoundException;
 
-require __DIR__ . '/../vendor/autoload.php';
-
 // Since PHP doesn't have a native way of grabbing all request headers, we'll build them ourselves
 // Feel free to use a library of your choice to do this for you, if you'd like
 $headers = [];

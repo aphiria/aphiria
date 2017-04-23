@@ -8,8 +8,6 @@ use Opulence\Router\UriTemplates\Compilers\UriTemplateCompiler;
 use Opulence\Router\UriTemplates\Rules\RuleFactory;
 use Opulence\Router\UriTemplates\Rules\RuleFactoryRegistrant;
 
-require __DIR__ . '/../vendor/autoload.php';
-
 // Register our routes
 $routesCallback = function (RouteBuilderRegistry $routes) {
     // Add an ordinary route

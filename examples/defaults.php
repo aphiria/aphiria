@@ -5,8 +5,6 @@ use Opulence\Router\Matchers\RouteMatcher;
 use Opulence\Router\RouteFactory;
 use Opulence\Router\RouteNotFoundException;
 
-require __DIR__ . '/../vendor/autoload.php';
-
 // Register our routes
 $routesCallback = function (RouteBuilderRegistry $routes) {
     // Add an ordinary route

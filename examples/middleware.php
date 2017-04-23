@@ -6,8 +6,6 @@ use Opulence\Router\Middleware\MiddlewareBinding;
 use Opulence\Router\RouteFactory;
 use Opulence\Router\RouteNotFoundException;
 
-require __DIR__ . '/../vendor/autoload.php';
-
 // Register our routes
 $routesCallback = function (RouteBuilderRegistry $routes) {
     // Add a route with a single middleware class

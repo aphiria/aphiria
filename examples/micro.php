@@ -6,8 +6,6 @@ use Opulence\Router\RouteCollection;
 use Opulence\Router\RouteNotFoundException;
 use Opulence\Router\UriTemplates\UriTemplate;
 
-require __DIR__ . '/../vendor/autoload.php';
-
 // Create a route manually
 // The second param in UriTemplate::construct() is whether or not the URI is absolute
 $routes = new RouteCollection();
