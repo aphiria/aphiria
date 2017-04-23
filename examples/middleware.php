@@ -1,30 +1,36 @@
 <?php
 use Opulence\Router\Builders\RouteBuilderRegistry;
+use Opulence\Router\Caching\FileRouteCache;
 use Opulence\Router\Matchers\RouteMatcher;
 use Opulence\Router\Middleware\MiddlewareBinding;
+use Opulence\Router\RouteFactory;
 use Opulence\Router\RouteNotFoundException;
 
-$routes = new RouteBuilderRegistry();
+require __DIR__ . '/../vendor/autoload.php';
 
-// Add an ordinary route
-$routes->map('GET', 'users/:userId=me')
-    ->toMethod('UserController', 'getUser')
-    ->withName('GetUser')
-    ->withMiddleware('AuthMiddleware', ['roles' => 'admin']);
+// Register our routes
+$routesCallback = function (RouteBuilderRegistry $routes) {
+    // Add a route with a single middleware class
+    $routes->map('GET', 'users/:userId=me')
+        ->toMethod('UserController', 'getUser')
+        ->withName('GetUser')
+        ->withMiddleware('AuthMiddleware', ['roles' => 'admin']);
 
-// Add a route with rules
-// Matches "books/archives/2013" and "books/archives/2013/2"
-$routes->map('GET', 'books/archives/:year(int)[/:month(int,min(1),max(12))]')
-    ->toMethod('BookController', 'getBooksFromArchives')
-    ->withName('GetBooksFromArchives')
-    ->withManyMiddleware([
-        new MiddlewareBinding('AuthMiddleware', ['roles' => 'admin']),
-        'SessionMiddleware'
-    ]);
+    // Add a route with many middleware classes
+    $routes->map('GET', 'books/archives/:year(int)[/:month(int,between(1,12))]')
+        ->toMethod('BookController', 'getBooksFromArchives')
+        ->withName('GetBooksFromArchives')
+        // This supports both MiddlewareBinding objects and the names of session middleware classes
+        ->withManyMiddleware([
+            new MiddlewareBinding('AuthMiddleware', ['roles' => 'admin']),
+            'SessionMiddleware'
+        ]);
+};
+$routeFactory = new RouteFactory($routesCallback, new FileRouteCache(__DIR__ . '/routes.cache'));
 
 // Get the matched route
 try {
-    $matchedRoute = (new RouteMatcher($routes->buildAll()))->match(
+    $matchedRoute = (new RouteMatcher($routeFactory->createRoutes()))->match(
         $_SERVER['REQUEST_METHOD'],
         $_SERVER['HTTP_HOST'],
         $_SERVER['REQUEST_URI']

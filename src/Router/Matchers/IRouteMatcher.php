@@ -2,7 +2,6 @@
 namespace Opulence\Router\Matchers;
 
 use Opulence\Router\MatchedRoute;
-use Opulence\Router\RouteCollection;
 use Opulence\Router\RouteNotFoundException;
 
 /**

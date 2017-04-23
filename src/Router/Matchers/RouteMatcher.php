@@ -16,7 +16,7 @@ class RouteMatcher implements IRouteMatcher
     private const ROUTE_CHUNK_SIZE = 10;
     /** @var RouteCollection The list of routes to match against */
     private $routes = [];
-    
+
     /**
      * @param RouteCollection $routes The list of routes to match against
      */
@@ -62,7 +62,7 @@ class RouteMatcher implements IRouteMatcher
                 $routeVarNamesToValues = [];
                 $uriTemplate = $route->getUriTemplate();
                 $routeVarValues = array_slice($matches, $offset + 1, count($uriTemplate->getRouteVarNames()));
-                
+
                 if (!$this->routeVarsMatch($uriTemplate, $routeVarValues, $routeVarNamesToValues)) {
                     continue;
                 }
@@ -77,11 +77,11 @@ class RouteMatcher implements IRouteMatcher
 
         throw new RouteNotFoundException();
     }
-    
+
     /**
      * Builds a regex from a list of routes
-     * 
-     * @param Route[] $routes The list of routes whose regexes we're building from 
+     *
+     * @param Route[] $routes The list of routes whose regexes we're building from
      * @param Route[] $routesByCapturingGroupOffsets The mapping of capturing group offsets to routes that we'll build
      * @return string The built regex
      */
@@ -98,7 +98,7 @@ class RouteMatcher implements IRouteMatcher
             $capturingGroupOffset += count($uriTemplate->getRouteVarNames()) + 1;
             $regexes[] = $uriTemplate->getRegex();
         }
-        
+
         return '#^(?:(' . implode(')|(', $regexes) . '))$#';
     }
 
@@ -155,10 +155,10 @@ class RouteMatcher implements IRouteMatcher
             $routeVars[$routeVarNames[$matchIndex]] = $value;
         }
     }
-    
+
     /**
      * Checks whether or not the route vars match the URI template
-     * 
+     *
      * @param UriTemplate $uriTemplate The URI template to match against
      * @param array $routeVarValues The list of route var values
      * @param array $routeVarNamesToValues The mapping of route var names to their values
@@ -172,7 +172,7 @@ class RouteMatcher implements IRouteMatcher
             $routeVarValues,
             $uriTemplate->getDefaultRouteVars()
         );
-        
+
         foreach ($uriTemplate->getRouteVarRules() as $name => $rules) {
             foreach ($rules as $rule) {
                 if (isset($routeVarNamesToValues[$name]) && !$rule->passes($routeVarNamesToValues[$name])) {

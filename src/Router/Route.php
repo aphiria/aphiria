@@ -47,6 +47,15 @@ class Route
     }
 
     /**
+     * Performs a deep clone of object properties
+     */
+    public function __clone()
+    {
+        $this->action = clone $this->action;
+        $this->uriTemplate = clone $this->uriTemplate;
+    }
+
+    /**
      * @return RouteAction
      */
     public function getAction() : RouteAction

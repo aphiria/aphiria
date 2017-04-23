@@ -1,25 +1,30 @@
 <?php
 use Opulence\Router\Builders\RouteBuilderRegistry;
 use Opulence\Router\Builders\RouteGroupOptions;
+use Opulence\Router\Caching\FileRouteCache;
 use Opulence\Router\Matchers\RouteMatcher;
+use Opulence\Router\RouteFactory;
 use Opulence\Router\RouteNotFoundException;
 
-$routes = new RouteBuilderRegistry();
+require __DIR__ . '/../vendor/autoload.php';
 
-// Add a group of routes that share common options
-$routes->group(
-    new RouteGroupOptions('users/', '', false, []),
-    function (RouteBuilderRegistry $routeBuilderRegistry) {
-        $routeBuilderRegistry->map('GET', ':userId')
-            ->toMethod('UserController', 'getUser');
+// Register our routes
+$routesCallback = function (RouteBuilderRegistry $routes) {
+    $routes->group(
+        new RouteGroupOptions('users/', '', false, []),
+        function (RouteBuilderRegistry $routes) {
+            $routes->map('GET', ':userId')
+                ->toMethod('UserController', 'getUser');
 
-        $routeBuilderRegistry->map('GET', 'me')
-            ->toMethod('UserController', 'showMyProfile');
-    });
+            $routes->map('GET', 'me')
+                ->toMethod('UserController', 'showMyProfile');
+        });
+};
+$routeFactory = new RouteFactory($routesCallback, new FileRouteCache(__DIR__ . '/routes.cache'));
 
 // Get the matched route
 try {
-    $matchedRoute = (new RouteMatcher($routes->buildAll()))->match(
+    $matchedRoute = (new RouteMatcher($routeFactory->createRoutes()))->match(
         $_SERVER['REQUEST_METHOD'],
         $_SERVER['HTTP_HOST'],
         $_SERVER['REQUEST_URI']

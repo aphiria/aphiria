@@ -4,6 +4,8 @@ namespace Opulence\Router\Builders;
 use Closure;
 use Opulence\Router\RouteCollection;
 use Opulence\Router\UriTemplates\Compilers\IUriTemplateCompiler;
+use Opulence\Router\UriTemplates\Compilers\UriTemplateCompiler;
+use Opulence\Router\UriTemplates\Rules\RuleFactory;
 use Opulence\Router\UriTemplates\Rules\RuleFactoryRegistrant;
 
 /**
@@ -25,7 +27,8 @@ class RouteBuilderRegistry
     {
         if ($uriTemplateCompiler === null) {
             // Use the default compiler and register the built-in rule factories
-            $this->uriTemplateCompiler = (new RuleFactoryRegistrant)->registerRuleFactories(new RegexUriTemplateCompiler);
+            $ruleFactory = (new RuleFactoryRegistrant)->registerRuleFactories(new RuleFactory);
+            $this->uriTemplateCompiler = new UriTemplateCompiler($ruleFactory);
         } else {
             $this->uriTemplateCompiler = $uriTemplateCompiler;
         }

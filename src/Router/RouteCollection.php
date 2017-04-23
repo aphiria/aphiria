@@ -16,7 +16,7 @@ class RouteCollection
         'OPTIONS' => [],
         'PATCH' => []
     ];
-    /** @var ParsedRoute[] The mapping of route names to routes */
+    /** @var Route[] The mapping of route names to routes */
     private $namedRoutes = [];
 
     /**
@@ -28,6 +28,10 @@ class RouteCollection
             foreach ($routesByMethod as $index => $route) {
                 $this->routes[$method][$index] = clone $route;
             }
+        }
+
+        foreach ($this->namedRoutes as $name => $route) {
+            $this->namedRoutes[$name] = clone $route;
         }
     }
 

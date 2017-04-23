@@ -9,6 +9,7 @@ use Opulence\Router\UriTemplates\Compilers\Parsers\Nodes\Node;
 use Opulence\Router\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
 use Opulence\Router\UriTemplates\Compilers\Parsers\UriTemplateParser;
 use Opulence\Router\UriTemplates\Rules\IRuleFactory;
+use Opulence\Router\UriTemplates\Rules\RuleFactory;
 use Opulence\Router\UriTemplates\UriTemplate;
 
 /**
@@ -33,11 +34,11 @@ class UriTemplateCompiler implements IUriTemplateCompiler
      * @param IUriTemplateLexer|null $lexer The URI template lexer to use
      */
     public function __construct(
-        IRuleFactory $ruleFactory,
+        IRuleFactory $ruleFactory = null,
         IUriTemplateParser $parser = null,
         IUriTemplateLexer $lexer = null
     ) {
-        $this->ruleFactory = $ruleFactory;
+        $this->ruleFactory = $ruleFactory ?? new RuleFactory();
         $this->parser = $parser ?? new UriTemplateParser();
         $this->lexer = $lexer ?? new UriTemplateLexer();
     }

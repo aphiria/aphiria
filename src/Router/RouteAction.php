@@ -12,18 +12,19 @@ use SuperClosure\SerializerInterface;
  */
 class RouteAction
 {
+    // Note - These are protected rather than private for serialization purposes
     /** @var string|null The name of the class the route routes to */
-    private $className = null;
+    protected $className = null;
     /** @var string|null The name of the method the route routes to */
-    private $methodName = null;
+    protected $methodName = null;
     /** @var Closure|null The closure the route routes to */
-    private $closure = null;
+    protected $closure = null;
     /** @var bool Whether or not the action uses a method or a closure */
-    private $usesMethod = false;
+    protected $usesMethod = false;
     /** @var SerializerInterface The serializer to use for closures */
-    private $serializer = null;
+    protected $serializer = null;
     /** @var string The serialized closure */
-    private $serializedClosure = '';
+    protected $serializedClosure = '';
 
     /**
      * @param string|null $className The name of the class the route routes to
@@ -52,14 +53,30 @@ class RouteAction
     }
 
     /**
+     * Performs a deep clone of object properties
+     */
+    public function __clone()
+    {
+        if ($this->closure !== null) {
+            $this->closure = clone $this->closure;
+        }
+
+        $this->serializer = clone $this->serializer;
+    }
+
+    /**
      * Serializes the action
      *
      * @return array The list of properties to store
      */
     public function __sleep() : array
     {
-        $this->serializedClosure = $this->serializer->serialize($this->closure);
-        $this->closure = null;
+        if ($this->closure === null) {
+            $this->serializedClosure = '';
+        } else {
+            $this->serializedClosure = $this->serializer->serialize($this->closure);
+            $this->closure = null;
+        }
 
         return array_keys(get_object_vars($this));
     }
@@ -69,7 +86,12 @@ class RouteAction
      */
     public function __wakeup()
     {
-        $this->closure = $this->serializer->unserialize($this->serializedClosure);
+        if ($this->serializedClosure === '') {
+            $this->closure = null;
+        } else {
+            $this->closure = $this->serializer->unserialize($this->serializedClosure);
+        }
+
         $this->serializedClosure = '';
     }
 
