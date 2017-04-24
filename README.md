@@ -1,15 +1,15 @@
 <h1>Table of Contents</h1>
 
 1. [Introduction](#introduction)
-  1. [Why This Library?](#why-this-library)
+    1. [Why This Library?](#why-this-library)
 2. [Basic Usage](#basic-usage)
-  1. [Route Builders](#route-builders)
-  2. [Syntax](#syntax)
-  3. [Matched Routes](#matched-routes)
+    1. [Route Builders](#route-builders)
+    2. [Syntax](#syntax)
+    3. [Matched Routes](#matched-routes)
 3. [Binding Middleware](#binding-middleware)
-  1. [Middleware Properties](#middleware-properties)
+    1. [Middleware Properties](#middleware-properties)
 4. [Route Variable Rules](#route-variable-rules)
-  1. [Built-In Rules](#built-in-rules)
+    1. [Built-In Rules](#built-in-rules)
 5. [Grouping Routes](#grouping-routes)
 6. [Header Matching](#header-matching)
 7. [Micro-Library](#micro-library)
@@ -87,12 +87,12 @@ If part of your route is optional, then surround it with brackets.  For example,
 The route matcher returns a matched route on success.  It will contain three simple methods:
 
 * `getAction()`
-  * The action (either `Closure` or class name/method this route maps to)
+    * The action (either `Closure` or class name/method this route maps to)
 * `getMiddlewareBindings()`
-  * The list of middleware class names/properties this route uses
+    * The list of middleware class names/properties this route uses
 * `getRouteVars()`
-  * The mapping of route variable names to values for this route
-  * For example, if the route is `users/:userId` and the request URI is `/users/123`, then `getRouteVars()` would return `['userId' => '123']`.
+    * The mapping of route variable names to values for this route
+    * For example, if the route is `users/:userId` and the request URI is `/users/123`, then `getRouteVars()` would return `['userId' => '123']`.
 
 <h1 id="binding-middleware">Binding Middleware</h1>
 Middleware are a great way to modify both the request and the response on an endpoint.  Opulence lets you define middleware on your endpoints without binding you to any particular library/framework's middleware implementations.
