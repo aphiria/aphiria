@@ -24,7 +24,7 @@ This library is a route matching library.  In other words, it lets you define yo
 There are so many routing libraries out there?  Why this one?  Well, there are a few reasons:
 
 * It is incredibly fast
-* It isn't coupled to any other library/framework
+* It isn't coupled to any library/framework
 * It supports things that other route matching libraries do not support, like:
     * Binding framework-agnostic middleware
     * Binding both controller methods and closures to the route action
@@ -51,21 +51,14 @@ use Opulence\Router\RouteNotFoundException;
 
 // Register our routes
 $routesCallback = function (RouteBuilderRegistry $routes) {
-    // Add an ordinary route
     $routes->map('GET', 'books/:bookId')
         ->toMethod('BookController', 'getBooksById')
         ->withName('GetBooksById');
-
-    // Add a route with rules
-    // Matches "books/archives/2013" and "books/archives/2013/2"
-    $routes->map('GET', 'books/archives/:year(int)[/:month(int,between(1,12))]')
-        ->toMethod('BookController', 'getBooksFromArchives')
-        ->withName('GetBooksFromArchives');
 };
 $routeFactory = new RouteFactory($routesCallback, new FileRouteCache(__DIR__ . '/routes.cache'));
 
-// Get the matched route
 try {
+    // Get the matched route
     $matchedRoute = (new RouteMatcher($routeFactory->createRoutes()))->match(
         $_SERVER['REQUEST_METHOD'],
         $_SERVER['HTTP_HOST'],
@@ -79,17 +72,31 @@ try {
 }
 ```
 
-We define our routes inside a callback that will be executed once and then cached.  To actually dispatch `$matchedRoute`, use the library/framework of your choice.
+Define your routes inside a callback that will be executed once and then cached.  To actually dispatch `$matchedRoute`, use the library/framework of your choice.
 
 <h2 id="syntax">Syntax</h2>
 
-Opulence provides a simple syntax for your URIs.  Route variables are written as `:varName`.  If you want to specify a default value, then you'd write `:varName=defaultValue`.  If you'd like to use rules, then pass them in parentheses after the variable:   `:varName(rule1,rule2(param1,param2))`.  If a rule does not take any parameters, then no parentheses are required.
+Opulence provides a simple syntax for your URIs.  Route variables are written as `:varName`.  If you want to specify a default value, then you'd write
 
-If part of your route is optional, then surround it with brackets.  For example, the following will match both `archives/2017` and `archives/2017/7`: `archives/:year[/:month]`.
+```php
+:varName=defaultValue`
+```
+
+If you'd like to use rules, then pass them in parentheses after the variable:
+```php
+:varName(rule1,rule2(param1,param2))
+```
+
+If a rule does not take any parameters, then no parentheses are required.
+
+If part of your route is optional, then surround it with brackets.  For example, the following will match both `archives/2017` and `archives/2017/7`:
+```php
+archives/:year[/:month]
+```
 
 <h2 id="matched-routes">Matched Routes</h2>
 
-The route matcher returns a matched route on success.  It will contain three simple methods:
+The route matcher returns a `MatchedRoute` on success.  It will contain three simple methods:
 
 * `getAction()`
     * The action (either `Closure` or class name/method this route maps to)
@@ -101,7 +108,7 @@ The route matcher returns a matched route on success.  It will contain three sim
 
 <h2 id="route-builders">Route Builders</h2>
 
-Each time you call `$routes->map()`, you're creating a new `RouteBuilder`.  `map()` accepts the following parameters:
+Each time you call `$routes->map()`, you're creating a new `RouteBuilder`.  It accepts the following parameters:
 
 * `$httpMethods`
     * The HTTP method or list of methods to match on (eg `'GET'` or `['POST', 'GET']`)
@@ -135,6 +142,8 @@ $route->withManyMiddleware([
 ]);
 ```
 
+Under the hood, these class names get converted to instances of `MiddlewareBinding`.
+
 <h2 id="middleware-properties">Middleware Properties</h2>
 
 Some frameworks such as Opulence and Laravel let you bind properties to middleware.  For example, if you have an `AuthMiddleware`, but need to bind the route that's necessary to access the route, you might want to pass in the requisite user role.  Here's how you can do it:
@@ -144,7 +153,7 @@ $route->withMiddleware('AuthMiddleware', ['role' => 'admin']);
 // Or
 $route->withManyMiddleware([
     new MiddlewareBinding('AuthMiddleware', ['role' => 'admin']),
-    // Other middleware
+    // Other middleware...
 ]);
 ```
 
