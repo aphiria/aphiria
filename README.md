@@ -2,9 +2,10 @@
 
 1. [Introduction](#introduction)
     1. [Why This Library?](#why-this-library)
+    1. [Installation](#installation)
 2. [Basic Usage](#basic-usage)
-    1. [Route Builders](#route-builders)
-    2. [Syntax](#syntax)
+    1. [Syntax](#syntax)
+    2. [Route Builders](#route-builders)
     3. [Matched Routes](#matched-routes)
 3. [Binding Middleware](#binding-middleware)
     1. [Middleware Properties](#middleware-properties)
@@ -16,7 +17,7 @@
 
 <h1 id="introduction">Introduction</h1>
 
-This library is a route matching library.  In other words, it lets you define your routes, and returns the matched route given the request host and path.
+This library is a route matching library.  In other words, it lets you define your routes, and attempts to match an input request with ones of those routes.
 
 <h2 id="why-this-library">Why This Library?</h2>
 
@@ -33,6 +34,9 @@ There are so many routing libraries out there?  Why this one?  Well, there are a
 * It is built to support the latest PHP 7.1 features
 
 > **Note:** This is *not* a a route dispatching library.  This library does not call controllers or closures on the matched route.  Why?  Usually, such actions are tightly coupled to an HTTP library or to a framework.  By not dispatching the matched route, you're free to use the library/framework of your choice, while still getting the benefits of performance and fluent syntax.
+
+<h2 id="installation">Installation</h2>
+This library requires PHP 7.1 and above.
 
 <h1 id="basic-usage">Basic Usage</h1>
 
@@ -77,23 +81,6 @@ try {
 
 We define our routes inside a callback that will be executed once and then cached.  To actually dispatch `$matchedRoute`, use the library/framework of your choice.
 
-<h2 id="route-builders">Route Builders</h2>
-
-Each time you call `$routes->map()`, you're creating a new `RouteBuilder`  `map()` accepts the following parameters:
-
-* `$httpMethods`
-    * The HTTP method or list of methods to match on (eg `'GET'` or `['POST', 'GET']`)
-* `$pathTemplate`
-    * The path for this route ([read about syntax](#syntax))
-* `$hostTemplate` (optional)
-    * The optional host template for this route  ([read about syntax](#syntax))
-* `$isHttpsOnly` (optional)
-    * Whether or not this route is HTTPS-only
-* `$headersToMatch` (optional)
-    * The mapping of header names => values to match on
-
-Route builders give you a fluent syntax for mapping your routes to closures or controller methods.  They also let you [bind any middleware](#binding-middleware) classes and properties to the route.
-
 <h2 id="syntax">Syntax</h2>
 
 Opulence provides a simple syntax for your URIs.  Route variables are written as `:varName`.  If you want to specify a default value, then you'd write `:varName=defaultValue`.  If you'd like to use rules, then pass them in parentheses after the variable:   `:varName(rule1,rule2(param1,param2))`.  If a rule does not take any parameters, then no parentheses are required.
@@ -111,6 +98,23 @@ The route matcher returns a matched route on success.  It will contain three sim
 * `getRouteVars()`
     * The mapping of route variable names to values for this route
     * For example, if the route is `users/:userId` and the request URI is `/users/123`, then `getRouteVars()` would return `['userId' => '123']`.
+
+<h2 id="route-builders">Route Builders</h2>
+
+Each time you call `$routes->map()`, you're creating a new `RouteBuilder`.  `map()` accepts the following parameters:
+
+* `$httpMethods`
+    * The HTTP method or list of methods to match on (eg `'GET'` or `['POST', 'GET']`)
+* `$pathTemplate`
+    * The path for this route ([read about syntax](#syntax))
+* `$hostTemplate` (optional)
+    * The optional host template for this route  ([read about syntax](#syntax))
+* `$isHttpsOnly` (optional)
+    * Whether or not this route is HTTPS-only
+* `$headersToMatch` (optional)
+    * The mapping of header names => values to match on
+
+Route builders give you a fluent syntax for mapping your routes to closures or controller methods.  They also let you [bind any middleware](#binding-middleware) classes and properties to the route.
 
 <h1 id="binding-middleware">Binding Middleware</h1>
 
@@ -219,7 +223,7 @@ $ruleFactory = new RuleFactory(
 
 We can now use the slug to use this rule:  `users/names/:name(minLength(4))`.
 
-<h2 id="built-in-rules">Build-In Rules</h2>
+<h2 id="built-in-rules">Built-In Rules</h2>
 
 The following rules are built-into Opulence:
 
