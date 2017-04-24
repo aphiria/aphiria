@@ -13,6 +13,9 @@ class RuleFactory implements IRuleFactory
     /** @var Closure The mapping of rule slugs to factories */
     private $factories = [];
 
+    /**
+     * @inheritdoc
+     */
     public function createRule(string $slug, array $params = []) : IRule
     {
         if (!isset($this->factories[$slug])) {
