@@ -79,7 +79,7 @@ Define your routes inside a callback that will be executed once and then cached.
 Opulence provides a simple syntax for your URIs.  Route variables are written as `:varName`.  If you want to specify a default value, then you'd write
 
 ```php
-:varName=defaultValue`
+:varName=defaultValue
 ```
 
 If you'd like to use rules, then pass them in parentheses after the variable:
@@ -94,6 +94,12 @@ If part of your route is optional, then surround it with brackets.  For example,
 archives/:year[/:month]
 ```
 
+Optional route parts can be nested:
+
+```php
+archives/:year[/:month[/:day]]
+```
+
 <h2 id="matched-routes">Matched Routes</h2>
 
 The route matcher returns a `MatchedRoute` on success.  It will contain three simple methods:
@@ -104,7 +110,7 @@ The route matcher returns a `MatchedRoute` on success.  It will contain three si
     * The list of middleware class names/properties this route uses
 * `getRouteVars()`
     * The mapping of route variable names to values for this route
-    * For example, if the route is `users/:userId` and the request URI is `/users/123`, then `getRouteVars()` would return `['userId' => '123']`.
+    * For example, if the route is `users/:userId` and the request URI is `/users/123`, then `getRouteVars()` would return `['userId' => '123']`
 
 <h2 id="route-builders">Route Builders</h2>
 
