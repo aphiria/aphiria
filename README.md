@@ -74,6 +74,8 @@ try {
 
 Define your routes inside a callback that will be executed once and then cached.  To actually dispatch `$matchedRoute`, use the library/framework of your choice.
 
+> **Note:** If you're using another HTTP library (eg Opulence, Symfony, or Laravel) in your application, it's better to use their methods to get the request method, host, and URI.  They account for things like trusted proxies as well as more robust handling of certain request headers.
+
 <h2 id="syntax">Syntax</h2>
 
 Opulence provides a simple syntax for your URIs.  Route variables are written as `:varName`.  If you want to specify a default value, then you'd write
