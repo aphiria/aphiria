@@ -230,12 +230,12 @@ The following rules are built-into Opulence:
 * `alpha`
 * `alphanumeric`
 * `between($min, $max, $isInclusive = true)`
-* `date($listOfAcceptableFormats)`
-* `in($listOfAcceptableValues)`
+* `date(string $commaSeparatedListOfAcceptableFormats)`
+* `in(string $commaSeparatedListOfAcceptableValues)`
 * `int`
-* `notIn($listOfUnacceptableValues)`
+* `notIn(string $commaSeparatedListOfUnacceptableValues)`
 * `numeric`
-* `regex($regex)`
+* `regex(string $regex)`
 * `uuidv4`
 
 <h1 id="grouping-routes">Grouping Routes</h1>
