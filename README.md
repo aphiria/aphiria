@@ -19,6 +19,7 @@
 This library is a route matching library.  In other words, it lets you define your routes, and returns the matched route given the request host and path.
 
 <h2 id="why-this-library">Why This Library?</h2>
+
 There are so many routing libraries out there?  Why this one?  Well, there are a few reasons:
 
 * It is incredibly fast
@@ -34,6 +35,7 @@ There are so many routing libraries out there?  Why this one?  Well, there are a
 > **Note:** This is *not* a a route dispatching library.  This library does not call controllers or closures on the matched route.  Why?  Usually, such actions are tightly coupled to an HTTP library or to a framework.  By not dispatching the matched route, you're free to use the library/framework of your choice, while still getting the benefits of performance and fluent syntax.
 
 <h1 id="basic-usage">Basic Usage</h1>
+
 Out of the box, this library provides a fluent syntax to help you build your routes with ease.  In a nutshell, you build your routes and pass them into a route matcher.  Let's look at a simple and complete example:
 
 ```php
@@ -76,14 +78,30 @@ try {
 We define our routes inside a callback that will be executed once and then cached.  To actually dispatch `$matchedRoute`, use the library/framework of your choice.
 
 <h2 id="route-builders">Route Builders</h2>
-Each time you call `$routes->map()`, you're creating a new `RouteBuilder`.  These give you a fluent syntax for mapping your routes to closures or controller methods.  They also let you [bind any middleware](#binding-middleware) classes and properties to the route.
+
+Each time you call `$routes->map()`, you're creating a new `RouteBuilder`  `map()` accepts the following parameters:
+
+* `$httpMethods`
+    * The HTTP method or list of methods to match on (eg `'GET'` or `['POST', 'GET']`)
+* `$pathTemplate`
+    * The path for this route ([read about syntax](#syntax))
+* `$hostTemplate` (optional)
+    * The optional host template for this route  ([read about syntax](#syntax))
+* `$isHttpsOnly` (optional)
+    * Whether or not this route is HTTPS-only
+* `$headersToMatch` (optional)
+    * The mapping of header names => values to match on
+
+Route builders give you a fluent syntax for mapping your routes to closures or controller methods.  They also let you [bind any middleware](#binding-middleware) classes and properties to the route.
 
 <h2 id="syntax">Syntax</h2>
+
 Opulence provides a simple syntax for your URIs.  Route variables are written as `:varName`.  If you want to specify a default value, then you'd write `:varName=defaultValue`.  If you'd like to use rules, then pass them in parentheses after the variable:   `:varName(rule1,rule2(param1,param2))`.  If a rule does not take any parameters, then no parentheses are required.
 
 If part of your route is optional, then surround it with brackets.  For example, the following will match both `archives/2017` and `archives/2017/7`: `archives/:year[/:month]`.
 
 <h2 id="matched-routes">Matched Routes</h2>
+
 The route matcher returns a matched route on success.  It will contain three simple methods:
 
 * `getAction()`
@@ -95,6 +113,7 @@ The route matcher returns a matched route on success.  It will contain three sim
     * For example, if the route is `users/:userId` and the request URI is `/users/123`, then `getRouteVars()` would return `['userId' => '123']`.
 
 <h1 id="binding-middleware">Binding Middleware</h1>
+
 Middleware are a great way to modify both the request and the response on an endpoint.  Opulence lets you define middleware on your endpoints without binding you to any particular library/framework's middleware implementations.
 
 To bind a single middleware class to your route, call:
@@ -113,6 +132,7 @@ $route->withManyMiddleware([
 ```
 
 <h2 id="middleware-properties">Middleware Properties</h2>
+
 Some frameworks such as Opulence and Laravel let you bind properties to middleware.  For example, if you have an `AuthMiddleware`, but need to bind the route that's necessary to access the route, you might want to pass in the requisite user role.  Here's how you can do it:
 
 ```php
@@ -125,6 +145,7 @@ $route->withManyMiddleware([
 ```
 
 <h1 id="route-variable-rules">Route Variable Rules</h2>
+
 You can enforce certain rules to pass before matching on a route.  These rules come after variables, and must be enclosed in parentheses.  For example, if you want an integer to fall between two values, you can specify a route of `:month(int,min(1),max(12))`.
 
 You can register your own rule by implementing `Opulence\Router\UriTemplates\Rules\IRule`.  Let's make a rule that enforces a certain minimum string length:
@@ -187,7 +208,7 @@ use Opulence\Router\UriTemplates\Compilers\UriTemplateCompiler;
 $uriTemplateCompiler = new UriTemplateCompiler($ruleFactory);
 $routeBuilderRegistry = new RouteBuilderRegistry($uriTemplateCompiler);
 $ruleCallback = function (RouteBuilderRegistry $routes) {
-    // Register our rules
+    // Register our routes...
 };
 $ruleFactory = new RuleFactory(
     $ruleCallback,
@@ -199,6 +220,7 @@ $ruleFactory = new RuleFactory(
 We can now use the slug to use this rule:  `users/names/:name(minLength(4))`.
 
 <h2 id="built-in-rules">Build-In Rules</h2>
+
 The following rules are built-into Opulence:
 
 * `alpha`
@@ -213,6 +235,7 @@ The following rules are built-into Opulence:
 * `uuidv4`
 
 <h1 id="grouping-routes">Grouping Routes</h1>
+
 Often times, a lot of your routes will share similar properties such as hosts/paths/headers to match on and middleware.  You can group these routes together using `RouteBuilderRegistry::group()`:
 
 ```php
@@ -232,6 +255,7 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
 This creates two routes (`example.com/users/:userId` and `example.com/users/me`) with `FooMiddleware` and an API version of `v1.0`  bound to both.
 
 <h1 id="header-matching">Header Matching</h1>
+
 Sometimes, you might find it helpful to be able to specify certain header values to match on.  Opulence makes this easy:
 
 ```php
@@ -245,6 +269,7 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
 Then, pass the header values to `RouteMatcher::match()` as a 4th parameter.
 
 <h2 id="getting-php-headers">Getting Headers in PHP</h2>
+
 PHP is irritatingly difficult to extract headers from `$_SERVER`.  If you're using a library/framework to grab headers, then use that.  Otherwise, you can use the following:
 
 ```php
@@ -272,6 +297,7 @@ foreach ($_SERVER as $key => $value) {
 ```
 
 <h1 id="micro-library">Micro-Library</h1>
+
 If you don't want to use the route builders, and instead would rather create the routes yourself, you can.  Here's a complete example of how:
 
 ```php
