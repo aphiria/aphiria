@@ -4,8 +4,9 @@
     1. [Why This Library?](#why-this-library)
     1. [Installation](#installation)
 2. [Basic Usage](#basic-usage)
-    1. [URI Syntax](#uri-syntax)
-    2. [Route Builders](#route-builders)
+    1. [Route Variable Syntax](#route-variable-syntax)
+    2. [Optional Route Parts](#optional-route-parts)
+    3. [Route Builders](#route-builders)
 3. [Route Action](#route-actions)
 4. [Binding Middleware](#binding-middleware)
     1. [Middleware Properties](#middleware-properties)
@@ -51,16 +52,19 @@ use Opulence\Router\Matchers\RouteMatcher;
 use Opulence\Router\RouteFactory;
 use Opulence\Router\RouteNotFoundException;
 
-// Register our routes
+// Define your routes
 $routesCallback = function (RouteBuilderRegistry $routes) {
     $routes->map('GET', 'books/:bookId')
         ->toMethod('BookController', 'getBooksById')
         ->withName('GetBooksById');
 };
-$routeFactory = new RouteFactory($routesCallback, new FileRouteCache(__DIR__ . '/routes.cache'));
 
 try {
-    // Get the matched route
+    // Find a matching route
+    $routeFactory = new RouteFactory(
+        $routesCallback,
+        new FileRouteCache('/tmp/routes.cache')
+    );
     $matchedRoute = (new RouteMatcher($routeFactory->createRoutes()))->match(
         $_SERVER['REQUEST_METHOD'],
         $_SERVER['HTTP_HOST'],
@@ -74,7 +78,7 @@ try {
 }
 ```
 
-Using our example, if we hit `example.com/books/123`, then `$matchedRoute` would be an instance of `MatchedRoute`.  Grabbing the controller method is as simple as:
+Using our example, if we hit `example.com/books/123`, then `$matchedRoute` would be an instance of `MatchedRoute`.  Grabbing the matched controller info is as simple as:
 
 ```php
 $matchedRoute->getAction()->getControllerName(); // "BookController"
@@ -87,11 +91,9 @@ To get the route variables, call:
 $matchedRoute->getRouteVars(); // ["bookId" => "123"]
 ```
 
-Routes are defined in a callback that will be executed once and then cached.  To actually dispatch `$matchedRoute`, use the library/framework of your choice.
+> **Note:** If you're using another HTTP library (eg Opulence, Symfony, or Laravel) in your application, it's better to use their methods to get the request method, host, and URI.  They account for things like trusted proxies as well as provide more robust handling of certain request headers.
 
-> **Note:** If you're using another HTTP library (eg Opulence, Symfony, or Laravel) in your application, it's better to use their methods to get the request method, host, and URI.  They account for things like trusted proxies as well as more robust handling of certain request headers.
-
-<h2 id="uri-syntax">URI Syntax</h2>
+<h2 id="route-variable-syntax">Route Variable Syntax</h2>
 
 Opulence provides a simple syntax for your URIs.  Route variables are written as `:varName`.  If you want to specify a default value, then you'd write
 
@@ -105,6 +107,8 @@ If you'd like to use [rules](#route-variable-rules), then pass them in parenthes
 ```
 
 If a rule does not take any parameters, then no parentheses are required.
+
+<h2 id="optional-route-parts">Optional Route Parts</h2>
 
 If part of your route is optional, then surround it with brackets.  For example, the following will match both `archives/2017` and `archives/2017/7`:
 ```php
