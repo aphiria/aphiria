@@ -4,17 +4,17 @@
     1. [Why This Library?](#why-this-library)
     1. [Installation](#installation)
 2. [Basic Usage](#basic-usage)
-    1. [Route Variable Syntax](#route-variable-syntax)
+    1. [Route Variables](#route-variables)
     2. [Optional Route Parts](#optional-route-parts)
     3. [Route Builders](#route-builders)
 3. [Route Action](#route-actions)
 4. [Binding Middleware](#binding-middleware)
     1. [Middleware Properties](#middleware-properties)
-5. [Route Variable Rules](#route-variable-rules)
-    1. [Making Your Own Custom Rules](#making-your-own-custom-rules)
-    2. [Built-In Rules](#built-in-rules)
-6. [Grouping Routes](#grouping-routes)
-7. [Header Matching](#header-matching)
+5. [Grouping Routes](#grouping-routes)
+6. [Header Matching](#header-matching)
+7. [Route Variable Rules](#route-variable-rules)
+    1. [Built-In Rules](#built-in-rules)
+    2. [Making Your Own Custom Rules](#making-your-own-custom-rules)
 8. [Micro-Library](#micro-library)
 
 <h1 id="introduction">Introduction</h1>
@@ -93,7 +93,7 @@ $matchedRoute->getRouteVars(); // ["bookId" => "123"]
 
 > **Note:** If you're using another HTTP library (eg Opulence, Symfony, or Laravel) in your application, it's better to use their methods to get the request method, host, and URI.  They account for things like trusted proxies as well as provide more robust handling of certain request headers.
 
-<h2 id="route-variable-syntax">Route Variable Syntax</h2>
+<h2 id="route-variables">Route Variables</h2>
 
 Opulence provides a simple syntax for your URIs.  Route variables are written as `:varName`.  If you want to specify a default value, then you'd write
 
@@ -101,12 +101,10 @@ Opulence provides a simple syntax for your URIs.  Route variables are written as
 :varName=defaultValue
 ```
 
-If you'd like to use [rules](#route-variable-rules), then pass them in parentheses after the variable:
+If you'd like to use [rules](#route-variable-rules), then put them in parentheses after the variable:
 ```php
 :varName(rule1,rule2(param1,param2))
 ```
-
-If a rule does not take any parameters, then no parentheses are required.
 
 <h2 id="optional-route-parts">Optional Route Parts</h2>
 
@@ -123,17 +121,17 @@ archives/:year[/:month[/:day]]
 
 <h2 id="route-builders">Route Builders</h2>
 
-Each time you call `$routes->map()`, you're creating a new `RouteBuilder`.  It accepts the following parameters:
+Each time you call `$routes->map()` accepts the following parameters:
 
-* `$httpMethods`
+* `string|array $httpMethods`
     * The HTTP method or list of methods to match on (eg `'GET'` or `['POST', 'GET']`)
-* `$pathTemplate`
+* `string $pathTemplate`
     * The path for this route ([read about syntax](#syntax))
-* `$hostTemplate` (optional)
+* `string|null $hostTemplate` (optional)
     * The optional host template for this route  ([read about syntax](#syntax))
-* `$isHttpsOnly` (optional)
+* `bool $isHttpsOnly` (optional)
     * Whether or not this route is HTTPS-only
-* `$headersToMatch` (optional)
+* `array $headersToMatch` (optional)
     * The mapping of header names => values to match on
 
 Route builders give you a fluent syntax for mapping your routes to closures or controller methods.  They also let you [bind any middleware](#binding-middleware) classes and properties to the route.
@@ -194,12 +192,74 @@ $route->withManyMiddleware([
 ]);
 ```
 
+<h1 id="grouping-routes">Grouping Routes</h1>
+
+Often times, a lot of your routes will share similar properties such as hosts/paths/headers to match on, or middleware.  You can group these routes together using `RouteBuilderRegistry::group()`:
+
+```php
+$routesCallback = function (RouteBuilderRegistry $routes) {
+    $routes->group(
+        new RouteGroupOptions('users/', 'example.com', false, ['FooMiddleware'], ['API-VERSION' => 'v1.0']),
+        function (RouteBuilderRegistry $routes) {
+            $routes->map('GET', ':userId')
+                ->toMethod('UserController', 'getUser');
+
+            $routes->map('GET', 'me')
+                ->toMethod('UserController', 'showMyProfile');
+        });
+};
+```
+
+This creates two routes (`example.com/users/:userId` and `example.com/users/me`) with `FooMiddleware` and an API version of `v1.0`  bound to both.
+
+<h1 id="header-matching">Header Matching</h1>
+
+Sometimes, you might find it helpful to be able to specify certain header values to match on.  Opulence makes this easy:
+
+```php
+$routesCallback = function (RouteBuilderRegistry $routes) {
+    // This route will require an API-VERSION value of 'v1.0'
+    $routes->map('GET', 'comments', null, false, ['API-VERSION' => 'v1.0'])
+        ->toMethod('CommentController', 'getAllComments');
+};
+```
+
+Then, pass the header values to `RouteMatcher::match()` as a 4th parameter.
+
+<h2 id="getting-php-headers">Getting Headers in PHP</h2>
+
+PHP is irritatingly difficult to extract headers from `$_SERVER`.  If you're using a library/framework to grab headers, then use that.  Otherwise, you can use the `HeaderParser`:
+
+```php
+use Opulence\Router\Requests\HeaderParser;
+
+$headers = (new HeaderParser)->parseHeaders($_SERVER);
+```
+
 <h1 id="route-variable-rules">Route Variable Rules</h2>
 
 You can enforce certain rules to pass before matching on a route.  These rules come after variables, and must be enclosed in parentheses.  For example, if you want an integer to fall between two values, you can specify a route of
+
 ```php
 :month(int,min(1),max(12))
 ```
+
+> **Note:** If a rule does not require any parameters, then the parentheses after the rule slug are optional.
+
+<h2 id="built-in-rules">Built-In Rules</h2>
+
+The following rules are built-into Opulence:
+
+* `alpha`
+* `alphanumeric`
+* `between($min, $max, $isInclusive = true)`
+* `date(string $commaSeparatedListOfAcceptableFormats)`
+* `in(string $commaSeparatedListOfAcceptableValues)`
+* `int`
+* `notIn(string $commaSeparatedListOfUnacceptableValues)`
+* `numeric`
+* `regex(string $regex)`
+* `uuidv4`
 
 <h2 id="making-your-own-custom-rules">Making Your Own Custom Rules</h2>
 
@@ -273,65 +333,6 @@ $ruleFactory = new RuleFactory(
 ```
 
 We can now use the slug to use this rule:  `users/names/:name(minLength(4))`.
-
-<h2 id="built-in-rules">Built-In Rules</h2>
-
-The following rules are built-into Opulence:
-
-* `alpha`
-* `alphanumeric`
-* `between($min, $max, $isInclusive = true)`
-* `date(string $commaSeparatedListOfAcceptableFormats)`
-* `in(string $commaSeparatedListOfAcceptableValues)`
-* `int`
-* `notIn(string $commaSeparatedListOfUnacceptableValues)`
-* `numeric`
-* `regex(string $regex)`
-* `uuidv4`
-
-<h1 id="grouping-routes">Grouping Routes</h1>
-
-Often times, a lot of your routes will share similar properties such as hosts/paths/headers to match on, or middleware.  You can group these routes together using `RouteBuilderRegistry::group()`:
-
-```php
-$routesCallback = function (RouteBuilderRegistry $routes) {
-    $routes->group(
-        new RouteGroupOptions('users/', 'example.com', false, ['FooMiddleware'], ['API-VERSION' => 'v1.0']),
-        function (RouteBuilderRegistry $routes) {
-            $routes->map('GET', ':userId')
-                ->toMethod('UserController', 'getUser');
-
-            $routes->map('GET', 'me')
-                ->toMethod('UserController', 'showMyProfile');
-        });
-};
-```
-
-This creates two routes (`example.com/users/:userId` and `example.com/users/me`) with `FooMiddleware` and an API version of `v1.0`  bound to both.
-
-<h1 id="header-matching">Header Matching</h1>
-
-Sometimes, you might find it helpful to be able to specify certain header values to match on.  Opulence makes this easy:
-
-```php
-$routesCallback = function (RouteBuilderRegistry $routes) {
-    // This route will require an API-VERSION value of 'v1.0'
-    $routes->map('GET', 'comments', null, false, ['API-VERSION' => 'v1.0'])
-        ->toMethod('CommentController', 'getAllComments');
-};
-```
-
-Then, pass the header values to `RouteMatcher::match()` as a 4th parameter.
-
-<h2 id="getting-php-headers">Getting Headers in PHP</h2>
-
-PHP is irritatingly difficult to extract headers from `$_SERVER`.  If you're using a library/framework to grab headers, then use that.  Otherwise, you can use the `HeaderParser`:
-
-```php
-use Opulence\Router\Requests\HeaderParser;
-
-$headers = (new HeaderParser)->parseHeaders($_SERVER);
-```
 
 <h1 id="micro-library">Micro-Library</h1>
 
