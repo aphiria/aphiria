@@ -95,10 +95,16 @@ $matchedRoute->getRouteVars(); // ["bookId" => "123"]
 
 <h2 id="route-variables">Route Variables</h2>
 
-Opulence provides a simple syntax for your URIs.  Route variables are written as `:varName`.  If you want to specify a default value, then you'd write
+Opulence provides a simple syntax for your URIs.  To capture variables in your route, use `:varName`, eg:
 
 ```php
-:varName=defaultValue
+users/:userId/profile
+```
+
+If you want to specify a default value, then you'd write
+
+```php
+users/:userId=me/profile
 ```
 
 If you'd like to use [rules](#route-variable-rules), then put them in parentheses after the variable:
@@ -121,7 +127,7 @@ archives/:year[/:month[/:day]]
 
 <h2 id="route-builders">Route Builders</h2>
 
-Each time you call `$routes->map()` accepts the following parameters:
+To build your routes, call `$routes->map()`, which accepts the following parameters:
 
 * `string|array $httpMethods`
     * The HTTP method or list of methods to match on (eg `'GET'` or `['POST', 'GET']`)
