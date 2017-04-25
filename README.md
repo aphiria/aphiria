@@ -375,3 +375,5 @@ try {
     exit;
 }
 ```
+
+In your `UriTemplate`, use regex capturing groups to grab any variables from the route.  Then, map the capturing groups to a list of variable names.  So, in the above example, `(\d+)` would map to a route variable named `userId`.
