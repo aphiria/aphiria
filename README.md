@@ -6,12 +6,11 @@
 2. [Basic Usage](#basic-usage)
     1. [URI Syntax](#uri-syntax)
     2. [Route Builders](#route-builders)
-    3. [Matched Routes](#matched-routes)
 3. [Route Action](#route-actions)
 4. [Binding Middleware](#binding-middleware)
     1. [Middleware Properties](#middleware-properties)
 5. [Route Variable Rules](#route-variable-rules)
-    1. [Making Your Own Custom Rules](#making-your-own custom-rules)
+    1. [Making Your Own Custom Rules](#making-your-own-custom-rules)
     2. [Built-In Rules](#built-in-rules)
 6. [Grouping Routes](#grouping-routes)
 7. [Header Matching](#header-matching)
@@ -75,6 +74,19 @@ try {
 }
 ```
 
+Using our example, if we hit `example.com/books/123`, then `$matchedRoute` would be an instance of `MatchedRoute`.  Grabbing the controller method is as simple as:
+
+```php
+$matchedRoute->getAction()->getControllerName(); // "BookController"
+$matchedRoute->getAction()->getMethodName(); // "getBooksById"
+```
+
+To get the route variables, call:
+
+```php
+$matchedRoute->getRouteVars(); // ["bookId" => "123"]
+```
+
 Routes are defined in a callback that will be executed once and then cached.  To actually dispatch `$matchedRoute`, use the library/framework of your choice.
 
 > **Note:** If you're using another HTTP library (eg Opulence, Symfony, or Laravel) in your application, it's better to use their methods to get the request method, host, and URI.  They account for things like trusted proxies as well as more robust handling of certain request headers.
@@ -104,18 +116,6 @@ Optional route parts can be nested:
 ```php
 archives/:year[/:month[/:day]]
 ```
-
-<h2 id="matched-routes">Matched Routes</h2>
-
-The route matcher returns a `MatchedRoute` on success.  It will contain three simple methods:
-
-* `getAction()`
-    * The action (either `Closure` or class name/method this route maps to)
-* `getMiddlewareBindings()`
-    * The list of middleware class names/properties this route uses
-* `getRouteVars()`
-    * The mapping of route variable names to values for this route
-    * For example, if the route is `users/:userId` and the request URI is `/users/123`, then `getRouteVars()` would return `['userId' => '123']`
 
 <h2 id="route-builders">Route Builders</h2>
 
@@ -171,7 +171,11 @@ $route->withManyMiddleware([
 ]);
 ```
 
-Under the hood, these class names get converted to instances of `MiddlewareBinding`.
+Under the hood, these class names get converted to instances of `MiddlewareBinding`.  To get the middleware from the matched route, call:
+
+```php
+$matchedRoute->getMiddlewareBindings();
+```
 
 <h2 id="middleware-properties">Middleware Properties</h2>
 
