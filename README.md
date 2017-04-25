@@ -4,20 +4,22 @@
     1. [Why This Library?](#why-this-library)
     1. [Installation](#installation)
 2. [Basic Usage](#basic-usage)
-    1. [Syntax](#syntax)
+    1. [URI Syntax](#uri-syntax)
     2. [Route Builders](#route-builders)
     3. [Matched Routes](#matched-routes)
-3. [Binding Middleware](#binding-middleware)
+3. [Route Action](#route-actions)
+4. [Binding Middleware](#binding-middleware)
     1. [Middleware Properties](#middleware-properties)
-4. [Route Variable Rules](#route-variable-rules)
-    1. [Built-In Rules](#built-in-rules)
-5. [Grouping Routes](#grouping-routes)
-6. [Header Matching](#header-matching)
-7. [Micro-Library](#micro-library)
+5. [Route Variable Rules](#route-variable-rules)
+    1. [Making Your Own Custom Rules](#making-your-own custom-rules)
+    2. [Built-In Rules](#built-in-rules)
+6. [Grouping Routes](#grouping-routes)
+7. [Header Matching](#header-matching)
+8. [Micro-Library](#micro-library)
 
 <h1 id="introduction">Introduction</h1>
 
-This library is a route matching library.  In other words, it lets you define your routes, and attempts to match an input request with ones of those routes.
+This library is a route matching library.  In other words, it lets you define your routes, and attempts to match an input request to ones of those routes.
 
 <h2 id="why-this-library">Why This Library?</h2>
 
@@ -28,7 +30,8 @@ There are so many routing libraries out there?  Why this one?  Well, there are a
 * It supports things that other route matching libraries do not support, like:
     * Binding framework-agnostic middleware
     * Binding both controller methods and closures to the route action
-    * The ability to enforce rules on route variables, and with the ability to add your own customized route variable rules
+    * The ability to enforce rules on route variables
+    * The ability to add your own customized route variable rules
 * You can match on header values, which makes versioning your routes a cinch
 * Its fluent syntax keeps you from having to memorize how to set up config arrays
 * It is built to support the latest PHP 7.1 features
@@ -40,7 +43,7 @@ This library requires PHP 7.1 and above.
 
 <h1 id="basic-usage">Basic Usage</h1>
 
-Out of the box, this library provides a fluent syntax to help you build your routes with ease.  In a nutshell, you build your routes and pass them into a route matcher.  Let's look at a simple and complete example:
+Out of the box, this library provides a fluent syntax to help you build your routes with ease.  In a nutshell, you build your routes and pass them into a route matcher.  Let's look at a working example:
 
 ```php
 use Opulence\Router\Builders\RouteBuilderRegistry;
@@ -72,11 +75,11 @@ try {
 }
 ```
 
-Define your routes inside a callback that will be executed once and then cached.  To actually dispatch `$matchedRoute`, use the library/framework of your choice.
+Routes are defined in a callback that will be executed once and then cached.  To actually dispatch `$matchedRoute`, use the library/framework of your choice.
 
 > **Note:** If you're using another HTTP library (eg Opulence, Symfony, or Laravel) in your application, it's better to use their methods to get the request method, host, and URI.  They account for things like trusted proxies as well as more robust handling of certain request headers.
 
-<h2 id="syntax">Syntax</h2>
+<h2 id="uri-syntax">URI Syntax</h2>
 
 Opulence provides a simple syntax for your URIs.  Route variables are written as `:varName`.  If you want to specify a default value, then you'd write
 
@@ -84,7 +87,7 @@ Opulence provides a simple syntax for your URIs.  Route variables are written as
 :varName=defaultValue
 ```
 
-If you'd like to use rules, then pass them in parentheses after the variable:
+If you'd like to use [rules](#route-variable-rules), then pass them in parentheses after the variable:
 ```php
 :varName(rule1,rule2(param1,param2))
 ```
@@ -131,6 +134,24 @@ Each time you call `$routes->map()`, you're creating a new `RouteBuilder`.  It a
 
 Route builders give you a fluent syntax for mapping your routes to closures or controller methods.  They also let you [bind any middleware](#binding-middleware) classes and properties to the route.
 
+<h1 id="route-actions">Route Actions</h1>
+
+Opulence supports mapping routes to both controller methods and to closures:
+
+```php
+$routesCallback = function (RouteBuilderRegistry $routes) {
+    // Map to a controller method
+    $routes->map('GET', 'users/:userId')
+        ->toMethod('UserController', 'getUserById');
+
+    // Map to a closure
+    $routes->map('GET', 'users/:userId/name')
+        ->toClosure(function () {
+            // Handle the request...
+        });
+};
+```
+
 <h1 id="binding-middleware">Binding Middleware</h1>
 
 Middleware are a great way to modify both the request and the response on an endpoint.  Opulence lets you define middleware on your endpoints without binding you to any particular library/framework's middleware implementations.
@@ -154,7 +175,7 @@ Under the hood, these class names get converted to instances of `MiddlewareBindi
 
 <h2 id="middleware-properties">Middleware Properties</h2>
 
-Some frameworks such as Opulence and Laravel let you bind properties to middleware.  For example, if you have an `AuthMiddleware`, but need to bind the route that's necessary to access the route, you might want to pass in the requisite user role.  Here's how you can do it:
+Some frameworks such as Opulence and Laravel let you bind properties to middleware.  For example, if you have an `AuthMiddleware`, but need to bind the user role that's necessary to access that route, you might want to pass in the required user role.  Here's how you can do it:
 
 ```php
 $route->withMiddleware('AuthMiddleware', ['role' => 'admin']);
@@ -167,11 +188,18 @@ $route->withManyMiddleware([
 
 <h1 id="route-variable-rules">Route Variable Rules</h2>
 
-You can enforce certain rules to pass before matching on a route.  These rules come after variables, and must be enclosed in parentheses.  For example, if you want an integer to fall between two values, you can specify a route of `:month(int,min(1),max(12))`.
+You can enforce certain rules to pass before matching on a route.  These rules come after variables, and must be enclosed in parentheses.  For example, if you want an integer to fall between two values, you can specify a route of
+```php
+:month(int,min(1),max(12))
+```
 
-You can register your own rule by implementing `Opulence\Router\UriTemplates\Rules\IRule`.  Let's make a rule that enforces a certain minimum string length:
+<h2 id="making-your-own-custom-rules">Making Your Own Custom Rules</h2>
+
+You can register your own rule by implementing `IRule`.  Let's make a rule that enforces a certain minimum string length:
 
 ```php
+use Opulence\Router\UriTemplates\Rules\IRule;
+
 class MinLengthRule implements IRule
 {
     /** @var int The required minimum length */
@@ -228,11 +256,11 @@ use Opulence\Router\UriTemplates\Compilers\UriTemplateCompiler;
 
 $uriTemplateCompiler = new UriTemplateCompiler($ruleFactory);
 $routeBuilderRegistry = new RouteBuilderRegistry($uriTemplateCompiler);
-$ruleCallback = function (RouteBuilderRegistry $routes) {
+$routesCallback = function (RouteBuilderRegistry $routes) {
     // Register our routes...
 };
 $ruleFactory = new RuleFactory(
-    $ruleCallback,
+    $routesCallback,
     new FileRouteCache('/tmp/routes.cache'),
     $routeBuilderRegistry
 );
@@ -257,7 +285,7 @@ The following rules are built-into Opulence:
 
 <h1 id="grouping-routes">Grouping Routes</h1>
 
-Often times, a lot of your routes will share similar properties such as hosts/paths/headers to match on and middleware.  You can group these routes together using `RouteBuilderRegistry::group()`:
+Often times, a lot of your routes will share similar properties such as hosts/paths/headers to match on, or middleware.  You can group these routes together using `RouteBuilderRegistry::group()`:
 
 ```php
 $routesCallback = function (RouteBuilderRegistry $routes) {
@@ -291,30 +319,12 @@ Then, pass the header values to `RouteMatcher::match()` as a 4th parameter.
 
 <h2 id="getting-php-headers">Getting Headers in PHP</h2>
 
-PHP is irritatingly difficult to extract headers from `$_SERVER`.  If you're using a library/framework to grab headers, then use that.  Otherwise, you can use the following:
+PHP is irritatingly difficult to extract headers from `$_SERVER`.  If you're using a library/framework to grab headers, then use that.  Otherwise, you can use the `HeaderParser`:
 
 ```php
-// These headers do not have the HTTP_ prefix
-$specialCaseHeaders = [
-    'AUTH_TYPE' => true,
-    'CONTENT_LENGTH' => true,
-    'CONTENT_TYPE' => true,
-    'PHP_AUTH_DIGEST' => true,
-    'PHP_AUTH_PW' => true,
-    'PHP_AUTH_TYPE' => true,
-    'PHP_AUTH_USER' => true
-];
-$headers = [];
+use Opulence\Router\Requests\HeaderParser;
 
-foreach ($_SERVER as $key => $value) {
-    $uppercasedKey = strtoupper($key);
-
-    if (isset($specialCaseHeaders[$uppercasedKey]) || strpos($uppercasedKey, 'HTTP_') === 0) {
-        $headers[$uppercasedKey] = (array)$value;
-    }
-}
-
-// $headers now holds all the request headers
+$headers = (new HeaderParser)->parseHeaders($_SERVER);
 ```
 
 <h1 id="micro-library">Micro-Library</h1>

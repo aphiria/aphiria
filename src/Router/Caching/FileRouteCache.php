@@ -38,7 +38,7 @@ class FileRouteCache implements IRouteCache
             return null;
         }
 
-        return unserialize(base64_decode(file_get_contents($this->path)));
+        return unserialize(file_get_contents($this->path));
     }
 
     /**
@@ -55,6 +55,6 @@ class FileRouteCache implements IRouteCache
     public function set(RouteCollection $routes): void
     {
         // Clone the routes so that serialization doesn't affect the input routes object
-        file_put_contents($this->path, base64_encode(serialize(clone $routes)));
+        file_put_contents($this->path, serialize(clone $routes));
     }
 }
