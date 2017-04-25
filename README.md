@@ -179,7 +179,7 @@ $matchedRoute->getMiddlewareBindings();
 
 <h2 id="middleware-properties">Middleware Properties</h2>
 
-Some frameworks such as Opulence and Laravel let you bind properties to middleware.  For example, if you have an `AuthMiddleware`, but need to bind the user role that's necessary to access that route, you might want to pass in the required user role.  Here's how you can do it:
+Some frameworks, such as Opulence and Laravel, let you bind properties to middleware.  For example, if you have an `AuthMiddleware`, but need to bind the user role that's necessary to access that route, you might want to pass in the required user role.  Here's how you can do it:
 
 ```php
 $route->withMiddleware('AuthMiddleware', ['role' => 'admin']);
@@ -258,15 +258,13 @@ use Opulence\Router\Caching\FileRouteCache;
 use Opulence\Router\RuleFactory;
 use Opulence\Router\UriTemplates\Compilers\UriTemplateCompiler;
 
-$uriTemplateCompiler = new UriTemplateCompiler($ruleFactory);
-$routeBuilderRegistry = new RouteBuilderRegistry($uriTemplateCompiler);
 $routesCallback = function (RouteBuilderRegistry $routes) {
     // Register our routes...
 };
 $ruleFactory = new RuleFactory(
     $routesCallback,
     new FileRouteCache('/tmp/routes.cache'),
-    $routeBuilderRegistry
+    new RouteBuilderRegistry(new UriTemplateCompiler($ruleFactory))
 );
 ```
 
