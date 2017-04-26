@@ -209,12 +209,14 @@ foreach ($matchedRoute->getMiddlewareBindings() as $middlewareBinding) {
 
 <h1 id="grouping-routes">Grouping Routes</h1>
 
-Often times, a lot of your routes will share similar properties such as hosts/paths/headers to match on, or middleware.  You can group these routes together using `RouteBuilderRegistry::group()`:
+Often times, a lot of your routes will share similar properties such as hosts/paths/headers to match on, or middleware.  You can group these routes together using `RouteBuilderRegistry::group()` and specifying the options to apply to all routes within the group:
 
 ```php
+use Opulence\Router\Builders\RouteGroupOptions;
+
 $routesCallback = function (RouteBuilderRegistry $routes) {
     $routes->group(
-        new RouteGroupOptions('users/', 'example.com', false, ['FooMiddleware'], ['API-VERSION' => 'v1.0']),
+        new RouteGroupOptions('users/', 'example.com'),
         function (RouteBuilderRegistry $routes) {
             $routes->map('GET', ':userId')
                 ->toMethod('UserController', 'getUser');
@@ -225,7 +227,22 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
 };
 ```
 
-This creates two routes (`example.com/users/:userId` and `example.com/users/me`) with `FooMiddleware` and an API version of `v1.0`  bound to both.
+This creates two routes with a host suffix of `example.com` and a route prefix of `users/` (`example.com/users/:userId` and `example.com/users/me`).  `RouteGroupOptions::__construct()` accepts the following parameters:
+
+* `string $pathTemplate`
+    * The path for routes in this group ([read about syntax](#syntax))
+    * This value is prefixed to the paths of all routes within the group
+* `string|null $hostTemplate` (optional)
+    * The optional host template for routes in this group  ([read about syntax](#syntax))
+    * This value is suffixed to the hosts of all routes within the group
+* `bool $isHttpsOnly` (optional)
+    * Whether or not the routes in this group are HTTPS-only
+* `array $headersToMatch` (optional)
+    * The mapping of header names => values to match on
+* `MiddlewareBinding[] $middleware` (optional)
+    * The list of middleware bindings for routes in this group
+
+It is possible to nest route groups.
 
 <h1 id="header-matching">Header Matching</h1>
 

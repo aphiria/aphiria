@@ -10,8 +10,8 @@ class RouteGroupOptions
 {
     /** @var string The path template that applies to the entire group */
     private $pathTemplate = '';
-    /** @var string The host template that applies to the entire group */
-    private $hostTemplate = '';
+    /** @var string|null The host template that applies to the entire group */
+    private $hostTemplate = null;
     /** @var MiddlewareBinding[] The list of middleware bindings that applies to the entire group */
     private $middlewareBindings = [];
     /** @var bool Whether or not the entire group is HTTPS-only */
@@ -21,15 +21,15 @@ class RouteGroupOptions
 
     /**
      * @param string $pathTemplate The path template that applies to the entire group
-     * @param string $hostTemplate The host template that applies to the entire group
+     * @param string|null $hostTemplate The host template that applies to the entire group, or null
      * @param bool $isHttpsOnly Whether or not the entire group is HTTPS-only
      * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings that applies to the entire group
      * @param array $headersToMatch The list of header values to match on for the entire group
      */
     public function __construct(
         string $pathTemplate,
-        string $hostTemplate,
-        bool $isHttpsOnly,
+        ?string $hostTemplate = null,
+        bool $isHttpsOnly = false,
         array $middlewareBindings = [],
         array $headersToMatch = []
     ) {
@@ -51,7 +51,7 @@ class RouteGroupOptions
     /**
      * @return string
      */
-    public function getHostTemplate() : string
+    public function getHostTemplate() : ?string
     {
         return $this->hostTemplate;
     }
