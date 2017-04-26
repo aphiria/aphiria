@@ -35,7 +35,9 @@ class UriTemplateLexer implements IUriTemplateLexer
         while ($cursor < $templateLength) {
             $matches = [];
 
-            if (strpos(self::PUNCTUATION, $template[$cursor]) !== false) {
+            if ($template[$cursor] === ' ') {
+                $cursor++;
+            } elseif (strpos(self::PUNCTUATION, $template[$cursor]) !== false) {
                 $this->flushTextBuffer($textBuffer, $tokens);
                 $this->lexPunctuation($template[$cursor], $tokens, $cursor);
             } elseif (preg_match(self::VARIABLE_NAME_REGEX, $template, $matches, 0, $cursor) === 1) {

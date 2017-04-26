@@ -97,6 +97,49 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests lexing a path a variable with multiple rules
+     */
+    public function testLexingPathWithMultipleRule(): void
+    {
+        $this->assertEquals(
+            new TokenStream([
+                new Token(TokenTypes::T_TEXT, '/foo/'),
+                new Token(TokenTypes::T_VARIABLE, 'bar'),
+                new Token(TokenTypes::T_PUNCTUATION, '('),
+                new Token(TokenTypes::T_TEXT, 'int'),
+                new Token(TokenTypes::T_PUNCTUATION, ','),
+                new Token(TokenTypes::T_TEXT, 'caf'),
+                new Token(TokenTypes::T_PUNCTUATION, ')')
+            ]),
+            $this->lexer->lex('/foo/:bar(int,caf)')
+        );
+    }
+
+    /**
+     * Tests lexing a path a variable with multiple rules with spaces in between slugs and parameters
+     */
+    public function testLexingPathWithMultipleRulesWithSpacesInBetweenSlugsAndParameters(): void
+    {
+        $this->assertEquals(
+            new TokenStream([
+                new Token(TokenTypes::T_TEXT, '/foo/'),
+                new Token(TokenTypes::T_VARIABLE, 'bar'),
+                new Token(TokenTypes::T_PUNCTUATION, '('),
+                new Token(TokenTypes::T_TEXT, 'int'),
+                new Token(TokenTypes::T_PUNCTUATION, ','),
+                new Token(TokenTypes::T_TEXT, 'caf'),
+                new Token(TokenTypes::T_PUNCTUATION, '('),
+                new Token(TokenTypes::T_TEXT, 'abc'),
+                new Token(TokenTypes::T_PUNCTUATION, ','),
+                new Token(TokenTypes::T_TEXT, 'def'),
+                new Token(TokenTypes::T_PUNCTUATION, ')'),
+                new Token(TokenTypes::T_PUNCTUATION, ')')
+            ]),
+            $this->lexer->lex('/foo/:bar(int , caf(abc , def))')
+        );
+    }
+
+    /**
      * Tests lexing a path with no variables
      */
     public function testLexingPathWithNoVariables(): void
@@ -110,45 +153,18 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests lexing a path a variable at the beginning
+     * Tests lexing a path a variable with optional parts
      */
-    public function testLexingPathWithVariableAtBeginning(): void
+    public function testLexingPathWithOptionalParts(): void
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_VARIABLE, 'foo'),
-                new Token(TokenTypes::T_TEXT, '/bar/baz')
+                new Token(TokenTypes::T_TEXT, '/foo'),
+                new Token(TokenTypes::T_PUNCTUATION, '['),
+                new Token(TokenTypes::T_TEXT, '/bar'),
+                new Token(TokenTypes::T_PUNCTUATION, ']')
             ]),
-            $this->lexer->lex(':foo/bar/baz')
-        );
-    }
-
-    /**
-     * Tests lexing a path a variable at the end
-     */
-    public function testLexingPathWithVariableAtEnd(): void
-    {
-        $this->assertEquals(
-            new TokenStream([
-                new Token(TokenTypes::T_TEXT, '/foo/bar/'),
-                new Token(TokenTypes::T_VARIABLE, 'baz')
-            ]),
-            $this->lexer->lex('/foo/bar/:baz')
-        );
-    }
-
-    /**
-     * Tests lexing a path a variable in the middle
-     */
-    public function testLexingPathWithVariableInMiddle(): void
-    {
-        $this->assertEquals(
-            new TokenStream([
-                new Token(TokenTypes::T_TEXT, '/foo/'),
-                new Token(TokenTypes::T_VARIABLE, 'bar'),
-                new Token(TokenTypes::T_TEXT, '/baz')
-            ]),
-            $this->lexer->lex('/foo/:bar/baz')
+            $this->lexer->lex('/foo[/bar]')
         );
     }
 
@@ -280,37 +296,45 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests lexing a path a variable with multiple rules
+     * Tests lexing a path a variable at the beginning
      */
-    public function testLexingPathWithMultipleRule(): void
+    public function testLexingPathWithVariableAtBeginning(): void
+    {
+        $this->assertEquals(
+            new TokenStream([
+                new Token(TokenTypes::T_VARIABLE, 'foo'),
+                new Token(TokenTypes::T_TEXT, '/bar/baz')
+            ]),
+            $this->lexer->lex(':foo/bar/baz')
+        );
+    }
+
+    /**
+     * Tests lexing a path a variable at the end
+     */
+    public function testLexingPathWithVariableAtEnd(): void
+    {
+        $this->assertEquals(
+            new TokenStream([
+                new Token(TokenTypes::T_TEXT, '/foo/bar/'),
+                new Token(TokenTypes::T_VARIABLE, 'baz')
+            ]),
+            $this->lexer->lex('/foo/bar/:baz')
+        );
+    }
+
+    /**
+     * Tests lexing a path a variable in the middle
+     */
+    public function testLexingPathWithVariableInMiddle(): void
     {
         $this->assertEquals(
             new TokenStream([
                 new Token(TokenTypes::T_TEXT, '/foo/'),
                 new Token(TokenTypes::T_VARIABLE, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_TEXT, 'int'),
-                new Token(TokenTypes::T_PUNCTUATION, ','),
-                new Token(TokenTypes::T_TEXT, 'caf'),
-                new Token(TokenTypes::T_PUNCTUATION, ')')
+                new Token(TokenTypes::T_TEXT, '/baz')
             ]),
-            $this->lexer->lex('/foo/:bar(int,caf)')
-        );
-    }
-
-    /**
-     * Tests lexing a path a variable with optional parts
-     */
-    public function testLexingPathWithOptionalParts(): void
-    {
-        $this->assertEquals(
-            new TokenStream([
-                new Token(TokenTypes::T_TEXT, '/foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '['),
-                new Token(TokenTypes::T_TEXT, '/bar'),
-                new Token(TokenTypes::T_PUNCTUATION, ']')
-            ]),
-            $this->lexer->lex('/foo[/bar]')
+            $this->lexer->lex('/foo/:bar/baz')
         );
     }
 
