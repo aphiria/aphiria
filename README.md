@@ -132,9 +132,9 @@ To build your routes, call `$routes->map()`, which accepts the following paramet
 * `string|array $httpMethods`
     * The HTTP method or list of methods to match on (eg `'GET'` or `['POST', 'GET']`)
 * `string $pathTemplate`
-    * The path for this route ([read about syntax](#syntax))
+    * The path for this route ([read about syntax](#route-variables))
 * `string|null $hostTemplate` (optional)
-    * The optional host template for this route  ([read about syntax](#syntax))
+    * The optional host template for this route  ([read about syntax](#route-variables))
 * `bool $isHttpsOnly` (optional)
     * Whether or not this route is HTTPS-only
 * `array $headersToMatch` (optional)
@@ -216,24 +216,26 @@ use Opulence\Router\Builders\RouteGroupOptions;
 
 $routesCallback = function (RouteBuilderRegistry $routes) {
     $routes->group(
-        new RouteGroupOptions('users/', 'example.com'),
+        new RouteGroupOptions('courses/:courseId', 'example.com'),
         function (RouteBuilderRegistry $routes) {
-            $routes->map('GET', ':userId')
-                ->toMethod('UserController', 'getUser');
+            // This route's path will use the group's path
+            $routes->map('GET', '')
+                ->toMethod('CourseController', 'getCourseById');
 
-            $routes->map('GET', 'me')
-                ->toMethod('UserController', 'showMyProfile');
-        });
+            $routes->map('GET', '/professors')
+                ->toMethod('CourseController', 'getCourseProfessors');
+        }
+    );
 };
 ```
 
-This creates two routes with a host suffix of `example.com` and a route prefix of `users/` (`example.com/users/:userId` and `example.com/users/me`).  `RouteGroupOptions::__construct()` accepts the following parameters:
+This creates two routes with a host suffix of `example.com` and a route prefix of `users/` (`example.com/courses/:courseId` and `example.com/courses/:courseId/professors`).  `RouteGroupOptions::__construct()` accepts the following parameters:
 
 * `string $pathTemplate`
-    * The path for routes in this group ([read about syntax](#syntax))
+    * The path for routes in this group ([read about syntax](#route-variables))
     * This value is prefixed to the paths of all routes within the group
 * `string|null $hostTemplate` (optional)
-    * The optional host template for routes in this group  ([read about syntax](#syntax))
+    * The optional host template for routes in this group  ([read about syntax](#route-variables))
     * This value is suffixed to the hosts of all routes within the group
 * `bool $isHttpsOnly` (optional)
     * Whether or not the routes in this group are HTTPS-only
@@ -256,7 +258,16 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
 };
 ```
 
-Then, pass the header values to `RouteMatcher::match()` as a 4th parameter.
+Then, pass the header values to `RouteMatcher::match()`:
+
+```php
+$matchedRoute = (new RouteMatcher($routeFactory->createRoutes()))->match(
+    $_SERVER['REQUEST_METHOD'],
+    $_SERVER['HTTP_HOST'],
+    $_SERVER['REQUEST_URI'],
+    $headers
+);
+```
 
 <h2 id="getting-php-headers">Getting Headers in PHP</h2>
 
