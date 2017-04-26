@@ -19,17 +19,17 @@
 
 <h1 id="introduction">Introduction</h1>
 
-This library is a route matching library.  In other words, it lets you define your routes, and attempts to match an input request to ones of those routes.
+This library is a route matching library.  In other words, it lets you map URIs to actions, and attempts to match an input request to ones of those routes.
 
 <h2 id="why-use-this-library">Why Use This Library?</h2>
 
 There are so many routing libraries out there.  Why use this one?  Well, there are a few reasons:
 
-* It is incredibly fast
-* It isn't coupled to any library/framework
+* It isn't coupled to _any_ library/framework
+* It is fast
 * It supports things that other route matching libraries do not support, like:
-    * Binding framework-agnostic middleware
-    * Binding both controller methods and closures to the route action
+    * Binding framework-agnostic middleware to routes
+    * Binding controller methods and closures to the route action
     * The ability to enforce rules on route variables
     * The ability to add your own customized route variable rules
 * You can match on header values, which makes versioning your routes a cinch
@@ -43,7 +43,7 @@ This library requires PHP 7.1 and above.
 
 <h1 id="basic-usage">Basic Usage</h1>
 
-Out of the box, this library provides a fluent syntax to help you build your routes with ease.  In a nutshell, you build your routes and pass them into a route matcher.  Let's look at a working example:
+Out of the box, this library provides a fluent syntax to help you build your routes with ease.  Let's look at a working example:
 
 ```php
 use Opulence\Router\Builders\RouteBuilderRegistry;
@@ -203,7 +203,7 @@ Here's how you can grab the middleware on a matched route:
 ```php
 foreach ($matchedRoute->getMiddlewareBindings() as $middlewareBinding) {
     $middlewareBinding->getClassName(); // "AuthMiddleware"
-    $middlewareBinding->getProperties(); ["role" => "admin"]
+    $middlewareBinding->getProperties(); // ["role" => "admin"]
 }
 ```
 
@@ -385,4 +385,4 @@ try {
 }
 ```
 
-In your `UriTemplate`, use regex capturing groups to grab any variables from the route.  Then, map the capturing groups to a list of variable names (order is important).  So, in the above example, `(\d+)` would map to a route variable named `userId`.
+In your `UriTemplate`, use regex capturing groups to grab any variables from the route.  Then, map the capturing groups to a list of variable names (order is important).  In the above example, `(\d+)` would map to a route variable named `userId`.
