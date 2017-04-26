@@ -1,7 +1,7 @@
 <h1>Table of Contents</h1>
 
 1. [Introduction](#introduction)
-    1. [Why This Library?](#why-this-library)
+    1. [Why Use This Library?](#why-use-this-library)
     1. [Installation](#installation)
 2. [Basic Usage](#basic-usage)
     1. [Route Variables](#route-variables)
@@ -21,9 +21,9 @@
 
 This library is a route matching library.  In other words, it lets you define your routes, and attempts to match an input request to ones of those routes.
 
-<h2 id="why-this-library">Why This Library?</h2>
+<h2 id="why-use-this-library">Why Use This Library?</h2>
 
-There are so many routing libraries out there?  Why this one?  Well, there are a few reasons:
+There are so many routing libraries out there.  Why use this one?  Well, there are a few reasons:
 
 * It is incredibly fast
 * It isn't coupled to any library/framework
@@ -196,6 +196,15 @@ $route->withManyMiddleware([
     new MiddlewareBinding('AuthMiddleware', ['role' => 'admin']),
     // Other middleware...
 ]);
+```
+
+Here's how you can grab the middleware on a matched route:
+
+```php
+foreach ($matchedRoute->getMiddlewareBindings() as $middlewareBinding) {
+    $middlewareBinding->getClassName(); // "AuthMiddleware"
+    $middlewareBinding->getProperties(); ["role" => "admin"]
+}
 ```
 
 <h1 id="grouping-routes">Grouping Routes</h1>
