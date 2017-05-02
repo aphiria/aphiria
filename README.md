@@ -36,7 +36,7 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
 * Its fluent syntax keeps you from having to memorize how to set up config arrays
 * It is built to support the latest PHP 7.1 features
 
-> **Note:** This is *not* a a route dispatching library.  This library does not call controllers or closures on the matched route.  Why?  Usually, such actions are tightly coupled to an HTTP library or to a framework.  By not dispatching the matched route, you're free to use the library/framework of your choice, while still getting the benefits of performance and fluent syntax.
+> **Note:** This is *not* a route dispatching library.  This library does not call controllers or closures on the matched route.  Why?  Usually, such actions are tightly coupled to an HTTP library or to a framework.  By not dispatching the matched route, you're free to use the library/framework of your choice, while still getting the benefits of performance and fluent syntax.
 
 <h2 id="installation">Installation</h2>
 This library requires PHP 7.1 and above.
