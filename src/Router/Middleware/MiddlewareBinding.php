@@ -23,7 +23,7 @@ class MiddlewareBinding
 
     /**
      * Gets the name of the middleware class
-     * 
+     *
      * @return string The middleware class name
      */
     public function getClassName() : string
@@ -33,7 +33,7 @@ class MiddlewareBinding
 
     /**
      * Gets the mapping of property names => values for the middleware
-     * 
+     *
      * @return array The mapping of property names => values
      */
     public function getProperties() : array

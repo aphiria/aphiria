@@ -10,7 +10,7 @@ interface IRouteActionParameterResolver
 {
     /**
      * Resolves a parameter from a route action
-     * 
+     *
      * @param ReflectionParameter $parameter The parameter to resolve
      * @param array $routeVars The mapping of route var names => values
      * @param string $rawBody The raw request body

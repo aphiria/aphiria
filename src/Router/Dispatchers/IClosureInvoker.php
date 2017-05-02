@@ -11,7 +11,7 @@ interface IClosureInvoker
 {
     /**
      * Invokes a closure
-     * 
+     *
      * @param Closure $closure The closure to invoke
      * @param MatchedRoute $matchedRoute The matched route
      * @param string $rawBody The raw HTTP request body

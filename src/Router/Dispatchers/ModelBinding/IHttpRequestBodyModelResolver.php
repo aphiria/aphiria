@@ -10,7 +10,7 @@ interface IHttpRequestBodyModelResolver
 {
     /**
      * Resolves the HTTP request body as a model
-     * 
+     *
      * @param string $rawBody The raw body of the HTTP request
      * @param string $contentType The content type of the body
      * @returns mixed An instance of the model

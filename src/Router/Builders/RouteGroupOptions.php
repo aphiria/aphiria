@@ -42,7 +42,7 @@ class RouteGroupOptions
 
     /**
      * Gets the header names => values to match
-     * 
+     *
      * @return array The mapping of header names => values to match
      */
     public function getHeadersToMatch() : array
@@ -52,7 +52,7 @@ class RouteGroupOptions
 
     /**
      * Gets the host template
-     * 
+     *
      * @return string|null The host template if one was defined, otherwise null
      */
     public function getHostTemplate() : ?string
@@ -62,7 +62,7 @@ class RouteGroupOptions
 
     /**
      * Gets the list of middleware bindings
-     * 
+     *
      * @return MiddlewareBinding[] The list of middleware bindings
      */
     public function getMiddlewareBindings() : array
@@ -72,7 +72,7 @@ class RouteGroupOptions
 
     /**
      * Gets the path template
-     * 
+     *
      * @return string The path template
      */
     public function getPathTemplate() : string
@@ -82,7 +82,7 @@ class RouteGroupOptions
 
     /**
      * Gets whether or not the route group is HTTPS-only
-     * 
+     *
      * @return bool True if the route group is HTTPS-only, otherwise false
      */
     public function isHttpsOnly() : bool

@@ -10,7 +10,7 @@ interface IRouteDispatcher
 {
     /**
      * Dispatches a matched route
-     * 
+     *
      * @param MatchedRoute $matchedRoute The matched route
      * @param string $rawRequestBody The raw request body
      * @param string $contentType The request content type

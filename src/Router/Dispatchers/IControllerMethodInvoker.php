@@ -10,7 +10,7 @@ interface IControllerMethodInvoker
 {
     /**
      * Invokes a controller method
-     * 
+     *
      * @param object $controller The instance of the controller to call
      * @param string $methodName The name of the method to invoke
      * @param MatchedRoute $matchedRoute The matched route

@@ -57,7 +57,7 @@ class Route
 
     /**
      * Gets the action this route takes
-     * 
+     *
      * @return RouteAction The action this route takes
      */
     public function getAction() : RouteAction
@@ -67,7 +67,7 @@ class Route
 
     /**
      * Gets the mapping of header names => values to match on
-     * 
+     *
      * @return array The mapping of header names => values
      */
     public function getHeadersToMatch() : array
@@ -77,7 +77,7 @@ class Route
 
     /**
      * Gets the HTTP methods this route matches on
-     * 
+     *
      * @return array The list of HTTP methods to match on
      */
     public function getHttpMethods() : array
@@ -87,7 +87,7 @@ class Route
 
     /**
      * Gets the list of middleware bindings
-     * 
+     *
      * @return MiddlewareBinding[] The list of middleware bindings
      */
     public function getMiddlewareBindings() : array
@@ -97,7 +97,7 @@ class Route
 
     /**
      * Gets the name of this route
-     * 
+     *
      * @return string|null The name of this route if one was defined, other null
      */
     public function getName() : ?string
@@ -107,7 +107,7 @@ class Route
 
     /**
      * Gets the URI template for this route
-     * 
+     *
      * @return UriTemplate The URI template
      */
     public function getUriTemplate() : UriTemplate
