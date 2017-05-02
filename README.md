@@ -15,7 +15,8 @@
 7. [Route Variable Rules](#route-variable-rules)
     1. [Built-In Rules](#built-in-rules)
     2. [Making Your Own Custom Rules](#making-your-own-custom-rules)
-8. [Micro-Library](#micro-library)
+8. [Caching](#caching)
+9. [Micro-Library](#micro-library)
 
 <h1 id="introduction">Introduction</h1>
 
@@ -376,6 +377,22 @@ $ruleFactory = new RuleFactory(
 ```
 
 We can now use the slug to use this rule:  `users/names/:name(minLength(4))`.
+
+<h1 id="caching">Caching</h1>
+
+To speed up the compilation of your routes, Opulence supports caching (`FileRouteCache` is enabled by default).  If you're actively developing and adding new routes, it's best not to enable caching, which can be done by passing `null` into the `RouteFactory`:
+
+```php
+$routeFactory = new RouteFactory($routesCallback, null);
+```
+
+If you want to enable caching for a particular environment, you could do so:
+
+```php
+// Let's say that our environment name is stored in an environment var named 'ENV_NAME'
+$routeCache = getenv('ENV_NAME') === 'production' ? new FileRouteCache('/tmp/routes.cache') : null;
+$routeFactory = new RouteFactory($routesCallback, $routeCache);
+```
 
 <h1 id="micro-library">Micro-Library</h1>
 

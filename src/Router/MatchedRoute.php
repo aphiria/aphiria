@@ -16,7 +16,6 @@ class MatchedRoute
     private $middlewareBindings = [];
 
     /**
-     *
      * @param RouteAction $action The action taken on this route
      * @param array $routeVars The mapping of route var names to their values
      * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings
@@ -29,7 +28,9 @@ class MatchedRoute
     }
 
     /**
-     * @return RouteAction
+     * Gets the action this route takes
+     * 
+     * @return RouteAction The route's action
      */
     public function getAction() : RouteAction
     {
@@ -37,7 +38,9 @@ class MatchedRoute
     }
 
     /**
-     * @return MiddlewareBinding[]
+     * Gets the list of middleware bindings for this route
+     * 
+     * @return MiddlewareBinding[] The list of middleware bindings
      */
     public function getMiddlewareBindings() : array
     {
@@ -45,7 +48,9 @@ class MatchedRoute
     }
 
     /**
-     * @return array
+     * Gets the mapping of route var names => values
+     * 
+     * @return array The mapping of route var names => values
      */
     public function getRouteVars() : array
     {
