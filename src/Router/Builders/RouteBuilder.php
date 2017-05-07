@@ -21,8 +21,8 @@ class RouteBuilder
     private $action = null;
     /** @var UriTemplate The URI template */
     private $uriTemplate = null;
-    /** @var array The list of header values to match on */
-    private $headersToMatch = [];
+    /** @var array The mapping of custom route attribute names => values */
+    private $attributes = [];
     /** @var MiddlewareBinding[] The list of middleware bindings on this route */
     private $middlewareBindings = [];
     /** @var string|null The name of this route */
@@ -31,13 +31,11 @@ class RouteBuilder
     /**
      * @param array $httpMethods The list of HTTP methods the route matches on
      * @param UriTemplate $uriTemplate The URI template the route matches on
-     * @param array $headersToMatch The list of header values to match on
      */
-    public function __construct(array $httpMethods, UriTemplate $uriTemplate, array $headersToMatch)
+    public function __construct(array $httpMethods, UriTemplate $uriTemplate)
     {
         $this->httpMethods = $httpMethods;
         $this->uriTemplate = $uriTemplate;
-        $this->headersToMatch = $headersToMatch;
     }
 
     /**
@@ -58,7 +56,7 @@ class RouteBuilder
             $this->action,
             $this->middlewareBindings,
             $this->name,
-            $this->headersToMatch
+            $this->attributes
         );
     }
 
@@ -86,6 +84,35 @@ class RouteBuilder
     {
         $this->action = new MethodRouteAction($controllerClassName, $controllerMethodName);
 
+        return $this;
+    }
+    
+    /**
+     * Binds a custom attribute to the route
+     * This is useful for custom route constraint matching
+     * 
+     * @param string $name The name of the attribute
+     * @param mixed $value The value of the attribute
+     * @return self For chaining
+     */
+    public function withAttribute(string $name, $value) : self
+    {
+        $this->attributes[$name] = $value;
+        
+        return $this;
+    }
+    
+    /**
+     * Binds many custom attributes to the route
+     * This is useful for custom route constraint matching
+     * 
+     * @param array $attributes The mapping of custom attribute names => values
+     * @return self For chaining
+     */
+    public function withManyAttributes(array $attributes) : self
+    {
+        $this->attributes = array_merge($this->attributes, $attributes);
+        
         return $this;
     }
 

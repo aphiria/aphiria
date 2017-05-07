@@ -29,11 +29,11 @@ class RouteGroupOptionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that the correct headers to match are returned
+     * Tests that the attributes to match are returned
      */
-    public function testCorrectHeadersToMatchAreReturned() : void
+    public function testCorrectAttributesAreReturned() : void
     {
-        $this->assertEquals(['foo' => 'bar'], $this->routeGroupOptions->getHeadersToMatch());
+        $this->assertEquals(['foo' => 'bar'], $this->routeGroupOptions->getAttributes());
     }
 
     /**

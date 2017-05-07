@@ -13,8 +13,8 @@ class Route
     private $httpMethods = [];
     /** @var UriTemplate The URI template */
     private $uriTemplate = null;
-    /** @var array The list of header values to match on */
-    private $headersToMatch = [];
+    /** @var array The mapping of custom attribute names => values */
+    private $attributes = [];
     /** @var RouteAction The action this route performs */
     private $action = null;
     /** @var string|null The name of this route */
@@ -28,7 +28,7 @@ class Route
      * @param RouteAction $action The action this route takes
      * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings
      * @param string|null $name The name of this route
-     * @param array $headersToMatch The list of header values to match on
+     * @param array $attributes The mapping of custom attribute names => values
      */
     public function __construct(
         $httpMethods,
@@ -36,14 +36,14 @@ class Route
         RouteAction $action,
         array $middlewareBindings = [],
         string $name = null,
-        array $headersToMatch = []
+        array $attributes = []
     ) {
         $this->httpMethods = (array)$httpMethods;
         $this->uriTemplate = $uriTemplate;
         $this->action = $action;
         $this->middlewareBindings = $middlewareBindings;
         $this->name = $name;
-        $this->headersToMatch = $headersToMatch;
+        $this->attributes = $attributes;
     }
 
     /**
@@ -66,13 +66,13 @@ class Route
     }
 
     /**
-     * Gets the mapping of header names => values to match on
+     * Gets the mapping of custom attribute names => values
      *
-     * @return array The mapping of header names => values
+     * @return array The mapping of attribute names => values
      */
-    public function getHeadersToMatch() : array
+    public function getAttributes() : array
     {
-        return $this->headersToMatch;
+        return $this->attributes;
     }
 
     /**

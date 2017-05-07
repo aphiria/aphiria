@@ -19,11 +19,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->routeBuilder = new RouteBuilder(
-            ['GET'],
-            new UriTemplate('/foo', false),
-            ['foo' => 'bar']
-        );
+        $this->routeBuilder = new RouteBuilder(['GET'], new UriTemplate('/foo', false));
     }
 
     /**
@@ -44,6 +40,8 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
             // Don't do anything
         }));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->toMethod('Foo', 'bar'));
+        $this->assertSame($this->routeBuilder, $this->routeBuilder->withAttribute('foo', 'bar'));
+        $this->assertSame($this->routeBuilder, $this->routeBuilder->withManyAttributes(['foo' => 'bar']));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withManyMiddleware(['Foo']));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withMiddleware('Foo'));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withName('Foo'));
@@ -63,13 +61,25 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that headers to match on are set in the route
+     * Tests that attributes are set when passing them in as individual attributes
      */
-    public function testHeadersToMatchAreSetOnRoute() : void
+    public function testAttributesAreSetWhenPassingIndividualAttributes() : void
     {
+        $this->routeBuilder->withAttribute('foo', 'bar');
         $this->routeBuilder->toMethod('class', 'method');
         $route = $this->routeBuilder->build();
-        $this->assertEquals(['foo' => 'bar'], $route->getHeadersToMatch());
+        $this->assertEquals(['foo' => 'bar'], $route->getAttributes());
+    }
+
+    /**
+     * Tests that attributes are set when passing them in as multiple attributes
+     */
+    public function testAttributesAreSetWhenPassingMultipleAttributes() : void
+    {
+        $this->routeBuilder->withManyAttributes(['foo' => 'bar']);
+        $this->routeBuilder->toMethod('class', 'method');
+        $route = $this->routeBuilder->build();
+        $this->assertEquals(['foo' => 'bar'], $route->getAttributes());
     }
 
     /**

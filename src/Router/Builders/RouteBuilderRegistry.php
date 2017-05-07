@@ -73,36 +73,38 @@ class RouteBuilderRegistry
      * @param string $pathTemplate The path template
      * @param string|null $hostTemplate The host template
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
-     * @param array $headersToMatch The header values to match on
      * @return RouteBuilder The configured route builder
      */
     public function map(
         $httpMethods,
         string $pathTemplate,
         string $hostTemplate = null,
-        bool $isHttpsOnly = false,
-        array $headersToMatch = []
+        bool $isHttpsOnly = false
     ) : RouteBuilder {
         $this->applyGroupRouteTemplates($pathTemplate, $hostTemplate, $isHttpsOnly);
-        $this->applyGroupHeadersToMatch($headersToMatch);
         $uriTemplate = $this->uriTemplateCompiler->compile($hostTemplate, $pathTemplate, $isHttpsOnly);
-        $routeBuilder = new RouteBuilder((array)$httpMethods, $uriTemplate, $headersToMatch);
+        $routeBuilder = new RouteBuilder((array)$httpMethods, $uriTemplate);
         $this->applyGroupMiddleware($routeBuilder);
+        $this->applyGroupAttributes($routeBuilder);
         $this->routeBuilders[] = $routeBuilder;
 
         return $routeBuilder;
     }
 
     /**
-     * Applies a group's header values to the input array
+     * Applies a group's attributes to the input route builder
      *
-     * @param array $headersToMatch The list of header values to match on
+     * @param RouteBuilder $routeBuilder The route builder to bind attributes to
      */
-    private function applyGroupHeadersToMatch(array &$headersToMatch) : void
+    private function applyGroupAttributes(RouteBuilder &$routeBuilder) : void
     {
+        $groupAttributes = [];
+        
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $headersToMatch = array_merge($headersToMatch, $groupOptions->getHeadersToMatch());
+            $groupAttributes = array_merge($groupAttributes, $groupOptions->getAttributes());
         }
+        
+        $routeBuilder->withManyAttributes($groupAttributes);
     }
 
     /**

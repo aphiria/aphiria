@@ -11,7 +11,8 @@
 4. [Binding Middleware](#binding-middleware)
     1. [Middleware Properties](#middleware-properties)
 5. [Grouping Routes](#grouping-routes)
-6. [Header Matching](#header-matching)
+6. [Custom Constraints](#custom-constraints)
+    1. [Getting Headers in PHP](#getting-php-headers)
 7. [Route Variable Rules](#route-variable-rules)
     1. [Built-In Rules](#built-in-rules)
     2. [Making Your Own Custom Rules](#making-your-own-custom-rules)
@@ -247,22 +248,44 @@ This creates two routes with a host suffix of `example.com` and a route prefix o
 
 It is possible to nest route groups.
 
-<h1 id="header-matching">Header Matching</h1>
+<h1 id="custom-constraints">Custom Constraints</h1>
 
-Sometimes, you might find it helpful to be able to specify certain header values to match on.  Opulence makes this easy:
+Sometimes, you might find it useful to add some custom logic for matching routes.  For example, you might want to add API versioning to your routes to force your API version header to match a version specified on the routes.  To do so, you'd use route "attributes" and a route constraint.  Route constraints implement `IRouteConstraint`, and are easy to make:
+
+```php
+use Opulence\Router\Matchers\Constraints\IRouteConstraint;
+
+class ApiVersionConstraint implements IRouteConstraint
+{
+    public function isMatch(string $host, string $path, array $headers, Route $route) : bool
+    {
+        $attributes = $route->getAttributes();
+
+        if (!isset($attributes['API-VERSION'])) {
+            return false;
+        }
+
+        return $headers['API-VERSION'] === $attributes['API-VERSION'];
+    }
+}
+```
+
+Next, we need to specify the API version attribute in our routes:
 
 ```php
 $routesCallback = function (RouteBuilderRegistry $routes) {
     // This route will require an API-VERSION value of 'v1.0'
-    $routes->map('GET', 'comments', null, false, ['API-VERSION' => 'v1.0'])
-        ->toMethod('CommentController', 'getAllComments');
+    $routes->map('GET', 'comments')
+        ->toMethod('CommentController', 'getAllComments')
+        ->withAttribute('API-VERSION', 'v1.0');
 };
 ```
 
-Then, pass the header values to `RouteMatcher::match()`:
+Finally, we need to let the route matcher know to use our `ApiVersionConstraint`:
 
 ```php
-$matchedRoute = (new RouteMatcher($routeFactory->createRoutes()))->match(
+$routeMatcher = new RouteMatcher($routeFactory->createRoutes(), [new ApiVersionConstraint()]);
+$matchedRoute = $routeMatcher->match(
     $_SERVER['REQUEST_METHOD'],
     $_SERVER['HTTP_HOST'],
     $_SERVER['REQUEST_URI'],

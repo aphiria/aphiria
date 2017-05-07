@@ -1,6 +1,7 @@
 <?php
 namespace Opulence\Router\Matchers;
 
+use Opulence\Router\Matchers\Constraints\IRouteConstraint;
 use Opulence\Router\Middleware\MiddlewareBinding;
 use Opulence\Router\Route;
 use Opulence\Router\RouteAction;
@@ -28,32 +29,29 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that the header names are case-insensitive
+     * Tests that a matching route with a failed constraint causes the matcher to throw an exception
      */
-    public function testHeaderNamesAreCaseInsensitive() : void
+    public function testFailedConstraintThrowsException() : void
     {
+        $this->expectException(RouteNotFoundException::class);
         $expectedRoutes = [
             new Route(
                 ['GET'],
                 new UriTemplate('^foo$', false),
                 $this->createMock(RouteAction::class)
-            ),
-            new Route(
-                ['GET'],
-                new UriTemplate('^bar$', false),
-                $this->createMock(RouteAction::class),
-                [new MiddlewareBinding('foo')],
-                null,
-                ['header' => 'value']
             )
         ];
+        $constraint = $this->createMock(IRouteConstraint::class);
+        $constraint->expects($this->once())
+            ->method('isMatch')
+            ->with('', 'foo', ['foo' => 'bar'], $expectedRoutes[0])
+            ->willReturn(false);
+        $matcher = new RouteMatcher($this->routeCollection, [$constraint]);
         $this->routeCollection->expects($this->once())
             ->method('getByMethod')
             ->with('GET')
             ->willReturn($expectedRoutes);
-        $matchedRoute = $this->matcher->match('GET', '', 'bar', ['HEADER' => 'value'], $this->routeCollection);
-        $this->assertSame($expectedRoutes[1]->getAction(), $matchedRoute->getAction());
-        $this->assertSame($expectedRoutes[1]->getMiddlewareBindings(), $matchedRoute->getMiddlewareBindings());
+        $matcher->match('GET', '', 'foo', ['foo' => 'bar'], $this->routeCollection);
     }
 
     /**
@@ -120,75 +118,6 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests a matching URI but no matching header throws an exception
-     */
-    public function testMatchingUriButNoMatchingHeaderThrowsException() : void
-    {
-        $this->expectException(RouteNotFoundException::class);
-        $expectedRoutes = [
-            new Route(
-                ['GET'],
-                new UriTemplate('^foo$', false),
-                $this->createMock(RouteAction::class),
-                [new MiddlewareBinding('foo')],
-                null,
-                ['HEADER' => 'wrong']
-            )
-        ];
-        $this->routeCollection->expects($this->once())
-            ->method('getByMethod')
-            ->with('GET')
-            ->willReturn($expectedRoutes);
-        $this->matcher->match('GET', '', 'foo', ['HEADER' => 'right'], $this->routeCollection);
-    }
-
-    /**
-     * Tests a matching URI with headers to match returns a match
-     */
-    public function testMatchingUriWithHeadersToMatchReturnsMatch() : void
-    {
-        $expectedRoutes = [
-            new Route(
-                ['GET'],
-                new UriTemplate('^foo$', false),
-                $this->createMock(RouteAction::class),
-                [new MiddlewareBinding('foo')],
-                null,
-                ['HEADER' => 'right']
-            )
-        ];
-        $this->routeCollection->expects($this->once())
-            ->method('getByMethod')
-            ->with('GET')
-            ->willReturn($expectedRoutes);
-        $matchedRoute = $this->matcher->match('GET', '', 'foo', ['HEADER' => 'right'], $this->routeCollection);
-        $this->assertSame($expectedRoutes[0]->getAction(), $matchedRoute->getAction());
-        $this->assertSame($expectedRoutes[0]->getMiddlewareBindings(), $matchedRoute->getMiddlewareBindings());
-    }
-
-    /**
-     * Tests a matching URI with no headers to match returns a match
-     */
-    public function testMatchingUriWithNoHeadersToMatchReturnsMatch() : void
-    {
-        $expectedRoutes = [
-            new Route(
-                ['GET'],
-                new UriTemplate('^foo$', false),
-                $this->createMock(RouteAction::class),
-                [new MiddlewareBinding('foo')]
-            )
-        ];
-        $this->routeCollection->expects($this->once())
-            ->method('getByMethod')
-            ->with('GET')
-            ->willReturn($expectedRoutes);
-        $matchedRoute = $this->matcher->match('GET', '', 'foo', ['HEADER' => 'value'], $this->routeCollection);
-        $this->assertSame($expectedRoutes[0]->getAction(), $matchedRoute->getAction());
-        $this->assertSame($expectedRoutes[0]->getMiddlewareBindings(), $matchedRoute->getMiddlewareBindings());
-    }
-
-    /**
      * Tests no match for a URI throws an exception
      */
     public function testNoMatchForUriThrowsException() : void
@@ -206,5 +135,31 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
             ->with('GET')
             ->willReturn($expectedRoutes);
         $this->matcher->match('GET', '', 'bar', [], $this->routeCollection);
+    }
+
+    /**
+     * Tests that a passing constraint does not filter a route
+     */
+    public function testPassingConstraintDoesNotFilterRoute() : void
+    {
+        $expectedRoutes = [
+            new Route(
+                ['GET'],
+                new UriTemplate('^foo$', false),
+                $this->createMock(RouteAction::class)
+            )
+        ];
+        $constraint = $this->createMock(IRouteConstraint::class);
+        $constraint->expects($this->once())
+            ->method('isMatch')
+            ->with('', 'foo', ['foo' => 'bar'], $expectedRoutes[0])
+            ->willReturn(true);
+        $matcher = new RouteMatcher($this->routeCollection, [$constraint]);
+        $this->routeCollection->expects($this->once())
+            ->method('getByMethod')
+            ->with('GET')
+            ->willReturn($expectedRoutes);
+        $matchedRoute = $matcher->match('GET', '', 'foo', ['foo' => 'bar'], $this->routeCollection);
+        $this->assertSame($expectedRoutes[0]->getAction(), $matchedRoute->getAction());
     }
 }

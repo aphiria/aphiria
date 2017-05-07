@@ -16,38 +16,38 @@ class RouteGroupOptions
     private $middlewareBindings = [];
     /** @var bool Whether or not the entire group is HTTPS-only */
     private $isHttpsOnly = false;
-    /** @var array The list of header values to match on for the entire group */
-    private $headersToMatch = [];
+    /** @var array The mapping of custom attribute names => values to match on for the entire group */
+    private $attributes = [];
 
     /**
      * @param string $pathTemplate The path template that applies to the entire group
      * @param string|null $hostTemplate The host template that applies to the entire group, or null
      * @param bool $isHttpsOnly Whether or not the entire group is HTTPS-only
      * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings that applies to the entire group
-     * @param array $headersToMatch The list of header values to match on for the entire group
+     * @param array $attributes The mapping of custom attribute names => values to match on for the entire group
      */
     public function __construct(
         string $pathTemplate,
         ?string $hostTemplate = null,
         bool $isHttpsOnly = false,
         array $middlewareBindings = [],
-        array $headersToMatch = []
+        array $attributes = []
     ) {
         $this->pathTemplate = $pathTemplate;
         $this->hostTemplate = $hostTemplate;
         $this->isHttpsOnly = $isHttpsOnly;
         $this->middlewareBindings = $middlewareBindings;
-        $this->headersToMatch = $headersToMatch;
+        $this->attributes = $attributes;
     }
 
     /**
-     * Gets the header names => values to match
+     * Gets the maaping of custom route attribute names => values
      *
-     * @return array The mapping of header names => values to match
+     * @return array The mapping of attribute names => values
      */
-    public function getHeadersToMatch() : array
+    public function getAttributes() : array
     {
-        return $this->headersToMatch;
+        return $this->attributes;
     }
 
     /**

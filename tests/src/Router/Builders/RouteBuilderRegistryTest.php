@@ -46,6 +46,22 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that attributes to match on are merged with those in its routes
+     */
+    public function testGroupAttributesToMatchOnAreMergedWithRouteAttributesToMatch() : void
+    {
+        $groupOptions = new RouteGroupOptions('foo', 'bar', false, [], ['H1' => 'val1']);
+        $this->registry->group($groupOptions, function (RouteBuilderRegistry $registry) {
+            $registry->map('GET', '', '', false)
+                ->toMethod('foo', 'bar')
+                ->withAttribute('H2', 'val2');
+        });
+        $routes = $this->registry->buildAll()->getByMethod('GET');
+        $this->assertCount(1, $routes);
+        $this->assertEquals(['H1' => 'val1', 'H2' => 'val2'], $routes[0]->getAttributes());
+    }
+
+    /**
      * Tests that a group's options do not apply to routes outside the group
      */
     public function testGroupOptionsDoNotApplyToRoutesAddedOutsideGroup() : void
@@ -64,21 +80,6 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
             ->toMethod('c2', 'm2');
         $routes = $this->registry->buildAll()->getByMethod('POST');
         $this->assertCount(1, $routes);
-    }
-
-    /**
-     * Tests that headers to match on are merged with those in its routes
-     */
-    public function testGroupHeadersToMatchOnAreMergedWithRouteHeadersToMatch() : void
-    {
-        $groupOptions = new RouteGroupOptions('foo', 'bar', false, [], ['H1' => 'val1']);
-        $this->registry->group($groupOptions, function (RouteBuilderRegistry $registry) {
-            $registry->map('GET', '', '', false, ['H2' => 'val2'])
-                ->toMethod('foo', 'bar');
-        });
-        $routes = $this->registry->buildAll()->getByMethod('GET');
-        $this->assertCount(1, $routes);
-        $this->assertEquals(['H1' => 'val1', 'H2' => 'val2'], $routes[0]->getHeadersToMatch());
     }
 
     /**
@@ -186,14 +187,15 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that the route builder is created with the headers to match parameter
+     * Tests that the route builder is created with the attributes to match parameter
      */
-    public function testRouteBuilderIsCreatedWithHeadersToMatchParameter() : void
+    public function testRouteBuilderIsCreatedWithAttributesToMatchParameter() : void
     {
-        $routeBuilder = $this->registry->map('GET', '', null, false, ['FOO' => 'BAR'])
-            ->toMethod('foo', 'bar');
+        $routeBuilder = $this->registry->map('GET', '', null, false)
+            ->toMethod('foo', 'bar')
+            ->withAttribute('FOO', 'BAR');
         $route = $routeBuilder->build();
-        $this->assertEquals(['FOO' => 'BAR'], $route->getHeadersToMatch());
+        $this->assertEquals(['FOO' => 'BAR'], $route->getAttributes());
     }
 
     /**

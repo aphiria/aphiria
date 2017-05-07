@@ -16,13 +16,17 @@ class RouteMatcher implements IRouteMatcher
     private const ROUTE_CHUNK_SIZE = 10;
     /** @var RouteCollection The list of routes to match against */
     private $routes = [];
+    /** @var IRouteConstraint[] The list of custom route constraints to apply */
+    private $routeConstraints = [];
 
     /**
      * @param RouteCollection $routes The list of routes to match against
+     * @param IRouteConstraint[] $routeConstraints The list of custom route constraints to apply
      */
-    public function __construct(RouteCollection $routes)
+    public function __construct(RouteCollection $routes, array $routeConstraints = [])
     {
         $this->routes = $routes;
+        $this->routeConstraints = $routeConstraints;
     }
 
     /**
@@ -54,10 +58,6 @@ class RouteMatcher implements IRouteMatcher
                     continue;
                 }
 
-                if (!$this->headersMatch($route->getHeadersToMatch(), $headers)) {
-                    continue;
-                }
-
                 // Since the first value in this route's capturing group is the entire matched route,
                 // start with the next offset, which will contain the route variables
                 $routeVarNamesToValues = [];
@@ -66,6 +66,12 @@ class RouteMatcher implements IRouteMatcher
 
                 if (!$this->routeVarsMatch($uriTemplate, $routeVarValues, $routeVarNamesToValues)) {
                     continue;
+                }
+                
+                foreach ($this->routeConstraints as $routeConstraint) {
+                    if (!$routeConstraint->isMatch($host, $path, $headers, $route)) {
+                        continue 2;
+                    }
                 }
 
                 return new MatchedRoute(
@@ -101,30 +107,6 @@ class RouteMatcher implements IRouteMatcher
         }
 
         return '#^(?:(' . implode(')|(', $regexes) . '))$#';
-    }
-
-    /**
-     * Compares the headers to match on against all the headers
-     *
-     * @param array $headersToMatch The headers to match on
-     * @param array $allHeaders The list of all headers
-     * @return bool True if the headers in a route match the headers from the request, otherwise false
-     */
-    private function headersMatch(array $headersToMatch, array $allHeaders) : bool
-    {
-        foreach ($headersToMatch as $headerNameToMatch => $headerValueToMatch) {
-            // The header names are case-insensitive
-            $uppercaseHeaderNameToMatch = strtoupper($headerNameToMatch);
-
-            if (
-                !isset($allHeaders[$uppercaseHeaderNameToMatch]) ||
-                $allHeaders[$uppercaseHeaderNameToMatch] !== $headerValueToMatch
-            ) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**

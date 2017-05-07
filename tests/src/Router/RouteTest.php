@@ -11,8 +11,8 @@ class RouteTest extends \PHPUnit\Framework\TestCase
 {
     /** @var The name of the route to use */
     private const ROUTE_NAME = 'route';
-    /** @var The list of header values to match on */
-    private static $headersToMatch = ['foo' => 'bar'];
+    /** @var The list of attributes to match on */
+    private static $attributes = ['foo' => 'bar'];
     /** @var Route The route to use in tests */
     private $route = null;
     /** @var UriTemplate|\PHPUnit_Framework_MockObject_MockObject The URI template used by the route */
@@ -36,7 +36,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
             $this->routeAction,
             $this->middlewareBindings,
             self::ROUTE_NAME,
-            self::$headersToMatch
+            self::$attributes
         );
     }
 
@@ -49,11 +49,11 @@ class RouteTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that the correct header values are returned
+     * Tests that the correct attributes are returned
      */
-    public function testCorrectHeaderValuesAreReturned() : void
+    public function testCorrectAttributesAreReturned() : void
     {
-        $this->assertSame(self::$headersToMatch, $this->route->getHeadersToMatch());
+        $this->assertSame(self::$attributes, $this->route->getAttributes());
     }
 
     /**
