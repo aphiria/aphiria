@@ -139,8 +139,6 @@ To build your routes, call `$routes->map()`, which accepts the following paramet
     * The optional host template for this route  ([read about syntax](#route-variables))
 * `bool $isHttpsOnly` (optional)
     * Whether or not this route is HTTPS-only
-* `array $headersToMatch` (optional)
-    * The mapping of header names => values to match on
 
 Route builders give you a fluent syntax for mapping your routes to closures or controller methods.  They also let you [bind any middleware](#binding-middleware) classes and properties to the route.
 
@@ -211,7 +209,7 @@ foreach ($matchedRoute->getMiddlewareBindings() as $middlewareBinding) {
 
 <h1 id="grouping-routes">Grouping Routes</h1>
 
-Often times, a lot of your routes will share similar properties such as hosts/paths/headers to match on, or middleware.  You can group these routes together using `RouteBuilderRegistry::group()` and specifying the options to apply to all routes within the group:
+Often times, a lot of your routes will share similar properties such as hosts and paths to match on, or middleware.  You can group these routes together using `RouteBuilderRegistry::group()` and specifying the options to apply to all routes within the group:
 
 ```php
 use Opulence\Router\Builders\RouteGroupOptions;
@@ -241,8 +239,9 @@ This creates two routes with a host suffix of `example.com` and a route prefix o
     * This value is suffixed to the hosts of all routes within the group
 * `bool $isHttpsOnly` (optional)
     * Whether or not the routes in this group are HTTPS-only
-* `array $headersToMatch` (optional)
-    * The mapping of header names => values to match on
+* `array $attributes` (optional)
+    * The mapping of route attribute names => values
+    * These attribute can be used with [custom constraint](#custom-constraints) matching
 * `MiddlewareBinding[] $middleware` (optional)
     * The list of middleware bindings for routes in this group
 

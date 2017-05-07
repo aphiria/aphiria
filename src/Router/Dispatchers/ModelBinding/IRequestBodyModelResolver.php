@@ -6,7 +6,7 @@ use InvalidArgumentException;
 /**
  * Defines the interface for HTTP request body model resolvers to implement
  */
-interface IHttpRequestBodyModelResolver
+interface IRequestBodyModelResolver
 {
     /**
      * Resolves the HTTP request body as a model

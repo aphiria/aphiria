@@ -28,12 +28,12 @@ class UriTemplate
      * @param array $routeVarRules The mapping of route var names to their rules
      */
     public function __construct(
-            string $regex,
-            bool $isAbsoluteUri,
-            array $routeVarNames = [],
-            bool $isHttpsOnly = false,
-            array $defaultRouteVars = [],
-            array $routeVarRules = []
+        string $regex,
+        bool $isAbsoluteUri,
+        array $routeVarNames = [],
+        bool $isHttpsOnly = false,
+        array $defaultRouteVars = [],
+        array $routeVarRules = []
     ) {
         $this->regex = $regex;
         $this->isAbsoluteUri = $isAbsoluteUri;
