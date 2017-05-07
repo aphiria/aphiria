@@ -67,7 +67,7 @@ class RouteMatcher implements IRouteMatcher
                 if (!$this->routeVarsMatch($uriTemplate, $routeVarValues, $routeVarNamesToValues)) {
                     continue;
                 }
-                
+
                 foreach ($this->routeConstraints as $routeConstraint) {
                     if (!$routeConstraint->isMatch($host, $path, $headers, $route)) {
                         continue 2;

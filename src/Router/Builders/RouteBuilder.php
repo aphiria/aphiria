@@ -86,11 +86,11 @@ class RouteBuilder
 
         return $this;
     }
-    
+
     /**
      * Binds a custom attribute to the route
      * This is useful for custom route constraint matching
-     * 
+     *
      * @param string $name The name of the attribute
      * @param mixed $value The value of the attribute
      * @return self For chaining
@@ -98,21 +98,21 @@ class RouteBuilder
     public function withAttribute(string $name, $value) : self
     {
         $this->attributes[$name] = $value;
-        
+
         return $this;
     }
-    
+
     /**
      * Binds many custom attributes to the route
      * This is useful for custom route constraint matching
-     * 
+     *
      * @param array $attributes The mapping of custom attribute names => values
      * @return self For chaining
      */
     public function withManyAttributes(array $attributes) : self
     {
         $this->attributes = array_merge($this->attributes, $attributes);
-        
+
         return $this;
     }
 

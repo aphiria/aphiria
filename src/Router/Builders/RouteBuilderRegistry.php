@@ -99,11 +99,11 @@ class RouteBuilderRegistry
     private function applyGroupAttributes(RouteBuilder &$routeBuilder) : void
     {
         $groupAttributes = [];
-        
+
         foreach ($this->groupOptionsStack as $groupOptions) {
             $groupAttributes = array_merge($groupAttributes, $groupOptions->getAttributes());
         }
-        
+
         $routeBuilder->withManyAttributes($groupAttributes);
     }
 

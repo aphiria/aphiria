@@ -2,7 +2,6 @@
 namespace Opulence\Router\Matchers;
 
 use Opulence\Router\Matchers\Constraints\IRouteConstraint;
-use Opulence\Router\Middleware\MiddlewareBinding;
 use Opulence\Router\Route;
 use Opulence\Router\RouteAction;
 use Opulence\Router\RouteCollection;

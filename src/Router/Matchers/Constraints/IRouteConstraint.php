@@ -10,7 +10,7 @@ interface IRouteConstraint
 {
     /**
      * Attempts to match a route with certain constraints
-     * 
+     *
      * @param string $host The host to match
      * @param string $path The path to match
      * @param array $headers The headers to match

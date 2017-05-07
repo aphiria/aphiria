@@ -293,6 +293,8 @@ $matchedRoute = $routeMatcher->match(
 );
 ```
 
+If you plan on adding many attributes to your routes, use `RouteBuilder::withManyAttributes()`.
+
 <h2 id="getting-php-headers">Getting Headers in PHP</h2>
 
 PHP is irritatingly difficult to extract headers from `$_SERVER`.  If you're using a library/framework to grab headers, then use that.  Otherwise, you can use the `HeaderParser`:
