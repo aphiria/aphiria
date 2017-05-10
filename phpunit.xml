@@ -1,7 +1,7 @@
 <phpunit
     bootstrap="config/phpunit.php"
     colors="true">
-    <testsuite name="Project">
+    <testsuite name="RouteMatcher">
         <directory>tests</directory>
     </testsuite>
 </phpunit>
