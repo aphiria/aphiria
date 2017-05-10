@@ -41,7 +41,7 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
 > **Note:** This is *not* a route dispatching library.  This library does not call controllers or closures on the matched route.  Why?  Usually, such actions are tightly coupled to an HTTP library or to a framework.  By not dispatching the matched route, you're free to use the library/framework of your choice, while still getting the benefits of performance and fluent syntax.
 
 <h2 id="installation">Installation</h2>
-This library requires PHP 7.1 and above.
+This library requires PHP 7.1 and above.  It can be installed via <a href="https://getcomposer.org/" target="_blank">Composer</a> by including `"opulence/route-matching": "1.0.*@dev"` in your _composer.json_.
 
 <h1 id="basic-usage">Basic Usage</h1>
 

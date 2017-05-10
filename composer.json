@@ -1,11 +1,10 @@
 {
-    "name": "opulence/router",
-    "description": "The Opulence routing library",
+    "name": "opulence/route-matcher",
+    "description": "The Opulence route matching library",
     "keywords": [
         "PHP",
         "routing",
-        "http",
-        "mvc"
+        "matching"
     ],
     "authors": [
         {
@@ -17,7 +16,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Opulence\\Routing\\": ""
+            "Opulence\\Routing\\Matchers\\": ""
         }
     },
     "require": {
