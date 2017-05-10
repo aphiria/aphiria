@@ -48,11 +48,11 @@ This library requires PHP 7.1 and above.
 Out of the box, this library provides a fluent syntax to help you build your routes with ease.  Let's look at a working example:
 
 ```php
-use Opulence\Router\Builders\RouteBuilderRegistry;
-use Opulence\Router\Caching\FileRouteCache;
-use Opulence\Router\Matchers\RouteMatcher;
-use Opulence\Router\RouteFactory;
-use Opulence\Router\RouteNotFoundException;
+use Opulence\Routing\Matchers\Builders\RouteBuilderRegistry;
+use Opulence\Routing\Matchers\Caching\FileRouteCache;
+use Opulence\Routing\Matchers\RouteFactory;
+use Opulence\Routing\Matchers\RouteMatcher;
+use Opulence\Routing\Matchers\RouteNotFoundException;
 
 // Define your routes
 $routesCallback = function (RouteBuilderRegistry $routes) {
@@ -212,7 +212,7 @@ foreach ($matchedRoute->getMiddlewareBindings() as $middlewareBinding) {
 Often times, a lot of your routes will share similar properties such as hosts and paths to match on, or middleware.  You can group these routes together using `RouteBuilderRegistry::group()` and specifying the options to apply to all routes within the group:
 
 ```php
-use Opulence\Router\Builders\RouteGroupOptions;
+use Opulence\Routing\Matchers\Builders\RouteGroupOptions;
 
 $routesCallback = function (RouteBuilderRegistry $routes) {
     $routes->group(
@@ -252,7 +252,7 @@ It is possible to nest route groups.
 Sometimes, you might find it useful to add some custom logic for matching routes.  For example, you might want to add API versioning to your routes to force your API version header to match a version specified on the routes.  To do so, you'd use route "attributes" and a route constraint.  Route constraints implement `IRouteConstraint`, and are easy to make:
 
 ```php
-use Opulence\Router\Matchers\Constraints\IRouteConstraint;
+use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
 
 class ApiVersionConstraint implements IRouteConstraint
 {
@@ -299,7 +299,7 @@ If you plan on adding many attributes to your routes, use `RouteBuilder::withMan
 PHP is irritatingly difficult to extract headers from `$_SERVER`.  If you're using a library/framework to grab headers, then use that.  Otherwise, you can use the `HeaderParser`:
 
 ```php
-use Opulence\Router\Requests\HeaderParser;
+use Opulence\Routing\Matchers\Requests\HeaderParser;
 
 $headers = (new HeaderParser)->parseHeaders($_SERVER);
 ```
@@ -334,7 +334,7 @@ The following rules are built-into Opulence:
 You can register your own rule by implementing `IRule`.  Let's make a rule that enforces a certain minimum string length:
 
 ```php
-use Opulence\Router\UriTemplates\Rules\IRule;
+use Opulence\Routing\Matchers\UriTemplates\Rules\IRule;
 
 class MinLengthRule implements IRule
 {
@@ -370,8 +370,8 @@ class MinLengthRule implements IRule
 Let's register our rule with the rule factory:
 
 ```php
-use Opulence\Router\UriTemplates\Rules\RuleFactory;
-use Opulence\Router\UriTemplates\Rules\RuleFactoryRegistrant;
+use Opulence\Routing\Matchers\UriTemplates\Rules\RuleFactory;
+use Opulence\Routing\Matchers\UriTemplates\Rules\RuleFactoryRegistrant;
 
 // Register some built-in rules to our factory
 $ruleFactory = (new RuleFactoryRegistrant)->registerRuleFactories(new RuleFactory);
@@ -385,10 +385,10 @@ $ruleFactory->registerRuleFactory(MinLengthRule::getSlug(), function (int $minLe
 Finally, register this rule factory with the URI template compiler:
 
 ```php
-use Opulence\Router\Builders\RouteBuilderRegistry;
-use Opulence\Router\Caching\FileRouteCache;
-use Opulence\Router\RuleFactory;
-use Opulence\Router\UriTemplates\Compilers\UriTemplateCompiler;
+use Opulence\Routing\Matchers\Builders\RouteBuilderRegistry;
+use Opulence\Routing\Matchers\Caching\FileRouteCache;
+use Opulence\Routing\Matchers\RuleFactory;
+use Opulence\Routing\Matchers\UriTemplates\Compilers\UriTemplateCompiler;
 
 $routesCallback = function (RouteBuilderRegistry $routes) {
     // Register our routes...
@@ -423,12 +423,12 @@ $routeFactory = new RouteFactory($routesCallback, $routeCache);
 If you don't want to use the route builders, and instead would rather create the routes yourself, you can.  Here's a complete example of how:
 
 ```php
-use Opulence\Router\ClosureRouteAction;
-use Opulence\Router\Matchers\RouteMatcher;
-use Opulence\Router\Route;
-use Opulence\Router\RouteCollection;
-use Opulence\Router\RouteNotFoundException;
-use Opulence\Router\UriTemplates\UriTemplate;
+use Opulence\Routing\Matchers\ClosureRouteAction;
+use Opulence\Routing\Matchers\Route;
+use Opulence\Routing\Matchers\RouteCollection;
+use Opulence\Routing\Matchers\RouteMatcher;
+use Opulence\Routing\Matchers\RouteNotFoundException;
+use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
 
 $routes = new RouteCollection();
 $routes->add(new Route(
