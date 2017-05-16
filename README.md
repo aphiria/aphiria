@@ -399,7 +399,8 @@ use Opulence\Routing\Matchers\RuleFactory;
 use Opulence\Routing\Matchers\UriTemplates\Compilers\UriTemplateCompiler;
 
 $routesCallback = function (RouteBuilderRegistry $routes) {
-    // Register our routes...
+    $routes->map('parts/:serialNumber(minLength(6))')
+        ->toMethod('PartController', 'getPartBySerialNumber');
 };
 $ruleFactory = new RuleFactory(
     $routesCallback,
@@ -408,7 +409,7 @@ $ruleFactory = new RuleFactory(
 );
 ```
 
-We can now use the slug to use this rule:  `users/names/:name(minLength(4))`.
+Our route will now enforce a serial number with minimum length 6.
 
 <h1 id="caching">Caching</h1>
 
