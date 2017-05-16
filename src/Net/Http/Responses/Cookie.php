@@ -21,6 +21,15 @@ class Cookie
     /** @var bool Whether or not this cookie is HTTP only */
     private $isHttpOnly = true;
 
+    /**
+     * @param string $name The name of the cookie
+     * @param mixed $value The value of the cookie
+     * @param DateTime|int $expiration The expiration of the cookie
+     * @param string $path The path the cookie applies to
+     * @param string $domain The domain the cookie applies to
+     * @param bool $isSecure Whether or not this cookie is HTTPS-only
+     * @param bool $isHttpOnly Whether or not this cookie can be read client-side
+     */
     public function __construct(
         string $name,
         $value,
@@ -86,6 +95,7 @@ class Cookie
         if ($expiration instanceof DateTime) {
             $expiration = $expiration->format('U');
         }
+        
         $this->expiration = $expiration;
     }
 

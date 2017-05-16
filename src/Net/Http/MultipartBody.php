@@ -6,8 +6,11 @@ namespace Opulence\Net\Http;
  */
 class MultipartBody implements IHttpBody
 {
+    /** @var string The subtype of the body */
     protected $subType = 'mixed';
+    /** @var string The boundary between the bodies */
     protected $boundary = '';
+    /** @var IHttpBody[] The list of bodies in this multipart body */
     protected $bodies = [];
 
     public function __construct(string $subType = 'mixed', ?string $boundary = null)
@@ -22,5 +25,27 @@ class MultipartBody implements IHttpBody
         $this->bodies[] = $body;
     }
 
-    // Todo
+    /**
+     * @inheritdoc
+     */
+    public function readAsStream() : IStream
+    {
+        // Todo
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function readAsString() : string
+    {
+        // Todo
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function writeToStream(IStream $stream) : void
+    {
+        // Todo
+    }
 }

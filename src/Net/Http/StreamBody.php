@@ -15,5 +15,27 @@ class StreamBody implements IHttpBody
         $this->stream = $stream;
     }
 
-    // Todo
+    /**
+     * @inheritdoc
+     */
+    public function readAsStream() : IStream
+    {
+        // Todo
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function readAsString() : string
+    {
+        // Todo
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function writeToStream(IStream $stream) : void
+    {
+        // Todo
+    }
 }

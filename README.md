@@ -2,7 +2,7 @@
 
 <h2>Ideas</h2>
 
-* If using this along with the new routing library, we should set the route variables in the `Request`'s `properties`
+* Should set the HTTP protocol in the request message's `properties`
 
 <h2>Requests</h2>
 
