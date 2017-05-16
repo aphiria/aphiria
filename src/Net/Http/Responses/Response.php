@@ -17,7 +17,7 @@ class Response implements IHttpResponseMessage
     {
         // Todo
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -25,7 +25,7 @@ class Response implements IHttpResponseMessage
     {
         // Todo
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -49,7 +49,7 @@ class Response implements IHttpResponseMessage
     {
         // Todo
     }
-    
+
     /**
      * @inheritdoc
      */

@@ -16,7 +16,7 @@ class Request implements IHttpRequestMessage
     {
         // Todo
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -24,7 +24,7 @@ class Request implements IHttpRequestMessage
     {
         // Todo
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -52,6 +52,14 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
+    public function setBody(IHttpBody $body) : void
+    {
+        // Todo
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function setMethod(string $method) : void
     {
         // Todo
@@ -61,14 +69,6 @@ class Request implements IHttpRequestMessage
      * @inheritdoc
      */
     public function setRequestUri(IUri $requestUri) : void
-    {
-        // Todo
-    }
-    
-    /**
-     * @inheritdoc
-     */
-    public function setBody(IHttpBody $body) : void
     {
         // Todo
     }

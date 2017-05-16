@@ -3,6 +3,7 @@
 <h2>Ideas</h2>
 
 * Should set the HTTP protocol in the request message's `properties`
+* I forgot - how do I specify trusted proxies?  I feel like I already figured this.
 
 <h2>Requests</h2>
 

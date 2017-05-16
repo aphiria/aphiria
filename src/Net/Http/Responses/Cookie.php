@@ -95,7 +95,7 @@ class Cookie
         if ($expiration instanceof DateTime) {
             $expiration = $expiration->format('U');
         }
-        
+
         $this->expiration = $expiration;
     }
 
