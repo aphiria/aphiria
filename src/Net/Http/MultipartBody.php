@@ -1,6 +1,8 @@
 <?php
 namespace Opulence\Net\Http;
 
+use Opulence\IO\Streams\IStream;
+
 /**
  * Defines the multipart HTTP body
  */

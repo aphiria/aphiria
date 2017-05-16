@@ -1,0 +1,7 @@
+<phpunit
+    bootstrap="config/phpunit.php"
+    colors="true">
+    <testsuite name="Net">
+        <directory>tests</directory>
+    </testsuite>
+</phpunit>
