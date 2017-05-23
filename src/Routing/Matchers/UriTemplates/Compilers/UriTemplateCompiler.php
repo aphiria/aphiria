@@ -19,8 +19,8 @@ class UriTemplateCompiler implements IUriTemplateCompiler
 {
     /** @var string The regex delimiter to use */
     private const REGEX_DELIMITER = '#';
-    /** @var string The regex used to match route variables */
-    private const ROUTE_VAR_REGEX = '([^\/:]+)';
+    /** @var string The regex used to match route variables (stops at periods for host vars, slashes for path vars) */
+    private const ROUTE_VAR_REGEX = '([^\/\.]+)';
     /** @var IRuleFactory The factory for rules found in the routes */
     private $ruleFactory = null;
     /** @var IUriTemplateParser The URI template parser to use */

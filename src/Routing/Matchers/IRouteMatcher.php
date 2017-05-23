@@ -16,10 +16,5 @@ interface IRouteMatcher
      * @return MatchedRoute The matched route, if one was found
      * @throws RouteNotFoundException Thrown if no matching route was found
      */
-    public function match(
-        string $httpMethod,
-        string $host,
-        string $path,
-        array $headers = []
-    ) : MatchedRoute;
+    public function match(string $httpMethod, string $host, string $path, array $headers = []) : MatchedRoute;
 }

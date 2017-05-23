@@ -3,9 +3,7 @@ namespace Opulence\Routing\Matchers;
 
 use Closure;
 use InvalidArgumentException;
-use SuperClosure\Analyzer\AstAnalyzer;
-use SuperClosure\Serializer;
-use SuperClosure\SerializerInterface;
+use Opis\Closure\SerializableClosure;
 
 /**
  * Defines a route action
@@ -21,8 +19,6 @@ class RouteAction
     protected $closure = null;
     /** @var bool Whether or not the action uses a method or a closure */
     protected $usesMethod = false;
-    /** @var SerializerInterface The serializer to use for closures */
-    protected $serializer = null;
     /** @var string The serialized closure */
     protected $serializedClosure = '';
 
@@ -30,15 +26,10 @@ class RouteAction
      * @param string|null $className The name of the class the route routes to
      * @param string|null $methodName The name of the method the route routes to
      * @param Closure|null $closure The closure the route routes to
-     * @param SerializerInterface The serializer to use for this action
      * @throws InvalidArgumentException Thrown if no valid class or closure is specified
      */
-    public function __construct(
-        ?string $className,
-        ?string $methodName,
-        ?Closure $closure,
-        SerializerInterface $serializer = null
-    ) {
+    public function __construct(?string $className, ?string $methodName, ?Closure $closure)
+    {
         // Check if everything was set or nothing was set
         if (($className !== null && $closure !== null) ||
             ($className === null || $methodName == null) && $closure === null) {
@@ -49,7 +40,6 @@ class RouteAction
         $this->methodName = $methodName;
         $this->closure = $closure;
         $this->usesMethod = $closure === null;
-        $this->serializer = $serializer ?? new Serializer(new AstAnalyzer());
     }
 
     /**
@@ -60,8 +50,6 @@ class RouteAction
         if ($this->closure !== null) {
             $this->closure = clone $this->closure;
         }
-
-        $this->serializer = clone $this->serializer;
     }
 
     /**
@@ -74,7 +62,7 @@ class RouteAction
         if ($this->closure === null) {
             $this->serializedClosure = '';
         } else {
-            $this->serializedClosure = $this->serializer->serialize($this->closure);
+            $this->serializedClosure = serialize(new SerializableClosure($this->closure));
             $this->closure = null;
         }
 
@@ -89,7 +77,9 @@ class RouteAction
         if ($this->serializedClosure === '') {
             $this->closure = null;
         } else {
-            $this->closure = $this->serializer->unserialize($this->serializedClosure);
+            /** @var SerializableClosure $serializedClosure */
+            $serializedClosure = unserialize($this->serializedClosure);
+            $this->closure = $serializedClosure->getClosure();
         }
 
         $this->serializedClosure = '';

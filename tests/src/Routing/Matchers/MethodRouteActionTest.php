@@ -1,8 +1,6 @@
 <?php
 namespace Opulence\Routing\Matchers;
 
-use SuperClosure\SerializerInterface;
-
 /**
  * Tests the method route action
  */
@@ -14,16 +12,13 @@ class MethodRouteActionTest extends \PHPUnit\Framework\TestCase
     private const METHOD_NAME = 'bar';
     /** @var MethodRouteAction An instance that uses a method as the action */
     private $methodAction = null;
-    /** @var SerializerInterface|\PHPUnit_Framework_MockObject_MockObject The mock serializer used by our actions */
-    private $serializer = null;
 
     /**
      * Sets up the tests
      */
     public function setUp() : void
     {
-        $this->serializer = $this->createMock(SerializerInterface::class);
-        $this->methodAction = new MethodRouteAction(self::CLASS_NAME, self::METHOD_NAME, $this->serializer);
+        $this->methodAction = new MethodRouteAction(self::CLASS_NAME, self::METHOD_NAME);
     }
 
     /**

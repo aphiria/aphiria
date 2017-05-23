@@ -16,12 +16,12 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Opulence\\Routing\\Matchers\\": ""
+            "Opulence\\Routing\\Matchers\\": "src/Routing/Matchers/"
         }
     },
     "require": {
         "php": "^7.1",
-        "jeremeamia/superclosure": "~2.2"
+        "opis/closure": "3.0.*"
     },
     "extra": {
         "branch-alias": {

@@ -2,7 +2,6 @@
 namespace Opulence\Routing\Matchers;
 
 use Closure;
-use SuperClosure\SerializerInterface;
 
 /**
  * Defines a route action that uses a closure
@@ -11,11 +10,10 @@ class ClosureRouteAction extends RouteAction
 {
     /**
      * @param Closure $closure The closure the route routes to
-     * @param SerializerInterface|null The serializer to use for this action
      */
-    public function __construct(Closure $closure, SerializerInterface $serializer = null)
+    public function __construct(Closure $closure)
     {
-        parent::__construct(null, null, $closure, $serializer);
+        parent::__construct(null, null, $closure);
     }
 
     /**

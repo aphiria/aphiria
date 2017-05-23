@@ -28,12 +28,8 @@ class RouteMatcher implements IRouteMatcher
     /**
      * @inheritdoc
      */
-    public function match(
-        string $httpMethod,
-        string $host,
-        string $path,
-        array $headers = []
-    ) : MatchedRoute {
+    public function match(string $httpMethod, string $host, string $path, array $headers = []) : MatchedRoute
+    {
         $hostAndPath = $host . $path;
         $routesByMethod = $this->routes->getByMethod(strtoupper($httpMethod));
 
@@ -46,21 +42,25 @@ class RouteMatcher implements IRouteMatcher
                 continue;
             }
 
-            // Remove the subject of the matches
-            array_shift($matches);
-
             foreach ($routesByCapturingGroupOffsets as $offset => $route) {
-                if ($matches[$offset] === '') {
+                // The first values in the matches is the subject, so skip that one
+                if ($matches[$offset + 1] === '') {
                     continue;
                 }
 
-                // Since the first value in this route's capturing group is the entire matched route,
-                // start with the next offset, which will contain the route variables
+                // Since the first value in this route's capturing group is the entire matched route and the first
+                // value in matches is the subject, start with the next offset, which will contain the route variables
                 $routeVarNamesToValues = [];
                 $uriTemplate = $route->getUriTemplate();
-                $routeVarValues = array_slice($matches, $offset + 1, count($uriTemplate->getRouteVarNames()));
+                $routeVarValues = array_slice($matches, $offset + 2, count($uriTemplate->getRouteVarNames()));
+                $this->populateRouteVars(
+                    $routeVarNamesToValues,
+                    $uriTemplate->getRouteVarNames(),
+                    $routeVarValues,
+                    $uriTemplate->getDefaultRouteVars()
+                );
 
-                if (!$this->routeVarsMatch($uriTemplate, $routeVarValues, $routeVarNamesToValues)) {
+                if (!$this->routeVarsMatch($uriTemplate, $routeVarNamesToValues)) {
                     continue;
                 }
 
@@ -92,17 +92,17 @@ class RouteMatcher implements IRouteMatcher
     {
         $routesByCapturingGroupOffsets = [];
         $capturingGroupOffset = 0;
-        $regexes = [];
+        $regexes = '';
 
         foreach ($routes as $route) {
             $routesByCapturingGroupOffsets[$capturingGroupOffset] = $route;
             $uriTemplate = $route->getUriTemplate();
+            $regexes .= '(' . $uriTemplate->getRegex() . ')|';
             // Each regex has a capturing group around the entire thing, hence the + 1
             $capturingGroupOffset += count($uriTemplate->getRouteVarNames()) + 1;
-            $regexes[] = $uriTemplate->getRegex();
         }
 
-        return '#^(?:(' . implode(')|(', $regexes) . '))$#';
+        return '#^(?:' . rtrim($regexes, '|') . ')$#';
     }
 
     /**
@@ -139,19 +139,11 @@ class RouteMatcher implements IRouteMatcher
      * Checks whether or not the route vars match the URI template
      *
      * @param UriTemplate $uriTemplate The URI template to match against
-     * @param array $routeVarValues The list of route var values
      * @param array $routeVarNamesToValues The mapping of route var names to their values
      * @return bool True if the route vars match, otherwise false
      */
-    private function routeVarsMatch(UriTemplate $uriTemplate, array $routeVarValues, array &$routeVarNamesToValues) : bool
+    private function routeVarsMatch(UriTemplate $uriTemplate, array &$routeVarNamesToValues) : bool
     {
-        $this->populateRouteVars(
-            $routeVarNamesToValues,
-            $uriTemplate->getRouteVarNames(),
-            $routeVarValues,
-            $uriTemplate->getDefaultRouteVars()
-        );
-
         foreach ($uriTemplate->getRouteVarRules() as $name => $rules) {
             foreach ($rules as $rule) {
                 if (isset($routeVarNamesToValues[$name]) && !$rule->passes($routeVarNamesToValues[$name])) {

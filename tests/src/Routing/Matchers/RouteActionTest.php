@@ -2,7 +2,6 @@
 namespace Opulence\Routing\Matchers;
 
 use Closure;
-use SuperClosure\SerializerInterface;
 
 /**
  * Tests the route action
@@ -19,8 +18,6 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
     private $closure = null;
     /** @var RouteAction An instance that uses a method as the action */
     private $methodAction = null;
-    /** @var SerializerInterface|\PHPUnit_Framework_MockObject_MockObject The mock serializer used by our actions */
-    private $serializer = null;
 
     /**
      * Sets up the tests
@@ -30,9 +27,8 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
         $this->closure = function () {
             // Don't do anything
         };
-        $this->serializer = $this->createMock(SerializerInterface::class);
-        $this->closureAction = new RouteAction(null, null, $this->closure, $this->serializer);
-        $this->methodAction = new RouteAction(self::CLASS_NAME, self::METHOD_NAME, null, $this->serializer);
+        $this->closureAction = new RouteAction(null, null, $this->closure);
+        $this->methodAction = new RouteAction(self::CLASS_NAME, self::METHOD_NAME, null);
     }
 
     /**
