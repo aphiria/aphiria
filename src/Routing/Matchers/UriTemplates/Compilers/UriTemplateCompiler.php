@@ -1,4 +1,13 @@
 <?php
+
+/*
+ * Opulence
+ *
+ * @link      https://www.opulencephp.com
+ * @copyright Copyright (C) 2017 David Young
+ * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
+ */
+
 namespace Opulence\Routing\Matchers\UriTemplates\Compilers;
 
 use InvalidArgumentException;

@@ -34,7 +34,7 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
     * Binding controller methods and closures to the route action
     * The ability to enforce rules on route variables
     * The ability to add your own customized route variable rules
-* You can match on header values, which makes versioning your routes a cinch
+* You can match on header values, which makes things like versioning your routes a cinch
 * Its fluent syntax keeps you from having to memorize how to set up config arrays
 * It is built to support the latest PHP 7.1 features
 
