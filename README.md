@@ -164,6 +164,17 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
 };
 ```
 
+To determine the type of action (controller method or closure) the matched route uses, check `RouteAction::usesClosure()`:
+
+```php
+if ($matchedRoute->getAction()->usesClosure()) {
+    $closure = $matchedRoute->getAction()->getClosure();
+} else {
+    $controllerName = $matchedRoute->getAction()->getControllerName();
+    $methodName = $matchedRoute->getAction()->getMethodName();
+}
+```
+
 <h1 id="binding-middleware">Binding Middleware</h1>
 
 Middleware are a great way to modify both the request and the response on an endpoint.  Opulence lets you define middleware on your endpoints without binding you to any particular library/framework's middleware implementations.
