@@ -30,14 +30,14 @@ This library is a route matching library.  In other words, it lets you map URIs 
 There are so many routing libraries out there.  Why use this one?  Well, there are a few reasons:
 
 * It isn't coupled to _any_ library/framework
-* It is fast
-  * With 100 routes with 9 route variables each, it can match any route in less than 1ms
 * It supports things that other route matching libraries do not support, like:
     * Binding framework-agnostic middleware to routes
     * Binding controller methods and closures to the route action
     * The ability to enforce rules on route variables
     * The ability to add your own customized route variable rules
 * You can match on header values, which makes things like versioning your routes a cinch
+* It is fast
+  * With 100 routes with 9 route variables each, it can match any route in less than 1ms
 * Its fluent syntax keeps you from having to memorize how to set up config arrays
 * It is built to support the latest PHP 7.1 features
 
@@ -70,7 +70,7 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
         ->withName('GetBooksById');
 };
 
-// Set up some caches
+// Set up some factories to build your routes and their regexes
 $routeFactory = new RouteFactory(
     $routesCallback,
     new FileRouteCache('/tmp/routes.cache')
@@ -316,7 +316,7 @@ class ApiVersionConstraint implements IRouteConstraint
 Finally, we need to let the route matcher know to use our `ApiVersionConstraint`:
 
 ```php
-$routeMatcher = new RouteMatcher($routeFactory->createRoutes(), [new ApiVersionConstraint()]);
+$routeMatcher = new RouteMatcher($regexFactory->createRegexes(), [new ApiVersionConstraint()]);
 $matchedRoute = $routeMatcher->match(
     $_SERVER['REQUEST_METHOD'],
     $_SERVER['HTTP_HOST'],
@@ -463,6 +463,8 @@ $regexFactory = new GroupRegexFactory($routes, new FileGroupRegexCache('/tmp/reg
 ```
 
 Similar to the [route cache](#route-caching), you can optionally pass in `null` if you do not wish to cache the regexes.
+
+> **Note:** If you flush the route cache, you should also flush the regex cache (and vice versa).
 
 <h1 id="micro-library">Micro-Library</h1>
 
