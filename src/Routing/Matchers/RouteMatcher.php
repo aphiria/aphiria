@@ -10,6 +10,7 @@
 
 namespace Opulence\Routing\Matchers;
 
+use Opulence\Routing\Matchers\Regexes\GroupRegexCollection;
 use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
 
 /**
@@ -17,20 +18,18 @@ use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
  */
 class RouteMatcher implements IRouteMatcher
 {
-    /** @var The number of routes to attempt to match against in one go */
-    private const ROUTE_CHUNK_SIZE = 10;
-    /** @var RouteCollection The list of routes to match against */
-    private $routes = [];
+    /** @var GroupRegexCollection The list of regexes to match against */
+    private $regexes = [];
     /** @var IRouteConstraint[] The list of custom route constraints to apply */
     private $routeConstraints = [];
-
+    
     /**
-     * @param RouteCollection $routes The list of routes to match against
+     * @param GroupRegexCollection $regexes The list of regexes to match against
      * @param IRouteConstraint[] $routeConstraints The list of custom route constraints to apply
      */
-    public function __construct(RouteCollection $routes, array $routeConstraints = [])
+    public function __construct(GroupRegexCollection $regexes, array $routeConstraints = [])
     {
-        $this->routes = $routes;
+        $this->regexes = $regexes;
         $this->routeConstraints = $routeConstraints;
     }
 
@@ -40,18 +39,16 @@ class RouteMatcher implements IRouteMatcher
     public function match(string $httpMethod, string $host, string $path, array $headers = []) : MatchedRoute
     {
         $hostAndPath = $host . $path;
-        $routesByMethod = $this->routes->getByMethod(strtoupper($httpMethod));
+        $regexesByMethod = $this->regexes->getByMethod(strtoupper($httpMethod));
 
-        foreach (array_chunk($routesByMethod, self::ROUTE_CHUNK_SIZE, true) as $chunkedRoutes) {
-            $routesByCapturingGroupOffsets = [];
-            $regex = $this->buildRegex($chunkedRoutes, $routesByCapturingGroupOffsets);
+        foreach ($regexesByMethod as $regex) {
             $matches = [];
 
-            if (preg_match($regex, $hostAndPath, $matches) !== 1) {
+            if (preg_match($regex->getGroupRegex(), $hostAndPath, $matches) !== 1) {
                 continue;
             }
 
-            foreach ($routesByCapturingGroupOffsets as $offset => $route) {
+            foreach ($regex->getRoutesByCapturingGroupOffsets() as $offset => $route) {
                 // The first values in the matches is the subject, so skip that one
                 if ($matches[$offset + 1] === '') {
                     continue;
@@ -88,30 +85,6 @@ class RouteMatcher implements IRouteMatcher
         }
 
         throw new RouteNotFoundException();
-    }
-
-    /**
-     * Builds a regex from a list of routes
-     *
-     * @param Route[] $routes The list of routes whose regexes we're building from
-     * @param Route[] $routesByCapturingGroupOffsets The mapping of capturing group offsets to routes that we'll build
-     * @return string The built regex
-     */
-    private function buildRegex(array $routes, array &$routesByCapturingGroupOffsets) : string
-    {
-        $routesByCapturingGroupOffsets = [];
-        $capturingGroupOffset = 0;
-        $regexes = '';
-
-        foreach ($routes as $route) {
-            $routesByCapturingGroupOffsets[$capturingGroupOffset] = $route;
-            $uriTemplate = $route->getUriTemplate();
-            $regexes .= '(' . $uriTemplate->getRegex() . ')|';
-            // Each regex has a capturing group around the entire thing, hence the + 1
-            $capturingGroupOffset += count($uriTemplate->getRouteVarNames()) + 1;
-        }
-
-        return '#^(?:' . rtrim($regexes, '|') . ')$#';
     }
 
     /**

@@ -90,7 +90,7 @@ class RouteCollection
     }
 
     /**
-     * Gets all the routes
+     * Gets all the routes for a particular HTTP method
      *
      * @param string The HTTP method whose routes we want
      * @return Route[] The list of routes

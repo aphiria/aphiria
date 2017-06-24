@@ -17,6 +17,8 @@
     1. [Built-In Rules](#built-in-rules)
     2. [Making Your Own Custom Rules](#making-your-own-custom-rules)
 8. [Caching](#caching)
+    1. [Route Caching](#route-caching)
+    2. [Regex Caching](#regex-caching)
 9. [Micro-Library](#micro-library)
 
 <h1 id="introduction">Introduction</h1>
@@ -29,6 +31,7 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
 
 * It isn't coupled to _any_ library/framework
 * It is fast
+  * With 100 routes with 9 route variables each, it can match any route in less than 1ms
 * It supports things that other route matching libraries do not support, like:
     * Binding framework-agnostic middleware to routes
     * Binding controller methods and closures to the route action
@@ -54,6 +57,8 @@ Out of the box, this library provides a fluent syntax to help you build your rou
 ```php
 use Opulence\Routing\Matchers\Builders\RouteBuilderRegistry;
 use Opulence\Routing\Matchers\Caching\FileRouteCache;
+use Opulence\Routing\Matchers\Regexes\Caching\FileGroupRegexCache;
+use Opulence\Routing\Matchers\Regexes\GroupRegexFactory;
 use Opulence\Routing\Matchers\RouteFactory;
 use Opulence\Routing\Matchers\RouteMatcher;
 use Opulence\Routing\Matchers\RouteNotFoundException;
@@ -65,13 +70,19 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
         ->withName('GetBooksById');
 };
 
+// Set up some caches
+$routeFactory = new RouteFactory(
+    $routesCallback,
+    new FileRouteCache('/tmp/routes.cache')
+);
+$regexFactory = new GroupRegexFactory(
+    $routeFactory->createRoutes(),
+    new FileGroupRegexCache('/tmp/regexes.cache')
+);
+
 try {
     // Find a matching route
-    $routeFactory = new RouteFactory(
-        $routesCallback,
-        new FileRouteCache('/tmp/routes.cache')
-    );
-    $matchedRoute = (new RouteMatcher($routeFactory->createRoutes()))->match(
+    $matchedRoute = (new RouteMatcher($regexFactory->createRegexes()))->match(
         $_SERVER['REQUEST_METHOD'],
         $_SERVER['HTTP_HOST'],
         $_SERVER['REQUEST_URI']
@@ -427,6 +438,8 @@ Our route will now enforce a serial number with minimum length 6.
 
 <h1 id="caching">Caching</h1>
 
+<h2 id="route-caching">Route Caching</h2>
+
 To speed up the compilation of your routes, Opulence supports caching (`FileRouteCache` is enabled by default).  If you're actively developing and adding new routes, it's best not to enable caching, which can be done by passing `null` into the `RouteFactory`:
 
 ```php
@@ -441,12 +454,23 @@ $routeCache = getenv('ENV_NAME') === 'production' ? new FileRouteCache('/tmp/rou
 $routeFactory = new RouteFactory($routesCallback, $routeCache);
 ```
 
+<h2 id="regex-caching">Regex Caching</h2>
+
+The route matcher processes groups of routes at a time while trying to find a match.  This requires combining those routes' URI templates' regexes.  This process is repetitive, and only really needs to happen once.  So, Opulence provides a cache (`FileGroupRegexCache` is enabled by default) to make this process faster.  This cache is passed in as the second parameter to `GroupRegexFactory`:
+
+```php
+$regexFactory = new GroupRegexFactory($routes, new FileGroupRegexCache('/tmp/regexes.cache'));
+```
+
+Similar to the [route cache](#route-caching), you can optionally pass in `null` if you do not wish to cache the regexes.
+
 <h1 id="micro-library">Micro-Library</h1>
 
 If you don't want to use the route builders, and instead would rather create the routes yourself, you can.  Here's a complete example of how:
 
 ```php
 use Opulence\Routing\Matchers\ClosureRouteAction;
+use Opulence\Routing\Matchers\Regexes\GroupRegexFactory;
 use Opulence\Routing\Matchers\Route;
 use Opulence\Routing\Matchers\RouteCollection;
 use Opulence\Routing\Matchers\RouteMatcher;
@@ -461,10 +485,11 @@ $routes->add(new Route(
         return "Hello, world";
     })
 ));
+$regexFactory = new GroupRegexFactory($routes);
 
 // Get the matched route
 try {
-    $matchedRoute = (new RouteMatcher($routes))->match(
+    $matchedRoute = (new RouteMatcher($regexFactory->createRegexes()))->match(
         $_SERVER['REQUEST_METHOD'],
         $_SERVER['HTTP_HOST'],
         $_SERVER['REQUEST_URI']

@@ -11,6 +11,8 @@
 namespace Opulence\Routing\Matchers;
 
 use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
+use Opulence\Routing\Matchers\Regexes\GroupRegex;
+use Opulence\Routing\Matchers\Regexes\GroupRegexCollection;
 use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
 
 /**
@@ -20,16 +22,16 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
 {
     /** @var RouteMatcher The matcher to use in tests */
     private $matcher = null;
-    /** @var RouteCollection|\PHPUnit_Framework_MockObject_MockObject The route collection to use in tests */
-    private $routeCollection = null;
+    /** @var GroupRegexCollection|\PHPUnit_Framework_MockObject_MockObject The regex collection to use in tests */
+    private $regexes = null;
 
     /**
      * Sets up the tests
      */
     public function setUp() : void
     {
-        $this->routeCollection = $this->createMock(RouteCollection::class);
-        $this->matcher = new RouteMatcher($this->routeCollection);
+        $this->regexes = $this->createMock(GroupRegexCollection::class);
+        $this->matcher = new RouteMatcher($this->regexes);
     }
 
     /**
@@ -38,24 +40,24 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
     public function testFailedConstraintThrowsException() : void
     {
         $this->expectException(RouteNotFoundException::class);
-        $expectedRoutes = [
-            new Route(
-                ['GET'],
-                new UriTemplate('^foo$', false),
-                $this->createMock(RouteAction::class)
+        $expectedRoute = new Route('GET', new UriTemplate('', false), $this->createMock(RouteAction::class));
+        $expectedRegexes = [
+            new GroupRegex(
+                '#^(^foo$)$#',
+                [0 => $expectedRoute]
             )
         ];
         $constraint = $this->createMock(IRouteConstraint::class);
         $constraint->expects($this->once())
             ->method('isMatch')
-            ->with('', 'foo', ['foo' => 'bar'], $expectedRoutes[0])
+            ->with('', 'foo', ['foo' => 'bar'], $expectedRoute)
             ->willReturn(false);
-        $matcher = new RouteMatcher($this->routeCollection, [$constraint]);
-        $this->routeCollection->expects($this->once())
+        $matcher = new RouteMatcher($this->regexes, [$constraint]);
+        $this->regexes->expects($this->once())
             ->method('getByMethod')
             ->with('GET')
-            ->willReturn($expectedRoutes);
-        $matcher->match('GET', '', 'foo', ['foo' => 'bar'], $this->routeCollection);
+            ->willReturn($expectedRegexes);
+        $matcher->match('GET', '', 'foo', ['foo' => 'bar']);
     }
 
     /**
@@ -63,27 +65,32 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
      */
     public function testMatchingCanOccurOnUriTemplatesWithDifferingNumbersOfCapturingGroups() : void
     {
-        $expectedRoutes = [
-            new Route(
-                ['GET'],
-                new UriTemplate('^foo(1)$', false, ['var1']),
-                $this->createMock(RouteAction::class)
-            ),
-            new Route(
-                ['GET'],
-                new UriTemplate('^bar(2)(3)(4)$', false, ['var2', 'var3', 'var4']),
-                $this->createMock(RouteAction::class)
-            ),
-            new Route(
-                ['GET'],
-                new UriTemplate('^baz(5)(6)$', false, ['var5', 'var6']),
-                $this->createMock(RouteAction::class)
+        $expectedRegexes = [
+            new GroupRegex(
+                '#^(^foo(1)$)|(^bar(2)(3)(4)$)|(^baz(5)(6)$)$#',
+                [
+                    0 => new Route(
+                        'GET',
+                        new UriTemplate('', false, ['var1']),
+                        $this->createMock(RouteAction::class)
+                    ),
+                    2 => new Route(
+                        'GET',
+                        new UriTemplate('', false, ['var2', 'var3', 'var4']),
+                        $this->createMock(RouteAction::class)
+                    ),
+                    6 => new Route(
+                        'GET',
+                        new UriTemplate('', false, ['var5', 'var6']),
+                        $this->createMock(RouteAction::class)
+                    )
+                ]
             )
         ];
-        $this->routeCollection->expects($this->exactly(3))
+        $this->regexes->expects($this->exactly(3))
             ->method('getByMethod')
             ->with('GET')
-            ->willReturn($expectedRoutes);
+            ->willReturn($expectedRegexes);
         $matchingPaths = [
             'foo1' => ['var1' => '1'],
             'bar234' => ['var2' => '2', 'var3' => '3', 'var4' => '4'],
@@ -91,7 +98,7 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
         ];
 
         foreach ($matchingPaths as $matchingPath => $expectedRouteVars) {
-            $matchedRoute = $this->matcher->match('GET', '', $matchingPath, [], $this->routeCollection);
+            $matchedRoute = $this->matcher->match('GET', '', $matchingPath, []);
             $this->assertEquals($expectedRouteVars, $matchedRoute->getRouteVars());
         }
     }
@@ -101,24 +108,30 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
      */
     public function testMatchingRouteWithVarsThatIsCheckedAfterMissedRouteWithNoVars() : void
     {
-        $expectedRoutes = [
-            new Route(
-                ['GET'],
-                new UriTemplate('^foo$', false),
-                $this->createMock(RouteAction::class)
-            ),
-            new Route(
-                ['GET'],
-                new UriTemplate('^bar(1)(2)$', false),
-                $this->createMock(RouteAction::class)
+        $expectedMatchedAction = $this->createMock(RouteAction::class);
+        $expectedRegexes = [
+            new GroupRegex(
+                '#^(^foo$)|(^bar(1)(2)$)$#',
+                [
+                    0 => new Route(
+                        'GET',
+                        new UriTemplate('', false),
+                        $this->createMock(RouteAction::class)
+                    ),
+                    1 => new Route(
+                        'GET',
+                        new UriTemplate('', false),
+                        $expectedMatchedAction
+                    )
+                ]
             )
         ];
-        $this->routeCollection->expects($this->once())
+        $this->regexes->expects($this->once())
             ->method('getByMethod')
             ->with('GET')
-            ->willReturn($expectedRoutes);
-        $matchedRoute = $this->matcher->match('GET', '', 'bar12', [], $this->routeCollection);
-        $this->assertSame($expectedRoutes[1]->getAction(), $matchedRoute->getAction());
+            ->willReturn($expectedRegexes);
+        $matchedRoute = $this->matcher->match('GET', '', 'bar12', []);
+        $this->assertSame($expectedMatchedAction, $matchedRoute->getAction());
     }
 
     /**
@@ -127,18 +140,23 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
     public function testNoMatchForUriThrowsException() : void
     {
         $this->expectException(RouteNotFoundException::class);
-        $expectedRoutes = [
-            new Route(
-                ['GET'],
-                new UriTemplate('^foo$', false),
-                $this->createMock(RouteAction::class)
+        $expectedRegexes = [
+            new GroupRegex(
+                '#^(^foo$)$#',
+                [
+                    0 => new Route(
+                        'GET',
+                        new UriTemplate('', false),
+                        $this->createMock(RouteAction::class)
+                    )
+                ]
             )
         ];
-        $this->routeCollection->expects($this->once())
+        $this->regexes->expects($this->once())
             ->method('getByMethod')
             ->with('GET')
-            ->willReturn($expectedRoutes);
-        $this->matcher->match('GET', '', 'bar', [], $this->routeCollection);
+            ->willReturn($expectedRegexes);
+        $this->matcher->match('GET', '', 'bar', []);
     }
 
     /**
@@ -146,24 +164,29 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
      */
     public function testPassingConstraintDoesNotFilterRoute() : void
     {
-        $expectedRoutes = [
-            new Route(
-                ['GET'],
-                new UriTemplate('^foo$', false),
-                $this->createMock(RouteAction::class)
+        $expectedMatchedAction = $this->createMock(RouteAction::class);
+        $expectedRoute = new Route(
+            'GET',
+            new UriTemplate('', false),
+            $expectedMatchedAction
+        );
+        $expectedRegexes = [
+            new GroupRegex(
+                '#^(^foo$)$#',
+                [0 => $expectedRoute]
             )
         ];
         $constraint = $this->createMock(IRouteConstraint::class);
         $constraint->expects($this->once())
             ->method('isMatch')
-            ->with('', 'foo', ['foo' => 'bar'], $expectedRoutes[0])
+            ->with('', 'foo', ['foo' => 'bar'], $expectedRoute)
             ->willReturn(true);
-        $matcher = new RouteMatcher($this->routeCollection, [$constraint]);
-        $this->routeCollection->expects($this->once())
+        $matcher = new RouteMatcher($this->regexes, [$constraint]);
+        $this->regexes->expects($this->once())
             ->method('getByMethod')
             ->with('GET')
-            ->willReturn($expectedRoutes);
-        $matchedRoute = $matcher->match('GET', '', 'foo', ['foo' => 'bar'], $this->routeCollection);
-        $this->assertSame($expectedRoutes[0]->getAction(), $matchedRoute->getAction());
+            ->willReturn($expectedRegexes);
+        $matchedRoute = $matcher->match('GET', '', 'foo', ['foo' => 'bar']);
+        $this->assertSame($expectedMatchedAction, $matchedRoute->getAction());
     }
 }
