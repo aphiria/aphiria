@@ -31,14 +31,13 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
 
 * It isn't coupled to _any_ library/framework
 * It supports things that other route matching libraries do not support, like:
-    * Binding framework-agnostic middleware to routes
-    * Binding controller methods and closures to the route action
-    * The ability to enforce rules on route variables
-    * The ability to add your own customized route variable rules
-* You can match on header values, which makes things like versioning your routes a cinch
+    * [Binding framework-agnostic middleware to routes](#binding-middleware)
+    * [Binding controller methods and closures to the route action](#route-actions)
+    * [The ability to enforce rules on route variables](#route-variable-rules)
+    * [The ability to match on header values](#custom-constraints), which makes things like versioning your routes a cinch
 * It is fast
   * With 100 routes with 9 route variables each, it can match any route in less than 1ms
-* Its fluent syntax keeps you from having to memorize how to set up config arrays
+* Its [fluent syntax](#route-builders) keeps you from having to memorize how to set up config arrays
 * It is built to support the latest PHP 7.1 features
 
 > **Note:** This is *not* a route dispatching library.  This library does not call controllers or closures on the matched route.  Why?  Usually, such actions are tightly coupled to an HTTP library or to a framework.  By not dispatching the matched route, you're free to use the library/framework of your choice, while still getting the benefits of performance and fluent syntax.
@@ -59,9 +58,7 @@ use Opulence\Routing\Matchers\Builders\RouteBuilderRegistry;
 use Opulence\Routing\Matchers\Caching\FileRouteCache;
 use Opulence\Routing\Matchers\Regexes\Caching\FileGroupRegexCache;
 use Opulence\Routing\Matchers\Regexes\GroupRegexFactory;
-use Opulence\Routing\Matchers\RouteFactory;
-use Opulence\Routing\Matchers\RouteMatcher;
-use Opulence\Routing\Matchers\RouteNotFoundException;
+use Opulence\Routing\Matchers\{RouteFactory, RouteMatcher, RouteNotFoundException};
 
 // Define your routes
 $routesCallback = function (RouteBuilderRegistry $routes) {
@@ -80,8 +77,8 @@ $regexFactory = new GroupRegexFactory(
     new FileGroupRegexCache('/tmp/regexes.cache')
 );
 
+// Find a matching route
 try {
-    // Find a matching route
     $matchedRoute = (new RouteMatcher($regexFactory->createRegexes()))->match(
         $_SERVER['REQUEST_METHOD'],
         $_SERVER['HTTP_HOST'],
@@ -118,7 +115,7 @@ Opulence provides a simple syntax for your URIs.  To capture variables in your r
 users/:userId/profile
 ```
 
-If you want to specify a default value, then you'd write
+If you want to specify a default value, then you'd write:
 
 ```php
 users/:userId=me/profile
@@ -489,7 +486,7 @@ $routes->add(new Route(
 ));
 $regexFactory = new GroupRegexFactory($routes);
 
-// Get the matched route
+// Find a matching route
 try {
     $matchedRoute = (new RouteMatcher($regexFactory->createRegexes()))->match(
         $_SERVER['REQUEST_METHOD'],
