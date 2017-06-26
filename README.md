@@ -32,11 +32,11 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
 * It isn't coupled to _any_ library/framework
 * It supports things that other route matching libraries do not support, like:
     * [Binding framework-agnostic middleware to routes](#binding-middleware)
-    * [Binding controller methods and closures to the route action](#route-actions)
-    * [The ability to enforce rules on route variables](#route-variable-rules)
+    * [The ability to add custom matching rules on route variables](#route-variable-rules)
     * [The ability to match on header values](#custom-constraints), which makes things like versioning your routes a cinch
+    * [Binding controller methods and closures to the route action](#route-actions)
 * It is fast
-  * With 100 routes with 9 route variables each, it can match any route in less than 1ms
+    * With 100 routes with 9 route variables each, it can match any route in less than 1ms
 * Its [fluent syntax](#route-builders) keeps you from having to memorize how to set up config arrays
 * It is built to support the latest PHP 7.1 features
 
