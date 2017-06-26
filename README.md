@@ -139,6 +139,8 @@ Optional route parts can be nested:
 archives/:year[/:month[/:day]]
 ```
 
+This would match `archives/2017`, `archives/2017/07`, and `archives/2017/07/24`.
+
 <h2 id="route-builders">Route Builders</h2>
 
 To build your routes, call `$routes->map()`, which accepts the following parameters:
