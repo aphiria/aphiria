@@ -51,7 +51,9 @@ This library requires PHP 7.1 and above.  It can be installed via <a href="https
 
 <h1 id="basic-usage">Basic Usage</h1>
 
-Out of the box, this library provides a fluent syntax to help you build your routes with ease.  Let's look at a working example:
+Out of the box, this library provides a fluent syntax to help you build your routes with ease.  Let's look at a working example.
+
+First, let's import the namespaces and define our routes:
 
 ```php
 use Opulence\Routing\Matchers\Builders\RouteBuilderRegistry;
@@ -60,14 +62,16 @@ use Opulence\Routing\Matchers\Regexes\Caching\FileGroupRegexCache;
 use Opulence\Routing\Matchers\Regexes\GroupRegexFactory;
 use Opulence\Routing\Matchers\{RouteFactory, RouteMatcher, RouteNotFoundException};
 
-// Define your routes
 $routesCallback = function (RouteBuilderRegistry $routes) {
     $routes->map('GET', 'books/:bookId')
         ->toMethod('BookController', 'getBooksById')
         ->withName('GetBooksById');
 };
+```
 
-// Set up some factories to build your routes and their regexes
+Next, let's set up some factories to build and cache your routes:
+
+```php
 $routeFactory = new RouteFactory(
     $routesCallback,
     new FileRouteCache('/tmp/routes.cache')
@@ -76,8 +80,11 @@ $regexFactory = new GroupRegexFactory(
     $routeFactory->createRoutes(),
     new FileGroupRegexCache('/tmp/regexes.cache')
 );
+```
 
-// Find a matching route
+Finally, let's find a matching route:
+
+```php
 try {
     $matchedRoute = (new RouteMatcher($regexFactory->createRegexes()))->match(
         $_SERVER['REQUEST_METHOD'],
