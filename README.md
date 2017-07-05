@@ -99,7 +99,7 @@ try {
 }
 ```
 
-Using our example, if we hit `example.com/books/123`, then `$matchedRoute` would be an instance of `MatchedRoute`.  Grabbing the matched controller info is as simple as:
+Using our example, if we hit _example.com/books/123_, then `$matchedRoute` would be an instance of `MatchedRoute`.  Grabbing the matched controller info is as simple as:
 
 ```php
 $matchedRoute->getAction()->getControllerName(); // "BookController"
@@ -135,7 +135,7 @@ If you'd like to use [rules](#route-variable-rules), then put them in parenthese
 
 <h2 id="optional-route-parts">Optional Route Parts</h2>
 
-If part of your route is optional, then surround it with brackets.  For example, the following will match both `archives/2017` and `archives/2017/7`:
+If part of your route is optional, then surround it with brackets.  For example, the following will match both _archives/2017_ and _archives/2017/7_:
 ```php
 archives/:year[/:month]
 ```
@@ -261,7 +261,7 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
 };
 ```
 
-This creates two routes with a host suffix of `example.com` and a route prefix of `users/` (`example.com/courses/:courseId` and `example.com/courses/:courseId/professors`).  `RouteGroupOptions::__construct()` accepts the following parameters:
+This creates two routes with a host suffix of _example.com_ and a route prefix of _users/_ (`example.com/courses/:courseId` and `example.com/courses/:courseId/professors`).  `RouteGroupOptions::__construct()` accepts the following parameters:
 
 * `string $pathTemplate`
     * The path for routes in this group ([read about syntax](#route-variables))
@@ -331,7 +331,7 @@ $matchedRoute = $routeMatcher->match(
 );
 ```
 
-If we hit `/comments` with an `API-VERSION` header value of "v2.0", we'd match the second route in our example.
+If we hit _/comments_ with an "API-VERSION" header value of "v2.0", we'd match the second route in our example.
 
 <h2 id="getting-php-headers">Getting Headers in PHP</h2>
 

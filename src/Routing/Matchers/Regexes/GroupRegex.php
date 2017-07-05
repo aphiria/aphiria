@@ -10,6 +10,8 @@
 
 namespace Opulence\Routing\Matchers\Regexes;
 
+use Opulence\Routing\Matchers\Route;
+
 /**
  * Defines a regex for a group of routes
  */
@@ -17,12 +19,12 @@ class GroupRegex
 {
     /** @var string The group regex */
     private $groupRegex = '';
-    /** @var array The mapping of regex capturing group offsets to routes */
+    /** @var Route[] The mapping of regex capturing group offsets to routes */
     private $routesByCapturingGroupOffsets = [];
     
     /**
      * @param string $groupRegex The group regex
-     * @param array $routesByCapturingGroupOffsets The mapping of regex capturing group offsets to routes
+     * @param Route[] $routesByCapturingGroupOffsets The mapping of regex capturing group offsets to routes
      */
     public function __construct(string $groupRegex, array $routesByCapturingGroupOffsets)
     {
@@ -43,7 +45,7 @@ class GroupRegex
     /**
      * Gets the mapping of regex capturing group offsets to routes
      * 
-     * @return array The mapping of regex capturing group offsets to routes
+     * @return Route[] The mapping of regex capturing group offsets to routes
      */
     public function getRoutesByCapturingGroupOffsets() : array
     {
