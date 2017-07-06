@@ -86,7 +86,8 @@ Finally, let's find a matching route:
 
 ```php
 try {
-    $matchedRoute = (new RouteMatcher($regexFactory->createRegexes()))->match(
+    $routeMatcher = new RouteMatcher($regexFactory->createRegexes());
+    $matchedRoute = $routeMatcher->match(
         $_SERVER['REQUEST_METHOD'],
         $_SERVER['HTTP_HOST'],
         $_SERVER['REQUEST_URI']
@@ -146,7 +147,7 @@ Optional route parts can be nested:
 archives/:year[/:month[/:day]]
 ```
 
-This would match `archives/2017`, `archives/2017/07`, and `archives/2017/07/24`.
+This would match _archives/2017_, _archives/2017/07_, and _archives/2017/07/24_.
 
 <h2 id="route-builders">Route Builders</h2>
 
@@ -377,28 +378,18 @@ use Opulence\Routing\Matchers\UriTemplates\Rules\IRule;
 
 class MinLengthRule implements IRule
 {
-    /** @var int The required minimum length */
     private $minLength = 0;
 
-    /**
-     * @param int The required minimum length
-     */
     public function __construct(int $minLength)
     {
         $this->minLength = $minLength;
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function getSlug() : string
     {
         return 'minLength';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function passes($value) : bool
     {
         return mb_strlen($value) >= $this->minLength;
@@ -426,14 +417,14 @@ Finally, register this rule factory with the URI template compiler:
 ```php
 use Opulence\Routing\Matchers\Builders\RouteBuilderRegistry;
 use Opulence\Routing\Matchers\Caching\FileRouteCache;
-use Opulence\Routing\Matchers\RuleFactory;
+use Opulence\Routing\Matchers\RouteFactory;
 use Opulence\Routing\Matchers\UriTemplates\Compilers\UriTemplateCompiler;
 
 $routesCallback = function (RouteBuilderRegistry $routes) {
     $routes->map('parts/:serialNumber(minLength(6))')
         ->toMethod('PartController', 'getPartBySerialNumber');
 };
-$ruleFactory = new RuleFactory(
+$routeFactory = new RouteFactory(
     $routesCallback,
     new FileRouteCache('/tmp/routes.cache'),
     new RouteBuilderRegistry(new UriTemplateCompiler($ruleFactory))
