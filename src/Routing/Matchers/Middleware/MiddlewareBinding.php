@@ -17,17 +17,27 @@ class MiddlewareBinding
 {
     /** @var string The name of the middleware class */
     private $className = '';
-    /** @var array The name => value mapping of parameters bound to the middleware */
-    private $properties = [];
+    /** @var array The name => value mapping of attributes bound to the middleware */
+    private $attributes = [];
 
     /**
      * @param string $className The name of the middleware class
-     * @param array $properties The name => value mapping of parameters bound to the middleware
+     * @param array $attributes The name => value mapping of attributes bound to the middleware
      */
-    public function __construct(string $className, array $properties = [])
+    public function __construct(string $className, array $attributes = [])
     {
         $this->className = $className;
-        $this->properties = $properties;
+        $this->attributes = $attributes;
+    }
+
+    /**
+     * Gets the mapping of attribute names => values for the middleware
+     *
+     * @return array The mapping of attribute names => values
+     */
+    public function getAttributes() : array
+    {
+        return $this->attributes;
     }
 
     /**
@@ -38,15 +48,5 @@ class MiddlewareBinding
     public function getClassName() : string
     {
         return $this->className;
-    }
-
-    /**
-     * Gets the mapping of property names => values for the middleware
-     *
-     * @return array The mapping of property names => values
-     */
-    public function getProperties() : array
-    {
-        return $this->properties;
     }
 }

@@ -16,20 +16,20 @@ namespace Opulence\Routing\Matchers\Middleware;
 class MiddlewareBindingTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * Tests that the correct attributes are returned
+     */
+    public function testCorrectAttributesAreReturned() : void
+    {
+        $middlewareBinding = new MiddlewareBinding('foo', ['bar' => 'baz']);
+        $this->assertEquals(['bar' => 'baz'], $middlewareBinding->getAttributes());
+    }
+    
+    /**
      * Tests that the correct class name is returned
      */
     public function testCorrectClassNameIsReturned() : void
     {
         $middlewareBinding = new MiddlewareBinding('foo', ['bar' => 'baz']);
         $this->assertEquals('foo', $middlewareBinding->getClassName());
-    }
-
-    /**
-     * Tests that the correct properties are returned
-     */
-    public function testCorrectPropertiesAreReturned() : void
-    {
-        $middlewareBinding = new MiddlewareBinding('foo', ['bar' => 'baz']);
-        $this->assertEquals(['bar' => 'baz'], $middlewareBinding->getProperties());
     }
 }

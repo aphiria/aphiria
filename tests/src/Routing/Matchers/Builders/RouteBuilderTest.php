@@ -116,8 +116,8 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(MiddlewareBinding::class, $route->getMiddlewareBindings()[1]);
         $this->assertEquals('foo', $route->getMiddlewareBindings()[0]->getClassName());
         $this->assertEquals('dave', $route->getMiddlewareBindings()[1]->getClassName());
-        $this->assertEquals(['bar' => 'baz'], $route->getMiddlewareBindings()[0]->getProperties());
-        $this->assertEquals(['young' => 'cool'], $route->getMiddlewareBindings()[1]->getProperties());
+        $this->assertEquals(['bar' => 'baz'], $route->getMiddlewareBindings()[0]->getAttributes());
+        $this->assertEquals(['young' => 'cool'], $route->getMiddlewareBindings()[1]->getAttributes());
     }
 
     /**
@@ -133,8 +133,8 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(MiddlewareBinding::class, $route->getMiddlewareBindings()[1]);
         $this->assertEquals('foo', $route->getMiddlewareBindings()[0]->getClassName());
         $this->assertEquals('bar', $route->getMiddlewareBindings()[1]->getClassName());
-        $this->assertEquals([], $route->getMiddlewareBindings()[0]->getProperties());
-        $this->assertEquals([], $route->getMiddlewareBindings()[1]->getProperties());
+        $this->assertEquals([], $route->getMiddlewareBindings()[0]->getAttributes());
+        $this->assertEquals([], $route->getMiddlewareBindings()[1]->getAttributes());
     }
 
     /**
@@ -159,7 +159,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(1, $route->getMiddlewareBindings());
         $this->assertInstanceOf(MiddlewareBinding::class, $route->getMiddlewareBindings()[0]);
         $this->assertEquals('foo', $route->getMiddlewareBindings()[0]->getClassName());
-        $this->assertEquals(['bar' => 'baz'], $route->getMiddlewareBindings()[0]->getProperties());
+        $this->assertEquals(['bar' => 'baz'], $route->getMiddlewareBindings()[0]->getAttributes());
     }
 
     /**
