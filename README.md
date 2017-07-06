@@ -51,7 +51,7 @@ This library requires PHP 7.1 and above.  It can be installed via <a href="https
 
 <h1 id="basic-usage">Basic Usage</h1>
 
-Out of the box, this library provides a fluent syntax to help you build your routes with ease.  Let's look at a working example.
+Out of the box, this library provides a fluent syntax to help you build your routes.  Let's look at a working example.
 
 First, let's import the namespaces and define our routes:
 
@@ -69,7 +69,7 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
 };
 ```
 
-Next, let's set up some factories to build and cache your routes:
+Next, let's set up some factories to build your routes:
 
 ```php
 $routeFactory = new RouteFactory(
@@ -151,7 +151,7 @@ This would match _archives/2017_, _archives/2017/07_, and _archives/2017/07/24_.
 
 <h2 id="route-builders">Route Builders</h2>
 
-To build your routes, call `$routes->map()`, which accepts the following parameters:
+Route builders give you a fluent syntax for mapping your routes to closures or controller methods.  They also let you [bind any middleware](#binding-middleware) classes and properties to the route.  To add a route builder, call `RouteBuilderRegistry::map()`, which returns a `RouteBuilder` and accepts the following parameters:
 
 * `string|array $httpMethods`
     * The HTTP method or list of methods to match on (eg `'GET'` or `['POST', 'GET']`)
@@ -162,7 +162,6 @@ To build your routes, call `$routes->map()`, which accepts the following paramet
 * `bool $isHttpsOnly` (optional)
     * Whether or not this route is HTTPS-only
 
-Route builders give you a fluent syntax for mapping your routes to closures or controller methods.  They also let you [bind any middleware](#binding-middleware) classes and properties to the route.
 
 <h1 id="route-actions">Route Actions</h1>
 
@@ -488,7 +487,8 @@ $regexFactory = new GroupRegexFactory($routes);
 
 // Find a matching route
 try {
-    $matchedRoute = (new RouteMatcher($regexFactory->createRegexes()))->match(
+    $routeMatcher = new RouteMatcher($regexFactory->createRegexes());
+    $matchedRoute = $routeMatcher->match(
         $_SERVER['REQUEST_METHOD'],
         $_SERVER['HTTP_HOST'],
         $_SERVER['REQUEST_URI']
