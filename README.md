@@ -9,7 +9,7 @@
     3. [Route Builders](#route-builders)
 3. [Route Action](#route-actions)
 4. [Binding Middleware](#binding-middleware)
-    1. [Middleware Properties](#middleware-properties)
+    1. [Middleware Attributes](#middleware-attributes)
 5. [Grouping Routes](#grouping-routes)
 6. [Custom Constraints](#custom-constraints)
     1. [Getting Headers in PHP](#getting-php-headers)
@@ -151,7 +151,7 @@ This would match _archives/2017_, _archives/2017/07_, and _archives/2017/07/24_.
 
 <h2 id="route-builders">Route Builders</h2>
 
-Route builders give you a fluent syntax for mapping your routes to closures or controller methods.  They also let you [bind any middleware](#binding-middleware) classes and properties to the route.  To add a route builder, call `RouteBuilderRegistry::map()`, which returns a `RouteBuilder` and accepts the following parameters:
+Route builders give you a fluent syntax for mapping your routes to closures or controller methods.  They also let you [bind any middleware](#binding-middleware) classes and properties to the route.  To add a route builder, call `RouteBuilderRegistry::map()`, which accepts the following parameters:
 
 * `string|array $httpMethods`
     * The HTTP method or list of methods to match on (eg `'GET'` or `['POST', 'GET']`)
@@ -161,6 +161,8 @@ Route builders give you a fluent syntax for mapping your routes to closures or c
     * The optional host template for this route  ([read about syntax](#route-variables))
 * `bool $isHttpsOnly` (optional)
     * Whether or not this route is HTTPS-only
+
+`RouteBuilderRegistry::map()` returns an instance of `RouteBuilder`.
 
 
 <h1 id="route-actions">Route Actions</h1>
@@ -199,16 +201,20 @@ Middleware are a great way to modify both the request and the response on an end
 To bind a single middleware class to your route, call:
 
 ```php
-$route->withMiddleware('FooMiddleware');
+$routes->map('GET', 'foo')
+    ->toMethod('MyController', 'myMethod')
+    ->withMiddleware('FooMiddleware');
 ```
 
 To bind many middleware classes, call:
 
 ```php
-$route->withManyMiddleware([
-    'FooMiddleware',
-    'BarMiddleware'
-]);
+$routes->map('GET', 'foo')
+    ->toMethod('MyController', 'myMethod')
+    ->withManyMiddleware([
+        'FooMiddleware',
+        'BarMiddleware'
+    ]);
 ```
 
 Under the hood, these class names get converted to instances of `MiddlewareBinding`.  To get the middleware from the matched route, call:
@@ -217,17 +223,23 @@ Under the hood, these class names get converted to instances of `MiddlewareBindi
 $matchedRoute->getMiddlewareBindings();
 ```
 
-<h2 id="middleware-properties">Middleware Properties</h2>
+<h2 id="middleware-attributes">Middleware Attributes</h2>
 
-Some frameworks, such as Opulence and Laravel, let you bind properties to middleware.  For example, if you have an `AuthMiddleware`, but need to bind the user role that's necessary to access that route, you might want to pass in the required user role.  Here's how you can do it:
+Some frameworks, such as Opulence and Laravel, let you bind attributes to middleware.  For example, if you have an `AuthMiddleware`, but need to bind the user role that's necessary to access that route, you might want to pass in the required user role.  Here's how you can do it:
 
 ```php
-$route->withMiddleware('AuthMiddleware', ['role' => 'admin']);
+$routes->map('GET', 'foo')
+    ->toMethod('MyController', 'myMethod')
+    ->withMiddleware('AuthMiddleware', ['role' => 'admin']);
+
 // Or
-$route->withManyMiddleware([
-    new MiddlewareBinding('AuthMiddleware', ['role' => 'admin']),
-    // Other middleware...
-]);
+
+$routes->map('GET', 'foo')
+    ->toMethod('MyController', 'myMethod')
+    ->withManyMiddleware([
+        new MiddlewareBinding('AuthMiddleware', ['role' => 'admin']),
+        // Other middleware...
+    ]);
 ```
 
 Here's how you can grab the middleware on a matched route:
@@ -235,7 +247,7 @@ Here's how you can grab the middleware on a matched route:
 ```php
 foreach ($matchedRoute->getMiddlewareBindings() as $middlewareBinding) {
     $middlewareBinding->getClassName(); // "AuthMiddleware"
-    $middlewareBinding->getProperties(); // ["role" => "admin"]
+    $middlewareBinding->getAttributes(); // ["role" => "admin"]
 }
 ```
 
