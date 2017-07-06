@@ -299,7 +299,7 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
 
 > **Note:** If you plan on adding many attributes to your routes, use `RouteBuilder::withManyAttributes()`.
 
-Now, let's add a route constraint to match the `API-VERSION` header to the attribute on our route:
+Now, let's add a route constraint to match the "API-VERSION" header to the attribute on our route:
 
 ```php
 use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
