@@ -22,7 +22,7 @@ class FileGroupRegexCacheTest extends \PHPUnit\Framework\TestCase
     private const PATH = __DIR__ . '/tmp/routes.cache';
     /** @var FileGroupRegexCache The cache to test */
     private $cache = null;
-    
+
     /**
      * Sets up the tests
      */
@@ -40,7 +40,7 @@ class FileGroupRegexCacheTest extends \PHPUnit\Framework\TestCase
             @unlink(self::PATH);
         }
     }
-    
+
     /**
      * Tests that flushing deletes the file
      */
@@ -50,7 +50,7 @@ class FileGroupRegexCacheTest extends \PHPUnit\Framework\TestCase
         $this->cache->flush();
         $this->assertFalse(file_exists(self::PATH));
     }
-    
+
     /**
      * Tests a hit returns the regexes
      */
@@ -61,7 +61,7 @@ class FileGroupRegexCacheTest extends \PHPUnit\Framework\TestCase
         $this->cache->set($regexes);
         $this->assertEquals($regexes, $this->cache->get());
     }
-    
+
     /**
      * Tests a miss returns null
      */
@@ -69,7 +69,7 @@ class FileGroupRegexCacheTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertNull($this->cache->get());
     }
-    
+
     /**
      * Test that has returns the existence of the file
      */
@@ -79,7 +79,7 @@ class FileGroupRegexCacheTest extends \PHPUnit\Framework\TestCase
         file_put_contents(self::PATH, 'foo');
         $this->assertTrue($this->cache->has());
     }
-    
+
     /**
      * Tests setting the cache creates the file
      */

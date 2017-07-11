@@ -38,6 +38,7 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
 * It is fast
     * With 100 routes with 9 route variables each, it can match any route in less than 1ms
 * Its [fluent syntax](#route-builders) keeps you from having to memorize how to set up config arrays
+* It supports [matching hosts](#route-builders)
 * It is built to support the latest PHP 7.1 features
 
 > **Note:** This is *not* a route dispatching library.  This library does not call controllers or closures on the matched route.  Why?  Usually, such actions are tightly coupled to an HTTP library or to a framework.  By not dispatching the matched route, you're free to use the library/framework of your choice, while still getting the benefits of performance and fluent syntax.
@@ -65,7 +66,7 @@ use Opulence\Routing\Matchers\{RouteFactory, RouteMatcher, RouteNotFoundExceptio
 $routesCallback = function (RouteBuilderRegistry $routes) {
     $routes->map('GET', 'books/:bookId')
         ->toMethod('BookController', 'getBooksById')
-        ->withName('GetBooksById');
+        ->withMiddleware('AuthMiddleware');
 };
 ```
 
@@ -107,10 +108,16 @@ $matchedRoute->getAction()->getControllerName(); // "BookController"
 $matchedRoute->getAction()->getMethodName(); // "getBooksById"
 ```
 
-To get the route variables, call:
+To get the [route variables](#route-variables), call:
 
 ```php
 $matchedRoute->getRouteVars(); // ["bookId" => "123"]
+```
+
+To get the [middleware bindings](#binding-middleware), call:
+
+```php
+$matchedRoute->getMiddlewareBindings();
 ```
 
 > **Note:** If you're using another HTTP library (eg Opulence, Symfony, or Laravel) in your application, it's better to use their methods to get the request method, host, and URI.  They account for things like trusted proxies as well as provide more robust handling of certain request headers.
@@ -217,11 +224,7 @@ $routes->map('GET', 'foo')
     ]);
 ```
 
-Under the hood, these class names get converted to instances of `MiddlewareBinding`.  To get the middleware from the matched route, call:
-
-```php
-$matchedRoute->getMiddlewareBindings();
-```
+Under the hood, these class names get converted to instances of `MiddlewareBinding`.  
 
 <h2 id="middleware-attributes">Middleware Attributes</h2>
 
@@ -371,7 +374,7 @@ The following rules are built-into Opulence:
 
 * `alpha`
 * `alphanumeric`
-* `between($min, $max, $isInclusive = true)`
+* `between($min, $max, bool $isInclusive = true)`
 * `date(string $commaSeparatedListOfAcceptableFormats)`
 * `in(string $commaSeparatedListOfAcceptableValues)`
 * `int`
@@ -492,7 +495,7 @@ $routes->add(new Route(
     'GET',
     new UriTemplate('^[^/]+/users/(\d+)$', false, ['userId']),
     new ClosureRouteAction(function () {
-        return "Hello, world";
+        return 'Hello, world';
     })
 ));
 $regexFactory = new GroupRegexFactory($routes);

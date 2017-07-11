@@ -21,7 +21,7 @@ class GroupRegexCollectionTest extends \PHPUnit\Framework\TestCase
     private $getRegex = null;
     /** @var The regex for POST routes */
     private $postRegex = null;
-    
+
     /**
      * Sets up the tests
      */
@@ -33,7 +33,7 @@ class GroupRegexCollectionTest extends \PHPUnit\Framework\TestCase
         $this->regexes->add('GET', $this->getRegex);
         $this->regexes->add('POST', $this->postRegex);
     }
-    
+
     /**
      * Tests cloning the collection clones the regexes
      */
@@ -45,7 +45,7 @@ class GroupRegexCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertNotSame($this->postRegex, $clonedRegexes->getByMethod('POST')[0]);
         $this->assertEquals($this->postRegex, $clonedRegexes->getByMethod('POST')[0]);
     }
-    
+
     /**
      * Tests getting by HTTP method returns the correct regexes
      */

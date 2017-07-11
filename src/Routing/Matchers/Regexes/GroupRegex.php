@@ -21,7 +21,7 @@ class GroupRegex
     private $groupRegex = '';
     /** @var Route[] The mapping of regex capturing group offsets to routes */
     private $routesByCapturingGroupOffsets = [];
-    
+
     /**
      * @param string $groupRegex The group regex
      * @param Route[] $routesByCapturingGroupOffsets The mapping of regex capturing group offsets to routes
@@ -31,20 +31,20 @@ class GroupRegex
         $this->groupRegex = $groupRegex;
         $this->routesByCapturingGroupOffsets = $routesByCapturingGroupOffsets;
     }
-    
+
     /**
      * Gets the group regex
-     * 
+     *
      * @return string The group regex
      */
     public function getGroupRegex() : string
     {
         return $this->groupRegex;
     }
-    
+
     /**
      * Gets the mapping of regex capturing group offsets to routes
-     * 
+     *
      * @return Route[] The mapping of regex capturing group offsets to routes
      */
     public function getRoutesByCapturingGroupOffsets() : array

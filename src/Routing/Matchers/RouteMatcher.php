@@ -22,7 +22,7 @@ class RouteMatcher implements IRouteMatcher
     private $regexes = [];
     /** @var IRouteConstraint[] The list of custom route constraints to apply */
     private $routeConstraints = [];
-    
+
     /**
      * @param GroupRegexCollection $regexes The list of regexes to match against
      * @param IRouteConstraint[] $routeConstraints The list of custom route constraints to apply

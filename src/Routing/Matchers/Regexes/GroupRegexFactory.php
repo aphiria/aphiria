@@ -24,7 +24,7 @@ class GroupRegexFactory
     private $routes = null;
     /** @var IGroupRegexCache|null The regex cache if using one, otherwise null */
     private $regexCache = null;
-    
+
     /**
      * @param RouteCollection $routes The list of routes to create regexes from
      * @param IGroupRegexCache|null $regexCache The regex cache if using one, otherwise null
@@ -34,10 +34,10 @@ class GroupRegexFactory
         $this->routes = $routes;
         $this->regexCache = $regexCache;
     }
-    
+
     /**
      * Creates group regexes from the list of routes
-     * 
+     *
      * @return The list of group regexes
      */
     public function createRegexes() : GroupRegexCollection
@@ -54,7 +54,7 @@ class GroupRegexFactory
                 $regex = $this->buildRegex($chunkedRoutes, $routesByCapturingGroupOffsets);
                 $regexes->add($httpMethod, new GroupRegex($regex, $routesByCapturingGroupOffsets));
             }
-	}
+        }
 
         if ($this->regexCache !== null) {
             $this->regexCache->set($regexes);
@@ -62,7 +62,7 @@ class GroupRegexFactory
 
         return $regexes;
     }
-    
+
     /**
      * Builds a regex from a list of routes
      *

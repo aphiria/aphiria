@@ -42,6 +42,8 @@ class TokenStreamTest extends \PHPUnit\Framework\TestCase
         $stream = new TokenStream([new Token('foo', 'bar')]);
         $stream->expect('foo');
         $stream->expect('foo', 'bar');
+        // Just verify we've gotten here
+        $this->assertTrue(true);
     }
 
     /**

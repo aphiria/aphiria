@@ -17,7 +17,7 @@ class GroupRegexTest extends \PHPUnit\Framework\TestCase
 {
     /** @var GroupRegex The group regex to test */
     private $regex = null;
-    
+
     /**
      * Sets up the tests
      */
@@ -25,7 +25,7 @@ class GroupRegexTest extends \PHPUnit\Framework\TestCase
     {
         $this->regex = new GroupRegex('foo', ['bar']);
     }
-    
+
     /**
      * Tests getting the regex returns the correct value
      */
@@ -33,7 +33,7 @@ class GroupRegexTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals('foo', $this->regex->getGroupRegex());
     }
-    
+
     /**
      * Tests getting the routes by capturing group offsets returns the correct value
      */

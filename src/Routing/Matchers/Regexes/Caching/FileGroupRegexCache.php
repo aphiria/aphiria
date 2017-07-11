@@ -27,7 +27,7 @@ class FileGroupRegexCache implements IGroupRegexCache
     {
         $this->path = $path;
     }
-    
+
     /**
      * @inheritdoc
      */

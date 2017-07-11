@@ -27,7 +27,7 @@ class GroupRegexFactoryTest extends \PHPUnit\Framework\TestCase
     private $routes = null;
     /** @var IGroupRegexCache|\PHPUnit_Framework_MockObject_MockObject The regex cache to use in the factory */
     private $regexCache = null;
-    
+
     /**
      * Sets up the tests
      */
@@ -37,7 +37,7 @@ class GroupRegexFactoryTest extends \PHPUnit\Framework\TestCase
         $this->regexCache = $this->createMock(IGroupRegexCache::class);
         $this->regexFactory = new GroupRegexFactory($this->routes, $this->regexCache);
     }
-    
+
     /**
      * Tests that built regexes are chunked
      */
@@ -48,25 +48,25 @@ class GroupRegexFactoryTest extends \PHPUnit\Framework\TestCase
             ->willReturn(null);
         $regex1 = [];
         $regex2 = [];
-        
+
         for ($i = 0;$i < 20;$i++) {
             $route = new Route('GET', new UriTemplate($i, false), new MethodRouteAction('class', 'method'));
             $this->routes->add($route);
-            
+
             if ($i < 10) {
                 $regex1[] = "($i)";
             } else {
                 $regex2[] = "($i)";
             }
         }
-        
+
         $regexes = $this->regexFactory->createRegexes();
         $regexChunk1 = $regexes->getByMethod('GET')[0];
         $regexChunk2 = $regexes->getByMethod('GET')[1];
         $this->assertEquals('#^(?:' . implode('|', $regex1) . ')$#', $regexChunk1->getGroupRegex());
         $this->assertEquals('#^(?:' . implode('|', $regex2) . ')$#', $regexChunk2->getGroupRegex());
     }
-    
+
     /**
      * Tests that a cache hit returns the cached regexes
      */
@@ -78,7 +78,7 @@ class GroupRegexFactoryTest extends \PHPUnit\Framework\TestCase
             ->willReturn($regexes);
         $this->assertSame($regexes, $this->regexFactory->createRegexes());
     }
-    
+
     /**
      * Tests that a cache miss builds the regexes
      */
@@ -95,7 +95,7 @@ class GroupRegexFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('#^(?:(foo)|(bar))$#', $regex->getGroupRegex());
         $this->assertEquals([$route1, $route2], $regex->getRoutesByCapturingGroupOffsets());
     }
-    
+
     /**
      * Tests that capturing group offsets respect route capturing groups in routes
      */
