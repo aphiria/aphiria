@@ -180,7 +180,7 @@ Opulence supports mapping routes to both controller methods and to closures:
 $routesCallback = function (RouteBuilderRegistry $routes) {
     // Map to a controller method
     $routes->map('GET', 'users/:userId')
-        ->toMethod('UserController', 'getUserById');
+        ->toMethod(UserController::class, 'getUserById');
 
     // Map to a closure
     $routes->map('GET', 'users/:userId/name')
@@ -267,7 +267,7 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
         function (RouteBuilderRegistry $routes) {
             // This route's path will use the group's path
             $routes->map('GET', '')
-                ->toMethod('CourseController', 'getCourseById');
+                ->toMethod(CourseController::class, 'getCourseById');
 
             $routes->map('GET', '/professors')
                 ->toMethod(CourseController::class, 'getCourseProfessors');
@@ -302,7 +302,7 @@ Sometimes, you might find it useful to add some custom logic for matching routes
 $routesCallback = function (RouteBuilderRegistry $routes) {
     // This route will require an API-VERSION value of 'v1.0'
     $routes->map('GET', 'comments')
-        ->toMethod('CommentController', 'getAllComments')
+        ->toMethod(CommentController::class, 'getAllComments')
         ->withAttribute('API-VERSION', 'v1.0');
 
     // This route will require an API-VERSION value of 'v2.0'
