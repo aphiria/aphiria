@@ -65,8 +65,8 @@ use Opulence\Routing\Matchers\{RouteFactory, RouteMatcher, RouteNotFoundExceptio
 
 $routesCallback = function (RouteBuilderRegistry $routes) {
     $routes->map('GET', 'books/:bookId')
-        ->toMethod('BookController', 'getBooksById')
-        ->withMiddleware('AuthMiddleware');
+        ->toMethod(BookController::class, 'getBooksById')
+        ->withMiddleware(AuthMiddleware::class);
 };
 ```
 
@@ -209,18 +209,18 @@ To bind a single middleware class to your route, call:
 
 ```php
 $routes->map('GET', 'foo')
-    ->toMethod('MyController', 'myMethod')
-    ->withMiddleware('FooMiddleware');
+    ->toMethod(MyController::class, 'myMethod')
+    ->withMiddleware(FooMiddleware::class);
 ```
 
 To bind many middleware classes, call:
 
 ```php
 $routes->map('GET', 'foo')
-    ->toMethod('MyController', 'myMethod')
+    ->toMethod(MyController::class, 'myMethod')
     ->withManyMiddleware([
-        'FooMiddleware',
-        'BarMiddleware'
+        FooMiddleware::class,
+        BarMiddleware::class
     ]);
 ```
 
@@ -232,15 +232,15 @@ Some frameworks, such as Opulence and Laravel, let you bind attributes to middle
 
 ```php
 $routes->map('GET', 'foo')
-    ->toMethod('MyController', 'myMethod')
-    ->withMiddleware('AuthMiddleware', ['role' => 'admin']);
+    ->toMethod(MyController::class, 'myMethod')
+    ->withMiddleware(AuthMiddleware::class, ['role' => 'admin']);
 
 // Or
 
 $routes->map('GET', 'foo')
-    ->toMethod('MyController', 'myMethod')
+    ->toMethod(MyController::class, 'myMethod')
     ->withManyMiddleware([
-        new MiddlewareBinding('AuthMiddleware', ['role' => 'admin']),
+        new MiddlewareBinding(AuthMiddleware::class, ['role' => 'admin']),
         // Other middleware...
     ]);
 ```
@@ -270,7 +270,7 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
                 ->toMethod('CourseController', 'getCourseById');
 
             $routes->map('GET', '/professors')
-                ->toMethod('CourseController', 'getCourseProfessors');
+                ->toMethod(CourseController::class, 'getCourseProfessors');
         }
     );
 };
@@ -307,7 +307,7 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
 
     // This route will require an API-VERSION value of 'v2.0'
     $routes->map('GET', 'comments')
-        ->toMethod('CommentController', 'getAllComments')
+        ->toMethod(CommentController::class, 'getAllComments')
         ->withAttribute('API-VERSION', 'v2.0');
 };
 ```
@@ -436,7 +436,7 @@ use Opulence\Routing\Matchers\UriTemplates\Compilers\UriTemplateCompiler;
 
 $routesCallback = function (RouteBuilderRegistry $routes) {
     $routes->map('parts/:serialNumber(minLength(6))')
-        ->toMethod('PartController', 'getPartBySerialNumber');
+        ->toMethod(PartController::class, 'getPartBySerialNumber');
 };
 $routeFactory = new RouteFactory(
     $routesCallback,
