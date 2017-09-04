@@ -46,7 +46,19 @@ interface IHttpResponseHeaderFormatter
      */
     public function getCookies(IHttpHeaders $headers, bool $includeDeletedCookies = false) : array;
 
+    /**
+     * Sets a cookie in the headers
+     *
+     * @param IHttpHeaders $headers The headers to set the cookie in
+     * @param Cookie $cookie The cookie to set
+     */
     public function setCookie(IHttpHeaders $headers, Cookie $cookie) : void;
 
+    /**
+     * Sets cookies in the headers
+     *
+     * @param IHttpHeaders $headers The headers to set the cookies in
+     * @param Cookie[] $cookies The cookies to set
+     */
     public function setCookies(IHttpHeaders $headers, array $cookies) : void;
 }

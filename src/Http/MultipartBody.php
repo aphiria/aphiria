@@ -35,6 +35,11 @@ class MultipartBody implements IHttpBody
         $this->boundary = $boundary;
     }
 
+    /**
+     * Adds another body
+     *
+     * @param IHttpBody $body The body to add
+     */
     public function add(IHttpBody $body) : void
     {
         $this->bodies[] = $body;
