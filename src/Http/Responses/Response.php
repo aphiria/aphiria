@@ -1,13 +1,23 @@
 <?php
-namespace Opulence\Net\Http\Requests;
 
+/*
+ * Opulence
+ *
+ * @link      https://www.opulencephp.com
+ * @copyright Copyright (C) 2017 David Young
+ * @license   https://github.com/opulencephp/net/blob/master/LICENSE.md
+ */
+
+namespace Opulence\Net\Http\Responses;
+
+use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\IHttpHeaders;
 
 /**
- * Defines an HTTP request message
+ * Defines an HTTP response message
  */
-class Request implements IHttpRequestMessage
+class Response implements IHttpResponseMessage
 {
     /**
      * @inheritdoc
@@ -28,7 +38,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getMethod() : string
+    public function getOutputStream() : IStream
     {
         // Todo
     }
@@ -36,7 +46,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getProperties() : array
+    public function getReasonPhrase() : ?string
     {
         // Todo
     }
@@ -44,7 +54,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getRequestUri() : IUri
+    public function getStatusCode() : int
     {
         // Todo
     }
@@ -60,15 +70,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function setMethod(string $method) : void
-    {
-        // Todo
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setRequestUri(IUri $requestUri) : void
+    public function setStatusCode(int $statusCode, ?string $reasonPhrase = null) : void
     {
         // Todo
     }
