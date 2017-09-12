@@ -10,7 +10,6 @@
 
 namespace Opulence\Net\Http\Responses;
 
-use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\IHttpMessage;
 
 /**
@@ -18,13 +17,6 @@ use Opulence\Net\Http\IHttpMessage;
  */
 interface IHttpResponseMessage extends IHttpMessage
 {
-    /**
-     * Gets the output stream of the response
-     *
-     * @return IStream The output stream to write to
-     */
-    public function getOutputStream() : IStream;
-
     /**
      * Gets the reason phrase of the response
      *

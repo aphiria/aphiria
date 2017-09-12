@@ -62,9 +62,6 @@ $request->getBody()->readAsStream()->read(64);
 
 ```php
 $response = new Response();
-
-// Or, with a custom output stream (wrapper around php://output is the default):
-$response = new Response(new BufferStream());
 ```
 
 <h3>Create a JSON response</h3>
@@ -113,5 +110,8 @@ $response->setBody(new StreamBody($stream));
 ```php
 $response = new Response();
 // Set the body...
-$response->getBody()->writeToStream($response->getOutputStream());
+(new ResponseSender)->sendResponse($response);
+
+// Or specify the output stream to send to (defaults to PHP's output buffer):
+new ResponseSender(new SomeStream())->sendResponse($response);
 ```

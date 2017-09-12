@@ -11,6 +11,7 @@
 namespace Opulence\Net\Http;
 
 use Opulence\IO\Streams\IStream;
+use Opulence\IO\Streams\Stream;
 
 /**
  * Defines the string HTTP body
@@ -19,6 +20,8 @@ class StringBody implements IHttpBody
 {
     /** @var string The body content */
     protected $content = '';
+    /** @var IStream The underlying stream */
+    private $stream = null;
 
     /**
      * @param string $content The body content
@@ -33,7 +36,13 @@ class StringBody implements IHttpBody
      */
     public function readAsStream() : IStream
     {
-        // Todo
+        if ($this->stream === null) {
+            $this->stream = new Stream(fopen('php://temp', 'r+'));
+        }
+        
+        $this->stream->write($this->content);
+        
+        return $this->stream;
     }
 
     /**
@@ -41,7 +50,7 @@ class StringBody implements IHttpBody
      */
     public function readAsString() : string
     {
-        // Todo
+        return $this->content;
     }
 
     /**
@@ -49,6 +58,6 @@ class StringBody implements IHttpBody
      */
     public function writeToStream(IStream $stream) : void
     {
-        // Todo
+        $stream->write($this->content);
     }
 }

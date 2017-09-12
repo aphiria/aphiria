@@ -11,6 +11,7 @@
 namespace Opulence\Net\Http;
 
 use Opulence\IO\Streams\IStream;
+use RuntimeException;
 
 /**
  * Defines the interface for all HTTP message bodies to implement
@@ -21,6 +22,7 @@ interface IHttpBody
      * Reads an HTTP body as a stream
      *
      * @return IStream The stream
+     * @throws RuntimeException Thrown if there was an error reading as a stream
      */
     public function readAsStream() : IStream;
 
@@ -35,6 +37,7 @@ interface IHttpBody
      * Writes an HTTP body to a stream
      *
      * @param IStream $stream The stream to write to
+     * @throws RuntimeException Thrown if there was an error writing to the stream
      */
     public function writeToStream(IStream $stream) : void;
 }

@@ -33,7 +33,7 @@ class StreamBody implements IHttpBody
      */
     public function readAsStream() : IStream
     {
-        // Todo
+        return $this->stream;
     }
 
     /**
@@ -41,7 +41,7 @@ class StreamBody implements IHttpBody
      */
     public function readAsString() : string
     {
-        // Todo
+        return (string)$this->stream;
     }
 
     /**
@@ -49,6 +49,6 @@ class StreamBody implements IHttpBody
      */
     public function writeToStream(IStream $stream) : void
     {
-        // Todo
+        $this->stream->copyToStream($stream);
     }
 }

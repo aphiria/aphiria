@@ -10,7 +10,6 @@
 
 namespace Opulence\Net\Http\Responses;
 
-use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\IHttpHeaders;
 
@@ -19,12 +18,36 @@ use Opulence\Net\Http\IHttpHeaders;
  */
 class Response implements IHttpResponseMessage
 {
+    /** @var IHttpBody The body of the response */
+    protected $body = null;
+    /** @var IHttpHeaders The list of response headers */
+    protected $headers = null;
+    /** @var string|null The response reason phrase if there is one, otherwise null */
+    protected $reasonPhrase = null;
+    /** @var int The response status code */
+    protected $statusCode = HttpStatusCodes::HTTP_OK;
+    
+    /**
+     * @param int $statusCode The response status code
+     * @param IHttpHeaders|null $headers The list of response headers
+     * @param IHttpBody|null $body The response body
+     */
+    public function __construct(
+        int $statusCode = HttpStatusCodes::HTTP_OK,
+        IHttpHeaders $headers = null,
+        IHttpBody $body = null
+    ) { 
+        $this->statusCode = $statusCode;
+        $this->headers = $headers;
+        $this->body = $body;
+    }
+    
     /**
      * @inheritdoc
      */
     public function getBody() : IHttpBody
     {
-        // Todo
+        return $this->body;
     }
 
     /**
@@ -32,15 +55,7 @@ class Response implements IHttpResponseMessage
      */
     public function getHeaders() : IHttpHeaders
     {
-        // Todo
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getOutputStream() : IStream
-    {
-        // Todo
+        return $this->headers;
     }
 
     /**
@@ -48,7 +63,7 @@ class Response implements IHttpResponseMessage
      */
     public function getReasonPhrase() : ?string
     {
-        // Todo
+        return $this->reasonPhrase;
     }
 
     /**
@@ -56,7 +71,7 @@ class Response implements IHttpResponseMessage
      */
     public function getStatusCode() : int
     {
-        // Todo
+        return $this->statusCode;
     }
 
     /**
@@ -64,7 +79,7 @@ class Response implements IHttpResponseMessage
      */
     public function setBody(IHttpBody $body) : void
     {
-        // Todo
+        $this->body = $body;
     }
 
     /**
@@ -72,6 +87,7 @@ class Response implements IHttpResponseMessage
      */
     public function setStatusCode(int $statusCode, ?string $reasonPhrase = null) : void
     {
-        // Todo
+        $this->statusCode = $statusCode;
+        $this->reasonPhrase = $reasonPhrase;
     }
 }
