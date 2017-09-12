@@ -39,9 +39,9 @@ class StringBody implements IHttpBody
         if ($this->stream === null) {
             $this->stream = new Stream(fopen('php://temp', 'r+'));
         }
-        
+
         $this->stream->write($this->content);
-        
+
         return $this->stream;
     }
 

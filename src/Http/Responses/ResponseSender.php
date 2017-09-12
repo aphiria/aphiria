@@ -20,7 +20,7 @@ class ResponseSender
 {
     /** @var IStream The output stream */
     private $outputStream = null;
-    
+
     /**
      * @param IStream|null $outputStream The output stream (null defaults to PHP's output stream)
      */
@@ -28,10 +28,10 @@ class ResponseSender
     {
         $this->outputStream = $outputStream ?? new Stream(fopen('php://output', 'r+'));
     }
-    
+
     /**
      * Sends the response to the output stream
-     * 
+     *
      * @param IHttpResponseMessage $response The response to send
      */
     public function sendResponse(IHttpResponseMessage $response) : void

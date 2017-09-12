@@ -26,7 +26,7 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
         $body = new StreamBody($stream);
         $this->assertSame($stream, $body->readAsStream());
     }
-    
+
     /**
      * Tests reading as a string converts the underlying stream to a string
      */
@@ -39,7 +39,7 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
         $body = new StreamBody($stream);
         $this->assertEquals('foo', $body->readAsString());
     }
-    
+
     /**
      * Tests writing to a stream writes to an underlying stream
      */

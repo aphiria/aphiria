@@ -26,7 +26,7 @@ class StringBodyTest extends \PHPUnit\Framework\TestCase
         $stream = $body->readAsStream();
         $this->assertSame($stream, $stream->readAsStream());
     }
-    
+
     /**
      * Tests reading as a stream returns the body contents' written to a stream
      */
@@ -36,7 +36,7 @@ class StringBodyTest extends \PHPUnit\Framework\TestCase
         $stream = $body->readAsStream();
         $this->assertEquals('foo', $stream->readToEnd());
     }
-    
+
     /**
      * Tests reading as a string returns the contents
      */
@@ -45,7 +45,7 @@ class StringBodyTest extends \PHPUnit\Framework\TestCase
         $body = new StringBody('foo');
         $this->assertEquals('foo', $body->readAsString());
     }
-    
+
     /**
      * Tests writing to a stream actually writes the contents to the stream
      */

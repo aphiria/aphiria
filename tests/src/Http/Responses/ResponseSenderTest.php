@@ -10,8 +10,6 @@
 
 namespace Opulence\Net\Http\Responses;
 
-use Opulence\IO\Streams\IStream;
-
 /**
  * Tests the response sender
  */

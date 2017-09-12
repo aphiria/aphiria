@@ -100,7 +100,7 @@ $response->setBody(new StringBody('This is my response'));
 
 ```php
 $response = new Response();
-$stream = new OutputStream();
+$stream = new Stream(fopen('php://temp', 'r+'));
 $stream->write('This is my response');
 $response->setBody(new StreamBody($stream));
 ```
@@ -113,5 +113,5 @@ $response = new Response();
 (new ResponseSender)->sendResponse($response);
 
 // Or specify the output stream to send to (defaults to PHP's output buffer):
-new ResponseSender(new SomeStream())->sendResponse($response);
+new ResponseSender(new Stream(fopen('php://temp', 'r+')))->sendResponse($response);
 ```

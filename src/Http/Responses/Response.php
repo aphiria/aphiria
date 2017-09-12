@@ -26,7 +26,7 @@ class Response implements IHttpResponseMessage
     protected $reasonPhrase = null;
     /** @var int The response status code */
     protected $statusCode = HttpStatusCodes::HTTP_OK;
-    
+
     /**
      * @param int $statusCode The response status code
      * @param IHttpHeaders|null $headers The list of response headers
@@ -36,12 +36,12 @@ class Response implements IHttpResponseMessage
         int $statusCode = HttpStatusCodes::HTTP_OK,
         IHttpHeaders $headers = null,
         IHttpBody $body = null
-    ) { 
+    ) {
         $this->statusCode = $statusCode;
         $this->headers = $headers;
         $this->body = $body;
     }
-    
+
     /**
      * @inheritdoc
      */

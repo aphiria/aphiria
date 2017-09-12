@@ -30,7 +30,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $response->setBody($body2);
         $this->assertSame($body2, $response->getBody());
     }
-    
+
     /**
      * Tests getting and setting the status code
      */
@@ -41,7 +41,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $response->setStatusCode(202);
         $this->assertEquals(202, $response->getStatusCode());
     }
-    
+
     /**
      * Tests getting headers
      */

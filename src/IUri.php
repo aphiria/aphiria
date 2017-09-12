@@ -24,6 +24,13 @@ interface IUri
     public static function createFromString(string $uri) : IUri;
 
     /**
+     * Converts the URI to a string
+     *
+     * @return string The URI as a string
+     */
+    public function __toString() : string;
+
+    /**
      * Gets the fragment
      *
      * @return string The fragment
