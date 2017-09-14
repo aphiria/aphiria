@@ -31,6 +31,14 @@ class StreamBody implements IHttpBody
     /**
      * @inheritdoc
      */
+    public function __toString() : string
+    {
+        return $this->readAsString();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function readAsStream() : IStream
     {
         return $this->stream;

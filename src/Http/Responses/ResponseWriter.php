@@ -14,15 +14,15 @@ use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
 
 /**
- * Defines the response sender
+ * Defines the response writer
  */
-class ResponseSender
+class ResponseWriter
 {
-    /** @var IStream The output stream */
+    /** @var IStream The output stream to write to */
     private $outputStream = null;
 
     /**
-     * @param IStream|null $outputStream The output stream (null defaults to PHP's output stream)
+     * @param IStream|null $outputStream The output stream to write to (null defaults to PHP's output stream)
      */
     public function __construct(IStream $outputStream = null)
     {
@@ -30,11 +30,11 @@ class ResponseSender
     }
 
     /**
-     * Sends the response to the output stream
+     * Writes the response to the output stream
      *
-     * @param IHttpResponseMessage $response The response to send
+     * @param IHttpResponseMessage $response The response to write
      */
-    public function sendResponse(IHttpResponseMessage $response) : void
+    public function writeResponse(IHttpResponseMessage $response) : void
     {
         // Todo: Write the status code, reason phrase, and any headers
         $response->getBody()->writeToStream($this->outputStream);

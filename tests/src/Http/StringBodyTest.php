@@ -18,6 +18,15 @@ use Opulence\IO\Streams\IStream;
 class StringBodyTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * Tests casting to a string returns the contents
+     */
+    public function testCastingToStringReturnsContents() : void
+    {
+        $body = new StringBody('foo');
+        $this->assertEquals('foo', (string)$body);
+    }
+
+    /**
      * Tests reading as a stream returns the same stream instance every time
      */
     public function testReadingAsStreamReturnsSameStreamInstanceEveryTime() : void

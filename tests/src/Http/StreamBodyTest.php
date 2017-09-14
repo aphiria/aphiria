@@ -18,6 +18,19 @@ use Opulence\IO\Streams\IStream;
 class StreamBodyTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * Tests casting to a string converts the underlying stream to a string
+     */
+    public function testCastingToStringConvertsUnderlyingStreamToString() : void
+    {
+        $stream = $this->createMock(IStream::class);
+        $stream->expects($this->once())
+            ->method('__toString')
+            ->returns('foo');
+        $body = new StreamBody($stream);
+        $this->assertEquals('foo', (string)$body);
+    }
+
+    /**
      * Tests reading as a stream returns the underlying stream
      */
     public function testReadingAsStreamReturnsUnderlyingStream() : void

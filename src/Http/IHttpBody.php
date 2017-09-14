@@ -19,7 +19,14 @@ use RuntimeException;
 interface IHttpBody
 {
     /**
-     * Reads an HTTP body as a stream
+     * Reads the HTTP body as a string
+     *
+     * @return string The string
+     */
+    public function __toString() : string;
+
+    /**
+     * Reads the HTTP body as a stream
      *
      * @return IStream The stream
      * @throws RuntimeException Thrown if there was an error reading as a stream
@@ -27,14 +34,14 @@ interface IHttpBody
     public function readAsStream() : IStream;
 
     /**
-     * Reads an HTTP body as a string
+     * Reads the HTTP body as a string
      *
      * @return string The string
      */
     public function readAsString() : string;
 
     /**
-     * Writes an HTTP body to a stream
+     * Writes the HTTP body to a stream
      *
      * @param IStream $stream The stream to write to
      * @throws RuntimeException Thrown if there was an error writing to the stream

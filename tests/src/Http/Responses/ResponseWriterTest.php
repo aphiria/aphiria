@@ -11,9 +11,9 @@
 namespace Opulence\Net\Http\Responses;
 
 /**
- * Tests the response sender
+ * Tests the response writer
  */
-class ResponseSenderTest extends \PHPUnit\Framework\TestCase
+class ResponseWriterTest extends \PHPUnit\Framework\TestCase
 {
     // Todo
 }
