@@ -10,8 +10,9 @@
 
 namespace Opulence\Net\Http\Requests;
 
+use InvalidArgumentException;
 use Opulence\Net\Http\IHttpMessage;
-use Opulence\Net\IUri;
+use Opulence\Net\Uri;
 
 /**
  * Defines the interface for HTTP request messages to implement
@@ -35,21 +36,22 @@ interface IHttpRequestMessage extends IHttpMessage
     /**
      * Gets the URI of the request
      *
-     * @return IUri The URI
+     * @return Uri The URI
      */
-    public function getRequestUri() : IUri;
+    public function getUri() : Uri;
 
     /**
      * Sets the HTTP method of the request
      *
      * @param string $method The HTTP method
+     * @throws InvalidArgumentException Thrown if the method is not a valid HTTP method
      */
     public function setMethod(string $method) : void;
 
     /**
      * Sets the request URI
      *
-     * @param IUri $requestUri The request URI
+     * @param Uri $uri The request URI
      */
-    public function setRequestUri(IUri $requestUri) : void;
+    public function setUri(Uri $uri) : void;
 }

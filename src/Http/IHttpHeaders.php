@@ -24,6 +24,13 @@ interface IHttpHeaders
      * @return mixed The value of the header
      */
     public function get(string $name, $default = null, bool $onlyReturnFirst = true);
+    
+    /**
+     * Gets all the header names to values
+     * 
+     * @return array The header names to values
+     */
+    public function getAll() : array;
 
     /**
      * Gets whether or not a header has a value

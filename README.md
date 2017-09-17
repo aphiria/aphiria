@@ -12,6 +12,8 @@
 ```php
 $request = (new RequestFactory)->createFromGlobals($_GET, $_POST, $_COOKIE, $_SERVER, $_FILES, $_ENV);
 $request->getBody()->readAsString();
+// Or...
+(string)request->getBody();
 ```
 
 <h3>Get a query string var</h3>
@@ -85,7 +87,7 @@ $response = (new RedirectHttpResponseFactory)->createResponse('https://google.co
 
 ```php
 $response = new Response();
-$cookie = new Cookie('userid', '123');
+$cookie = new Cookie('userid', '123', new DateTime('+1 day'));
 (new HttpResponseHeaderFormatter)->setCookie($response->getHeaders(), $cookie);
 ```
 

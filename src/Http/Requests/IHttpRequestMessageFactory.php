@@ -10,6 +10,8 @@
 
 namespace Opulence\Net\Http\Requests;
 
+use InvalidArgumentException;
+
 /**
  * Defines the interface for HTTP request messages factories to implement
  */
@@ -26,6 +28,7 @@ interface IHttpRequestMessageFactory
      * @param array|null $env The environment variables, or null if using $_ENV
      * @param string|null $rawBody The raw request message body, or null if using the input stream
      * @return IHttpRequestMessage The created request message
+     * @throws InvalidArgumentException Thrown if any of the expected global values are not set correctly
      */
     public function createFromGlobals(
         array $query = null,

@@ -12,74 +12,120 @@ namespace Opulence\Net\Http\Requests;
 
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\IHttpHeaders;
-use Opulence\Net\IUri;
+use Opulence\Net\Uri;
 
 /**
  * Defines an HTTP request message
  */
 class Request implements IHttpRequestMessage
 {
+    /** @var string The request method */
+    protected $method = '';
+    /** @var IHttpHeaders The request headers */
+    protected $headers = null;
+    /** @var IHttpBody The request body */
+    protected $body = null;
+    /** @var Uri The request URI */
+    protected $uri = null;
+    /** @var array The request properties */
+    protected $properties = [];
+    /** @var The list of valid HTTP methods */
+    private static $validMethod = [
+        'CONNECT',
+        'DELETE',
+        'GET',
+        'HEAD',
+        'OPTIONS',
+        'PATCH',
+        'POST',
+        'PURGE',
+        'PUT',
+        'TRACE'
+    ];
+
     /**
-     * @inheritdoc
+     * @param string $method The request method
+     * @param IHttpHeaders $headers The request headers
+     * @param IHttpBody $body The request body
+     * @param Uri $uri The request URI
+     * @param array $properties The request properties
      */
-    public function getBody() : IHttpBody
+    public function __construct(string $method, IHttpHeaders $headers, IHttpBody $body, Uri $uri, array $properties = [])
     {
-        // Todo
+        $this->method = $this->setMethod($method);
+        $this->headers = $headers;
+        $this->body = $body;
+        $this->uri = $uri;
+        $this->properties = $properties;
     }
 
     /**
      * @inheritdoc
      */
-    public function getHeaders() : IHttpHeaders
+    public function getBody(): IHttpBody
     {
-        // Todo
+        return $this->body;
     }
 
     /**
      * @inheritdoc
      */
-    public function getMethod() : string
+    public function getHeaders(): IHttpHeaders
     {
-        // Todo
+        return $this->headers;
     }
 
     /**
      * @inheritdoc
      */
-    public function getProperties() : array
+    public function getMethod(): string
     {
-        // Todo
+        return $this->method;
     }
 
     /**
      * @inheritdoc
      */
-    public function getRequestUri() : IUri
+    public function getProperties(): array
     {
-        // Todo
+        return $this->properties;
     }
 
     /**
      * @inheritdoc
      */
-    public function setBody(IHttpBody $body) : void
+    public function getUri(): Uri
     {
-        // Todo
+        return $this->uri;
     }
 
     /**
      * @inheritdoc
      */
-    public function setMethod(string $method) : void
+    public function setBody(IHttpBody $body): void
     {
-        // Todo
+        $this->body = $body;
     }
 
     /**
      * @inheritdoc
      */
-    public function setRequestUri(IUri $requestUri) : void
+    public function setMethod(string $method): void
     {
-        // Todo
+        $uppercaseMethod = strtoupper($method);
+        
+        if (!in_array($uppercaseMethod, self::$validMethod)) {
+            throw new InvalidArgumentException("Invalid HTTP method $method");
+        }
+                
+        $this->method = $method;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setUri(Uri $uri): void
+    {
+        $this->uri = $uri;
     }
 }
