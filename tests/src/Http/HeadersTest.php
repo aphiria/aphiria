@@ -17,7 +17,7 @@ class HeadersTest extends \PHPUnit\Framework\TestCase
 {
     /** @var Headers The headers to use */
     private $headers = null;
-    
+
     /**
      * Sets up the tests
      */
@@ -34,7 +34,7 @@ class HeadersTest extends \PHPUnit\Framework\TestCase
         $this->headers->set('foo', 'bar');
         $this->assertEquals('bar', $this->headers->get('foo'));
     }
-    
+
     /**
      * Tests checking if a header exists
      */
@@ -44,7 +44,7 @@ class HeadersTest extends \PHPUnit\Framework\TestCase
         $this->headers->set('foo', 'bar');
         $this->assertTrue($this->headers->has('foo'));
     }
-    
+
     /**
      * Tests getting all values
      */
@@ -79,7 +79,7 @@ class HeadersTest extends \PHPUnit\Framework\TestCase
         $this->headers->set('foo', 'bar');
         $this->assertEquals(['bar'], $this->headers->get('foo', null, false));
     }
-    
+
     /**
      * Tests removing a header
      */
@@ -89,7 +89,7 @@ class HeadersTest extends \PHPUnit\Framework\TestCase
         $this->headers->remove('foo');
         $this->assertFalse($this->headers->has('foo'));
     }
-    
+
     /**
      * Tests setting a header and replacing it replaces it
      */
@@ -99,7 +99,7 @@ class HeadersTest extends \PHPUnit\Framework\TestCase
         $this->headers->set('foo', 'baz', true);
         $this->assertEquals(['baz'], $this->headers->get('foo'));
     }
-    
+
     /**
      * Tests setting a header without replacing it appends it
      */

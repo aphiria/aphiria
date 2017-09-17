@@ -17,7 +17,7 @@ class Headers implements IHttpHeaders
 {
     /** @var array The mapping of header names to values */
     private $headers = [];
-    
+
     /**
      * @inheritdoc
      */
@@ -26,16 +26,16 @@ class Headers implements IHttpHeaders
         if (!$this->headers($name)) {
             return $default;
         }
-        
+
         $values = $this->headers[$name];
-        
+
         if ($onlyReturnFirst) {
             return $values[0];
         }
-        
+
         return $values;
     }
-    
+
     /**
      * @inheritdoc
      */

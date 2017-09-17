@@ -30,7 +30,7 @@ class RequestFactory implements IHttpRequestMessageFactory
         'PHP_AUTH_TYPE' => true,
         'PHP_AUTH_USER' => true
     ];
-    
+
     /**
      * @inheritdoc
      */
@@ -44,12 +44,12 @@ class RequestFactory implements IHttpRequestMessageFactory
         string $rawBody = null
     ) : IHttpRequestMessage {
         $method = $server['REQUEST_METHOD'] ?? null;
-        
+
         // Permit the overriding of the request method for POST requests
         if ($method === 'POST' && isset($server['X-HTTP-METHOD-OVERRIDE'])) {
             $method = $server['X-HTTP-METHOD-OVERRIDE'];
         }
-        
+
         $headers = $this->createHeadersFromGlobals($server);
         $body = $this->createBodyFromRawBody($rawBody);
 
@@ -72,10 +72,10 @@ class RequestFactory implements IHttpRequestMessageFactory
     ) : IHttpRequestMessage {
         // Todo
     }
-    
+
     /**
      * Creates a body from the raw body
-     * 
+     *
      * @param string $rawBody The raw body if one is specified, otherwise we use the input stream
      */
     private function createBodyFromRawBody(string $rawBody = null) : IHttpBody
@@ -83,20 +83,20 @@ class RequestFactory implements IHttpRequestMessageFactory
         if ($rawBody === null) {
             return new StreamBody(new Stream(fopen('php://input', 'r+')));
         }
-        
+
         return new StringBody($rawBody);
     }
-    
+
     /**
      * Creates headers from globals
-     * 
+     *
      * @param array $server The global server array
      * @return IHttpHeaders The request headers
      */
     private function createHeadersFromGlobals(array $server) : IHttpHeaders
     {
         $headers = new Headers();
-        
+
         foreach ($server as $name => $value) {
             if (isset(self::$specialCaseHeaders[$name])) {
                 $headers->set($name, $value);
@@ -106,7 +106,7 @@ class RequestFactory implements IHttpRequestMessageFactory
                 $headers->set($normalizedName, $value);
             }
         }
-        
+
         return $headers;
     }
 }

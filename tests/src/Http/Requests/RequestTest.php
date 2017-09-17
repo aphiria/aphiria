@@ -30,7 +30,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     private $uri = null;
     /** @var array The request properties */
     private $properties = [];
-    
+
     /**
      * Sets up the tests
      */
@@ -48,7 +48,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
             $this->properties
         );
     }
-    
+
     /**
      * Tests getting the body
      */
@@ -56,7 +56,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame($this->body, $this->request->getBody());
     }
-    
+
     /**
      * Tests getting the headers
      */
@@ -64,7 +64,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame($this->headers, $this->request->getHeaders());
     }
-    
+
     /**
      * Tests getting the method
      */
@@ -72,7 +72,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame('GET', $this->request->getMethod());
     }
-    
+
     /**
      * Tests getting the method returns the method set in the headers
      */
@@ -80,7 +80,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame($this->uri, $this->request->getUri());
     }
-    
+
     /**
      * Tests setting the body
      */
@@ -90,7 +90,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $this->request->setBody($body);
         $this->assertSame($body, $this->request->getBody());
     }
-    
+
     /**
      * Tests setting an invalid method throws an exception
      */
@@ -99,7 +99,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->request->setMethod('foo');
     }
-    
+
     /**
      * Tests setting the method
      */
@@ -108,7 +108,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $this->request->setMethod('DELETE');
         $this->assertEquals('DELETE', $this->request->getMethod());
     }
-    
+
     /**
      * Tests setting the URI
      */

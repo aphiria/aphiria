@@ -35,7 +35,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             'fragment'
         );
     }
-    
+
     /**
      * Tests creating from a string creates a URI with the correct values
      */
@@ -114,7 +114,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals('user', $this->uri->getUser());
     }
-    
+
     /**
      * Tests a malformed URI throws an exception when creating from string
      */

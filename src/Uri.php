@@ -75,7 +75,7 @@ class Uri
         if (($parsedUri = parse_url($uri)) === false) {
             throw new InvalidArgumentException("Uri $uri is malformed");
         }
-        
+
         return new Uri(
             $parsedUri['scheme'] ?? 'http',
             $parsedUri['user'] ?? null,
@@ -105,7 +105,7 @@ class Uri
 
         // Only include the port if not using standard ports for the scheme
         if (
-            $this->port !== null && 
+            $this->port !== null &&
             (($this->scheme === 'http' && $this->port !== 80) || ($this->scheme === 'https' && $this->port !== 443))
         ) {
             $stringUri .= ":{$this->port}";

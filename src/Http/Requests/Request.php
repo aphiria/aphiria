@@ -113,11 +113,11 @@ class Request implements IHttpRequestMessage
     public function setMethod(string $method): void
     {
         $uppercaseMethod = strtoupper($method);
-        
+
         if (!in_array($uppercaseMethod, self::$validMethod)) {
             throw new InvalidArgumentException("Invalid HTTP method $method");
         }
-                
+
         $this->method = $method;
     }
 
