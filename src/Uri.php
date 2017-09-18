@@ -213,6 +213,7 @@ class Uri
      */
     public function matchesPath(string $path, bool $isRegex = false) : bool
     {
+        // Does this belong in this class?
     }
 
     /**
@@ -224,5 +225,6 @@ class Uri
      */
     public function matchesUri(string $uri, bool $isRegex = false) : bool
     {
+        // Does this belong in this class?
     }
 }

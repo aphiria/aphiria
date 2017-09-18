@@ -23,11 +23,13 @@ class Headers implements IHttpHeaders
      */
     public function get(string $name, $default = null, bool $onlyReturnFirst = true)
     {
-        if (!$this->headers($name)) {
+        $normalizedName = $this->normalizeName($name);
+
+        if (!$this->headers($normalizedName)) {
             return $default;
         }
 
-        $values = $this->headers[$name];
+        $values = $this->headers[$normalizedName];
 
         if ($onlyReturnFirst) {
             return $values[0];
@@ -49,7 +51,9 @@ class Headers implements IHttpHeaders
      */
     public function has(string $name) : bool
     {
-        return isset($this->headers[$name]);
+        $normalizedName = $this->normalizeName($name);
+
+        return isset($this->headers[$normalizedName]);
     }
 
     /**
@@ -57,7 +61,9 @@ class Headers implements IHttpHeaders
      */
     public function remove(string $name) : void
     {
-        unset($this->headers[$name]);
+        $normalizedName = $this->normalizeName($name);
+
+        unset($this->headers[$normalizedName]);
     }
 
     /**
@@ -65,10 +71,23 @@ class Headers implements IHttpHeaders
      */
     public function set(string $name, $values, bool $shouldReplace = true) : void
     {
-        if ($shouldReplace || !isset($this->headers['name'])) {
-            $this->headers[$name] = (array)$values;
+        $normalizedName = $this->normalizeName($name);
+
+        if ($shouldReplace || !isset($this->headers[$normalizedName])) {
+            $this->headers[$normalizedName] = (array)$values;
         } else {
-            $this->headers[$name] = array_merge($this->headers['name'], (array)$values);
+            $this->headers[$normalizedName] = array_merge($this->headers[$normalizedName], (array)$values);
         }
+    }
+
+    /**
+     * Normalizes the name of the header
+     *
+     * @param string $name The header name to normalize
+     * @return string The normalized name
+     */
+    protected function normalizeName(string $name) : string
+    {
+        return strtr(strtoupper($name), '_', '-');
     }
 }

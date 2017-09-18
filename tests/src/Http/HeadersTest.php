@@ -51,7 +51,7 @@ class HeadersTest extends \PHPUnit\Framework\TestCase
     public function testGettingAll() : void
     {
         $this->headers->set('foo', 'bar');
-        $this->assertEquals(['foo' => ['bar']], $this->headers->getAll());
+        $this->assertEquals(['FOO' => ['bar']], $this->headers->getAll());
     }
 
     /**
@@ -78,6 +78,25 @@ class HeadersTest extends \PHPUnit\Framework\TestCase
     {
         $this->headers->set('foo', 'bar');
         $this->assertEquals(['bar'], $this->headers->get('foo', null, false));
+    }
+
+    /**
+     * Tests that all names are normalized
+     */
+    public function testNamesAreNormalized() : void
+    {
+        $this->headers->set('foo', 'bar');
+        $this->assertEquals(['bar'], $this->headers->get('foo'));
+        $this->assertEquals(['FOO' => ['bar']], $this->headers->getAll());
+        $this->assertTrue($this->headers->has('foo'));
+        $this->headers->remove('foo');
+        $this->assertEquals([], $this->headers->getAll());
+        $this->headers->set('BAZ', 'blah');
+        $this->assertEquals(['blah'], $this->headers->get('BAZ'));
+        $this->assertEquals(['BAZ' => ['blah']], $this->headers->getAll());
+        $this->assertTrue($this->headers->has('BAZ'));
+        $this->headers->remove('BAZ');
+        $this->assertEquals([], $this->headers->getAll());
     }
 
     /**

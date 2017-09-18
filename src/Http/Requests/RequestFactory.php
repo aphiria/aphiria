@@ -14,6 +14,7 @@ use Opulence\Net\Http\Headers;
 use Opulence\Net\Http\IHttpHeaders;
 use Opulence\Net\Http\StreamBody;
 use Opulence\Net\Http\StringBody;
+use Opulence\Net\Uri;
 
 /**
  * Defines the factory that creates requests
@@ -61,7 +62,7 @@ class RequestFactory implements IHttpRequestMessageFactory
      * @inheritdoc
      */
     public function createFromUri(
-        string $uri,
+        string $rawUri,
         string $method,
         array $parameters = [],
         array $cookies = [],
@@ -70,6 +71,8 @@ class RequestFactory implements IHttpRequestMessageFactory
         array $env = [],
         ?string $rawBody = null
     ) : IHttpRequestMessage {
+        $uri = Uri::createFromString($rawUri);
+
         // Todo
     }
 
@@ -88,7 +91,7 @@ class RequestFactory implements IHttpRequestMessageFactory
     }
 
     /**
-     * Creates headers from globals
+     * Creates headers from PHP globals
      *
      * @param array $server The global server array
      * @return IHttpHeaders The request headers
@@ -101,12 +104,54 @@ class RequestFactory implements IHttpRequestMessageFactory
             if (isset(self::$specialCaseHeaders[$name])) {
                 $headers->set($name, $value);
             } elseif (strpos($value, 'HTTP_') === 0) {
-                // Drop the "HTTP_", capitalize it, and replace "_" with "-"
-                $normalizedName = strtr(strtoupper(substr($name, 5)), '_', '-');
+                // Drop the "HTTP_"
+                $normalizedName = substr($name, 5);
                 $headers->set($normalizedName, $value);
             }
         }
 
         return $headers;
+    }
+
+    /**
+     * Creates a URI from PHP globals
+     *
+     * @param array $server The global server array
+     * @return Uri The URI
+     */
+    private function createUriFromGlobals(array $server) : Uri
+    {
+        // Todo: Need to handle trusted proxies for determining protocol, port, and host
+        $isSecure = isset($server['HTTPS']) && $server['HTTPS'] !== 'off';
+        $rawProtocol = strtolower($server['SERVER_PROTOCOL']);
+        $parsedProtocol = substr($rawProtocol, 0, strpos($rawProtocol, '/')) . ($isSecure ? 's' : '');
+        $port = (int)$server['SERVER_PORT'];
+
+        if (isset($server['HTTP_HOST'])) {
+            $host = $server['HTTP_HOST'];
+        } elseif (isset($server['SERVER_NAME'])) {
+            $host = $server['SERVER_NAME'];
+        } elseif (isset($server['SERVER_ADDR'])) {
+            $host = $server['SERVER_ADDR'];
+        } else {
+            $host = '';
+        }
+
+        // Remove the port from the host
+        $host = strtolower(preg_replace("/:\d+$/", '', trim($host)));
+
+        // Check for forbidden characters
+        if (!empty($host) && !empty(preg_replace("/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/", '', $host))) {
+            throw new InvalidArgumentException("Invalid host \"$host\"");
+        }
+
+        // Prepend a colon if the port is non-standard
+        if ((!$isSecure && $port != '80') || ($isSecure && $port != '443')) {
+            $port = ":$port";
+        } else {
+            $port = '';
+        }
+
+        return $parsedProtocol . '://' . $host . $port . $this->server->get('REQUEST_URI');
     }
 }
