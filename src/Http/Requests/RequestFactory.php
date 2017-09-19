@@ -53,9 +53,10 @@ class RequestFactory implements IHttpRequestMessageFactory
 
         $headers = $this->createHeadersFromGlobals($server);
         $body = $this->createBodyFromRawBody($rawBody);
+        $uri = $this->createUriFromGlobals($server);
 
-        // Todo: Keep going
         // Todo: Where do the request "properties" come from?
+        return new Request($method, $headers, $body, $uri, ['Todo']);
     }
 
     /**
@@ -118,40 +119,36 @@ class RequestFactory implements IHttpRequestMessageFactory
      *
      * @param array $server The global server array
      * @return Uri The URI
+     * @throws InvalidArgumentException Thrown if the host is malformed
      */
     private function createUriFromGlobals(array $server) : Uri
     {
         // Todo: Need to handle trusted proxies for determining protocol, port, and host
         $isSecure = isset($server['HTTPS']) && $server['HTTPS'] !== 'off';
         $rawProtocol = strtolower($server['SERVER_PROTOCOL']);
-        $parsedProtocol = substr($rawProtocol, 0, strpos($rawProtocol, '/')) . ($isSecure ? 's' : '');
+        $scheme = substr($rawProtocol, 0, strpos($rawProtocol, '/')) . ($isSecure ? 's' : '');
+        $user = $server['PHP_AUTH_USER'] ?? null;
+        $password = $server['PHP_AUTH_PW'] ?? null;
         $port = (int)$server['SERVER_PORT'];
-
-        if (isset($server['HTTP_HOST'])) {
-            $host = $server['HTTP_HOST'];
-        } elseif (isset($server['SERVER_NAME'])) {
-            $host = $server['SERVER_NAME'];
-        } elseif (isset($server['SERVER_ADDR'])) {
-            $host = $server['SERVER_ADDR'];
-        } else {
-            $host = '';
-        }
+        $hostWithPort = $server['HTTP_HOST'] ?? $server['SERVER_NAME'] ?? $server['SERVER_ADDR'] ?? '';
 
         // Remove the port from the host
-        $host = strtolower(preg_replace("/:\d+$/", '', trim($host)));
+        $host = strtolower(preg_replace("/:\d+$/", '', trim($hostWithPort)));
 
         // Check for forbidden characters
         if (!empty($host) && !empty(preg_replace("/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/", '', $host))) {
             throw new InvalidArgumentException("Invalid host \"$host\"");
         }
 
-        // Prepend a colon if the port is non-standard
-        if ((!$isSecure && $port != '80') || ($isSecure && $port != '443')) {
-            $port = ":$port";
-        } else {
-            $port = '';
+        $path = parse_url('http://foo.com' . $server['REQUEST_URI'], PHP_URL_PATH);
+        $path = $path === false ? '' : ltrim($path, '/');
+        $queryString = $server['QUERY_STRING'];
+
+        if ($queryString === '') {
+            $queryString = parse_url('http://foo.com' . $server['REQUEST_URI'], PHP_URL_QUERY);
+            $queryString = $queryString === false || $queryString === '' ? null : $queryString;
         }
 
-        return $parsedProtocol . '://' . $host . $port . $this->server->get('REQUEST_URI');
+        return new Uri($scheme, $user, $password, $host, $port, $path, $queryString, null);
     }
 }

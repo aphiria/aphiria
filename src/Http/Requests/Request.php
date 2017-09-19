@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Http\Requests;
 
+use InvalidArgumentException;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\IHttpHeaders;
 use Opulence\Net\Uri;
@@ -52,7 +53,7 @@ class Request implements IHttpRequestMessage
      */
     public function __construct(string $method, IHttpHeaders $headers, IHttpBody $body, Uri $uri, array $properties = [])
     {
-        $this->method = $this->setMethod($method);
+        $this->setMethod($method);
         $this->headers = $headers;
         $this->body = $body;
         $this->uri = $uri;

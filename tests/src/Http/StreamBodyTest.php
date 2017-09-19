@@ -25,7 +25,7 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('__toString')
-            ->returns('foo');
+            ->willReturn('foo');
         $body = new StreamBody($stream);
         $this->assertEquals('foo', (string)$body);
     }
@@ -48,7 +48,7 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('__toString')
-            ->returns('foo');
+            ->willReturn('foo');
         $body = new StreamBody($stream);
         $this->assertEquals('foo', $body->readAsString());
     }
@@ -58,14 +58,11 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
      */
     public function testWritingToStreamWritesToUnderlyingStream() : void
     {
+        $outputStream = $this->createMock(IStream::class);
         $underlyingStream = $this->createMock(IStream::class);
         $underlyingStream->expects($this->once())
-            ->method('__toString')
-            ->returns('foo');
-        $outputStream = $this->createMock(IStream::class);
-        $outputStream->expects($this->once())
-            ->method('write')
-            ->with('foo');
+            ->method('copyToStream')
+            ->with($outputStream);
         $body = new StreamBody($underlyingStream);
         $body->writeToStream($outputStream);
     }

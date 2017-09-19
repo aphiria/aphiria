@@ -25,7 +25,7 @@ class Headers implements IHttpHeaders
     {
         $normalizedName = $this->normalizeName($name);
 
-        if (!$this->headers($normalizedName)) {
+        if (!$this->has($normalizedName)) {
             return $default;
         }
 

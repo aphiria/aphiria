@@ -32,8 +32,8 @@ class StringBodyTest extends \PHPUnit\Framework\TestCase
     public function testReadingAsStreamReturnsSameStreamInstanceEveryTime() : void
     {
         $body = new StringBody('foo');
-        $stream = $body->readAsStream();
-        $this->assertSame($stream, $stream->readAsStream());
+        $expectedStream = $body->readAsStream();
+        $this->assertSame($expectedStream, $body->readAsStream());
     }
 
     /**
@@ -43,6 +43,7 @@ class StringBodyTest extends \PHPUnit\Framework\TestCase
     {
         $body = new StringBody('foo');
         $stream = $body->readAsStream();
+        $stream->rewind();
         $this->assertEquals('foo', $stream->readToEnd());
     }
 

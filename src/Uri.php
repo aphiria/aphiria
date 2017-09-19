@@ -65,30 +65,6 @@ class Uri
     }
 
     /**
-     * Creates a URI from a string
-     *
-     * @param string $uri The string URI to convert
-     * @return Uri The created URI
-     */
-    public static function createFromString(string $uri) : Uri
-    {
-        if (($parsedUri = parse_url($uri)) === false) {
-            throw new InvalidArgumentException("Uri $uri is malformed");
-        }
-
-        return new Uri(
-            $parsedUri['scheme'] ?? 'http',
-            $parsedUri['user'] ?? null,
-            $parsedUri['pass'] ?? null,
-            $parsedUri['host'] ?? '',
-            $parsedUri['port'] ?? null,
-            $parsedUri['path'] ?? null,
-            $parsedUri['query'] ?? null,
-            $parsedUri['fragment'] ?? null
-        );
-    }
-
-    /**
      * Converts the URI to a string
      *
      * @return string The URI as a string
@@ -111,7 +87,7 @@ class Uri
             $stringUri .= ":{$this->port}";
         }
 
-        $stringUri .= '/' . ltrim($this->path, '/');
+        $stringUri .= $this->path;
 
         if ($this->queryString !== null) {
             $stringUri .= "?{$this->queryString}";
@@ -122,6 +98,30 @@ class Uri
         }
 
         return $stringUri;
+    }
+
+    /**
+     * Creates a URI from a string
+     *
+     * @param string $uri The string URI to convert
+     * @return Uri The created URI
+     */
+    public static function createFromString(string $uri) : Uri
+    {
+        if (($parsedUri = parse_url($uri)) === false) {
+            throw new InvalidArgumentException("Uri $uri is malformed");
+        }
+
+        return new Uri(
+            $parsedUri['scheme'] ?? 'http',
+            $parsedUri['user'] ?? null,
+            $parsedUri['pass'] ?? null,
+            $parsedUri['host'] ?? '',
+            $parsedUri['port'] ?? null,
+            $parsedUri['path'] ?? '',
+            $parsedUri['query'] ?? null,
+            $parsedUri['fragment'] ?? null
+        );
     }
 
     /**

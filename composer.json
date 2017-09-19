@@ -19,12 +19,17 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Opulence\\Net\\": "src/"
+      "Opulence\\Net\\": "src",
+      "Opulence\\IO\\": "../IO/src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Opulence\\Tests\\Net\\": "tests/src"
     }
   },
   "require": {
-    "php": "^7.1",
-    "opulence/io": "1.0.*@dev"
+    "php": "^7.1"
   },
   "extra": {
     "branch-alias": {

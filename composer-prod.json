@@ -1,0 +1,40 @@
+{
+  "name": "opulence/net",
+  "description": "The Opulence network library",
+  "keywords": [
+    "PHP",
+    "network",
+    "http",
+    "request",
+    "response",
+    "cookie"
+  ],
+  "authors": [
+    {
+      "name": "David Young",
+      "email": "dave@opulencephp.com",
+      "role": "Architect"
+    }
+  ],
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Opulence\\Net\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Opulence\\Tests\\Net\\": "tests/src"
+    }
+  },
+  "require": {
+    "php": "^7.1",
+    "opulence/io": "1.0.*@dev"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  },
+  "minimum-stability": "dev"
+}

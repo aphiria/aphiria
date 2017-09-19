@@ -31,6 +31,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             'password',
             'host',
             80,
+            'path',
             'query',
             'fragment'
         );
@@ -41,12 +42,13 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreatingFromStringCreatesUriWithCorrectValues() : void
     {
-        $uri = Uri::createFromString('https://user:password@host:8080?query#fragment');
+        $uri = Uri::createFromString('https://user:password@host:8080/path?query#fragment');
         $this->assertEquals('https', $uri->getScheme());
         $this->assertEquals('user', $uri->getUser());
         $this->assertEquals('password', $uri->getPassword());
         $this->assertEquals('host', $uri->getHost());
         $this->assertEquals(8080, $uri->getPort());
+        $this->assertEquals('/path', $uri->getPath());
         $this->assertEquals('query', $uri->getQueryString());
         $this->assertEquals('fragment', $uri->getFragment());
     }
@@ -121,7 +123,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
     public function testMalformedUriThrowsExceptionWhenCreatingFromString() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        Uri::createFromString('foo');
+        Uri::createFromString('host:65536');
     }
 
     /**
@@ -135,10 +137,11 @@ class UriTest extends \PHPUnit\Framework\TestCase
             'password',
             'host',
             8080,
+            '/path',
             'query',
             'fragment'
         );
-        $this->assertEquals('http://user:password@host:8080?query#fragment', (string)$uri);
+        $this->assertEquals('http://user:password@host:8080/path?query#fragment', (string)$uri);
     }
 
     /**
@@ -152,6 +155,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             null,
             'host',
             80,
+            '',
             null,
             'fragment'
         );
@@ -169,6 +173,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             'password',
             'host',
             8080,
+            '',
             null,
             null
         );
@@ -179,6 +184,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             'password',
             'host',
             1234,
+            '',
             null,
             null
         );
@@ -196,10 +202,11 @@ class UriTest extends \PHPUnit\Framework\TestCase
             null,
             'host',
             null,
+            '',
             null,
             null
         );
-        $this->assertEquals('http://host#fragment', (string)$uri);
+        $this->assertEquals('http://host', (string)$uri);
     }
 
     /**
@@ -213,6 +220,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             null,
             'host',
             80,
+            '',
             'query',
             null
         );
@@ -230,6 +238,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             'password',
             'host',
             null,
+            '',
             null,
             null
         );

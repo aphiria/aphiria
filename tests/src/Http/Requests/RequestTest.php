@@ -38,7 +38,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     {
         $this->headers = $this->createMock(IHttpHeaders::class);
         $this->body = $this->createMock(IHttpBody::class);
-        $this->uri = new Uri('http', null, null, 'host', null, null, null);
+        $this->uri = new Uri('http', null, null, 'host', null, '', null, null);
         $this->properties = ['foo' => 'bar'];
         $this->request = new Request(
             'GET',
@@ -114,7 +114,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
      */
     public function testSettingUri() : void
     {
-        $uri = new Uri('http', null, null, 'host', null, null, null);
+        $uri = new Uri('http', null, null, 'host', null, '', null, null);
         $this->request->setUri($uri);
         $this->assertSame($uri, $this->request->getUri());
     }

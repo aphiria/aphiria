@@ -34,7 +34,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
      */
     public function testCheckingIfIsHttpOnly() : void
     {
-        $this->assertTrue($this->cooke->isHttpOnly());
+        $this->assertTrue($this->cookie->isHttpOnly());
     }
 
     /**
@@ -42,7 +42,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
      */
     public function testCheckingIfIsSecure() : void
     {
-        $this->assertTrue($this->cooke->isSecure());
+        $this->assertTrue($this->cookie->isSecure());
     }
 
     /**
