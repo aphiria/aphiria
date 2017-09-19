@@ -28,6 +28,8 @@ class Request implements IHttpRequestMessage
     protected $body = null;
     /** @var Uri The request URI */
     protected $uri = null;
+    /** @var UploadedFile[] The list of uploaded files */
+    protected $uploadedFiles = [];
     /** @var array The request properties */
     protected $properties = [];
     /** @var The list of valid HTTP methods */
@@ -49,14 +51,22 @@ class Request implements IHttpRequestMessage
      * @param IHttpHeaders $headers The request headers
      * @param IHttpBody $body The request body
      * @param Uri $uri The request URI
+     * @param UploadedFile[] $uploadedFiles The list of uploaded files
      * @param array $properties The request properties
      */
-    public function __construct(string $method, IHttpHeaders $headers, IHttpBody $body, Uri $uri, array $properties = [])
-    {
+    public function __construct(
+        string $method,
+        IHttpHeaders $headers,
+        IHttpBody $body,
+        Uri $uri,
+        array $uploadedFiles = [],
+        array $properties = []
+    ) {
         $this->setMethod($method);
         $this->headers = $headers;
         $this->body = $body;
         $this->uri = $uri;
+        $this->uploadedFiles = $uploadedFiles;
         $this->properties = $properties;
     }
 
@@ -90,6 +100,14 @@ class Request implements IHttpRequestMessage
     public function getProperties(): array
     {
         return $this->properties;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUploadedFiles() : array
+    {
+        return $this->uploadedFiles;
     }
 
     /**

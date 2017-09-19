@@ -34,6 +34,13 @@ interface IHttpRequestMessage extends IHttpMessage
     public function getProperties() : array;
 
     /**
+     * Gets the list of uploaded files
+     *
+     * @return UploadedFile[] The list of uploaded files
+     */
+    public function getUploadedFiles() : array;
+
+    /**
      * Gets the URI of the request
      *
      * @return Uri The URI

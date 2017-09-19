@@ -55,8 +55,9 @@ class RequestFactory implements IHttpRequestMessageFactory
         $body = $this->createBodyFromRawBody($rawBody);
         $uri = $this->createUriFromGlobals($server);
 
+        // Todo: Create list of UploadedFiles
         // Todo: Where do the request "properties" come from?
-        return new Request($method, $headers, $body, $uri, ['Todo']);
+        return new Request($method, $headers, $body, $uri, ['Todo'], ['Todo']);
     }
 
     /**

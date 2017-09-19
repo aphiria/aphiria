@@ -127,6 +127,44 @@ class UriTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that an out of range port throws an exception
+     */
+    public function testOutOfRangePortThrowsException() : void
+    {
+        try {
+            new Uri(
+                'http',
+                'user',
+                'password',
+                'host',
+                0,
+                'path',
+                'query',
+                'fragment'
+            );
+            $this->fail('Port below acceptable range was accepted');
+        } catch (InvalidArgumentException $ex) {
+            // Don't do anything
+        }
+
+        try {
+            new Uri(
+                'http',
+                'user',
+                'password',
+                'host',
+                65536,
+                'path',
+                'query',
+                'fragment'
+            );
+            $this->fail('Port above acceptable range was accepted');
+        } catch (InvalidArgumentException $ex) {
+            // Don't do anything
+        }
+    }
+
+    /**
      * Tests casting to string with all parts is created correctly
      */
     public function testToStringWithAllPartsIsCreatedCorrectly() : void

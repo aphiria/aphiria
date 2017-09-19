@@ -17,6 +17,7 @@ use InvalidArgumentException;
  */
 interface IHttpRequestMessageFactory
 {
+    // Todo: Does this interface really even need to exist?  What's a use-case?
     /**
      * Creates a request message from PHP globals
      *

@@ -43,6 +43,7 @@ class Uri
      * @param string $path The URI path
      * @param string|null $queryString The URI query string (excludes '?') if set, otherwise null
      * @param string|null $fragment The URI fragment (excludes '#') if set, otherwise null
+     * @throws InvalidArgumentException Thrown if the port is out of range
      */
     public function __construct(
         string $scheme,
@@ -58,6 +59,11 @@ class Uri
         $this->user = $user;
         $this->password = $password;
         $this->host = $host;
+
+        if ($port !== null && ($port < 1 || $port > 65535)) {
+            throw new InvalidArgumentException("Port $port must be between 1 and 65535, inclusive");
+        }
+
         $this->port = $port;
         $this->path = $path;
         $this->queryString = $queryString;

@@ -28,6 +28,8 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     private $body = null;
     /** @var Uri The request URI */
     private $uri = null;
+    /** @var UploadedFile[] The list of uploaded files */
+    private $uploadedFiles = [];
     /** @var array The request properties */
     private $properties = [];
 
@@ -39,12 +41,14 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $this->headers = $this->createMock(IHttpHeaders::class);
         $this->body = $this->createMock(IHttpBody::class);
         $this->uri = new Uri('http', null, null, 'host', null, '', null, null);
+        $this->uploadedFiles[] = $this->createMock(UploadedFile::class);
         $this->properties = ['foo' => 'bar'];
         $this->request = new Request(
             'GET',
             $this->headers,
             $this->body,
             $this->uri,
+            $this->uploadedFiles,
             $this->properties
         );
     }
@@ -71,6 +75,14 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     public function testGettingMethod() : void
     {
         $this->assertSame('GET', $this->request->getMethod());
+    }
+
+    /**
+     * Tests getting uploaded files
+     */
+    public function testGettingUploadedFiles() : void
+    {
+        $this->assertSame($this->uploadedFiles, $this->request->getUploadedFiles());
     }
 
     /**
