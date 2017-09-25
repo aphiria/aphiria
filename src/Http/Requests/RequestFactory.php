@@ -41,8 +41,7 @@ class RequestFactory implements IHttpRequestMessageFactory
         array $cookies = null,
         array $server = null,
         array $files = null,
-        array $env = null,
-        string $rawBody = null
+        ?string $rawBody = null
     ) : IHttpRequestMessage {
         $method = $server['REQUEST_METHOD'] ?? null;
 
@@ -56,8 +55,7 @@ class RequestFactory implements IHttpRequestMessageFactory
         $uri = $this->createUriFromGlobals($server);
 
         // Todo: Create list of UploadedFiles
-        // Todo: Where do the request "properties" come from?
-        return new Request($method, $headers, $body, $uri, ['Todo'], ['Todo']);
+        return new Request($method, $headers, $body, $uri, ['Todo']);
     }
 
     /**
@@ -70,20 +68,22 @@ class RequestFactory implements IHttpRequestMessageFactory
         array $cookies = [],
         array $server = [],
         array $files = [],
-        array $env = [],
         ?string $rawBody = null
     ) : IHttpRequestMessage {
         $uri = Uri::createFromString($rawUri);
+        $headers = $this->createHeadersFromGlobals($server);
+        $body = $this->createBodyFromRawBody($rawBody);
 
-        // Todo
+        // Todo: Create list of UploadedFiles
+        return new Request($method, $headers, $body, $uri, ['Todo']);
     }
 
     /**
      * Creates a body from the raw body
      *
-     * @param string $rawBody The raw body if one is specified, otherwise we use the input stream
+     * @param string|null $rawBody The raw body if one is specified, otherwise we use the input stream
      */
-    private function createBodyFromRawBody(string $rawBody = null) : IHttpBody
+    private function createBodyFromRawBody(?string $rawBody) : IHttpBody
     {
         if ($rawBody === null) {
             return new StreamBody(new Stream(fopen('php://input', 'r+')));

@@ -11,6 +11,7 @@
 namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
+use Opulence\Net\Http\Collection;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\IHttpHeaders;
 use Opulence\Net\Uri;
@@ -30,8 +31,8 @@ class Request implements IHttpRequestMessage
     protected $uri = null;
     /** @var UploadedFile[] The list of uploaded files */
     protected $uploadedFiles = [];
-    /** @var array The request properties */
-    protected $properties = [];
+    /** @var Collection The request properties */
+    protected $properties = null;
     /** @var The list of valid HTTP methods */
     private static $validMethod = [
         'CONNECT',
@@ -52,7 +53,7 @@ class Request implements IHttpRequestMessage
      * @param IHttpBody $body The request body
      * @param Uri $uri The request URI
      * @param UploadedFile[] $uploadedFiles The list of uploaded files
-     * @param array $properties The request properties
+     * @param Collection|null $properties The request properties
      */
     public function __construct(
         string $method,
@@ -60,20 +61,20 @@ class Request implements IHttpRequestMessage
         IHttpBody $body,
         Uri $uri,
         array $uploadedFiles = [],
-        array $properties = []
+        Collection $properties = null
     ) {
         $this->setMethod($method);
         $this->headers = $headers;
         $this->body = $body;
         $this->uri = $uri;
         $this->uploadedFiles = $uploadedFiles;
-        $this->properties = $properties;
+        $this->properties = $properties ?? new Collection();
     }
 
     /**
      * @inheritdoc
      */
-    public function getBody(): IHttpBody
+    public function getBody() : IHttpBody
     {
         return $this->body;
     }
@@ -81,7 +82,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getHeaders(): IHttpHeaders
+    public function getHeaders() : IHttpHeaders
     {
         return $this->headers;
     }
@@ -89,7 +90,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getMethod(): string
+    public function getMethod() : string
     {
         return $this->method;
     }
@@ -97,7 +98,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getProperties(): array
+    public function getProperties() : Collection
     {
         return $this->properties;
     }
@@ -113,7 +114,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getUri(): Uri
+    public function getUri() : Uri
     {
         return $this->uri;
     }
@@ -121,7 +122,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function setBody(IHttpBody $body): void
+    public function setBody(IHttpBody $body) : void
     {
         $this->body = $body;
     }
@@ -129,7 +130,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function setMethod(string $method): void
+    protected function setMethod(string $method) : void
     {
         $uppercaseMethod = strtoupper($method);
 
@@ -138,13 +139,5 @@ class Request implements IHttpRequestMessage
         }
 
         $this->method = $method;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setUri(Uri $uri): void
-    {
-        $this->uri = $uri;
     }
 }

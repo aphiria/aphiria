@@ -10,7 +10,7 @@
 
 namespace Opulence\Net\Http\Requests;
 
-use InvalidArgumentException;
+use Opulence\Net\Http\Collection;
 use Opulence\Net\Http\IHttpMessage;
 use Opulence\Net\Uri;
 
@@ -29,9 +29,9 @@ interface IHttpRequestMessage extends IHttpMessage
     /**
      * Gets the properties of the request
      *
-     * @return array The mapping of property names to values
+     * @return Collection The collection of properties
      */
-    public function getProperties() : array;
+    public function getProperties() : Collection;
 
     /**
      * Gets the list of uploaded files
@@ -46,19 +46,4 @@ interface IHttpRequestMessage extends IHttpMessage
      * @return Uri The URI
      */
     public function getUri() : Uri;
-
-    /**
-     * Sets the HTTP method of the request
-     *
-     * @param string $method The HTTP method
-     * @throws InvalidArgumentException Thrown if the method is not a valid HTTP method
-     */
-    public function setMethod(string $method) : void;
-
-    /**
-     * Sets the request URI
-     *
-     * @param Uri $uri The request URI
-     */
-    public function setUri(Uri $uri) : void;
 }

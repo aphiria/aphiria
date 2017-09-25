@@ -44,6 +44,13 @@ $formData = (new HttpRequestMessageParser)->getFormData($request);
 $email = (new HttpRequestMessageParser)->getInput($request, 'email');
 ```
 
+<h3>Get the uploaded files</h3>
+
+```php
+// Create request...
+$uploadedFiles = $request->getUploadedFiles();
+```
+
 <h3>Check if the request was JSON</h3>
 
 ```php
@@ -56,6 +63,14 @@ $isJson = (new HttpRequestHeaderParser)->isJson($request->getHeaders());
 ```php
 // Create request...
 $request->getBody()->readAsStream()->read(64);
+```
+
+<h3>Get/set request properties</h3>
+
+```php
+// Create request...
+$request->getProperties()->get('foo');
+$request->getProperties()->set('foo', 'bar');
 ```
 
 <h2>Responses</h2>

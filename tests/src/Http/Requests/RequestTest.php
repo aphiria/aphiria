@@ -11,6 +11,7 @@
 namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
+use Opulence\Net\Http\Collection;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\IHttpHeaders;
 use Opulence\Net\Uri;
@@ -30,8 +31,8 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     private $uri = null;
     /** @var UploadedFile[] The list of uploaded files */
     private $uploadedFiles = [];
-    /** @var array The request properties */
-    private $properties = [];
+    /** @var Collection The request properties */
+    private $properties = null;
 
     /**
      * Sets up the tests
@@ -42,7 +43,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $this->body = $this->createMock(IHttpBody::class);
         $this->uri = new Uri('http', null, null, 'host', null, '', null, null);
         $this->uploadedFiles[] = $this->createMock(UploadedFile::class);
-        $this->properties = ['foo' => 'bar'];
+        $this->properties = new Collection(['foo' => 'bar']);
         $this->request = new Request(
             'GET',
             $this->headers,
@@ -78,6 +79,14 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests getting properties
+     */
+    public function testGettingProperties() : void
+    {
+        $this->assertSame($this->properties, $this->request->getProperties());
+    }
+
+    /**
      * Tests getting uploaded files
      */
     public function testGettingUploadedFiles() : void
@@ -109,25 +118,6 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     public function testSettingInvalidMethodThrowsException() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->request->setMethod('foo');
-    }
-
-    /**
-     * Tests setting the method
-     */
-    public function testSettingMethod() : void
-    {
-        $this->request->setMethod('DELETE');
-        $this->assertEquals('DELETE', $this->request->getMethod());
-    }
-
-    /**
-     * Tests setting the URI
-     */
-    public function testSettingUri() : void
-    {
-        $uri = new Uri('http', null, null, 'host', null, '', null, null);
-        $this->request->setUri($uri);
-        $this->assertSame($uri, $this->request->getUri());
+        new Request('foo', $this->headers, $this->body, $this->uri);
     }
 }

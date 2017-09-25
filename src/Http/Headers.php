@@ -13,37 +13,50 @@ namespace Opulence\Net\Http;
 /**
  * Defines HTTP headers
  */
-class Headers implements IHttpHeaders
+class Headers extends Collection implements IHttpHeaders
 {
-    /** @var array The mapping of header names to values */
-    private $headers = [];
+    /**
+     * Creates an instance with no initial values
+     */
+    public function __construct()
+    {
+        /**
+         * Headers allow multiple values
+         * The parent class does not have this feature, which is why we took care of it in this constructor
+         * To satisfy the parent constructor, we'll simply send it an empty array
+         */
+        parent::__construct([]);
+    }
 
     /**
+     * Headers are allowed to have multiple values, so we must add support for that
+     *
      * @inheritdoc
+     * @param string|array $values The value or values
+     * @param bool $shouldReplace Whether or not to replace the value
      */
-    public function get(string $name, $default = null, bool $onlyReturnFirst = true)
+    public function add(string $name, $values, bool $shouldReplace = true) : void
     {
-        $normalizedName = $this->normalizeName($name);
-
-        if (!$this->has($normalizedName)) {
-            return $default;
-        }
-
-        $values = $this->headers[$normalizedName];
-
-        if ($onlyReturnFirst) {
-            return $values[0];
-        }
-
-        return $values;
+        $this->set($name, $values, $shouldReplace);
     }
 
     /**
      * @inheritdoc
+     * @param bool $onlyReturnFirst True if we only want the first header, otherwise we'll return all of them
      */
-    public function getAll() : array
+    public function get(string $name, $default = null, bool $onlyReturnFirst = true)
     {
-        return $this->headers;
+        if ($this->has($name)) {
+            $value = $this->values[$this->normalizeName($name)];
+
+            if ($onlyReturnFirst) {
+                return $value[0];
+            }
+        } else {
+            $value = $default;
+        }
+
+        return $value;
     }
 
     /**
@@ -51,9 +64,7 @@ class Headers implements IHttpHeaders
      */
     public function has(string $name) : bool
     {
-        $normalizedName = $this->normalizeName($name);
-
-        return isset($this->headers[$normalizedName]);
+        return parent::has($this->normalizeName($name));
     }
 
     /**
@@ -61,9 +72,7 @@ class Headers implements IHttpHeaders
      */
     public function remove(string $name) : void
     {
-        $normalizedName = $this->normalizeName($name);
-
-        unset($this->headers[$normalizedName]);
+        parent::remove($this->normalizeName($name));
     }
 
     /**
@@ -73,10 +82,10 @@ class Headers implements IHttpHeaders
     {
         $normalizedName = $this->normalizeName($name);
 
-        if ($shouldReplace || !isset($this->headers[$normalizedName])) {
-            $this->headers[$normalizedName] = (array)$values;
+        if ($shouldReplace || !isset($this->values[$normalizedName])) {
+            $this->values[$normalizedName] = (array)$values;
         } else {
-            $this->headers[$normalizedName] = array_merge($this->headers[$normalizedName], (array)$values);
+            $this->values[$normalizedName] = array_merge($this->values[$normalizedName], (array)$values);
         }
     }
 
