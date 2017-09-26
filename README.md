@@ -2,8 +2,8 @@
 
 <h2>Ideas</h2>
 
-* Should set the HTTP protocol in the request message's `properties`
-* I forgot - how do I specify trusted proxies?  I feel like I already figured this.
+* Should set the HTTP protocol version, matched route variables in the request message's `properties`
+* I forgot - how do I specify trusted proxies?  I feel like I already figured this out.
 
 <h2>Requests</h2>
 
@@ -20,7 +20,7 @@ $request->getBody()->readAsString();
 
 ```php
 // Create request...
-$userId = (new HttpRequestMessageParser)->getQueryVar($request, 'userId');
+$userId = (new HttpRequestMessageParser)->getQueryStringParam($request, 'userId');
 ```
 
 <h3>Get a cookie</h3>

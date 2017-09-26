@@ -25,7 +25,7 @@ class Uri
     private $password = null;
     /** @var string The URI host */
     private $host = '';
-    /** @var int|nulll The URI port if set, otherwise null */
+    /** @var int|null The URI port if set, otherwise null */
     private $port = null;
     /** @var string The URI path */
     private $path = '';

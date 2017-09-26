@@ -12,6 +12,7 @@ namespace Opulence\Net\Http\Requests;
 
 use Opulence\Net\Http\Headers;
 use Opulence\Net\Http\IHttpHeaders;
+use Opulence\Net\Http\Requests\UploadedFile;
 use Opulence\Net\Http\StreamBody;
 use Opulence\Net\Http\StringBody;
 use Opulence\Net\Uri;
@@ -36,8 +37,6 @@ class RequestFactory implements IHttpRequestMessageFactory
      * @inheritdoc
      */
     public function createFromGlobals(
-        array $query = null,
-        array $post = null,
         array $cookies = null,
         array $server = null,
         array $files = null,
@@ -50,32 +49,12 @@ class RequestFactory implements IHttpRequestMessageFactory
             $method = $server['X-HTTP-METHOD-OVERRIDE'];
         }
 
-        $headers = $this->createHeadersFromGlobals($server);
+        $headers = $this->createHeadersFromGlobals($server, $cookies);
         $body = $this->createBodyFromRawBody($rawBody);
         $uri = $this->createUriFromGlobals($server);
+        $uploadedFiles = $this->createUploadedFilesFromGlobals($files);
 
-        // Todo: Create list of UploadedFiles
-        return new Request($method, $headers, $body, $uri, ['Todo']);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function createFromUri(
-        string $rawUri,
-        string $method,
-        array $parameters = [],
-        array $cookies = [],
-        array $server = [],
-        array $files = [],
-        ?string $rawBody = null
-    ) : IHttpRequestMessage {
-        $uri = Uri::createFromString($rawUri);
-        $headers = $this->createHeadersFromGlobals($server);
-        $body = $this->createBodyFromRawBody($rawBody);
-
-        // Todo: Create list of UploadedFiles
-        return new Request($method, $headers, $body, $uri, ['Todo']);
+        return new Request($method, $headers, $body, $uri, $uploadedFiles);
     }
 
     /**
@@ -96,9 +75,10 @@ class RequestFactory implements IHttpRequestMessageFactory
      * Creates headers from PHP globals
      *
      * @param array $server The global server array
+     * @param array $cookies The global cookie array
      * @return IHttpHeaders The request headers
      */
-    private function createHeadersFromGlobals(array $server) : IHttpHeaders
+    private function createHeadersFromGlobals(array $server, array $cookies) : IHttpHeaders
     {
         $headers = new Headers();
 
@@ -111,8 +91,41 @@ class RequestFactory implements IHttpRequestMessageFactory
                 $headers->set($normalizedName, $value);
             }
         }
+        
+        if (count($cookies) > 0) {
+            $cookieValues = [];
+
+            foreach ($cookies as $name => $value) {
+                $cookieValues[] = "$name=$value";
+            }
+            
+            $headers->set('Cookie', implode('; ', $cookieValues));
+        }
 
         return $headers;
+    }
+    
+    /**
+     * Creates a list of uploaded files from globals
+     * 
+     * @param array $files The global file array
+     * @return UploadedFile[] The list of uploaded files
+     */
+    private function createUploadedFilesFromGlobals(array $files) : array
+    {
+        $uploadedFiles = [];
+        
+        foreach ($files as $name => $file) {
+            $uploadedFiles[$name]= new UploadedFile(
+                $file['tmp_name'],
+                $file['name'],
+                $file['size'],
+                $file['type'],
+                $file['error']
+            );
+        }
+        
+        return $uploadedFiles;
     }
 
     /**

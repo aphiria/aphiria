@@ -44,20 +44,12 @@ interface IHttpRequestMessageParser
     public function getInput(IHttpRequestMessage $message, string $name, $default = null);
 
     /**
-     * Parses a request for a query string variable value
+     * Parses a request for a query string parameter  value
      *
      * @param IHttpRequestMessage $message The message to parse
-     * @param string $name The name of the query string variable to look for
+     * @param string $name The name of the query string parameter to look for
      * @param mixed|null $default The default value, if none was found
-     * @return mixed The value of the query string variable
+     * @return mixed The value of the query string parameter
      */
-    public function getQueryVar(IHttpRequestMessage $message, string $name, $default = null);
-
-    /**
-     * Parses a request for the query string variable values
-     *
-     * @param IHttpRequestMessage $message The message to parse
-     * @return array The mapping of query string variable names to values
-     */
-    public function getQueryVars(IHttpRequestMessage $message) : array;
+    public function getQueryStringParam(IHttpRequestMessage $message, string $name, $default = null);
 }
