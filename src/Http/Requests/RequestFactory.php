@@ -12,7 +12,6 @@ namespace Opulence\Net\Http\Requests;
 
 use Opulence\Net\Http\Headers;
 use Opulence\Net\Http\IHttpHeaders;
-use Opulence\Net\Http\Requests\UploadedFile;
 use Opulence\Net\Http\StreamBody;
 use Opulence\Net\Http\StringBody;
 use Opulence\Net\Uri;
@@ -91,30 +90,30 @@ class RequestFactory implements IHttpRequestMessageFactory
                 $headers->set($normalizedName, $value);
             }
         }
-        
+
         if (count($cookies) > 0) {
             $cookieValues = [];
 
             foreach ($cookies as $name => $value) {
                 $cookieValues[] = "$name=$value";
             }
-            
+
             $headers->set('Cookie', implode('; ', $cookieValues));
         }
 
         return $headers;
     }
-    
+
     /**
      * Creates a list of uploaded files from globals
-     * 
+     *
      * @param array $files The global file array
      * @return UploadedFile[] The list of uploaded files
      */
     private function createUploadedFilesFromGlobals(array $files) : array
     {
         $uploadedFiles = [];
-        
+
         foreach ($files as $name => $file) {
             $uploadedFiles[$name]= new UploadedFile(
                 $file['tmp_name'],
@@ -124,7 +123,7 @@ class RequestFactory implements IHttpRequestMessageFactory
                 $file['error']
             );
         }
-        
+
         return $uploadedFiles;
     }
 
