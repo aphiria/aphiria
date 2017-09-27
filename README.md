@@ -3,14 +3,19 @@
 <h2>Ideas</h2>
 
 * Should set the HTTP protocol version, matched route variables in the request message's `properties`
-* I forgot - how do I specify trusted proxies?  I feel like I already figured this out.
 
 <h2>Requests</h2>
+
+<h3>Create a request from globals</h3>
+
+```php
+$request = (new RequestFactory)->createFromGlobals($_SERVER, $_COOKIE, $_FILES);
+```
 
 <h3>Read the request body as a string</h3>
 
 ```php
-$request = (new RequestFactory)->createFromGlobals($_GET, $_POST, $_COOKIE, $_SERVER, $_FILES, $_ENV);
+// Create request...
 $request->getBody()->readAsString();
 // Or...
 (string)request->getBody();
@@ -71,6 +76,20 @@ $request->getBody()->readAsStream()->read(64);
 // Create request...
 $request->getProperties()->get('foo');
 $request->getProperties()->set('foo', 'bar');
+```
+
+<h3>Set trusted proxy IP addresses</h3>
+
+```php
+$factory = new RequestFactory(['192.168.1.1', '192.168.1.2']);
+$request = $factory->createFromGlobals($_SERVER, $_COOKIE, $_FILES);
+```
+
+<h3>Get client IP address</h3>
+
+```php
+// Create request (must use RequestFactory)
+$request->getProperties()->get('CLIENT_IP_ADDRESS');
 ```
 
 <h2>Responses</h2>

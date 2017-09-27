@@ -10,7 +10,11 @@
 
 namespace Opulence\Net\Http\Requests;
 
+use InvalidArgumentException;
+use Opulence\IO\Streams\Stream;
+use Opulence\Net\Http\Collection;
 use Opulence\Net\Http\Headers;
+use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\IHttpHeaders;
 use Opulence\Net\Http\StreamBody;
 use Opulence\Net\Http\StringBody;
@@ -19,7 +23,7 @@ use Opulence\Net\Uri;
 /**
  * Defines the factory that creates requests
  */
-class RequestFactory implements IHttpRequestMessageFactory
+class RequestFactory
 {
     /** @var array The list of HTTP request headers that don't begin with "HTTP_" */
     private static $specialCaseHeaders = [
@@ -31,17 +35,45 @@ class RequestFactory implements IHttpRequestMessageFactory
         'PHP_AUTH_TYPE' => true,
         'PHP_AUTH_USER' => true
     ];
+    /** @var array The default mapping of header names to trusted proxy header names */
+    private static $defaultTrustedProxyHeaderNames = [
+        'HTTP_FORWARDED' => 'HTTP_FORWARDED',
+        'HTTP_CLIENT_IP' => 'HTTP_X_FORWARDED_FOR',
+        'HTTP_CLIENT_HOST' => 'HTTP_X_FORWARDED_HOST',
+        'HTTP_CLIENT_PORT' => 'HTTP_X_FORWARDED_PORT',
+        'HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO'
+    ];
+    /** @var array The list of trusted proxy IP addresses */
+    protected $trustedProxyIPAddresses = [];
+    /** @var array The mapping of header names to trusted header names*/
+    protected $trustedHeaderNames = [];
 
     /**
-     * @inheritdoc
+     * @param array $trustedProxyIPAddresses The list of trusted proxy IP addresses
+     * @param array $trustedHeaderNames The mapping of additional header names to trusted header names
+     */
+    public function __construct(array $trustedProxyIPAddresses = [], array $trustedHeaderNames = [])
+    {
+        $this->trustedProxyIPAddresses = $trustedProxyIPAddresses;
+        $this->trustedHeaderNames = array_merge(self::$defaultTrustedProxyHeaderNames, $trustedHeaderNames);
+    }
+
+    /**
+     * Creates a request message from PHP globals
+     *
+     * @param array $server The server super global
+     * @param array $cookies The cookies super global
+     * @param array $files The files super global
+     * @param string|null $rawBody The raw request message body, or null if using the input stream
+     * @return IHttpRequestMessage The created request message
      */
     public function createFromGlobals(
-        array $cookies = null,
-        array $server = null,
-        array $files = null,
+        array $server = [],
+        array $cookies = [],
+        array $files = [],
         ?string $rawBody = null
     ) : IHttpRequestMessage {
-        $method = $server['REQUEST_METHOD'] ?? null;
+        $method = $server['REQUEST_METHOD'] ?? 'GET';
 
         // Permit the overriding of the request method for POST requests
         if ($method === 'POST' && isset($server['X-HTTP-METHOD-OVERRIDE'])) {
@@ -52,16 +84,18 @@ class RequestFactory implements IHttpRequestMessageFactory
         $body = $this->createBodyFromRawBody($rawBody);
         $uri = $this->createUriFromGlobals($server);
         $uploadedFiles = $this->createUploadedFilesFromGlobals($files);
+        $properties = $this->createProperties($server);
 
-        return new Request($method, $headers, $body, $uri, $uploadedFiles);
+        return new Request($method, $headers, $body, $uri, $uploadedFiles, $properties);
     }
 
     /**
      * Creates a body from the raw body
      *
      * @param string|null $rawBody The raw body if one is specified, otherwise we use the input stream
+     * @return IHttpBody The body
      */
-    private function createBodyFromRawBody(?string $rawBody) : IHttpBody
+    protected function createBodyFromRawBody(?string $rawBody) : IHttpBody
     {
         if ($rawBody === null) {
             return new StreamBody(new Stream(fopen('php://input', 'r+')));
@@ -77,7 +111,7 @@ class RequestFactory implements IHttpRequestMessageFactory
      * @param array $cookies The global cookie array
      * @return IHttpHeaders The request headers
      */
-    private function createHeadersFromGlobals(array $server, array $cookies) : IHttpHeaders
+    protected function createHeadersFromGlobals(array $server, array $cookies) : IHttpHeaders
     {
         $headers = new Headers();
 
@@ -95,7 +129,7 @@ class RequestFactory implements IHttpRequestMessageFactory
             $cookieValues = [];
 
             foreach ($cookies as $name => $value) {
-                $cookieValues[] = "$name=$value";
+                $cookieValues[] = "$name=" . urlencode($value);
             }
 
             $headers->set('Cookie', implode('; ', $cookieValues));
@@ -105,12 +139,30 @@ class RequestFactory implements IHttpRequestMessageFactory
     }
 
     /**
+     * Creates properties
+     *
+     * @param array $server The global server array
+     * @return Collection The list of properties
+     */
+    protected function createProperties(array $server) : Collection
+    {
+        $properties = new Collection();
+
+        // Set the client IP address as a property
+        if (($clientIPAddress = $this->getClientIPAddress($server)) !== null) {
+            $properties->add('CLIENT_IP_ADDRESS', $clientIPAddress);
+        }
+
+        return $properties;
+    }
+
+    /**
      * Creates a list of uploaded files from globals
      *
      * @param array $files The global file array
      * @return UploadedFile[] The list of uploaded files
      */
-    private function createUploadedFilesFromGlobals(array $files) : array
+    protected function createUploadedFilesFromGlobals(array $files) : array
     {
         $uploadedFiles = [];
 
@@ -134,16 +186,47 @@ class RequestFactory implements IHttpRequestMessageFactory
      * @return Uri The URI
      * @throws InvalidArgumentException Thrown if the host is malformed
      */
-    private function createUriFromGlobals(array $server) : Uri
+    protected function createUriFromGlobals(array $server) : Uri
     {
-        // Todo: Need to handle trusted proxies for determining protocol, port, and host
-        $isSecure = isset($server['HTTPS']) && $server['HTTPS'] !== 'off';
-        $rawProtocol = strtolower($server['SERVER_PROTOCOL']);
+        if ($this->isUsingTrustedProxy($server) && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']])) {
+            $protoString = $server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']];
+            $protoArray = explode(',', $protoString);
+
+            $isSecure = count($protoArray) > 0 && in_array(strtolower($protoArray[0]), ['https', 'ssl', 'on']);
+        } else {
+            $isSecure = isset($server['HTTPS']) && $server['HTTPS'] !== 'off';
+        }
+
+        $rawProtocol = isset($server['SERVER_PROTOCOL']) ? strtolower($server['SERVER_PROTOCOL']) : 'http/1.1';
         $scheme = substr($rawProtocol, 0, strpos($rawProtocol, '/')) . ($isSecure ? 's' : '');
         $user = $server['PHP_AUTH_USER'] ?? null;
         $password = $server['PHP_AUTH_PW'] ?? null;
-        $port = (int)$server['SERVER_PORT'];
-        $hostWithPort = $server['HTTP_HOST'] ?? $server['SERVER_NAME'] ?? $server['SERVER_ADDR'] ?? '';
+        $port = null;
+
+        if ($this->isUsingTrustedProxy($server)) {
+            if (isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PORT']])) {
+                $port = (int)$server[$this->trustedHeaderNames['HTTP_CLIENT_PORT']];
+            } elseif (
+                isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']]) &&
+                $server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']] === 'https'
+            ) {
+                $port = 443;
+            }
+        }
+
+        if ($port === null) {
+            $port = isset($server['SERVER_PORT']) ? (int)$server['SERVER_PORT'] : null;
+        }
+
+        if (
+            $this->isUsingTrustedProxy($server) &&
+            isset($server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']])
+        ) {
+            $hostWithPort = explode(',', $server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']]);
+            $hostWithPort = trim(end($hostWithPort));
+        } else {
+            $hostWithPort = $server['HTTP_HOST'] ?? $server['SERVER_NAME'] ?? $server['SERVER_ADDR'] ?? '';
+        }
 
         // Remove the port from the host
         $host = strtolower(preg_replace("/:\d+$/", '', trim($hostWithPort)));
@@ -153,15 +236,78 @@ class RequestFactory implements IHttpRequestMessageFactory
             throw new InvalidArgumentException("Invalid host \"$host\"");
         }
 
-        $path = parse_url('http://foo.com' . $server['REQUEST_URI'], PHP_URL_PATH);
-        $path = $path === false ? '' : ltrim($path, '/');
-        $queryString = $server['QUERY_STRING'];
+        $path = parse_url('http://foo.com' . ($server['REQUEST_URI'] ?? ''), PHP_URL_PATH);
+        $path = $path === false ? '' : ($path ?? '');
+        $queryString = $server['QUERY_STRING'] ?? '';
 
         if ($queryString === '') {
-            $queryString = parse_url('http://foo.com' . $server['REQUEST_URI'], PHP_URL_QUERY);
+            $queryString = parse_url('http://foo.com' . ($server['REQUEST_URI'] ?? ''), PHP_URL_QUERY);
             $queryString = $queryString === false || $queryString === '' ? null : $queryString;
         }
 
+        // The "?" is simply the separator for the query string, not actually part of the query string
+        $queryString = ltrim($queryString, '?');
+
         return new Uri($scheme, $user, $password, $host, $port, $path, $queryString, null);
+    }
+
+    /**
+     * Gets the client IP address
+     *
+     * @param array $server The global server array
+     * @return string|null The client IP address if one was found, otherwise null
+     */
+    protected function getClientIPAddress(array $server) : ?string
+    {
+        $serverRemoteAddress = $server['REMOTE_ADDR'] ?? null;
+
+        if ($this->isUsingTrustedProxy($server)) {
+            return $serverRemoteAddress ?? null;
+        }
+
+        $ipAddresses = [];
+
+        // RFC 7239
+        if (isset($server[$this->trustedHeaderNames['HTTP_FORWARDED']])) {
+            $header = $server[$this->trustedHeaderNames['HTTP_FORWARDED']];
+            preg_match_all("/for=(?:\"?\[?)([a-z0-9:\.\-\/_]*)/", $header, $matches);
+            $ipAddresses = $matches[1];
+        } elseif (isset($server[$this->trustedHeaderNames['HTTP_CLIENT_IP']])) {
+            $ipAddresses = explode(',', $server[$this->trustedHeaderNames['HTTP_CLIENT_IP']]);
+            $ipAddresses = array_map('trim', $ipAddresses);
+        }
+
+        if ($serverRemoteAddress !== null) {
+            $ipAddresses[] = $serverRemoteAddress;
+        }
+
+        $fallbackIPAddresses = count($ipAddresses) === 0 ? [] : [$ipAddresses[0]];
+
+        foreach ($ipAddresses as $index => $ipAddress) {
+            // Check for valid IP address
+            if (filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
+                unset($ipAddresses[$index]);
+            }
+
+            // Don't accept trusted proxies
+            if (in_array($ipAddress, $this->trustedProxyIPAddresses)) {
+                unset($ipAddresses[$index]);
+            }
+        }
+
+        $clientIPAddresses = count($ipAddresses) === 0 ? $fallbackIPAddresses : array_reverse($ipAddresses);
+
+        return $clientIPAddresses[0] ?? null;
+    }
+
+    /**
+     * Gets whether or not we're using a trusted proxy
+     *
+     * @param array $server The global server array
+     * @return bool True if using a trusted proxy, otherwise false
+     */
+    protected function isUsingTrustedProxy(array $server) : bool
+    {
+        return in_array($server['REMOTE_ADDR'] ?? '', $this->trustedProxyIPAddresses);
     }
 }
