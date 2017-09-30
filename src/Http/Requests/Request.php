@@ -12,8 +12,8 @@ namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
 use Opulence\Net\Http\Collection;
+use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
-use Opulence\Net\Http\IHttpHeaders;
 use Opulence\Net\Uri;
 
 /**
@@ -23,7 +23,7 @@ class Request implements IHttpRequestMessage
 {
     /** @var string The request method */
     protected $method = '';
-    /** @var IHttpHeaders The request headers */
+    /** @var HttpHeaders The request headers */
     protected $headers = null;
     /** @var IHttpBody The request body */
     protected $body = null;
@@ -49,7 +49,7 @@ class Request implements IHttpRequestMessage
 
     /**
      * @param string $method The request method
-     * @param IHttpHeaders $headers The request headers
+     * @param HttpHeaders $headers The request headers
      * @param IHttpBody $body The request body
      * @param Uri $uri The request URI
      * @param UploadedFile[] $uploadedFiles The list of uploaded files
@@ -57,7 +57,7 @@ class Request implements IHttpRequestMessage
      */
     public function __construct(
         string $method,
-        IHttpHeaders $headers,
+        HttpHeaders $headers,
         IHttpBody $body,
         Uri $uri,
         array $uploadedFiles = [],
@@ -82,7 +82,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getHeaders() : IHttpHeaders
+    public function getHeaders() : HttpHeaders
     {
         return $this->headers;
     }

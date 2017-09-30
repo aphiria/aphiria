@@ -11,9 +11,9 @@
 namespace Opulence\Net\Http\Responses;
 
 /**
- * Defines the interface for redirect HTTP response factories to implement
+ * Defines the redirect HTTP response factory
  */
-interface IRedirectHttpResponseFactory
+class RedirectHttpResponseFactory
 {
     /**
      * Creates a redirect response
@@ -27,5 +27,7 @@ interface IRedirectHttpResponseFactory
         string $uri,
         int $statusCode = HttpStatusCodes::HTTP_FOUND,
         array $headers = []
-    ) : IHttpResponseMessage;
+    ) : IHttpResponseMessage {
+        // Todo
+    }
 }

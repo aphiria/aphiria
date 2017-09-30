@@ -13,9 +13,9 @@ namespace Opulence\Net\Http;
 /**
  * Tests the HTTP headers
  */
-class HeadersTest extends \PHPUnit\Framework\TestCase
+class HttpHeadersTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Headers The headers to use */
+    /** @var HttpHeaders The headers to use */
     private $headers = null;
 
     /**
@@ -23,7 +23,7 @@ class HeadersTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->headers = new Headers();
+        $this->headers = new HttpHeaders();
     }
 
     /**

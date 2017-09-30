@@ -11,9 +11,9 @@
 namespace Opulence\Net\Http\Responses;
 
 /**
- * Defines the interface for JSON HTTP response factories to implement
+ * Defines the JSON HTTP response factory
  */
-interface IJsonHttpResponseFactory
+class JsonHttpResponseFactory
 {
     /**
      * Creates a JSON response
@@ -27,5 +27,7 @@ interface IJsonHttpResponseFactory
         $content,
         int $statusCode = HttpStatusCodes::HTTP_OK,
         array $headers = []
-    ) : IHttpResponseMessage;
+    ) : IHttpResponseMessage {
+        // Todo
+    }
 }

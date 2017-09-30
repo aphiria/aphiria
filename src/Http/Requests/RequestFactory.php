@@ -13,9 +13,8 @@ namespace Opulence\Net\Http\Requests;
 use InvalidArgumentException;
 use Opulence\IO\Streams\Stream;
 use Opulence\Net\Http\Collection;
-use Opulence\Net\Http\Headers;
+use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
-use Opulence\Net\Http\IHttpHeaders;
 use Opulence\Net\Http\StreamBody;
 use Opulence\Net\Http\StringBody;
 use Opulence\Net\Uri;
@@ -109,11 +108,11 @@ class RequestFactory
      *
      * @param array $server The global server array
      * @param array $cookies The global cookie array
-     * @return IHttpHeaders The request headers
+     * @return HttpHeaders The request headers
      */
-    protected function createHeadersFromGlobals(array $server, array $cookies) : IHttpHeaders
+    protected function createHeadersFromGlobals(array $server, array $cookies) : HttpHeaders
     {
-        $headers = new Headers();
+        $headers = new HttpHeaders();
 
         foreach ($server as $name => $value) {
             if (isset(self::$specialCaseHeaders[$name])) {

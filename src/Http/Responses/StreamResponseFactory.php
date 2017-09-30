@@ -13,9 +13,9 @@ namespace Opulence\Net\Http\Responses;
 use Opulence\IO\Streams\IStream;
 
 /**
- * Defines the interface for stream HTTP response factories to implement
+ * Defines the stream HTTP response factory
  */
-interface IStreamHttpResponseFactory
+class StreamHttpResponseFactory
 {
     /**
      * Creates a stream response
@@ -29,5 +29,7 @@ interface IStreamHttpResponseFactory
         IStream $stream,
         int $statusCode = HttpStatusCodes::HTTP_OK,
         array $headers = []
-    ) : IHttpResponseMessage;
+    ) : IHttpResponseMessage {
+        // Todo
+    }
 }

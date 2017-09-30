@@ -12,8 +12,8 @@ namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
 use Opulence\Net\Http\Collection;
+use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
-use Opulence\Net\Http\IHttpHeaders;
 use Opulence\Net\Uri;
 
 /**
@@ -23,7 +23,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
 {
     /** @var Request The request to use in tests */
     private $request = null;
-    /** @var IHttpHeaders|\PHPUnit_Framework_MockObject_MockObject The mock headers */
+    /** @var HttpHeaders The headers */
     private $headers = null;
     /** @var IHttpBody|\PHPUnit_Framework_MockObject_MockObject The mock body */
     private $body = null;
@@ -39,7 +39,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->headers = $this->createMock(IHttpHeaders::class);
+        $this->headers = new HttpHeaders();
         $this->body = $this->createMock(IHttpBody::class);
         $this->uri = new Uri('http', null, null, 'host', null, '', null, null);
         $this->uploadedFiles[] = $this->createMock(UploadedFile::class);

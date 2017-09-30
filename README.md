@@ -25,14 +25,14 @@ $request->getBody()->readAsString();
 
 ```php
 // Create request...
-$userId = (new HttpRequestMessageParser)->getQueryStringParam($request, 'userId');
+$userId = (new UriParser)->getQueryStringParam($request->getUri(), 'userId');
 ```
 
 <h3>Get a cookie</h3>
 
 ```php
 // Create request...
-$userId = (new HttpRequestHeaderParser)->getCookie($request->getHeaders(), 'userId');
+$userId = (new HttpRequestHeaderParser)->getCookieValue($request->getHeaders(), 'userId');
 ```
 
 <h3>Get all form data</h3>

@@ -10,8 +10,8 @@
 
 namespace Opulence\Net\Http\Responses;
 
+use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
-use Opulence\Net\Http\IHttpHeaders;
 
 /**
  * Defines an HTTP response message
@@ -20,7 +20,7 @@ class Response implements IHttpResponseMessage
 {
     /** @var IHttpBody The body of the response */
     protected $body = null;
-    /** @var IHttpHeaders The list of response headers */
+    /** @var HttpHeaders The list of response headers */
     protected $headers = null;
     /** @var string|null The response reason phrase if there is one, otherwise null */
     protected $reasonPhrase = null;
@@ -29,16 +29,16 @@ class Response implements IHttpResponseMessage
 
     /**
      * @param int $statusCode The response status code
-     * @param IHttpHeaders|null $headers The list of response headers
+     * @param HttpHeaders|null $headers The list of response headers
      * @param IHttpBody|null $body The response body
      */
     public function __construct(
         int $statusCode = HttpStatusCodes::HTTP_OK,
-        IHttpHeaders $headers = null,
+        HttpHeaders $headers = null,
         IHttpBody $body = null
     ) {
         $this->statusCode = $statusCode;
-        $this->headers = $headers;
+        $this->headers = $headers ?? new HttpHeaders;
         $this->body = $body;
     }
 
@@ -53,7 +53,7 @@ class Response implements IHttpResponseMessage
     /**
      * @inheritdoc
      */
-    public function getHeaders() : IHttpHeaders
+    public function getHeaders() : HttpHeaders
     {
         return $this->headers;
     }

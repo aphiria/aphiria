@@ -10,8 +10,8 @@
 
 namespace Opulence\Net\Http\Responses;
 
+use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
-use Opulence\Net\Http\IHttpHeaders;
 
 /**
  * Tests the response class
@@ -47,7 +47,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
      */
     public function testGettingHeaders() : void
     {
-        $headers = $this->createMock(IHttpHeaders::class);
+        $headers = new HttpHeaders();
         $response = new Response(200, $headers);
         $this->assertSame($headers, $response->getHeaders());
     }

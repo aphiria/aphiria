@@ -25,9 +25,9 @@ interface IHttpMessage
     /**
      * Gets the headers of the HTTP message
      *
-     * @return IHttpHeaders The headers
+     * @return HttpHeaders The headers
      */
-    public function getHeaders() : IHttpHeaders;
+    public function getHeaders() : HttpHeaders;
 
     /**
      * Sets the body of the HTTP message

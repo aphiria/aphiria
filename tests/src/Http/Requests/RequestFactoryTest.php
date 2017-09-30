@@ -11,7 +11,7 @@
 namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
-use Opulence\Net\Http\Headers;
+use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\StreamBody;
 use Opulence\Net\Http\StringBody;
 
@@ -302,7 +302,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
             'PHP-AUTH-USER' => ['php_auth_user']
         ];
         $headers = $this->factory->createFromGlobals($server)->getHeaders();
-        $this->assertInstanceOf(Headers::class, $headers);
+        $this->assertInstanceOf(HttpHeaders::class, $headers);
         $this->assertEquals($expectedHeaders, $headers->getAll());
     }
 
