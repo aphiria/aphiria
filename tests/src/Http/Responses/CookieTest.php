@@ -60,7 +60,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals(1234, (int)$this->cookie->getExpiration()->format('U'));
     }
-    
+
     /**
      * Tests that the max age is set from the expiration
      */
@@ -100,7 +100,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals('value', $this->cookie->getValue());
     }
-    
+
     /**
      * Tests that an invalid name throws an exception
      */
@@ -129,7 +129,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
         $this->expectException(InvalidArgumentException::class);
         new Cookie('foo', 'bar', 'baz');
     }
-    
+
     /**
      * Tests setting the max age
      */

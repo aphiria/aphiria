@@ -31,7 +31,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter = new HttpResponseHeaderFormatter();
         $this->headers = new HttpHeaders();
     }
-    
+
     /**
      * Tests that cookie properties with values are URL-encoded
      */
@@ -44,7 +44,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
             $this->headers->get('Cookie', null)
         );
     }
-    
+
     /**
      * Tests that a cookie with a domain sets the domain property
      */
@@ -57,7 +57,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
             $this->headers->get('Cookie', null)
         );
     }
-    
+
     /**
      * Tests that a cookie with an expiration sets the expires property
      */
@@ -71,7 +71,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
             $this->headers->get('Cookie', null)
         );
     }
-    
+
     /**
      * Tests that a cookie with a max age sets the expires and max-age properties
      */
@@ -85,7 +85,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
             $this->headers->get('Cookie', null)
         );
     }
-    
+
     /**
      * Tests that a cookie with a path sets the path property
      */
@@ -98,7 +98,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
             $this->headers->get('Cookie', null)
         );
     }
-    
+
     /**
      * Tests that a cookie with a same-site sets the same-site property
      */
@@ -111,7 +111,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
             $this->headers->get('Cookie', null)
         );
     }
-    
+
     /**
      * Tests that an HTTP-only cookie sets the HTTP-only flag
      */
@@ -121,7 +121,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertEquals('foo=bar; HttpOnly', $this->headers->get('Cookie', null));
     }
-    
+
     /**
      * Tests that a secure cookie sets the secure flag
      */

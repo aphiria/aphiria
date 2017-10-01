@@ -64,7 +64,7 @@ class Cookie
     ) {
         $this->setName($name);
         $this->value = $value;
-        
+
         if ($expiration === null) {
             $this->expiration = null;
             $this->maxAge = null;
@@ -76,7 +76,7 @@ class Cookie
         } else {
             throw new InvalidArgumentException('Expiration must be integer or DateTime');
         }
-        
+
         $this->path = $path;
         $this->domain = $domain;
         $this->isSecure = $isSecure;
@@ -103,10 +103,10 @@ class Cookie
     {
         return $this->expiration;
     }
-    
+
     /**
      * Gets the max age of the cookie
-     * 
+     *
      * @return int|null The max age of the cookie if set, otherwise null
      */
     public function getMaxAge() : ?int
@@ -204,10 +204,10 @@ class Cookie
     {
         $this->isHttpOnly = $isHttpOnly;
     }
-    
+
     /**
      * Sets the max age of the cookie
-     * 
+     *
      * @param int $maxAge The max age of the cookie
      */
     public function setMaxAge(int $maxAge) : void
@@ -226,7 +226,7 @@ class Cookie
         if (preg_match('/[\x00-\x20\x22\x28-\x29\x2c\x2f\x3a-\x40\x5b-\x5d\x7b\x7d\x7f]/', $name) === 1) {
             throw new InvalidArgumentException("Cookie name \"$name\" contains invalid characters");
         }
-        
+
         $this->name = $name;
     }
 
