@@ -38,6 +38,7 @@ class Response implements IHttpResponseMessage
         IHttpBody $body = null
     ) {
         $this->statusCode = $statusCode;
+        $this->reasonPhrase = ResponseStatusCodes::getDefaultReasonPhrase($this->statusCode);
         $this->headers = $headers ?? new HttpHeaders;
         $this->body = $body;
     }
@@ -88,6 +89,6 @@ class Response implements IHttpResponseMessage
     public function setStatusCode(int $statusCode, ?string $reasonPhrase = null) : void
     {
         $this->statusCode = $statusCode;
-        $this->reasonPhrase = $reasonPhrase;
+        $this->reasonPhrase = $reasonPhrase ?? ResponseStatusCodes::getDefaultReasonPhrase($this->statusCode);
     }
 }

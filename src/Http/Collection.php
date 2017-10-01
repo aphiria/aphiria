@@ -120,7 +120,7 @@ class Collection implements ArrayAccess, Countable
      */
     public function offsetSet($offset, $value) : void
     {
-        $this->set($offset, $value);
+        $this->add($offset, $value);
     }
 
     /**
@@ -139,16 +139,5 @@ class Collection implements ArrayAccess, Countable
     public function remove(string $name) : void
     {
         unset($this->values[$name]);
-    }
-
-    /**
-     * Sets a value
-     *
-     * @param string $name The key to set
-     * @param mixed $value The value to set
-     */
-    public function set(string $name, $value) : void
-    {
-        $this->values[$name] = $value;
     }
 }

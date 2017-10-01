@@ -33,11 +33,17 @@ class HttpHeaders extends Collection
      *
      * @inheritdoc
      * @param string|array $values The value or values
-     * @param bool $shouldReplace Whether or not to replace the value
+     * @param bool $append Whether or not to append the value to to the other header values
      */
-    public function add(string $name, $values, bool $shouldReplace = true) : void
+    public function add(string $name, $values, bool $append = false) : void
     {
-        $this->set($name, $values, $shouldReplace);
+        $normalizedName = $this->normalizeName($name);
+
+        if (!$append || !isset($this->values[$normalizedName])) {
+            $this->values[$normalizedName] = (array)$values;
+        } else {
+            $this->values[$normalizedName] = array_merge($this->values[$normalizedName], (array)$values);
+        }
     }
 
     /**
@@ -82,24 +88,6 @@ class HttpHeaders extends Collection
     public function remove(string $name) : void
     {
         parent::remove($this->normalizeName($name));
-    }
-
-    /**
-     * Sets a header value
-     *
-     * @param string $name The name of the header to set
-     * @param mixed $values The value of the header
-     * @param bool $shouldReplace True if we should overwrite previously-set values, otherwise false
-     */
-    public function set(string $name, $values, bool $shouldReplace = true) : void
-    {
-        $normalizedName = $this->normalizeName($name);
-
-        if ($shouldReplace || !isset($this->values[$normalizedName])) {
-            $this->values[$normalizedName] = (array)$values;
-        } else {
-            $this->values[$normalizedName] = array_merge($this->values[$normalizedName], (array)$values);
-        }
     }
 
     /**

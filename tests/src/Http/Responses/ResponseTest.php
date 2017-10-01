@@ -19,6 +19,15 @@ use Opulence\Net\Http\IHttpBody;
 class ResponseTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * Tests that the default reason phrase is set
+     */
+    public function testDefaultReasonPhraseIsSet() : void
+    {
+        $response = new Response(200);
+        $this->assertEquals(ResponseStatusCodes::getDefaultReasonPhrase(200), $response->getReasonPhrase());
+    }
+
+    /**
      * Tests getting and setting the body
      */
     public function testGettingAndSettingBody() : void

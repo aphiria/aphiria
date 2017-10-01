@@ -143,15 +143,6 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests setting a parameter
-     */
-    public function testSetting()
-    {
-        $this->parameters->set('foo', 'bar');
-        $this->assertEquals('bar', $this->parameters->get('foo'));
-    }
-
-    /**
      * Tests setting an item
      */
     public function testSettingItem()

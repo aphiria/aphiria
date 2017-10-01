@@ -39,18 +39,6 @@ class HttpResponseHeaderFormatter
     }
 
     /**
-     * Gets the cookies from headers
-     *
-     * @param HttpHeaders $headers The headers to format
-     * @param bool $includeDeletedCookies Whether or not to include deleted cookies
-     * @return Cookie[] The list of cookies
-     */
-    public function getCookies(HttpHeaders $headers, bool $includeDeletedCookies = false) : array
-    {
-        // Todo
-    }
-
-    /**
      * Sets a cookie in the headers
      *
      * @param HttpHeaders $headers The headers to set the cookie in
@@ -58,7 +46,7 @@ class HttpResponseHeaderFormatter
      */
     public function setCookie(HttpHeaders $headers, Cookie $cookie) : void
     {
-        // Todo
+        $headers->add('Cookie', $this->getSetCookieHeaderValue($cookie), true);
     }
 
     /**
@@ -69,6 +57,49 @@ class HttpResponseHeaderFormatter
      */
     public function setCookies(HttpHeaders $headers, array $cookies) : void
     {
-        // Todo
+        foreach ($cookies as $cookie) {
+            $this->setCookie($headers, $cookie);
+        }
+    }
+
+    /**
+     * Gets the set-cookie header value from a cookie
+     *
+     * @param Cookie $cookie The cookie to serialize
+     * @return string The set-cookie header value
+     */
+    private function getSetCookieHeaderValue(Cookie $cookie) : string
+    {
+        $headerValue = "{$cookie->getName()}=" . urlencode($cookie->getValue());
+        
+        if ($cookie->getExpiration() !== null) {
+            $headerValue .= '; Expires=' . $cookie->getExpiration()->format('D, d M Y H:i:s \G\M\T');
+        }
+        
+        if ($cookie->getMaxAge() !== null) {
+            $headerValue .= "; Max-Age={$cookie->getMaxAge()}";
+        }
+        
+        if ($cookie->getDomain() !== null) {
+            $headerValue .= '; Domain=' . urlencode($cookie->getDomain());
+        }
+        
+        if ($cookie->getPath() !== null) {
+            $headerValue .= '; Path=' . urlencode($cookie->getPath());
+        }
+        
+        if ($cookie->isSecure()) {
+            $headerValue .= "; Secure";
+        }
+        
+        if ($cookie->isHttpOnly()) {
+            $headerValue .= "; HttpOnly";
+        }
+        
+        if ($cookie->getSameSite() !== null) {
+            $headerValue .= '; Same-Site=' . urlencode($cookie->getSameSite());
+        }
+
+        return $headerValue;
     }
 }

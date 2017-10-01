@@ -116,11 +116,11 @@ class RequestFactory
 
         foreach ($server as $name => $value) {
             if (isset(self::$specialCaseHeaders[$name])) {
-                $headers->set($name, $value);
+                $headers->add($name, $value);
             } elseif (strpos($value, 'HTTP_') === 0) {
                 // Drop the "HTTP_"
                 $normalizedName = substr($name, 5);
-                $headers->set($normalizedName, $value);
+                $headers->add($normalizedName, $value);
             }
         }
 
@@ -131,7 +131,7 @@ class RequestFactory
                 $cookieValues[] = "$name=" . urlencode($value);
             }
 
-            $headers->set('Cookie', implode('; ', $cookieValues));
+            $headers->add('Cookie', implode('; ', $cookieValues));
         }
 
         return $headers;
