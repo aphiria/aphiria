@@ -42,11 +42,11 @@ class HttpResponseHeaderFormatter
         $expiration = DateTime::createFromFormat('U', 0);
         $headerValue .= "; Expires={$expiration->format('D, d M Y H:i:s \G\M\T')}";
         $headerValue .= '; Max-Age=0';
-        
+
         if ($domain !== null) {
             $headerValue .= '; Domain=' . urlencode($domain);
         }
-        
+
         if ($path !== null) {
             $headerValue .= '; Path=' . urlencode($path);
         }
@@ -62,7 +62,7 @@ class HttpResponseHeaderFormatter
         if ($sameSite !== null) {
             $headerValue .= '; SameSite=' . urlencode($sameSite);
         }
-        
+
         $headers->add('Set-Cookie', $headerValue);
     }
 

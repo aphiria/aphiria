@@ -111,7 +111,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
             $this->headers->get('Set-Cookie')
         );
     }
-    
+
     /**
      * Tests that deleting a cookie sets the expiration to the epoch and the max-age to zero
      */
