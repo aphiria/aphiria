@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Http\Responses;
 
+use DateTime;
 use Opulence\Net\Http\HttpHeaders;
 
 /**
@@ -22,20 +23,47 @@ class HttpResponseHeaderFormatter
      *
      * @param HttpHeaders $headers The headers to format
      * @param string $name The name of the cookie to delete
-     * @param string $path The path to the cookie to delete
-     * @param null|string $domain The domain of the cookie to delete
+     * @param string|null $path The path to the cookie to delete if set, otherwise null
+     * @param string|null $domain The domain of the cookie to delete if set, otherwise null
      * @param bool $isSecure Whether or not the cookie to be deleted was HTTPS
      * @param bool $isHttpOnly Whether or not the cookie to be deleted was HTTP-only
+     * @param string|null $sameSite The same-site setting to use if set, otherwise null
      */
     public function deleteCookie(
         HttpHeaders $headers,
         string $name,
-        string $path = '/',
+        ?string $path = null,
         ?string $domain = null,
         bool $isSecure = false,
-        bool $isHttpOnly = true
+        bool $isHttpOnly = true,
+        ?string $sameSite = null
     ) : void {
-        // Todo
+        $headerValue = "$name=";
+        $expiration = DateTime::createFromFormat('U', 0);
+        $headerValue .= "; Expires={$expiration->format('D, d M Y H:i:s \G\M\T')}";
+        $headerValue .= '; Max-Age=0';
+        
+        if ($domain !== null) {
+            $headerValue .= '; Domain=' . urlencode($domain);
+        }
+        
+        if ($path !== null) {
+            $headerValue .= '; Path=' . urlencode($path);
+        }
+
+        if ($isSecure) {
+            $headerValue .= '; Secure';
+        }
+
+        if ($isHttpOnly) {
+            $headerValue .= '; HttpOnly';
+        }
+
+        if ($sameSite !== null) {
+            $headerValue .= '; SameSite=' . urlencode($sameSite);
+        }
+        
+        $headers->add('Set-Cookie', $headerValue);
     }
 
     /**
@@ -46,7 +74,7 @@ class HttpResponseHeaderFormatter
      */
     public function setCookie(HttpHeaders $headers, Cookie $cookie) : void
     {
-        $headers->add('Cookie', $this->getSetCookieHeaderValue($cookie), true);
+        $headers->add('Set-Cookie', $this->getSetCookieHeaderValue($cookie), true);
     }
 
     /**
@@ -97,7 +125,7 @@ class HttpResponseHeaderFormatter
         }
 
         if ($cookie->getSameSite() !== null) {
-            $headerValue .= '; Same-Site=' . urlencode($cookie->getSameSite());
+            $headerValue .= '; SameSite=' . urlencode($cookie->getSameSite());
         }
 
         return $headerValue;
