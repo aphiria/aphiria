@@ -60,4 +60,13 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $response = new Response(200, $headers);
         $this->assertSame($headers, $response->getHeaders());
     }
+
+    /**
+     * Tests getting the protocol version
+     */
+    public function testGettingProtocolVersion() : void
+    {
+        $response = new Response(200, null, null, '2.0');
+        $this->assertEquals('2.0', $response->getProtocolVersion());
+    }
 }

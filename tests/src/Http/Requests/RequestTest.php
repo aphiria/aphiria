@@ -50,7 +50,8 @@ class RequestTest extends \PHPUnit\Framework\TestCase
             $this->body,
             $this->uri,
             $this->uploadedFiles,
-            $this->properties
+            $this->properties,
+            '2.0'
         );
     }
 
@@ -84,6 +85,14 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     public function testGettingProperties() : void
     {
         $this->assertSame($this->properties, $this->request->getProperties());
+    }
+
+    /**
+     * Tests getting the protocol version
+     */
+    public function testGettingProtocolVersion() : void
+    {
+        $this->assertEquals('2.0', $this->request->getProtocolVersion());
     }
 
     /**

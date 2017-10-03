@@ -45,7 +45,19 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that getting form data with form-url-encoded bodies return the parsed form data
+     * Tests that getting existing form input returns that input's value
+     */
+    public function testGettingExistingFormInputReturnsThatInputsValue() : void
+    {
+        $this->body->expects($this->once())
+            ->method('readAsString')
+            ->willReturn('foo=bar');
+        $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
+        $this->assertEquals('bar', $this->parser->getInput($this->request, 'foo'));
+    }
+
+    /**
+     * Tests that getting form data with form-URL-encoded bodies return the parsed form data
      */
     public function testGettingFormDataWithFormUrlEncodedBodyReturnsParsedFormData() : void
     {
@@ -57,7 +69,7 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that getting form data with non-form-url-encoded bodies return an empty array
+     * Tests that getting form data with non-form-URL-encoded bodies return an empty array
      */
     public function testGettingFormDataWithNonFormUrlEncodedBodyReturnsEmptyArray() : void
     {
@@ -66,7 +78,17 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that getting an input with non-form-url-encoded bodies return null
+     * Tests that getting form data with a null body will return an empty array
+     */
+    public function testGettingFormDataWithNullBodyWillReturnEmptyArray() : void
+    {
+        $this->body = null;
+        $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
+        $this->assertEquals([], $this->parser->getFormData($this->request));
+    }
+
+    /**
+     * Tests that getting an input with non-form-URL-encoded bodies return null
      */
     public function testGettingInputOnNonFormUrlEncodedBodyReturnsNull() : void
     {
@@ -75,15 +97,14 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that getting existing form input returns that input's value
+     * Tests that getting input with a null body will return the default value
      */
-    public function testGettingExistingFormInputReturnsThatInputsValue() : void
+    public function testGettingInputWithNullBodyWillReturnDefault() : void
     {
-        $this->body->expects($this->once())
-            ->method('readAsString')
-            ->willReturn('foo=bar');
+        $this->body = null;
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->assertEquals('bar', $this->parser->getInput($this->request, 'foo'));
+        $this->assertNull($this->parser->getInput($this->request, 'foo'));
+        $this->assertEquals('baz', $this->parser->getInput($this->request, 'foo', 'baz'));
     }
 
     /**

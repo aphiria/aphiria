@@ -18,7 +18,7 @@ use Opulence\Net\Http\IHttpBody;
  */
 class Response implements IHttpResponseMessage
 {
-    /** @var IHttpBody The body of the response */
+    /** @var IHttpBody|null The body of the response if there is one, otherwise null */
     protected $body = null;
     /** @var HttpHeaders The list of response headers */
     protected $headers = null;
@@ -26,27 +26,32 @@ class Response implements IHttpResponseMessage
     protected $reasonPhrase = null;
     /** @var int The response status code */
     protected $statusCode = HttpStatusCodes::HTTP_OK;
+    /** @var string The HTTP protocol version */
+    protected $protocolVersion = '';
 
     /**
      * @param int $statusCode The response status code
      * @param HttpHeaders|null $headers The list of response headers
      * @param IHttpBody|null $body The response body
+     * @param string $protocolVersion The HTTP protocol version
      */
     public function __construct(
         int $statusCode = HttpStatusCodes::HTTP_OK,
         HttpHeaders $headers = null,
-        IHttpBody $body = null
+        IHttpBody $body = null,
+        string $protocolVersion = '1.1'
     ) {
         $this->statusCode = $statusCode;
         $this->reasonPhrase = ResponseStatusCodes::getDefaultReasonPhrase($this->statusCode);
         $this->headers = $headers ?? new HttpHeaders;
         $this->body = $body;
+        $this->protocolVersion = $protocolVersion;
     }
 
     /**
      * @inheritdoc
      */
-    public function getBody() : IHttpBody
+    public function getBody() : ?IHttpBody
     {
         return $this->body;
     }
@@ -57,6 +62,14 @@ class Response implements IHttpResponseMessage
     public function getHeaders() : HttpHeaders
     {
         return $this->headers;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getProtocolVersion() : string
+    {
+        return $this->protocolVersion;
     }
 
     /**

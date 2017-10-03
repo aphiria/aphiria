@@ -18,9 +18,9 @@ interface IHttpMessage
     /**
      * Gets the body of the HTTP message
      *
-     * @return IHttpBody The body
+     * @return IHttpBody|null The body if there is one, otherwise null
      */
-    public function getBody() : IHttpBody;
+    public function getBody() : ?IHttpBody;
 
     /**
      * Gets the headers of the HTTP message
@@ -28,6 +28,13 @@ interface IHttpMessage
      * @return HttpHeaders The headers
      */
     public function getHeaders() : HttpHeaders;
+
+    /**
+     * Gets the protocol version (eg '1.1' or '2.0') from the HTTP message
+     *
+     * @return string The protocol version
+     */
+    public function getProtocolVersion() : string;
 
     /**
      * Sets the body of the HTTP message

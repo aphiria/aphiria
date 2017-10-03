@@ -293,13 +293,13 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
             'PHP_AUTH_USER' => 'php_auth_user'
         ];
         $expectedHeaders = [
-            'AUTH-TYPE' => ['auth_type'],
-            'CONTENT-LENGTH' => [123],
-            'CONTENT-TYPE' => ['content_type'],
-            'PHP-AUTH-DIGEST' => ['php_auth_digest'],
-            'PHP-AUTH-PW' => ['php_auth_pw'],
-            'PHP-AUTH-TYPE' => ['php_auth_type'],
-            'PHP-AUTH-USER' => ['php_auth_user']
+            'Auth-Type' => ['auth_type'],
+            'Content-Length' => [123],
+            'Content-Type' => ['content_type'],
+            'Php-Auth-Digest' => ['php_auth_digest'],
+            'Php-Auth-Pw' => ['php_auth_pw'],
+            'Php-Auth-Type' => ['php_auth_type'],
+            'Php-Auth-User' => ['php_auth_user']
         ];
         $headers = $this->factory->createFromGlobals($server)->getHeaders();
         $this->assertInstanceOf(HttpHeaders::class, $headers);

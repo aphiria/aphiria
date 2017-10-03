@@ -63,9 +63,9 @@ class HttpRequestMessageParser
      * @param IHttpBody $body The body to parse
      * @return array The parsed form data
      */
-    private function parseFormData(HttpHeaders $headers, IHttpBody $body) : array
+    private function parseFormData(HttpHeaders $headers, ?IHttpBody $body) : array
     {
-        if (!$this->isFormUrlEncodedRequest($headers)) {
+        if (!$this->isFormUrlEncodedRequest($headers) || $body === null) {
             return [];
         }
 

@@ -51,7 +51,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     public function testGettingAll() : void
     {
         $this->headers->add('foo', 'bar');
-        $this->assertEquals(['FOO' => ['bar']], $this->headers->getAll());
+        $this->assertEquals(['Foo' => ['bar']], $this->headers->getAll());
     }
 
     /**
@@ -85,15 +85,23 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
      */
     public function testNamesAreNormalized() : void
     {
+        // Test lower-case names
         $this->headers->add('foo', 'bar');
         $this->assertEquals('bar', $this->headers->get('foo'));
-        $this->assertEquals(['FOO' => ['bar']], $this->headers->getAll());
+        $this->assertEquals(['Foo' => ['bar']], $this->headers->getAll());
         $this->assertTrue($this->headers->has('foo'));
         $this->headers->remove('foo');
+        // Test snake-case names
+        $this->headers->add('FOO_BAR', 'baz');
+        $this->assertEquals('baz', $this->headers->get('FOO_BAR'));
+        $this->assertEquals(['Foo-Bar' => ['baz']], $this->headers->getAll());
+        $this->assertTrue($this->headers->has('FOO_BAR'));
+        $this->headers->remove('FOO_BAR');
+        // Test upper-case names
         $this->assertEquals([], $this->headers->getAll());
         $this->headers->add('BAZ', 'blah');
         $this->assertEquals('blah', $this->headers->get('BAZ'));
-        $this->assertEquals(['BAZ' => ['blah']], $this->headers->getAll());
+        $this->assertEquals(['Baz' => ['blah']], $this->headers->getAll());
         $this->assertTrue($this->headers->has('BAZ'));
         $this->headers->remove('BAZ');
         $this->assertEquals([], $this->headers->getAll());

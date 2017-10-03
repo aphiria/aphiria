@@ -25,7 +25,7 @@ class Request implements IHttpRequestMessage
     protected $method = '';
     /** @var HttpHeaders The request headers */
     protected $headers = null;
-    /** @var IHttpBody The request body */
+    /** @var IHttpBody|null The request body if there is one, otherwise null */
     protected $body = null;
     /** @var Uri The request URI */
     protected $uri = null;
@@ -33,6 +33,8 @@ class Request implements IHttpRequestMessage
     protected $uploadedFiles = [];
     /** @var Collection The request properties */
     protected $properties = null;
+    /** @var string The HTTP protocl version */
+    protected $protocolVersion = '';
     /** @var The list of valid HTTP methods */
     private static $validMethod = [
         'CONNECT',
@@ -54,6 +56,7 @@ class Request implements IHttpRequestMessage
      * @param Uri $uri The request URI
      * @param UploadedFile[] $uploadedFiles The list of uploaded files
      * @param Collection|null $properties The request properties
+     * @param string $protocolVersion The HTTP protocol version
      */
     public function __construct(
         string $method,
@@ -61,7 +64,8 @@ class Request implements IHttpRequestMessage
         IHttpBody $body,
         Uri $uri,
         array $uploadedFiles = [],
-        Collection $properties = null
+        Collection $properties = null,
+        string $protocolVersion = '1.1'
     ) {
         $this->setMethod($method);
         $this->headers = $headers;
@@ -69,12 +73,13 @@ class Request implements IHttpRequestMessage
         $this->uri = $uri;
         $this->uploadedFiles = $uploadedFiles;
         $this->properties = $properties ?? new Collection();
+        $this->protocolVersion = $protocolVersion;
     }
 
     /**
      * @inheritdoc
      */
-    public function getBody() : IHttpBody
+    public function getBody() : ?IHttpBody
     {
         return $this->body;
     }
@@ -101,6 +106,14 @@ class Request implements IHttpRequestMessage
     public function getProperties() : Collection
     {
         return $this->properties;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getProtocolVersion() : string
+    {
+        return $this->protocolVersion;
     }
 
     /**

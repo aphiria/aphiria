@@ -98,6 +98,6 @@ class HttpHeaders extends Collection
      */
     protected function normalizeName(string $name) : string
     {
-        return strtr(strtoupper($name), '_', '-');
+        return ucwords(strtr(strtolower($name), '_', '-'), '-');
     }
 }

@@ -36,7 +36,22 @@ class ResponseWriter
      */
     public function writeResponse(IHttpResponseMessage $response) : void
     {
-        // Todo: Write the status code, reason phrase, and any headers
-        $response->getBody()->writeToStream($this->outputStream);
+        $startLine = "HTTP/{$response->getProtocolVersion()} {$response->getStatusCode()}";
+
+        if (($reasonPhrase = $response->getReasonPhrase()) !== null) {
+            $startLine .= " $reasonPhrase";
+        }
+
+        $headers = '';
+
+        foreach ($response->getHeaders()->getAll() as $headerName => $headerValues) {
+            $headers .= "\r\n$headerName: " . implode(', ', $headerValues);
+        }
+
+        $this->outputStream->write($startLine . $headers . "\r\n\r\n");
+
+        if (($body = $response->getBody()) !== null) {
+            $body->writeToStream($this->outputStream);
+        }
     }
 }

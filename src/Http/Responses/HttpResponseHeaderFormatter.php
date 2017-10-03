@@ -100,20 +100,20 @@ class HttpResponseHeaderFormatter
     {
         $headerValue = "{$cookie->getName()}=" . urlencode($cookie->getValue());
 
-        if ($cookie->getExpiration() !== null) {
-            $headerValue .= '; Expires=' . $cookie->getExpiration()->format('D, d M Y H:i:s \G\M\T');
+        if (($expiration = $cookie->getExpiration()) !== null) {
+            $headerValue .= '; Expires=' . $expiration->format('D, d M Y H:i:s \G\M\T');
         }
 
-        if ($cookie->getMaxAge() !== null) {
-            $headerValue .= "; Max-Age={$cookie->getMaxAge()}";
+        if (($maxAge = $cookie->getMaxAge()) !== null) {
+            $headerValue .= "; Max-Age=$maxAge";
         }
 
-        if ($cookie->getDomain() !== null) {
-            $headerValue .= '; Domain=' . urlencode($cookie->getDomain());
+        if (($domain = $cookie->getDomain()) !== null) {
+            $headerValue .= '; Domain=' . urlencode($domain);
         }
 
-        if ($cookie->getPath() !== null) {
-            $headerValue .= '; Path=' . urlencode($cookie->getPath());
+        if (($path = $cookie->getPath()) !== null) {
+            $headerValue .= '; Path=' . urlencode($path);
         }
 
         if ($cookie->isSecure()) {
@@ -124,8 +124,8 @@ class HttpResponseHeaderFormatter
             $headerValue .= '; HttpOnly';
         }
 
-        if ($cookie->getSameSite() !== null) {
-            $headerValue .= '; SameSite=' . urlencode($cookie->getSameSite());
+        if (($sameSite = $cookie->getSameSite()) !== null) {
+            $headerValue .= '; SameSite=' . urlencode($sameSite);
         }
 
         return $headerValue;
