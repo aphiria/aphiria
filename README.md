@@ -21,7 +21,7 @@ $request->getBody()->readAsString();
 (string)request->getBody();
 ```
 
-<h3>Get a query string var</h3>
+<h3>Get a query string parameter</h3>
 
 ```php
 // Create request...
@@ -75,7 +75,7 @@ $request->getBody()->readAsStream()->read(64);
 ```php
 // Create request...
 $request->getProperties()->get('foo');
-$request->getProperties()->set('foo', 'bar');
+$request->getProperties()->add('foo', 'bar');
 ```
 
 <h3>Set trusted proxy IP addresses</h3>
@@ -103,18 +103,18 @@ $response = new Response();
 <h3>Create a JSON response</h3>
 
 ```php
-$response = (new JsonHttpResponseFactory)->createResponse($someArray);
-
-// Or, manually:
+// Note:  This sort of thing could be done in a helper method
 $response = new Response();
 $response->setBody(new StringBody(json_encode($someArray)));
-$response->getHeaders()->set('Content-Type', 'application/json');
+$response->getHeaders()->add('Content-Type', 'application/json');
 ```
 
 <h3>Create a redirect response</h3>
 
 ```php
-$response = (new RedirectHttpResponseFactory)->createResponse('https://google.com');
+// Note:  This sort of thing could be done in a helper method
+$response = new Response(302);
+$response->getHeaders()->add('Location', 'https://google.com');
 ```
 
 <h3>Set a cookie</h3>
