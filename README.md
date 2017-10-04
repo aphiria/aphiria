@@ -1,113 +1,143 @@
-<h1>Opulence's Net Library</h1>
+<h1>Requests</h1>
 
-<h2>Ideas</h2>
-
-* Should set the HTTP protocol version, matched route variables in the request message's `properties`
-
-<h2>Requests</h2>
-
-<h3>Create a request from globals</h3>
+<h2>Create a request from globals</h2>
 
 ```php
 $request = (new RequestFactory)->createFromGlobals($_SERVER, $_COOKIE, $_FILES);
 ```
 
-<h3>Read the request body as a string</h3>
+<h2>Get/set headers</h2>
 
 ```php
-// Create request...
+$request->getHeaders()->add('Foo', 'bar');
+$request->getHeaders()->get('Foo');
+```
+
+<h2>Read the request body as a string</h2>
+
+```php
 $request->getBody()->readAsString();
 // Or...
 (string)request->getBody();
 ```
 
-<h3>Get a query string parameter</h3>
+<h2>Get the uploaded files</h2>
 
 ```php
-// Create request...
-$userId = (new UriParser)->getQueryStringParam($request->getUri(), 'userId');
-```
-
-<h3>Get a cookie</h3>
-
-```php
-// Create request...
-$userId = (new HttpRequestHeaderParser)->getCookieValue($request->getHeaders(), 'userId');
-```
-
-<h3>Get all form input</h3>
-
-```php
-// Create request...
-$formData = (new HttpRequestMessageParser)->getAllFormInput($request);
-```
-
-<h3>Get a specific form input</h3>
-
-```php
-// Create request...
-$email = (new HttpRequestMessageParser)->getFormInput($request, 'email');
-```
-
-<h3>Get the uploaded files</h3>
-
-```php
-// Create request...
 $uploadedFiles = $request->getUploadedFiles();
 ```
 
-<h3>Check if the request was JSON</h3>
+<h2>Read a chunk of a stream body</h2>
 
 ```php
-// Create request...
-$isJson = (new HttpRequestHeaderParser)->isJson($request->getHeaders());
-```
-
-<h3>Read body as JSON</h3>
-
-```php
-// Create request...
-$json = (new HttpRequestMessageParser)->readAsJson($request);
-```
-
-<h3>Read a chunk of a stream body</h3>
-
-```php
-// Create request...
 $request->getBody()->readAsStream()->read(64);
 ```
 
-<h3>Get/set request properties</h3>
+<h2>Get/set request properties</h2>
 
 ```php
-// Create request...
-$request->getProperties()->get('foo');
 $request->getProperties()->add('foo', 'bar');
+$request->getProperties()->get('foo');
 ```
 
-<h3>Set trusted proxy IP addresses</h3>
+<h2>Set trusted proxy IP addresses</h2>
 
 ```php
 $factory = new RequestFactory(['192.168.1.1', '192.168.1.2']);
 $request = $factory->createFromGlobals($_SERVER, $_COOKIE, $_FILES);
 ```
 
-<h3>Get client IP address</h3>
+<h2>Get client IP address</h2>
 
 ```php
 // Create request (must use RequestFactory)
 $request->getProperties()->get('CLIENT_IP_ADDRESS');
 ```
 
-<h2>Responses</h2>
+<h1>Request Parsers</h1>
 
-<h3>Create a response</h3>
+<h2>Get a query string parameter</h2>
+
+```php
+$userId = (new UriParser)->getQueryStringParam($request->getUri(), 'userId');
+```
+
+<h2>Get a cookie</h2>
+
+```php
+$userId = (new HttpRequestHeaderParser)->getCookieValue($request->getHeaders(), 'userId');
+```
+
+<h2>Get all form input</h2>
+
+```php
+$formData = (new HttpRequestMessageParser)->getAllFormInput($request);
+```
+
+<h2>Get a specific form input</h2>
+
+```php
+$email = (new HttpRequestMessageParser)->getFormInput($request, 'email');
+```
+
+<h2>Check if the request was JSON</h2>
+
+```php
+$isJson = (new HttpRequestHeaderParser)->isJson($request->getHeaders());
+```
+
+<h2>Read body as JSON</h2>
+
+```php
+$json = (new HttpRequestMessageParser)->readAsJson($request);
+```
+
+<h1>Responses</h1>
+
+<h2>Create a response</h2>
 
 ```php
 $response = new Response();
 ```
 
-<h3>Create a JSON response</h3>
+<h2>Get/set headers</h2>
+
+```php
+$response->getHeaders()->add('Foo', 'bar');
+$response->getHeaders()->get('Foo');
+```
+
+<h2>Specify a string body</h2>
+
+```php
+$response = new Response();
+$response->setBody(new StringBody('This is my response'));
+```
+
+<h2>Specify a stream body</h2>
+
+```php
+$response = new Response();
+$stream = new Stream(fopen('php://temp', 'r+'));
+$stream->write('This is my response');
+$response->setBody(new StreamBody($stream));
+```
+
+<h2>Actually write the response to the output stream</h2>
+
+```php
+$response = new Response();
+// Set the body...
+(new ResponseWriter)->writeResponse($response);
+
+// Or specify the output stream to send to (defaults to PHP's output buffer):
+$outputStream = new Stream(fopen('php://temp', 'r+'));
+(new ResponseWriter($outputStream))->writeResponse($response);
+```
+
+<h1>Response formatters</h1>
+
+<h2>Create a JSON response</h2>
 
 ```php
 $response = new Response();
@@ -119,7 +149,7 @@ $response->setBody(new StringBody(json_encode($someArray)));
 $response->getHeaders()->add('Content-Type', 'application/json');
 ```
 
-<h3>Create a redirect response</h3>
+<h2>Create a redirect response</h2>
 
 ```php
 $response = new Response();
@@ -130,7 +160,7 @@ $response = new Response(302);
 $response->getHeaders()->add('Location', 'https://google.com');
 ```
 
-<h3>Set a cookie</h3>
+<h2>Set a cookie</h2>
 
 ```php
 $response = new Response();
@@ -138,30 +168,16 @@ $cookie = new Cookie('userid', '123', new DateTime('+1 day'));
 (new HttpResponseHeaderFormatter)->setCookie($response->getHeaders(), $cookie);
 ```
 
-<h3>Specify a string body</h3>
+<h1>URI</h1>
+
+<h2>Create URI from string</h2>
 
 ```php
-$response = new Response();
-$response->setBody(new StringBody('This is my response'));
+$uri = Uri::createFromString('http://foo.com/bar?baz');
 ```
 
-<h3>Specify a stream body</h3>
+<h2>Serialize URI to string</h2>
 
 ```php
-$response = new Response();
-$stream = new Stream(fopen('php://temp', 'r+'));
-$stream->write('This is my response');
-$response->setBody(new StreamBody($stream));
-```
-
-<h3>Actually write the response to the output stream</h3>
-
-```php
-$response = new Response();
-// Set the body...
-(new ResponseWriter)->writeResponse($response);
-
-// Or specify the output stream to send to (defaults to PHP's output buffer):
-$outputStream = new Stream(fopen('php://temp', 'r+'));
-(new ResponseWriter($outputStream))->writeResponse($response);
+(string)$uri;
 ```
