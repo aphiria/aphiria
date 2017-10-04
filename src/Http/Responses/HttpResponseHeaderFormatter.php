@@ -18,6 +18,9 @@ use Opulence\Net\Http\HttpHeaders;
  */
 class HttpResponseHeaderFormatter
 {
+    /** The date format to use for the expiration property of cookies */
+    private const EXPIRATION_DATE_FORMAT = 'D, d M Y H:i:s \G\M\T';
+
     /**
      * Deletes a cookie from headers
      *
@@ -40,7 +43,7 @@ class HttpResponseHeaderFormatter
     ) : void {
         $headerValue = "$name=";
         $expiration = DateTime::createFromFormat('U', 0);
-        $headerValue .= "; Expires={$expiration->format('D, d M Y H:i:s \G\M\T')}";
+        $headerValue .= "; Expires={$expiration->format(self::EXPIRATION_DATE_FORMAT)}";
         $headerValue .= '; Max-Age=0';
 
         if ($domain !== null) {
@@ -101,7 +104,7 @@ class HttpResponseHeaderFormatter
         $headerValue = "{$cookie->getName()}=" . urlencode($cookie->getValue());
 
         if (($expiration = $cookie->getExpiration()) !== null) {
-            $headerValue .= '; Expires=' . $expiration->format('D, d M Y H:i:s \G\M\T');
+            $headerValue .= '; Expires=' . $expiration->format(self::EXPIRATION_DATE_FORMAT);
         }
 
         if (($maxAge = $cookie->getMaxAge()) !== null) {

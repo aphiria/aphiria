@@ -12,37 +12,60 @@ namespace Opulence\Net\Http\Requests;
 
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
+use RuntimeException;
 
 /**
  * Defines the HTTP request message parser
  */
 class HttpRequestMessageParser
 {
-    /** @var array The mapping of body hash IDs to their parsed form data */
-    private $parsedFormDataCache = [];
+    /** @var array The mapping of body hash IDs to their parsed form input */
+    private $parsedFormInputCache = [];
 
     /**
-     * Parses a request for form data in the body
+     * Parses a request for all the form input in the body
      *
      * @param IHttpRequestMessage $request The request to parse
      * @return array The mapping of input names to values
      */
-    public function getFormData(IHttpRequestMessage $request) : array
+    public function getAllFormInput(IHttpRequestMessage $request) : array
     {
-        return $this->parseFormData($request->getHeaders(), $request->getBody());
+        return $this->parseFormInput($request->getHeaders(), $request->getBody());
     }
 
     /**
-     * Parses a request for an input value
+     * Parses a request for a form input value
      *
      * @param IHttpRequestMessage $request The request to parse
      * @param string $name The name of the input whose value we want
      * @param mixed|null $default The default value, if none was found
      * @return mixed The value of the input
      */
-    public function getInput(IHttpRequestMessage $request, string $name, $default = null)
+    public function getFormInput(IHttpRequestMessage $request, string $name, $default = null)
     {
-        return $this->parseFormData($request->getHeaders(), $request->getBody())[$name] ?? $default;
+        return $this->parseFormInput($request->getHeaders(), $request->getBody())[$name] ?? $default;
+    }
+
+    /**
+     * Attempts to read the request body as JSON
+     *
+     * @param IHttpRequestMessage $request The request to parse
+     * @return array The request body as JSON
+     * @throws RuntimeException Thrown if the body could not be read as JSON
+     */
+    public function readAsJson(IHttpRequestMessage $request) : array
+    {
+        if (preg_match("/application\/json/i", $request->getHeaders()->get('Content-Type')) !== 1) {
+            return [];
+        }
+
+        $json = json_decode($request->getBody()->readAsString(), true);
+
+        if ($json === null) {
+            throw new RuntimeException('Body could not be decoded as JSON');
+        }
+
+        return $json;
     }
 
     /**
@@ -57,29 +80,29 @@ class HttpRequestMessageParser
     }
 
     /**
-     * Parses form data from the body
+     * Parses form input from the body
      *
      * @param HttpHeaders $headers The header to parse
      * @param IHttpBody $body The body to parse
-     * @return array The parsed form data
+     * @return array The parsed form input
      */
-    private function parseFormData(HttpHeaders $headers, ?IHttpBody $body) : array
+    private function parseFormInput(HttpHeaders $headers, ?IHttpBody $body) : array
     {
         if (!$this->isFormUrlEncodedRequest($headers) || $body === null) {
             return [];
         }
 
-        $parsedFormDataCacheKey = spl_object_hash($body);
+        $parsedFormInputCacheKey = spl_object_hash($body);
 
-        if (isset($this->parsedFormDataCache[$parsedFormDataCacheKey])) {
-            return $this->parsedFormDataCache[$parsedFormDataCacheKey];
+        if (isset($this->parsedFormInputCache[$parsedFormInputCacheKey])) {
+            return $this->parsedFormInputCache[$parsedFormInputCacheKey];
         }
 
-        $formData = [];
-        parse_str($body->readAsString(), $formData);
+        $allFormInput = [];
+        parse_str($body->readAsString(), $allFormInput);
         // Cache this for next time
-        $this->parsedFormDataCache[$parsedFormDataCacheKey] = $formData;
+        $this->parsedFormInputCache[$parsedFormInputCacheKey] = $allFormInput;
 
-        return $formData;
+        return $allFormInput;
     }
 }

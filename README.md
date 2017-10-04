@@ -35,18 +35,18 @@ $userId = (new UriParser)->getQueryStringParam($request->getUri(), 'userId');
 $userId = (new HttpRequestHeaderParser)->getCookieValue($request->getHeaders(), 'userId');
 ```
 
-<h3>Get all form data</h3>
+<h3>Get all form input</h3>
 
 ```php
 // Create request...
-$formData = (new HttpRequestMessageParser)->getFormData($request);
+$formData = (new HttpRequestMessageParser)->getAllFormInput($request);
 ```
 
 <h3>Get a specific form input</h3>
 
 ```php
 // Create request...
-$email = (new HttpRequestMessageParser)->getInput($request, 'email');
+$email = (new HttpRequestMessageParser)->getFormInput($request, 'email');
 ```
 
 <h3>Get the uploaded files</h3>
@@ -61,6 +61,13 @@ $uploadedFiles = $request->getUploadedFiles();
 ```php
 // Create request...
 $isJson = (new HttpRequestHeaderParser)->isJson($request->getHeaders());
+```
+
+<h3>Read body as JSON</h3>
+
+```php
+// Create request...
+$json = (new HttpRequestMessageParser)->readAsJson($request);
 ```
 
 <h3>Read a chunk of a stream body</h3>
@@ -103,7 +110,10 @@ $response = new Response();
 <h3>Create a JSON response</h3>
 
 ```php
-// Note:  This sort of thing could be done in a helper method
+$response = new Response();
+(new HttpResponseMessageFormatter)->writeJson($response, $someArray);
+
+// Or manually:
 $response = new Response();
 $response->setBody(new StringBody(json_encode($someArray)));
 $response->getHeaders()->add('Content-Type', 'application/json');
@@ -112,7 +122,10 @@ $response->getHeaders()->add('Content-Type', 'application/json');
 <h3>Create a redirect response</h3>
 
 ```php
-// Note:  This sort of thing could be done in a helper method
+$response = new Response();
+(new HttpResponseMessageFormatter)->redirectToUri($response, 'https://google.com');
+
+// Or manually:
 $response = new Response(302);
 $response->getHeaders()->add('Location', 'https://google.com');
 ```
