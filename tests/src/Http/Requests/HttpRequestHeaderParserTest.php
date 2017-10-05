@@ -86,7 +86,7 @@ class HttpRequestHeaderParserTest extends \PHPUnit\Framework\TestCase
         $this->headers->add('Cookie', 'foo=bar');
         $this->assertEquals(['foo' => 'bar'], $this->parser->parseCookies($this->headers)->getAll());
     }
-    
+
     /**
      * Tests getting cookies returns the same instance of the collection
      */

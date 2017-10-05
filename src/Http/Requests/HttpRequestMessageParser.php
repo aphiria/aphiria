@@ -21,10 +21,10 @@ class HttpRequestMessageParser
 {
     /** @var array The mapping of body hash IDs to their parsed form input */
     private $parsedFormInputCache = [];
-    
+
     /**
      * Parses a request body as form input
-     * 
+     *
      * @param IHttpRequestMessage $request
      * @return Collection The body form input as a collection
      */
@@ -32,7 +32,7 @@ class HttpRequestMessageParser
     {
         $headers = $request->getHeaders();
         $body = $request->getBody();
-        
+
         if (!$this->isFormUrlEncodedRequest($headers) || $body === null) {
             return new Collection();
         }

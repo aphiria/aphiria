@@ -43,10 +43,10 @@ class HttpRequestHeaderParser
     {
         return $headers->get('X-Requested-With') === 'XMLHttpRequest';
     }
-    
+
     /**
      * Parses the request headers for cookies
-     * 
+     *
      * @param HttpHeaders $headers The headers to parse
      * @return Collection The collection of cookie values
      */

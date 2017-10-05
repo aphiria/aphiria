@@ -17,17 +17,17 @@ class UriParser
 {
     /** @var array The mapping of raw query strings to their parsed collections */
     private $parsedQueryStringCache = [];
-    
+
     /**
      * Parses a URI's query string into a collection
-     * 
+     *
      * @param Uri $uri The URI to parse
      * @return Collection The parsed query string
      */
     public function parseQueryString(Uri $uri) : Collection
     {
         $queryString = $uri->getQueryString();
-        
+
         if (!isset($this->parsedQueryStringCache[$queryString])) {
             $parsedQueryString = [];
             parse_str($queryString, $parsedQueryString);
