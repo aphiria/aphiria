@@ -11,6 +11,7 @@
 namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
+use Opulence\Net\Http\Collection;
 use Opulence\Net\Http\HttpHeaders;
 
 /**
@@ -39,17 +40,7 @@ class HttpRequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->headers->add('Cookie', 'foo=');
-        $this->parser->getAllCookies($this->headers);
-    }
-
-    /**
-     * Tests that a bad cookie format throws an exception when getting a single cookie
-     */
-    public function testBadCookieFormatThrowsExceptionWhenGettingSingleCookie() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->headers->add('Cookie', 'foo=');
-        $this->parser->getCookieValue($this->headers, 'foo');
+        $this->parser->parseCookies($this->headers);
     }
 
     /**
@@ -84,7 +75,7 @@ class HttpRequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     public function testGettingAllCookiesWithMultipleCookiesReturnsCorrectMapping() : void
     {
         $this->headers->add('Cookie', 'foo=bar; baz=blah');
-        $this->assertEquals(['foo' => 'bar', 'baz' => 'blah'], $this->parser->getAllCookies($this->headers));
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'blah'], $this->parser->parseCookies($this->headers)->getAll());
     }
 
     /**
@@ -93,7 +84,17 @@ class HttpRequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     public function testGettingAllCookiesWithOneCookieReturnsCorrectMapping() : void
     {
         $this->headers->add('Cookie', 'foo=bar');
-        $this->assertEquals(['foo' => 'bar'], $this->parser->getAllCookies($this->headers));
+        $this->assertEquals(['foo' => 'bar'], $this->parser->parseCookies($this->headers)->getAll());
+    }
+    
+    /**
+     * Tests getting cookies returns the same instance of the collection
+     */
+    public function testGettingCookiesReturnsSameInstanceOfCollection() : void
+    {
+        $this->headers->add('Cookie', 'foo=bar');
+        $expectedCollection = $this->parser->parseCookies($this->headers);
+        $this->assertSame($expectedCollection, $this->parser->parseCookies($this->headers));
     }
 
     /**
@@ -102,9 +103,9 @@ class HttpRequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     public function testGettingCookieValueUrlDecodesValue() : void
     {
         $this->headers->add('Cookie', 'foo=' . urlencode('%') . '; bar=' . urlencode(';'));
-        $this->assertEquals('%', $this->parser->getCookieValue($this->headers, 'foo'));
-        $this->assertEquals(';', $this->parser->getCookieValue($this->headers, 'bar'));
-        $this->assertEquals(['foo' => '%', 'bar' => ';'], $this->parser->getAllCookies($this->headers));
+        $this->assertEquals('%', $this->parser->parseCookies($this->headers)->get('foo'));
+        $this->assertEquals(';', $this->parser->parseCookies($this->headers)->get('bar'));
+        $this->assertEquals(['foo' => '%', 'bar' => ';'], $this->parser->parseCookies($this->headers)->getAll());
     }
 
     /**
@@ -113,7 +114,7 @@ class HttpRequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     public function testSetCookieHeaderWithoutCookieNameReturnsNullCookieValue() : void
     {
         $this->headers->add('Cookie', 'foo=bar');
-        $this->assertNull($this->parser->getCookieValue($this->headers, 'baz'));
+        $this->assertNull($this->parser->parseCookies($this->headers)->get('baz'));
     }
 
     /**
@@ -121,7 +122,7 @@ class HttpRequestHeaderParserTest extends \PHPUnit\Framework\TestCase
      */
     public function testUnsetCookieHeaderReturnsEmptyCookies() : void
     {
-        $this->assertEquals([], $this->parser->getAllCookies($this->headers));
+        $this->assertEquals([], $this->parser->parseCookies($this->headers)->getAll());
     }
 
     /**
@@ -129,6 +130,6 @@ class HttpRequestHeaderParserTest extends \PHPUnit\Framework\TestCase
      */
     public function testUnsetCookieHeaderReturnsNullCookieValue() : void
     {
-        $this->assertNull($this->parser->getCookieValue($this->headers, 'foo'));
+        $this->assertNull($this->parser->parseCookies($this->headers)->get('foo'));
     }
 }

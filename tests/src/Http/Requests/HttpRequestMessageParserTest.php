@@ -46,7 +46,7 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that getting existing form input returns that input's value
+     * Tests that parsing existing form input returns that input's value
      */
     public function testGettingExistingFormInputReturnsThatInputsValue() : void
     {
@@ -54,71 +54,60 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
             ->method('readAsString')
             ->willReturn('foo=bar');
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->assertEquals('bar', $this->parser->getFormInput($this->request, 'foo'));
+        $this->assertEquals('bar', $this->parser->parseFormInput($this->request)->get('foo'));
     }
 
     /**
-     * Tests that getting form input with form-URL-encoded bodies return the parsed form data
+     * Tests that parsing form input with form-URL-encoded bodies return the parsed form data
      */
-    public function testGettingFormInputWithFormUrlEncodedBodyReturnsParsedFormData() : void
+    public function testParsingInputWithFormUrlEncodedBodyReturnsParsedFormData() : void
     {
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn('foo=bar');
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->assertEquals(['foo' => 'bar'], $this->parser->getAllFormInput($this->request));
+        $this->assertEquals(['foo' => 'bar'], $this->parser->parseFormInput($this->request)->getAll());
     }
 
     /**
-     * Tests that getting form input with non-form-URL-encoded bodies return an empty array
+     * Tests that parsing form input with non-form-URL-encoded bodies return an empty array
      */
-    public function testGettingFormInputWithNonFormUrlEncodedBodyReturnsEmptyArray() : void
+    public function testParsingInputWithNonFormUrlEncodedBodyReturnsEmptyArray() : void
     {
         $this->headers->add('Content-Type', 'application/json');
-        $this->assertEquals([], $this->parser->getAllFormInput($this->request));
+        $this->assertEquals([], $this->parser->parseFormInput($this->request)->getAll());
     }
 
     /**
-     * Tests that getting form input with a null body will return an empty array
+     * Tests that parsing an input with non-form-URL-encoded bodies return null
      */
-    public function testGettingFormInputWithNullBodyWillReturnEmptyArray() : void
+    public function testParsingInputOnNonFormUrlEncodedBodyReturnsNull() : void
+    {
+        $this->headers->add('Content-Type', 'application/json');
+        $this->assertNull($this->parser->parseFormInput($this->request)->get('foo'));
+    }
+
+    /**
+     * Tests that parsing input with a null body will return null
+     */
+    public function testParsingInputWithNullBodyWillReturnNull() : void
     {
         $this->body = null;
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->assertEquals([], $this->parser->getAllFormInput($this->request));
+        $this->assertEquals([], $this->parser->parseFormInput($this->request)->getAll());
+        $this->assertNull($this->parser->parseFormInput($this->request)->get('foo'));
     }
 
     /**
-     * Tests that getting an input with non-form-URL-encoded bodies return null
+     * Tests that parsing non-existent form input returns null
      */
-    public function testGettingInputOnNonFormUrlEncodedBodyReturnsNull() : void
-    {
-        $this->headers->add('Content-Type', 'application/json');
-        $this->assertNull($this->parser->getFormInput($this->request, 'foo'));
-    }
-
-    /**
-     * Tests that getting input with a null body will return the default value
-     */
-    public function testGettingInputWithNullBodyWillReturnDefault() : void
-    {
-        $this->body = null;
-        $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->assertNull($this->parser->getFormInput($this->request, 'foo'));
-        $this->assertEquals('baz', $this->parser->getFormInput($this->request, 'foo', 'baz'));
-    }
-
-    /**
-     * Tests that getting non-existent form input returns default value
-     */
-    public function testGettingNonExistentFormInputReturnsDefaultValue() : void
+    public function testParsingNonExistentFormInputReturnsNull() : void
     {
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn('foo=bar');
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->assertNull($this->parser->getFormInput($this->request, 'baz'));
-        $this->assertEquals('ahhh', $this->parser->getFormInput($this->request, 'baz', 'ahhh'));
+        $this->assertNull($this->parser->parseFormInput($this->request)->get('baz'));
     }
 
     /**
@@ -130,7 +119,7 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn(json_encode(['foo' => 'bar']));
-        $this->assertEquals(['foo' => 'bar'], $this->parser->readAsJson($this->request));
+        $this->assertEquals(['foo' => 'bar'], $this->parser->parseJson($this->request));
     }
 
     /**
@@ -139,7 +128,7 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     public function testReadAsJsonForNonJsonRequestReturnsEmptyArray() : void
     {
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->assertEquals([], $this->parser->readAsJson($this->request));
+        $this->assertEquals([], $this->parser->parseJson($this->request));
     }
 
     /**
@@ -152,6 +141,6 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn("\x0");
-        $this->parser->readAsJson($this->request);
+        $this->parser->parseJson($this->request);
     }
 }

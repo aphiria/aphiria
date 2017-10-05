@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http;
+namespace Opulence\Net;
 
 /**
  * Tests the request collection

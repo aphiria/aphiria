@@ -10,24 +10,13 @@
 
 namespace Opulence\Net\Http;
 
+use Opulence\Net\Collection;
+
 /**
  * Defines HTTP headers
  */
 class HttpHeaders extends Collection
 {
-    /**
-     * Creates an instance with no initial values
-     */
-    public function __construct()
-    {
-        /**
-         * Headers allow multiple values
-         * The parent class does not have this feature, which is why we took care of it in this constructor
-         * To satisfy the parent constructor, we'll simply send it an empty array
-         */
-        parent::__construct([]);
-    }
-
     /**
      * Headers are allowed to have multiple values, so we must add support for that
      *

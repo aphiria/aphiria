@@ -11,7 +11,7 @@
 namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
-use Opulence\Net\Http\Collection;
+use Opulence\Net\Collection;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Uri;

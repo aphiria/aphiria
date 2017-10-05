@@ -10,7 +10,7 @@
 
 namespace Opulence\Net\Http\Requests;
 
-use Opulence\Net\Http\Collection;
+use Opulence\Net\Collection;
 use Opulence\Net\Http\IHttpMessage;
 use Opulence\Net\Uri;
 

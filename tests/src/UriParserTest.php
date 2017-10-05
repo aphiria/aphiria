@@ -27,40 +27,31 @@ class UriParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that checking the existence of a query string param returns correct value
+     * Tests that parsing the query string param with multiple values returns an array of values
      */
-    public function testCheckingExistenceOfQueryStringParamReturnsCorrectValue() : void
-    {
-        $uri = new Uri('http', null, null, 'host.com', null, '', 'foo=bar', null);
-        $this->assertTrue($this->parser->hasQueryStringParam($uri, 'foo'));
-        $this->assertFalse($this->parser->hasQueryStringParam($uri, 'baz'));
-    }
-
-    /**
-     * Tests that getting the query string param with multiple values returns an array of values
-     */
-    public function testGettingQueryStringParamWithMultipleValuesReturnsArrayOfValues() : void
+    public function testParsingQueryStringParamWithMultipleValuesReturnsArrayOfValues() : void
     {
         $uri = new Uri('http', null, null, 'host.com', null, '', 'foo[]=bar&foo[]=baz', null);
-        $this->assertEquals(['bar', 'baz'], $this->parser->getQueryStringParam($uri, 'foo'));
+        $this->assertEquals(['foo' => ['bar', 'baz']], $this->parser->parseQueryString($uri)->getAll());
     }
 
     /**
-     * Tests that getting the query string param without a value returns null
+     * Tests that parsing the query string param without a value returns null
      */
-    public function testGettingQueryStringParamWithoutValueReturnsNull() : void
+    public function testParsingQueryStringParamWithoutValueReturnsNull() : void
     {
         $uri = new Uri('http', null, null, 'host.com', null, '', 'foo=bar', null);
-        $this->assertNull($this->parser->getQueryStringParam($uri, 'baz'));
+        $this->assertNull($this->parser->parseQueryString($uri)->get('baz'));
     }
 
     /**
-     * Tests that getting the query string param with a single value returns that value
+     * Tests that parsing the query string param with a single value returns that value
      */
-    public function testGettingQueryStringParamWithSingleValueReturnsThatValue() : void
+    public function testParsingQueryStringParamWithSingleValueReturnsThatValue() : void
     {
         $uri = new Uri('http', null, null, 'host.com', null, '', 'foo=bar', null);
-        $this->assertEquals('bar', $this->parser->getQueryStringParam($uri, 'foo'));
+        $this->assertEquals(['foo' => 'bar'], $this->parser->parseQueryString($uri)->getAll());
+        $this->assertEquals('bar', $this->parser->parseQueryString($uri)->get('foo'));
     }
 
     /**
@@ -69,6 +60,7 @@ class UriParserTest extends \PHPUnit\Framework\TestCase
     public function testUrlEncodedValuesAreDecoded() : void
     {
         $uri = new Uri('http', null, null, 'host.com', null, '', 'foo=a%26w', null);
-        $this->assertEquals('a&w', $this->parser->getQueryStringParam($uri, 'foo'));
+        $this->assertEquals(['foo' => 'a&w'], $this->parser->parseQueryString($uri)->getAll());
+        $this->assertEquals('a&w', $this->parser->parseQueryString($uri)->get('foo'));
     }
 }

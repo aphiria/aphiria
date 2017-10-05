@@ -12,7 +12,7 @@ namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
 use Opulence\IO\Streams\Stream;
-use Opulence\Net\Http\Collection;
+use Opulence\Net\Collection;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\StreamBody;

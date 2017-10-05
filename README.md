@@ -59,25 +59,25 @@ $request->getProperties()->get('CLIENT_IP_ADDRESS');
 <h2>Get a query string parameter</h2>
 
 ```php
-$userId = (new UriParser)->getQueryStringParam($request->getUri(), 'userId');
+$userId = (new UriParser)->parseQueryString($request->getUri())->get('userId');
 ```
 
 <h2>Get a cookie</h2>
 
 ```php
-$userId = (new HttpRequestHeaderParser)->getCookieValue($request->getHeaders(), 'userId');
+$userId = (new HttpRequestHeaderParser)->parseCookie($request->getHeaders())->get('userId');
 ```
 
 <h2>Get all form input</h2>
 
 ```php
-$formData = (new HttpRequestMessageParser)->getAllFormInput($request);
+$formData = (new HttpRequestMessageParser)->parseFormInput($request);
 ```
 
 <h2>Get a specific form input</h2>
 
 ```php
-$email = (new HttpRequestMessageParser)->getFormInput($request, 'email');
+$email = (new HttpRequestMessageParser)->parseFormInput($request)->get('email');
 ```
 
 <h2>Check if the request was JSON</h2>
@@ -89,7 +89,7 @@ $isJson = (new HttpRequestHeaderParser)->isJson($request->getHeaders());
 <h2>Read body as JSON</h2>
 
 ```php
-$json = (new HttpRequestMessageParser)->readAsJson($request);
+$json = (new HttpRequestMessageParser)->parseJson($request);
 ```
 
 <h1>Responses</h1>
@@ -129,8 +129,11 @@ $response->setBody(new StreamBody($stream));
 $response = new Response();
 // Set the body...
 (new ResponseWriter)->writeResponse($response);
+```
 
-// Or specify the output stream to send to (defaults to PHP's output buffer):
+Or specify the output stream to send to (defaults to PHP's output buffer):
+
+```php
 $outputStream = new Stream(fopen('php://temp', 'r+'));
 (new ResponseWriter($outputStream))->writeResponse($response);
 ```
@@ -142,8 +145,11 @@ $outputStream = new Stream(fopen('php://temp', 'r+'));
 ```php
 $response = new Response();
 (new HttpResponseMessageFormatter)->writeJson($response, $someArray);
+```
 
-// Or manually:
+Or manually:
+
+```php
 $response = new Response();
 $response->setBody(new StringBody(json_encode($someArray)));
 $response->getHeaders()->add('Content-Type', 'application/json');
@@ -154,8 +160,11 @@ $response->getHeaders()->add('Content-Type', 'application/json');
 ```php
 $response = new Response();
 (new HttpResponseMessageFormatter)->redirectToUri($response, 'https://google.com');
+```
 
-// Or manually:
+Or manually:
+
+```php
 $response = new Response(302);
 $response->getHeaders()->add('Location', 'https://google.com');
 ```
