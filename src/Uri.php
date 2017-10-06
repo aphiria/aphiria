@@ -209,28 +209,4 @@ class Uri
     {
         return $this->user;
     }
-
-    /**
-     * Gets whether or not the URI matches a path
-     *
-     * @param string $path The path to match
-     * @param bool $isRegex Whether or not the path is a regex
-     * @return bool True if the URI matches the path, otherwise false
-     */
-    public function matchesPath(string $path, bool $isRegex = false) : bool
-    {
-        // Todo: Does this belong in this class?
-    }
-
-    /**
-     * Gets whether or not the URI matches a string URI
-     *
-     * @param string $uri The string URI to match
-     * @param bool $isRegex Whether or not the string URI is a regex
-     * @return bool True if the URI matches the string URI, otherwise false
-     */
-    public function matchesUri(string $uri, bool $isRegex = false) : bool
-    {
-        // Todo: Does this belong in this class?
-    }
 }
