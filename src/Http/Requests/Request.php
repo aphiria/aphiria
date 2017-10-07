@@ -29,11 +29,9 @@ class Request implements IHttpRequestMessage
     protected $body = null;
     /** @var Uri The request URI */
     protected $uri = null;
-    /** @var UploadedFile[] The list of uploaded files */
-    protected $uploadedFiles = [];
     /** @var Collection The request properties */
     protected $properties = null;
-    /** @var string The HTTP protocl version */
+    /** @var string The HTTP protocol version */
     protected $protocolVersion = '';
     /** @var The list of valid HTTP methods */
     private static $validMethod = [
@@ -54,7 +52,6 @@ class Request implements IHttpRequestMessage
      * @param HttpHeaders $headers The request headers
      * @param IHttpBody $body The request body
      * @param Uri $uri The request URI
-     * @param UploadedFile[] $uploadedFiles The list of uploaded files
      * @param Collection|null $properties The request properties
      * @param string $protocolVersion The HTTP protocol version
      */
@@ -63,7 +60,6 @@ class Request implements IHttpRequestMessage
         HttpHeaders $headers,
         IHttpBody $body,
         Uri $uri,
-        array $uploadedFiles = [],
         Collection $properties = null,
         string $protocolVersion = '1.1'
     ) {
@@ -71,7 +67,6 @@ class Request implements IHttpRequestMessage
         $this->headers = $headers;
         $this->body = $body;
         $this->uri = $uri;
-        $this->uploadedFiles = $uploadedFiles;
         $this->properties = $properties ?? new Collection();
         $this->protocolVersion = $protocolVersion;
     }
@@ -114,14 +109,6 @@ class Request implements IHttpRequestMessage
     public function getProtocolVersion() : string
     {
         return $this->protocolVersion;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getUploadedFiles() : array
-    {
-        return $this->uploadedFiles;
     }
 
     /**

@@ -96,7 +96,7 @@ class Collection implements ArrayAccess, Countable
      */
     public function has(string $name) : bool
     {
-        return isset($this->values[$name]);
+        return array_key_exists($name, $this->values);
     }
 
     /**

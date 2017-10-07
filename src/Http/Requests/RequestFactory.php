@@ -61,17 +61,11 @@ class RequestFactory
      * Creates a request message from PHP globals
      *
      * @param array $server The server super global
-     * @param array $cookies The cookies super global
-     * @param array $files The files super global
      * @param string|null $rawBody The raw request message body, or null if using the input stream
      * @return IHttpRequestMessage The created request message
      */
-    public function createFromGlobals(
-        array $server = [],
-        array $cookies = [],
-        array $files = [],
-        ?string $rawBody = null
-    ) : IHttpRequestMessage {
+    public function createFromGlobals(array $server = [], ?string $rawBody = null) : IHttpRequestMessage
+    {
         $method = $server['REQUEST_METHOD'] ?? 'GET';
 
         // Permit the overriding of the request method for POST requests
@@ -79,13 +73,12 @@ class RequestFactory
             $method = $server['X-HTTP-METHOD-OVERRIDE'];
         }
 
-        $headers = $this->createHeadersFromGlobals($server, $cookies);
+        $headers = $this->createHeadersFromGlobals($server);
         $body = $this->createBodyFromRawBody($rawBody);
         $uri = $this->createUriFromGlobals($server);
-        $uploadedFiles = $this->createUploadedFilesFromGlobals($files);
         $properties = $this->createProperties($server);
 
-        return new Request($method, $headers, $body, $uri, $uploadedFiles, $properties);
+        return new Request($method, $headers, $body, $uri, $properties);
     }
 
     /**
@@ -107,31 +100,20 @@ class RequestFactory
      * Creates headers from PHP globals
      *
      * @param array $server The global server array
-     * @param array $cookies The global cookie array
      * @return HttpHeaders The request headers
      */
-    protected function createHeadersFromGlobals(array $server, array $cookies) : HttpHeaders
+    protected function createHeadersFromGlobals(array $server) : HttpHeaders
     {
         $headers = new HttpHeaders();
 
         foreach ($server as $name => $value) {
             if (isset(self::$specialCaseHeaders[$name])) {
                 $headers->add($name, $value);
-            } elseif (strpos($value, 'HTTP_') === 0) {
+            } elseif (strpos($name, 'HTTP_') === 0) {
                 // Drop the "HTTP_"
                 $normalizedName = substr($name, 5);
                 $headers->add($normalizedName, $value);
             }
-        }
-
-        if (count($cookies) > 0) {
-            $cookieValues = [];
-
-            foreach ($cookies as $name => $value) {
-                $cookieValues[] = "$name=" . urlencode($value);
-            }
-
-            $headers->add('Cookie', implode('; ', $cookieValues));
         }
 
         return $headers;

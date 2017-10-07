@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Http\Requests;
 
+use InvalidArgumentException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
 use RuntimeException;
@@ -111,9 +112,9 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that reading as JSON for a JSON request return the JSON-decoded body
+     * Tests that parsing as JSON for a JSON request return the JSON-decoded body
      */
-    public function testReadAsJsonForJsonRequestReturnsJsonDecodedBody() : void
+    public function testParsingJsonForJsonRequestReturnsJsonDecodedBody() : void
     {
         $this->headers->add('Content-Type', 'application/json');
         $this->body->expects($this->once())
@@ -123,18 +124,18 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that reading as JSON for a non-JSON request returns an empty array
+     * Tests that parsing as JSON for a non-JSON request returns an empty array
      */
-    public function testReadAsJsonForNonJsonRequestReturnsEmptyArray() : void
+    public function testParsingJsonForNonJsonRequestReturnsEmptyArray() : void
     {
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
         $this->assertEquals([], $this->parser->parseJson($this->request));
     }
 
     /**
-     * Tests that reading as JSON with incorrectly-formatted JSON throws an exception
+     * Tests that parsing as JSON with incorrectly-formatted JSON throws an exception
      */
-    public function testReadAsJsonWithIncorrectlyFormattedJsonThrowsException() : void
+    public function testParsingJsonWithIncorrectlyFormattedJsonThrowsException() : void
     {
         $this->expectException(RuntimeException::class);
         $this->headers->add('Content-Type', 'application/json');
@@ -142,5 +143,56 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
             ->method('readAsString')
             ->willReturn("\x0");
         $this->parser->parseJson($this->request);
+    }
+
+    /**
+     * Tests parsing a multipart request extracts the headers
+     */
+    public function testParsingMultipartRequestExtractsHeaders() : void
+    {
+        $this->headers->add('Content-Type', 'multipart/mixed; boundary="boundary"');
+        $this->body->expects($this->once())
+            ->method('readAsString')
+            ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
+        /** @var MultipartBodyPart[] $bodyParts */
+        $bodyParts = $this->parser->parseMultipart($this->request);
+        $this->assertCount(1, $bodyParts);
+        $this->assertEquals('bar', $bodyParts[0]->getHeaders()->get('Foo'));
+        $this->assertEquals('blah', $bodyParts[0]->getHeaders()->get('Baz'));
+    }
+
+    /**
+     * Tests parsing a multipart request with headers extracts the headers
+     */
+    public function testParsingMultipartRequestWithHeadersExtractsBody() : void
+    {
+        $this->headers->add('Content-Type', 'multipart/mixed; boundary="boundary"');
+        $this->body->expects($this->once())
+            ->method('readAsString')
+            ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
+        /** @var MultipartBodyPart[] $bodyParts */
+        $bodyParts = $this->parser->parseMultipart($this->request);
+        $this->assertCount(1, $bodyParts);
+        $this->assertEquals('body', $bodyParts[0]->getBody()->readAsString());
+    }
+
+    /**
+     * Tests parsing a multipart request without a boundary throws an exception
+     */
+    public function testParsingMultipartRequestWithoutBoundaryThrowsException() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->headers->add('Content-Type', 'multipart/mixed');
+        $this->parser->parseMultipart($this->request);
+    }
+
+    /**
+     * Tests parsing a non-multipart request as a multipart request throws an exception
+     */
+    public function testParsingNonMultipartRequestAsMultipartRequestThrowsException() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->headers->add('Content-Type', 'text/plain');
+        $this->parser->parseMultipart($this->request);
     }
 }

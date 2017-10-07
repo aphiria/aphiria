@@ -29,8 +29,6 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     private $body = null;
     /** @var Uri The request URI */
     private $uri = null;
-    /** @var UploadedFile[] The list of uploaded files */
-    private $uploadedFiles = [];
     /** @var Collection The request properties */
     private $properties = null;
 
@@ -42,14 +40,12 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $this->headers = new HttpHeaders();
         $this->body = $this->createMock(IHttpBody::class);
         $this->uri = new Uri('http', null, null, 'host', null, '', null, null);
-        $this->uploadedFiles[] = $this->createMock(UploadedFile::class);
         $this->properties = new Collection(['foo' => 'bar']);
         $this->request = new Request(
             'GET',
             $this->headers,
             $this->body,
             $this->uri,
-            $this->uploadedFiles,
             $this->properties,
             '2.0'
         );
@@ -93,14 +89,6 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     public function testGettingProtocolVersion() : void
     {
         $this->assertEquals('2.0', $this->request->getProtocolVersion());
-    }
-
-    /**
-     * Tests getting uploaded files
-     */
-    public function testGettingUploadedFiles() : void
-    {
-        $this->assertSame($this->uploadedFiles, $this->request->getUploadedFiles());
     }
 
     /**

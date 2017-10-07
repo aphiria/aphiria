@@ -125,14 +125,12 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that the cookie global gets serialized to the headers
+     * Tests that the cookies are added to headers
      */
-    public function testCookieGlobalGetsSerializedToHeaders() : void
+    public function testCookiesAreAddedToHeaders() : void
     {
-        // Test cookie values with special chars
-        $request = $this->factory->createFromGlobals([], ['foo' => 'bar', 'baz' => '!=#;$=%']);
-        $expectedCookieHeaderValue = 'foo=bar; baz=%21%3D%23%3B%24%3D%25';
-        $this->assertEquals($expectedCookieHeaderValue, $request->getHeaders()->get('Cookie'));
+        $request = $this->factory->createFromGlobals(['HTTP_COOKIE' => 'foo=bar; baz=blah']);
+        $this->assertEquals('foo=bar; baz=blah', $request->getHeaders()->get('Cookie'));
     }
 
     /**
@@ -151,33 +149,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->factory->createFromGlobals(['HTTP_HOST' => '192.168.1.1, 192.168.1.2, 192.168.1.3']);
-    }
-
-    /**
-     * Tests that files get converted to uploaded file objects
-     */
-    public function testFilesGetConvertedToUploadedFileObjects() : void
-    {
-        $files = [
-            'foo' => [
-                'tmp_name' => '/path/foo.txt',
-                'name' => 'foo.txt',
-                'type' => 'text/plain',
-                'size' => 100,
-                'error' => UPLOAD_ERR_EXTENSION
-            ]
-        ];
-        $expectedUploadedFiles = [
-            'foo' => new UploadedFile(
-                '/path/foo.txt',
-                'foo.txt',
-                100,
-                'text/plain',
-                UPLOAD_ERR_EXTENSION
-            )
-        ];
-        $request = $this->factory->createFromGlobals([], [], $files);
-        $this->assertEquals($expectedUploadedFiles, $request->getUploadedFiles());
     }
 
     /**
@@ -311,7 +282,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testStringRawBodyCreatesBodyFromThatString() : void
     {
-        $request = $this->factory->createFromGlobals([], [], [], 'foo');
+        $request = $this->factory->createFromGlobals([], 'foo');
         $this->assertInstanceOf(StringBody::class, $request->getBody());
         $this->assertEquals('foo', $request->getBody()->readAsString());
     }

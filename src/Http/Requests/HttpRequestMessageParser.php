@@ -10,8 +10,10 @@
 
 namespace Opulence\Net\Http\Requests;
 
+use InvalidArgumentException;
 use Opulence\Net\Collection;
 use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\StringBody;
 use RuntimeException;
 
 /**
@@ -50,6 +52,53 @@ class HttpRequestMessageParser
         $this->parsedFormInputCache[$parsedFormInputCacheKey] = $formInputCollection;
 
         return $formInputCollection;
+    }
+
+    /**
+     * Parses a request as a multipart request
+     * Note: This method should only be called once for best performance
+     *
+     * @param IHttpRequestMessage $request The request to parse
+     * @return MultipartBodyPart[] The list of uploaded files
+     * @throws InvalidArgumentException Thrown if the request is not a multipart request
+     */
+    public function parseMultipart(IHttpRequestMessage $request) : array
+    {
+        if (preg_match('/multipart\//i', $request->getHeaders()->get('Content-Type')) !== 1) {
+            throw new InvalidArgumentException('Request is not multipart');
+        }
+
+        $boundaryMatches = [];
+
+        if (preg_match('/boundary=(\"?)(.*)\1/', $request->getHeaders()->get('Content-Type'), $boundaryMatches) !== 1) {
+            throw new InvalidArgumentException('Boundary is missing in Content-Type of multipart request');
+        }
+
+        $boundary = $boundaryMatches[2];
+        $rawBodyParts = explode("--$boundary", $request->getBody()->readAsString());
+        // The first part will be empty, and the last will be "--".  Remove them.
+        array_shift($rawBodyParts);
+        array_pop($rawBodyParts);
+        $parsedBodyParts = [];
+
+        foreach ($rawBodyParts as $rawBodyPart) {
+            $headerStartIndex = strlen("\r\n");
+            $headerEndIndex = strpos($rawBodyPart, "\r\n\r\n");
+            $bodyStartIndex = $headerEndIndex + strlen("\r\n\r\n");
+            $bodyEndIndex = strlen($rawBodyPart) - strlen("\r\n");
+            $rawHeaders = explode("\r\n", substr($rawBodyPart, $headerStartIndex, $headerEndIndex - $headerStartIndex));
+            $parsedHeaders = new HttpHeaders();
+
+            foreach ($rawHeaders as $headerLine) {
+                [$headerName, $headerValue] = explode(':', $headerLine, 2);
+                $parsedHeaders->add(trim($headerName), trim($headerValue));
+            }
+
+            $body = new StringBody(substr($rawBodyPart, $bodyStartIndex, $bodyEndIndex - $bodyStartIndex));
+            $parsedBodyParts[] = new MultipartBodyPart($parsedHeaders, $body);
+        }
+
+        return $parsedBodyParts;
     }
 
     /**

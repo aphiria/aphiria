@@ -3,7 +3,7 @@
 <h2>Create a request from globals</h2>
 
 ```php
-$request = (new RequestFactory)->createFromGlobals($_SERVER, $_COOKIE, $_FILES);
+$request = (new RequestFactory)->createFromGlobals($_SERVER);
 ```
 
 <h2>Get/set headers</h2>
@@ -19,12 +19,6 @@ $request->getHeaders()->get('Foo');
 $request->getBody()->readAsString();
 // Or...
 (string)request->getBody();
-```
-
-<h2>Get the uploaded files</h2>
-
-```php
-$uploadedFiles = $request->getUploadedFiles();
 ```
 
 <h2>Read a chunk of a stream body</h2>
@@ -54,6 +48,14 @@ $request = $factory->createFromGlobals($_SERVER, $_COOKIE, $_FILES);
 $request->getProperties()->get('CLIENT_IP_ADDRESS');
 ```
 
+<h2>Get header value parameters</h2>
+
+```php
+$request->getHeaders()->add('test', 'foo=bar; baz');
+print_r($request->getHeaders()->getParameters('test')->getAll());
+// ['foo' => 'bar', 'baz' => null]
+```
+
 <h1>Request Parsers</h1>
 
 <h2>Get a query string parameter</h2>
@@ -78,6 +80,19 @@ $formData = (new HttpRequestMessageParser)->parseFormInput($request);
 
 ```php
 $email = (new HttpRequestMessageParser)->parseFormInput($request)->get('email');
+```
+
+<h2>Parse the request as multipart request</h2>
+
+```php
+$multipartBodies = (new HttpRequestMessageParser)->parseMultipart($request);
+
+foreach ($multipartBodies as $multipartBody) {
+    // Get the headers of the body part
+    $multipartBody->getHeaders();
+    // Get the body of the body part
+    $multipartBody->getBody();
+}
 ```
 
 <h2>Check if the request was JSON</h2>
