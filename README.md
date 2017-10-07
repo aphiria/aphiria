@@ -67,7 +67,7 @@ $userId = (new UriParser)->parseQueryString($request->getUri())->get('userId');
 <h2>Get a cookie</h2>
 
 ```php
-$userId = (new HttpRequestHeaderParser)->parseCookie($request->getHeaders())->get('userId');
+$userId = $request->getHeaders()->getParameters('Cookie')->get('userId');
 ```
 
 <h2>Get all form input</h2>
