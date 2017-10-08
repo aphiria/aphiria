@@ -11,7 +11,7 @@
 namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
-use Opulence\Net\Collection;
+use Opulence\Collections\HashTable;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Uri;
@@ -29,7 +29,7 @@ class Request implements IHttpRequestMessage
     protected $body = null;
     /** @var Uri The request URI */
     protected $uri = null;
-    /** @var Collection The request properties */
+    /** @var HashTable The request properties */
     protected $properties = null;
     /** @var string The HTTP protocol version */
     protected $protocolVersion = '';
@@ -52,7 +52,7 @@ class Request implements IHttpRequestMessage
      * @param HttpHeaders $headers The request headers
      * @param IHttpBody $body The request body
      * @param Uri $uri The request URI
-     * @param Collection|null $properties The request properties
+     * @param HashTable|null $properties The request properties
      * @param string $protocolVersion The HTTP protocol version
      */
     public function __construct(
@@ -60,14 +60,14 @@ class Request implements IHttpRequestMessage
         HttpHeaders $headers,
         IHttpBody $body,
         Uri $uri,
-        Collection $properties = null,
+        HashTable $properties = null,
         string $protocolVersion = '1.1'
     ) {
         $this->setMethod($method);
         $this->headers = $headers;
         $this->body = $body;
         $this->uri = $uri;
-        $this->properties = $properties ?? new Collection();
+        $this->properties = $properties ?? new HashTable();
         $this->protocolVersion = $protocolVersion;
     }
 
@@ -98,7 +98,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getProperties() : Collection
+    public function getProperties() : HashTable
     {
         return $this->properties;
     }

@@ -10,7 +10,7 @@
 
 namespace Opulence\Net\Http\Requests;
 
-use Opulence\Net\Collection;
+use Opulence\Collections\HashTable;
 use Opulence\Net\Http\IHttpMessage;
 use Opulence\Net\Uri;
 
@@ -29,9 +29,9 @@ interface IHttpRequestMessage extends IHttpMessage
     /**
      * Gets the properties of the request
      *
-     * @return Collection The collection of properties
+     * @return HashTable The collection of properties
      */
-    public function getProperties() : Collection;
+    public function getProperties() : HashTable;
 
     /**
      * Gets the URI of the request

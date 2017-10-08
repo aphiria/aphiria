@@ -29,6 +29,7 @@
   },
   "require": {
     "php": "^7.1",
+    "opulence/collections": "1.0.*@dev",
     "opulence/io": "1.0.*@dev"
   },
   "extra": {

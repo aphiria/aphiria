@@ -11,8 +11,8 @@
 namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
+use Opulence\Collections\HashTable;
 use Opulence\IO\Streams\Stream;
-use Opulence\Net\Collection;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\StreamBody;
@@ -35,13 +35,15 @@ class RequestFactory
         'PHP_AUTH_USER' => true
     ];
     /** @var array The default mapping of header names to trusted proxy header names */
-    private static $defaultTrustedProxyHeaderNames = [
+    private static $defaultTrustedHeaderNames = [
         'HTTP_FORWARDED' => 'HTTP_FORWARDED',
         'HTTP_CLIENT_IP' => 'HTTP_X_FORWARDED_FOR',
         'HTTP_CLIENT_HOST' => 'HTTP_X_FORWARDED_HOST',
         'HTTP_CLIENT_PORT' => 'HTTP_X_FORWARDED_PORT',
         'HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO'
     ];
+    /** @var array The list of header names whose values should be URL-decoded */
+    private static $headersToUrlDecode = ['HTTP_COOKIE' => true];
     /** @var array The list of trusted proxy IP addresses */
     protected $trustedProxyIPAddresses = [];
     /** @var array The mapping of header names to trusted header names*/
@@ -54,7 +56,7 @@ class RequestFactory
     public function __construct(array $trustedProxyIPAddresses = [], array $trustedHeaderNames = [])
     {
         $this->trustedProxyIPAddresses = $trustedProxyIPAddresses;
-        $this->trustedHeaderNames = array_merge(self::$defaultTrustedProxyHeaderNames, $trustedHeaderNames);
+        $this->trustedHeaderNames = array_merge(self::$defaultTrustedHeaderNames, $trustedHeaderNames);
     }
 
     /**
@@ -107,8 +109,8 @@ class RequestFactory
         $headers = new HttpHeaders();
 
         foreach ($server as $name => $value) {
-            $decodedValue = urldecode($value);
-
+            $decodedValue = isset(self::$headersToUrlDecode[$name]) ? urldecode($value) : $value;
+            
             if (isset(self::$specialCaseHeaders[$name])) {
                 $headers->add($name, $decodedValue);
             } elseif (strpos($name, 'HTTP_') === 0) {
@@ -125,11 +127,11 @@ class RequestFactory
      * Creates properties
      *
      * @param array $server The global server array
-     * @return Collection The list of properties
+     * @return HashTable The list of properties
      */
-    protected function createProperties(array $server) : Collection
+    protected function createProperties(array $server) : HashTable
     {
-        $properties = new Collection();
+        $properties = new HashTable();
 
         // Set the client IP address as a property
         if (($clientIPAddress = $this->getClientIPAddress($server)) !== null) {
@@ -137,29 +139,6 @@ class RequestFactory
         }
 
         return $properties;
-    }
-
-    /**
-     * Creates a list of uploaded files from globals
-     *
-     * @param array $files The global file array
-     * @return UploadedFile[] The list of uploaded files
-     */
-    protected function createUploadedFilesFromGlobals(array $files) : array
-    {
-        $uploadedFiles = [];
-
-        foreach ($files as $name => $file) {
-            $uploadedFiles[$name]= new UploadedFile(
-                $file['tmp_name'],
-                $file['name'],
-                $file['size'],
-                $file['type'],
-                $file['error']
-            );
-        }
-
-        return $uploadedFiles;
     }
 
     /**

@@ -11,7 +11,7 @@
 namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
-use Opulence\Net\Collection;
+use Opulence\Collections\HashTable;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\StringBody;
 use RuntimeException;
@@ -28,15 +28,15 @@ class HttpRequestMessageParser
      * Parses a request body as form input
      *
      * @param IHttpRequestMessage $request
-     * @return Collection The body form input as a collection
+     * @return HashTable The body form input as a collection
      */
-    public function parseFormInput(IHttpRequestMessage $request) : Collection
+    public function parseFormInput(IHttpRequestMessage $request) : HashTable
     {
         $headers = $request->getHeaders();
         $body = $request->getBody();
 
         if (!$this->isFormUrlEncodedRequest($headers) || $body === null) {
-            return new Collection();
+            return new HashTable();
         }
 
         $parsedFormInputCacheKey = spl_object_hash($body);
@@ -48,7 +48,7 @@ class HttpRequestMessageParser
         $formInputArray = [];
         parse_str($body->readAsString(), $formInputArray);
         // Cache this for next time
-        $formInputCollection = new Collection($formInputArray);
+        $formInputCollection = new HashTable($formInputArray);
         $this->parsedFormInputCache[$parsedFormInputCacheKey] = $formInputCollection;
 
         return $formInputCollection;

@@ -42,6 +42,17 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that certain header values are URL-decoded
+     */
+    public function testCertainHeaderValuesAreUrlDecoded() : void
+    {
+        // Only cookies should be decoded
+        $request = $this->factory->createFromGlobals(['HTTP_FOO' => '%25', 'HTTP_COOKIE' => '%25']);
+        $this->assertEquals('%25', $request->getHeaders()->get('Foo'));
+        $this->assertEquals('%', $request->getHeaders()->get('Cookie'));
+    }
+
+    /**
      * Tests that the client IP address is set as a property when using a trusted proxy
      */
     public function testClientIPAddressIsSetAsPropertyWhenUsingTrustedProxy() : void
@@ -160,15 +171,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $server = ['REMOTE_ADDR' => '192.168.2.1', 'HTTP_X_FORWARDED_HOST' => 'foo.com, bar.com'];
         $request = $factory->createFromGlobals($server);
         $this->assertEquals('bar.com', $request->getUri()->getHost());
-    }
-
-    /**
-     * Tests that header values are decoded
-     */
-    public function testHeaderValuesAreDecoded() : void
-    {
-        $request = $this->factory->createFromGlobals(['HTTP_FOO' => '%25']);
-        $this->assertEquals('%', $request->getHeaders()->get('Foo'));
     }
 
     /**

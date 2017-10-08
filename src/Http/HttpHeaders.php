@@ -10,12 +10,12 @@
 
 namespace Opulence\Net\Http;
 
-use Opulence\Net\Collection;
+use Opulence\Collections\HashTable;
 
 /**
  * Defines HTTP headers
  */
-class HttpHeaders extends Collection
+class HttpHeaders extends HashTable
 {
     /**
      * Headers are allowed to have multiple values, so we must add support for that
@@ -63,14 +63,14 @@ class HttpHeaders extends Collection
      *
      * @param string $name The name of the header whose parameters we want
      * @param bool $onlyReturnFirst Whether or not to return only the first value's parameters
-     * @return Collection|Collection[] The list of parameters or an array of lists of parameters if returning all
+     * @return HashTable|HashTable[] The list of parameters or an array of lists of parameters if returning all
      */
     public function getParameters(string $name, bool $onlyReturnFirst = true)
     {
         $normalizedName = $this->normalizeName($name);
 
         if (!$this->has($normalizedName)) {
-            return new Collection;
+            return new HashTable;
         }
 
         $parameters = [];
@@ -94,7 +94,7 @@ class HttpHeaders extends Collection
             }
 
             if (count($parameter) !== 0) {
-                $parameters[] = new Collection($parameter);
+                $parameters[] = new HashTable($parameter);
             }
         }
 

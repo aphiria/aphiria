@@ -20,7 +20,8 @@
   "autoload": {
     "psr-4": {
       "Opulence\\Net\\": "src",
-      "Opulence\\IO\\": "../IO/src"
+      "Opulence\\IO\\": "../IO/src",
+      "Opulence\\Collections\\": "../Collections/src"
     }
   },
   "autoload-dev": {
