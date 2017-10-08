@@ -10,7 +10,7 @@
 
 namespace Opulence\Net;
 
-use Opulence\Collections\HashTable;
+use Opulence\Collections\ReadOnlyHashTable;
 
 /**
  * Defines the URI parser
@@ -26,14 +26,14 @@ class UriParser
      * @param Uri $uri The URI to parse
      * @return HashTable The parsed query string
      */
-    public function parseQueryString(Uri $uri) : HashTable
+    public function parseQueryString(Uri $uri) : ReadOnlyHashTable
     {
         $queryString = $uri->getQueryString();
 
         if (!isset($this->parsedQueryStringCache[$queryString])) {
             $parsedQueryString = [];
             parse_str($queryString, $parsedQueryString);
-            $this->parsedQueryStringCache[$queryString] = new HashTable($parsedQueryString);
+            $this->parsedQueryStringCache[$queryString] = new ReadOnlyHashTable($parsedQueryString);
         }
 
         return $this->parsedQueryStringCache[$queryString];

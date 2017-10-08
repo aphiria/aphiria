@@ -32,7 +32,7 @@ class UriParserTest extends \PHPUnit\Framework\TestCase
     public function testParsingQueryStringParamWithMultipleValuesReturnsArrayOfValues() : void
     {
         $uri = new Uri('http', null, null, 'host.com', null, '', 'foo[]=bar&foo[]=baz', null);
-        $this->assertEquals(['foo' => ['bar', 'baz']], $this->parser->parseQueryString($uri)->getAll());
+        $this->assertEquals(['foo' => ['bar', 'baz']], $this->parser->parseQueryString($uri)->toArray());
     }
 
     /**
@@ -50,7 +50,7 @@ class UriParserTest extends \PHPUnit\Framework\TestCase
     public function testParsingQueryStringParamWithSingleValueReturnsThatValue() : void
     {
         $uri = new Uri('http', null, null, 'host.com', null, '', 'foo=bar', null);
-        $this->assertEquals(['foo' => 'bar'], $this->parser->parseQueryString($uri)->getAll());
+        $this->assertEquals(['foo' => 'bar'], $this->parser->parseQueryString($uri)->toArray());
         $this->assertEquals('bar', $this->parser->parseQueryString($uri)->get('foo'));
     }
 
@@ -60,7 +60,7 @@ class UriParserTest extends \PHPUnit\Framework\TestCase
     public function testUrlEncodedValuesAreDecoded() : void
     {
         $uri = new Uri('http', null, null, 'host.com', null, '', 'foo=a%26w', null);
-        $this->assertEquals(['foo' => 'a&w'], $this->parser->parseQueryString($uri)->getAll());
+        $this->assertEquals(['foo' => 'a&w'], $this->parser->parseQueryString($uri)->toArray());
         $this->assertEquals('a&w', $this->parser->parseQueryString($uri)->get('foo'));
     }
 }

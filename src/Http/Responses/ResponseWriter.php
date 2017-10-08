@@ -44,7 +44,7 @@ class ResponseWriter
 
         $headers = '';
 
-        foreach ($response->getHeaders()->getAll() as $headerName => $headerValues) {
+        foreach ($response->getHeaders()->toArray() as $headerName => $headerValues) {
             $headers .= "\r\n$headerName: " . implode(', ', $headerValues);
         }
 

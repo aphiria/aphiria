@@ -11,6 +11,7 @@
 namespace Opulence\Net\Http;
 
 use Opulence\Collections\HashTable;
+use Opulence\Collections\ReadOnlyHashTable;
 
 /**
  * Defines HTTP headers
@@ -36,6 +37,17 @@ class HttpHeaders extends HashTable
     }
 
     /**
+     * Gets whether or not a header has a key
+     *
+     * @param string $name The name of the header to search for
+     * @return bool True if the header has a value, otherwise false
+     */
+    public function containsKey(string $name) : bool
+    {
+        return parent::containsKey($this->normalizeName($name));
+    }
+
+    /**
      * Gets a header value
      *
      * @param string $name The name of the header whose value we want
@@ -45,7 +57,7 @@ class HttpHeaders extends HashTable
      */
     public function get(string $name, $default = null, bool $onlyReturnFirst = true)
     {
-        if ($this->has($name)) {
+        if ($this->containsKey($name)) {
             $value = $this->values[$this->normalizeName($name)];
 
             if ($onlyReturnFirst) {
@@ -59,18 +71,20 @@ class HttpHeaders extends HashTable
     }
 
     /**
-     * Gets the parameters (semi-colon delimited values for a header) as a collection
+     * Gets the parameters (semi-colon delimited values for a header) as a hash table
+     * If returning only the first value's parameters, then a hash table will be returned
+     * If returning all the values' parameters, then an array of hash tables will be returned
      *
      * @param string $name The name of the header whose parameters we want
      * @param bool $onlyReturnFirst Whether or not to return only the first value's parameters
-     * @return HashTable|HashTable[] The list of parameters or an array of lists of parameters if returning all
+     * @return ReadOnlyHashTable|ReadOnlyHashTable[] The hash table of parameters
      */
     public function getParameters(string $name, bool $onlyReturnFirst = true)
     {
         $normalizedName = $this->normalizeName($name);
 
-        if (!$this->has($normalizedName)) {
-            return new HashTable;
+        if (!$this->containsKey($normalizedName)) {
+            return new ReadOnlyHashTable([]);
         }
 
         $parameters = [];
@@ -94,7 +108,7 @@ class HttpHeaders extends HashTable
             }
 
             if (count($parameter) !== 0) {
-                $parameters[] = new HashTable($parameter);
+                $parameters[] = new ReadOnlyHashTable($parameter);
             }
         }
 
@@ -103,17 +117,6 @@ class HttpHeaders extends HashTable
         }
 
         return $parameters;
-    }
-
-    /**
-     * Gets whether or not a header has a value
-     *
-     * @param string $name The name of the header to search for
-     * @return bool True if the header has a value, otherwise false
-     */
-    public function has(string $name) : bool
-    {
-        return parent::has($this->normalizeName($name));
     }
 
     /**

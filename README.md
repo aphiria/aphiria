@@ -52,7 +52,7 @@ $request->getProperties()->get('CLIENT_IP_ADDRESS');
 
 ```php
 $request->getHeaders()->add('test', 'foo=bar; baz');
-print_r($request->getHeaders()->getParameters('test')->getAll());
+print_r($request->getHeaders()->getParameters('test')->toArray());
 // ['foo' => 'bar', 'baz' => null]
 ```
 
