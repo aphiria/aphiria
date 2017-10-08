@@ -37,7 +37,7 @@ class HttpHeaders extends HashTable
     }
 
     /**
-     * Gets whether or not a header has a key
+     * Gets whether or not a header has a value
      *
      * @param string $name The name of the header to search for
      * @return bool True if the header has a value, otherwise false
@@ -124,9 +124,9 @@ class HttpHeaders extends HashTable
      *
      * @param string $name The name of the header to remove
      */
-    public function remove(string $name) : void
+    public function removeKey(string $name) : void
     {
-        parent::remove($this->normalizeName($name));
+        parent::removeKey($this->normalizeName($name));
     }
 
     /**

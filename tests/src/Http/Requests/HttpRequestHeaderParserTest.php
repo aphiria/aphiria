@@ -38,10 +38,10 @@ class HttpRequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     {
         $this->headers->add('Content-Type', 'text/plain');
         $this->assertFalse($this->parser->isJson($this->headers));
-        $this->headers->remove('Content-Type');
+        $this->headers->removeKey('Content-Type');
         $this->headers->add('Content-Type', 'application/json');
         $this->assertTrue($this->parser->isJson($this->headers));
-        $this->headers->remove('Content-Type');
+        $this->headers->removeKey('Content-Type');
         $this->headers->add('Content-Type', 'application/json; charset=utf-8');
         $this->assertTrue($this->parser->isJson($this->headers));
     }
@@ -53,7 +53,7 @@ class HttpRequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     {
         $this->headers->add('X-Requested-With', 'XMLHttpRequest');
         $this->assertTrue($this->parser->isXhr($this->headers));
-        $this->headers->remove('X-Requested-With');
+        $this->headers->removeKey('X-Requested-With');
         $this->assertFalse($this->parser->isXhr($this->headers));
     }
 }

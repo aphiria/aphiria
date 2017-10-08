@@ -17,7 +17,10 @@ $request->getHeaders()->get('Foo');
 
 ```php
 $request->getBody()->readAsString();
-// Or...
+```
+Or:
+
+```php
 (string)request->getBody();
 ```
 
@@ -38,7 +41,7 @@ $request->getProperties()->get('foo');
 
 ```php
 $factory = new RequestFactory(['192.168.1.1', '192.168.1.2']);
-$request = $factory->createFromGlobals($_SERVER, $_COOKIE, $_FILES);
+$request = $factory->createFromGlobals($_SERVER);
 ```
 
 <h2>Get client IP address</h2>

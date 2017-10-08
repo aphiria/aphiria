@@ -127,7 +127,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     {
         $this->headers->add('Foo', 'bar=baz');
         $this->assertEquals(['bar' => 'baz'], $this->headers->getParameters('Foo')->toArray());
-        $this->headers->remove('Foo');
+        $this->headers->removeKey('Foo');
         $this->headers->add('Foo', 'bar="baz"');
         $this->assertEquals(['bar' => 'baz'], $this->headers->getParameters('Foo')->toArray());
     }
@@ -142,20 +142,20 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('bar', $this->headers->get('foo'));
         $this->assertEquals(['Foo' => ['bar']], $this->headers->toArray());
         $this->assertTrue($this->headers->containsKey('foo'));
-        $this->headers->remove('foo');
+        $this->headers->removeKey('foo');
         // Test snake-case names
         $this->headers->add('FOO_BAR', 'baz');
         $this->assertEquals('baz', $this->headers->get('FOO_BAR'));
         $this->assertEquals(['Foo-Bar' => ['baz']], $this->headers->toArray());
         $this->assertTrue($this->headers->containsKey('FOO_BAR'));
-        $this->headers->remove('FOO_BAR');
+        $this->headers->removeKey('FOO_BAR');
         // Test upper-case names
         $this->assertEquals([], $this->headers->toArray());
         $this->headers->add('BAZ', 'blah');
         $this->assertEquals('blah', $this->headers->get('BAZ'));
         $this->assertEquals(['Baz' => ['blah']], $this->headers->toArray());
         $this->assertTrue($this->headers->containsKey('BAZ'));
-        $this->headers->remove('BAZ');
+        $this->headers->removeKey('BAZ');
         $this->assertEquals([], $this->headers->toArray());
     }
 
@@ -165,7 +165,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     public function testRemovingHeader() : void
     {
         $this->headers->add('foo', 'bar');
-        $this->headers->remove('foo');
+        $this->headers->removeKey('foo');
         $this->assertFalse($this->headers->containsKey('foo'));
     }
 
