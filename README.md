@@ -56,18 +56,18 @@ print_r($request->getHeaders()->getParameters('test')->getAll());
 // ['foo' => 'bar', 'baz' => null]
 ```
 
+<h2>Get a cookie</h2>
+
+```php
+$userId = $request->getHeaders()->getParameters('Cookie')->get('userId');
+```
+
 <h1>Request Parsers</h1>
 
 <h2>Get a query string parameter</h2>
 
 ```php
 $userId = (new UriParser)->parseQueryString($request->getUri())->get('userId');
-```
-
-<h2>Get a cookie</h2>
-
-```php
-$userId = $request->getHeaders()->getParameters('Cookie')->get('userId');
 ```
 
 <h2>Get all form input</h2>

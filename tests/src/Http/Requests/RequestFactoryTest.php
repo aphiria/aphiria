@@ -161,6 +161,15 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $request = $factory->createFromGlobals($server);
         $this->assertEquals('bar.com', $request->getUri()->getHost());
     }
+    
+    /**
+     * Tests that header values are decoded
+     */
+    public function testHeaderValuesAreDecoded() : void
+    {
+        $request = $this->factory->createFromGlobals(['HTTP_FOO' => '%25']);
+        $this->assertEquals('%', $request->getHeaders()->get('Foo'));
+    }
 
     /**
      * Tests that a host with a port strips the port from the host

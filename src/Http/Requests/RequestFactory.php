@@ -107,12 +107,14 @@ class RequestFactory
         $headers = new HttpHeaders();
 
         foreach ($server as $name => $value) {
+            $decodedValue = urldecode($value);
+            
             if (isset(self::$specialCaseHeaders[$name])) {
-                $headers->add($name, $value);
+                $headers->add($name, $decodedValue);
             } elseif (strpos($name, 'HTTP_') === 0) {
                 // Drop the "HTTP_"
                 $normalizedName = substr($name, 5);
-                $headers->add($normalizedName, $value);
+                $headers->add($normalizedName, $decodedValue);
             }
         }
 
