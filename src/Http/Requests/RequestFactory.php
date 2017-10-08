@@ -108,7 +108,7 @@ class RequestFactory
 
         foreach ($server as $name => $value) {
             $decodedValue = urldecode($value);
-            
+
             if (isset(self::$specialCaseHeaders[$name])) {
                 $headers->add($name, $decodedValue);
             } elseif (strpos($name, 'HTTP_') === 0) {
