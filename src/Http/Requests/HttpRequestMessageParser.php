@@ -30,7 +30,7 @@ class HttpRequestMessageParser
      * @param IHttpRequestMessage $request
      * @return HashTable The body form input as a collection
      */
-    public function parseFormInput(IHttpRequestMessage $request) : HashTable
+    public function readAsFormInput(IHttpRequestMessage $request) : HashTable
     {
         $headers = $request->getHeaders();
         $body = $request->getBody();
@@ -62,7 +62,7 @@ class HttpRequestMessageParser
      * @return MultipartBodyPart[] The list of uploaded files
      * @throws InvalidArgumentException Thrown if the request is not a multipart request
      */
-    public function parseMultipart(IHttpRequestMessage $request) : array
+    public function readAsMultipart(IHttpRequestMessage $request) : array
     {
         if (preg_match('/multipart\//i', $request->getHeaders()->get('Content-Type')) !== 1) {
             throw new InvalidArgumentException('Request is not multipart');
@@ -108,7 +108,7 @@ class HttpRequestMessageParser
      * @return array The request body as JSON
      * @throws RuntimeException Thrown if the body could not be read as JSON
      */
-    public function parseJson(IHttpRequestMessage $request) : array
+    public function readAsJson(IHttpRequestMessage $request) : array
     {
         if (preg_match("/application\/json/i", $request->getHeaders()->get('Content-Type')) !== 1) {
             return [];

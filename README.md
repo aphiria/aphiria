@@ -76,19 +76,19 @@ $userId = (new UriParser)->parseQueryString($request->getUri())->get('userId');
 <h2>Get all form input</h2>
 
 ```php
-$formData = (new HttpRequestMessageParser)->parseFormInput($request);
+$formData = (new HttpRequestMessageParser)->readAsFormInput($request);
 ```
 
 <h2>Get a specific form input</h2>
 
 ```php
-$email = (new HttpRequestMessageParser)->parseFormInput($request)->get('email');
+$email = (new HttpRequestMessageParser)->readAsFormInput($request)->get('email');
 ```
 
 <h2>Parse the request as multipart request</h2>
 
 ```php
-$multipartBodies = (new HttpRequestMessageParser)->parseMultipart($request);
+$multipartBodies = (new HttpRequestMessageParser)->readAsMultipart($request);
 
 foreach ($multipartBodies as $multipartBody) {
     // Get the headers of the body part
@@ -107,7 +107,7 @@ $isJson = (new HttpRequestHeaderParser)->isJson($request->getHeaders());
 <h2>Read body as JSON</h2>
 
 ```php
-$json = (new HttpRequestMessageParser)->parseJson($request);
+$json = (new HttpRequestMessageParser)->readAsJson($request);
 ```
 
 <h1>Responses</h1>
