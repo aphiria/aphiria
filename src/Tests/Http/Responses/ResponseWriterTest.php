@@ -8,11 +8,12 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Responses;
+namespace Opulence\Net\Tests\Http\Responses;
 
 use Opulence\IO\Streams\Stream;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
+use Opulence\Net\Http\Responses\ResponseWriter;
 
 /**
  * Tests the response writer

@@ -11,7 +11,7 @@
 namespace Opulence\Net\Http;
 
 use Opulence\Collections\HashTable;
-use Opulence\Collections\ReadOnlyHashTable;
+use Opulence\Collections\ImmutableHashTable;
 
 /**
  * Defines HTTP headers
@@ -77,14 +77,14 @@ class HttpHeaders extends HashTable
      *
      * @param string $name The name of the header whose parameters we want
      * @param bool $onlyReturnFirst Whether or not to return only the first value's parameters
-     * @return ReadOnlyHashTable|ReadOnlyHashTable[] The hash table of parameters
+     * @return ImmutableHashTable|ImmutableHashTable[] The hash table of parameters
      */
     public function getParameters(string $name, bool $onlyReturnFirst = true)
     {
         $normalizedName = $this->normalizeName($name);
 
         if (!$this->containsKey($normalizedName)) {
-            return new ReadOnlyHashTable([]);
+            return new ImmutableHashTable([]);
         }
 
         $parameters = [];
@@ -108,7 +108,7 @@ class HttpHeaders extends HashTable
             }
 
             if (count($parameter) !== 0) {
-                $parameters[] = new ReadOnlyHashTable($parameter);
+                $parameters[] = new ImmutableHashTable($parameter);
             }
         }
 

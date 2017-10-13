@@ -8,9 +8,10 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http;
+namespace Opulence\Net\Tests\Http;
 
 use Opulence\IO\Streams\IStream;
+use Opulence\Net\Http\StringBody;
 
 /**
  * Tests the string body

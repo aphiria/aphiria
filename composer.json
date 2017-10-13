@@ -21,13 +21,11 @@
     "psr-4": {
       "Opulence\\Net\\": "src",
       "Opulence\\IO\\": "../IO/src",
-      "Opulence\\Collections\\": "../Collections/src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Opulence\\Tests\\Net\\": "tests/src"
-    }
+      "Opulence\\Collections\\": "../opulence/src/Opulence/Collections"
+    },
+    "exclude-from-classmap": [
+        "**/Tests/"
+    ]
   },
   "require": {
     "php": "^7.1"

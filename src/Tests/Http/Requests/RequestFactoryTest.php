@@ -8,10 +8,11 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Requests;
+namespace Opulence\Net\Tests\Http\Requests;
 
 use InvalidArgumentException;
 use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\Requests\RequestFactory;
 use Opulence\Net\Http\StreamBody;
 use Opulence\Net\Http\StringBody;
 

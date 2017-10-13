@@ -8,9 +8,10 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Requests;
+namespace Opulence\Net\Tests\Http\Requests;
 
 use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\Requests\HttpRequestHeaderParser;
 
 /**
  * Tests the HTTP request header parser

@@ -8,9 +8,10 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Responses;
+namespace Opulence\Net\Tests\Http\Responses;
 
 use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\Responses\HttpResponseMessageFormatter;
 use Opulence\Net\Http\StringBody;
 
 /**

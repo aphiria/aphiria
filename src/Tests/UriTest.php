@@ -8,9 +8,10 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net;
+namespace Opulence\Net\Tests;
 
 use InvalidArgumentException;
+use Opulence\Net\Uri;
 
 /**
  * Tests the URI

@@ -20,12 +20,10 @@
   "autoload": {
     "psr-4": {
       "Opulence\\Net\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Opulence\\Tests\\Net\\": "tests/src"
-    }
+    },
+    "exclude-from-classmap": [
+        "**/Tests/"
+    ]
   },
   "require": {
     "php": "^7.1",

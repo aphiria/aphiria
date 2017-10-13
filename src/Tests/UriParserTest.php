@@ -8,7 +8,10 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net;
+namespace Opulence\Net\Tests;
+
+use Opulence\Net\Uri;
+use Opulence\Net\UriParser;
 
 /**
  * Tests the URI parser

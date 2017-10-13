@@ -8,12 +8,13 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Requests;
+namespace Opulence\Net\Tests\Http\Requests;
 
 use InvalidArgumentException;
 use Opulence\Collections\HashTable;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
+use Opulence\Net\Http\Requests\Request;
 use Opulence\Net\Uri;
 
 /**

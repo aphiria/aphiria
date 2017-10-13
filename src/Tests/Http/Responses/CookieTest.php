@@ -8,10 +8,11 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Responses;
+namespace Opulence\Net\Tests\Http\Responses;
 
 use DateTime;
 use InvalidArgumentException;
+use Opulence\Net\Http\Responses\Cookie;
 
 /**
  * Tests cookies

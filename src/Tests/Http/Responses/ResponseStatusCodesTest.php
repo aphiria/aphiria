@@ -8,7 +8,9 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Responses;
+namespace Opulence\Net\Tests\Http\Responses;
+
+use Opulence\Net\Http\Responses\ResponseStatusCodes;
 
 /**
  * Tests the response status codes
