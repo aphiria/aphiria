@@ -54,17 +54,6 @@ $request = $factory->createFromGlobals($_SERVER);
 $request->getProperties()->get('CLIENT_IP_ADDRESS');
 ```
 
-<h2>Get header value parameters</h2>
-
-```php
-$request->getHeaders()->add('test', 'foo=bar; baz');
-$parameters = (new HttpHeaderParser)->parseParametersForFirstValue($request->getHeaders(), 'test');
-echo $parameters->get('foo');
-// 'bar'
-echo $parameters->get('baz');
-// null
-```
-
 <h2>Get a cookie</h2>
 
 ```php
@@ -89,6 +78,17 @@ $formData = (new HttpRequestMessageParser)->readAsFormInput($request);
 
 ```php
 $email = (new HttpRequestMessageParser)->readAsFormInput($request)->get('email');
+```
+
+<h2>Get header value parameters</h2>
+
+```php
+$request->getHeaders()->add('test', 'foo=bar; baz');
+$parameters = (new HttpHeaderParser)->parseParametersForFirstValue($request->getHeaders(), 'test');
+echo $parameters->get('foo');
+// 'bar'
+echo $parameters->get('baz');
+// null
 ```
 
 <h2>Parse the request as multipart request</h2>

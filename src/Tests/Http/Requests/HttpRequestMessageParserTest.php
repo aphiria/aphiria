@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\Requests\HttpRequestMessageParser;
+use Opulence\Net\Http\Requests\IHttpRequestMessage;
 use RuntimeException;
 
 /**
@@ -68,7 +69,7 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
             ->method('readAsString')
             ->willReturn('foo=bar');
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->assertEquals(['foo' => 'bar'], $this->parser->readAsFormInput($this->request)->toArray());
+        $this->assertEquals('bar', $this->parser->readAsFormInput($this->request)->get('foo'));
     }
 
     /**
@@ -158,8 +159,8 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
         /** @var MultipartBodyPart[] $bodyParts */
         $bodyParts = $this->parser->readAsMultipart($this->request);
         $this->assertCount(1, $bodyParts);
-        $this->assertEquals('bar', $bodyParts[0]->getHeaders()->get('Foo'));
-        $this->assertEquals('blah', $bodyParts[0]->getHeaders()->get('Baz'));
+        $this->assertEquals('bar', $bodyParts[0]->getHeaders()->getFirst('Foo'));
+        $this->assertEquals('blah', $bodyParts[0]->getHeaders()->getFirst('Baz'));
     }
 
     /**

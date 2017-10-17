@@ -13,6 +13,7 @@ namespace Opulence\Net\Tests\Http\Responses;
 use Opulence\IO\Streams\Stream;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
+use Opulence\Net\Http\Responses\IHttpResponseMessage;
 use Opulence\Net\Http\Responses\ResponseWriter;
 
 /**

@@ -12,6 +12,7 @@ namespace Opulence\Net\Tests\Http\Responses;
 
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\Responses\HttpResponseMessageFormatter;
+use Opulence\Net\Http\Responses\IHttpResponseMessage;
 use Opulence\Net\Http\StringBody;
 
 /**
@@ -50,7 +51,7 @@ class HttpResponseMessageFormatterTest extends \PHPUnit\Framework\TestCase
                 return $body instanceof StringBody && $body->readAsString() === json_encode(['foo' => 'bar']);
             }));
         $this->formatter->writeJson($this->response, ['foo' => 'bar']);
-        $this->assertEquals('application/json', $this->response->getHeaders()->get('Content-Type'));
+        $this->assertEquals('application/json', $this->response->getHeaders()->getFirst('Content-Type'));
     }
 
     /**
@@ -62,6 +63,6 @@ class HttpResponseMessageFormatterTest extends \PHPUnit\Framework\TestCase
             ->method('setStatusCode')
             ->with(301);
         $this->formatter->redirectToUri($this->response, 'http://foo.com', 301);
-        $this->assertEquals('http://foo.com', $this->headers->get('Location'));
+        $this->assertEquals('http://foo.com', $this->headers->getFirst('Location'));
     }
 }

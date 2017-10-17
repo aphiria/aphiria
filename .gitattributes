@@ -7,4 +7,4 @@
 phpunit.xml export-ignore
 README.md export-ignore
 /config export-ignore
-/tests export-ignore
+/src/Tests export-ignore

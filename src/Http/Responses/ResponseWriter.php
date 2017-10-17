@@ -44,8 +44,8 @@ class ResponseWriter
 
         $headers = '';
 
-        foreach ($response->getHeaders()->toArray() as $headerName => $headerValues) {
-            $headers .= "\r\n$headerName: " . implode(', ', $headerValues);
+        foreach ($response->getHeaders() as $kvp) {
+            $headers .= "\r\n{$kvp->getKey()}: " . implode(', ', $kvp->getValue());
         }
 
         $this->outputStream->write($startLine . $headers . "\r\n\r\n");

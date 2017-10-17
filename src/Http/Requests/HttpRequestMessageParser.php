@@ -13,6 +13,7 @@ namespace Opulence\Net\Http\Requests;
 use InvalidArgumentException;
 use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
+use Opulence\Collections\KeyValuePair;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\StringBody;
 use RuntimeException;
@@ -48,11 +49,17 @@ class HttpRequestMessageParser
 
         $formInputArray = [];
         parse_str($body->readAsString(), $formInputArray);
-        // Cache this for next time
-        $formInputCollection = new HashTable($formInputArray);
-        $this->parsedFormInputCache[$parsedFormInputCacheKey] = $formInputCollection;
+        $kvps = [];
 
-        return $formInputCollection;
+        foreach ($formInputArray as $key => $value) {
+            $kvps[] = new KeyValuePair($key, $value);
+        }
+
+        // Cache this for next time
+        $formInputs = new HashTable($kvps);
+        $this->parsedFormInputCache[$parsedFormInputCacheKey] = $formInputs;
+
+        return $formInputs;
     }
 
     /**
@@ -65,13 +72,18 @@ class HttpRequestMessageParser
      */
     public function readAsMultipart(IHttpRequestMessage $request) : array
     {
-        if (preg_match('/multipart\//i', $request->getHeaders()->get('Content-Type')) !== 1) {
+        if (preg_match('/multipart\//i', $request->getHeaders()->getFirst('Content-Type')) !== 1) {
             throw new InvalidArgumentException('Request is not multipart');
         }
 
         $boundaryMatches = [];
 
-        if (preg_match('/boundary=(\"?)(.*)\1/', $request->getHeaders()->get('Content-Type'), $boundaryMatches) !== 1) {
+        if (
+            preg_match(
+                '/boundary=(\"?)(.*)\1/',
+                $request->getHeaders()->getFirst('Content-Type'),
+                $boundaryMatches) !== 1
+        ) {
             throw new InvalidArgumentException('Boundary is missing in Content-Type of multipart request');
         }
 
@@ -111,7 +123,7 @@ class HttpRequestMessageParser
      */
     public function readAsJson(IHttpRequestMessage $request) : array
     {
-        if (preg_match("/application\/json/i", $request->getHeaders()->get('Content-Type')) !== 1) {
+        if (preg_match("/application\/json/i", $request->getHeaders()->getFirst('Content-Type')) !== 1) {
             return [];
         }
 
@@ -132,6 +144,6 @@ class HttpRequestMessageParser
      */
     private function isFormUrlEncodedRequest(HttpHeaders $headers) : bool
     {
-        return mb_strpos($headers->get('Content-Type'), 'application/x-www-form-urlencoded') === 0;
+        return mb_strpos($headers->getFirst('Content-Type'), 'application/x-www-form-urlencoded') === 0;
     }
 }
