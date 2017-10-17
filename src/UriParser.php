@@ -10,7 +10,9 @@
 
 namespace Opulence\Net;
 
+use Opulence\Collections\IImmutableDictionary;
 use Opulence\Collections\ImmutableHashTable;
+use Opulence\Collections\KeyValuePair;
 
 /**
  * Defines the URI parser
@@ -24,16 +26,22 @@ class UriParser
      * Parses a URI's query string into a collection
      *
      * @param Uri $uri The URI to parse
-     * @return HashTable The parsed query string
+     * @return IImmutableDictionary The parsed query string
      */
-    public function parseQueryString(Uri $uri) : ImmutableHashTable
+    public function parseQueryString(Uri $uri) : IImmutableDictionary
     {
         $queryString = $uri->getQueryString();
 
         if (!isset($this->parsedQueryStringCache[$queryString])) {
             $parsedQueryString = [];
             parse_str($queryString, $parsedQueryString);
-            $this->parsedQueryStringCache[$queryString] = new ImmutableHashTable($parsedQueryString);
+            $kvps = [];
+
+            foreach ($parsedQueryString as $key => $value) {
+                $kvps[] = new KeyValuePair($key, $value);
+            }
+
+            $this->parsedQueryStringCache[$queryString] = new ImmutableHashTable($kvps);
         }
 
         return $this->parsedQueryStringCache[$queryString];

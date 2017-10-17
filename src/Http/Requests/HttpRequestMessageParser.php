@@ -12,6 +12,7 @@ namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
 use Opulence\Collections\HashTable;
+use Opulence\Collections\IDictionary;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\StringBody;
 use RuntimeException;
@@ -28,9 +29,9 @@ class HttpRequestMessageParser
      * Parses a request body as form input
      *
      * @param IHttpRequestMessage $request
-     * @return HashTable The body form input as a collection
+     * @return IDictionary The body form input as a collection
      */
-    public function readAsFormInput(IHttpRequestMessage $request) : HashTable
+    public function readAsFormInput(IHttpRequestMessage $request) : IDictionary
     {
         $headers = $request->getHeaders();
         $body = $request->getBody();

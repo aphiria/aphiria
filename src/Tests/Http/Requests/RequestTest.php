@@ -12,6 +12,7 @@ namespace Opulence\Net\Tests\Http\Requests;
 
 use InvalidArgumentException;
 use Opulence\Collections\HashTable;
+use Opulence\Collections\KeyValuePair;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\Requests\Request;
@@ -41,7 +42,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $this->headers = new HttpHeaders();
         $this->body = $this->createMock(IHttpBody::class);
         $this->uri = new Uri('http', null, null, 'host', null, '', null, null);
-        $this->properties = new HashTable(['foo' => 'bar']);
+        $this->properties = new HashTable([new KeyValuePair('foo', 'bar')]);
         $this->request = new Request(
             'GET',
             $this->headers,

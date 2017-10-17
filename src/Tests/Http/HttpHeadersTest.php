@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Tests\Http;
 
+use Opulence\Collections\KeyValuePair;
 use Opulence\Net\Http\HttpHeaders;
 
 /**
@@ -48,15 +49,6 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests getting all values
-     */
-    public function testGettingAll() : void
-    {
-        $this->headers->add('foo', 'bar');
-        $this->assertEquals(['Foo' => ['bar']], $this->headers->toArray());
-    }
-
-    /**
      * Tests getting all values for a header returns a list of values
      */
     public function testGettingAllValuesForHeaderReturnsListOfValues()
@@ -88,7 +80,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     public function testGettingParametersReturnsArrayWithValueIfNoParametersExist() : void
     {
         $this->headers->add('Foo', 'bar');
-        $this->assertEquals(['bar' => null], $this->headers->getParameters('Foo')->toArray());
+        $this->assertNull($this->headers->getParameters('Foo')->get('bar'));
     }
 
     /**
@@ -105,7 +97,9 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     public function testGettingParametersWithMixOfValueAndValueLessParametersReturnsCorrectParameters() : void
     {
         $this->headers->add('Foo', 'bar; baz="blah"');
-        $this->assertEquals(['bar' => null, 'baz' => 'blah'], $this->headers->getParameters('Foo')->toArray());
+        $values = $this->headers->getParameters('Foo');
+        $this->assertNull($values->get('bar'));
+        $this->assertEquals('blah', $values->get('baz'));
     }
 
     /**
@@ -113,13 +107,14 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
      */
     public function testGettingParametersWithMultipleValuesReturnsArrayOfParameters() : void
     {
-        $expectedParameters = [['foo' => null, 'baz' => 'blah'], ['dave' => 'young', 'alex' => null]];
         $this->headers->add('test', 'foo; baz=blah');
         $this->headers->add('test', 'dave=young; alex', true);
         $actualParameters = $this->headers->getParameters('test', false);
         $this->assertCount(2, $actualParameters);
-        $this->assertEquals($expectedParameters[0], $actualParameters[0]->toArray());
-        $this->assertEquals($expectedParameters[1], $actualParameters[1]->toArray());
+        $this->assertNull($actualParameters[0]->get('foo'));
+        $this->assertEquals('blah', $actualParameters[0]->get('baz'));
+        $this->assertEquals('young', $actualParameters[1]->get('dave'));
+        $this->assertNull($actualParameters[1]->get('alex'));
     }
 
     /**
@@ -128,10 +123,10 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     public function testGettingParametersWithQuotedAndUnquotedValuesReturnsArrayWithUnquotedValue() : void
     {
         $this->headers->add('Foo', 'bar=baz');
-        $this->assertEquals(['bar' => 'baz'], $this->headers->getParameters('Foo')->toArray());
+        $this->assertEquals('baz', $this->headers->getParameters('Foo')->get('bar'));
         $this->headers->removeKey('Foo');
         $this->headers->add('Foo', 'bar="baz"');
-        $this->assertEquals(['bar' => 'baz'], $this->headers->getParameters('Foo')->toArray());
+        $this->assertEquals('baz', $this->headers->getParameters('Foo')->get('bar'));
     }
 
     /**
@@ -142,20 +137,20 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
         // Test lower-case names
         $this->headers->add('foo', 'bar');
         $this->assertEquals('bar', $this->headers->get('foo'));
-        $this->assertEquals(['Foo' => ['bar']], $this->headers->toArray());
+        $this->assertEquals(['bar'], $this->headers->get('Foo', null, false));
         $this->assertTrue($this->headers->containsKey('foo'));
         $this->headers->removeKey('foo');
         // Test snake-case names
         $this->headers->add('FOO_BAR', 'baz');
         $this->assertEquals('baz', $this->headers->get('FOO_BAR'));
-        $this->assertEquals(['Foo-Bar' => ['baz']], $this->headers->toArray());
+        $this->assertEquals(['baz'], $this->headers->get('Foo-Bar', null, false));
         $this->assertTrue($this->headers->containsKey('FOO_BAR'));
         $this->headers->removeKey('FOO_BAR');
         // Test upper-case names
         $this->assertEquals([], $this->headers->toArray());
         $this->headers->add('BAZ', 'blah');
         $this->assertEquals('blah', $this->headers->get('BAZ'));
-        $this->assertEquals(['Baz' => ['blah']], $this->headers->toArray());
+        $this->assertEquals(['blah'], $this->headers->get('Baz', null, false));
         $this->assertTrue($this->headers->containsKey('BAZ'));
         $this->headers->removeKey('BAZ');
         $this->assertEquals([], $this->headers->toArray());
@@ -189,5 +184,25 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
         $this->headers->add('foo', 'bar');
         $this->headers->add('foo', 'baz', false);
         $this->assertEquals(['baz'], $this->headers->get('foo', null, false));
+    }
+
+    /**
+     * Tests that getting the headers as an array returns a list of key-value pairs
+     */
+    public function testToArrayReturnsListOfKeyValuePairs() : void
+    {
+        $this->headers->add('foo', 'bar');
+        $actualValues = [];
+
+        foreach ($this->headers->toArray() as $key => $value) {
+            // Verify that the key is numeric, not associative
+            $this->assertTrue(is_int($key));
+            $this->assertInstanceOf(KeyValuePair::class, $value);
+            $actualValues[$value->getKey()] = $value->getValue();
+        }
+
+        $this->assertCount(1, $actualValues);
+        // The header name will be normalized
+        $this->assertEquals(['bar'], $actualValues['Foo']);
     }
 }

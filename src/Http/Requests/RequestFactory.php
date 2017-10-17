@@ -12,6 +12,7 @@ namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
 use Opulence\Collections\HashTable;
+use Opulence\Collections\IDictionary;
 use Opulence\IO\Streams\Stream;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
@@ -127,9 +128,9 @@ class RequestFactory
      * Creates properties
      *
      * @param array $server The global server array
-     * @return HashTable The list of properties
+     * @return IDictionary The list of properties
      */
-    protected function createProperties(array $server) : HashTable
+    protected function createProperties(array $server) : IDictionary
     {
         $properties = new HashTable();
 

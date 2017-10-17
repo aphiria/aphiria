@@ -286,7 +286,10 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         ];
         $headers = $this->factory->createFromGlobals($server)->getHeaders();
         $this->assertInstanceOf(HttpHeaders::class, $headers);
-        $this->assertEquals($expectedHeaders, $headers->toArray());
+
+        foreach ($expectedHeaders as $expectedName => $expectedValue) {
+            $this->assertEquals($expectedValue, $headers->get($expectedName, null, false));
+        }
     }
 
     /**
