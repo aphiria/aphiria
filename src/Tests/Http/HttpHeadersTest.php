@@ -75,61 +75,6 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that getting the parameters returns an array with a value if no parameters exist
-     */
-    public function testGettingParametersReturnsArrayWithValueIfNoParametersExist() : void
-    {
-        $this->headers->add('Foo', 'bar');
-        $this->assertNull($this->headers->getParameters('Foo')->get('bar'));
-    }
-
-    /**
-     * Tests that getting the parameters returns null if the header does not exist
-     */
-    public function testGettingParametersReturnsNullIfHeaderDoesNotExist() : void
-    {
-        $this->assertEquals(0, $this->headers->getParameters('Does-Not-Exist')->count());
-    }
-
-    /**
-     * Tests that getting the parameters with a mix of value and value-less parameters returns correct parameters
-     */
-    public function testGettingParametersWithMixOfValueAndValueLessParametersReturnsCorrectParameters() : void
-    {
-        $this->headers->add('Foo', 'bar; baz="blah"');
-        $values = $this->headers->getParameters('Foo');
-        $this->assertNull($values->get('bar'));
-        $this->assertEquals('blah', $values->get('baz'));
-    }
-
-    /**
-     * Tests that getting the parameters of a header with multiple values returns an array of parameters
-     */
-    public function testGettingParametersWithMultipleValuesReturnsArrayOfParameters() : void
-    {
-        $this->headers->add('test', 'foo; baz=blah');
-        $this->headers->add('test', 'dave=young; alex', true);
-        $actualParameters = $this->headers->getParameters('test', false);
-        $this->assertCount(2, $actualParameters);
-        $this->assertNull($actualParameters[0]->get('foo'));
-        $this->assertEquals('blah', $actualParameters[0]->get('baz'));
-        $this->assertEquals('young', $actualParameters[1]->get('dave'));
-        $this->assertNull($actualParameters[1]->get('alex'));
-    }
-
-    /**
-     * Tests getting parameters with quoted and unquoted values returns an array with the unquoted value
-     */
-    public function testGettingParametersWithQuotedAndUnquotedValuesReturnsArrayWithUnquotedValue() : void
-    {
-        $this->headers->add('Foo', 'bar=baz');
-        $this->assertEquals('baz', $this->headers->getParameters('Foo')->get('bar'));
-        $this->headers->removeKey('Foo');
-        $this->headers->add('Foo', 'bar="baz"');
-        $this->assertEquals('baz', $this->headers->getParameters('Foo')->get('bar'));
-    }
-
-    /**
      * Tests that all names are normalized
      */
     public function testNamesAreNormalized() : void
