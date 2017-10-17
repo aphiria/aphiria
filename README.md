@@ -58,7 +58,7 @@ $request->getProperties()->get('CLIENT_IP_ADDRESS');
 
 ```php
 $request->getHeaders()->add('test', 'foo=bar; baz');
-$parameters = $request->getHeaders()->getParameters('test');
+$parameters = (new HttpHeaderParser)->parseParametersForFirstValue($request->getHeaders(), 'test');
 echo $parameters->get('foo');
 // 'bar'
 echo $parameters->get('baz');
