@@ -8,12 +8,23 @@ $request = (new RequestFactory)->createFromGlobals($_SERVER);
 
 <h2>Get/set headers</h2>
 
+The following will throw an `OutOfBoundsException` if the key does not exist:
+
 ```php
 $request->getHeaders()->add('Foo', 'bar');
-print_r($request->getHeaders()->get('Foo'));
-// ['Foo' => ['bar']]
-echo $request->getHeaders()->getFirst('Foo');
-// 'bar'
+print_r($request->getHeaders()->get('Foo')); // ['bar']
+echo $request->getHeaders()->getFirst('Foo'); // 'bar'
+```
+
+To safely try and get a header value, use `tryGet()` or `tryGetFirst()`:
+
+```php
+$request->getHeaders()->add('Foo', 'bar');
+$value = null;
+$request->getHeaders()->tryGet('Foo', $value);
+print_r($value); // ['bar']
+$request->getHeaders()->tryGetFirst('Foo', $value);
+echo $value; // 'bar'
 ```
 
 <h2>Read the request body as a string</h2>
@@ -128,7 +139,8 @@ $response = new Response();
 
 ```php
 $response->getHeaders()->add('Foo', 'bar');
-$response->getHeaders()->get('Foo');
+$response->getHeaders()->get('Foo'); // ['bar']
+$response->getHeaders()->getFirst('Foo'); // 'bar'
 ```
 
 <h2>Specify a string body</h2>
