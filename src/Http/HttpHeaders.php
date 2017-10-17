@@ -34,45 +34,27 @@ class HttpHeaders extends HashTable
         if (!$append || !$this->containsKey($normalizedName)) {
             parent::add($normalizedName, (array)$values);
         } else {
-            $currentValues = $this->get($name, [], false);
+            $currentValues = $this->get($name, []);
             parent::add($normalizedName, array_merge($currentValues, (array)$values));
         }
     }
 
     /**
-     * Gets whether or not a header has a value
-     *
-     * @param string $name The name of the header to search for
-     * @return bool True if the header has a value, otherwise false
-     */
-    public function containsKey($name) : bool
-    {
-        return parent::containsKey($this->getHashKey($name));
-    }
-
-    /**
-     * Gets a header value
+     * Gets the first values for a header
      *
      * @param string $name The name of the header whose value we want
      * @param mixed|null $default The default value, if none was found
-     * @param bool $onlyReturnFirst Whether or not to return only the first value
-     * @return mixed The value of the header
+     * @return mixed The first value of the header
      */
-    public function get($name, $default = null, bool $onlyReturnFirst = true)
+    public function getFirst($name, $default = null)
     {
-        $normalizedName = $this->getHashKey($name);
-
-        if ($this->containsKey($normalizedName)) {
-            $value = parent::get($normalizedName);
-
-            if ($onlyReturnFirst) {
-                return $value[0];
-            }
-        } else {
-            $value = $default;
+        $value = $this->get($name, []);
+        
+        if (count($value) === 0) {
+            return $default;
         }
-
-        return $value;
+        
+        return $value[0];
     }
 
     /**
@@ -95,7 +77,7 @@ class HttpHeaders extends HashTable
         $parameters = [];
         $trimmedChars = "\"'  \n\t\r";
 
-        foreach ($this->get($normalizedName, [], false) as $value) {
+        foreach ($this->get($normalizedName, []) as $value) {
             $kvps = [];
 
             // Match all parameters
@@ -126,16 +108,6 @@ class HttpHeaders extends HashTable
         }
 
         return $parameters;
-    }
-
-    /**
-     * Removes a header
-     *
-     * @param string $name The name of the header to remove
-     */
-    public function removeKey($name) : void
-    {
-        parent::removeKey($this->getHashKey($name));
     }
 
     /**

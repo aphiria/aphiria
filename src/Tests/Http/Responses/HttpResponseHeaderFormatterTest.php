@@ -43,7 +43,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertEquals(
             'foo=' . urlencode('+') . '; Path=' . urlencode('/') . '; SameSite=' . urldecode('strict'),
-            $this->headers->get('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie')
         );
     }
 
@@ -56,7 +56,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertEquals(
             'foo=bar; Domain=foo.com',
-            $this->headers->get('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie')
         );
     }
 
@@ -70,7 +70,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertEquals(
             'foo=bar; Expires=' . $expiration->format('D, d M Y H:i:s \G\M\T'),
-            $this->headers->get('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie')
         );
     }
 
@@ -84,7 +84,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertEquals(
             'foo=bar; Expires=' . $cookie->getExpiration()->format('D, d M Y H:i:s \G\M\T') . '; Max-Age=3600',
-            $this->headers->get('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie')
         );
     }
 
@@ -97,7 +97,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertEquals(
             'foo=bar; Path=' . urlencode('/foo'),
-            $this->headers->get('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie')
         );
     }
 
@@ -110,7 +110,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertEquals(
             'foo=bar; SameSite=lax',
-            $this->headers->get('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie')
         );
     }
 
@@ -121,7 +121,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
     {
         $this->formatter->deleteCookie($this->headers, 'foo', null, null, false, false);
         $expectedExpiration = DateTime::createFromFormat('U', 0)->format('D, d M Y H:i:s \G\M\T');
-        $this->assertEquals("foo=; Expires=$expectedExpiration; Max-Age=0", $this->headers->get('Set-Cookie'));
+        $this->assertEquals("foo=; Expires=$expectedExpiration; Max-Age=0", $this->headers->getFirst('Set-Cookie'));
     }
 
     /**
@@ -131,7 +131,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
     {
         $cookie = new Cookie('foo', 'bar', null, null, null, false, true);
         $this->formatter->setCookie($this->headers, $cookie);
-        $this->assertEquals('foo=bar; HttpOnly', $this->headers->get('Set-Cookie'));
+        $this->assertEquals('foo=bar; HttpOnly', $this->headers->getFirst('Set-Cookie'));
     }
 
     /**
@@ -141,7 +141,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
     {
         $cookie = new Cookie('foo', 'bar', null, null, null, true, false);
         $this->formatter->setCookie($this->headers, $cookie);
-        $this->assertEquals('foo=bar; Secure', $this->headers->get('Set-Cookie'));
+        $this->assertEquals('foo=bar; Secure', $this->headers->getFirst('Set-Cookie'));
     }
 
     /**
@@ -154,7 +154,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter->setCookie($this->headers, $cookie1);
         $this->formatter->setCookie($this->headers, $cookie2);
         $expectedHeader = ['foo=bar', 'baz=blah'];
-        $this->assertEquals($expectedHeader, $this->headers->get('Set-Cookie', null, false));
+        $this->assertEquals($expectedHeader, $this->headers->get('Set-Cookie'));
     }
 
     /**
@@ -166,6 +166,6 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $cookie2 = new Cookie('baz', 'blah', null, null, null, false, false);
         $this->formatter->setCookies($this->headers, [$cookie1, $cookie2]);
         $expectedHeader = ['foo=bar', 'baz=blah'];
-        $this->assertEquals($expectedHeader, $this->headers->get('Set-Cookie', null, false));
+        $this->assertEquals($expectedHeader, $this->headers->get('Set-Cookie'));
     }
 }

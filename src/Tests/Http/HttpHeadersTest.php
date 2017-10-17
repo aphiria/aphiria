@@ -35,7 +35,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     public function testAddingStringValue()
     {
         $this->headers->add('foo', 'bar');
-        $this->assertEquals('bar', $this->headers->get('foo'));
+        $this->assertEquals(['bar'], $this->headers->get('foo'));
     }
 
     /**
@@ -54,7 +54,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     public function testGettingAllValuesForHeaderReturnsListOfValues()
     {
         $this->headers->add('foo', ['bar', 'baz']);
-        $this->assertEquals(['bar', 'baz'], $this->headers->get('foo', null, false));
+        $this->assertEquals(['bar', 'baz'], $this->headers->get('foo'));
     }
 
     /**
@@ -63,7 +63,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     public function testGettingFirstValue()
     {
         $this->headers->add('foo', ['bar', 'baz']);
-        $this->assertEquals('bar', $this->headers->get('foo', null, true));
+        $this->assertEquals('bar', $this->headers->getFirst('foo', null));
     }
 
     /**
@@ -71,7 +71,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
      */
     public function testGettingFirstValueWhenKeyDoesNotExist()
     {
-        $this->assertEquals('foo', $this->headers->get('THIS_DOES_NOT_EXIST', 'foo', true));
+        $this->assertEquals('foo', $this->headers->getFirst('THIS_DOES_NOT_EXIST', 'foo'));
     }
 
     /**
@@ -136,21 +136,21 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     {
         // Test lower-case names
         $this->headers->add('foo', 'bar');
-        $this->assertEquals('bar', $this->headers->get('foo'));
-        $this->assertEquals(['bar'], $this->headers->get('Foo', null, false));
+        $this->assertEquals(['bar'], $this->headers->get('Foo'));
+        $this->assertEquals('bar', $this->headers->getFirst('foo'));
         $this->assertTrue($this->headers->containsKey('foo'));
         $this->headers->removeKey('foo');
         // Test snake-case names
         $this->headers->add('FOO_BAR', 'baz');
-        $this->assertEquals('baz', $this->headers->get('FOO_BAR'));
-        $this->assertEquals(['baz'], $this->headers->get('Foo-Bar', null, false));
+        $this->assertEquals(['baz'], $this->headers->get('Foo-Bar'));
+        $this->assertEquals('baz', $this->headers->getFirst('FOO_BAR'));
         $this->assertTrue($this->headers->containsKey('FOO_BAR'));
         $this->headers->removeKey('FOO_BAR');
         // Test upper-case names
         $this->assertEquals([], $this->headers->toArray());
         $this->headers->add('BAZ', 'blah');
-        $this->assertEquals('blah', $this->headers->get('BAZ'));
-        $this->assertEquals(['blah'], $this->headers->get('Baz', null, false));
+        $this->assertEquals(['blah'], $this->headers->get('Baz'));
+        $this->assertEquals('blah', $this->headers->getFirst('BAZ'));
         $this->assertTrue($this->headers->containsKey('BAZ'));
         $this->headers->removeKey('BAZ');
         $this->assertEquals([], $this->headers->toArray());
@@ -173,7 +173,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     {
         $this->headers->add('foo', 'bar');
         $this->headers->add('foo', 'baz', true);
-        $this->assertEquals(['bar', 'baz'], $this->headers->get('foo', null, false));
+        $this->assertEquals(['bar', 'baz'], $this->headers->get('foo'));
     }
 
     /**
@@ -183,7 +183,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     {
         $this->headers->add('foo', 'bar');
         $this->headers->add('foo', 'baz', false);
-        $this->assertEquals(['baz'], $this->headers->get('foo', null, false));
+        $this->assertEquals(['baz'], $this->headers->get('foo'));
     }
 
     /**

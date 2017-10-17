@@ -49,8 +49,8 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     {
         // Only cookies should be decoded
         $request = $this->factory->createFromGlobals(['HTTP_FOO' => '%25', 'HTTP_COOKIE' => '%25']);
-        $this->assertEquals('%25', $request->getHeaders()->get('Foo'));
-        $this->assertEquals('%', $request->getHeaders()->get('Cookie'));
+        $this->assertEquals('%25', $request->getHeaders()->getFirst('Foo'));
+        $this->assertEquals('%', $request->getHeaders()->getFirst('Cookie'));
     }
 
     /**
@@ -142,7 +142,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     public function testCookiesAreAddedToHeaders() : void
     {
         $request = $this->factory->createFromGlobals(['HTTP_COOKIE' => 'foo=bar; baz=blah']);
-        $this->assertEquals('foo=bar; baz=blah', $request->getHeaders()->get('Cookie'));
+        $this->assertEquals('foo=bar; baz=blah', $request->getHeaders()->getFirst('Cookie'));
     }
 
     /**
@@ -288,7 +288,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(HttpHeaders::class, $headers);
 
         foreach ($expectedHeaders as $expectedName => $expectedValue) {
-            $this->assertEquals($expectedValue, $headers->get($expectedName, null, false));
+            $this->assertEquals($expectedValue, $headers->get($expectedName, null));
         }
     }
 

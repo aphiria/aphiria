@@ -10,7 +10,10 @@ $request = (new RequestFactory)->createFromGlobals($_SERVER);
 
 ```php
 $request->getHeaders()->add('Foo', 'bar');
-$request->getHeaders()->get('Foo');
+print_r($request->getHeaders()->get('Foo'));
+// ['Foo' => ['bar']]
+echo $request->getHeaders()->getFirst('Foo');
+// 'bar'
 ```
 
 <h2>Read the request body as a string</h2>
@@ -55,8 +58,11 @@ $request->getProperties()->get('CLIENT_IP_ADDRESS');
 
 ```php
 $request->getHeaders()->add('test', 'foo=bar; baz');
-print_r($request->getHeaders()->getParameters('test')->toArray());
-// ['foo' => 'bar', 'baz' => null]
+$parameters = $request->getHeaders()->getParameters('test');
+echo $parameters->get('foo');
+// 'bar'
+echo $parameters->get('baz');
+// null
 ```
 
 <h2>Get a cookie</h2>
