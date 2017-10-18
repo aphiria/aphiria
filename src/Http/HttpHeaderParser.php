@@ -27,57 +27,15 @@ class HttpHeaderParser
     private const PARAMETER_KEY_VALUE_REGEX = '/<[^>]+>|[^=]+/';
 
     /**
-     * Parses the parameters (semi-colon delimited values for a header) for all values of a header
-     *
-     * @param HttpHeaders $headers The headers to parse
-     * @param string $name The name of the header whose parameters we want
-     * @return IImmutableDictionary[] The dictionary of parameters for each value of the header
-     */
-    public function parseParametersForAllValues(HttpHeaders $headers, string $name)
-    {
-        if (!$headers->containsKey($name)) {
-            return [new ImmutableHashTable([])];
-        }
-
-        $parameters = [];
-        $values = [];
-        $headers->tryGet($name, $values);
-
-        foreach ($values as $value) {
-            $kvps = $this->parseParameters($value);
-
-            if (count($kvps) > 0) {
-                $parameters[] = $kvps;
-            }
-        }
-
-        return $parameters;
-    }
-
-    /**
      * Parses the parameters (semi-colon delimited values for a header) for the first value of a header
      *
-     * @param HttpHeaders $headers The headers to parse
-     * @param string $name The name of the header whose parameters we want
+     * @param string $value The value to parse
      * @return IImmutableDictionary The dictionary of parameters for the first value
      */
-    public function parseParametersForFirstValue(HttpHeaders $headers, string $name)
+    public function parseParameters(string $value)
     {
-        if (!$headers->containsKey($name)) {
-            return new ImmutableHashTable([]);
-        }
+        $kvps = [];
 
-        return $this->parseParameters($headers->getFirst($name));
-    }
-
-    /**
-     * Parses the parameters of a header value into a dictionary
-     *
-     * @param string|int|float $value The value to parse
-     * @return IImmutableDictionary The dictionary of parameter name => value pairs
-     */
-    private function parseParameters($value) : IImmutableDictionary
-    {
         foreach (preg_split(self::PARAMETER_SPLIT_REGEX, $value) as $kvp) {
             $matches = [];
 

@@ -95,7 +95,7 @@ $email = (new HttpRequestMessageParser)->readAsFormInput($request)->get('email')
 
 ```php
 $request->getHeaders()->add('test', 'foo=bar; baz');
-$parameters = (new HttpHeaderParser)->parseParametersForFirstValue($request->getHeaders(), 'test');
+$parameters = (new HttpHeaderParser)->parseParametersForFirstValue($request->getHeaders()->getFirst('test'));
 echo $parameters->get('foo');
 // 'bar'
 echo $parameters->get('baz');
