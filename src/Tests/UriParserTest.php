@@ -40,12 +40,12 @@ class UriParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that parsing the query string param without a value returns null
+     * Tests that parsing the query string param without a value returns false
      */
-    public function testParsingQueryStringParamWithoutValueReturnsNull() : void
+    public function testParsingQueryStringParamWithoutValueReturnsFalse() : void
     {
         $uri = new Uri('http', null, null, 'host.com', null, '', 'foo=bar', null);
-        $this->assertNull($this->parser->parseQueryString($uri)->get('baz'));
+        $this->assertFalse($this->parser->parseQueryString($uri)->containsKey('baz'));
     }
 
     /**

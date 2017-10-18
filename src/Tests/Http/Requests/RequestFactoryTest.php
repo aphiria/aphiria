@@ -288,7 +288,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(HttpHeaders::class, $headers);
 
         foreach ($expectedHeaders as $expectedName => $expectedValue) {
-            $this->assertEquals($expectedValue, $headers->get($expectedName, null));
+            $this->assertEquals($expectedValue, $headers->get($expectedName));
         }
     }
 

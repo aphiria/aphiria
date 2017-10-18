@@ -11,6 +11,7 @@
 namespace Opulence\Net\Http;
 
 use Opulence\Collections\HashTable;
+use OutOfBoundsException;
 
 /**
  * Defines HTTP headers
@@ -31,7 +32,8 @@ class HttpHeaders extends HashTable
         if (!$append || !$this->containsKey($normalizedName)) {
             parent::add($normalizedName, (array)$values);
         } else {
-            $currentValues = $this->get($name, []);
+            $currentValues = [];
+            $this->tryGet($name, $currentValues);
             parent::add($normalizedName, array_merge($currentValues, (array)$values));
         }
     }
@@ -40,18 +42,36 @@ class HttpHeaders extends HashTable
      * Gets the first values for a header
      *
      * @param string $name The name of the header whose value we want
-     * @param mixed|null $default The default value, if none was found
      * @return mixed The first value of the header
+     * @throws OutOfBoundsException Thrown if the key could not be found
      */
-    public function getFirst($name, $default = null)
+    public function getFirst($name)
     {
-        $value = $this->get($name, []);
-
-        if (count($value) === 0) {
-            return $default;
+        if (!$this->containsKey($name)) {
+            throw new OutOfBoundsException('Key does not exist');
         }
 
-        return $value[0];
+        return $this->get($name)[0];
+    }
+
+    /**
+     * Tries to get the first value of a header
+     *
+     * @param mixed $name The name of the header whose value we want
+     * @param mixed $value The value, if it is found
+     * @return bool True if the key exists, otherwise false
+     */
+    public function tryGetFirst($name, &$value) : bool
+    {
+        try {
+            $value = $this->get($name)[0];
+
+            return true;
+        } catch (OutOfBoundsException $ex) {
+            return false;
+        }
+
+        return false;
     }
 
     /**

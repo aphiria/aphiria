@@ -12,6 +12,7 @@ namespace Opulence\Net\Tests\Http;
 
 use Opulence\Collections\KeyValuePair;
 use Opulence\Net\Http\HttpHeaders;
+use OutOfBoundsException;
 
 /**
  * Tests the HTTP headers
@@ -63,15 +64,16 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     public function testGettingFirstValue()
     {
         $this->headers->add('foo', ['bar', 'baz']);
-        $this->assertEquals('bar', $this->headers->getFirst('foo', null));
+        $this->assertEquals('bar', $this->headers->getFirst('foo'));
     }
 
     /**
-     * Tests returning only the first value when the key does not exist
+     * Tests getting the first value when the key does not exist throws an exception
      */
-    public function testGettingFirstValueWhenKeyDoesNotExist()
+    public function testGettingFirstValueWhenKeyDoesNotExistThrowsException()
     {
-        $this->assertEquals('foo', $this->headers->getFirst('THIS_DOES_NOT_EXIST', 'foo'));
+        $this->expectException(OutOfBoundsException::class);
+        $this->headers->getFirst('foo');
     }
 
     /**
@@ -149,5 +151,17 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(1, $actualValues);
         // The header name will be normalized
         $this->assertEquals(['bar'], $actualValues['Foo']);
+    }
+
+    /**
+     * Tests that trying to get the first value returns true if the key exists, otherwise false
+     */
+    public function testTryGetFirstReturnsTrueIfKeyExistsOtherwiseFalse() : void
+    {
+        $value = null;
+        $this->assertFalse($this->headers->tryGetFirst('foo', $value));
+        $this->headers->add('foo', 'bar');
+        $this->assertTrue($this->headers->tryGetFirst('foo', $value));
+        $this->assertEquals('bar', $value);
     }
 }

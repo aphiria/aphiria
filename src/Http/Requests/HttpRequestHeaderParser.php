@@ -25,7 +25,10 @@ class HttpRequestHeaderParser
      */
     public function isJson(HttpHeaders $headers) : bool
     {
-        return preg_match("/application\/json/i", $headers->getFirst('Content-Type')) === 1;
+        $contentType = null;
+        $headers->tryGetFirst('Content-Type', $contentType);
+
+        return preg_match("/application\/json/i", $contentType) === 1;
     }
 
     /**
@@ -36,6 +39,9 @@ class HttpRequestHeaderParser
      */
     public function isXhr(HttpHeaders $headers) : bool
     {
-        return $headers->getFirst('X-Requested-With') === 'XMLHttpRequest';
+        $requestedWith = null;
+        $headers->tryGetFirst('X-Requested-With', $requestedWith);
+
+        return $requestedWith === 'XMLHttpRequest';
     }
 }

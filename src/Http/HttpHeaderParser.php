@@ -40,8 +40,10 @@ class HttpHeaderParser
         }
 
         $parameters = [];
+        $values = [];
+        $headers->tryGet($name, $values);
 
-        foreach ($headers->get($name, []) as $value) {
+        foreach ($values as $value) {
             $kvps = $this->parseParameters($value);
 
             if (count($kvps) > 0) {

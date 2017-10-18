@@ -82,35 +82,24 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that parsing an input with non-form-URL-encoded bodies return null
+     * Tests that parsing an input with non-form-URL-encoded bodies return an empty dictionary
      */
-    public function testParsingInputOnNonFormUrlEncodedBodyReturnsNull() : void
+    public function testParsingInputOnNonFormUrlEncodedBodyReturnsEmptyDictionary() : void
     {
         $this->headers->add('Content-Type', 'application/json');
-        $this->assertNull($this->parser->readAsFormInput($this->request)->get('foo'));
+        $this->assertEquals([], $this->parser->readAsFormInput($this->request)->toArray());
+        $this->assertCount(0, $this->parser->readAsFormInput($this->request));
     }
 
     /**
-     * Tests that parsing input with a null body will return null
+     * Tests that parsing input with a null body will return an empty dictionary
      */
-    public function testParsingInputWithNullBodyWillReturnNull() : void
+    public function testParsingInputWithNullBodyWillReturnEmptyDictionary() : void
     {
         $this->body = null;
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
         $this->assertEquals([], $this->parser->readAsFormInput($this->request)->toArray());
-        $this->assertNull($this->parser->readAsFormInput($this->request)->get('foo'));
-    }
-
-    /**
-     * Tests that parsing non-existent form input returns null
-     */
-    public function testParsingNonExistentFormInputReturnsNull() : void
-    {
-        $this->body->expects($this->once())
-            ->method('readAsString')
-            ->willReturn('foo=bar');
-        $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->assertNull($this->parser->readAsFormInput($this->request)->get('baz'));
+        $this->assertCount(0, $this->parser->readAsFormInput($this->request));
     }
 
     /**
