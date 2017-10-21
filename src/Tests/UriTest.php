@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Tests;
 
+use Exception;
 use InvalidArgumentException;
 use Opulence\Net\Uri;
 
@@ -145,7 +146,11 @@ class UriTest extends \PHPUnit\Framework\TestCase
             );
             $this->fail('Port below acceptable range was accepted');
         } catch (InvalidArgumentException $ex) {
-            // Don't do anything
+            // Verify we got here
+            $this->assertTrue(true);
+        } catch (Exception $ex) {
+            // Don't want to get here
+            $this->assertTrue(false);
         }
 
         try {
@@ -161,7 +166,11 @@ class UriTest extends \PHPUnit\Framework\TestCase
             );
             $this->fail('Port above acceptable range was accepted');
         } catch (InvalidArgumentException $ex) {
-            // Don't do anything
+            // Verify we got here
+            $this->assertTrue(true);
+        } catch (Exception $ex) {
+            // Don't want to get here
+            $this->assertTrue(false);
         }
     }
 

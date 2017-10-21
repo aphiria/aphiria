@@ -27,15 +27,31 @@ class HttpHeaders extends HashTable
      */
     public function add($name, $values, bool $append = false) : void
     {
-        $normalizedName = $this->getHashKey($name);
+        $normalizedName = $this->normalizeHeaderName($name);
 
         if (!$append || !$this->containsKey($normalizedName)) {
             parent::add($normalizedName, (array)$values);
         } else {
             $currentValues = [];
-            $this->tryGet($name, $currentValues);
+            $this->tryGet($normalizedName, $currentValues);
             parent::add($normalizedName, array_merge($currentValues, (array)$values));
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function containsKey($name) : bool
+    {
+        return parent::containsKey($this->normalizeHeaderName($name));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function get($name)
+    {
+        return parent::get($this->normalizeHeaderName($name));
     }
 
     /**
@@ -48,10 +64,18 @@ class HttpHeaders extends HashTable
     public function getFirst($name)
     {
         if (!$this->containsKey($name)) {
-            throw new OutOfBoundsException('Key does not exist');
+            throw new OutOfBoundsException("Header \"$name\" does not exist");
         }
 
         return $this->get($name)[0];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeKey($name) : void
+    {
+        parent::removeKey($this->normalizeHeaderName($name));
     }
 
     /**
@@ -75,13 +99,13 @@ class HttpHeaders extends HashTable
     }
 
     /**
-     * @inheritdoc
-     * Normalizes the name of the header
+     * Normalizes the name of the header so that capitalization and snake-casing doesn't matter
+     *
+     * @param string $name The name of the header to normalize
+     * @return string The normalized header name
      */
-    protected function getHashKey($name) : string
+    private function normalizeHeaderName(string $name) : string
     {
-        $normalizedName = ucwords(strtr(strtolower($name), '_', '-'), '-');
-
-        return parent::getHashKey($normalizedName);
+        return ucwords(strtr(strtolower($name), '_', '-'), '-');
     }
 }
