@@ -14,7 +14,6 @@ use InvalidArgumentException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\Requests\RequestFactory;
 use Opulence\Net\Http\StreamBody;
-use Opulence\Net\Http\StringBody;
 
 /**
  * Tests the request factory
@@ -37,9 +36,18 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testAuthorityInServerSetsAuthorityInUri() : void
     {
-        $request = $this->factory->createFromGlobals(['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'pw']);
+        $request = $this->factory->createRequestFromGlobals(['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'pw']);
         $this->assertEquals('user', $request->getUri()->getUser());
         $this->assertEquals('pw', $request->getUri()->getPassword());
+    }
+
+    /**
+     * Tests that the body is created from the input stream
+     */
+    public function testBodyIsCreatedFromInputStream() : void
+    {
+        $request = $this->factory->createRequestFromGlobals([]);
+        $this->assertInstanceOf(StreamBody::class, $request->getBody());
     }
 
     /**
@@ -48,7 +56,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     public function testCertainHeaderValuesAreUrlDecoded() : void
     {
         // Only cookies should be decoded
-        $request = $this->factory->createFromGlobals(['HTTP_FOO' => '%25', 'HTTP_COOKIE' => '%25']);
+        $request = $this->factory->createRequestFromGlobals(['HTTP_FOO' => '%25', 'HTTP_COOKIE' => '%25']);
         $this->assertEquals('%25', $request->getHeaders()->getFirst('Foo'));
         $this->assertEquals('%', $request->getHeaders()->getFirst('Cookie'));
     }
@@ -59,7 +67,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     public function testClientIPAddressIsSetAsPropertyWhenUsingTrustedProxy() : void
     {
         $factory = new RequestFactory(['192.168.1.1']);
-        $request = $factory->createFromGlobals(['REMOTE_ADDR' => '192.168.1.1']);
+        $request = $factory->createRequestFromGlobals(['REMOTE_ADDR' => '192.168.1.1']);
         $this->assertEquals('192.168.1.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
     }
 
@@ -78,7 +86,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         foreach ($ipData as $ipDatum) {
             $_SERVER['HTTP_FORWARDED'] = $ipDatum[0];
             $factory = new RequestFactory([], ['HTTP_FORWARDED' => 'HTTP_FORWARDED']);
-            $request = $factory->createFromGlobals(['HTTP_FORWARDED' => $ipDatum[0]]);
+            $request = $factory->createRequestFromGlobals(['HTTP_FORWARDED' => $ipDatum[0]]);
             $this->assertEquals($ipDatum[1], $request->getProperties()->get('CLIENT_IP_ADDRESS'));
         }
     }
@@ -89,7 +97,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     public function testClientIPHeaderUsedWhenSet()
     {
         $factory = new RequestFactory([], ['HTTP_CLIENT_IP' => 'HTTP_CLIENT_IP', 'HTTP_FORWARDED' => 'FORWARDED']);
-        $request = $factory->createFromGlobals(['HTTP_CLIENT_IP' => '192.168.1.1']);
+        $request = $factory->createRequestFromGlobals(['HTTP_CLIENT_IP' => '192.168.1.1']);
         $this->assertEquals('192.168.1.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
     }
 
@@ -99,7 +107,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     public function testClientPortUsedToDeterminePortWithTrustedProxy()
     {
         $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_PORT' => 'HTTP_X_FORWARDED_PORT']);
-        $request = $factory->createFromGlobals(['REMOTE_ADDR' => '192.168.1.1', 'HTTP_X_FORWARDED_PORT' => 8080]);
+        $request = $factory->createRequestFromGlobals(['REMOTE_ADDR' => '192.168.1.1', 'HTTP_X_FORWARDED_PORT' => 8080]);
         $this->assertEquals(8080, $request->getUri()->getPort());
     }
 
@@ -110,19 +118,19 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     {
         // Try with HTTPS
         $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO']);
-        $request = $factory->createFromGlobals(['REMOTE_ADDR' => '192.168.1.1', 'HTTP_X_FORWARDED_PROTO' => 'HTTPS']);
+        $request = $factory->createRequestFromGlobals(['REMOTE_ADDR' => '192.168.1.1', 'HTTP_X_FORWARDED_PROTO' => 'HTTPS']);
         $this->assertEquals('https', $request->getUri()->getScheme());
 
         // Try with SSL
-        $request = $factory->createFromGlobals(['REMOTE_ADDR' => '192.168.1.1', 'HTTP_X_FORWARDED_PROTO' => 'ssl']);
+        $request = $factory->createRequestFromGlobals(['REMOTE_ADDR' => '192.168.1.1', 'HTTP_X_FORWARDED_PROTO' => 'ssl']);
         $this->assertEquals('https', $request->getUri()->getScheme());
 
         // Try with "on"
-        $request = $factory->createFromGlobals(['REMOTE_ADDR' => '192.168.1.1', 'HTTP_X_FORWARDED_PROTO' => 'on']);
+        $request = $factory->createRequestFromGlobals(['REMOTE_ADDR' => '192.168.1.1', 'HTTP_X_FORWARDED_PROTO' => 'on']);
         $this->assertEquals('https', $request->getUri()->getScheme());
 
         // Try with HTTP
-        $request = $factory->createFromGlobals(['REMOTE_ADDR' => '192.168.1.1', 'HTTP_X_FORWARDED_PROTO' => 'HTTP']);
+        $request = $factory->createRequestFromGlobals(['REMOTE_ADDR' => '192.168.1.1', 'HTTP_X_FORWARDED_PROTO' => 'HTTP']);
         $this->assertEquals('http', $request->getUri()->getScheme());
     }
 
@@ -132,7 +140,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     public function testClientProtoUsedToDeterminePortWithTrustedProxy()
     {
         $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO']);
-        $request = $factory->createFromGlobals(['REMOTE_ADDR' => '192.168.1.1', 'HTTP_X_FORWARDED_PROTO' => 'https']);
+        $request = $factory->createRequestFromGlobals(['REMOTE_ADDR' => '192.168.1.1', 'HTTP_X_FORWARDED_PROTO' => 'https']);
         $this->assertEquals(443, $request->getUri()->getPort());
     }
 
@@ -141,17 +149,8 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCookiesAreAddedToHeaders() : void
     {
-        $request = $this->factory->createFromGlobals(['HTTP_COOKIE' => 'foo=bar; baz=blah']);
+        $request = $this->factory->createRequestFromGlobals(['HTTP_COOKIE' => 'foo=bar; baz=blah']);
         $this->assertEquals('foo=bar; baz=blah', $request->getHeaders()->getFirst('Cookie'));
-    }
-
-    /**
-     * Tests that an empty raw body creates body from the input stream
-     */
-    public function testEmptyRawBodyCreatesBodyFromInputStream() : void
-    {
-        $request = $this->factory->createFromGlobals();
-        $this->assertInstanceOf(StreamBody::class, $request->getBody());
     }
 
     /**
@@ -160,7 +159,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     public function testExceptionThrownWhenUsingUntrustedProxyHost()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->factory->createFromGlobals(['HTTP_HOST' => '192.168.1.1, 192.168.1.2, 192.168.1.3']);
+        $this->factory->createRequestFromGlobals(['HTTP_HOST' => '192.168.1.1, 192.168.1.2, 192.168.1.3']);
     }
 
     /**
@@ -170,7 +169,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $factory = new RequestFactory(['192.168.2.1']);
         $server = ['REMOTE_ADDR' => '192.168.2.1', 'HTTP_X_FORWARDED_HOST' => 'foo.com, bar.com'];
-        $request = $factory->createFromGlobals($server);
+        $request = $factory->createRequestFromGlobals($server);
         $this->assertEquals('bar.com', $request->getUri()->getHost());
     }
 
@@ -179,7 +178,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testHostWithPortStripsPortFromHost() : void
     {
-        $request = $this->factory->createFromGlobals(['HTTP_HOST' => 'foo.com:8080']);
+        $request = $this->factory->createRequestFromGlobals(['HTTP_HOST' => 'foo.com:8080']);
         $this->assertEquals('foo.com', $request->getUri()->getHost());
     }
 
@@ -188,11 +187,11 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testHttpsServerPropertyControlsSchemeOfUri() : void
     {
-        $httpsOnRequest = $this->factory->createFromGlobals(['SERVER_PROTOCOL' => 'HTTP/1.1', 'HTTPS' => 'on']);
+        $httpsOnRequest = $this->factory->createRequestFromGlobals(['SERVER_PROTOCOL' => 'HTTP/1.1', 'HTTPS' => 'on']);
         $this->assertEquals('https', $httpsOnRequest->getUri()->getScheme());
-        $httpsOffRequest = $this->factory->createFromGlobals(['SERVER_PROTOCOL' => 'HTTP/1.1', 'HTTPS' => 'off']);
+        $httpsOffRequest = $this->factory->createRequestFromGlobals(['SERVER_PROTOCOL' => 'HTTP/1.1', 'HTTPS' => 'off']);
         $this->assertEquals('http', $httpsOffRequest->getUri()->getScheme());
-        $noHttpsRequest = $this->factory->createFromGlobals(['SERVER_PROTOCOL' => 'HTTP/1.1']);
+        $noHttpsRequest = $this->factory->createRequestFromGlobals(['SERVER_PROTOCOL' => 'HTTP/1.1']);
         $this->assertEquals('http', $noHttpsRequest->getUri()->getScheme());
     }
 
@@ -201,7 +200,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testInputMethodIsSetInRequest() : void
     {
-        $request = $this->factory->createFromGlobals(['REQUEST_METHOD' => 'CONNECT']);
+        $request = $this->factory->createRequestFromGlobals(['REQUEST_METHOD' => 'CONNECT']);
         $this->assertEquals('CONNECT', $request->getMethod());
     }
 
@@ -211,7 +210,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     public function testInvalidHostCharThrowsException() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->factory->createFromGlobals(['HTTP_HOST' => '!']);
+        $this->factory->createRequestFromGlobals(['HTTP_HOST' => '!']);
     }
 
     /**
@@ -219,7 +218,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testMethodOverrideHeaderOverridesInputMethodForPostRequests() : void
     {
-        $request = $this->factory->createFromGlobals(
+        $request = $this->factory->createRequestFromGlobals(
             ['REQUEST_METHOD' => 'POST', 'X-HTTP-METHOD-OVERRIDE' => 'PUT']
         );
         $this->assertEquals('PUT', $request->getMethod());
@@ -230,7 +229,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testPathWithQueryStringStripsTheQueryStringFromUriPath() : void
     {
-        $request = $this->factory->createFromGlobals(['REQUEST_URI' => '/foo/bar?baz=blah']);
+        $request = $this->factory->createRequestFromGlobals(['REQUEST_URI' => '/foo/bar?baz=blah']);
         $this->assertEquals('/foo/bar', $request->getUri()->getPath());
     }
 
@@ -239,7 +238,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testPortHeaderSetsPortOnUri() : void
     {
-        $request = $this->factory->createFromGlobals(['SERVER_PORT' => 8080]);
+        $request = $this->factory->createRequestFromGlobals(['SERVER_PORT' => 8080]);
         $this->assertEquals(8080, $request->getUri()->getPort());
     }
 
@@ -248,7 +247,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testQueryStringServerPropertyIsUsedBeforeRequestUriQueryString() : void
     {
-        $request = $this->factory->createFromGlobals(['QUERY_STRING' => '?foo=bar', 'REQUEST_URI' => '/baz?blah=dave']);
+        $request = $this->factory->createRequestFromGlobals(['QUERY_STRING' => '?foo=bar', 'REQUEST_URI' => '/baz?blah=dave']);
         $this->assertEquals('foo=bar', $request->getUri()->getQueryString());
     }
 
@@ -257,7 +256,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testRequestUriQueryStringIsUsedIfQueryStringServerPropertyDoesNotExist() : void
     {
-        $request = $this->factory->createFromGlobals(['REQUEST_URI' => '/foo?bar=baz']);
+        $request = $this->factory->createRequestFromGlobals(['REQUEST_URI' => '/foo?bar=baz']);
         $this->assertEquals('bar=baz', $request->getUri()->getQueryString());
     }
 
@@ -284,21 +283,11 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
             'Php-Auth-Type' => ['php_auth_type'],
             'Php-Auth-User' => ['php_auth_user']
         ];
-        $headers = $this->factory->createFromGlobals($server)->getHeaders();
+        $headers = $this->factory->createRequestFromGlobals($server)->getHeaders();
         $this->assertInstanceOf(HttpHeaders::class, $headers);
 
         foreach ($expectedHeaders as $expectedName => $expectedValue) {
             $this->assertEquals($expectedValue, $headers->get($expectedName));
         }
-    }
-
-    /**
-     * Tests that an string raw body creates body from that string
-     */
-    public function testStringRawBodyCreatesBodyFromThatString() : void
-    {
-        $request = $this->factory->createFromGlobals([], 'foo');
-        $this->assertInstanceOf(StringBody::class, $request->getBody());
-        $this->assertEquals('foo', $request->getBody()->readAsString());
     }
 }

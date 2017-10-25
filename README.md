@@ -1,228 +1,352 @@
-<h1>Requests</h1>
+# Net
 
-<h2>Create a request from globals</h2>
+## Table of Contents
+1. [Introduction](#introduction)
+    1. [Why Not Use PSR-7?](#why-not-use-psr-7)
+2. [HTTP Messages](#http-messages)
+3. [HTTP Bodies](#http-bodies)
+    1. [String Bodies](#string-bodies)
+    2. [Stream Bodies](#stream-bodies)
+4. [HTTP Headers](#http-headers)
+5. [Requests](#requests)
+    1. [Creating a Request From Globals](#creating-request-from-globals)
+    2. [Reading Form Inpu](#requests-getting-form-input)
+    3. [Reading JSON](#requests-reading-json)
+    4. [Reading Multipart Requests](#requests-reading-multipart-requests)
+    5. Todo: Add docs for request header parser
+6. [Responses](#responses)
+    1. Todo: Setting bodies
+    2. Todo: Setting cookies
+    3. [Writing Responses](#writing-responses)
+    4. Todo: Add docs for response message formatters
+    5. Todo: Add docs for response header formatters
+7. [URIs](#uris)
+    1. [Creating URIs From Strings](#creating-uris-from-strings)
+    2. [Parsing Query String Parameters](#uris-parsing-query-string-parameters)
 
-```php
-$request = (new RequestFactory)->createFromGlobals($_SERVER);
-```
+<h2 id="introduction">Introduction</h2>
 
-<h2>Get/set headers</h2>
+Opulence's network library provides abstractions for URIs, HTTP request and response messages, bodies, and headers.  It also has handy methods for helpers for things like [parsing URI query strings](#uris-parsing-query-string-parameters), [reading request bodies as form input](#requests-reading-body-as-form-input), and [setting cookies in the response headers](#responses-setting-cookies).  It adheres as closely to the HTTP spec as possible, and aims to decouple developers from PHP's horrendous abstractions for HTTP requests and responses.
 
-The following will throw an `OutOfBoundsException` if the key does not exist:
+<h4 id="why-not-use-psr-7">Why Not Use PSR-7?</h4>
 
-```php
-$request->getHeaders()->add('Foo', 'bar');
-print_r($request->getHeaders()->get('Foo')); // ['bar']
-echo $request->getHeaders()->getFirst('Foo'); // 'bar'
-```
+PSR-7 was an attempt to standardize the representation of HTTP requests and responses, as well as routing middleware.  PHP does not have these things baked-in, and every framework had previously been rolling its own wrappers, which weren't interopible between frameworks.  Although a noble attempt, PSR-7 had many contested features:
 
-To safely try and get a header value, use `tryGet()` or `tryGetFirst()`:
+1. Request and response immutability
+    * This has often been considered cumbersome, bug-prone, and a bad use-case for immutability
+2. HTTP message bodies were streams
+    * Bodies aren't inherently streams - they should be _readable as_ streams, and _writable to_ streams
+    * Since some streams are readable exactly once, this breaks the idea of immutability in the first point
+3. PSR-7 improperly abstracted uploaded files - they are part of the body, not the request as a whole
+4. Headers were added through the HTTP message rather than encapsulated in a dictionary-like object that was contained in the message
 
-```php
-$request->getHeaders()->add('Foo', 'bar');
-$value = null;
-$request->getHeaders()->tryGet('Foo', $value);
-print_r($value); // ['bar']
-$request->getHeaders()->tryGetFirst('Foo', $value);
-echo $value; // 'bar'
-```
+Opulence's network library aims to fix these shortcomings.
 
-<h2>Read the request body as a string</h2>
+<h2 id="http-messages">HTTP Messages</h2>
 
-```php
-$request->getBody()->readAsString();
-```
-Or:
-
-```php
-(string)request->getBody();
-```
-
-<h2>Read a chunk of a stream body</h2>
-
-```php
-$request->getBody()->readAsStream()->read(64);
-```
-
-<h2>Get/set request properties</h2>
-
-```php
-$request->getProperties()->add('foo', 'bar');
-$request->getProperties()->get('foo');
-```
-
-<h2>Set trusted proxy IP addresses</h2>
+HTTP messages are ASCII-encoded text messages that contain headers and bodies.  In Opulence, they're represented by `Opulence\Net\Http\IHttpMessage`.  They come with a few basic methods:
 
 ```php
-$factory = new RequestFactory(['192.168.1.1', '192.168.1.2']);
-$request = $factory->createFromGlobals($_SERVER);
-```
+interface IHttpMessage
+{
+    /**
+     * Gets the body of the HTTP message
+     *
+     * @return IHttpBody|null The body if there is one, otherwise null
+     */
+    public function getBody() : ?IHttpBody;
 
-<h2>Get client IP address</h2>
+    /**
+     * Gets the headers of the HTTP message
+     *
+     * @return HttpHeaders The headers
+     */
+    public function getHeaders() : HttpHeaders;
 
-```php
-// Create request (must use RequestFactory)
-$request->getProperties()->get('CLIENT_IP_ADDRESS');
-```
+    /**
+     * Gets the protocol version (eg '1.1' or '2.0') from the HTTP message
+     *
+     * @return string The protocol version
+     */
+    public function getProtocolVersion() : string;
 
-<h2>Get a cookie</h2>
-
-```php
-$userId = $request->getHeaders()->getParameters('Cookie')->get('userId');
-```
-
-<h1>Request Parsers</h1>
-
-<h2>Get a query string parameter</h2>
-
-```php
-$userId = (new UriParser)->parseQueryString($request->getUri())->get('userId');
-```
-
-<h2>Get all form input</h2>
-
-```php
-$formData = (new HttpRequestMessageParser)->readAsFormInput($request);
-```
-
-<h2>Get a specific form input</h2>
-
-```php
-$email = (new HttpRequestMessageParser)->readAsFormInput($request)->get('email');
-```
-
-<h2>Get header value parameters</h2>
-
-```php
-$request->getHeaders()->add('test', 'foo=bar; baz');
-$parameters = (new HttpHeaderParser)->parseParametersForFirstValue($request->getHeaders()->getFirst('test'));
-echo $parameters->get('foo');
-// 'bar'
-echo $parameters->get('baz');
-// null
-```
-
-<h2>Parse the request as multipart request</h2>
-
-```php
-$multipartBodies = (new HttpRequestMessageParser)->readAsMultipart($request);
-
-foreach ($multipartBodies as $multipartBody) {
-    // Get the headers of the body part
-    $multipartBody->getHeaders();
-    // Get the body of the body part
-    $multipartBody->getBody();
+    /**
+     * Sets the body of the HTTP message
+     *
+     * @param IHttpBody $body The body
+     */
+    public function setBody(IHttpBody $body) : void;
 }
 ```
 
-<h2>Check if the request was JSON</h2>
+Requests and responses are specific types of HTTP messages.
+
+<h2 id="http-bodies">HTTP Bodies</h2>
+
+HTTP bodies contain data associated with the HTTP message, and are optional.  They're repsented by `Opulence\Net\Http\IHttpBody`.  They provide a few methods to read and write their contents to streams and to strings:
 
 ```php
-$isJson = (new HttpRequestHeaderParser)->isJson($request->getHeaders());
+interface IHttpBody
+{
+    /**
+     * Reads the HTTP body as a string
+     *
+     * @return string The string
+     */
+    public function __toString() : string;
+
+    /**
+     * Reads the HTTP body as a stream
+     *
+     * @return IStream The stream
+     * @throws RuntimeException Thrown if there was an error reading as a stream
+     */
+    public function readAsStream() : IStream;
+
+    /**
+     * Reads the HTTP body as a string
+     *
+     * @return string The string
+     */
+    public function readAsString() : string;
+
+    /**
+     * Writes the HTTP body to a stream
+     *
+     * @param IStream $stream The stream to write to
+     * @throws RuntimeException Thrown if there was an error writing to the stream
+     */
+    public function writeToStream(IStream $stream) : void;
 ```
 
-<h2>Read body as JSON</h2>
+<h4 id="string-bodies">String Bodies</h4>
+
+HTTP bodies are most commonly represented as strings.  Opulence makes it easy to create a string body via `StringBody`:
 
 ```php
-$json = (new HttpRequestMessageParser)->readAsJson($request);
+use Opulence\Net\Http\StringBody;
+
+$body = new StringBody('foo');
 ```
 
-<h1>Responses</h1>
+<h4 id="stream-bodies">Stream Bodies</h4>
 
-<h2>Create a response</h2>
+Sometimes, bodies might be too big to hold entirely in memory.  This is where `StreamBody` comes in handy:
 
 ```php
-$response = new Response();
+use Opulence\IO\Streams\Stream;
+use Opulence\Net\Http\StreamBody;
+
+$stream = new Stream(fopen('foo.txt', 'r+'));
+$body = new StreamBody($stream);
 ```
 
-<h2>Get/set headers</h2>
+<h2 id="http-headers">HTTP Headers</h2>
+
+Headers provide metadata about the HTTP message.  In Opulence, they're implemented by `Opulence\Net\Http\HttpHeaders`, which extends  [`Opulence\Collections\HashTable`](collections#hash-tables).  On top of the methods provided by `HashTable`, they also provide the following methods:
 
 ```php
-$response->getHeaders()->add('Foo', 'bar');
-$response->getHeaders()->get('Foo'); // ['bar']
-$response->getHeaders()->getFirst('Foo'); // 'bar'
+/**
+ * Gets the first values for a header
+ *
+ * @param string $name The name of the header whose value we want
+ * @return mixed The first value of the header
+ * @throws OutOfBoundsException Thrown if the key could not be found
+ */
+public function getFirst($name);
+
+/**
+ * Tries to get the first value of a header
+ *
+ * @param mixed $name The name of the header whose value we want
+ * @param mixed $value The value, if it is found
+ * @return bool True if the key exists, otherwise false
+ */
+public function tryGetFirst($name, &$value) : bool;
 ```
 
-<h2>Specify a string body</h2>
+Header names that are passed into the methods in `HttpHeaders` are normalized to Train-Case.  In other words, `foo_bar` will become `Foo-Bar`.
+
+<h2 id="requests">Requests</h2>
+
+Requests are HTTP messages sent by clients to servers.  They contain a few more methods than `IHttpMessage`:
 
 ```php
-$response = new Response();
-$response->setBody(new StringBody('This is my response'));
+interface IHttpRequestMessage extends IHttpMessage
+{
+    /**
+     * Gets the HTTP method for the request
+     *
+     * @return string The HTTP method
+     */
+    public function getMethod() : string;
+
+    /**
+     * Gets the properties of the request
+     * These are custom pieces of metadata that the application can attach to the request
+     *
+     * @return HashTable The collection of properties
+     */
+    public function getProperties() : IDictionary;
+
+    /**
+     * Gets the URI of the request
+     *
+     * @return Uri The URI
+     */
+    public function getUri() : Uri;
+}
 ```
 
-<h2>Specify a stream body</h2>
+<h4 id="creating-request-from-globals">Creating a Request From Globals</h4>
+
+PHP has superglobal arrays that store information about the requests.  They're a mess, architecturally-speaking.  Opulence attempts to insulate developers from the nastiness of superglobals by giving you a simple method to create requests and responses.  To create a request, use `RequestFactory`:
 
 ```php
-$response = new Response();
-$stream = new Stream(fopen('php://temp', 'r+'));
-$stream->write('This is my response');
-$response->setBody(new StreamBody($stream));
+use Opulence\Net\Http\Requests\RequestFactory;
+
+$request = (new RequestFactory)->createRequestFromGlobals($_SERVER);
 ```
 
-<h2>Actually write the response to the output stream</h2>
+Opulence reads all the information it needs from the `$_SERVER` superglobal - it doesn't need the others.
+
+Todo: Document trusted proxies
+
+<h4 id="requests-getting-form-input">Reading Form Input</h4>
+
+Todo
+
+<h4 id="requests-reading-json">Reading JSON</h4>
+
+Todo
+
+<h4 id="requests-reading-multipart-requests">Reading Multipart Requests</h4>
+
+Todo
+
+<h2 id="responses">Responses</h2>
+
+Responses are HTTP messages that are sent by servers back to the client.
 
 ```php
-$response = new Response();
-// Set the body...
-(new ResponseWriter)->writeResponse($response);
+interface IHttpResponseMessage extends IHttpMessage
+{
+    /**
+     * Gets the reason phrase of the response
+     *
+     * @return string|null The reason phrase if one is set, otherwise null
+     */
+    public function getReasonPhrase() : ?string;
+
+    /**
+     * Gets the HTTP status code of the response
+     *
+     * @return int The HTTP status code of the response
+     */
+    public function getStatusCode() : int;
+
+    /**
+     * Sets the HTTP status code of the response
+     *
+     * @param int $statusCode The HTTP status code of the response
+     * @param string|null $reasonPhrase The reason phrase if there is one, otherwise null
+     */
+    public function setStatusCode(int $statusCode, ?string $reasonPhrase = null) : void;
+}
 ```
 
-Or specify the output stream to send to (defaults to PHP's output buffer):
+<h4 id="writing-responses">Writing Responses</h4>
+
+Todo
+
+<h2 id="uris">URIs</h2>
+
+A URI identifies a resource, typically over a network.  They contain such information as the scheme, host, port, path, query string, and fragment.  Opulence represents them in `Opulence\Net\Uri`, and they include the following methods:
 
 ```php
-$outputStream = new Stream(fopen('php://temp', 'r+'));
-(new ResponseWriter($outputStream))->writeResponse($response);
+/**
+ * Converts the URI to a string
+ *
+ * @return string The URI as a string
+ */
+public function __toString() : string;
+
+/**
+ * Gets the fragment
+ *
+ * @return string|null The fragment if set, otherwise null
+ */
+public function getFragment() : ?string;
+
+/**
+ * Gets the host
+ *
+ * @return string The host
+ */
+public function getHost() : string;
+
+/**
+ * Gets the password
+ *
+ * @return string|null The password if set, otherwise null
+ */
+public function getPassword() : ?string;
+
+/**
+ * Gets the path
+ *
+ * @return string The path
+ */
+public function getPath() : string;
+
+/**
+ * Gets the port
+ *
+ * @return int|null The port if set, otherwise null
+ */
+public function getPort() : ?int;
+
+/**
+ * Gets the query string
+ *
+ * @return string|null The query string if set, otherwise null
+ */
+public function getQueryString() : ?string;
+
+/**
+ * Gets the scheme
+ *
+ * @return string The scheme
+ */
+public function getScheme() : string;
+
+/**
+ * Gets the user
+ *
+ * @return string|null The user if set, otherwise null
+ */
+public function getUser() : ?string;
 ```
 
-<h1>Response formatters</h1>
+<h4 id="creating-uris-from-strings">Creating URIs From Strings</h4>
 
-<h2>Create a JSON response</h2>
+To create an instance of `Uri` from a raw string, eg `https://example.com/foo?bar=baz`, use `UriFactory`:
 
 ```php
-$response = new Response();
-(new HttpResponseMessageFormatter)->writeJson($response, $someArray);
+use Opulence\Net\UriFactory;
+
+$uri = (new UriFactory)->createUriFromString($rawString);
 ```
 
-Or manually:
+<h4 id="uris-parsing-query-string-parameters">Parsing Query String Parameters</h4>
+
+`Uri::getQueryString()` returns the raw query string.  To parse them into an immutable [dictionary](collections#immutable-hash-tables) (similar to PHP's `$_GET`), use `UriParser`:
 
 ```php
-$response = new Response();
-$response->setBody(new StringBody(json_encode($someArray)));
-$response->getHeaders()->add('Content-Type', 'application/json');
-```
+use Opulence\Net\UriFactory;
+use Opulence\Net\UriParser;
 
-<h2>Create a redirect response</h2>
-
-```php
-$response = new Response();
-(new HttpResponseMessageFormatter)->redirectToUri($response, 'https://google.com');
-```
-
-Or manually:
-
-```php
-$response = new Response(302);
-$response->getHeaders()->add('Location', 'https://google.com');
-```
-
-<h2>Set a cookie</h2>
-
-```php
-$response = new Response();
-$cookie = new Cookie('userid', '123', new DateTime('+1 day'));
-(new HttpResponseHeaderFormatter)->setCookie($response->getHeaders(), $cookie);
-```
-
-<h1>URI</h1>
-
-<h2>Create URI from string</h2>
-
-```php
-$uri = Uri::createFromString('http://foo.com/bar?baz');
-```
-
-<h2>Serialize URI to string</h2>
-
-```php
-(string)$uri;
+$uri = (new UriFactory)->createUriFromString('https://example.com?foo=bar');
+$queryStringParams = (new UriParser)->parseQueryString($uri);
+echo $queryStringParams->get('foo'); // "bar"
 ```

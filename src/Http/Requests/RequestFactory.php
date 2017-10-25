@@ -17,7 +17,6 @@ use Opulence\IO\Streams\Stream;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\StreamBody;
-use Opulence\Net\Http\StringBody;
 use Opulence\Net\Uri;
 
 /**
@@ -64,10 +63,9 @@ class RequestFactory
      * Creates a request message from PHP globals
      *
      * @param array $server The server super global
-     * @param string|null $rawBody The raw request message body, or null if using the input stream
      * @return IHttpRequestMessage The created request message
      */
-    public function createFromGlobals(array $server = [], ?string $rawBody = null) : IHttpRequestMessage
+    public function createRequestFromGlobals(array $server) : IHttpRequestMessage
     {
         $method = $server['REQUEST_METHOD'] ?? 'GET';
 
@@ -77,7 +75,7 @@ class RequestFactory
         }
 
         $headers = $this->createHeadersFromGlobals($server);
-        $body = $this->createBodyFromRawBody($rawBody);
+        $body = $this->createBodyFromRawBody();
         $uri = $this->createUriFromGlobals($server);
         $properties = $this->createProperties($server);
 
@@ -85,18 +83,13 @@ class RequestFactory
     }
 
     /**
-     * Creates a body from the raw body
+     * Creates a body from the input stream
      *
-     * @param string|null $rawBody The raw body if one is specified, otherwise we use the input stream
      * @return IHttpBody The body
      */
-    protected function createBodyFromRawBody(?string $rawBody) : IHttpBody
+    protected function createBodyFromRawBody() : IHttpBody
     {
-        if ($rawBody === null) {
-            return new StreamBody(new Stream(fopen('php://input', 'r+')));
-        }
-
-        return new StringBody($rawBody);
+        return new StreamBody(new Stream(fopen('php://input', 'r+')));
     }
 
     /**

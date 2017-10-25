@@ -107,30 +107,6 @@ class Uri
     }
 
     /**
-     * Creates a URI from a string
-     *
-     * @param string $uri The string URI to convert
-     * @return Uri The created URI
-     */
-    public static function createFromString(string $uri) : Uri
-    {
-        if (($parsedUri = parse_url($uri)) === false) {
-            throw new InvalidArgumentException("Uri $uri is malformed");
-        }
-
-        return new Uri(
-            $parsedUri['scheme'] ?? 'http',
-            $parsedUri['user'] ?? null,
-            $parsedUri['pass'] ?? null,
-            $parsedUri['host'] ?? '',
-            $parsedUri['port'] ?? null,
-            $parsedUri['path'] ?? '',
-            $parsedUri['query'] ?? null,
-            $parsedUri['fragment'] ?? null
-        );
-    }
-
-    /**
      * Gets the fragment
      *
      * @return string|null The fragment if set, otherwise null

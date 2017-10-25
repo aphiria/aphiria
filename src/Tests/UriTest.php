@@ -40,22 +40,6 @@ class UriTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests creating from a string creates a URI with the correct values
-     */
-    public function testCreatingFromStringCreatesUriWithCorrectValues() : void
-    {
-        $uri = Uri::createFromString('https://user:password@host:8080/path?query#fragment');
-        $this->assertEquals('https', $uri->getScheme());
-        $this->assertEquals('user', $uri->getUser());
-        $this->assertEquals('password', $uri->getPassword());
-        $this->assertEquals('host', $uri->getHost());
-        $this->assertEquals(8080, $uri->getPort());
-        $this->assertEquals('/path', $uri->getPath());
-        $this->assertEquals('query', $uri->getQueryString());
-        $this->assertEquals('fragment', $uri->getFragment());
-    }
-
-    /**
      * Tests getting the fragment
      */
     public function testGettingFragment() : void
@@ -117,15 +101,6 @@ class UriTest extends \PHPUnit\Framework\TestCase
     public function testGettingUser() : void
     {
         $this->assertEquals('user', $this->uri->getUser());
-    }
-
-    /**
-     * Tests a malformed URI throws an exception when creating from string
-     */
-    public function testMalformedUriThrowsExceptionWhenCreatingFromString() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        Uri::createFromString('host:65536');
     }
 
     /**

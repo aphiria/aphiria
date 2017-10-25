@@ -19,16 +19,16 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Opulence\\Net\\": "src",
-      "Opulence\\IO\\": "../IO/src",
-      "Opulence\\Collections\\": "../opulence/src/Opulence/Collections"
+      "Opulence\\Net\\": "src"
     },
     "exclude-from-classmap": [
         "**/Tests/"
     ]
   },
   "require": {
-    "php": "^7.1"
+    "php": "^7.1",
+    "opulence/collections": "1.1.*@dev",
+    "opulence/io": "1.1.*@dev"
   },
   "extra": {
     "branch-alias": {

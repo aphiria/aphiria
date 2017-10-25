@@ -29,6 +29,7 @@ interface IHttpRequestMessage extends IHttpMessage
 
     /**
      * Gets the properties of the request
+     * These are custom pieces of metadata that the application can attach to the request
      *
      * @return HashTable The collection of properties
      */
