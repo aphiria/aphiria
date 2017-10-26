@@ -73,22 +73,13 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that parsing form input with non-form-URL-encoded bodies return an empty array
+     * Tests that parsing form input with non-form-URL-encoded bodies throws an exception
      */
-    public function testParsingInputWithNonFormUrlEncodedBodyReturnsEmptyArray() : void
+    public function testParsingInputOnNonFormUrlEncodedBodyThrowsException() : void
     {
+        $this->expectException(InvalidArgumentException::class);
         $this->headers->add('Content-Type', 'application/json');
-        $this->assertEquals([], $this->parser->readAsFormInput($this->request)->toArray());
-    }
-
-    /**
-     * Tests that parsing an input with non-form-URL-encoded bodies return an empty dictionary
-     */
-    public function testParsingInputOnNonFormUrlEncodedBodyReturnsEmptyDictionary() : void
-    {
-        $this->headers->add('Content-Type', 'application/json');
-        $this->assertEquals([], $this->parser->readAsFormInput($this->request)->toArray());
-        $this->assertCount(0, $this->parser->readAsFormInput($this->request));
+        $this->parser->readAsFormInput($this->request);
     }
 
     /**
@@ -115,12 +106,13 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that parsing as JSON for a non-JSON request returns an empty array
+     * Tests that parsing as JSON for a non-JSON request throws an exception
      */
-    public function testParsingJsonForNonJsonRequestReturnsEmptyArray() : void
+    public function testParsingJsonForNonJsonRequestThrowsException() : void
     {
+        $this->expectException(InvalidArgumentException::class);
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->assertEquals([], $this->parser->readAsJson($this->request));
+        $this->parser->readAsJson($this->request);
     }
 
     /**

@@ -31,6 +31,7 @@ class HttpRequestMessageParser
      *
      * @param IHttpRequestMessage $request
      * @return IDictionary The body form input as a collection
+     * @throws InvalidArgumentException Thrown if the request is not a form-URL-encoded request
      */
     public function readAsFormInput(IHttpRequestMessage $request) : IDictionary
     {
@@ -38,7 +39,7 @@ class HttpRequestMessageParser
         $body = $request->getBody();
 
         if (!$this->isFormUrlEncodedRequest($headers) || $body === null) {
-            return new HashTable();
+            throw new InvalidArgumentException('Request is not a form URL-encoded reuqest');
         }
 
         $parsedFormInputCacheKey = spl_object_hash($body);
@@ -73,7 +74,7 @@ class HttpRequestMessageParser
     public function readAsMultipart(IHttpRequestMessage $request) : array
     {
         if (preg_match('/multipart\//i', $request->getHeaders()->getFirst('Content-Type')) !== 1) {
-            throw new InvalidArgumentException('Request is not multipart');
+            throw new InvalidArgumentException('Request is not a multipart request');
         }
 
         $boundaryMatches = [];
@@ -119,12 +120,13 @@ class HttpRequestMessageParser
      *
      * @param IHttpRequestMessage $request The request to parse
      * @return array The request body as JSON
+     * @throws InvalidArgumentException Thrown if the request is not a JSON request
      * @throws RuntimeException Thrown if the body could not be read as JSON
      */
     public function readAsJson(IHttpRequestMessage $request) : array
     {
         if (preg_match("/application\/json/i", $request->getHeaders()->getFirst('Content-Type')) !== 1) {
-            return [];
+            throw new InvalidArgumentException('Request is not a JSON request');
         }
 
         $json = json_decode($request->getBody()->readAsString(), true);

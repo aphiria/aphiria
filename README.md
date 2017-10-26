@@ -117,6 +117,7 @@ interface IHttpBody
      * @throws RuntimeException Thrown if there was an error writing to the stream
      */
     public function writeToStream(IStream $stream) : void;
+}
 ```
 
 <h4 id="string-bodies">String Bodies</h4>
@@ -185,7 +186,7 @@ interface IHttpRequestMessage extends IHttpMessage
      * Gets the properties of the request
      * These are custom pieces of metadata that the application can attach to the request
      *
-     * @return HashTable The collection of properties
+     * @return IDictionary The collection of properties
      */
     public function getProperties() : IDictionary;
 
@@ -210,19 +211,71 @@ $request = (new RequestFactory)->createRequestFromGlobals($_SERVER);
 
 Opulence reads all the information it needs from the `$_SERVER` superglobal - it doesn't need the others.
 
-Todo: Document trusted proxies
+<h5 id="trusted-proxies">Trusted Proxies</h5>
+
+If you're using a load balancer or some sort of proxy server, you'll need to add it to the list of trusted proxies:
+
+```php
+$factory = new RequestFactory(['192.168.1.1', '192.168.1.2']);
+$request = $factory->createRequestFromGlobals($_SERVER);
+```
+
+If you want to use your proxy to set custom, trusted headers, you may add them to the factory:
+
+```php
+$factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_IP' => 'X-My-Proxy-Ip']);
+$request = $factory->createRequestFromGlobals($_SERVER);
+```
 
 <h4 id="requests-getting-form-input">Reading Form Input</h4>
 
-Todo
+In vanilla PHP, you can read URL-encoded form input data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of URL-encoded form requests into a [dictionary](collections#hash-tables).
+
+```php
+use Opulence\Net\Http\Requests\HttpRequestMessageParser;
+
+// Let's assume the raw body is "email=foo%40bar.com"
+$formInput = (new HttpRequestMessageParser)->readAsFormInput($request);
+echo $formInput->get('email'); // "foo@bar.com"
+```
 
 <h4 id="requests-reading-json">Reading JSON</h4>
 
-Todo
+Rather than having to parse a JSON body yourself, you can use `HttpRequestMessageParser` to do it for you:
+
+```php
+use Opulence\Net\Http\Requests\HttpRequestMessageParser;
+
+$json = (new HttpRequestMessageParser)->readAsJson($request);
+```
 
 <h4 id="requests-reading-multipart-requests">Reading Multipart Requests</h4>
 
-Todo
+Multipart requests contain multiple bodies, each with headers.  That's actually how file upload files work - each file gets a body with headers indicating the name, type, and size of the file.  Opulence can parse these multipart bodies into a list of `MultipartBodyPart` objects.  Each `MultipartBodyPart` has an instance of `HttpHeaders` and `IHttpBody`.
+
+```php
+use Opulence\Net\Http\Requests\HttpRequestMessageParser;
+
+$multipartBodies = (new HttpRequestMessageParser)->readAsMultipart($request);
+
+foreach ($multipartBodies as $multipartBody) {
+    // Get the headers of the body part
+    $multipartBody->getHeaders();
+    // Get the body of the body part
+    $multipartBody->getBody();
+}
+```
+
+To copy a multipart body part to some form of storage, use `copyToStream()`:
+
+```php
+use Opulence\IO\Streams\Stream;
+
+// Todo: Create a stream for the destination.  Also, actually test this.
+$multipartBody->getBody()->readAsStream()->copyToStream(
+```
+
+Todo: Talk about how to save the uploaded files, grab their actual file info
 
 <h2 id="responses">Responses</h2>
 

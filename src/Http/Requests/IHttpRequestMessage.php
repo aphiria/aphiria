@@ -10,7 +10,6 @@
 
 namespace Opulence\Net\Http\Requests;
 
-use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
 use Opulence\Net\Http\IHttpMessage;
 use Opulence\Net\Uri;
@@ -31,7 +30,7 @@ interface IHttpRequestMessage extends IHttpMessage
      * Gets the properties of the request
      * These are custom pieces of metadata that the application can attach to the request
      *
-     * @return HashTable The collection of properties
+     * @return IDictionary The collection of properties
      */
     public function getProperties() : IDictionary;
 

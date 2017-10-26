@@ -15,7 +15,6 @@ use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
 use Opulence\IO\Streams\Stream;
 use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\StreamBody;
 use Opulence\Net\Uri;
 
@@ -75,21 +74,11 @@ class RequestFactory
         }
 
         $headers = $this->createHeadersFromGlobals($server);
-        $body = $this->createBodyFromRawBody();
+        $body = new StreamBody(new Stream(fopen('php://input', 'r+')));
         $uri = $this->createUriFromGlobals($server);
         $properties = $this->createProperties($server);
 
         return new Request($method, $headers, $body, $uri, $properties);
-    }
-
-    /**
-     * Creates a body from the input stream
-     *
-     * @return IHttpBody The body
-     */
-    protected function createBodyFromRawBody() : IHttpBody
-    {
-        return new StreamBody(new Stream(fopen('php://input', 'r+')));
     }
 
     /**

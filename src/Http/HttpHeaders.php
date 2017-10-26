@@ -94,8 +94,6 @@ class HttpHeaders extends HashTable
         } catch (OutOfBoundsException $ex) {
             return false;
         }
-
-        return false;
     }
 
     /**
