@@ -16,7 +16,7 @@ use Opulence\Net\Http\StringBody;
 /**
  * Defines the HTTP response message formatter
  */
-class HttpResponseMessageFormatter
+class ResponseFormatter
 {
     /**
      * Sets up the response to redirect to a particular URI

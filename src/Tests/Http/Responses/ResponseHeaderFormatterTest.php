@@ -13,14 +13,14 @@ namespace Opulence\Net\Tests\Http\Responses;
 use DateTime;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\Responses\Cookie;
-use Opulence\Net\Http\Responses\HttpResponseHeaderFormatter;
+use Opulence\Net\Http\Responses\ResponseHeaderFormatter;
 
 /**
  * Tests the HTTP response header formatter
  */
-class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
+class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var HttpResponseHeaderFormatter The formatter to use in tests */
+    /** @var ResponseHeaderFormatter The formatter to use in tests */
     private $formatter = null;
     /** @var HttpHeaders The HTTP headers to use in tests */
     private $headers = null;
@@ -30,7 +30,7 @@ class HttpResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->formatter = new HttpResponseHeaderFormatter();
+        $this->formatter = new ResponseHeaderFormatter();
         $this->headers = new HttpHeaders();
     }
 

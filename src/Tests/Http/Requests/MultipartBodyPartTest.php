@@ -46,7 +46,7 @@ class MultipartBodyPartTest extends \PHPUnit\Framework\TestCase
     public function testCopyingBodyToDestinationThatDoesNotExistThrowsException() : void
     {
         $this->expectException(RuntimeException::class);
-        $this->bodyPart->copyBody(__DIR__ . '/tmp/doesnotexist.txt');
+        $this->bodyPart->copyBodyToFile(__DIR__ . '/tmp/doesnotexist.txt');
     }
 
     /**
@@ -60,7 +60,7 @@ class MultipartBodyPartTest extends \PHPUnit\Framework\TestCase
         $this->body->expects($this->once())
             ->method('readAsStream')
             ->willReturn($bodyStream);
-        $this->bodyPart->copyBody(self::BODY_COPY_PATH);
+        $this->bodyPart->copyBodyToFile(self::BODY_COPY_PATH);
     }
 
     /**

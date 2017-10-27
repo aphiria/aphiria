@@ -232,21 +232,21 @@ $request = $factory->createRequestFromGlobals($_SERVER);
 In vanilla PHP, you can read URL-encoded form input data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of URL-encoded form requests into a [dictionary](collections#hash-tables).
 
 ```php
-use Opulence\Net\Http\Requests\HttpRequestMessageParser;
+use Opulence\Net\Http\Requests\RequestParser;
 
 // Let's assume the raw body is "email=foo%40bar.com"
-$formInput = (new HttpRequestMessageParser)->readAsFormInput($request);
+$formInput = (new RequestParser)->readAsFormInput($request);
 echo $formInput->get('email'); // "foo@bar.com"
 ```
 
 <h4 id="requests-reading-json">Reading JSON</h4>
 
-Rather than having to parse a JSON body yourself, you can use `HttpRequestMessageParser` to do it for you:
+Rather than having to parse a JSON body yourself, you can use `RequestParser` to do it for you:
 
 ```php
-use Opulence\Net\Http\Requests\HttpRequestMessageParser;
+use Opulence\Net\Http\Requests\RequestParser;
 
-$json = (new HttpRequestMessageParser)->readAsJson($request);
+$json = (new RequestParser)->readAsJson($request);
 ```
 
 <h4 id="requests-reading-multipart-requests">Reading Multipart Requests</h4>
@@ -254,9 +254,9 @@ $json = (new HttpRequestMessageParser)->readAsJson($request);
 Multipart requests contain multiple bodies, each with headers.  That's actually how file upload files work - each file gets a body with headers indicating the name, type, and size of the file.  Opulence can parse these multipart bodies into a list of `MultipartBodyPart` objects.  Each `MultipartBodyPart` has an instance of `HttpHeaders` and `IHttpBody`.
 
 ```php
-use Opulence\Net\Http\Requests\HttpRequestMessageParser;
+use Opulence\Net\Http\Requests\RequestParser;
 
-$multipartBodies = (new HttpRequestMessageParser)->readAsMultipart($request);
+$multipartBodies = (new RequestParser)->readAsMultipart($request);
 
 foreach ($multipartBodies as $multipartBody) {
     // Get the headers of the body part
@@ -266,16 +266,22 @@ foreach ($multipartBodies as $multipartBody) {
 }
 ```
 
-To copy a multipart body part to some form of storage, use `copyToStream()`:
+<h5 id="saving-uploaded-files">Saving Uploaded Files</h5>
+
+To save a multipart body part to a file, use `copyBodyToFile()`:
+
+```php
+$multipartBody->copyBodyToFile('path/to/copy/to');
+```
+
+If you need to copy the body to some other form of storage, eg a CDN, you can read the body as a stream and [copy it to another stream](io#copying-to-another-stream):
 
 ```php
 use Opulence\IO\Streams\Stream;
 
-// Todo: Create a stream for the destination.  Also, actually test this.
-$multipartBody->getBody()->readAsStream()->copyToStream(
+$destinationStream = new Stream(fopen('path/to/copy/to', 'w'));
+$multipartBody->getBody()->readAsStream()->copyToStream($destinationStream);
 ```
-
-Todo: Talk about how to save the uploaded files, grab their actual file info
 
 <h2 id="responses">Responses</h2>
 
@@ -310,7 +316,20 @@ interface IHttpResponseMessage extends IHttpMessage
 
 <h4 id="writing-responses">Writing Responses</h4>
 
-Todo
+Once you're ready to start sending the response back to the client, you can use `ResponseWriter`:
+
+```php
+use Opulence\Net\Http\Responses\ResponseWriter;
+
+(new ResponseWriter)->writeResponse($response);
+```
+
+By default, this will write the response to the `php://output` stream.  You can override the stream it writes to via the constructor:
+
+```php
+$outputStream = new Stream(fopen('path/to/output', 'w'));
+(new ResponseWriter($outputStream))->writeResponse($response);
+```
 
 <h2 id="uris">URIs</h2>
 

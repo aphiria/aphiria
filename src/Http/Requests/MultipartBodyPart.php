@@ -37,12 +37,12 @@ class MultipartBodyPart
     }
 
     /**
-     * Copies the body to a certain path
+     * Copies the body to a file path
      *
      * @param string $path The destination path to copy to
      * @throws RuntimeException Thrown if the destination path could not be written to
      */
-    public function copyBody(string $path) : void
+    public function copyBodyToFile(string $path) : void
     {
         $pathInfo = pathinfo($path);
 

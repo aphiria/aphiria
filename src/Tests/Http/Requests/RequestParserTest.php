@@ -13,19 +13,16 @@ namespace Opulence\Net\Tests\Http\Requests;
 use InvalidArgumentException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
-use Opulence\Net\Http\Requests\HttpRequestMessageParser;
-use Opulence\Net\Http\Requests\IHttpRequestMessage;
+use Opulence\Net\Http\Requests\RequestParser;
 use RuntimeException;
 
 /**
  * Tests the HTTP request message parser
  */
-class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
+class RequestParserTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var HttpRequestMessageParser The parser to use in tests */
+    /** @var RequestParser The parser to use in tests */
     private $parser = null;
-    /** @var IHttpRequestMessage|\PHPUnit_Framework_MockObject_MockObject The request to use in tests */
-    private $request = null;
     /** @var HttpHeaders The headers to use in tests */
     private $headers = null;
     /** @var IHttpBody|\PHPUnit_Framework_MockObject_MockObject The body to use in tests */
@@ -36,16 +33,9 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->parser = new HttpRequestMessageParser();
+        $this->parser = new RequestParser();
         $this->headers = new HttpHeaders();
         $this->body = $this->createMock(IHttpBody::class);
-        $this->request = $this->createMock(IHttpRequestMessage::class);
-        $this->request->expects($this->any())
-            ->method('getHeaders')
-            ->willReturn($this->headers);
-        $this->request->expects($this->any())
-            ->method('getBody')
-            ->willReturn($this->body);
     }
 
     /**
@@ -57,7 +47,7 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
             ->method('readAsString')
             ->willReturn('foo=bar');
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->assertEquals('bar', $this->parser->readAsFormInput($this->request)->get('foo'));
+        $this->assertEquals('bar', $this->parser->readAsFormInput($this->headers, $this->body)->get('foo'));
     }
 
     /**
@@ -69,28 +59,27 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
             ->method('readAsString')
             ->willReturn('foo=bar');
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->assertEquals('bar', $this->parser->readAsFormInput($this->request)->get('foo'));
+        $this->assertEquals('bar', $this->parser->readAsFormInput($this->headers, $this->body)->get('foo'));
     }
 
     /**
      * Tests that parsing form input with non-form-URL-encoded bodies throws an exception
      */
-    public function testParsingInputOnNonFormUrlEncodedBodyThrowsException() : void
+    public function testParsingInputWithNonFormUrlEncodedBodyThrowsException() : void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->headers->add('Content-Type', 'application/json');
-        $this->parser->readAsFormInput($this->request);
+        $this->parser->readAsFormInput($this->headers, $this->body);
     }
 
     /**
-     * Tests that parsing input with a null body will return an empty dictionary
+     * Tests that parsing input with a null body throws an exception
      */
-    public function testParsingInputWithNullBodyWillReturnEmptyDictionary() : void
+    public function testParsingInputWithNullBodyThrowsException() : void
     {
-        $this->body = null;
+        $this->expectException(InvalidArgumentException::class);
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->assertEquals([], $this->parser->readAsFormInput($this->request)->toArray());
-        $this->assertCount(0, $this->parser->readAsFormInput($this->request));
+        $this->parser->readAsFormInput($this->headers, null);
     }
 
     /**
@@ -102,7 +91,7 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn(json_encode(['foo' => 'bar']));
-        $this->assertEquals(['foo' => 'bar'], $this->parser->readAsJson($this->request));
+        $this->assertEquals(['foo' => 'bar'], $this->parser->readAsJson($this->headers, $this->body));
     }
 
     /**
@@ -112,7 +101,7 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->headers->add('Content-Type', 'application/x-www-form-urlencoded');
-        $this->parser->readAsJson($this->request);
+        $this->parser->readAsJson($this->headers, $this->body);
     }
 
     /**
@@ -125,7 +114,17 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn("\x0");
-        $this->parser->readAsJson($this->request);
+        $this->parser->readAsJson($this->headers, $this->body);
+    }
+
+    /**
+     * Tests that parsing JSON with a null body throws an exception
+     */
+    public function testParsingJsonWithNullBodyThrowsException() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->headers->add('Content-Type', 'application/json');
+        $this->parser->readAsJson($this->headers, null);
     }
 
     /**
@@ -138,7 +137,7 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
             ->method('readAsString')
             ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
         /** @var MultipartBodyPart[] $bodyParts */
-        $bodyParts = $this->parser->readAsMultipart($this->request);
+        $bodyParts = $this->parser->readAsMultipart($this->headers, $this->body);
         $this->assertCount(1, $bodyParts);
         $this->assertEquals('bar', $bodyParts[0]->getHeaders()->getFirst('Foo'));
         $this->assertEquals('blah', $bodyParts[0]->getHeaders()->getFirst('Baz'));
@@ -154,9 +153,19 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
             ->method('readAsString')
             ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
         /** @var MultipartBodyPart[] $bodyParts */
-        $bodyParts = $this->parser->readAsMultipart($this->request);
+        $bodyParts = $this->parser->readAsMultipart($this->headers, $this->body);
         $this->assertCount(1, $bodyParts);
         $this->assertEquals('body', $bodyParts[0]->getBody()->readAsString());
+    }
+
+    /**
+     * Tests that parsing a multipart request with a null body throws an exception
+     */
+    public function testParsingMultipartRequestWithNullBodyThrowsException() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->headers->add('Content-Type', 'multipart/mixed');
+        $this->parser->readAsJson($this->headers, null);
     }
 
     /**
@@ -166,7 +175,7 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->headers->add('Content-Type', 'multipart/mixed');
-        $this->parser->readAsMultipart($this->request);
+        $this->parser->readAsMultipart($this->headers, $this->body);
     }
 
     /**
@@ -176,6 +185,6 @@ class HttpRequestMessageParserTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->headers->add('Content-Type', 'text/plain');
-        $this->parser->readAsMultipart($this->request);
+        $this->parser->readAsMultipart($this->headers, $this->body);
     }
 }

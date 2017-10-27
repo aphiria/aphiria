@@ -1,5 +1,5 @@
 <phpunit
-    bootstrap="config/phpunit.php"
+    bootstrap="vendor/autoload.php"
     colors="true">
     <testsuite name="Net">
         <directory>src/Tests</directory>

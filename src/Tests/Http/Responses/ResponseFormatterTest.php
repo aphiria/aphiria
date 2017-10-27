@@ -11,16 +11,16 @@
 namespace Opulence\Net\Tests\Http\Responses;
 
 use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\Responses\HttpResponseMessageFormatter;
 use Opulence\Net\Http\Responses\IHttpResponseMessage;
+use Opulence\Net\Http\Responses\ResponseFormatter;
 use Opulence\Net\Http\StringBody;
 
 /**
  * Tests the HTTP response message formatter
  */
-class HttpResponseMessageFormatterTest extends \PHPUnit\Framework\TestCase
+class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var HttpResponseMessageFormatter The formatter to use in tests */
+    /** @var ResponseFormatter The formatter to use in tests */
     private $formatter = null;
     /** @var IHttpResponseMessage|\PHPUnit_Framework_MockObject_MockObject The message to use in tests */
     private $response = null;
@@ -32,7 +32,7 @@ class HttpResponseMessageFormatterTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->formatter = new HttpResponseMessageFormatter();
+        $this->formatter = new ResponseFormatter();
         $this->headers = new HttpHeaders();
         $this->response = $this->createMock(IHttpResponseMessage::class);
         $this->response->expects($this->any())

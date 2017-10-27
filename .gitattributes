@@ -6,5 +6,4 @@
 .gitignore export-ignore
 phpunit.xml export-ignore
 README.md export-ignore
-/config export-ignore
 /src/Tests export-ignore

@@ -15,13 +15,14 @@ use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
 use Opulence\Collections\KeyValuePair;
 use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\StringBody;
 use RuntimeException;
 
 /**
  * Defines the HTTP request message parser
  */
-class HttpRequestMessageParser
+class RequestParser
 {
     /** @var array The mapping of body hash IDs to their parsed form input */
     private $parsedFormInputCache = [];
@@ -29,15 +30,13 @@ class HttpRequestMessageParser
     /**
      * Parses a request body as form input
      *
-     * @param IHttpRequestMessage $request
+     * @param HttpHeaders $headers The headers to parse
+     * @param IHttpBody|null $body The body to parse
      * @return IDictionary The body form input as a collection
      * @throws InvalidArgumentException Thrown if the request is not a form-URL-encoded request
      */
-    public function readAsFormInput(IHttpRequestMessage $request) : IDictionary
+    public function readAsFormInput(HttpHeaders $headers, ?IHttpBody $body) : IDictionary
     {
-        $headers = $request->getHeaders();
-        $body = $request->getBody();
-
         if (!$this->isFormUrlEncodedRequest($headers) || $body === null) {
             throw new InvalidArgumentException('Request is not a form URL-encoded reuqest');
         }
@@ -67,13 +66,14 @@ class HttpRequestMessageParser
      * Parses a request as a multipart request
      * Note: This method should only be called once for best performance
      *
-     * @param IHttpRequestMessage $request The request to parse
+     * @param HttpHeaders $headers The headers to parse
+     * @param IHttpBody|null $body The body to parse
      * @return MultipartBodyPart[] The list of uploaded files
      * @throws InvalidArgumentException Thrown if the request is not a multipart request
      */
-    public function readAsMultipart(IHttpRequestMessage $request) : array
+    public function readAsMultipart(HttpHeaders $headers, ?IHttpBody $body) : array
     {
-        if (preg_match('/multipart\//i', $request->getHeaders()->getFirst('Content-Type')) !== 1) {
+        if (preg_match('/multipart\//i', $headers->getFirst('Content-Type')) !== 1 || $body === null) {
             throw new InvalidArgumentException('Request is not a multipart request');
         }
 
@@ -82,14 +82,14 @@ class HttpRequestMessageParser
         if (
             preg_match(
                 '/boundary=(\"?)(.*)\1/',
-                $request->getHeaders()->getFirst('Content-Type'),
+                $headers->getFirst('Content-Type'),
                 $boundaryMatches) !== 1
         ) {
             throw new InvalidArgumentException('Boundary is missing in Content-Type of multipart request');
         }
 
         $boundary = $boundaryMatches[2];
-        $rawBodyParts = explode("--$boundary", $request->getBody()->readAsString());
+        $rawBodyParts = explode("--$boundary", $body->readAsString());
         // The first part will be empty, and the last will be "--".  Remove them.
         array_shift($rawBodyParts);
         array_pop($rawBodyParts);
@@ -118,18 +118,19 @@ class HttpRequestMessageParser
     /**
      * Attempts to read the request body as JSON
      *
-     * @param IHttpRequestMessage $request The request to parse
+     * @param HttpHeaders $headers The headers to parse
+     * @param IHttpBody|null $body The body to parse
      * @return array The request body as JSON
      * @throws InvalidArgumentException Thrown if the request is not a JSON request
      * @throws RuntimeException Thrown if the body could not be read as JSON
      */
-    public function readAsJson(IHttpRequestMessage $request) : array
+    public function readAsJson(HttpHeaders $headers, ?IHttpBody $body) : array
     {
-        if (preg_match("/application\/json/i", $request->getHeaders()->getFirst('Content-Type')) !== 1) {
+        if (preg_match("/application\/json/i", $headers->getFirst('Content-Type')) !== 1 || $body === null) {
             throw new InvalidArgumentException('Request is not a JSON request');
         }
 
-        $json = json_decode($request->getBody()->readAsString(), true);
+        $json = json_decode($body->readAsString(), true);
 
         if ($json === null) {
             throw new RuntimeException('Body could not be decoded as JSON');

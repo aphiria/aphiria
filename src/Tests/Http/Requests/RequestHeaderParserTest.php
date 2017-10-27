@@ -11,14 +11,14 @@
 namespace Opulence\Net\Tests\Http\Requests;
 
 use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\Requests\HttpRequestHeaderParser;
+use Opulence\Net\Http\Requests\RequestHeaderParser;
 
 /**
  * Tests the HTTP request header parser
  */
-class HttpRequestHeaderParserTest extends \PHPUnit\Framework\TestCase
+class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var HttpRequestHeaderParser The parser to use in tests */
+    /** @var RequestHeaderParser The parser to use in tests */
     private $parser = null;
     /** @var HttpHeaders The headers to use in tests */
     private $headers = null;
@@ -28,7 +28,7 @@ class HttpRequestHeaderParserTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->parser = new HttpRequestHeaderParser();
+        $this->parser = new RequestHeaderParser();
         $this->headers = new HttpHeaders();
     }
 

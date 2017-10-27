@@ -15,7 +15,7 @@ use Opulence\Net\Http\HttpHeaders;
 /**
  * Defines the HTTP request header parser
  */
-class HttpRequestHeaderParser
+class RequestHeaderParser
 {
     /**
      * Gets whether or not the request headers have a JSON content type
