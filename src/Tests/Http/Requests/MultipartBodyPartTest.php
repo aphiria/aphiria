@@ -21,7 +21,7 @@ use RuntimeException;
  */
 class MultipartBodyPartTest extends \PHPUnit\Framework\TestCase
 {
-    /** The path to copy the body to in tests */
+    /** @const The path to copy the body to in tests */
     private const BODY_COPY_PATH = __DIR__ . '/tmp/foo.txt';
     /** @var MultipartBodyPart The body part to use in tests */
     private $bodyPart = null;

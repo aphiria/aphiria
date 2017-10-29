@@ -18,7 +18,7 @@ use Opulence\Net\Http\HttpHeaders;
  */
 class ResponseHeaderFormatter
 {
-    /** The date format to use for the expiration property of cookies */
+    /** @const The date format to use for the expiration property of cookies */
     private const EXPIRATION_DATE_FORMAT = 'D, d M Y H:i:s \G\M\T';
 
     /**

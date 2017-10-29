@@ -232,21 +232,21 @@ $request = $factory->createRequestFromGlobals($_SERVER);
 In vanilla PHP, you can read URL-encoded form input data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of URL-encoded form requests into a [dictionary](collections#hash-tables).
 
 ```php
-use Opulence\Net\Http\Requests\RequestParser;
+use Opulence\Net\Http\HttpBodyParser;
 
 // Let's assume the raw body is "email=foo%40bar.com"
-$formInput = (new RequestParser)->readAsFormInput($request);
+$formInput = (new HttpBodyParser)->readAsFormInput($request->getBody());
 echo $formInput->get('email'); // "foo@bar.com"
 ```
 
 <h4 id="requests-reading-json">Reading JSON</h4>
 
-Rather than having to parse a JSON body yourself, you can use `RequestParser` to do it for you:
+Rather than having to parse a JSON body yourself, you can use `HttpBodyParser` to do it for you:
 
 ```php
-use Opulence\Net\Http\Requests\RequestParser;
+use Opulence\Net\Http\HttpBodyParser;
 
-$json = (new RequestParser)->readAsJson($request);
+$json = (new HttpBodyParser)->readAsJson($request->getBody());
 ```
 
 <h4 id="requests-reading-multipart-requests">Reading Multipart Requests</h4>

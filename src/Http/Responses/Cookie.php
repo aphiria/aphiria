@@ -18,9 +18,9 @@ use InvalidArgumentException;
  */
 class Cookie
 {
-    /** The lax same-site value */
+    /** @const The lax same-site value */
     public const SAME_SITE_LAX = 'lax';
-    /** The strict same-site value */
+    /** @const The strict same-site value */
     public const SAME_SITE_STRICT = 'strict';
     /** @var string The name of the cookie */
     private $name = '';

@@ -19,11 +19,11 @@ use Opulence\Collections\KeyValuePair;
  */
 class HttpHeaderParser
 {
-    /** The list of trimmed characters from parameters */
+    /** @const The list of trimmed characters from parameters */
     private const PARAMETER_TRIMMED_CHARS = "\"'  \n\t\r";
-    /** The regex used to split parameter values */
+    /** @const The regex used to split parameter values */
     private const PARAMETER_SPLIT_REGEX = '/;(?=([^"]*"[^"]*")*[^"]*$)/';
-    /** The regex used to split a parameter into a key-value pair */
+    /** @const The regex used to split a parameter into a key-value pair */
     private const PARAMETER_KEY_VALUE_REGEX = '/<[^>]+>|[^=]+/';
 
     /**
@@ -42,13 +42,7 @@ class HttpHeaderParser
             // Split the parameters into names and values
             if (preg_match_all(self::PARAMETER_KEY_VALUE_REGEX, $kvp, $matches)) {
                 $key = trim($matches[0][0], self::PARAMETER_TRIMMED_CHARS);
-
-                if (isset($matches[0][1])) {
-                    $value = trim($matches[0][1], self::PARAMETER_TRIMMED_CHARS);
-                } else {
-                    $value = null;
-                }
-
+                $value = isset($matches[0][1]) ? trim($matches[0][1], self::PARAMETER_TRIMMED_CHARS) : null;
                 $kvps[] = new KeyValuePair($key, $value);
             }
         }
