@@ -10,7 +10,7 @@
 4. [HTTP Headers](#http-headers)
 5. [Requests](#requests)
     1. [Creating a Request From Globals](#creating-request-from-globals)
-    2. [Reading Form Inpu](#requests-getting-form-input)
+    2. [Reading Form Input](#requests-getting-form-input)
     3. [Reading JSON](#requests-reading-json)
     4. [Reading Multipart Requests](#requests-reading-multipart-requests)
     5. [Request Header Parsers](#request-header-helpers)
@@ -395,7 +395,7 @@ You can also create a redirect response:
 $redirectResponse = (new ResponseFormatter)->redirectToUri(new Response(), 'http://example.com');
 ```
 
-<h4 id="settings-response-cookies">Setting Cookies</h4>
+<h4 id="setting-response-cookies">Setting Cookies</h4>
 
 Cookies are headers that are automatically appended to each request from the client to the server.  To set one, use `ResponseHeaderFormatter`:
 
@@ -425,6 +425,8 @@ public function __construct(
 ```
 
 Use `setCookies()` to set multiple cookies at once.
+
+<h5 id="deleting-response-cookies">Deleting Cookies</h5>
 
 To delete a cookie on the client, call
 
