@@ -35,7 +35,7 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests checking if the headers indicate a JSON response with the value of the content type header
      */
-    public function testCheckingIfJsonChecksContentTypeHeader()
+    public function testCheckingIfJsonChecksContentTypeHeader() : void
     {
         $this->headers->add('Content-Type', 'text/plain');
         $this->assertFalse($this->parser->isJson($this->headers));
@@ -48,9 +48,24 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests checking if the headers indicate a multipart response with the value of the content type header
+     */
+    public function testCheckingIfMultipartChecksContentTypeHeader() : void
+    {
+        $this->headers->add('Content-Type', 'text/plain');
+        $this->assertFalse($this->parser->isMultipart($this->headers));
+        $this->headers->removeKey('Content-Type');
+        $this->headers->add('Content-Type', 'multipart/mixed');
+        $this->assertTrue($this->parser->isMultipart($this->headers));
+        $this->headers->removeKey('Content-Type');
+        $this->headers->add('Content-Type', 'multipart/form-data');
+        $this->assertTrue($this->parser->isMultipart($this->headers));
+    }
+
+    /**
      * Tests checking if the headers indicate an XHR request with the value of the X-Requested-With header
      */
-    public function testCheckingIfXhrChecksXRequestedWithHeader()
+    public function testCheckingIfXhrChecksXRequestedWithHeader() : void
     {
         $this->headers->add('X-Requested-With', 'XMLHttpRequest');
         $this->assertTrue($this->parser->isXhr($this->headers));

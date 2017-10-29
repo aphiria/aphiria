@@ -11,12 +11,13 @@
 namespace Opulence\Net\Http\Responses;
 
 use DateTime;
+use Opulence\Net\Http\HttpHeaderParser;
 use Opulence\Net\Http\HttpHeaders;
 
 /**
  * Defines the response header formatter
  */
-class ResponseHeaderFormatter
+class ResponseHeaderFormatter extends HttpHeaderParser
 {
     /** @const The date format to use for the expiration property of cookies */
     private const EXPIRATION_DATE_FORMAT = 'D, d M Y H:i:s \G\M\T';

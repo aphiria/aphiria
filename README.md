@@ -13,13 +13,11 @@
     2. [Reading Form Inpu](#requests-getting-form-input)
     3. [Reading JSON](#requests-reading-json)
     4. [Reading Multipart Requests](#requests-reading-multipart-requests)
-    5. Todo: Add docs for request header parser
+    5. [Request Header Parsers](#request-header-helpers)
 6. [Responses](#responses)
-    1. Todo: Setting bodies
-    2. Todo: Setting cookies
+    1. [Creating Responses](#creating-responses)
+    2. [Setting Cookies](#setting-response-cookies)
     3. [Writing Responses](#writing-responses)
-    4. Todo: Add docs for response message formatters
-    5. Todo: Add docs for response header formatters
 7. [URIs](#uris)
     1. [Creating URIs From Strings](#creating-uris-from-strings)
     2. [Parsing Query String Parameters](#uris-parsing-query-string-parameters)
@@ -283,6 +281,39 @@ $destinationStream = new Stream(fopen('path/to/copy/to', 'w'));
 $multipartBody->getBody()->readAsStream()->copyToStream($destinationStream);
 ```
 
+<h4 id="request-header-helpers">Request Header Helpers</h4>
+
+Opulence provides some tools to glean information about the request via `RequestHeaderParser`.  You can tell if a request is JSON:
+
+```php
+use Opulence\Net\Http\Requests\RequestHeaderParser;
+
+$headerParser = new RequestHeaderParser();
+$isJson = $headerParser->isJson($request->getHeaders());
+```
+
+You can also check if the request is a multipart request:
+
+```php
+$isMultipart = $headerParser->isMultipart($request->getHeaders());
+```
+
+`RequestHeaderParser` can tell you if a request is made via XHR (AJAX):
+
+```php
+$isXhr = $headerParser->isXhr($request->getHeaders());
+```
+
+Some header values are semicolon delimeted, eg `Content-Type: text/html; charset=utf-8`.  It's sometimes convenient to grab those key => value pairs:
+
+```php
+$contentTypeHeader = $request->getHeaders()->getFirst('Content-Type')
+$contentTypeValues = $headerParser->parseParameters($contentTypeHeader);
+// Keys without values will return null:
+echo $contentTypeValues->get('text/html'); // null
+echo $contentTypeValues->get('charset'); // "utf-8"
+```
+
 <h2 id="responses">Responses</h2>
 
 Responses are HTTP messages that are sent by servers back to the client.
@@ -312,6 +343,93 @@ interface IHttpResponseMessage extends IHttpMessage
      */
     public function setStatusCode(int $statusCode, ?string $reasonPhrase = null) : void;
 }
+```
+
+<h4 id="creating-responses">Creating Responses</h4>
+
+Creating a response is easy:
+
+```php
+use Opulence\Net\Http\Responses\Response;
+
+$response = new Response();
+```
+
+This will create a 200 OK response.  If you'd like to set a different status code, you can either pass it in the constructor or via `setStatusCode()`:
+
+```php
+$response = new Response(404);
+// Or...
+$response->setStatusCode(404);
+```
+
+By default, headers will be set to an empty [hash table](collections#hash-tables), and can be accessed via `getHeaders()`:
+
+```php
+$response->getHeaders()->add('Content-Type', 'application/json');
+```
+
+You can pass the body via the constructor or via `setBody()`:
+
+```php
+$response = new Response(200, null, new StringBody('foo'));
+// Or...
+$response->setBody(new StringBody('foo'));
+```
+
+<h5 id="response-helpers">Response Helpers</h5>
+
+Opulence provides a few easy ways to create common responses.  For example, to create a JSON response, use `ResponseFormatter`:
+
+```php
+use Opulence\Net\Http\Responses\ResponseFormatter;
+
+$jsonResponse = (new ResponseFormatter)->writeJson(new Response(), ['foo' => 'bar']);
+```
+
+This will set the contents of the response, as well as the appropriate `Content-Type` headers.
+
+You can also create a redirect response:
+
+```php
+$redirectResponse = (new ResponseFormatter)->redirectToUri(new Response(), 'http://example.com');
+```
+
+<h4 id="settings-response-cookies">Setting Cookies</h4>
+
+Cookies are headers that are automatically appended to each request from the client to the server.  To set one, use `ResponseHeaderFormatter`:
+
+```php
+use Opulence\Net\Http\Responses\Cookie;
+use Opulence\Net\Http\Responses\ResponseHeaderFormatter;
+
+(new ResponseHeaderFormatter)->setCookie(
+    $response->getHeaders(),
+    new Cookie('userid', 123, 3600)
+);
+```
+
+`Cookie` accepts the following parameters:
+
+```php
+public function __construct(
+    string $name,
+    $value,
+    $expiration = null, // Either lifetime in seconds or DateTime to expire
+    ?string $path = null,
+    ?string $domain = null,
+    bool $isSecure = false,
+    bool $isHttpOnly = true,
+    ?string $sameSite = null
+)
+```
+
+Use `setCookies()` to set multiple cookies at once.
+
+To delete a cookie on the client, call
+
+```php
+(new ResponseHeaderFormatter)->deleteCookie($response->getHeaders(), 'userid');
 ```
 
 <h4 id="writing-responses">Writing Responses</h4>
