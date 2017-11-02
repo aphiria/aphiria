@@ -55,7 +55,7 @@ class HttpHeaders extends HashTable
     }
 
     /**
-     * Gets the first values for a header
+     * Gets the first value of a header
      *
      * @param string $name The name of the header whose value we want
      * @return mixed The first value of the header

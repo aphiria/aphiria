@@ -81,7 +81,7 @@ Requests and responses are specific types of HTTP messages.
 
 <h2 id="http-bodies">HTTP Bodies</h2>
 
-HTTP bodies contain data associated with the HTTP message, and are optional.  They're repsented by `Opulence\Net\Http\IHttpBody`.  They provide a few methods to read and write their contents to streams and to strings:
+HTTP bodies contain data associated with the HTTP message, and are optional.  They're represented by `Opulence\Net\Http\IHttpBody`.  They provide a few methods to read and write their contents to streams and to strings:
 
 ```php
 interface IHttpBody
@@ -146,7 +146,7 @@ Headers provide metadata about the HTTP message.  In Opulence, they're implement
 
 ```php
 /**
- * Gets the first values for a header
+ * Gets the first value of a header
  *
  * @param string $name The name of the header whose value we want
  * @return mixed The first value of the header
@@ -382,9 +382,11 @@ $response->setBody(new StringBody('foo'));
 Opulence provides a few easy ways to create common responses.  For example, to create a JSON response, use `ResponseFormatter`:
 
 ```php
+use Opulence\Net\Http\Responses\Response;
 use Opulence\Net\Http\Responses\ResponseFormatter;
 
-$jsonResponse = (new ResponseFormatter)->writeJson(new Response(), ['foo' => 'bar']);
+$response = new Response();
+(new ResponseFormatter)->writeJson($response, ['foo' => 'bar']);
 ```
 
 This will set the contents of the response, as well as the appropriate `Content-Type` headers.
@@ -392,7 +394,8 @@ This will set the contents of the response, as well as the appropriate `Content-
 You can also create a redirect response:
 
 ```php
-$redirectResponse = (new ResponseFormatter)->redirectToUri(new Response(), 'http://example.com');
+$response = new Response();
+(new ResponseFormatter)->redirectToUri($response, 'http://example.com');
 ```
 
 <h4 id="setting-response-cookies">Setting Cookies</h4>
