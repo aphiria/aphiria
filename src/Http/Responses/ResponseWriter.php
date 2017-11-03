@@ -22,7 +22,7 @@ class ResponseWriter
     private $outputStream = null;
 
     /**
-     * @param IStream|null $outputStream The output stream to write to (null defaults to PHP's output stream)
+     * @param IStream|null $outputStream The output stream to write the body to (null defaults to PHP's output stream)
      */
     public function __construct(IStream $outputStream = null)
     {
@@ -42,13 +42,11 @@ class ResponseWriter
             $startLine .= " $reasonPhrase";
         }
 
-        $headers = '';
+        header($startLine);
 
         foreach ($response->getHeaders() as $kvp) {
-            $headers .= "\r\n{$kvp->getKey()}: " . implode(', ', $kvp->getValue());
+            header($kvp->getKey() . ': ' . implode(', ', $kvp->getValue()));
         }
-
-        $this->outputStream->write($startLine . $headers . "\r\n\r\n");
 
         if (($body = $response->getBody()) !== null) {
             $body->writeToStream($this->outputStream);

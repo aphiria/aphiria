@@ -168,7 +168,7 @@ Header names that are passed into the methods in `HttpHeaders` are normalized to
 
 <h4 id="header-parsers">Header Parsers</h4>
 
-Opulence provides some tools to glean information about the HTTP messages via `HeaderParser`.  You can tell if a request is JSON:
+Opulence provides some tools to glean information about the HTTP messages via `HttpHeaderParser`.  You can tell if a request is JSON:
 
 ```php
 use Opulence\Net\Http\HttpHeaderParser;
@@ -183,7 +183,7 @@ You can also check if the request is a multipart request:
 $isMultipart = $headerParser->isMultipart($request->getHeaders());
 ```
 
-Some header values are semicolon delimeted, eg `Content-Type: text/html; charset=utf-8`.  It's sometimes convenient to grab those key => value pairs:
+Some header values are semicolon delimited, eg `Content-Type: text/html; charset=utf-8`.  It's sometimes convenient to grab those key => value pairs:
 
 ```php
 $contentTypeHeader = $request->getHeaders()->getFirst('Content-Type')

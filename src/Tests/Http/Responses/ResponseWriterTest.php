@@ -63,53 +63,15 @@ class ResponseWriterTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that multiple header values are concatenated with commas
+     * Tests that the body is written to the output stream
+     *
+     * @runInSeparateProcess
      */
-    public function testMultipleHeaderValuesAreConcatenatedWithCommas() : void
-    {
-        $this->response->expects($this->once())
-            ->method('getReasonPhrase')
-            ->willReturn(null);
-        $this->headers->add('Foo', 'bar');
-        $this->headers->add('Foo', 'baz', true);
-        $this->writer->writeResponse($this->response);
-        $this->assertEquals("HTTP/1.1 200\r\nFoo: bar, baz\r\n\r\n", (string)$this->outputStream);
-    }
-
-    /**
-     * Tests that the reason phrase is included only if it is defined
-     */
-    public function testReasonPhraseIsIncludedOnlyIfDefined() : void
-    {
-        $this->response->expects($this->once())
-            ->method('getReasonPhrase')
-            ->willReturn('OK');
-        $this->writer->writeResponse($this->response);
-        $this->assertEquals("HTTP/1.1 200 OK\r\n\r\n", (string)$this->outputStream);
-    }
-
-    /**
-     * Tests that a response with headers but no body ends with a blank line
-     */
-    public function testResponseWithHeadersButNoBodyEndsWithBlankLine() : void
-    {
-        $this->response->expects($this->once())
-            ->method('getReasonPhrase')
-            ->willReturn(null);
-        $this->headers->add('Foo', 'bar');
-        $this->writer->writeResponse($this->response);
-        $this->assertEquals("HTTP/1.1 200\r\nFoo: bar\r\n\r\n", (string)$this->outputStream);
-    }
-
-    /**
-     * Tests that a response with no headers or body ends with a blank line
-     */
-    public function testResponseWithNoHeadersOrBodyEndsWithBlankLine() : void
+    public function testBodyIsWrittenToOutputStream() : void
     {
         $this->response->expects($this->once())
             ->method('getReasonPhrase')
             ->willReturn(null);
         $this->writer->writeResponse($this->response);
-        $this->assertEquals("HTTP/1.1 200\r\n\r\n", (string)$this->outputStream);
     }
 }
