@@ -8,12 +8,12 @@
     1. [String Bodies](#string-bodies)
     2. [Stream Bodies](#stream-bodies)
 4. [HTTP Headers](#http-headers)
+    1. [Header Parsers](#header-parsers)
 5. [Requests](#requests)
     1. [Creating a Request From Globals](#creating-request-from-globals)
     2. [Reading Form Input](#requests-getting-form-input)
     3. [Reading JSON](#requests-reading-json)
     4. [Reading Multipart Requests](#requests-reading-multipart-requests)
-    5. [Request Header Parsers](#request-header-helpers)
 6. [Responses](#responses)
     1. [Creating Responses](#creating-responses)
     2. [Setting Cookies](#setting-response-cookies)
@@ -166,6 +166,33 @@ public function tryGetFirst($name, &$value) : bool;
 
 Header names that are passed into the methods in `HttpHeaders` are normalized to Train-Case.  In other words, `foo_bar` will become `Foo-Bar`.
 
+<h4 id="header-parsers">Header Parsers</h4>
+
+Opulence provides some tools to glean information about the HTTP messages via `HeaderParser`.  You can tell if a request is JSON:
+
+```php
+use Opulence\Net\Http\HttpHeaderParser;
+
+$headerParser = new HttpHeaderParser();
+$isJson = $headerParser->isJson($request->getHeaders());
+```
+
+You can also check if the request is a multipart request:
+
+```php
+$isMultipart = $headerParser->isMultipart($request->getHeaders());
+```
+
+Some header values are semicolon delimeted, eg `Content-Type: text/html; charset=utf-8`.  It's sometimes convenient to grab those key => value pairs:
+
+```php
+$contentTypeHeader = $request->getHeaders()->getFirst('Content-Type')
+$contentTypeValues = $headerParser->parseParameters($contentTypeHeader);
+// Keys without values will return null:
+echo $contentTypeValues->get('text/html'); // null
+echo $contentTypeValues->get('charset'); // "utf-8"
+```
+
 <h2 id="requests">Requests</h2>
 
 Requests are HTTP messages sent by clients to servers.  They contain a few more methods than `IHttpMessage`:
@@ -281,39 +308,6 @@ $destinationStream = new Stream(fopen('path/to/copy/to', 'w'));
 $multipartBody->getBody()->readAsStream()->copyToStream($destinationStream);
 ```
 
-<h4 id="request-header-helpers">Request Header Helpers</h4>
-
-Opulence provides some tools to glean information about the request via `RequestHeaderParser`.  You can tell if a request is JSON:
-
-```php
-use Opulence\Net\Http\Requests\RequestHeaderParser;
-
-$headerParser = new RequestHeaderParser();
-$isJson = $headerParser->isJson($request->getHeaders());
-```
-
-You can also check if the request is a multipart request:
-
-```php
-$isMultipart = $headerParser->isMultipart($request->getHeaders());
-```
-
-`RequestHeaderParser` can tell you if a request is made via XHR (AJAX):
-
-```php
-$isXhr = $headerParser->isXhr($request->getHeaders());
-```
-
-Some header values are semicolon delimeted, eg `Content-Type: text/html; charset=utf-8`.  It's sometimes convenient to grab those key => value pairs:
-
-```php
-$contentTypeHeader = $request->getHeaders()->getFirst('Content-Type')
-$contentTypeValues = $headerParser->parseParameters($contentTypeHeader);
-// Keys without values will return null:
-echo $contentTypeValues->get('text/html'); // null
-echo $contentTypeValues->get('charset'); // "utf-8"
-```
-
 <h2 id="responses">Responses</h2>
 
 Responses are HTTP messages that are sent by servers back to the client.
@@ -427,7 +421,7 @@ public function __construct(
 )
 ```
 
-Use `setCookies()` to set multiple cookies at once.
+Use `ResponseHeaderFormatter::setCookies()` to set multiple cookies at once.
 
 <h5 id="deleting-response-cookies">Deleting Cookies</h5>
 

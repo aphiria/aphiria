@@ -27,6 +27,34 @@ class HttpHeaderParser
     private const PARAMETER_KEY_VALUE_REGEX = '/<[^>]+>|[^=]+/';
 
     /**
+     * Gets whether or not the headers have a JSON content type
+     *
+     * @param HttpHeaders $headers The headers to parse
+     * @return bool True if the message has a JSON content type, otherwise false
+     */
+    public function isJson(HttpHeaders $headers) : bool
+    {
+        $contentType = null;
+        $headers->tryGetFirst('Content-Type', $contentType);
+
+        return preg_match("/application\/json/i", $contentType) === 1;
+    }
+
+    /**
+     * Gets whether or not the message is a multipart message
+     *
+     * @param HttpHeaders $headers The headers to parse
+     * @return bool True if the request is a multipart message, otherwise false
+     */
+    public function isMultipart(HttpHeaders $headers) : bool
+    {
+        $contentType = null;
+        $headers->tryGetFirst('Content-Type', $contentType);
+
+        return preg_match("/multipart\//i", $contentType) === 1;
+    }
+
+    /**
      * Parses the parameters (semi-colon delimited values for a header) for the first value of a header
      *
      * @param string $value The value to parse
