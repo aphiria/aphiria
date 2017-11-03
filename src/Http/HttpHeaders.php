@@ -59,7 +59,7 @@ class HttpHeaders extends HashTable
      *
      * @param string $name The name of the header whose value we want
      * @return mixed The first value of the header
-     * @throws OutOfBoundsException Thrown if the key could not be found
+     * @throws OutOfBoundsException Thrown if the header could not be found
      */
     public function getFirst($name)
     {

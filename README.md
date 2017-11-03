@@ -150,7 +150,7 @@ Headers provide metadata about the HTTP message.  In Opulence, they're implement
  *
  * @param string $name The name of the header whose value we want
  * @return mixed The first value of the header
- * @throws OutOfBoundsException Thrown if the key could not be found
+ * @throws OutOfBoundsException Thrown if the header could not be found
  */
 public function getFirst($name);
 
@@ -254,7 +254,7 @@ $request = $factory->createRequestFromGlobals($_SERVER);
 
 <h4 id="requests-getting-form-input">Reading Form Input</h4>
 
-In vanilla PHP, you can read URL-encoded form input data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of URL-encoded form requests into a [dictionary](collections#hash-tables).
+In vanilla PHP, you can read URL-encoded form input data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of form requests into a [dictionary](collections#hash-tables).
 
 ```php
 use Opulence\Net\Http\HttpBodyParser;
@@ -293,7 +293,7 @@ foreach ($multipartBodies as $multipartBody) {
 
 <h5 id="saving-uploaded-files">Saving Uploaded Files</h5>
 
-To save a multipart body part to a file, use `copyBodyToFile()`:
+To save a multipart body part to a file, use `MultipartBodyPart::copyBodyToFile()`:
 
 ```php
 $multipartBody->copyBodyToFile('path/to/copy/to');
@@ -349,7 +349,7 @@ use Opulence\Net\Http\Responses\Response;
 $response = new Response();
 ```
 
-This will create a 200 OK response.  If you'd like to set a different status code, you can either pass it in the constructor or via `setStatusCode()`:
+This will create a 200 OK response.  If you'd like to set a different status code, you can either pass it in the constructor or via `Response::setStatusCode()`:
 
 ```php
 $response = new Response(404);
@@ -357,13 +357,13 @@ $response = new Response(404);
 $response->setStatusCode(404);
 ```
 
-By default, headers will be set to an empty [hash table](collections#hash-tables), and can be accessed via `getHeaders()`:
+By default, headers will be set to an empty [hash table](collections#hash-tables), and can be accessed via `Response::getHeaders()`:
 
 ```php
 $response->getHeaders()->add('Content-Type', 'application/json');
 ```
 
-You can pass the body via the constructor or via `setBody()`:
+You can pass the body via the constructor or via `Response::setBody()`:
 
 ```php
 $response = new Response(200, null, new StringBody('foo'));
@@ -371,7 +371,7 @@ $response = new Response(200, null, new StringBody('foo'));
 $response->setBody(new StringBody('foo'));
 ```
 
-<h5 id="response-helpers">Response Helpers</h5>
+<h5 id="response-formatters">Response Formatters</h5>
 
 Opulence provides a few easy ways to create common responses.  For example, to create a JSON response, use `ResponseFormatter`:
 
