@@ -14,7 +14,6 @@ use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\Requests\MultipartBodyPart;
-use RuntimeException;
 
 /**
  * Tests the multipart body part
@@ -41,12 +40,19 @@ class MultipartBodyPartTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that coping a body to a destination that doesn't exist throws an exception
+     * Tests that copying a body to a destination that doesn't creates that file
      */
-    public function testCopyingBodyToDestinationThatDoesNotExistThrowsException() : void
+    public function testCopyingBodyToDestinationThatDoesNotCreatesThatFile() : void
     {
-        $this->expectException(RuntimeException::class);
-        $this->bodyPart->copyBodyToFile(__DIR__ . '/tmp/doesnotexist.txt');
+        $bodyStream = $this->createMock(IStream::class);
+        $bodyStream->expects($this->once())
+            ->method('copyToStream');
+        $this->body->expects($this->once())
+            ->method('readAsStream')
+            ->willReturn($bodyStream);
+        $filePath  = __DIR__ . '/tmp/doesnotexist.txt';
+        $this->bodyPart->copyBodyToFile($filePath);
+        @unlink($filePath);
     }
 
     /**

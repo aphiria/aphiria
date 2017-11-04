@@ -50,12 +50,12 @@ class MultipartBodyPart
             throw new RuntimeException("Directory {$pathInfo['dirname']} must be created before copying body");
         }
 
-        if (!is_writable($path)) {
-            throw new RuntimeException("Path $path is not writable");
-        }
-
         if (!file_exists($path)) {
             touch($path);
+        }
+
+        if (!is_writable($path)) {
+            throw new RuntimeException("Path $path is not writable");
         }
 
         try {
@@ -70,7 +70,9 @@ class MultipartBodyPart
             throw new RuntimeException("Could not open path $path", 0, $ex);
         }
 
-        $this->body->readAsStream()->copyToStream($destinationStream);
+        $bodyStream = $this->body->readAsStream();
+        $bodyStream->rewind();
+        $bodyStream->copyToStream($destinationStream);
     }
 
     /**

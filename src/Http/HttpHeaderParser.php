@@ -60,7 +60,7 @@ class HttpHeaderParser
      * @param string $value The value to parse
      * @return IImmutableDictionary The dictionary of parameters for the first value
      */
-    public function parseParameters(string $value)
+    public function parseParameters(string $value) : IImmutableDictionary
     {
         $kvps = [];
 

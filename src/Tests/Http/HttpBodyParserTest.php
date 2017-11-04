@@ -18,7 +18,7 @@ use RuntimeException;
 /**
  * Tests the HTTP body parser
  */
-class HttpBodyTest extends \PHPUnit\Framework\TestCase
+class HttpBodyParserTest extends \PHPUnit\Framework\TestCase
 {
     /** @var HttpBodyParser The parser to use in tests */
     private $parser = null;
@@ -43,6 +43,17 @@ class HttpBodyTest extends \PHPUnit\Framework\TestCase
             ->method('readAsString')
             ->willReturn('foo=bar');
         $this->assertEquals('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
+    }
+
+    /**
+     * Tests that getting the mime type returns the correct mime type
+     */
+    public function testGettingMimeTypeReturnsCorrectMimeType() : void
+    {
+        $this->body->expects($this->once())
+            ->method('readAsString')
+            ->willReturn('<?xml version="1.0"?><foo />');
+        $this->assertEquals('application/xml', $this->parser->getMimeType($this->body));
     }
 
     /**

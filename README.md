@@ -2,7 +2,8 @@
 
 ## Table of Contents
 1. [Introduction](#introduction)
-    1. [Why Not Use PSR-7?](#why-not-use-psr-7)
+    1. [Requirements](#requirements)
+    2. [Why Not Use PSR-7?](#why-not-use-psr-7)
 2. [HTTP Messages](#http-messages)
 3. [HTTP Bodies](#http-bodies)
     1. [String Bodies](#string-bodies)
@@ -14,6 +15,7 @@
     2. [Reading Form Input](#requests-getting-form-input)
     3. [Reading JSON](#requests-reading-json)
     4. [Reading Multipart Requests](#requests-reading-multipart-requests)
+    5. [Getting Cookies](#getting-request-cookies)
 6. [Responses](#responses)
     1. [Creating Responses](#creating-responses)
     2. [Setting Cookies](#setting-response-cookies)
@@ -25,6 +27,18 @@
 <h2 id="introduction">Introduction</h2>
 
 Opulence's network library provides abstractions for URIs, HTTP request and response messages, bodies, and headers.  It also has handy methods for helpers for things like [parsing URI query strings](#uris-parsing-query-string-parameters), [reading request bodies as form input](#requests-reading-body-as-form-input), and [setting cookies in the response headers](#responses-setting-cookies).  It adheres as closely to the HTTP spec as possible, and aims to decouple developers from PHP's horrendous abstractions for HTTP requests and responses.
+
+<h4 id="requirements">Requirements</h4>
+
+PHP has all sorts of idiosyncracies when it comes to parsing HTTP requests.  For example, form input requests are parsed into `$_POST` for POST requests, but must be manually parsed from the `php://input` stream for any other request methods.  Similarly, uploaded files in POST requests are available in the `$_FILES` superglobal, but uploaded files in PUT requests must be manually parsed from the `php://input` stream.
+
+To work around these issues, Opulence requires the following setting in either a _.user.ini_ or your main _php.ini_:
+
+```
+enable_post_data_reading = 0
+```
+
+Alternatively, you could add `php_value enable_post_data_reading 0` to an _.htaccess_ file or to your _httpd.conf_.
 
 <h4 id="why-not-use-psr-7">Why Not Use PSR-7?</h4>
 
@@ -168,7 +182,9 @@ Header names that are passed into the methods in `HttpHeaders` are normalized to
 
 <h4 id="header-parsers">Header Parsers</h4>
 
-Opulence provides some tools to glean information about the HTTP messages via `HttpHeaderParser`.  You can tell if a request is JSON:
+Opulence provides some tools to glean information about the HTTP messages via `HttpHeaderParser`.
+
+<h5 id="checking-if-json">Checking if JSON</h5>
 
 ```php
 use Opulence\Net\Http\HttpHeaderParser;
@@ -177,11 +193,13 @@ $headerParser = new HttpHeaderParser();
 $isJson = $headerParser->isJson($request->getHeaders());
 ```
 
-You can also check if the request is a multipart request:
+<h5 id="checking-if-multipart">Checking if Multipart</h5>
 
 ```php
 $isMultipart = $headerParser->isMultipart($request->getHeaders());
 ```
+
+<h5 id="parsing-header-parameters">Parsing Header Parameters</h5>
 
 Some header values are semicolon delimited, eg `Content-Type: text/html; charset=utf-8`.  It's sometimes convenient to grab those key => value pairs:
 
@@ -306,6 +324,30 @@ use Opulence\IO\Streams\Stream;
 
 $destinationStream = new Stream(fopen('path/to/copy/to', 'w'));
 $multipartBody->getBody()->readAsStream()->copyToStream($destinationStream);
+```
+
+<h5 id="getting-mime-type-of-body">Getting MIME Type of Body</h5>
+
+To grab the MIME type of an HTTP body, call
+
+```php
+(new HttpBodyParser)->getMimeType($request->getBody());
+```
+
+<h4 id="getting-request-cookies">Getting Cookies</h4>
+
+Opulence has a helper to grab a single cookie value:
+
+```php
+use Opulence\Net\Http\Requests\RequestHeaderParser;
+
+$cookieValue = (new RequestHeaderParser)->getCookie($request->getHeaders(), 'userid');
+```
+
+You can also grab all cookie values from the request headers as an `[immutable dictionary](collections#immutable-hash-tables)`:
+
+```php
+$cookieValues = (new RequestHeaderParser)->getAllCookies($request->getHeaders());
 ```
 
 <h2 id="responses">Responses</h2>

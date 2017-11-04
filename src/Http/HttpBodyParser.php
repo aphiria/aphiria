@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Http;
 
+use finfo;
 use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
 use Opulence\Collections\KeyValuePair;
@@ -22,6 +23,35 @@ class HttpBodyParser
 {
     /** @var array The mapping of body hash IDs to their parsed form input */
     private $parsedFormInputCache = [];
+    /** @var array The mapping of body hash IDs to their parsed MIME types */
+    private $parsedMimeTypeCache = [];
+
+    /**
+     * Gets the MIME type of the body
+     *
+     * @param IHttpBody The body whose MIME type we want
+     * @return string The mime type
+     * @throws RuntimeException Thrown if the MIME type could not be determined
+     */
+    public function getMimeType(IHttpBody $body) : string
+    {
+        $parsedMimeTypeCacheKey = spl_object_hash($body);
+
+        if (isset($this->parsedMimeTypeCache[$parsedMimeTypeCacheKey])) {
+            return $this->parsedMimeTypeCache[$parsedMimeTypeCacheKey];
+        }
+
+        $fileInfo = new finfo(FILEINFO_MIME_TYPE);
+
+        if (($mimeType = $fileInfo->buffer($body->readAsString())) === false) {
+            throw new RuntimeException('Could not determine mime type of body');
+        }
+
+        // Cache this for next time
+        $this->parsedMimeTypeCache[$parsedMimeTypeCacheKey] = $mimeType;
+
+        return $mimeType;
+    }
 
     /**
      * Parses a request body as form input
