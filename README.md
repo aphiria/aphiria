@@ -26,7 +26,7 @@
 
 <h2 id="introduction">Introduction</h2>
 
-Opulence's network library provides abstractions for URIs, HTTP request and response messages, bodies, and headers.  It also has handy methods for helpers for things like [parsing URI query strings](#uris-parsing-query-string-parameters), [reading request bodies as form input](#requests-reading-body-as-form-input), and [setting cookies in the response headers](#responses-setting-cookies).  It adheres as closely to the HTTP spec as possible, and aims to decouple developers from PHP's horrendous abstractions for HTTP requests and responses.
+Opulence's network library provides abstractions for URIs, HTTP request and response messages, bodies, and headers.  It also has handy methods for helpers for things like [parsing URI query strings](#uris-parsing-query-string-parameters), [reading request bodies as form input](#requests-getting-form-input), and [setting cookies in the response headers](#setting-response-cookies).  It adheres as closely to the HTTP spec as possible, and aims to decouple developers from PHP's horrendous abstractions for HTTP requests and responses.
 
 <h4 id="requirements">Requirements</h4>
 
@@ -331,7 +331,7 @@ $multipartBody->getBody()->readAsStream()->copyToStream($destinationStream);
 To grab the MIME type of an HTTP body, call
 
 ```php
-(new HttpBodyParser)->getMimeType($request->getBody());
+(new HttpBodyParser)->getMimeType($multipartBody->getBody());
 ```
 
 <h4 id="getting-request-cookies">Getting Cookies</h4>
@@ -344,7 +344,7 @@ use Opulence\Net\Http\Requests\RequestHeaderParser;
 $cookieValue = (new RequestHeaderParser)->getCookie($request->getHeaders(), 'userid');
 ```
 
-You can also grab all cookie values from the request headers as an `[immutable dictionary](collections#immutable-hash-tables)`:
+You can also grab all cookie values from the request headers as an [`immutable dictionary`](collections#immutable-hash-tables):
 
 ```php
 $cookieValues = (new RequestHeaderParser)->getAllCookies($request->getHeaders());
