@@ -26,11 +26,11 @@
 
 <h2 id="introduction">Introduction</h2>
 
-Opulence's network library provides abstractions for URIs, HTTP request and response messages, bodies, and headers.  It also has handy methods for helpers for things like [parsing URI query strings](#uris-parsing-query-string-parameters), [reading request bodies as form input](#requests-getting-form-input), and [setting cookies in the response headers](#setting-response-cookies).  It adheres as closely to the HTTP spec as possible, and aims to decouple developers from PHP's horrendous abstractions for HTTP requests and responses.
+Opulence's network library provides abstractions for URIs, HTTP request and response messages, bodies, and headers.  It attempts to accurately model HTTP components, and aims to decouple developers from PHP's horrendous abstractions for HTTP requests and responses.
 
 <h4 id="requirements">Requirements</h4>
 
-PHP has all sorts of idiosyncracies when it comes to parsing HTTP requests.  For example, form input requests are parsed into `$_POST` for POST requests, but must be manually parsed from the `php://input` stream for any other request methods.  Similarly, uploaded files in POST requests are available in the `$_FILES` superglobal, but uploaded files in PUT requests must be manually parsed from the `php://input` stream.
+PHP has all sorts of idiosyncracies with parsing HTTP requests.  For example, form input requests are parsed into `$_POST` for POST requests, but must be manually parsed from the `php://input` stream for any other request methods.  Similarly, uploaded files in POST requests are available in the `$_FILES` superglobal, but uploaded files in PUT requests must be manually parsed from the `php://input` stream.
 
 To work around these issues, Opulence requires the following setting in either a _.user.ini_ or your main _php.ini_:
 
@@ -38,11 +38,13 @@ To work around these issues, Opulence requires the following setting in either a
 enable_post_data_reading = 0
 ```
 
-This will disable automatically parsing POST data into `$_POST` and multipart data into `$_FILES`.  If you're developing any non-Opulence applications on the same web server, then it's probably better to use _.user.ini_ because it'll only apply this setting to your Opulence application.  Alternatively, you could add `php_value enable_post_data_reading 0` to an _.htaccess_ file or to your _httpd.conf_.
+This will disable automatically parsing POST data into `$_POST` and multipart data into `$_FILES`.
+
+> **Note:** If you're developing any non-Opulence applications on the same web server, then it's probably better to use _.user.ini_ because it'll only apply this setting to your Opulence application.  Alternatively, you could add `php_value enable_post_data_reading 0` to an _.htaccess_ file or to your _httpd.conf_.
 
 <h4 id="why-not-use-psr-7">Why Not Use PSR-7?</h4>
 
-PSR-7 was an attempt to standardize the representation of HTTP requests and responses, as well as routing middleware.  PHP does not have these things baked-in, and every framework had previously been rolling its own wrappers, which weren't interopible between frameworks.  Although a noble attempt, PSR-7 had many contested features:
+PSR-7 was an attempt to standardize the models for HTTP components.  PHP does not have these things baked-in, and every framework had previously been rolling its own wrappers, which weren't interopible between frameworks.  Although a noble attempt, PSR-7 had many contested features:
 
 1. Request and response immutability
     * This has often been considered cumbersome, bug-prone, and a bad use-case for immutability
@@ -58,38 +60,10 @@ Opulence's network library aims to fix these shortcomings.
 
 HTTP messages are ASCII-encoded text messages that contain headers and bodies.  In Opulence, they're represented by `Opulence\Net\Http\IHttpMessage`.  They come with a few basic methods:
 
-```php
-interface IHttpMessage
-{
-    /**
-     * Gets the body of the HTTP message
-     *
-     * @return IHttpBody|null The body if there is one, otherwise null
-     */
-    public function getBody() : ?IHttpBody;
-
-    /**
-     * Gets the headers of the HTTP message
-     *
-     * @return HttpHeaders The headers
-     */
-    public function getHeaders() : HttpHeaders;
-
-    /**
-     * Gets the protocol version (eg '1.1' or '2.0') from the HTTP message
-     *
-     * @return string The protocol version
-     */
-    public function getProtocolVersion() : string;
-
-    /**
-     * Sets the body of the HTTP message
-     *
-     * @param IHttpBody $body The body
-     */
-    public function setBody(IHttpBody $body) : void;
-}
-```
+* `getBody() : ?IHttpBody`
+* `getHeaders() : HttpHeaders`
+* `getProtocolVersion() : string`
+* `setBody(IHttpBody) : void`
 
 Requests and responses are specific types of HTTP messages.
 
@@ -97,40 +71,10 @@ Requests and responses are specific types of HTTP messages.
 
 HTTP bodies contain data associated with the HTTP message, and are optional.  They're represented by `Opulence\Net\Http\IHttpBody`.  They provide a few methods to read and write their contents to streams and to strings:
 
-```php
-interface IHttpBody
-{
-    /**
-     * Reads the HTTP body as a string
-     *
-     * @return string The string
-     */
-    public function __toString() : string;
-
-    /**
-     * Reads the HTTP body as a stream
-     *
-     * @return IStream The stream
-     * @throws RuntimeException Thrown if there was an error reading as a stream
-     */
-    public function readAsStream() : IStream;
-
-    /**
-     * Reads the HTTP body as a string
-     *
-     * @return string The string
-     */
-    public function readAsString() : string;
-
-    /**
-     * Writes the HTTP body to a stream
-     *
-     * @param IStream $stream The stream to write to
-     * @throws RuntimeException Thrown if there was an error writing to the stream
-     */
-    public function writeToStream(IStream $stream) : void;
-}
-```
+* `__toString() : string`
+* `readAsStream() : IStream`
+* `readAsString() : string`
+* `writeToStream(IStream $stream) : void`
 
 <h4 id="string-bodies">String Bodies</h4>
 
@@ -158,25 +102,8 @@ $body = new StreamBody($stream);
 
 Headers provide metadata about the HTTP message.  In Opulence, they're implemented by `Opulence\Net\Http\HttpHeaders`, which extends  [`Opulence\Collections\HashTable`](collections#hash-tables).  On top of the methods provided by `HashTable`, they also provide the following methods:
 
-```php
-/**
- * Gets the first value of a header
- *
- * @param string $name The name of the header whose value we want
- * @return mixed The first value of the header
- * @throws OutOfBoundsException Thrown if the header could not be found
- */
-public function getFirst($name);
-
-/**
- * Tries to get the first value of a header
- *
- * @param mixed $name The name of the header whose value we want
- * @param mixed $value The value, if it is found
- * @return bool True if the key exists, otherwise false
- */
-public function tryGetFirst($name, &$value) : bool;
-```
+* `getFirst(string $name) : mixed`
+* `tryGetFirst(string $name, &$value) : bool`
 
 Header names that are passed into the methods in `HttpHeaders` are normalized to Train-Case.  In other words, `foo_bar` will become `Foo-Bar`.
 
@@ -213,34 +140,13 @@ echo $contentTypeValues->get('charset'); // "utf-8"
 
 <h2 id="requests">Requests</h2>
 
-Requests are HTTP messages sent by clients to servers.  They contain a few more methods than `IHttpMessage`:
+Requests are HTTP messages sent by clients to servers.  They contain a few more methods than [`IHttpMessage`](#http-messages):
 
-```php
-interface IHttpRequestMessage extends IHttpMessage
-{
-    /**
-     * Gets the HTTP method for the request
-     *
-     * @return string The HTTP method
-     */
-    public function getMethod() : string;
+* `getMethod() : string`
+* `getProperties() : IDictionary`
+* `getUri() : Uri`
 
-    /**
-     * Gets the properties of the request
-     * These are custom pieces of metadata that the application can attach to the request
-     *
-     * @return IDictionary The collection of properties
-     */
-    public function getProperties() : IDictionary;
-
-    /**
-     * Gets the URI of the request
-     *
-     * @return Uri The URI
-     */
-    public function getUri() : Uri;
-}
-```
+The properties dictionary is a useful place to store metadata about a request, eg route variables.
 
 <h4 id="creating-request-from-globals">Creating a Request From Globals</h4>
 
@@ -294,19 +200,17 @@ $json = (new HttpBodyParser)->readAsJson($request->getBody());
 
 <h4 id="requests-reading-multipart-requests">Reading Multipart Requests</h4>
 
-Multipart requests contain multiple bodies, each with headers.  That's actually how file upload files work - each file gets a body with headers indicating the name, type, and size of the file.  Opulence can parse these multipart bodies into a list of `MultipartBodyPart` objects.  Each `MultipartBodyPart` has an instance of `HttpHeaders` and `IHttpBody`.
+Multipart requests contain multiple bodies, each with headers.  That's actually how file upload files work - each file gets a body with headers indicating the name, type, and size of the file.  Opulence can parse these multipart bodies into a list of `MultipartBodyPart` objects, which contain the following methods:
+
+* `getBody() : ?IHttpBody`
+* `getHeaders() : HttpHeaders`
+
+To parse the multipart bodies, call
 
 ```php
 use Opulence\Net\Http\Requests\RequestParser;
 
 $multipartBodies = (new RequestParser)->readAsMultipart($request);
-
-foreach ($multipartBodies as $multipartBody) {
-    // Get the headers of the body part
-    $multipartBody->getHeaders();
-    // Get the body of the body part
-    $multipartBody->getBody();
-}
 ```
 
 <h5 id="saving-uploaded-files">Saving Uploaded Files</h5>
@@ -349,34 +253,11 @@ $cookies->get('userid');
 
 <h2 id="responses">Responses</h2>
 
-Responses are HTTP messages that are sent by servers back to the client.
+Responses are HTTP messages that are sent by servers back to the client.  On top of the methods in [`IHttpMessage`](#http-messages), they contain the following methods:
 
-```php
-interface IHttpResponseMessage extends IHttpMessage
-{
-    /**
-     * Gets the reason phrase of the response
-     *
-     * @return string|null The reason phrase if one is set, otherwise null
-     */
-    public function getReasonPhrase() : ?string;
-
-    /**
-     * Gets the HTTP status code of the response
-     *
-     * @return int The HTTP status code of the response
-     */
-    public function getStatusCode() : int;
-
-    /**
-     * Sets the HTTP status code of the response
-     *
-     * @param int $statusCode The HTTP status code of the response
-     * @param string|null $reasonPhrase The reason phrase if there is one, otherwise null
-     */
-    public function setStatusCode(int $statusCode, ?string $reasonPhrase = null) : void;
-}
-```
+* `getReasonPhrase() : ?string`
+* `getStatusCode() : int`
+* `setStatusCode(int $statusCode, ?string $reasonPhrase = null) : void`
 
 <h4 id="creating-responses">Creating Responses</h4>
 
@@ -491,70 +372,15 @@ $outputStream = new Stream(fopen('path/to/output', 'w'));
 
 A URI identifies a resource, typically over a network.  They contain such information as the scheme, host, port, path, query string, and fragment.  Opulence represents them in `Opulence\Net\Uri`, and they include the following methods:
 
-```php
-/**
- * Converts the URI to a string
- *
- * @return string The URI as a string
- */
-public function __toString() : string;
-
-/**
- * Gets the fragment
- *
- * @return string|null The fragment if set, otherwise null
- */
-public function getFragment() : ?string;
-
-/**
- * Gets the host
- *
- * @return string The host
- */
-public function getHost() : string;
-
-/**
- * Gets the password
- *
- * @return string|null The password if set, otherwise null
- */
-public function getPassword() : ?string;
-
-/**
- * Gets the path
- *
- * @return string The path
- */
-public function getPath() : string;
-
-/**
- * Gets the port
- *
- * @return int|null The port if set, otherwise null
- */
-public function getPort() : ?int;
-
-/**
- * Gets the query string
- *
- * @return string|null The query string if set, otherwise null
- */
-public function getQueryString() : ?string;
-
-/**
- * Gets the scheme
- *
- * @return string The scheme
- */
-public function getScheme() : string;
-
-/**
- * Gets the user
- *
- * @return string|null The user if set, otherwise null
- */
-public function getUser() : ?string;
-```
+* `__toString() : string`
+* `getFragment() : ?string`
+* `getHost() : string`
+* `getPassword() : ?string`
+* `getPath() : string`
+* `getPort() : ?int`
+* `getQueryString() : ?string`
+* `getScheme() : string`
+* `getUser() : ?string`
 
 <h4 id="creating-uris-from-strings">Creating URIs From Strings</h4>
 
