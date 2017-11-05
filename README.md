@@ -38,7 +38,7 @@ To work around these issues, Opulence requires the following setting in either a
 enable_post_data_reading = 0
 ```
 
-Alternatively, you could add `php_value enable_post_data_reading 0` to an _.htaccess_ file or to your _httpd.conf_.
+This will disable automatically parsing POST data into `$_POST` and multipart data into `$_FILES`.  If you're developing any non-Opulence applications on the same web server, then it's probably better to use _.user.ini_ because it'll only apply this setting to your Opulence application.  Alternatively, you could add `php_value enable_post_data_reading 0` to an _.htaccess_ file or to your _httpd.conf_.
 
 <h4 id="why-not-use-psr-7">Why Not Use PSR-7?</h4>
 
@@ -336,19 +336,16 @@ To grab the MIME type of an HTTP body, call
 
 <h4 id="getting-request-cookies">Getting Cookies</h4>
 
-Opulence has a helper to grab a single cookie value:
+Opulence has a helper to grab cookies from request headers:
 
 ```php
 use Opulence\Net\Http\Requests\RequestHeaderParser;
 
-$cookieValue = (new RequestHeaderParser)->getCookie($request->getHeaders(), 'userid');
+$cookies = (new RequestHeaderParser)->parseCookies($request->getHeaders());
+$cookies->get('userid');
 ```
 
-You can also grab all cookie values from the request headers as an [`immutable dictionary`](collections#immutable-hash-tables):
-
-```php
-$cookieValues = (new RequestHeaderParser)->getAllCookies($request->getHeaders());
-```
+`RequestHeaderParser::parseCookies()` returns an [immutable dictionary](collections#immutable-hash-tables).
 
 <h2 id="responses">Responses</h2>
 

@@ -11,9 +11,9 @@
 namespace Opulence\Net\Http\Requests;
 
 use Opulence\Collections\IImmutableDictionary;
+use Opulence\Collections\ImmutableHashTable;
 use Opulence\Net\Http\HttpHeaderParser;
 use Opulence\Net\Http\HttpHeaders;
-use OutOfBoundsException;
 
 /**
  * Defines the request header parser
@@ -21,27 +21,19 @@ use OutOfBoundsException;
 class RequestHeaderParser extends HttpHeaderParser
 {
     /**
-     * Gets all the cookie values from the request headers
+     * Parses the request headers for all cookie values
      *
+     * @param HttpHeaders $headers The headers to parse
      * @return IImmutableDictionary The mapping of cookie names to values
-     * @throws OutOfBoundsException Thrown if no cookies were found
      */
-    public function getAllCookies(HttpHeaders $headers) : IImmutableDictionary
+    public function parseCookies(HttpHeaders $headers) : IImmutableDictionary
     {
-        return $this->parseParameters($headers->getFirst('Cookie'));
-    }
+        $cookieValues = [];
 
+        if (!$headers->tryGetFirst('Cookie', $cookieValues)) {
+            return new ImmutableHashTable([]);
+        }
 
-    /**
-     * Gets a cookie value from the request headers
-     *
-     * @param HttpHeaders $headers The request headers to parse
-     * @param string $name The name of the cookie whose value we want
-     * @return mixed The value of the cookie
-     * @throws OutOfBoundsException Thrown if the cookie does not exist
-     */
-    public function getCookie(HttpHeaders $headers, string $name)
-    {
-        return $this->parseParameters($headers->getFirst('Cookie'))->get($name);
+        return $this->parseParameters($cookieValues);
     }
 }
