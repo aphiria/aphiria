@@ -11,6 +11,7 @@
 namespace Opulence\Net\Tests\Http\Requests;
 
 use InvalidArgumentException;
+use Opulence\Collections\HashTable;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\Requests\IHttpRequestMessage;
@@ -29,6 +30,8 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
     private $headers = null;
     /** @var IHttpBody|\PHPUnit_Framework_MockObject_MockObject The body to use in tests */
     private $body = null;
+    /** @var IDictionary|\PHPUnit_Framework_MockObject_MockObject The request properties to use in tests */
+    private $properties = null;
 
     /**
      * Sets up the tests
@@ -38,6 +41,7 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
         $this->parser = new RequestParser();
         $this->headers = new HttpHeaders();
         $this->body = $this->createMock(IHttpBody::class);
+        $this->properties = new HashTable();
         $this->request = $this->createMock(IHttpRequestMessage::class);
         $this->request->expects($this->any())
             ->method('getHeaders')
@@ -45,6 +49,26 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
         $this->request->expects($this->any())
             ->method('getBody')
             ->willReturn($this->body);
+        $this->request->expects($this->any())
+            ->method('getProperties')
+            ->willReturn($this->properties);
+    }
+
+    /**
+     * Tests that getting the client IP address returns null when the property is not set
+     */
+    public function testGettingClientIPAddressReturnsNullWhenPropertyIsNotSet() : void
+    {
+        $this->assertNull($this->parser->getClientIPAddress($this->request));
+    }
+
+    /**
+     * Tests that getting the client IP address returns the property value when the property is set
+     */
+    public function testGettingClientIPAddressReturnsPropertyValueWhenPropertyIsSet() : void
+    {
+        $this->properties->add('CLIENT_IP_ADDRESS', '127.0.0.1');
+        $this->assertEquals('127.0.0.1', $this->parser->getClientIPAddress($this->request));
     }
 
     /**

@@ -16,6 +16,7 @@
     3. [Reading JSON](#requests-reading-json)
     4. [Reading Multipart Requests](#requests-reading-multipart-requests)
     5. [Getting Cookies](#getting-request-cookies)
+    6. [Getting Client IP Address](#getting-client-ip-address)
 6. [Responses](#responses)
     1. [Creating Responses](#creating-responses)
     2. [Setting Cookies](#setting-response-cookies)
@@ -105,7 +106,7 @@ Headers provide metadata about the HTTP message.  In Opulence, they're implement
 * `getFirst(string $name) : mixed`
 * `tryGetFirst(string $name, &$value) : bool`
 
-Header names that are passed into the methods in `HttpHeaders` are normalized to Train-Case.  In other words, `foo_bar` will become `Foo-Bar`.
+> **Note:** Header names that are passed into the methods in `HttpHeaders` are automatically normalized to Train-Case.  In other words, `foo_bar` will become `Foo-Bar`.
 
 <h4 id="header-parsers">Header Parsers</h4>
 
@@ -251,6 +252,18 @@ $cookies->get('userid');
 
 `RequestHeaderParser::parseCookies()` returns an [immutable dictionary](collections#immutable-hash-tables).
 
+<h4 id="getting-client-ip-address">Getting Client IP Address</h4>
+
+If you use the [`RequestFactory](#creating-request-from-globals) to create your request, the client IP address will be added the the request property `CLIENT_IP_ADDRESS`.  To make it easier to grab this value, you can use `RequestParser` to retrieve it:
+
+```php
+use Opulence\Net\Http\Requests\RequestParser;
+
+$clientIPAddress = (new RequestParser)->getClientIPAddress($request);
+```
+
+This will take into consideration any [trusted proxy header values](#trusted-proxies) when determining the original client IP address.
+
 <h2 id="responses">Responses</h2>
 
 Responses are HTTP messages that are sent by servers back to the client.  On top of the methods in [`IHttpMessage`](#http-messages), they contain the following methods:
@@ -332,7 +345,7 @@ use Opulence\Net\Http\Responses\ResponseHeaderFormatter;
 public function __construct(
     string $name,
     $value,
-    $expiration = null, // Either lifetime in seconds or DateTime to expire
+    $expiration = null, // Either Unix timestamp or DateTime to expire
     ?string $path = null,
     ?string $domain = null,
     bool $isSecure = false,
@@ -373,13 +386,14 @@ $outputStream = new Stream(fopen('path/to/output', 'w'));
 A URI identifies a resource, typically over a network.  They contain such information as the scheme, host, port, path, query string, and fragment.  Opulence represents them in `Opulence\Net\Uri`, and they include the following methods:
 
 * `__toString() : string`
+* `getAuthority() : ?string`
 * `getFragment() : ?string`
-* `getHost() : string`
+* `getHost() : ?string`
 * `getPassword() : ?string`
 * `getPath() : string`
 * `getPort() : ?int`
 * `getQueryString() : ?string`
-* `getScheme() : string`
+* `getScheme() : ?string`
 * `getUser() : ?string`
 
 <h4 id="creating-uris-from-strings">Creating URIs From Strings</h4>

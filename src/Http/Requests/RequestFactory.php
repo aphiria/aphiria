@@ -23,6 +23,8 @@ use Opulence\Net\Uri;
  */
 class RequestFactory
 {
+    /** @const The name of the request property that stores the client IP address */
+    private const CLIENT_IP_ADDRESS_PROPERTY = 'CLIENT_IP_ADDRESS';
     /** @var array The list of HTTP request headers that don't begin with "HTTP_" */
     private static $specialCaseHeaders = [
         'AUTH_TYPE' => true,
@@ -118,7 +120,7 @@ class RequestFactory
 
         // Set the client IP address as a property
         if (($clientIPAddress = $this->getClientIPAddress($server)) !== null) {
-            $properties->add('CLIENT_IP_ADDRESS', $clientIPAddress);
+            $properties->add(self::CLIENT_IP_ADDRESS_PROPERTY, $clientIPAddress);
         }
 
         return $properties;

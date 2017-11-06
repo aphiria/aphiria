@@ -51,6 +51,32 @@ class Response implements IHttpResponseMessage
     /**
      * @inheritdoc
      */
+    public function __toString() : string
+    {
+        $startLine = "HTTP/{$this->protocolVersion} {$this->statusCode}";
+
+        if ($this->reasonPhrase !== null) {
+            $startLine .= " {$this->reasonPhrase}";
+        }
+
+        $headers = '';
+
+        foreach ($this->headers as $kvp) {
+            $headers .= "\r\n{$kvp->getKey()}: " . implode(', ', $kvp->getValue());
+        }
+
+        $response = $startLine . $headers . "\r\n\r\n";
+
+        if ($this->body !== null) {
+            $response .= (string)$this->getBody();
+        }
+
+        return $response;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getBody() : ?IHttpBody
     {
         return $this->body;

@@ -71,4 +71,44 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $response = new Response(200, null, null, '2.0');
         $this->assertEquals('2.0', $response->getProtocolVersion());
     }
+
+    /**
+     * Tests that multiple header values are concatenated with commas
+     */
+    public function testMultipleHeaderValuesAreConcatenatedWithCommas() : void
+    {
+        $response = new Response();
+        $response->getHeaders()->add('Foo', 'bar');
+        $response->getHeaders()->add('Foo', 'baz', true);
+        $this->assertEquals("HTTP/1.1 200 OK\r\nFoo: bar, baz\r\n\r\n", (string)$response);
+    }
+
+    /**
+     * Tests that the reason phrase is included only if it is defined
+     */
+    public function testReasonPhraseIsIncludedOnlyIfDefined() : void
+    {
+        $response = new Response();
+        $response->setStatusCode(200, 'OK');
+        $this->assertEquals("HTTP/1.1 200 OK\r\n\r\n", (string)$response);
+    }
+
+    /**
+     * Tests that a response with headers but no body ends with a blank line
+     */
+    public function testResponseWithHeadersButNoBodyEndsWithBlankLine() : void
+    {
+        $response = new Response();
+        $response->getHeaders()->add('Foo', 'bar');
+        $this->assertEquals("HTTP/1.1 200 OK\r\nFoo: bar\r\n\r\n", (string)$response);
+    }
+
+    /**
+     * Tests that a response with no headers or body ends with a blank line
+     */
+    public function testResponseWithNoHeadersOrBodyEndsWithBlankLine() : void
+    {
+        $response = new Response();
+        $this->assertEquals("HTTP/1.1 200 OK\r\n\r\n", (string)$response);
+    }
 }

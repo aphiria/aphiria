@@ -75,6 +75,14 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
+    public function __toString() : string
+    {
+        // Todo
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getBody() : ?IHttpBody
     {
         return $this->body;

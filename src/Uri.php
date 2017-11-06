@@ -17,14 +17,14 @@ use InvalidArgumentException;
  */
 class Uri
 {
-    /** @var string The URI scheme */
-    private $scheme = '';
+    /** @var string|null The URI scheme if set, otherwise null */
+    private $scheme = null;
     /** @var string|null The URI user if set, otherwise null */
     private $user = null;
     /** @var string|null The URI password if set, otherwise null */
     private $password = null;
-    /** @var string The URI host */
-    private $host = '';
+    /** @var string|null The URI host if set, otherwise null */
+    private $host = null;
     /** @var int|null The URI port if set, otherwise null */
     private $port = null;
     /** @var string The URI path */
@@ -35,10 +35,10 @@ class Uri
     private $fragment = '';
 
     /**
-     * @param string $scheme The URI scheme
+     * @param string|null $scheme The URI scheme
      * @param string|null $user The URI user if set, otherwise null
      * @param string|null $password The URI password if set, otherwise null
-     * @param string $host The URI host
+     * @param string|null $host The URI host if set, otherwise null
      * @param int|null $port The URI host if set, otherwise null
      * @param string $path The URI path
      * @param string|null $queryString The URI query string (excludes '?') if set, otherwise null
@@ -46,10 +46,10 @@ class Uri
      * @throws InvalidArgumentException Thrown if the port is out of range
      */
     public function __construct(
-        string $scheme,
+        ?string $scheme,
         ?string $user,
         ?string $password,
-        string $host,
+        ?string $host,
         ?int $port,
         string $path,
         ?string $queryString,
@@ -77,20 +77,14 @@ class Uri
      */
     public function __toString() : string
     {
-        $stringUri = "{$this->scheme}://";
+        $stringUri = '';
 
-        if ($this->user !== null && $this->password !== null) {
-            $stringUri .= "{$this->user}:{$this->password}@";
+        if ($this->scheme !== null) {
+            $stringUri .= "{$this->scheme}:";
         }
 
-        $stringUri .= "{$this->host}";
-
-        // Only include the port if not using standard ports for the scheme
-        if (
-            $this->port !== null &&
-            (($this->scheme === 'http' && $this->port !== 80) || ($this->scheme === 'https' && $this->port !== 443))
-        ) {
-            $stringUri .= ":{$this->port}";
+        if (($authority = $this->getAuthority()) !== null) {
+            $stringUri .= "//$authority";
         }
 
         $stringUri .= $this->path;
@@ -107,6 +101,31 @@ class Uri
     }
 
     /**
+     * Gets the authority portion of the URI, eg user:password@host:port
+     * Note: The port is only included if it is non-standard for the scheme
+     *
+     * @return string|null The URI authority if set, otherwise null
+     */
+    public function getAuthority() : ?string
+    {
+        $authority = '';
+
+        if ($this->user !== null && $this->password !== null) {
+            $authority .= "{$this->user}:{$this->password}@";
+        }
+
+        if ($this->host !== null) {
+            $authority .= $this->host;
+        }
+
+        if (!$this->isUsingStandardPort()) {
+            $authority .= ":{$this->port}";
+        }
+
+        return $authority === '' ? null : $authority;
+    }
+
+    /**
      * Gets the fragment
      *
      * @return string|null The fragment if set, otherwise null
@@ -119,9 +138,9 @@ class Uri
     /**
      * Gets the host
      *
-     * @return string The host
+     * @return string|null The host if set, otherwise null
      */
-    public function getHost() : string
+    public function getHost() : ?string
     {
         return $this->host;
     }
@@ -169,9 +188,9 @@ class Uri
     /**
      * Gets the scheme
      *
-     * @return string The scheme
+     * @return string|null The scheme if set, otherwise null
      */
-    public function getScheme() : string
+    public function getScheme() : ?string
     {
         return $this->scheme;
     }
@@ -184,5 +203,16 @@ class Uri
     public function getUser() : ?string
     {
         return $this->user;
+    }
+
+    /**
+     * Gets whether or not a standard port is being used for the scheme
+     *
+     * @return bool True if using a standard port, otherwise false
+     */
+    private function isUsingStandardPort() : bool
+    {
+        return $this->port === null ||
+            (($this->scheme === 'http' && $this->port === 80) || ($this->scheme === 'https' && $this->port === 443));
     }
 }

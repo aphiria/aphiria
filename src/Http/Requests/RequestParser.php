@@ -19,6 +19,23 @@ use Opulence\Net\Http\StringBody;
  */
 class RequestParser
 {
+    /** @const The name of the request property that stores the client IP address */
+    private const CLIENT_IP_ADDRESS_PROPERTY = 'CLIENT_IP_ADDRESS';
+
+    /**
+     * Gets the client IP address from the request
+     *
+     * @param IHttpRequestMessage $request The request to look in
+     * @return string|null The client IP address if one was found, otherwise null
+     */
+    public function getClientIPAddress(IHttpRequestMessage $request) : ?string
+    {
+        $clientIPAddress = null;
+        $request->getProperties()->tryGet(self::CLIENT_IP_ADDRESS_PROPERTY, $clientIPAddress);
+
+        return $clientIPAddress;
+    }
+
     /**
      * Parses a request as a multipart request
      * Note: This method should only be called once for best performance

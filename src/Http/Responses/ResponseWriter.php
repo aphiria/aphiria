@@ -18,7 +18,7 @@ use Opulence\IO\Streams\Stream;
  */
 class ResponseWriter
 {
-    /** @var IStream The output stream to write to */
+    /** @var IStream The output stream to write the body to */
     private $outputStream = null;
 
     /**

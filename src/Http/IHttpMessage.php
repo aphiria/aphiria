@@ -16,6 +16,13 @@ namespace Opulence\Net\Http;
 interface IHttpMessage
 {
     /**
+     * Gets the message as a string
+     *
+     * @return string The string representation of the message
+     */
+    public function __toString() : string;
+
+    /**
      * Gets the body of the HTTP message
      *
      * @return IHttpBody|null The body if there is one, otherwise null

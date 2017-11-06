@@ -40,6 +40,71 @@ class UriTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests getting the authority with no user or password and with a non-standard port
+     */
+    public function testGettingAuthorityWithNoUserOrPasswordAndWithNonStandardPort() : void
+    {
+        $httpUri = new Uri(
+            'http',
+            null,
+            null,
+            'host',
+            8080,
+            '',
+            null,
+            null
+        );
+        $this->assertEquals('host:8080', $httpUri->getAuthority());
+        $httpsUri = new Uri(
+            'https',
+            null,
+            null,
+            'host',
+            4343,
+            '',
+            null,
+            null
+        );
+        $this->assertEquals('host:4343', $httpsUri->getAuthority());
+    }
+
+    /**
+     * Tests getting the authority with no user, password, and host returns null
+     */
+    public function testGettingAuthorityWithNoHostOrUserInfoReturnsNull() : void
+    {
+        $httpUri = new Uri(
+            null,
+            null,
+            null,
+            null,
+            null,
+            '',
+            null,
+            null
+        );
+        $this->assertNull($httpUri->getAuthority());
+    }
+
+    /**
+     * Tests getting the authority with user and password includes the user and password
+     */
+    public function testGettingAuthorityWithUserAndPasswordIncludesUserAndPassword() : void
+    {
+        $httpUri = new Uri(
+            'http',
+            'user',
+            'password',
+            'host',
+            null,
+            '',
+            null,
+            null
+        );
+        $this->assertEquals('user:password@host', $httpUri->getAuthority());
+    }
+
+    /**
      * Tests getting the fragment
      */
     public function testGettingFragment() : void
@@ -212,6 +277,24 @@ class UriTest extends \PHPUnit\Framework\TestCase
             null
         );
         $this->assertEquals('https://user:password@host:1234', (string)$httpsUri);
+    }
+
+    /**
+     * Tests casting to string with no scheme does not include that value
+     */
+    public function testToStringWithNoSchemedDoesNotIncludeThatValue() : void
+    {
+        $uri = new Uri(
+            null,
+            null,
+            null,
+            'host',
+            null,
+            '',
+            null,
+            null
+        );
+        $this->assertEquals('//host', (string)$uri);
     }
 
     /**
