@@ -33,10 +33,28 @@ class UriTest extends \PHPUnit\Framework\TestCase
             'password',
             'host',
             80,
-            'path',
+            '/path',
             'query',
             'fragment'
         );
+    }
+
+    /**
+     * Tests that an empty path string with an authority is accepted
+     */
+    public function testEmptyPathStringWithAuthorityIsAccepted() : void
+    {
+        $uri = new Uri(
+            null,
+            null,
+            null,
+            'host',
+            null,
+            '',
+            null,
+            null
+        );
+        $this->assertEquals('', $uri->getPath());
     }
 
     /**
@@ -50,7 +68,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             null,
             'host',
             8080,
-            '',
+            null,
             null,
             null
         );
@@ -61,7 +79,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             null,
             'host',
             4343,
-            '',
+            null,
             null,
             null
         );
@@ -79,7 +97,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             null,
             null,
             null,
-            '',
+            null,
             null,
             null
         );
@@ -97,7 +115,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             'password',
             'host',
             null,
-            '',
+            null,
             null,
             null
         );
@@ -133,7 +151,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     public function testGettingPath() : void
     {
-        $this->assertEquals('path', $this->uri->getPath());
+        $this->assertEquals('/path', $this->uri->getPath());
     }
 
     /**
@@ -180,7 +198,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
                 'password',
                 'host',
                 0,
-                'path',
+                '/path',
                 'query',
                 'fragment'
             );
@@ -200,7 +218,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
                 'password',
                 'host',
                 65536,
-                'path',
+                '/path',
                 'query',
                 'fragment'
             );
@@ -212,6 +230,24 @@ class UriTest extends \PHPUnit\Framework\TestCase
             // Don't want to get here
             $this->assertTrue(false);
         }
+    }
+
+    /**
+     * Tests that a path without a leading slash with an authority throws an exception
+     */
+    public function testPathWithoutLeadingSlashWithAuthorityThrowsException() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        new Uri(
+            null,
+            null,
+            null,
+            'host',
+            null,
+            'path',
+            null,
+            null
+        );
     }
 
     /**
@@ -243,7 +279,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             null,
             'host',
             80,
-            '',
+            null,
             null,
             'fragment'
         );
@@ -261,7 +297,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             'password',
             'host',
             8080,
-            '',
+            null,
             null,
             null
         );
@@ -272,7 +308,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             'password',
             'host',
             1234,
-            '',
+            null,
             null,
             null
         );
@@ -290,7 +326,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             null,
             'host',
             null,
-            '',
+            null,
             null,
             null
         );
@@ -308,7 +344,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             null,
             'host',
             null,
-            '',
+            null,
             null,
             null
         );
@@ -326,7 +362,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             null,
             'host',
             80,
-            '',
+            null,
             'query',
             null
         );
@@ -344,7 +380,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
             'password',
             'host',
             null,
-            '',
+            null,
             null,
             null
         );

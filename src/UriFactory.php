@@ -30,12 +30,12 @@ class UriFactory
         }
 
         return new Uri(
-            $parsedUri['scheme'] ?? 'http',
+            $parsedUri['scheme'] ?? null,
             $parsedUri['user'] ?? null,
             $parsedUri['pass'] ?? null,
-            $parsedUri['host'] ?? '',
+            $parsedUri['host'] ?? null,
             $parsedUri['port'] ?? null,
-            $parsedUri['path'] ?? '',
+            $parsedUri['path'] ?? null,
             $parsedUri['query'] ?? null,
             $parsedUri['fragment'] ?? null
         );

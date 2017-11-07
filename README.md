@@ -390,7 +390,7 @@ A URI identifies a resource, typically over a network.  They contain such inform
 * `getFragment() : ?string`
 * `getHost() : ?string`
 * `getPassword() : ?string`
-* `getPath() : string`
+* `getPath() : ?string`
 * `getPort() : ?int`
 * `getQueryString() : ?string`
 * `getScheme() : ?string`

@@ -27,12 +27,12 @@ class Uri
     private $host = null;
     /** @var int|null The URI port if set, otherwise null */
     private $port = null;
-    /** @var string The URI path */
-    private $path = '';
+    /** @var string|null The URI path if set, otherwise null */
+    private $path = null;
     /** @var string|null The URI query string (excludes '?') if set, otherwise null */
-    private $queryString = '';
+    private $queryString = null;
     /** @var string|null The URI fragment (excludes '#') if set, otherwise null */
-    private $fragment = '';
+    private $fragment = null;
 
     /**
      * @param string|null $scheme The URI scheme
@@ -40,10 +40,10 @@ class Uri
      * @param string|null $password The URI password if set, otherwise null
      * @param string|null $host The URI host if set, otherwise null
      * @param int|null $port The URI host if set, otherwise null
-     * @param string $path The URI path
+     * @param string|null $path The URI path if set, otherwise null
      * @param string|null $queryString The URI query string (excludes '?') if set, otherwise null
      * @param string|null $fragment The URI fragment (excludes '#') if set, otherwise null
-     * @throws InvalidArgumentException Thrown if the port is out of range
+     * @throws InvalidArgumentException Thrown if the port is out of range or the path is invalid
      */
     public function __construct(
         ?string $scheme,
@@ -51,7 +51,7 @@ class Uri
         ?string $password,
         ?string $host,
         ?int $port,
-        string $path,
+        ?string $path,
         ?string $queryString,
         ?string $fragment
     ) {
@@ -65,6 +65,11 @@ class Uri
         }
 
         $this->port = $port;
+
+        if ($this->getAuthority() !== null && $path !== null && strlen($path) > 0 && $path[0] !== '/') {
+            throw new InvalidArgumentException('Path must be null/empty or start with "/" if the URI has an authority');
+        }
+
         $this->path = $path;
         $this->queryString = $queryString;
         $this->fragment = $fragment;
@@ -87,7 +92,9 @@ class Uri
             $stringUri .= "//$authority";
         }
 
-        $stringUri .= $this->path;
+        if ($this->path !== null) {
+            $stringUri .= $this->path;
+        }
 
         if ($this->queryString !== null) {
             $stringUri .= "?{$this->queryString}";
@@ -158,9 +165,9 @@ class Uri
     /**
      * Gets the path
      *
-     * @return string The path
+     * @return string|null The URI path if set, otherwise null
      */
-    public function getPath() : string
+    public function getPath() : ?string
     {
         return $this->path;
     }
