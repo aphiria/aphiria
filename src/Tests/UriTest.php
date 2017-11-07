@@ -27,34 +27,25 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->uri = new Uri(
-            'http',
-            'user',
-            'password',
-            'host',
-            80,
-            '/path',
-            'query',
-            'fragment'
-        );
+        $this->uri = new Uri('http://user:password@host:80/path?query#fragment');
     }
 
     /**
-     * Tests that an empty path string with an authority is accepted
+     * Tests that a double-slash path without an authority throws an exception
      */
-    public function testEmptyPathStringWithAuthorityIsAccepted() : void
+    public function testDoubleSlashPathWithoutAuthorityThrowsException() : void
     {
-        $uri = new Uri(
-            null,
-            null,
-            null,
-            'host',
-            null,
-            '',
-            null,
-            null
-        );
-        $this->assertEquals('', $uri->getPath());
+        $this->expectException(InvalidArgumentException::class);
+        new Uri('http:////path');
+    }
+
+    /**
+     * Tests that reserve characters in the fragment are encoded
+     */
+    public function testFragmentReservedCharsAreEncoded() : void
+    {
+        $uri = new Uri('#dave=%young');
+        $this->assertEquals('dave=%25young', $uri->getFragment());
     }
 
     /**
@@ -62,27 +53,9 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     public function testGettingAuthorityWithNoUserOrPasswordAndWithNonStandardPort() : void
     {
-        $httpUri = new Uri(
-            'http',
-            null,
-            null,
-            'host',
-            8080,
-            null,
-            null,
-            null
-        );
+        $httpUri = new Uri('http://host:8080');
         $this->assertEquals('host:8080', $httpUri->getAuthority());
-        $httpsUri = new Uri(
-            'https',
-            null,
-            null,
-            'host',
-            4343,
-            null,
-            null,
-            null
-        );
+        $httpsUri = new Uri('https://host:4343');
         $this->assertEquals('host:4343', $httpsUri->getAuthority());
     }
 
@@ -91,16 +64,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     public function testGettingAuthorityWithNoHostOrUserInfoReturnsNull() : void
     {
-        $httpUri = new Uri(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-        );
+        $httpUri = new Uri('');
         $this->assertNull($httpUri->getAuthority());
     }
 
@@ -109,17 +73,10 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     public function testGettingAuthorityWithUserAndPasswordIncludesUserAndPassword() : void
     {
-        $httpUri = new Uri(
-            'http',
-            'user',
-            'password',
-            'host',
-            null,
-            null,
-            null,
-            null
-        );
-        $this->assertEquals('user:password@host', $httpUri->getAuthority());
+        $uriWithUserAndPassword = new Uri('http://user:password@host');
+        $this->assertEquals('user:password@host', $uriWithUserAndPassword->getAuthority());
+        $uriWithUserButNoPassword = new Uri('http://user:@host');
+        $this->assertEquals('user:@host', $uriWithUserButNoPassword->getAuthority());
     }
 
     /**
@@ -187,21 +144,39 @@ class UriTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that the host is lower-cased
+     */
+    public function testHostIsLowerCased() : void
+    {
+        $uri = new Uri('http://FOO.COM');
+        $this->assertEquals('foo.com', $uri->getHost());
+    }
+
+    /**
+     * Tests that an invalid scheme throws an exception
+     */
+    public function testInvalidSchemeThrowsException() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        new Uri('foo://bar.com');
+    }
+
+    /**
+     * Tests a malformed URI throws an exception when creating from string
+     */
+    public function testMalformedUriThrowsExceptionWhenCreatingFromString() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        new Uri('host:65536');
+    }
+
+    /**
      * Tests that an out of range port throws an exception
      */
     public function testOutOfRangePortThrowsException() : void
     {
         try {
-            new Uri(
-                'http',
-                'user',
-                'password',
-                'host',
-                0,
-                '/path',
-                'query',
-                'fragment'
-            );
+            new Uri('foo.com:0');
             $this->fail('Port below acceptable range was accepted');
         } catch (InvalidArgumentException $ex) {
             // Verify we got here
@@ -212,16 +187,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
         }
 
         try {
-            new Uri(
-                'http',
-                'user',
-                'password',
-                'host',
-                65536,
-                '/path',
-                'query',
-                'fragment'
-            );
+            new Uri('foo.com:65536');
             $this->fail('Port above acceptable range was accepted');
         } catch (InvalidArgumentException $ex) {
             // Verify we got here
@@ -233,21 +199,30 @@ class UriTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that a path without a leading slash with an authority throws an exception
+     * Tests that reserve characeters in the path are encoded
      */
-    public function testPathWithoutLeadingSlashWithAuthorityThrowsException() : void
+    public function testPathReservedCharsAreEncoded() : void
     {
-        $this->expectException(InvalidArgumentException::class);
-        new Uri(
-            null,
-            null,
-            null,
-            'host',
-            null,
-            'path',
-            null,
-            null
-        );
+        $uri = new Uri('/%path');
+        $this->assertEquals('/%25path', $uri->getPath());
+    }
+
+    /**
+     * Tests that reserve characeters in the query string are encoded
+     */
+    public function testQueryStringReservedCharsAreEncoded() : void
+    {
+        $uri = new Uri('?dave=%young');
+        $this->assertEquals('dave=%25young', $uri->getQueryString());
+    }
+
+    /**
+     * Tests that the scheme is lower-cased
+     */
+    public function testSchemeIsLowerCased() : void
+    {
+        $uri = new Uri('HTTP://foo.com');
+        $this->assertEquals('http', $uri->getScheme());
     }
 
     /**
@@ -255,16 +230,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     public function testToStringWithAllPartsIsCreatedCorrectly() : void
     {
-        $uri = new Uri(
-            'http',
-            'user',
-            'password',
-            'host',
-            8080,
-            '/path',
-            'query',
-            'fragment'
-        );
+        $uri = new Uri('http://user:password@host:8080/path?query#fragment');
         $this->assertEquals('http://user:password@host:8080/path?query#fragment', (string)$uri);
     }
 
@@ -273,16 +239,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     public function testToStringWithFragmentStringIncludesFragment() : void
     {
-        $uri = new Uri(
-            'http',
-            null,
-            null,
-            'host',
-            80,
-            null,
-            null,
-            'fragment'
-        );
+        $uri = new Uri('http://host#fragment');
         $this->assertEquals('http://host#fragment', (string)$uri);
     }
 
@@ -291,28 +248,10 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     public function testToStringWithNonStandardPortIncludesPort() : void
     {
-        $httpUri = new Uri(
-            'http',
-            'user',
-            'password',
-            'host',
-            8080,
-            null,
-            null,
-            null
-        );
-        $this->assertEquals('http://user:password@host:8080', (string)$httpUri);
-        $httpsUri = new Uri(
-            'https',
-            'user',
-            'password',
-            'host',
-            1234,
-            null,
-            null,
-            null
-        );
-        $this->assertEquals('https://user:password@host:1234', (string)$httpsUri);
+        $httpUri = new Uri('http://host:8080');
+        $this->assertEquals('http://host:8080', (string)$httpUri);
+        $httpsUri = new Uri('https://host:1234');
+        $this->assertEquals('https://host:1234', (string)$httpsUri);
     }
 
     /**
@@ -320,17 +259,8 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     public function testToStringWithNoSchemedDoesNotIncludeThatValue() : void
     {
-        $uri = new Uri(
-            null,
-            null,
-            null,
-            'host',
-            null,
-            null,
-            null,
-            null
-        );
-        $this->assertEquals('//host', (string)$uri);
+        $uri = new Uri('host');
+        $this->assertEquals('host', (string)$uri);
     }
 
     /**
@@ -338,16 +268,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     public function testToStringWithNoUserPasswordDoesNotIncludeThoseValues() : void
     {
-        $uri = new Uri(
-            'http',
-            null,
-            null,
-            'host',
-            null,
-            null,
-            null,
-            null
-        );
+        $uri = new Uri('http://host');
         $this->assertEquals('http://host', (string)$uri);
     }
 
@@ -356,16 +277,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     public function testToStringWithQueryStringIncludesQueryString() : void
     {
-        $uri = new Uri(
-            'http',
-            null,
-            null,
-            'host',
-            80,
-            null,
-            'query',
-            null
-        );
+        $uri = new Uri('http://host?query');
         $this->assertEquals('http://host?query', (string)$uri);
     }
 
@@ -374,16 +286,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     public function testToStringWithUserPasswordIncludesThoseValues() : void
     {
-        $uri = new Uri(
-            'http',
-            'user',
-            'password',
-            'host',
-            null,
-            null,
-            null,
-            null
-        );
+        $uri = new Uri('http://user:password@host');
         $this->assertEquals('http://user:password@host', (string)$uri);
     }
 }

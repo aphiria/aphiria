@@ -138,7 +138,6 @@ class RequestFactory
         if ($this->isUsingTrustedProxy($server) && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']])) {
             $protoString = $server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']];
             $protoArray = explode(',', $protoString);
-
             $isSecure = count($protoArray) > 0 && in_array(strtolower($protoArray[0]), ['https', 'ssl', 'on']);
         } else {
             $isSecure = isset($server['HTTPS']) && $server['HTTPS'] !== 'off';
@@ -194,8 +193,15 @@ class RequestFactory
 
         // The "?" is simply the separator for the query string, not actually part of the query string
         $queryString = ltrim($queryString, '?');
+        $uriString = "$scheme://";
 
-        return new Uri($scheme, $user, $password, $host, $port, $path, $queryString, null);
+        if ($user !== null) {
+            $uriString .= "$user:" . ($password ?? '') .'@';
+        }
+
+        $uriString .= "{$host}" . ($port === null ? '' : ":$port") . "{$path}?{$queryString}";
+
+        return new Uri($uriString);
     }
 
     /**

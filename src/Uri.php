@@ -35,44 +35,24 @@ class Uri
     private $fragment = null;
 
     /**
-     * @param string|null $scheme The URI scheme
-     * @param string|null $user The URI user if set, otherwise null
-     * @param string|null $password The URI password if set, otherwise null
-     * @param string|null $host The URI host if set, otherwise null
-     * @param int|null $port The URI host if set, otherwise null
-     * @param string|null $path The URI path if set, otherwise null
-     * @param string|null $queryString The URI query string (excludes '?') if set, otherwise null
-     * @param string|null $fragment The URI fragment (excludes '#') if set, otherwise null
-     * @throws InvalidArgumentException Thrown if the port is out of range or the path is invalid
+     * @param string $uri The raw URI
+     * @throws InvalidArgumentException Thrown if the URI is malformed
      */
-    public function __construct(
-        ?string $scheme,
-        ?string $user,
-        ?string $password,
-        ?string $host,
-        ?int $port,
-        ?string $path,
-        ?string $queryString,
-        ?string $fragment
-    ) {
-        $this->scheme = $scheme;
-        $this->user = $user;
-        $this->password = $password;
-        $this->host = $host;
-
-        if ($port !== null && ($port < 1 || $port > 65535)) {
-            throw new InvalidArgumentException("Port $port must be between 1 and 65535, inclusive");
+    public function __construct(string $uri)
+    {
+        if (($parsedUri = parse_url($uri)) === false) {
+            throw new InvalidArgumentException("URI $uri is malformed");
         }
 
-        $this->port = $port;
-
-        if ($this->getAuthority() !== null && $path !== null && strlen($path) > 0 && $path[0] !== '/') {
-            throw new InvalidArgumentException('Path must be null/empty or start with "/" if the URI has an authority');
-        }
-
-        $this->path = $path;
-        $this->queryString = $queryString;
-        $this->fragment = $fragment;
+        $this->scheme = $this->filterScheme($parsedUri['scheme'] ?? null);
+        $this->user = $parsedUri['user'] ?? null;
+        $this->password = $parsedUri['pass'] ?? null;
+        $this->host = $this->filterHost($parsedUri['host'] ?? null);
+        $this->port = $parsedUri['port'] ?? null;
+        $this->path = $this->filterPath($parsedUri['path'] ?? null);
+        $this->queryString = $this->filterQueryString($parsedUri['query'] ?? null);
+        $this->fragment = $this->filterFragment($parsedUri['fragment'] ?? null);
+        $this->validateProperties();
     }
 
     /**
@@ -117,8 +97,12 @@ class Uri
     {
         $authority = '';
 
-        if ($this->user !== null && $this->password !== null) {
-            $authority .= "{$this->user}:{$this->password}@";
+        if ($this->user !== null) {
+            /**
+             * The password can be empty
+             * @link $uriWithUserButNoPassword
+             */
+            $authority .= "{$this->user}:" . ($this->password ?? '') . '@';
         }
 
         if ($this->host !== null) {
@@ -213,6 +197,93 @@ class Uri
     }
 
     /**
+     * Filters the URI fragment and percent-encodes reserved characters
+     *
+     * @param string|null $fragment The fragment to filter if one is set, otherwise null
+     * @return string|null The filtered fragment, or null if the fragment was already null
+     */
+    private function filterFragment(?string $fragment) : ?string
+    {
+        return $this->filterQueryString($fragment);
+    }
+
+    /**
+     * Filters the URI host
+     *
+     * @param string|null $host The host to filter if one is set, otherwise null
+     * @return string|null The filtered host, or null if the host was already null
+     */
+    private function filterHost(?string $host) : ?string
+    {
+        if ($host === null) {
+            return null;
+        }
+
+        /** @link https://tools.ietf.org/html/rfc3986#section-3.2.2 */
+        return strtolower($host);
+    }
+
+    /**
+     * Filters the URI path and percent-encodes reserved characters
+     *
+     * @param string|null $path The path to filter if one is set, otherwise null
+     * @return string|null The filtered path, or null if the path was already null
+     */
+    private function filterPath(?string $path) : ?string
+    {
+        if ($path === null) {
+            return null;
+        }
+
+        /** @link https://tools.ietf.org/html/rfc3986#section-3.3 */
+        return preg_replace_callback(
+            '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
+            function ($match) {
+                return rawurlencode($match[0]);
+            },
+            $path
+        );
+    }
+
+    /**
+     * Filters the URI query string and percent-encodes reserved characters
+     *
+     * @param string|null $queryString The query string to filter if one is set, otherwise null
+     * @return string|null The filtered query string, or null if the query string was already null
+     */
+    private function filterQueryString(?string $queryString) : ?string
+    {
+        if ($queryString === null) {
+            return null;
+        }
+
+        /** @link https://tools.ietf.org/html/rfc3986#section-3.4 */
+        return preg_replace_callback(
+            '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
+            function ($match) {
+                return rawurlencode($match[0]);
+            },
+            $queryString
+        );
+    }
+
+    /**
+     * Filters the URI scheme
+     *
+     * @param string|null $scheme The scheme to filter if one is set, otherwise null
+     * @return string|null The filtered scheme, or null if the scheme was already null
+     */
+    private function filterScheme(?string $scheme) : ?string
+    {
+        if ($scheme === null) {
+            return null;
+        }
+
+        /** @link https://tools.ietf.org/html/rfc3986#section-3.1 */
+        return strtolower($scheme);
+    }
+
+    /**
      * Gets whether or not a standard port is being used for the scheme
      *
      * @return bool True if using a standard port, otherwise false
@@ -221,5 +292,36 @@ class Uri
     {
         return $this->port === null ||
             (($this->scheme === 'http' && $this->port === 80) || ($this->scheme === 'https' && $this->port === 443));
+    }
+
+    /**
+     * Validates all the properties
+     *
+     * @throws InvalidArgumentException Thrown if any of the properties are invalid
+     */
+    private function validateProperties() : void
+    {
+        $acceptedSchemes = ['' => true, 'http' => true, 'https' => true];
+
+        if (!isset($acceptedSchemes[$this->scheme])) {
+            throw new InvalidArgumentException("Scheme \"{$this->scheme}\" is invalid");
+        }
+
+        if ($this->port !== null && ($this->port < 1 || $this->port > 65535)) {
+            throw new InvalidArgumentException("Port {$this->port} must be between 1 and 65535, inclusive");
+        }
+
+        $authority = $this->getAuthority();
+        $pathIsSet = $this->path !== null && strlen($this->path) > 0;
+
+        /** @link https://tools.ietf.org/html/rfc3986#section-3 */
+        if ($authority !== null && $pathIsSet > 0 && $this->path[0] !== '/') {
+            throw new InvalidArgumentException('Path must be null/empty or start with "/" if the URI has an authority');
+        }
+
+        /** @link https://tools.ietf.org/html/rfc3986#section-3 */
+        if ($authority === null && $pathIsSet && strlen($this->path) >= 2 && substr($this->path, 0, 2) === '//') {
+            throw new InvalidArgumentException('Path cannot start with "//" if the URI has no authority');
+        }
     }
 }

@@ -22,8 +22,7 @@
     2. [Setting Cookies](#setting-response-cookies)
     3. [Writing Responses](#writing-responses)
 7. [URIs](#uris)
-    1. [Creating URIs From Strings](#creating-uris-from-strings)
-    2. [Parsing Query String Parameters](#uris-parsing-query-string-parameters)
+    1. [Parsing Query String Parameters](#uris-parsing-query-string-parameters)
 
 <h2 id="introduction">Introduction</h2>
 
@@ -396,14 +395,12 @@ A URI identifies a resource, typically over a network.  They contain such inform
 * `getScheme() : ?string`
 * `getUser() : ?string`
 
-<h4 id="creating-uris-from-strings">Creating URIs From Strings</h4>
-
-To create an instance of `Uri` from a raw string, eg `https://example.com/foo?bar=baz`, use `UriFactory`:
+To create an instance of `Uri`, pass the raw URI string into the constructor:
 
 ```php
-use Opulence\Net\UriFactory;
+use Opulence\Net\Uri;
 
-$uri = (new UriFactory)->createUriFromString($rawString);
+$uri = new Uri('https://example.com/foo?bar=baz#blah');
 ```
 
 <h4 id="uris-parsing-query-string-parameters">Parsing Query String Parameters</h4>
@@ -411,10 +408,9 @@ $uri = (new UriFactory)->createUriFromString($rawString);
 `Uri::getQueryString()` returns the raw query string.  To parse them into an immutable [dictionary](collections#immutable-hash-tables) (similar to PHP's `$_GET`), use `UriParser`:
 
 ```php
-use Opulence\Net\UriFactory;
 use Opulence\Net\UriParser;
 
-$uri = (new UriFactory)->createUriFromString('https://example.com?foo=bar');
+$uri = new Uri('https://example.com?foo=bar');
 $queryStringParams = (new UriParser)->parseQueryString($uri);
 echo $queryStringParams->get('foo'); // "bar"
 ```
