@@ -32,7 +32,7 @@ Opulence's network library provides abstractions for URIs, HTTP request and resp
 
 PHP has all sorts of idiosyncracies with parsing HTTP requests.  For example, form input requests are parsed into `$_POST` for POST requests, but must be manually parsed from the `php://input` stream for any other request methods.  Similarly, uploaded files in POST requests are available in the `$_FILES` superglobal, but uploaded files in PUT requests must be manually parsed from the `php://input` stream.
 
-To work around these issues, Opulence requires the following setting in either a _.user.ini_ or your main _php.ini_:
+To work around these issues, Opulence requires the following setting in either a <a href="http://php.net/manual/en/configuration.file.per-user.php" target="_blank">_.user.ini_</a> or your main _php.ini_:
 
 ```
 enable_post_data_reading = 0
@@ -40,7 +40,7 @@ enable_post_data_reading = 0
 
 This will disable automatically parsing POST data into `$_POST` and multipart data into `$_FILES`.
 
-> **Note:** If you're developing any non-Opulence applications on the same web server, then it's probably better to use _.user.ini_ because it'll only apply this setting to your Opulence application.  Alternatively, you could add `php_value enable_post_data_reading 0` to an _.htaccess_ file or to your _httpd.conf_.
+> **Note:** If you're developing any non-Opulence applications on the same web server, then it's probably better to use <a href="http://php.net/manual/en/configuration.file.per-user.php" target="_blank">_.user.ini_</a> because it'll only apply this setting to your Opulence application.  Alternatively, you could add `php_value enable_post_data_reading 0` to an _.htaccess_ file or to your _httpd.conf_.
 
 <h4 id="why-not-use-psr-7">Why Not Use PSR-7?</h4>
 
@@ -54,7 +54,7 @@ PSR-7 was an attempt to standardize the models for HTTP components.  PHP does no
 3. PSR-7 improperly abstracted uploaded files - they are part of the body, not the request as a whole
 4. Headers were added through the HTTP message rather than encapsulated in a dictionary-like object that was contained in the message
 
-Opulence's network library aims to fix these shortcomings.
+Opulence's Net library aims to fix these shortcomings.
 
 <h2 id="http-messages">HTTP Messages</h2>
 
@@ -253,7 +253,7 @@ $cookies->get('userid');
 
 <h4 id="getting-client-ip-address">Getting Client IP Address</h4>
 
-If you use the [`RequestFactory](#creating-request-from-globals) to create your request, the client IP address will be added the the request property `CLIENT_IP_ADDRESS`.  To make it easier to grab this value, you can use `RequestParser` to retrieve it:
+If you use the [`RequestFactory`](#creating-request-from-globals) to create your request, the client IP address will be added to the request property `CLIENT_IP_ADDRESS`.  To make it easier to grab this value, you can use `RequestParser` to retrieve it:
 
 ```php
 use Opulence\Net\Http\Requests\RequestParser;
