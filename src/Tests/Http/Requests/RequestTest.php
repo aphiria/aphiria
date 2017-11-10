@@ -45,9 +45,9 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $this->properties = new HashTable([new KeyValuePair('foo', 'bar')]);
         $this->request = new Request(
             'GET',
+            $this->uri,
             $this->headers,
             $this->body,
-            $this->uri,
             $this->properties,
             '2.0'
         );
@@ -117,6 +117,6 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     public function testSettingInvalidMethodThrowsException() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        new Request('foo', $this->headers, $this->body, $this->uri);
+        new Request('foo', $this->uri, $this->headers, $this->body);
     }
 }

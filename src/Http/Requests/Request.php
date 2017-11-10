@@ -50,24 +50,24 @@ class Request implements IHttpRequestMessage
 
     /**
      * @param string $method The request method
-     * @param HttpHeaders $headers The request headers
-     * @param IHttpBody $body The request body
      * @param Uri $uri The request URI
+     * @param HttpHeaders|null $headers The request headers if any are set, otherwise null
+     * @param IHttpBody $body The request body
      * @param IDictionary|null $properties The request properties
      * @param string $protocolVersion The HTTP protocol version
      */
     public function __construct(
         string $method,
-        HttpHeaders $headers,
-        IHttpBody $body,
         Uri $uri,
+        HttpHeaders $headers = null,
+        ?IHttpBody $body = null,
         IDictionary $properties = null,
         string $protocolVersion = '1.1'
     ) {
         $this->setMethod($method);
-        $this->headers = $headers;
-        $this->body = $body;
         $this->uri = $uri;
+        $this->headers = $headers ?? new HttpHeaders();
+        $this->body = $body;
         $this->properties = $properties ?? new HashTable();
         $this->protocolVersion = $protocolVersion;
     }

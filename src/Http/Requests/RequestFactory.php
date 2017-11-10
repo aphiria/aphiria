@@ -75,12 +75,12 @@ class RequestFactory
             $method = $server['X-HTTP-METHOD-OVERRIDE'];
         }
 
-        $headers = $this->createHeadersFromGlobals($server);
-        $body = new StreamBody(new Stream(fopen('php://input', 'r+')));
         $uri = $this->createUriFromGlobals($server);
+        $headers = $this->createHeadersFromGlobals($server);
+        $body = new StreamBody(new Stream(fopen('php://input', 'r')));
         $properties = $this->createProperties($server);
 
-        return new Request($method, $headers, $body, $uri, $properties);
+        return new Request($method, $uri, $headers, $body, $properties);
     }
 
     /**

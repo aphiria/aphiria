@@ -11,7 +11,7 @@
 4. [HTTP Headers](#http-headers)
     1. [Header Parsers](#header-parsers)
 5. [Requests](#requests)
-    1. [Creating a Request From Globals](#creating-request-from-globals)
+    1. [Creating Requests](#creating-requests)
     2. [Reading Form Input](#requests-getting-form-input)
     3. [Reading JSON](#requests-reading-json)
     4. [Reading Multipart Requests](#requests-reading-multipart-requests)
@@ -148,7 +148,37 @@ Requests are HTTP messages sent by clients to servers.  They contain a few more 
 
 The properties dictionary is a useful place to store metadata about a request, eg route variables.
 
-<h4 id="creating-request-from-globals">Creating a Request From Globals</h4>
+<h4 id="creating-requests">Creating Requests</h4>
+
+Creating a request is easy:
+
+```php
+use Opulence\Net\Http\Requests\Requests;
+use Opulence\Net\Uri;
+
+$request = new Request('GET', new Uri('https://example.com'));
+```
+
+You can set HTTP headers by calling
+
+```php
+$request->getHeaders()->add('Foo', 'bar');
+```
+
+You can either set the body via the constructor or via `Request::setBody()`:
+
+```php
+use Opulence\Net\Http\StringBody;
+
+// Via constructor:
+$body = new StringBody('foo');
+$request = new Request('GET', new Uri('https://example.com'), null, $body);
+
+// Or via setBody():
+$request->setBody($body);
+```
+
+<h5 id="creating-request-from-globals">Creating a Request From Globals</h5>
 
 PHP has superglobal arrays that store information about the requests.  They're a mess, architecturally-speaking.  Opulence attempts to insulate developers from the nastiness of superglobals by giving you a simple method to create requests and responses.  To create a request, use `RequestFactory`:
 

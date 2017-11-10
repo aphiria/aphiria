@@ -38,7 +38,7 @@ class Response implements IHttpResponseMessage
     public function __construct(
         int $statusCode = HttpStatusCodes::HTTP_OK,
         HttpHeaders $headers = null,
-        IHttpBody $body = null,
+        ?IHttpBody $body = null,
         string $protocolVersion = '1.1'
     ) {
         $this->statusCode = $statusCode;
