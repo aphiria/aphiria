@@ -4,13 +4,12 @@
 1. [Introduction](#introduction)
     1. [Requirements](#requirements)
     2. [Why Not Use PSR-7?](#why-not-use-psr-7)
-2. [HTTP Messages](#http-messages)
+2. [HTTP Headers](#http-headers)
+    1. [Header Parsers](#header-parsers)
 3. [HTTP Bodies](#http-bodies)
     1. [String Bodies](#string-bodies)
     2. [Stream Bodies](#stream-bodies)
-4. [HTTP Headers](#http-headers)
-    1. [Header Parsers](#header-parsers)
-5. [Requests](#requests)
+4. [Requests](#requests)
     1. [Creating Requests](#creating-requests)
     2. [Reading Form Input](#requests-getting-form-input)
     3. [Reading JSON](#requests-reading-json)
@@ -18,12 +17,12 @@
     5. [Getting Cookies](#getting-request-cookies)
     6. [Getting Client IP Address](#getting-client-ip-address)
     7. [Serializing Requests](#serializing-requests)
-6. [Responses](#responses)
+5. [Responses](#responses)
     1. [Creating Responses](#creating-responses)
     2. [Setting Cookies](#setting-response-cookies)
     3. [Writing Responses](#writing-responses)
     4. [Serializing Responses](#serializing-responses)
-7. [URIs](#uris)
+6. [URIs](#uris)
     1. [Parsing Query String Parameters](#uris-parsing-query-string-parameters)
 
 <h2 id="introduction">Introduction</h2>
@@ -57,48 +56,6 @@ PSR-7 was an attempt to standardize the models for HTTP components.  PHP does no
 4. Headers were added through the HTTP message rather than encapsulated in a dictionary-like object that was contained in the message
 
 Opulence's Net library aims to fix these shortcomings.
-
-<h2 id="http-messages">HTTP Messages</h2>
-
-HTTP messages are ASCII-encoded text messages that contain headers and bodies.  In Opulence, they're represented by `Opulence\Net\Http\IHttpMessage`.  They come with a few basic methods:
-
-* `getBody() : ?IHttpBody`
-* `getHeaders() : HttpHeaders`
-* `getProtocolVersion() : string`
-* `setBody(IHttpBody) : void`
-
-Requests and responses are specific types of HTTP messages.
-
-<h2 id="http-bodies">HTTP Bodies</h2>
-
-HTTP bodies contain data associated with the HTTP message, and are optional.  They're represented by `Opulence\Net\Http\IHttpBody`.  They provide a few methods to read and write their contents to streams and to strings:
-
-* `__toString() : string`
-* `readAsStream() : IStream`
-* `readAsString() : string`
-* `writeToStream(IStream $stream) : void`
-
-<h4 id="string-bodies">String Bodies</h4>
-
-HTTP bodies are most commonly represented as strings.  Opulence makes it easy to create a string body via `StringBody`:
-
-```php
-use Opulence\Net\Http\StringBody;
-
-$body = new StringBody('foo');
-```
-
-<h4 id="stream-bodies">Stream Bodies</h4>
-
-Sometimes, bodies might be too big to hold entirely in memory.  This is where `StreamBody` comes in handy:
-
-```php
-use Opulence\IO\Streams\Stream;
-use Opulence\Net\Http\StreamBody;
-
-$stream = new Stream(fopen('foo.txt', 'r+'));
-$body = new StreamBody($stream);
-```
 
 <h2 id="http-headers">HTTP Headers</h2>
 
@@ -140,15 +97,50 @@ echo $contentTypeValues->get('text/html'); // null
 echo $contentTypeValues->get('charset'); // "utf-8"
 ```
 
+<h2 id="http-bodies">HTTP Bodies</h2>
+
+HTTP bodies contain data associated with the HTTP message, and are optional.  They're represented by `Opulence\Net\Http\IHttpBody`.  They provide a few methods to read and write their contents to streams and to strings:
+
+* `__toString() : string`
+* `readAsStream() : IStream`
+* `readAsString() : string`
+* `writeToStream(IStream $stream) : void`
+
+<h4 id="string-bodies">String Bodies</h4>
+
+HTTP bodies are most commonly represented as strings.  Opulence makes it easy to create a string body via `StringBody`:
+
+```php
+use Opulence\Net\Http\StringBody;
+
+$body = new StringBody('foo');
+```
+
+<h4 id="stream-bodies">Stream Bodies</h4>
+
+Sometimes, bodies might be too big to hold entirely in memory.  This is where `StreamBody` comes in handy:
+
+```php
+use Opulence\IO\Streams\Stream;
+use Opulence\Net\Http\StreamBody;
+
+$stream = new Stream(fopen('foo.txt', 'r+'));
+$body = new StreamBody($stream);
+```
+
 <h2 id="requests">Requests</h2>
 
-Requests are HTTP messages sent by clients to servers.  They contain a few more methods than [`IHttpMessage`](#http-messages):
+Requests are HTTP messages sent by clients to servers.  They contain the following methods:
 
+* `getBody() : ?IHttpBody`
+* `getHeaders() : HttpHeaders`
 * `getMethod() : string`
 * `getProperties() : IDictionary`
+* `getProtocolVersion() : string`
 * `getUri() : Uri`
+* `setBody(IHttpBody) : void`
 
-The properties dictionary is a useful place to store metadata about a request, eg route variables.
+> **Note:** The properties dictionary is a useful place to store metadata about a request, eg route variables.
 
 <h4 id="creating-requests">Creating Requests</h4>
 
@@ -322,16 +314,20 @@ $request = new Request(
 The following request target types may be used:
 
 * <a href="https://tools.ietf.org/html/rfc7230#section-5.3.2" target="_blank">`RequestTargetTypes::ABSOLUTE_FORM`</a>
+* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.4" target="_blank">`RequestTargetTypes::ASTERISK_FORM`</a>
 * <a href="https://tools.ietf.org/html/rfc7230#section-5.3.3" target="_blank">`RequestTargetTypes::AUTHORITY_FORM`</a>
 * <a href="https://tools.ietf.org/html/rfc7230#section-5.3.1" target="_blank">`RequestTargetTypes::ORIGIN_FORM`</a>
-* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.4" target="_blank">`RequestTargetTypes::ASTERISK_FORM`</a>
 
 <h2 id="responses">Responses</h2>
 
-Responses are HTTP messages that are sent by servers back to the client.  On top of the methods in [`IHttpMessage`](#http-messages), they contain the following methods:
+Responses are HTTP messages that are sent by servers back to the client.  They contain the following methods:
 
+* `getBody() : ?IHttpBody`
+* `getHeaders() : HttpHeaders`
+* `getProtocolVersion() : string`
 * `getReasonPhrase() : ?string`
 * `getStatusCode() : int`
+* `setBody(IHttpBody) : void`
 * `setStatusCode(int $statusCode, ?string $reasonPhrase = null) : void`
 
 <h4 id="creating-responses">Creating Responses</h4>
@@ -476,7 +472,7 @@ $uri = new Uri('https://example.com/foo?bar=baz#blah');
 
 <h4 id="uris-parsing-query-string-parameters">Parsing Query String Parameters</h4>
 
-`Uri::getQueryString()` returns the raw query string.  To parse them into an immutable [dictionary](collections#immutable-hash-tables) (similar to PHP's `$_GET`), use `UriParser`:
+`Uri::getQueryString()` returns the raw query string.  To parse them into an [immutable dictionary](collections#immutable-hash-tables) (similar to PHP's `$_GET`), use `UriParser`:
 
 ```php
 use Opulence\Net\UriParser;
