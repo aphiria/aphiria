@@ -31,6 +31,16 @@ class UriTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that an absolute path URI returns the path and query string
+     */
+    public function testAbsolutePathUriReturnsPathAndQueryString() : void
+    {
+        $uri = new Uri('/foo?bar=baz');
+        $this->assertEquals('/foo', $uri->getPath());
+        $this->assertEquals('bar=baz', $uri->getQueryString());
+    }
+
+    /**
      * Tests that a double-slash path without an authority throws an exception
      */
     public function testDoubleSlashPathWithoutAuthorityThrowsException() : void
@@ -75,8 +85,10 @@ class UriTest extends \PHPUnit\Framework\TestCase
     {
         $uriWithUserAndPassword = new Uri('http://user:password@host');
         $this->assertEquals('user:password@host', $uriWithUserAndPassword->getAuthority());
+        $this->assertEquals('host', $uriWithUserAndPassword->getAuthority(false));
         $uriWithUserButNoPassword = new Uri('http://user:@host');
-        $this->assertEquals('user:@host', $uriWithUserButNoPassword->getAuthority());
+        $this->assertEquals('user@host', $uriWithUserButNoPassword->getAuthority());
+        $this->assertEquals('host', $uriWithUserButNoPassword->getAuthority(false));
     }
 
     /**
@@ -288,5 +300,14 @@ class UriTest extends \PHPUnit\Framework\TestCase
     {
         $uri = new Uri('http://user:password@host');
         $this->assertEquals('http://user:password@host', (string)$uri);
+    }
+
+    /**
+     * Tests casting to string with user but no password only includes the user
+     */
+    public function testToStringWithUserButNoPasswordOnlyIncludesUser() : void
+    {
+        $uri = new Uri('http://user@host');
+        $this->assertEquals('http://user@host', (string)$uri);
     }
 }

@@ -91,18 +91,25 @@ class Uri
      * Gets the authority portion of the URI, eg user:password@host:port
      * Note: The port is only included if it is non-standard for the scheme
      *
+     * @param bool $includeUserInfo Whether or not to include the user info
      * @return string|null The URI authority if set, otherwise null
      */
-    public function getAuthority() : ?string
+    public function getAuthority(bool $includeUserInfo = true) : ?string
     {
         $authority = '';
 
-        if ($this->user !== null) {
+        if ($includeUserInfo && $this->user !== null) {
             /**
              * The password can be empty
              * @link $uriWithUserButNoPassword
              */
-            $authority .= "{$this->user}:" . ($this->password ?? '') . '@';
+            $authority = $this->user;
+
+            if ($this->password !== null && strlen($this->password) > 0) {
+                $authority .= ":{$this->password}";
+            }
+
+            $authority .= '@';
         }
 
         if ($this->host !== null) {

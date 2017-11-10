@@ -34,18 +34,34 @@ class Request implements IHttpRequestMessage
     protected $properties = null;
     /** @var string The HTTP protocol version */
     protected $protocolVersion = '';
-    /** @var The list of valid HTTP methods */
-    private static $validMethod = [
-        'CONNECT',
-        'DELETE',
-        'GET',
-        'HEAD',
-        'OPTIONS',
-        'PATCH',
-        'POST',
-        'PURGE',
-        'PUT',
-        'TRACE'
+    /** @var string The type of request target URI this request uses */
+    protected $requestTargetType = RequestTargetTypes::ORIGIN_FORM;
+    /** @var array The list of valid HTTP methods */
+    private static $validMethods = [
+        'CONNECT' => true,
+        'DELETE' => true,
+        'GET' => true,
+        'HEAD' => true,
+        'OPTIONS' => true,
+        'PATCH' => true,
+        'POST' => true,
+        'PURGE' => true,
+        'PUT' => true,
+        'TRACE' => true
+    ];
+    /** @var array The list of request target types that require a Host header */
+    private static $validRequestTargetTypes = [
+        RequestTargetTypes::ORIGIN_FORM => true,
+        RequestTargetTypes::ABSOLUTE_FORM => true,
+        RequestTargetTypes::AUTHORITY_FORM => true,
+        RequestTargetTypes::ASTERISK_FORM => true
+    ];
+    /** @var array The list of valid request target types */
+    private static $requestTargetTypesWithHostHeader = [
+        RequestTargetTypes::ORIGIN_FORM => true,
+        // Per https://tools.ietf.org/html/rfc7230#section-5.4, this is necessary for old HTTP/1.0 proxies
+        RequestTargetTypes::ABSOLUTE_FORM => true,
+        RequestTargetTypes::ASTERISK_FORM => true
     ];
 
     /**
@@ -55,6 +71,7 @@ class Request implements IHttpRequestMessage
      * @param IHttpBody $body The request body
      * @param IDictionary|null $properties The request properties
      * @param string $protocolVersion The HTTP protocol version
+     * @param string $requestTargetType The type of request target URI this request uses
      */
     public function __construct(
         string $method,
@@ -62,14 +79,25 @@ class Request implements IHttpRequestMessage
         HttpHeaders $headers = null,
         ?IHttpBody $body = null,
         IDictionary $properties = null,
-        string $protocolVersion = '1.1'
+        string $protocolVersion = '1.1',
+        string $requestTargetType = RequestTargetTypes::ORIGIN_FORM
     ) {
-        $this->setMethod($method);
+        $this->method = strtoupper($method);
         $this->uri = $uri;
         $this->headers = $headers ?? new HttpHeaders();
         $this->body = $body;
         $this->properties = $properties ?? new HashTable();
         $this->protocolVersion = $protocolVersion;
+        $this->requestTargetType = $requestTargetType;
+        $this->validateProperties();
+
+        /** @link https://tools.ietf.org/html/rfc7230#section-5.4 */
+        if (
+            !$this->headers->containsKey('Host') &&
+            isset(self::$requestTargetTypesWithHostHeader[$this->requestTargetType])
+        ) {
+            $this->headers->add('Host', $this->uri->getAuthority(false) ?? '');
+        }
     }
 
     /**
@@ -77,7 +105,20 @@ class Request implements IHttpRequestMessage
      */
     public function __toString() : string
     {
-        // Todo
+        $startLine = "{$this->method} {$this->getRequestTarget()} HTTP/{$this->protocolVersion}";
+        $headers = '';
+
+        foreach ($this->headers as $kvp) {
+            $headers .= "\r\n{$kvp->getKey()}: " . implode(', ', $kvp->getValue());
+        }
+
+        $request = $startLine . $headers . "\r\n\r\n";
+
+        if ($this->body !== null) {
+            $request .= (string)$this->getBody();
+        }
+
+        return $request;
     }
 
     /**
@@ -137,16 +178,51 @@ class Request implements IHttpRequestMessage
     }
 
     /**
-     * @inheritdoc
+     * Gets the request target
+     *
+     * return @string The request target
      */
-    protected function setMethod(string $method) : void
+    private function getRequestTarget() : string
     {
-        $uppercaseMethod = strtoupper($method);
+        switch ($this->requestTargetType) {
+            case RequestTargetTypes::ORIGIN_FORM:
+                $requestTarget = $this->uri->getPath();
 
-        if (!in_array($uppercaseMethod, self::$validMethod)) {
-            throw new InvalidArgumentException("Invalid HTTP method $method");
+                /** @link https://tools.ietf.org/html/rfc7230#section-5.3.1 */
+                if ($requestTarget === null || strlen($requestTarget) === 0) {
+                    $requestTarget = '/';
+                }
+
+                if (($queryString = $this->uri->getQueryString()) !== null && strlen($queryString) > 0) {
+                    $requestTarget .= "?$queryString";
+                }
+
+                return $requestTarget;
+            case RequestTargetTypes::ABSOLUTE_FORM:
+                return (string)$this->uri;
+            case RequestTargetTypes::AUTHORITY_FORM:
+                return $this->uri->getAuthority(false) ?? '';
+            case RequestTargetTypes::ASTERISK_FORM:
+                return '*';
+            default:
+                // Shouldn't happen
+                return '';
+        }
+    }
+
+    /**
+     * Validates all the properties
+     *
+     * @throws InvalidArgumentException Thrown if any of the properties are invalid
+     */
+    private function validateProperties() : void
+    {
+        if (!isset(self::$validMethods[$this->method])) {
+            throw new InvalidArgumentException("Invalid HTTP method {$this->method}");
         }
 
-        $this->method = $method;
+        if (!isset(self::$validRequestTargetTypes[$this->requestTargetType])) {
+            throw new InvalidArgumentException("Request target type {$this->requestTargetType} is invalid");
+        }
     }
 }

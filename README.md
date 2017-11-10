@@ -17,10 +17,12 @@
     4. [Reading Multipart Requests](#requests-reading-multipart-requests)
     5. [Getting Cookies](#getting-request-cookies)
     6. [Getting Client IP Address](#getting-client-ip-address)
+    7. [Serializing Requests](#serializing-requests)
 6. [Responses](#responses)
     1. [Creating Responses](#creating-responses)
     2. [Setting Cookies](#setting-response-cookies)
     3. [Writing Responses](#writing-responses)
+    4. [Serializing Responses](#serializing-responses)
 7. [URIs](#uris)
     1. [Parsing Query String Parameters](#uris-parsing-query-string-parameters)
 
@@ -293,6 +295,37 @@ $clientIPAddress = (new RequestParser)->getClientIPAddress($request);
 
 This will take into consideration any [trusted proxy header values](#trusted-proxies) when determining the original client IP address.
 
+<h4 id="serializing-requests">Serializing Requests</h4>
+
+You can serialize a request per <a href="https://tools.ietf.org/html/rfc7230" target="_blank">RFC7230</a> by casting it to a string:
+
+```php
+echo (string)$request;
+```
+
+By default, this will use <a href="https://tools.ietf.org/html/rfc7230#section-5.3.1" target="_blank">origin-form</a> for the request target, but you can override the request type via the constructor:
+
+```php
+use Opulence\Net\Http\Requests\RequestTargetTypes;
+
+$request = new Request(
+    'GET',
+    new Uri('https://example.com/foo?bar'),
+    null,
+    null,
+    null,
+    '1.1',
+    RequestTargetTypes::AUTHORITY_FORM
+);
+```
+
+The following request target types may be used:
+
+* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.2" target="_blank">`RequestTargetTypes::ABSOLUTE_FORM`</a>
+* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.3" target="_blank">`RequestTargetTypes::AUTHORITY_FORM`</a>
+* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.1" target="_blank">`RequestTargetTypes::ORIGIN_FORM`</a>
+* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.4" target="_blank">`RequestTargetTypes::ASTERISK_FORM`</a>
+
 <h2 id="responses">Responses</h2>
 
 Responses are HTTP messages that are sent by servers back to the client.  On top of the methods in [`IHttpMessage`](#http-messages), they contain the following methods:
@@ -410,12 +443,20 @@ $outputStream = new Stream(fopen('path/to/output', 'w'));
 (new ResponseWriter($outputStream))->writeResponse($response);
 ```
 
+<h4 id="serializing-responses">Serializing Responses</h4>
+
+Opulence can serialize responses per <a href="https://tools.ietf.org/html/rfc7230" target="_blank">RFC7230</a>:
+
+```php
+echo (string)$response;
+```
+
 <h2 id="uris">URIs</h2>
 
 A URI identifies a resource, typically over a network.  They contain such information as the scheme, host, port, path, query string, and fragment.  Opulence represents them in `Opulence\Net\Uri`, and they include the following methods:
 
 * `__toString() : string`
-* `getAuthority() : ?string`
+* `getAuthority(bool $includeUserInfo = true) : ?string`
 * `getFragment() : ?string`
 * `getHost() : ?string`
 * `getPassword() : ?string`
