@@ -19,6 +19,23 @@ use OutOfBoundsException;
 class HttpHeaders extends HashTable
 {
     /**
+     * Gets the headers as a string
+     * Note: This can be used for the headers of a raw HTTP message
+     *
+     * @return string The serialized headers
+     */
+    public function __toString() : string
+    {
+        $headerString = '';
+
+        foreach ($this->hashKeysToKvps as $kvp) {
+            $headerString .= "{$kvp->getKey()}: " . implode(', ', $kvp->getValue()) . "\r\n";
+        }
+
+        return rtrim($headerString);
+    }
+
+    /**
      * Headers are allowed to have multiple values, so we must add support for that
      *
      * @inheritdoc

@@ -16,7 +16,8 @@
     4. [Reading Multipart Requests](#requests-reading-multipart-requests)
     5. [Getting Cookies](#getting-request-cookies)
     6. [Getting Client IP Address](#getting-client-ip-address)
-    7. [Serializing Requests](#serializing-requests)
+    7. [Creating Multipart Requests](#creating-multipart-requests)
+    8. [Serializing Requests](#serializing-requests)
 5. [Responses](#responses)
     1. [Creating Responses](#creating-responses)
     2. [Setting Cookies](#setting-response-cookies)
@@ -138,7 +139,7 @@ Requests are HTTP messages sent by clients to servers.  They contain the followi
 * `getProperties() : IDictionary`
 * `getProtocolVersion() : string`
 * `getUri() : Uri`
-* `setBody(IHttpBody) : void`
+* `setBody(IHttpBody $body) : void`
 
 > **Note:** The properties dictionary is a useful place to store metadata about a request, eg route variables.
 
@@ -287,9 +288,33 @@ $clientIPAddress = (new RequestParser)->getClientIPAddress($request);
 
 This will take into consideration any [trusted proxy header values](#trusted-proxies) when determining the original client IP address.
 
+<h4 id="creating-multipart-requests">Creating Multipart Requests</h4>
+
+The Net library makes it easy to create a multipart request manually:
+
+```php
+use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\MultipartBody;
+use Opulence\Net\Http\MultipartBodyPart;
+use Opulence\Net\Http\Requests\Request;
+use Opulence\Net\Http\StringBody;
+use Opulence\Net\Uri;
+
+$body = new MultipartBody([
+    new MultipartBodyPart(new HttpHeaders(), new StringBody('foo'))
+    new MultipartBodyPart(new HttpHeaders(), new StringBody('bar')),
+]);
+$request = new Request(
+    'GET',
+    new Uri('https://example.com'),
+    new HttpHeaders(),
+    $body
+);
+```
+
 <h4 id="serializing-requests">Serializing Requests</h4>
 
-You can serialize a request per <a href="https://tools.ietf.org/html/rfc7230" target="_blank">RFC7230</a> by casting it to a string:
+You can serialize a request per <a href="https://tools.ietf.org/html/rfc7230" target="_blank">RFC 7230</a> by casting it to a string:
 
 ```php
 echo (string)$request;
@@ -327,7 +352,7 @@ Responses are HTTP messages that are sent by servers back to the client.  They c
 * `getProtocolVersion() : string`
 * `getReasonPhrase() : ?string`
 * `getStatusCode() : int`
-* `setBody(IHttpBody) : void`
+* `setBody(IHttpBody $body) : void`
 * `setStatusCode(int $statusCode, ?string $reasonPhrase = null) : void`
 
 <h4 id="creating-responses">Creating Responses</h4>
@@ -441,7 +466,7 @@ $outputStream = new Stream(fopen('path/to/output', 'w'));
 
 <h4 id="serializing-responses">Serializing Responses</h4>
 
-Opulence can serialize responses per <a href="https://tools.ietf.org/html/rfc7230" target="_blank">RFC7230</a>:
+Opulence can serialize responses per <a href="https://tools.ietf.org/html/rfc7230" target="_blank">RFC 7230</a>:
 
 ```php
 echo (string)$response;

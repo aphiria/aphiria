@@ -108,8 +108,8 @@ class Request implements IHttpRequestMessage
         $startLine = "{$this->method} {$this->getRequestTarget()} HTTP/{$this->protocolVersion}";
         $headers = '';
 
-        foreach ($this->headers as $kvp) {
-            $headers .= "\r\n{$kvp->getKey()}: " . implode(', ', $kvp->getValue());
+        if (count($this->headers) > 0) {
+            $headers .= "\r\n{$this->headers}";
         }
 
         $request = $startLine . $headers . "\r\n\r\n";

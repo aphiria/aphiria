@@ -61,8 +61,8 @@ class Response implements IHttpResponseMessage
 
         $headers = '';
 
-        foreach ($this->headers as $kvp) {
-            $headers .= "\r\n{$kvp->getKey()}: " . implode(', ', $kvp->getValue());
+        if (count($this->headers) > 0) {
+            $headers .= "\r\n{$this->headers}";
         }
 
         $response = $startLine . $headers . "\r\n\r\n";

@@ -17,6 +17,7 @@ interface IHttpMessage
 {
     /**
      * Gets the message as a string
+     * Note: This string can be used as a raw HTTP message
      *
      * @return string The string representation of the message
      */

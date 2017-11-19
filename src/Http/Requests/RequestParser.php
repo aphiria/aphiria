@@ -12,6 +12,7 @@ namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
 use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\MultipartBodyPart;
 use Opulence\Net\Http\StringBody;
 
 /**

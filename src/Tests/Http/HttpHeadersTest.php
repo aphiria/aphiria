@@ -114,6 +114,26 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that serializing headers with multiple values splits the values with commas
+     */
+    public function testSerializingHeadersWithMultipleValuesSplitsTheValuesWithCommas() : void
+    {
+        $this->headers->add('Foo', 'bar');
+        $this->headers->add('Foo', 'baz', true);
+        $this->assertEquals('Foo: bar, baz', (string)$this->headers);
+    }
+
+    /**
+     * Tests that serializing headers splits them into lines
+     */
+    public function testSerializingSplitsHeadersIntoLines() : void
+    {
+        $this->headers->add('Foo', 'bar');
+        $this->headers->add('Baz', 'blah');
+        $this->assertEquals("Foo: bar\r\nBaz: blah", (string)$this->headers);
+    }
+
+    /**
      * Tests setting a header and appending it appends it
      */
     public function testSettingHeaderAndAppendingItAppendsIt() : void

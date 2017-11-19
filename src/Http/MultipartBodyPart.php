@@ -8,11 +8,9 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Requests;
+namespace Opulence\Net\Http;
 
 use Opulence\IO\Streams\Stream;
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\IHttpBody;
 use RuntimeException;
 use Throwable;
 
@@ -34,6 +32,17 @@ class MultipartBodyPart
     {
         $this->headers = $headers;
         $this->body = $body;
+    }
+
+    /**
+     * Gets the multipart body part as a string
+     * Note: This can be used in raw HTTP messages
+     *
+     * @return string The body part as a string
+     */
+    public function __toString() : string
+    {
+        return "{$this->headers}\r\n\r\n" . ($this->body === null ? '' : (string)$this->body);
     }
 
     /**
