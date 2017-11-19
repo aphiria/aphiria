@@ -301,8 +301,8 @@ use Opulence\Net\Http\StringBody;
 use Opulence\Net\Uri;
 
 $body = new MultipartBody([
-    new MultipartBodyPart(new HttpHeaders(), new StringBody('foo'))
-    new MultipartBodyPart(new HttpHeaders(), new StringBody('bar')),
+    new MultipartBodyPart(new HttpHeaders(), new StringBody('foo')),
+    new MultipartBodyPart(new HttpHeaders(), new StringBody('bar'))
 ]);
 $request = new Request(
     'GET',
