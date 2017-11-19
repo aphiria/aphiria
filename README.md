@@ -248,13 +248,6 @@ $bodyStream->rewind();
 $bodyStream->copyToStream(new Stream(fopen('path/to/copy/to', 'w')));
 ```
 
-```php
-use Opulence\IO\Streams\Stream;
-
-$destinationStream = new Stream(fopen('path/to/copy/to', 'w'));
-$multipartBody->getBody()->readAsStream()->copyToStream($destinationStream);
-```
-
 <h5 id="getting-mime-type-of-body">Getting MIME Type of Body</h5>
 
 To grab the MIME type of an HTTP body, call
