@@ -18,36 +18,49 @@ use Opulence\IO\Streams\Stream;
  */
 class MultipartBody extends StreamBody
 {
+    /** @var MultipartBody[] The list of body parts */
+    private $parts = [];
+
     /**
      * @param MultipartBodyPart[] $parts The list of multipart body parts
      * @param string $boundary The boundary between the parts
      */
     public function __construct(array $parts, string $boundary = null)
     {
-        $parts = $parts;
+        $this->parts = $parts;
         $boundary = $boundary ?? $this->createDefaultBoundary();
         $stream = new MultiStream();
 
         // Create the header boundary
         $stream->addStream($this->createStreamFromString("--{$boundary}"));
 
-        for ($i = 0;$i < count($parts);$i++) {
+        for ($i = 0;$i < count($this->parts);$i++) {
             if ($i > 0) {
                 $stream->addStream($this->createStreamFromString("\r\n--{$boundary}"));
             }
 
-            if (count($parts[$i]->getHeaders()) > 0) {
-                $stream->addStream($this->createStreamFromString("\r\n{$parts[$i]->getHeaders()}"));
+            if (count($this->parts[$i]->getHeaders()) > 0) {
+                $stream->addStream($this->createStreamFromString("\r\n{$this->parts[$i]->getHeaders()}"));
             }
 
             $stream->addStream($this->createStreamFromString("\r\n\r\n"));
-            $stream->addStream($parts[$i]->getBody()->readAsStream());
+            $stream->addStream($this->parts[$i]->getBody()->readAsStream());
         }
 
         // Create the footer boundary
         $stream->addStream($this->createStreamFromString("\r\n--{$boundary}--"));
 
         parent::__construct($stream);
+    }
+
+    /**
+     * Gets the multipart body parts that make up the body
+     *
+     * @return MultipartBodyPart[] The list of body parts
+     */
+    public function getParts() : array
+    {
+        return $this->parts;
     }
 
     /**

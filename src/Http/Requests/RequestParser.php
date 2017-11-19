@@ -12,6 +12,7 @@ namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
 use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\MultipartBody;
 use Opulence\Net\Http\MultipartBodyPart;
 use Opulence\Net\Http\StringBody;
 
@@ -42,10 +43,10 @@ class RequestParser
      * Note: This method should only be called once for best performance
      *
      * @param IHttpRequestMessage|MultipartBodyPart $request The request or multipart body part to parse
-     * @return MultipartBodyPart[] The list of uploaded files
+     * @return MultipartBody|null The multipart body if it was set, otherwise null
      * @throws InvalidArgumentException Thrown if the request is not a multipart request
      */
-    public function readAsMultipart($request) : array
+    public function readAsMultipart($request) : ?MultipartBody
     {
         if (!$request instanceof IHttpRequestMessage && !$request instanceof MultipartBodyPart) {
             throw new InvalidArgumentException(
@@ -54,14 +55,13 @@ class RequestParser
         }
 
         $headers = $request->getHeaders();
-        $body = $request->getBody();
 
         if (preg_match('/multipart\//i', $headers->getFirst('Content-Type')) !== 1) {
             throw new InvalidArgumentException('Request is not a multipart request');
         }
 
-        if ($body === null) {
-            return [];
+        if (($body = $request->getBody()) === null) {
+            return null;
         }
 
         $boundaryMatches = [];
@@ -99,6 +99,6 @@ class RequestParser
             $parsedBodyParts[] = new MultipartBodyPart($parsedHeaders, $body);
         }
 
-        return $parsedBodyParts;
+        return new MultipartBody($parsedBodyParts, $boundary);
     }
 }

@@ -81,7 +81,7 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
             ->method('readAsString')
             ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
         /** @var MultipartBodyPart[] $bodyParts */
-        $bodyParts = $this->parser->readAsMultipart($this->request);
+        $bodyParts = $this->parser->readAsMultipart($this->request)->getParts();
         $this->assertCount(1, $bodyParts);
         $this->assertEquals('bar', $bodyParts[0]->getHeaders()->getFirst('Foo'));
         $this->assertEquals('blah', $bodyParts[0]->getHeaders()->getFirst('Baz'));
@@ -97,15 +97,15 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
             ->method('readAsString')
             ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
         /** @var MultipartBodyPart[] $bodyParts */
-        $bodyParts = $this->parser->readAsMultipart($this->request);
+        $bodyParts = $this->parser->readAsMultipart($this->request)->getParts();
         $this->assertCount(1, $bodyParts);
         $this->assertEquals('body', $bodyParts[0]->getBody()->readAsString());
     }
 
     /**
-     * Tests that parsing a multipart request with a null body returns an empty array
+     * Tests that parsing a multipart request with a null body returns null
      */
-    public function testParsingMultipartRequestWithNullBodyReturnsEmptyArray() : void
+    public function testParsingMultipartRequestWithNullBodyReturnsNull() : void
     {
         $request = $this->createMock(IHttpRequestMessage::class);
         $request->expects($this->any())
@@ -115,7 +115,7 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
             ->method('getBody')
             ->willReturn(null);
         $this->headers->add('Content-Type', 'multipart/mixed');
-        $this->assertEquals([], $this->parser->readAsMultipart($request));
+        $this->assertNull($this->parser->readAsMultipart($request));
     }
 
     /**
@@ -158,7 +158,7 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
             ->method('readAsString')
             ->willReturn($bodyString);
         /** @var MultipartBodyPart[] $bodyParts */
-        $bodyParts = $this->parser->readAsMultipart($this->request);
+        $bodyParts = $this->parser->readAsMultipart($this->request)->getParts();
         $this->assertCount(1, $bodyParts);
         $this->assertEquals(
             'multipart/mixed; boundary="boundary2"',

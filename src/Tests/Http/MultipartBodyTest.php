@@ -22,6 +22,19 @@ use Opulence\Net\Http\StringBody;
 class MultipartBodyTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * Tests that getting the parts returns the parts
+     */
+    public function testGettingPartsReturnsParts() : void
+    {
+        $parts = [
+            $this->createMultipartBodyPart(['Foo' => 'bar'], 'baz'),
+            $this->createMultipartBodyPart(['Oh' => 'hi'], 'mark')
+        ];
+        $body = new MultipartBody($parts, '123');
+        $this->assertSame($parts, $body->getParts());
+    }
+
+    /**
      * Tests that no parts results in only the header and footer
      */
     public function testNoPartsResultsInOnlyHeaderAndFooter() : void

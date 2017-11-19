@@ -53,10 +53,8 @@ PSR-7 was an attempt to standardize the models for HTTP components.  PHP does no
 2. HTTP message bodies were streams
     * Bodies aren't inherently streams - they should be _readable as_ streams, and _writable to_ streams
     * Since some streams are readable exactly once, this breaks the idea of immutability in the first point
-3. PSR-7 improperly abstracted uploaded files - they are part of the body, not the request as a whole
+3. PSR-7 improperly abstracted uploaded files - they are part of the body, not the request message
 4. Headers were added through the HTTP message rather than encapsulated in a dictionary-like object that was contained in the message
-
-Opulence's Net library aims to fix these shortcomings.
 
 <h2 id="http-headers">HTTP Headers</h2>
 
@@ -225,17 +223,16 @@ $json = (new HttpBodyParser)->readAsJson($request->getBody());
 
 <h4 id="requests-reading-multipart-requests">Reading Multipart Requests</h4>
 
-Multipart requests contain multiple bodies, each with headers.  That's actually how file upload files work - each file gets a body with headers indicating the name, type, and size of the file.  Opulence can parse these multipart bodies into a list of `MultipartBodyPart` objects, which contain the following methods:
+Multipart requests contain multiple bodies, each with headers.  That's actually how file upload files work - each file gets a body with headers indicating the name, type, and size of the file.  Opulence can parse these multipart bodies into a `MultipartBody`, which extends `StreamBody`.  It contains an additional method to get the list of `MultipartBodyPart` objects that make up the body:
 
-* `getBody() : ?IHttpBody`
-* `getHeaders() : HttpHeaders`
+* `getParts() : MultipartBodyPart[]`
 
-To parse the multipart bodies, call
+To parse a request body as a multipart body, call
 
 ```php
 use Opulence\Net\Http\Requests\RequestParser;
 
-$multipartBodies = (new RequestParser)->readAsMultipart($request);
+$multipartBody = (new RequestParser)->readAsMultipart($request);
 ```
 
 <h5 id="saving-uploaded-files">Saving Uploaded Files</h5>
