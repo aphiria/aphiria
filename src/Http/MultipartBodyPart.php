@@ -10,10 +10,6 @@
 
 namespace Opulence\Net\Http;
 
-use Opulence\IO\Streams\Stream;
-use RuntimeException;
-use Throwable;
-
 /**
  * Defines a multipart body part
  */
@@ -43,45 +39,6 @@ class MultipartBodyPart
     public function __toString() : string
     {
         return "{$this->headers}\r\n\r\n" . ($this->body === null ? '' : (string)$this->body);
-    }
-
-    /**
-     * Copies the body to a file path
-     *
-     * @param string $path The destination path to copy to
-     * @throws RuntimeException Thrown if the destination path could not be written to
-     */
-    public function copyBodyToFile(string $path) : void
-    {
-        $pathInfo = pathinfo($path);
-
-        if (!is_dir($pathInfo['dirname'])) {
-            throw new RuntimeException("Directory {$pathInfo['dirname']} must be created before copying body");
-        }
-
-        if (!file_exists($path)) {
-            touch($path);
-        }
-
-        if (!is_writable($path)) {
-            throw new RuntimeException("Path $path is not writable");
-        }
-
-        try {
-            $destinationHandle = fopen($path, 'r+');
-
-            if ($destinationHandle === false) {
-                throw new RuntimeException("Could not open path $path");
-            }
-
-            $destinationStream = new Stream($destinationHandle);
-        } catch (Throwable $ex) {
-            throw new RuntimeException("Could not open path $path", 0, $ex);
-        }
-
-        $bodyStream = $this->body->readAsStream();
-        $bodyStream->rewind();
-        $bodyStream->copyToStream($destinationStream);
     }
 
     /**

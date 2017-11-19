@@ -240,13 +240,13 @@ $multipartBodies = (new RequestParser)->readAsMultipart($request);
 
 <h5 id="saving-uploaded-files">Saving Uploaded Files</h5>
 
-To save a multipart body part to a file, use `MultipartBodyPart::copyBodyToFile()`:
+To save a multipart body part to a file in a memory-efficient manner, read it as a stream and copy it to the destination path:
 
 ```php
-$multipartBody->copyBodyToFile('path/to/copy/to');
+$bodyStream = $multipartBodyPart->getBody()->readAsStream();
+$bodyStream->rewind();
+$bodyStream->copyToStream(new Stream(fopen('path/to/copy/to', 'w')));
 ```
-
-If you need to copy the body to some other form of storage, eg a CDN, you can read the body as a stream and [copy it to another stream](io#copying-to-another-stream):
 
 ```php
 use Opulence\IO\Streams\Stream;

@@ -29,7 +29,7 @@ class MultipartBodyTest extends \PHPUnit\Framework\TestCase
         $body = new MultipartBody([], '123');
         $this->assertEquals("--123\r\n--123--", (string)$body);
     }
-    
+
     /**
      * Tests that the parts are written to a stream with boundaries
      */
@@ -55,7 +55,7 @@ class MultipartBodyTest extends \PHPUnit\Framework\TestCase
         $body = new MultipartBody($parts, '123');
         $this->assertInstanceOf(MultiStream::class, $body->readAsStream());
     }
-    
+
     /**
      * Tests that a single part is wrapped with a header and footer
      */
