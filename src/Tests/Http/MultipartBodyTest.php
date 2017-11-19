@@ -22,6 +22,15 @@ use Opulence\Net\Http\StringBody;
 class MultipartBodyTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * Tests that no parts results in only the header and footer
+     */
+    public function testNoPartsResultsInOnlyHeaderAndFooter() : void
+    {
+        $body = new MultipartBody([], '123');
+        $this->assertEquals("--123\r\n--123--", (string)$body);
+    }
+    
+    /**
      * Tests that the parts are written to a stream with boundaries
      */
     public function testPartsAreWrittenToStreamWithBoundaries() : void
@@ -45,6 +54,18 @@ class MultipartBodyTest extends \PHPUnit\Framework\TestCase
         ];
         $body = new MultipartBody($parts, '123');
         $this->assertInstanceOf(MultiStream::class, $body->readAsStream());
+    }
+    
+    /**
+     * Tests that a single part is wrapped with a header and footer
+     */
+    public function testSinglePartIsWrappedWithHeaderAndFooter() : void
+    {
+        $parts = [
+            $this->createMultipartBodyPart(['Foo' => 'bar'], 'baz')
+        ];
+        $body = new MultipartBody($parts, '123');
+        $this->assertEquals("--123\r\nFoo: bar\r\n\r\nbaz\r\n--123--", (string)$body);
     }
 
     /**
