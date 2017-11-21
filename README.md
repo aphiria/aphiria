@@ -13,11 +13,10 @@
     1. [Creating Requests](#creating-requests)
     2. [Reading Form Input](#requests-getting-form-input)
     3. [Reading JSON](#requests-reading-json)
-    4. [Reading Multipart Requests](#requests-reading-multipart-requests)
+    4. [Multipart Requests](#multipart-requests)
     5. [Getting Cookies](#getting-request-cookies)
     6. [Getting Client IP Address](#getting-client-ip-address)
-    7. [Creating Multipart Requests](#creating-multipart-requests)
-    8. [Serializing Requests](#serializing-requests)
+    7. [Serializing Requests](#serializing-requests)
 5. [Responses](#responses)
     1. [Creating Responses](#creating-responses)
     2. [Setting Cookies](#setting-response-cookies)
@@ -221,7 +220,7 @@ use Opulence\Net\Http\HttpBodyParser;
 $json = (new HttpBodyParser)->readAsJson($request->getBody());
 ```
 
-<h4 id="requests-reading-multipart-requests">Reading Multipart Requests</h4>
+<h4 id="multipart-requests">Multipart Requests</h4>
 
 Multipart requests contain multiple bodies, each with headers.  That's actually how file upload files work - each file gets a body with headers indicating the name, type, and size of the file.  Opulence can parse these multipart bodies into a `MultipartBody`, which extends `StreamBody`.  It contains an additional method to get the list of `MultipartBodyPart` objects that make up the body:
 
@@ -234,6 +233,11 @@ use Opulence\Net\Http\Requests\RequestParser;
 
 $multipartBody = (new RequestParser)->readAsMultipart($request);
 ```
+
+Each `MultipartBodyPart` contains the following methods:
+
+* `getBody() : ?IHttpBody`
+* `getHeaders() : HttpHeaders`
 
 <h5 id="saving-uploaded-files">Saving Uploaded Files</h5>
 
@@ -251,6 +255,30 @@ To grab the MIME type of an HTTP body, call
 
 ```php
 (new HttpBodyParser)->getMimeType($multipartBody->getBody());
+```
+
+<h5 id="creating-multipart-requests">Creating Multipart Requests</h5>
+
+The Net library makes it easy to create a multipart request manually:
+
+```php
+use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\MultipartBody;
+use Opulence\Net\Http\MultipartBodyPart;
+use Opulence\Net\Http\Requests\Request;
+use Opulence\Net\Http\StringBody;
+use Opulence\Net\Uri;
+
+$body = new MultipartBody([
+    new MultipartBodyPart(new HttpHeaders(), new StringBody('foo')),
+    new MultipartBodyPart(new HttpHeaders(), new StringBody('bar'))
+]);
+$request = new Request(
+    'GET',
+    new Uri('https://example.com'),
+    new HttpHeaders(),
+    $body
+);
 ```
 
 <h4 id="getting-request-cookies">Getting Cookies</h4>
@@ -277,30 +305,6 @@ $clientIPAddress = (new RequestParser)->getClientIPAddress($request);
 ```
 
 This will take into consideration any [trusted proxy header values](#trusted-proxies) when determining the original client IP address.
-
-<h4 id="creating-multipart-requests">Creating Multipart Requests</h4>
-
-The Net library makes it easy to create a multipart request manually:
-
-```php
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\MultipartBody;
-use Opulence\Net\Http\MultipartBodyPart;
-use Opulence\Net\Http\Requests\Request;
-use Opulence\Net\Http\StringBody;
-use Opulence\Net\Uri;
-
-$body = new MultipartBody([
-    new MultipartBodyPart(new HttpHeaders(), new StringBody('foo')),
-    new MultipartBodyPart(new HttpHeaders(), new StringBody('bar'))
-]);
-$request = new Request(
-    'GET',
-    new Uri('https://example.com'),
-    new HttpHeaders(),
-    $body
-);
-```
 
 <h4 id="serializing-requests">Serializing Requests</h4>
 
