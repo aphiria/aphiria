@@ -27,13 +27,11 @@
 
 <h2 id="introduction">Introduction</h2>
 
-Opulence's network library provides abstractions for URIs, HTTP request and response messages, bodies, and headers.  It attempts to accurately model HTTP components, and aims to decouple developers from PHP's horrendous abstractions for HTTP requests and responses.
+Opulence's network library provides abstractions for HTTP request and response messages, bodies, headers, and URIs.  It attempts to accurately model HTTP components, and aims to decouple developers from PHP's horrendous abstractions for HTTP requests and responses.
 
 <h4 id="requirements">Requirements</h4>
 
-PHP has all sorts of idiosyncracies with parsing HTTP requests.  For example, form input requests are parsed into `$_POST` for POST requests, but must be manually parsed from the `php://input` stream for any other request methods.  Similarly, uploaded files in POST requests are available in the `$_FILES` superglobal, but uploaded files in PUT requests must be manually parsed from the `php://input` stream.
-
-To work around these issues, Opulence requires the following setting in either a <a href="http://php.net/manual/en/configuration.file.per-user.php" target="_blank">_.user.ini_</a> or your main _php.ini_:
+In PHP POST requests, bodies are read from `$_POST` and `$_FILES` for form data and for uploaded files, respectively.  All other request methods must be manually parsed from the `php://input` stream.  To work around the inconsistencies of the PHP internals, Opulence requires the following setting in either a <a href="http://php.net/manual/en/configuration.file.per-user.php" target="_blank">_.user.ini_</a> or your _php.ini_:
 
 ```
 enable_post_data_reading = 0
@@ -41,11 +39,11 @@ enable_post_data_reading = 0
 
 This will disable automatically parsing POST data into `$_POST` and multipart data into `$_FILES`.
 
-> **Note:** If you're developing any non-Opulence applications on the same web server, then it's probably better to use <a href="http://php.net/manual/en/configuration.file.per-user.php" target="_blank">_.user.ini_</a> because it'll only apply this setting to your Opulence application.  Alternatively, you could add `php_value enable_post_data_reading 0` to an _.htaccess_ file or to your _httpd.conf_.
+> **Note:** If you're developing any non-Opulence applications on your web server, use <a href="http://php.net/manual/en/configuration.file.per-user.php" target="_blank">_.user.ini_</a> to limit this setting to only your Opulence application.  Alternatively, you can add `php_value enable_post_data_reading 0` to an _.htaccess_ file or to your _httpd.conf_.
 
 <h4 id="why-not-use-psr-7">Why Not Use PSR-7?</h4>
 
-PSR-7 was an attempt to standardize the models for HTTP components.  PHP does not have these things baked-in, and every framework had previously been rolling its own wrappers, which weren't interopible between frameworks.  Although a noble attempt, PSR-7 had many contested features:
+PSR-7 was an attempt to standardize the models for HTTP components.  PHP does not have these things baked-in, and every framework has been rolling its own wrappers, which weren't interopible between frameworks.  Although a noble attempt, PSR-7 had many contested features:
 
 1. Request and response immutability
     * This has often been considered cumbersome, bug-prone, and a bad use-case for immutability
@@ -200,7 +198,7 @@ $request = $factory->createRequestFromGlobals($_SERVER);
 
 <h4 id="requests-getting-form-input">Reading Form Input</h4>
 
-In vanilla PHP, you can read URL-encoded form input data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of form requests into a [dictionary](collections#hash-tables).
+In vanilla PHP, you can read URL-encoded form data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of form requests into a [dictionary](collections#hash-tables).
 
 ```php
 use Opulence\Net\Http\HttpBodyParser;
