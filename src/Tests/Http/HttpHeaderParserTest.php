@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Tests\Http;
 
+use Opulence\Collections\ImmutableHashTable;
 use Opulence\Net\Http\HttpHeaderParser;
 use Opulence\Net\Http\HttpHeaders;
 
@@ -62,11 +63,23 @@ class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that getting the parameters for an index that does not exist returns an empty dictionary
+     */
+    public function testGettingParametersForIndexThatDoesNotExistReturnsEmptyDictionary() : void
+    {
+        $headers = new HttpHeaders();
+        $headers->add('Foo', 'bar; baz');
+        $this->assertEquals(new ImmutableHashTable([]), $this->parser->parseParameters($headers, 'Foo', 1));
+    }
+
+    /**
      * Tests that getting the parameters with a mix of value and value-less parameters returns correct parameters
      */
     public function testGettingParametersWithMixOfValueAndValueLessParametersReturnsCorrectParameters() : void
     {
-        $values = $this->parser->parseParameters('bar; baz="blah"');
+        $headers = new HttpHeaders();
+        $headers->add('Foo', 'bar; baz="blah"');
+        $values = $this->parser->parseParameters($headers, 'Foo');
         $this->assertNull($values->get('bar'));
         $this->assertEquals('blah', $values->get('baz'));
     }
@@ -76,7 +89,10 @@ class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
      */
     public function testGettingParametersWithQuotedAndUnquotedValuesReturnsArrayWithUnquotedValue() : void
     {
-        $this->assertEquals('baz', $this->parser->parseParameters('bar=baz')->get('bar'));
-        $this->assertEquals('baz', $this->parser->parseParameters('bar="baz"')->get('bar'));
+        $headers = new HttpHeaders();
+        $headers->add('Foo', 'bar=baz');
+        $headers->add('Bar', 'bar="baz"');
+        $this->assertEquals('baz', $this->parser->parseParameters($headers, 'Foo')->get('bar'));
+        $this->assertEquals('baz', $this->parser->parseParameters($headers, 'Bar')->get('bar'));
     }
 }

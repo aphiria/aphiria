@@ -11,10 +11,9 @@
 namespace Opulence\Net\Http\Requests;
 
 use InvalidArgumentException;
-use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\HttpBodyParser;
 use Opulence\Net\Http\MultipartBody;
 use Opulence\Net\Http\MultipartBodyPart;
-use Opulence\Net\Http\StringBody;
 
 /**
  * Defines the HTTP request message parser
@@ -23,6 +22,20 @@ class RequestParser
 {
     /** @const The name of the request property that stores the client IP address */
     private const CLIENT_IP_ADDRESS_PROPERTY = 'CLIENT_IP_ADDRESS';
+    /** @var RequestHeaderParser The header parser to use */
+    private $headerParser = null;
+    /** @var HttpBodyParser The body parser to use */
+    private $bodyParser = null;
+
+    /**
+     * @param RequestHeaderParser|null $headerParser The header parser to use, or null if using the default parser
+     * @param HttpBodyParser|null $bodyParser The body parser to use, or null if using the default parser
+     */
+    public function __construct(RequestHeaderParser $headerParser = null, HttpBodyParser $bodyParser = null)
+    {
+        $this->headerParser = $headerParser ?? new RequestHeaderParser();
+        $this->bodyParser = $bodyParser ?? new HttpBodyParser();
+    }
 
     /**
      * Gets the client IP address from the request
@@ -36,6 +49,55 @@ class RequestParser
         $request->getProperties()->tryGet(self::CLIENT_IP_ADDRESS_PROPERTY, $clientIPAddress);
 
         return $clientIPAddress;
+    }
+
+    /**
+     * Gets whether or not the headers have a JSON content type
+     *
+     * @param IHttpRequestMessage $request The request to parse
+     * @return bool True if the message has a JSON content type, otherwise false
+     */
+    public function isJson(IHttpRequestMessage $request) : bool
+    {
+        return $this->headerParser->isJson($request->getHeaders());
+    }
+
+    /**
+     * Gets whether or not the message is a multipart message
+     *
+     * @param IHttpRequestMessage $request The request to parse
+     * @return bool True if the request is a multipart message, otherwise false
+     */
+    public function isMultipart(IHttpRequestMessage $request) : bool
+    {
+        return $this->headerParser->isMultipart($request->getHeaders());
+    }
+
+    /**
+     * Parses the request headers for all cookie values
+     *
+     * @param IHttpRequestMessage $request The request to parse
+     * @return IImmutableDictionary The mapping of cookie names to values
+     */
+    public function parseCookies(IHttpRequestMessage $request) : IImmutableDictionary
+    {
+        return $this->headerParser->parseCookies($request->getHeaders());
+    }
+
+    /**
+     * Parses the parameters (semi-colon delimited values for a header) for the first value of a header
+     *
+     * @param IHttpRequestMessage $request The request to parse
+     * @param string $headerName The name of the header whose parameters we're parsing
+     * @param int $index The
+     * @return IImmutableDictionary The dictionary of parameters for the first value
+     */
+    public function parseParameters(
+        IHttpRequestMessage $request,
+        string $headerName,
+        int $index = 0
+    ) : IImmutableDictionary {
+        return $this->headerParser->parseParameters($request->getHeaders(), $headerName, $index);
     }
 
     /**
@@ -54,51 +116,12 @@ class RequestParser
             );
         }
 
-        $headers = $request->getHeaders();
+        $boundary = null;
 
-        if (preg_match('/multipart\//i', $headers->getFirst('Content-Type')) !== 1) {
-            throw new InvalidArgumentException('Request is not a multipart request');
+        if (!$this->headerParser->parseParameters($request->getHeaders(), 'Content-Type')->tryGet('boundary', $boundary)) {
+            throw new InvalidArgumentException('"boundary" is missing in Content-Type header');
         }
 
-        if (($body = $request->getBody()) === null) {
-            return null;
-        }
-
-        $boundaryMatches = [];
-
-        if (
-            preg_match(
-                '/boundary=(\"?)(.*)\1/',
-                $headers->getFirst('Content-Type'),
-                $boundaryMatches) !== 1
-        ) {
-            throw new InvalidArgumentException('Boundary is missing in Content-Type in multipart request');
-        }
-
-        $boundary = $boundaryMatches[2];
-        $rawBodyParts = explode("--$boundary", $body->readAsString());
-        // The first part will be empty, and the last will be "--".  Remove them.
-        array_shift($rawBodyParts);
-        array_pop($rawBodyParts);
-        $parsedBodyParts = [];
-
-        foreach ($rawBodyParts as $rawBodyPart) {
-            $headerStartIndex = strlen("\r\n");
-            $headerEndIndex = strpos($rawBodyPart, "\r\n\r\n");
-            $bodyStartIndex = $headerEndIndex + strlen("\r\n\r\n");
-            $bodyEndIndex = strlen($rawBodyPart) - strlen("\r\n");
-            $rawHeaders = explode("\r\n", substr($rawBodyPart, $headerStartIndex, $headerEndIndex - $headerStartIndex));
-            $parsedHeaders = new HttpHeaders();
-
-            foreach ($rawHeaders as $headerLine) {
-                [$headerName, $headerValue] = explode(':', $headerLine, 2);
-                $parsedHeaders->add(trim($headerName), trim($headerValue));
-            }
-
-            $body = new StringBody(substr($rawBodyPart, $bodyStartIndex, $bodyEndIndex - $bodyStartIndex));
-            $parsedBodyParts[] = new MultipartBodyPart($parsedHeaders, $body);
-        }
-
-        return new MultipartBody($parsedBodyParts, $boundary);
+        return $this->bodyParser->readAsMultipart($request->getBody(), $boundary);
     }
 }

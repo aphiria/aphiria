@@ -107,4 +107,44 @@ class HttpBodyParser
 
         return $json;
     }
+
+    /**
+     * Reads the body as a multipart body
+     *
+     * @param IHttpBody|null $body The body to parse
+     * @param string $boundary The boundary that separates the multipart body parts
+     * @return MultipartBody|null The multipart body if it could be read as a multipart body, otherwise null
+     * @throws InvalidArgumentException Thrown if the body is not a valid multipart body
+     */
+    public function readAsMultipart(?IHttpBody $body, string $boundary) : ?MultipartBody
+    {
+        if ($body === null) {
+            return null;
+        }
+
+        $rawBodyParts = explode("--$boundary", $body->readAsString());
+        // The first part will be empty, and the last will be "--".  Remove them.
+        array_shift($rawBodyParts);
+        array_pop($rawBodyParts);
+        $parsedBodyParts = [];
+
+        foreach ($rawBodyParts as $rawBodyPart) {
+            $headerStartIndex = strlen("\r\n");
+            $headerEndIndex = strpos($rawBodyPart, "\r\n\r\n");
+            $bodyStartIndex = $headerEndIndex + strlen("\r\n\r\n");
+            $bodyEndIndex = strlen($rawBodyPart) - strlen("\r\n");
+            $rawHeaders = explode("\r\n", substr($rawBodyPart, $headerStartIndex, $headerEndIndex - $headerStartIndex));
+            $parsedHeaders = new HttpHeaders();
+
+            foreach ($rawHeaders as $headerLine) {
+                [$headerName, $headerValue] = explode(':', $headerLine, 2);
+                $parsedHeaders->add(trim($headerName), trim($headerValue));
+            }
+
+            $body = new StringBody(substr($rawBodyPart, $bodyStartIndex, $bodyEndIndex - $bodyStartIndex));
+            $parsedBodyParts[] = new MultipartBodyPart($parsedHeaders, $body);
+        }
+
+        return new MultipartBody($parsedBodyParts, $boundary);
+    }
 }

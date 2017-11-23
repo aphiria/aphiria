@@ -11,7 +11,6 @@
 namespace Opulence\Net\Http\Requests;
 
 use Opulence\Collections\IImmutableDictionary;
-use Opulence\Collections\ImmutableHashTable;
 use Opulence\Net\Http\HttpHeaderParser;
 use Opulence\Net\Http\HttpHeaders;
 
@@ -28,12 +27,6 @@ class RequestHeaderParser extends HttpHeaderParser
      */
     public function parseCookies(HttpHeaders $headers) : IImmutableDictionary
     {
-        $cookieValues = [];
-
-        if (!$headers->tryGetFirst('Cookie', $cookieValues)) {
-            return new ImmutableHashTable([]);
-        }
-
-        return $this->parseParameters($cookieValues);
+        return $this->parseParameters($headers, 'Cookie');
     }
 }

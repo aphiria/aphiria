@@ -57,14 +57,22 @@ class HttpHeaderParser
     /**
      * Parses the parameters (semi-colon delimited values for a header) for the first value of a header
      *
-     * @param string $value The value to parse
+     * @param HttpHeaders $headers The headers to parse
+     * @param string $headerName The name of the header whose parameters we're parsing
+     * @param int $index The index of the header value to parse
      * @return IImmutableDictionary The dictionary of parameters for the first value
      */
-    public function parseParameters(string $value) : IImmutableDictionary
+    public function parseParameters(HttpHeaders $headers, string $headerName, int $index = 0) : IImmutableDictionary
     {
+        $headerValues = null;
+
+        if (!$headers->tryGet($headerName, $headerValues) || !isset($headerValues[$index])) {
+            return new ImmutableHashTable([]);
+        }
+
         $kvps = [];
 
-        foreach (preg_split(self::PARAMETER_SPLIT_REGEX, $value) as $kvp) {
+        foreach (preg_split(self::PARAMETER_SPLIT_REGEX, $headerValues[$index]) as $kvp) {
             $matches = [];
 
             // Split the parameters into names and values
