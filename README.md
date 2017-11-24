@@ -498,3 +498,9 @@ $uri = new Uri('https://example.com?foo=bar');
 $queryStringParams = (new UriParser)->parseQueryString($uri);
 echo $queryStringParams->get('foo'); // "bar"
 ```
+
+If you're trying to parse the query string of a request URI, use `RequestParser`:
+
+```php
+$queryStringParams = (new RequestParser)->parseQueryString($request);
+```
