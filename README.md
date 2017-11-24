@@ -5,18 +5,19 @@
     1. [Requirements](#requirements)
     2. [Why Not Use PSR-7?](#why-not-use-psr-7)
 2. [HTTP Headers](#http-headers)
-    1. [Header Parsers](#header-parsers)
 3. [HTTP Bodies](#http-bodies)
     1. [String Bodies](#string-bodies)
     2. [Stream Bodies](#stream-bodies)
 4. [Requests](#requests)
     1. [Creating Requests](#creating-requests)
-    2. [Reading Form Input](#requests-getting-form-input)
-    3. [Reading JSON](#requests-reading-json)
-    4. [Multipart Requests](#multipart-requests)
-    5. [Getting Cookies](#getting-request-cookies)
-    6. [Getting Client IP Address](#getting-client-ip-address)
-    7. [Serializing Requests](#serializing-requests)
+    2. [Checking Content Type](#requests-checking-content-type)
+    3. [Reading Form Input](#requests-getting-form-input)
+    4. [Reading JSON](#requests-reading-json)
+    5. [Multipart Requests](#multipart-requests)
+    6. [Getting Cookies](#getting-request-cookies)
+    7. [Getting Client IP Address](#getting-client-ip-address)
+    8. [Header Parameters](#requests-header-parameters)
+    9. [Serializing Requests](#serializing-requests)
 5. [Responses](#responses)
     1. [Creating Responses](#creating-responses)
     2. [Setting Cookies](#setting-response-cookies)
@@ -61,37 +62,6 @@ Headers provide metadata about the HTTP message.  In Opulence, they're implement
 * `tryGetFirst(string $name, &$value) : bool`
 
 > **Note:** Header names that are passed into the methods in `HttpHeaders` are automatically normalized to Train-Case.  In other words, `foo_bar` will become `Foo-Bar`.
-
-<h4 id="header-parsers">Header Parsers</h4>
-
-Opulence provides some tools to glean information about the HTTP messages via `HttpHeaderParser`.
-
-<h5 id="checking-if-json">Checking if JSON</h5>
-
-```php
-use Opulence\Net\Http\HttpHeaderParser;
-
-$headerParser = new HttpHeaderParser();
-$isJson = $headerParser->isJson($request->getHeaders());
-```
-
-<h5 id="checking-if-multipart">Checking if Multipart</h5>
-
-```php
-$isMultipart = $headerParser->isMultipart($request->getHeaders());
-```
-
-<h5 id="parsing-header-parameters">Parsing Header Parameters</h5>
-
-Some header values are semicolon delimited, eg `Content-Type: text/html; charset=utf-8`.  It's sometimes convenient to grab those key => value pairs:
-
-```php
-$contentTypeHeader = $request->getHeaders()->getFirst('Content-Type')
-$contentTypeValues = $headerParser->parseParameters($contentTypeHeader);
-// Keys without values will return null:
-echo $contentTypeValues->get('text/html'); // null
-echo $contentTypeValues->get('charset'); // "utf-8"
-```
 
 <h2 id="http-bodies">HTTP Bodies</h2>
 
@@ -196,26 +166,45 @@ $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_IP' => 'X-My-Proxy-
 $request = $factory->createRequestFromGlobals($_SERVER);
 ```
 
+<h4 id="requests-checking-content-type">Checking Content Type</h4>
+
+Opulence provides some tools to glean information about the request content type via `RequestParser`.
+
+<h5 id="checking-if-json">Checking if JSON</h5>
+
+```php
+use Opulence\Net\Http\Requests\RequestParser;
+
+$requestParser = new RequestParser();
+$isJson = $requestParser->isJson($request);
+```
+
+<h5 id="checking-if-multipart">Checking if Multipart</h5>
+
+```php
+$isMultipart = $requestParser->isMultipart($request);
+```
+
 <h4 id="requests-getting-form-input">Reading Form Input</h4>
 
 In vanilla PHP, you can read URL-encoded form data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of form requests into a [dictionary](collections#hash-tables).
 
 ```php
-use Opulence\Net\Http\HttpBodyParser;
+use Opulence\Net\Http\Requests\RequestParser;
 
 // Let's assume the raw body is "email=foo%40bar.com"
-$formInput = (new HttpBodyParser)->readAsFormInput($request->getBody());
+$formInput = (new RequestParser)->readAsFormInput($request);
 echo $formInput->get('email'); // "foo@bar.com"
 ```
 
 <h4 id="requests-reading-json">Reading JSON</h4>
 
-Rather than having to parse a JSON body yourself, you can use `HttpBodyParser` to do it for you:
+Rather than having to parse a JSON body yourself, you can use `RequestParser` to do it for you:
 
 ```php
-use Opulence\Net\Http\HttpBodyParser;
+use Opulence\Net\Http\Requests\RequestParser;
 
-$json = (new HttpBodyParser)->readAsJson($request->getBody());
+$json = (new RequestParser)->readAsJson($request);
 ```
 
 <h4 id="multipart-requests">Multipart Requests</h4>
@@ -252,7 +241,7 @@ $bodyStream->copyToStream(new Stream(fopen('path/to/copy/to', 'w')));
 To grab the MIME type of an HTTP body, call
 
 ```php
-(new HttpBodyParser)->getMimeType($multipartBody->getBody());
+(new RequestParser)->getMimeType($multipartBodyPart);
 ```
 
 <h5 id="creating-multipart-requests">Creating Multipart Requests</h5>
@@ -286,11 +275,11 @@ Opulence has a helper to grab cookies from request headers:
 ```php
 use Opulence\Net\Http\Requests\RequestHeaderParser;
 
-$cookies = (new RequestHeaderParser)->parseCookies($request->getHeaders());
+$cookies = (new RequestParser)->parseCookies($request);
 $cookies->get('userid');
 ```
 
-`RequestHeaderParser::parseCookies()` returns an [immutable dictionary](collections#immutable-hash-tables).
+`RequestParser::parseCookies()` returns an [immutable dictionary](collections#immutable-hash-tables).
 
 <h4 id="getting-client-ip-address">Getting Client IP Address</h4>
 
@@ -303,6 +292,17 @@ $clientIPAddress = (new RequestParser)->getClientIPAddress($request);
 ```
 
 This will take into consideration any [trusted proxy header values](#trusted-proxies) when determining the original client IP address.
+
+<h4 id="requests-header-parameters">Header Parameters</h4>
+
+Some header values are semicolon delimited, eg `Content-Type: text/html; charset=utf-8`.  It's sometimes convenient to grab those key => value pairs:
+
+```php
+$contentTypeValues = $requestParser->parseParameters($request, 'Content-Type');
+// Keys without values will return null:
+echo $contentTypeValues->get('text/html'); // null
+echo $contentTypeValues->get('charset'); // "utf-8"
+```
 
 <h4 id="serializing-requests">Serializing Requests</h4>
 
@@ -402,14 +402,14 @@ $response = new Response();
 
 <h4 id="setting-response-cookies">Setting Cookies</h4>
 
-Cookies are headers that are automatically appended to each request from the client to the server.  To set one, use `ResponseHeaderFormatter`:
+Cookies are headers that are automatically appended to each request from the client to the server.  To set one, use `ResponseFormatter`:
 
 ```php
 use Opulence\Net\Http\Responses\Cookie;
-use Opulence\Net\Http\Responses\ResponseHeaderFormatter;
+use Opulence\Net\Http\Responses\ResponseFormatter;
 
-(new ResponseHeaderFormatter)->setCookie(
-    $response->getHeaders(),
+(new ResponseFormatter)->setCookie(
+    $response,
     new Cookie('userid', 123, 3600)
 );
 ```
@@ -429,14 +429,14 @@ public function __construct(
 )
 ```
 
-Use `ResponseHeaderFormatter::setCookies()` to set multiple cookies at once.
+Use `ResponseFormatter::setCookies()` to set multiple cookies at once.
 
 <h5 id="deleting-response-cookies">Deleting Cookies</h5>
 
 To delete a cookie on the client, call
 
 ```php
-(new ResponseHeaderFormatter)->deleteCookie($response->getHeaders(), 'userid');
+(new ResponseFormatter)->deleteCookie($response, 'userid');
 ```
 
 <h4 id="writing-responses">Writing Responses</h4>

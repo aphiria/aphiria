@@ -72,6 +72,15 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests getting the mime type a non-request and non-multipart body part throws an exception
+     */
+    public function testGettingMimeTypeOfNonRequestNorMultipartBodyPartThrowsException() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->parser->getMimeType([]);
+    }
+
+    /**
      * Tests parsing a multipart request without a boundary throws an exception
      */
     public function testParsingMultipartRequestWithoutBoundaryThrowsException() : void
