@@ -8,10 +8,11 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http;
+namespace Opulence\Net\Http\Formatting;
 
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
+use Opulence\Net\Http\IHttpResponseMessage;
 
 /**
  * Defines the response writer

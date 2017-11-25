@@ -48,11 +48,12 @@ PSR-7 was an attempt to standardize the models for HTTP components.  PHP does no
 
 1. Request and response immutability
     * This has often been considered cumbersome, bug-prone, and a bad use-case for immutability
+    * The fact that some bodies' streams are readable exactly once breaks the idea of immutability
+    * The `with*()` methods are more reminiscent of the <a href="https://en.wikipedia.org/wiki/Builder_pattern" target="_blank">builder pattern</a> rather than of a domain model
 2. HTTP message bodies were streams
     * Bodies aren't inherently streams - they should be _readable as_ streams, and _writable to_ streams
-    * Since some streams are readable exactly once, this breaks the idea of immutability in the first point
-3. PSR-7 improperly abstracted uploaded files - they are part of the body, not the request message
-4. Headers were added through the HTTP message rather than encapsulated in a dictionary-like object that was contained in the message
+3. PSR-7 improperly abstracted uploaded files
+    * They are part of the body, not the request message
 
 <h2 id="http-headers">HTTP Headers</h2>
 
@@ -444,7 +445,7 @@ To delete a cookie on the client, call
 Once you're ready to start sending the response back to the client, you can use `ResponseWriter`:
 
 ```php
-use Opulence\Net\Http\ResponseWriter;
+use Opulence\Net\Http\Formatting\ResponseWriter;
 
 (new ResponseWriter)->writeResponse($response);
 ```
