@@ -113,7 +113,7 @@ Requests are HTTP messages sent by clients to servers.  They contain the followi
 Creating a request is easy:
 
 ```php
-use Opulence\Net\Http\Requests\Requests;
+use Opulence\Net\Http\Request;
 use Opulence\Net\Uri;
 
 $request = new Request('GET', new Uri('https://example.com'));
@@ -143,7 +143,7 @@ $request->setBody($body);
 PHP has superglobal arrays that store information about the requests.  They're a mess, architecturally-speaking.  Opulence attempts to insulate developers from the nastiness of superglobals by giving you a simple method to create requests and responses.  To create a request, use `RequestFactory`:
 
 ```php
-use Opulence\Net\Http\Requests\RequestFactory;
+use Opulence\Net\Http\RequestFactory;
 
 $request = (new RequestFactory)->createRequestFromGlobals($_SERVER);
 ```
@@ -173,7 +173,7 @@ Opulence provides some tools to glean information about the request content type
 <h5 id="checking-if-json">Checking if JSON</h5>
 
 ```php
-use Opulence\Net\Http\Requests\RequestParser;
+use Opulence\Net\Http\Formatting\RequestParser;
 
 $requestParser = new RequestParser();
 $isJson = $requestParser->isJson($request);
@@ -190,7 +190,7 @@ $isMultipart = $requestParser->isMultipart($request);
 In vanilla PHP, you can read URL-encoded form data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of form requests into a [dictionary](collections#hash-tables).
 
 ```php
-use Opulence\Net\Http\Requests\RequestParser;
+use Opulence\Net\Http\Formatting\RequestParser;
 
 // Let's assume the raw body is "email=foo%40bar.com"
 $formInput = (new RequestParser)->readAsFormInput($request);
@@ -202,7 +202,7 @@ echo $formInput->get('email'); // "foo@bar.com"
 Rather than having to parse a JSON body yourself, you can use `RequestParser` to do it for you:
 
 ```php
-use Opulence\Net\Http\Requests\RequestParser;
+use Opulence\Net\Http\Formatting\RequestParser;
 
 $json = (new RequestParser)->readAsJson($request);
 ```
@@ -216,7 +216,7 @@ Multipart requests contain multiple bodies, each with headers.  That's actually 
 To parse a request body as a multipart body, call
 
 ```php
-use Opulence\Net\Http\Requests\RequestParser;
+use Opulence\Net\Http\Formatting\RequestParser;
 
 $multipartBody = (new RequestParser)->readAsMultipart($request);
 ```
@@ -252,7 +252,7 @@ The Net library makes it easy to create a multipart request manually:
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\MultipartBody;
 use Opulence\Net\Http\MultipartBodyPart;
-use Opulence\Net\Http\Requests\Request;
+use Opulence\Net\Http\Request;
 use Opulence\Net\Http\StringBody;
 use Opulence\Net\Uri;
 
@@ -273,7 +273,7 @@ $request = new Request(
 Opulence has a helper to grab cookies from request headers:
 
 ```php
-use Opulence\Net\Http\Requests\RequestHeaderParser;
+use Opulence\Net\Http\Formatting\RequestHeaderParser;
 
 $cookies = (new RequestParser)->parseCookies($request);
 $cookies->get('userid');
@@ -286,7 +286,7 @@ $cookies->get('userid');
 If you use the [`RequestFactory`](#creating-request-from-globals) to create your request, the client IP address will be added to the request property `CLIENT_IP_ADDRESS`.  To make it easier to grab this value, you can use `RequestParser` to retrieve it:
 
 ```php
-use Opulence\Net\Http\Requests\RequestParser;
+use Opulence\Net\Http\Formatting\RequestParser;
 
 $clientIPAddress = (new RequestParser)->getClientIPAddress($request);
 ```
@@ -315,7 +315,7 @@ echo (string)$request;
 By default, this will use <a href="https://tools.ietf.org/html/rfc7230#section-5.3.1" target="_blank">origin-form</a> for the request target, but you can override the request type via the constructor:
 
 ```php
-use Opulence\Net\Http\Requests\RequestTargetTypes;
+use Opulence\Net\Http\RequestTargetTypes;
 
 $request = new Request(
     'GET',
@@ -352,7 +352,7 @@ Responses are HTTP messages that are sent by servers back to the client.  They c
 Creating a response is easy:
 
 ```php
-use Opulence\Net\Http\Responses\Response;
+use Opulence\Net\Http\Response;
 
 $response = new Response();
 ```
@@ -384,8 +384,8 @@ $response->setBody(new StringBody('foo'));
 Opulence provides a few easy ways to create common responses.  For example, to create a JSON response, use `ResponseFormatter`:
 
 ```php
-use Opulence\Net\Http\Responses\Response;
-use Opulence\Net\Http\Responses\ResponseFormatter;
+use Opulence\Net\Http\Formatting\ResponseFormatter;
+use Opulence\Net\Http\Response;
 
 $response = new Response();
 (new ResponseFormatter)->writeJson($response, ['foo' => 'bar']);
@@ -405,8 +405,8 @@ $response = new Response();
 Cookies are headers that are automatically appended to each request from the client to the server.  To set one, use `ResponseFormatter`:
 
 ```php
-use Opulence\Net\Http\Responses\Cookie;
-use Opulence\Net\Http\Responses\ResponseFormatter;
+use Opulence\Net\Http\Cookie;
+use Opulence\Net\Http\Formatting\ResponseFormatter;
 
 (new ResponseFormatter)->setCookie(
     $response,
@@ -444,7 +444,7 @@ To delete a cookie on the client, call
 Once you're ready to start sending the response back to the client, you can use `ResponseWriter`:
 
 ```php
-use Opulence\Net\Http\Responses\ResponseWriter;
+use Opulence\Net\Http\ResponseWriter;
 
 (new ResponseWriter)->writeResponse($response);
 ```
@@ -492,7 +492,7 @@ $uri = new Uri('https://example.com/foo?bar=baz#blah');
 `Uri::getQueryString()` returns the raw query string.  To parse them into an [immutable dictionary](collections#immutable-hash-tables) (similar to PHP's `$_GET`), use `UriParser`:
 
 ```php
-use Opulence\Net\UriParser;
+use Opulence\Net\Formatting\UriParser;
 
 $uri = new Uri('https://example.com?foo=bar');
 $queryStringParams = (new UriParser)->parseQueryString($uri);
