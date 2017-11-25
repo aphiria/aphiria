@@ -274,7 +274,7 @@ $request = new Request(
 Opulence has a helper to grab cookies from request headers:
 
 ```php
-use Opulence\Net\Http\Formatting\RequestHeaderParser;
+use Opulence\Net\Http\Formatting\RequestParser;
 
 $cookies = (new RequestParser)->parseCookies($request);
 $cookies->get('userid');
