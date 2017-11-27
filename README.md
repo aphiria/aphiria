@@ -4,25 +4,24 @@
 1. [Introduction](#introduction)
     1. [Requirements](#requirements)
     2. [Why Not Use PSR-7?](#why-not-use-psr-7)
-2. [HTTP Headers](#http-headers)
-3. [HTTP Bodies](#http-bodies)
-    1. [String Bodies](#string-bodies)
-    2. [Stream Bodies](#stream-bodies)
-4. [Requests](#requests)
+2. [Requests](#requests)
     1. [Creating Requests](#creating-requests)
-    2. [Checking Content Type](#requests-checking-content-type)
-    3. [Reading Form Input](#requests-getting-form-input)
-    4. [Reading JSON](#requests-reading-json)
-    5. [Multipart Requests](#multipart-requests)
-    6. [Getting Cookies](#getting-request-cookies)
-    7. [Getting Client IP Address](#getting-client-ip-address)
-    8. [Header Parameters](#requests-header-parameters)
-    9. [Serializing Requests](#serializing-requests)
-5. [Responses](#responses)
+    2. [Form Input Requests](#form-input-requests)
+    3. [JSON Request](#json-requests)
+    4. [Multipart Requests](#multipart-requests)
+    5. [Getting Cookies](#getting-request-cookies)
+    6. [Getting Client IP Address](#getting-client-ip-address)
+    7. [Header Parameters](#header-parameters)
+    8. [Serializing Requests](#serializing-requests)
+3. [Responses](#responses)
     1. [Creating Responses](#creating-responses)
     2. [Setting Cookies](#setting-response-cookies)
     3. [Writing Responses](#writing-responses)
     4. [Serializing Responses](#serializing-responses)
+4. [HTTP Headers](#http-headers)
+5. [HTTP Bodies](#http-bodies)
+    1. [String Bodies](#string-bodies)
+    2. [Stream Bodies](#stream-bodies)
 6. [URIs](#uris)
     1. [Parsing Query String Parameters](#uris-parsing-query-string-parameters)
 
@@ -54,46 +53,6 @@ PSR-7 was an attempt to standardize the models for HTTP components.  PHP does no
     * Bodies aren't inherently streams - they should be _readable as_ streams, and _writable to_ streams
 3. PSR-7 improperly abstracted uploaded files
     * They are part of the body, not the request message
-
-<h2 id="http-headers">HTTP Headers</h2>
-
-Headers provide metadata about the HTTP message.  In Opulence, they're implemented by `Opulence\Net\Http\HttpHeaders`, which extends  [`Opulence\Collections\HashTable`](collections#hash-tables).  On top of the methods provided by `HashTable`, they also provide the following methods:
-
-* `getFirst(string $name) : mixed`
-* `tryGetFirst(string $name, &$value) : bool`
-
-> **Note:** Header names that are passed into the methods in `HttpHeaders` are automatically normalized to Train-Case.  In other words, `foo_bar` will become `Foo-Bar`.
-
-<h2 id="http-bodies">HTTP Bodies</h2>
-
-HTTP bodies contain data associated with the HTTP message, and are optional.  They're represented by `Opulence\Net\Http\IHttpBody`.  They provide a few methods to read and write their contents to streams and to strings:
-
-* `__toString() : string`
-* `readAsStream() : IStream`
-* `readAsString() : string`
-* `writeToStream(IStream $stream) : void`
-
-<h4 id="string-bodies">String Bodies</h4>
-
-HTTP bodies are most commonly represented as strings.  Opulence makes it easy to create a string body via `StringBody`:
-
-```php
-use Opulence\Net\Http\StringBody;
-
-$body = new StringBody('foo');
-```
-
-<h4 id="stream-bodies">Stream Bodies</h4>
-
-Sometimes, bodies might be too big to hold entirely in memory.  This is where `StreamBody` comes in handy:
-
-```php
-use Opulence\IO\Streams\Stream;
-use Opulence\Net\Http\StreamBody;
-
-$stream = new Stream(fopen('foo.txt', 'r+'));
-$body = new StreamBody($stream);
-```
 
 <h2 id="requests">Requests</h2>
 
@@ -167,26 +126,7 @@ $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_IP' => 'X-My-Proxy-
 $request = $factory->createRequestFromGlobals($_SERVER);
 ```
 
-<h4 id="requests-checking-content-type">Checking Content Type</h4>
-
-Opulence provides some tools to glean information about the request content type via `RequestParser`.
-
-<h5 id="checking-if-json">Checking if JSON</h5>
-
-```php
-use Opulence\Net\Http\Formatting\RequestParser;
-
-$requestParser = new RequestParser();
-$isJson = $requestParser->isJson($request);
-```
-
-<h5 id="checking-if-multipart">Checking if Multipart</h5>
-
-```php
-$isMultipart = $requestParser->isMultipart($request);
-```
-
-<h4 id="requests-getting-form-input">Reading Form Input</h4>
+<h4 id="form-input-requests">Form Input Requests</h4>
 
 In vanilla PHP, you can read URL-encoded form data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of form requests into a [dictionary](collections#hash-tables).
 
@@ -198,7 +138,15 @@ $formInput = (new RequestParser)->readAsFormInput($request);
 echo $formInput->get('email'); // "foo@bar.com"
 ```
 
-<h4 id="requests-reading-json">Reading JSON</h4>
+<h4 id="json-requests">JSON Requests</h4>
+
+To check if a request is a JSON request, call
+
+```php
+use Opulence\Net\Http\Formatting\RequestParser;
+
+$isJson = (new RequestParser)->isJson($request);
+```
 
 Rather than having to parse a JSON body yourself, you can use `RequestParser` to do it for you:
 
@@ -213,6 +161,14 @@ $json = (new RequestParser)->readAsJson($request);
 Multipart requests contain multiple bodies, each with headers.  That's actually how file upload files work - each file gets a body with headers indicating the name, type, and size of the file.  Opulence can parse these multipart bodies into a `MultipartBody`, which extends `StreamBody`.  It contains an additional method to get the list of `MultipartBodyPart` objects that make up the body:
 
 * `getParts() : MultipartBodyPart[]`
+
+You can check if a request is a multipart request:
+
+```php
+use Opulence\Net\Http\Formatting\RequestParser;
+
+$isMultipart = (new RequestParser)->isMultipart($request);
+```
 
 To parse a request body as a multipart body, call
 
@@ -294,7 +250,7 @@ $clientIPAddress = (new RequestParser)->getClientIPAddress($request);
 
 This will take into consideration any [trusted proxy header values](#trusted-proxies) when determining the original client IP address.
 
-<h4 id="requests-header-parameters">Header Parameters</h4>
+<h4 id="header-parameters">Header Parameters</h4>
 
 Some header values are semicolon delimited, eg `Content-Type: text/html; charset=utf-8`.  It's sometimes convenient to grab those key => value pairs:
 
@@ -463,6 +419,46 @@ Opulence can serialize responses per <a href="https://tools.ietf.org/html/rfc723
 
 ```php
 echo (string)$response;
+```
+
+<h2 id="http-headers">HTTP Headers</h2>
+
+Headers provide metadata about the HTTP message.  In Opulence, they're implemented by `Opulence\Net\Http\HttpHeaders`, which extends  [`Opulence\Collections\HashTable`](collections#hash-tables).  On top of the methods provided by `HashTable`, they also provide the following methods:
+
+* `getFirst(string $name) : mixed`
+* `tryGetFirst(string $name, &$value) : bool`
+
+> **Note:** Header names that are passed into the methods in `HttpHeaders` are automatically normalized to Train-Case.  In other words, `foo_bar` will become `Foo-Bar`.
+
+<h2 id="http-bodies">HTTP Bodies</h2>
+
+HTTP bodies contain data associated with the HTTP message, and are optional.  They're represented by `Opulence\Net\Http\IHttpBody`.  They provide a few methods to read and write their contents to streams and to strings:
+
+* `__toString() : string`
+* `readAsStream() : IStream`
+* `readAsString() : string`
+* `writeToStream(IStream $stream) : void`
+
+<h4 id="string-bodies">String Bodies</h4>
+
+HTTP bodies are most commonly represented as strings.  Opulence makes it easy to create a string body via `StringBody`:
+
+```php
+use Opulence\Net\Http\StringBody;
+
+$body = new StringBody('foo');
+```
+
+<h4 id="stream-bodies">Stream Bodies</h4>
+
+Sometimes, bodies might be too big to hold entirely in memory.  This is where `StreamBody` comes in handy:
+
+```php
+use Opulence\IO\Streams\Stream;
+use Opulence\Net\Http\StreamBody;
+
+$stream = new Stream(fopen('foo.txt', 'r+'));
+$body = new StreamBody($stream);
 ```
 
 <h2 id="uris">URIs</h2>
