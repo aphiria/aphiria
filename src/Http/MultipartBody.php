@@ -20,6 +20,8 @@ class MultipartBody extends StreamBody
 {
     /** @var MultipartBody[] The list of body parts */
     private $parts = [];
+    /** @var string The boundary string */
+    private $boundary = '';
 
     /**
      * @param MultipartBodyPart[] $parts The list of multipart body parts
@@ -28,15 +30,15 @@ class MultipartBody extends StreamBody
     public function __construct(array $parts, string $boundary = null)
     {
         $this->parts = $parts;
-        $boundary = $boundary ?? $this->createDefaultBoundary();
+        $this->boundary = $boundary ?? $this->createDefaultBoundary();
         $stream = new MultiStream();
 
         // Create the header boundary
-        $stream->addStream($this->createStreamFromString("--{$boundary}"));
+        $stream->addStream($this->createStreamFromString("--{$this->boundary}"));
 
         for ($i = 0;$i < count($this->parts);$i++) {
             if ($i > 0) {
-                $stream->addStream($this->createStreamFromString("\r\n--{$boundary}"));
+                $stream->addStream($this->createStreamFromString("\r\n--{$this->boundary}"));
             }
 
             if (count($this->parts[$i]->getHeaders()) > 0) {
@@ -48,9 +50,19 @@ class MultipartBody extends StreamBody
         }
 
         // Create the footer boundary
-        $stream->addStream($this->createStreamFromString("\r\n--{$boundary}--"));
+        $stream->addStream($this->createStreamFromString("\r\n--{$this->boundary}--"));
 
         parent::__construct($stream);
+    }
+
+    /**
+     * Gets the boundary string
+     *
+     * @return string The boundary string
+     */
+    public function getBoundary() : string
+    {
+        return $this->boundary;
     }
 
     /**

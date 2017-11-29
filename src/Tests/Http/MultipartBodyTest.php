@@ -22,6 +22,24 @@ use Opulence\Net\Http\StringBody;
 class MultipartBodyTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * Tests that getting the boundary returns the boundary specified in the constructor
+     */
+    public function testGettingBoundaryReturnsBoundarySpecifiedInConstructor() : void
+    {
+        $body = new MultipartBody([], 'foo');
+        $this->assertEquals('foo', $body->getBoundary());
+    }
+
+    /**
+     * Tests that getting the boundary returns a UUID when non is specified in the constructor
+     */
+    public function testGettingBoundaryReturnsUuidWhenNoneSpecifiedInConstructor() : void
+    {
+        $body = new MultipartBody([]);
+        $this->assertNotEmpty($body->getBoundary());
+    }
+
+    /**
      * Tests that getting the parts returns the parts
      */
     public function testGettingPartsReturnsParts() : void
