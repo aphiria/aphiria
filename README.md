@@ -158,7 +158,7 @@ $json = (new RequestParser)->readAsJson($request);
 
 <h4 id="multipart-requests">Multipart Requests</h4>
 
-Multipart requests contain multiple bodies, each with headers.  That's actually how file upload files work - each file gets a body with headers indicating the name, type, and size of the file.  Opulence can parse these multipart bodies into a `MultipartBody`, which extends `StreamBody`.  It contains an additional method to get the list of `MultipartBodyPart` objects that make up the body:
+Multipart requests contain multiple bodies, each with headers.  That's actually how file upload files work - each file gets a body with headers indicating the name, type, and size of the file.  Opulence can parse these multipart bodies into a `MultipartBody`, which extends [`StreamBody`](#stream-bodies).  It contains an additional method to get the list of `MultipartBodyPart` objects that make up the body:
 
 * `getParts() : MultipartBodyPart[]`
 
@@ -218,7 +218,7 @@ $body = new MultipartBody([
     new MultipartBodyPart(new HttpHeaders(), new StringBody('bar'))
 ]);
 $request = new Request(
-    'GET',
+    'POST',
     new Uri('https://example.com'),
     new HttpHeaders(),
     $body

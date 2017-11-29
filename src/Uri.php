@@ -99,10 +99,7 @@ class Uri
         $authority = '';
 
         if ($includeUserInfo && $this->user !== null) {
-            /**
-             * The password can be empty
-             * @link $uriWithUserButNoPassword
-             */
+            // The password can be empty
             $authority = $this->user;
 
             if ($this->password !== null && strlen($this->password) > 0) {
