@@ -218,7 +218,7 @@ $body = new MultipartBody([
     new MultipartBodyPart(new HttpHeaders(), new StringBody('bar'))
 ]);
 $headers = new HttpHeaders();
-$headers->add('Content-Type', "multipart/form-data;boundary="{$body->getBoundary()}");
+$headers->add('Content-Type', "multipart/form-data;boundary={$body->getBoundary()}");
 $request = new Request(
     'POST',
     new Uri('https://example.com'),
