@@ -204,22 +204,37 @@ To grab the MIME type of an HTTP body, call
 
 <h5 id="creating-multipart-requests">Creating Multipart Requests</h5>
 
-The Net library makes it easy to create a multipart request manually:
+The Net library makes it straightforward to create a multipart request manually.  The following example creates a request to upload two images:
 
 ```php
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\MultipartBody;
 use Opulence\Net\Http\MultipartBodyPart;
 use Opulence\Net\Http\Request;
-use Opulence\Net\Http\StringBody;
+use Opulence\Net\Http\StreamBody;
 use Opulence\Net\Uri;
 
-$body = new MultipartBody([
-    new MultipartBodyPart(new HttpHeaders(), new StringBody('foo')),
-    new MultipartBodyPart(new HttpHeaders(), new StringBody('bar'))
-]);
+// Build the first image's headers and body
+$image1Headers = new HttpHeaders();
+$image1Headers->add('Content-Disposition', 'form-data; name="image1"; filename="foo.png"');
+$image1Headers->add('Content-Type', 'image/png');
+$image1Body = new StreamBody(fopen('path/to/foo.png', 'r'));
+
+// Build the second image's headers and body
+$image2Headers = new HttpHeaders();
+$image2Headers->add('Content-Disposition', 'form-data; name="image2"; filename="bar.png"');
+$image2Headers->add('Content-Type', 'image/png');
+$image2Body = new StreamBody(fopen('path/to/bar.png', 'r'));
+
+// Build the request's headers and body
 $headers = new HttpHeaders();
 $headers->add('Content-Type', "multipart/form-data; boundary={$body->getBoundary()}");
+$body = new MultipartBody([
+    new MultipartBodyPart($image1Headers, $image1Body),
+    new MultipartBodyPart($image2Headers, $image2Body)
+]);
+
+// Build the request
 $request = new Request(
     'POST',
     new Uri('https://example.com'),
