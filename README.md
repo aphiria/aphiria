@@ -6,13 +6,14 @@
     2. [Why Not Use PSR-7?](#why-not-use-psr-7)
 2. [Requests](#requests)
     1. [Creating Requests](#creating-requests)
-    2. [Form Input Requests](#form-input-requests)
-    3. [JSON Request](#json-requests)
-    4. [Multipart Requests](#multipart-requests)
-    5. [Getting Cookies](#getting-request-cookies)
-    6. [Getting Client IP Address](#getting-client-ip-address)
-    7. [Header Parameters](#header-parameters)
-    8. [Serializing Requests](#serializing-requests)
+    2. [Getting POST Data](#getting-post-data)
+    3. [Getting Query String Data](#getting-query-string-data)
+    4. [JSON Request](#json-requests)
+    5. [Multipart Requests](#multipart-requests)
+    6. [Getting Cookies](#getting-request-cookies)
+    7. [Getting Client IP Address](#getting-client-ip-address)
+    8. [Header Parameters](#header-parameters)
+    9. [Serializing Requests](#serializing-requests)
 3. [Responses](#responses)
     1. [Creating Responses](#creating-responses)
     2. [Setting Cookies](#setting-response-cookies)
@@ -23,7 +24,6 @@
     1. [String Bodies](#string-bodies)
     2. [Stream Bodies](#stream-bodies)
 6. [URIs](#uris)
-    1. [Parsing Query String Parameters](#uris-parsing-query-string-parameters)
 
 <h2 id="introduction">Introduction</h2>
 
@@ -112,21 +112,15 @@ Opulence reads all the information it needs from the `$_SERVER` superglobal - it
 
 <h5 id="trusted-proxies">Trusted Proxies</h5>
 
-If you're using a load balancer or some sort of proxy server, you'll need to add it to the list of trusted proxies:
+If you're using a load balancer or some sort of proxy server, you'll need to add it to the list of trusted proxies.  You can also use your proxy to set custom, trusted headers.  You may specify them in the factory constructor:
 
 ```php
-$factory = new RequestFactory(['192.168.1.1', '192.168.1.2']);
-$request = $factory->createRequestFromGlobals($_SERVER);
-```
-
-If you want to use your proxy to set custom, trusted headers, you may add them to the factory:
-
-```php
+// The client IP will be read from the "X-My-Proxy-Ip" header when using a trusted proxy
 $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_IP' => 'X-My-Proxy-Ip']);
 $request = $factory->createRequestFromGlobals($_SERVER);
 ```
 
-<h4 id="form-input-requests">Form Input Requests</h4>
+<h4 id="getting-post-data">Getting POST Data</h4>
 
 In vanilla PHP, you can read URL-encoded form data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of form requests into a [dictionary](collections#hash-tables).
 
@@ -136,6 +130,18 @@ use Opulence\Net\Http\Formatting\RequestParser;
 // Let's assume the raw body is "email=foo%40bar.com"
 $formInput = (new RequestParser)->readAsFormInput($request);
 echo $formInput->get('email'); // "foo@bar.com"
+```
+
+<h4 id="getting-query-string-data">Getting Query String Data</h4>
+
+In vanilla PHP, query string data is read from the `$_GET` superglobal.  In Opulence, it's stored in the request's URI.  `Uri::getQueryString()` returns the raw query string - to return it as an [immutable dictionary](collections#immutable-hash-tables), use `RequestParser`:
+
+```php
+use Opulence\Net\Http\Formatting\RequestParser;
+
+// Assume the query string was "?foo=bar"
+$queryStringParams = (new RequestParser)->parseQueryString($request);
+echo $queryStringParams->get('foo'); // "bar"
 ```
 
 <h4 id="json-requests">JSON Requests</h4>
@@ -502,22 +508,4 @@ To create an instance of `Uri`, pass the raw URI string into the constructor:
 use Opulence\Net\Uri;
 
 $uri = new Uri('https://example.com/foo?bar=baz#blah');
-```
-
-<h4 id="uris-parsing-query-string-parameters">Parsing Query String Parameters</h4>
-
-`Uri::getQueryString()` returns the raw query string.  To parse them into an [immutable dictionary](collections#immutable-hash-tables) (similar to PHP's `$_GET`), use `UriParser`:
-
-```php
-use Opulence\Net\Formatting\UriParser;
-
-$uri = new Uri('https://example.com?foo=bar');
-$queryStringParams = (new UriParser)->parseQueryString($uri);
-echo $queryStringParams->get('foo'); // "bar"
-```
-
-If you're trying to parse the query string of a request URI, use `RequestParser`:
-
-```php
-$queryStringParams = (new RequestParser)->parseQueryString($request);
 ```
