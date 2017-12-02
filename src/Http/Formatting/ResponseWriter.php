@@ -13,6 +13,7 @@ namespace Opulence\Net\Http\Formatting;
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
 use Opulence\Net\Http\IHttpResponseMessage;
+use RuntimeException;
 
 /**
  * Defines the response writer
@@ -20,20 +21,21 @@ use Opulence\Net\Http\IHttpResponseMessage;
 class ResponseWriter
 {
     /** @var IStream The output stream to write the body to */
-    private $outputStream = null;
+    private $outputStream;
 
     /**
      * @param IStream|null $outputStream The output stream to write the body to (null defaults to PHP's output stream)
      */
     public function __construct(IStream $outputStream = null)
     {
-        $this->outputStream = $outputStream ?? new Stream(fopen('php://output', 'r+'));
+        $this->outputStream = $outputStream ?? new Stream(fopen('php://output', 'r+b'));
     }
 
     /**
      * Writes the response to the output stream
      *
      * @param IHttpResponseMessage $response The response to write
+     * @throws RuntimeException Thrown if the output stream could not be written to
      */
     public function writeResponse(IHttpResponseMessage $response) : void
     {

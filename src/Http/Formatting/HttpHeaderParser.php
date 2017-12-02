@@ -14,6 +14,7 @@ use Opulence\Collections\IImmutableDictionary;
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
 use Opulence\Net\Http\HttpHeaders;
+use RuntimeException;
 
 /**
  * Defines the HTTP header parser
@@ -32,6 +33,7 @@ class HttpHeaderParser
      *
      * @param HttpHeaders $headers The headers to parse
      * @return bool True if the message has a JSON content type, otherwise false
+     * @throws RuntimeException Thrown if the content type header's hash key could not be calculated
      */
     public function isJson(HttpHeaders $headers) : bool
     {
@@ -46,6 +48,7 @@ class HttpHeaderParser
      *
      * @param HttpHeaders $headers The headers to parse
      * @return bool True if the request is a multipart message, otherwise false
+     * @throws RuntimeException Thrown if the content type header's hash key could not be calculated
      */
     public function isMultipart(HttpHeaders $headers) : bool
     {
@@ -65,7 +68,7 @@ class HttpHeaderParser
      */
     public function parseParameters(HttpHeaders $headers, string $headerName, int $index = 0) : IImmutableDictionary
     {
-        $headerValues = null;
+        $headerValues = [];
 
         if (!$headers->tryGet($headerName, $headerValues) || !isset($headerValues[$index])) {
             return new ImmutableHashTable([]);

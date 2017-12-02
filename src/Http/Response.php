@@ -16,11 +16,11 @@ namespace Opulence\Net\Http;
 class Response implements IHttpResponseMessage
 {
     /** @var IHttpBody|null The body of the response if there is one, otherwise null */
-    protected $body = null;
+    protected $body;
     /** @var HttpHeaders The list of response headers */
-    protected $headers = null;
+    protected $headers;
     /** @var string|null The response reason phrase if there is one, otherwise null */
-    protected $reasonPhrase = null;
+    protected $reasonPhrase;
     /** @var int The response status code */
     protected $statusCode = HttpStatusCodes::HTTP_OK;
     /** @var string The HTTP protocol version */
@@ -40,7 +40,7 @@ class Response implements IHttpResponseMessage
     ) {
         $this->statusCode = $statusCode;
         $this->reasonPhrase = ResponseStatusCodes::getDefaultReasonPhrase($this->statusCode);
-        $this->headers = $headers ?? new HttpHeaders;
+        $this->headers = $headers ?? new HttpHeaders();
         $this->body = $body;
         $this->protocolVersion = $protocolVersion;
     }
@@ -58,7 +58,7 @@ class Response implements IHttpResponseMessage
 
         $headers = '';
 
-        if (count($this->headers) > 0) {
+        if (\count($this->headers) > 0) {
             $headers .= "\r\n{$this->headers}";
         }
 

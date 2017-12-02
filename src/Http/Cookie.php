@@ -25,21 +25,21 @@ class Cookie
     /** @var string The name of the cookie */
     private $name = '';
     /** @var mixed The value of the cookie */
-    private $value = '';
+    private $value;
     /** @var DateTime|null The expiration timestamp of the cookie if set, otherwise null */
-    private $expiration = null;
+    private $expiration;
     /** @var int|null The max age of the cookie if set, otherwise null */
-    private $maxAge = null;
+    private $maxAge;
     /** @var string|null The path the cookie is valid on if set, otherwise null */
-    private $path = '/';
+    private $path;
     /** @var string|null The domain the cookie is valid on if set, otherwise null */
-    private $domain = '';
+    private $domain;
     /** @var bool Whether or not this cookie is on HTTPS */
-    private $isSecure = false;
+    private $isSecure;
     /** @var bool Whether or not this cookie is HTTP only */
-    private $isHttpOnly = true;
+    private $isHttpOnly;
     /** @var string|null The same-site setting to use, or null if none is specified */
-    private $sameSite = null;
+    private $sameSite;
 
     /**
      * @param string $name The name of the cookie
@@ -68,7 +68,7 @@ class Cookie
         if ($expiration === null) {
             $this->expiration = null;
             $this->maxAge = null;
-        } elseif (is_int($expiration)) {
+        } elseif (\is_int($expiration)) {
             $this->expiration = DateTime::createFromFormat('U', $expiration);
             $this->maxAge = $expiration;
         } elseif ($expiration instanceof DateTime) {

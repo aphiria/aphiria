@@ -12,6 +12,7 @@ namespace Opulence\Net\Http;
 
 use Opulence\Collections\HashTable;
 use OutOfBoundsException;
+use RuntimeException;
 
 /**
  * Defines HTTP headers
@@ -77,6 +78,7 @@ class HttpHeaders extends HashTable
      * @param string $name The name of the header whose value we want
      * @return mixed The first value of the header
      * @throws OutOfBoundsException Thrown if the header could not be found
+     * @throws RuntimeException Thrown if the key could not be calculated
      */
     public function getFirst($name)
     {
@@ -101,6 +103,7 @@ class HttpHeaders extends HashTable
      * @param mixed $name The name of the header whose value we want
      * @param mixed $value The value, if it is found
      * @return bool True if the key exists, otherwise false
+     * @throws RuntimeException Thrown if the key could not be calculated
      */
     public function tryGetFirst($name, &$value) : bool
     {
@@ -121,6 +124,6 @@ class HttpHeaders extends HashTable
      */
     private function normalizeHeaderName(string $name) : string
     {
-        return ucwords(strtr(strtolower($name), '_', '-'), '-');
+        return ucwords(str_replace('_', '-', strtolower($name)), '-');
     }
 }

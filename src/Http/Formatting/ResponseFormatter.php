@@ -11,8 +11,10 @@
 namespace Opulence\Net\Http\Formatting;
 
 use InvalidArgumentException;
+use Opulence\Net\Http\Cookie;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\StringBody;
+use RuntimeException;
 
 /**
  * Defines the HTTP response message formatter
@@ -20,7 +22,7 @@ use Opulence\Net\Http\StringBody;
 class ResponseFormatter
 {
     /** @var ResponseHeaderFormatter The response header formatter to use */
-    private $headerFormatter = null;
+    private $headerFormatter;
 
     /**
      * @param ResponseHeaderFormatter|null $headerFormatter The response header formatter to use, or null if using the default one
@@ -89,6 +91,7 @@ class ResponseFormatter
      * @param IHttpResponseMessage $response The response to format
      * @param string $uri The URI to redirect to
      * @param int $statusCode The status code
+     * @throws RuntimeException Thrown if the location header's hash key could not be calculated
      */
     public function redirectToUri(IHttpResponseMessage $response, string $uri, int $statusCode = 302) : void
     {
@@ -102,6 +105,7 @@ class ResponseFormatter
      * @param IHttpResponseMessage $response The response to write to
      * @param array $content The JSON to write
      * @throws InvalidArgumentException Thrown if the input JSON is incorrectly formatted
+     * @throws RuntimeException Thrown if the content type header's hash key could not be calculated
      */
     public function writeJson(IHttpResponseMessage $response, array $content) : void
     {

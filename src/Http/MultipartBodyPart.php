@@ -16,9 +16,9 @@ namespace Opulence\Net\Http;
 class MultipartBodyPart
 {
     /** @var HttpHeaders The headers of this body part */
-    private $headers = null;
+    private $headers;
     /** @var IHttpBody|null The body of this body part if one is set, otherwise null */
-    private $body = null;
+    private $body;
 
     /**
      * @param HttpHeaders $headers The headers of this body part

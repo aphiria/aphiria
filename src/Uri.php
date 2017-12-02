@@ -18,21 +18,21 @@ use InvalidArgumentException;
 class Uri
 {
     /** @var string|null The URI scheme if set, otherwise null */
-    private $scheme = null;
+    private $scheme;
     /** @var string|null The URI user if set, otherwise null */
-    private $user = null;
+    private $user;
     /** @var string|null The URI password if set, otherwise null */
-    private $password = null;
+    private $password;
     /** @var string|null The URI host if set, otherwise null */
-    private $host = null;
+    private $host;
     /** @var int|null The URI port if set, otherwise null */
-    private $port = null;
+    private $port;
     /** @var string|null The URI path if set, otherwise null */
-    private $path = null;
+    private $path;
     /** @var string|null The URI query string (excludes '?') if set, otherwise null */
-    private $queryString = null;
+    private $queryString;
     /** @var string|null The URI fragment (excludes '#') if set, otherwise null */
-    private $fragment = null;
+    private $fragment;
 
     /**
      * @param string $uri The raw URI
@@ -102,7 +102,7 @@ class Uri
             // The password can be empty
             $authority = $this->user;
 
-            if ($this->password !== null && strlen($this->password) > 0) {
+            if ($this->password !== null && \strlen($this->password) > 0) {
                 $authority .= ":{$this->password}";
             }
 
@@ -316,7 +316,7 @@ class Uri
         }
 
         $authority = $this->getAuthority();
-        $pathIsSet = $this->path !== null && strlen($this->path) > 0;
+        $pathIsSet = $this->path !== null && \strlen($this->path) > 0;
 
         /** @link https://tools.ietf.org/html/rfc3986#section-3 */
         if ($authority !== null && $pathIsSet > 0 && $this->path[0] !== '/') {
@@ -324,7 +324,7 @@ class Uri
         }
 
         /** @link https://tools.ietf.org/html/rfc3986#section-3 */
-        if ($authority === null && $pathIsSet && strlen($this->path) >= 2 && substr($this->path, 0, 2) === '//') {
+        if ($authority === null && $pathIsSet && \strlen($this->path) >= 2 && \strpos($this->path, '//') === 0) {
             throw new InvalidArgumentException('Path cannot start with "//" if the URI has no authority');
         }
     }

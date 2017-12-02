@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
 use Opulence\Net\Uri;
+use RuntimeException;
 
 /**
  * Defines an HTTP request message
@@ -23,13 +24,13 @@ class Request implements IHttpRequestMessage
     /** @var string The request method */
     protected $method = '';
     /** @var HttpHeaders The request headers */
-    protected $headers = null;
+    protected $headers;
     /** @var IHttpBody|null The request body if there is one, otherwise null */
-    protected $body = null;
+    protected $body;
     /** @var Uri The request URI */
-    protected $uri = null;
+    protected $uri;
     /** @var IDictionary The request properties */
-    protected $properties = null;
+    protected $properties;
     /** @var string The HTTP protocol version */
     protected $protocolVersion = '';
     /** @var string The type of request target URI this request uses */
@@ -70,6 +71,8 @@ class Request implements IHttpRequestMessage
      * @param IDictionary|null $properties The request properties
      * @param string $protocolVersion The HTTP protocol version
      * @param string $requestTargetType The type of request target URI this request uses
+     * @throws InvalidArgumentException Thrown if the any of the properties are not valid
+     * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
     public function __construct(
         string $method,
@@ -91,8 +94,8 @@ class Request implements IHttpRequestMessage
 
         /** @link https://tools.ietf.org/html/rfc7230#section-5.4 */
         if (
-            !$this->headers->containsKey('Host') &&
-            isset(self::$requestTargetTypesWithHostHeader[$this->requestTargetType])
+            isset(self::$requestTargetTypesWithHostHeader[$this->requestTargetType]) &&
+            !$this->headers->containsKey('Host')
         ) {
             $this->headers->add('Host', $this->uri->getAuthority(false) ?? '');
         }
@@ -106,7 +109,7 @@ class Request implements IHttpRequestMessage
         $startLine = "{$this->method} {$this->getRequestTarget()} HTTP/{$this->protocolVersion}";
         $headers = '';
 
-        if (count($this->headers) > 0) {
+        if (\count($this->headers) > 0) {
             $headers .= "\r\n{$this->headers}";
         }
 
@@ -187,11 +190,11 @@ class Request implements IHttpRequestMessage
                 $requestTarget = $this->uri->getPath();
 
                 /** @link https://tools.ietf.org/html/rfc7230#section-5.3.1 */
-                if ($requestTarget === null || strlen($requestTarget) === 0) {
+                if ($requestTarget === null || $requestTarget === '') {
                     $requestTarget = '/';
                 }
 
-                if (($queryString = $this->uri->getQueryString()) !== null && strlen($queryString) > 0) {
+                if (($queryString = $this->uri->getQueryString()) !== null && \strlen($queryString) > 0) {
                     $requestTarget .= "?$queryString";
                 }
 

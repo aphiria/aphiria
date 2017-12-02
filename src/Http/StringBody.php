@@ -21,7 +21,7 @@ class StringBody implements IHttpBody
     /** @var string The body content */
     protected $content = '';
     /** @var IStream The underlying stream */
-    private $stream = null;
+    private $stream;
 
     /**
      * @param string $content The body content
@@ -45,7 +45,7 @@ class StringBody implements IHttpBody
     public function readAsStream() : IStream
     {
         if ($this->stream === null) {
-            $this->stream = new Stream(fopen('php://temp', 'r+'));
+            $this->stream = new Stream(fopen('php://temp', 'r+b'));
         }
 
         $this->stream->write($this->content);

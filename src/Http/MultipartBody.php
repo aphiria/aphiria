@@ -10,8 +10,11 @@
 
 namespace Opulence\Net\Http;
 
+use Exception;
+use InvalidArgumentException;
 use Opulence\IO\Streams\MultiStream;
 use Opulence\IO\Streams\Stream;
+use RuntimeException;
 
 /**
  * Defines a multipart HTTP body
@@ -19,13 +22,15 @@ use Opulence\IO\Streams\Stream;
 class MultipartBody extends StreamBody
 {
     /** @var MultipartBody[] The list of body parts */
-    private $parts = [];
+    private $parts;
     /** @var string The boundary string */
-    private $boundary = '';
+    private $boundary;
 
     /**
      * @param MultipartBodyPart[] $parts The list of multipart body parts
      * @param string $boundary The boundary between the parts
+     * @throws RuntimeException Thrown if the boundary could not be generated
+     * @throws InvalidArgumentException Thrown if the internal stream could not be generated
      */
     public function __construct(array $parts, string $boundary = null)
     {
@@ -41,12 +46,15 @@ class MultipartBody extends StreamBody
                 $stream->addStream($this->createStreamFromString("\r\n--{$this->boundary}"));
             }
 
-            if (count($this->parts[$i]->getHeaders()) > 0) {
+            if (\count($this->parts[$i]->getHeaders()) > 0) {
                 $stream->addStream($this->createStreamFromString("\r\n{$this->parts[$i]->getHeaders()}"));
             }
 
             $stream->addStream($this->createStreamFromString("\r\n\r\n"));
-            $stream->addStream($this->parts[$i]->getBody()->readAsStream());
+
+            if (($body = $this->parts[$i]->getBody()) !== null) {
+                $stream->addStream($body->readAsStream());
+            }
         }
 
         // Create the footer boundary
@@ -79,26 +87,32 @@ class MultipartBody extends StreamBody
      * Creates the default boundary in case one wasn't specified
      *
      * @return string The default boundary
+     * @throws RuntimeException Thrown if random bytes could not be generated
      */
     private function createDefaultBoundary() : string
     {
-        // The following creates a UUID v4
-        $string = \random_bytes(16);
-        $string[6] = \chr(\ord($string[6]) & 0x0f | 0x40);
-        $string[8] = \chr(\ord($string[8]) & 0x3f | 0x80);
+        try {
+            // The following creates a UUID v4
+            $string = \random_bytes(16);
+            $string[6] = \chr(\ord($string[6]) & 0x0f | 0x40);
+            $string[8] = \chr(\ord($string[8]) & 0x3f | 0x80);
 
-        return \vsprintf('%s%s-%s-%s-%s-%s%s%s', \str_split(\bin2hex($string), 4));
+            return \vsprintf('%s%s-%s-%s-%s-%s%s%s', \str_split(\bin2hex($string), 4));
+        } catch (Exception $ex) {
+            throw new RuntimeException('Failed to generate random bytes', 0, $ex);
+        }
     }
 
     /**
      * Creates a stream from a string
      *
      * @param string $string The string to create a stream for
-     * @return string The stream
+     * @return Stream The stream
+     * @throws RuntimeException Thrown if the stream could not be written to
      */
     private function createStreamFromString(string $string) : Stream
     {
-        $stream = new Stream(fopen('php://temp', 'r+'));
+        $stream = new Stream(fopen('php://temp', 'r+b'));
         $stream->write($string);
         $stream->rewind();
 

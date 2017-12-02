@@ -15,6 +15,7 @@ use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
 use Opulence\IO\Streams\Stream;
 use Opulence\Net\Uri;
+use RuntimeException;
 
 /**
  * Defines the factory that creates requests
@@ -45,7 +46,7 @@ class RequestFactory
     private static $headersToUrlDecode = ['HTTP_COOKIE' => true];
     /** @var array The list of trusted proxy IP addresses */
     protected $trustedProxyIPAddresses = [];
-    /** @var array The mapping of header names to trusted header names*/
+    /** @var array The mapping of header names to trusted header names */
     protected $trustedHeaderNames = [];
 
     /**
@@ -63,6 +64,8 @@ class RequestFactory
      *
      * @param array $server The server super global
      * @return IHttpRequestMessage The created request message
+     * @throws InvalidArgumentException Thrown if any of the headers were in an invalid format
+     * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
     public function createRequestFromGlobals(array $server) : IHttpRequestMessage
     {
@@ -75,7 +78,7 @@ class RequestFactory
 
         $uri = $this->createUriFromGlobals($server);
         $headers = $this->createHeadersFromGlobals($server);
-        $body = new StreamBody(new Stream(fopen('php://input', 'r')));
+        $body = new StreamBody(new Stream(fopen('php://input', 'rb')));
         $properties = $this->createProperties($server);
 
         return new Request($method, $uri, $headers, $body, $properties);
@@ -86,6 +89,8 @@ class RequestFactory
      *
      * @param array $server The global server array
      * @return HttpHeaders The request headers
+     * @throws InvalidArgumentException Thrown if any of the headers were in an invalid format
+     * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
     protected function createHeadersFromGlobals(array $server) : HttpHeaders
     {
@@ -111,6 +116,7 @@ class RequestFactory
      *
      * @param array $server The global server array
      * @return IDictionary The list of properties
+     * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
     protected function createProperties(array $server) : IDictionary
     {
@@ -136,7 +142,7 @@ class RequestFactory
         if ($this->isUsingTrustedProxy($server) && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']])) {
             $protoString = $server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']];
             $protoArray = explode(',', $protoString);
-            $isSecure = count($protoArray) > 0 && in_array(strtolower($protoArray[0]), ['https', 'ssl', 'on']);
+            $isSecure = \count($protoArray) > 0 && \in_array(strtolower($protoArray[0]), ['https', 'ssl', 'on'], true);
         } else {
             $isSecure = isset($server['HTTPS']) && $server['HTTPS'] !== 'off';
         }
@@ -194,7 +200,7 @@ class RequestFactory
         $uriString = "$scheme://";
 
         if ($user !== null) {
-            $uriString .= "$user:" . ($password ?? '') .'@';
+            $uriString .= "$user:" . ($password ?? '') . '@';
         }
 
         $uriString .= "{$host}" . ($port === null ? '' : ":$port") . "{$path}?{$queryString}";
@@ -232,7 +238,7 @@ class RequestFactory
             $ipAddresses[] = $serverRemoteAddress;
         }
 
-        $fallbackIPAddresses = count($ipAddresses) === 0 ? [] : [$ipAddresses[0]];
+        $fallbackIPAddresses = \count($ipAddresses) === 0 ? [] : [$ipAddresses[0]];
 
         foreach ($ipAddresses as $index => $ipAddress) {
             // Check for valid IP address
@@ -241,12 +247,12 @@ class RequestFactory
             }
 
             // Don't accept trusted proxies
-            if (in_array($ipAddress, $this->trustedProxyIPAddresses)) {
+            if (\in_array($ipAddress, $this->trustedProxyIPAddresses, true)) {
                 unset($ipAddresses[$index]);
             }
         }
 
-        $clientIPAddresses = count($ipAddresses) === 0 ? $fallbackIPAddresses : array_reverse($ipAddresses);
+        $clientIPAddresses = \count($ipAddresses) === 0 ? $fallbackIPAddresses : array_reverse($ipAddresses);
 
         return $clientIPAddresses[0] ?? null;
     }
@@ -259,6 +265,6 @@ class RequestFactory
      */
     protected function isUsingTrustedProxy(array $server) : bool
     {
-        return in_array($server['REMOTE_ADDR'] ?? '', $this->trustedProxyIPAddresses);
+        return \in_array($server['REMOTE_ADDR'] ?? '', $this->trustedProxyIPAddresses, true);
     }
 }

@@ -13,6 +13,7 @@ namespace Opulence\Net\Http\Formatting;
 use DateTime;
 use Opulence\Net\Http\Cookie;
 use Opulence\Net\Http\HttpHeaders;
+use RuntimeException;
 
 /**
  * Defines the response header formatter
@@ -32,6 +33,7 @@ class ResponseHeaderFormatter extends HttpHeaderParser
      * @param bool $isSecure Whether or not the cookie to be deleted was HTTPS
      * @param bool $isHttpOnly Whether or not the cookie to be deleted was HTTP-only
      * @param string|null $sameSite The same-site setting to use if set, otherwise null
+     * @throws RuntimeException Thrown if the set cookie header's hash key could not be calculated
      */
     public function deleteCookie(
         HttpHeaders $headers,
@@ -75,6 +77,7 @@ class ResponseHeaderFormatter extends HttpHeaderParser
      *
      * @param HttpHeaders $headers The headers to set the cookie in
      * @param Cookie $cookie The cookie to set
+     * @throws RuntimeException Thrown if the set cookie header's hash key could not be calculated
      */
     public function setCookie(HttpHeaders $headers, Cookie $cookie) : void
     {
@@ -86,6 +89,7 @@ class ResponseHeaderFormatter extends HttpHeaderParser
      *
      * @param HttpHeaders $headers The headers to set the cookies in
      * @param Cookie[] $cookies The cookies to set
+     * @throws RuntimeException Thrown if the set cookie header's hash key could not be calculated
      */
     public function setCookies(HttpHeaders $headers, array $cookies) : void
     {

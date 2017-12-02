@@ -11,6 +11,7 @@
 namespace Opulence\Net\Http\Formatting;
 
 use finfo;
+use InvalidArgumentException;
 use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
 use Opulence\Collections\KeyValuePair;
@@ -34,7 +35,7 @@ class HttpBodyParser
     /**
      * Gets the MIME type of the body
      *
-     * @param IHttpBody The body whose MIME type we want
+     * @param IHttpBody $body The body whose MIME type we want
      * @return string The mime type
      * @throws RuntimeException Thrown if the MIME type could not be determined
      */
@@ -119,7 +120,8 @@ class HttpBodyParser
      * @param IHttpBody|null $body The body to parse
      * @param string $boundary The boundary that separates the multipart body parts
      * @return MultipartBody|null The multipart body if it could be read as a multipart body, otherwise null
-     * @throws InvalidArgumentException Thrown if the body is not a valid multipart body
+     * @throws InvalidArgumentException Thrown if the body parts were invalid
+     * @throws RuntimeException Thrown if the headers' hash keys could not be calculated
      */
     public function readAsMultipart(?IHttpBody $body, string $boundary) : ?MultipartBody
     {
@@ -134,10 +136,10 @@ class HttpBodyParser
         $parsedBodyParts = [];
 
         foreach ($rawBodyParts as $rawBodyPart) {
-            $headerStartIndex = strlen("\r\n");
-            $headerEndIndex = strpos($rawBodyPart, "\r\n\r\n");
-            $bodyStartIndex = $headerEndIndex + strlen("\r\n\r\n");
-            $bodyEndIndex = strlen($rawBodyPart) - strlen("\r\n");
+            $headerStartIndex = \strlen("\r\n");
+            $headerEndIndex = \strpos($rawBodyPart, "\r\n\r\n");
+            $bodyStartIndex = $headerEndIndex + \strlen("\r\n\r\n");
+            $bodyEndIndex = \strlen($rawBodyPart) - \strlen("\r\n");
             $rawHeaders = explode("\r\n", substr($rawBodyPart, $headerStartIndex, $headerEndIndex - $headerStartIndex));
             $parsedHeaders = new HttpHeaders();
 

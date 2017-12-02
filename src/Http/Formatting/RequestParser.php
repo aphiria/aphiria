@@ -15,7 +15,9 @@ use Opulence\Collections\IDictionary;
 use Opulence\Collections\IImmutableDictionary;
 use Opulence\Net\Formatting\UriParser;
 use Opulence\Net\Http\IHttpRequestMessage;
+use Opulence\Net\Http\MultipartBody;
 use Opulence\Net\Http\MultipartBodyPart;
+use RuntimeException;
 
 /**
  * Defines the HTTP request message parser
@@ -25,11 +27,11 @@ class RequestParser
     /** @const The name of the request property that stores the client IP address */
     private const CLIENT_IP_ADDRESS_PROPERTY = 'CLIENT_IP_ADDRESS';
     /** @var RequestHeaderParser The header parser to use */
-    private $headerParser = null;
+    private $headerParser;
     /** @var HttpBodyParser The body parser to use */
-    private $bodyParser = null;
+    private $bodyParser;
     /** @var UriParser The URI parser to use */
-    private $uriParser = null;
+    private $uriParser;
 
     /**
      * @param RequestHeaderParser|null $headerParser The header parser to use, or null if using the default parser
@@ -84,6 +86,7 @@ class RequestParser
      *
      * @param IHttpRequestMessage $request The request to parse
      * @return bool True if the message has a JSON content type, otherwise false
+     * @throws RuntimeException Thrown if the content type header's hash key could not be calculated
      */
     public function isJson(IHttpRequestMessage $request) : bool
     {
@@ -95,6 +98,7 @@ class RequestParser
      *
      * @param IHttpRequestMessage $request The request to parse
      * @return bool True if the request is a multipart message, otherwise false
+     * @throws RuntimeException Thrown if the content type header's hash key could not be calculated
      */
     public function isMultipart(IHttpRequestMessage $request) : bool
     {
@@ -169,6 +173,7 @@ class RequestParser
      * @param IHttpRequestMessage|MultipartBodyPart $request The request or multipart body part to parse
      * @return MultipartBody|null The multipart body if it was set, otherwise null
      * @throws InvalidArgumentException Thrown if the request is not a multipart request
+     * @throws RuntimeException Thrown if the headers' hash keys could not be calculated
      */
     public function readAsMultipart($request) : ?MultipartBody
     {
@@ -180,7 +185,8 @@ class RequestParser
 
         $boundary = null;
 
-        if (!$this->headerParser->parseParameters($request->getHeaders(), 'Content-Type')->tryGet('boundary', $boundary)) {
+        if (!$this->headerParser->parseParameters($request->getHeaders(), 'Content-Type')->tryGet('boundary',
+            $boundary)) {
             throw new InvalidArgumentException('"boundary" is missing in Content-Type header');
         }
 

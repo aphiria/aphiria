@@ -37,7 +37,7 @@ class ResponseWriterTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->outputStream = new Stream(fopen('php://temp', 'r+'));
+        $this->outputStream = new Stream(fopen('php://temp', 'r+b'));
         $this->writer = new ResponseWriter($this->outputStream);
         $this->headers = new HttpHeaders();
         $this->body = $this->createMock(IHttpBody::class);
