@@ -285,7 +285,7 @@ echo $contentTypeValues->get('charset'); // "utf-8"
 
 <h4 id="serializing-requests">Serializing Requests</h4>
 
-You can serialize a request per <a href="https://tools.ietf.org/html/rfc7230" target="_blank">RFC 7230</a> by casting it to a string:
+You can serialize a request per <a href="https://tools.ietf.org/html/rfc7230#section-3" target="_blank">RFC 7230</a> by casting it to a string:
 
 ```php
 echo (string)$request;
@@ -441,7 +441,7 @@ $outputStream = new Stream(fopen('path/to/output', 'w'));
 
 <h4 id="serializing-responses">Serializing Responses</h4>
 
-Opulence can serialize responses per <a href="https://tools.ietf.org/html/rfc7230" target="_blank">RFC 7230</a>:
+Opulence can serialize responses per <a href="https://tools.ietf.org/html/rfc7230#section-3" target="_blank">RFC 7230</a>:
 
 ```php
 echo (string)$response;
