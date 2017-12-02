@@ -245,7 +245,7 @@ $request = new Request(
 
 <h4 id="getting-request-cookies">Getting Cookies</h4>
 
-Opulence has a helper to grab cookies from request headers:
+Opulence has a helper to grab cookies from request headers as an [immutable dictionary](collections#immutable-hash-tables):
 
 ```php
 use Opulence\Net\Http\Formatting\RequestParser;
@@ -253,8 +253,6 @@ use Opulence\Net\Http\Formatting\RequestParser;
 $cookies = (new RequestParser)->parseCookies($request);
 $cookies->get('userid');
 ```
-
-`RequestParser::parseCookies()` returns an [immutable dictionary](collections#immutable-hash-tables).
 
 <h4 id="getting-client-ip-address">Getting Client IP Address</h4>
 
@@ -266,7 +264,7 @@ use Opulence\Net\Http\Formatting\RequestParser;
 $clientIPAddress = (new RequestParser)->getClientIPAddress($request);
 ```
 
-This will take into consideration any [trusted proxy header values](#trusted-proxies) when determining the original client IP address.
+> **Note:** This will take into consideration any [trusted proxy header values](#trusted-proxies) when determining the original client IP address.
 
 <h4 id="header-parameters">Header Parameters</h4>
 
@@ -340,13 +338,17 @@ $response = new Response(404);
 $response->setStatusCode(404);
 ```
 
-By default, headers will be set to an empty [hash table](collections#hash-tables), and can be accessed via `Response::getHeaders()`:
+<h5 id="response-headers">Response Headers</h5>
+
+You can set response [headers](#http-headers) via `Response::getHeaders()`:
 
 ```php
 $response->getHeaders()->add('Content-Type', 'application/json');
 ```
 
-You can pass the body via the constructor or via `Response::setBody()`:
+<h5 id="response-bodies">Response Bodies</h5>
+
+You can pass the [body](#http-bodies) via the response constructor or via `Response::setBody()`:
 
 ```php
 $response = new Response(200, null, new StringBody('foo'));
