@@ -8,7 +8,7 @@
     1. [Creating Requests](#creating-requests)
     2. [Getting POST Data](#getting-post-data)
     3. [Getting Query String Data](#getting-query-string-data)
-    4. [JSON Request](#json-requests)
+    4. [JSON Requests](#json-requests)
     5. [Multipart Requests](#multipart-requests)
     6. [Getting Cookies](#getting-request-cookies)
     7. [Getting Client IP Address](#getting-client-ip-address)
@@ -383,6 +383,9 @@ This will set the contents of the response, as well as the appropriate `Content-
 You can also create a redirect response:
 
 ```php
+use Opulence\Net\Http\Formatting\ResponseFormatter;
+use Opulence\Net\Http\Response;
+
 $response = new Response();
 (new ResponseFormatter)->redirectToUri($response, 'http://example.com');
 ```
