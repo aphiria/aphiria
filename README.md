@@ -16,9 +16,11 @@
     9. [Serializing Requests](#serializing-requests)
 3. [Responses](#responses)
     1. [Creating Responses](#creating-responses)
-    2. [Setting Cookies](#setting-response-cookies)
-    3. [Writing Responses](#writing-responses)
-    4. [Serializing Responses](#serializing-responses)
+    2. [JSON Responses](#json-responses)
+    3. [Redirect Responses](#redirect-responses)
+    4. [Setting Cookies](#setting-response-cookies)
+    5. [Writing Responses](#writing-responses)
+    6. [Serializing Responses](#serializing-responses)
 4. [HTTP Headers](#http-headers)
 5. [HTTP Bodies](#http-bodies)
     1. [String Bodies](#string-bodies)
@@ -362,9 +364,9 @@ $response = new Response(200, null, new StringBody('foo'));
 $response->setBody(new StringBody('foo'));
 ```
 
-<h5 id="response-formatters">Response Formatters</h5>
+<h4 id="json-responses">JSON Responses</h4>
 
-Opulence provides a few easy ways to create common responses.  For example, to create a JSON response, use `ResponseFormatter`:
+Opulence provides an easy way to create common responses.  For example, to create a JSON response, use `ResponseFormatter`:
 
 ```php
 use Opulence\Net\Http\Formatting\ResponseFormatter;
@@ -375,6 +377,8 @@ $response = new Response();
 ```
 
 This will set the contents of the response, as well as the appropriate `Content-Type` headers.
+
+<h4 id="redirect-responses">Redirect Responses</h4>
 
 You can also create a redirect response:
 
