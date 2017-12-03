@@ -124,7 +124,7 @@ $request = $factory->createRequestFromGlobals($_SERVER);
 
 <h4 id="getting-post-data">Getting POST Data</h4>
 
-In vanilla PHP, you can read URL-encoded form data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of form requests into a [dictionary](collections#hash-tables).
+In vanilla PHP, you can read URL-encoded form data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of form requests into a [dictionary](https://www.opulencephp.com/docs/1.1/collections#hash-tables).
 
 ```php
 use Opulence\Net\Http\Formatting\RequestParser;
@@ -136,7 +136,7 @@ echo $formInput->get('email'); // "foo@bar.com"
 
 <h4 id="getting-query-string-data">Getting Query String Data</h4>
 
-In vanilla PHP, query string data is read from the `$_GET` superglobal.  In Opulence, it's stored in the request's URI.  `Uri::getQueryString()` returns the raw query string - to return it as an [immutable dictionary](collections#immutable-hash-tables), use `RequestParser`:
+In vanilla PHP, query string data is read from the `$_GET` superglobal.  In Opulence, it's stored in the request's URI.  `Uri::getQueryString()` returns the raw query string - to return it as an [immutable dictionary](https://www.opulencephp.com/docs/1.1/collections#immutable-hash-tables), use `RequestParser`:
 
 ```php
 use Opulence\Net\Http\Formatting\RequestParser;
@@ -253,7 +253,7 @@ $request = new Request(
 
 <h4 id="getting-request-cookies">Getting Cookies</h4>
 
-Opulence has a helper to grab cookies from request headers as an [immutable dictionary](collections#immutable-hash-tables):
+Opulence has a helper to grab cookies from request headers as an [immutable dictionary](https://www.opulencephp.com/docs/1.1/collections#immutable-hash-tables):
 
 ```php
 use Opulence\Net\Http\Formatting\RequestParser;
@@ -456,7 +456,7 @@ echo (string)$response;
 
 <h2 id="http-headers">HTTP Headers</h2>
 
-Headers provide metadata about the HTTP message.  In Opulence, they're implemented by `Opulence\Net\Http\HttpHeaders`, which extends  [`Opulence\Collections\HashTable`](collections#hash-tables).  On top of the methods provided by `HashTable`, they also provide the following methods:
+Headers provide metadata about the HTTP message.  In Opulence, they're implemented by `Opulence\Net\Http\HttpHeaders`, which extends  [`Opulence\Collections\HashTable`](https://www.opulencephp.com/docs/1.1/collections#hash-tables).  On top of the methods provided by `HashTable`, they also provide the following methods:
 
 * `getFirst(string $name) : mixed`
 * `tryGetFirst(string $name, &$value) : bool`
