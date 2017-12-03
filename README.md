@@ -5,7 +5,8 @@
 ## Table of Contents
 1. [Introduction](#introduction)
     1. [Requirements](#requirements)
-    2. [Why Not Use PSR-7?](#why-not-use-psr-7)
+    2. [Installation](#installation)
+    3. [Why Not Use PSR-7?](#why-not-use-psr-7)
 2. [Requests](#requests)
     1. [Creating Requests](#creating-requests)
     2. [Getting POST Data](#getting-post-data)
@@ -44,6 +45,10 @@ enable_post_data_reading = 0
 This will disable automatically parsing POST data into `$_POST` and uploaded files into `$_FILES`.
 
 > **Note:** If you're developing any non-Opulence applications on your web server, use <a href="http://php.net/manual/en/configuration.file.per-user.php" target="_blank">_.user.ini_</a> to limit this setting to only your Opulence application.  Alternatively, you can add `php_value enable_post_data_reading 0` to an _.htaccess_ file or to your _httpd.conf_.
+
+<h4 id="installation">Installation</h4>
+
+To install the Net library, simply add `opulence/net: 1.0.*` to your _composer.json_.
 
 <h4 id="why-not-use-psr-7">Why Not Use PSR-7?</h4>
 
