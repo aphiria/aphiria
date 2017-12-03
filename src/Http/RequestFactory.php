@@ -139,7 +139,9 @@ class RequestFactory
      */
     protected function createUriFromGlobals(array $server) : Uri
     {
-        if ($this->isUsingTrustedProxy($server) && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']])) {
+        $isUsingTrustedProxy = $this->isUsingTrustedProxy($server);
+
+        if ($isUsingTrustedProxy && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']])) {
             $protoString = $server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']];
             $protoArray = explode(',', $protoString);
             $isSecure = \count($protoArray) > 0 && \in_array(strtolower($protoArray[0]), ['https', 'ssl', 'on'], true);
@@ -153,7 +155,7 @@ class RequestFactory
         $password = $server['PHP_AUTH_PW'] ?? null;
         $port = null;
 
-        if ($this->isUsingTrustedProxy($server)) {
+        if ($isUsingTrustedProxy) {
             if (isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PORT']])) {
                 $port = (int)$server[$this->trustedHeaderNames['HTTP_CLIENT_PORT']];
             } elseif (
@@ -168,10 +170,7 @@ class RequestFactory
             $port = isset($server['SERVER_PORT']) ? (int)$server['SERVER_PORT'] : null;
         }
 
-        if (
-            $this->isUsingTrustedProxy($server) &&
-            isset($server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']])
-        ) {
+        if ($isUsingTrustedProxy && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']])) {
             $hostWithPort = explode(',', $server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']]);
             $hostWithPort = trim(end($hostWithPort));
         } else {

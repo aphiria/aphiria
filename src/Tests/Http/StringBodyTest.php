@@ -44,7 +44,6 @@ class StringBodyTest extends \PHPUnit\Framework\TestCase
     {
         $body = new StringBody('foo');
         $stream = $body->readAsStream();
-        $stream->rewind();
         $this->assertEquals('foo', $stream->readToEnd());
     }
 
