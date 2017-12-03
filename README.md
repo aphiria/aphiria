@@ -100,14 +100,14 @@ $request = new Request('GET', new Uri('https://example.com'), null, $body);
 $request->setBody($body);
 ```
 
-<h5 id="creating-request-from-globals">Creating a Request From Globals</h5>
+<h5 id="creating-request-from-super-globals">Creating a Request From Superglobals</h5>
 
 PHP has superglobal arrays that store information about the requests.  They're a mess, architecturally-speaking.  Opulence attempts to insulate developers from the nastiness of superglobals by giving you a simple method to create requests and responses.  To create a request, use `RequestFactory`:
 
 ```php
 use Opulence\Net\Http\RequestFactory;
 
-$request = (new RequestFactory)->createRequestFromGlobals($_SERVER);
+$request = (new RequestFactory)->createRequestFromSuperglobals($_SERVER);
 ```
 
 Opulence reads all the information it needs from the `$_SERVER` superglobal - it doesn't need the others.

@@ -23,7 +23,7 @@ use RuntimeException;
 class RequestFactory
 {
     /** @const The name of the request property that stores the client IP address */
-    private const CLIENT_IP_ADDRESS_PROPERTY = 'CLIENT_IP_ADDRESS';
+    private const CLIENT_IP_ADDRESS_PROPERTY_NAME = 'CLIENT_IP_ADDRESS';
     /** @var array The list of HTTP request headers that don't begin with "HTTP_" */
     private static $specialCaseHeaders = [
         'AUTH_TYPE' => true,
@@ -60,14 +60,14 @@ class RequestFactory
     }
 
     /**
-     * Creates a request message from PHP globals
+     * Creates a request message from PHP superglobals
      *
-     * @param array $server The server super global
+     * @param array $server The server superglobal
      * @return IHttpRequestMessage The created request message
      * @throws InvalidArgumentException Thrown if any of the headers were in an invalid format
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
-    public function createRequestFromGlobals(array $server) : IHttpRequestMessage
+    public function createRequestFromSuperglobals(array $server) : IHttpRequestMessage
     {
         $method = $server['REQUEST_METHOD'] ?? 'GET';
 
@@ -124,7 +124,7 @@ class RequestFactory
 
         // Set the client IP address as a property
         if (($clientIPAddress = $this->getClientIPAddress($server)) !== null) {
-            $properties->add(self::CLIENT_IP_ADDRESS_PROPERTY, $clientIPAddress);
+            $properties->add(self::CLIENT_IP_ADDRESS_PROPERTY_NAME, $clientIPAddress);
         }
 
         return $properties;
