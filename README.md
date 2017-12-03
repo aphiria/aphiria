@@ -1,5 +1,7 @@
 # Net
 
+> **Note:** This library is still in development.
+
 ## Table of Contents
 1. [Introduction](#introduction)
     1. [Requirements](#requirements)
@@ -45,7 +47,7 @@ This will disable automatically parsing POST data into `$_POST` and uploaded fil
 
 <h4 id="why-not-use-psr-7">Why Not Use PSR-7?</h4>
 
-PSR-7 was an attempt to standardize the models for HTTP components.  Most frameworks have been rolling their own wrappers, which weren't interopible.  Although a noble attempt, PSR-7 had many contested features:
+PSR-7 was an attempt to standardize frameworks' HTTP components to be interopbile, but it contained many contested features:
 
 1. Request and response immutability
     * This has often been considered cumbersome, bug-prone, and a bad use-case for immutability
