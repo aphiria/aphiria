@@ -22,13 +22,16 @@
       "Opulence\\Net\\": "src"
     },
     "exclude-from-classmap": [
-        "**/Tests/"
+      "**/Tests/"
     ]
   },
   "require": {
     "php": "^7.1",
     "opulence/collections": "1.1.*@dev",
     "opulence/io": "1.1.*@dev"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~6.5"
   },
   "extra": {
     "branch-alias": {
