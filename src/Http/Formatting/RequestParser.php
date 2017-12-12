@@ -66,11 +66,11 @@ class RequestParser
      * Gets the MIME type of the body
      *
      * @param IHttpRequestMessage|MultipartBodyPart $request The request or multipart body part to parse
-     * @return string The mime type
+     * @return string|null The mime type if one is set, otherwise null
      * @throws InvalidArgumentException Thrown if the request is neither a request nor a multipart body part
      * @throws RuntimeException Thrown if the MIME type could not be determined
      */
-    public function getMimeType($request) : string
+    public function getMimeType($request) : ?string
     {
         if (!$request instanceof IHttpRequestMessage && !$request instanceof MultipartBodyPart) {
             throw new InvalidArgumentException(

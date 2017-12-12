@@ -36,11 +36,15 @@ class HttpBodyParser
      * Gets the MIME type of the body
      *
      * @param IHttpBody $body The body whose MIME type we want
-     * @return string The mime type
+     * @return string|null The mime type if one is set, otherwise null
      * @throws RuntimeException Thrown if the MIME type could not be determined
      */
-    public function getMimeType(IHttpBody $body) : string
+    public function getMimeType(?IHttpBody $body) : ?string
     {
+        if ($body === null) {
+            return null;
+        }
+
         $parsedMimeTypeCacheKey = spl_object_hash($body);
 
         if (isset($this->parsedMimeTypeCache[$parsedMimeTypeCacheKey])) {

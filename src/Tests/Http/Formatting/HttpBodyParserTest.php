@@ -46,6 +46,14 @@ class HttpBodyParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that getting the mime type of a null body returns null
+     */
+    public function testGettingMimeTypeOfNullBodyReturnsNull() : void
+    {
+        $this->assertNull($this->parser->getMimeType(null));
+    }
+
+    /**
      * Tests that getting the mime type returns the correct mime type
      */
     public function testGettingMimeTypeReturnsCorrectMimeType() : void
