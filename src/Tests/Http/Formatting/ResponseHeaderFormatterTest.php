@@ -115,6 +115,21 @@ class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that deleting cookies appends to the Set-Cookie header
+     */
+    public function testDeletingCookiesAppendsToSetCookieHeader() : void
+    {
+        $this->formatter->deleteCookie($this->headers, 'foo');
+        $this->formatter->deleteCookie($this->headers, 'bar');
+        $expectedExpiration = DateTime::createFromFormat('U', 0)->format('D, d M Y H:i:s \G\M\T');
+        $expectedHeaders = [
+            "foo=; Expires=$expectedExpiration; Max-Age=0; HttpOnly",
+            "bar=; Expires=$expectedExpiration; Max-Age=0; HttpOnly"
+        ];
+        $this->assertEquals($expectedHeaders, $this->headers->get('Set-Cookie'));
+    }
+
+    /**
      * Tests that deleting a cookie sets the expiration to the epoch and the max-age to zero
      */
     public function testDeletingCookieSetsExpirationAndMaxAgeToEpochAndZero() : void

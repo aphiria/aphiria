@@ -69,7 +69,7 @@ class ResponseHeaderFormatter extends HttpHeaderParser
             $headerValue .= '; SameSite=' . urlencode($sameSite);
         }
 
-        $headers->add('Set-Cookie', $headerValue);
+        $headers->add('Set-Cookie', $headerValue, true);
     }
 
     /**
