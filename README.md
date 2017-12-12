@@ -126,7 +126,7 @@ If you're using a load balancer or some sort of proxy server, you'll need to add
 ```php
 // The client IP will be read from the "X-My-Proxy-Ip" header when using a trusted proxy
 $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_IP' => 'X-My-Proxy-Ip']);
-$request = $factory->createRequestFromGlobals($_SERVER);
+$request = $factory->createRequestFromSuperglobals($_SERVER);
 ```
 
 <h4 id="getting-post-data">Getting POST Data</h4>
@@ -201,12 +201,14 @@ Each `MultipartBodyPart` contains the following methods:
 
 <h5 id="saving-uploaded-files">Saving Uploaded Files</h5>
 
-To save a multipart body part to a file in a memory-efficient manner, read it as a stream and copy it to the destination path:
+To save a multipart body's parts to files in a memory-efficient manner, read each part as a stream and copy it to the destination path:
 
 ```php
-$bodyStream = $multipartBodyPart->getBody()->readAsStream();
-$bodyStream->rewind();
-$bodyStream->copyToStream(new Stream(fopen('path/to/copy/to', 'w')));
+foreach ($multipartBody->getParts() as $multipartBodyPart) {
+    $bodyStream = $multipartBodyPart->getBody()->readAsStream();
+    $bodyStream->rewind();
+    $bodyStream->copyToStream(new Stream(fopen('path/to/copy/to/' . uniqid(), 'w')));
+}
 ```
 
 <h5 id="getting-mime-type-of-body">Getting MIME Type of Body</h5>
