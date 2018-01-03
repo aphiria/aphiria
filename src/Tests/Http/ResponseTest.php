@@ -11,9 +11,9 @@
 namespace Opulence\Net\Tests\Http;
 
 use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\Response;
-use Opulence\Net\Http\ResponseStatusCodes;
 
 /**
  * Tests the response class
@@ -26,7 +26,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     public function testDefaultReasonPhraseIsSet() : void
     {
         $response = new Response(200);
-        $this->assertEquals(ResponseStatusCodes::getDefaultReasonPhrase(200), $response->getReasonPhrase());
+        $this->assertEquals(HttpStatusCodes::getDefaultReasonPhrase(200), $response->getReasonPhrase());
     }
 
     /**

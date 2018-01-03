@@ -10,19 +10,19 @@
 
 namespace Opulence\Net\Tests\Http;
 
-use Opulence\Net\Http\ResponseStatusCodes;
+use Opulence\Net\Http\HttpStatusCodes;
 
 /**
- * Tests the response status codes
+ * Tests the HTTP status codes
  */
-class ResponseStatusCodesTest extends \PHPUnit\Framework\TestCase
+class HttpStatusCodesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests that an existing status code returns the default status text
      */
     public function testExistingStatusCodeReturnsDefaultStatusText() : void
     {
-        $this->assertEquals('OK', ResponseStatusCodes::getDefaultReasonPhrase(200));
+        $this->assertEquals('OK', HttpStatusCodes::getDefaultReasonPhrase(200));
     }
 
     /**
@@ -30,6 +30,6 @@ class ResponseStatusCodesTest extends \PHPUnit\Framework\TestCase
      */
     public function testNonExistentStatusCodeReturnsNullStatusText() : void
     {
-        $this->assertNull(ResponseStatusCodes::getDefaultReasonPhrase(-1));
+        $this->assertNull(HttpStatusCodes::getDefaultReasonPhrase(-1));
     }
 }

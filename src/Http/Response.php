@@ -39,7 +39,7 @@ class Response implements IHttpResponseMessage
         string $protocolVersion = '1.1'
     ) {
         $this->statusCode = $statusCode;
-        $this->reasonPhrase = ResponseStatusCodes::getDefaultReasonPhrase($this->statusCode);
+        $this->reasonPhrase = HttpStatusCodes::getDefaultReasonPhrase($this->statusCode);
         $this->headers = $headers ?? new HttpHeaders();
         $this->body = $body;
         $this->protocolVersion = $protocolVersion;
@@ -125,6 +125,6 @@ class Response implements IHttpResponseMessage
     public function setStatusCode(int $statusCode, ?string $reasonPhrase = null) : void
     {
         $this->statusCode = $statusCode;
-        $this->reasonPhrase = $reasonPhrase ?? ResponseStatusCodes::getDefaultReasonPhrase($this->statusCode);
+        $this->reasonPhrase = $reasonPhrase ?? HttpStatusCodes::getDefaultReasonPhrase($this->statusCode);
     }
 }

@@ -95,4 +95,58 @@ class HttpStatusCodes
     public const HTTP_GATEWAY_TIMEOUT = 504;
     /** @const The HTTP version in the request isn't supported */
     public const HTTP_HTTP_VERSION_NOT_SUPPORTED = 505;
+    /** @const @var array Maps HTTP status codes to their default reason phrases */
+    private static $defaultReasonPhrases = [
+        self::HTTP_CONTINUE => 'Continue',
+        self::HTTP_SWITCHING_PROTOCOL => 'Switching Protocol',
+        self::HTTP_OK => 'OK',
+        self::HTTP_CREATED => 'Created',
+        self::HTTP_ACCEPTED => 'Accepted',
+        self::HTTP_NON_AUTHORITATIVE_INFORMATION => 'Non-Authoritative Information',
+        self::HTTP_NO_CONTENT => 'No Content',
+        self::HTTP_RESET_CONTENT => 'Reset Content',
+        self::HTTP_PARTIAL_CONTENT => 'Partial Content',
+        self::HTTP_MULTIPLE_CHOICE => 'Multiple Choice',
+        self::HTTP_MOVED_PERMANENTLY => 'Moved Permanently',
+        self::HTTP_FOUND => 'Found',
+        self::HTTP_SEE_OTHER => 'See Other',
+        self::HTTP_NOT_MODIFIED => 'Not Modified',
+        self::HTTP_USE_PROXY => 'Use Proxy',
+        self::HTTP_TEMPORARY_REDIRECT => 'Temporary Redirect',
+        self::HTTP_PERMANENT_REDIRECT => 'Permanent Redirect',
+        self::HTTP_BAD_REQUEST => 'Bad Request',
+        self::HTTP_UNAUTHORIZED => 'Unauthorized',
+        self::HTTP_PAYMENT_REQUIRED => 'Payment Required',
+        self::HTTP_FORBIDDEN => 'Forbidden',
+        self::HTTP_NOT_FOUND => 'Not Found',
+        self::HTTP_METHOD_NOT_ALLOWED => 'Method Not Allowed',
+        self::HTTP_NOT_ACCEPTABLE => 'Not Acceptable',
+        self::HTTP_PROXY_AUTHENTICATION_REQUIRED => 'Proxy Authentication Required',
+        self::HTTP_REQUEST_TIMEOUT => 'Request Timeout',
+        self::HTTP_CONFLICT => 'Conflict',
+        self::HTTP_GONE => 'Gone',
+        self::HTTP_LENGTH_REQUIRED => 'Length Required',
+        self::HTTP_PRECONDITION_FAILED => 'Precondition Failed',
+        self::HTTP_REQUEST_ENTITY_TOO_LARGE => 'Request Entity Too Large',
+        self::HTTP_UNSUPPORTED_MEDIA_TYPE => 'Unsupported Media Type',
+        self::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE => 'Requested Range Not Satisfiable',
+        self::HTTP_EXPECTATION_FAILED => 'Expectation Failed',
+        self::HTTP_INTERNAL_SERVER_ERROR => 'Internal Server Error',
+        self::HTTP_NOT_IMPLEMENTED => 'Not Implemented',
+        self::HTTP_BAD_GATEWAY => 'Bad Gateway',
+        self::HTTP_SERVICE_UNAVAILABLE => 'Service Unavailable',
+        self::HTTP_GATEWAY_TIMEOUT => 'Gateway Timeout',
+        self::HTTP_HTTP_VERSION_NOT_SUPPORTED => 'HTTP Version Not Supported'
+    ];
+
+    /**
+     * Gets the default reason phrase for a status code
+     *
+     * @param int $statusCode The status code whose reason phrase we want
+     * @return string|null The default reason code if one exists, otherwise null
+     */
+    public static function getDefaultReasonPhrase(int $statusCode) : ?string
+    {
+        return self::$defaultReasonPhrases[$statusCode] ?? null;
+    }
 }
