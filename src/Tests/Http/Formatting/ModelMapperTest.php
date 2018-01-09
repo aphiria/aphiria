@@ -10,7 +10,9 @@
 
 namespace Opulence\Net\Tests\Http\Formatting;
 
+use InvalidArgumentException;
 use Opulence\Net\Http\Formatting\ModelMapper;
+use Opulence\Net\Http\Formatting\ModelMapperRegistry;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
 
 /**
@@ -20,13 +22,25 @@ class ModelMapperTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ModelMapper The model mapper to use in tests */
     private $modelMapper;
+    /** @var ModelMapperRegistry The registry of mappers to use in tests */
+    private $registry;
 
     /**
      * Sets up the tests
      */
     public function setUp() : void
     {
-        $this->modelMapper = new ModelMapper();
+        $this->registry = new ModelMapperRegistry();
+        $this->modelMapper = new ModelMapper($this->registry);
+    }
+
+    /**
+     * Tests that converting from a hash for a model without a mapper throws an exception
+     */
+    public function testConvertFromHashForModelWithoutMapperThrowsException() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->modelMapper->convertFromHash('foo', []);
     }
 
     /**
@@ -40,10 +54,19 @@ class ModelMapperTest extends \PHPUnit\Framework\TestCase
         $fromHasher = function (array $hash, ModelMapper $modelMapper) {
             return new User((int)$hash['id'], $hash['email']);
         };
-        $this->modelMapper->registerMapper(User::class, $toHashMapper, $fromHasher);
+        $this->registry->registerMappers(User::class, $toHashMapper, $fromHasher);
         $hash = ['id' => 123, 'email' => 'foo@bar.com'];
         $expectedUser = new User(123, 'foo@bar.com');
         $this->assertEquals($expectedUser, $this->modelMapper->convertFromHash(User::class, $hash));
+    }
+
+    /**
+     * Tests that converting to a hash for a model without a mapper throws an exception
+     */
+    public function testConvertToHashForModelWithoutMapperThrowsException() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->modelMapper->convertToHash(new User(123, 'foo@bar.com'));
     }
 
     /**
@@ -57,7 +80,7 @@ class ModelMapperTest extends \PHPUnit\Framework\TestCase
         $fromHasher = function (array $hash, ModelMapper $modelMapper) {
             return new User((int)$hash['id'], $hash['email']);
         };
-        $this->modelMapper->registerMapper(User::class, $toHashMapper, $fromHasher);
+        $this->registry->registerMappers(User::class, $toHashMapper, $fromHasher);
         $user = new User(123, 'foo@bar.com');
         $this->assertEquals(['id' => 123, 'email' => 'foo@bar.com'], $this->modelMapper->convertToHash($user));
     }

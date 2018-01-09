@@ -17,8 +17,16 @@ use InvalidArgumentException;
  */
 class ModelMapper
 {
-    /** @var array The mapping of object types to to/from hash mappers */
-    private $registry = [];
+    /** @var ModelMapperRegistry The registry that contains mappers for models */
+    private $registry;
+
+    /**
+     * @param ModelMapperRegistry $registry The registry that contains mappers for models
+     */
+    public function __construct(ModelMapperRegistry $registry)
+    {
+        $this->registry = $registry;
+    }
 
     /**
      * Converts a hash to a model
@@ -30,11 +38,7 @@ class ModelMapper
      */
     public function convertFromHash(string $type, array $hash)
     {
-        if (!isset($this->registry[$type])) {
-            throw new InvalidArgumentException("No model mapper registered for type $type");
-        }
-
-        return $this->registry[$type][1]($hash, $this);
+        return $this->registry->getFromHashMapper($type)($hash, $this);
     }
 
     /**
@@ -46,24 +50,6 @@ class ModelMapper
      */
     public function convertToHash($object) : array
     {
-        $type = get_class($object);
-
-        if (!isset($this->registry[$type])) {
-            throw new InvalidArgumentException("No model mapper registered for type $type");
-        }
-
-        return $this->registry[$type][0]($object, $this);
-    }
-
-    /**
-     * Registers model mappers for a particular type
-     *
-     * @param string $type The type whose mappers we're registering
-     * @param callable $toHashMapper The hasher that converts a model to a hash (must accept the model and an instance of ModelMapper)
-     * @param callable $fromHashMapper The hasher that converts a hash to a model (must accept the hash and an instance of ModelMapper)
-     */
-    public function registerMapper(string $type, callable $toHashMapper, callable $fromHashMapper) : void
-    {
-        $this->registry[$type] = [$toHashMapper, $fromHashMapper];
+        return $this->registry->getToHashMapper(get_class($object))($object, $this);
     }
 }

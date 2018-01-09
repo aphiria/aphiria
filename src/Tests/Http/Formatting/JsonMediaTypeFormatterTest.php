@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\Formatting\JsonMediaTypeFormatter;
 use Opulence\Net\Http\Formatting\ModelMapper;
+use Opulence\Net\Http\Formatting\ModelMapperRegistry;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
 use RuntimeException;
 
@@ -32,8 +33,8 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp() : void
     {
-        $this->modelMapper = new ModelMapper();
-        $this->modelMapper->registerMapper(
+        $modelMapperRegistry = new ModelMapperRegistry();
+        $modelMapperRegistry->registerMappers(
             User::class,
             function (User $user, ModelMapper $modelMapper) {
                 return ['id' => $user->getId(), 'email' => $user->getEmail()];
@@ -42,6 +43,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
                 return new User((int)$hash['id'], $hash['email']);
             }
         );
+        $this->modelMapper = new ModelMapper($modelMapperRegistry);
         $this->formatter = new JsonMediaTypeFormatter($this->modelMapper);
     }
 
