@@ -10,12 +10,10 @@
 
 namespace Opulence\Net\Http\Formatting;
 
-use InvalidArgumentException;
-
 /**
  * Defines the model mapper
  */
-class ModelMapper
+class ModelMapper implements IModelMapper
 {
     /** @var ModelMapperRegistry The registry that contains mappers for models */
     private $registry;
@@ -29,12 +27,7 @@ class ModelMapper
     }
 
     /**
-     * Converts a hash to a model
-     *
-     * @param string $type The type to convert to
-     * @param array $hash The hash to convert
-     * @return object An instance of the input type
-     * @throws InvalidArgumentException Thrown if no model mapper exists for the input type
+     * @inheritdoc
      */
     public function convertFromHash(string $type, array $hash)
     {
@@ -42,11 +35,7 @@ class ModelMapper
     }
 
     /**
-     * Converts a model to a hash
-     *
-     * @param object $object The model to convert
-     * @return array The hash
-     * @throws InvalidArgumentException Thrown if no model mapper exists for the input model
+     * @inheritdoc
      */
     public function convertToHash($object) : array
     {
