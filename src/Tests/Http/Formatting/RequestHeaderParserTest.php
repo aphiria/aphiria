@@ -33,6 +33,38 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that parsing an Accept header with no scores returns values with default scores
+     */
+    public function testParsingAcceptHeaderWithNoScoresReturnsValuesWithDefaultScores() : void
+    {
+        $headers = new HttpHeaders();
+        $headers->add('Accept', 'text/html', true);
+        $headers->add('Accept', 'application/json', true);
+        $headerValues = $this->parser->parseAcceptParameters($headers);
+        $this->assertCount(2, $headerValues);
+        $this->assertEquals('text/html', $headerValues[0]->getFullMediaType());
+        $this->assertEquals(1.0, $headerValues[0]->getQuality());
+        $this->assertEquals('application/json', $headerValues[1]->getFullMediaType());
+        $this->assertEquals(1.0, $headerValues[1]->getQuality());
+    }
+
+    /**
+     * Tests that parsing an Accept header with scores returns values with those scores
+     */
+    public function testParsingAcceptHeaderWithScoresReturnsValuesWithThoseScores() : void
+    {
+        $headers = new HttpHeaders();
+        $headers->add('Accept', 'text/html; q=0.1', true);
+        $headers->add('Accept', 'application/json; q=0.5', true);
+        $headerValues = $this->parser->parseAcceptParameters($headers);
+        $this->assertCount(2, $headerValues);
+        $this->assertEquals('text/html', $headerValues[0]->getFullMediaType());
+        $this->assertEquals(0.1, $headerValues[0]->getQuality());
+        $this->assertEquals('application/json', $headerValues[1]->getFullMediaType());
+        $this->assertEquals(0.5, $headerValues[1]->getQuality());
+    }
+
+    /**
      * Tests that parsing cookies returns the correct values with multiple cookie values
      */
     public function testParsingCookiesReturnsCorrectValuesWithMultipleCookieValues() : void
@@ -49,5 +81,14 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     public function testParsingCookiesAndNotHavingCookieHeaderReturnsEmptyDictionary() : void
     {
         $this->assertEquals(0, $this->parser->parseCookies($this->headers)->count());
+    }
+
+    /**
+     * Tests that parsing an non-existent Accept header returns an empty array
+     */
+    public function testParsingNonExistentAcceptHeaderReturnsEmptyArray() : void
+    {
+        $headers = new HttpHeaders();
+        $this->assertEquals([], $this->parser->parseAcceptParameters($headers));
     }
 }

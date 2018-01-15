@@ -44,9 +44,9 @@ class MediaTypeHeaderRankerTest extends \PHPUnit\Framework\TestCase
     {
         // Order here is important - make sure this is in the exact wrong order to verify it's reordered
         $mediaTypeHeaders = [
-            new MediaTypeHeaderValue('text', '*'),
-            new MediaTypeHeaderValue('text', 'html'),
-            new MediaTypeHeaderValue('*', '*')
+            new MediaTypeHeaderValue('text/*'),
+            new MediaTypeHeaderValue('text/html'),
+            new MediaTypeHeaderValue('*/*')
         ];
         $actualRankedMediaTypeHeaders = $this->ranker->rankMediaTypeHeaders($mediaTypeHeaders);
         $this->assertCount(3, $actualRankedMediaTypeHeaders);
@@ -62,9 +62,9 @@ class MediaTypeHeaderRankerTest extends \PHPUnit\Framework\TestCase
     {
         // Order here is important - make sure this is in the exact wrong order to verify it's reordered
         $mediaTypeHeaders = [
-            new MediaTypeHeaderValue('text', 'xml', .5),
-            new MediaTypeHeaderValue('text', 'html', 1),
-            new MediaTypeHeaderValue('text', 'plain', .1)
+            new MediaTypeHeaderValue('text/xml', .5),
+            new MediaTypeHeaderValue('text/html', 1),
+            new MediaTypeHeaderValue('text/plain', .1)
         ];
         $actualRankedMediaTypeHeaders = $this->ranker->rankMediaTypeHeaders($mediaTypeHeaders);
         $this->assertCount(3, $actualRankedMediaTypeHeaders);
@@ -79,8 +79,8 @@ class MediaTypeHeaderRankerTest extends \PHPUnit\Framework\TestCase
     public function testRankingZeroQualityScoreTypesAreFilteredOut() : void
     {
         $mediaTypeHeaders = [
-            new MediaTypeHeaderValue('text', 'html', 1),
-            new MediaTypeHeaderValue('text', 'xml', 0)
+            new MediaTypeHeaderValue('text/html', 1),
+            new MediaTypeHeaderValue('text/xml', 0)
         ];
         $actualRankedMediaTypeHeaders = $this->ranker->rankMediaTypeHeaders($mediaTypeHeaders);
         $this->assertCount(1, $actualRankedMediaTypeHeaders);

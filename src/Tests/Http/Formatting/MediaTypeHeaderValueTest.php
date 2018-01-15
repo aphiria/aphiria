@@ -24,14 +24,14 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
     public function testExceptionThrownWithQualityScoreOutsideAcceptedRange() : void
     {
         try {
-            new MediaTypeHeaderValue('foo', 'bar', -1);
+            new MediaTypeHeaderValue('foo/bar', -1);
             $this->fail('Failed to throw exception for quality score less than 0');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
         }
 
         try {
-            new MediaTypeHeaderValue('foo', 'bar', 1.5);
+            new MediaTypeHeaderValue('foo/bar', 1.5);
             $this->fail('Failed to throw exception for quality score greater than 1');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
@@ -43,7 +43,7 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
      */
     public function testGettingQualityReturnsCorrectQuality() : void
     {
-        $value = new MediaTypeHeaderValue('foo', 'bar', .5);
+        $value = new MediaTypeHeaderValue('foo/bar', .5);
         $this->assertEquals(.5, $value->getQuality());
     }
 
@@ -52,7 +52,7 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
      */
     public function testGettingSubTypeReturnsCorrectSubtType() : void
     {
-        $value = new MediaTypeHeaderValue('foo', 'bar', 1);
+        $value = new MediaTypeHeaderValue('foo/bar', 1);
         $this->assertEquals('bar', $value->getSubType());
     }
 
@@ -61,8 +61,35 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
      */
     public function testGettingTypeReturnsCorrectType() : void
     {
-        $value = new MediaTypeHeaderValue('foo', 'bar', 1);
+        $value = new MediaTypeHeaderValue('foo/bar', 1);
         $this->assertEquals('foo', $value->getType());
+    }
+
+    /**
+     * Tests that an incorrectly formatted media type throws an exception
+     */
+    public function testIncorrectlyFormattedMediaTypeThrowsException() : void
+    {
+        try {
+            new MediaTypeHeaderValue('foo');
+            $this->fail('"foo" is in invalid media type');
+        } catch (InvalidArgumentException $ex) {
+            $this->assertTrue(true);
+        }
+
+        try {
+            new MediaTypeHeaderValue('foo/');
+            $this->fail('"foo/" is in invalid media type');
+        } catch (InvalidArgumentException $ex) {
+            $this->assertTrue(true);
+        }
+
+        try {
+            new MediaTypeHeaderValue('/foo');
+            $this->fail('"/foo" is in invalid media type');
+        } catch (InvalidArgumentException $ex) {
+            $this->assertTrue(true);
+        }
     }
 
     /**
@@ -70,7 +97,7 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
      */
     public function testQualityDefaultsToOne() : void
     {
-        $value = new MediaTypeHeaderValue('foo', 'bar', null);
+        $value = new MediaTypeHeaderValue('foo/bar', null);
         $this->assertEquals(1, $value->getQuality());
     }
 }

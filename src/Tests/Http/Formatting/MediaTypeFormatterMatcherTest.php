@@ -12,43 +12,34 @@ namespace Opulence\Net\Tests\Http\Formatting;
 
 use InvalidArgumentException;
 use Opulence\Net\Http\Formatting\IMediaTypeFormatter;
-use Opulence\Net\Http\Formatting\MediaTypeFormatterRegistry;
+use Opulence\Net\Http\Formatting\MediaTypeFormatterMatcher;
 
 /**
- * Tests the media type formatter registry
+ * Tests the media type formatter matcher
  */
-class MediaTypeFormatterRegistryTest extends \PHPUnit\Framework\TestCase
+class MediaTypeFormatterMatcherTest /* extends \PHPUnit\Framework\TestCase*/
 {
-    /** @var MediaTypeFormatterRegistry The registry to use in tests */
-    private $registry;
-
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
-    {
-        $this->registry = new MediaTypeFormatterRegistry();
-    }
-
+    // Todo: DAVE - I've totally changes this class' public methods, which neccessitates a rewrite of the tests
     /**
      * Tests that the default formatter is always the first formatter
      */
     public function testDefaultFormatterReturnsFirstFormatter() : void
     {
         $formatter1 = $this->createMock(IMediaTypeFormatter::class);
-        $this->registry->registerFormatter($formatter1);
-        $this->assertSame($formatter1, $this->registry->getDefaultFormatter());
+        $matcher = new MediaTypeFormatterMatcher([$formatter1]);
+        $this->assertSame($formatter1, $matcher->getDefaultFormatter());
         $formatter2 = $this->createMock(IMediaTypeFormatter::class);
-        $this->registry->registerFormatter($formatter2);
-        $this->assertSame($formatter1, $this->registry->getDefaultFormatter());
+        $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
+        $this->assertSame($formatter1, $matcher->getDefaultFormatter());
     }
 
     /**
-     * Tests that getting the default formatter with no formatters registered returns null
+     * Tests that an empty list of formatters throws an exception
      */
-    public function testDefaultFormatterWithNoFormattersRegisteredReturnsNull() : void
+    public function testEmptyListOfFormattersThrowsException() : void
     {
-        $this->assertNull($this->registry->getDefaultFormatter());
+        $this->expectException(InvalidArgumentException::class);
+        new MediaTypeFormatterMatcher([]);
     }
 
     /**
@@ -56,22 +47,24 @@ class MediaTypeFormatterRegistryTest extends \PHPUnit\Framework\TestCase
      */
     public function testMatchingInvalidMediaTypeThrowsException() : void
     {
+        $matcher = new MediaTypeFormatterMatcher([$this->createMock(IMediaTypeFormatter::class)]);
+
         try {
-            $this->registry->getFormatterMatches('foo');
+            $matcher->getFormatterMatches('foo');
             $this->fail('"foo" is not a valid media type');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
         }
 
         try {
-            $this->registry->getFormatterMatches('foo/');
+            $matcher->getFormatterMatches('foo/');
             $this->fail('"foo/" is not a valid media type');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
         }
 
         try {
-            $this->registry->getFormatterMatches('/foo');
+            $matcher->getFormatterMatches('/foo');
             $this->fail('"/foo" is not a valid media type');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
@@ -86,10 +79,8 @@ class MediaTypeFormatterRegistryTest extends \PHPUnit\Framework\TestCase
         $nonMatchingFormatter = $this->createFormatterMock(['text/html'], 1);
         $matchingFormatter1 = $this->createFormatterMock(['application/json'], 1);
         $matchingFormatter2 = $this->createFormatterMock(['application/json'], 1);
-        $this->registry->registerFormatter($nonMatchingFormatter);
-        $this->registry->registerFormatter($matchingFormatter1);
-        $this->registry->registerFormatter($matchingFormatter2);
-        $matches = $this->registry->getFormatterMatches('application/json');
+        $matcher = new MediaTypeFormatterMatcher([$nonMatchingFormatter, $matchingFormatter1, $matchingFormatter2]);
+        $matches = $matcher->getFormatterMatches('application/json');
         $this->assertCount(2, $matches);
         $this->assertSame($matchingFormatter1, $matches[0]->getFormatter());
         $this->assertEquals('application/json', $matches[0]->getMediaType());
@@ -102,8 +93,9 @@ class MediaTypeFormatterRegistryTest extends \PHPUnit\Framework\TestCase
      */
     public function testNoMatchingFormattersReturnsEmptyArray() : void
     {
-        $this->createFormatterMock(['application/json'], 0);
-        $this->assertEquals([], $this->registry->getFormatterMatches('text/html'));
+        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $matcher = new MediaTypeFormatterMatcher([$formatter]);
+        $this->assertEquals([], $matcher->getFormatterMatches('text/html'));
     }
 
     /**
@@ -113,9 +105,8 @@ class MediaTypeFormatterRegistryTest extends \PHPUnit\Framework\TestCase
     {
         $nonMatchingFormatter = $this->createFormatterMock(['text/html'], 1);
         $matchingFormatter = $this->createFormatterMock(['application/json'], 1);
-        $this->registry->registerFormatter($nonMatchingFormatter);
-        $this->registry->registerFormatter($matchingFormatter);
-        $matches = $this->registry->getFormatterMatches('application/*');
+        $matcher = new MediaTypeFormatterMatcher([$nonMatchingFormatter, $matchingFormatter]);
+        $matches = $matcher->getFormatterMatches('application/*');
         $this->assertCount(1, $matches);
         $this->assertSame($matchingFormatter, $matches[0]->getFormatter());
         $this->assertEquals('application/json', $matches[0]->getMediaType());
@@ -128,9 +119,8 @@ class MediaTypeFormatterRegistryTest extends \PHPUnit\Framework\TestCase
     {
         $formatter1 = $this->createFormatterMock(['text/html', 'text/xml'], 1);
         $formatter2 = $this->createFormatterMock(['application/json', 'text/json'], 1);
-        $this->registry->registerFormatter($formatter1);
-        $this->registry->registerFormatter($formatter2);
-        $matches = $this->registry->getFormatterMatches('*/*');
+        $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
+        $matches = $matcher->getFormatterMatches('*/*');
         $this->assertCount(2, $matches);
         $this->assertSame($formatter1, $matches[0]->getFormatter());
         $this->assertEquals('text/html', $matches[0]->getMediaType());

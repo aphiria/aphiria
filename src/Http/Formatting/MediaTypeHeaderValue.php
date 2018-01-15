@@ -25,15 +25,20 @@ class MediaTypeHeaderValue
     private $quality;
 
     /**
-     * @param string $type The type, eg "text" in "text/html"
-     * @param string $subType The sub-type, eg "html" in "text/html"
+     * @param string $mediaType The media type
      * @param float $quality The quality score (0-1)
-     * @throws InvalidArgumentException Thrown if the quality is outside the allowed range
+     * @throws InvalidArgumentException Thrown if the media type is incorrectly formatted or the quality is outside the allowed range
      */
-    public function __construct(string $type, string $subType, ?float $quality = 1.0)
+    public function __construct(string $mediaType, ?float $quality = 1.0)
     {
-        $this->type = $type;
-        $this->subType = $subType;
+        $mediaTypeParts = explode('/', $mediaType);
+
+        if (count($mediaTypeParts) !== 2 || empty($mediaTypeParts[0]) || empty($mediaTypeParts[1])) {
+            throw new InvalidArgumentException("Media type must be in format {type}/{sub-type}, received $mediaType");
+        }
+
+        $this->type = $mediaTypeParts[0];
+        $this->subType = $mediaTypeParts[1];
         $this->quality = $quality ?? 1.0;
 
         if ($this->quality < 0 || $this->quality > 1) {
@@ -49,6 +54,16 @@ class MediaTypeHeaderValue
     public function getQuality() : float
     {
         return $this->quality;
+    }
+
+    /**
+     * Gets the full media type
+     *
+     * @return string The full media type
+     */
+    public function getFullMediaType() : string
+    {
+        return "{$this->type}/{$this->subType}";
     }
 
     /**

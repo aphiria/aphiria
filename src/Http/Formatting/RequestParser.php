@@ -106,6 +106,17 @@ class RequestParser
     }
 
     /**
+     * Parses the Accept header parameters from
+     *
+     * @param IHttpRequestMessage $request The request to parse
+     * @return MediaTypeHeaderValue[] The list of media type header values
+     */
+    public function parseAcceptParameters(IHttpRequestMessage $request) : IImmutableDictionary
+    {
+        return $this->headerParser->parseAcceptParameters($request->getHeaders());
+    }
+
+    /**
      * Parses the request headers for all cookie values
      *
      * @param IHttpRequestMessage $request The request to parse
