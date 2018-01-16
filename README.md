@@ -244,12 +244,12 @@ $image2Headers->add('Content-Type', 'image/png');
 $image2Body = new StreamBody(fopen('path/to/bar.png', 'r'));
 
 // Build the request's headers and body
-$headers = new HttpHeaders();
-$headers->add('Content-Type', "multipart/form-data; boundary={$body->getBoundary()}");
 $body = new MultipartBody([
     new MultipartBodyPart($image1Headers, $image1Body),
     new MultipartBodyPart($image2Headers, $image2Body)
 ]);
+$headers = new HttpHeaders();
+$headers->add('Content-Type', "multipart/form-data; boundary={$body->getBoundary()}");
 
 // Build the request
 $request = new Request(

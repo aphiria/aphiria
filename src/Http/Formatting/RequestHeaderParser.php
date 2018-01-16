@@ -19,7 +19,7 @@ use Opulence\Net\Http\HttpHeaders;
 class RequestHeaderParser extends HttpHeaderParser
 {
     /**
-     * Parses the Accept header parameters from
+     * Parses the Accept header parameters
      *
      * @param HttpHeaders $headers The request headers to parse
      * @return MediaTypeHeaderValue[] The list of media type header values

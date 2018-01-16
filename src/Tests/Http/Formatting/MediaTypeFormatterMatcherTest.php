@@ -13,24 +13,22 @@ namespace Opulence\Net\Tests\Http\Formatting;
 use InvalidArgumentException;
 use Opulence\Net\Http\Formatting\IMediaTypeFormatter;
 use Opulence\Net\Http\Formatting\MediaTypeFormatterMatcher;
+use Opulence\Net\Http\HttpHeaders;
 
 /**
  * Tests the media type formatter matcher
  */
-class MediaTypeFormatterMatcherTest /* extends \PHPUnit\Framework\TestCase*/
+class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
 {
-    // Todo: DAVE - I've totally changes this class' public methods, which neccessitates a rewrite of the tests
+    /** @var HttpHeaders The headers to use in tests */
+    private $headers;
+
     /**
-     * Tests that the default formatter is always the first formatter
+     * Sets up the tests
      */
-    public function testDefaultFormatterReturnsFirstFormatter() : void
+    public function setUp() : void
     {
-        $formatter1 = $this->createMock(IMediaTypeFormatter::class);
-        $matcher = new MediaTypeFormatterMatcher([$formatter1]);
-        $this->assertSame($formatter1, $matcher->getDefaultFormatter());
-        $formatter2 = $this->createMock(IMediaTypeFormatter::class);
-        $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
-        $this->assertSame($formatter1, $matcher->getDefaultFormatter());
+        $this->headers = new HttpHeaders();
     }
 
     /**
@@ -43,89 +41,184 @@ class MediaTypeFormatterMatcherTest /* extends \PHPUnit\Framework\TestCase*/
     }
 
     /**
-     * Tests that matching an invalid media type throws an exception
+     * Tests that the matcher selects the read formatter that supports its content type
      */
-    public function testMatchingInvalidMediaTypeThrowsException() : void
+    public function testMatcherSelectsReadFormatterThatSupportsContentType() : void
+    {
+        $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter2 = $this->createFormatterMock(['text/html'], 1);
+        $this->headers->add('Content-Type', 'text/html');
+        $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
+        $match = $matcher->matchReadMediaTypeFormatter($this->headers);
+        $this->assertSame($formatter2, $match->getFormatter());
+        $this->assertEquals('text/html', $match->getMediaType());
+    }
+
+    /**
+     * Tests that matching a write formatter with an invalid media type throws an exception
+     */
+    public function testMatchingWriteFormatterWithInvalidMediaTypeThrowsException() : void
     {
         $matcher = new MediaTypeFormatterMatcher([$this->createMock(IMediaTypeFormatter::class)]);
 
         try {
-            $matcher->getFormatterMatches('foo');
-            $this->fail('"foo" is not a valid media type');
+            $this->headers->add('Accept', 'text');
+            $matcher->matchWriteMediaTypeFormatter($this->headers);
+            $this->fail('"text" is not a valid media type');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
         }
 
         try {
-            $matcher->getFormatterMatches('foo/');
-            $this->fail('"foo/" is not a valid media type');
+            $this->headers->add('Accept', 'text/');
+            $matcher->matchWriteMediaTypeFormatter($this->headers);
+            $this->fail('"text/" is not a valid media type');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
         }
 
         try {
-            $matcher->getFormatterMatches('/foo');
-            $this->fail('"/foo" is not a valid media type');
+            $this->headers->add('Accept', '/html');
+            $matcher->matchWriteMediaTypeFormatter($this->headers);
+            $this->fail('"/html" is not a valid media type');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
         }
     }
 
     /**
-     * Tests that media type matches are returned in the order that formatters are registered
+     * Tests that no matching read formatter returns null
      */
-    public function testMediaTypeMatchesAreReturnedInOrderThatFormattersAreRegistered() : void
-    {
-        $nonMatchingFormatter = $this->createFormatterMock(['text/html'], 1);
-        $matchingFormatter1 = $this->createFormatterMock(['application/json'], 1);
-        $matchingFormatter2 = $this->createFormatterMock(['application/json'], 1);
-        $matcher = new MediaTypeFormatterMatcher([$nonMatchingFormatter, $matchingFormatter1, $matchingFormatter2]);
-        $matches = $matcher->getFormatterMatches('application/json');
-        $this->assertCount(2, $matches);
-        $this->assertSame($matchingFormatter1, $matches[0]->getFormatter());
-        $this->assertEquals('application/json', $matches[0]->getMediaType());
-        $this->assertSame($matchingFormatter2, $matches[1]->getFormatter());
-        $this->assertEquals('application/json', $matches[1]->getMediaType());
-    }
-
-    /**
-     * Tests that no matching formatters returns an empty array
-     */
-    public function testNoMatchingFormattersReturnsEmptyArray() : void
+    public function testNoMatchingReadFormatterReturnsNull() : void
     {
         $formatter = $this->createFormatterMock(['application/json'], 1);
+        $this->headers->add('Content-Type', 'text/html');
         $matcher = new MediaTypeFormatterMatcher([$formatter]);
-        $this->assertEquals([], $matcher->getFormatterMatches('text/html'));
+        $match = $matcher->matchReadMediaTypeFormatter($this->headers);
+        $this->assertNull($match);
     }
 
     /**
-     * Tests that a wildcard sub-type matches formatters with matching types
+     * Tests that no matching write formatter returns null
      */
-    public function testWildcardSubTypeMatchesFormattersWithMatchingType() : void
+    public function testNoMatchingWriteFormatterReturnsNull() : void
     {
-        $nonMatchingFormatter = $this->createFormatterMock(['text/html'], 1);
-        $matchingFormatter = $this->createFormatterMock(['application/json'], 1);
-        $matcher = new MediaTypeFormatterMatcher([$nonMatchingFormatter, $matchingFormatter]);
-        $matches = $matcher->getFormatterMatches('application/*');
-        $this->assertCount(1, $matches);
-        $this->assertSame($matchingFormatter, $matches[0]->getFormatter());
-        $this->assertEquals('application/json', $matches[0]->getMediaType());
+        $formatter = $this->createFormatterMock(['text/html'], 1);
+        $matcher = new MediaTypeFormatterMatcher([$formatter]);
+        $this->headers->add('Accept', 'application/json');
+        $this->assertNull($matcher->matchWriteMediaTypeFormatter($this->headers));
     }
 
     /**
-     * Tests that a wildcard type matches all formatters and returns the first supported media type
+     * Tests that matching the read formatter when no content-type is specified returns the first registered formatter
      */
-    public function testWildcardTypeMatchesAllFormattersAndReturnsFirstSupportedMediaType() : void
+    public function testReadFormatterIsFirstFormatterRegisteredWithNoContentTypeSpecified() : void
     {
-        $formatter1 = $this->createFormatterMock(['text/html', 'text/xml'], 1);
-        $formatter2 = $this->createFormatterMock(['application/json', 'text/json'], 1);
+        $formatter1 = $this->createMock(IMediaTypeFormatter::class);
+        $formatter2 = $this->createMock(IMediaTypeFormatter::class);
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
-        $matches = $matcher->getFormatterMatches('*/*');
-        $this->assertCount(2, $matches);
-        $this->assertSame($formatter1, $matches[0]->getFormatter());
-        $this->assertEquals('text/html', $matches[0]->getMediaType());
-        $this->assertSame($formatter2, $matches[1]->getFormatter());
-        $this->assertEquals('application/json', $matches[1]->getMediaType());
+        $match = $matcher->matchReadMediaTypeFormatter($this->headers);
+        $this->assertSame($formatter1, $match->getFormatter());
+        $this->assertNull($match->getMediaType());
+    }
+
+    /**
+     * Tests that matching the write formatter when no Accept is specified returns the first registered formatter
+     */
+    public function testWriteFormatterIsFirstFormatterRegisteredWithNoAcceptSpecified() : void
+    {
+        $formatter1 = $this->createMock(IMediaTypeFormatter::class);
+        $formatter2 = $this->createMock(IMediaTypeFormatter::class);
+        $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
+        $match = $matcher->matchReadMediaTypeFormatter($this->headers);
+        $this->assertSame($formatter1, $match->getFormatter());
+        $this->assertNull($match->getMediaType());
+    }
+
+    /**
+     * Tests that a write formatter can match a wildcard sub-type
+     */
+    public function testWriteFormatterCanMatchWithWildcardSubType() : void
+    {
+        $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter2 = $this->createFormatterMock(['text/html'], 1);
+        $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
+        $this->headers->add('Accept', 'text/*', true);
+        $match = $matcher->matchWriteMediaTypeFormatter($this->headers);
+        $this->assertSame($formatter2, $match->getFormatter());
+        $this->assertEquals('text/html', $match->getMediaType());
+    }
+
+    /**
+     * Tests that a write formatter can match a wildcard type
+     */
+    public function testWriteFormatterCanMatchWithWildcardType() : void
+    {
+        $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter2 = $this->createFormatterMock(['text/html'], 0);
+        $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
+        $this->headers->add('Accept', '*/*', true);
+        $match = $matcher->matchWriteMediaTypeFormatter($this->headers);
+        $this->assertSame($formatter1, $match->getFormatter());
+        $this->assertEquals('application/json', $match->getMediaType());
+    }
+
+    /**
+     * Tests that a write formatter matches the most specific media type with equal quality media types
+     */
+    public function testWriteFormatterMatchesMostSpecificMediaTypeWithEqualQualityMediaTypes() : void
+    {
+        $formatter1 = $this->createFormatterMock(['text/plain'], 1);
+        $formatter2 = $this->createFormatterMock(['text/xml'], 1);
+        $formatter3 = $this->createFormatterMock(['text/html'], 1);
+        $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2, $formatter3]);
+        $this->headers->add('Accept', '*/*', true);
+        $this->headers->add('Accept', 'text/*', true);
+        $this->headers->add('Accept', 'text/html', true);
+        $match = $matcher->matchWriteMediaTypeFormatter($this->headers);
+        $this->assertSame($formatter3, $match->getFormatter());
+        $this->assertEquals('text/html', $match->getMediaType());
+    }
+
+    /**
+     * Tests that a write formatter can match a wildcard sub-type with a higher quality score than a specific media type
+     */
+    public function testWriteFormatterMatchesWildcardSubTypeWithHigherQualityScoreThanSpecificMediaType() : void
+    {
+        $formatter = $this->createFormatterMock(['text/plain', 'text/html'], 1);
+        $matcher = new MediaTypeFormatterMatcher([$formatter]);
+        $this->headers->add('Accept', 'text/*; q=0.5', true);
+        $this->headers->add('Accept', 'text/html; q=0.3', true);
+        $match = $matcher->matchWriteMediaTypeFormatter($this->headers);
+        $this->assertSame($formatter, $match->getFormatter());
+        $this->assertEquals('text/plain', $match->getMediaType());
+    }
+
+    /**
+     * Tests that a write formatter can match a wildcard type with a higher quality score than a specific media type
+     */
+    public function testWriteFormatterMatchesWildcardTypeWithHigherQualityScoreThanSpecificMediaType() : void
+    {
+        $formatter = $this->createFormatterMock(['application/json', 'text/html'], 1);
+        $matcher = new MediaTypeFormatterMatcher([$formatter]);
+        $this->headers->add('Accept', '*/*; q=0.5', true);
+        $this->headers->add('Accept', 'text/html; q=0.3', true);
+        $match = $matcher->matchWriteMediaTypeFormatter($this->headers);
+        $this->assertSame($formatter, $match->getFormatter());
+        $this->assertEquals('application/json', $match->getMediaType());
+    }
+
+    /**
+     * Tests that a write formatter that matches a zero quality media type returns a null match
+     */
+    public function testWriteFormatterThatMatchesZeroQualityMediaTypeReturnsNullMatch() : void
+    {
+        // The media type should be filtered out of the list of media types to check against
+        $formatter = $this->createFormatterMock(['text/html'], 0);
+        $matcher = new MediaTypeFormatterMatcher([$formatter]);
+        $this->headers->add('Accept', 'text/html; q=0.0');
+        $match = $matcher->matchWriteMediaTypeFormatter($this->headers);
+        $this->assertNull($match);
     }
 
     /**

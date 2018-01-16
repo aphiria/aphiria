@@ -14,9 +14,9 @@ use InvalidArgumentException;
 use Opulence\Net\Http\HttpHeaders;
 
 /**
- * Defines the interface for media type header matchers to implement
+ * Defines the interface for media type formatter matchers to implement
  */
-interface IMediaTypeHeaderMatcher
+interface IMediaTypeFormatterMatcher
 {
     /**
      * Finds the media type formatter that can be used to read the body of a request

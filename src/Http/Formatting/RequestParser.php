@@ -106,7 +106,7 @@ class RequestParser
     }
 
     /**
-     * Parses the Accept header parameters from
+     * Parses the Accept header parameters
      *
      * @param IHttpRequestMessage $request The request to parse
      * @return MediaTypeHeaderValue[] The list of media type header values
