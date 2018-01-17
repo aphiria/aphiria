@@ -23,13 +23,16 @@ class MediaTypeHeaderValue
     private $subType;
     /** @var float The quality score (0-1) */
     private $quality;
+    /** @var string|null The charset if one was set, otherwise null */
+    private $charSet;
 
     /**
      * @param string $mediaType The media type
      * @param float $quality The quality score (0-1)
+     * @param string|null $charSet The charset if one was set, otherwise null
      * @throws InvalidArgumentException Thrown if the media type is incorrectly formatted or the quality is outside the allowed range
      */
-    public function __construct(string $mediaType, ?float $quality = 1.0)
+    public function __construct(string $mediaType, ?float $quality = 1.0, ?string $charSet)
     {
         $mediaTypeParts = explode('/', $mediaType);
 
@@ -40,6 +43,7 @@ class MediaTypeHeaderValue
         $this->type = $mediaTypeParts[0];
         $this->subType = $mediaTypeParts[1];
         $this->quality = $quality ?? 1.0;
+        $this->charSet = $charSet;
 
         if ($this->quality < 0 || $this->quality > 1) {
             throw new InvalidArgumentException('Quality score must be between 0 and 1, inclusive');
@@ -47,13 +51,13 @@ class MediaTypeHeaderValue
     }
 
     /**
-     * Gets the quality score
+     * Gets the charset
      *
-     * @return float The quality score (0-1)
+     * @return string|null The charset if one was set, otherwise null
      */
-    public function getQuality() : float
+    public function getCharSet() : ?string
     {
-        return $this->quality;
+        return $this->charSet;
     }
 
     /**
@@ -64,6 +68,16 @@ class MediaTypeHeaderValue
     public function getFullMediaType() : string
     {
         return "{$this->type}/{$this->subType}";
+    }
+
+    /**
+     * Gets the quality score
+     *
+     * @return float The quality score (0-1)
+     */
+    public function getQuality() : float
+    {
+        return $this->quality;
     }
 
     /**

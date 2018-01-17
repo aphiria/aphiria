@@ -11,13 +11,15 @@
 namespace Opulence\Net\Http\Formatting;
 
 use InvalidArgumentException;
-use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\IHttpRequestMessage;
 
 /**
- * Defines the media type formatter matcher
+ * Defines the default content negotiator
  */
-class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
+class ContentNegotiator implements IContentNegotiator
 {
+    /** @const The default media type if none is found (RFC-2616) */
+    private const DEFAULT_MEDIA_TYPE = 'application/octet-stream';
     /** @var IMediaTypeFormatter[] The list of registered formatters */
     private $formatters;
     /** @var HttpHeaderParser The header parser */
@@ -41,22 +43,27 @@ class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
     /**
      * @inheritdoc
      */
-    public function matchReadMediaTypeFormatter(HttpHeaders $requestHeaders) : ?MediaTypeFormatterMatch
+    public function negotiateRequestContent(IHttpRequestMessage $request) : ?ContentNegotiationResult
     {
-        $contentType = null;
+        $requestHeaders = $request->getHeaders();
 
-        if (!$requestHeaders->tryGetFirst('Content-Type', $contentType)) {
+        if (!$requestHeaders->containsKey('Content-Type')) {
             // Default to the first registered media type formatter
-            return new MediaTypeFormatterMatch(
+            return new ContentNegotiationResult(
                 $this->formatters[0],
+                self::DEFAULT_MEDIA_TYPE,
                 null
             );
         }
 
-        $formatterMatch = $this->getFirstMediaTypeFormatterMatch($contentType);
+        $parsedContentTypeHeader = $this->headerParser->parseParameters($requestHeaders, 'Content-Type', 0);
+        // The first value should be the content-type
+        $contentType = $parsedContentTypeHeader->getKeys()[0];
+        $charSet = $parsedContentTypeHeader->containsKey('charset') ? $parsedContentTypeHeader['charset'] : null;
+        $contentNegotiationResult = $this->getFirstContentNegotiationResult($contentType, $charSet);
 
-        if ($formatterMatch !== null) {
-            return $formatterMatch;
+        if ($contentNegotiationResult !== null) {
+            return $contentNegotiationResult;
         }
 
         return null;
@@ -65,12 +72,15 @@ class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
     /**
      * @inheritdoc
      */
-    public function matchWriteMediaTypeFormatter(HttpHeaders $requestHeaders) : ?MediaTypeFormatterMatch
+    public function negotiateResponseContent(IHttpRequestMessage $request) : ?ContentNegotiationResult
     {
+        $requestHeaders = $request->getHeaders();
+
         if (!$requestHeaders->containsKey('Accept')) {
             // Default to the first registered media type formatter
-            return new MediaTypeFormatterMatch(
+            return new ContentNegotiationResult(
                 $this->formatters[0],
+                self::DEFAULT_MEDIA_TYPE,
                 null
             );
         }
@@ -79,10 +89,13 @@ class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
         $rankedMediaTypeHeaders = $this->rankMediaTypeHeaders($mediaTypeHeaders);
 
         foreach ($rankedMediaTypeHeaders as $mediaTypeHeader) {
-            $formatterMatch = $this->getFirstMediaTypeFormatterMatch($mediaTypeHeader->getFullMediaType());
+            $contentNegotiationResult = $this->getFirstContentNegotiationResult(
+                $mediaTypeHeader->getFullMediaType(),
+                $mediaTypeHeader->getCharSet()
+            );
 
-            if ($formatterMatch !== null) {
-                return $formatterMatch;
+            if ($contentNegotiationResult !== null) {
+                return $contentNegotiationResult;
             }
         }
 
@@ -150,13 +163,14 @@ class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
     }
 
     /**
-     * Gets the first matching media type formatter
+     * Gets the first content negotiation result
      *
      * @param string $mediaType The media type to match on
-     * @return MediaTypeFormatterMatch|null The matching formatter if one was found, otherwise null
+     * @param string|null $charSet The charset to use if one is set, otherwise null
+     * @return ContentNegotiationResult|null The content negotiation result if one was found, otherwise null
      * @throws InvalidArgumentException Thrown if the media type was incorrectly formatted
      */
-    protected function getFirstMediaTypeFormatterMatch(string $mediaType) : ?MediaTypeFormatterMatch
+    protected function getFirstContentNegotiationResult(string $mediaType, ?string $charSet) : ?ContentNegotiationResult
     {
         $mediaTypeParts = explode('/', $mediaType);
 
@@ -177,7 +191,7 @@ class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
                     ($subType === '*' && $type === $supportedType) ||
                     ($type === $supportedType && $subType === $supportedSubType)
                 ) {
-                    return new MediaTypeFormatterMatch($formatter, $supportedMediaType);
+                    return new ContentNegotiationResult($formatter, $supportedMediaType, $charSet);
                 }
             }
         }

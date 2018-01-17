@@ -11,23 +11,37 @@
 namespace Opulence\Net\Http\Formatting;
 
 /**
- * Defines a media type formatter match
+ * Defines the results of content negotiation
  */
-class MediaTypeFormatterMatch
+class ContentNegotiationResult
 {
     /** @var IMediaTypeFormatter The matched media type formatter */
     private $formatter;
     /** @var string|null The matched media type, or null if no media type was specified */
     private $mediaType;
+    /** @var string|null The matched charset, or null if no charset was specified */
+    private $charSet;
 
     /**
      * @param IMediaTypeFormatter $formatter The matched media type formatter
      * @param string|null $mediaType The matched media type if there was one, otherwise null
+     * @param string|null $charSet The matched charset if there was one, otherwise null
      */
-    public function __construct(IMediaTypeFormatter $formatter, ?string $mediaType)
+    public function __construct(IMediaTypeFormatter $formatter, ?string $mediaType, ?string $charSet)
     {
         $this->formatter = $formatter;
         $this->mediaType = $mediaType;
+        $this->charSet = $charSet;
+    }
+
+    /**
+     * Gets the matched charset
+     *
+     * @return string|null The matched charset if there was one, otherwise null
+     */
+    public function getCharSet() : ?string
+    {
+        return $this->charSet;
     }
 
     /**

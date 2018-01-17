@@ -32,6 +32,9 @@ class RequestHeaderParser extends HttpHeaderParser
             return [];
         }
 
+        $charSetHeaderValue = null;
+        $headers->tryGetFirst('Accept-Charset', $charSetHeaderValue);
+
         $parsedHeaderValues = [];
 
         for ($i = 0;$i < count($headerValues);$i++) {
@@ -39,7 +42,8 @@ class RequestHeaderParser extends HttpHeaderParser
             // The first value should always be the media type
             $mediaType = $parsedHeaderParameters->getKeys()[0];
             $qualityScore = $parsedHeaderParameters->containsKey('q') ? (float)$parsedHeaderParameters['q'] : null;
-            $parsedHeaderValues[] = new MediaTypeHeaderValue($mediaType, $qualityScore);
+            $charSet = $parsedHeaderParameters->containsKey('charset') ? $parsedHeaderParameters['charset'] : $charSetHeaderValue;
+            $parsedHeaderValues[] = new MediaTypeHeaderValue($mediaType, $qualityScore, $charSet);
         }
 
         return $parsedHeaderValues;
