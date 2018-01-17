@@ -32,7 +32,7 @@ class MediaTypeHeaderValue
      * @param string|null $charSet The charset if one was set, otherwise null
      * @throws InvalidArgumentException Thrown if the media type is incorrectly formatted or the quality is outside the allowed range
      */
-    public function __construct(string $mediaType, ?float $quality = 1.0, ?string $charSet)
+    public function __construct(string $mediaType, ?float $quality = 1.0, ?string $charSet = null)
     {
         $mediaTypeParts = explode('/', $mediaType);
 
