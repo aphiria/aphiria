@@ -77,11 +77,14 @@ class ContentNegotiator implements IContentNegotiator
         $requestHeaders = $request->getHeaders();
 
         if (!$requestHeaders->containsKey('Accept')) {
+            $charSet = null;
+            $requestHeaders->tryGetFirst('Accept-Charset', $charSet);
+
             // Default to the first registered media type formatter
             return new ContentNegotiationResult(
                 $this->formatters[0],
                 self::DEFAULT_MEDIA_TYPE,
-                null
+                $charSet
             );
         }
 
