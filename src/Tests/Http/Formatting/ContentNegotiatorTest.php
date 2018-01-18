@@ -251,6 +251,20 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that the response media type is set from the Accept-Charset header if set and the Accept header isn't
+     */
+    public function testResponseMediaTypeIsSetFromAcceptCharsetHeaderIfSetAndAcceptHeaderIsNotSet() : void
+    {
+        $formatter = $this->createMock(IMediaTypeFormatter::class);
+        $this->headers->add('Accept-Charset', 'utf-16');
+        $negotiator = new ContentNegotiator([$formatter]);
+        $result = $negotiator->negotiateResponseContent($this->request);
+        $this->assertSame($formatter, $result->getFormatter());
+        $this->assertEquals('application/octet-stream', $result->getMediaType());
+        $this->assertEquals('utf-16', $result->getCharSet());
+    }
+
+    /**
      * Tests that the response result gets the charset from the Accept-Charset header when present
      */
     public function testResponseResultGetsCharsetFromAcceptCharsetHeaderWhenPresent() : void
