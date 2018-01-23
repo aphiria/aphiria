@@ -11,6 +11,8 @@
 namespace Opulence\Net\Http\Formatting;
 
 use Opulence\Collections\IImmutableDictionary;
+use Opulence\Net\Http\Headers\AcceptCharSetHeaderValue;
+use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Opulence\Net\Http\HttpHeaders;
 
 /**
@@ -19,12 +21,38 @@ use Opulence\Net\Http\HttpHeaders;
 class RequestHeaderParser extends HttpHeaderParser
 {
     /**
-     * Parses the Accept header parameters
+     * Parses the Accept-Charset header
      *
      * @param HttpHeaders $headers The request headers to parse
-     * @return MediaTypeHeaderValue[] The list of media type header values
+     * @return AcceptCharSetHeaderValue[] The list of charset header values
      */
-    public function parseAcceptParameters(HttpHeaders $headers) : array
+    public function parseAcceptCharsetHeader(HttpHeaders $headers) : array
+    {
+        $headerValues = [];
+
+        if (!$headers->tryGet('Accept-Charset', $headerValues)) {
+            return [];
+        }
+
+        $parsedHeaderValues = [];
+
+        for ($i = 0;$i < count($headerValues);$i++) {
+            $parsedHeaderParameters = $this->parseParameters($headers, 'Accept-Charset', $i);
+            // The first value should always be the charset
+            $charset = $parsedHeaderParameters->getKeys()[0];
+            $parsedHeaderValues[] = new AcceptCharSetHeaderValue($charset, $parsedHeaderParameters);
+        }
+
+        return $parsedHeaderValues;
+    }
+
+    /**
+     * Parses the Accept header
+     *
+     * @param HttpHeaders $headers The request headers to parse
+     * @return AcceptMediaTypeHeaderValue[] The list of media type header values
+     */
+    public function parseAcceptHeader(HttpHeaders $headers) : array
     {
         $headerValues = [];
 
@@ -32,18 +60,13 @@ class RequestHeaderParser extends HttpHeaderParser
             return [];
         }
 
-        $charSetHeaderValue = null;
-        $headers->tryGetFirst('Accept-Charset', $charSetHeaderValue);
-
         $parsedHeaderValues = [];
 
         for ($i = 0;$i < count($headerValues);$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept', $i);
             // The first value should always be the media type
             $mediaType = $parsedHeaderParameters->getKeys()[0];
-            $qualityScore = $parsedHeaderParameters->containsKey('q') ? (float)$parsedHeaderParameters['q'] : null;
-            $charSet = $parsedHeaderParameters->containsKey('charset') ? $parsedHeaderParameters['charset'] : $charSetHeaderValue;
-            $parsedHeaderValues[] = new MediaTypeHeaderValue($mediaType, $qualityScore, $charSet);
+            $parsedHeaderValues[] = new AcceptMediaTypeHeaderValue($mediaType, $parsedHeaderParameters);
         }
 
         return $parsedHeaderValues;

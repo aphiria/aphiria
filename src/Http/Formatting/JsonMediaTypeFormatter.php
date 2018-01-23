@@ -19,11 +19,10 @@ use RuntimeException;
  */
 class JsonMediaTypeFormatter implements IMediaTypeFormatter
 {
+    /** @var array The list of supported character encodings */
+    private static $supportedEncodings = ['utf-8'];
     /** @var array The list of supported media types */
-    private static $mediaTypes = [
-        'application/json',
-        'text/json'
-    ];
+    private static $supportedMediaTypes = ['application/json', 'text/json'];
     /** @var ModelMapper The model mapper to use to convert to and from models and hashes */
     private $modelMapper;
 
@@ -38,9 +37,17 @@ class JsonMediaTypeFormatter implements IMediaTypeFormatter
     /**
      * @inheritdoc
      */
+    public function getSupportedEncodings() : array
+    {
+        return self::$supportedEncodings;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getSupportedMediaTypes() : array
     {
-        return self::$mediaTypes;
+        return self::$supportedMediaTypes;
     }
 
     /**

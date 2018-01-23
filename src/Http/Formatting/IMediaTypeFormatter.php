@@ -19,6 +19,13 @@ use RuntimeException;
 interface IMediaTypeFormatter
 {
     /**
+     * Gets the list of character encodings this formatter supports
+     *
+     * @return array The list of supported character encodings
+     */
+    public function getSupportedEncodings() : array;
+
+    /**
      * Gets the list of media types this formatter supports
      * These media types are listed in the order of preference by the formatter
      *

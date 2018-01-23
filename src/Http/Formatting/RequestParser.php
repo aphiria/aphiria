@@ -14,6 +14,8 @@ use InvalidArgumentException;
 use Opulence\Collections\IDictionary;
 use Opulence\Collections\IImmutableDictionary;
 use Opulence\Net\Formatting\UriParser;
+use Opulence\Net\Http\Headers\AcceptCharSetHeaderValue;
+use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\MultipartBody;
 use Opulence\Net\Http\MultipartBodyPart;
@@ -106,14 +108,25 @@ class RequestParser
     }
 
     /**
-     * Parses the Accept header parameters
+     * Parses the Accept-Charset header
      *
      * @param IHttpRequestMessage $request The request to parse
-     * @return MediaTypeHeaderValue[] The list of media type header values
+     * @return AcceptCharSetHeaderValue[] The list of charset header values
      */
-    public function parseAcceptParameters(IHttpRequestMessage $request) : IImmutableDictionary
+    public function parseAcceptCharsetHeader(IHttpRequestMessage $request) : array
     {
-        return $this->headerParser->parseAcceptParameters($request->getHeaders());
+        return $this->headerParser->parseAcceptCharsetHeader($request->getHeaders());
+    }
+
+    /**
+     * Parses the Accept header
+     *
+     * @param IHttpRequestMessage $request The request to parse
+     * @return AcceptMediaTypeHeaderValue[] The list of media type header values
+     */
+    public function parseAcceptHeader(IHttpRequestMessage $request) : array
+    {
+        return $this->headerParser->parseAcceptHeader($request->getHeaders());
     }
 
     /**

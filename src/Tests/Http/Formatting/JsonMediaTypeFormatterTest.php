@@ -48,6 +48,14 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that the correct supported encodings are returned
+     */
+    public function testCorrectSupportedEncodingsAreReturned() : void
+    {
+        $this->assertEquals(['utf-8'], $this->formatter->getSupportedEncodings());
+    }
+
+    /**
      * Tests that the correct supported media types are returned
      */
     public function testCorrectSupportedMediaTypesAreReturned() : void

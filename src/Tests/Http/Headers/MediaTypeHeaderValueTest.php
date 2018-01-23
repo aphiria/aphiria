@@ -11,7 +11,9 @@
 namespace Opulence\Net\Tests\Http\Formatting;
 
 use InvalidArgumentException;
-use Opulence\Net\Http\Formatting\MediaTypeHeaderValue;
+use Opulence\Collections\ImmutableHashTable;
+use Opulence\Collections\KeyValuePair;
+use Opulence\Net\Http\Headers\MediaTypeHeaderValue;
 
 /**
  * Tests the media type header value
@@ -19,41 +21,23 @@ use Opulence\Net\Http\Formatting\MediaTypeHeaderValue;
 class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests that an exception is thrown with a quality score outside the accepted range
-     */
-    public function testExceptionThrownWithQualityScoreOutsideAcceptedRange() : void
-    {
-        try {
-            new MediaTypeHeaderValue('foo/bar', -1, null);
-            $this->fail('Failed to throw exception for quality score less than 0');
-        } catch (InvalidArgumentException $ex) {
-            $this->assertTrue(true);
-        }
-
-        try {
-            new MediaTypeHeaderValue('foo/bar', 1.5, null);
-            $this->fail('Failed to throw exception for quality score greater than 1');
-        } catch (InvalidArgumentException $ex) {
-            $this->assertTrue(true);
-        }
-    }
-
-    /**
      * Tests that getting the charset returns the one set in the constructor
      */
     public function testGettingCharSetReturnsOneSetInConstructor() : void
     {
-        $value = new MediaTypeHeaderValue('foo/bar', null, 'utf-8');
+        $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
+        $value = new MediaTypeHeaderValue('foo/bar', $parameters);
         $this->assertEquals('utf-8', $value->getCharSet());
     }
 
     /**
-     * Tests that getting the quality returns the correct quality
+     * Tests that getting the media type returns the one set in the constructor
      */
-    public function testGettingQualityReturnsCorrectQuality() : void
+    public function testGettingMediaTypeReturnsOneSetInConstructor() : void
     {
-        $value = new MediaTypeHeaderValue('foo/bar', .5, null);
-        $this->assertEquals(.5, $value->getQuality());
+        $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
+        $value = new MediaTypeHeaderValue('foo/bar', $parameters);
+        $this->assertEquals('foo/bar', $value->getMediaType());
     }
 
     /**
@@ -61,7 +45,7 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
      */
     public function testGettingSubTypeReturnsCorrectSubtType() : void
     {
-        $value = new MediaTypeHeaderValue('foo/bar', 1, null);
+        $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
         $this->assertEquals('bar', $value->getSubType());
     }
 
@@ -70,7 +54,7 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
      */
     public function testGettingTypeReturnsCorrectType() : void
     {
-        $value = new MediaTypeHeaderValue('foo/bar', 1, null);
+        $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
         $this->assertEquals('foo', $value->getType());
     }
 
@@ -80,33 +64,24 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
     public function testIncorrectlyFormattedMediaTypeThrowsException() : void
     {
         try {
-            new MediaTypeHeaderValue('foo', null, null);
+            new MediaTypeHeaderValue('foo', $this->createMock(IImmutableDictionary::class));
             $this->fail('"foo" is in invalid media type');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
         }
 
         try {
-            new MediaTypeHeaderValue('foo/', null, null);
+            new MediaTypeHeaderValue('foo/', $this->createMock(IImmutableDictionary::class));
             $this->fail('"foo/" is in invalid media type');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
         }
 
         try {
-            new MediaTypeHeaderValue('/foo', null, null);
+            new MediaTypeHeaderValue('/foo', $this->createMock(IImmutableDictionary::class));
             $this->fail('"/foo" is in invalid media type');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
         }
-    }
-
-    /**
-     * Tests that getting the quality defaults to 1
-     */
-    public function testQualityDefaultsToOne() : void
-    {
-        $value = new MediaTypeHeaderValue('foo/bar', null, null);
-        $this->assertEquals(1, $value->getQuality());
     }
 }

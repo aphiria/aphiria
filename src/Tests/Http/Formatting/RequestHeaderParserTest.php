@@ -33,19 +33,35 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that the charset header value overrides the charset in the Accept header
+     * Tests that parsing an Accept header with no scores returns values with default scores
      */
-    public function testAcceptCharsetHeaderValueIsUsedIfNoneSpecifiedInAcceptHeader() : void
+    public function testParsingAcceptCharsetHeaderWithNoScoresReturnsValuesWithDefaultScores() : void
     {
         $headers = new HttpHeaders();
-        $headers->add('Accept', 'text/html; charset=utf-8', true);
-        $headers->add('Accept', 'text/plain', true);
-        $headers->add('Accept-Charset', 'utf-16');
-        $headerValues = $this->parser->parseAcceptParameters($headers);
+        $headers->add('Accept-Charset', 'utf-8', true);
+        $headers->add('Accept-Charset', 'utf-16', true);
+        $headerValues = $this->parser->parseAcceptCharsetHeader($headers);
         $this->assertCount(2, $headerValues);
         $this->assertEquals('utf-8', $headerValues[0]->getCharSet());
-        // Since this Accept header value had no charset, it should default to the Accept-Charset header value
+        $this->assertEquals(1.0, $headerValues[0]->getQuality());
         $this->assertEquals('utf-16', $headerValues[1]->getCharSet());
+        $this->assertEquals(1.0, $headerValues[1]->getQuality());
+    }
+
+    /**
+     * Tests that parsing an Accept header with scores returns values with those scores
+     */
+    public function testParsingAcceptCharsetHeaderWithScoresReturnsValuesWithThoseScores() : void
+    {
+        $headers = new HttpHeaders();
+        $headers->add('Accept-Charset', 'utf-8; q=0.1', true);
+        $headers->add('Accept-Charset', 'utf-16; q=0.5', true);
+        $headerValues = $this->parser->parseAcceptCharsetHeader($headers);
+        $this->assertCount(2, $headerValues);
+        $this->assertEquals('utf-8', $headerValues[0]->getCharSet());
+        $this->assertEquals(0.1, $headerValues[0]->getQuality());
+        $this->assertEquals('utf-16', $headerValues[1]->getCharSet());
+        $this->assertEquals(0.5, $headerValues[1]->getQuality());
     }
 
     /**
@@ -55,7 +71,7 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     {
         $headers = new HttpHeaders();
         $headers->add('Accept', 'text/html; charset=utf-8', true);
-        $headerValues = $this->parser->parseAcceptParameters($headers);
+        $headerValues = $this->parser->parseAcceptHeader($headers);
         $this->assertCount(1, $headerValues);
         $this->assertEquals('utf-8', $headerValues[0]->getCharSet());
     }
@@ -68,12 +84,12 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
         $headers = new HttpHeaders();
         $headers->add('Accept', 'text/html', true);
         $headers->add('Accept', 'application/json', true);
-        $headerValues = $this->parser->parseAcceptParameters($headers);
+        $headerValues = $this->parser->parseAcceptHeader($headers);
         $this->assertCount(2, $headerValues);
-        $this->assertEquals('text/html', $headerValues[0]->getFullMediaType());
+        $this->assertEquals('text/html', $headerValues[0]->getMediaType());
         $this->assertEquals(1.0, $headerValues[0]->getQuality());
         $this->assertNull($headerValues[0]->getCharSet());
-        $this->assertEquals('application/json', $headerValues[1]->getFullMediaType());
+        $this->assertEquals('application/json', $headerValues[1]->getMediaType());
         $this->assertEquals(1.0, $headerValues[1]->getQuality());
         $this->assertNull($headerValues[1]->getCharSet());
     }
@@ -86,12 +102,12 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
         $headers = new HttpHeaders();
         $headers->add('Accept', 'text/html; q=0.1', true);
         $headers->add('Accept', 'application/json; q=0.5', true);
-        $headerValues = $this->parser->parseAcceptParameters($headers);
+        $headerValues = $this->parser->parseAcceptHeader($headers);
         $this->assertCount(2, $headerValues);
-        $this->assertEquals('text/html', $headerValues[0]->getFullMediaType());
+        $this->assertEquals('text/html', $headerValues[0]->getMediaType());
         $this->assertEquals(0.1, $headerValues[0]->getQuality());
         $this->assertNull($headerValues[0]->getCharSet());
-        $this->assertEquals('application/json', $headerValues[1]->getFullMediaType());
+        $this->assertEquals('application/json', $headerValues[1]->getMediaType());
         $this->assertEquals(0.5, $headerValues[1]->getQuality());
         $this->assertNull($headerValues[1]->getCharSet());
     }
@@ -116,11 +132,20 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that parsing an non-existent Accept-Charset header returns an empty array
+     */
+    public function testParsingNonExistentAcceptCharsetHeaderReturnsEmptyArray() : void
+    {
+        $headers = new HttpHeaders();
+        $this->assertEquals([], $this->parser->parseAcceptCharsetHeader($headers));
+    }
+
+    /**
      * Tests that parsing an non-existent Accept header returns an empty array
      */
     public function testParsingNonExistentAcceptHeaderReturnsEmptyArray() : void
     {
         $headers = new HttpHeaders();
-        $this->assertEquals([], $this->parser->parseAcceptParameters($headers));
+        $this->assertEquals([], $this->parser->parseAcceptHeader($headers));
     }
 }
