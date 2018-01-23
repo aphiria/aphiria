@@ -64,15 +64,13 @@ class ContentNegotiator implements IContentNegotiator
         $parsedContentTypeHeader = $this->headerParser->parseParameters($requestHeaders, 'Content-Type', 0);
         // The first value should be the content-type
         $contentType = $parsedContentTypeHeader->getKeys()[0];
-        $charSet = $parsedContentTypeHeader->containsKey('charset') ? $parsedContentTypeHeader['charset'] : null;
-        // Todo: I need to create a result that includes a charset - I'm simplifying this for now
         $mediaTypeFormatterMatch = $this->getBestMediaTypeFormatterMatch(new ContentTypeHeaderValue($contentType));
 
         if ($mediaTypeFormatterMatch !== null) {
             return new ContentNegotiationResult(
                 $mediaTypeFormatterMatch->getFormatter(),
                 $mediaTypeFormatterMatch->getMediaTypeHeaderValue()->getMediaType(),
-                null
+                null // TOdo Need to try to grab charset from the content type header
             );
         }
 
@@ -86,34 +84,30 @@ class ContentNegotiator implements IContentNegotiator
     {
         $requestHeaders = $request->getHeaders();
         $charSetHeaders = $this->headerParser->parseAcceptCharsetHeader($requestHeaders);
-        // Todo: $rankedCharSetHeaders = $this->rankCharSetHeaders($charSetHeaders);
+        // Todo: What do I do with this value?  Should I rank it here, or inside the methods I'm calling?
+        $rankedCharSetHeaders = $this->rankCharSetHeaders($charSetHeaders);
 
         if (!$requestHeaders->containsKey('Accept')) {
-            // Todo: We have to use the parser to grab all charsets, then rank them
-            // Todo: We should them match them against the default formatter's supported encodings
-            // Todo: If there are no matches, then $charSet should be null
-            // Todo: $charSet = $this->getMatchingCharSet($this->formatters[0], $rankedCharSetHeaders);
-
             // Default to the first registered media type formatter
             return new ContentNegotiationResult(
                 $this->formatters[0],
                 self::DEFAULT_MEDIA_TYPE,
-                null// Todo: $charSet
+                null// Todo: What do I set this value to?
             );
         }
 
         $mediaTypeHeaders = $this->headerParser->parseAcceptHeader($requestHeaders);
         $rankedMediaTypeHeaders = $this->rankMediaTypeHeaders($mediaTypeHeaders);
+        $charSetHeaderValues = $this->headerParser->parseAcceptCharsetHeader($requestHeaders);
 
         foreach ($rankedMediaTypeHeaders as $mediaTypeHeader) {
             $mediaTypeFormatterMatch = $this->getBestMediaTypeFormatterMatch($mediaTypeHeader);
 
             if ($mediaTypeFormatterMatch !== null) {
-                // Todo: I need to create a result that includes a charset - I'm simplifying this for now
                 return new ContentNegotiationResult(
                     $mediaTypeFormatterMatch->getFormatter(),
                     $mediaTypeFormatterMatch->getMediaTypeHeaderValue()->getMediaType(),
-                    null
+                    $this->getBestEncoding($charSetHeaderValues, $mediaTypeFormatterMatch->getFormatter())
                 );
             }
         }
@@ -220,14 +214,27 @@ class ContentNegotiator implements IContentNegotiator
     }
 
     /**
-     * Gets the best charset for the input media type formatter
+     * Gets the best character encoding for the input media type formatter
      *
-     * @param IHttpRequestMessage $request The request to match with
+     * @param AcceptCharSetHeaderValue[] $charSetHeaderValues The list of charset header values to match against
      * @param IMediaTypeFormatter $formatter The media type formatter to match against
      * @return string|null The best charset if one was found, otherwise null
      */
-    protected function getBestCharset(IHttpRequestMessage $request, IMediaTypeFormatter $formatter) : ?string
+    protected function getBestEncoding(array $charSetHeaderValues, IMediaTypeFormatter $formatter) : ?string
     {
+        $rankedCharSetHeaderValues = $this->rankCharSetHeaders($charSetHeaderValues);
+
+        foreach ($rankedCharSetHeaderValues as $charSetHeaderValue) {
+            foreach ($formatter->getSupportedEncodings() as $supportedEncoding) {
+                if (
+                    $charSetHeaderValue->getCharSet() === '*'
+                    || $charSetHeaderValue->getCharSet() === $supportedEncoding
+                ) {
+                    return $supportedEncoding;
+                }
+            }
+        }
+
         return null;
     }
 
