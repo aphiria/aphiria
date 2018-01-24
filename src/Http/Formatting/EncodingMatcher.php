@@ -66,7 +66,7 @@ class EncodingMatcher
      * @param AcceptCharsetHeaderValue $b The second charset header to compare
      * @return int -1 if $a is lower than $b, 0 if they're even, or 1 if $a is higher than $b
      */
-    private function compareCharsets(AcceptCharsetHeaderValue $a, AcceptCharsetHeaderValue $b) : int
+    private function compareAcceptCharsetHeaders(AcceptCharsetHeaderValue $a, AcceptCharsetHeaderValue $b) : int
     {
         $aQuality = $a->getQuality();
         $bQuality = $b->getQuality();
@@ -116,7 +116,7 @@ class EncodingMatcher
      */
     private function rankAcceptCharsetHeaders(array $charsetHeaders) : array
     {
-        usort($charsetHeaders, [$this, 'compareCharsets']);
+        usort($charsetHeaders, [$this, 'compareAcceptCharsetHeaders']);
         $rankedCharsetHeaders = array_filter($charsetHeaders, [$this, 'filterZeroScores']);
 
         // Have to return the values because the keys aren't updated in array_filter()

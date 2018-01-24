@@ -69,7 +69,7 @@ class MediaTypeFormatterMatcher
      * @param AcceptMediaTypeHeaderValue $b The second media type to compare
      * @return int -1 if $a is lower than $b, 0 if they're even, or 1 if $a is higher than $b
      */
-    private function compareMediaTypes(AcceptMediaTypeHeaderValue $a, AcceptMediaTypeHeaderValue $b) : int
+    private function compareAcceptMediaTypeHeaders(AcceptMediaTypeHeaderValue $a, AcceptMediaTypeHeaderValue $b) : int
     {
         $aQuality = $a->getQuality();
         $bQuality = $b->getQuality();
@@ -130,7 +130,7 @@ class MediaTypeFormatterMatcher
      */
     private function rankAcceptMediaTypeHeaders(array $mediaTypeHeaders) : array
     {
-        usort($mediaTypeHeaders, [$this, 'compareMediaTypes']);
+        usort($mediaTypeHeaders, [$this, 'compareAcceptMediaTypeHeaders']);
         $rankedMediaTypeHeaders = array_filter($mediaTypeHeaders, [$this, 'filterZeroScores']);
 
         // Have to return the values because the keys aren't updated in array_filter()
