@@ -16,6 +16,7 @@ use Opulence\Collections\IImmutableDictionary;
 use Opulence\Net\Formatting\UriParser;
 use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
+use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\MultipartBody;
 use Opulence\Net\Http\MultipartBodyPart;
@@ -127,6 +128,17 @@ class RequestParser
     public function parseAcceptHeader(IHttpRequestMessage $request) : array
     {
         return $this->headerParser->parseAcceptHeader($request->getHeaders());
+    }
+
+    /**
+     * Parses the Content-Type header
+     *
+     * @param IHttpRequestMessage $request The request to parse
+     * @return ContentTypeHeaderValue|null The parsed header if one exists, otherwise null
+     */
+    public function parseContentTypeHeader(IHttpRequestMessage $request) : ?ContentTypeHeaderValue
+    {
+        return $this->headerParser->parseContentTypeHeader($request->getHeaders());
     }
 
     /**

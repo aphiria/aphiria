@@ -13,6 +13,7 @@ namespace Opulence\Net\Http\Formatting;
 use Opulence\Collections\IImmutableDictionary;
 use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
+use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
 use Opulence\Net\Http\HttpHeaders;
 
 /**
@@ -70,6 +71,24 @@ class RequestHeaderParser extends HttpHeaderParser
         }
 
         return $parsedHeaderValues;
+    }
+
+    /**
+     * Parses the Content-Type header
+     *
+     * @param HttpHeaders $headers The request headers to parse
+     * @return ContentTypeHeaderValue|null The parsed header if one exists, otherwise null
+     */
+    public function parseContentTypeHeader(HttpHeaders $headers) : ?ContentTypeHeaderValue
+    {
+        if (!$headers->containsKey('Content-Type')) {
+            return null;
+        }
+
+        $contentTypeHeaderParameters = $this->parseParameters($headers, 'Content-Type', 0);
+        $contentType = $contentTypeHeaderParameters->getKeys()[0];
+
+        return new ContentTypeHeaderValue($contentType, $contentTypeHeaderParameters);
     }
 
     /**

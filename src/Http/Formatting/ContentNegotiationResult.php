@@ -19,29 +19,29 @@ class ContentNegotiationResult
     private $formatter;
     /** @var string|null The matched media type, or null if no media type was specified */
     private $mediaType;
-    /** @var string|null The matched charset, or null if no charset was specified */
-    private $charset;
+    /** @var string|null The matched encoding, or null if no encoding was specified */
+    private $encoding;
 
     /**
      * @param IMediaTypeFormatter $formatter The matched media type formatter
      * @param string|null $mediaType The matched media type if there was one, otherwise null
-     * @param string|null $charset The matched charset if there was one, otherwise null
+     * @param string|null $encoding The matched encoding if there was one, otherwise null
      */
-    public function __construct(IMediaTypeFormatter $formatter, ?string $mediaType, ?string $charset)
+    public function __construct(IMediaTypeFormatter $formatter, ?string $mediaType, ?string $encoding)
     {
         $this->formatter = $formatter;
         $this->mediaType = $mediaType;
-        $this->charset = $charset;
+        $this->encoding = $encoding;
     }
 
     /**
-     * Gets the matched charset
+     * Gets the matched encoding
      *
-     * @return string|null The matched charset if there was one, otherwise null
+     * @return string|null The matched encoding if there was one, otherwise null
      */
-    public function getCharset() : ?string
+    public function getEncoding() : ?string
     {
-        return $this->charset;
+        return $this->encoding;
     }
 
     /**

@@ -11,7 +11,6 @@
 namespace Opulence\Net\Http\Formatting;
 
 use InvalidArgumentException;
-use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
 use Opulence\Net\Http\IHttpRequestMessage;
 
 /**
@@ -55,16 +54,13 @@ class ContentNegotiator implements IContentNegotiator
         }
 
         $requestHeaders = $request->getHeaders();
+        $contentTypeHeader = $this->headerParser->parseContentTypeHeader($requestHeaders);
 
-        if (!$requestHeaders->containsKey('Content-Type')) {
+        if ($contentTypeHeader === null) {
             // Default to the first registered media type formatter
             return new ContentNegotiationResult($mediaTypeFormatters[0], self::DEFAULT_MEDIA_TYPE, null);
         }
 
-        $contentTypeHeaderParameters = $this->headerParser->parseParameters($requestHeaders, 'Content-Type', 0);
-        // The first value should be the content-type
-        $contentType = $contentTypeHeaderParameters->getKeys()[0];
-        $contentTypeHeader = new ContentTypeHeaderValue($contentType, $contentTypeHeaderParameters);
         $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestMediaTypeFormatterMatch(
             $mediaTypeFormatters,
             [$contentTypeHeader]

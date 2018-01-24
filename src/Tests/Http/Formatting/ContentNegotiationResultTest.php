@@ -19,13 +19,13 @@ use Opulence\Net\Http\Formatting\IMediaTypeFormatter;
 class ContentNegotiationResultTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests that getting the charset returns the same one in the constructor
+     * Tests that getting the encoding returns the same one in the constructor
      */
-    public function testGettingCharsetReturnsSameOneInConstructor() : void
+    public function testGettingEncodingReturnsSameOneInConstructor() : void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', 'utf-8');
-        $this->assertEquals('utf-8', $results->getCharset());
+        $this->assertEquals('utf-8', $results->getEncoding());
     }
 
     /**

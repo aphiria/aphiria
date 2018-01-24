@@ -113,6 +113,30 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that parsing a Content-Type header with a charset sets the charset
+     */
+    public function testParsingContentTypeHeaderWithCharsetSetsCharset() : void
+    {
+        $headers = new HttpHeaders();
+        $headers->add('Content-Type', 'application/json; charset=utf-8');
+        $headerValue = $this->parser->parseContentTypeHeader($headers);
+        $this->assertEquals('application/json', $headerValue->getMediaType());
+        $this->assertEquals('utf-8', $headerValue->getCharset());
+    }
+
+    /**
+     * Tests that parsing a Content-Type header with no charset still sets the media type
+     */
+    public function testParsingContentTypeHeaderWithNoCharsetStillSetsMediaType() : void
+    {
+        $headers = new HttpHeaders();
+        $headers->add('Content-Type', 'application/json');
+        $headerValue = $this->parser->parseContentTypeHeader($headers);
+        $this->assertEquals('application/json', $headerValue->getMediaType());
+        $this->assertNull($headerValue->getCharset());
+    }
+
+    /**
      * Tests that parsing cookies returns the correct values with multiple cookie values
      */
     public function testParsingCookiesReturnsCorrectValuesWithMultipleCookieValues() : void
@@ -147,5 +171,13 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     {
         $headers = new HttpHeaders();
         $this->assertEquals([], $this->parser->parseAcceptHeader($headers));
+    }
+
+    /**
+     * Tests that parsing a non-existent Content-Type header returns null
+     */
+    public function testParsingNonExistentContentHeaderReturnsNull() : void
+    {
+        $this->assertNull($this->parser->parseContentTypeHeader(new HttpHeaders()));
     }
 }
