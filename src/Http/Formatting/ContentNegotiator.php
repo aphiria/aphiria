@@ -54,23 +54,26 @@ class ContentNegotiator implements IContentNegotiator
 
         if (!$requestHeaders->containsKey('Content-Type')) {
             // Default to the first registered media type formatter
-            return new ContentNegotiationResult(
-                $this->formatters[0],
-                self::DEFAULT_MEDIA_TYPE,
-                null
-            );
+            return new ContentNegotiationResult($this->formatters[0], self::DEFAULT_MEDIA_TYPE, null);
         }
 
-        $parsedContentTypeHeader = $this->headerParser->parseParameters($requestHeaders, 'Content-Type', 0);
+        $contentTypeHeaderParameters = $this->headerParser->parseParameters($requestHeaders, 'Content-Type', 0);
         // The first value should be the content-type
-        $contentType = $parsedContentTypeHeader->getKeys()[0];
-        $mediaTypeFormatterMatch = $this->getBestMediaTypeFormatterMatch(new ContentTypeHeaderValue($contentType));
+        $contentType = $contentTypeHeaderParameters->getKeys()[0];
+        $contentTypeHeader = new ContentTypeHeaderValue($contentType, $contentTypeHeaderParameters);
+        $mediaTypeFormatterMatch = $this->getBestMediaTypeFormatterMatch($contentTypeHeader);
 
         if ($mediaTypeFormatterMatch !== null) {
+            $encoding = $this->getBestEncoding(
+                $mediaTypeFormatterMatch->getFormatter(),
+                [],
+                $mediaTypeFormatterMatch->getMediaTypeHeaderValue()
+            );
+
             return new ContentNegotiationResult(
                 $mediaTypeFormatterMatch->getFormatter(),
-                $mediaTypeFormatterMatch->getMediaTypeHeaderValue()->getMediaType(),
-                null // TOdo Need to try to grab charset from the content type header
+                $mediaTypeFormatterMatch->getMediaType(),
+                $encoding
             );
         }
 
@@ -83,31 +86,33 @@ class ContentNegotiator implements IContentNegotiator
     public function negotiateResponseContent(IHttpRequestMessage $request) : ?ContentNegotiationResult
     {
         $requestHeaders = $request->getHeaders();
-        $charSetHeaders = $this->headerParser->parseAcceptCharsetHeader($requestHeaders);
-        // Todo: What do I do with this value?  Should I rank it here, or inside the methods I'm calling?
-        $rankedCharSetHeaders = $this->rankCharSetHeaders($charSetHeaders);
+        $acceptCharSetHeaders = $this->headerParser->parseAcceptCharsetHeader($requestHeaders);
+        $rankedAcceptCharSetHeaders = $this->rankCharSetHeaders($acceptCharSetHeaders);
 
         if (!$requestHeaders->containsKey('Accept')) {
             // Default to the first registered media type formatter
-            return new ContentNegotiationResult(
-                $this->formatters[0],
-                self::DEFAULT_MEDIA_TYPE,
-                null// Todo: What do I set this value to?
-            );
+            $encoding = $this->getBestEncoding($this->formatters[0], $rankedAcceptCharSetHeaders);
+
+            return new ContentNegotiationResult($this->formatters[0], self::DEFAULT_MEDIA_TYPE, $encoding);
         }
 
         $mediaTypeHeaders = $this->headerParser->parseAcceptHeader($requestHeaders);
         $rankedMediaTypeHeaders = $this->rankMediaTypeHeaders($mediaTypeHeaders);
-        $charSetHeaderValues = $this->headerParser->parseAcceptCharsetHeader($requestHeaders);
 
         foreach ($rankedMediaTypeHeaders as $mediaTypeHeader) {
             $mediaTypeFormatterMatch = $this->getBestMediaTypeFormatterMatch($mediaTypeHeader);
 
             if ($mediaTypeFormatterMatch !== null) {
+                $encoding = $this->getBestEncoding(
+                    $mediaTypeFormatterMatch->getFormatter(),
+                    $rankedAcceptCharSetHeaders,
+                    $mediaTypeFormatterMatch->getMediaTypeHeaderValue()
+                );
+
                 return new ContentNegotiationResult(
                     $mediaTypeFormatterMatch->getFormatter(),
-                    $mediaTypeFormatterMatch->getMediaTypeHeaderValue()->getMediaType(),
-                    $this->getBestEncoding($charSetHeaderValues, $mediaTypeFormatterMatch->getFormatter())
+                    $mediaTypeFormatterMatch->getMediaType(),
+                    $encoding
                 );
             }
         }
@@ -216,22 +221,35 @@ class ContentNegotiator implements IContentNegotiator
     /**
      * Gets the best character encoding for the input media type formatter
      *
-     * @param AcceptCharSetHeaderValue[] $charSetHeaderValues The list of charset header values to match against
      * @param IMediaTypeFormatter $formatter The media type formatter to match against
+     * @param AcceptCharSetHeaderValue[] $rankedAcceptCharSetHeaders The ranked list of charset header values to match against
+     * @param MediaTypeHeaderValue|null $mediaTypeHeader The matched media type header value
      * @return string|null The best charset if one was found, otherwise null
      */
-    protected function getBestEncoding(array $charSetHeaderValues, IMediaTypeFormatter $formatter) : ?string
-    {
-        $rankedCharSetHeaderValues = $this->rankCharSetHeaders($charSetHeaderValues);
-
-        foreach ($rankedCharSetHeaderValues as $charSetHeaderValue) {
+    protected function getBestEncoding(
+        IMediaTypeFormatter $formatter,
+        array $rankedAcceptCharSetHeaders,
+        MediaTypeHeaderValue $mediaTypeHeader = null
+    ) : ?string {
+        foreach ($rankedAcceptCharSetHeaders as $acceptCharsetHeader) {
             foreach ($formatter->getSupportedEncodings() as $supportedEncoding) {
                 if (
-                    $charSetHeaderValue->getCharSet() === '*'
-                    || $charSetHeaderValue->getCharSet() === $supportedEncoding
+                    $acceptCharsetHeader->getCharSet() === '*'
+                    || $acceptCharsetHeader->getCharSet() === $supportedEncoding
                 ) {
                     return $supportedEncoding;
                 }
+            }
+        }
+
+        if ($mediaTypeHeader === null || $mediaTypeHeader->getCharSet() === null) {
+            return null;
+        }
+
+        // Fall back to the charset in the media type header
+        foreach ($formatter->getSupportedEncodings() as $supportedEncoding) {
+            if ($mediaTypeHeader->getCharSet() === '*' || $mediaTypeHeader->getCharSet() === $supportedEncoding) {
+                return $supportedEncoding;
             }
         }
 
@@ -241,13 +259,13 @@ class ContentNegotiator implements IContentNegotiator
     /**
      * Gets the best media type formatter match
      *
-     * @param MediaTypeHeaderValue $mediaTypeHeaderValue The media type header value to match on
+     * @param MediaTypeHeaderValue $mediaTypeHeader The media type header value to match on
      * @return MediaTypeFormatterMatch|null The best media type formatter match if one was found, otherwise null
      * @throws InvalidArgumentException Thrown if the media type was incorrectly formatted
      */
-    protected function getBestMediaTypeFormatterMatch(MediaTypeHeaderValue $mediaTypeHeaderValue) : ?MediaTypeFormatterMatch
+    protected function getBestMediaTypeFormatterMatch(MediaTypeHeaderValue $mediaTypeHeader) : ?MediaTypeFormatterMatch
     {
-        $mediaTypeParts = explode('/', $mediaTypeHeaderValue->getMediaType());
+        $mediaTypeParts = explode('/', $mediaTypeHeader->getMediaType());
 
         // Don't bother going on if the media type isn't in the correct format
         if (count($mediaTypeParts) !== 2 || $mediaTypeParts[0] === '' || $mediaTypeParts[1] === '') {
@@ -266,10 +284,7 @@ class ContentNegotiator implements IContentNegotiator
                     ($subType === '*' && $type === $supportedType) ||
                     ($type === $supportedType && $subType === $supportedSubType)
                 ) {
-                    return new MediaTypeFormatterMatch(
-                        $formatter,
-                        new MediaTypeHeaderValue($supportedMediaType, $mediaTypeHeaderValue->getParameters())
-                    );
+                    return new MediaTypeFormatterMatch($formatter, $supportedMediaType, $mediaTypeHeader);
                 }
             }
         }

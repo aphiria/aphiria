@@ -26,7 +26,7 @@ class MediaTypeFormatterMatchTest extends \PHPUnit\Framework\TestCase
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeHeaderValue = new ContentTypeHeaderValue('foo/bar');
-        $match = new MediaTypeFormatterMatch($formatter, $mediaTypeHeaderValue);
+        $match = new MediaTypeFormatterMatch($formatter, 'baz/blah', $mediaTypeHeaderValue);
         $this->assertSame($formatter, $match->getFormatter());
     }
 
@@ -37,7 +37,18 @@ class MediaTypeFormatterMatchTest extends \PHPUnit\Framework\TestCase
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeHeaderValue = new ContentTypeHeaderValue('foo/bar');
-        $match = new MediaTypeFormatterMatch($formatter, $mediaTypeHeaderValue);
+        $match = new MediaTypeFormatterMatch($formatter, 'baz/blah', $mediaTypeHeaderValue);
+        $this->assertEquals('baz/blah', $match->getMediaType());
+    }
+
+    /**
+     * Tests that getting the media type header returns the same one in the constructor
+     */
+    public function testGettingMediaTypeHeaderReturnsSameOneInConstructor() : void
+    {
+        $formatter = $this->createMock(IMediaTypeFormatter::class);
+        $mediaTypeHeaderValue = new ContentTypeHeaderValue('foo/bar');
+        $match = new MediaTypeFormatterMatch($formatter, 'baz/blah', $mediaTypeHeaderValue);
         $this->assertSame($mediaTypeHeaderValue, $match->getMediaTypeHeaderValue());
     }
 }

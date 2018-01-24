@@ -11,6 +11,7 @@
 namespace Opulence\Net\Tests\Http\Formatting;
 
 use InvalidArgumentException;
+use Opulence\Collections\IImmutableDictionary;
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
 use Opulence\Net\Http\Headers\MediaTypeHeaderValue;

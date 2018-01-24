@@ -118,11 +118,31 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that the request result's charset is null if the formatter does not support it
+     */
+    public function testRequestResultCharSetIsNullIfFormatterDoesNotSupportIt() : void
+    {
+        $formatter = $this->createFormatterMock(['text/html'], 1);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-8']);
+        $this->headers->add('Content-Type', 'text/html; charset=utf-16');
+        $negotiator = new ContentNegotiator([$formatter]);
+        $result = $negotiator->negotiateRequestContent($this->request);
+        $this->assertSame($formatter, $result->getFormatter());
+        $this->assertEquals('text/html', $result->getMediaType());
+        $this->assertNull($result->getCharSet());
+    }
+
+    /**
      * Tests that the request result's charset is set from the Content-Type header if set
      */
     public function testRequestResultCharSetIsSetFromContentTypeHeaderIfSet() : void
     {
         $formatter = $this->createFormatterMock(['text/html'], 1);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-16']);
         $this->headers->add('Content-Type', 'text/html; charset=utf-16');
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateRequestContent($this->request);
@@ -256,6 +276,9 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
     public function testResponseMediaTypeIsSetFromAcceptCharsetHeaderIfSetAndAcceptHeaderIsNotSet() : void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-16']);
         $this->headers->add('Accept-Charset', 'utf-16');
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateResponseContent($this->request);
@@ -265,11 +288,49 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that the response result's charset is null if the formatter does not support the charset in the Accept=Charset header
+     */
+    public function testResponseResultCharSetIsNullIfFormatterDoesNotSupportCharSetInAcceptCharSetHeader() : void
+    {
+        $formatter = $this->createFormatterMock(['text/html'], 1);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-8']);
+        $this->headers->add('Accept', 'text/html');
+        $this->headers->add('Accept-Charset', 'utf-16');
+        $negotiator = new ContentNegotiator([$formatter]);
+        $result = $negotiator->negotiateResponseContent($this->request);
+        $this->assertSame($formatter, $result->getFormatter());
+        $this->assertEquals('text/html', $result->getMediaType());
+        $this->assertNull($result->getCharSet());
+    }
+
+    /**
+     * Tests that the response result's charset is null if the formatter does not support the charset in the Accept header
+     */
+    public function testResponseResultCharSetIsNullIfFormatterDoesNotSupportCharSetInAcceptHeader() : void
+    {
+        $formatter = $this->createFormatterMock(['text/html'], 1);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-8']);
+        $this->headers->add('Accept', 'text/html; charset=utf-16');
+        $negotiator = new ContentNegotiator([$formatter]);
+        $result = $negotiator->negotiateResponseContent($this->request);
+        $this->assertSame($formatter, $result->getFormatter());
+        $this->assertEquals('text/html', $result->getMediaType());
+        $this->assertNull($result->getCharSet());
+    }
+
+    /**
      * Tests that the response result gets the charset from the Accept-Charset header when present
      */
     public function testResponseResultGetsCharsetFromAcceptCharsetHeaderWhenPresent() : void
     {
         $formatter = $this->createFormatterMock(['text/html'], 1);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-16']);
         $negotiator = new ContentNegotiator([$formatter]);
         $this->headers->add('Accept', 'text/html', true);
         $this->headers->add('Accept-Charset', 'utf-16', true);
@@ -285,12 +346,84 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
     public function testResponseResultGetsCharsetFromAcceptHeaderWhenNoAcceptCharsetHeaderIsPresent() : void
     {
         $formatter = $this->createFormatterMock(['text/html'], 1);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-16']);
         $negotiator = new ContentNegotiator([$formatter]);
         $this->headers->add('Accept', 'text/html; charset=utf-16', true);
         $result = $negotiator->negotiateResponseContent($this->request);
         $this->assertSame($formatter, $result->getFormatter());
         $this->assertEquals('text/html', $result->getMediaType());
         $this->assertEquals('utf-16', $result->getCharSet());
+    }
+
+    /**
+     * Tests that supported encodings are chosen in order of their quality score
+     */
+    public function testSupportedEncodingsAreChosenInOrderOfQualityScore() : void
+    {
+        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-8', 'utf-16']);
+        $negotiator = new ContentNegotiator([$formatter]);
+        $this->headers->add('Accept', 'application/json', true);
+        $this->headers->add('Accept-Charset', 'utf-8; q=0.1', true);
+        $this->headers->add('Accept-Charset', 'utf-16; q=0.5', true);
+        $result = $negotiator->negotiateResponseContent($this->request);
+        $this->assertSame($formatter, $result->getFormatter());
+        $this->assertEquals('application/json', $result->getMediaType());
+        $this->assertEquals('utf-16', $result->getCharSet());
+    }
+
+    /**
+     * Tests that a wildcard encoding matches any formatter in a request result
+     */
+    public function testWildcardEncodingMatchesAnyFormatterInRequestResults() : void
+    {
+        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-8']);
+        $negotiator = new ContentNegotiator([$formatter]);
+        $this->headers->add('Content-Type', 'application/json; charset=*', true);
+        $result = $negotiator->negotiateRequestContent($this->request);
+        $this->assertSame($formatter, $result->getFormatter());
+        $this->assertEquals('application/json', $result->getMediaType());
+        $this->assertEquals('utf-8', $result->getCharSet());
+    }
+
+    /**
+     * Tests that a wildcard encoding matches any formatter in a response result
+     */
+    public function testWildcardEncodingMatchesAnyFormatterInResponseResults() : void
+    {
+        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-8']);
+        $negotiator = new ContentNegotiator([$formatter]);
+        $this->headers->add('Accept', 'application/json', true);
+        $this->headers->add('Accept-Charset', '*', true);
+        $result = $negotiator->negotiateResponseContent($this->request);
+        $this->assertSame($formatter, $result->getFormatter());
+        $this->assertEquals('application/json', $result->getMediaType());
+        $this->assertEquals('utf-8', $result->getCharSet());
+    }
+
+    /**
+     * Tests that zero quality score encodings are not matched
+     */
+    public function testZeroQualityScoreEncodingsAreNotMatched() : void
+    {
+        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $negotiator = new ContentNegotiator([$formatter]);
+        $this->headers->add('Accept', 'application/json', true);
+        $this->headers->add('Accept-Charset', 'utf-8; q=0.0', true);
+        $result = $negotiator->negotiateResponseContent($this->request);
+        $this->assertSame($formatter, $result->getFormatter());
+        $this->assertEquals('application/json', $result->getMediaType());
+        $this->assertNull($result->getCharSet());
     }
 
     /**

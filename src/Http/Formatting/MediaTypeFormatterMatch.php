@@ -19,16 +19,20 @@ class MediaTypeFormatterMatch
 {
     /** @var IMediaTypeFormatter The matched media type formatter */
     private $formatter;
-    /** @var string|null The matched media type header, or null if no media type was specified */
+    /** @var string The matched media type */
+    private $mediaType;
+    /** @var string The matched media type header */
     private $mediaTypeHeaderValue;
 
     /**
      * @param IMediaTypeFormatter $formatter The matched media type formatter
-     * @param MediaTypeHeaderValue|null $mediaTypeHeaderValue The matched media type header value if there was one, otherwise null
+     * @param string $mediaType The matched media type
+     * @param MediaTypeHeaderValue $mediaTypeHeaderValue The matched media type header value
      */
-    public function __construct(IMediaTypeFormatter $formatter, ?MediaTypeHeaderValue $mediaTypeHeaderValue)
+    public function __construct(IMediaTypeFormatter $formatter, string $mediaType, MediaTypeHeaderValue $mediaTypeHeaderValue)
     {
         $this->formatter = $formatter;
+        $this->mediaType = $mediaType;
         $this->mediaTypeHeaderValue = $mediaTypeHeaderValue;
     }
 
@@ -43,11 +47,21 @@ class MediaTypeFormatterMatch
     }
 
     /**
+     * Gets the matched media type
+     *
+     * @return string The matched media type
+     */
+    public function getMediaType() : string
+    {
+        return $this->mediaType;
+    }
+
+    /**
      * Gets the matched media type header value
      *
-     * @return MediaTypeHeaderValue|null The matched media type header value if there was one, otherwise null
+     * @return MediaTypeHeaderValue The matched media type header value
      */
-    public function getMediaTypeHeaderValue() : ?MediaTypeHeaderValue
+    public function getMediaTypeHeaderValue() : MediaTypeHeaderValue
     {
         return $this->mediaTypeHeaderValue;
     }
