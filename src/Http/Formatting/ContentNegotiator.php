@@ -21,24 +21,24 @@ class ContentNegotiator implements IContentNegotiator
 {
     /** @const The default media type if none is found (RFC-2616) */
     private const DEFAULT_MEDIA_TYPE = 'application/octet-stream';
-    /** @var MediaTypeMatcher The media type matcher */
-    private $mediaTypeMatcher;
+    /** @var MediaTypeFormatterMatcher The media type formatter matcher */
+    private $mediaTypeFormatterMatcher;
     /** @var EncodingMatcher The encoding matcher */
     private $encodingMatcher;
     /** @var RequestHeaderParser The header parser */
     private $headerParser;
 
     /**
-     * @param MediaTypeMatcher|null $mediaTypeMatcher The media type matcher, or null if using the default one
+     * @param MediaTypeFormatterMatcher|null $mediaTypeFormatterMatcher The media type formatter matcher, or null if using the default one
      * @param EncodingMatcher|null $encodingMatcher The encoding matcher, or null if using the default one
      * @param RequestHeaderParser|null $headerParser The header parser, or null if using the default one
      */
     public function __construct(
-        MediaTypeMatcher $mediaTypeMatcher = null,
+        MediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
         EncodingMatcher $encodingMatcher = null,
         RequestHeaderParser $headerParser = null
     ) {
-        $this->mediaTypeMatcher = $mediaTypeMatcher ?? new MediaTypeMatcher();
+        $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher();
         $this->encodingMatcher = $encodingMatcher ?? new EncodingMatcher();
         $this->headerParser = $headerParser ?? new RequestHeaderParser();
     }
@@ -65,7 +65,7 @@ class ContentNegotiator implements IContentNegotiator
         // The first value should be the content-type
         $contentType = $contentTypeHeaderParameters->getKeys()[0];
         $contentTypeHeader = new ContentTypeHeaderValue($contentType, $contentTypeHeaderParameters);
-        $mediaTypeFormatterMatch = $this->mediaTypeMatcher->getBestMediaTypeFormatterMatch(
+        $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestMediaTypeFormatterMatch(
             $mediaTypeFormatters,
             [$contentTypeHeader]
         );
@@ -109,7 +109,7 @@ class ContentNegotiator implements IContentNegotiator
         }
 
         $mediaTypeHeaders = $this->headerParser->parseAcceptHeader($requestHeaders);
-        $mediaTypeFormatterMatch = $this->mediaTypeMatcher->getBestMediaTypeFormatterMatch(
+        $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestMediaTypeFormatterMatch(
             $mediaTypeFormatters,
             $mediaTypeHeaders
         );

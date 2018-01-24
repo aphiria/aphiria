@@ -15,9 +15,9 @@ use Opulence\Net\Http\Headers\IHeaderValueWithQualityScore;
 use Opulence\Net\Http\Headers\MediaTypeHeaderValue;
 
 /**
- * Defines the media type matcher
+ * Defines the media type formatter matcher
  */
-class MediaTypeMatcher
+class MediaTypeFormatterMatcher
 {
     /**
      * Gets the best media type formatter match
