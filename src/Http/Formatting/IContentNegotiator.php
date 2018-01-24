@@ -22,17 +22,25 @@ interface IContentNegotiator
      * Gets the negotiation result for the request body
      *
      * @param IHttpRequestMessage $request The request to negotiate with
+     * @param IMediaTypeFormatter[] $mediaTypeFormatters The list of media type formatters to match against
      * @return ContentNegotiationResult|null The content negotiation result if found, otherwise null
-     * @throws InvalidArgumentException Thrown if the Content-Type header was incorrectly formatted
+     * @throws InvalidArgumentException Thrown if the Content-Type header was incorrectly formatted or the formatter list is empty
      */
-    public function negotiateRequestContent(IHttpRequestMessage $request) : ?ContentNegotiationResult;
+    public function negotiateRequestContent(
+        IHttpRequestMessage $request,
+        array $mediaTypeFormatters
+    ) : ?ContentNegotiationResult;
 
     /**
      * Gets the negotiation result for the response body
      *
      * @param IHttpRequestMessage $request The request to negotiate with
+     * @param IMediaTypeFormatter[] $mediaTypeFormatters The list of media type formatters to match against
      * @return ContentNegotiationResult|null The content negotiation result if found, otherwise null
-     * @throws InvalidArgumentException Thrown if the Accept header's media types were incorrectly formatted
+     * @throws InvalidArgumentException Thrown if the Accept header's media types were incorrectly formatted or the formatter list is empty
      */
-    public function negotiateResponseContent(IHttpRequestMessage $request) : ?ContentNegotiationResult;
+    public function negotiateResponseContent(
+        IHttpRequestMessage $request,
+        array $mediaTypeFormatters
+    ) : ?ContentNegotiationResult;
 }
