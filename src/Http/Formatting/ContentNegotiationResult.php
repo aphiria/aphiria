@@ -20,18 +20,18 @@ class ContentNegotiationResult
     /** @var string|null The matched media type, or null if no media type was specified */
     private $mediaType;
     /** @var string|null The matched charset, or null if no charset was specified */
-    private $charSet;
+    private $charset;
 
     /**
      * @param IMediaTypeFormatter $formatter The matched media type formatter
      * @param string|null $mediaType The matched media type if there was one, otherwise null
-     * @param string|null $charSet The matched charset if there was one, otherwise null
+     * @param string|null $charset The matched charset if there was one, otherwise null
      */
-    public function __construct(IMediaTypeFormatter $formatter, ?string $mediaType, ?string $charSet)
+    public function __construct(IMediaTypeFormatter $formatter, ?string $mediaType, ?string $charset)
     {
         $this->formatter = $formatter;
         $this->mediaType = $mediaType;
-        $this->charSet = $charSet;
+        $this->charset = $charset;
     }
 
     /**
@@ -39,9 +39,9 @@ class ContentNegotiationResult
      *
      * @return string|null The matched charset if there was one, otherwise null
      */
-    public function getCharSet() : ?string
+    public function getCharset() : ?string
     {
-        return $this->charSet;
+        return $this->charset;
     }
 
     /**

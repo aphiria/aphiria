@@ -28,7 +28,7 @@ class MediaTypeHeaderValue
     /** @var string The sub-type, eg "html" in "text/html" */
     private $subType;
     /** @var string|null The charset if one was set, otherwise null */
-    private $charSet = null;
+    private $charset = null;
 
     /**
      * @param string $mediaType The media type
@@ -47,7 +47,7 @@ class MediaTypeHeaderValue
 
         $this->type = $mediaTypeParts[0];
         $this->subType = $mediaTypeParts[1];
-        $this->parameters->tryGet('charset', $this->charSet);
+        $this->parameters->tryGet('charset', $this->charset);
     }
 
     /**
@@ -55,9 +55,9 @@ class MediaTypeHeaderValue
      *
      * @return string|null The charset if one was set, otherwise null
      */
-    public function getCharSet() : ?string
+    public function getCharset() : ?string
     {
-        return $this->charSet;
+        return $this->charset;
     }
 
     /**

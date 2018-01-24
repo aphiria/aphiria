@@ -11,7 +11,7 @@
 namespace Opulence\Net\Http\Formatting;
 
 use InvalidArgumentException;
-use Opulence\Net\Http\Headers\AcceptCharSetHeaderValue;
+use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
 use Opulence\Net\Http\Headers\IHeaderValueWithQualityScore;
@@ -86,12 +86,12 @@ class ContentNegotiator implements IContentNegotiator
     public function negotiateResponseContent(IHttpRequestMessage $request) : ?ContentNegotiationResult
     {
         $requestHeaders = $request->getHeaders();
-        $acceptCharSetHeaders = $this->headerParser->parseAcceptCharsetHeader($requestHeaders);
-        $rankedAcceptCharSetHeaders = $this->rankCharSetHeaders($acceptCharSetHeaders);
+        $acceptCharsetHeaders = $this->headerParser->parseAcceptCharsetHeader($requestHeaders);
+        $rankedAcceptCharsetHeaders = $this->rankCharsetHeaders($acceptCharsetHeaders);
 
         if (!$requestHeaders->containsKey('Accept')) {
             // Default to the first registered media type formatter
-            $encoding = $this->getBestEncoding($this->formatters[0], $rankedAcceptCharSetHeaders);
+            $encoding = $this->getBestEncoding($this->formatters[0], $rankedAcceptCharsetHeaders);
 
             return new ContentNegotiationResult($this->formatters[0], self::DEFAULT_MEDIA_TYPE, $encoding);
         }
@@ -105,7 +105,7 @@ class ContentNegotiator implements IContentNegotiator
             if ($mediaTypeFormatterMatch !== null) {
                 $encoding = $this->getBestEncoding(
                     $mediaTypeFormatterMatch->getFormatter(),
-                    $rankedAcceptCharSetHeaders,
+                    $rankedAcceptCharsetHeaders,
                     $mediaTypeFormatterMatch->getMediaTypeHeaderValue()
                 );
 
@@ -123,11 +123,11 @@ class ContentNegotiator implements IContentNegotiator
     /**
      * Compares two charsets and returns which of them is "lower" than the other
      *
-     * @param AcceptCharSetHeaderValue $a The first charset header to compare
-     * @param AcceptCharSetHeaderValue $b The second charset header to compare
+     * @param AcceptCharsetHeaderValue $a The first charset header to compare
+     * @param AcceptCharsetHeaderValue $b The second charset header to compare
      * @return int -1 if $a is lower than $b, 0 if they're even, or 1 if $a is higher than $b
      */
-    protected function compareCharSets(AcceptCharSetHeaderValue $a, AcceptCharSetHeaderValue $b) : int
+    protected function compareCharsets(AcceptCharsetHeaderValue $a, AcceptCharsetHeaderValue $b) : int
     {
         $aQuality = $a->getQuality();
         $bQuality = $b->getQuality();
@@ -140,8 +140,8 @@ class ContentNegotiator implements IContentNegotiator
             return -1;
         }
 
-        $aValue = $a->getCharSet();
-        $bValue = $b->getCharSet();
+        $aValue = $a->getCharset();
+        $bValue = $b->getCharset();
 
         if ($aValue === '*') {
             if ($bValue === '*') {
@@ -222,33 +222,33 @@ class ContentNegotiator implements IContentNegotiator
      * Gets the best character encoding for the input media type formatter
      *
      * @param IMediaTypeFormatter $formatter The media type formatter to match against
-     * @param AcceptCharSetHeaderValue[] $rankedAcceptCharSetHeaders The ranked list of charset header values to match against
+     * @param AcceptCharsetHeaderValue[] $rankedAcceptCharsetHeaders The ranked list of charset header values to match against
      * @param MediaTypeHeaderValue|null $mediaTypeHeader The matched media type header value
      * @return string|null The best charset if one was found, otherwise null
      */
     protected function getBestEncoding(
         IMediaTypeFormatter $formatter,
-        array $rankedAcceptCharSetHeaders,
+        array $rankedAcceptCharsetHeaders,
         MediaTypeHeaderValue $mediaTypeHeader = null
     ) : ?string {
-        foreach ($rankedAcceptCharSetHeaders as $acceptCharsetHeader) {
+        foreach ($rankedAcceptCharsetHeaders as $acceptCharsetHeader) {
             foreach ($formatter->getSupportedEncodings() as $supportedEncoding) {
                 if (
-                    $acceptCharsetHeader->getCharSet() === '*'
-                    || $acceptCharsetHeader->getCharSet() === $supportedEncoding
+                    $acceptCharsetHeader->getCharset() === '*'
+                    || $acceptCharsetHeader->getCharset() === $supportedEncoding
                 ) {
                     return $supportedEncoding;
                 }
             }
         }
 
-        if ($mediaTypeHeader === null || $mediaTypeHeader->getCharSet() === null) {
+        if ($mediaTypeHeader === null || $mediaTypeHeader->getCharset() === null) {
             return null;
         }
 
         // Fall back to the charset in the media type header
         foreach ($formatter->getSupportedEncodings() as $supportedEncoding) {
-            if ($mediaTypeHeader->getCharSet() === '*' || $mediaTypeHeader->getCharSet() === $supportedEncoding) {
+            if ($mediaTypeHeader->getCharset() === '*' || $mediaTypeHeader->getCharset() === $supportedEncoding) {
                 return $supportedEncoding;
             }
         }
@@ -295,13 +295,13 @@ class ContentNegotiator implements IContentNegotiator
     /**
      * Ranks the charset headers by quality, and then by specificity
      *
-     * @param AcceptCharSetHeaderValue[] $charSetHeaders The list of charset headers to rank
-     * @return AcceptCharSetHeaderValue[] The ranked list of charset headers
+     * @param AcceptCharsetHeaderValue[] $charsetHeaders The list of charset headers to rank
+     * @return AcceptCharsetHeaderValue[] The ranked list of charset headers
      */
-    protected function rankCharSetHeaders(array $charSetHeaders) : array
+    protected function rankCharsetHeaders(array $charsetHeaders) : array
     {
-        usort($charSetHeaders, [$this, 'compareCharSets']);
-        $rankedCharsetHeaders = array_filter($charSetHeaders, [$this, 'filterZeroScores']);
+        usort($charsetHeaders, [$this, 'compareCharsets']);
+        $rankedCharsetHeaders = array_filter($charsetHeaders, [$this, 'filterZeroScores']);
 
         // Have to return the values because the keys aren't updated in array_filter()
         return array_values($rankedCharsetHeaders);

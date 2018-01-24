@@ -24,11 +24,11 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the charset returns the one set in the constructor
      */
-    public function testGettingCharSetReturnsOneSetInConstructor() : void
+    public function testGettingCharsetReturnsOneSetInConstructor() : void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
         $value = new MediaTypeHeaderValue('foo/bar', $parameters);
-        $this->assertEquals('utf-8', $value->getCharSet());
+        $this->assertEquals('utf-8', $value->getCharset());
     }
 
     /**

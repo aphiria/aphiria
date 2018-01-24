@@ -42,9 +42,9 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
         $headers->add('Accept-Charset', 'utf-16', true);
         $headerValues = $this->parser->parseAcceptCharsetHeader($headers);
         $this->assertCount(2, $headerValues);
-        $this->assertEquals('utf-8', $headerValues[0]->getCharSet());
+        $this->assertEquals('utf-8', $headerValues[0]->getCharset());
         $this->assertEquals(1.0, $headerValues[0]->getQuality());
-        $this->assertEquals('utf-16', $headerValues[1]->getCharSet());
+        $this->assertEquals('utf-16', $headerValues[1]->getCharset());
         $this->assertEquals(1.0, $headerValues[1]->getQuality());
     }
 
@@ -58,22 +58,22 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
         $headers->add('Accept-Charset', 'utf-16; q=0.5', true);
         $headerValues = $this->parser->parseAcceptCharsetHeader($headers);
         $this->assertCount(2, $headerValues);
-        $this->assertEquals('utf-8', $headerValues[0]->getCharSet());
+        $this->assertEquals('utf-8', $headerValues[0]->getCharset());
         $this->assertEquals(0.1, $headerValues[0]->getQuality());
-        $this->assertEquals('utf-16', $headerValues[1]->getCharSet());
+        $this->assertEquals('utf-16', $headerValues[1]->getCharset());
         $this->assertEquals(0.5, $headerValues[1]->getQuality());
     }
 
     /**
      * Tests that parsing an Accept header with a charset sets the charset in the header value
      */
-    public function testParsingAcceptHeaderWithCharSetSetsCharsetInHeaderValue() : void
+    public function testParsingAcceptHeaderWithCharsetSetsCharsetInHeaderValue() : void
     {
         $headers = new HttpHeaders();
         $headers->add('Accept', 'text/html; charset=utf-8', true);
         $headerValues = $this->parser->parseAcceptHeader($headers);
         $this->assertCount(1, $headerValues);
-        $this->assertEquals('utf-8', $headerValues[0]->getCharSet());
+        $this->assertEquals('utf-8', $headerValues[0]->getCharset());
     }
 
     /**
@@ -88,10 +88,10 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $headerValues);
         $this->assertEquals('text/html', $headerValues[0]->getMediaType());
         $this->assertEquals(1.0, $headerValues[0]->getQuality());
-        $this->assertNull($headerValues[0]->getCharSet());
+        $this->assertNull($headerValues[0]->getCharset());
         $this->assertEquals('application/json', $headerValues[1]->getMediaType());
         $this->assertEquals(1.0, $headerValues[1]->getQuality());
-        $this->assertNull($headerValues[1]->getCharSet());
+        $this->assertNull($headerValues[1]->getCharset());
     }
 
     /**
@@ -106,10 +106,10 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $headerValues);
         $this->assertEquals('text/html', $headerValues[0]->getMediaType());
         $this->assertEquals(0.1, $headerValues[0]->getQuality());
-        $this->assertNull($headerValues[0]->getCharSet());
+        $this->assertNull($headerValues[0]->getCharset());
         $this->assertEquals('application/json', $headerValues[1]->getMediaType());
         $this->assertEquals(0.5, $headerValues[1]->getQuality());
-        $this->assertNull($headerValues[1]->getCharSet());
+        $this->assertNull($headerValues[1]->getCharset());
     }
 
     /**

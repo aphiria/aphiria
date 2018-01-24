@@ -17,23 +17,23 @@ use Opulence\Collections\ImmutableHashTable;
 /**
  * Defines the Accept-Charset header value
  */
-class AcceptCharSetHeaderValue implements IHeaderValueWithQualityScore
+class AcceptCharsetHeaderValue implements IHeaderValueWithQualityScore
 {
     /** @var string The value of the header */
-    protected $charSet;
+    protected $charset;
     /** @var IImmutableDictionary The dictionary of parameter names to values */
     protected $parameters;
     /** @var float The quality score of the header */
     protected $quality;
 
     /**
-     * @param string $charSet The charset value
+     * @param string $charset The charset value
      * @param IImmutableDictionary $parameters The dictionary of parameters
      * @throws InvalidArgumentException Thrown if the quality score is not between 0 and 1
      */
-    public function __construct(string $charSet, IImmutableDictionary $parameters = null)
+    public function __construct(string $charset, IImmutableDictionary $parameters = null)
     {
-        $this->charSet = $charSet;
+        $this->charset = $charset;
         $this->parameters = $parameters ?? new ImmutableHashTable([]);
         $this->quality = 1.0;
         $this->parameters->tryGet('q', $this->quality);
@@ -48,9 +48,9 @@ class AcceptCharSetHeaderValue implements IHeaderValueWithQualityScore
      *
      * @return string The value of the header
      */
-    public function getCharSet() : string
+    public function getCharset() : string
     {
-        return $this->charSet;
+        return $this->charset;
     }
 
     /**

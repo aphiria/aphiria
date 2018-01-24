@@ -14,12 +14,12 @@ use InvalidArgumentException;
 use Opulence\Collections\IImmutableDictionary;
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
-use Opulence\Net\Http\Headers\AcceptCharSetHeaderValue;
+use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
 
 /**
  * Tests the Accept-Charset header value
  */
-class AcceptCharSetHeaderValueTest extends \PHPUnit\Framework\TestCase
+class AcceptCharsetHeaderValueTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests that an exception is thrown with a quality score outside the accepted range
@@ -28,7 +28,7 @@ class AcceptCharSetHeaderValueTest extends \PHPUnit\Framework\TestCase
     {
         try {
             $parameters = new ImmutableHashTable([new KeyValuePair('q', '-1')]);
-            new AcceptCharSetHeaderValue('utf-8', $parameters);
+            new AcceptCharsetHeaderValue('utf-8', $parameters);
             $this->fail('Failed to throw exception for quality score less than 0');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
@@ -36,7 +36,7 @@ class AcceptCharSetHeaderValueTest extends \PHPUnit\Framework\TestCase
 
         try {
             $parameters = new ImmutableHashTable([new KeyValuePair('q', '1.5')]);
-            new AcceptCharSetHeaderValue('utf-8', $parameters);
+            new AcceptCharsetHeaderValue('utf-8', $parameters);
             $this->fail('Failed to throw exception for quality score greater than 1');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
@@ -46,11 +46,11 @@ class AcceptCharSetHeaderValueTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the charset returns the same one that's set in the constructor
      */
-    public function testGettingCharSetReturnsSameOneSetInConstructor() : void
+    public function testGettingCharsetReturnsSameOneSetInConstructor() : void
     {
         $parameters = $this->createMock(IImmutableDictionary::class);
-        $value = new AcceptCharSetHeaderValue('utf-8', $parameters);
-        $this->assertSame('utf-8', $value->getCharSet());
+        $value = new AcceptCharsetHeaderValue('utf-8', $parameters);
+        $this->assertSame('utf-8', $value->getCharset());
     }
 
     /**
@@ -59,7 +59,7 @@ class AcceptCharSetHeaderValueTest extends \PHPUnit\Framework\TestCase
     public function testGettingParametersReturnsSameOneSetInConstructor() : void
     {
         $parameters = new ImmutableHashTable([]);
-        $value = new AcceptCharSetHeaderValue('utf-8', $parameters);
+        $value = new AcceptCharsetHeaderValue('utf-8', $parameters);
         $this->assertSame($parameters, $value->getParameters());
     }
 
@@ -69,7 +69,7 @@ class AcceptCharSetHeaderValueTest extends \PHPUnit\Framework\TestCase
     public function testGettingQualityReturnsCorrectQuality() : void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('q', '.5')]);
-        $value = new AcceptCharSetHeaderValue('utf-8', $parameters);
+        $value = new AcceptCharsetHeaderValue('utf-8', $parameters);
         $this->assertEquals(.5, $value->getQuality());
     }
 
@@ -78,7 +78,7 @@ class AcceptCharSetHeaderValueTest extends \PHPUnit\Framework\TestCase
      */
     public function testQualityDefaultsToOne() : void
     {
-        $value = new AcceptCharSetHeaderValue('utf-8', null);
+        $value = new AcceptCharsetHeaderValue('utf-8', null);
         $this->assertEquals(1, $value->getQuality());
     }
 }

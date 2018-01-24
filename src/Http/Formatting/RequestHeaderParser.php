@@ -11,7 +11,7 @@
 namespace Opulence\Net\Http\Formatting;
 
 use Opulence\Collections\IImmutableDictionary;
-use Opulence\Net\Http\Headers\AcceptCharSetHeaderValue;
+use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Opulence\Net\Http\HttpHeaders;
 
@@ -24,7 +24,7 @@ class RequestHeaderParser extends HttpHeaderParser
      * Parses the Accept-Charset header
      *
      * @param HttpHeaders $headers The request headers to parse
-     * @return AcceptCharSetHeaderValue[] The list of charset header values
+     * @return AcceptCharsetHeaderValue[] The list of charset header values
      */
     public function parseAcceptCharsetHeader(HttpHeaders $headers) : array
     {
@@ -40,7 +40,7 @@ class RequestHeaderParser extends HttpHeaderParser
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept-Charset', $i);
             // The first value should always be the charset
             $charset = $parsedHeaderParameters->getKeys()[0];
-            $parsedHeaderValues[] = new AcceptCharSetHeaderValue($charset, $parsedHeaderParameters);
+            $parsedHeaderValues[] = new AcceptCharsetHeaderValue($charset, $parsedHeaderParameters);
         }
 
         return $parsedHeaderValues;

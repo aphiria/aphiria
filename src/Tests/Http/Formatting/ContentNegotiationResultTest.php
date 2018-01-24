@@ -21,11 +21,11 @@ class ContentNegotiationResultTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the charset returns the same one in the constructor
      */
-    public function testGettingCharSetReturnsSameOneInConstructor() : void
+    public function testGettingCharsetReturnsSameOneInConstructor() : void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', 'utf-8');
-        $this->assertEquals('utf-8', $results->getCharSet());
+        $this->assertEquals('utf-8', $results->getCharset());
     }
 
     /**

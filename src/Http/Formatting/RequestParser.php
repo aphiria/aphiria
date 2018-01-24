@@ -14,7 +14,7 @@ use InvalidArgumentException;
 use Opulence\Collections\IDictionary;
 use Opulence\Collections\IImmutableDictionary;
 use Opulence\Net\Formatting\UriParser;
-use Opulence\Net\Http\Headers\AcceptCharSetHeaderValue;
+use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\MultipartBody;
@@ -111,7 +111,7 @@ class RequestParser
      * Parses the Accept-Charset header
      *
      * @param IHttpRequestMessage $request The request to parse
-     * @return AcceptCharSetHeaderValue[] The list of charset header values
+     * @return AcceptCharsetHeaderValue[] The list of charset header values
      */
     public function parseAcceptCharsetHeader(IHttpRequestMessage $request) : array
     {
