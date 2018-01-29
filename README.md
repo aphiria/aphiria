@@ -101,7 +101,7 @@ use Opulence\Net\Http\StringBody;
 
 // Via constructor:
 $body = new StringBody('foo');
-$request = new Request('GET', new Uri('https://example.com'), null, $body);
+$request = new Request('POST', new Uri('https://example.com'), null, $body);
 
 // Or via setBody():
 $request->setBody($body);

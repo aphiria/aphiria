@@ -10,10 +10,12 @@
 
 namespace Opulence\Net\Tests\Http\Formatting;
 
+use InvalidArgumentException;
 use Opulence\Net\Http\Formatting\ResponseFormatter;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\StringBody;
+use Opulence\Net\Uri;
 
 /**
  * Tests the HTTP response message formatter
@@ -64,5 +66,26 @@ class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
             ->with(301);
         $this->formatter->redirectToUri($this->response, 'http://foo.com', 301);
         $this->assertEquals('http://foo.com', $this->headers->getFirst('Location'));
+    }
+
+    /**
+     * Tests that redirecting to a URI converts a URI instance to a string and sets the location header and sets the status code
+     */
+    public function testRedirectingToUriConvertsUriInstanceToStringAndSetsLocationHeaderAndStatusCode() : void
+    {
+        $this->response->expects($this->once())
+            ->method('setStatusCode')
+            ->with(301);
+        $this->formatter->redirectToUri($this->response, new Uri('http://foo.com'), 301);
+        $this->assertEquals('http://foo.com', $this->headers->getFirst('Location'));
+    }
+
+    /**
+     * Tests that redirecting to a URI that is not a string nor URI throws an exception
+     */
+    public function testRedirectingToUriThatIsNotUriNorStringThrowsException() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->formatter->redirectToUri($this->response, [], 301);
     }
 }

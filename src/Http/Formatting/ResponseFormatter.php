@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use Opulence\Net\Http\Cookie;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\StringBody;
+use Opulence\Net\Uri;
 use RuntimeException;
 
 /**
@@ -89,14 +90,23 @@ class ResponseFormatter
      * Sets up the response to redirect to a particular URI
      *
      * @param IHttpResponseMessage $response The response to format
-     * @param string $uri The URI to redirect to
+     * @param Uri|string $uri The URI to redirect to
      * @param int $statusCode The status code
+     * @throws InvalidArgumentException Thrown if the URI is not an instance of URI or a string
      * @throws RuntimeException Thrown if the location header's hash key could not be calculated
      */
-    public function redirectToUri(IHttpResponseMessage $response, string $uri, int $statusCode = 302) : void
+    public function redirectToUri(IHttpResponseMessage $response, $uri, int $statusCode = 302) : void
     {
+        if (is_string($uri)) {
+            $uriString = $uri;
+        } elseif ($uri instanceof Uri) {
+            $uriString = (string)$uri;
+        } else {
+            throw new InvalidArgumentException('Uri must be instance of ' . Uri::class . ' or string');
+        }
+
         $response->setStatusCode($statusCode);
-        $response->getHeaders()->add('Location', $uri);
+        $response->getHeaders()->add('Location', $uriString);
     }
 
     /**
