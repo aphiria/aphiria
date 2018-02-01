@@ -32,7 +32,7 @@
 
 <h2 id="introduction">Introduction</h2>
 
-Opulence's network library provides better abstractions for HTTP requests, responses, bodies, headers, and URIs.
+Opulence's network library provides better abstractions for HTTP requests, responses, bodies, headers, and URIs.  It also comes built-in with support for RFC-compliant content negotiation for request and response bodies.
 
 <h4 id="requirements">Requirements</h4>
 

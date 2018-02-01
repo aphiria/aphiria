@@ -12,9 +12,8 @@ namespace Opulence\Net\Tests\Http\Formatting;
 
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
+use Opulence\Net\Http\Formatting\IDataContractConverter;
 use Opulence\Net\Http\Formatting\JsonMediaTypeFormatter;
-use Opulence\Net\Http\Formatting\ModelMapper;
-use Opulence\Net\Http\Formatting\ModelMapperRegistry;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
 use RuntimeException;
 
@@ -25,26 +24,16 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 {
     /** @var JsonMediaTypeFormatter The formatter to use in tests */
     private $formatter;
-    /** @var ModelMapper The model mapper to use in tests */
-    private $modelMapper;
+    /** @var IDataContractConverter|\PHPUnit_Framework_MockObject_MockObject The data contract converter to use in tests */
+    private $dataContractConverter;
 
     /**
      * Sets up the tests
      */
     public function setUp() : void
     {
-        $modelMapperRegistry = new ModelMapperRegistry();
-        $modelMapperRegistry->registerMappers(
-            User::class,
-            function (User $user, ModelMapper $modelMapper) {
-                return ['id' => $user->getId(), 'email' => $user->getEmail()];
-            },
-            function (array $hash, ModelMapper $modelMapper) {
-                return new User((int)$hash['id'], $hash['email']);
-            }
-        );
-        $this->modelMapper = new ModelMapper($modelMapperRegistry);
-        $this->formatter = new JsonMediaTypeFormatter($this->modelMapper);
+        $this->dataContractConverter = $this->createMock(IDataContractConverter::class);
+        $this->formatter = new JsonMediaTypeFormatter($this->dataContractConverter);
     }
 
     /**
@@ -86,16 +75,6 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that reading an object whose decoded value is not a hash throws an exception
-     */
-    public function testReadingObjectWhoseDecodedValueIsNotHashThrowsException() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $stream = $this->createStreamWithStringBody(json_encode('foo'));
-        $this->formatter->readFromStream(User::class, $stream);
-    }
-
-    /**
      * Tests that reading null returns null
      */
     public function testReadingNullReturnsNull() : void
@@ -132,15 +111,23 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that reading an array of serialized objects will use the model mapper to deserialize the objects
+     * Tests that reading an array of serialized objects will use the data contract converter to deserialize the objects
      */
-    public function testReadingSerializedArrayOfObjectsWillUseModelMapperToDeserializeObjects() : void
+    public function testReadingSerializedArrayOfObjectsWillUseDataContractConverterToDeserializeObjects() : void
     {
-        $userHashes = [
+        $userDataContracts = [
             ['id' => 123, 'email' => 'foo@bar.com'],
             ['id' => 456, 'email' => 'baz@blah.com']
         ];
-        $stream = $this->createStreamWithStringBody(json_encode($userHashes));
+        $this->dataContractConverter->expects($this->at(0))
+            ->method('convertFromDataContract')
+            ->with(User::class, $userDataContracts[0])
+            ->willReturn(new User(123, 'foo@bar.com'));
+        $this->dataContractConverter->expects($this->at(1))
+            ->method('convertFromDataContract')
+            ->with(User::class, $userDataContracts[1])
+            ->willReturn(new User(456, 'baz@blah.com'));
+        $stream = $this->createStreamWithStringBody(json_encode($userDataContracts));
         $users = $this->formatter->readFromStream(User::class, $stream, true);
         $this->assertTrue(is_array($users));
         $this->assertCount(2, $users);
@@ -153,11 +140,16 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that reading a serialized object will use the model mapper to deserialize the object
+     * Tests that reading a serialized object will use the data contract converter to deserialize the object
      */
-    public function testReadingSerializedObjectWillUseModelMapperToDeserializeObject() : void
+    public function testReadingSerializedObjectWillUseDataContractConverterToDeserializeObject() : void
     {
-        $stream = $this->createStreamWithStringBody(json_encode(['id' => 123, 'email' => 'foo@bar.com']));
+        $dataContract = ['id' => 123, 'email' => 'foo@bar.com'];
+        $this->dataContractConverter->expects($this->once())
+            ->method('convertFromDataContract')
+            ->with(User::class, $dataContract)
+            ->willReturn(new User(123, 'foo@bar.com'));
+        $stream = $this->createStreamWithStringBody(json_encode($dataContract));
         $user = $this->formatter->readFromStream(User::class, $stream);
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals(123, $user->getId());
@@ -165,16 +157,24 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that writing an array of objects uses the model mapper to serialize them
+     * Tests that writing an array of objects uses the data contract converter to serialize them
      */
-    public function testWritingArrayOfObjectsUsesModelMapperToSerializeThem() : void
+    public function testWritingArrayOfObjectsUsesDataContractConverterToSerializeThem() : void
     {
         $users = [new User(123, 'foo@bar.com'), new User(456, 'baz@blah.com')];
-        $usersHash = [
+        $userDataContracts = [
             ['id' => 123, 'email' => 'foo@bar.com'],
             ['id' => 456, 'email' => 'baz@blah.com']
         ];
-        $stream = $this->createStreamThatExpectsBody(json_encode($usersHash));
+        $this->dataContractConverter->expects($this->at(0))
+            ->method('convertToDataContract')
+            ->with($users[0])
+            ->willReturn($userDataContracts[0]);
+        $this->dataContractConverter->expects($this->at(1))
+            ->method('convertToDataContract')
+            ->with($users[1])
+            ->willReturn($userDataContracts[1]);
+        $stream = $this->createStreamThatExpectsBody(json_encode($userDataContracts));
         $this->formatter->writeToStream($users, $stream);
     }
 
@@ -194,17 +194,21 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     public function testWritingNonScalarNorObjectThrowsException() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->formatter->writeToStream(function () {
-        }, $this->createMock(IStream::class));
+        $this->formatter->writeToStream(fopen('php://temp', 'r'), $this->createMock(IStream::class));
     }
 
     /**
-     * Tests that writing an object uses the model mapper to serialize it
+     * Tests that writing an object uses the data contract converter to serialize it
      */
-    public function testWritingObjectUsesModelMapperToSerializeIt() : void
+    public function testWritingObjectUsesDataContractConverterToSerializeIt() : void
     {
         $user = new User(123, 'foo@bar.com');
-        $stream = $this->createStreamThatExpectsBody(json_encode(['id' => 123, 'email' => 'foo@bar.com']));
+        $userDataContract = ['id' => 123, 'email' => 'foo@bar.com'];
+        $this->dataContractConverter->expects($this->once())
+            ->method('convertToDataContract')
+            ->with($user)
+            ->willReturn($userDataContract);
+        $stream = $this->createStreamThatExpectsBody(json_encode($userDataContract));
         $this->formatter->writeToStream($user, $stream);
     }
 

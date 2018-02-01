@@ -23,15 +23,15 @@ class JsonMediaTypeFormatter implements IMediaTypeFormatter
     private static $supportedEncodings = ['utf-8'];
     /** @var array The list of supported media types */
     private static $supportedMediaTypes = ['application/json', 'text/json'];
-    /** @var ModelMapper The model mapper to use to convert to and from models and hashes */
-    private $modelMapper;
+    /** @var IDataContractConverter The data contract converter to use */
+    private $dataContractConverter;
 
     /**
-     * @param ModelMapper $modelMapper The model mapper to use to convert to and from models and hashes
+     * @param IDataContractConverter $dataContractConverter The data contract converter to use
      */
-    public function __construct(ModelMapper $modelMapper)
+    public function __construct(IDataContractConverter $dataContractConverter)
     {
-        $this->modelMapper = $modelMapper;
+        $this->dataContractConverter = $dataContractConverter;
     }
 
     /**
@@ -102,7 +102,7 @@ class JsonMediaTypeFormatter implements IMediaTypeFormatter
         }
 
         if (is_object($value)) {
-            return $this->modelMapper->convertToHash($value);
+            return $this->dataContractConverter->convertToDataContract($value);
         }
 
         throw new InvalidArgumentException('Expected scalar, array, or object, received ' . gettype($value));
@@ -136,11 +136,7 @@ class JsonMediaTypeFormatter implements IMediaTypeFormatter
             case 'boolean':
                 return (bool)$value;
             default:
-                if (!is_array($value)) {
-                    throw new InvalidArgumentException("Failed to convert value to type $type");
-                }
-
-                return $this->modelMapper->convertFromHash($type, $value);
+                return $this->dataContractConverter->convertFromDataContract($type, $value);
         }
     }
 }
