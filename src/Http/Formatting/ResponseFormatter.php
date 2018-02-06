@@ -97,7 +97,7 @@ class ResponseFormatter
      */
     public function redirectToUri(IHttpResponseMessage $response, $uri, int $statusCode = 302) : void
     {
-        if (is_string($uri)) {
+        if (\is_string($uri)) {
             $uriString = $uri;
         } elseif ($uri instanceof Uri) {
             $uriString = (string)$uri;

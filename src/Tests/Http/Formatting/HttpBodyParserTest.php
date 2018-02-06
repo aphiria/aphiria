@@ -21,9 +21,9 @@ use RuntimeException;
 class HttpBodyParserTest extends \PHPUnit\Framework\TestCase
 {
     /** @var HttpBodyParser The parser to use in tests */
-    private $parser = null;
+    private $parser;
     /** @var IHttpBody|\PHPUnit_Framework_MockObject_MockObject The body to use in tests */
-    private $body = null;
+    private $body;
 
     /**
      * Sets up the tests
@@ -61,7 +61,7 @@ class HttpBodyParserTest extends \PHPUnit\Framework\TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn('<?xml version="1.0"?><foo />');
-        $this->assertEquals('application/xml', $this->parser->getMimeType($this->body));
+        $this->assertEquals('text/xml', $this->parser->getMimeType($this->body));
     }
 
     /**
@@ -122,8 +122,9 @@ class HttpBodyParserTest extends \PHPUnit\Framework\TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
-        /** @var MultipartBodyPart[] $bodyParts */
-        $bodyParts = $this->parser->readAsMultipart($this->body, 'boundary')->getParts();
+        $multipartBody = $this->parser->readAsMultipart($this->body, 'boundary');
+        $this->assertNotNull($multipartBody);
+        $bodyParts = $multipartBody->getParts();
         $this->assertCount(1, $bodyParts);
         $this->assertEquals('bar', $bodyParts[0]->getHeaders()->getFirst('Foo'));
         $this->assertEquals('blah', $bodyParts[0]->getHeaders()->getFirst('Baz'));
@@ -137,10 +138,13 @@ class HttpBodyParserTest extends \PHPUnit\Framework\TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
-        /** @var MultipartBodyPart[] $bodyParts */
-        $bodyParts = $this->parser->readAsMultipart($this->body, 'boundary')->getParts();
+        $multipartBody = $this->parser->readAsMultipart($this->body, 'boundary');
+        $this->assertNotNull($multipartBody);
+        $bodyParts = $multipartBody->getParts();
         $this->assertCount(1, $bodyParts);
-        $this->assertEquals('body', $bodyParts[0]->getBody()->readAsString());
+        $body = $bodyParts[0]->getBody();
+        $this->assertNotNull($body);
+        $this->assertEquals('body', $body->readAsString());
     }
 
     /**
@@ -179,8 +183,9 @@ class HttpBodyParserTest extends \PHPUnit\Framework\TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn($bodyString);
-        /** @var MultipartBodyPart[] $bodyParts */
-        $bodyParts = $this->parser->readAsMultipart($this->body, 'boundary1')->getParts();
+        $multipartBody = $this->parser->readAsMultipart($this->body, 'boundary1');
+        $this->assertNotNull($multipartBody);
+        $bodyParts = $multipartBody->getParts();
         $this->assertCount(1, $bodyParts);
         $this->assertEquals(
             'multipart/mixed; boundary="boundary2"',
@@ -198,6 +203,8 @@ class HttpBodyParserTest extends \PHPUnit\Framework\TestCase
             '--boundary3--' .
             "\r\n" .
             '--boundary2--';
-        $this->assertEquals($expectedBodyString, $bodyParts[0]->getBody()->readAsString());
+        $body = $bodyParts[0]->getBody();
+        $this->assertNotNull($body);
+        $this->assertEquals($expectedBodyString, $body->readAsString());
     }
 }

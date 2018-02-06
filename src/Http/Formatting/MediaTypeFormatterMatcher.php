@@ -26,22 +26,17 @@ class MediaTypeFormatterMatcher
      * @param MediaTypeHeaderValue[] $mediaTypeHeaders The media type headers to match against
      * @return MediaTypeFormatterMatch|null The media type formatter match if there was one, otherwise null
      */
-    public function getBestMediaTypeFormatterMatch(array $formatters, array $mediaTypeHeaders) : ?MediaTypeFormatterMatch
-    {
+    public function getBestMediaTypeFormatterMatch(
+        array $formatters,
+        array $mediaTypeHeaders
+    ) : ?MediaTypeFormatterMatch {
         // Rank the media type headers if they are rankable
-        if (count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof IHeaderValueWithQualityScore) {
+        if (\count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof IHeaderValueWithQualityScore) {
             $mediaTypeHeaders = $this->rankAcceptMediaTypeHeaders($mediaTypeHeaders);
         }
 
         foreach ($mediaTypeHeaders as $mediaTypeHeader) {
-            $mediaTypeParts = explode('/', $mediaTypeHeader->getMediaType());
-
-            // Don't bother going on if the media type isn't in the correct format
-            if (count($mediaTypeParts) !== 2 || $mediaTypeParts[0] === '' || $mediaTypeParts[1] === '') {
-                throw new InvalidArgumentException('Media type must be in format {type}/{sub-type}');
-            }
-
-            [$type, $subType] = $mediaTypeParts;
+            [$type, $subType] = explode('/', $mediaTypeHeader->getMediaType());
 
             foreach ($formatters as $formatter) {
                 foreach ($formatter->getSupportedMediaTypes() as $supportedMediaType) {

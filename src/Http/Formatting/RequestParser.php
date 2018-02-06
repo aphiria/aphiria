@@ -113,6 +113,7 @@ class RequestParser
      *
      * @param IHttpRequestMessage $request The request to parse
      * @return AcceptCharsetHeaderValue[] The list of charset header values
+     * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseAcceptCharsetHeader(IHttpRequestMessage $request) : array
     {
@@ -124,6 +125,7 @@ class RequestParser
      *
      * @param IHttpRequestMessage $request The request to parse
      * @return AcceptMediaTypeHeaderValue[] The list of media type header values
+     * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseAcceptHeader(IHttpRequestMessage $request) : array
     {
@@ -135,6 +137,7 @@ class RequestParser
      *
      * @param IHttpRequestMessage $request The request to parse
      * @return ContentTypeHeaderValue|null The parsed header if one exists, otherwise null
+     * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseContentTypeHeader(IHttpRequestMessage $request) : ?ContentTypeHeaderValue
     {

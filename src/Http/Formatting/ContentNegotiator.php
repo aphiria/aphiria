@@ -49,7 +49,7 @@ class ContentNegotiator implements IContentNegotiator
         IHttpRequestMessage $request,
         array $mediaTypeFormatters
     ) : ?ContentNegotiationResult {
-        if (count($mediaTypeFormatters) === 0) {
+        if (\count($mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
         }
 
@@ -90,7 +90,7 @@ class ContentNegotiator implements IContentNegotiator
         IHttpRequestMessage $request,
         array $mediaTypeFormatters
     ) : ?ContentNegotiationResult {
-        if (count($mediaTypeFormatters) === 0) {
+        if (\count($mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
         }
 
@@ -99,7 +99,11 @@ class ContentNegotiator implements IContentNegotiator
 
         if (!$requestHeaders->containsKey('Accept')) {
             // Default to the first registered media type formatter
-            $encoding = $this->encodingMatcher->getBestEncodingMatch($mediaTypeFormatters[0], $acceptCharsetHeaders, null);
+            $encoding = $this->encodingMatcher->getBestEncodingMatch(
+                $mediaTypeFormatters[0],
+                $acceptCharsetHeaders,
+                null
+            );
 
             return new ContentNegotiationResult($mediaTypeFormatters[0], self::DEFAULT_MEDIA_TYPE, $encoding);
         }

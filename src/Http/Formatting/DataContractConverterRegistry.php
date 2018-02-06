@@ -59,7 +59,7 @@ class DataContractConverterRegistry
      * @param callable $toDataContractConverter The converter that converts a model to a data contract
      *      Note: Must accept the model and an instance of IDataContractConverter
      * @param callable $fromDataContractConverter The converter that converts a data contract to a model
-     *      Note: Mmust accept the data contract and an instance of IDataContractConverter
+     *      Note: Must accept the data contract and an instance of IDataContractConverter
      */
     public function registerDataContractConverter(
         string $type,

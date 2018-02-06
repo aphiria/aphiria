@@ -10,7 +10,6 @@
 
 namespace Opulence\Net\Tests\Http\Formatting;
 
-use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\Formatting\IDataContractConverter;
 use Opulence\Net\Http\Formatting\JsonMediaTypeFormatter;
@@ -128,8 +127,9 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
             ->with(User::class, $userDataContracts[1])
             ->willReturn(new User(456, 'baz@blah.com'));
         $stream = $this->createStreamWithStringBody(json_encode($userDataContracts));
+        /** @var User[] $users */
         $users = $this->formatter->readFromStream(User::class, $stream, true);
-        $this->assertTrue(is_array($users));
+        $this->assertTrue(\is_array($users));
         $this->assertCount(2, $users);
         $this->assertInstanceOf(User::class, $users[0]);
         $this->assertInstanceOf(User::class, $users[1]);
@@ -193,8 +193,10 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
      */
     public function testWritingNonScalarNorObjectThrowsException() : void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->formatter->writeToStream(fopen('php://temp', 'r'), $this->createMock(IStream::class));
+        $this->expectException(RuntimeException::class);
+        /** @var IStream|\PHPUnit_Framework_MockObject_MockObject $stream */
+        $stream = $this->createMock(IStream::class);
+        $this->formatter->writeToStream(fopen('php://temp', 'r+b'), $stream);
     }
 
     /**

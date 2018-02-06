@@ -28,7 +28,7 @@ class MediaTypeHeaderValue
     /** @var string The sub-type, eg "html" in "text/html" */
     private $subType;
     /** @var string|null The charset if one was set, otherwise null */
-    private $charset = null;
+    private $charset;
 
     /**
      * @param string $mediaType The media type
@@ -37,11 +37,11 @@ class MediaTypeHeaderValue
      */
     public function __construct(string $mediaType, IImmutableDictionary $parameters = null)
     {
-        $this->value = $mediaType;
+        $this->mediaType = $mediaType;
         $this->parameters = $parameters ?? new ImmutableHashTable([]);
         $mediaTypeParts = explode('/', $mediaType);
 
-        if (count($mediaTypeParts) !== 2 || empty($mediaTypeParts[0]) || empty($mediaTypeParts[1])) {
+        if (\count($mediaTypeParts) !== 2 || empty($mediaTypeParts[0]) || empty($mediaTypeParts[1])) {
             throw new InvalidArgumentException("Media type must be in format {type}/{sub-type}, received $mediaType");
         }
 
@@ -67,7 +67,7 @@ class MediaTypeHeaderValue
      */
     public function getMediaType() : string
     {
-        return $this->value;
+        return $this->mediaType;
     }
 
     /**

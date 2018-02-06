@@ -36,10 +36,9 @@ class EncodingMatcher
 
         foreach ($rankedAcceptCharsetHeaders as $acceptCharsetHeader) {
             foreach ($formatter->getSupportedEncodings() as $supportedEncoding) {
-                if (
-                    $acceptCharsetHeader->getCharset() === '*'
-                    || $acceptCharsetHeader->getCharset() === $supportedEncoding
-                ) {
+                $charset = $acceptCharsetHeader->getCharset();
+
+                if ($charset === '*' || $charset === $supportedEncoding) {
                     return $supportedEncoding;
                 }
             }
@@ -51,7 +50,9 @@ class EncodingMatcher
 
         // Fall back to the charset in the media type header
         foreach ($formatter->getSupportedEncodings() as $supportedEncoding) {
-            if ($mediaTypeHeader->getCharset() === '*' || $mediaTypeHeader->getCharset() === $supportedEncoding) {
+            $charset = $mediaTypeHeader->getCharset();
+
+            if ($charset === '*' || $charset === $supportedEncoding) {
                 return $supportedEncoding;
             }
         }

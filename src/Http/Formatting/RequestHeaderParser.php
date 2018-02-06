@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Http\Formatting;
 
+use InvalidArgumentException;
 use Opulence\Collections\IImmutableDictionary;
 use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
@@ -26,6 +27,7 @@ class RequestHeaderParser extends HttpHeaderParser
      *
      * @param HttpHeaders $headers The request headers to parse
      * @return AcceptCharsetHeaderValue[] The list of charset header values
+     * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseAcceptCharsetHeader(HttpHeaders $headers) : array
     {
@@ -36,8 +38,9 @@ class RequestHeaderParser extends HttpHeaderParser
         }
 
         $parsedHeaderValues = [];
+        $numHeaderValues = \count($headerValues);
 
-        for ($i = 0;$i < count($headerValues);$i++) {
+        for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept-Charset', $i);
             // The first value should always be the charset
             $charset = $parsedHeaderParameters->getKeys()[0];
@@ -52,6 +55,7 @@ class RequestHeaderParser extends HttpHeaderParser
      *
      * @param HttpHeaders $headers The request headers to parse
      * @return AcceptMediaTypeHeaderValue[] The list of media type header values
+     * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseAcceptHeader(HttpHeaders $headers) : array
     {
@@ -62,8 +66,9 @@ class RequestHeaderParser extends HttpHeaderParser
         }
 
         $parsedHeaderValues = [];
+        $numHeaderValues = \count($headerValues);
 
-        for ($i = 0;$i < count($headerValues);$i++) {
+        for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept', $i);
             // The first value should always be the media type
             $mediaType = $parsedHeaderParameters->getKeys()[0];
@@ -78,6 +83,7 @@ class RequestHeaderParser extends HttpHeaderParser
      *
      * @param HttpHeaders $headers The request headers to parse
      * @return ContentTypeHeaderValue|null The parsed header if one exists, otherwise null
+     * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseContentTypeHeader(HttpHeaders $headers) : ?ContentTypeHeaderValue
     {

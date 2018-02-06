@@ -61,17 +61,21 @@ class JsonMediaTypeFormatter implements IMediaTypeFormatter
             throw new RuntimeException('Stream could not be read as JSON');
         }
 
-        if (!$readAsArrayOfType) {
-            return $this->convertValueToType($type, $json);
+        try {
+            if (!$readAsArrayOfType) {
+                return $this->convertValueToType($type, $json);
+            }
+
+            $values = [];
+
+            foreach ($json as $value) {
+                $values[] = $this->convertValueToType($type, $value);
+            }
+
+            return $values;
+        } catch (InvalidArgumentException $ex) {
+            throw new RuntimeException('Failed to convert value to type', 0, $ex);
         }
-
-        $values = [];
-
-        foreach ($json as $value) {
-            $values[] = $this->convertValueToType($type, $value);
-        }
-
-        return $values;
     }
 
     /**
@@ -79,13 +83,17 @@ class JsonMediaTypeFormatter implements IMediaTypeFormatter
      */
     public function writeToStream($object, IStream $stream) : void
     {
-        if (is_array($object)) {
-            $data = array_map([$this, 'convertToJsonEncodableValue'], $object);
-        } else {
-            $data = $this->convertToJsonEncodableValue($object);
-        }
+        try {
+            if (\is_array($object)) {
+                $data = array_map([$this, 'convertToJsonEncodableValue'], $object);
+            } else {
+                $data = $this->convertToJsonEncodableValue($object);
+            }
 
-        $stream->write(json_encode($data));
+            $stream->write(json_encode($data));
+        } catch (InvalidArgumentException $ex) {
+            throw new RuntimeException('Failed to convert value to JSON-encodable value', 0, $ex);
+        }
     }
 
     /**
@@ -97,15 +105,15 @@ class JsonMediaTypeFormatter implements IMediaTypeFormatter
      */
     private function convertToJsonEncodableValue($value)
     {
-        if (is_scalar($value) || is_array($value) || $value === null) {
+        if (is_scalar($value) || \is_array($value) || $value === null) {
             return $value;
         }
 
-        if (is_object($value)) {
+        if (\is_object($value)) {
             return $this->dataContractConverter->convertToDataContract($value);
         }
 
-        throw new InvalidArgumentException('Expected scalar, array, or object, received ' . gettype($value));
+        throw new InvalidArgumentException('Expected scalar, array, or object, received ' . \gettype($value));
     }
 
     /**

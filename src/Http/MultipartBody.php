@@ -40,8 +40,9 @@ class MultipartBody extends StreamBody
 
         // Create the header boundary
         $stream->addStream($this->createStreamFromString("--{$this->boundary}"));
+        $numParts = \count($this->parts);
 
-        for ($i = 0;$i < count($this->parts);$i++) {
+        for ($i = 0;$i < $numParts;$i++) {
             if ($i > 0) {
                 $stream->addStream($this->createStreamFromString("\r\n--{$this->boundary}"));
             }
