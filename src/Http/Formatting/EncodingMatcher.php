@@ -38,7 +38,7 @@ class EncodingMatcher
             foreach ($formatter->getSupportedEncodings() as $supportedEncoding) {
                 $charset = $acceptCharsetHeader->getCharset();
 
-                if ($charset === '*' || $charset === $supportedEncoding) {
+                if ($charset === '*' || strcasecmp($charset, $supportedEncoding) === 0) {
                     return $supportedEncoding;
                 }
             }
@@ -52,7 +52,7 @@ class EncodingMatcher
         foreach ($formatter->getSupportedEncodings() as $supportedEncoding) {
             $charset = $mediaTypeHeader->getCharset();
 
-            if ($charset === '*' || $charset === $supportedEncoding) {
+            if ($charset === '*' || strcasecmp($charset, $supportedEncoding) === 0) {
                 return $supportedEncoding;
             }
         }

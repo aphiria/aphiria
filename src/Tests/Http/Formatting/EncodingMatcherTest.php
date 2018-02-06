@@ -35,6 +35,29 @@ class EncodingMatcherTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that the best encoding can match mis-matching cases in the Accept-Charset header
+     */
+    public function testBestEncodingCanMatchMismatchingCasesInAcceptCharset() : void
+    {
+        $formatter = $this->createFormatterMock(['utf-8']);
+        $acceptCharsetHeader = new AcceptCharsetHeaderValue('UTF-8');
+        $encoding = $this->matcher->getBestEncodingMatch($formatter, [$acceptCharsetHeader], null);
+        $this->assertEquals('utf-8', $encoding);
+    }
+
+    /**
+     * Tests that the best encoding can match mis-matching cases in charsets in the Accept header
+     */
+    public function testBestEncodingCanMatchMismatchingCasesInAcceptHeader() : void
+    {
+        $formatter = $this->createFormatterMock(['utf-8']);
+        $acceptHeaderParameters = new ImmutableHashTable([new KeyValuePair('charset', 'UTF-8')]);
+        $acceptHeader = new AcceptMediaTypeHeaderValue('text/html', $acceptHeaderParameters);
+        $encoding = $this->matcher->getBestEncodingMatch($formatter, [], $acceptHeader);
+        $this->assertEquals('utf-8', $encoding);
+    }
+
+    /**
      * Tests that the best encoding comes from the Accept-Charset header if it and the Accept header have supported encodings
      */
     public function testBestEncodingComesFromAcceptCharsetHeaderIfItAndAcceptHeaderHaveSupportedEncodings() : void
@@ -149,6 +172,7 @@ class EncodingMatcherTest extends \PHPUnit\Framework\TestCase
      */
     public function testBestEncodingIsNullWhenMatchingZeroQualityScoreCharset() : void
     {
+        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $formatter */
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $acceptCharsetHeader = new AcceptCharsetHeaderValue(
             'utf-8',
