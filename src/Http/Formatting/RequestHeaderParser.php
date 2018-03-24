@@ -13,6 +13,7 @@ namespace Opulence\Net\Http\Formatting;
 use InvalidArgumentException;
 use Opulence\Collections\IImmutableDictionary;
 use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
+use Opulence\Net\Http\Headers\AcceptLanguageHeaderValue;
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
 use Opulence\Net\Http\HttpHeaders;
@@ -73,6 +74,33 @@ class RequestHeaderParser extends HttpHeaderParser
             // The first value should always be the media type
             $mediaType = $parsedHeaderParameters->getKeys()[0];
             $parsedHeaderValues[] = new AcceptMediaTypeHeaderValue($mediaType, $parsedHeaderParameters);
+        }
+
+        return $parsedHeaderValues;
+    }
+    /**
+     * Parses the Accept-Language header
+     *
+     * @param HttpHeaders $headers The request headers to parse
+     * @return AcceptLangugeHeaderValue[] The list of language header values
+     * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
+     */
+    public function parseAcceptLanguageHeader(HttpHeaders $headers) : array
+    {
+        $headerValues = [];
+
+        if (!$headers->tryGet('Accept-Language', $headerValues)) {
+            return [];
+        }
+
+        $parsedHeaderValues = [];
+        $numHeaderValues = \count($headerValues);
+
+        for ($i = 0;$i < $numHeaderValues;$i++) {
+            $parsedHeaderParameters = $this->parseParameters($headers, 'Accept-Language', $i);
+            // The first value should always be the language
+            $language = $parsedHeaderParameters->getKeys()[0];
+            $parsedHeaderValues[] = new AcceptLanguageHeaderValue($language, $parsedHeaderParameters);
         }
 
         return $parsedHeaderValues;

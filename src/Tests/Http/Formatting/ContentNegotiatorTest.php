@@ -90,10 +90,12 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
             ->method('getSupportedEncodings')
             ->willReturn(['utf-16']);
         $this->headers->add('Content-Type', 'text/html; charset=utf-16');
+        $this->headers->add('Content-Language', 'en-US');
         $result = $this->negotiator->negotiateRequestContent($this->request, [$formatter]);
         $this->assertSame($formatter, $result->getFormatter());
         $this->assertEquals('text/html', $result->getMediaType());
         $this->assertEquals('utf-16', $result->getEncoding());
+        $this->assertEquals(['en-US'], $result->getLanguages());
     }
 
     /**
@@ -107,6 +109,24 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($formatter1, $result->getFormatter());
         $this->assertEquals('application/octet-stream', $result->getMediaType());
         $this->assertNull($result->getEncoding());
+    }
+
+    /**
+     * Tests that the request result's laguage is set from the Content-Language header if set
+     */
+    public function testRequestResultLanguageIsSetFromContentLanguageHeaderIfSet() : void
+    {
+        $formatter = $this->createFormatterMock(['text/html'], 1);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-8']);
+        $this->headers->add('Content-Type', 'text/html; charset=utf-8');
+        $this->headers->add('Content-Language', 'en-US');
+        $result = $this->negotiator->negotiateRequestContent($this->request, [$formatter]);
+        $this->assertSame($formatter, $result->getFormatter());
+        $this->assertEquals('text/html', $result->getMediaType());
+        $this->assertEquals('utf-8', $result->getEncoding());
+        $this->assertEquals(['en-US'], $result->getLanguages());
     }
 
     /**
@@ -132,10 +152,30 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
             ->method('getSupportedEncodings')
             ->willReturn(['utf-16']);
         $this->headers->add('Accept-Charset', 'utf-16');
+        $this->headers->add('Accept-Language', 'en-US');
         $result = $this->negotiator->negotiateResponseContent($this->request, [$formatter]);
         $this->assertSame($formatter, $result->getFormatter());
         $this->assertEquals('application/octet-stream', $result->getMediaType());
         $this->assertEquals('utf-16', $result->getEncoding());
+        $this->assertEquals(['en-US'], $result->getLanguages());
+    }
+
+    /**
+     * Tests that the response languages are set from the Accept-Language header
+     */
+    public function testResponseLanguagesAreSetFromAcceptLanguageHeader() : void
+    {
+        $formatter = $this->createMock(IMediaTypeFormatter::class);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-8']);
+        $this->headers->add('Accept-Charset', 'utf-8');
+        $this->headers->add('Accept-Language', 'en-US');
+        $result = $this->negotiator->negotiateResponseContent($this->request, [$formatter]);
+        $this->assertSame($formatter, $result->getFormatter());
+        $this->assertEquals('application/octet-stream', $result->getMediaType());
+        $this->assertEquals('utf-8', $result->getEncoding());
+        $this->assertEquals(['en-US'], $result->getLanguages());
     }
 
     /**

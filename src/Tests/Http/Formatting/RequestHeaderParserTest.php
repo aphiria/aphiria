@@ -33,7 +33,7 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that parsing an Accept header with no scores returns values with default scores
+     * Tests that parsing an Accept-Charset header with no scores returns values with default scores
      */
     public function testParsingAcceptCharsetHeaderWithNoScoresReturnsValuesWithDefaultScores() : void
     {
@@ -49,7 +49,7 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that parsing an Accept header with scores returns values with those scores
+     * Tests that parsing an Accept-Charset header with scores returns values with those scores
      */
     public function testParsingAcceptCharsetHeaderWithScoresReturnsValuesWithThoseScores() : void
     {
@@ -110,6 +110,38 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('application/json', $headerValues[1]->getMediaType());
         $this->assertEquals(0.5, $headerValues[1]->getQuality());
         $this->assertNull($headerValues[1]->getCharset());
+    }
+
+    /**
+     * Tests that parsing an Accept-Language header with no scores returns values with default scores
+     */
+    public function testParsingAcceptLanguageHeaderWithNoScoresReturnsValuesWithDefaultScores() : void
+    {
+        $headers = new HttpHeaders();
+        $headers->add('Accept-Language', 'en-US', true);
+        $headers->add('Accept-Language', 'en-GB', true);
+        $headerValues = $this->parser->parseAcceptLanguageHeader($headers);
+        $this->assertCount(2, $headerValues);
+        $this->assertEquals('en-US', $headerValues[0]->getLanguage());
+        $this->assertEquals(1.0, $headerValues[0]->getQuality());
+        $this->assertEquals('en-GB', $headerValues[1]->getLanguage());
+        $this->assertEquals(1.0, $headerValues[1]->getQuality());
+    }
+
+    /**
+     * Tests that parsing an Accept-Language header with scores returns values with those scores
+     */
+    public function testParsingAcceptLanguageHeaderWithScoresReturnsValuesWithThoseScores() : void
+    {
+        $headers = new HttpHeaders();
+        $headers->add('Accept-Language', 'en-US; q=0.1', true);
+        $headers->add('Accept-Language', 'en-GB; q=0.5', true);
+        $headerValues = $this->parser->parseAcceptLanguageHeader($headers);
+        $this->assertCount(2, $headerValues);
+        $this->assertEquals('en-US', $headerValues[0]->getLanguage());
+        $this->assertEquals(0.1, $headerValues[0]->getQuality());
+        $this->assertEquals('en-GB', $headerValues[1]->getLanguage());
+        $this->assertEquals(0.5, $headerValues[1]->getQuality());
     }
 
     /**

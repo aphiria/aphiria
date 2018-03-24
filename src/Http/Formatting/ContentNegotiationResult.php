@@ -21,17 +21,21 @@ class ContentNegotiationResult
     private $mediaType;
     /** @var string|null The matched encoding, or null if no encoding was specified */
     private $encoding;
+    /** @var array The list of languages in order of preference */
+    private $languages = [];
 
     /**
      * @param IMediaTypeFormatter $formatter The matched media type formatter
      * @param string|null $mediaType The matched media type if there was one, otherwise null
      * @param string|null $encoding The matched encoding if there was one, otherwise null
+     * @param array $languages The list of languages in order of preference
      */
-    public function __construct(IMediaTypeFormatter $formatter, ?string $mediaType, ?string $encoding)
+    public function __construct(IMediaTypeFormatter $formatter, ?string $mediaType, ?string $encoding, array $languages)
     {
         $this->formatter = $formatter;
         $this->mediaType = $mediaType;
         $this->encoding = $encoding;
+        $this->languages = $languages;
     }
 
     /**
@@ -52,6 +56,16 @@ class ContentNegotiationResult
     public function getFormatter() : IMediaTypeFormatter
     {
         return $this->formatter;
+    }
+
+    /**
+     * Gets the list of languages in order of preference
+     *
+     * @return array The languages
+     */
+    public function getLanguages() : array
+    {
+        return $this->languages;
     }
 
     /**
