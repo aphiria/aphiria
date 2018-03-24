@@ -61,7 +61,7 @@ class HttpBodyParserTest extends \PHPUnit\Framework\TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn('<?xml version="1.0"?><foo />');
-        $this->assertEquals('application/xml', $this->parser->getMimeType($this->body));
+        $this->assertEquals('text/xml', $this->parser->getMimeType($this->body));
     }
 
     /**
