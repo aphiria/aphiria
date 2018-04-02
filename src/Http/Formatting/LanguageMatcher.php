@@ -14,22 +14,41 @@ use Opulence\Net\Http\Headers\AcceptLanguageHeaderValue;
 use Opulence\Net\Http\Headers\IHeaderValueWithQualityScore;
 
 /**
- * Defines the language ranker
+ * Defines the language matcher
  */
-class LanguageRanker
+class LanguageMatcher
 {
     /**
-     * Ranks the language headers by quality, and then by specificity
+     * Gets the best language match between a list of supported languages and Accept-Language headers
+     * This uses "lookup" matching per RFC-4647 section 3.4
      *
+     * @param array $supportedLanguages The list of supported languages
      * @param AcceptLanguageHeaderValue[] $languageHeaders The list of language headers to rank
-     * @return AcceptLanguageHeaderValue[] The ranked list of language headers
+     * @return string|null The best language match if one existed, otherwise null
+     * @link https://tools.ietf.org/html/rfc4647#section-3.4
      */
-    public function rankAcceptLanguageHeaders(array $languageHeaders) : array
+    public function getBestLanguageMatch(array $supportedLanguages, array $languageHeaders) : ?string
     {
         usort($languageHeaders, [$this, 'compareAcceptLanguageHeaders']);
         $rankedLanguageHeaders = array_filter($languageHeaders, [$this, 'filterZeroScores']);
+        $rankedLanguageHeaderValues = $this->getLanguageValuesFromHeaders($rankedLanguageHeaders);
 
-        return $this->getLanguageValuesFromHeaders($rankedLanguageHeaders);
+        foreach ($rankedLanguageHeaderValues as $language) {
+            $languageParts = explode('-', $language);
+
+            // Progressively truncate this language tag and try to match a supported language
+            do {
+                foreach ($supportedLanguages as $supportedLanguage) {
+                    if ($language === '*' || implode('-', $languageParts) === $supportedLanguage) {
+                        return $supportedLanguage;
+                    }
+                }
+
+                array_pop($languageParts);
+            } while (count($languageParts) > 0);
+        }
+
+        return null;
     }
 
     /**
@@ -84,7 +103,7 @@ class LanguageRanker
     /**
      * Gets the language values from a list of headers
      *
-     * @param AcceptLanguageHeaderValue $headers The list of language headers
+     * @param AcceptLanguageHeaderValue[] $headers The list of language headers
      * @return array The list of language values from the headers
      */
     private function getLanguageValuesFromHeaders(array $headers) : array

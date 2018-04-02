@@ -24,26 +24,26 @@ class ContentNegotiator implements IContentNegotiator
     private $mediaTypeFormatterMatcher;
     /** @var EncodingMatcher The encoding matcher */
     private $encodingMatcher;
-    /** @var LanguageRanker The language ranker */
-    private $languageRanker;
+    /** @var LanguageMatcher The language matcher */
+    private $languageMatcher;
     /** @var RequestHeaderParser The header parser */
     private $headerParser;
 
     /**
      * @param MediaTypeFormatterMatcher|null $mediaTypeFormatterMatcher The media type formatter matcher, or null if using the default one
      * @param EncodingMatcher|null $encodingMatcher The encoding matcher, or null if using the default one
-     * @param LanguageRanker|null $languageRanker The language ranker, or null if using the default one
+     * @param LanguageMatcher|null $languageMatcher The language matcher, or null if using the default one
      * @param RequestHeaderParser|null $headerParser The header parser, or null if using the default one
      */
     public function __construct(
         MediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
         EncodingMatcher $encodingMatcher = null,
-        LanguageRanker $languageRanker = null,
+        LanguageMatcher $languageMatcher = null,
         RequestHeaderParser $headerParser = null
     ) {
         $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher();
         $this->encodingMatcher = $encodingMatcher ?? new EncodingMatcher();
-        $this->languageRanker = $languageRanker ?? new LanguageRanker();
+        $this->languageMatcher = $languageMatcher ?? new LanguageMatcher();
         $this->headerParser = $headerParser ?? new RequestHeaderParser();
     }
 
@@ -60,12 +60,12 @@ class ContentNegotiator implements IContentNegotiator
 
         $requestHeaders = $request->getHeaders();
         $contentTypeHeader = $this->headerParser->parseContentTypeHeader($requestHeaders);
-        $languages = [];
-        $requestHeaders->tryGet('Content-Language', $languages);
+        $language = null;
+        $requestHeaders->tryGetFirst('Content-Language', $languages);
 
         if ($contentTypeHeader === null) {
             // Default to the first registered media type formatter
-            return new ContentNegotiationResult($mediaTypeFormatters[0], self::DEFAULT_MEDIA_TYPE, null, $languages);
+            return new ContentNegotiationResult($mediaTypeFormatters[0], self::DEFAULT_MEDIA_TYPE, null, $language);
         }
 
         $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestMediaTypeFormatterMatch(
@@ -96,7 +96,8 @@ class ContentNegotiator implements IContentNegotiator
      */
     public function negotiateResponseContent(
         IHttpRequestMessage $request,
-        array $mediaTypeFormatters
+        array $mediaTypeFormatters,
+        array $supportedLanguages
     ) : ?ContentNegotiationResult {
         if (\count($mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
@@ -105,7 +106,7 @@ class ContentNegotiator implements IContentNegotiator
         $requestHeaders = $request->getHeaders();
         $acceptCharsetHeaders = $this->headerParser->parseAcceptCharsetHeader($requestHeaders);
         $acceptLanguageHeaders = $this->headerParser->parseAcceptLanguageHeader($requestHeaders);
-        $rankedLanguages = $this->languageRanker->rankAcceptLanguageHeaders($acceptLanguageHeaders);
+        $language = $this->languageMatcher->getBestLanguageMatch($supportedLanguages, $acceptLanguageHeaders);
 
         if (!$requestHeaders->containsKey('Accept')) {
             // Default to the first registered media type formatter
@@ -119,7 +120,7 @@ class ContentNegotiator implements IContentNegotiator
                 $mediaTypeFormatters[0],
                 self::DEFAULT_MEDIA_TYPE,
                 $encoding,
-                $rankedLanguages
+                $language
             );
         }
 
@@ -143,7 +144,7 @@ class ContentNegotiator implements IContentNegotiator
             $mediaTypeFormatterMatch->getFormatter(),
             $mediaTypeFormatterMatch->getMediaType(),
             $encoding,
-            $rankedLanguages
+            $language
         );
     }
 }

@@ -36,11 +36,13 @@ interface IContentNegotiator
      *
      * @param IHttpRequestMessage $request The request to negotiate with
      * @param IMediaTypeFormatter[] $mediaTypeFormatters The list of media type formatters to match against
+     * @param array $supportedLanguages The list of supported languages
      * @return ContentNegotiationResult|null The content negotiation result if found, otherwise null
      * @throws InvalidArgumentException Thrown if the Accept header's media types were incorrectly formatted or the formatter list is empty
      */
     public function negotiateResponseContent(
         IHttpRequestMessage $request,
-        array $mediaTypeFormatters
+        array $mediaTypeFormatters,
+        array $supportedLanguages
     ) : ?ContentNegotiationResult;
 }

@@ -24,7 +24,7 @@ class ContentNegotiationResultTest extends \PHPUnit\Framework\TestCase
     public function testGettingEncodingReturnsSameOneInConstructor() : void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $results = new ContentNegotiationResult($formatter, 'foo/bar', 'utf-8', []);
+        $results = new ContentNegotiationResult($formatter, 'foo/bar', 'utf-8', null);
         $this->assertEquals('utf-8', $results->getEncoding());
     }
 
@@ -34,18 +34,18 @@ class ContentNegotiationResultTest extends \PHPUnit\Framework\TestCase
     public function testGettingFormatterReturnsSameOneInConstructor() : void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $results = new ContentNegotiationResult($formatter, 'foo/bar', null, []);
+        $results = new ContentNegotiationResult($formatter, 'foo/bar', null, null);
         $this->assertSame($formatter, $results->getFormatter());
     }
 
     /**
-     * Tests that getting the languages returns the same ones in the constructor
+     * Tests that getting the language returns the same one in the constructor
      */
-    public function testGettingLanguagesReturnsSameOnesInConstructor() : void
+    public function testGettingLanguageReturnsSameOneInConstructor() : void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $results = new ContentNegotiationResult($formatter, 'foo/bar', 'utf-8', ['en-US', 'en-GB']);
-        $this->assertEquals(['en-US', 'en-GB'], $results->getLanguages());
+        $results = new ContentNegotiationResult($formatter, 'foo/bar', 'utf-8', 'en-US');
+        $this->assertEquals('en-US', $results->getLanguage());
     }
 
     /**
@@ -54,7 +54,7 @@ class ContentNegotiationResultTest extends \PHPUnit\Framework\TestCase
     public function testGettingMediaTypeReturnsSameOneInConstructor() : void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $results = new ContentNegotiationResult($formatter, 'foo/bar', null, []);
+        $results = new ContentNegotiationResult($formatter, 'foo/bar', null, null);
         $this->assertEquals('foo/bar', $results->getMediaType());
     }
 }
