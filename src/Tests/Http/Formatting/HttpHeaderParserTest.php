@@ -25,7 +25,7 @@ class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->parser = new HttpHeaderParser();
     }
@@ -33,7 +33,7 @@ class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests checking if the headers indicate a JSON response with the value of the content type header
      */
-    public function testCheckingIfJsonChecksContentTypeHeader() : void
+    public function testCheckingIfJsonChecksContentTypeHeader(): void
     {
         $headers = new HttpHeaders();
         $headers->add('Content-Type', 'text/plain');
@@ -49,7 +49,7 @@ class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests checking if the headers indicate a multipart response with the value of the content type header
      */
-    public function testCheckingIfMultipartChecksContentTypeHeader() : void
+    public function testCheckingIfMultipartChecksContentTypeHeader(): void
     {
         $headers = new HttpHeaders();
         $headers->add('Content-Type', 'text/plain');
@@ -65,7 +65,7 @@ class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the parameters for an index that does not exist returns an empty dictionary
      */
-    public function testGettingParametersForIndexThatDoesNotExistReturnsEmptyDictionary() : void
+    public function testGettingParametersForIndexThatDoesNotExistReturnsEmptyDictionary(): void
     {
         $headers = new HttpHeaders();
         $headers->add('Foo', 'bar; baz');
@@ -75,7 +75,7 @@ class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the parameters with a mix of value and value-less parameters returns correct parameters
      */
-    public function testGettingParametersWithMixOfValueAndValueLessParametersReturnsCorrectParameters() : void
+    public function testGettingParametersWithMixOfValueAndValueLessParametersReturnsCorrectParameters(): void
     {
         $headers = new HttpHeaders();
         $headers->add('Foo', 'bar; baz="blah"');
@@ -87,7 +87,7 @@ class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting parameters with quoted and unquoted values returns an array with the unquoted value
      */
-    public function testGettingParametersWithQuotedAndUnquotedValuesReturnsArrayWithUnquotedValue() : void
+    public function testGettingParametersWithQuotedAndUnquotedValuesReturnsArrayWithUnquotedValue(): void
     {
         $headers = new HttpHeaders();
         $headers->add('Foo', 'bar=baz');

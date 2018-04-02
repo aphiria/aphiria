@@ -24,7 +24,7 @@ class UriParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->parser = new UriParser();
     }
@@ -32,7 +32,7 @@ class UriParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that parsing the query string param with multiple values returns an array of values
      */
-    public function testParsingQueryStringParamWithMultipleValuesReturnsArrayOfValues() : void
+    public function testParsingQueryStringParamWithMultipleValuesReturnsArrayOfValues(): void
     {
         $uri = new Uri('http://host.com?foo[]=bar&foo[]=baz');
         $values = $this->parser->parseQueryString($uri);
@@ -42,7 +42,7 @@ class UriParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that parsing the query string param without a value returns false
      */
-    public function testParsingQueryStringParamWithoutValueReturnsFalse() : void
+    public function testParsingQueryStringParamWithoutValueReturnsFalse(): void
     {
         $uri = new Uri('http://host.com?foo=bar');
         $this->assertFalse($this->parser->parseQueryString($uri)->containsKey('baz'));
@@ -51,7 +51,7 @@ class UriParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that parsing the query string param with a single value returns that value
      */
-    public function testParsingQueryStringParamWithSingleValueReturnsThatValue() : void
+    public function testParsingQueryStringParamWithSingleValueReturnsThatValue(): void
     {
         $uri = new Uri('http://host.com?foo=bar');
         $this->assertEquals('bar', $this->parser->parseQueryString($uri)->get('foo'));
@@ -60,7 +60,7 @@ class UriParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that URL-encoded values are decoded
      */
-    public function testUrlEncodedValuesAreDecoded() : void
+    public function testUrlEncodedValuesAreDecoded(): void
     {
         $uri = new Uri('http://host.com?foo=a%26w');
         $this->assertEquals('a&w', $this->parser->parseQueryString($uri)->get('foo'));

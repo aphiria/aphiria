@@ -89,7 +89,7 @@ class Cookie
      *
      * @return string|null The domain if set, otherwise null
      */
-    public function getDomain() : ?string
+    public function getDomain(): ?string
     {
         return $this->domain;
     }
@@ -99,7 +99,7 @@ class Cookie
      *
      * @return DateTime|null The expiration if set, otherwise null
      */
-    public function getExpiration() : ?DateTime
+    public function getExpiration(): ?DateTime
     {
         return $this->expiration;
     }
@@ -109,7 +109,7 @@ class Cookie
      *
      * @return int|null The max age of the cookie if set, otherwise null
      */
-    public function getMaxAge() : ?int
+    public function getMaxAge(): ?int
     {
         return $this->maxAge;
     }
@@ -119,7 +119,7 @@ class Cookie
      *
      * @return string The name of the cookie
      */
-    public function getName() : string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -129,7 +129,7 @@ class Cookie
      *
      * @return string|null The path if set, otherwise null
      */
-    public function getPath() : ?string
+    public function getPath(): ?string
     {
         return $this->path;
     }
@@ -139,7 +139,7 @@ class Cookie
      *
      * @return string|null The same-site value, or null if not set
      */
-    public function getSameSite() : ?string
+    public function getSameSite(): ?string
     {
         return $this->sameSite;
     }
@@ -159,7 +159,7 @@ class Cookie
      *
      * @return bool True if the cookie is HTTP-only, otherwise false
      */
-    public function isHttpOnly() : bool
+    public function isHttpOnly(): bool
     {
         return $this->isHttpOnly;
     }
@@ -169,7 +169,7 @@ class Cookie
      *
      * @return bool True if the cookie is secure, otherwise false
      */
-    public function isSecure() : bool
+    public function isSecure(): bool
     {
         return $this->isSecure;
     }
@@ -179,7 +179,7 @@ class Cookie
      *
      * @param string $domain The domain
      */
-    public function setDomain(string $domain) : void
+    public function setDomain(string $domain): void
     {
         $this->domain = $domain;
     }
@@ -190,7 +190,7 @@ class Cookie
      * @param DateTime|int|null $expiration The expiration if set, otherwise null
      * @throws InvalidArgumentException Thrown if the expiration is not an integer or DateTime
      */
-    public function setExpiration($expiration) : void
+    public function setExpiration($expiration): void
     {
         $this->expiration = $expiration;
     }
@@ -200,7 +200,7 @@ class Cookie
      *
      * @param bool $isHttpOnly True if the cookie is HTTP-only, otherwise false
      */
-    public function setHttpOnly(bool $isHttpOnly) : void
+    public function setHttpOnly(bool $isHttpOnly): void
     {
         $this->isHttpOnly = $isHttpOnly;
     }
@@ -210,7 +210,7 @@ class Cookie
      *
      * @param int $maxAge The max age of the cookie
      */
-    public function setMaxAge(int $maxAge) : void
+    public function setMaxAge(int $maxAge): void
     {
         $this->maxAge = $maxAge;
     }
@@ -221,7 +221,7 @@ class Cookie
      * @param string $name The name of the cookie
      * @throws InvalidArgumentException Thrown if the name contains invalid characters
      */
-    public function setName(string $name) : void
+    public function setName(string $name): void
     {
         if (preg_match('/[\x00-\x20\x22\x28-\x29\x2c\x2f\x3a-\x40\x5b-\x5d\x7b\x7d\x7f]/', $name) === 1) {
             throw new InvalidArgumentException("Cookie name \"$name\" contains invalid characters");
@@ -235,7 +235,7 @@ class Cookie
      *
      * @param string $path The path
      */
-    public function setPath(string $path) : void
+    public function setPath(string $path): void
     {
         $this->path = $path;
     }
@@ -245,7 +245,7 @@ class Cookie
      *
      * @param bool $isSecure True if the cookie is HTTPS, otherwise false
      */
-    public function setSecure(bool $isSecure) : void
+    public function setSecure(bool $isSecure): void
     {
         $this->isSecure = $isSecure;
     }
@@ -255,7 +255,7 @@ class Cookie
      *
      * @param mixed $value The value of the cookie
      */
-    public function setValue($value) : void
+    public function setValue($value): void
     {
         $this->value = $value;
     }

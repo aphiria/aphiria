@@ -48,7 +48,7 @@ class Response implements IHttpResponseMessage
     /**
      * @inheritdoc
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         $startLine = "HTTP/{$this->protocolVersion} {$this->statusCode}";
 
@@ -74,7 +74,7 @@ class Response implements IHttpResponseMessage
     /**
      * @inheritdoc
      */
-    public function getBody() : ?IHttpBody
+    public function getBody(): ?IHttpBody
     {
         return $this->body;
     }
@@ -82,7 +82,7 @@ class Response implements IHttpResponseMessage
     /**
      * @inheritdoc
      */
-    public function getHeaders() : HttpHeaders
+    public function getHeaders(): HttpHeaders
     {
         return $this->headers;
     }
@@ -90,7 +90,7 @@ class Response implements IHttpResponseMessage
     /**
      * @inheritdoc
      */
-    public function getProtocolVersion() : string
+    public function getProtocolVersion(): string
     {
         return $this->protocolVersion;
     }
@@ -98,7 +98,7 @@ class Response implements IHttpResponseMessage
     /**
      * @inheritdoc
      */
-    public function getReasonPhrase() : ?string
+    public function getReasonPhrase(): ?string
     {
         return $this->reasonPhrase;
     }
@@ -106,7 +106,7 @@ class Response implements IHttpResponseMessage
     /**
      * @inheritdoc
      */
-    public function getStatusCode() : int
+    public function getStatusCode(): int
     {
         return $this->statusCode;
     }
@@ -114,7 +114,7 @@ class Response implements IHttpResponseMessage
     /**
      * @inheritdoc
      */
-    public function setBody(IHttpBody $body) : void
+    public function setBody(IHttpBody $body): void
     {
         $this->body = $body;
     }
@@ -122,7 +122,7 @@ class Response implements IHttpResponseMessage
     /**
      * @inheritdoc
      */
-    public function setStatusCode(int $statusCode, ?string $reasonPhrase = null) : void
+    public function setStatusCode(int $statusCode, ?string $reasonPhrase = null): void
     {
         $this->statusCode = $statusCode;
         $this->reasonPhrase = $reasonPhrase ?? HttpStatusCodes::getDefaultReasonPhrase($this->statusCode);

@@ -29,7 +29,7 @@ class MultipartBodyPartTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->headers = new HttpHeaders();
         $this->body = $this->createMock(IHttpBody::class);
@@ -39,7 +39,7 @@ class MultipartBodyPartTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting body
      */
-    public function testGettingBody() : void
+    public function testGettingBody(): void
     {
         $this->assertSame($this->body, $this->bodyPart->getBody());
     }
@@ -47,7 +47,7 @@ class MultipartBodyPartTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting headers
      */
-    public function testGettingHeaders() : void
+    public function testGettingHeaders(): void
     {
         $this->assertSame($this->headers, $this->bodyPart->getHeaders());
     }
@@ -55,7 +55,7 @@ class MultipartBodyPartTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that serializing separates headers and the body with two empty lines
      */
-    public function testSerializingSeparatesHeadersAndBodyWithTwoEmptyLines() : void
+    public function testSerializingSeparatesHeadersAndBodyWithTwoEmptyLines(): void
     {
         $this->headers->add('Foo', 'bar');
         $this->body->expects($this->once())

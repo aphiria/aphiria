@@ -43,7 +43,7 @@ class ContentNegotiationResult
      *
      * @return string|null The matched encoding if there was one, otherwise null
      */
-    public function getEncoding() : ?string
+    public function getEncoding(): ?string
     {
         return $this->encoding;
     }
@@ -53,7 +53,7 @@ class ContentNegotiationResult
      *
      * @return IMediaTypeFormatter The matched media type formatter
      */
-    public function getFormatter() : IMediaTypeFormatter
+    public function getFormatter(): IMediaTypeFormatter
     {
         return $this->formatter;
     }
@@ -63,7 +63,7 @@ class ContentNegotiationResult
      *
      * @return string|null The matched language if there was one, otherwise null
      */
-    public function getLanguage() : ?string
+    public function getLanguage(): ?string
     {
         return $this->language;
     }
@@ -73,7 +73,7 @@ class ContentNegotiationResult
      *
      * @return string|null The matched media type if there was one, otherwise null
      */
-    public function getMediaType() : ?string
+    public function getMediaType(): ?string
     {
         return $this->mediaType;
     }

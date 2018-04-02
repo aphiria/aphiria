@@ -79,7 +79,7 @@ class ResponseHeaderFormatter extends HttpHeaderParser
      * @param Cookie $cookie The cookie to set
      * @throws RuntimeException Thrown if the set cookie header's hash key could not be calculated
      */
-    public function setCookie(HttpHeaders $headers, Cookie $cookie) : void
+    public function setCookie(HttpHeaders $headers, Cookie $cookie): void
     {
         $headers->add('Set-Cookie', $this->getSetCookieHeaderValue($cookie), true);
     }
@@ -91,7 +91,7 @@ class ResponseHeaderFormatter extends HttpHeaderParser
      * @param Cookie[] $cookies The cookies to set
      * @throws RuntimeException Thrown if the set cookie header's hash key could not be calculated
      */
-    public function setCookies(HttpHeaders $headers, array $cookies) : void
+    public function setCookies(HttpHeaders $headers, array $cookies): void
     {
         foreach ($cookies as $cookie) {
             $this->setCookie($headers, $cookie);
@@ -104,7 +104,7 @@ class ResponseHeaderFormatter extends HttpHeaderParser
      * @param Cookie $cookie The cookie to serialize
      * @return string The set-cookie header value
      */
-    private function getSetCookieHeaderValue(Cookie $cookie) : string
+    private function getSetCookieHeaderValue(Cookie $cookie): string
     {
         $headerValue = "{$cookie->getName()}=" . urlencode($cookie->getValue());
 

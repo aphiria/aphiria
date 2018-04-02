@@ -55,7 +55,7 @@ class MediaTypeHeaderValue
      *
      * @return string|null The charset if one was set, otherwise null
      */
-    public function getCharset() : ?string
+    public function getCharset(): ?string
     {
         return $this->charset;
     }
@@ -65,7 +65,7 @@ class MediaTypeHeaderValue
      *
      * @return string The value of the header
      */
-    public function getMediaType() : string
+    public function getMediaType(): string
     {
         return $this->mediaType;
     }
@@ -75,7 +75,7 @@ class MediaTypeHeaderValue
      *
      * @return IImmutableDictionary The properties
      */
-    public function getParameters() : IImmutableDictionary
+    public function getParameters(): IImmutableDictionary
     {
         return $this->parameters;
     }
@@ -85,7 +85,7 @@ class MediaTypeHeaderValue
      *
      * @return string The sub-type
      */
-    public function getSubType() : string
+    public function getSubType(): string
     {
         return $this->subType;
     }
@@ -95,7 +95,7 @@ class MediaTypeHeaderValue
      *
      * @return string The type
      */
-    public function getType() : string
+    public function getType(): string
     {
         return $this->type;
     }

@@ -67,7 +67,7 @@ class RequestFactory
      * @throws InvalidArgumentException Thrown if any of the headers were in an invalid format
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
-    public function createRequestFromSuperglobals(array $server) : IHttpRequestMessage
+    public function createRequestFromSuperglobals(array $server): IHttpRequestMessage
     {
         $method = $server['REQUEST_METHOD'] ?? 'GET';
 
@@ -92,7 +92,7 @@ class RequestFactory
      * @throws InvalidArgumentException Thrown if any of the headers were in an invalid format
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
-    protected function createHeadersFromGlobals(array $server) : HttpHeaders
+    protected function createHeadersFromGlobals(array $server): HttpHeaders
     {
         $headers = new HttpHeaders();
 
@@ -118,7 +118,7 @@ class RequestFactory
      * @return IDictionary The list of properties
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
-    protected function createProperties(array $server) : IDictionary
+    protected function createProperties(array $server): IDictionary
     {
         $properties = new HashTable();
 
@@ -137,7 +137,7 @@ class RequestFactory
      * @return Uri The URI
      * @throws InvalidArgumentException Thrown if the host is malformed
      */
-    protected function createUriFromGlobals(array $server) : Uri
+    protected function createUriFromGlobals(array $server): Uri
     {
         $isUsingTrustedProxy = $this->isUsingTrustedProxy($server);
 
@@ -213,7 +213,7 @@ class RequestFactory
      * @param array $server The global server array
      * @return string|null The client IP address if one was found, otherwise null
      */
-    protected function getClientIPAddress(array $server) : ?string
+    protected function getClientIPAddress(array $server): ?string
     {
         $serverRemoteAddress = $server['REMOTE_ADDR'] ?? null;
 
@@ -262,7 +262,7 @@ class RequestFactory
      * @param array $server The global server array
      * @return bool True if using a trusted proxy, otherwise false
      */
-    protected function isUsingTrustedProxy(array $server) : bool
+    protected function isUsingTrustedProxy(array $server): bool
     {
         return \in_array($server['REMOTE_ADDR'] ?? '', $this->trustedProxyIPAddresses, true);
     }

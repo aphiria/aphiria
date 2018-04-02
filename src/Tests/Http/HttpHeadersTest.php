@@ -25,7 +25,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->headers = new HttpHeaders();
     }
@@ -42,7 +42,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests checking if a header exists
      */
-    public function testCheckingIfHeaderExists() : void
+    public function testCheckingIfHeaderExists(): void
     {
         $this->assertFalse($this->headers->containsKey('foo'));
         $this->headers->add('foo', 'bar');
@@ -79,7 +79,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that all names are normalized
      */
-    public function testNamesAreNormalized() : void
+    public function testNamesAreNormalized(): void
     {
         // Test lower-case names
         $this->headers->add('foo', 'bar');
@@ -106,7 +106,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests removing a header
      */
-    public function testRemovingHeader() : void
+    public function testRemovingHeader(): void
     {
         $this->headers->add('foo', 'bar');
         $this->headers->removeKey('foo');
@@ -116,7 +116,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that serializing headers with multiple values splits the values with commas
      */
-    public function testSerializingHeadersWithMultipleValuesSplitsTheValuesWithCommas() : void
+    public function testSerializingHeadersWithMultipleValuesSplitsTheValuesWithCommas(): void
     {
         $this->headers->add('Foo', 'bar');
         $this->headers->add('Foo', 'baz', true);
@@ -126,7 +126,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that serializing headers splits them into lines
      */
-    public function testSerializingSplitsHeadersIntoLines() : void
+    public function testSerializingSplitsHeadersIntoLines(): void
     {
         $this->headers->add('Foo', 'bar');
         $this->headers->add('Baz', 'blah');
@@ -136,7 +136,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests setting a header and appending it appends it
      */
-    public function testSettingHeaderAndAppendingItAppendsIt() : void
+    public function testSettingHeaderAndAppendingItAppendsIt(): void
     {
         $this->headers->add('foo', 'bar');
         $this->headers->add('foo', 'baz', true);
@@ -146,7 +146,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests setting a header without appending it appends it
      */
-    public function testSettingHeaderWithoutAppendingReplacesIt() : void
+    public function testSettingHeaderWithoutAppendingReplacesIt(): void
     {
         $this->headers->add('foo', 'bar');
         $this->headers->add('foo', 'baz', false);
@@ -156,7 +156,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the headers as an array returns a list of key-value pairs
      */
-    public function testToArrayReturnsListOfKeyValuePairs() : void
+    public function testToArrayReturnsListOfKeyValuePairs(): void
     {
         $this->headers->add('foo', 'bar');
         $actualValues = [];
@@ -176,7 +176,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that trying to get the first value returns true if the key exists, otherwise false
      */
-    public function testTryGetFirstReturnsTrueIfKeyExistsOtherwiseFalse() : void
+    public function testTryGetFirstReturnsTrueIfKeyExistsOtherwiseFalse(): void
     {
         $value = null;
         $this->assertFalse($this->headers->tryGetFirst('foo', $value));

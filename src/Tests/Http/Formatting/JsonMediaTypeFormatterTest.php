@@ -29,7 +29,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->dataContractConverter = $this->createMock(IDataContractConverter::class);
         $this->formatter = new JsonMediaTypeFormatter($this->dataContractConverter);
@@ -38,7 +38,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct supported encodings are returned
      */
-    public function testCorrectSupportedEncodingsAreReturned() : void
+    public function testCorrectSupportedEncodingsAreReturned(): void
     {
         $this->assertEquals(['utf-8'], $this->formatter->getSupportedEncodings());
     }
@@ -46,7 +46,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the correct supported media types are returned
      */
-    public function testCorrectSupportedMediaTypesAreReturned() : void
+    public function testCorrectSupportedMediaTypesAreReturned(): void
     {
         $this->assertEquals(['application/json', 'text/json'], $this->formatter->getSupportedMediaTypes());
     }
@@ -54,7 +54,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that reading invalid JSON will throw an exception
      */
-    public function testReadingInvalidJsonWillThrowException() : void
+    public function testReadingInvalidJsonWillThrowException(): void
     {
         $this->expectException(RuntimeException::class);
         $stream = $this->createStreamWithStringBody("\x0");
@@ -64,7 +64,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that reading an array of scalars casts each element to the correct type
      */
-    public function testReadingArrayOfScalarsCastsEachElementToCorrectType() : void
+    public function testReadingArrayOfScalarsCastsEachElementToCorrectType(): void
     {
         $stream = $this->createStreamWithStringBody(json_encode(['1.1', '2.2']));
         $actualValues = $this->formatter->readFromStream('float', $stream, true);
@@ -76,7 +76,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that reading null returns null
      */
-    public function testReadingNullReturnsNull() : void
+    public function testReadingNullReturnsNull(): void
     {
         $stream = $this->createStreamWithStringBody(json_encode(null));
         $this->assertNull($this->formatter->readFromStream('int', $stream));
@@ -85,7 +85,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that reading scalars casts them to the correct types
      */
-    public function testReadingScalarsCastsThemToCorrectTypes() : void
+    public function testReadingScalarsCastsThemToCorrectTypes(): void
     {
         $scalarData = [
             ['int', '1', 1],
@@ -112,7 +112,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that reading an array of serialized objects will use the data contract converter to deserialize the objects
      */
-    public function testReadingSerializedArrayOfObjectsWillUseDataContractConverterToDeserializeObjects() : void
+    public function testReadingSerializedArrayOfObjectsWillUseDataContractConverterToDeserializeObjects(): void
     {
         $userDataContracts = [
             ['id' => 123, 'email' => 'foo@bar.com'],
@@ -142,7 +142,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that reading a serialized object will use the data contract converter to deserialize the object
      */
-    public function testReadingSerializedObjectWillUseDataContractConverterToDeserializeObject() : void
+    public function testReadingSerializedObjectWillUseDataContractConverterToDeserializeObject(): void
     {
         $dataContract = ['id' => 123, 'email' => 'foo@bar.com'];
         $this->dataContractConverter->expects($this->once())
@@ -159,7 +159,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that writing an array of objects uses the data contract converter to serialize them
      */
-    public function testWritingArrayOfObjectsUsesDataContractConverterToSerializeThem() : void
+    public function testWritingArrayOfObjectsUsesDataContractConverterToSerializeThem(): void
     {
         $users = [new User(123, 'foo@bar.com'), new User(456, 'baz@blah.com')];
         $userDataContracts = [
@@ -181,7 +181,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that writing an array of scalars JSON-encodes those values
      */
-    public function testWritingArrayOfScalarsJsonEncodesThoseValues() : void
+    public function testWritingArrayOfScalarsJsonEncodesThoseValues(): void
     {
         $scalars = [1.1, 2.2];
         $stream = $this->createStreamThatExpectsBody(json_encode($scalars));
@@ -191,7 +191,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that writing a non-scalar/object throws an exception
      */
-    public function testWritingNonScalarNorObjectThrowsException() : void
+    public function testWritingNonScalarNorObjectThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
         /** @var IStream|\PHPUnit_Framework_MockObject_MockObject $stream */
@@ -202,7 +202,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that writing an object uses the data contract converter to serialize it
      */
-    public function testWritingObjectUsesDataContractConverterToSerializeIt() : void
+    public function testWritingObjectUsesDataContractConverterToSerializeIt(): void
     {
         $user = new User(123, 'foo@bar.com');
         $userDataContract = ['id' => 123, 'email' => 'foo@bar.com'];
@@ -217,7 +217,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that writing a scalar JSON-encodes the value
      */
-    public function testWritingScalarJsonEncodesThatValue() : void
+    public function testWritingScalarJsonEncodesThatValue(): void
     {
         $scalars = [1, 1.1, 'foo', true, false, null];
 
@@ -233,7 +233,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
      * @param string $body The expected body of the stream
      * @return IStream|\PHPUnit_Framework_MockObject_MockObject The stream that expects the input body
      */
-    private function createStreamThatExpectsBody(string $body) : IStream
+    private function createStreamThatExpectsBody(string $body): IStream
     {
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
@@ -249,7 +249,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
      * @param string $body The body of the stream
      * @return IStream|\PHPUnit_Framework_MockObject_MockObject The stream with the input body as its string body
      */
-    private function createStreamWithStringBody(string $body) : IStream
+    private function createStreamWithStringBody(string $body): IStream
     {
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())

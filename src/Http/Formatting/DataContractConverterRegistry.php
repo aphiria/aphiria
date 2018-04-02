@@ -27,7 +27,7 @@ class DataContractConverterRegistry
      * @return callable The data-contract-to-model converter
      * @throws InvalidArgumentException Thrown if no converter was found for the input type
      */
-    public function getFromDataContractConverter(string $type) : callable
+    public function getFromDataContractConverter(string $type): callable
     {
         if (!isset($this->converters[$type])) {
             throw new InvalidArgumentException("No data contract converter found for type $type");
@@ -43,7 +43,7 @@ class DataContractConverterRegistry
      * @return callable The model-to-data-contract converter
      * @throws InvalidArgumentException Thrown if no converter was found for the input type
      */
-    public function getToDataContractConverter(string $type) : callable
+    public function getToDataContractConverter(string $type): callable
     {
         if (!isset($this->converters[$type])) {
             throw new InvalidArgumentException("No data contract converter found for type $type");

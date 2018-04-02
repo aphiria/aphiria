@@ -35,7 +35,7 @@ class HttpHeaderParser
      * @return bool True if the message has a JSON content type, otherwise false
      * @throws RuntimeException Thrown if the content type header's hash key could not be calculated
      */
-    public function isJson(HttpHeaders $headers) : bool
+    public function isJson(HttpHeaders $headers): bool
     {
         $contentType = null;
         $headers->tryGetFirst('Content-Type', $contentType);
@@ -50,7 +50,7 @@ class HttpHeaderParser
      * @return bool True if the request is a multipart message, otherwise false
      * @throws RuntimeException Thrown if the content type header's hash key could not be calculated
      */
-    public function isMultipart(HttpHeaders $headers) : bool
+    public function isMultipart(HttpHeaders $headers): bool
     {
         $contentType = null;
         $headers->tryGetFirst('Content-Type', $contentType);
@@ -66,7 +66,7 @@ class HttpHeaderParser
      * @param int $index The index of the header value to parse
      * @return IImmutableDictionary The dictionary of parameters for the first value
      */
-    public function parseParameters(HttpHeaders $headers, string $headerName, int $index = 0) : IImmutableDictionary
+    public function parseParameters(HttpHeaders $headers, string $headerName, int $index = 0): IImmutableDictionary
     {
         $headerValues = [];
 

@@ -70,7 +70,7 @@ class ResponseFormatter
      * @param IHttpResponseMessage $response The response to set the cookie in
      * @param Cookie $cookie The cookie to set
      */
-    public function setCookie(IHttpResponseMessage $response, Cookie $cookie) : void
+    public function setCookie(IHttpResponseMessage $response, Cookie $cookie): void
     {
         $this->headerFormatter->setCookie($response->getHeaders(), $cookie);
     }
@@ -81,7 +81,7 @@ class ResponseFormatter
      * @param IHttpResponseMessage $response The response to set the cookies in
      * @param Cookie[] $cookies The cookies to set
      */
-    public function setCookies(IHttpResponseMessage $response, array $cookies) : void
+    public function setCookies(IHttpResponseMessage $response, array $cookies): void
     {
         $this->headerFormatter->setCookies($response->getHeaders(), $cookies);
     }
@@ -95,7 +95,7 @@ class ResponseFormatter
      * @throws InvalidArgumentException Thrown if the URI is not an instance of URI or a string
      * @throws RuntimeException Thrown if the location header's hash key could not be calculated
      */
-    public function redirectToUri(IHttpResponseMessage $response, $uri, int $statusCode = 302) : void
+    public function redirectToUri(IHttpResponseMessage $response, $uri, int $statusCode = 302): void
     {
         if (\is_string($uri)) {
             $uriString = $uri;
@@ -117,7 +117,7 @@ class ResponseFormatter
      * @throws InvalidArgumentException Thrown if the input JSON is incorrectly formatted
      * @throws RuntimeException Thrown if the content type header's hash key could not be calculated
      */
-    public function writeJson(IHttpResponseMessage $response, array $content) : void
+    public function writeJson(IHttpResponseMessage $response, array $content): void
     {
         $json = json_encode($content);
 

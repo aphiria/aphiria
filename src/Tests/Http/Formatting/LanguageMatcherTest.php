@@ -26,7 +26,7 @@ class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->matcher = new LanguageMatcher();
     }
@@ -34,7 +34,7 @@ class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the first supported languages is the default when no matches are found
      */
-    public function testLanguageIsNullWhenNoMatchesAreFound() : void
+    public function testLanguageIsNullWhenNoMatchesAreFound(): void
     {
         $acceptLanguageHeaders = [
             new AcceptLanguageHeaderValue('en-US', new ImmutableHashTable([new KeyValuePair('q', 1)]))
@@ -46,7 +46,7 @@ class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the languages are chosen in order of quality score
      */
-    public function testLanguagesAreRankedInOrderOfQualityScore() : void
+    public function testLanguagesAreRankedInOrderOfQualityScore(): void
     {
         $acceptLanguageHeaders = [
             new AcceptLanguageHeaderValue('en-US', new ImmutableHashTable([new KeyValuePair('q', 0.1)])),
@@ -58,7 +58,7 @@ class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a language with a wildcard is ranked after languages with an equal quality score
      */
-    public function testLanguageWithWildcardIsRankedAfterLanguagesWithEqualQualityScore() : void
+    public function testLanguageWithWildcardIsRankedAfterLanguagesWithEqualQualityScore(): void
     {
         $acceptLanguageHeaders = [
             new AcceptLanguageHeaderValue('en-US', new ImmutableHashTable([new KeyValuePair('q', 1)])),
@@ -71,7 +71,7 @@ class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a language with a zero quality score is excluded
      */
-    public function testLanguageWithZeroQualityScoreIsExcluded() : void
+    public function testLanguageWithZeroQualityScoreIsExcluded(): void
     {
         $acceptLanguageHeaders = [
             new AcceptLanguageHeaderValue('en-US', new ImmutableHashTable([new KeyValuePair('q', 1)])),
@@ -83,7 +83,7 @@ class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a truncated language can match a supported language
      */
-    public function testTruncatedLanguageCanMatchSupportedLanguage() : void
+    public function testTruncatedLanguageCanMatchSupportedLanguage(): void
     {
         $acceptLanguageHeaders = [
             new AcceptLanguageHeaderValue('en-US-123', new ImmutableHashTable([new KeyValuePair('q', 1)]))
@@ -98,7 +98,7 @@ class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a wildcard language with the highest score matches the first supported language
      */
-    public function testWildcardWithHighestScoreMatchesFirstSupportedLanguage() : void
+    public function testWildcardWithHighestScoreMatchesFirstSupportedLanguage(): void
     {
         $acceptLanguageHeaders = [
             new AcceptLanguageHeaderValue('*', new ImmutableHashTable([new KeyValuePair('q', 1)])),

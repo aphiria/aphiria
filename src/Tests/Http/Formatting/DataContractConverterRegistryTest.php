@@ -24,7 +24,7 @@ class DataContractConverterRegistryTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->registry = new DataContractConverterRegistry;
     }
@@ -32,7 +32,7 @@ class DataContractConverterRegistryTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the from-data-contract converter for a type without a converter throws an exception
      */
-    public function testGettingFromDataContractConverterForTypeWithoutConverterThrowsException() : void
+    public function testGettingFromDataContractConverterForTypeWithoutConverterThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->registry->getFromDataContractConverter('foo');
@@ -41,7 +41,7 @@ class DataContractConverterRegistryTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the to-data-contract converter for a type without a converter throws an exception
      */
-    public function testGettingToDataContractConverterForTypeWithoutConverterThrowsException() : void
+    public function testGettingToDataContractConverterForTypeWithoutConverterThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->registry->getToDataContractConverter('foo');
@@ -50,7 +50,7 @@ class DataContractConverterRegistryTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting converters returns the converters registered for the type
      */
-    public function testGettingConvertersReturnsConvertersRegisteredForType() : void
+    public function testGettingConvertersReturnsConvertersRegisteredForType(): void
     {
         $toDataContractConverter = function () {
         };

@@ -25,7 +25,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->cookie = new Cookie('name', 'value', 1234, '/', 'foo.com', true, true, Cookie::SAME_SITE_LAX);
     }
@@ -33,7 +33,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests checking if the is-HTTP-only flag returns the correct value
      */
-    public function testCheckingIfIsHttpOnly() : void
+    public function testCheckingIfIsHttpOnly(): void
     {
         $this->assertTrue($this->cookie->isHttpOnly());
     }
@@ -41,7 +41,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests checking if the is-secure flag returns the correct value
      */
-    public function testCheckingIfIsSecure() : void
+    public function testCheckingIfIsSecure(): void
     {
         $this->assertTrue($this->cookie->isSecure());
     }
@@ -49,7 +49,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting the domain
      */
-    public function testGettingDomain() : void
+    public function testGettingDomain(): void
     {
         $this->assertEquals('foo.com', $this->cookie->getDomain());
     }
@@ -57,7 +57,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting the expiration
      */
-    public function testGettingExpiration() : void
+    public function testGettingExpiration(): void
     {
         $this->assertEquals(1234, (int)$this->cookie->getExpiration()->format('U'));
     }
@@ -65,7 +65,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the max age is set from the expiration
      */
-    public function testGettingMaxAge() : void
+    public function testGettingMaxAge(): void
     {
         $this->assertEquals(1234, $this->cookie->getMaxAge());
     }
@@ -73,7 +73,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting the name
      */
-    public function testGettingName() : void
+    public function testGettingName(): void
     {
         $this->assertEquals('name', $this->cookie->getName());
     }
@@ -81,7 +81,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting the path
      */
-    public function testGettingPath() : void
+    public function testGettingPath(): void
     {
         $this->assertEquals('/', $this->cookie->getPath());
     }
@@ -89,7 +89,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting the same-site value
      */
-    public function testGettingSameSite() : void
+    public function testGettingSameSite(): void
     {
         $this->assertEquals(Cookie::SAME_SITE_LAX, $this->cookie->getSameSite());
     }
@@ -97,7 +97,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting the value
      */
-    public function testGettingValue() : void
+    public function testGettingValue(): void
     {
         $this->assertEquals('value', $this->cookie->getValue());
     }
@@ -105,7 +105,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that an invalid name throws an exception
      */
-    public function testInvalidNameThrowsException() : void
+    public function testInvalidNameThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->cookie->setName('=');
@@ -114,7 +114,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests setting a DateTime as the expiration uses that DateTime and doesn't set the max age
      */
-    public function testSettingDateTimeAsExpirationDoesNotSetMaxAge() : void
+    public function testSettingDateTimeAsExpirationDoesNotSetMaxAge(): void
     {
         $expiration = new DateTime();
         $cookie = new Cookie('name', 'value', $expiration);
@@ -125,7 +125,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests setting an invalid expiration value throws an exception
      */
-    public function testSettingInvalidExpirationValueThrowsException() : void
+    public function testSettingInvalidExpirationValueThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Cookie('foo', 'bar', 'baz');
@@ -143,7 +143,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that setting a null expiration sets a null expiration
      */
-    public function testSettingNullExpirationSetsNullExpiration() : void
+    public function testSettingNullExpirationSetsNullExpiration(): void
     {
         $this->cookie->setExpiration(null);
         $this->assertNull($this->cookie->getExpiration());

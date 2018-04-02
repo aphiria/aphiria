@@ -21,7 +21,7 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests casting to a string converts the underlying stream to a string
      */
-    public function testCastingToStringConvertsUnderlyingStreamToString() : void
+    public function testCastingToStringConvertsUnderlyingStreamToString(): void
     {
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
@@ -34,7 +34,7 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests reading as a stream returns the underlying stream
      */
-    public function testReadingAsStreamReturnsUnderlyingStream() : void
+    public function testReadingAsStreamReturnsUnderlyingStream(): void
     {
         $stream = $this->createMock(IStream::class);
         $body = new StreamBody($stream);
@@ -44,7 +44,7 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests reading as a string converts the underlying stream to a string
      */
-    public function testReadingAsStringConvertsUnderlyingStreamToString() : void
+    public function testReadingAsStringConvertsUnderlyingStreamToString(): void
     {
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
@@ -57,7 +57,7 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests writing to a stream writes to an underlying stream
      */
-    public function testWritingToStreamWritesToUnderlyingStream() : void
+    public function testWritingToStreamWritesToUnderlyingStream(): void
     {
         $outputStream = $this->createMock(IStream::class);
         $underlyingStream = $this->createMock(IStream::class);

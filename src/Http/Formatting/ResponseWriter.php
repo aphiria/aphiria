@@ -37,7 +37,7 @@ class ResponseWriter
      * @param IHttpResponseMessage $response The response to write
      * @throws RuntimeException Thrown if the output stream could not be written to
      */
-    public function writeResponse(IHttpResponseMessage $response) : void
+    public function writeResponse(IHttpResponseMessage $response): void
     {
         $startLine = "HTTP/{$response->getProtocolVersion()} {$response->getStatusCode()}";
 

@@ -39,7 +39,7 @@ class HttpBodyParser
      * @return string|null The mime type if one is set, otherwise null
      * @throws RuntimeException Thrown if the MIME type could not be determined
      */
-    public function getMimeType(?IHttpBody $body) : ?string
+    public function getMimeType(?IHttpBody $body): ?string
     {
         if ($body === null) {
             return null;
@@ -69,7 +69,7 @@ class HttpBodyParser
      * @param IHttpBody|null $body The body to parse
      * @return IDictionary The body form input as a collection
      */
-    public function readAsFormInput(?IHttpBody $body) : IDictionary
+    public function readAsFormInput(?IHttpBody $body): IDictionary
     {
         if ($body === null) {
             return new HashTable();
@@ -103,7 +103,7 @@ class HttpBodyParser
      * @return array The request body as JSON
      * @throws RuntimeException Thrown if the body could not be read as JSON
      */
-    public function readAsJson(?IHttpBody $body) : array
+    public function readAsJson(?IHttpBody $body): array
     {
         if ($body === null) {
             return [];
@@ -127,7 +127,7 @@ class HttpBodyParser
      * @throws InvalidArgumentException Thrown if the body parts were invalid
      * @throws RuntimeException Thrown if the headers' hash keys could not be calculated
      */
-    public function readAsMultipart(?IHttpBody $body, string $boundary) : ?MultipartBody
+    public function readAsMultipart(?IHttpBody $body, string $boundary): ?MultipartBody
     {
         if ($body === null) {
             return null;

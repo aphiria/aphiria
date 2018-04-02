@@ -23,7 +23,7 @@ interface IHttpBody
      *
      * @return string The string
      */
-    public function __toString() : string;
+    public function __toString(): string;
 
     /**
      * Reads the HTTP body as a stream
@@ -31,14 +31,14 @@ interface IHttpBody
      * @return IStream The stream
      * @throws RuntimeException Thrown if there was an error reading as a stream
      */
-    public function readAsStream() : IStream;
+    public function readAsStream(): IStream;
 
     /**
      * Reads the HTTP body as a string
      *
      * @return string The string
      */
-    public function readAsString() : string;
+    public function readAsString(): string;
 
     /**
      * Writes the HTTP body to a stream
@@ -46,5 +46,5 @@ interface IHttpBody
      * @param IStream $stream The stream to write to
      * @throws RuntimeException Thrown if there was an error writing to the stream
      */
-    public function writeToStream(IStream $stream) : void;
+    public function writeToStream(IStream $stream): void;
 }

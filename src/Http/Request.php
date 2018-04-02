@@ -104,7 +104,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         $startLine = "{$this->method} {$this->getRequestTarget()} HTTP/{$this->protocolVersion}";
         $headers = '';
@@ -125,7 +125,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getBody() : ?IHttpBody
+    public function getBody(): ?IHttpBody
     {
         return $this->body;
     }
@@ -133,7 +133,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getHeaders() : HttpHeaders
+    public function getHeaders(): HttpHeaders
     {
         return $this->headers;
     }
@@ -141,7 +141,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getMethod() : string
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -149,7 +149,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getProperties() : IDictionary
+    public function getProperties(): IDictionary
     {
         return $this->properties;
     }
@@ -157,7 +157,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getProtocolVersion() : string
+    public function getProtocolVersion(): string
     {
         return $this->protocolVersion;
     }
@@ -165,7 +165,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getUri() : Uri
+    public function getUri(): Uri
     {
         return $this->uri;
     }
@@ -173,7 +173,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function setBody(IHttpBody $body) : void
+    public function setBody(IHttpBody $body): void
     {
         $this->body = $body;
     }
@@ -183,7 +183,7 @@ class Request implements IHttpRequestMessage
      *
      * return @string The request target
      */
-    private function getRequestTarget() : string
+    private function getRequestTarget(): string
     {
         switch ($this->requestTargetType) {
             case RequestTargetTypes::ORIGIN_FORM:
@@ -216,7 +216,7 @@ class Request implements IHttpRequestMessage
      *
      * @throws InvalidArgumentException Thrown if any of the properties are invalid
      */
-    private function validateProperties() : void
+    private function validateProperties(): void
     {
         if (!isset(self::$validMethods[$this->method])) {
             throw new InvalidArgumentException("Invalid HTTP method {$this->method}");

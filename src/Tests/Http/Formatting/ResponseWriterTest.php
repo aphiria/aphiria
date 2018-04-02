@@ -35,7 +35,7 @@ class ResponseWriterTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->outputStream = new Stream(fopen('php://temp', 'r+b'));
         $this->writer = new ResponseWriter($this->outputStream);
@@ -67,7 +67,7 @@ class ResponseWriterTest extends \PHPUnit\Framework\TestCase
      *
      * @runInSeparateProcess
      */
-    public function testBodyIsWrittenToOutputStream() : void
+    public function testBodyIsWrittenToOutputStream(): void
     {
         $this->response->expects($this->once())
             ->method('getReasonPhrase')

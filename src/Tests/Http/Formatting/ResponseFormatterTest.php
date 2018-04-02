@@ -32,7 +32,7 @@ class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->formatter = new ResponseFormatter();
         $this->headers = new HttpHeaders();
@@ -45,7 +45,7 @@ class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the content type header and body are set when writing JSON
      */
-    public function testContentTypeHeaderAndBodyAreSetWhenWritingJson() : void
+    public function testContentTypeHeaderAndBodyAreSetWhenWritingJson(): void
     {
         $this->response->expects($this->once())
             ->method('setBody')
@@ -59,7 +59,7 @@ class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that redirecting to a URI sets the location header and sets the status code
      */
-    public function testRedirectingToUriSetsLocationHeaderAndStatusCode() : void
+    public function testRedirectingToUriSetsLocationHeaderAndStatusCode(): void
     {
         $this->response->expects($this->once())
             ->method('setStatusCode')
@@ -71,7 +71,7 @@ class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that redirecting to a URI converts a URI instance to a string and sets the location header and sets the status code
      */
-    public function testRedirectingToUriConvertsUriInstanceToStringAndSetsLocationHeaderAndStatusCode() : void
+    public function testRedirectingToUriConvertsUriInstanceToStringAndSetsLocationHeaderAndStatusCode(): void
     {
         $this->response->expects($this->once())
             ->method('setStatusCode')
@@ -83,7 +83,7 @@ class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that redirecting to a URI that is not a string nor URI throws an exception
      */
-    public function testRedirectingToUriThatIsNotUriNorStringThrowsException() : void
+    public function testRedirectingToUriThatIsNotUriNorStringThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->formatter->redirectToUri($this->response, [], 301);

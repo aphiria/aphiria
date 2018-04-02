@@ -27,7 +27,7 @@ class LanguageMatcher
      * @return string|null The best language match if one existed, otherwise null
      * @link https://tools.ietf.org/html/rfc4647#section-3.4
      */
-    public function getBestLanguageMatch(array $supportedLanguages, array $languageHeaders) : ?string
+    public function getBestLanguageMatch(array $supportedLanguages, array $languageHeaders): ?string
     {
         usort($languageHeaders, [$this, 'compareAcceptLanguageHeaders']);
         $rankedLanguageHeaders = array_filter($languageHeaders, [$this, 'filterZeroScores']);
@@ -58,7 +58,7 @@ class LanguageMatcher
      * @param AcceptLanguageHeaderValue $b The second language header to compare
      * @return int -1 if $a is lower than $b, 0 if they're even, or 1 if $a is higher than $b
      */
-    private function compareAcceptLanguageHeaders(AcceptLanguageHeaderValue $a, AcceptLanguageHeaderValue $b) : int
+    private function compareAcceptLanguageHeaders(AcceptLanguageHeaderValue $a, AcceptLanguageHeaderValue $b): int
     {
         $aQuality = $a->getQuality();
         $bQuality = $b->getQuality();
@@ -95,7 +95,7 @@ class LanguageMatcher
      * @param IHeaderValueWithQualityScore $header The value to check
      * @return bool True if we should keep the value, otherwise false
      */
-    private function filterZeroScores(IHeaderValueWithQualityScore $header) : bool
+    private function filterZeroScores(IHeaderValueWithQualityScore $header): bool
     {
         return $header->getQuality() > 0;
     }
@@ -106,7 +106,7 @@ class LanguageMatcher
      * @param AcceptLanguageHeaderValue[] $headers The list of language headers
      * @return array The list of language values from the headers
      */
-    private function getLanguageValuesFromHeaders(array $headers) : array
+    private function getLanguageValuesFromHeaders(array $headers): array
     {
         $languages = [];
 

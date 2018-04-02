@@ -36,7 +36,7 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->parser = new RequestParser();
         $this->headers = new HttpHeaders();
@@ -57,7 +57,7 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the client IP address returns null when the property is not set
      */
-    public function testGettingClientIPAddressReturnsNullWhenPropertyIsNotSet() : void
+    public function testGettingClientIPAddressReturnsNullWhenPropertyIsNotSet(): void
     {
         $this->assertNull($this->parser->getClientIPAddress($this->request));
     }
@@ -65,7 +65,7 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the client IP address returns the property value when the property is set
      */
-    public function testGettingClientIPAddressReturnsPropertyValueWhenPropertyIsSet() : void
+    public function testGettingClientIPAddressReturnsPropertyValueWhenPropertyIsSet(): void
     {
         $this->properties->add('CLIENT_IP_ADDRESS', '127.0.0.1');
         $this->assertEquals('127.0.0.1', $this->parser->getClientIPAddress($this->request));
@@ -74,7 +74,7 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting the mime type a non-request and non-multipart body part throws an exception
      */
-    public function testGettingMimeTypeOfNonRequestNorMultipartBodyPartThrowsException() : void
+    public function testGettingMimeTypeOfNonRequestNorMultipartBodyPartThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->parser->getMimeType([]);
@@ -83,7 +83,7 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests parsing a multipart request without a boundary throws an exception
      */
-    public function testParsingMultipartRequestWithoutBoundaryThrowsException() : void
+    public function testParsingMultipartRequestWithoutBoundaryThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->headers->add('Content-Type', 'multipart/mixed');
@@ -93,7 +93,7 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests parsing a non-request and non-multipart body part throws an exception
      */
-    public function testParsingNonRequestNorMultipartBodyPartThrowsException() : void
+    public function testParsingNonRequestNorMultipartBodyPartThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->parser->readAsMultipart([]);

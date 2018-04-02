@@ -30,7 +30,7 @@ class RequestHeaderParser extends HttpHeaderParser
      * @return AcceptCharsetHeaderValue[] The list of charset header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
-    public function parseAcceptCharsetHeader(HttpHeaders $headers) : array
+    public function parseAcceptCharsetHeader(HttpHeaders $headers): array
     {
         $headerValues = [];
 
@@ -58,7 +58,7 @@ class RequestHeaderParser extends HttpHeaderParser
      * @return AcceptMediaTypeHeaderValue[] The list of media type header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
-    public function parseAcceptHeader(HttpHeaders $headers) : array
+    public function parseAcceptHeader(HttpHeaders $headers): array
     {
         $headerValues = [];
 
@@ -85,7 +85,7 @@ class RequestHeaderParser extends HttpHeaderParser
      * @return AcceptLangugeHeaderValue[] The list of language header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
-    public function parseAcceptLanguageHeader(HttpHeaders $headers) : array
+    public function parseAcceptLanguageHeader(HttpHeaders $headers): array
     {
         $headerValues = [];
 
@@ -113,7 +113,7 @@ class RequestHeaderParser extends HttpHeaderParser
      * @return ContentTypeHeaderValue|null The parsed header if one exists, otherwise null
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
-    public function parseContentTypeHeader(HttpHeaders $headers) : ?ContentTypeHeaderValue
+    public function parseContentTypeHeader(HttpHeaders $headers): ?ContentTypeHeaderValue
     {
         if (!$headers->containsKey('Content-Type')) {
             return null;
@@ -131,7 +131,7 @@ class RequestHeaderParser extends HttpHeaderParser
      * @param HttpHeaders $headers The headers to parse
      * @return IImmutableDictionary The mapping of cookie names to values
      */
-    public function parseCookies(HttpHeaders $headers) : IImmutableDictionary
+    public function parseCookies(HttpHeaders $headers): IImmutableDictionary
     {
         return $this->parseParameters($headers, 'Cookie');
     }

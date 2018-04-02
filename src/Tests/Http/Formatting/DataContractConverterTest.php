@@ -28,7 +28,7 @@ class DataContractConverterTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->registry = new DataContractConverterRegistry();
         $this->converter = new DataContractConverter($this->registry);
@@ -37,7 +37,7 @@ class DataContractConverterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that converting from a data contract for a model without a converter throws an exception
      */
-    public function testConvertFromDataContractForModelWithoutConverterThrowsException() : void
+    public function testConvertFromDataContractForModelWithoutConverterThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->converter->convertFromDataContract('foo', []);
@@ -46,7 +46,7 @@ class DataContractConverterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that converting from a data contract uses the registered converter
      */
-    public function testConvertingFromDataContractUsesRegisteredConverter() : void
+    public function testConvertingFromDataContractUsesRegisteredConverter(): void
     {
         $toDataContractConverter = function (User $user, DataContractConverter $converter) {
             return ['id' => $user->getId(), 'email' => $user->getEmail()];
@@ -63,7 +63,7 @@ class DataContractConverterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that converting to a data contract for a model without a converter throws an exception
      */
-    public function testConvertToDataContractForModelWithoutConverterThrowsException() : void
+    public function testConvertToDataContractForModelWithoutConverterThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->converter->convertToDataContract(new User(123, 'foo@bar.com'));
@@ -72,7 +72,7 @@ class DataContractConverterTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that converting to a data contract uses the registered converter
      */
-    public function testConvertingToDataContractUsesRegisteredConverter() : void
+    public function testConvertingToDataContractUsesRegisteredConverter(): void
     {
         $toDataContractConverter = function (User $user, DataContractConverter $converter) {
             return ['id' => $user->getId(), 'email' => $user->getEmail()];

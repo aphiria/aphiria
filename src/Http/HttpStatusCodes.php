@@ -145,7 +145,7 @@ class HttpStatusCodes
      * @param int $statusCode The status code whose reason phrase we want
      * @return string|null The default reason code if one exists, otherwise null
      */
-    public static function getDefaultReasonPhrase(int $statusCode) : ?string
+    public static function getDefaultReasonPhrase(int $statusCode): ?string
     {
         return self::$defaultReasonPhrases[$statusCode] ?? null;
     }

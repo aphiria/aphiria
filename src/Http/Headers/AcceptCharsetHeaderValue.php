@@ -48,7 +48,7 @@ class AcceptCharsetHeaderValue implements IHeaderValueWithQualityScore
      *
      * @return string The value of the header
      */
-    public function getCharset() : string
+    public function getCharset(): string
     {
         return $this->charset;
     }
@@ -58,7 +58,7 @@ class AcceptCharsetHeaderValue implements IHeaderValueWithQualityScore
      *
      * @return IImmutableDictionary The dictionary of parameters
      */
-    public function getParameters() : IImmutableDictionary
+    public function getParameters(): IImmutableDictionary
     {
         return $this->parameters;
     }
@@ -66,7 +66,7 @@ class AcceptCharsetHeaderValue implements IHeaderValueWithQualityScore
     /**
      * @inheritdoc
      */
-    public function getQuality() : float
+    public function getQuality(): float
     {
         return $this->quality;
     }

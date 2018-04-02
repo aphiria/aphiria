@@ -31,7 +31,7 @@ class StreamBody implements IHttpBody
     /**
      * @inheritdoc
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->readAsString();
     }
@@ -39,7 +39,7 @@ class StreamBody implements IHttpBody
     /**
      * @inheritdoc
      */
-    public function readAsStream() : IStream
+    public function readAsStream(): IStream
     {
         return $this->stream;
     }
@@ -47,7 +47,7 @@ class StreamBody implements IHttpBody
     /**
      * @inheritdoc
      */
-    public function readAsString() : string
+    public function readAsString(): string
     {
         return (string)$this->stream;
     }
@@ -55,7 +55,7 @@ class StreamBody implements IHttpBody
     /**
      * @inheritdoc
      */
-    public function writeToStream(IStream $stream) : void
+    public function writeToStream(IStream $stream): void
     {
         $this->stream->copyToStream($stream);
     }

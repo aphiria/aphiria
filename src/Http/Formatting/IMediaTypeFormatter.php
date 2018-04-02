@@ -23,7 +23,7 @@ interface IMediaTypeFormatter
      *
      * @return array The list of supported character encodings
      */
-    public function getSupportedEncodings() : array;
+    public function getSupportedEncodings(): array;
 
     /**
      * Gets the list of media types this formatter supports
@@ -31,7 +31,7 @@ interface IMediaTypeFormatter
      *
      * @return array The list of supported media types
      */
-    public function getSupportedMediaTypes() : array;
+    public function getSupportedMediaTypes(): array;
 
     /**
      * Reads content from a string and converts it to the input type
@@ -51,5 +51,5 @@ interface IMediaTypeFormatter
      * @param IStream $stream The stream to write to
      * @throws RuntimeException Thrown if the content could not be converted to the input type and written
      */
-    public function writeToStream($object, IStream $stream) : void;
+    public function writeToStream($object, IStream $stream): void;
 }

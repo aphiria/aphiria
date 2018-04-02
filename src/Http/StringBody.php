@@ -34,7 +34,7 @@ class StringBody implements IHttpBody
     /**
      * @inheritdoc
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->readAsString();
     }
@@ -42,7 +42,7 @@ class StringBody implements IHttpBody
     /**
      * @inheritdoc
      */
-    public function readAsStream() : IStream
+    public function readAsStream(): IStream
     {
         if ($this->stream === null) {
             $this->stream = new Stream(fopen('php://temp', 'r+b'));
@@ -56,7 +56,7 @@ class StringBody implements IHttpBody
     /**
      * @inheritdoc
      */
-    public function readAsString() : string
+    public function readAsString(): string
     {
         return $this->content;
     }
@@ -64,7 +64,7 @@ class StringBody implements IHttpBody
     /**
      * @inheritdoc
      */
-    public function writeToStream(IStream $stream) : void
+    public function writeToStream(IStream $stream): void
     {
         $stream->write($this->content);
     }

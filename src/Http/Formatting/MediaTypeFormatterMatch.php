@@ -41,7 +41,7 @@ class MediaTypeFormatterMatch
      *
      * @return IMediaTypeFormatter The matched media type formatter
      */
-    public function getFormatter() : IMediaTypeFormatter
+    public function getFormatter(): IMediaTypeFormatter
     {
         return $this->formatter;
     }
@@ -51,7 +51,7 @@ class MediaTypeFormatterMatch
      *
      * @return string The matched media type
      */
-    public function getMediaType() : string
+    public function getMediaType(): string
     {
         return $this->mediaType;
     }
@@ -61,7 +61,7 @@ class MediaTypeFormatterMatch
      *
      * @return MediaTypeHeaderValue The matched media type header value
      */
-    public function getMediaTypeHeaderValue() : MediaTypeHeaderValue
+    public function getMediaTypeHeaderValue(): MediaTypeHeaderValue
     {
         return $this->mediaTypeHeaderValue;
     }

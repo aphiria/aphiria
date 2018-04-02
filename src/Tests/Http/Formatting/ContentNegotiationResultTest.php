@@ -21,7 +21,7 @@ class ContentNegotiationResultTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the encoding returns the same one in the constructor
      */
-    public function testGettingEncodingReturnsSameOneInConstructor() : void
+    public function testGettingEncodingReturnsSameOneInConstructor(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', 'utf-8', null);
@@ -31,7 +31,7 @@ class ContentNegotiationResultTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the formatter returns the same one in the constructor
      */
-    public function testGettingFormatterReturnsSameOneInConstructor() : void
+    public function testGettingFormatterReturnsSameOneInConstructor(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', null, null);
@@ -41,7 +41,7 @@ class ContentNegotiationResultTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the language returns the same one in the constructor
      */
-    public function testGettingLanguageReturnsSameOneInConstructor() : void
+    public function testGettingLanguageReturnsSameOneInConstructor(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', 'utf-8', 'en-US');
@@ -51,7 +51,7 @@ class ContentNegotiationResultTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the media type returns the same one in the constructor
      */
-    public function testGettingMediaTypeReturnsSameOneInConstructor() : void
+    public function testGettingMediaTypeReturnsSameOneInConstructor(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', null, null);

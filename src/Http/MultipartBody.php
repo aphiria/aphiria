@@ -69,7 +69,7 @@ class MultipartBody extends StreamBody
      *
      * @return string The boundary string
      */
-    public function getBoundary() : string
+    public function getBoundary(): string
     {
         return $this->boundary;
     }
@@ -79,7 +79,7 @@ class MultipartBody extends StreamBody
      *
      * @return MultipartBodyPart[] The list of body parts
      */
-    public function getParts() : array
+    public function getParts(): array
     {
         return $this->parts;
     }
@@ -90,7 +90,7 @@ class MultipartBody extends StreamBody
      * @return string The default boundary
      * @throws RuntimeException Thrown if random bytes could not be generated
      */
-    private function createDefaultBoundary() : string
+    private function createDefaultBoundary(): string
     {
         try {
             // The following creates a UUID v4
@@ -111,7 +111,7 @@ class MultipartBody extends StreamBody
      * @return Stream The stream
      * @throws RuntimeException Thrown if the stream could not be written to
      */
-    private function createStreamFromString(string $string) : Stream
+    private function createStreamFromString(string $string): Stream
     {
         $stream = new Stream(fopen('php://temp', 'r+b'));
         $stream->write($string);

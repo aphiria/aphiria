@@ -48,7 +48,7 @@ class AcceptLanguageHeaderValue implements IHeaderValueWithQualityScore
      *
      * @return string The value of the header
      */
-    public function getLanguage() : string
+    public function getLanguage(): string
     {
         return $this->language;
     }
@@ -58,7 +58,7 @@ class AcceptLanguageHeaderValue implements IHeaderValueWithQualityScore
      *
      * @return IImmutableDictionary The dictionary of parameters
      */
-    public function getParameters() : IImmutableDictionary
+    public function getParameters(): IImmutableDictionary
     {
         return $this->parameters;
     }
@@ -66,7 +66,7 @@ class AcceptLanguageHeaderValue implements IHeaderValueWithQualityScore
     /**
      * @inheritdoc
      */
-    public function getQuality() : float
+    public function getQuality(): float
     {
         return $this->quality;
     }

@@ -35,7 +35,7 @@ class User
      *
      * @return string The user's email address
      */
-    public function getEmail() : string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -45,7 +45,7 @@ class User
      *
      * @return int The user's ID
      */
-    public function getId() : int
+    public function getId(): int
     {
         return $this->id;
     }

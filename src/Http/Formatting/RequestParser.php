@@ -57,7 +57,7 @@ class RequestParser
      * @param IHttpRequestMessage $request The request to look in
      * @return string|null The client IP address if one was found, otherwise null
      */
-    public function getClientIPAddress(IHttpRequestMessage $request) : ?string
+    public function getClientIPAddress(IHttpRequestMessage $request): ?string
     {
         $clientIPAddress = null;
         $request->getProperties()->tryGet(self::CLIENT_IP_ADDRESS_PROPERTY, $clientIPAddress);
@@ -73,7 +73,7 @@ class RequestParser
      * @throws InvalidArgumentException Thrown if the request is neither a request nor a multipart body part
      * @throws RuntimeException Thrown if the MIME type could not be determined
      */
-    public function getMimeType($request) : ?string
+    public function getMimeType($request): ?string
     {
         if (!$request instanceof IHttpRequestMessage && !$request instanceof MultipartBodyPart) {
             throw new InvalidArgumentException(
@@ -91,7 +91,7 @@ class RequestParser
      * @return bool True if the message has a JSON content type, otherwise false
      * @throws RuntimeException Thrown if the content type header's hash key could not be calculated
      */
-    public function isJson(IHttpRequestMessage $request) : bool
+    public function isJson(IHttpRequestMessage $request): bool
     {
         return $this->headerParser->isJson($request->getHeaders());
     }
@@ -103,7 +103,7 @@ class RequestParser
      * @return bool True if the request is a multipart message, otherwise false
      * @throws RuntimeException Thrown if the content type header's hash key could not be calculated
      */
-    public function isMultipart(IHttpRequestMessage $request) : bool
+    public function isMultipart(IHttpRequestMessage $request): bool
     {
         return $this->headerParser->isMultipart($request->getHeaders());
     }
@@ -115,7 +115,7 @@ class RequestParser
      * @return AcceptCharsetHeaderValue[] The list of charset header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
-    public function parseAcceptCharsetHeader(IHttpRequestMessage $request) : array
+    public function parseAcceptCharsetHeader(IHttpRequestMessage $request): array
     {
         return $this->headerParser->parseAcceptCharsetHeader($request->getHeaders());
     }
@@ -127,7 +127,7 @@ class RequestParser
      * @return AcceptMediaTypeHeaderValue[] The list of media type header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
-    public function parseAcceptHeader(IHttpRequestMessage $request) : array
+    public function parseAcceptHeader(IHttpRequestMessage $request): array
     {
         return $this->headerParser->parseAcceptHeader($request->getHeaders());
     }
@@ -139,7 +139,7 @@ class RequestParser
      * @return AcceptCharsetLanguageValue[] The list of language header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
-    public function parseAcceptLanguageHeader(IHttpRequestMessage $request) : array
+    public function parseAcceptLanguageHeader(IHttpRequestMessage $request): array
     {
         return $this->headerParser->parseAcceptLanguageHeader($request->getHeaders());
     }
@@ -151,7 +151,7 @@ class RequestParser
      * @return ContentTypeHeaderValue|null The parsed header if one exists, otherwise null
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
-    public function parseContentTypeHeader(IHttpRequestMessage $request) : ?ContentTypeHeaderValue
+    public function parseContentTypeHeader(IHttpRequestMessage $request): ?ContentTypeHeaderValue
     {
         return $this->headerParser->parseContentTypeHeader($request->getHeaders());
     }
@@ -162,7 +162,7 @@ class RequestParser
      * @param IHttpRequestMessage $request The request to parse
      * @return IImmutableDictionary The mapping of cookie names to values
      */
-    public function parseCookies(IHttpRequestMessage $request) : IImmutableDictionary
+    public function parseCookies(IHttpRequestMessage $request): IImmutableDictionary
     {
         return $this->headerParser->parseCookies($request->getHeaders());
     }
@@ -189,7 +189,7 @@ class RequestParser
      * @param IHttpRequestMessage $request The request whose URI we're parsing
      * @return IImmutableDictionary The parsed query string
      */
-    public function parseQueryString(IHttpRequestMessage $request) : IImmutableDictionary
+    public function parseQueryString(IHttpRequestMessage $request): IImmutableDictionary
     {
         return $this->uriParser->parseQueryString($request->getUri());
     }
@@ -200,7 +200,7 @@ class RequestParser
      * @param IHttpRequestMessage $request The request to parse
      * @return IDictionary The body form input as a collection
      */
-    public function readAsFormInput(IHttpRequestMessage $request) : IDictionary
+    public function readAsFormInput(IHttpRequestMessage $request): IDictionary
     {
         return $this->bodyParser->readAsFormInput($request->getBody());
     }
@@ -212,7 +212,7 @@ class RequestParser
      * @return array The request body as JSON
      * @throws RuntimeException Thrown if the body could not be read as JSON
      */
-    public function readAsJson(IHttpRequestMessage $request) : array
+    public function readAsJson(IHttpRequestMessage $request): array
     {
         return $this->bodyParser->readAsJson($request->getBody());
     }
@@ -226,7 +226,7 @@ class RequestParser
      * @throws InvalidArgumentException Thrown if the request is not a multipart request
      * @throws RuntimeException Thrown if the headers' hash keys could not be calculated
      */
-    public function readAsMultipart($request) : ?MultipartBody
+    public function readAsMultipart($request): ?MultipartBody
     {
         if (!$request instanceof IHttpRequestMessage && !$request instanceof MultipartBodyPart) {
             throw new InvalidArgumentException(

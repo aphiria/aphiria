@@ -20,7 +20,7 @@ class HttpStatusCodesTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that an existing status code returns the default status text
      */
-    public function testExistingStatusCodeReturnsDefaultStatusText() : void
+    public function testExistingStatusCodeReturnsDefaultStatusText(): void
     {
         $this->assertEquals('OK', HttpStatusCodes::getDefaultReasonPhrase(200));
     }
@@ -28,7 +28,7 @@ class HttpStatusCodesTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a non-existent status code returns a null default status text
      */
-    public function testNonExistentStatusCodeReturnsNullStatusText() : void
+    public function testNonExistentStatusCodeReturnsNullStatusText(): void
     {
         $this->assertNull(HttpStatusCodes::getDefaultReasonPhrase(-1));
     }

@@ -39,7 +39,7 @@ class AcceptMediaTypeHeaderValue extends MediaTypeHeaderValue implements IHeader
     /**
      * @inheritdoc
      */
-    public function getQuality() : float
+    public function getQuality(): float
     {
         return $this->quality;
     }

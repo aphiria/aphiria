@@ -20,5 +20,5 @@ interface IHeaderValueWithQualityScore
      *
      * @return float The quality score (0-1)
      */
-    public function getQuality() : float;
+    public function getQuality(): float;
 }

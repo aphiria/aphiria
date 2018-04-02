@@ -37,7 +37,7 @@ class JsonMediaTypeFormatter implements IMediaTypeFormatter
     /**
      * @inheritdoc
      */
-    public function getSupportedEncodings() : array
+    public function getSupportedEncodings(): array
     {
         return self::$supportedEncodings;
     }
@@ -45,7 +45,7 @@ class JsonMediaTypeFormatter implements IMediaTypeFormatter
     /**
      * @inheritdoc
      */
-    public function getSupportedMediaTypes() : array
+    public function getSupportedMediaTypes(): array
     {
         return self::$supportedMediaTypes;
     }
@@ -81,7 +81,7 @@ class JsonMediaTypeFormatter implements IMediaTypeFormatter
     /**
      * @inheritdoc
      */
-    public function writeToStream($object, IStream $stream) : void
+    public function writeToStream($object, IStream $stream): void
     {
         try {
             if (\is_array($object)) {

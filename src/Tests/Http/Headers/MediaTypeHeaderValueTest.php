@@ -24,7 +24,7 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the charset returns the one set in the constructor
      */
-    public function testGettingCharsetReturnsOneSetInConstructor() : void
+    public function testGettingCharsetReturnsOneSetInConstructor(): void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
         $value = new MediaTypeHeaderValue('foo/bar', $parameters);
@@ -34,7 +34,7 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the media type returns the one set in the constructor
      */
-    public function testGettingMediaTypeReturnsOneSetInConstructor() : void
+    public function testGettingMediaTypeReturnsOneSetInConstructor(): void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
         $value = new MediaTypeHeaderValue('foo/bar', $parameters);
@@ -44,7 +44,7 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the sub-type returns the correct sub-type
      */
-    public function testGettingSubTypeReturnsCorrectSubtType() : void
+    public function testGettingSubTypeReturnsCorrectSubtType(): void
     {
         $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
         $this->assertEquals('bar', $value->getSubType());
@@ -53,7 +53,7 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the type returns the correct type
      */
-    public function testGettingTypeReturnsCorrectType() : void
+    public function testGettingTypeReturnsCorrectType(): void
     {
         $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
         $this->assertEquals('foo', $value->getType());
@@ -62,7 +62,7 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that an incorrectly formatted media type throws an exception
      */
-    public function testIncorrectlyFormattedMediaTypeThrowsException() : void
+    public function testIncorrectlyFormattedMediaTypeThrowsException(): void
     {
         try {
             new MediaTypeHeaderValue('foo', $this->createMock(IImmutableDictionary::class));

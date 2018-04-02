@@ -38,7 +38,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Sets up the tests
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->headers = new HttpHeaders();
         $this->body = $this->createMock(IHttpBody::class);
@@ -57,7 +57,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting the body
      */
-    public function testGettingBody() : void
+    public function testGettingBody(): void
     {
         $this->assertSame($this->body, $this->request->getBody());
     }
@@ -65,7 +65,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting the headers
      */
-    public function testGettingHeaders() : void
+    public function testGettingHeaders(): void
     {
         $this->assertSame($this->headers, $this->request->getHeaders());
     }
@@ -73,7 +73,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting the method
      */
-    public function testGettingMethod() : void
+    public function testGettingMethod(): void
     {
         $this->assertSame('GET', $this->request->getMethod());
     }
@@ -81,7 +81,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting properties
      */
-    public function testGettingProperties() : void
+    public function testGettingProperties(): void
     {
         $this->assertSame($this->properties, $this->request->getProperties());
     }
@@ -89,7 +89,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting the protocol version
      */
-    public function testGettingProtocolVersion() : void
+    public function testGettingProtocolVersion(): void
     {
         $this->assertEquals('2.0', $this->request->getProtocolVersion());
     }
@@ -97,7 +97,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting the method returns the method set in the headers
      */
-    public function testGettingUri() : void
+    public function testGettingUri(): void
     {
         $this->assertSame($this->uri, $this->request->getUri());
     }
@@ -105,7 +105,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the Host header is not added if it already exists
      */
-    public function testHostHeaderIsNotAddedIfItAlreadyExists() : void
+    public function testHostHeaderIsNotAddedIfItAlreadyExists(): void
     {
         $headers = new HttpHeaders();
         $headers->add('Host', 'foo.com');
@@ -116,7 +116,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that an invalid request target type throws an exception
      */
-    public function testInvalidRequestTargetTypeThrowsException() : void
+    public function testInvalidRequestTargetTypeThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Request('GET', new Uri('https://example.com'), null, null, null, '1.1', 'foo');
@@ -125,7 +125,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that multiple header values are concatenated with commas
      */
-    public function testMultipleHeaderValuesAreConcatenatedWithCommas() : void
+    public function testMultipleHeaderValuesAreConcatenatedWithCommas(): void
     {
         $request = new Request('GET', new Uri('https://example.com'));
         $request->getHeaders()->add('Foo', 'bar');
@@ -136,7 +136,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the request target in absolute form includes the entire URI
      */
-    public function testRequestTargetTypeAbsoluteFormIncludesEntireUri() : void
+    public function testRequestTargetTypeAbsoluteFormIncludesEntireUri(): void
     {
         $request = new Request(
             'GET',
@@ -156,7 +156,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the request target in asterisk form uses an asterisk for the request target
      */
-    public function testRequestTargetTypeAsteriskFormUsesAsteriskForRequestTarget() : void
+    public function testRequestTargetTypeAsteriskFormUsesAsteriskForRequestTarget(): void
     {
         $request = new Request(
             'GET',
@@ -173,7 +173,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the request target in authority form includes the URI authority without the user info
      */
-    public function testRequestTargetTypeAuthorityFormIncludeUriAuthorityWithoutUserInfo() : void
+    public function testRequestTargetTypeAuthorityFormIncludeUriAuthorityWithoutUserInfo(): void
     {
         $request = new Request(
             'GET',
@@ -190,7 +190,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the request target in origin form includes a host header
      */
-    public function testRequestTargetTypeOriginFormIncludesHostHeader() : void
+    public function testRequestTargetTypeOriginFormIncludesHostHeader(): void
     {
         $requestWithUriWithoutQueryString = new Request('GET', new Uri('https://example.com/foo'));
         $this->assertEquals("GET /foo HTTP/1.1\r\nHost: example.com\r\n\r\n", (string)$requestWithUriWithoutQueryString);
@@ -203,7 +203,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a request with headers but no body ends with a blank line
      */
-    public function testRequesteWithHeadersButNoBodyEndsWithBlankLine() : void
+    public function testRequesteWithHeadersButNoBodyEndsWithBlankLine(): void
     {
         $request = new Request('GET', new Uri('https://example.com'));
         $request->getHeaders()->add('Foo', 'bar');
@@ -213,7 +213,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a request with no headers or body ends with a blank line
      */
-    public function testRequestWithNoHeadersOrBodyEndsWithBlankLine() : void
+    public function testRequestWithNoHeadersOrBodyEndsWithBlankLine(): void
     {
         $request = new Request('GET', new Uri('https://example.com'));
         $this->assertEquals("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n", (string)$request);
@@ -222,7 +222,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests setting the body
      */
-    public function testSettingBody() : void
+    public function testSettingBody(): void
     {
         $body = $this->createMock(IHttpBody::class);
         $this->request->setBody($body);
@@ -232,7 +232,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests setting an invalid method throws an exception
      */
-    public function testSettingInvalidMethodThrowsException() : void
+    public function testSettingInvalidMethodThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Request('foo', $this->uri, $this->headers, $this->body);

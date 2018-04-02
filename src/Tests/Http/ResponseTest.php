@@ -23,7 +23,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the default reason phrase is set
      */
-    public function testDefaultReasonPhraseIsSet() : void
+    public function testDefaultReasonPhraseIsSet(): void
     {
         $response = new Response(200);
         $this->assertEquals(HttpStatusCodes::getDefaultReasonPhrase(200), $response->getReasonPhrase());
@@ -32,7 +32,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting and setting the body
      */
-    public function testGettingAndSettingBody() : void
+    public function testGettingAndSettingBody(): void
     {
         $body1 = $this->createMock(IHttpBody::class);
         $response = new Response(200, null, $body1);
@@ -45,7 +45,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting and setting the status code
      */
-    public function testGettingAndSettingStatusCode() : void
+    public function testGettingAndSettingStatusCode(): void
     {
         $response = new Response(201);
         $this->assertEquals(201, $response->getStatusCode());
@@ -56,7 +56,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting headers
      */
-    public function testGettingHeaders() : void
+    public function testGettingHeaders(): void
     {
         $headers = new HttpHeaders();
         $response = new Response(200, $headers);
@@ -66,7 +66,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests getting the protocol version
      */
-    public function testGettingProtocolVersion() : void
+    public function testGettingProtocolVersion(): void
     {
         $response = new Response(200, null, null, '2.0');
         $this->assertEquals('2.0', $response->getProtocolVersion());
@@ -75,7 +75,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that multiple header values are concatenated with commas
      */
-    public function testMultipleHeaderValuesAreConcatenatedWithCommas() : void
+    public function testMultipleHeaderValuesAreConcatenatedWithCommas(): void
     {
         $response = new Response();
         $response->getHeaders()->add('Foo', 'bar');
@@ -86,7 +86,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that the reason phrase is included only if it is defined
      */
-    public function testReasonPhraseIsIncludedOnlyIfDefined() : void
+    public function testReasonPhraseIsIncludedOnlyIfDefined(): void
     {
         $response = new Response();
         $response->setStatusCode(200, 'OK');
@@ -96,7 +96,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a response with headers but no body ends with a blank line
      */
-    public function testResponseWithHeadersButNoBodyEndsWithBlankLine() : void
+    public function testResponseWithHeadersButNoBodyEndsWithBlankLine(): void
     {
         $response = new Response();
         $response->getHeaders()->add('Foo', 'bar');
@@ -106,7 +106,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that a response with no headers or body ends with a blank line
      */
-    public function testResponseWithNoHeadersOrBodyEndsWithBlankLine() : void
+    public function testResponseWithNoHeadersOrBodyEndsWithBlankLine(): void
     {
         $response = new Response();
         $this->assertEquals("HTTP/1.1 200 OK\r\n\r\n", (string)$response);

@@ -24,7 +24,7 @@ class AcceptLanguageHeaderValueTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that an exception is thrown with a quality score outside the accepted range
      */
-    public function testExceptionThrownWithQualityScoreOutsideAcceptedRange() : void
+    public function testExceptionThrownWithQualityScoreOutsideAcceptedRange(): void
     {
         try {
             $parameters = new ImmutableHashTable([new KeyValuePair('q', '-1')]);
@@ -46,7 +46,7 @@ class AcceptLanguageHeaderValueTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the language returns the same one that's set in the constructor
      */
-    public function testGettingLanguageReturnsSameOneSetInConstructor() : void
+    public function testGettingLanguageReturnsSameOneSetInConstructor(): void
     {
         $parameters = $this->createMock(IImmutableDictionary::class);
         $value = new AcceptLanguageHeaderValue('en-US', $parameters);
@@ -56,7 +56,7 @@ class AcceptLanguageHeaderValueTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the parameters returns the same instance that's set in the constructor
      */
-    public function testGettingParametersReturnsSameOneSetInConstructor() : void
+    public function testGettingParametersReturnsSameOneSetInConstructor(): void
     {
         $parameters = new ImmutableHashTable([]);
         $value = new AcceptLanguageHeaderValue('en-US', $parameters);
@@ -66,7 +66,7 @@ class AcceptLanguageHeaderValueTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the quality returns the correct quality
      */
-    public function testGettingQualityReturnsCorrectQuality() : void
+    public function testGettingQualityReturnsCorrectQuality(): void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('q', '.5')]);
         $value = new AcceptLanguageHeaderValue('en-US', $parameters);
@@ -76,7 +76,7 @@ class AcceptLanguageHeaderValueTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that getting the quality defaults to 1
      */
-    public function testQualityDefaultsToOne() : void
+    public function testQualityDefaultsToOne(): void
     {
         $value = new AcceptLanguageHeaderValue('en-US', null);
         $this->assertEquals(1, $value->getQuality());

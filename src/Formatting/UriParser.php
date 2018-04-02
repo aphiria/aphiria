@@ -29,7 +29,7 @@ class UriParser
      * @param Uri $uri The URI to parse
      * @return IImmutableDictionary The parsed query string
      */
-    public function parseQueryString(Uri $uri) : IImmutableDictionary
+    public function parseQueryString(Uri $uri): IImmutableDictionary
     {
         $queryString = $uri->getQueryString();
 

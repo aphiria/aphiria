@@ -23,7 +23,7 @@ interface IHttpRequestMessage extends IHttpMessage
      *
      * @return string The HTTP method
      */
-    public function getMethod() : string;
+    public function getMethod(): string;
 
     /**
      * Gets the properties of the request
@@ -31,12 +31,12 @@ interface IHttpRequestMessage extends IHttpMessage
      *
      * @return IDictionary The collection of properties
      */
-    public function getProperties() : IDictionary;
+    public function getProperties(): IDictionary;
 
     /**
      * Gets the URI of the request
      *
      * @return Uri The URI
      */
-    public function getUri() : Uri;
+    public function getUri(): Uri;
 }

@@ -36,7 +36,7 @@ class MultipartBodyPart
      *
      * @return string The body part as a string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return "{$this->headers}\r\n\r\n" . ($this->body === null ? '' : (string)$this->body);
     }
@@ -46,7 +46,7 @@ class MultipartBodyPart
      *
      * @return IHttpBody|null The body of this body part if one is set, otherwise null
      */
-    public function getBody() : ?IHttpBody
+    public function getBody(): ?IHttpBody
     {
         return $this->body;
     }
@@ -56,7 +56,7 @@ class MultipartBodyPart
      *
      * @return HttpHeaders The headers of this body part
      */
-    public function getHeaders() : HttpHeaders
+    public function getHeaders(): HttpHeaders
     {
         return $this->headers;
     }

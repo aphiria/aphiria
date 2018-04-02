@@ -60,7 +60,7 @@ class Uri
      *
      * @return string The URI as a string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         $stringUri = '';
 
@@ -94,7 +94,7 @@ class Uri
      * @param bool $includeUserInfo Whether or not to include the user info
      * @return string|null The URI authority if set, otherwise null
      */
-    public function getAuthority(bool $includeUserInfo = true) : ?string
+    public function getAuthority(bool $includeUserInfo = true): ?string
     {
         $authority = '';
 
@@ -125,7 +125,7 @@ class Uri
      *
      * @return string|null The fragment if set, otherwise null
      */
-    public function getFragment() : ?string
+    public function getFragment(): ?string
     {
         return $this->fragment;
     }
@@ -135,7 +135,7 @@ class Uri
      *
      * @return string|null The host if set, otherwise null
      */
-    public function getHost() : ?string
+    public function getHost(): ?string
     {
         return $this->host;
     }
@@ -145,7 +145,7 @@ class Uri
      *
      * @return string|null The password if set, otherwise null
      */
-    public function getPassword() : ?string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -155,7 +155,7 @@ class Uri
      *
      * @return string|null The URI path if set, otherwise null
      */
-    public function getPath() : ?string
+    public function getPath(): ?string
     {
         return $this->path;
     }
@@ -165,7 +165,7 @@ class Uri
      *
      * @return int|null The port if set, otherwise null
      */
-    public function getPort() : ?int
+    public function getPort(): ?int
     {
         return $this->port;
     }
@@ -175,7 +175,7 @@ class Uri
      *
      * @return string|null The query string if set, otherwise null
      */
-    public function getQueryString() : ?string
+    public function getQueryString(): ?string
     {
         return $this->queryString;
     }
@@ -185,7 +185,7 @@ class Uri
      *
      * @return string|null The scheme if set, otherwise null
      */
-    public function getScheme() : ?string
+    public function getScheme(): ?string
     {
         return $this->scheme;
     }
@@ -195,7 +195,7 @@ class Uri
      *
      * @return string|null The user if set, otherwise null
      */
-    public function getUser() : ?string
+    public function getUser(): ?string
     {
         return $this->user;
     }
@@ -206,7 +206,7 @@ class Uri
      * @param string|null $fragment The fragment to filter if one is set, otherwise null
      * @return string|null The filtered fragment, or null if the fragment was already null
      */
-    private function filterFragment(?string $fragment) : ?string
+    private function filterFragment(?string $fragment): ?string
     {
         return $this->filterQueryString($fragment);
     }
@@ -217,7 +217,7 @@ class Uri
      * @param string|null $host The host to filter if one is set, otherwise null
      * @return string|null The filtered host, or null if the host was already null
      */
-    private function filterHost(?string $host) : ?string
+    private function filterHost(?string $host): ?string
     {
         if ($host === null) {
             return null;
@@ -233,7 +233,7 @@ class Uri
      * @param string|null $path The path to filter if one is set, otherwise null
      * @return string|null The filtered path, or null if the path was already null
      */
-    private function filterPath(?string $path) : ?string
+    private function filterPath(?string $path): ?string
     {
         if ($path === null) {
             return null;
@@ -255,7 +255,7 @@ class Uri
      * @param string|null $queryString The query string to filter if one is set, otherwise null
      * @return string|null The filtered query string, or null if the query string was already null
      */
-    private function filterQueryString(?string $queryString) : ?string
+    private function filterQueryString(?string $queryString): ?string
     {
         if ($queryString === null) {
             return null;
@@ -277,7 +277,7 @@ class Uri
      * @param string|null $scheme The scheme to filter if one is set, otherwise null
      * @return string|null The filtered scheme, or null if the scheme was already null
      */
-    private function filterScheme(?string $scheme) : ?string
+    private function filterScheme(?string $scheme): ?string
     {
         if ($scheme === null) {
             return null;
@@ -292,7 +292,7 @@ class Uri
      *
      * @return bool True if using a standard port, otherwise false
      */
-    private function isUsingStandardPort() : bool
+    private function isUsingStandardPort(): bool
     {
         return $this->port === null ||
             (($this->scheme === 'http' && $this->port === 80) || ($this->scheme === 'https' && $this->port === 443));
@@ -303,7 +303,7 @@ class Uri
      *
      * @throws InvalidArgumentException Thrown if any of the properties are invalid
      */
-    private function validateProperties() : void
+    private function validateProperties(): void
     {
         $acceptedSchemes = ['' => true, 'http' => true, 'https' => true];
 
