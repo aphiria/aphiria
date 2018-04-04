@@ -65,7 +65,7 @@ class DataContractConverterRegistry
         string $type,
         callable $toDataContractConverter,
         callable $fromDataContractConverter
-    ) : void {
+    ): void {
         $this->converters[$type] = ['to' => $toDataContractConverter, 'from' => $fromDataContractConverter];
     }
 }

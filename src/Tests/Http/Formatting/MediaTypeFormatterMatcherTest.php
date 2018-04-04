@@ -178,7 +178,7 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
     private function createFormatterMock(
         array $supportedMediaTypes,
         int $numTimesSupportedMediaTypesCalled
-    ) : IMediaTypeFormatter {
+    ): IMediaTypeFormatter {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $formatter->expects($this->exactly($numTimesSupportedMediaTypesCalled))
             ->method('getSupportedMediaTypes')

@@ -67,13 +67,13 @@ PSR-7 was an attempt to standardize frameworks' HTTP components to be interopbil
 
 Requests are HTTP messages sent by clients to servers.  They contain the following methods:
 
-* `getBody() : ?IHttpBody`
-* `getHeaders() : HttpHeaders`
-* `getMethod() : string`
-* `getProperties() : IDictionary`
-* `getProtocolVersion() : string`
-* `getUri() : Uri`
-* `setBody(IHttpBody $body) : void`
+* `getBody(): ?IHttpBody`
+* `getHeaders(): HttpHeaders`
+* `getMethod(): string`
+* `getProperties(): IDictionary`
+* `getProtocolVersion(): string`
+* `getUri(): Uri`
+* `setBody(IHttpBody $body): void`
 
 > **Note:** The properties dictionary is a useful place to store metadata about a request, eg route variables.
 
@@ -175,8 +175,8 @@ $json = (new RequestParser)->readAsJson($request);
 
 Multipart requests contain multiple bodies, each with headers.  That's actually how file uploads work - each file gets a body with headers indicating the name, type, and size of the file.  Opulence can parse these multipart bodies into a `MultipartBody`, which extends [`StreamBody`](#stream-bodies).  It contains additional methods to get the boundary and the list of `MultipartBodyPart` objects that make up the body:
 
-* `getBoundary() : string`
-* `getParts() : MultipartBodyPart[]`
+* `getBoundary(): string`
+* `getParts(): MultipartBodyPart[]`
 
 You can check if a request is a multipart request:
 
@@ -196,8 +196,8 @@ $multipartBody = (new RequestParser)->readAsMultipart($request);
 
 Each `MultipartBodyPart` contains the following methods:
 
-* `getBody() : ?IHttpBody`
-* `getHeaders() : HttpHeaders`
+* `getBody(): ?IHttpBody`
+* `getHeaders(): HttpHeaders`
 
 <h5 id="saving-uploaded-files">Saving Uploaded Files</h5>
 
@@ -329,13 +329,13 @@ The following request target types may be used:
 
 Responses are HTTP messages that are sent by servers back to the client.  They contain the following methods:
 
-* `getBody() : ?IHttpBody`
-* `getHeaders() : HttpHeaders`
-* `getProtocolVersion() : string`
-* `getReasonPhrase() : ?string`
-* `getStatusCode() : int`
-* `setBody(IHttpBody $body) : void`
-* `setStatusCode(int $statusCode, ?string $reasonPhrase = null) : void`
+* `getBody(): ?IHttpBody`
+* `getHeaders(): HttpHeaders`
+* `getProtocolVersion(): string`
+* `getReasonPhrase(): ?string`
+* `getStatusCode(): int`
+* `setBody(IHttpBody $body): void`
+* `setStatusCode(int $statusCode, ?string $reasonPhrase = null): void`
 
 <h4 id="creating-responses">Creating Responses</h4>
 
@@ -467,8 +467,8 @@ echo (string)$response;
 
 Headers provide metadata about the HTTP message.  In Opulence, they're implemented by `Opulence\Net\Http\HttpHeaders`, which extends  [`Opulence\Collections\HashTable`](https://www.opulencephp.com/docs/1.1/collections#hash-tables).  On top of the methods provided by `HashTable`, they also provide the following methods:
 
-* `getFirst(string $name) : mixed`
-* `tryGetFirst(string $name, &$value) : bool`
+* `getFirst(string $name): mixed`
+* `tryGetFirst(string $name, &$value): bool`
 
 > **Note:** Header names that are passed into the methods in `HttpHeaders` are automatically normalized to Train-Case.  In other words, `foo_bar` will become `Foo-Bar`.
 
@@ -476,10 +476,10 @@ Headers provide metadata about the HTTP message.  In Opulence, they're implement
 
 HTTP bodies contain data associated with the HTTP message, and are optional.  They're represented by `Opulence\Net\Http\IHttpBody`.  They provide a few methods to read and write their contents to streams and to strings:
 
-* `__toString() : string`
-* `readAsStream() : IStream`
-* `readAsString() : string`
-* `writeToStream(IStream $stream) : void`
+* `__toString(): string`
+* `readAsStream(): IStream`
+* `readAsString(): string`
+* `writeToStream(IStream $stream): void`
 
 <h4 id="string-bodies">String Bodies</h4>
 
@@ -507,16 +507,16 @@ $body = new StreamBody($stream);
 
 A URI identifies a resource, typically over a network.  They contain such information as the scheme, host, port, path, query string, and fragment.  Opulence represents them in `Opulence\Net\Uri`, and they include the following methods:
 
-* `__toString() : string`
-* `getAuthority(bool $includeUserInfo = true) : ?string`
-* `getFragment() : ?string`
-* `getHost() : ?string`
-* `getPassword() : ?string`
-* `getPath() : ?string`
-* `getPort() : ?int`
-* `getQueryString() : ?string`
-* `getScheme() : ?string`
-* `getUser() : ?string`
+* `__toString(): string`
+* `getAuthority(bool $includeUserInfo = true): ?string`
+* `getFragment(): ?string`
+* `getHost(): ?string`
+* `getPassword(): ?string`
+* `getPath(): ?string`
+* `getPort(): ?int`
+* `getQueryString(): ?string`
+* `getScheme(): ?string`
+* `getUser(): ?string`
 
 To create an instance of `Uri`, pass the raw URI string into the constructor:
 

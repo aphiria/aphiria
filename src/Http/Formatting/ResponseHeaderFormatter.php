@@ -43,7 +43,7 @@ class ResponseHeaderFormatter extends HttpHeaderParser
         bool $isSecure = false,
         bool $isHttpOnly = true,
         ?string $sameSite = null
-    ) : void {
+    ): void {
         $headerValue = "$name=";
         $expiration = DateTime::createFromFormat('U', 0);
         $headerValue .= "; Expires={$expiration->format(self::EXPIRATION_DATE_FORMAT)}";

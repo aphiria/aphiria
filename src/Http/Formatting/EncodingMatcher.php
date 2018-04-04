@@ -31,7 +31,7 @@ class EncodingMatcher
         IMediaTypeFormatter $formatter,
         array $acceptCharsetHeaders,
         ?MediaTypeHeaderValue $mediaTypeHeader
-    ) : ?string {
+    ): ?string {
         $rankedAcceptCharsetHeaders = $this->rankAcceptCharsetHeaders($acceptCharsetHeaders);
 
         foreach ($rankedAcceptCharsetHeaders as $acceptCharsetHeader) {

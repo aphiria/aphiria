@@ -52,7 +52,7 @@ class ResponseFormatter
         bool $isSecure = false,
         bool $isHttpOnly = true,
         ?string $sameSite = null
-    ) : void {
+    ): void {
         $this->headerFormatter->deleteCookie(
             $response->getHeaders(),
             $name,

@@ -29,7 +29,7 @@ interface IContentNegotiator
     public function negotiateRequestContent(
         IHttpRequestMessage $request,
         array $mediaTypeFormatters
-    ) : ?ContentNegotiationResult;
+    ): ?ContentNegotiationResult;
 
     /**
      * Gets the negotiation result for the response body
@@ -44,5 +44,5 @@ interface IContentNegotiator
         IHttpRequestMessage $request,
         array $mediaTypeFormatters,
         array $supportedLanguages
-    ) : ?ContentNegotiationResult;
+    ): ?ContentNegotiationResult;
 }

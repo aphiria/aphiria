@@ -53,7 +53,7 @@ class ContentNegotiator implements IContentNegotiator
     public function negotiateRequestContent(
         IHttpRequestMessage $request,
         array $mediaTypeFormatters
-    ) : ?ContentNegotiationResult {
+    ): ?ContentNegotiationResult {
         if (\count($mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
         }
@@ -98,7 +98,7 @@ class ContentNegotiator implements IContentNegotiator
         IHttpRequestMessage $request,
         array $mediaTypeFormatters,
         array $supportedLanguages
-    ) : ?ContentNegotiationResult {
+    ): ?ContentNegotiationResult {
         if (\count($mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
         }

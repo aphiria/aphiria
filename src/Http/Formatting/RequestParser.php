@@ -179,7 +179,7 @@ class RequestParser
         IHttpRequestMessage $request,
         string $headerName,
         int $index = 0
-    ) : IImmutableDictionary {
+    ): IImmutableDictionary {
         return $this->headerParser->parseParameters($request->getHeaders(), $headerName, $index);
     }
 

@@ -29,7 +29,7 @@ class MediaTypeFormatterMatcher
     public function getBestMediaTypeFormatterMatch(
         array $formatters,
         array $mediaTypeHeaders
-    ) : ?MediaTypeFormatterMatch {
+    ): ?MediaTypeFormatterMatch {
         // Rank the media type headers if they are rankable
         if (\count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof IHeaderValueWithQualityScore) {
             $mediaTypeHeaders = $this->rankAcceptMediaTypeHeaders($mediaTypeHeaders);
