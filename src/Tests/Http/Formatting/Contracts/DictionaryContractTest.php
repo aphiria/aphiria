@@ -21,9 +21,6 @@ class DictionaryContractTest extends \PHPUnit\Framework\TestCase
     /** @var DictionaryContract The contract to use in tests */
     private $contract;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->contract = new DictionaryContract(['foo' => 'bar', 'baz' => 'blah']);
