@@ -31,8 +31,7 @@ class ContractMapperBus implements IContractMapperBus
      */
     public function mapFromArrayContract(ArrayContract $contract, string $type): array
     {
-        return $this->contractMapperRegistry->getContractMapperForType($type)
-            ->mapFromContract($contract);
+        return $this->mapFromContract($contract, $type);
     }
 
     /**
@@ -40,7 +39,7 @@ class ContractMapperBus implements IContractMapperBus
      */
     public function mapFromBoolContract(BoolContract $contract, string $type)
     {
-        throw new \Exception('Not implemented');
+        return $this->mapFromContract($contract, $type);
     }
 
     /**
@@ -48,7 +47,7 @@ class ContractMapperBus implements IContractMapperBus
      */
     public function mapFromDictionaryContract(DictionaryContract $contract, string $type)
     {
-        throw new \Exception('Not implemented');
+        return $this->mapFromContract($contract, $type);
     }
 
     /**
@@ -56,7 +55,7 @@ class ContractMapperBus implements IContractMapperBus
      */
     public function mapFromFloatContract(FloatContract $contract, string $type)
     {
-        throw new \Exception('Not implemented');
+        return $this->mapFromContract($contract, $type);
     }
 
     /**
@@ -64,7 +63,7 @@ class ContractMapperBus implements IContractMapperBus
      */
     public function mapFromIntContract(IntContract $contract, string $type)
     {
-        throw new \Exception('Not implemented');
+        return $this->mapFromContract($contract, $type);
     }
 
     /**
@@ -72,7 +71,7 @@ class ContractMapperBus implements IContractMapperBus
      */
     public function mapFromStringContract(StringContract $contract, string $type)
     {
-        throw new \Exception('Not implemented');
+        return $this->mapFromContract($contract, $type);
     }
 
     /**
@@ -80,7 +79,7 @@ class ContractMapperBus implements IContractMapperBus
      */
     public function mapToArrayContract(array $values): ArrayContract
     {
-        throw new \Exception('Not implemented');
+        return $this->mapToContract($values);
     }
 
     /**
@@ -88,7 +87,7 @@ class ContractMapperBus implements IContractMapperBus
      */
     public function mapToBoolContract($value): BoolContract
     {
-        throw new \Exception('Not implemented');
+        return $this->mapToContract($value);
     }
 
     /**
@@ -96,7 +95,7 @@ class ContractMapperBus implements IContractMapperBus
      */
     public function mapToDictionaryContract($value): DictionaryContract
     {
-        throw new \Exception('Not implemented');
+        return $this->mapToContract($value);
     }
 
     /**
@@ -104,7 +103,7 @@ class ContractMapperBus implements IContractMapperBus
      */
     public function mapToFloatContract($value): FloatContract
     {
-        throw new \Exception('Not implemented');
+        return $this->mapToContract($value);
     }
 
     /**
@@ -112,7 +111,7 @@ class ContractMapperBus implements IContractMapperBus
      */
     public function mapToIntContract($value): IntContract
     {
-        throw new \Exception('Not implemented');
+        return $this->mapToContract($value);
     }
 
     /**
@@ -120,6 +119,33 @@ class ContractMapperBus implements IContractMapperBus
      */
     public function mapToStringContract($value): StringContract
     {
-        throw new \Exception('Not implemented');
+        return $this->mapToContract($value);
+    }
+
+    /**
+     * Maps a contract to an instance of a type
+     *
+     * @param ArrayContract|BoolContract|DictionaryContract|FloatContract|IntContract|StringContract $contract The contract to map from
+     * @param string $type The type to convert to
+     * @return mixed An instance of the input type
+     */
+    private function mapFromContract($contract, string $type)
+    {
+        return $this->contractMapperRegistry->getContractMapperForType($type)
+            ->mapFromContract($contract);
+    }
+
+    /**
+     * Maps data to a contract
+     *
+     * @param mixed $value The value to map
+     * @return ArrayContract|BoolContract|DictionaryContract|FloatContract|IntContract|StringContract The contract
+     */
+    private function mapToContract($value)
+    {
+        $type = is_object($value) ? get_class($value) : gettype($value);
+
+        return $this->contractMapperRegistry->getContractMapperForType($type)
+            ->mapToContract($value);
     }
 }
