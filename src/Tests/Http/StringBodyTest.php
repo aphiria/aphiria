@@ -18,18 +18,12 @@ use Opulence\Net\Http\StringBody;
  */
 class StringBodyTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests casting to a string returns the contents
-     */
     public function testCastingToStringReturnsContents(): void
     {
         $body = new StringBody('foo');
         $this->assertEquals('foo', (string)$body);
     }
 
-    /**
-     * Tests reading as a stream returns the same stream instance every time
-     */
     public function testReadingAsStreamReturnsSameStreamInstanceEveryTime(): void
     {
         $body = new StringBody('foo');
@@ -37,9 +31,6 @@ class StringBodyTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expectedStream, $body->readAsStream());
     }
 
-    /**
-     * Tests reading as a stream returns the body contents' written to a stream
-     */
     public function testReadingAsStreamReturnsStreamWithContentsWrittenToIt(): void
     {
         $body = new StringBody('foo');
@@ -47,20 +38,15 @@ class StringBodyTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo', $stream->readToEnd());
     }
 
-    /**
-     * Tests reading as a string returns the contents
-     */
     public function testReadingAsStringReturnsContents(): void
     {
         $body = new StringBody('foo');
         $this->assertEquals('foo', $body->readAsString());
     }
 
-    /**
-     * Tests writing to a stream actually writes the contents to the stream
-     */
     public function testWritingToStreamActuallyWritesContentsToStream(): void
     {
+        /** @var IStream|\PHPUnit_Framework_MockObject_MockObject $stream */
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('write')

@@ -28,9 +28,6 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
     /** @var HttpHeaders The headers to use in tests */
     private $headers;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->negotiator = new ContentNegotiator();
@@ -41,38 +38,26 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
             ->willReturn($this->headers);
     }
 
-    /**
-     * Tests that an empty list of formatters throws an exception when negotiating the request
-     */
     public function testEmptyListOfFormattersThrowsExceptionWhenNegotiatingRequest(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->negotiator->negotiateRequestContent($this->request, []);
     }
 
-    /**
-     * Tests that an empty list of formatters throws an exception when negotiating the response
-     */
     public function testEmptyListOfFormattersThrowsExceptionWhenNegotiatingResponse(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->negotiator->negotiateResponseContent($this->request, [], []);
     }
 
-    /**
-     * Tests that no matching request formatter returns null
-     */
     public function testNoMatchingRequestFormatterReturnsNull(): void
     {
         $formatter = $this->createFormatterMock(['application/json'], 1);
         $this->headers->add('Content-Type', 'text/html');
-        $result = $this->negotiator->negotiateRequestContent($this->request, [$formatter], []);
+        $result = $this->negotiator->negotiateRequestContent($this->request, [$formatter]);
         $this->assertNull($result);
     }
 
-    /**
-     * Tests that no matching response formatter returns null
-     */
     public function testNoMatchingResponseFormatterReturnsNull(): void
     {
         $formatter = $this->createFormatterMock(['text/html'], 1);
@@ -80,9 +65,6 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($this->negotiator->negotiateResponseContent($this->request, [$formatter], []));
     }
 
-    /**
-     * Tests that the request result's encoding is set from the Content-Type header if set
-     */
     public function testRequestResultEncodingIsSetFromContentTypeHeaderIfSet(): void
     {
         $formatter = $this->createFormatterMock(['text/html'], 1);
@@ -98,9 +80,6 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('en-US', $result->getLanguage());
     }
 
-    /**
-     * Tests that matching the request formatter when no content-type is specified returns the first registered formatter
-     */
     public function testRequestFormatterIsFirstFormatterRegisteredWithNoContentTypeSpecified(): void
     {
         $formatter1 = $this->createMock(IMediaTypeFormatter::class);
@@ -111,9 +90,6 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($result->getEncoding());
     }
 
-    /**
-     * Tests that the request result's laguage is set from the Content-Language header if set
-     */
     public function testRequestResultLanguageIsSetFromContentLanguageHeaderIfSet(): void
     {
         $formatter = $this->createFormatterMock(['text/html'], 1);
@@ -129,9 +105,6 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('en-US', $result->getLanguage());
     }
 
-    /**
-     * Tests that matching the response formatter when no Accept is specified returns the first registered formatter
-     */
     public function testResponseFormatterIsFirstFormatterRegisteredWithNoAcceptSpecified(): void
     {
         $formatter1 = $this->createMock(IMediaTypeFormatter::class);
@@ -142,9 +115,6 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($result->getEncoding());
     }
 
-    /**
-     * Tests that the response encoding is set from the Accept-Charset header if set and the Accept header isn't
-     */
     public function testResponseEncodingIsSetFromAcceptCharsetHeaderIfSetAndAcceptHeaderIsNotSet(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
@@ -160,9 +130,6 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('en-US', $result->getLanguage());
     }
 
-    /**
-     * Tests that the response language is null when there's no matching supported language
-     */
     public function testResponseLanguageIsNullWhenNoMatchingSupportedLanguage(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
@@ -176,9 +143,6 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($result->getLanguage());
     }
 
-    /**
-     * Tests that the response language is set from the Accept-Language header
-     */
     public function testResponseLanguageIsSetFromAcceptLanguageHeader(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);

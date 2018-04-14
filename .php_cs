@@ -10,6 +10,7 @@ return PhpCsFixer\Config::create()
         'no_unused_imports' => true,
         'no_whitespace_in_blank_line' => true,
         'ordered_imports' => true,
+        'return_type_declaration' => ['space_before' => 'none'],
         'single_quote' => true,
         'standardize_not_equals' => true,
     ])

@@ -18,11 +18,9 @@ use Opulence\Net\Http\StreamBody;
  */
 class StreamBodyTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests casting to a string converts the underlying stream to a string
-     */
     public function testCastingToStringConvertsUnderlyingStreamToString(): void
     {
+        /** @var IStream $stream */
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('__toString')
@@ -31,11 +29,9 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo', (string)$body);
     }
 
-    /**
-     * Tests reading as a stream returns the underlying stream
-     */
     public function testReadingAsStreamReturnsUnderlyingStream(): void
     {
+        /** @var IStream $stream */
         $stream = $this->createMock(IStream::class);
         $body = new StreamBody($stream);
         $this->assertSame($stream, $body->readAsStream());
@@ -46,6 +42,7 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
      */
     public function testReadingAsStringConvertsUnderlyingStreamToString(): void
     {
+        /** @var IStream|\PHPUnit_Framework_MockObject_MockObject $stream */
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('__toString')
@@ -59,7 +56,9 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
      */
     public function testWritingToStreamWritesToUnderlyingStream(): void
     {
+        /** @var IStream $outputStream */
         $outputStream = $this->createMock(IStream::class);
+        /** @var IStream|\PHPUnit_Framework_MockObject_MockObject $underlyingStream */
         $underlyingStream = $this->createMock(IStream::class);
         $underlyingStream->expects($this->once())
             ->method('copyToStream')

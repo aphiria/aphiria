@@ -23,17 +23,11 @@ class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
     /** @var LanguageMatcher The language matcher to use in tests */
     private $matcher;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->matcher = new LanguageMatcher();
     }
 
-    /**
-     * Tests that the first supported languages is the default when no matches are found
-     */
     public function testLanguageIsNullWhenNoMatchesAreFound(): void
     {
         $acceptLanguageHeaders = [
@@ -43,9 +37,6 @@ class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($this->matcher->getBestLanguageMatch(['en-GB'], $acceptLanguageHeaders));
     }
 
-    /**
-     * Tests that the languages are chosen in order of quality score
-     */
     public function testLanguagesAreRankedInOrderOfQualityScore(): void
     {
         $acceptLanguageHeaders = [
@@ -55,9 +46,6 @@ class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('en-GB', $this->matcher->getBestLanguageMatch(['en-US', 'en-GB'], $acceptLanguageHeaders));
     }
 
-    /**
-     * Tests that a language with a wildcard is ranked after languages with an equal quality score
-     */
     public function testLanguageWithWildcardIsRankedAfterLanguagesWithEqualQualityScore(): void
     {
         $acceptLanguageHeaders = [
@@ -68,9 +56,6 @@ class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('en-US', $this->matcher->getBestLanguageMatch(['en-GB', 'en-US'], $acceptLanguageHeaders));
     }
 
-    /**
-     * Tests that a language with a zero quality score is excluded
-     */
     public function testLanguageWithZeroQualityScoreIsExcluded(): void
     {
         $acceptLanguageHeaders = [
@@ -80,9 +65,6 @@ class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($this->matcher->getBestLanguageMatch(['en-GB'], $acceptLanguageHeaders));
     }
 
-    /**
-     * Tests that a truncated language can match a supported language
-     */
     public function testTruncatedLanguageCanMatchSupportedLanguage(): void
     {
         $acceptLanguageHeaders = [
@@ -95,9 +77,6 @@ class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('en', $this->matcher->getBestLanguageMatch(['en'], $acceptLanguageHeaders));
     }
 
-    /**
-     * Tests that a wildcard language with the highest score matches the first supported language
-     */
     public function testWildcardWithHighestScoreMatchesFirstSupportedLanguage(): void
     {
         $acceptLanguageHeaders = [

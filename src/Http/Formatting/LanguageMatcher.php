@@ -45,7 +45,7 @@ class LanguageMatcher
                 }
 
                 array_pop($languageParts);
-            } while (count($languageParts) > 0);
+            } while (\count($languageParts) > 0);
         }
 
         return null;

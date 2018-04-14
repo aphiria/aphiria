@@ -21,35 +21,23 @@ class DataContractConverterRegistryTest extends \PHPUnit\Framework\TestCase
     /** @var DataContractConverterRegistry The data contract converter registry to use in tests */
     private $registry;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->registry = new DataContractConverterRegistry;
     }
 
-    /**
-     * Tests that getting the from-data-contract converter for a type without a converter throws an exception
-     */
     public function testGettingFromDataContractConverterForTypeWithoutConverterThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->registry->getFromDataContractConverter('foo');
     }
 
-    /**
-     * Tests that getting the to-data-contract converter for a type without a converter throws an exception
-     */
     public function testGettingToDataContractConverterForTypeWithoutConverterThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->registry->getToDataContractConverter('foo');
     }
 
-    /**
-     * Tests that getting converters returns the converters registered for the type
-     */
     public function testGettingConvertersReturnsConvertersRegisteredForType(): void
     {
         $toDataContractConverter = function () {

@@ -22,17 +22,11 @@ class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
     /** @var HttpHeaderParser The parser to use in tests */
     private $parser = null;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->parser = new HttpHeaderParser();
     }
 
-    /**
-     * Tests checking if the headers indicate a JSON response with the value of the content type header
-     */
     public function testCheckingIfJsonChecksContentTypeHeader(): void
     {
         $headers = new HttpHeaders();
@@ -46,9 +40,6 @@ class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($this->parser->isJson($headers));
     }
 
-    /**
-     * Tests checking if the headers indicate a multipart response with the value of the content type header
-     */
     public function testCheckingIfMultipartChecksContentTypeHeader(): void
     {
         $headers = new HttpHeaders();
@@ -62,9 +53,6 @@ class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($this->parser->isMultipart($headers));
     }
 
-    /**
-     * Tests that getting the parameters for an index that does not exist returns an empty dictionary
-     */
     public function testGettingParametersForIndexThatDoesNotExistReturnsEmptyDictionary(): void
     {
         $headers = new HttpHeaders();
@@ -72,9 +60,6 @@ class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(new ImmutableHashTable([]), $this->parser->parseParameters($headers, 'Foo', 1));
     }
 
-    /**
-     * Tests that getting the parameters with a mix of value and value-less parameters returns correct parameters
-     */
     public function testGettingParametersWithMixOfValueAndValueLessParametersReturnsCorrectParameters(): void
     {
         $headers = new HttpHeaders();
@@ -84,9 +69,6 @@ class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('blah', $values->get('baz'));
     }
 
-    /**
-     * Tests getting parameters with quoted and unquoted values returns an array with the unquoted value
-     */
     public function testGettingParametersWithQuotedAndUnquotedValuesReturnsArrayWithUnquotedValue(): void
     {
         $headers = new HttpHeaders();

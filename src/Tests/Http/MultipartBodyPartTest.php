@@ -20,15 +20,12 @@ use Opulence\Net\Http\MultipartBodyPart;
 class MultipartBodyPartTest extends \PHPUnit\Framework\TestCase
 {
     /** @var MultipartBodyPart The body part to use in tests */
-    private $bodyPart = null;
+    private $bodyPart;
     /** @var HttpHeaders The headers to use in tests */
-    private $headers = null;
+    private $headers;
     /** @var IHttpBody|\PHPUnit_Framework_MockObject_MockObject The body to use in tests */
-    private $body = null;
+    private $body;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->headers = new HttpHeaders();
@@ -36,25 +33,16 @@ class MultipartBodyPartTest extends \PHPUnit\Framework\TestCase
         $this->bodyPart = new MultipartBodyPart($this->headers, $this->body);
     }
 
-    /**
-     * Tests getting body
-     */
     public function testGettingBody(): void
     {
         $this->assertSame($this->body, $this->bodyPart->getBody());
     }
 
-    /**
-     * Tests getting headers
-     */
     public function testGettingHeaders(): void
     {
         $this->assertSame($this->headers, $this->bodyPart->getHeaders());
     }
 
-    /**
-     * Tests that serializing separates headers and the body with two empty lines
-     */
     public function testSerializingSeparatesHeadersAndBodyWithTwoEmptyLines(): void
     {
         $this->headers->add('Foo', 'bar');

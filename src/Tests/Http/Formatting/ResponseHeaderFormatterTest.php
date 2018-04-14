@@ -21,22 +21,16 @@ use Opulence\Net\Http\HttpHeaders;
 class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ResponseHeaderFormatter The formatter to use in tests */
-    private $formatter = null;
+    private $formatter;
     /** @var HttpHeaders The HTTP headers to use in tests */
-    private $headers = null;
+    private $headers;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->formatter = new ResponseHeaderFormatter();
         $this->headers = new HttpHeaders();
     }
 
-    /**
-     * Tests that cookie properties with values are URL-encoded
-     */
     public function testCookiePropertiesWithValuesAreUrlEncoded(): void
     {
         $cookie = new Cookie('foo', '+', null, '/', null, false, false, 'strict');
@@ -47,9 +41,6 @@ class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests that a cookie with a domain sets the domain property
-     */
     public function testCookieWithDomainSetsDomainProperty(): void
     {
         $cookie = new Cookie('foo', 'bar', null, null, 'foo.com', false, false);
@@ -60,9 +51,6 @@ class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests that a cookie with an expiration sets the expires property
-     */
     public function testCookieWithExpirationSetsExpiresProperty(): void
     {
         $expiration = new DateTime();
@@ -74,9 +62,6 @@ class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests that a cookie with a max age sets the expires and max-age properties
-     */
     public function testCookieWithMaxAgeSetsExpiresAndMaxAgeProperty(): void
     {
         $expiration = 3600;
@@ -88,9 +73,6 @@ class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests that a cookie with a path sets the path property
-     */
     public function testCookieWithPathSetsPathProperty(): void
     {
         $cookie = new Cookie('foo', 'bar', null, '/foo', null, false, false);
@@ -101,9 +83,6 @@ class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests that a cookie with a same-site sets the same-site property
-     */
     public function testCookieWithSameSiteSetsSameSiteProperty(): void
     {
         $cookie = new Cookie('foo', 'bar', null, null, null, false, false, 'lax');
@@ -114,9 +93,6 @@ class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests that deleting cookies appends to the Set-Cookie header
-     */
     public function testDeletingCookiesAppendsToSetCookieHeader(): void
     {
         $this->formatter->deleteCookie($this->headers, 'foo');
@@ -129,9 +105,6 @@ class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedHeaders, $this->headers->get('Set-Cookie'));
     }
 
-    /**
-     * Tests that deleting a cookie sets the expiration to the epoch and the max-age to zero
-     */
     public function testDeletingCookieSetsExpirationAndMaxAgeToEpochAndZero(): void
     {
         $this->formatter->deleteCookie($this->headers, 'foo', null, null, false, false);
@@ -139,9 +112,6 @@ class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("foo=; Expires=$expectedExpiration; Max-Age=0", $this->headers->getFirst('Set-Cookie'));
     }
 
-    /**
-     * Tests that an HTTP-only cookie sets the HTTP-only flag
-     */
     public function testHttpOnlyCookieSetsHttpOnlyFlag(): void
     {
         $cookie = new Cookie('foo', 'bar', null, null, null, false, true);
@@ -149,9 +119,6 @@ class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo=bar; HttpOnly', $this->headers->getFirst('Set-Cookie'));
     }
 
-    /**
-     * Tests that a secure cookie sets the secure flag
-     */
     public function testSecureCookieSetsSecureFlag(): void
     {
         $cookie = new Cookie('foo', 'bar', null, null, null, true, false);
@@ -159,9 +126,6 @@ class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo=bar; Secure', $this->headers->getFirst('Set-Cookie'));
     }
 
-    /**
-     * Tests that setting cookies appends to the cookie header
-     */
     public function testSettingCookieAppendsToCookieHeader(): void
     {
         $cookie1 = new Cookie('foo', 'bar', null, null, null, false, false);
@@ -172,9 +136,6 @@ class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedHeader, $this->headers->get('Set-Cookie'));
     }
 
-    /**
-     * Tests that setting multiple cookies appends to the cookie header
-     */
     public function testSettingMultipleCookiesAppendsToCookieHeader(): void
     {
         $cookie1 = new Cookie('foo', 'bar', null, null, null, false, false);

@@ -78,11 +78,12 @@ class RequestHeaderParser extends HttpHeaderParser
 
         return $parsedHeaderValues;
     }
+
     /**
      * Parses the Accept-Language header
      *
      * @param HttpHeaders $headers The request headers to parse
-     * @return AcceptLangugeHeaderValue[] The list of language header values
+     * @return AcceptLanguageHeaderValue[] The list of language header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseAcceptLanguageHeader(HttpHeaders $headers): array

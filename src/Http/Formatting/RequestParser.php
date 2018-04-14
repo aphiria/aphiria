@@ -15,6 +15,7 @@ use Opulence\Collections\IDictionary;
 use Opulence\Collections\IImmutableDictionary;
 use Opulence\Net\Formatting\UriParser;
 use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
+use Opulence\Net\Http\Headers\AcceptLanguageHeaderValue;
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
 use Opulence\Net\Http\IHttpRequestMessage;
@@ -136,7 +137,7 @@ class RequestParser
      * Parses the Accept-Language header
      *
      * @param IHttpRequestMessage $request The request to parse
-     * @return AcceptCharsetLanguageValue[] The list of language header values
+     * @return AcceptLanguageHeaderValue[] The list of language header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseAcceptLanguageHeader(IHttpRequestMessage $request): array

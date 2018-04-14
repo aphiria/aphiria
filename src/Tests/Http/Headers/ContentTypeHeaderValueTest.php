@@ -21,9 +21,6 @@ use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
  */
 class ContentTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests that getting the charset returns the one set in the constructor
-     */
     public function testGettingCharsetReturnsOneSetInConstructor(): void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
@@ -31,9 +28,6 @@ class ContentTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('utf-8', $value->getCharset());
     }
 
-    /**
-     * Tests that getting the media type returns the one set in the constructor
-     */
     public function testGettingMediaTypeReturnsOneSetInConstructor(): void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
@@ -41,27 +35,18 @@ class ContentTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo/bar', $value->getMediaType());
     }
 
-    /**
-     * Tests that getting the sub-type returns the correct sub-type
-     */
     public function testGettingSubTypeReturnsCorrectSubtType(): void
     {
         $value = new ContentTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
         $this->assertEquals('bar', $value->getSubType());
     }
 
-    /**
-     * Tests that getting the type returns the correct type
-     */
     public function testGettingTypeReturnsCorrectType(): void
     {
         $value = new ContentTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
         $this->assertEquals('foo', $value->getType());
     }
 
-    /**
-     * Tests that an incorrectly formatted media type throws an exception
-     */
     public function testIncorrectlyFormattedMediaTypeThrowsException(): void
     {
         try {

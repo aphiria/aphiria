@@ -19,33 +19,27 @@ use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
  */
 class MediaTypeFormatterMatchTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests that getting the formatter returns the same one in the constructor
-     */
     public function testGettingFormatterReturnsSameOneInConstructor(): void
     {
+        /** @var IMediaTypeFormatter $formatter */
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeHeaderValue = new ContentTypeHeaderValue('foo/bar');
         $match = new MediaTypeFormatterMatch($formatter, 'baz/blah', $mediaTypeHeaderValue);
         $this->assertSame($formatter, $match->getFormatter());
     }
 
-    /**
-     * Tests that getting the media type returns the same one in the constructor
-     */
     public function testGettingMediaTypeReturnsSameOneInConstructor(): void
     {
+        /** @var IMediaTypeFormatter $formatter */
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeHeaderValue = new ContentTypeHeaderValue('foo/bar');
         $match = new MediaTypeFormatterMatch($formatter, 'baz/blah', $mediaTypeHeaderValue);
         $this->assertEquals('baz/blah', $match->getMediaType());
     }
 
-    /**
-     * Tests that getting the media type header returns the same one in the constructor
-     */
     public function testGettingMediaTypeHeaderReturnsSameOneInConstructor(): void
     {
+        /** @var IMediaTypeFormatter $formatter */
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeHeaderValue = new ContentTypeHeaderValue('foo/bar');
         $match = new MediaTypeFormatterMatch($formatter, 'baz/blah', $mediaTypeHeaderValue);

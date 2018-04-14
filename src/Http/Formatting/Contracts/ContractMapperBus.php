@@ -10,6 +10,8 @@
 
 namespace Opulence\Net\Http\Formatting\Contracts;
 
+use OutOfBoundsException;
+
 /**
  * Defines the contract mapper bus
  */
@@ -128,6 +130,7 @@ class ContractMapperBus implements IContractMapperBus
      * @param ArrayContract|BoolContract|DictionaryContract|FloatContract|IntContract|StringContract $contract The contract to map from
      * @param string $type The type to convert to
      * @return mixed An instance of the input type
+     * @throws OutOfBoundsException Thrown if there is no contract mapper for the input type
      */
     private function mapFromContract($contract, string $type)
     {
@@ -140,10 +143,11 @@ class ContractMapperBus implements IContractMapperBus
      *
      * @param mixed $value The value to map
      * @return ArrayContract|BoolContract|DictionaryContract|FloatContract|IntContract|StringContract The contract
+     * @throws OutOfBoundsException Thrown if there is no contract mapper for the input value
      */
     private function mapToContract($value)
     {
-        $type = is_object($value) ? get_class($value) : gettype($value);
+        $type = \is_object($value) ? \get_class($value) : \gettype($value);
 
         return $this->contractMapperRegistry->getContractMapperForType($type)
             ->mapToContract($value);

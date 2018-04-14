@@ -12,6 +12,7 @@ namespace Opulence\Net\Tests\Http\Formatting;
 
 use InvalidArgumentException;
 use Opulence\Collections\HashTable;
+use Opulence\Collections\IDictionary;
 use Opulence\Net\Http\Formatting\RequestParser;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
@@ -23,19 +24,16 @@ use Opulence\Net\Http\IHttpRequestMessage;
 class RequestParserTest extends \PHPUnit\Framework\TestCase
 {
     /** @var RequestParser The parser to use in tests */
-    private $parser = null;
+    private $parser;
     /** @var IHttpRequestMessage|\PHPUnit_Framework_MockObject_MockObject The request message to use in tests */
-    private $request = null;
+    private $request;
     /** @var HttpHeaders The headers to use in tests */
-    private $headers = null;
+    private $headers;
     /** @var IHttpBody|\PHPUnit_Framework_MockObject_MockObject The body to use in tests */
-    private $body = null;
+    private $body;
     /** @var IDictionary|\PHPUnit_Framework_MockObject_MockObject The request properties to use in tests */
-    private $properties = null;
+    private $properties;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->parser = new RequestParser();
@@ -54,35 +52,23 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
             ->willReturn($this->properties);
     }
 
-    /**
-     * Tests that getting the client IP address returns null when the property is not set
-     */
     public function testGettingClientIPAddressReturnsNullWhenPropertyIsNotSet(): void
     {
         $this->assertNull($this->parser->getClientIPAddress($this->request));
     }
 
-    /**
-     * Tests that getting the client IP address returns the property value when the property is set
-     */
     public function testGettingClientIPAddressReturnsPropertyValueWhenPropertyIsSet(): void
     {
         $this->properties->add('CLIENT_IP_ADDRESS', '127.0.0.1');
         $this->assertEquals('127.0.0.1', $this->parser->getClientIPAddress($this->request));
     }
 
-    /**
-     * Tests getting the mime type a non-request and non-multipart body part throws an exception
-     */
     public function testGettingMimeTypeOfNonRequestNorMultipartBodyPartThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->parser->getMimeType([]);
     }
 
-    /**
-     * Tests parsing a multipart request without a boundary throws an exception
-     */
     public function testParsingMultipartRequestWithoutBoundaryThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -90,9 +76,6 @@ class RequestParserTest extends \PHPUnit\Framework\TestCase
         $this->parser->readAsMultipart($this->request);
     }
 
-    /**
-     * Tests parsing a non-request and non-multipart body part throws an exception
-     */
     public function testParsingNonRequestNorMultipartBodyPartThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

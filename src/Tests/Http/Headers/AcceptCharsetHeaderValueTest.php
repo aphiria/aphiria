@@ -21,9 +21,6 @@ use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
  */
 class AcceptCharsetHeaderValueTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests that an exception is thrown with a quality score outside the accepted range
-     */
     public function testExceptionThrownWithQualityScoreOutsideAcceptedRange(): void
     {
         try {
@@ -43,9 +40,6 @@ class AcceptCharsetHeaderValueTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * Tests that getting the charset returns the same one that's set in the constructor
-     */
     public function testGettingCharsetReturnsSameOneSetInConstructor(): void
     {
         $parameters = $this->createMock(IImmutableDictionary::class);
@@ -53,9 +47,6 @@ class AcceptCharsetHeaderValueTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('utf-8', $value->getCharset());
     }
 
-    /**
-     * Tests that getting the parameters returns the same instance that's set in the constructor
-     */
     public function testGettingParametersReturnsSameOneSetInConstructor(): void
     {
         $parameters = new ImmutableHashTable([]);
@@ -63,9 +54,6 @@ class AcceptCharsetHeaderValueTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($parameters, $value->getParameters());
     }
 
-    /**
-     * Tests that getting the quality returns the correct quality
-     */
     public function testGettingQualityReturnsCorrectQuality(): void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('q', '.5')]);
@@ -73,9 +61,6 @@ class AcceptCharsetHeaderValueTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(.5, $value->getQuality());
     }
 
-    /**
-     * Tests that getting the quality defaults to 1
-     */
     public function testQualityDefaultsToOne(): void
     {
         $value = new AcceptCharsetHeaderValue('utf-8', null);

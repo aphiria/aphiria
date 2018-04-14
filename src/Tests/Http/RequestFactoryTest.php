@@ -21,19 +21,13 @@ use Opulence\Net\Http\StreamBody;
 class RequestFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /** @var RequestFactory The request factory to use in tests */
-    private $factory = null;
+    private $factory;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->factory = new RequestFactory();
     }
 
-    /**
-     * Tests that the authority in the server sets the authority in the URI
-     */
     public function testAuthorityInServerSetsAuthorityInUri(): void
     {
         $request = $this->factory->createRequestFromSuperglobals([
@@ -45,18 +39,12 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('pw', $request->getUri()->getPassword());
     }
 
-    /**
-     * Tests that the body is created from the input stream
-     */
     public function testBodyIsCreatedFromInputStream(): void
     {
         $request = $this->factory->createRequestFromSuperglobals(['HTTP_HOST' => 'foo.com']);
         $this->assertInstanceOf(StreamBody::class, $request->getBody());
     }
 
-    /**
-     * Tests that certain header values are URL-decoded
-     */
     public function testCertainHeaderValuesAreUrlDecoded(): void
     {
         // Only cookies should be decoded
@@ -69,9 +57,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('%', $request->getHeaders()->getFirst('Cookie'));
     }
 
-    /**
-     * Tests that the client IP address is set as a property when using a trusted proxy
-     */
     public function testClientIPAddressIsSetAsPropertyWhenUsingTrustedProxy(): void
     {
         $factory = new RequestFactory(['192.168.1.1']);
@@ -82,9 +67,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('192.168.1.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
     }
 
-    /**
-     * Tests that the client IP address is set as a property when using a trusted proxy
-     */
     public function testClientIPAddressIsSetFromForwardedHeaderWhenUsingTrustedProxy(): void
     {
         $ipData = [
@@ -105,9 +87,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * Tests that the client IP header is used when set
-     */
     public function testClientIPHeaderUsedWhenSet()
     {
         $factory = new RequestFactory([], ['HTTP_CLIENT_IP' => 'HTTP_CLIENT_IP', 'HTTP_FORWARDED' => 'FORWARDED']);
@@ -118,9 +97,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('192.168.1.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
     }
 
-    /**
-     * Tests that the client port is used with a trusted proxy
-     */
     public function testClientPortUsedToDeterminePortWithTrustedProxy()
     {
         $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_PORT' => 'HTTP_X_FORWARDED_PORT']);
@@ -132,9 +108,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(8080, $request->getUri()->getPort());
     }
 
-    /**
-     * Tests that the client proto is used to set the scheme a trusted proxy
-     */
     public function testClientProtoUsedToSetSchemeWithTrustedProxy()
     {
         // Try with HTTPS
@@ -171,9 +144,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('http', $request->getUri()->getScheme());
     }
 
-    /**
-     * Tests that the client proto is used with a trusted proxy
-     */
     public function testClientProtoUsedToDeterminePortWithTrustedProxy()
     {
         $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO']);
@@ -185,9 +155,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(443, $request->getUri()->getPort());
     }
 
-    /**
-     * Tests that the cookies are added to headers
-     */
     public function testCookiesAreAddedToHeaders(): void
     {
         $request = $this->factory->createRequestFromSuperglobals([
@@ -197,18 +164,12 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo=bar; baz=blah', $request->getHeaders()->getFirst('Cookie'));
     }
 
-    /**
-     * Tests that an exception is thrown when using an untrusted proxy host
-     */
     public function testExceptionThrownWhenUsingUntrustedProxyHost()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->factory->createRequestFromSuperglobals(['HTTP_HOST' => '192.168.1.1, 192.168.1.2, 192.168.1.3']);
     }
 
-    /**
-     * Tests that the forwarded host is used with a trusted proxy
-     */
     public function testForwardedHostUsedWithTrustedProxy(): void
     {
         $factory = new RequestFactory(['192.168.2.1']);
@@ -217,18 +178,12 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('bar.com', $request->getUri()->getHost());
     }
 
-    /**
-     * Tests that a host with a port strips the port from the host
-     */
     public function testHostWithPortStripsPortFromHost(): void
     {
         $request = $this->factory->createRequestFromSuperglobals(['HTTP_HOST' => 'foo.com:8080']);
         $this->assertEquals('foo.com', $request->getUri()->getHost());
     }
 
-    /**
-     * Tests that the HTTPS server property controls the scheme of the URI
-     */
     public function testHttpsServerPropertyControlsSchemeOfUri(): void
     {
         $httpsOnRequest = $this->factory->createRequestFromSuperglobals([
@@ -250,9 +205,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('http', $noHttpsRequest->getUri()->getScheme());
     }
 
-    /**
-     * Tests that the input method is set in the request
-     */
     public function testInputMethodIsSetInRequest(): void
     {
         $request = $this->factory->createRequestFromSuperglobals([
@@ -262,18 +214,12 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('CONNECT', $request->getMethod());
     }
 
-    /**
-     * Tests that an invalid host char throws an exception
-     */
     public function testInvalidHostCharThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->factory->createRequestFromSuperglobals(['HTTP_HOST' => '!']);
     }
 
-    /**
-     * Tests that the method override header overrides the input method for post requests
-     */
     public function testMethodOverrideHeaderOverridesInputMethodForPostRequests(): void
     {
         $request = $this->factory->createRequestFromSuperglobals([
@@ -284,9 +230,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('PUT', $request->getMethod());
     }
 
-    /**
-     * Tests that a path with a query string strips the query strip from the URI path
-     */
     public function testPathWithQueryStringStripsTheQueryStringFromUriPath(): void
     {
         $request = $this->factory->createRequestFromSuperglobals([
@@ -296,9 +239,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('/foo/bar', $request->getUri()->getPath());
     }
 
-    /**
-     * Tests that the port header sets the port on the URI
-     */
     public function testPortHeaderSetsPortOnUri(): void
     {
         $request = $this->factory->createRequestFromSuperglobals([
@@ -308,9 +248,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(8080, $request->getUri()->getPort());
     }
 
-    /**
-     * Tests that the query string server property is used before the request URI's query string is used
-     */
     public function testQueryStringServerPropertyIsUsedBeforeRequestUriQueryString(): void
     {
         $request = $this->factory->createRequestFromSuperglobals([
@@ -321,9 +258,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo=bar', $request->getUri()->getQueryString());
     }
 
-    /**
-     * Tests that the request URI's query string is used if the query string server property does not exist
-     */
     public function testRequestUriQueryStringIsUsedIfQueryStringServerPropertyDoesNotExist(): void
     {
         $request = $this->factory->createRequestFromSuperglobals([
@@ -333,9 +267,6 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('bar=baz', $request->getUri()->getQueryString());
     }
 
-    /**
-     * Tests that the special-case headers are added to request headers
-     */
     public function testSpecialCaseHeadersAreAddedToRequestHeaders(): void
     {
         $server = [

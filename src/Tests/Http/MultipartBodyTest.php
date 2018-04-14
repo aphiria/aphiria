@@ -21,27 +21,18 @@ use Opulence\Net\Http\StringBody;
  */
 class MultipartBodyTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests that getting the boundary returns the boundary specified in the constructor
-     */
     public function testGettingBoundaryReturnsBoundarySpecifiedInConstructor(): void
     {
         $body = new MultipartBody([], 'foo');
         $this->assertEquals('foo', $body->getBoundary());
     }
 
-    /**
-     * Tests that getting the boundary returns a UUID when non is specified in the constructor
-     */
     public function testGettingBoundaryReturnsUuidWhenNoneSpecifiedInConstructor(): void
     {
         $body = new MultipartBody([]);
         $this->assertNotEmpty($body->getBoundary());
     }
 
-    /**
-     * Tests that getting the parts returns the parts
-     */
     public function testGettingPartsReturnsParts(): void
     {
         $parts = [
@@ -52,18 +43,12 @@ class MultipartBodyTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($parts, $body->getParts());
     }
 
-    /**
-     * Tests that no parts results in only the header and footer
-     */
     public function testNoPartsResultsInOnlyHeaderAndFooter(): void
     {
         $body = new MultipartBody([], '123');
         $this->assertEquals("--123\r\n--123--", (string)$body);
     }
 
-    /**
-     * Tests that the parts are written to a stream with boundaries
-     */
     public function testPartsAreWrittenToStreamWithBoundaries(): void
     {
         $parts = [
@@ -74,9 +59,6 @@ class MultipartBodyTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("--123\r\nFoo: bar\r\n\r\nbaz\r\n--123\r\nOh: hi\r\n\r\nmark\r\n--123--", (string)$body);
     }
 
-    /**
-     * Tests that reading as a stream returns a multi-stream
-     */
     public function testReadingAsStreamReturnsAMultiStream(): void
     {
         $parts = [
@@ -87,9 +69,6 @@ class MultipartBodyTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(MultiStream::class, $body->readAsStream());
     }
 
-    /**
-     * Tests that a single part is wrapped with a header and footer
-     */
     public function testSinglePartIsWrappedWithHeaderAndFooter(): void
     {
         $parts = [

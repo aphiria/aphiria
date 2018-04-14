@@ -20,9 +20,6 @@ use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
  */
 class AcceptMediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests that an exception is thrown with a quality score outside the accepted range
-     */
     public function testExceptionThrownWithQualityScoreOutsideAcceptedRange(): void
     {
         try {
@@ -42,9 +39,6 @@ class AcceptMediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * Tests that getting the quality returns the correct quality
-     */
     public function testGettingQualityReturnsCorrectQuality(): void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('q', '.5')]);
@@ -52,9 +46,6 @@ class AcceptMediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(.5, $value->getQuality());
     }
 
-    /**
-     * Tests that getting the quality defaults to 1
-     */
     public function testQualityDefaultsToOne(): void
     {
         $value = new AcceptMediaTypeHeaderValue('foo/bar', null);

@@ -22,19 +22,16 @@ use Opulence\Net\Http\IHttpResponseMessage;
 class ResponseWriterTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ResponseWriter The response writer to use in tests */
-    private $writer = null;
+    private $writer;
     /** @var Stream The output stream to use in tests */
-    private $outputStream = null;
+    private $outputStream;
     /** @var IHttpResponseMessage|\PHPUnit_Framework_MockObject_MockObject The response to use in tests */
-    private $response = null;
+    private $response;
     /** @var HttpHeaders The response headers to use in tests */
-    private $headers = null;
+    private $headers;
     /** @var IHttpBody|\PHPUnit_Framework_MockObject_MockObject the response body to use in tests */
-    private $body = null;
+    private $body;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->outputStream = new Stream(fopen('php://temp', 'r+b'));
@@ -63,8 +60,6 @@ class ResponseWriterTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests that the body is written to the output stream
-     *
      * @runInSeparateProcess
      */
     public function testBodyIsWrittenToOutputStream(): void

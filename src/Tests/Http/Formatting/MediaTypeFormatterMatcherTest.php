@@ -26,17 +26,11 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
     /** @var MediaTypeFormatterMatcher The matcher to use in tests */
     private $matcher;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->matcher = new MediaTypeFormatterMatcher();
     }
 
-    /**
-     * Tests that the best formatter can match a wildcard sub-type
-     */
     public function testBestFormatterCanMatchWithWildcardSubType(): void
     {
         $formatter1 = $this->createFormatterMock(['application/json'], 1);
@@ -47,9 +41,6 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('text/html', $match->getMediaType());
     }
 
-    /**
-     * Tests that the best formatter can match a wildcard type
-     */
     public function testBestFormatterCanMatchWithWildcardType(): void
     {
         $formatter1 = $this->createFormatterMock(['application/json'], 1);
@@ -60,9 +51,6 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('application/json', $match->getMediaType());
     }
 
-    /**
-     * Tests that the best formatter is selected by matching the supported media types in the Content-Type header
-     */
     public function testBestFormatterIsSelectedByMatchingSupportedMediaTypesInContentTypeHeader(): void
     {
         $formatter1 = $this->createFormatterMock(['application/json'], 1);
@@ -73,9 +61,6 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('text/html', $match->getMediaType());
     }
 
-    /**
-     * Tests that the best formatter matches the most specific media type with equal quality media types
-     */
     public function testBestFormatterMatchesMostSpecificMediaTypeWithEqualQualityMediaTypes(): void
     {
         $formatter1 = $this->createFormatterMock(['text/plain'], 1);
@@ -86,14 +71,14 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
             new AcceptMediaTypeHeaderValue('text/*'),
             new AcceptMediaTypeHeaderValue('text/html')
         ];
-        $match = $this->matcher->getBestMediaTypeFormatterMatch([$formatter1, $formatter2, $formatter3], $acceptHeaders);
+        $match = $this->matcher->getBestMediaTypeFormatterMatch(
+            [$formatter1, $formatter2, $formatter3],
+            $acceptHeaders
+        );
         $this->assertSame($formatter3, $match->getFormatter());
         $this->assertEquals('text/html', $match->getMediaType());
     }
 
-    /**
-     * Tests that the best formatter can match a wildcard sub-type with a higher quality score than a specific media type
-     */
     public function testBestFormatterMatchesWildcardSubTypeWithHigherQualityScoreThanSpecificMediaType(): void
     {
         $formatter = $this->createFormatterMock(['text/plain', 'text/html'], 1);
@@ -106,9 +91,6 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('text/plain', $match->getMediaType());
     }
 
-    /**
-     * Tests that the best formatter can match a wildcard type with a higher quality score than a specific media type
-     */
     public function tesBestFormatterMatchesWildcardTypeWithHigherQualityScoreThanSpecificMediaType(): void
     {
         $formatter = $this->createFormatterMock(['application/json', 'text/html'], 1);
@@ -121,9 +103,6 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('application/json', $match->getMediaType());
     }
 
-    /**
-     * Tests that the best formatter that matches a zero quality media type returns a null match
-     */
     public function testBestFormatterThatMatchesZeroQualityMediaTypeReturnsNullMatch(): void
     {
         // The media type should be filtered out of the list of media types to check against
@@ -136,9 +115,6 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($match);
     }
 
-    /**
-     * Tests that getting the best formatter will throw an exception with invalid media types
-     */
     public function testBestFormatterWithInvalidMediaTypeThrowsException(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);

@@ -25,27 +25,18 @@ class DataContractConverterTest extends \PHPUnit\Framework\TestCase
     /** @var DataContractConverterRegistry The registry of converters to use in tests */
     private $registry;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->registry = new DataContractConverterRegistry();
         $this->converter = new DataContractConverter($this->registry);
     }
 
-    /**
-     * Tests that converting from a data contract for a model without a converter throws an exception
-     */
     public function testConvertFromDataContractForModelWithoutConverterThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->converter->convertFromDataContract('foo', []);
     }
 
-    /**
-     * Tests that converting from a data contract uses the registered converter
-     */
     public function testConvertingFromDataContractUsesRegisteredConverter(): void
     {
         $toDataContractConverter = function (User $user, DataContractConverter $converter) {
@@ -54,24 +45,22 @@ class DataContractConverterTest extends \PHPUnit\Framework\TestCase
         $fromDataContractConverter = function (array $hash, DataContractConverter $converter) {
             return new User((int)$hash['id'], $hash['email']);
         };
-        $this->registry->registerDataContractConverter(User::class, $toDataContractConverter, $fromDataContractConverter);
+        $this->registry->registerDataContractConverter(
+            User::class,
+            $toDataContractConverter,
+            $fromDataContractConverter
+        );
         $hash = ['id' => 123, 'email' => 'foo@bar.com'];
         $expectedUser = new User(123, 'foo@bar.com');
         $this->assertEquals($expectedUser, $this->converter->convertFromDataContract(User::class, $hash));
     }
 
-    /**
-     * Tests that converting to a data contract for a model without a converter throws an exception
-     */
     public function testConvertToDataContractForModelWithoutConverterThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->converter->convertToDataContract(new User(123, 'foo@bar.com'));
     }
 
-    /**
-     * Tests that converting to a data contract uses the registered converter
-     */
     public function testConvertingToDataContractUsesRegisteredConverter(): void
     {
         $toDataContractConverter = function (User $user, DataContractConverter $converter) {
@@ -80,7 +69,11 @@ class DataContractConverterTest extends \PHPUnit\Framework\TestCase
         $fromDataContractConverter = function (array $hash, DataContractConverter $converter) {
             return new User((int)$hash['id'], $hash['email']);
         };
-        $this->registry->registerDataContractConverter(User::class, $toDataContractConverter, $fromDataContractConverter);
+        $this->registry->registerDataContractConverter(
+            User::class,
+            $toDataContractConverter,
+            $fromDataContractConverter
+        );
         $user = new User(123, 'foo@bar.com');
         $this->assertEquals(['id' => 123, 'email' => 'foo@bar.com'], $this->converter->convertToDataContract($user));
     }

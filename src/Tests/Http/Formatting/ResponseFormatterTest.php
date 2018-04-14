@@ -23,15 +23,12 @@ use Opulence\Net\Uri;
 class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ResponseFormatter The formatter to use in tests */
-    private $formatter = null;
+    private $formatter;
     /** @var IHttpResponseMessage|\PHPUnit_Framework_MockObject_MockObject The message to use in tests */
-    private $response = null;
+    private $response;
     /** @var HttpHeaders The HTTP headers to use in tests */
-    private $headers = null;
+    private $headers;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->formatter = new ResponseFormatter();
@@ -42,9 +39,6 @@ class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
             ->willReturn($this->headers);
     }
 
-    /**
-     * Tests that the content type header and body are set when writing JSON
-     */
     public function testContentTypeHeaderAndBodyAreSetWhenWritingJson(): void
     {
         $this->response->expects($this->once())
@@ -56,9 +50,6 @@ class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('application/json', $this->response->getHeaders()->getFirst('Content-Type'));
     }
 
-    /**
-     * Tests that redirecting to a URI sets the location header and sets the status code
-     */
     public function testRedirectingToUriSetsLocationHeaderAndStatusCode(): void
     {
         $this->response->expects($this->once())
@@ -68,9 +59,6 @@ class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('http://foo.com', $this->headers->getFirst('Location'));
     }
 
-    /**
-     * Tests that redirecting to a URI converts a URI instance to a string and sets the location header and sets the status code
-     */
     public function testRedirectingToUriConvertsUriInstanceToStringAndSetsLocationHeaderAndStatusCode(): void
     {
         $this->response->expects($this->once())
@@ -80,9 +68,6 @@ class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('http://foo.com', $this->headers->getFirst('Location'));
     }
 
-    /**
-     * Tests that redirecting to a URI that is not a string nor URI throws an exception
-     */
     public function testRedirectingToUriThatIsNotUriNorStringThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
