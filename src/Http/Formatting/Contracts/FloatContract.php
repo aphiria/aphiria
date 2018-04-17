@@ -13,7 +13,7 @@ namespace Opulence\Net\Http\Formatting\Contracts;
 /**
  * Defines the float contract
  */
-class FloatContract
+class FloatContract implements IContract
 {
     /** @var float The float value */
     private $value;
@@ -27,9 +27,7 @@ class FloatContract
     }
 
     /**
-     * Gets the float value
-     *
-     * @return float The float value
+     * @inheritdoc
      */
     public function getValue(): float
     {

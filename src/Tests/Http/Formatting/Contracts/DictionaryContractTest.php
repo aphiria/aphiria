@@ -11,7 +11,6 @@
 namespace Opulence\Net\Tests\Http\Formatting\Contracts;
 
 use Opulence\Net\Http\Formatting\Contracts\DictionaryContract;
-use OutOfBoundsException;
 
 /**
  * Tests the dictionary contract
@@ -26,20 +25,10 @@ class DictionaryContractTest extends \PHPUnit\Framework\TestCase
         $this->contract = new DictionaryContract(['foo' => 'bar', 'baz' => 'blah']);
     }
 
-    public function testGettingPropertyValueThatDoesNotExistThrowsException(): void
+    public function testGettingValueReturnsSameValueFromConstructor(): void
     {
-        $this->expectException(OutOfBoundsException::class);
-        $this->contract->getPropertyValue('does not exist');
-    }
-
-    public function testGettingPropertyValueThatExistsReturnsTheValue(): void
-    {
-        $this->assertEquals('bar', $this->contract->getPropertyValue('foo'));
-        $this->assertEquals('blah', $this->contract->getPropertyValue('baz'));
-    }
-
-    public function testGettingValuesReturnsSameValuesSetInConstructor(): void
-    {
-        $this->assertEquals(['foo' => 'bar', 'baz' => 'blah'], $this->contract->getValues());
+        $expectedValues = ['foo' => 'bar', 'baz' => 'blah'];
+        $contract = new DictionaryContract($expectedValues);
+        $this->assertEquals($expectedValues, $contract->getValue());
     }
 }

@@ -127,12 +127,12 @@ class ContractMapperBus implements IContractMapperBus
     /**
      * Maps a contract to an instance of a type
      *
-     * @param ArrayContract|BoolContract|DictionaryContract|FloatContract|IntContract|StringContract $contract The contract to map from
+     * @param IContract $contract The contract to map from
      * @param string $type The type to convert to
      * @return mixed An instance of the input type
      * @throws OutOfBoundsException Thrown if there is no contract mapper for the input type
      */
-    private function mapFromContract($contract, string $type)
+    private function mapFromContract(IContract $contract, string $type)
     {
         return $this->contractMapperRegistry->getContractMapperForType($type)
             ->mapFromContract($contract);
@@ -142,10 +142,10 @@ class ContractMapperBus implements IContractMapperBus
      * Maps data to a contract
      *
      * @param mixed $value The value to map
-     * @return ArrayContract|BoolContract|DictionaryContract|FloatContract|IntContract|StringContract The contract
+     * @return IContract The contract
      * @throws OutOfBoundsException Thrown if there is no contract mapper for the input value
      */
-    private function mapToContract($value)
+    private function mapToContract($value): IContract
     {
         $type = \is_object($value) ? \get_class($value) : \gettype($value);
 

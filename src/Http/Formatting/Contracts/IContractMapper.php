@@ -25,16 +25,16 @@ interface IContractMapper
     /**
      * Maps a contract to the underlying type
      *
-     * @param ArrayContract|BoolContract|DictionaryContract|FloatContract|IntContract|StringContract $contract The contract to map
+     * @param IContract $contract The contract to map
      * @return mixed An instance of the underlying type
      */
-    public function mapFromContract($contract);
+    public function mapFromContract(IContract $contract);
 
     /**
      * Maps an instance of the underlying type to a contract
      *
      * @param mixed $data The instance to map
-     * @return ArrayContract|BoolContract|DictionaryContract|FloatContract|IntContract|StringContract $contract The contract
+     * @return IContract $contract The contract
      */
-    public function mapToContract($data);
+    public function mapToContract($data): IContract;
 }

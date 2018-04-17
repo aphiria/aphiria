@@ -11,6 +11,7 @@
 namespace Opulence\Net\Tests\Http\Formatting\Contracts;
 
 use Opulence\Net\Http\Formatting\Contracts\ClosureContractMapper;
+use Opulence\Net\Http\Formatting\Contracts\IContract;
 
 /**
  * Tests the closure contract mapper
@@ -27,11 +28,9 @@ class ClosureContractMapperTest extends \PHPUnit\Framework\TestCase
             function ($data) {
                 $this->assertEquals('data', $data);
 
-                return 'contract';
+                return $this->createMock(IContract::class);
             },
-            function ($contract) {
-                $this->assertEquals('contract', $contract);
-
+            function (IContract $contract) {
                 return 'data';
             }
         );
@@ -44,11 +43,13 @@ class ClosureContractMapperTest extends \PHPUnit\Framework\TestCase
 
     public function testMappingFromContractInvokesFromClosureWithData(): void
     {
-        $this->assertEquals('data', $this->contractMapper->mapFromContract('contract'));
+        /** @var IContract $contract */
+        $contract = $this->createMock(IContract::class);
+        $this->assertEquals('data', $this->contractMapper->mapFromContract($contract));
     }
 
     public function testMappingToContractInvokesFromClosureWithData(): void
     {
-        $this->assertEquals('contract', $this->contractMapper->mapToContract('data'));
+        $this->assertInstanceOf(IContract::class, $this->contractMapper->mapToContract('data'));
     }
 }

@@ -13,7 +13,7 @@ namespace Opulence\Net\Http\Formatting\Contracts;
 /**
  * Defines a boolean contract
  */
-class BoolContract
+class BoolContract implements IContract
 {
     /** @var bool The boolean value */
     private $value;
@@ -27,9 +27,7 @@ class BoolContract
     }
 
     /**
-     * Gets the boolean value
-     *
-     * @return bool The boolean value
+     * @inheritdoc
      */
     public function getValue(): bool
     {

@@ -13,7 +13,7 @@ namespace Opulence\Net\Http\Formatting\Contracts;
 /**
  * Defines a contract that is an array of data
  */
-class ArrayContract
+class ArrayContract implements IContract
 {
     /** @var array The list of values in the contract */
     private $values;
@@ -27,11 +27,9 @@ class ArrayContract
     }
 
     /**
-     * Gets the list of values in the contract
-     *
-     * @return array The list of values in the contract
+     * @inheritdoc
      */
-    public function getValues(): array
+    public function getValue(): array
     {
         return $this->values;
     }

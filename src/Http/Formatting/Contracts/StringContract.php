@@ -13,7 +13,7 @@ namespace Opulence\Net\Http\Formatting\Contracts;
 /**
  * Defines the string contract
  */
-class StringContract
+class StringContract implements IContract
 {
     /** @var string The string value */
     private $value;
@@ -27,9 +27,7 @@ class StringContract
     }
 
     /**
-     * Gets the string value
-     *
-     * @return string The string value
+     * @inheritdoc
      */
     public function getValue(): string
     {

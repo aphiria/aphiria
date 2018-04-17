@@ -10,12 +10,10 @@
 
 namespace Opulence\Net\Http\Formatting\Contracts;
 
-use OutOfBoundsException;
-
 /**
  * Defines a contract that is a dictionary of data
  */
-class DictionaryContract
+class DictionaryContract implements IContract
 {
     /** @var array The dictionary values in the contract */
     private $values;
@@ -29,27 +27,9 @@ class DictionaryContract
     }
 
     /**
-     * Gets the value of a certain property
-     *
-     * @param string $propertyName The name of the property whose value we want
-     * @return mixed The value of the property
-     * @throws OutOfBoundsException Thrown if the property did not exist
+     * @inheritdoc
      */
-    public function getPropertyValue(string $propertyName)
-    {
-        if (!array_key_exists($propertyName, $this->values)) {
-            throw new OutOfBoundsException("Property \"$propertyName\" does not exist");
-        }
-
-        return $this->values[$propertyName];
-    }
-
-    /**
-     * Gets the dictionary values in the contract
-     *
-     * @return array The dictionary values in the contract
-     */
-    public function getValues(): array
+    public function getValue(): array
     {
         return $this->values;
     }

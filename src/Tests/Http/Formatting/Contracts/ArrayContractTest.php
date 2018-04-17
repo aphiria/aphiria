@@ -21,6 +21,6 @@ class ArrayContractTest extends \PHPUnit\Framework\TestCase
     {
         $expectedValues = ['foo', 'bar'];
         $contract = new ArrayContract($expectedValues);
-        $this->assertSame($expectedValues, $contract->getValues());
+        $this->assertSame($expectedValues, $contract->getValue());
     }
 }

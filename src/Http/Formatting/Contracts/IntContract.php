@@ -13,7 +13,7 @@ namespace Opulence\Net\Http\Formatting\Contracts;
 /**
  * Defines the integer contract
  */
-class IntContract
+class IntContract implements IContract
 {
     /** @var int The integer value */
     private $value;
@@ -27,9 +27,7 @@ class IntContract
     }
 
     /**
-     * Gets the integer value
-     *
-     * @return int The integer value
+     * @inheritdoc
      */
     public function getValue(): int
     {
