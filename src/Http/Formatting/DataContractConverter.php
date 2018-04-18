@@ -31,7 +31,7 @@ class DataContractConverter implements IDataContractConverter
      */
     public function convertFromDataContract(string $type, $dataContract)
     {
-        return $this->registry->getFromDataContractConverter($type)($dataContract, $this);
+        return ($this->registry->getFromDataContractConverter($type))($dataContract, $this);
     }
 
     /**
@@ -39,6 +39,6 @@ class DataContractConverter implements IDataContractConverter
      */
     public function convertToDataContract($object)
     {
-        return $this->registry->getToDataContractConverter(\get_class($object))($object, $this);
+        return ($this->registry->getToDataContractConverter(\get_class($object)))($object, $this);
     }
 }
