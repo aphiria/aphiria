@@ -38,6 +38,20 @@ class ContractMapperRegistry
     }
 
     /**
+     * Gets the contract mapper for a value
+     *
+     * @param mixed $value The value whose contract mapper we want
+     * @return IContractMapper The contract mapper for the input value
+     * @throws OutOfBoundsException Thrown if the value does not have a contract mapper
+     */
+    public function getContractMapperForValue($value): IContractMapper
+    {
+        $type = \is_object($value) ? \get_class($value) : gettype($value);
+
+        return $this->getContractMapperForType($type);
+    }
+
+    /**
      * Registers a closure contract mapper
      *
      * @param string $type The type that the contract mapper applies to

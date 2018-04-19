@@ -11,7 +11,6 @@
 namespace Opulence\Net\Tests\Http\Formatting\Contracts;
 
 use Opulence\Net\Http\Formatting\Contracts\ClosureContractMapper;
-use Opulence\Net\Http\Formatting\Contracts\IContract;
 
 /**
  * Tests the closure contract mapper

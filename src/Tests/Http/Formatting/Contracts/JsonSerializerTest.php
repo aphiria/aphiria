@@ -11,27 +11,20 @@
 namespace Opulence\Net\Tests\Http\Formatting\Contracts;
 
 use InvalidArgumentException;
-use Opulence\Net\Http\Formatting\Contracts\ArrayContract;
-use Opulence\Net\Http\Formatting\Contracts\BoolContract;
-use Opulence\Net\Http\Formatting\Contracts\DictionaryContract;
-use Opulence\Net\Http\Formatting\Contracts\FloatContract;
-use Opulence\Net\Http\Formatting\Contracts\IContract;
-use Opulence\Net\Http\Formatting\Contracts\IntContract;
-use Opulence\Net\Http\Formatting\Contracts\JsonContractSerializer;
+use Opulence\Net\Http\Formatting\Contracts\JsonSerializer;
 use Opulence\Net\Http\Formatting\Contracts\SerializationException;
-use Opulence\Net\Http\Formatting\Contracts\StringContract;
 
 /**
- * Tests the JSON contract serializer
+ * Tests the JSON serializer
  */
-class JsonContractSerializerTest extends \PHPUnit\Framework\TestCase
+class JsonSerializerTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var JsonContractSerializer The serializer to use in tests */
+    /** @var JsonSerializer The serializer to use in tests */
     private $serializer;
 
     public function setUp(): void
     {
-        $this->serializer = new JsonContractSerializer();
+        $this->serializer = new JsonSerializer();
     }
 
     public function testDeserializingContractCreatesInstanceOfContractFromDecodedValue(): void
@@ -46,7 +39,7 @@ class JsonContractSerializerTest extends \PHPUnit\Framework\TestCase
         ];
 
         foreach ($contractsAndValues as $contractAndValues) {
-            $contract = $this->serializer->deserializeContract($contractAndValues[1], $contractAndValues[0]);
+            $contract = $this->serializer->deserialize($contractAndValues[1], $contractAndValues[0]);
             $this->assertInstanceOf($contractAndValues[0], $contract);
             $this->assertEquals($contractAndValues[2], $contract->getValue());
         }
@@ -55,19 +48,19 @@ class JsonContractSerializerTest extends \PHPUnit\Framework\TestCase
     public function testDeserializingInvalidJsonThrowsException(): void
     {
         $this->expectException(SerializationException::class);
-        $this->serializer->deserializeContract('"', StringContract::class);
+        $this->serializer->deserialize('"', StringContract::class);
     }
 
     public function testDeserializingToContractTypeThatDoesNotImplementIContractThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->serializer->deserializeContract('foo', 'bar');
+        $this->serializer->deserialize('foo', 'bar');
     }
 
     public function testDeserializingToDictionaryContractWithValueThatIsNotDictionaryThrowsException(): void
     {
         $this->expectException(SerializationException::class);
-        $this->serializer->deserializeContract('"foo"', DictionaryContract::class);
+        $this->serializer->deserialize('"foo"', DictionaryContract::class);
     }
 
     public function testSerializingContractJsonEncodesValueInContract(): void
@@ -77,6 +70,6 @@ class JsonContractSerializerTest extends \PHPUnit\Framework\TestCase
         $contract->expects($this->once())
             ->method('getValue')
             ->willReturn(['foo' => 'bar']);
-        $this->assertEquals('{"foo":"bar"}', $this->serializer->serializeContract($contract));
+        $this->assertEquals('{"foo":"bar"}', $this->serializer->serialize($contract));
     }
 }

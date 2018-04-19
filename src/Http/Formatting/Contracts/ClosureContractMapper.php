@@ -47,7 +47,7 @@ class ClosureContractMapper implements IContractMapper
     /**
      * @inheritdoc
      */
-    public function mapFromContract(IContract $contract)
+    public function mapFromContract($contract)
     {
         return ($this->fromContractClosure)($contract);
     }
@@ -55,7 +55,7 @@ class ClosureContractMapper implements IContractMapper
     /**
      * @inheritdoc
      */
-    public function mapToContract($data): IContract
+    public function mapToContract($data)
     {
         return ($this->toContractClosure)($data);
     }
