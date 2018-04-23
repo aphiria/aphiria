@@ -65,7 +65,7 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
             ->willReturn(User::class);
         $contractMapper->expects($this->once())
             ->method('mapFromContract')
-            ->with(['id' => 123, 'email' => 'foo@bar.com'])
+            ->with(['id' => 123, 'email' => 'foo@bar.com'], User::class)
             ->willReturn($user);
         $this->contractMapperRegistry->registerContractMapper($contractMapper);
         /** @var ISerializationInterceptor $serializationInterceptor */

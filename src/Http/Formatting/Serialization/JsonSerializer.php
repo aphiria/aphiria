@@ -38,10 +38,9 @@ class JsonSerializer implements ISerializer
         $contract = json_decode($value, true);
 
         if (($jsonErrorCode = json_last_error()) !== JSON_ERROR_NONE) {
-            throw $this->getDeserializationException($jsonErrorCode);
+            throw $this->createDeserializationException($jsonErrorCode);
         }
 
-        // TODO: Test interceptors!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         foreach ($this->serializationInterceptors as $serializationInterceptor) {
             $contract = $serializationInterceptor->onDeserialization($contract, $type);
         }
@@ -58,7 +57,6 @@ class JsonSerializer implements ISerializer
         $contract = $this->contractMappers->getContractMapperForValue($value)
             ->mapToContract($value);
 
-        // TODO: Test interceptors!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         foreach ($this->serializationInterceptors as $serializationInterceptor) {
             $contract = $serializationInterceptor->onSerialization($contract);
         }
@@ -71,12 +69,12 @@ class JsonSerializer implements ISerializer
     }
 
     /**
-     * Gets a deserialization exception from a JSON error code
+     * Creates a deserialization exception from a JSON error code
      *
      * @param int $jsonErrorCode The JSON error code
      * @return SerializationException The exception to throw
      */
-    private function getDeserializationException(int $jsonErrorCode): SerializationException
+    private function createDeserializationException(int $jsonErrorCode): SerializationException
     {
         switch ($jsonErrorCode) {
             case JSON_ERROR_DEPTH:
@@ -92,7 +90,7 @@ class JsonSerializer implements ISerializer
                 $message = 'JSON syntax error';
                 break;
             case JSON_ERROR_UTF8:
-                $message = 'Malfored UTF-8 characters, possibly incorrectly encoded';
+                $message = 'Malformed UTF-8 characters, possibly incorrectly encoded';
                 break;
             case JSON_ERROR_RECURSION:
                 $message = 'One or more recursive references in the value encoded';
