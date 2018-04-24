@@ -17,6 +17,7 @@ class TypeResolver
 {
     /**
      * Gets the type of the input value
+     * This is useful for getting around PHP's type shortcomings
      *
      * @param mixed $value The value whose type we want
      * @return string The type of the input value
