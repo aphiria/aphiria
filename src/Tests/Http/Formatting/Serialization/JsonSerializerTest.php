@@ -72,7 +72,7 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
         $serializationInterceptor = $this->createMock(ISerializationInterceptor::class);
         $serializationInterceptor->expects($this->once())
             ->method('onDeserialization')
-            ->with(['_id_' => 123, '_email_' => 'foo@bar.com'])
+            ->with(['_id_' => 123, '_email_' => 'foo@bar.com'], User::class)
             ->willReturn(['id' => 123, 'email' => 'foo@bar.com']);
         $serializer = new JsonSerializer($this->contractMapperRegistry, [$serializationInterceptor]);
         $this->assertSame($user, $serializer->deserialize('{"_id_":123,"_email_":"foo@bar.com"}', User::class));
@@ -95,7 +95,7 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
         $serializationInterceptor = $this->createMock(ISerializationInterceptor::class);
         $serializationInterceptor->expects($this->once())
             ->method('onSerialization')
-            ->with(['id' => 123, 'email' => 'foo@bar.com'])
+            ->with(['id' => 123, 'email' => 'foo@bar.com'], User::class)
             ->willReturn(['_id_' => 123, '_email_' => 'foo@bar.com']);
         $serializer = new JsonSerializer($this->contractMapperRegistry, [$serializationInterceptor]);
         $this->assertEquals('{"_id_":123,"_email_":"foo@bar.com"}', $serializer->serialize($user));

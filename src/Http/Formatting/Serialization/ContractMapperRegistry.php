@@ -46,9 +46,7 @@ class ContractMapperRegistry
      */
     public function getContractMapperForValue($value): IContractMapper
     {
-        $type = \is_object($value) ? \get_class($value) : gettype($value);
-
-        return $this->getContractMapperForType($type);
+        return $this->getContractMapperForType(TypeResolver::resolveType($value));
     }
 
     /**

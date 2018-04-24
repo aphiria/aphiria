@@ -28,7 +28,8 @@ interface ISerializationInterceptor
      * Provides a hook for serializing a contract
      *
      * @param mixed $contract The contract being serialized
+     * @param string $type The type of the original value that was being serialized
      * @return mixed The modified contract value
      */
-    public function onSerialization($contract);
+    public function onSerialization($contract, string $type);
 }

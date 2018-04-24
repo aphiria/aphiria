@@ -56,9 +56,10 @@ class JsonSerializer implements ISerializer
     {
         $contract = $this->contractMappers->getContractMapperForValue($value)
             ->mapToContract($value);
+        $type = TypeResolver::resolveType($value);
 
         foreach ($this->serializationInterceptors as $serializationInterceptor) {
-            $contract = $serializationInterceptor->onSerialization($contract);
+            $contract = $serializationInterceptor->onSerialization($contract, $type);
         }
 
         if (!($jsonEncodedContract = json_encode($contract))) {
