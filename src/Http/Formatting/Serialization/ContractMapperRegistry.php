@@ -30,11 +30,14 @@ class ContractMapperRegistry
      */
     public function getContractMapperForType(string $type): IContractMapper
     {
-        if (!isset($this->contractMappersByType[$type])) {
+        $normalizedType = $this->normalizeType($type);
+
+        if (!isset($this->contractMappersByType[$normalizedType])) {
+            // Use the input type name to make the exception message more meaningful
             throw new OutOfBoundsException("No contract mapper registered for type \"$type\"");
         }
 
-        return $this->contractMappersByType[$type];
+        return $this->contractMappersByType[$normalizedType];
     }
 
     /**
@@ -46,6 +49,7 @@ class ContractMapperRegistry
      */
     public function getContractMapperForValue($value): IContractMapper
     {
+        // Note: The type is normalized in getContractMapperForType()
         return $this->getContractMapperForType(TypeResolver::resolveType($value));
     }
 
@@ -61,6 +65,7 @@ class ContractMapperRegistry
         Closure $toContractClosure,
         Closure $fromContractClosure
     ): void {
+        // Note: The type is normalized in registerContractMapper()
         $this->registerContractMapper(new ClosureContractMapper($type, $toContractClosure, $fromContractClosure));
     }
 
@@ -71,6 +76,30 @@ class ContractMapperRegistry
      */
     public function registerContractMapper(IContractMapper $contractMapper): void
     {
-        $this->contractMappersByType[$contractMapper->getType()] = $contractMapper;
+        $normalizedType = $this->normalizeType($contractMapper->getType());
+        $this->contractMappersByType[$normalizedType] = $contractMapper;
+    }
+
+    /**
+     * Normalizes a type, eg "integer" to "int", for usage as keys in the registry
+     *
+     * @param string $type The type to normalize
+     * @return string The normalized type
+     */
+    private function normalizeType(string $type): string
+    {
+        switch ($type) {
+            case 'boolean':
+            case 'bool':
+                return 'bool';
+            case 'float':
+            case 'double':
+                return 'float';
+            case 'int':
+            case 'integer':
+                return 'int';
+            default:
+                return $type;
+        }
     }
 }

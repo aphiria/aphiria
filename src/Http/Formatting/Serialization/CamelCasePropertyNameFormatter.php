@@ -20,7 +20,11 @@ class CamelCasePropertyNameFormatter implements ISerializationInterceptor
      */
     public function onDeserialization($contract, string $type)
     {
-        // Todo: return if $type isn't array
+        if ($type !== 'array') {
+            return $contract;
+        }
+
+        // Todo
     }
 
     /**
@@ -28,6 +32,10 @@ class CamelCasePropertyNameFormatter implements ISerializationInterceptor
      */
     public function onSerialization($contract, string $type)
     {
-        // Todo: return if $type isn't array
+        if ($type !== 'array') {
+            return $contract;
+        }
+
+        // Todo
     }
 }

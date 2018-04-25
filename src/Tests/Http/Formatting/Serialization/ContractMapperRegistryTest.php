@@ -63,6 +63,37 @@ class ContractMapperRegistryTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expectedContractMapper, $this->registry->getContractMapperForType('int'));
     }
 
+    public function testGettingContractMapperForTypeNormalizesTypeName(): void
+    {
+        $typesAndNormalizedTypes = [
+            ['boolean', 'bool'],
+            ['double', 'float'],
+            ['integer', 'int']
+        ];
+
+        // Test type to normalized type
+        foreach ($typesAndNormalizedTypes as $typeAndNormalizedType) {
+            [$type, $normalizedType] = $typeAndNormalizedType;
+            $expectedContractMapper = $this->createMock(IContractMapper::class);
+            $expectedContractMapper->expects($this->once())
+                ->method('getType')
+                ->willReturn($type);
+            $this->registry->registerContractMapper($expectedContractMapper);
+            $this->assertSame($expectedContractMapper, $this->registry->getContractMapperForType($normalizedType));
+        }
+
+        // Test normalized type to type
+        foreach ($typesAndNormalizedTypes as $typeAndNormalizedType) {
+            [$type, $normalizedType] = $typeAndNormalizedType;
+            $expectedContractMapper = $this->createMock(IContractMapper::class);
+            $expectedContractMapper->expects($this->once())
+                ->method('getType')
+                ->willReturn($normalizedType);
+            $this->registry->registerContractMapper($expectedContractMapper);
+            $this->assertSame($expectedContractMapper, $this->registry->getContractMapperForType($type));
+        }
+    }
+
     public function testGettingContractMapperForTypeWithoutRegisteringOneThrowsException(): void
     {
         $this->expectException(OutOfBoundsException::class);

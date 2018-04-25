@@ -10,17 +10,34 @@
 
 namespace Opulence\Net\Http\Formatting\Serialization;
 
+use DateTime;
+
 /**
  * Defines the DateTime formatter interceptor
  */
 class DateTimeFormatter implements ISerializationInterceptor
 {
+    /** @var string The DateTime format to use */
+    private $format;
+
+    /**
+     * @param string $format The DateTime format to use
+     */
+    public function __construct(string $format)
+    {
+        $this->format = $format;
+    }
+
     /**
      * @inheritdoc
      */
     public function onDeserialization($contract, string $type)
     {
-        // Todo: return if $type isn't DateTime
+        if ($type !== DateTime::class) {
+            return $contract;
+        }
+
+        // Todo
     }
 
     /**
@@ -28,6 +45,10 @@ class DateTimeFormatter implements ISerializationInterceptor
      */
     public function onSerialization($contract, string $type)
     {
-        // Todo: return if $type isn't DateTime
+        if ($type !== DateTime::class) {
+            return $contract;
+        }
+
+        // Todo
     }
 }
