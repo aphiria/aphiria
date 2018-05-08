@@ -37,7 +37,7 @@ abstract class ObjectContract
      * Creates an instance of the object from a value
      *
      * @param mixed $value The value to create an instance from
-     * @return object An instance of the type this contract represents
+     * @return \object An instance of the type this contract represents
      * @throws InvalidArgumentException Thrown if the input value is not of the expected type
      */
     abstract public function createObject($value): object;
@@ -45,6 +45,7 @@ abstract class ObjectContract
     /**
      * Creates a PHP value from the input object
      *
+     * @param \object $object The object to create the PHP value from
      * @return mixed The PHP value for the input object
      */
     abstract public function createPhpValue(object $object);

@@ -11,6 +11,7 @@
 namespace Opulence\Net\Http\Formatting\Serialization;
 
 use Closure;
+use OutOfBoundsException;
 
 /**
  * Defines a contract registry
@@ -53,6 +54,17 @@ class ContractRegistry
     }
 
     /**
+     * Gets whether or not the registry has a contract for a type
+     *
+     * @param string $type The type to check for
+     * @return bool True if the registry has a contract for the input type, otherwise false
+     */
+    public function hasContractForType(string $type): bool
+    {
+        return isset($this->contractsByType[$type]);
+    }
+
+    /**
      * Registers a contract
      *
      * @param ObjectContract $contract The contract to register
@@ -70,8 +82,11 @@ class ContractRegistry
      * @param Closure $objectFactory The factory that instantiates an object from a value
      * @param Property[] $properties,... The list of properties that make up the object
      */
-    public function registerDictionaryObjectContract(string $type, Closure $objectFactory, Property ...$properties)
-    {
+    public function registerDictionaryObjectContract(
+        string $type,
+        Closure $objectFactory,
+        Property ...$properties
+    ): void {
         $this->registerContract(new DictionaryObjectContract($type, $this, $objectFactory, $properties));
     }
 
@@ -82,19 +97,9 @@ class ContractRegistry
      * @param Closure $objectFactory The factory that instantiates an object from a value
      * @param Closure $phpValueFactory The factory that creates a PHP value from an object
      */
-    public function registerValueObjectContract(string $type, Closure $objectFactory, Closure $phpValueFactory)
+    public function registerValueObjectContract(string $type, Closure $objectFactory, Closure $phpValueFactory): void
     {
         $this->registerContract(new ValueObjectContract($type, $objectFactory, $phpValueFactory));
-    }
-
-    /**
-     * Gets whether or not the registry has a contract for a type
-     *
-     * @return bool True if the registry has a contract for the input type, otherwise false
-     */
-    public function hasContractForType(string $type): bool
-    {
-        return isset($this->contractsByType[$type]);
     }
 
     /**

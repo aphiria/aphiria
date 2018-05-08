@@ -17,7 +17,7 @@ use Closure;
  */
 class ValueObjectContract extends ObjectContract
 {
-    /** @var Closure The factory that creates a PHP alue from an object */
+    /** @var Closure The factory that creates a PHP value from an object */
     protected $phpValueFactory;
 
     /**
@@ -34,7 +34,7 @@ class ValueObjectContract extends ObjectContract
     /**
      * @inheritdoc
      */
-    public function createObject($value)
+    public function createObject($value): object
     {
         return ($this->objectFactory)($value);
     }

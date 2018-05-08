@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Http\Formatting\Serialization;
 
+use Closure;
 use InvalidArgumentException;
 
 /**
@@ -50,7 +51,7 @@ class DictionaryObjectContract extends ObjectContract
     /**
      * @inheritdoc
      */
-    public function createObject($objectHash)
+    public function createObject($objectHash): object
     {
         if (!\is_array($objectHash)) {
             throw new InvalidArgumentException('Value must be an associative array of properties');
@@ -94,7 +95,7 @@ class DictionaryObjectContract extends ObjectContract
                 $propertyValue = $propertyContract->createPhpValue($propertyValue);
             }
 
-            $objectHash[$property] = $propertyValue;
+            $objectHash[$property->getName()] = $propertyValue;
         }
 
         return $objectHash;
