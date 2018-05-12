@@ -23,7 +23,7 @@ class DateTimeFormatter implements IEncodingInterceptor
     /**
      * @param string $format The DateTime format to use
      */
-    public function __construct(string $format)
+    public function __construct(string $format = DateTime::ISO8601)
     {
         $this->format = $format;
     }
@@ -49,6 +49,6 @@ class DateTimeFormatter implements IEncodingInterceptor
             return $encodedValue;
         }
 
-        return $encodedValue->format($this->type);
+        return $encodedValue->format($this->format);
     }
 }

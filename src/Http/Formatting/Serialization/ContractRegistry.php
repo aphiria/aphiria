@@ -95,11 +95,11 @@ class ContractRegistry
      *
      * @param string $type The type of object this contract represents
      * @param Closure $objectFactory The factory that instantiates an object from a value
-     * @param Closure $phpValueFactory The factory that creates a PHP value from an object
+     * @param Closure $encodingFactory The factory that encodes an instance of an object this contract represents
      */
-    public function registerValueObjectContract(string $type, Closure $objectFactory, Closure $phpValueFactory): void
+    public function registerValueObjectContract(string $type, Closure $objectFactory, Closure $encodingFactory): void
     {
-        $this->registerContract(new ValueObjectContract($type, $objectFactory, $phpValueFactory));
+        $this->registerContract(new ValueObjectContract($type, $objectFactory, $encodingFactory));
     }
 
     /**
