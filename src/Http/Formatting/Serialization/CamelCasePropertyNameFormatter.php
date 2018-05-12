@@ -20,11 +20,8 @@ class CamelCasePropertyNameFormatter implements IEncodingInterceptor
      */
     public function onDecoding($decodedValue, string $type)
     {
-        if ($type !== 'array') {
-            return $decodedValue;
-        }
-
-        // Todo
+        // We don't handle decoding
+        return $decodedValue;
     }
 
     /**
@@ -32,10 +29,29 @@ class CamelCasePropertyNameFormatter implements IEncodingInterceptor
      */
     public function onEncoding($encodedValue, string $type)
     {
-        if ($type !== 'array') {
+        if (!\is_array($encodedValue)) {
             return $encodedValue;
         }
 
-        // Todo
+        $camelCasedValue = [];
+
+        foreach ($encodedValue as $key => $value) {
+            $camelCasedValue[\is_string($key) ? $this->camelCaseString($key) : $key] = $value;
+        }
+
+        return $camelCasedValue;
+    }
+
+    /**
+     * Camel-cases a string
+     *
+     * @param string $value The value to camelCase
+     * @return string The camelCased string
+     */
+    private function camelCaseString(string $value): string
+    {
+        $upperCasedWords = ucwords(str_replace(['-', '_'], ' ', $value));
+
+        return lcfirst(str_replace(' ', '', $upperCasedWords));
     }
 }

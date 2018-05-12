@@ -51,7 +51,7 @@ class DictionaryObjectContract extends ObjectContract
     /**
      * @inheritdoc
      */
-    public function decode($objectHash): object
+    public function decode($objectHash, array $encodingInterceptors = []): object
     {
         if (!\is_array($objectHash)) {
             throw new InvalidArgumentException('Value must be an associative array of properties');
@@ -65,15 +65,19 @@ class DictionaryObjectContract extends ObjectContract
                 continue;
             }
 
-            // Automatically create an object for the property if it also has a contract
+            // Automatically decode the property value if it also has a contract
             if ($this->contracts->hasContractForType($property->getType())) {
                 $propertyContract = $this->contracts->getContractForType($property->getType());
-                $propertyValue = $propertyContract->decode($rawPropertyValue);
+                $propertyValue = $propertyContract->decode($rawPropertyValue, $encodingInterceptors);
             } else {
                 $propertyValue = $rawPropertyValue;
             }
 
             $convertedObjectHash[$property->getName()] = $propertyValue;
+        }
+
+        foreach ($encodingInterceptors as $encodingInterceptor) {
+            $convertedObjectHash = $encodingInterceptor->onDecoding($convertedObjectHash, $this->type);
         }
 
         return ($this->objectFactory)($convertedObjectHash);
@@ -82,20 +86,24 @@ class DictionaryObjectContract extends ObjectContract
     /**
      * @inheritdoc
      */
-    public function encode(object $object): array
+    public function encode(object $object, array $encodingInterceptors = []): array
     {
         $objectHash = [];
 
         foreach ($this->properties as $property) {
             $propertyValue = $property->getValue($object);
 
-            // Automatically create a value for the property if it also has a contract
+            // Automatically encode the property value if it also has a contract
             if ($this->contracts->hasContractForType($property->getType())) {
                 $propertyContract = $this->contracts->getContractForType($property->getType());
-                $propertyValue = $propertyContract->encode($propertyValue);
+                $propertyValue = $propertyContract->encode($propertyValue, $encodingInterceptors);
             }
 
             $objectHash[$property->getName()] = $propertyValue;
+        }
+
+        foreach ($encodingInterceptors as $encodingInterceptor) {
+            $convertedObjectHash = $encodingInterceptor->onEncoding($convertedObjectHash, $this->type);
         }
 
         return $objectHash;

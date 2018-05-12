@@ -34,16 +34,26 @@ class ValueObjectContract extends ObjectContract
     /**
      * @inheritdoc
      */
-    public function decode($value): object
+    public function decode($value, array $encodingInterceptors = []): object
     {
+        foreach ($encodingInterceptors as $encodingInterceptor) {
+            $value = $encodingInterceptor->onDecoding($value, $this->type);
+        }
+
         return ($this->objectFactory)($value);
     }
 
     /**
      * @inheritdoc
      */
-    public function encode(object $object)
+    public function encode(object $object, array $encodingInterceptors = [])
     {
-        return ($this->encodingFactory)($object);
+        $encodedValue = ($this->encodingFactory)($object);
+
+        foreach ($encodingInterceptors as $encodingInterceptor) {
+            $encodedValue = $encodingInterceptor->onEncoding($encodedValue, $this->type);
+        }
+
+        return $encodedValue;
     }
 }

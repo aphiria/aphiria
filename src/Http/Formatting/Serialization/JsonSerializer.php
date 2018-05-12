@@ -17,17 +17,17 @@ class JsonSerializer implements ISerializer
 {
     /** @var ContractMapperRegistry The registry of contract mappers */
     private $contractMappers;
-    /** @var ISerializationInterceptor[] The list of serialization interceptors to run contracts through */
-    private $serializationInterceptors = [];
+    /** @var IEncodingInterceptor[] The list of encoding interceptors to run contracts through */
+    private $encodingInterceptors = [];
 
     /**
      * @param ContractMapperRegistry $contractMappers The registry of contract mappers
-     * @param ISerializationInterceptor[] $serializationInterceptors The list of serialization interceptors
+     * @param IEncodingInterceptor[] $encodingInterceptors The list of encoding interceptors to run contracts through
      */
-    public function __construct(ContractMapperRegistry $contractMappers, array $serializationInterceptors = [])
+    public function __construct(ContractMapperRegistry $contractMappers, array $encodingInterceptors = [])
     {
         $this->contractMappers = $contractMappers;
-        $this->serializationInterceptors = $serializationInterceptors;
+        $this->encodingInterceptors = $encodingInterceptors;
     }
 
     /**
@@ -39,10 +39,6 @@ class JsonSerializer implements ISerializer
 
         if (($jsonErrorCode = json_last_error()) !== JSON_ERROR_NONE) {
             throw $this->createDeserializationException($jsonErrorCode);
-        }
-
-        foreach ($this->serializationInterceptors as $serializationInterceptor) {
-            $contract = $serializationInterceptor->onDecoding($contract, $type);
         }
 
         return $this->contractMappers->getContractMapperForType($type)
@@ -57,10 +53,6 @@ class JsonSerializer implements ISerializer
         $contract = $this->contractMappers->getContractMapperForValue($value)
             ->mapToContract($value);
         $type = TypeResolver::resolveType($value);
-
-        foreach ($this->serializationInterceptors as $serializationInterceptor) {
-            $contract = $serializationInterceptor->onEncoding($contract, $type);
-        }
 
         if (!($jsonEncodedContract = json_encode($contract))) {
             throw new SerializationException('Failed to serialize contract');

@@ -37,7 +37,7 @@ class DateTimeFormatter implements IEncodingInterceptor
             return $decodedValue;
         }
 
-        // Todo
+        return DateTime::createFromFormat($this->format, $decodedValue);
     }
 
     /**
@@ -45,10 +45,10 @@ class DateTimeFormatter implements IEncodingInterceptor
      */
     public function onEncoding($encodedValue, string $type)
     {
-        if ($type !== DateTime::class) {
+        if (!$encodedValue instanceof DateTime) {
             return $encodedValue;
         }
 
-        // Todo
+        return $encodedValue->format($this->type);
     }
 }

@@ -37,18 +37,20 @@ abstract class ObjectContract
      * Decodes a value to an object this contract represents
      *
      * @param mixed $value The value to decode
+     * @param IEncodingInterceptor[] $encodingInterceptors The list of encoding interceptors to run through
      * @return \object An instance of the type this contract represents
      * @throws InvalidArgumentException Thrown if the input value is not of the expected type
      */
-    abstract public function decode($value): object;
+    abstract public function decode($value, array $encodingInterceptors = []): object;
 
     /**
      * Encodes the input object
      *
      * @param \object $object The object to encode
+     * @param IEncodingInterceptor[] $encodingInterceptors The list of encoding interceptors to run through
      * @return mixed The encoded object
      */
-    abstract public function encode(object $object);
+    abstract public function encode(object $object, array $encodingInterceptors = []);
 
     /**
      * Gets the type this contract represents
