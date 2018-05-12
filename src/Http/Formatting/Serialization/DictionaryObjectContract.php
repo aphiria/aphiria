@@ -51,7 +51,7 @@ class DictionaryObjectContract extends ObjectContract
     /**
      * @inheritdoc
      */
-    public function createObject($objectHash): object
+    public function decode($objectHash): object
     {
         if (!\is_array($objectHash)) {
             throw new InvalidArgumentException('Value must be an associative array of properties');
@@ -68,7 +68,7 @@ class DictionaryObjectContract extends ObjectContract
             // Automatically create an object for the property if it also has a contract
             if ($this->contracts->hasContractForType($property->getType())) {
                 $propertyContract = $this->contracts->getContractForType($property->getType());
-                $propertyValue = $propertyContract->createObject($rawPropertyValue);
+                $propertyValue = $propertyContract->decode($rawPropertyValue);
             } else {
                 $propertyValue = $rawPropertyValue;
             }
@@ -82,7 +82,7 @@ class DictionaryObjectContract extends ObjectContract
     /**
      * @inheritdoc
      */
-    public function createPhpValue(object $object): array
+    public function encode(object $object): array
     {
         $objectHash = [];
 
@@ -92,7 +92,7 @@ class DictionaryObjectContract extends ObjectContract
             // Automatically create a value for the property if it also has a contract
             if ($this->contracts->hasContractForType($property->getType())) {
                 $propertyContract = $this->contracts->getContractForType($property->getType());
-                $propertyValue = $propertyContract->createPhpValue($propertyValue);
+                $propertyValue = $propertyContract->encode($propertyValue);
             }
 
             $objectHash[$property->getName()] = $propertyValue;

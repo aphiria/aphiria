@@ -12,7 +12,7 @@ namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
 use Opulence\Net\Http\Formatting\Serialization\ContractMapperRegistry;
 use Opulence\Net\Http\Formatting\Serialization\IContractMapper;
-use Opulence\Net\Http\Formatting\Serialization\ISerializationInterceptor;
+use Opulence\Net\Http\Formatting\Serialization\IEncodingInterceptor;
 use Opulence\Net\Http\Formatting\Serialization\JsonSerializer;
 use Opulence\Net\Http\Formatting\Serialization\SerializationException;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\User;
@@ -69,7 +69,7 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
             ->willReturn($user);
         $this->contractMapperRegistry->registerContractMapper($contractMapper);
         /** @var ISerializationInterceptor $serializationInterceptor */
-        $serializationInterceptor = $this->createMock(ISerializationInterceptor::class);
+        $serializationInterceptor = $this->createMock(IEncodingInterceptor::class);
         $serializationInterceptor->expects($this->once())
             ->method('onDeserialization')
             ->with(['_id_' => 123, '_email_' => 'foo@bar.com'], User::class)
@@ -92,7 +92,7 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
             ->willReturn(['id' => 123, 'email' => 'foo@bar.com']);
         $this->contractMapperRegistry->registerContractMapper($contractMapper);
         /** @var ISerializationInterceptor $serializationInterceptor */
-        $serializationInterceptor = $this->createMock(ISerializationInterceptor::class);
+        $serializationInterceptor = $this->createMock(IEncodingInterceptor::class);
         $serializationInterceptor->expects($this->once())
             ->method('onSerialization')
             ->with(['id' => 123, 'email' => 'foo@bar.com'], User::class)

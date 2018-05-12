@@ -20,12 +20,12 @@ abstract class ObjectContract
 {
     /** @var string The type of object this contract represents */
     protected $type;
-    /** @var Closure The factory that instantiates an object from a value */
+    /** @var Closure The factory that instantiates an object from a decoded value */
     protected $objectFactory;
 
     /**
      * @param string $type The type of object this contract represents
-     * @param Closure $objectFactory The factory that instantiates an object from a value
+     * @param Closure $objectFactory The factory that instantiates an object from a decoded value
      */
     public function __construct(string $type, Closure $objectFactory)
     {
@@ -34,21 +34,21 @@ abstract class ObjectContract
     }
 
     /**
-     * Creates an instance of the object from a value
+     * Decodes a value to an object this contract represents
      *
-     * @param mixed $value The value to create an instance from
+     * @param mixed $value The value to decode
      * @return \object An instance of the type this contract represents
      * @throws InvalidArgumentException Thrown if the input value is not of the expected type
      */
-    abstract public function createObject($value): object;
+    abstract public function decode($value): object;
 
     /**
-     * Creates a PHP value from the input object
+     * Encodes the input object
      *
-     * @param \object $object The object to create the PHP value from
-     * @return mixed The PHP value for the input object
+     * @param \object $object The object to encode
+     * @return mixed The encoded object
      */
-    abstract public function createPhpValue(object $object);
+    abstract public function encode(object $object);
 
     /**
      * Gets the type this contract represents

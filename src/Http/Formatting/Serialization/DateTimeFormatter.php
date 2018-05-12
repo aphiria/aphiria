@@ -15,7 +15,7 @@ use DateTime;
 /**
  * Defines the DateTime formatter interceptor
  */
-class DateTimeFormatter implements ISerializationInterceptor
+class DateTimeFormatter implements IEncodingInterceptor
 {
     /** @var string The DateTime format to use */
     private $format;
@@ -31,10 +31,10 @@ class DateTimeFormatter implements ISerializationInterceptor
     /**
      * @inheritdoc
      */
-    public function onDeserialization($contract, string $type)
+    public function onDecoding($decodedValue, string $type)
     {
         if ($type !== DateTime::class) {
-            return $contract;
+            return $decodedValue;
         }
 
         // Todo
@@ -43,10 +43,10 @@ class DateTimeFormatter implements ISerializationInterceptor
     /**
      * @inheritdoc
      */
-    public function onSerialization($contract, string $type)
+    public function onEncoding($encodedValue, string $type)
     {
         if ($type !== DateTime::class) {
-            return $contract;
+            return $encodedValue;
         }
 
         // Todo

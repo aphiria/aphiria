@@ -13,15 +13,15 @@ namespace Opulence\Net\Http\Formatting\Serialization;
 /**
  * Defines the camelCase property name formatter interceptor
  */
-class CamelCasePropertyNameFormatter implements ISerializationInterceptor
+class CamelCasePropertyNameFormatter implements IEncodingInterceptor
 {
     /**
      * @inheritdoc
      */
-    public function onDeserialization($contract, string $type)
+    public function onDecoding($decodedValue, string $type)
     {
         if ($type !== 'array') {
-            return $contract;
+            return $decodedValue;
         }
 
         // Todo
@@ -30,10 +30,10 @@ class CamelCasePropertyNameFormatter implements ISerializationInterceptor
     /**
      * @inheritdoc
      */
-    public function onSerialization($contract, string $type)
+    public function onEncoding($encodedValue, string $type)
     {
         if ($type !== 'array') {
-            return $contract;
+            return $encodedValue;
         }
 
         // Todo

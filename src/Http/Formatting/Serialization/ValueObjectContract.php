@@ -13,28 +13,28 @@ namespace Opulence\Net\Http\Formatting\Serialization;
 use Closure;
 
 /**
- * Defines a value contract
+ * Defines a value object contract
  */
 class ValueObjectContract extends ObjectContract
 {
-    /** @var Closure The factory that creates a PHP value from an object */
-    protected $phpValueFactory;
+    /** @var Closure The factory that encodes an instance of an object this contract represents */
+    protected $encodingFactory;
 
     /**
      * @inheritdoc
-     * @param Closure $phpValueFactory The factory that creates a PHP value from an object
+     * @param Closure $encodingFactory The factory that encodes an instance of an object this contract represents
      */
-    public function __construct(string $type, Closure $objectFactory, Closure $phpValueFactory)
+    public function __construct(string $type, Closure $objectFactory, Closure $encodingFactory)
     {
         parent::__construct($type, $objectFactory);
 
-        $this->phpValueFactory = $phpValueFactory;
+        $this->encodingFactory = $encodingFactory;
     }
 
     /**
      * @inheritdoc
      */
-    public function createObject($value): object
+    public function decode($value): object
     {
         return ($this->objectFactory)($value);
     }
@@ -42,8 +42,8 @@ class ValueObjectContract extends ObjectContract
     /**
      * @inheritdoc
      */
-    public function createPhpValue(object $object)
+    public function encode(object $object)
     {
-        return ($this->phpValueFactory)($object);
+        return ($this->encodingFactory)($object);
     }
 }

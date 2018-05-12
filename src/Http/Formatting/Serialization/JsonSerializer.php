@@ -42,7 +42,7 @@ class JsonSerializer implements ISerializer
         }
 
         foreach ($this->serializationInterceptors as $serializationInterceptor) {
-            $contract = $serializationInterceptor->onDeserialization($contract, $type);
+            $contract = $serializationInterceptor->onDecoding($contract, $type);
         }
 
         return $this->contractMappers->getContractMapperForType($type)
@@ -59,7 +59,7 @@ class JsonSerializer implements ISerializer
         $type = TypeResolver::resolveType($value);
 
         foreach ($this->serializationInterceptors as $serializationInterceptor) {
-            $contract = $serializationInterceptor->onSerialization($contract, $type);
+            $contract = $serializationInterceptor->onEncoding($contract, $type);
         }
 
         if (!($jsonEncodedContract = json_encode($contract))) {
