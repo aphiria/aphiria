@@ -87,7 +87,7 @@ class ContractRegistry
         Closure $objectFactory,
         Property ...$properties
     ): void {
-        $this->registerContract(new DictionaryObjectContract($type, $this, $objectFactory, $properties));
+        $this->registerContract(new DictionaryObjectContract($type, $this, $objectFactory, ...$properties));
     }
 
     /**

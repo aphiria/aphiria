@@ -103,7 +103,7 @@ class DictionaryObjectContract extends ObjectContract
         }
 
         foreach ($encodingInterceptors as $encodingInterceptor) {
-            $convertedObjectHash = $encodingInterceptor->onEncoding($convertedObjectHash, $this->type);
+            $objectHash = $encodingInterceptor->onEncoding($objectHash, $this->type);
         }
 
         return $objectHash;
