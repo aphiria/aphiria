@@ -10,25 +10,25 @@
 
 namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
-use Opulence\Net\Http\Formatting\Serialization\CamelCasePropertyNameFormatter;
+use Opulence\Net\Http\Formatting\Serialization\SnakeCasePropertyNameFormatter;
 
 /**
- * Tests the camel case property name formatter
+ * Tests the snake_case property name formatter
  */
-class CamelCasePropertyNameFormatterTest extends \PHPUnit\Framework\TestCase
+class SnakeCasePropertyNameFormatterTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var CamelCasePropertyNameFormatter The formatter to use in tests */
+    /** @var SnakeCasePropertyNameFormatter The formatter to use in tests */
     private $formatter;
 
     public function setUp(): void
     {
-        $this->formatter = new CamelCasePropertyNameFormatter();
+        $this->formatter = new SnakeCasePropertyNameFormatter();
     }
 
     public function testDecodingAnyValueJustReturnsValue(): void
     {
         $this->assertEquals('foo', $this->formatter->onDecoding('foo', 'string'));
-        $this->assertEquals(['foo_bar' => 'baz'], $this->formatter->onDecoding(['foo_bar' => 'baz'], 'array'));
+        $this->assertEquals(['foo-bar' => 'baz'], $this->formatter->onDecoding(['foo-bar' => 'baz'], 'array'));
     }
 
     public function testEncodingArrayWithNumericKeysLeavesNumericKeys(): void
@@ -37,10 +37,10 @@ class CamelCasePropertyNameFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedEncodedValue, $this->formatter->onEncoding(['foo', 'bar'], 'array'));
     }
 
-    public function testEncodingAssociativeArrayConvertsKeysToCamelCase(): void
+    public function testEncodingAssociativeArrayConvertsKeysToSnakeCase(): void
     {
         $value = ['foo_bar' => 'foo', 'bar-baz' => 'bar', 'baz blah' => 'baz', 'blahDave' => 'blah'];
-        $expectedEncodedValue = ['fooBar' => 'foo', 'barBaz' => 'bar', 'bazBlah' => 'baz', 'blahDave' => 'blah'];
+        $expectedEncodedValue = ['foo_bar' => 'foo', 'bar_baz' => 'bar', 'baz_blah' => 'baz', 'blah_dave' => 'blah'];
         $this->assertEquals($expectedEncodedValue, $this->formatter->onEncoding($value, 'array'));
     }
 

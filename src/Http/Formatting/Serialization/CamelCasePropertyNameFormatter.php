@@ -36,7 +36,7 @@ class CamelCasePropertyNameFormatter implements IEncodingInterceptor
         $camelCasedValue = [];
 
         foreach ($encodedValue as $key => $value) {
-            $camelCasedValue[\is_string($key) ? $this->camelCaseString($key) : $key] = $value;
+            $camelCasedValue[\is_string($key) ? $this->getCamelCaseString($key) : $key] = $value;
         }
 
         return $camelCasedValue;
@@ -48,7 +48,7 @@ class CamelCasePropertyNameFormatter implements IEncodingInterceptor
      * @param string $value The value to camelCase
      * @return string The camelCased string
      */
-    private function camelCaseString(string $value): string
+    private function getCamelCaseString(string $value): string
     {
         $upperCasedWords = ucwords(str_replace(['-', '_'], ' ', $value));
 

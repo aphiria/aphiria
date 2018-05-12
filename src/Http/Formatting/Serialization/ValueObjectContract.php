@@ -15,7 +15,7 @@ use Closure;
 /**
  * Defines a value object contract
  */
-class ValueObjectContract extends ObjectContract
+class ValueObjectContract extends Contract
 {
     /** @var Closure The factory that encodes an instance of an object this contract represents */
     protected $encodingFactory;
@@ -24,9 +24,9 @@ class ValueObjectContract extends ObjectContract
      * @inheritdoc
      * @param Closure $encodingFactory The factory that encodes an instance of an object this contract represents
      */
-    public function __construct(string $type, Closure $objectFactory, Closure $encodingFactory)
+    public function __construct(string $type, Closure $valueFactory, Closure $encodingFactory)
     {
-        parent::__construct($type, $objectFactory);
+        parent::__construct($type, $valueFactory);
 
         $this->encodingFactory = $encodingFactory;
     }
@@ -34,21 +34,21 @@ class ValueObjectContract extends ObjectContract
     /**
      * @inheritdoc
      */
-    public function decode($value, array $encodingInterceptors = []): object
+    public function decode($value, array $encodingInterceptors = [])
     {
         foreach ($encodingInterceptors as $encodingInterceptor) {
             $value = $encodingInterceptor->onDecoding($value, $this->type);
         }
 
-        return ($this->objectFactory)($value);
+        return ($this->valueFactory)($value);
     }
 
     /**
      * @inheritdoc
      */
-    public function encode(object $object, array $encodingInterceptors = [])
+    public function encode($value, array $encodingInterceptors = [])
     {
-        $encodedValue = ($this->encodingFactory)($object);
+        $encodedValue = ($this->encodingFactory)($value);
 
         foreach ($encodingInterceptors as $encodingInterceptor) {
             $encodedValue = $encodingInterceptor->onEncoding($encodedValue, $this->type);

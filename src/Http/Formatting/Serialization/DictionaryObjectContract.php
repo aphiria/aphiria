@@ -16,7 +16,7 @@ use InvalidArgumentException;
 /**
  * Defines a dictionary object contract
  */
-class DictionaryObjectContract extends ObjectContract
+class DictionaryObjectContract extends Contract
 {
     /** @var ContractRegistry The contract registry */
     private $contracts;
@@ -80,13 +80,13 @@ class DictionaryObjectContract extends ObjectContract
             $convertedObjectHash = $encodingInterceptor->onDecoding($convertedObjectHash, $this->type);
         }
 
-        return ($this->objectFactory)($convertedObjectHash);
+        return ($this->valueFactory)($convertedObjectHash);
     }
 
     /**
      * @inheritdoc
      */
-    public function encode(object $object, array $encodingInterceptors = []): array
+    public function encode($object, array $encodingInterceptors = []): array
     {
         $objectHash = [];
 

@@ -18,21 +18,21 @@ use OutOfBoundsException;
  */
 class ContractRegistry
 {
-    /** @var ObjectContract[] The mapping of types to contracts */
+    /** @var Contract[] The mapping of types to contracts */
     private $contractsByType = [];
 
     /**
      * Gets the contract for a type
      *
      * @param string $type The type whose contract we want
-     * @return ObjectContract The contract for the input type
+     * @return Contract The contract for the input type
      * @throws OutOfBoundsException Thrown if the type does not have a contract
      */
-    public function getContractForType(string $type): ObjectContract
+    public function getContractForType(string $type): Contract
     {
         $normalizedType = $this->normalizeType($type);
 
-        if (!$this->hasContractForType($type)) {
+        if (!$this->hasContractForType($normalizedType)) {
             // Use the input type name to make the exception message more meaningful
             throw new OutOfBoundsException("No contract registered for type \"$type\"");
         }
@@ -44,10 +44,10 @@ class ContractRegistry
      * Gets the contract for a value
      *
      * @param mixed $value The value whose contract we want
-     * @return ObjectContract The contract for the input value
+     * @return Contract The contract for the input value
      * @throws OutOfBoundsException Thrown if the value does not have a contract
      */
-    public function getContractForValue($value): ObjectContract
+    public function getContractForValue($value): Contract
     {
         // Note: The type is normalized in getContractForType()
         return $this->getContractForType(TypeResolver::resolveType($value));
@@ -67,9 +67,9 @@ class ContractRegistry
     /**
      * Registers a contract
      *
-     * @param ObjectContract $contract The contract to register
+     * @param Contract $contract The contract to register
      */
-    public function registerContract(ObjectContract $contract): void
+    public function registerContract(Contract $contract): void
     {
         $normalizedType = $this->normalizeType($contract->getType());
         $this->contractsByType[$normalizedType] = $contract;

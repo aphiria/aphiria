@@ -14,43 +14,43 @@ use Closure;
 use InvalidArgumentException;
 
 /**
- * Defines an object contract
+ * Defines a contract
  */
-abstract class ObjectContract
+abstract class Contract
 {
-    /** @var string The type of object this contract represents */
+    /** @var string The type of value this contract represents */
     protected $type;
-    /** @var Closure The factory that instantiates an object from a decoded value */
-    protected $objectFactory;
+    /** @var Closure The factory that instantiates a value from a decoded value */
+    protected $valueFactory;
 
     /**
-     * @param string $type The type of object this contract represents
-     * @param Closure $objectFactory The factory that instantiates an object from a decoded value
+     * @param string $type The type of value this contract represents
+     * @param Closure $valueFactory The factory that instantiates a value from a decoded value
      */
-    public function __construct(string $type, Closure $objectFactory)
+    public function __construct(string $type, Closure $valueFactory)
     {
         $this->type = $type;
-        $this->objectFactory = $objectFactory;
+        $this->valueFactory = $valueFactory;
     }
 
     /**
-     * Decodes a value to an object this contract represents
+     * Decodes a value to an instance of the type this contract represents
      *
      * @param mixed $value The value to decode
      * @param IEncodingInterceptor[] $encodingInterceptors The list of encoding interceptors to run through
-     * @return \object An instance of the type this contract represents
+     * @return mixed An instance of the type this contract represents
      * @throws InvalidArgumentException Thrown if the input value is not of the expected type
      */
-    abstract public function decode($value, array $encodingInterceptors = []): object;
+    abstract public function decode($value, array $encodingInterceptors = []);
 
     /**
-     * Encodes the input object
+     * Encodes the input value
      *
-     * @param \object $object The object to encode
+     * @param mixed $value The value to encode
      * @param IEncodingInterceptor[] $encodingInterceptors The list of encoding interceptors to run through
-     * @return mixed The encoded object
+     * @return mixed The encoded value
      */
-    abstract public function encode(object $object, array $encodingInterceptors = []);
+    abstract public function encode($value, array $encodingInterceptors = []);
 
     /**
      * Gets the type this contract represents
