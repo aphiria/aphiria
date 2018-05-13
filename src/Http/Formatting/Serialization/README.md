@@ -39,7 +39,7 @@ Under the hood, serializing works like this:
 
 1. Your value is converted to an encoded value via a "[contract](#contracts)"
 2. [Interceptors](#encoding-interceptors) are run on your encoded value
-3. The encodable value is serialized by your serializer
+3. The encoded value is serialized by your serializer
 
 Deserializing works in the reverse order:
 
@@ -49,7 +49,7 @@ Deserializing works in the reverse order:
 
 <h4 id="json-serializer">JSON Serializer</h4>
 
-`JsonSerializer` is able to serialize and deserialize value to and from JSON.  You can create an instance like this:
+`JsonSerializer` is able to serialize and deserialize values to and from JSON.  You can create an instance like this:
 
 ```php
 use Opulence\Net\Http\Formatting\Serialization\ContractRegistry;
@@ -58,12 +58,6 @@ use Opulence\Net\Http\Formatting\Serialization\JsonSerializer;
 $contracts = new ContractRegistry();
 // Register your models' contracts...
 $jsonSerializer = new JsonSerializer($contracts);
-```
-
-If you're using [encoding interceptors](#encoding-interceptors), simply pass an array of them into the constructor:
-
-```php
-$jsonSerializer = new JsonSerializer($contracts, [$interceptor1, $interceptor2]);
 ```
 
 <h2 id="contracts">Contracts</h2>
