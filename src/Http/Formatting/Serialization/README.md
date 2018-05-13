@@ -38,18 +38,18 @@ Opulence provides the following serializers:
 
 Under the hood, serializing works like this:
 
-Value &rarr; [contract](#contracts) &rarr; encoded value &rarr; [Interceptors](#encoding-interceptors) &rarr; serialized value
+Value &rarr; encode [contract](#contracts) &rarr; [Interceptors](#encoding-interceptors) &rarr; serialized value
 
 Deserializing works in the reverse order:
 
-Serialized value &rarr; [contract](#contracts) &rarr; decoded value &rarr; [Interceptors](#encoding-interceptors) &rarr; deserialized value
+Serialized value &rarr; decode [contract](#contracts) &rarr; [Interceptors](#encoding-interceptors) &rarr; deserialized value
 
 <h4 id="json-serializer">JSON Serializer</h4>
 
 `JsonSerializer` is able to serialize and deserialize values to and from JSON.  You can create an instance like this:
 
 ```php
-use Opulence\Net\Http\Formatting\Serialization\ContractRegistry;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\ContractRegistry;
 use Opulence\Net\Http\Formatting\Serialization\JsonSerializer;
 
 $contracts = new ContractRegistry();
@@ -73,7 +73,7 @@ You don't have to do anything special to serialize an array of values - just pas
 $serializer->serialize($users);
 ```
 
-> **Note:* Opulence only supports arrays that contain a single type of value.  In other words, you cannot mix and match different types in a single array.
+> **Note:** Opulence only supports arrays that contain a single type of value.  In other words, you cannot mix and match different types in a single array.
 
 <h2 id="contracts">Contracts</h2>
 

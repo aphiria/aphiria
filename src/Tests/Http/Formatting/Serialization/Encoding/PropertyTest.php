@@ -10,7 +10,7 @@
 
 namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
-use Opulence\Net\Http\Formatting\Serialization\Property;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\Property;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
 
 /**

@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Formatting\Serialization;
+namespace Opulence\Net\Http\Formatting\Serialization\Encoding;
 
 use Closure;
 
@@ -37,7 +37,7 @@ class StructContract extends Contract
     public function decode($value, array $encodingInterceptors = [])
     {
         foreach ($encodingInterceptors as $encodingInterceptor) {
-            $value = $encodingInterceptor->onDecoding($value, $this->type);
+            $value = $encodingInterceptor->onPreDecoding($value, $this->type);
         }
 
         return ($this->valueFactory)($value);
@@ -51,7 +51,7 @@ class StructContract extends Contract
         $encodedValue = ($this->encodingFactory)($value);
 
         foreach ($encodingInterceptors as $encodingInterceptor) {
-            $encodedValue = $encodingInterceptor->onEncoding($encodedValue, $this->type);
+            $encodedValue = $encodingInterceptor->onPostEncoding($encodedValue, $this->type);
         }
 
         return $encodedValue;

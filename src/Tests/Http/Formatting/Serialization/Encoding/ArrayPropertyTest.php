@@ -10,7 +10,7 @@
 
 namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
-use Opulence\Net\Http\Formatting\Serialization\ArrayProperty;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\ArrayProperty;
 
 /**
  * Tests an array property

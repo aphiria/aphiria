@@ -10,12 +10,12 @@
 
 namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
-use Opulence\Net\Http\Formatting\Serialization\ContractRegistry;
-use Opulence\Net\Http\Formatting\Serialization\EncodingException;
-use Opulence\Net\Http\Formatting\Serialization\IContract;
-use Opulence\Net\Http\Formatting\Serialization\IEncodingInterceptor;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\ContractRegistry;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\EncodingException;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\IContract;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\IEncodingInterceptor;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\Property;
 use Opulence\Net\Http\Formatting\Serialization\JsonSerializer;
-use Opulence\Net\Http\Formatting\Serialization\Property;
 use Opulence\Net\Http\Formatting\Serialization\SerializationException;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\User;
 
@@ -87,15 +87,15 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
         $encodingInterceptor = $this->createMock(IEncodingInterceptor::class);
         // Note: The inteceptor will fip the ID and email values around
         $encodingInterceptor->expects($this->at(0))
-            ->method('onDecoding')
+            ->method('onPreDecoding')
             ->with(321, 'int')
             ->willReturn(321);
         $encodingInterceptor->expects($this->at(1))
-            ->method('onDecoding')
+            ->method('onPreDecoding')
             ->with('bar@foo.com', 'string')
             ->willReturn('bar@foo.com');
         $encodingInterceptor->expects($this->at(2))
-            ->method('onDecoding')
+            ->method('onPreDecoding')
             ->with(['id' => 321, 'email' => 'bar@foo.com'], User::class)
             ->willReturn(['id' => 123, 'email' => 'foo@bar.com']);
         $serializer = new JsonSerializer($this->contracts, [$encodingInterceptor]);
@@ -160,15 +160,15 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
         /** @var IEncodingInterceptor $encodingInterceptor */
         $encodingInterceptor = $this->createMock(IEncodingInterceptor::class);
         $encodingInterceptor->expects($this->at(0))
-            ->method('onEncoding')
+            ->method('onPostEncoding')
             ->with(123, 'int')
             ->willReturn(123);
         $encodingInterceptor->expects($this->at(1))
-            ->method('onEncoding')
+            ->method('onPostEncoding')
             ->with('foo@bar.com', 'string')
             ->willReturn('foo@bar.com');
         $encodingInterceptor->expects($this->at(2))
-            ->method('onEncoding')
+            ->method('onPostEncoding')
             ->with(['id' => 123, 'email' => 'foo@bar.com'], User::class)
             ->willReturn(['_id_' => 123, '_email_' => 'foo@bar.com']);
         $serializer = new JsonSerializer($this->contracts, [$encodingInterceptor]);

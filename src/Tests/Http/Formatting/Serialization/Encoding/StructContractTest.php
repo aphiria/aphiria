@@ -10,8 +10,8 @@
 
 namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
-use Opulence\Net\Http\Formatting\Serialization\IEncodingInterceptor;
-use Opulence\Net\Http\Formatting\Serialization\StructContract;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\IEncodingInterceptor;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\StructContract;
 
 /**
  * Tests the struct contract
@@ -39,7 +39,7 @@ class StructContractTest extends \PHPUnit\Framework\TestCase
         /** @var IEncodingInterceptor $interceptor */
         $interceptor = $this->createMock(IEncodingInterceptor::class);
         $interceptor->expects($this->at(0))
-            ->method('onDecoding')
+            ->method('onPreDecoding')
             ->with(123, 'int')
             ->willReturn(456);
         $this->assertSame(456, $this->contract->decode(123, [$interceptor]));
@@ -55,7 +55,7 @@ class StructContractTest extends \PHPUnit\Framework\TestCase
         /** @var IEncodingInterceptor $interceptor */
         $interceptor = $this->createMock(IEncodingInterceptor::class);
         $interceptor->expects($this->at(0))
-            ->method('onEncoding')
+            ->method('onPostEncoding')
             ->with(123, 'int')
             ->willReturn(456);
         $this->assertSame(456, $this->contract->encode(123, [$interceptor]));

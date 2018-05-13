@@ -10,7 +10,7 @@
 
 namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
-use Opulence\Net\Http\Formatting\Serialization\SnakeCasePropertyNameFormatter;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\SnakeCasePropertyNameFormatter;
 
 /**
  * Tests the snake_case property name formatter
@@ -27,25 +27,25 @@ class SnakeCasePropertyNameFormatterTest extends \PHPUnit\Framework\TestCase
 
     public function testDecodingAnyValueJustReturnsValue(): void
     {
-        $this->assertEquals('foo', $this->formatter->onDecoding('foo', 'string'));
-        $this->assertEquals(['foo-bar' => 'baz'], $this->formatter->onDecoding(['foo-bar' => 'baz'], 'array'));
+        $this->assertEquals('foo', $this->formatter->onPreDecoding('foo', 'string'));
+        $this->assertEquals(['foo-bar' => 'baz'], $this->formatter->onPreDecoding(['foo-bar' => 'baz'], 'array'));
     }
 
     public function testEncodingArrayWithNumericKeysLeavesNumericKeys(): void
     {
         $expectedEncodedValue = ['foo', 'bar'];
-        $this->assertEquals($expectedEncodedValue, $this->formatter->onEncoding(['foo', 'bar'], 'array'));
+        $this->assertEquals($expectedEncodedValue, $this->formatter->onPostEncoding(['foo', 'bar'], 'array'));
     }
 
     public function testEncodingAssociativeArrayConvertsKeysToSnakeCase(): void
     {
         $value = ['foo_bar' => 'foo', 'bar-baz' => 'bar', 'baz blah' => 'baz', 'blahDave' => 'blah'];
         $expectedEncodedValue = ['foo_bar' => 'foo', 'bar_baz' => 'bar', 'baz_blah' => 'baz', 'blah_dave' => 'blah'];
-        $this->assertEquals($expectedEncodedValue, $this->formatter->onEncoding($value, 'array'));
+        $this->assertEquals($expectedEncodedValue, $this->formatter->onPostEncoding($value, 'array'));
     }
 
     public function testEncodingNonArraysReturnsValue(): void
     {
-        $this->assertEquals('foo', $this->formatter->onEncoding('foo', 'string'));
+        $this->assertEquals('foo', $this->formatter->onPostEncoding('foo', 'string'));
     }
 }

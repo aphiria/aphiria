@@ -10,6 +10,9 @@
 
 namespace Opulence\Net\Http\Formatting\Serialization;
 
+use Opulence\Net\Http\Formatting\Serialization\Encoding\ContractRegistry;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\EncodingException;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\IEncodingInterceptor;
 use OutOfBoundsException;
 
 /**
@@ -36,7 +39,7 @@ abstract class Serializer implements ISerializer
      * Decodes a value
      *
      * @param mixed $value The value to decode
-     * @param string $type The type of value to deserialize to
+     * @param string $type The type of value to decode to
      * @param bool $isArrayOfType Whether or not to treat the value as an array of values
      * @return mixed The decoded value
      * @throws OutOfBoundsException Thrown if no contract exists for the input value

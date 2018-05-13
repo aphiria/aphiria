@@ -8,10 +8,11 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Formatting\Serialization;
+namespace Opulence\Net\Http\Formatting\Serialization\Encoding;
 
 use Closure;
 use DateTime;
+use Opulence\Net\Http\Formatting\Serialization\TypeResolver;
 use OutOfBoundsException;
 
 /**

@@ -11,10 +11,10 @@
 namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
 use DateTime;
-use Opulence\Net\Http\Formatting\Serialization\ContractRegistry;
-use Opulence\Net\Http\Formatting\Serialization\ObjectContract;
-use Opulence\Net\Http\Formatting\Serialization\Property;
-use Opulence\Net\Http\Formatting\Serialization\StructContract;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\ContractRegistry;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\ObjectContract;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\Property;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\StructContract;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\User;
 use OutOfBoundsException;
 

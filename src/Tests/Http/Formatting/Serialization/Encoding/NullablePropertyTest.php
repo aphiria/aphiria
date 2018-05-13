@@ -10,7 +10,7 @@
 
 namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
-use Opulence\Net\Http\Formatting\Serialization\NullableProperty;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\NullableProperty;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
 
 /**

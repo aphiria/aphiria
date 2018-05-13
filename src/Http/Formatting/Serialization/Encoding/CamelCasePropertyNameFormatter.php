@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Formatting\Serialization;
+namespace Opulence\Net\Http\Formatting\Serialization\Encoding;
 
 /**
  * Defines the camelCase property name formatter interceptor
@@ -18,16 +18,7 @@ class CamelCasePropertyNameFormatter implements IEncodingInterceptor
     /**
      * @inheritdoc
      */
-    public function onDecoding($decodedValue, string $type)
-    {
-        // We don't handle decoding
-        return $decodedValue;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function onEncoding($encodedValue, string $type)
+    public function onPostEncoding($encodedValue, string $type)
     {
         if (!\is_array($encodedValue)) {
             return $encodedValue;
@@ -40,6 +31,15 @@ class CamelCasePropertyNameFormatter implements IEncodingInterceptor
         }
 
         return $camelCasedValue;
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function onPreDecoding($value, string $type)
+    {
+        // We don't handle decoding
+        return $value;
     }
 
     /**

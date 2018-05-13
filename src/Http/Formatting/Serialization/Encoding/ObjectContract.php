@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Formatting\Serialization;
+namespace Opulence\Net\Http\Formatting\Serialization\Encoding;
 
 use Closure;
 use InvalidArgumentException;
@@ -73,7 +73,7 @@ class ObjectContract extends Contract
         }
 
         foreach ($encodingInterceptors as $encodingInterceptor) {
-            $convertedObjectHash = $encodingInterceptor->onDecoding($convertedObjectHash, $this->type);
+            $convertedObjectHash = $encodingInterceptor->onPreDecoding($convertedObjectHash, $this->type);
         }
 
         return ($this->valueFactory)($convertedObjectHash);
@@ -96,7 +96,7 @@ class ObjectContract extends Contract
         }
 
         foreach ($encodingInterceptors as $encodingInterceptor) {
-            $objectHash = $encodingInterceptor->onEncoding($objectHash, $this->type);
+            $objectHash = $encodingInterceptor->onPostEncoding($objectHash, $this->type);
         }
 
         return $objectHash;

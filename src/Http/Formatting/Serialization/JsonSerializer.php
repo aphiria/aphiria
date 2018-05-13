@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Http\Formatting\Serialization;
 
+use Opulence\Net\Http\Formatting\Serialization\Encoding\EncodingException;
 use OutOfBoundsException;
 
 /**

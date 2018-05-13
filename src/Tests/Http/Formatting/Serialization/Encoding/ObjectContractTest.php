@@ -11,12 +11,12 @@
 namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
 use DateTime;
-use Opulence\Net\Http\Formatting\Serialization\ArrayProperty;
-use Opulence\Net\Http\Formatting\Serialization\ContractRegistry;
-use Opulence\Net\Http\Formatting\Serialization\EncodingException;
-use Opulence\Net\Http\Formatting\Serialization\IEncodingInterceptor;
-use Opulence\Net\Http\Formatting\Serialization\NullableProperty;
-use Opulence\Net\Http\Formatting\Serialization\Property;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\ArrayProperty;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\ContractRegistry;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\EncodingException;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\IEncodingInterceptor;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\NullableProperty;
+use Opulence\Net\Http\Formatting\Serialization\Encoding\Property;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\Account;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\Post;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\Subscription;
@@ -172,27 +172,27 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
         /** @var IEncodingInterceptor $interceptor */
         $interceptor = $this->createMock(IEncodingInterceptor::class);
         $interceptor->expects($this->at(0))
-            ->method('onDecoding')
+            ->method('onPreDecoding')
             ->with(123, 'int')
             ->willReturn(123);
         $interceptor->expects($this->at(1))
-            ->method('onDecoding')
+            ->method('onPreDecoding')
             ->with(456, 'int')
             ->willReturn(456);
         $interceptor->expects($this->at(2))
-            ->method('onDecoding')
+            ->method('onPreDecoding')
             ->with('foo@bar.com', 'string')
             ->willReturn('foo@bar.com');
         $interceptor->expects($this->at(3))
-            ->method('onDecoding')
+            ->method('onPreDecoding')
             ->with($encodedPost['author'], User::class)
             ->willReturn($encodedPost['author']);
         $interceptor->expects($this->at(4))
-            ->method('onDecoding')
+            ->method('onPreDecoding')
             ->with($expectedFormattedPublicationDate, DateTime::class)
             ->willReturn($expectedFormattedPublicationDate);
         $interceptor->expects($this->at(5))
-            ->method('onDecoding')
+            ->method('onPreDecoding')
             ->with($expectedDecodedPostHash, Post::class)
             ->willReturn($expectedDecodedPostHash);
         $actualPost = $this->contracts->getContractForType(Post::class)->decode($encodedPost, [$interceptor]);
@@ -294,27 +294,27 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
         /** @var IEncodingInterceptor $interceptor */
         $interceptor = $this->createMock(IEncodingInterceptor::class);
         $interceptor->expects($this->at(0))
-            ->method('onEncoding')
+            ->method('onPostEncoding')
             ->with(123, 'int')
             ->willReturn(123);
         $interceptor->expects($this->at(1))
-            ->method('onEncoding')
+            ->method('onPostEncoding')
             ->with(456, 'int')
             ->willReturn(456);
         $interceptor->expects($this->at(2))
-            ->method('onEncoding')
+            ->method('onPostEncoding')
             ->with('foo@bar.com', 'string')
             ->willReturn('foo@bar.com');
         $interceptor->expects($this->at(3))
-            ->method('onEncoding')
+            ->method('onPostEncoding')
             ->with($expectedEncodedAuthorHash, User::class)
             ->willReturn($expectedEncodedAuthorHash);
         $interceptor->expects($this->at(4))
-            ->method('onEncoding')
+            ->method('onPostEncoding')
             ->with($expectedEncodedPostHash['publicationDate'], DateTime::class)
             ->willReturn($expectedEncodedPostHash['publicationDate']);
         $interceptor->expects($this->at(5))
-            ->method('onEncoding')
+            ->method('onPostEncoding')
             ->with($expectedEncodedPostHash, Post::class)
             ->willReturn($expectedEncodedPostHash);
         $encodedPost = $this->contracts->getContractForType(Post::class)->encode($post, [$interceptor]);
