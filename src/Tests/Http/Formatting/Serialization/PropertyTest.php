@@ -43,8 +43,27 @@ class PropertyTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(123, $this->property->getValue(new User(123, 'foo@bar.com')));
     }
 
-    public function testIsNullableIsAlwaysFalse(): void
+    public function testIsArrayOfTypeUsesValueSetInConstructor(): void
     {
-        $this->assertFalse($this->property->isNullable());
+        $arrayProperty = new Property('id', 'int', function (User $user) {
+            return $user->getId();
+        }, true);
+        $nonArrayProperty = new Property('id', 'int', function (User $user) {
+            return $user->getId();
+        });
+        $this->assertTrue($arrayProperty->isArrayOfType());
+        $this->assertFalse($nonArrayProperty->isArrayOfType());
+    }
+
+    public function testIsNullableUsesValueSetInConstructor(): void
+    {
+        $nullableProperty = new Property('id', 'int', function (User $user) {
+            return $user->getId();
+        }, false, true);
+        $nonNullableProperty = new Property('id', 'int', function (User $user) {
+            return $user->getId();
+        }, false);
+        $this->assertTrue($nullableProperty->isNullable());
+        $this->assertFalse($nonNullableProperty->isNullable());
     }
 }

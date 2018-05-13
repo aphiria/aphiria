@@ -106,7 +106,13 @@ $contracts->registerObjectContract(
 );
 ```
 
-Now, you can (de)serialize a `User` object.  Here's the cool part - you don't have to worry about how to deserialize or decode any of the values in `$properties` - Opulence does it for you.  So, you can be sure that `$properties['registrationDate']` will be an instance of `DateTime`.
+Now, you can (de)serialize a `User` object.  Here's the cool part - you don't have to worry about how to (de)serialize any property values inside your contracts - Opulence does it for you.  In the example above, you can always be sure that `$properties['registrationDate']` will be an instance of `DateTime`.
+
+<h5 id="array-properties">Array Properties</h5>
+
+If a contract property is an array of values rather than a single value, use `ArrayProperty` instead of `Property`.
+
+> **Note:** Opulence only supports arrays that contain a single type of value.  In other words, you cannot mix and match different types in a single array.
 
 <h5 id="nullable-properties">Nullable Properties</h5>
 

@@ -13,15 +13,15 @@ namespace Opulence\Net\Http\Formatting\Serialization;
 use Closure;
 
 /**
- * Defines a nullable property
+ * Defines an array property
  */
-class NullableProperty extends Property
+class ArrayProperty extends Property
 {
     /**
      * @inheritdoc
      */
-    public function __construct(string $name, string $type, Closure $getter, bool $isArrayOfType = false)
+    public function __construct(string $name, string $type, Closure $getter, bool $isNullable = false)
     {
-        parent::__construct($name, $type, $getter, $isArrayOfType, true);
+        parent::__construct($name, $type, $getter, true, $isNullable);
     }
 }
