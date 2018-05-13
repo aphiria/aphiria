@@ -15,7 +15,7 @@
 
 <h2 id="introduction">Introduction</h2>
 
-By default, PHP does not have any way to serialize and deserialize POPO objects.  This library gives that functionality with an easy-to-use, flexible syntax.  Once your [contracts](#contracts) are set up, serializing an object is as easy as:
+By default, PHP does not have any way to serialize and deserialize POPO objects.  Opulence provides this functionality without bleeding into your code.  The best part is that you don't have to worry about how to (de)serialize nested objects - Opulence does it for you.  Once your [contracts](#contracts) are set up, serializing an object is as easy as:
 
 ```php
 $user = new User(123, 'foo@bar.com');
@@ -28,8 +28,6 @@ Similarly, deserializing an object is simple:
 $serializedUser = '{"id":123,"email":"foo@bar.com"}';
 $user = $jsonSerializer->deserialize($serializedUser, User::class);
 ```
-
-Additionally, Opulence can also automatically serialize and deserialize nested objects with no extra work on your part.
 
 <h2 id="serializers">Serializers</h2>
 
@@ -118,7 +116,7 @@ $contracts->registerDictionaryObjectContract(
 );
 ```
 
-Now, you can serialize and deserialize and `User` object.  Here's the cool part - you don't have to worry about how to deserialize or decode any of the values in `$properties` - Opulence does it for you.  So, you can be sure that `$properties['registrationDate']` will be an instance of `DateTime`.
+Now, you can (de)serialize a `User` object.  Here's the cool part - you don't have to worry about how to deserialize or decode any of the values in `$properties` - Opulence does it for you.  So, you can be sure that `$properties['registrationDate']` will be an instance of `DateTime`.
 
 <h4 id="value-object-contracts">Value Object Contracts</h4>
 
@@ -150,7 +148,7 @@ The following value types have default contracts built into `ContractRegistry`:
 
 <h4 id="datetime-formatting">DateTime Formatting</h4>
 
-By default, Opulence uses <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601</a> when serializing/deserializing `DateTime` objects, but you can customize the format:
+By default, Opulence uses <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601</a> when (de)serializing `DateTime` objects, but you can customize the format:
 
 ```php
 $contractRegistry = new ContractRegistry('F j, Y');
@@ -166,7 +164,8 @@ Occasionally, you might want to do some custom logic when encoding and decoding 
 You can use an interceptor in your serializer by passing it as a parameter:
 
 ```php
-$jsonSerializer = new JsonSerializer($contracts, [new MyCustomInterceptor()]);
+// Set the JSON serializer to user camelCase property names:
+$jsonSerializer = new JsonSerializer($contracts, [new CamelCasePropertyNameFormatter()]);
 ```
 
 To create your own interceptor, simply implement `IEncodingInterceptor` and pass it into the serializer.
