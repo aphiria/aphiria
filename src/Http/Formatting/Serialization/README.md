@@ -114,7 +114,7 @@ Now, you can (de)serialize a `User` object.  Here's the cool part - you don't ha
 
 <h5 id="nullable-properties">Nullable Properties</h5>
 
-If any of your contract properties are nullable, you use `NullableProperty` instead of `Property`.
+If any of your contract properties are nullable, use `NullableProperty` instead of `Property`.
 
 <h4 id="struct-contracts">Struct Contracts</h4>
 
