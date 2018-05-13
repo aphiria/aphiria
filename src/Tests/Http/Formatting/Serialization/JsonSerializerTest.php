@@ -63,7 +63,15 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
         /** @var IEncodingInterceptor $encodingInterceptor */
         $encodingInterceptor = $this->createMock(IEncodingInterceptor::class);
         // Note: The inteceptor will fip the ID and email values around
-        $encodingInterceptor->expects($this->once())
+        $encodingInterceptor->expects($this->at(0))
+            ->method('onDecoding')
+            ->with(321, 'int')
+            ->willReturn(321);
+        $encodingInterceptor->expects($this->at(1))
+            ->method('onDecoding')
+            ->with('bar@foo.com', 'string')
+            ->willReturn('bar@foo.com');
+        $encodingInterceptor->expects($this->at(2))
             ->method('onDecoding')
             ->with(['id' => 321, 'email' => 'bar@foo.com'], User::class)
             ->willReturn(['id' => 123, 'email' => 'foo@bar.com']);
@@ -76,7 +84,15 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
         $user = new User(123, 'foo@bar.com');
         /** @var IEncodingInterceptor $encodingInterceptor */
         $encodingInterceptor = $this->createMock(IEncodingInterceptor::class);
-        $encodingInterceptor->expects($this->once())
+        $encodingInterceptor->expects($this->at(0))
+            ->method('onEncoding')
+            ->with(123, 'int')
+            ->willReturn(123);
+        $encodingInterceptor->expects($this->at(1))
+            ->method('onEncoding')
+            ->with('foo@bar.com', 'string')
+            ->willReturn('foo@bar.com');
+        $encodingInterceptor->expects($this->at(2))
             ->method('onEncoding')
             ->with(['id' => 123, 'email' => 'foo@bar.com'], User::class)
             ->willReturn(['_id_' => 123, '_email_' => 'foo@bar.com']);

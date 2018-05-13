@@ -51,7 +51,7 @@ class ObjectContract extends Contract
     /**
      * @inheritdoc
      */
-    public function decode($objectHash, array $encodingInterceptors = []): ObjectContract
+    public function decode($objectHash, array $encodingInterceptors = []): object
     {
         if (!\is_array($objectHash)) {
             throw new InvalidArgumentException('Value must be an associative array of properties');
