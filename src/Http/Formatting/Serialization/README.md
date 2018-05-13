@@ -37,15 +37,11 @@ Opulence provides the following serializers:
 
 Under the hood, serializing works like this:
 
-1. Your value is converted to an encoded value via a "[contract](#contracts)"
-2. [Interceptors](#encoding-interceptors) are run on your encoded value
-3. The encoded value is serialized by your serializer
+Value -> [contract](#contracts) -> encoded value ->  [Interceptors](#encoding-interceptors) -> serialized value
 
 Deserializing works in the reverse order:
 
-1. Your serialized value is decoded by a "[contract](#contracts)"
-2. [Interceptors](#encoding-interceptors) are run on your decoded value
-3. An instance of your value (eg an object) is created from the decoded value
+Serialized value -> [contract](#contracts) -> decoded value -> [Interceptors](#encoding-interceptors) -> deserialized value
 
 <h4 id="json-serializer">JSON Serializer</h4>
 
