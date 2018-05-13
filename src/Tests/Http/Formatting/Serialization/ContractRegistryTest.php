@@ -12,9 +12,9 @@ namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
 use DateTime;
 use Opulence\Net\Http\Formatting\Serialization\ContractRegistry;
-use Opulence\Net\Http\Formatting\Serialization\DictionaryObjectContract;
+use Opulence\Net\Http\Formatting\Serialization\ObjectContract;
 use Opulence\Net\Http\Formatting\Serialization\Property;
-use Opulence\Net\Http\Formatting\Serialization\ValueObjectContract;
+use Opulence\Net\Http\Formatting\Serialization\StructContract;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\User;
 
 /**
@@ -32,7 +32,7 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
 
     public function testGettingContractByObjectValueGetsContractRegisteredForItsType(): void
     {
-        $expectedContract = new ValueObjectContract(
+        $expectedContract = new StructContract(
             DateTime::class,
             function ($value) {
                 return DateTime::createFromFormat(DateTime::ISO8601, $value);
@@ -47,7 +47,7 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
 
     public function testGettingContractByScalarValueGetsContractRegisteredForItsType(): void
     {
-        $expectedContract = new ValueObjectContract(
+        $expectedContract = new StructContract(
             'int',
             function ($value) {
                 return (int)$value;
@@ -62,7 +62,7 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
 
     public function testGettingContractByTypeGetsContractWithThatType(): void
     {
-        $expectedContract = new ValueObjectContract(
+        $expectedContract = new StructContract(
             'int',
             function ($value) {
                 return (int)$value;
@@ -76,9 +76,9 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expectedContract, $this->contracts->getContractForType('integer'));
     }
 
-    public function testRegisteringDictionaryObjectContractCreatesAnInstanceOfOne(): void
+    public function testRegisteringObjectContractCreatesAnInstanceOfOne(): void
     {
-        $expectedContract = new DictionaryObjectContract(
+        $expectedContract = new ObjectContract(
             User::class,
             $this->contracts,
             function (array $hash) {
@@ -91,7 +91,7 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
                 return $user->getEmail();
             })
         );
-        $this->contracts->registerDictionaryObjectContract(
+        $this->contracts->registerObjectContract(
             User::class,
             function (array $hash) {
                 return new User($hash['id'], $hash['email']);
@@ -106,9 +106,9 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedContract, $this->contracts->getContractForType(User::class));
     }
 
-    public function testRegisteringValueObjectContractCreatesAnInstanceOfOne(): void
+    public function testRegisteringStructContractCreatesAnInstanceOfOne(): void
     {
-        $expectedContract = new ValueObjectContract(
+        $expectedContract = new StructContract(
             'int',
             function ($value) {
                 return (int)$value;
@@ -117,7 +117,7 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
                 return $value;
             }
         );
-        $this->contracts->registerValueObjectContract(
+        $this->contracts->registerStructContract(
             'int',
             function ($value) {
                 return (int)$value;

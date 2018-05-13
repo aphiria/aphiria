@@ -60,10 +60,10 @@ class Property
     /**
      * Gets the value of the property given an input object
      *
-     * @param object $object The object to get the property value from
+     * @param ObjectContract $object The object to get the property value from
      * @return mixed The value of the property
      */
-    public function getValue(object $object)
+    public function getValue(ObjectContract $object)
     {
         return ($this->getter)($object);
     }

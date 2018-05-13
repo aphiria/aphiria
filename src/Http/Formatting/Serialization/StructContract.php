@@ -13,16 +13,16 @@ namespace Opulence\Net\Http\Formatting\Serialization;
 use Closure;
 
 /**
- * Defines a value object contract
+ * Defines a struct contract
  */
-class ValueObjectContract extends Contract
+class StructContract extends Contract
 {
-    /** @var Closure The factory that encodes an instance of an object this contract represents */
+    /** @var Closure The factory that encodes the value this contract represents */
     protected $encodingFactory;
 
     /**
      * @inheritdoc
-     * @param Closure $encodingFactory The factory that encodes an instance of an object this contract represents
+     * @param Closure $encodingFactory The factory that the value this contract represents
      */
     public function __construct(string $type, Closure $valueFactory, Closure $encodingFactory)
     {

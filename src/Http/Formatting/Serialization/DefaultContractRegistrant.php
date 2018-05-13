@@ -49,7 +49,7 @@ class DefaultContractRegistrant
      */
     protected function registerBoolContract(ContractRegistry $contracts): void
     {
-        $contracts->registerValueObjectContract(
+        $contracts->registerStructContract(
             'bool',
             function ($value) {
                 return (bool)$value;
@@ -67,7 +67,7 @@ class DefaultContractRegistrant
      */
     protected function registerDateTimeContract(ContractRegistry $contracts): void
     {
-        $contracts->registerValueObjectContract(
+        $contracts->registerStructContract(
             DateTime::class,
             function ($value) {
                 return DateTime::createFromFormat($this->dateTimeFormat, $value);
@@ -85,7 +85,7 @@ class DefaultContractRegistrant
      */
     protected function registerFloatContract(ContractRegistry $contracts): void
     {
-        $contracts->registerValueObjectContract(
+        $contracts->registerStructContract(
             'float',
             function ($value) {
                 return (float)$value;
@@ -103,7 +103,7 @@ class DefaultContractRegistrant
      */
     protected function registerIntContract(ContractRegistry $contracts): void
     {
-        $contracts->registerValueObjectContract(
+        $contracts->registerStructContract(
             'int',
             function ($value) {
                 return (int)$value;
@@ -121,7 +121,7 @@ class DefaultContractRegistrant
      */
     protected function registerStringContract(ContractRegistry $contracts): void
     {
-        $contracts->registerValueObjectContract(
+        $contracts->registerStructContract(
             'string',
             function ($value) {
                 return (string)$value;

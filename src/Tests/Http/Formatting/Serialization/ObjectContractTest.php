@@ -19,9 +19,9 @@ use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\Post;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\User;
 
 /**
- * Tests the dictionary object contract
+ * Tests the object contract
  */
-class DictionaryObjectContractTest extends \PHPUnit\Framework\TestCase
+class ObjectContractTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ContractRegistry The contract registry to use in tests */
     private $contracts;
@@ -30,7 +30,7 @@ class DictionaryObjectContractTest extends \PHPUnit\Framework\TestCase
     {
         $this->contracts = new ContractRegistry();
         (new DefaultContractRegistrant)->registerContracts($this->contracts);
-        $this->contracts->registerDictionaryObjectContract(
+        $this->contracts->registerObjectContract(
             User::class,
             function ($hash) {
                 return new User($hash['id'], $hash['email']);
@@ -42,7 +42,7 @@ class DictionaryObjectContractTest extends \PHPUnit\Framework\TestCase
                 return $user->getEmail();
             })
         );
-        $this->contracts->registerDictionaryObjectContract(
+        $this->contracts->registerObjectContract(
             Post::class,
             function ($hash) {
                 return new Post($hash['id'], $hash['author'], $hash['publicationDate']);

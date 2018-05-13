@@ -7,8 +7,8 @@
 2. [Serializers](#serializers)
     1. [JSON Serializer](#json-serializer)
 3. [Contracts](#contracts)
-    1. [Dictionary Object Contracts](#dictionary-object-contracts)
-    2. [Value Object Contracts](#value-object-contracts)
+    1. [Object Contracts](#object-contracts)
+    2. [Struct Contracts](#struct-contracts)
     3. [Default Contracts](#default-contracts)
     4. [DateTime Formatting](#datetime-formatting)
 4. [Encoding Interceptors](#encoding-interceptors)
@@ -62,9 +62,9 @@ $jsonSerializer = new JsonSerializer($contracts);
 
 <h2 id="contracts">Contracts</h2>
 
-Contracts are a way to define the properties that make up your POPOs in a way the serializer can understand.  There are two types of contracts:  [`DictionaryObjectContract`](#dictionary-object-contracts) and [`ValueObjectContract`](#value-object-contracts).
+Contracts are a way to define the properties that make up your POPOs in a way the serializer can understand.  There are two types of contracts:  [`ObjectContract`](#object-contracts) and [`StructContract`](#struct-contracts).
 
-<h4 id="dictionary-object-contracts">Dictionary Object Contracts</h4>
+<h4 id="object-contracts">Object Contracts</h4>
 
 These contracts are the primary way of defining most objects.  They take in a type, a constructor for your object, and a list of properties that make up the object.  Let's say your `User` class looks like this:
 
@@ -95,7 +95,7 @@ class User
 You can set up your contract for the `User` class like so:
 
 ```php
-$contracts->registerDictionaryObjectContract(
+$contracts->registerObjectContract(
     User::class,
     // Define how to construct User from the properties defined below
     function ($properties) {
@@ -112,12 +112,12 @@ $contracts->registerDictionaryObjectContract(
 
 Now, you can (de)serialize a `User` object.  Here's the cool part - you don't have to worry about how to deserialize or decode any of the values in `$properties` - Opulence does it for you.  So, you can be sure that `$properties['registrationDate']` will be an instance of `DateTime`.
 
-<h4 id="value-object-contracts">Value Object Contracts</h4>
+<h4 id="struct-contracts">Struct Contracts</h4>
 
-Some objects or values, such as `DateTime` and `string`, are <a href="https://en.wikipedia.org/wiki/Value_object" target="_blank">value objects</a>.  Opulence provides [default contracts](#default-contracts) for the most common value object types, but you can register your own contracts like so:
+Some values, such as `DateTime` and `string`, are better thought of as structs.  Opulence provides [default contracts](#default-contracts) for the most common struct types, but you can register your own contracts like so:
 
 ```php
-$contracts->registerValueObjectContract(
+$contracts->registerStructContract(
     DateTime::class,
     // Define how to construct DateTime
     function ($value) {
@@ -132,7 +132,7 @@ $contracts->registerValueObjectContract(
 
 <h4 id="default-contracts">Default Contracts</h4>
 
-The following value types have default contracts built into `ContractRegistry`:
+The following structs have default contracts built into `ContractRegistry`:
 
 * `bool`
 * `DateTime`

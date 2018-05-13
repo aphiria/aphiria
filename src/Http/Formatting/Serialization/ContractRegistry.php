@@ -85,30 +85,30 @@ class ContractRegistry
     }
 
     /**
-     * Registers a dictionary object contract
+     * Registers an object contract
      *
      * @param string $type The type of object this contract represents
      * @param Closure $objectFactory The factory that instantiates an object from a value
      * @param Property[] $properties,... The list of properties that make up the object
      */
-    public function registerDictionaryObjectContract(
+    public function registerObjectContract(
         string $type,
         Closure $objectFactory,
         Property ...$properties
     ): void {
-        $this->registerContract(new DictionaryObjectContract($type, $this, $objectFactory, ...$properties));
+        $this->registerContract(new ObjectContract($type, $this, $objectFactory, ...$properties));
     }
 
     /**
-     * Registers a value object contract
+     * Registers a struct contract
      *
      * @param string $type The type of object this contract represents
      * @param Closure $objectFactory The factory that instantiates an object from a value
      * @param Closure $encodingFactory The factory that encodes an instance of an object this contract represents
      */
-    public function registerValueObjectContract(string $type, Closure $objectFactory, Closure $encodingFactory): void
+    public function registerStructContract(string $type, Closure $objectFactory, Closure $encodingFactory): void
     {
-        $this->registerContract(new ValueObjectContract($type, $objectFactory, $encodingFactory));
+        $this->registerContract(new StructContract($type, $objectFactory, $encodingFactory));
     }
 
     /**

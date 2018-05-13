@@ -30,7 +30,7 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
     public function setUp(): void
     {
         $this->contracts = new ContractRegistry();
-        $this->contracts->registerDictionaryObjectContract(
+        $this->contracts->registerObjectContract(
             User::class,
             function ($hash) {
                 return new User($hash['id'], $hash['email']);

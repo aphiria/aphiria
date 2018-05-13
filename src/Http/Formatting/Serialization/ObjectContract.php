@@ -14,9 +14,9 @@ use Closure;
 use InvalidArgumentException;
 
 /**
- * Defines a dictionary object contract
+ * Defines an object contract
  */
-class DictionaryObjectContract extends Contract
+class ObjectContract extends Contract
 {
     /** @var ContractRegistry The contract registry */
     private $contracts;
@@ -51,7 +51,7 @@ class DictionaryObjectContract extends Contract
     /**
      * @inheritdoc
      */
-    public function decode($objectHash, array $encodingInterceptors = []): object
+    public function decode($objectHash, array $encodingInterceptors = []): ObjectContract
     {
         if (!\is_array($objectHash)) {
             throw new InvalidArgumentException('Value must be an associative array of properties');

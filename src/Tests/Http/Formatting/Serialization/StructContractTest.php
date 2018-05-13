@@ -11,19 +11,19 @@
 namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
 use Opulence\Net\Http\Formatting\Serialization\IEncodingInterceptor;
-use Opulence\Net\Http\Formatting\Serialization\ValueObjectContract;
+use Opulence\Net\Http\Formatting\Serialization\StructContract;
 
 /**
- * Tests the value object contract
+ * Tests the struct contract
  */
-class ValueObjectContractTest extends \PHPUnit\Framework\TestCase
+class StructContractTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ValueObjectContract The contract to use in tests */
+    /** @var StructContract The contract to use in tests */
     private $contract;
 
     public function setUp(): void
     {
-        $this->contract = new ValueObjectContract(
+        $this->contract = new StructContract(
             'int',
             function ($value) {
                 return (int)$value;
