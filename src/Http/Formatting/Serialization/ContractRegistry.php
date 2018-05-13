@@ -19,7 +19,7 @@ use OutOfBoundsException;
  */
 class ContractRegistry
 {
-    /** @var Contract[] The mapping of types to contracts */
+    /** @var IContract[] The mapping of types to contracts */
     private $contractsByType = [];
 
     /**
@@ -34,10 +34,10 @@ class ContractRegistry
      * Gets the contract for a type
      *
      * @param string $type The type whose contract we want
-     * @return Contract The contract for the input type
+     * @return IContract The contract for the input type
      * @throws OutOfBoundsException Thrown if the type does not have a contract
      */
-    public function getContractForType(string $type): Contract
+    public function getContractForType(string $type): IContract
     {
         $normalizedType = $this->normalizeType($type);
 
@@ -53,10 +53,10 @@ class ContractRegistry
      * Gets the contract for a value
      *
      * @param mixed $value The value whose contract we want
-     * @return Contract The contract for the input value
+     * @return IContract The contract for the input value
      * @throws OutOfBoundsException Thrown if the value does not have a contract
      */
-    public function getContractForValue($value): Contract
+    public function getContractForValue($value): IContract
     {
         // Note: The type is normalized in getContractForType()
         return $this->getContractForType(TypeResolver::resolveType($value));
@@ -76,9 +76,9 @@ class ContractRegistry
     /**
      * Registers a contract
      *
-     * @param Contract $contract The contract to register
+     * @param IContract $contract The contract to register
      */
-    public function registerContract(Contract $contract): void
+    public function registerContract(IContract $contract): void
     {
         $normalizedType = $this->normalizeType($contract->getType());
         $this->contractsByType[$normalizedType] = $contract;

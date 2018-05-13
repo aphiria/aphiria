@@ -42,4 +42,9 @@ class PropertyTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals(123, $this->property->getValue(new User(123, 'foo@bar.com')));
     }
+
+    public function testIsNullableIsAlwaysFalse(): void
+    {
+        $this->assertFalse($this->property->isNullable());
+    }
 }

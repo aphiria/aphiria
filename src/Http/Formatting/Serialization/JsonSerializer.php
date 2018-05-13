@@ -41,8 +41,16 @@ class JsonSerializer implements ISerializer
             throw new SerializationException('Failed to deserialize value: ' . json_last_error_msg());
         }
 
-        return $this->contracts->getContractForType($type)
-            ->decode($decodedValue, $this->encodingInterceptors);
+        if ($decodedValue === null) {
+            return null;
+        }
+
+        try {
+            return $this->contracts->getContractForType($type)
+                ->decode($decodedValue, $this->encodingInterceptors);
+        } catch (EncodingException $ex) {
+            throw new SerializationException('Failed to deserialize value', 0, $ex);
+        }
     }
 
     /**
@@ -50,8 +58,12 @@ class JsonSerializer implements ISerializer
      */
     public function serialize($value): string
     {
-        $encodedValue = $this->contracts->getContractForValue($value)
-            ->encode($value, $this->encodingInterceptors);
+        try {
+            $encodedValue = $value === null ? null : $this->contracts->getContractForValue($value)
+                ->encode($value, $this->encodingInterceptors);
+        } catch (EncodingException $ex) {
+            throw new SerializationException('Failed to serialize value', 0, $ex);
+        }
 
         if (!($jsonEncodedContract = json_encode($encodedValue))) {
             throw new SerializationException('Failed to serialize value: ' . json_last_error_msg());

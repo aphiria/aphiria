@@ -11,6 +11,7 @@
 namespace Opulence\Net\Http\Formatting\Serialization;
 
 use DateTime;
+use DateTimeImmutable;
 
 /**
  * Defines the default contracts' registrant
@@ -37,13 +38,14 @@ class DefaultContractRegistrant
     {
         $this->registerBoolContract($contracts);
         $this->registerDateTimeContract($contracts);
+        $this->registerDateTimeImmutableContract($contracts);
         $this->registerFloatContract($contracts);
         $this->registerIntContract($contracts);
         $this->registerStringContract($contracts);
     }
 
     /**
-     * Register an boolean contract
+     * Register a boolean contract
      *
      * @param ContractRegistry $contracts The contract registry to register to
      */
@@ -79,7 +81,25 @@ class DefaultContractRegistrant
     }
 
     /**
-     * Register an float contract
+     * Register a DateTimeImmutable contract
+     *
+     * @param ContractRegistry $contracts The contract registry to register to
+     */
+    protected function registerDateTimeImmutableContract(ContractRegistry $contracts): void
+    {
+        $contracts->registerStructContract(
+            DateTimeImmutable::class,
+            function ($value) {
+                return DateTimeImmutable::createFromFormat($this->dateTimeFormat, $value);
+            },
+            function (DateTimeImmutable $value) {
+                return $value->format($this->dateTimeFormat);
+            }
+        );
+    }
+
+    /**
+     * Register a float contract
      *
      * @param ContractRegistry $contracts The contract registry to register to
      */

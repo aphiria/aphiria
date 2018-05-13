@@ -66,7 +66,13 @@ class ObjectContract extends Contract
             }
 
             // Automatically decode the property value if it also has a contract
-            if ($this->contracts->hasContractForType($property->getType())) {
+            if ($rawPropertyValue === null) {
+                if (!$property->isNullable()) {
+                    throw new EncodingException("Property {$property->getName()} cannot be null");
+                }
+
+                $propertyValue = null;
+            } elseif ($this->contracts->hasContractForType($property->getType())) {
                 $propertyContract = $this->contracts->getContractForType($property->getType());
                 $propertyValue = $propertyContract->decode($rawPropertyValue, $encodingInterceptors);
             } else {
@@ -94,7 +100,11 @@ class ObjectContract extends Contract
             $propertyValue = $property->getValue($object);
 
             // Automatically encode the property value if it also has a contract
-            if ($this->contracts->hasContractForType($property->getType())) {
+            if ($propertyValue === null) {
+                if (!$property->isNullable()) {
+                    throw new EncodingException("Property {$property->getName()} cannot be null");
+                }
+            } elseif ($this->contracts->hasContractForType($property->getType())) {
                 $propertyContract = $this->contracts->getContractForType($property->getType());
                 $propertyValue = $propertyContract->encode($propertyValue, $encodingInterceptors);
             }

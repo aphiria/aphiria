@@ -11,12 +11,11 @@
 namespace Opulence\Net\Http\Formatting\Serialization;
 
 use Closure;
-use InvalidArgumentException;
 
 /**
  * Defines a contract
  */
-abstract class Contract
+abstract class Contract implements IContract
 {
     /** @var string The type of value this contract represents */
     protected $type;
@@ -34,28 +33,7 @@ abstract class Contract
     }
 
     /**
-     * Decodes a value to an instance of the type this contract represents
-     *
-     * @param mixed $value The value to decode
-     * @param IEncodingInterceptor[] $encodingInterceptors The list of encoding interceptors to run through
-     * @return mixed An instance of the type this contract represents
-     * @throws InvalidArgumentException Thrown if the input value is not of the expected type
-     */
-    abstract public function decode($value, array $encodingInterceptors = []);
-
-    /**
-     * Encodes the input value
-     *
-     * @param mixed $value The value to encode
-     * @param IEncodingInterceptor[] $encodingInterceptors The list of encoding interceptors to run through
-     * @return mixed The encoded value
-     */
-    abstract public function encode($value, array $encodingInterceptors = []);
-
-    /**
-     * Gets the type this contract represents
-     *
-     * @return string The type this contract represents
+     * @inheritdoc
      */
     public function getType(): string
     {

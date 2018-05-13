@@ -12,10 +12,12 @@ namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
 use DateTime;
 use Opulence\Net\Http\Formatting\Serialization\ContractRegistry;
-use Opulence\Net\Http\Formatting\Serialization\DefaultContractRegistrant;
+use Opulence\Net\Http\Formatting\Serialization\EncodingException;
 use Opulence\Net\Http\Formatting\Serialization\IEncodingInterceptor;
+use Opulence\Net\Http\Formatting\Serialization\NullableProperty;
 use Opulence\Net\Http\Formatting\Serialization\Property;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\Post;
+use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\Subscription;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\User;
 
 /**
@@ -29,7 +31,6 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
     public function setUp(): void
     {
         $this->contracts = new ContractRegistry();
-        (new DefaultContractRegistrant)->registerContracts($this->contracts);
         $this->contracts->registerObjectContract(
             User::class,
             function ($hash) {
@@ -57,6 +58,18 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
                 return $post->getPublicationDate();
             })
         );
+        $this->contracts->registerObjectContract(
+            Subscription::class,
+            function ($hash) {
+                return new Subscription($hash['id'], $hash['expiration']);
+            },
+            new Property('id', 'int', function (Subscription $subscription) {
+                return $subscription->getId();
+            }),
+            new NullableProperty('expiration', DateTime::class, function (Subscription $subscription) {
+                return $subscription->getExpiration();
+            })
+        );
     }
 
     public function testDecodingAlsoDecodesPropertyValues(): void
@@ -66,6 +79,21 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
         /** @var User $actualUser */
         $actualUser = $this->contracts->getContractForType(User::class)->decode($encodedValue);
         $this->assertTrue(\is_int($actualUser->getId()));
+    }
+
+    public function testDecodingNullablePropertyWithNullValueSetsValueToNull(): void
+    {
+        $encodedSubscription = ['id' => 123, 'expiration' => null];
+        $expectedSubscription = new Subscription(123, null);
+        $actualSubscription = $this->contracts->getContractForType(Subscription::class)->decode($encodedSubscription);
+        $this->assertEquals($expectedSubscription, $actualSubscription);
+    }
+
+    public function testDecodingNullPropertyThatIsNotNullableThrowsException(): void
+    {
+        $this->expectException(EncodingException::class);
+        $encodedUser = ['id' => 123, 'email' => null];
+        $this->contracts->getContractForType(User::class)->decode($encodedUser);
     }
 
     public function testDecodingPropertyNamesUsesFuzzyMatchingWhenNoExactMatchIsFound(): void
@@ -147,11 +175,6 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(new User(123, 'foo@bar.com'), $actualUser);
     }
 
-    public function testGettingTypeReturnsTypeSetInContract(): void
-    {
-        $this->assertEquals(User::class, $this->contracts->getContractForType(User::class)->getType());
-    }
-
     public function testEncodingAlsoEncodesPropertyValues(): void
     {
         $post = new Post(123, new User(456, 'foo@bar.com'), $this->createIso8601DateTime());
@@ -167,6 +190,34 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
             ],
             $encodedPost
         );
+    }
+
+    public function testEncodingNonNullablePropertyWithNullValueThrowsException(): void
+    {
+        $this->expectException(EncodingException::class);
+        // Purposely re-registering and not registering a property as nullable
+        $contracts = new ContractRegistry();
+        $contracts->registerObjectContract(
+            Subscription::class,
+            function ($hash) {
+                return new Subscription($hash['id'], $hash['expiration']);
+            },
+            new Property('id', 'int', function (Subscription $subscription) {
+                return $subscription->getId();
+            }),
+            new Property('expiration', DateTime::class, function (Subscription $subscription) {
+                return $subscription->getExpiration();
+            })
+        );
+        $contracts->getContractForType(Subscription::class)->encode(new Subscription(123, null));
+    }
+
+    public function testEncodingNullablePropertyWithNullValueEncodesValueToNull(): void
+    {
+        $subscription = new Subscription(123, null);
+        $expectedEncodedSubscription = ['id' => 123, 'expiration' => null];
+        $actualEncodedSubscription = $this->contracts->getContractForType(Subscription::class)->encode($subscription);
+        $this->assertEquals($expectedEncodedSubscription, $actualEncodedSubscription);
     }
 
     public function testEnccodingWithInterceptorsCallsInterceptorOnEachPropertyValue(): void
@@ -216,6 +267,11 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
             ],
             $encodedPost
         );
+    }
+
+    public function testGettingTypeReturnsTypeSetInContract(): void
+    {
+        $this->assertEquals(User::class, $this->contracts->getContractForType(User::class)->getType());
     }
 
 

@@ -11,6 +11,8 @@
 namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
 use Opulence\Net\Http\Formatting\Serialization\ContractRegistry;
+use Opulence\Net\Http\Formatting\Serialization\EncodingException;
+use Opulence\Net\Http\Formatting\Serialization\IContract;
 use Opulence\Net\Http\Formatting\Serialization\IEncodingInterceptor;
 use Opulence\Net\Http\Formatting\Serialization\JsonSerializer;
 use Opulence\Net\Http\Formatting\Serialization\Property;
@@ -51,6 +53,11 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
         $this->serializer->deserialize('"', self::class);
     }
 
+    public function testDeserializingNullReturnsNull(): void
+    {
+        $this->assertNull($this->serializer->deserialize('null', 'string'));
+    }
+
     public function testDeserializingTypeCreatesInstanceOfTypeFromContract(): void
     {
         $user = new User(123, 'foo@bar.com');
@@ -77,6 +84,42 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
             ->willReturn(['id' => 123, 'email' => 'foo@bar.com']);
         $serializer = new JsonSerializer($this->contracts, [$encodingInterceptor]);
         $this->assertEquals($user, $serializer->deserialize('{"id":321,"email":"bar@foo.com"}', User::class));
+    }
+
+    public function testEncodingExceptionThrownDuringDeserializationIsRethrown(): void
+    {
+        $this->expectException(SerializationException::class);
+        /** @var IContract $contract */
+        $contract = $this->createMock(IContract::class);
+        $contract->expects($this->once())
+            ->method('getType')
+            ->willReturn('foo');
+        $contract->expects($this->once())
+            ->method('decode')
+            ->will($this->throwException(new EncodingException));
+        $this->contracts->registerContract($contract);
+        $this->serializer->deserialize('{"foo":"bar"}', 'foo');
+    }
+
+    public function testEncodingExceptionThrownDuringSerializationIsRethrown(): void
+    {
+        $this->expectException(SerializationException::class);
+        // Purposely overwrite contract for string so we can easily test throwing an exception
+        /** @var IContract $contract */
+        $contract = $this->createMock(IContract::class);
+        $contract->expects($this->once())
+            ->method('getType')
+            ->willReturn('string');
+        $contract->expects($this->once())
+            ->method('encode')
+            ->will($this->throwException(new EncodingException));
+        $this->contracts->registerContract($contract);
+        $this->serializer->serialize('foo');
+    }
+
+    public function testSerializingNullReturnsNull(): void
+    {
+        $this->assertEquals('null', $this->serializer->serialize(null));
     }
 
     public function testSerializingValueSendsContractThroughInterceptors(): void

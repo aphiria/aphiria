@@ -16,6 +16,7 @@ use Opulence\Net\Http\Formatting\Serialization\ObjectContract;
 use Opulence\Net\Http\Formatting\Serialization\Property;
 use Opulence\Net\Http\Formatting\Serialization\StructContract;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\User;
+use OutOfBoundsException;
 
 /**
  * Tests the contract registry
@@ -74,6 +75,18 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
         $this->contracts->registerContract($expectedContract);
         $this->assertSame($expectedContract, $this->contracts->getContractForType('int'));
         $this->assertSame($expectedContract, $this->contracts->getContractForType('integer'));
+    }
+
+    public function testGettingContractForTypeWithoutContractThrowsException(): void
+    {
+        $this->expectException(OutOfBoundsException::class);
+        $this->contracts->getContractForType('foo');
+    }
+
+    public function testGettingContractForValueWithoutContractThrowsException(): void
+    {
+        $this->expectException(OutOfBoundsException::class);
+        $this->contracts->getContractForValue($this);
     }
 
     public function testRegisteringObjectContractCreatesAnInstanceOfOne(): void

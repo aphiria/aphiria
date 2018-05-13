@@ -112,6 +112,10 @@ $contracts->registerObjectContract(
 
 Now, you can (de)serialize a `User` object.  Here's the cool part - you don't have to worry about how to deserialize or decode any of the values in `$properties` - Opulence does it for you.  So, you can be sure that `$properties['registrationDate']` will be an instance of `DateTime`.
 
+<h5 id="nullable-properties">Nullable Properties</h5>
+
+If any of your contract properties are nullable, you use `NullableProperty` instead of `Property`.
+
 <h4 id="struct-contracts">Struct Contracts</h4>
 
 Some values, such as `DateTime` and `string`, are better thought of as structs.  Opulence provides [default contracts](#default-contracts) for the most common struct types, but you can register your own contracts like so:
@@ -136,6 +140,7 @@ The following structs have default contracts built into `ContractRegistry`:
 
 * `bool`
 * `DateTime`
+* `DateTimeImmutable`
 * `float`
 * `int`
 * `string`

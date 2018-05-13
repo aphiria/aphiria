@@ -67,4 +67,14 @@ class Property
     {
         return ($this->getter)($object);
     }
+
+    /**
+     * Gets whether or not the property value is nullable
+     *
+     * @return bool True if the property is nullable, otherwise false
+     */
+    public function isNullable(): bool
+    {
+        return false;
+    }
 }
