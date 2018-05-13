@@ -11,6 +11,7 @@
 namespace Opulence\Net\Http\Formatting\Serialization;
 
 use Closure;
+use DateTime;
 use OutOfBoundsException;
 
 /**
@@ -20,6 +21,14 @@ class ContractRegistry
 {
     /** @var Contract[] The mapping of types to contracts */
     private $contractsByType = [];
+
+    /**
+     * @param string $dateTimeFormat The format to use for DateTimes
+     */
+    public function __construct(string $dateTimeFormat = DateTime::ISO8601)
+    {
+        (new DefaultContractRegistrant($dateTimeFormat))->registerContracts($this);
+    }
 
     /**
      * Gets the contract for a type
