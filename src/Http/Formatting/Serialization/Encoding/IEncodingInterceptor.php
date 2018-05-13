@@ -23,7 +23,7 @@ interface IEncodingInterceptor
      * @return mixed The modified encoded value
      */
     public function onPostEncoding($encodedValue, string $type);
-    
+
     /**
      * Provides a hook for pre-decoding a value
      *

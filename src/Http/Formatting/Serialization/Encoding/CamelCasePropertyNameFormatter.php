@@ -32,7 +32,7 @@ class CamelCasePropertyNameFormatter implements IEncodingInterceptor
 
         return $camelCasedValue;
     }
-    
+
     /**
      * @inheritdoc
      */
