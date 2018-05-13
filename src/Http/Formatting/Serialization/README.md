@@ -10,6 +10,7 @@
     1. [Dictionary Object Contracts](#dictionary-object-contracts)
     2. [Value Object Contracts](#value-object-contracts)
     3. [Default Contracts](#default-contracts)
+    4. [DateTime Formatting](#datetime-formatting)
 4. [Encoding Interceptors](#encoding-interceptors)
 
 <h2 id="introduction">Introduction</h2>
@@ -38,13 +39,13 @@ Opulence provides the following serializers:
 
 Under the hood, serializing works like this:
 
-1. Your value is converted to an encoded value via a ["contract"](#contracts)
+1. Your value is converted to an encoded value via a "[contract](#contracts)"
 2. [Interceptors](#encoding-interceptors) are run on your encoded value
 3. The encodable value is serialized by your serializer
 
 Deserializing works in the reverse order:
 
-1. Your serialized value is decoded by a ["contract"](#contract)
+1. Your serialized value is decoded by a "[contract](#contracts)"
 2. [Interceptors](#encoding-interceptors) are run on your decoded value
 3. An instance of your value (eg an object) is created from the decoded value
 
@@ -99,7 +100,7 @@ class User
 }
 ```
 
-You can set up your contract for this class like so:
+You can set up your contract for the `User` class like so:
 
 ```php
 $contracts->registerDictionaryObjectContract(
@@ -117,11 +118,11 @@ $contracts->registerDictionaryObjectContract(
 );
 ```
 
-Now, you can serialize and deserialize and User object.  Here's the cool part - you don't have to worry about how to deserialize or decode any of the values in `$properties` - Opulence does it for you.  So, you can be sure that `$properties['registrationDate']` will be an instance of `DateTime`.
+Now, you can serialize and deserialize and `User` object.  Here's the cool part - you don't have to worry about how to deserialize or decode any of the values in `$properties` - Opulence does it for you.  So, you can be sure that `$properties['registrationDate']` will be an instance of `DateTime`.
 
 <h4 id="value-object-contracts">Value Object Contracts</h4>
 
-Some objects or values don't have a mapping of property names to values.  Some examples include `DateTime` and `string`.  Opulence provides [default contracts](#default-contracts) for the most common value types, but you can register your own value object contracts like so:
+Some objects or values, such as `DateTime` and `string`, are <a href="https://en.wikipedia.org/wiki/Value_object" target="_blank">value objects</a>.  Opulence provides [default contracts](#default-contracts) for the most common value object types, but you can register your own contracts like so:
 
 ```php
 $contracts->registerValueObjectContract(
@@ -147,7 +148,9 @@ The following value types have default contracts built into `ContractRegistry`:
 * `int`
 * `string`
 
-`DateTime` is a special case because it allows you to specify the format used when serializing and deserializing.  By default, ISO-8601 is enabled, by you can customize the format by passing in a parameter:
+<h4 id="datetime-formatting">DateTime Formatting</h4>
+
+By default, Opulence uses <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601</a> when serializing/deserializing `DateTime` objects, but you can customize the format:
 
 ```php
 $contractRegistry = new ContractRegistry('F j, Y');
@@ -160,8 +163,10 @@ Occasionally, you might want to do some custom logic when encoding and decoding 
 * `CamelCasePropertyNameFormatter`
 * `SnakeCasePropertyNameFormatter`
 
-To create your own interceptor, implement `IEncodingInterceptor`, and pass it into the serializer's constructor:
+You can use an interceptor in your serializer by passing it as a parameter:
 
 ```php
 $jsonSerializer = new JsonSerializer($contracts, [new MyCustomInterceptor()]);
 ```
+
+To create your own interceptor, simply implement `IEncodingInterceptor` and pass it into the serializer.
