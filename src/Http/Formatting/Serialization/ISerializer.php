@@ -21,10 +21,11 @@ interface ISerializer
      *
      * @param string $value The serialized value to deserialize
      * @param string $type The type of value to deserialize to
+     * @param bool $isArrayOfType Whether or not to treat the value as an array of values
      * @return mixed The deserialized value
      * @throws SerializationException Thrown if there was an error trying to deserialize to the input value
      */
-    public function deserialize(string $value, string $type);
+    public function deserialize(string $value, string $type, bool $isArrayOfType = false);
 
     /**
      * Serializes a value

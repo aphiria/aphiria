@@ -11,11 +11,13 @@
 namespace Opulence\Net\Tests\Http\Formatting\Serialization;
 
 use DateTime;
+use Opulence\Net\Http\Formatting\Serialization\ArrayProperty;
 use Opulence\Net\Http\Formatting\Serialization\ContractRegistry;
 use Opulence\Net\Http\Formatting\Serialization\EncodingException;
 use Opulence\Net\Http\Formatting\Serialization\IEncodingInterceptor;
 use Opulence\Net\Http\Formatting\Serialization\NullableProperty;
 use Opulence\Net\Http\Formatting\Serialization\Property;
+use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\Account;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\Post;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\Subscription;
 use Opulence\Net\Tests\Http\Formatting\Serialization\Mocks\User;
@@ -70,6 +72,18 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
                 return $subscription->getExpiration();
             })
         );
+        $this->contracts->registerObjectContract(
+            Account::class,
+            function ($hash) {
+                return new Account($hash['id'], $hash['subscriptions']);
+            },
+            new Property('id', 'int', function (Account $account) {
+                return $account->getId();
+            }),
+            new ArrayProperty('subscriptions', Subscription::class, function (Account $account) {
+                return $account->getSubscriptions();
+            })
+        );
     }
 
     public function testDecodingAlsoDecodesPropertyValues(): void
@@ -79,6 +93,28 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
         /** @var User $actualUser */
         $actualUser = $this->contracts->getContractForType(User::class)->decode($encodedValue);
         $this->assertTrue(\is_int($actualUser->getId()));
+    }
+
+    public function testDecodingArrayPropertyDecodesEachValue(): void
+    {
+        $subscription1Expiration = $this->createIso8601DateTime();
+        $subscription2Expiration = $this->createIso8601DateTime();
+        $encodedAccount = [
+            'id' => 123,
+            'subscriptions' => [
+                ['id' => 456, 'expiration' => $subscription1Expiration->format(DateTime::ISO8601)],
+                ['id' => 789, 'expiration' => $subscription2Expiration->format(DateTime::ISO8601)]
+            ]
+        ];
+        $expectedAccount = new Account(
+            123,
+            [
+                new Subscription(456, $subscription1Expiration),
+                new Subscription(789, $subscription2Expiration)
+            ]
+        );
+        $actualAccount = $this->contracts->getContractForType(Account::class)->decode($encodedAccount);
+        $this->assertEquals($expectedAccount, $actualAccount);
     }
 
     public function testDecodingNullablePropertyWithNullValueSetsValueToNull(): void
@@ -190,6 +226,32 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
             ],
             $encodedPost
         );
+    }
+
+    public function testEncodingArrayPropertyEncodesEachValue(): void
+    {
+        $account = new Account(
+            123,
+            [
+                new Subscription(456, $this->createIso8601DateTime()),
+                new Subscription(789, $this->createIso8601DateTime())
+            ]
+        );
+        $expectedEncodedAccount = [
+            'id' => 123,
+            'subscriptions' => [
+                [
+                    'id' => 456,
+                    'expiration' => $account->getSubscriptions()[0]->getExpiration()->format(DateTime::ISO8601)
+                ],
+                [
+                    'id' => 789,
+                    'expiration' => $account->getSubscriptions()[1]->getExpiration()->format(DateTime::ISO8601)
+                ]
+            ]
+        ];
+        $actualEncodedAccount = $this->contracts->getContractForType(Account::class)->encode($account);
+        $this->assertEquals($expectedEncodedAccount, $actualEncodedAccount);
     }
 
     public function testEncodingNonNullablePropertyWithNullValueThrowsException(): void

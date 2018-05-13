@@ -47,6 +47,22 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
         $this->serializer = new JsonSerializer($this->contracts);
     }
 
+    public function testDeserializingArrayDecodesEachValueUsingContract(): void
+    {
+        $expectedUsers = [
+            new User(123, 'foo@bar.com'),
+            new User(456, 'bar@baz.com')
+        ];
+        $encodedUsers = '[{"id":123,"email":"foo@bar.com"},{"id":456,"email":"bar@baz.com"}]';
+        $actualUsers = $this->serializer->deserialize($encodedUsers, User::class, true);
+        $this->assertEquals($expectedUsers, $actualUsers);
+    }
+
+    public function testDeserializingEmptyArrayReturnsEmptyArray(): void
+    {
+        $this->assertSame([], $this->serializer->deserialize('[]', User::class, true));
+    }
+
     public function testDeserializingInvalidJsonThrowsException(): void
     {
         $this->expectException(SerializationException::class);
@@ -115,6 +131,22 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
             ->will($this->throwException(new EncodingException));
         $this->contracts->registerContract($contract);
         $this->serializer->serialize('foo');
+    }
+
+    public function testSerializingArrayEncodesEachValueUsingContract(): void
+    {
+        $users = [
+            new User(123, 'foo@bar.com'),
+            new User(456, 'bar@baz.com')
+        ];
+        $expectedEncodedUsers = '[{"id":123,"email":"foo@bar.com"},{"id":456,"email":"bar@baz.com"}]';
+        $actualEncodedUsers = $this->serializer->serialize($users);
+        $this->assertEquals($expectedEncodedUsers, $actualEncodedUsers);
+    }
+
+    public function testSerializingEmptyArrayReturnsEmptyArray(): void
+    {
+        $this->assertEquals('[]', $this->serializer->serialize([]));
     }
 
     public function testSerializingNullReturnsNull(): void

@@ -59,27 +59,17 @@ class ObjectContract extends Contract
 
         $convertedObjectHash = [];
 
-        foreach ($objectHash as $rawPropertyName => $rawPropertyValue) {
-            if (($property = $this->getProperty($rawPropertyName)) === null) {
+        foreach ($objectHash as $encodedPropertyName => $encodedPropertyValue) {
+            if (($property = $this->getProperty($encodedPropertyName)) === null) {
                 // This property wasn't defined in the contract, so ignore it
                 continue;
             }
 
-            // Automatically decode the property value if it also has a contract
-            if ($rawPropertyValue === null) {
-                if (!$property->isNullable()) {
-                    throw new EncodingException("Property {$property->getName()} cannot be null");
-                }
-
-                $propertyValue = null;
-            } elseif ($this->contracts->hasContractForType($property->getType())) {
-                $propertyContract = $this->contracts->getContractForType($property->getType());
-                $propertyValue = $propertyContract->decode($rawPropertyValue, $encodingInterceptors);
-            } else {
-                $propertyValue = $rawPropertyValue;
-            }
-
-            $convertedObjectHash[$property->getName()] = $propertyValue;
+            $convertedObjectHash[$property->getName()] = $this->decodePropertyValue(
+                $property,
+                $encodedPropertyValue,
+                $encodingInterceptors
+            );
         }
 
         foreach ($encodingInterceptors as $encodingInterceptor) {
@@ -98,18 +88,11 @@ class ObjectContract extends Contract
 
         foreach ($this->properties as $property) {
             $propertyValue = $property->getValue($object);
-
-            // Automatically encode the property value if it also has a contract
-            if ($propertyValue === null) {
-                if (!$property->isNullable()) {
-                    throw new EncodingException("Property {$property->getName()} cannot be null");
-                }
-            } elseif ($this->contracts->hasContractForType($property->getType())) {
-                $propertyContract = $this->contracts->getContractForType($property->getType());
-                $propertyValue = $propertyContract->encode($propertyValue, $encodingInterceptors);
-            }
-
-            $objectHash[$property->getName()] = $propertyValue;
+            $objectHash[$property->getName()] = $this->encodePropertyValue(
+                $property,
+                $propertyValue,
+                $encodingInterceptors
+            );
         }
 
         foreach ($encodingInterceptors as $encodingInterceptor) {
@@ -151,5 +134,85 @@ class ObjectContract extends Contract
     protected function normalizePropertyName(string $propertyName): string
     {
         return strtolower(str_replace('_', '', $propertyName));
+    }
+
+    /**
+     * Decodes a property value
+     *
+     * @param Property $property The property whose value we're decoding
+     * @param mixed $encodedPropertyValue The encoded property value
+     * @param IEncodedInterceptor[] $encodingInterceptors The list of encoding interceptors
+     * @return mixed The decoded property value
+     * @throws EncodingException Thrown if a non-nullable value is null
+     */
+    private function decodePropertyValue(Property $property, $encodedPropertyValue, array $encodingInterceptors)
+    {
+        // Automatically decode the property value if it also has a contract
+        if ($encodedPropertyValue === null) {
+            if (!$property->isNullable()) {
+                throw new EncodingException("Property {$property->getName()} cannot be null");
+            }
+
+            // Purposely don't go to the contract for this type - just set the decoded value to null
+            return null;
+        }
+
+        if (!$this->contracts->hasContractForType($property->getType())) {
+            return $encodedPropertyValue;
+        }
+
+        $propertyContract = $this->contracts->getContractForType($property->getType());
+
+        if ($property->isArrayOfType()) {
+            $decodedPropertyValue = [];
+
+            foreach ($encodedPropertyValue as $singlePropertyValue) {
+                $decodedPropertyValue[] = $propertyContract->decode($singlePropertyValue, $encodingInterceptors);
+            }
+
+            return $decodedPropertyValue;
+        }
+
+        return $propertyContract->decode($encodedPropertyValue, $encodingInterceptors);
+    }
+
+    /**
+     * Encodes a property value
+     *
+     * @param Property $property The property whose value we're encoding
+     * @param mixed $propertyValue The property value to encode
+     * @param array $encodingInterceptors The list of encoding interceptors
+     * @return mixed The encoded property value
+     * @throws EncodingException Thrown if a non-nullable value is null
+     */
+    private function encodePropertyValue(Property $property, $propertyValue, array $encodingInterceptors)
+    {
+        // Automatically encode the property value if it also has a contract
+        if ($propertyValue === null) {
+            if (!$property->isNullable()) {
+                throw new EncodingException("Property {$property->getName()} cannot be null");
+            }
+
+            // Purposely don't go to the contract for this type - just set the encoded value to null
+            return null;
+        }
+
+        if (!$this->contracts->hasContractForType($property->getType())) {
+            return $propertyValue;
+        }
+
+        $propertyContract = $this->contracts->getContractForType($property->getType());
+
+        if ($property->isArrayOfType()) {
+            $encodedPropertyValue = [];
+
+            foreach ($propertyValue as $singlePropertyValue) {
+                $encodedPropertyValue[] = $propertyContract->encode($singlePropertyValue, $encodingInterceptors);
+            }
+
+            return $encodedPropertyValue;
+        }
+
+        return $propertyContract->encode($propertyValue, $encodingInterceptors);
     }
 }

@@ -6,6 +6,7 @@
 1. [Introduction](#introduction)
 2. [Serializers](#serializers)
     1. [JSON Serializer](#json-serializer)
+    2. [Array of Values](#array-of-values)
 3. [Contracts](#contracts)
     1. [Object Contracts](#object-contracts)
     2. [Struct Contracts](#struct-contracts)
@@ -15,7 +16,7 @@
 
 <h2 id="introduction">Introduction</h2>
 
-By default, PHP does not have any way to serialize and deserialize POPO objects.  Opulence provides this functionality without bleeding into your code.  The best part is that you don't have to worry about how to (de)serialize nested objects - Opulence does it for you.  Once your [contracts](#contracts) are set up, serializing an object is as easy as:
+By default, PHP does not have any way to serialize and deserialize POPO objects.  Opulence provides this functionality without bleeding into your code.  The best part is that you don't have to worry about how to (de)serialize nested objects or arrays of objects - Opulence does it for you.  Once your [contracts](#contracts) are set up, serializing an object is as easy as:
 
 ```php
 $user = new User(123, 'foo@bar.com');
@@ -55,6 +56,24 @@ $contracts = new ContractRegistry();
 // Register your models' contracts...
 $jsonSerializer = new JsonSerializer($contracts);
 ```
+
+<h4 id="array-of-values">Array of Values</h4>
+
+To deserialize an array of values, specify pass `true` to the last parameter:
+
+```php
+$serializer->deserialize($serializedUsers, User::class, true);
+```
+
+This will cause each value in `$serializedUsers` to be deserialized as an instance of `User`.
+
+You don't have to do anything special to serialize an array of values - just pass it in, and Opulence will know what to do:
+
+```php
+$serializer->serialize($users);
+```
+
+> **Note:* Opulence only supports arrays that contain a single type of value.  In other words, you cannot mix and match different types in a single array.
 
 <h2 id="contracts">Contracts</h2>
 

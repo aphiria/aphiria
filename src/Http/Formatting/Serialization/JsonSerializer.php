@@ -10,45 +10,27 @@
 
 namespace Opulence\Net\Http\Formatting\Serialization;
 
+use OutOfBoundsException;
+
 /**
  * Defines a JSON serializer
  */
-class JsonSerializer implements ISerializer
+class JsonSerializer extends Serializer
 {
-    /** @var ContractRegistry The registry of contracts */
-    private $contracts;
-    /** @var IEncodingInterceptor[] The list of encoding interceptors to run contracts through */
-    private $encodingInterceptors = [];
-
-    /**
-     * @param ContractRegistry $contracts The registry of contract
-     * @param IEncodingInterceptor[] $encodingInterceptors The list of encoding interceptors to run contracts through
-     */
-    public function __construct(ContractRegistry $contracts, array $encodingInterceptors = [])
-    {
-        $this->contracts = $contracts;
-        $this->encodingInterceptors = $encodingInterceptors;
-    }
-
     /**
      * @inheritdoc
      */
-    public function deserialize(string $value, string $type)
+    public function deserialize(string $value, string $type, bool $isArrayOfType = false)
     {
-        $decodedValue = json_decode($value, true);
+        $encodedValue = json_decode($value, true);
 
         if (($jsonErrorCode = json_last_error()) !== JSON_ERROR_NONE) {
             throw new SerializationException('Failed to deserialize value: ' . json_last_error_msg());
         }
 
-        if ($decodedValue === null) {
-            return null;
-        }
-
         try {
-            return $this->contracts->getContractForType($type)
-                ->decode($decodedValue, $this->encodingInterceptors);
-        } catch (EncodingException $ex) {
+            return $this->decodeValue($encodedValue, $type, $isArrayOfType);
+        } catch (EncodingException | OutOfBoundsException $ex) {
             throw new SerializationException('Failed to deserialize value', 0, $ex);
         }
     }
@@ -59,9 +41,8 @@ class JsonSerializer implements ISerializer
     public function serialize($value): string
     {
         try {
-            $encodedValue = $value === null ? null : $this->contracts->getContractForValue($value)
-                ->encode($value, $this->encodingInterceptors);
-        } catch (EncodingException $ex) {
+            $encodedValue = $this->encodeValue($value);
+        } catch (EncodingException | OutOfBoundsException $ex) {
             throw new SerializationException('Failed to serialize value', 0, $ex);
         }
 
