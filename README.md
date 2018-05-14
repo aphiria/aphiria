@@ -171,7 +171,8 @@ The following structs have default contracts built into `ContractRegistry`:
 By default, Opulence uses <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601</a> when (de)serializing `DateTime` objects, but you can customize the format:
 
 ```php
-$contractRegistry = new ContractRegistry('F j, Y');
+$contracts = new ContractRegistry('F j, Y');
+$jsonSerializer = new JsonSerializer($contracts);
 ```
 
 <h2 id="encoding-interceptors">Encoding Interceptors</h2>
