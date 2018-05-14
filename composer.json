@@ -1,0 +1,40 @@
+{
+  "name": "opulence/serialization",
+  "description": "The Opulence serialization library",
+  "keywords": [
+    "PHP",
+    "serialization",
+    "deserialization",
+    "json",
+    "form url-encoded",
+    "xml"
+  ],
+  "authors": [
+    {
+      "name": "David Young",
+      "email": "dave@opulencephp.com",
+      "role": "Architect"
+    }
+  ],
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Opulence\\Serialization\\": "src"
+    },
+    "exclude-from-classmap": [
+      "**/Tests/"
+    ]
+  },
+  "require": {
+    "php": "^7.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~7.0"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  },
+  "minimum-stability": "dev"
+}
