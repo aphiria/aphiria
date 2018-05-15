@@ -13,7 +13,7 @@ namespace Opulence\Net\Tests\Http\Formatting;
 use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\Formatting\JsonMediaTypeFormatter;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
-use Opulence\Serialization\Encoding\ContractRegistry;
+use Opulence\Serialization\Encoding\EncoderRegistry;
 use Opulence\Serialization\Encoding\Property;
 use Opulence\Serialization\JsonSerializer;
 
@@ -27,8 +27,8 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 
     public function setUp(): void
     {
-        $contracts = new ContractRegistry();
-        $contracts->registerObjectContract(
+        $encoders = new EncoderRegistry();
+        $encoders->registerObjectEncoder(
             User::class,
             function ($properties) {
                 return new User($properties['id'], $properties['email']);
@@ -40,7 +40,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
                 return $user->getEmail();
             })
         );
-        $serializer = new JsonSerializer($contracts);
+        $serializer = new JsonSerializer($encoders);
         $this->formatter = new JsonMediaTypeFormatter($serializer);
     }
 
