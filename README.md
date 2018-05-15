@@ -42,7 +42,7 @@ Value &rarr; [encode value](#encoders) &rarr; [Interceptors](#encoding-intercept
 
 Deserializing works in the reverse order:
 
-Serialized value &rarr; [decode encoder](#encoders) &rarr; [Interceptors](#encoding-interceptors) &rarr; deserialized value
+Serialized value &rarr; [decode value](#encoders) &rarr; [Interceptors](#encoding-interceptors) &rarr; deserialized value
 
 <h4 id="json-serializer">JSON Serializer</h4>
 
