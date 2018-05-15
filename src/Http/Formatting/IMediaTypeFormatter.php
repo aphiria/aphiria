@@ -11,7 +11,7 @@
 namespace Opulence\Net\Http\Formatting;
 
 use Opulence\IO\Streams\IStream;
-use RuntimeException;
+use Opulence\Serialization\SerializationException;
 
 /**
  * Defines the interface for media type formatters to implement
@@ -40,7 +40,7 @@ interface IMediaTypeFormatter
      * @param IStream $stream The stream to read from
      * @param bool $readAsArrayOfType Whether or not we're reading the stream content as an array of the input type
      * @return int|double|float|bool|string|object|array The converted content
-     * @throws RuntimeException Thrown if the content could not be read and converted to the input type
+     * @throws SerializationException Thrown if the content could not be read and converted to the input type
      */
     public function readFromStream(string $type, IStream $stream, bool $readAsArrayOfType = false);
 
@@ -49,7 +49,7 @@ interface IMediaTypeFormatter
      *
      * @param int|double|float|bool|string|object|array $object The object to write
      * @param IStream $stream The stream to write to
-     * @throws RuntimeException Thrown if the content could not be converted to the input type and written
+     * @throws SerializationException Thrown if the content could not be converted to the input type and written
      */
     public function writeToStream($object, IStream $stream): void;
 }

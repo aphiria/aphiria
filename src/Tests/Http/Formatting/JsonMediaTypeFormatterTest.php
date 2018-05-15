@@ -11,10 +11,11 @@
 namespace Opulence\Net\Tests\Http\Formatting;
 
 use Opulence\IO\Streams\IStream;
-use Opulence\Net\Http\Formatting\IDataContractConverter;
 use Opulence\Net\Http\Formatting\JsonMediaTypeFormatter;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
-use RuntimeException;
+use Opulence\Serialization\Encoding\ContractRegistry;
+use Opulence\Serialization\Encoding\Property;
+use Opulence\Serialization\JsonSerializer;
 
 /**
  * Tests the JSON media type formatter
@@ -23,13 +24,24 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 {
     /** @var JsonMediaTypeFormatter The formatter to use in tests */
     private $formatter;
-    /** @var IDataContractConverter|\PHPUnit_Framework_MockObject_MockObject The data contract converter to use in tests */
-    private $dataContractConverter;
 
     public function setUp(): void
     {
-        $this->dataContractConverter = $this->createMock(IDataContractConverter::class);
-        $this->formatter = new JsonMediaTypeFormatter($this->dataContractConverter);
+        $contracts = new ContractRegistry();
+        $contracts->registerObjectContract(
+            User::class,
+            function ($properties) {
+                return new User($properties['id'], $properties['email']);
+            },
+            new Property('id', 'int', function (User $user) {
+                return $user->getId();
+            }),
+            new Property('email', 'string', function (User $user) {
+                return $user->getEmail();
+            })
+        );
+        $serializer = new JsonSerializer($contracts);
+        $this->formatter = new JsonMediaTypeFormatter($serializer);
     }
 
     public function testCorrectSupportedEncodingsAreReturned(): void
@@ -42,147 +54,19 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['application/json', 'text/json'], $this->formatter->getSupportedMediaTypes());
     }
 
-    public function testReadingInvalidJsonWillThrowException(): void
+    public function testReadingFromStreamDeserializesStreamContents(): void
     {
-        $this->expectException(RuntimeException::class);
-        $stream = $this->createStreamWithStringBody("\x0");
-        $this->formatter->readFromStream(User::class, $stream);
+        $stream = $this->createStreamWithStringBody('{"id":123,"email":"foo@bar.com"}');
+        $expectedUser = new User(123, 'foo@bar.com');
+        $actualUser = $this->formatter->readFromStream(User::class, $stream);
+        $this->assertEquals($expectedUser, $actualUser);
     }
 
-    public function testReadingArrayOfScalarsCastsEachElementToCorrectType(): void
+    public function testWritingToStreamSetsStreamContentsFromSerializedValue(): void
     {
-        $stream = $this->createStreamWithStringBody(json_encode(['1.1', '2.2']));
-        $actualValues = $this->formatter->readFromStream('float', $stream, true);
-        $this->assertCount(2, $actualValues);
-        $this->assertSame(1.1, $actualValues[0]);
-        $this->assertSame(2.2, $actualValues[1]);
-    }
-
-    public function testReadingNullReturnsNull(): void
-    {
-        $stream = $this->createStreamWithStringBody(json_encode(null));
-        $this->assertNull($this->formatter->readFromStream('int', $stream));
-    }
-
-    public function testReadingScalarsCastsThemToCorrectTypes(): void
-    {
-        $scalarData = [
-            ['int', '1', 1],
-            ['integer', '1', 1],
-            ['double', '1.1', 1.1],
-            ['float', '1.1', 1.1],
-            ['string', 'foo', 'foo'],
-            ['bool', '1', true],
-            ['bool', '0', false],
-            ['boolean', '1', true],
-            ['boolean', '0', false]
-        ];
-
-        foreach ($scalarData as $scalarDatum) {
-            $stream = $this->createStreamWithStringBody(json_encode($scalarDatum[1]));
-            $this->assertEquals(
-                $scalarDatum[2],
-                $this->formatter->readFromStream($scalarDatum[0], $stream),
-                "Failed to assert that {$scalarDatum[0]} value {$scalarDatum[1]} matches {$scalarDatum[2]}"
-            );
-        }
-    }
-
-    public function testReadingSerializedArrayOfObjectsWillUseDataContractConverterToDeserializeObjects(): void
-    {
-        $userDataContracts = [
-            ['id' => 123, 'email' => 'foo@bar.com'],
-            ['id' => 456, 'email' => 'baz@blah.com']
-        ];
-        $this->dataContractConverter->expects($this->at(0))
-            ->method('convertFromDataContract')
-            ->with(User::class, $userDataContracts[0])
-            ->willReturn(new User(123, 'foo@bar.com'));
-        $this->dataContractConverter->expects($this->at(1))
-            ->method('convertFromDataContract')
-            ->with(User::class, $userDataContracts[1])
-            ->willReturn(new User(456, 'baz@blah.com'));
-        $stream = $this->createStreamWithStringBody(json_encode($userDataContracts));
-        /** @var User[] $users */
-        $users = $this->formatter->readFromStream(User::class, $stream, true);
-        $this->assertTrue(\is_array($users));
-        $this->assertCount(2, $users);
-        $this->assertInstanceOf(User::class, $users[0]);
-        $this->assertInstanceOf(User::class, $users[1]);
-        $this->assertEquals(123, $users[0]->getId());
-        $this->assertEquals(456, $users[1]->getId());
-        $this->assertEquals('foo@bar.com', $users[0]->getEmail());
-        $this->assertEquals('baz@blah.com', $users[1]->getEmail());
-    }
-
-    public function testReadingSerializedObjectWillUseDataContractConverterToDeserializeObject(): void
-    {
-        $dataContract = ['id' => 123, 'email' => 'foo@bar.com'];
-        $this->dataContractConverter->expects($this->once())
-            ->method('convertFromDataContract')
-            ->with(User::class, $dataContract)
-            ->willReturn(new User(123, 'foo@bar.com'));
-        $stream = $this->createStreamWithStringBody(json_encode($dataContract));
-        $user = $this->formatter->readFromStream(User::class, $stream);
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertEquals(123, $user->getId());
-        $this->assertEquals('foo@bar.com', $user->getEmail());
-    }
-
-    public function testWritingArrayOfObjectsUsesDataContractConverterToSerializeThem(): void
-    {
-        $users = [new User(123, 'foo@bar.com'), new User(456, 'baz@blah.com')];
-        $userDataContracts = [
-            ['id' => 123, 'email' => 'foo@bar.com'],
-            ['id' => 456, 'email' => 'baz@blah.com']
-        ];
-        $this->dataContractConverter->expects($this->at(0))
-            ->method('convertToDataContract')
-            ->with($users[0])
-            ->willReturn($userDataContracts[0]);
-        $this->dataContractConverter->expects($this->at(1))
-            ->method('convertToDataContract')
-            ->with($users[1])
-            ->willReturn($userDataContracts[1]);
-        $stream = $this->createStreamThatExpectsBody(json_encode($userDataContracts));
-        $this->formatter->writeToStream($users, $stream);
-    }
-
-    public function testWritingArrayOfScalarsJsonEncodesThoseValues(): void
-    {
-        $scalars = [1.1, 2.2];
-        $stream = $this->createStreamThatExpectsBody(json_encode($scalars));
-        $this->formatter->writeToStream($scalars, $stream);
-    }
-
-    public function testWritingNonScalarNorObjectThrowsException(): void
-    {
-        $this->expectException(RuntimeException::class);
-        /** @var IStream|\PHPUnit_Framework_MockObject_MockObject $stream */
-        $stream = $this->createMock(IStream::class);
-        $this->formatter->writeToStream(fopen('php://temp', 'r+b'), $stream);
-    }
-
-    public function testWritingObjectUsesDataContractConverterToSerializeIt(): void
-    {
+        $stream = $this->createStreamThatExpectsBody('{"id":123,"email":"foo@bar.com"}');
         $user = new User(123, 'foo@bar.com');
-        $userDataContract = ['id' => 123, 'email' => 'foo@bar.com'];
-        $this->dataContractConverter->expects($this->once())
-            ->method('convertToDataContract')
-            ->with($user)
-            ->willReturn($userDataContract);
-        $stream = $this->createStreamThatExpectsBody(json_encode($userDataContract));
         $this->formatter->writeToStream($user, $stream);
-    }
-
-    public function testWritingScalarJsonEncodesThatValue(): void
-    {
-        $scalars = [1, 1.1, 'foo', true, false, null];
-
-        foreach ($scalars as $scalar) {
-            $stream = $this->createStreamThatExpectsBody(json_encode($scalar));
-            $this->formatter->writeToStream($scalar, $stream);
-        }
     }
 
     /**
