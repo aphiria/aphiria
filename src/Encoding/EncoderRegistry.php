@@ -36,7 +36,7 @@ class EncoderRegistry
      *
      * @param string $type The type whose encoder we want
      * @return IEncoder The encoder for the input type
-     * @throws OutOfBoundsException Thrown if the type does not have a encoder
+     * @throws OutOfBoundsException Thrown if the type does not have an encoder
      */
     public function getEncoderForType(string $type): IEncoder
     {
@@ -64,10 +64,10 @@ class EncoderRegistry
     }
 
     /**
-     * Gets whether or not the registry has a encoder for a type
+     * Gets whether or not the registry has an encoder for a type
      *
      * @param string $type The type to check for
-     * @return bool True if the registry has a encoder for the input type, otherwise false
+     * @return bool True if the registry has an encoder for the input type, otherwise false
      */
     public function hasEncoderForType(string $type): bool
     {
@@ -75,7 +75,7 @@ class EncoderRegistry
     }
 
     /**
-     * Registers a encoder
+     * Registers an encoder
      *
      * @param IEncoder $encoder The encoder to register
      */
