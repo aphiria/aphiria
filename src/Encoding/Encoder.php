@@ -13,17 +13,17 @@ namespace Opulence\Serialization\Encoding;
 use Closure;
 
 /**
- * Defines a contract
+ * Defines an encoder
  */
-abstract class Contract implements IContract
+abstract class Encoder implements IEncoder
 {
-    /** @var string The type of value this contract represents */
+    /** @var string The type of value this encoder encodes */
     protected $type;
     /** @var Closure The factory that instantiates a value from a decoded value */
     protected $valueFactory;
 
     /**
-     * @param string $type The type of value this contract represents
+     * @param string $type The type of value this encoder encodes
      * @param Closure $valueFactory The factory that instantiates a value from a decoded value
      */
     public function __construct(string $type, Closure $valueFactory)

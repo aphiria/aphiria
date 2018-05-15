@@ -47,10 +47,10 @@ class JsonSerializer extends Serializer
             throw new SerializationException('Failed to serialize value', 0, $ex);
         }
 
-        if (!($jsonEncodedContract = json_encode($encodedValue))) {
+        if (!($serializedValue = json_encode($encodedValue))) {
             throw new SerializationException('Failed to serialize value: ' . json_last_error_msg());
         }
 
-        return $jsonEncodedContract;
+        return $serializedValue;
     }
 }

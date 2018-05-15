@@ -12,7 +12,7 @@ namespace Opulence\Serialization\Tests;
 
 use DateTime;
 use Opulence\Serialization\Encoding\ArrayProperty;
-use Opulence\Serialization\Encoding\ContractRegistry;
+use Opulence\Serialization\Encoding\EncoderRegistry;
 use Opulence\Serialization\Encoding\EncodingException;
 use Opulence\Serialization\Encoding\IEncodingInterceptor;
 use Opulence\Serialization\Encoding\NullableProperty;
@@ -23,17 +23,17 @@ use Opulence\Serialization\Tests\Mocks\Subscription;
 use Opulence\Serialization\Tests\Mocks\User;
 
 /**
- * Tests the object contract
+ * Tests the object encoder
  */
-class ObjectContractTest extends \PHPUnit\Framework\TestCase
+class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ContractRegistry The contract registry to use in tests */
-    private $contracts;
+    /** @var EncoderRegistry The encoder registry to use in tests */
+    private $encoder;
 
     public function setUp(): void
     {
-        $this->contracts = new ContractRegistry();
-        $this->contracts->registerObjectContract(
+        $this->encoder = new EncoderRegistry();
+        $this->encoder->registerObjectEncoder(
             User::class,
             function ($hash) {
                 return new User($hash['id'], $hash['email']);
@@ -45,7 +45,7 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
                 return $user->getEmail();
             })
         );
-        $this->contracts->registerObjectContract(
+        $this->encoder->registerObjectEncoder(
             Post::class,
             function ($hash) {
                 return new Post($hash['id'], $hash['author'], $hash['publicationDate']);
@@ -60,7 +60,7 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
                 return $post->getPublicationDate();
             })
         );
-        $this->contracts->registerObjectContract(
+        $this->encoder->registerObjectEncoder(
             Subscription::class,
             function ($hash) {
                 return new Subscription($hash['id'], $hash['expiration']);
@@ -72,7 +72,7 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
                 return $subscription->getExpiration();
             })
         );
-        $this->contracts->registerObjectContract(
+        $this->encoder->registerObjectEncoder(
             Account::class,
             function ($hash) {
                 return new Account($hash['id'], $hash['subscriptions']);
@@ -91,7 +91,7 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
         // Purposely set the ID to a string to verify that it gets converted to an integer
         $encodedValue = ['id' => '123', 'email' => 'foo@bar.com'];
         /** @var User $actualUser */
-        $actualUser = $this->contracts->getContractForType(User::class)->decode($encodedValue);
+        $actualUser = $this->encoder->getEncoderForType(User::class)->decode($encodedValue);
         $this->assertTrue(\is_int($actualUser->getId()));
     }
 
@@ -113,7 +113,7 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
                 new Subscription(789, $subscription2Expiration)
             ]
         );
-        $actualAccount = $this->contracts->getContractForType(Account::class)->decode($encodedAccount);
+        $actualAccount = $this->encoder->getEncoderForType(Account::class)->decode($encodedAccount);
         $this->assertEquals($expectedAccount, $actualAccount);
     }
 
@@ -121,7 +121,7 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
     {
         $encodedSubscription = ['id' => 123, 'expiration' => null];
         $expectedSubscription = new Subscription(123, null);
-        $actualSubscription = $this->contracts->getContractForType(Subscription::class)->decode($encodedSubscription);
+        $actualSubscription = $this->encoder->getEncoderForType(Subscription::class)->decode($encodedSubscription);
         $this->assertEquals($expectedSubscription, $actualSubscription);
     }
 
@@ -129,7 +129,7 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(EncodingException::class);
         $encodedUser = ['id' => 123, 'email' => null];
-        $this->contracts->getContractForType(User::class)->decode($encodedUser);
+        $this->encoder->getEncoderForType(User::class)->decode($encodedUser);
     }
 
     public function testDecodingPropertyNamesUsesFuzzyMatchingWhenNoExactMatchIsFound(): void
@@ -146,7 +146,7 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
             'publication_date' => $expectedPublicationDate->format(DateTime::ISO8601)
         ];
         /** @var Post $actualPost */
-        $actualPost = $this->contracts->getContractForType(Post::class)->decode($encodedPost);
+        $actualPost = $this->encoder->getEncoderForType(Post::class)->decode($encodedPost);
         $this->assertInstanceOf(Post::class, $actualPost);
         $this->assertEquals($expectedPost, $actualPost);
     }
@@ -195,7 +195,7 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
             ->method('onPreDecoding')
             ->with($expectedDecodedPostHash, Post::class)
             ->willReturn($expectedDecodedPostHash);
-        $actualPost = $this->contracts->getContractForType(Post::class)->decode($encodedPost, [$interceptor]);
+        $actualPost = $this->encoder->getEncoderForType(Post::class)->decode($encodedPost, [$interceptor]);
         $this->assertInstanceOf(Post::class, $actualPost);
         $this->assertEquals($expectedPost, $actualPost);
     }
@@ -207,14 +207,14 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
             'email' => 'foo@bar.com',
             'doesNotExist' => 'ahhhh'
         ];
-        $actualUser = $this->contracts->getContractForType(User::class)->decode($encodedUser);
+        $actualUser = $this->encoder->getEncoderForType(User::class)->decode($encodedUser);
         $this->assertEquals(new User(123, 'foo@bar.com'), $actualUser);
     }
 
     public function testEncodingAlsoEncodesPropertyValues(): void
     {
         $post = new Post(123, new User(456, 'foo@bar.com'), $this->createIso8601DateTime());
-        $encodedPost = $this->contracts->getContractForType(Post::class)->encode($post);
+        $encodedPost = $this->encoder->getEncoderForType(Post::class)->encode($post);
         $this->assertEquals(
             [
                 'id' => 123,
@@ -250,7 +250,7 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
                 ]
             ]
         ];
-        $actualEncodedAccount = $this->contracts->getContractForType(Account::class)->encode($account);
+        $actualEncodedAccount = $this->encoder->getEncoderForType(Account::class)->encode($account);
         $this->assertEquals($expectedEncodedAccount, $actualEncodedAccount);
     }
 
@@ -258,8 +258,8 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(EncodingException::class);
         // Purposely re-registering and not registering a property as nullable
-        $contracts = new ContractRegistry();
-        $contracts->registerObjectContract(
+        $encoders = new EncoderRegistry();
+        $encoders->registerObjectEncoder(
             Subscription::class,
             function ($hash) {
                 return new Subscription($hash['id'], $hash['expiration']);
@@ -271,14 +271,14 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
                 return $subscription->getExpiration();
             })
         );
-        $contracts->getContractForType(Subscription::class)->encode(new Subscription(123, null));
+        $encoders->getEncoderForType(Subscription::class)->encode(new Subscription(123, null));
     }
 
     public function testEncodingNullablePropertyWithNullValueEncodesValueToNull(): void
     {
         $subscription = new Subscription(123, null);
         $expectedEncodedSubscription = ['id' => 123, 'expiration' => null];
-        $actualEncodedSubscription = $this->contracts->getContractForType(Subscription::class)->encode($subscription);
+        $actualEncodedSubscription = $this->encoder->getEncoderForType(Subscription::class)->encode($subscription);
         $this->assertEquals($expectedEncodedSubscription, $actualEncodedSubscription);
     }
 
@@ -317,7 +317,7 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
             ->method('onPostEncoding')
             ->with($expectedEncodedPostHash, Post::class)
             ->willReturn($expectedEncodedPostHash);
-        $encodedPost = $this->contracts->getContractForType(Post::class)->encode($post, [$interceptor]);
+        $encodedPost = $this->encoder->getEncoderForType(Post::class)->encode($post, [$interceptor]);
         $this->assertEquals(
             [
                 'id' => 123,
@@ -331,9 +331,9 @@ class ObjectContractTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testGettingTypeReturnsTypeSetInContract(): void
+    public function testGettingTypeReturnsTypeSetInEncoder(): void
     {
-        $this->assertEquals(User::class, $this->contracts->getContractForType(User::class)->getType());
+        $this->assertEquals(User::class, $this->encoder->getEncoderForType(User::class)->getType());
     }
 
 

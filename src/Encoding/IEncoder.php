@@ -13,16 +13,16 @@ namespace Opulence\Serialization\Encoding;
 use InvalidArgumentException;
 
 /**
- * Defines the interface for contracts to implement
+ * Defines the interface for encoders to implement
  */
-interface IContract
+interface IEncoder
 {
     /**
-     * Decodes a value to an instance of the type this contract represents
+     * Decodes a value to an instance of the type this encoders encodes
      *
      * @param mixed $value The value to decode
      * @param IEncodingInterceptor[] $encodingInterceptors The list of encoding interceptors to run through
-     * @return mixed An instance of the type this contract represents
+     * @return mixed An instance of the type this encoder encodes
      * @throws InvalidArgumentException Thrown if the input value is not of the expected type
      * @throws EncodingException Thrown if there was an error decoding the value
      */
@@ -39,9 +39,9 @@ interface IContract
     public function encode($value, array $encodingInterceptors = []);
 
     /**
-     * Gets the type this contract represents
+     * Gets the type this encoder encodes
      *
-     * @return string The type this contract represents
+     * @return string The type this encoder encodes
      */
     public function getType(): string;
 }

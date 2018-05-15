@@ -11,29 +11,29 @@
 namespace Opulence\Serialization\Tests;
 
 use DateTime;
-use Opulence\Serialization\Encoding\ContractRegistry;
-use Opulence\Serialization\Encoding\ObjectContract;
+use Opulence\Serialization\Encoding\EncoderRegistry;
+use Opulence\Serialization\Encoding\ObjectEncoder;
 use Opulence\Serialization\Encoding\Property;
-use Opulence\Serialization\Encoding\StructContract;
+use Opulence\Serialization\Encoding\StructEncoder;
 use Opulence\Serialization\Tests\Mocks\User;
 use OutOfBoundsException;
 
 /**
- * Tests the contract registry
+ * Tests the encoder registry
  */
-class ContractRegistryTest extends \PHPUnit\Framework\TestCase
+class EncoderRegistryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ContractRegistry The registry to use in tests */
-    private $contracts;
+    /** @var EncoderRegistry The registry to use in tests */
+    private $encoders;
 
     public function setUp(): void
     {
-        $this->contracts = new ContractRegistry();
+        $this->encoders = new EncoderRegistry();
     }
 
-    public function testGettingContractByObjectValueGetsContractRegisteredForItsType(): void
+    public function testGettingEncoderByObjectValueGetsEncoderRegisteredForItsType(): void
     {
-        $expectedContract = new StructContract(
+        $expectedEncoder = new StructEncoder(
             DateTime::class,
             function ($value) {
                 return DateTime::createFromFormat(DateTime::ISO8601, $value);
@@ -42,13 +42,13 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
                 return $value->format(DateTime::ISO8601);
             }
         );
-        $this->contracts->registerContract($expectedContract);
-        $this->assertSame($expectedContract, $this->contracts->getContractForValue(new DateTime));
+        $this->encoders->registerEncoder($expectedEncoder);
+        $this->assertSame($expectedEncoder, $this->encoders->getEncoderForValue(new DateTime));
     }
 
-    public function testGettingContractByScalarValueGetsContractRegisteredForItsType(): void
+    public function testGettingEncoderByScalarValueGetsEncoderRegisteredForItsType(): void
     {
-        $expectedContract = new StructContract(
+        $expectedEncoder = new StructEncoder(
             'int',
             function ($value) {
                 return (int)$value;
@@ -57,13 +57,13 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
                 return $value;
             }
         );
-        $this->contracts->registerContract($expectedContract);
-        $this->assertSame($expectedContract, $this->contracts->getContractForValue(123));
+        $this->encoders->registerEncoder($expectedEncoder);
+        $this->assertSame($expectedEncoder, $this->encoders->getEncoderForValue(123));
     }
 
-    public function testGettingContractByTypeGetsContractWithThatType(): void
+    public function testGettingEncoderByTypeGetsEncoderWithThatType(): void
     {
-        $expectedContract = new StructContract(
+        $expectedEncoder = new StructEncoder(
             'int',
             function ($value) {
                 return (int)$value;
@@ -72,28 +72,28 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
                 return $value;
             }
         );
-        $this->contracts->registerContract($expectedContract);
-        $this->assertSame($expectedContract, $this->contracts->getContractForType('int'));
-        $this->assertSame($expectedContract, $this->contracts->getContractForType('integer'));
+        $this->encoders->registerEncoder($expectedEncoder);
+        $this->assertSame($expectedEncoder, $this->encoders->getEncoderForType('int'));
+        $this->assertSame($expectedEncoder, $this->encoders->getEncoderForType('integer'));
     }
 
-    public function testGettingContractForTypeWithoutContractThrowsException(): void
+    public function testGettingEncoderForTypeWithoutEncoderThrowsException(): void
     {
         $this->expectException(OutOfBoundsException::class);
-        $this->contracts->getContractForType('foo');
+        $this->encoders->getEncoderForType('foo');
     }
 
-    public function testGettingContractForValueWithoutContractThrowsException(): void
+    public function testGettingEncoderForValueWithoutEncoderThrowsException(): void
     {
         $this->expectException(OutOfBoundsException::class);
-        $this->contracts->getContractForValue($this);
+        $this->encoders->getEncoderForValue($this);
     }
 
-    public function testRegisteringObjectContractCreatesAnInstanceOfOne(): void
+    public function testRegisteringObjectEncoderCreatesAnInstanceOfOne(): void
     {
-        $expectedContract = new ObjectContract(
+        $expectedEncoder = new ObjectEncoder(
             User::class,
-            $this->contracts,
+            $this->encoders,
             function (array $hash) {
                 return new User($hash['id'], $hash['email']);
             },
@@ -104,7 +104,7 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
                 return $user->getEmail();
             })
         );
-        $this->contracts->registerObjectContract(
+        $this->encoders->registerObjectEncoder(
             User::class,
             function (array $hash) {
                 return new User($hash['id'], $hash['email']);
@@ -116,12 +116,12 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
                 return $user->getEmail();
             })
         );
-        $this->assertEquals($expectedContract, $this->contracts->getContractForType(User::class));
+        $this->assertEquals($expectedEncoder, $this->encoders->getEncoderForType(User::class));
     }
 
-    public function testRegisteringStructContractCreatesAnInstanceOfOne(): void
+    public function testRegisteringStructEncoderCreatesAnInstanceOfOne(): void
     {
-        $expectedContract = new StructContract(
+        $expectedEncoder = new StructEncoder(
             'int',
             function ($value) {
                 return (int)$value;
@@ -130,7 +130,7 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
                 return $value;
             }
         );
-        $this->contracts->registerStructContract(
+        $this->encoders->registerStructEncoder(
             'int',
             function ($value) {
                 return (int)$value;
@@ -139,6 +139,6 @@ class ContractRegistryTest extends \PHPUnit\Framework\TestCase
                 return $value;
             }
         );
-        $this->assertEquals($expectedContract, $this->contracts->getContractForType('int'));
+        $this->assertEquals($expectedEncoder, $this->encoders->getEncoderForType('int'));
     }
 }

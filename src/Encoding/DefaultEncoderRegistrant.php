@@ -14,9 +14,9 @@ use DateTime;
 use DateTimeImmutable;
 
 /**
- * Defines the default contracts' registrant
+ * Defines the default encoders' registrant
  */
-class DefaultContractRegistrant
+class DefaultEncoderRegistrant
 {
     /** @var string The format to use for DateTimes */
     private $dateTimeFormat;
@@ -30,28 +30,28 @@ class DefaultContractRegistrant
     }
 
     /**
-     * Registers default contracts
+     * Registers default encoders
      *
-     * @param ContractRegistry $contracts The contracts to register to
+     * @param EncoderRegistry $encoders The encoders to register to
      */
-    public function registerContracts(ContractRegistry $contracts): void
+    public function registerEncoder(EncoderRegistry $encoders): void
     {
-        $this->registerBoolContract($contracts);
-        $this->registerDateTimeContract($contracts);
-        $this->registerDateTimeImmutableContract($contracts);
-        $this->registerFloatContract($contracts);
-        $this->registerIntContract($contracts);
-        $this->registerStringContract($contracts);
+        $this->registerBoolEncoder($encoders);
+        $this->registerDateTimeEncoder($encoders);
+        $this->registerDateTimeImmutableEncoder($encoders);
+        $this->registerFloatEncoder($encoders);
+        $this->registerIntEncoder($encoders);
+        $this->registerStringEncoder($encoders);
     }
 
     /**
-     * Register a boolean contract
+     * Register a boolean encoder
      *
-     * @param ContractRegistry $contracts The contract registry to register to
+     * @param EncoderRegistry $encoders The encoder registry to register to
      */
-    protected function registerBoolContract(ContractRegistry $contracts): void
+    protected function registerBoolEncoder(EncoderRegistry $encoders): void
     {
-        $contracts->registerStructContract(
+        $encoders->registerStructEncoder(
             'bool',
             function ($value) {
                 return (bool)$value;
@@ -63,13 +63,13 @@ class DefaultContractRegistrant
     }
 
     /**
-     * Register a DateTime contract
+     * Register a DateTime encoder
      *
-     * @param ContractRegistry $contracts The contract registry to register to
+     * @param EncoderRegistry $encoders The encoder registry to register to
      */
-    protected function registerDateTimeContract(ContractRegistry $contracts): void
+    protected function registerDateTimeEncoder(EncoderRegistry $encoders): void
     {
-        $contracts->registerStructContract(
+        $encoders->registerStructEncoder(
             DateTime::class,
             function ($value) {
                 return DateTime::createFromFormat($this->dateTimeFormat, $value);
@@ -81,13 +81,13 @@ class DefaultContractRegistrant
     }
 
     /**
-     * Register a DateTimeImmutable contract
+     * Register a DateTimeImmutable encoder
      *
-     * @param ContractRegistry $contracts The contract registry to register to
+     * @param EncoderRegistry $encoders The encoder registry to register to
      */
-    protected function registerDateTimeImmutableContract(ContractRegistry $contracts): void
+    protected function registerDateTimeImmutableEncoder(EncoderRegistry $encoders): void
     {
-        $contracts->registerStructContract(
+        $encoders->registerStructEncoder(
             DateTimeImmutable::class,
             function ($value) {
                 return DateTimeImmutable::createFromFormat($this->dateTimeFormat, $value);
@@ -99,13 +99,13 @@ class DefaultContractRegistrant
     }
 
     /**
-     * Register a float contract
+     * Register a float encoder
      *
-     * @param ContractRegistry $contracts The contract registry to register to
+     * @param EncoderRegistry $encoders The encoder registry to register to
      */
-    protected function registerFloatContract(ContractRegistry $contracts): void
+    protected function registerFloatEncoder(EncoderRegistry $encoders): void
     {
-        $contracts->registerStructContract(
+        $encoders->registerStructEncoder(
             'float',
             function ($value) {
                 return (float)$value;
@@ -117,13 +117,13 @@ class DefaultContractRegistrant
     }
 
     /**
-     * Register an integer contract
+     * Register an integer encoder
      *
-     * @param ContractRegistry $contracts The contract registry to register to
+     * @param EncoderRegistry $encoders The encoder registry to register to
      */
-    protected function registerIntContract(ContractRegistry $contracts): void
+    protected function registerIntEncoder(EncoderRegistry $encoders): void
     {
-        $contracts->registerStructContract(
+        $encoders->registerStructEncoder(
             'int',
             function ($value) {
                 return (int)$value;
@@ -135,13 +135,13 @@ class DefaultContractRegistrant
     }
 
     /**
-     * Register a string contract
+     * Register a string encoder
      *
-     * @param ContractRegistry $contracts The contract registry to register to
+     * @param EncoderRegistry $encoders The encoder registry to register to
      */
-    protected function registerStringContract(ContractRegistry $contracts): void
+    protected function registerStringEncoder(EncoderRegistry $encoders): void
     {
-        $contracts->registerStructContract(
+        $encoders->registerStructEncoder(
             'string',
             function ($value) {
                 return (string)$value;

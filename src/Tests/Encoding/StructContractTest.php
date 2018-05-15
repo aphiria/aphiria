@@ -11,19 +11,19 @@
 namespace Opulence\Serialization\Tests;
 
 use Opulence\Serialization\Encoding\IEncodingInterceptor;
-use Opulence\Serialization\Encoding\StructContract;
+use Opulence\Serialization\Encoding\StructEncoder;
 
 /**
- * Tests the struct contract
+ * Tests the struct encoder
  */
-class StructContractTest extends \PHPUnit\Framework\TestCase
+class StructEncoderTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var StructContract The contract to use in tests */
-    private $contract;
+    /** @var StructEncoder The encoder to use in tests */
+    private $encoder;
 
     public function setUp(): void
     {
-        $this->contract = new StructContract(
+        $this->encoder = new StructEncoder(
             'int',
             function ($value) {
                 return (int)$value;
@@ -42,12 +42,12 @@ class StructContractTest extends \PHPUnit\Framework\TestCase
             ->method('onPreDecoding')
             ->with(123, 'int')
             ->willReturn(456);
-        $this->assertSame(456, $this->contract->decode(123, [$interceptor]));
+        $this->assertSame(456, $this->encoder->decode(123, [$interceptor]));
     }
 
     public function testDecodingValueUsesValueFactory(): void
     {
-        $this->assertSame(123, $this->contract->decode('123'));
+        $this->assertSame(123, $this->encoder->decode('123'));
     }
 
     public function testEncodedValueIsSentThroughInterceptors(): void
@@ -58,16 +58,16 @@ class StructContractTest extends \PHPUnit\Framework\TestCase
             ->method('onPostEncoding')
             ->with(123, 'int')
             ->willReturn(456);
-        $this->assertSame(456, $this->contract->encode(123, [$interceptor]));
+        $this->assertSame(456, $this->encoder->encode(123, [$interceptor]));
     }
 
     public function testEncodingValueUsesEncodingFactory(): void
     {
-        $this->assertSame(123, $this->contract->encode(123));
+        $this->assertSame(123, $this->encoder->encode(123));
     }
 
     public function testGettingTypeReturnsOneSetInConstructor(): void
     {
-        $this->assertEquals('int', $this->contract->getType());
+        $this->assertEquals('int', $this->encoder->getType());
     }
 }

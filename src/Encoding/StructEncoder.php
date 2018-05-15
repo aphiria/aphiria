@@ -13,16 +13,16 @@ namespace Opulence\Serialization\Encoding;
 use Closure;
 
 /**
- * Defines a struct contract
+ * Defines a struct encoder
  */
-class StructContract extends Contract
+class StructEncoder extends Encoder
 {
-    /** @var Closure The factory that encodes the value this contract represents */
+    /** @var Closure The factory that encodes the value this encoder encodes */
     protected $encodingFactory;
 
     /**
      * @inheritdoc
-     * @param Closure $encodingFactory The factory that the value this contract represents
+     * @param Closure $encodingFactory The factory that the value this encoder encodes
      */
     public function __construct(string $type, Closure $valueFactory, Closure $encodingFactory)
     {
