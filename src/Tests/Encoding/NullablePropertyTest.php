@@ -10,8 +10,8 @@
 
 namespace Opulence\Serialization\Tests;
 
-use Opulence\Net\Tests\Http\Formatting\Mocks\User;
 use Opulence\Serialization\Encoding\NullableProperty;
+use Opulence\Serialization\Tests\Mocks\User;
 
 /**
  * Tests a nullable property

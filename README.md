@@ -38,19 +38,19 @@ Opulence provides the following serializers:
 
 Under the hood, serializing works like this:
 
-Value &rarr; encode [encoder](#encoders) &rarr; [Interceptors](#encoding-interceptors) &rarr; serialized value
+Value &rarr; [encode value](#encoders) &rarr; [Interceptors](#encoding-interceptors) &rarr; serialized value
 
 Deserializing works in the reverse order:
 
-Serialized value &rarr; decode [encoder](#encoders) &rarr; [Interceptors](#encoding-interceptors) &rarr; deserialized value
+Serialized value &rarr; [decode encoder](#encoders) &rarr; [Interceptors](#encoding-interceptors) &rarr; deserialized value
 
 <h4 id="json-serializer">JSON Serializer</h4>
 
 `JsonSerializer` is able to serialize and deserialize values to and from JSON.  You can create an instance like this:
 
 ```php
-use Opulence\Net\Http\Formatting\Serialization\Encoding\EncoderRegistry;
-use Opulence\Net\Http\Formatting\Serialization\JsonSerializer;
+use Opulence\Serialization\Encoding\EncoderRegistry;
+use Opulence\Serialization\JsonSerializer;
 
 $encoders = new EncoderRegistry();
 // Register your models' encoders...
@@ -129,7 +129,7 @@ Now, you can (de)serialize a `User` object.  Here's the cool part - you don't ha
 
 <h5 id="array-properties">Array Properties</h5>
 
-If a encoder property is an array of values rather than a single value, use `ArrayProperty` instead of `Property`.
+If an encoder property is an array of values rather than a single value, use `ArrayProperty` instead of `Property`.
 
 > **Note:** Opulence only supports arrays that contain a single type of value.  In other words, you cannot mix and match different types in a single array.
 
