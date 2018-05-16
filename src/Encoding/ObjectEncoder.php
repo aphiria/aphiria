@@ -33,10 +33,10 @@ class ObjectEncoder extends Encoder
     public function __construct(
         string $type,
         EncoderRegistry $encoders,
-        Closure $objectFactory,
+        Closure $constructor,
         Property ...$properties
     ) {
-        parent::__construct($type, $objectFactory);
+        parent::__construct($type, $constructor);
 
         $this->encoders = $encoders;
 
@@ -76,7 +76,7 @@ class ObjectEncoder extends Encoder
             $convertedObjectHash = $encodingInterceptor->onPreDecoding($convertedObjectHash, $this->type);
         }
 
-        return ($this->valueFactory)($convertedObjectHash);
+        return ($this->constructor)($convertedObjectHash);
     }
 
     /**
@@ -163,17 +163,17 @@ class ObjectEncoder extends Encoder
 
         $propertyEncoder = $this->encoders->getEncoderForType($property->getType());
 
-        if ($property->isArrayOfType()) {
-            $decodedPropertyValue = [];
-
-            foreach ($encodedPropertyValue as $singlePropertyValue) {
-                $decodedPropertyValue[] = $propertyEncoder->decode($singlePropertyValue, $encodingInterceptors);
-            }
-
-            return $decodedPropertyValue;
+        if (!$property->isArrayOfType()) {
+            return $propertyEncoder->decode($encodedPropertyValue, $encodingInterceptors);
         }
 
-        return $propertyEncoder->decode($encodedPropertyValue, $encodingInterceptors);
+        $decodedPropertyValues = [];
+
+        foreach ($encodedPropertyValue as $singlePropertyValue) {
+            $decodedPropertyValues[] = $propertyEncoder->decode($singlePropertyValue, $encodingInterceptors);
+        }
+
+        return $decodedPropertyValues;
     }
 
     /**
@@ -203,16 +203,16 @@ class ObjectEncoder extends Encoder
 
         $propertyEncoder = $this->encoders->getEncoderForType($property->getType());
 
-        if ($property->isArrayOfType()) {
-            $encodedPropertyValue = [];
-
-            foreach ($propertyValue as $singlePropertyValue) {
-                $encodedPropertyValue[] = $propertyEncoder->encode($singlePropertyValue, $encodingInterceptors);
-            }
-
-            return $encodedPropertyValue;
+        if (!$property->isArrayOfType()) {
+            return $propertyEncoder->encode($propertyValue, $encodingInterceptors);
         }
 
-        return $propertyEncoder->encode($propertyValue, $encodingInterceptors);
+        $encodedPropertyValues = [];
+
+        foreach ($propertyValue as $singlePropertyValue) {
+            $encodedPropertyValues[] = $propertyEncoder->encode($singlePropertyValue, $encodingInterceptors);
+        }
+
+        return $encodedPropertyValues;
     }
 }

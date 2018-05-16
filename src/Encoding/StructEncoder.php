@@ -24,9 +24,9 @@ class StructEncoder extends Encoder
      * @inheritdoc
      * @param Closure $encodingFactory The factory that the value this encoder encodes
      */
-    public function __construct(string $type, Closure $valueFactory, Closure $encodingFactory)
+    public function __construct(string $type, Closure $constructor, Closure $encodingFactory)
     {
-        parent::__construct($type, $valueFactory);
+        parent::__construct($type, $constructor);
 
         $this->encodingFactory = $encodingFactory;
     }
@@ -40,7 +40,7 @@ class StructEncoder extends Encoder
             $value = $encodingInterceptor->onPreDecoding($value, $this->type);
         }
 
-        return ($this->valueFactory)($value);
+        return ($this->constructor)($value);
     }
 
     /**

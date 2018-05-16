@@ -86,17 +86,17 @@ abstract class Serializer implements ISerializer
                 ->encode($value, $this->encodingInterceptors);
         }
 
-        $encodedValue = [];
+        $encodedValues = [];
 
         if (\count($value) > 0) {
             // Here we assume the list contains homogenous types
             $encoder = $this->encoders->getEncoderForValue($value[0]);
 
             foreach ($value as $singleValue) {
-                $encodedValue[] = $encoder->encode($singleValue, $this->encodingInterceptors);
+                $encodedValues[] = $encoder->encode($singleValue, $this->encodingInterceptors);
             }
         }
 
-        return $encodedValue;
+        return $encodedValues;
     }
 }
