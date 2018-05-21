@@ -11,46 +11,16 @@
 namespace Opulence\Serialization\Encoding;
 
 /**
- * Defines the camelCase property name formatter interceptor
+ * Defines the camel-case property name formatter
  */
-class CamelCasePropertyNameFormatter implements IEncodingInterceptor
+class CamelCasePropertyNameFormatter implements IPropertyNameFormatter
 {
     /**
      * @inheritdoc
      */
-    public function onPostEncoding($encodedValue, string $type)
+    public function formatPropertyName(string $propertyName): string
     {
-        if (!\is_array($encodedValue)) {
-            return $encodedValue;
-        }
-
-        $camelCasedValue = [];
-
-        foreach ($encodedValue as $key => $value) {
-            $camelCasedValue[\is_string($key) ? $this->getCamelCaseString($key) : $key] = $value;
-        }
-
-        return $camelCasedValue;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function onPreDecoding($value, string $type)
-    {
-        // We don't handle decoding
-        return $value;
-    }
-
-    /**
-     * Camel-cases a string
-     *
-     * @param string $value The value to camelCase
-     * @return string The camelCased string
-     */
-    private function getCamelCaseString(string $value): string
-    {
-        $upperCasedWords = ucwords(str_replace(['-', '_'], ' ', $value));
+        $upperCasedWords = ucwords(str_replace(['-', '_'], ' ', $propertyName));
 
         return lcfirst(str_replace(' ', '', $upperCasedWords));
     }

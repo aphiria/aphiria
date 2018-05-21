@@ -8,16 +8,16 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Tests;
+namespace Opulence\Serialization\Tests\Encoding;
 
 use Opulence\Serialization\Encoding\SnakeCasePropertyNameFormatter;
 
 /**
- * Tests the snake_case property name formatter
+ * Tests the snake case property name formatter
  */
 class SnakeCasePropertyNameFormatterTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var SnakeCasePropertyNameFormatter The formatter to use in tests */
+    /** @var CamelCasePropertyNameFormatter The formatter to use in tests */
     private $formatter;
 
     public function setUp(): void
@@ -25,27 +25,16 @@ class SnakeCasePropertyNameFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter = new SnakeCasePropertyNameFormatter();
     }
 
-    public function testDecodingAnyValueJustReturnsValue(): void
+    public function testPropertyNamesAreSnakeCased(): void
     {
-        $this->assertEquals('foo', $this->formatter->onPreDecoding('foo', 'string'));
-        $this->assertEquals(['foo-bar' => 'baz'], $this->formatter->onPreDecoding(['foo-bar' => 'baz'], 'array'));
-    }
+        $propertyNames = ['foo_bar', 'bar-baz', 'baz blah', 'blahDave'];
+        $expectedFormattedPropertyNames = ['foo_bar', 'bar_baz', 'baz_blah', 'blah_dave'];
 
-    public function testEncodingArrayWithNumericKeysLeavesNumericKeys(): void
-    {
-        $expectedEncodedValue = ['foo', 'bar'];
-        $this->assertEquals($expectedEncodedValue, $this->formatter->onPostEncoding(['foo', 'bar'], 'array'));
-    }
-
-    public function testEncodingAssociativeArrayConvertsKeysToSnakeCase(): void
-    {
-        $value = ['foo_bar' => 'foo', 'bar-baz' => 'bar', 'baz blah' => 'baz', 'blahDave' => 'blah'];
-        $expectedEncodedValue = ['foo_bar' => 'foo', 'bar_baz' => 'bar', 'baz_blah' => 'baz', 'blah_dave' => 'blah'];
-        $this->assertEquals($expectedEncodedValue, $this->formatter->onPostEncoding($value, 'array'));
-    }
-
-    public function testEncodingNonArraysReturnsValue(): void
-    {
-        $this->assertEquals('foo', $this->formatter->onPostEncoding('foo', 'string'));
+        for ($i = 0;$i < count($propertyNames);$i++) {
+            $this->assertEquals(
+                $expectedFormattedPropertyNames[$i],
+                $this->formatter->formatPropertyName($propertyNames[$i])
+            );
+        }
     }
 }

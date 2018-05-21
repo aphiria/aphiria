@@ -10,7 +10,7 @@
 
 namespace Opulence\Serialization\Tests;
 
-use Opulence\Serialization\Tests\Mocks\User;
+use Opulence\Serialization\Tests\Encoding\Mocks\User;
 use Opulence\Serialization\TypeResolver;
 
 /**

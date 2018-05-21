@@ -8,51 +8,53 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Normalizers;
+namespace Opulence\Serialization\Encoding;
+
+use InvalidArgumentException;
 
 /**
- * Defines the array normalizer
+ * Defines the array encoder
  */
-class ArrayNormalizer implements INormalizer
+class ArrayEncoder implements IEncoder
 {
-    /** @var INormalizer The parent normalizer */
-    private $parentNormalizer;
+    /** @var IEncoder The parent encoder */
+    private $parentEncoder;
 
     /**
-     * @param INormalizer $parentNormalizer The parent normalizer
+     * @param IEncoder $parentEncoder The parent encoder
      */
-    public function __construct(INormalizer $parentNormalizer)
+    public function __construct(IEncoder $parentEncoder)
     {
-        $this->parentNormalizer = $parentNormalizer;
+        $this->parentEncoder = $parentEncoder;
     }
 
     /**
      * @inheritdoc
      */
-    public function denormalize($values, string $type)
+    public function decode($values, string $type)
     {
         if (substr($type, -2, 2) !== '[]') {
             throw new InvalidArgumentException('Type must end in "[]"');
         }
 
-        if (\is_array($values)) {
+        if (!\is_array($values)) {
             throw new InvalidArgumentException('Value must be an array');
         }
 
         $actualType = substr($type, 0, -2);
-        $denormalizedValues = [];
+        $decodedValues = [];
 
         foreach ($values as $value) {
-            $denormalizedValues[] = $this->parentNormalizer->denormalize($value, $actualType);
+            $decodedValues[] = $this->parentEncoder->decode($value, $actualType);
         }
 
-        return $denormalizedValues;
+        return $decodedValues;
     }
 
     /**
      * @inheritdoc
      */
-    public function normalize($values, array $interceptors = [])
+    public function encode($values)
     {
         if (!\is_array($values)) {
             throw new InvalidArgumentException('Value must be an array');
@@ -62,12 +64,12 @@ class ArrayNormalizer implements INormalizer
             return [];
         }
 
-        $normalizedValues = [];
+        $encodedValues = [];
 
         foreach ($values as $value) {
-            $normalizedValues[] = $this->parentNormalizer->normalize($value, $interceptors);
+            $encodedValues[] = $this->parentEncoder->encode($value);
         }
 
-        return $normalizedValues;
+        return $encodedValues;
     }
 }

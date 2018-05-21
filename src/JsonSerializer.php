@@ -11,17 +11,28 @@
 namespace Opulence\Serialization;
 
 use Opulence\Serialization\Encoding\EncodingException;
-use OutOfBoundsException;
+use Opulence\Serialization\Encoding\IEncoder;
 
 /**
  * Defines a JSON serializer
  */
-class JsonSerializer extends Serializer
+class JsonSerializer implements ISerializer
 {
+    /** @var IEncoder The encoder to use to encode/decode values */
+    private $encoder;
+
+    /**
+     * @param IEncoder $encoder The encoder to use to encode/decode values
+     */
+    public function __construct(IEncoder $encoder)
+    {
+        $this->encoder = $encoder;
+    }
+
     /**
      * @inheritdoc
      */
-    public function deserialize(string $value, string $type, bool $isArrayOfType = false)
+    public function deserialize(string $value, string $type)
     {
         $encodedValue = json_decode($value, true);
 
@@ -30,8 +41,8 @@ class JsonSerializer extends Serializer
         }
 
         try {
-            return $this->decodeValue($encodedValue, $type, $isArrayOfType);
-        } catch (EncodingException | OutOfBoundsException $ex) {
+            return $this->encoder->decode($encodedValue, $type);
+        } catch (EncodingException $ex) {
             throw new SerializationException('Failed to deserialize value', 0, $ex);
         }
     }
@@ -42,8 +53,8 @@ class JsonSerializer extends Serializer
     public function serialize($value): string
     {
         try {
-            $encodedValue = $this->encodeValue($value);
-        } catch (EncodingException | OutOfBoundsException $ex) {
+            $encodedValue = $this->encoder->encode($value);
+        } catch (EncodingException $ex) {
             throw new SerializationException('Failed to serialize value', 0, $ex);
         }
 

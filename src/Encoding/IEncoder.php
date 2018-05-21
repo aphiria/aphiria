@@ -18,30 +18,23 @@ use InvalidArgumentException;
 interface IEncoder
 {
     /**
-     * Decodes a value to an instance of the type this encoders encodes
+     * Decodes a value to an instance of the type
      *
      * @param mixed $value The value to decode
-     * @param IEncodingInterceptor[] $encodingInterceptors The list of encoding interceptors to run through
-     * @return mixed An instance of the type this encoder encodes
-     * @throws InvalidArgumentException Thrown if the input value is not of the expected type
+     * @param string $type The type to decode to (ending with '[]' if an array of $type)
+     * @return mixed An instance of the type
      * @throws EncodingException Thrown if there was an error decoding the value
+     * @throws InvalidArgumentException Thrown if the input value is not of the expected type
      */
-    public function decode($value, array $encodingInterceptors = []);
+    public function decode($value, string $type);
 
     /**
      * Encodes the input value
      *
      * @param mixed $value The value to encode
-     * @param IEncodingInterceptor[] $encodingInterceptors The list of encoding interceptors to run through
      * @return mixed The encoded value
      * @throws EncodingException Thrown if there was an error encoding the value
+     * @throws InvalidArgumentException Thrown if the input value is not of the expected type
      */
-    public function encode($value, array $encodingInterceptors = []);
-
-    /**
-     * Gets the type this encoder encodes
-     *
-     * @return string The type this encoder encodes
-     */
-    public function getType(): string;
+    public function encode($value);
 }

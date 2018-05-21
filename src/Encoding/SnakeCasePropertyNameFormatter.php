@@ -11,9 +11,9 @@
 namespace Opulence\Serialization\Encoding;
 
 /**
- * Defines the snake_case property name formatter interceptor
+ * Defines the snake-case property name formatter
  */
-class SnakeCasePropertyNameFormatter implements IEncodingInterceptor
+class SnakeCasePropertyNameFormatter implements IPropertyNameFormatter
 {
     /** @var string The delimiter to use */
     private $delimiter;
@@ -29,39 +29,9 @@ class SnakeCasePropertyNameFormatter implements IEncodingInterceptor
     /**
      * @inheritdoc
      */
-    public function onPostEncoding($encodedValue, string $type)
+    public function formatPropertyName(string $propertyName): string
     {
-        if (!\is_array($encodedValue)) {
-            return $encodedValue;
-        }
-
-        $snakeCasedValue = [];
-
-        foreach ($encodedValue as $key => $value) {
-            $snakeCasedValue[\is_string($key) ? $this->getSnakeCaseString($key) : $key] = $value;
-        }
-
-        return $snakeCasedValue;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function onPreDecoding($value, string $type)
-    {
-        // We don't handle decoding
-        return $value;
-    }
-
-    /**
-     * Snake-cases a string
-     *
-     * @param string $value The value to snake_case
-     * @return string The snake_cased string
-     */
-    private function getSnakeCaseString(string $value): string
-    {
-        $snakeCaseValue = $value;
+        $snakeCaseValue = $propertyName;
 
         if (! ctype_lower($snakeCaseValue)) {
             $snakeCaseValue = preg_replace('/\s+/u', '', ucwords($snakeCaseValue));

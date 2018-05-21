@@ -8,21 +8,21 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Tests\Normalizers\Mocks;
+namespace Opulence\Serialization\Tests\Encoding\Mocks;
 
 /**
- * Mocks a class with untyped variadic constructor params
+ * Defines a constructor with untyped optional params
  */
-class ConstructorWithUntypedVariadicParams
+class ConstructorWithUntypedOptionalParams
 {
     private $foo;
 
-    public function __construct(...$foo)
+    public function __construct($foo = 1)
     {
         $this->foo = $foo;
     }
 
-    public function getFoo(): array
+    public function getFoo()
     {
         return $this->foo;
     }

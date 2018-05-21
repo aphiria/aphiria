@@ -10,25 +10,28 @@
 
 namespace Opulence\Serialization\Encoding;
 
-use Closure;
-use DateTime;
 use Opulence\Serialization\TypeResolver;
-use OutOfBoundsException;
 
 /**
- * Defines an encoder registry
+ * Defines a registry of encoders
  */
 class EncoderRegistry
 {
     /** @var IEncoder[] The mapping of types to encoders */
     private $encodersByType = [];
+    /** @var IEncoder The default object encoder */
+    private $defaultObjectEncoder;
+    /** @var IEncoder The default scalar encoder */
+    private $defaultScalarEncoder;
 
     /**
-     * @param string $dateTimeFormat The format to use for DateTimes
+     * @param IEncoder $defaultObjectEncoder The default object encoder
+     * @param IEncoder $defaultScalarEncoder The default scalar encoder
      */
-    public function __construct(string $dateTimeFormat = DateTime::ISO8601)
+    public function __construct(IEncoder $defaultObjectEncoder, IEncoder $defaultScalarEncoder)
     {
-        (new DefaultEncoderRegistrant($dateTimeFormat))->registerEncoder($this);
+        $this->defaultObjectEncoder = $defaultObjectEncoder;
+        $this->defaultScalarEncoder = $defaultScalarEncoder;
     }
 
     /**
@@ -36,18 +39,20 @@ class EncoderRegistry
      *
      * @param string $type The type whose encoder we want
      * @return IEncoder The encoder for the input type
-     * @throws OutOfBoundsException Thrown if the type does not have an encoder
      */
     public function getEncoderForType(string $type): IEncoder
     {
-        $normalizedType = $this->normalizeType($type);
+        $encodedType = $this->normalizeType($type);
 
-        if (!$this->hasEncoderForType($normalizedType)) {
-            // Use the input type name to make the exception message more meaningful
-            throw new OutOfBoundsException("No encoder registered for type \"$type\"");
+        if (isset($this->encodersByType[$encodedType])) {
+            return $this->encodersByType[$encodedType];
         }
 
-        return $this->encodersByType[$normalizedType];
+        if (\class_exists($type)) {
+            return $this->defaultObjectEncoder;
+        }
+
+        return $this->defaultScalarEncoder;
     }
 
     /**
@@ -59,57 +64,20 @@ class EncoderRegistry
      */
     public function getEncoderForValue($value): IEncoder
     {
-        // Note: The type is normalized in getEncoderForType()
+        // Note: The type is encoded in getEncoderForType()
         return $this->getEncoderForType(TypeResolver::resolveType($value));
-    }
-
-    /**
-     * Gets whether or not the registry has an encoder for a type
-     *
-     * @param string $type The type to check for
-     * @return bool True if the registry has an encoder for the input type, otherwise false
-     */
-    public function hasEncoderForType(string $type): bool
-    {
-        return isset($this->encodersByType[$type]);
     }
 
     /**
      * Registers an encoder
      *
+     * @param string $type The type that the encoder is for
      * @param IEncoder $encoder The encoder to register
      */
-    public function registerEncoder(IEncoder $encoder): void
+    public function registerEncoder(string $type, IEncoder $encoder): void
     {
-        $normalizedType = $this->normalizeType($encoder->getType());
-        $this->encodersByType[$normalizedType] = $encoder;
-    }
-
-    /**
-     * Registers an object encoder
-     *
-     * @param string $type The type of object this encoder represents
-     * @param Closure $objectFactory The factory that instantiates an object from a value
-     * @param Property[] $properties,... The list of properties that make up the object
-     */
-    public function registerObjectEncoder(
-        string $type,
-        Closure $objectFactory,
-        Property ...$properties
-    ): void {
-        $this->registerEncoder(new ObjectEncoder($type, $this, $objectFactory, ...$properties));
-    }
-
-    /**
-     * Registers a struct encoder
-     *
-     * @param string $type The type of object this encoder represents
-     * @param Closure $objectFactory The factory that instantiates an object from a value
-     * @param Closure $encodingFactory The factory that encodes an instance of an object this encoder represents
-     */
-    public function registerStructEncoder(string $type, Closure $objectFactory, Closure $encodingFactory): void
-    {
-        $this->registerEncoder(new StructEncoder($type, $objectFactory, $encodingFactory));
+        $encodedType = $this->normalizeType($type);
+        $this->encodersByType[$encodedType] = $encoder;
     }
 
     /**
@@ -131,6 +99,10 @@ class EncoderRegistry
             case 'integer':
                 return 'int';
             default:
+                if (substr($type, -2) === '[]') {
+                    return 'array';
+                }
+
                 return $type;
         }
     }

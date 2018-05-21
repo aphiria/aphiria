@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Tests;
+namespace Opulence\Serialization\Tests\Encoding;
 
 use Opulence\Serialization\Encoding\CamelCasePropertyNameFormatter;
 
@@ -25,27 +25,16 @@ class CamelCasePropertyNameFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter = new CamelCasePropertyNameFormatter();
     }
 
-    public function testDecodingAnyValueJustReturnsValue(): void
+    public function testPropertyNamesAreCamelCased(): void
     {
-        $this->assertEquals('foo', $this->formatter->onPreDecoding('foo', 'string'));
-        $this->assertEquals(['foo_bar' => 'baz'], $this->formatter->onPreDecoding(['foo_bar' => 'baz'], 'array'));
-    }
+        $propertyNames = ['foo_bar', 'bar-baz', 'baz blah', 'blahDave'];
+        $expectedFormattedPropertyNames = ['fooBar', 'barBaz', 'bazBlah', 'blahDave'];
 
-    public function testEncodingArrayWithNumericKeysLeavesNumericKeys(): void
-    {
-        $expectedEncodedValue = ['foo', 'bar'];
-        $this->assertEquals($expectedEncodedValue, $this->formatter->onPostEncoding(['foo', 'bar'], 'array'));
-    }
-
-    public function testEncodingAssociativeArrayConvertsKeysToCamelCase(): void
-    {
-        $value = ['foo_bar' => 'foo', 'bar-baz' => 'bar', 'baz blah' => 'baz', 'blahDave' => 'blah'];
-        $expectedEncodedValue = ['fooBar' => 'foo', 'barBaz' => 'bar', 'bazBlah' => 'baz', 'blahDave' => 'blah'];
-        $this->assertEquals($expectedEncodedValue, $this->formatter->onPostEncoding($value, 'array'));
-    }
-
-    public function testEncodingNonArraysReturnsValue(): void
-    {
-        $this->assertEquals('foo', $this->formatter->onPostEncoding('foo', 'string'));
+        for ($i = 0;$i < count($propertyNames);$i++) {
+            $this->assertEquals(
+                $expectedFormattedPropertyNames[$i],
+                $this->formatter->formatPropertyName($propertyNames[$i])
+            );
+        }
     }
 }

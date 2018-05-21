@@ -8,19 +8,19 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Tests\Normalizers\Mocks;
+namespace Opulence\Serialization\Tests\Encoding\Mocks;
 
 /**
- * Mocks a class with properties and no getters
+ * Mocks a derived class with properties
  */
-class ConstructorWithTypedParamsAndNoGetters
+class DerivedClassWithProperties extends BaseClassWithProperties
 {
-    private $foo;
     private $bar;
 
     public function __construct(string $foo, string $bar)
     {
-        $this->foo = $foo;
+        parent::__construct($foo);
+
         $this->bar = $bar;
     }
 }

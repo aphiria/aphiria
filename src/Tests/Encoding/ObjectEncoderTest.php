@@ -8,346 +8,254 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Tests;
+namespace Opulence\Serialization\Tests\Encoding;
 
-use DateTime;
-use Opulence\Serialization\Encoding\ArrayProperty;
-use Opulence\Serialization\Encoding\EncoderRegistry;
+use InvalidArgumentException;
 use Opulence\Serialization\Encoding\EncodingException;
-use Opulence\Serialization\Encoding\IEncodingInterceptor;
-use Opulence\Serialization\Encoding\NullableProperty;
-use Opulence\Serialization\Encoding\Property;
-use Opulence\Serialization\Tests\Mocks\Account;
-use Opulence\Serialization\Tests\Mocks\Post;
-use Opulence\Serialization\Tests\Mocks\Subscription;
-use Opulence\Serialization\Tests\Mocks\User;
+use Opulence\Serialization\Encoding\IEncoder;
+use Opulence\Serialization\Encoding\IPropertyNameFormatter;
+use Opulence\Serialization\Encoding\ObjectEncoder;
+use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithArrayParams;
+use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithNullableParams;
+use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedParams;
+use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedParamsAndNoGetters;
+use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedVariadicParams;
+use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedOptionalParams;
+use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedPararmsWithTypedGetters;
+use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedScalars;
+use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedVariadicParams;
+use Opulence\Serialization\Tests\Encoding\Mocks\DerivedClassWithProperties;
+use Opulence\Serialization\Tests\Encoding\Mocks\NoConstructor;
+use Opulence\Serialization\Tests\Encoding\Mocks\User;
 
 /**
  * Tests the object encoder
  */
 class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var EncoderRegistry The encoder registry to use in tests */
-    private $encoder;
+    /** @var IParentEncoder The parent encoder */
+    private $parentEncoder;
+    /** @var ObjectEncoder The object encoder */
+    private $objectEncoder;
 
     public function setUp(): void
     {
-        $this->encoder = new EncoderRegistry();
-        $this->encoder->registerObjectEncoder(
-            User::class,
-            function ($hash) {
-                return new User($hash['id'], $hash['email']);
-            },
-            new Property('id', 'int', function (User $user) {
-                return $user->getId();
-            }),
-            new Property('email', 'string', function (User $user) {
-                return $user->getEmail();
-            })
-        );
-        $this->encoder->registerObjectEncoder(
-            Post::class,
-            function ($hash) {
-                return new Post($hash['id'], $hash['author'], $hash['publicationDate']);
-            },
-            new Property('id', 'int', function (Post $post) {
-                return $post->getId();
-            }),
-            new Property('author', User::class, function (Post $post) {
-                return $post->getAuthor();
-            }),
-            new Property('publicationDate', DateTime::class, function (Post $post) {
-                return $post->getPublicationDate();
-            })
-        );
-        $this->encoder->registerObjectEncoder(
-            Subscription::class,
-            function ($hash) {
-                return new Subscription($hash['id'], $hash['expiration']);
-            },
-            new Property('id', 'int', function (Subscription $subscription) {
-                return $subscription->getId();
-            }),
-            new NullableProperty('expiration', DateTime::class, function (Subscription $subscription) {
-                return $subscription->getExpiration();
-            })
-        );
-        $this->encoder->registerObjectEncoder(
-            Account::class,
-            function ($hash) {
-                return new Account($hash['id'], $hash['subscriptions']);
-            },
-            new Property('id', 'int', function (Account $account) {
-                return $account->getId();
-            }),
-            new ArrayProperty('subscriptions', Subscription::class, function (Account $account) {
-                return $account->getSubscriptions();
-            })
-        );
+        $this->parentEncoder = $this->createMock(IEncoder::class);
+        $this->objectEncoder = new ObjectEncoder($this->parentEncoder);
     }
 
-    public function testDecodingAlsoDecodesPropertyValues(): void
-    {
-        // Purposely set the ID to a string to verify that it gets converted to an integer
-        $encodedValue = ['id' => '123', 'email' => 'foo@bar.com'];
-        /** @var User $actualUser */
-        $actualUser = $this->encoder->getEncoderForType(User::class)->decode($encodedValue);
-        $this->assertTrue(\is_int($actualUser->getId()));
-    }
-
-    public function testDecodingArrayPropertyDecodesEachValue(): void
-    {
-        $subscription1Expiration = $this->createIso8601DateTime();
-        $subscription2Expiration = $this->createIso8601DateTime();
-        $encodedAccount = [
-            'id' => 123,
-            'subscriptions' => [
-                ['id' => 456, 'expiration' => $subscription1Expiration->format(DateTime::ISO8601)],
-                ['id' => 789, 'expiration' => $subscription2Expiration->format(DateTime::ISO8601)]
-            ]
-        ];
-        $expectedAccount = new Account(
-            123,
-            [
-                new Subscription(456, $subscription1Expiration),
-                new Subscription(789, $subscription2Expiration)
-            ]
-        );
-        $actualAccount = $this->encoder->getEncoderForType(Account::class)->decode($encodedAccount);
-        $this->assertEquals($expectedAccount, $actualAccount);
-    }
-
-    public function testDecodingNullablePropertyWithNullValueSetsValueToNull(): void
-    {
-        $encodedSubscription = ['id' => 123, 'expiration' => null];
-        $expectedSubscription = new Subscription(123, null);
-        $actualSubscription = $this->encoder->getEncoderForType(Subscription::class)->decode($encodedSubscription);
-        $this->assertEquals($expectedSubscription, $actualSubscription);
-    }
-
-    public function testDecodingNullPropertyThatIsNotNullableThrowsException(): void
+    public function testDecodingClassWithArrayConstructorParamThrowsExceptionIfEncodedValueIsNotArray(): void
     {
         $this->expectException(EncodingException::class);
-        $encodedUser = ['id' => 123, 'email' => null];
-        $this->encoder->getEncoderForType(User::class)->decode($encodedUser);
+        $this->objectEncoder->decode(['foo' => 'bar'], ConstructorWithArrayParams::class);
     }
 
-    public function testDecodingPropertyNamesUsesFuzzyMatchingWhenNoExactMatchIsFound(): void
+    public function testDecodingClassWithArrayConstructorParamWorksIfEncodedArrayContainsScalars(): void
     {
-        $expectedPublicationDate = $this->createIso8601DateTime();
-        $expectedPost = new Post(123, new User(456, 'foo@bar.com'), $expectedPublicationDate);
-        $encodedPost = [
-            'id' => 123,
-            'author' => [
-                'id' => 456,
-                'email' => 'foo@bar.com'
-            ],
-            // Property name here is snake-case, which should fuzzy match the proper camelCase name
-            'publication_date' => $expectedPublicationDate->format(DateTime::ISO8601)
-        ];
-        /** @var Post $actualPost */
-        $actualPost = $this->encoder->getEncoderForType(Post::class)->decode($encodedPost);
-        $this->assertInstanceOf(Post::class, $actualPost);
-        $this->assertEquals($expectedPost, $actualPost);
+        $encodedValue = ['foo' => ['bar', 'baz']];
+        $this->parentEncoder->expects($this->at(0))
+            ->method('decode')
+            ->with(['bar', 'baz'], 'string[]')
+            ->willReturn(['bar', 'baz']);
+        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithArrayParams::class);
+        $this->assertInstanceOf(ConstructorWithArrayParams::class, $value);
+        $this->assertEquals(['bar', 'baz'], $value->getFoo());
     }
 
-    public function testDecodingWithInterceptorsCallsInterceptorOnEachPropertyValue(): void
+    public function testDecodingClassWithNoConstructorStillCreatesInstance(): void
     {
-        $expectedPost = new Post(123, new User(456, 'foo@bar.com'), $this->createIso8601DateTime());
-        $expectedFormattedPublicationDate = $expectedPost->getPublicationDate()->format(DateTime::ISO8601);
-        $encodedPost = [
-            'id' => 123,
-            'author' => [
-                'id' => 456,
-                'email' => 'foo@bar.com'
-            ],
-            'publicationDate' => $expectedFormattedPublicationDate
-        ];
-        // This is the fully decoded post hash just before an instance of Post is created
-        $expectedDecodedPostHash = [
-            'id' => 123,
-            'author' => $expectedPost->getAuthor(),
-            'publicationDate' => $expectedPost->getPublicationDate()
-        ];
-        /** @var IEncodingInterceptor $interceptor */
-        $interceptor = $this->createMock(IEncodingInterceptor::class);
-        $interceptor->expects($this->at(0))
-            ->method('onPreDecoding')
-            ->with(123, 'int')
+        $value = $this->objectEncoder->decode([], NoConstructor::class);
+        $this->assertInstanceOf(NoConstructor::class, $value);
+    }
+
+    public function testDecodingClassWithTypedConstructorParamsAndNoGettersDecodesByConstructorType(): void
+    {
+        $encodedValue = ['foo' => 'dave', 'bar' => 'young'];
+        $this->parentEncoder->expects($this->at(0))
+            ->method('decode')
+            ->with('dave', 'string')
+            ->willReturn('dave');
+        $this->parentEncoder->expects($this->at(1))
+            ->method('decode')
+            ->with('young', 'string')
+            ->willReturn('young');
+        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithTypedParamsAndNoGetters::class);
+        $this->assertInstanceOf(ConstructorWithTypedParamsAndNoGetters::class, $value);
+    }
+
+    public function testDecodingClassWithTypedConstructorParamsDecodesByConstructorType(): void
+    {
+        $expectedUser = new User(123, 'foo@bar.com');
+        $encodedValue = ['user' => ['id' => 123, 'email' => 'foo@bar.com']];
+        $this->parentEncoder->expects($this->at(0))
+            ->method('decode')
+            ->with(['id' => 123, 'email' => 'foo@bar.com'])
+            ->willReturn($expectedUser);
+        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithTypedParams::class);
+        $this->assertInstanceOf(ConstructorWithTypedParams::class, $value);
+        $this->assertEquals($expectedUser, $value->getUser());
+    }
+
+    public function testDecodingClassWithTypedVariadicParamsDecodesByVariadicType(): void
+    {
+        $encodedValue = ['users' => [['id' => 123, 'foo@bar.com'], ['id' => 456, 'email' => 'bar@baz.com']]];
+        $expectedUsers = [new User(123, 'foo@bar.com'), new User(456, 'bar@baz.com')];
+        $this->parentEncoder->expects($this->at(0))
+            ->method('decode')
+            ->with($encodedValue['users'], User::class . '[]')
+            ->willReturn($expectedUsers);
+        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithTypedVariadicParams::class);
+        $this->assertInstanceOf(ConstructorWithTypedVariadicParams::class, $value);
+        $this->assertEquals($expectedUsers, $value->getUsers());
+    }
+
+    public function testDecodingClassWithUntypedConstructorParamsAndUntypedGettersStillWorksIfEncodedValuesAreScalars(): void
+    {
+        $encodedValue = ['foo' => 123, 'bar' => 456];
+        $this->parentEncoder->expects($this->at(0))
+            ->method('decode')
+            ->with(123, 'integer')
             ->willReturn(123);
-        $interceptor->expects($this->at(1))
-            ->method('onPreDecoding')
-            ->with(456, 'int')
+        $this->parentEncoder->expects($this->at(1))
+            ->method('decode')
+            ->with(456, 'integer')
             ->willReturn(456);
-        $interceptor->expects($this->at(2))
-            ->method('onPreDecoding')
-            ->with('foo@bar.com', 'string')
-            ->willReturn('foo@bar.com');
-        $interceptor->expects($this->at(3))
-            ->method('onPreDecoding')
-            ->with($encodedPost['author'], User::class)
-            ->willReturn($encodedPost['author']);
-        $interceptor->expects($this->at(4))
-            ->method('onPreDecoding')
-            ->with($expectedFormattedPublicationDate, DateTime::class)
-            ->willReturn($expectedFormattedPublicationDate);
-        $interceptor->expects($this->at(5))
-            ->method('onPreDecoding')
-            ->with($expectedDecodedPostHash, Post::class)
-            ->willReturn($expectedDecodedPostHash);
-        $actualPost = $this->encoder->getEncoderForType(Post::class)->decode($encodedPost, [$interceptor]);
-        $this->assertInstanceOf(Post::class, $actualPost);
-        $this->assertEquals($expectedPost, $actualPost);
+        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithUntypedScalars::class);
+        $this->assertInstanceOf(ConstructorWithUntypedScalars::class, $value);
+        $this->assertEquals(123, $value->getFoo());
+        $this->assertEquals(456, $value->getBar());
     }
 
-    public function testDecodingUndefinedPropertyIgnoresThatProperty(): void
+    public function testDecodingClassWithUntypedConstructorParamsUsesGetterTypes(): void
     {
-        $encodedUser = [
-            'id' => 123,
-            'email' => 'foo@bar.com',
-            'doesNotExist' => 'ahhhh'
-        ];
-        $actualUser = $this->encoder->getEncoderForType(User::class)->decode($encodedUser);
-        $this->assertEquals(new User(123, 'foo@bar.com'), $actualUser);
-    }
-
-    public function testEncodingAlsoEncodesPropertyValues(): void
-    {
-        $post = new Post(123, new User(456, 'foo@bar.com'), $this->createIso8601DateTime());
-        $encodedPost = $this->encoder->getEncoderForType(Post::class)->encode($post);
-        $this->assertEquals(
-            [
-                'id' => 123,
-                'author' => [
-                    'id' => 456,
-                    'email' => 'foo@bar.com'
-                ],
-                'publicationDate' => $post->getPublicationDate()->format(DateTime::ISO8601)
-            ],
-            $encodedPost
+        $encodedValue = ['foo' => ['id' => 123, 'email' => 'foo@bar.com'], 'bar' => true, 'baz' => true];
+        $expectedUser = new User(123, 'foo@bar.com');
+        $this->parentEncoder->expects($this->at(0))
+            ->method('decode')
+            ->with($encodedValue['foo'], User::class)
+            ->willReturn($expectedUser);
+        $this->parentEncoder->expects($this->at(1))
+            ->method('decode')
+            ->with(true, 'bool')
+            ->willReturn(true);
+        $this->parentEncoder->expects($this->at(2))
+            ->method('decode')
+            ->with(true, 'bool')
+            ->willReturn(true);
+        $value = $this->objectEncoder->decode(
+            $encodedValue,
+            ConstructorWithUntypedPararmsWithTypedGetters::class
         );
+        $this->assertInstanceOf(ConstructorWithUntypedPararmsWithTypedGetters::class, $value);
+        $this->assertEquals($expectedUser, $value->getFoo());
+        $this->assertTrue($value->isBar());
+        $this->assertTrue($value->hasBaz());
     }
 
-    public function testEncodingArrayPropertyEncodesEachValue(): void
-    {
-        $account = new Account(
-            123,
-            [
-                new Subscription(456, $this->createIso8601DateTime()),
-                new Subscription(789, $this->createIso8601DateTime())
-            ]
-        );
-        $expectedEncodedAccount = [
-            'id' => 123,
-            'subscriptions' => [
-                [
-                    'id' => 456,
-                    'expiration' => $account->getSubscriptions()[0]->getExpiration()->format(DateTime::ISO8601)
-                ],
-                [
-                    'id' => 789,
-                    'expiration' => $account->getSubscriptions()[1]->getExpiration()->format(DateTime::ISO8601)
-                ]
-            ]
-        ];
-        $actualEncodedAccount = $this->encoder->getEncoderForType(Account::class)->encode($account);
-        $this->assertEquals($expectedEncodedAccount, $actualEncodedAccount);
-    }
-
-    public function testEncodingNonNullablePropertyWithNullValueThrowsException(): void
+    public function testDecodingClassWitVariadicConstructorParamThrowsExceptionIfEncodedValueIsNotArray(): void
     {
         $this->expectException(EncodingException::class);
-        // Purposely re-registering and not registering a property as nullable
-        $encoders = new EncoderRegistry();
-        $encoders->registerObjectEncoder(
-            Subscription::class,
-            function ($hash) {
-                return new Subscription($hash['id'], $hash['expiration']);
-            },
-            new Property('id', 'int', function (Subscription $subscription) {
-                return $subscription->getId();
-            }),
-            new Property('expiration', DateTime::class, function (Subscription $subscription) {
-                return $subscription->getExpiration();
-            })
-        );
-        $encoders->getEncoderForType(Subscription::class)->encode(new Subscription(123, null));
+        $this->objectEncoder->decode(['foo' => 'bar'], ConstructorWithUntypedVariadicParams::class);
     }
 
-    public function testEncodingNullablePropertyWithNullValueEncodesValueToNull(): void
+    public function testDecodingClassWithUntypedVariadicParamsDecodesByEncodedValueType(): void
     {
-        $subscription = new Subscription(123, null);
-        $expectedEncodedSubscription = ['id' => 123, 'expiration' => null];
-        $actualEncodedSubscription = $this->encoder->getEncoderForType(Subscription::class)->encode($subscription);
-        $this->assertEquals($expectedEncodedSubscription, $actualEncodedSubscription);
+        $encodedValue = ['foo' => ['bar', 'baz']];
+        $this->parentEncoder->expects($this->at(0))
+            ->method('decode')
+            ->with($encodedValue['foo'], 'string[]')
+            ->willReturn($encodedValue['foo']);
+        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithUntypedVariadicParams::class);
+        $this->assertInstanceOf(ConstructorWithUntypedVariadicParams::class, $value);
+        $this->assertEquals(['bar', 'baz'], $value->getFoo());
     }
 
-    public function testEnccodingWithInterceptorsCallsInterceptorOnEachPropertyValue(): void
+    public function testDecodingHashWithMissingPropertyStillWorksIfConstructorParamIsNullable(): void
     {
-        $post = new Post(123, new User(456, 'foo@bar.com'), $this->createIso8601DateTime());
-        $expectedEncodedAuthorHash = ['id' => 456, 'email' => 'foo@bar.com'];
-        $expectedEncodedPostHash = [
-            'id' => 123,
-            'author' => $expectedEncodedAuthorHash,
-            'publicationDate' => $post->getPublicationDate()->format(DateTime::ISO8601)
-        ];
-        /** @var IEncodingInterceptor $interceptor */
-        $interceptor = $this->createMock(IEncodingInterceptor::class);
-        $interceptor->expects($this->at(0))
-            ->method('onPostEncoding')
-            ->with(123, 'int')
+        $value = $this->objectEncoder->decode([], ConstructorWithNullableParams::class);
+        $this->assertInstanceOf(ConstructorWithNullableParams::class, $value);
+        $this->assertNull($value->getFoo());
+    }
+
+    public function testDecodingHashMissingPropertyStillWorksIfUntypedConstructorParamIsOptional(): void
+    {
+        $value = $this->objectEncoder->decode([], ConstructorWithUntypedOptionalParams::class);
+        $this->assertInstanceOf(ConstructorWithUntypedOptionalParams::class, $value);
+        $this->assertSame(1, $value->getFoo());
+    }
+
+    public function testDecodingHashMissingRequiredPropertyThrowsException(): void
+    {
+        $this->expectException(EncodingException::class);
+        $this->objectEncoder->decode([], ConstructorWithTypedParams::class);
+    }
+
+    public function testDecodingNonArrayThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->objectEncoder->decode('foo', 'bar');
+    }
+
+    public function testEncodingCreatesHashFromPropertiesOfClass(): void
+    {
+        $value = new ConstructorWithTypedParamsAndNoGetters('dave', 'young');
+        $this->parentEncoder->expects($this->at(0))
+            ->method('encode')
+            ->with('dave')
+            ->willReturn('dave');
+        $this->parentEncoder->expects($this->at(1))
+            ->method('encode')
+            ->with('young')
+            ->willReturn('young');
+        $this->assertEquals(['foo' => 'dave', 'bar' => 'young'], $this->objectEncoder->encode($value));
+    }
+
+    public function testEncodingDerivedClassIncludesPropertiesFromBaseClass(): void
+    {
+        $value = new DerivedClassWithProperties('dave', 'young');
+        // Base class properties come first, which is why things are in the order they are
+        $this->parentEncoder->expects($this->at(0))
+            ->method('encode')
+            ->with('young')
+            ->willReturn('young');
+        $this->parentEncoder->expects($this->at(1))
+            ->method('encode')
+            ->with('dave')
+            ->willReturn('dave');
+        $this->assertEquals(['bar' => 'young', 'foo' => 'dave'], $this->objectEncoder->encode($value));
+    }
+
+    public function testEncodingDoesNotIncludeIgnoredProperties(): void
+    {
+        $user = new User(123, 'foo@bar.com');
+        $this->objectEncoder->addIgnoredProperty(User::class, 'email');
+        $this->parentEncoder->expects($this->at(0))
+            ->method('encode')
+            ->with(123)
             ->willReturn(123);
-        $interceptor->expects($this->at(1))
-            ->method('onPostEncoding')
-            ->with(456, 'int')
-            ->willReturn(456);
-        $interceptor->expects($this->at(2))
-            ->method('onPostEncoding')
-            ->with('foo@bar.com', 'string')
-            ->willReturn('foo@bar.com');
-        $interceptor->expects($this->at(3))
-            ->method('onPostEncoding')
-            ->with($expectedEncodedAuthorHash, User::class)
-            ->willReturn($expectedEncodedAuthorHash);
-        $interceptor->expects($this->at(4))
-            ->method('onPostEncoding')
-            ->with($expectedEncodedPostHash['publicationDate'], DateTime::class)
-            ->willReturn($expectedEncodedPostHash['publicationDate']);
-        $interceptor->expects($this->at(5))
-            ->method('onPostEncoding')
-            ->with($expectedEncodedPostHash, Post::class)
-            ->willReturn($expectedEncodedPostHash);
-        $encodedPost = $this->encoder->getEncoderForType(Post::class)->encode($post, [$interceptor]);
-        $this->assertEquals(
-            [
-                'id' => 123,
-                'author' => [
-                    'id' => 456,
-                    'email' => 'foo@bar.com'
-                ],
-                'publicationDate' => $post->getPublicationDate()->format(DateTime::ISO8601)
-            ],
-            $encodedPost
-        );
+        $this->assertEquals(['id' => 123], $this->objectEncoder->encode($user));
     }
 
-    public function testGettingTypeReturnsTypeSetInEncoder(): void
+    public function testEncodingFormatsPropertyNameFormatterIfOneIsSpecified(): void
     {
-        $this->assertEquals(User::class, $this->encoder->getEncoderForType(User::class)->getType());
+        /** @var IPropertyNameFormatter|\PHPUnit_Framework_MockObject_MockObject $propertyNameFormatter */
+        $propertyNameFormatter = $this->createMock(IPropertyNameFormatter::class);
+        $objectEncoder = new ObjectEncoder($this->parentEncoder, $propertyNameFormatter);
+        $propertyNameFormatter->expects($this->at(0))
+            ->method('formatPropertName')
+            ->with('id')
+            ->returns('_id');
+        $propertyNameFormatter->expects($this->at(1))
+            ->method('formatPropertName')
+            ->with('email')
+            ->returns('_email');
+        $user = new User(123, 'foo@bar.com');
+        $this->assertEquals(['_id' => 123, '_email' => 'foo@bar.com'], $objectEncoder->encode($user));
     }
 
-
-    /**
-     * Creates an ISO-8601 DateTime
-     * This is useful when doing DateTime comparisons and you don't want fractions of a second included so you can get equaltiy
-     *
-     * @return DateTime The DateTime
-     */
-    private function createIso8601DateTime(): DateTime
+    public function testEncodingNonObjectThrowsException(): void
     {
-        return DateTime::createFromFormat(
-            DateTime::ISO8601,
-            (new DateTime)->format(DateTime::ISO8601)
-        );
+        $this->expectException(InvalidArgumentException::class);
+        $this->objectEncoder->encode([]);
     }
 }

@@ -8,14 +8,12 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Normalizers;
-
-use Exception;
+namespace Opulence\Serialization\Tests\Encoding\Mocks;
 
 /**
- * Defines an exception that's thrown with normalization errors
+ * Mocks a class with no constructor
  */
-class NormalizationException extends Exception
+class NoConstructor
 {
     // Don't do anything
 }

@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Tests\Normalizers\Mocks;
+namespace Opulence\Serialization\Tests\Encoding\Mocks;
 
 /**
  * Mocks a base class with properties

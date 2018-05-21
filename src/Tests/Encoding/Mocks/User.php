@@ -8,10 +8,10 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Tests\Mocks;
+namespace Opulence\Serialization\Tests\Encoding\Mocks;
 
 /**
- * Mocks a user object for use in serialization tests
+ * Mocks a user object
  */
 class User
 {

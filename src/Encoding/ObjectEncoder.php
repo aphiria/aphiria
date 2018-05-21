@@ -10,209 +10,259 @@
 
 namespace Opulence\Serialization\Encoding;
 
-use Closure;
 use InvalidArgumentException;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionObject;
+use ReflectionParameter;
 
 /**
  * Defines an object encoder
  */
-class ObjectEncoder extends Encoder
+class ObjectEncoder implements IEncoder
 {
-    /** @var EncoderRegistry The encoder registry */
-    private $encoders;
-    /** @var Property[] The list of properties */
-    private $properties = [];
-    /** @var array The mapping of normalized to original property names */
-    private $normalizedPropertyNames = [];
+    /** @var IEncoder The parent encoder */
+    private $parentEncoder;
+    /** @var IPropertyNameFormatter|null The property name formatter to use */
+    private $propertyNameFormatter;
+    /** @var array The mapping of types to encoded property names to ignore */
+    private $ignoredEncodedPropertyNamesByType = [];
 
     /**
-     * @inheritdoc
-     * @param EncoderRegistry $encoders The encoder registry
-     * @param Property[] $properties,... The list of properties that make up the object
+     * @param IEncoder $parentEncoder The parent encoder
+     * @param IPropertyNameFormatter|null $propertyNameFormatter The property name formatter to use
      */
-    public function __construct(
-        string $type,
-        EncoderRegistry $encoders,
-        Closure $constructor,
-        Property ...$properties
-    ) {
-        parent::__construct($type, $constructor);
+    public function __construct(IEncoder $parentEncoder, IPropertyNameFormatter $propertyNameFormatter = null)
+    {
+        $this->parentEncoder = $parentEncoder;
+        $this->propertyNameFormatter = $propertyNameFormatter;
+    }
 
-        $this->encoders = $encoders;
-
-        foreach ($properties as $property) {
-            $propertyName = $property->getName();
-            $this->properties[$propertyName] = $property;
-            // Set up fuzzy matching
-            $this->normalizedPropertyNames[$this->normalizePropertyName($propertyName)] = $propertyName;
+    /**
+     * Adds a property to ignore during encoding
+     *
+     * @param string $type The type whose property we're ignoring
+     * @param string $propertyName The name of the property to ignore
+     */
+    public function addIgnoredProperty(string $type, string $propertyName): void
+    {
+        if (!isset($this->ignoredEncodedPropertyNamesByType[$type])) {
+            $this->ignoredEncodedPropertyNamesByType[$type] = [];
         }
+
+        $this->ignoredEncodedPropertyNamesByType[$type][$this->encodePropertyName($propertyName)] = true;
     }
 
     /**
      * @inheritdoc
      */
-    public function decode($objectHash, array $encodingInterceptors = []): object
+    public function decode($objectHash, string $type)
     {
-        if (!\is_array($objectHash)) {
-            throw new InvalidArgumentException('Value must be an associative array of properties');
+        if (!\class_exists($type)) {
+            throw new InvalidArgumentException("Type $type is not a valid class name");
         }
 
-        $convertedObjectHash = [];
+        if (!\is_array($objectHash)) {
+            throw new InvalidArgumentException('Value must be an associative array');
+        }
 
-        foreach ($objectHash as $encodedPropertyName => $encodedPropertyValue) {
-            if (($property = $this->getProperty($encodedPropertyName)) === null) {
-                // This property wasn't defined in the encoder, so ignore it
+        $reflectionClass = new ReflectionClass($type);
+        $encodedHashPropertyNames = $this->encodeHashProperties($objectHash);
+        $constructorParams = [];
+        $constructor = $reflectionClass->getConstructor();
+
+        if ($constructor === null) {
+            return $reflectionClass->newInstance();
+        }
+
+        foreach ($constructor->getParameters() as $constructorParam) {
+            $encodedConstructorParamName = $this->encodePropertyName($constructorParam->getName());
+
+            if (isset($encodedHashPropertyNames[$encodedConstructorParamName])) {
+                $constructorParamValue = $objectHash[$encodedHashPropertyNames[$encodedConstructorParamName]];
+                $decodedConstructorParamValue = $this->decodeConstructorParamValue(
+                    $constructorParam,
+                    $constructorParamValue,
+                    $reflectionClass,
+                    $encodedConstructorParamName
+                );
+
+                if ($constructorParam->isVariadic()) {
+                    $constructorParams = array_merge($constructorParams, $decodedConstructorParamValue);
+                } else {
+                    $constructorParams[] = $decodedConstructorParamValue;
+                }
+            } elseif ($constructorParam->isDefaultValueAvailable()) {
+                $constructorParams[] = $constructorParam->getDefaultValue();
+            } elseif ($constructorParam->allowsNull()) {
+                // The property wasn't in the hash, but the parameter is nullable
+                $constructorParams[] = null;
+            } else {
+                throw new EncodingException("No value specified for parameter \"{$constructorParam->getName()}\"");
+            }
+        }
+
+        return $reflectionClass->newInstanceArgs($constructorParams);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function encode($object, array $interceptors = [])
+    {
+        if (!\is_object($object)) {
+            throw new InvalidArgumentException('Value must be an object');
+        }
+
+        $encodedObject = [];
+        $reflectionObject = new ReflectionObject($object);
+
+        foreach ($reflectionObject->getProperties() as $property) {
+            if ($this->propertyIsIgnored($reflectionObject->getName(), $property->getName())) {
                 continue;
             }
 
-            $convertedObjectHash[$property->getName()] = $this->decodePropertyValue(
-                $property,
-                $encodedPropertyValue,
-                $encodingInterceptors
+            if (!$property->isPublic()) {
+                $property->setAccessible(true);
+            }
+
+            $formattedPropertyName = $this->propertyNameFormatter === null ?
+                $property->getName() :
+                $this->propertyNameFormatter->formatPropertyName($property->getName());
+            $encodedObject[$formattedPropertyName] = $this->parentEncoder->encode(
+                $property->getValue($object),
+                $interceptors
             );
         }
 
-        foreach ($encodingInterceptors as $encodingInterceptor) {
-            $convertedObjectHash = $encodingInterceptor->onPreDecoding($convertedObjectHash, $this->type);
-        }
-
-        return ($this->constructor)($convertedObjectHash);
+        return $encodedObject;
     }
 
     /**
-     * @inheritdoc
+     * Decodes a constructor parameter value
+     *
+     * @param ReflectionParameter $constructorParam The constructor parameter to decode
+     * @param mixed $constructorParamValue The encoded construtctor parameter value
+     * @param ReflectionClass $reflectionClass The reflection class we're trying to instantiate
+     * @param string $encodedHashPropertyName The encoded property name from the hash
+     * @return mixed The decoded constructor parameter value
+     * @throws EncodingException Thrown if the value could not be automatically decoded
      */
-    public function encode($object, array $encodingInterceptors = []): array
-    {
-        $objectHash = [];
+    protected function decodeConstructorParamValue(
+        ReflectionParameter $constructorParam,
+        $constructorParamValue,
+        ReflectionClass $reflectionClass,
+        string $encodedHashPropertyName
+    ) {
+        if ($constructorParam->hasType() && !$constructorParam->isArray() && !$constructorParam->isVariadic()) {
+            return $this->parentEncoder->decode($constructorParamValue, $constructorParam->getType());
+        }
 
-        foreach ($this->properties as $property) {
-            $propertyValue = $property->getValue($object);
-            $objectHash[$property->getName()] = $this->encodePropertyValue(
-                $property,
-                $propertyValue,
-                $encodingInterceptors
+        if ($constructorParam->isVariadic() || $constructorParam->isArray()) {
+            if (!\is_array($constructorParamValue)) {
+                throw new EncodingException('Value must be an array');
+            }
+
+            if (\count($constructorParamValue) === 0) {
+                return [];
+            }
+
+            if ($constructorParam->isVariadic() && $constructorParam->hasType()) {
+                return $this->parentEncoder->decode($constructorParamValue, $constructorParam->getType() . '[]');
+            }
+
+            if (\is_object($constructorParamValue[0])) {
+                return $this->parentEncoder->decode(
+                    $constructorParamValue,
+                    \get_class($constructorParamValue[0]) . '[]'
+                );
+            }
+
+            return $this->parentEncoder->decode(
+                $constructorParamValue,
+                gettype($constructorParamValue[0]) . '[]'
             );
         }
 
-        foreach ($encodingInterceptors as $encodingInterceptor) {
-            $objectHash = $encodingInterceptor->onPostEncoding($objectHash, $this->type);
+        // Check if we can infer the type from any getters or setters
+        foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+            if (
+                !$reflectionMethod->hasReturnType() ||
+                $reflectionMethod->getReturnType() === 'array' ||
+                $reflectionMethod->isConstructor() ||
+                $reflectionMethod->isDestructor() ||
+                $reflectionMethod->getNumberOfRequiredParameters() > 0
+            ) {
+                continue;
+            }
+
+            $propertyName = null;
+
+            // Try to extract the property name from the getter/has-er/is-er
+            if (substr($reflectionMethod->name, 0, 3) === 'get' || substr($reflectionMethod->name, 0, 3) === 'has') {
+                $propertyName = lcfirst(substr($reflectionMethod->name, 3));
+            } elseif (substr($reflectionMethod->name, 0, 2) === 'is') {
+                $propertyName = lcfirst(substr($reflectionMethod->name, 2));
+            }
+
+            if ($propertyName === null) {
+                continue;
+            }
+
+            $encodedPropertyName = $this->encodePropertyName($propertyName);
+
+            // This getter matches the property name we're looking for
+            if ($encodedPropertyName === $encodedHashPropertyName) {
+                return $this->parentEncoder->decode($constructorParamValue, $reflectionMethod->getReturnType());
+            }
         }
 
-        return $objectHash;
+        // At this point, let's just check if the value we're trying to decode is a scalar, and if so, just return it
+        if (\is_scalar($constructorParamValue)) {
+            return $this->parentEncoder->decode($constructorParamValue, \gettype($constructorParamValue));
+        }
+
+        throw new EncodingException("Failed to decode constructor parameter {$constructorParam->getName()}");
     }
 
     /**
-     * Gets the property with the input name
+     * Gets the encoded hash property names to original names
      *
-     * @param string $propertyName The name of the property we want (with fuzzy matching fallback)
-     * @return Property|null The property if one existed, otherwise null
+     * @param array $objectHash The object hash whose properties we're encoding
+     * @return array The mapping of encoded names to original names
      */
-    protected function getProperty(string $propertyName): ?Property
+    protected function encodeHashProperties(array $objectHash): array
     {
-        // First, try an exact match
-        if (isset($this->properties[$propertyName])) {
-            return $this->properties[$propertyName];
+        $encodedHashProperties = [];
+
+        foreach ($objectHash as $propertyName => $propertyValue) {
+            $encodedHashProperties[$this->encodePropertyName($propertyName)] = $propertyName;
         }
 
-        // Next, try fuzzy matching
-        $normalizedPropertyName = $this->normalizePropertyName($propertyName);
-
-        if (isset($this->normalizedPropertyNames[$normalizedPropertyName])) {
-            return $this->properties[$this->normalizedPropertyNames[$normalizedPropertyName]];
-        }
-
-        return null;
+        return $encodedHashProperties;
     }
 
     /**
-     * Normalizes a property name to support fuzzy matching
+     * Encodes a property name to support fuzzy matching
      *
-     * @param string $propertyName The property name to normalize
-     * @return string The normalized property name
+     * @param string $propertyName The property name to encode
+     * @return string The encoded property name
      */
-    protected function normalizePropertyName(string $propertyName): string
+    protected function encodePropertyName(string $propertyName): string
     {
         return strtolower(str_replace('_', '', $propertyName));
     }
 
     /**
-     * Decodes a property value
+     * Checks whether or not a property on a type is ignored
      *
-     * @param Property $property The property whose value we're decoding
-     * @param mixed $encodedPropertyValue The encoded property value
-     * @param IEncodedInterceptor[] $encodingInterceptors The list of encoding interceptors
-     * @return mixed The decoded property value
-     * @throws EncodingException Thrown if a non-nullable value is null
+     * @param string $type The type to check
+     * @param string $propertyName The property name to check
+     * @return bool True if the property should be ignored, otherwise false
      */
-    private function decodePropertyValue(Property $property, $encodedPropertyValue, array $encodingInterceptors)
+    protected function propertyIsIgnored(string $type, string $propertyName): bool
     {
-        // Automatically decode the property value if it also has an encoder
-        if ($encodedPropertyValue === null) {
-            if (!$property->isNullable()) {
-                throw new EncodingException("Property {$property->getName()} cannot be null");
-            }
-
-            // Purposely don't go to the encoder for this type - just set the decoded value to null
-            return null;
-        }
-
-        if (!$this->encoders->hasEncoderForType($property->getType())) {
-            return $encodedPropertyValue;
-        }
-
-        $propertyEncoder = $this->encoders->getEncoderForType($property->getType());
-
-        if (!$property->isArrayOfType()) {
-            return $propertyEncoder->decode($encodedPropertyValue, $encodingInterceptors);
-        }
-
-        $decodedPropertyValues = [];
-
-        foreach ($encodedPropertyValue as $singlePropertyValue) {
-            $decodedPropertyValues[] = $propertyEncoder->decode($singlePropertyValue, $encodingInterceptors);
-        }
-
-        return $decodedPropertyValues;
-    }
-
-    /**
-     * Encodes a property value
-     *
-     * @param Property $property The property whose value we're encoding
-     * @param mixed $propertyValue The property value to encode
-     * @param array $encodingInterceptors The list of encoding interceptors
-     * @return mixed The encoded property value
-     * @throws EncodingException Thrown if a non-nullable value is null
-     */
-    private function encodePropertyValue(Property $property, $propertyValue, array $encodingInterceptors)
-    {
-        // Automatically encode the property value if it also has an encoder
-        if ($propertyValue === null) {
-            if (!$property->isNullable()) {
-                throw new EncodingException("Property {$property->getName()} cannot be null");
-            }
-
-            // Purposely don't go to the encoder for this type - just set the encoded value to null
-            return null;
-        }
-
-        if (!$this->encoders->hasEncoderForType($property->getType())) {
-            return $propertyValue;
-        }
-
-        $propertyEncoder = $this->encoders->getEncoderForType($property->getType());
-
-        if (!$property->isArrayOfType()) {
-            return $propertyEncoder->encode($propertyValue, $encodingInterceptors);
-        }
-
-        $encodedPropertyValues = [];
-
-        foreach ($propertyValue as $singlePropertyValue) {
-            $encodedPropertyValues[] = $propertyEncoder->encode($singlePropertyValue, $encodingInterceptors);
-        }
-
-        return $encodedPropertyValues;
+        return isset($this->ignoredEncodedPropertyNamesByType[$type]) &&
+            isset($this->ignoredEncodedPropertyNamesByType[$type][$this->encodePropertyName($propertyName)]);
     }
 }

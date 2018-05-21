@@ -8,137 +8,89 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Tests;
+namespace Opulence\Serialization\Tests\Encoding;
 
-use DateTime;
 use Opulence\Serialization\Encoding\EncoderRegistry;
-use Opulence\Serialization\Encoding\ObjectEncoder;
-use Opulence\Serialization\Encoding\Property;
-use Opulence\Serialization\Encoding\StructEncoder;
-use Opulence\Serialization\Tests\Mocks\User;
-use OutOfBoundsException;
+use Opulence\Serialization\Encoding\IEncoder;
+use Opulence\Serialization\Tests\Encoding\Mocks\User;
 
 /**
  * Tests the encoder registry
  */
 class EncoderRegistryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var EncoderRegistry The registry to use in tests */
-    private $encoders;
+    /** @var EncoderRegistry The encoder registry to test */
+    private $encoderRegistry;
+    /** @var IEncoder The default object encoder */
+    private $defaultObjectEncoder;
+    /** @var IEncoder The default scalar encoder */
+    private $defaultScalarEncoder;
 
     public function setUp(): void
     {
-        $this->encoders = new EncoderRegistry();
+        $this->defaultObjectEncoder = $this->createMock(IEncoder::class);
+        $this->defaultScalarEncoder = $this->createMock(IEncoder::class);
+        $this->encoderRegistry = new EncoderRegistry($this->defaultObjectEncoder, $this->defaultScalarEncoder);
     }
 
-    public function testGettingEncoderByObjectValueGetsEncoderRegisteredForItsType(): void
+    public function testGettingEncoderByTypeForArrayOfTypeGetsEncoderForArray(): void
     {
-        $expectedEncoder = new StructEncoder(
-            DateTime::class,
-            function ($value) {
-                return DateTime::createFromFormat(DateTime::ISO8601, $value);
-            },
-            function (DateTime $value) {
-                return $value->format(DateTime::ISO8601);
-            }
-        );
-        $this->encoders->registerEncoder($expectedEncoder);
-        $this->assertSame($expectedEncoder, $this->encoders->getEncoderForValue(new DateTime));
+        $arrayEncoder = $this->createMock(IEncoder::class);
+        $this->encoderRegistry->registerEncoder('array', $arrayEncoder);
+        $this->assertSame($arrayEncoder, $this->encoderRegistry->getEncoderForType('foo[]'));
     }
 
-    public function testGettingEncoderByScalarValueGetsEncoderRegisteredForItsType(): void
+    public function testGettingEncoderByTypeForObjectUsesDefaultEncoder(): void
     {
-        $expectedEncoder = new StructEncoder(
-            'int',
-            function ($value) {
-                return (int)$value;
-            },
-            function (int $value) {
-                return $value;
-            }
-        );
-        $this->encoders->registerEncoder($expectedEncoder);
-        $this->assertSame($expectedEncoder, $this->encoders->getEncoderForValue(123));
+        $this->assertSame($this->defaultObjectEncoder, $this->encoderRegistry->getEncoderForType(User::class));
     }
 
-    public function testGettingEncoderByTypeGetsEncoderWithThatType(): void
+    public function testGettingEncoderByTypeForScalarUsesDefaultEncoder(): void
     {
-        $expectedEncoder = new StructEncoder(
-            'int',
-            function ($value) {
-                return (int)$value;
-            },
-            function (int $value) {
-                return $value;
-            }
-        );
-        $this->encoders->registerEncoder($expectedEncoder);
-        $this->assertSame($expectedEncoder, $this->encoders->getEncoderForType('int'));
-        $this->assertSame($expectedEncoder, $this->encoders->getEncoderForType('integer'));
+        $this->assertSame($this->defaultScalarEncoder, $this->encoderRegistry->getEncoderForType('int'));
     }
 
-    public function testGettingEncoderForTypeWithoutEncoderThrowsException(): void
+    public function testGettingEncoderByTypeUsesCustomEncoderIfOneIsRegistered(): void
     {
-        $this->expectException(OutOfBoundsException::class);
-        $this->encoders->getEncoderForType('foo');
+        $expectedEncoder = $this->createMock(IEncoder::class);
+        $this->encoderRegistry->registerEncoder('foo', $expectedEncoder);
+        $this->assertSame($expectedEncoder, $this->encoderRegistry->getEncoderForType('foo'));
     }
 
-    public function testGettingEncoderForValueWithoutEncoderThrowsException(): void
+    public function testGettingEncoderByTypeNormalizesType(): void
     {
-        $this->expectException(OutOfBoundsException::class);
-        $this->encoders->getEncoderForValue($this);
+        $data = [
+            ['bool', 'boolean', $this->createMock(IEncoder::class)],
+            ['float', 'double', $this->createMock(IEncoder::class)],
+            ['int', 'integer', $this->createMock(IEncoder::class)]
+        ];
+
+        foreach ($data as $datum) {
+            $this->encoderRegistry->registerEncoder($datum[0], $datum[2]);
+            $this->assertSame($datum[2], $this->encoderRegistry->getEncoderForType($datum[1]));
+        }
     }
 
-    public function testRegisteringObjectEncoderCreatesAnInstanceOfOne(): void
+    public function testGettingEncoderByValueForObjectUsesDefaultEncoder(): void
     {
-        $expectedEncoder = new ObjectEncoder(
-            User::class,
-            $this->encoders,
-            function (array $hash) {
-                return new User($hash['id'], $hash['email']);
-            },
-            new Property('id', 'int', function (User $user) {
-                return $user->getId();
-            }),
-            new Property('email', 'string', function (User $user) {
-                return $user->getEmail();
-            })
+        $this->assertSame(
+            $this->defaultObjectEncoder,
+            $this->encoderRegistry->getEncoderForValue(new User(123, 'foo@bar.com'))
         );
-        $this->encoders->registerObjectEncoder(
-            User::class,
-            function (array $hash) {
-                return new User($hash['id'], $hash['email']);
-            },
-            new Property('id', 'int', function (User $user) {
-                return $user->getId();
-            }),
-            new Property('email', 'string', function (User $user) {
-                return $user->getEmail();
-            })
-        );
-        $this->assertEquals($expectedEncoder, $this->encoders->getEncoderForType(User::class));
     }
 
-    public function testRegisteringStructEncoderCreatesAnInstanceOfOne(): void
+    public function testGettingEncoderByValueForScalarUsesDefaultEncoder(): void
     {
-        $expectedEncoder = new StructEncoder(
-            'int',
-            function ($value) {
-                return (int)$value;
-            },
-            function (int $value) {
-                return $value;
-            }
+        $this->assertSame(
+            $this->defaultScalarEncoder,
+            $this->encoderRegistry->getEncoderForValue(123)
         );
-        $this->encoders->registerStructEncoder(
-            'int',
-            function ($value) {
-                return (int)$value;
-            },
-            function (int $value) {
-                return $value;
-            }
-        );
-        $this->assertEquals($expectedEncoder, $this->encoders->getEncoderForType('int'));
+    }
+
+    public function testGettingEncoderByValueUsesCustomEncoderIfOneIsRegistered(): void
+    {
+        $expectedEncoder = $this->createMock(IEncoder::class);
+        $this->encoderRegistry->registerEncoder(User::class, $expectedEncoder);
+        $this->assertSame($expectedEncoder, $this->encoderRegistry->getEncoderForValue(new User(123, 'foo@bar.com')));
     }
 }
