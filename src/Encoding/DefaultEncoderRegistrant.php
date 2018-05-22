@@ -34,13 +34,16 @@ class DefaultEncoderRegistrant
      * Registers the default encoders
      *
      * @param EncoderRegistry $encoders The encoders to register to
+     * @return EncoderRegistry The registry with the default encoders registered
      */
-    public function registerDefaultEncoders(EncoderRegistry $encoders): void
+    public function registerDefaultEncoders(EncoderRegistry $encoders): EncoderRegistry
     {
         $encoders->registerEncoder('array', new ArrayEncoder($encoders));
         $dateTimeEncoder = new DateTimeEncoder($this->dateTimeFormat);
         $encoders->registerEncoder(DateTime::class, $dateTimeEncoder);
         $encoders->registerEncoder(DateTimeImmutable::class, $dateTimeEncoder);
         $encoders->registerEncoder(DateTimeInterface::class, $dateTimeEncoder);
+
+        return $encoders;
     }
 }

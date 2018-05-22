@@ -13,6 +13,7 @@ namespace Opulence\Serialization\Tests\Encoding;
 use Opulence\Serialization\Encoding\EncoderRegistry;
 use Opulence\Serialization\Encoding\IEncoder;
 use Opulence\Serialization\Tests\Encoding\Mocks\User;
+use OutOfBoundsException;
 
 /**
  * Tests the encoder registry
@@ -21,16 +22,10 @@ class EncoderRegistryTest extends \PHPUnit\Framework\TestCase
 {
     /** @var EncoderRegistry The encoder registry to test */
     private $encoderRegistry;
-    /** @var IEncoder The default object encoder */
-    private $defaultObjectEncoder;
-    /** @var IEncoder The default scalar encoder */
-    private $defaultScalarEncoder;
 
     public function setUp(): void
     {
-        $this->defaultObjectEncoder = $this->createMock(IEncoder::class);
-        $this->defaultScalarEncoder = $this->createMock(IEncoder::class);
-        $this->encoderRegistry = new EncoderRegistry($this->defaultObjectEncoder, $this->defaultScalarEncoder);
+        $this->encoderRegistry = new EncoderRegistry();
     }
 
     public function testGettingEncoderByTypeForArrayOfTypeGetsEncoderForArray(): void
@@ -42,12 +37,28 @@ class EncoderRegistryTest extends \PHPUnit\Framework\TestCase
 
     public function testGettingEncoderByTypeForObjectUsesDefaultEncoder(): void
     {
-        $this->assertSame($this->defaultObjectEncoder, $this->encoderRegistry->getEncoderForType(User::class));
+        $encoder = $this->createMock(IEncoder::class);
+        $this->encoderRegistry->registerDefaultObjectEncoder($encoder);
+        $this->assertSame($encoder, $this->encoderRegistry->getEncoderForType(User::class));
+    }
+
+    public function testGettingEncoderByTypeForObjectWithoutEncoderThrowsException(): void
+    {
+        $this->expectException(OutOfBoundsException::class);
+        $this->encoderRegistry->getEncoderForType(User::class);
     }
 
     public function testGettingEncoderByTypeForScalarUsesDefaultEncoder(): void
     {
-        $this->assertSame($this->defaultScalarEncoder, $this->encoderRegistry->getEncoderForType('int'));
+        $encoder = $this->createMock(IEncoder::class);
+        $this->encoderRegistry->registerDefaultScalarEncoder($encoder);
+        $this->assertSame($encoder, $this->encoderRegistry->getEncoderForType('int'));
+    }
+
+    public function testGettingEncoderByTypeForScalarWithoutEncoderThrowsException(): void
+    {
+        $this->expectException(OutOfBoundsException::class);
+        $this->encoderRegistry->getEncoderForType('int');
     }
 
     public function testGettingEncoderByTypeUsesCustomEncoderIfOneIsRegistered(): void
@@ -73,18 +84,16 @@ class EncoderRegistryTest extends \PHPUnit\Framework\TestCase
 
     public function testGettingEncoderByValueForObjectUsesDefaultEncoder(): void
     {
-        $this->assertSame(
-            $this->defaultObjectEncoder,
-            $this->encoderRegistry->getEncoderForValue(new User(123, 'foo@bar.com'))
-        );
+        $encoder = $this->createMock(IEncoder::class);
+        $this->encoderRegistry->registerDefaultObjectEncoder($encoder);
+        $this->assertSame($encoder, $this->encoderRegistry->getEncoderForValue(new User(123, 'foo@bar.com')));
     }
 
     public function testGettingEncoderByValueForScalarUsesDefaultEncoder(): void
     {
-        $this->assertSame(
-            $this->defaultScalarEncoder,
-            $this->encoderRegistry->getEncoderForValue(123)
-        );
+        $encoder = $this->createMock(IEncoder::class);
+        $this->encoderRegistry->registerDefaultScalarEncoder($encoder);
+        $this->assertSame($encoder, $this->encoderRegistry->getEncoderForValue(123));
     }
 
     public function testGettingEncoderByValueUsesCustomEncoderIfOneIsRegistered(): void

@@ -11,6 +11,7 @@
 namespace Opulence\Serialization\Encoding;
 
 use Opulence\Serialization\TypeResolver;
+use OutOfBoundsException;
 
 /**
  * Defines a registry of encoders
@@ -23,16 +24,6 @@ class EncoderRegistry
     private $defaultObjectEncoder;
     /** @var IEncoder The default scalar encoder */
     private $defaultScalarEncoder;
-
-    /**
-     * @param IEncoder $defaultObjectEncoder The default object encoder
-     * @param IEncoder $defaultScalarEncoder The default scalar encoder
-     */
-    public function __construct(IEncoder $defaultObjectEncoder, IEncoder $defaultScalarEncoder)
-    {
-        $this->defaultObjectEncoder = $defaultObjectEncoder;
-        $this->defaultScalarEncoder = $defaultScalarEncoder;
-    }
 
     /**
      * Gets the encoder for a type
@@ -49,7 +40,15 @@ class EncoderRegistry
         }
 
         if (\class_exists($type)) {
+            if ($this->defaultObjectEncoder === null) {
+                throw new OutOfBoundsException('No default object encoder is registered');
+            }
+
             return $this->defaultObjectEncoder;
+        }
+
+        if ($this->defaultScalarEncoder === null) {
+            throw new OutOfBoundsException('No default scalar encoder is registered');
         }
 
         return $this->defaultScalarEncoder;
@@ -66,6 +65,26 @@ class EncoderRegistry
     {
         // Note: The type is encoded in getEncoderForType()
         return $this->getEncoderForType(TypeResolver::resolveType($value));
+    }
+
+    /**
+     * Registers a default encoder for objects
+     *
+     * @param IEncoder $encoder The default object encoder
+     */
+    public function registerDefaultObjectEncoder(IEncoder $encoder): void
+    {
+        $this->defaultObjectEncoder = $encoder;
+    }
+
+    /**
+     * Registers a default encoder for scalars
+     *
+     * @param IEncoder $encoder The default scalar encoder
+     */
+    public function registerDefaultScalarEncoder(IEncoder $encoder): void
+    {
+        $this->defaultScalarEncoder = $encoder;
     }
 
     /**

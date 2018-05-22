@@ -17,15 +17,16 @@ use InvalidArgumentException;
  */
 class ArrayEncoder implements IEncoder
 {
-    /** @var IEncoder The parent encoder */
-    private $parentEncoder;
+    /** @var EncoderRegistry The encoder registry */
+    private $encoders;
 
     /**
-     * @param IEncoder $parentEncoder The parent encoder
+     * @param EncoderRegistry $encoders The encoder registry
      */
-    public function __construct(IEncoder $parentEncoder)
+    public function __construct(EncoderRegistry $encoders, IPropertyNameFormatter $propertyNameFormatter = null)
     {
-        $this->parentEncoder = $parentEncoder;
+        $this->encoders = $encoders;
+        $this->propertyNameFormatter = $propertyNameFormatter;
     }
 
     /**
@@ -42,10 +43,11 @@ class ArrayEncoder implements IEncoder
         }
 
         $actualType = substr($type, 0, -2);
+        $encoder = $this->encoders->getEncoderForType($actualType);
         $decodedValues = [];
 
         foreach ($values as $value) {
-            $decodedValues[] = $this->parentEncoder->decode($value, $actualType);
+            $decodedValues[] = $encoder->decode($value, $actualType);
         }
 
         return $decodedValues;
@@ -67,7 +69,8 @@ class ArrayEncoder implements IEncoder
         $encodedValues = [];
 
         foreach ($values as $value) {
-            $encodedValues[] = $this->parentEncoder->encode($value);
+            $encodedValues[] = $this->encoders->getEncoderForValue($value)
+                ->encode($value);
         }
 
         return $encodedValues;

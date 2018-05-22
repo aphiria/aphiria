@@ -12,6 +12,7 @@ namespace Opulence\Serialization\Tests\Encoding;
 
 use InvalidArgumentException;
 use Opulence\Serialization\Encoding\ArrayEncoder;
+use Opulence\Serialization\Encoding\EncoderRegistry;
 use Opulence\Serialization\Encoding\IEncoder;
 
 /**
@@ -19,27 +20,29 @@ use Opulence\Serialization\Encoding\IEncoder;
  */
 class ArrayEncoderTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var IParentEncoder The parent encoder */
-    private $parentEncoder;
+    /** @var EncoderRegistry The encoder registry */
+    private $encoders;
     /** @var ArrayEncoder The encoder to use in tests */
     private $arrayEncoder;
 
     public function setUp(): void
     {
-        $this->parentEncoder = $this->createMock(IEncoder::class);
-        $this->arrayEncoder = new ArrayEncoder($this->parentEncoder);
+        $this->encoders = new EncoderRegistry();
+        $this->arrayEncoder = new ArrayEncoder($this->encoders);
     }
 
     public function testDecodingCallsParentDecoderOnEachElement(): void
     {
-        $this->parentEncoder->expects($this->at(0))
+        $encoder = $this->createMock(IEncoder::class);
+        $encoder->expects($this->at(0))
             ->method('decode')
             ->with(123, 'int')
             ->willReturn(123);
-        $this->parentEncoder->expects($this->at(1))
+        $encoder->expects($this->at(1))
             ->method('decode')
             ->with(456, 'int')
             ->willReturn(456);
+        $this->encoders->registerEncoder('int', $encoder);
         $this->assertEquals([123, 456], $this->arrayEncoder->decode([123, 456], 'int[]'));
     }
 
@@ -57,14 +60,16 @@ class ArrayEncoderTest extends \PHPUnit\Framework\TestCase
 
     public function testEncodingCallsParentEncoderOnEachElement(): void
     {
-        $this->parentEncoder->expects($this->at(0))
+        $encoder = $this->createMock(IEncoder::class);
+        $encoder->expects($this->at(0))
             ->method('encode')
             ->with(123)
             ->willReturn(123);
-        $this->parentEncoder->expects($this->at(1))
+        $encoder->expects($this->at(1))
             ->method('encode')
             ->with(456)
             ->willReturn(456);
+        $this->encoders->registerEncoder('int', $encoder);
         $this->assertEquals([123, 456], $this->arrayEncoder->encode([123, 456]));
     }
 }

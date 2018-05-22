@@ -11,6 +11,7 @@
 namespace Opulence\Serialization\Encoding;
 
 use InvalidArgumentException;
+use OutOfBoundsException;
 
 /**
  * Defines the interface for encoders to implement
@@ -25,6 +26,7 @@ interface IEncoder
      * @return mixed An instance of the type
      * @throws EncodingException Thrown if there was an error decoding the value
      * @throws InvalidArgumentException Thrown if the input value is not of the expected type
+     * @throws OutOfBoundsException Thrown if there is no encoder for the input type
      */
     public function decode($value, string $type);
 
@@ -35,6 +37,7 @@ interface IEncoder
      * @return mixed The encoded value
      * @throws EncodingException Thrown if there was an error encoding the value
      * @throws InvalidArgumentException Thrown if the input value is not of the expected type
+     * @throws OutOfBoundsException Thrown if there is no encoder for the input value
      */
     public function encode($value);
 }

@@ -15,26 +15,27 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionObject;
 use ReflectionParameter;
+use ReflectionProperty;
 
 /**
  * Defines an object encoder
  */
 class ObjectEncoder implements IEncoder
 {
-    /** @var IEncoder The parent encoder */
-    private $parentEncoder;
+    /** @var EncoderRegistry The encoder registry */
+    private $encoders;
     /** @var IPropertyNameFormatter|null The property name formatter to use */
     private $propertyNameFormatter;
     /** @var array The mapping of types to encoded property names to ignore */
     private $ignoredEncodedPropertyNamesByType = [];
 
     /**
-     * @param IEncoder $parentEncoder The parent encoder
+     * @param EncoderRegistry $encoders The encoder registry
      * @param IPropertyNameFormatter|null $propertyNameFormatter The property name formatter to use
      */
-    public function __construct(IEncoder $parentEncoder, IPropertyNameFormatter $propertyNameFormatter = null)
+    public function __construct(EncoderRegistry $encoders, IPropertyNameFormatter $propertyNameFormatter = null)
     {
-        $this->parentEncoder = $parentEncoder;
+        $this->encoders = $encoders;
         $this->propertyNameFormatter = $propertyNameFormatter;
     }
 
@@ -68,47 +69,62 @@ class ObjectEncoder implements IEncoder
 
         $reflectionClass = new ReflectionClass($type);
         $encodedHashPropertyNames = $this->encodeHashProperties($objectHash);
+        $encodedHashPropertyNamesNotUsed = $encodedHashPropertyNames;
         $constructorParams = [];
         $constructor = $reflectionClass->getConstructor();
 
         if ($constructor === null) {
-            return $reflectionClass->newInstance();
-        }
+            $object = $reflectionClass->newInstance();
+        } else {
+            foreach ($constructor->getParameters() as $constructorParam) {
+                $encodedConstructorParamName = $this->encodePropertyName($constructorParam->getName());
 
-        foreach ($constructor->getParameters() as $constructorParam) {
-            $encodedConstructorParamName = $this->encodePropertyName($constructorParam->getName());
+                if (isset($encodedHashPropertyNames[$encodedConstructorParamName])) {
+                    $constructorParamValue = $objectHash[$encodedHashPropertyNames[$encodedConstructorParamName]];
+                    $decodedConstructorParamValue = $this->decodeConstructorParamValue(
+                        $constructorParam,
+                        $constructorParamValue,
+                        $reflectionClass,
+                        $encodedConstructorParamName
+                    );
 
-            if (isset($encodedHashPropertyNames[$encodedConstructorParamName])) {
-                $constructorParamValue = $objectHash[$encodedHashPropertyNames[$encodedConstructorParamName]];
-                $decodedConstructorParamValue = $this->decodeConstructorParamValue(
-                    $constructorParam,
-                    $constructorParamValue,
-                    $reflectionClass,
-                    $encodedConstructorParamName
-                );
+                    if ($constructorParam->isVariadic()) {
+                        $constructorParams = array_merge($constructorParams, $decodedConstructorParamValue);
+                    } else {
+                        $constructorParams[] = $decodedConstructorParamValue;
+                    }
 
-                if ($constructorParam->isVariadic()) {
-                    $constructorParams = array_merge($constructorParams, $decodedConstructorParamValue);
+                    unset($encodedHashPropertyNamesNotUsed[$encodedConstructorParamName]);
+                } elseif ($constructorParam->isDefaultValueAvailable()) {
+                    $constructorParams[] = $constructorParam->getDefaultValue();
+                } elseif ($constructorParam->allowsNull()) {
+                    // The property wasn't in the hash, but the parameter is nullable
+                    $constructorParams[] = null;
                 } else {
-                    $constructorParams[] = $decodedConstructorParamValue;
+                    throw new EncodingException("No value specified for parameter \"{$constructorParam->getName()}\"");
                 }
-            } elseif ($constructorParam->isDefaultValueAvailable()) {
-                $constructorParams[] = $constructorParam->getDefaultValue();
-            } elseif ($constructorParam->allowsNull()) {
-                // The property wasn't in the hash, but the parameter is nullable
-                $constructorParams[] = null;
-            } else {
-                throw new EncodingException("No value specified for parameter \"{$constructorParam->getName()}\"");
             }
         }
 
-        return $reflectionClass->newInstanceArgs($constructorParams);
+        $object = $reflectionClass->newInstanceArgs($constructorParams);
+
+        foreach ($reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC) as $publicProperty) {
+            $encodedPropertyName = $this->encodePropertyName($publicProperty->getName());
+
+            if (isset($encodedHashPropertyNamesNotUsed[$encodedPropertyName])) {
+                // Since public properties aren't typed, we cannot decode it automatically.  So, just use the raw value.
+                $propertyValue = $objectHash[$encodedHashPropertyNames[$encodedPropertyName]];
+                $object->{$publicProperty->getName()} = $propertyValue;
+            }
+        }
+
+        return $object;
     }
 
     /**
      * @inheritdoc
      */
-    public function encode($object, array $interceptors = [])
+    public function encode($object)
     {
         if (!\is_object($object)) {
             throw new InvalidArgumentException('Value must be an object');
@@ -129,10 +145,9 @@ class ObjectEncoder implements IEncoder
             $formattedPropertyName = $this->propertyNameFormatter === null ?
                 $property->getName() :
                 $this->propertyNameFormatter->formatPropertyName($property->getName());
-            $encodedObject[$formattedPropertyName] = $this->parentEncoder->encode(
-                $property->getValue($object),
-                $interceptors
-            );
+            $propertyValue = $property->getValue($object);
+            $encodedObject[$formattedPropertyName] = $this->encoders->getEncoderForValue($propertyValue)
+                ->encode($propertyValue);
         }
 
         return $encodedObject;
@@ -142,7 +157,7 @@ class ObjectEncoder implements IEncoder
      * Decodes a constructor parameter value
      *
      * @param ReflectionParameter $constructorParam The constructor parameter to decode
-     * @param mixed $constructorParamValue The encoded construtctor parameter value
+     * @param mixed $constructorParamValue The encoded constructor parameter value
      * @param ReflectionClass $reflectionClass The reflection class we're trying to instantiate
      * @param string $encodedHashPropertyName The encoded property name from the hash
      * @return mixed The decoded constructor parameter value
@@ -155,7 +170,8 @@ class ObjectEncoder implements IEncoder
         string $encodedHashPropertyName
     ) {
         if ($constructorParam->hasType() && !$constructorParam->isArray() && !$constructorParam->isVariadic()) {
-            return $this->parentEncoder->decode($constructorParamValue, $constructorParam->getType());
+            return $this->encoders->getEncoderForType($constructorParam->getType())
+                ->decode($constructorParamValue, $constructorParam->getType());
         }
 
         if ($constructorParam->isVariadic() || $constructorParam->isArray()) {
@@ -168,20 +184,23 @@ class ObjectEncoder implements IEncoder
             }
 
             if ($constructorParam->isVariadic() && $constructorParam->hasType()) {
-                return $this->parentEncoder->decode($constructorParamValue, $constructorParam->getType() . '[]');
+                $type = $constructorParam->getType() . '[]';
+
+                return $this->encoders->getEncoderForType($type)
+                    ->decode($constructorParamValue, $type);
             }
 
             if (\is_object($constructorParamValue[0])) {
-                return $this->parentEncoder->decode(
-                    $constructorParamValue,
-                    \get_class($constructorParamValue[0]) . '[]'
-                );
+                $type = \get_class($constructorParamValue[0]) . '[]';
+
+                return $this->encoders->getEncoderForType($type)
+                    ->decode($constructorParamValue, $type);
             }
 
-            return $this->parentEncoder->decode(
-                $constructorParamValue,
-                gettype($constructorParamValue[0]) . '[]'
-            );
+            $type = gettype($constructorParamValue[0]) . '[]';
+
+            return $this->encoders->getEncoderForType($type)
+                ->decode($constructorParamValue, $type);
         }
 
         // Check if we can infer the type from any getters or setters
@@ -213,13 +232,17 @@ class ObjectEncoder implements IEncoder
 
             // This getter matches the property name we're looking for
             if ($encodedPropertyName === $encodedHashPropertyName) {
-                return $this->parentEncoder->decode($constructorParamValue, $reflectionMethod->getReturnType());
+                return $this->encoders->getEncoderForType($reflectionMethod->getReturnType())
+                    ->decode($constructorParamValue, $reflectionMethod->getReturnType());
             }
         }
 
         // At this point, let's just check if the value we're trying to decode is a scalar, and if so, just return it
         if (\is_scalar($constructorParamValue)) {
-            return $this->parentEncoder->decode($constructorParamValue, \gettype($constructorParamValue));
+            $type = \gettype($constructorParamValue);
+
+            return $this->encoders->getEncoderForType($type)
+                ->decode($constructorParamValue, $type);
         }
 
         throw new EncodingException("Failed to decode constructor parameter {$constructorParam->getName()}");

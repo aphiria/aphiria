@@ -10,23 +10,26 @@
 
 namespace Opulence\Serialization;
 
+use InvalidArgumentException;
+use Opulence\Serialization\Encoding\DefaultEncoderRegistrant;
+use Opulence\Serialization\Encoding\EncoderRegistry;
 use Opulence\Serialization\Encoding\EncodingException;
-use Opulence\Serialization\Encoding\IEncoder;
+use OutOfBoundsException;
 
 /**
  * Defines a JSON serializer
  */
 class JsonSerializer implements ISerializer
 {
-    /** @var IEncoder The encoder to use to encode/decode values */
-    private $encoder;
+    /** @var EncoderRegistry The encoder registry to use to encode/decode values */
+    private $encoders;
 
     /**
-     * @param IEncoder $encoder The encoder to use to encode/decode values
+     * @param EncoderRegistry|null $encoders The encoder registry to use to encode/decode values
      */
-    public function __construct(IEncoder $encoder)
+    public function __construct(EncoderRegistry $encoders = null)
     {
-        $this->encoder = $encoder;
+        $this->encoders = $encoders ?? (new DefaultEncoderRegistrant)->registerDefaultEncoders(new EncoderRegistry);
     }
 
     /**
@@ -41,8 +44,9 @@ class JsonSerializer implements ISerializer
         }
 
         try {
-            return $this->encoder->decode($encodedValue, $type);
-        } catch (EncodingException $ex) {
+            return $this->encoders->getEncoderForType($type)
+                ->decode($encodedValue, $type);
+        } catch (EncodingException | InvalidArgumentException | OutOfBoundsException $ex) {
             throw new SerializationException('Failed to deserialize value', 0, $ex);
         }
     }
@@ -53,8 +57,9 @@ class JsonSerializer implements ISerializer
     public function serialize($value): string
     {
         try {
-            $encodedValue = $this->encoder->encode($value);
-        } catch (EncodingException $ex) {
+            $encodedValue = $this->encoders->getEncoderForValue($value)
+                ->encode($value);
+        } catch (EncodingException | InvalidArgumentException | OutOfBoundsException $ex) {
             throw new SerializationException('Failed to serialize value', 0, $ex);
         }
 
