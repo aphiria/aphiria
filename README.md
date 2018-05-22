@@ -7,9 +7,10 @@
 2. [Serializers](#serializers)
     1. [JSON Serializer](#json-serializer)
 3. [Encoders](#encoders)
-    1. [Object Encoder](#object-encoder)
-    2. [Custom Encoders](#custom-encoders)
-    3. [DateTime Encoder](#datetime-encoder)
+    1. [Default Encoders](#default-encoders)
+    2. [Object Encoder](#object-encoder)
+    3. [Custom Encoders](#custom-encoders)
+    4. [DateTime Encoder](#datetime-encoder)
 
 <h2 id="introduction">Introduction</h2>
 
@@ -17,15 +18,15 @@ By default, PHP does not have any way to serialize and deserialize POPO objects.
 
 ```php
 $user = new User(123, 'foo@bar.com');
-$jsonSerializer = new JsonSerializer();
-$jsonSerializer->serialize($user); // {"id":123,"email":"foo@bar.com"}
+$serializer = new JsonSerializer();
+$serializer->serialize($user); // {"id":123,"email":"foo@bar.com"}
 ```
 
 Similarly, deserializing an object is simple:
 
 ```php
 $serializedUser = '{"id":123,"email":"foo@bar.com"}';
-$user = $jsonSerializer->deserialize($serializedUser, User::class);
+$user = $serializer->deserialize($serializedUser, User::class);
 ```
 
 <h2 id="serializers">Serializers</h2>
@@ -49,17 +50,17 @@ Serialized value &rarr; [decoded value](#encoders) &rarr; deserialized value
 ```php
 use Opulence\Serialization\JsonSerializer;
 
-$jsonSerializer = new JsonSerializer();
+$serializer = new JsonSerializer();
 ```
 
-If you need to register any [custom encoders](#custom-encoders), set up your `Entity Registry`](#entity-registry), and pass it in to the constructor:
+If you need to register any [custom encoders](#custom-encoders), set up your [`Entity Registry`](#entity-registry), and pass it in to the constructor:
 
 ```php
 use Opulence\Serialization\Encoding\EncoderRegistry;
 
 $encoders = new EncoderRegistry();
 // Set up $encoders...
-$jsonSerializer = new JsonSerializer($encoders);
+$serializer = new JsonSerializer($encoders);
 ```
 
 <h5 id="arrays-of-values">Arrays of Values</h5>
@@ -82,7 +83,20 @@ $serializer->serialize($users);
 
 <h2 id="encoders">Encoders</h2>
 
-Encoders are a way to define how to map your POPOs to values that a serializer can (de)serialize.  For most [objects](#object-encoders), this involves mapping an object to and from an associative array.
+Encoders define how to map your POPOs to values that a serializer can (de)serialize.  For most [objects](#object-encoder), this involves mapping an object to and from an associative array.
+
+<h4 id="default-encoders">Default Encoders</h4>
+
+To make it easier for you, Opulence supports `array` and `DateTime` values via the `ArrayEncoder` and [`DateTimeEncoder`](#datetime-encoder).  If you do not pass in an encoder registry to your serializer, then you're already set.  If you want to customize your encoders, use `DefaultEncoderRegistrant` to register the default encoders:
+
+```php
+use Opulence\Serialization\Encoding\DefaultEncoderRegistrant;
+use Opulence\Serialization\Encoding\EncoderRegistry;
+
+$encoders = new EncoderRegistry();
+(new DefaultEncoderRegistrant)->registerDefaultEncoders($encoders);
+// Register your encoders...
+```
 
 <h4 id="object-encoder">Object Encoder</h4>
 
@@ -116,14 +130,14 @@ $objectEncoder = new ObjectEncoder($encoders, new YourPropertyNameFormatter());
 Due to PHP's type limitations, there are some objects that Opulence just can't (de)serialize automatically.  Some examples include:
 
 * Classes that require custom instantiation/hydration logic
-* Properties inside objects that contain an array of objects
+* Object properties that contain an array of objects
 * Non-scalar public properties
 
-In these cases, you can register your own encoder (must implement `IEncoder`) to the `EntityRegistry`:
+In these cases, you can register your own encoder (which must implement `IEncoder`) to the entity registry:
 
 ```php
 $encoders = new EntityRegistry();
-$encoders->registerEncoder('YourClass', new YourEncoder());
+$encoders->registerEncoder(YourClass::class, new YourEncoder());
 // Pass $encoders into your serializer...
 ```
 
@@ -137,8 +151,8 @@ Now, whenever an instance `YourClass` needs to be (de)serialized, `YourEncoder` 
 use Opulence\Serialization\Encoding\DefaultEncoderRegistrant;
 use Opulence\Serialization\Encoding\EncoderRegistry;
 
-$customDateTimeFormat = 'F j, Y';
 $encoders = new EncoderRegistry();
+$customDateTimeFormat = 'F j, Y';
 (new DefaultEncoderRegistrant($customDateTimeFormat))->registerDefaultEncoders($encoders);
-$jsonSerializer = new JsonSerializer($encoders);
+$serializer = new JsonSerializer($encoders);
 ```
