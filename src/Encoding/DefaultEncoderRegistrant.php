@@ -19,14 +19,19 @@ use DateTimeInterface;
  */
 class DefaultEncoderRegistrant
 {
+    /** @var IPropertyNameFormatter|null The property name formatter to use */
+    private $propertyNameFormatter;
     /** @var string The DateTime format to use */
     private $dateTimeFormat;
 
     /**
      * @param string $dateTimeFormat The DateTime format to use
      */
-    public function __construct(string $dateTimeFormat = DateTime::ISO8601)
-    {
+    public function __construct(
+        IPropertyNameFormatter $propertyNameFormatter = null,
+        string $dateTimeFormat = DateTime::ISO8601
+    ) {
+        $this->propertyNameFormatter = $propertyNameFormatter;
         $this->dateTimeFormat = $dateTimeFormat;
     }
 
@@ -38,6 +43,8 @@ class DefaultEncoderRegistrant
      */
     public function registerDefaultEncoders(EncoderRegistry $encoders): EncoderRegistry
     {
+        $encoders->registerDefaultObjectEncoder(new ObjectEncoder($encoders, $this->propertyNameFormatter));
+        $encoders->registerDefaultScalarEncoder(new ScalarEncoder());
         $encoders->registerEncoder('array', new ArrayEncoder($encoders));
         $dateTimeEncoder = new DateTimeEncoder($this->dateTimeFormat);
         $encoders->registerEncoder(DateTime::class, $dateTimeEncoder);
