@@ -53,7 +53,7 @@ use Opulence\Serialization\JsonSerializer;
 $serializer = new JsonSerializer();
 ```
 
-If you need to register any [custom encoders](#custom-encoders), set up your [`Entity Registry`](#entity-registry), and pass it in to the constructor:
+If you need to register any [custom encoders](#custom-encoders), set up your encoder registry, and pass it in to the constructor:
 
 ```php
 use Opulence\Serialization\Encoding\EncoderRegistry;
@@ -96,6 +96,15 @@ use Opulence\Serialization\Encoding\EncoderRegistry;
 $encoders = new EncoderRegistry();
 (new DefaultEncoderRegistrant)->registerDefaultEncoders($encoders);
 // Register your custom encoders...
+```
+
+If you use this registrant, but want to customize some behavior, you can pass in a [property name formatter](#property-name-formatters) and [date format](#date-encoder):
+
+```php
+$encoderRegistrant = new DefaultEncoderRegistrant(
+    new CamelCasePropertyNameFormatter(),
+    'F j, Y'
+);
 ```
 
 <h4 id="object-encoder">Object Encoder</h4>
