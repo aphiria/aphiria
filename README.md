@@ -98,7 +98,7 @@ $encoders = new EncoderRegistry();
 // Register your custom encoders...
 ```
 
-If you use this registrant, but want to customize some behavior, you can pass in a [property name formatter](#property-name-formatters) and [date format](#date-encoder):
+If you use this registrant, but want to customize some behavior, you can pass in a [property name formatter](#property-name-formatters) and [date format](#datetime-encoder):
 
 ```php
 $encoderRegistrant = new DefaultEncoderRegistrant(
@@ -154,14 +154,4 @@ Now, whenever an instance `YourClass` needs to be (de)serialized, `YourEncoder` 
 
 <h4 id="datetime-encoder">DateTime encoder</h4>
 
-`DateTime` objects are typically serialized to a formatted date string, and deserialized from that string back to an instance of `DateTime`.  Opulence provides `DateTimeEncoder` to provide this functionality. By default, it uses <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601</a> when (de)serializing `DateTime`, `DateTimeImmutable`, and `DateTimeInterface` objects, but you can customize the format:
-
-```php
-use Opulence\Serialization\Encoding\DefaultEncoderRegistrant;
-use Opulence\Serialization\Encoding\EncoderRegistry;
-
-$encoders = new EncoderRegistry();
-$customDateTimeFormat = 'F j, Y';
-(new DefaultEncoderRegistrant($customDateTimeFormat))->registerDefaultEncoders($encoders);
-$serializer = new JsonSerializer($encoders);
-```
+`DateTime` objects are typically serialized to a formatted date string, and deserialized from that string back to an instance of `DateTime`.  Opulence provides `DateTimeEncoder` to provide this functionality. By default, it uses <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601</a> when (de)serializing `DateTime`, `DateTimeImmutable`, and `DateTimeInterface` objects, but you can [customize the format](#default-encoders).
