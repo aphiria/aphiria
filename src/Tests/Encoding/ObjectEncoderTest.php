@@ -16,6 +16,7 @@ use Opulence\Serialization\Encoding\EncodingException;
 use Opulence\Serialization\Encoding\IEncoder;
 use Opulence\Serialization\Encoding\IPropertyNameFormatter;
 use Opulence\Serialization\Encoding\ObjectEncoder;
+use Opulence\Serialization\Encoding\ScalarEncoder;
 use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithArrayParams;
 use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithNullableParams;
 use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedParamAndPublicProperty;
@@ -281,14 +282,15 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
         /** @var IPropertyNameFormatter|\PHPUnit_Framework_MockObject_MockObject $propertyNameFormatter */
         $propertyNameFormatter = $this->createMock(IPropertyNameFormatter::class);
         $objectEncoder = new ObjectEncoder($this->encoders, $propertyNameFormatter);
+        $this->encoders->registerDefaultScalarEncoder(new ScalarEncoder());
         $propertyNameFormatter->expects($this->at(0))
-            ->method('formatPropertName')
+            ->method('formatPropertyName')
             ->with('id')
-            ->returns('_id');
+            ->willReturn('_id');
         $propertyNameFormatter->expects($this->at(1))
-            ->method('formatPropertName')
+            ->method('formatPropertyName')
             ->with('email')
-            ->returns('_email');
+            ->willReturn('_email');
         $user = new User(123, 'foo@bar.com');
         $this->assertEquals(['_id' => 123, '_email' => 'foo@bar.com'], $objectEncoder->encode($user));
     }
