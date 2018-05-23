@@ -54,7 +54,9 @@ class JsonMediaTypeFormatter implements IMediaTypeFormatter
      */
     public function readFromStream(string $type, IStream $stream, bool $readAsArrayOfType = false)
     {
-        return $this->serializer->deserialize((string)$stream, $type, $readAsArrayOfType);
+        $formattedType = $readAsArrayOfType ? $type . '[]' : $type;
+
+        return $this->serializer->deserialize((string)$stream, $formattedType);
     }
 
     /**
