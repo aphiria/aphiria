@@ -95,7 +95,7 @@ use Opulence\Serialization\Encoding\EncoderRegistry;
 
 $encoders = new EncoderRegistry();
 (new DefaultEncoderRegistrant)->registerDefaultEncoders($encoders);
-// Register your encoders...
+// Register your custom encoders...
 ```
 
 <h4 id="object-encoder">Object Encoder</h4>
