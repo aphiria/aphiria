@@ -90,12 +90,12 @@ Encoders define how to map your POPOs to values that a serializer can (de)serial
 To make it easier for you, Opulence encodes/decodes `array` and `DateTime` values via the `ArrayEncoder` and [`DateTimeEncoder`](#datetime-encoder).  `DefaultEncoderRegistrant` registers these default encoders for you.  If you use this registrant, but want to customize some behavior, you can pass in a [property name formatter](#property-name-formatters) and [date format](#datetime-encoder):
 
 ```php
-$encoderRegistry = new EncoderRegistry();
+$encoders = new EncoderRegistry();
 $encoderRegistrant = new DefaultEncoderRegistrant(
     new CamelCasePropertyNameFormatter(),
     'F j, Y'
 );
-$encoderRegistrant->registerDefaultEncoders($encoderRegistry);
+$encoderRegistrant->registerDefaultEncoders($encoders);
 // Pass $encoders into your serializer...
 ```
 
@@ -111,6 +111,7 @@ Sometimes, you might want to ignore some properties when serializing your object
 
 ```php
 // Create encoder registry...
+$objectEncoder = new ObjectEncoder($encoders);
 $objectEncoder->addIgnoredProperty(YourClass::class, 'nameOfPropertyToIgnore');
 $encoders->registerDefaultObjectEncoder($objectEncoder);
 // Pass $encoders into your serializer...
@@ -118,14 +119,7 @@ $encoders->registerDefaultObjectEncoder($objectEncoder);
 
 <h5 id="property-name-formatters">Property Name Formatters</h5>
 
-You might find yourself wanting to make your property names' formats consistent.  For example, you might want to camelCase them.  `CamelCasePropertyNameFormatter` and `SnakeCasePropertyNameFormatter` come out of the box.  To use one (or your own), pass it into `ObjectEncoder`:
-
-```php
-// Create encoder registry...
-$objectEncoder = new ObjectEncoder($encoders, new CamelCasePropertyNameFormatter());
-$encoders->registerDefaultObjectEncoder($objectEncoder);
-// Pass $encoders into your serializer...
-```
+You might find yourself wanting to make your property names' formats consistent.  For example, you might want to camelCase them.  `CamelCasePropertyNameFormatter` and `SnakeCasePropertyNameFormatter` come out of the box.  To use one (or your own), pass it into [`DefaultEncoderRegistrant`](#default-encoders).
 
 <h4 id="custom-encoders">Custom Encoders</h4>
 
