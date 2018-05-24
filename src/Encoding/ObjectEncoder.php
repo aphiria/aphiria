@@ -57,7 +57,7 @@ class ObjectEncoder implements IEncoder
     /**
      * @inheritdoc
      */
-    public function decode($objectHash, string $type)
+    public function decode($objectHash, string $type, EncodingContext $context)
     {
         if (!\class_exists($type)) {
             throw new InvalidArgumentException("Type $type is not a valid class name");
@@ -83,7 +83,8 @@ class ObjectEncoder implements IEncoder
                         $constructorParam,
                         $constructorParamValue,
                         $reflectionClass,
-                        $encodedConstructorParamName
+                        $encodedConstructorParamName,
+                        $context
                     );
 
                     if ($constructorParam->isVariadic()) {
@@ -129,10 +130,14 @@ class ObjectEncoder implements IEncoder
     /**
      * @inheritdoc
      */
-    public function encode($object)
+    public function encode($object, EncodingContext $context)
     {
         if (!\is_object($object)) {
             throw new InvalidArgumentException('Value must be an object');
+        }
+
+        if ($context->isCircularReference($object)) {
+            throw new EncodingException('Circular reference detected');
         }
 
         $encodedObject = [];
@@ -152,7 +157,7 @@ class ObjectEncoder implements IEncoder
                 $this->propertyNameFormatter->formatPropertyName($property->getName());
             $propertyValue = $property->getValue($object);
             $encodedObject[$formattedPropertyName] = $this->encoders->getEncoderForValue($propertyValue)
-                ->encode($propertyValue);
+                ->encode($propertyValue, $context);
         }
 
         return $encodedObject;
@@ -163,12 +168,14 @@ class ObjectEncoder implements IEncoder
      *
      * @param ReflectionParameter $constructorParam The constructor parameter to decode
      * @param mixed $constructorParamValue The encoded constructor parameter value
+     * @param EncodingContext $context The encoding context
      * @return mixed The decoded value
      * @throws EncodingException Thrown if the value was not an array
      */
     protected function decodeArrayOrVariadicConstructorParamValue(
         ReflectionParameter $constructorParam,
-        $constructorParamValue
+        $constructorParamValue,
+        EncodingContext $context
     ) {
         if (!\is_array($constructorParamValue)) {
             throw new EncodingException('Value must be an array');
@@ -182,20 +189,20 @@ class ObjectEncoder implements IEncoder
             $type = $constructorParam->getType() . '[]';
 
             return $this->encoders->getEncoderForType($type)
-                ->decode($constructorParamValue, $type);
+                ->decode($constructorParamValue, $type, $context);
         }
 
         if (\is_object($constructorParamValue[0])) {
             $type = \get_class($constructorParamValue[0]) . '[]';
 
             return $this->encoders->getEncoderForType($type)
-                ->decode($constructorParamValue, $type);
+                ->decode($constructorParamValue, $type, $context);
         }
 
         $type = gettype($constructorParamValue[0]) . '[]';
 
         return $this->encoders->getEncoderForType($type)
-            ->decode($constructorParamValue, $type);
+            ->decode($constructorParamValue, $type, $context);
     }
 
     /**
@@ -205,6 +212,7 @@ class ObjectEncoder implements IEncoder
      * @param mixed $constructorParamValue The encoded constructor parameter value
      * @param ReflectionClass $reflectionClass The reflection class we're trying to instantiate
      * @param string $normalizedHashPropertyName The encoded property name from the hash
+     * @param EncodingContext $context The encoding context
      * @return mixed The decoded constructor parameter value
      * @throws EncodingException Thrown if the value could not be automatically decoded
      */
@@ -212,15 +220,20 @@ class ObjectEncoder implements IEncoder
         ReflectionParameter $constructorParam,
         $constructorParamValue,
         ReflectionClass $reflectionClass,
-        string $normalizedHashPropertyName
+        string $normalizedHashPropertyName,
+        EncodingContext $context
     ) {
         if ($constructorParam->hasType() && !$constructorParam->isArray() && !$constructorParam->isVariadic()) {
             return $this->encoders->getEncoderForType($constructorParam->getType())
-                ->decode($constructorParamValue, $constructorParam->getType());
+                ->decode($constructorParamValue, $constructorParam->getType(), $context);
         }
 
         if ($constructorParam->isVariadic() || $constructorParam->isArray()) {
-            return $this->decodeArrayOrVariadicConstructorParamValue($constructorParam, $constructorParamValue);
+            return $this->decodeArrayOrVariadicConstructorParamValue(
+                $constructorParam,
+                $constructorParamValue,
+                $context
+            );
         }
 
         $decodedValue = null;
@@ -230,6 +243,7 @@ class ObjectEncoder implements IEncoder
                 $reflectionClass,
                 $normalizedHashPropertyName,
                 $constructorParamValue,
+                $context,
                 $decodedValue
             )
         ) {
@@ -241,7 +255,7 @@ class ObjectEncoder implements IEncoder
             $type = \gettype($constructorParamValue);
 
             return $this->encoders->getEncoderForType($type)
-                ->decode($constructorParamValue, $type);
+                ->decode($constructorParamValue, $type, $context);
         }
 
         throw new EncodingException("Failed to decode constructor parameter {$constructorParam->getName()}");
@@ -294,6 +308,7 @@ class ObjectEncoder implements IEncoder
      * @param ReflectionClass $reflectionClass The reflection class
      * @param string $normalizedPropertyName The normalized property name
      * @param mixed $encodedValue The encoded value
+     * @param EncodingContext $context The encoding context
      * @param mixed The decoded value
      * @return bool Returns true if the value was successfully decoded, otherwise false
      */
@@ -301,6 +316,7 @@ class ObjectEncoder implements IEncoder
         ReflectionClass $reflectionClass,
         string $normalizedPropertyName,
         $encodedValue,
+        EncodingContext $context,
         &$decodedValue
     ): bool {
         // Check if we can infer the type from any getters or setters
@@ -333,7 +349,7 @@ class ObjectEncoder implements IEncoder
             // This getter matches the property name we're looking for
             if ($encodedPropertyName === $normalizedPropertyName) {
                 $decodedValue = $this->encoders->getEncoderForType($reflectionMethod->getReturnType())
-                    ->decode($encodedValue, $reflectionMethod->getReturnType());
+                    ->decode($encodedValue, $reflectionMethod->getReturnType(), $context);
 
                 return true;
             }

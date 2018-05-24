@@ -32,7 +32,7 @@ class ArrayEncoder implements IEncoder
     /**
      * @inheritdoc
      */
-    public function decode($values, string $type)
+    public function decode($values, string $type, EncodingContext $context)
     {
         if (substr($type, -2, 2) !== '[]') {
             throw new InvalidArgumentException('Type must end in "[]"');
@@ -47,7 +47,7 @@ class ArrayEncoder implements IEncoder
         $decodedValues = [];
 
         foreach ($values as $value) {
-            $decodedValues[] = $encoder->decode($value, $actualType);
+            $decodedValues[] = $encoder->decode($value, $actualType, $context);
         }
 
         return $decodedValues;
@@ -56,7 +56,7 @@ class ArrayEncoder implements IEncoder
     /**
      * @inheritdoc
      */
-    public function encode($values)
+    public function encode($values, EncodingContext $context)
     {
         if (!\is_array($values)) {
             throw new InvalidArgumentException('Value must be an array');
@@ -70,7 +70,7 @@ class ArrayEncoder implements IEncoder
 
         foreach ($values as $value) {
             $encodedValues[] = $this->encoders->getEncoderForValue($value)
-                ->encode($value);
+                ->encode($value, $context);
         }
 
         return $encodedValues;

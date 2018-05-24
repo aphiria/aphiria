@@ -130,7 +130,7 @@ $encoders->registerDefaultObjectEncoder($objectEncoder);
 You might find yourself wanting to make your property names' formats consistent.  For example, you might want to camelCase them.  `CamelCasePropertyNameFormatter` and `SnakeCasePropertyNameFormatter` come out of the box.  To use one (or your own), pass it into `ObjectEncoder`:
 
 ```php
-$objectEncoder = new ObjectEncoder($encoders, new YourPropertyNameFormatter());
+$objectEncoder = new ObjectEncoder($encoders, new CamelCasePropertyNameFormatter());
 // Register the encoder...
 ```
 
@@ -142,10 +142,10 @@ Due to PHP's type limitations, there are some objects that Opulence just can't (
 * Object properties that contain an array of objects
 * Non-scalar public properties
 
-In these cases, you can register your own encoder (which must implement `IEncoder`) to the entity registry:
+In these cases, you can register your own encoder (which must implement `IEncoder`) to the encoder registry:
 
 ```php
-$encoders = new EntityRegistry();
+$encoders = new Encoderegistry();
 $encoders->registerEncoder(YourClass::class, new YourEncoder());
 // Pass $encoders into your serializer...
 ```

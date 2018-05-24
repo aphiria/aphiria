@@ -11,6 +11,7 @@
 namespace Opulence\Serialization\Tests\Encoding;
 
 use InvalidArgumentException;
+use Opulence\Serialization\Encoding\EncodingContext;
 use Opulence\Serialization\Encoding\ScalarEncoder;
 
 /**
@@ -29,27 +30,27 @@ class ScalarEncoderTest extends \PHPUnit\Framework\TestCase
     public function testDecodingNonScalarThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->scalarEncoder->decode(['foo'], 'string[]');
+        $this->scalarEncoder->decode(['foo'], 'string[]', new EncodingContext());
     }
 
     public function testDecodingScalarsNormalizesType(): void
     {
-        $this->assertTrue($this->scalarEncoder->decode(1, 'bool'));
-        $this->assertTrue($this->scalarEncoder->decode(1, 'boolean'));
-        $this->assertEquals(1.0, $this->scalarEncoder->decode(1.0, 'float'));
-        $this->assertEquals(1.0, $this->scalarEncoder->decode(1.0, 'double'));
-        $this->assertEquals(1, $this->scalarEncoder->decode(1, 'int'));
-        $this->assertEquals(1, $this->scalarEncoder->decode(1, 'integer'));
+        $this->assertTrue($this->scalarEncoder->decode(1, 'bool', new EncodingContext()));
+        $this->assertTrue($this->scalarEncoder->decode(1, 'boolean', new EncodingContext()));
+        $this->assertEquals(1.0, $this->scalarEncoder->decode(1.0, 'float', new EncodingContext()));
+        $this->assertEquals(1.0, $this->scalarEncoder->decode(1.0, 'double', new EncodingContext()));
+        $this->assertEquals(1, $this->scalarEncoder->decode(1, 'int', new EncodingContext()));
+        $this->assertEquals(1, $this->scalarEncoder->decode(1, 'integer', new EncodingContext()));
     }
 
     public function testEncodingNonScalarThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->scalarEncoder->encode([]);
+        $this->scalarEncoder->encode([], new EncodingContext());
     }
 
     public function testEncodingScalarReturnsValue(): void
     {
-        $this->assertSame(123, $this->scalarEncoder->encode(123));
+        $this->assertSame(123, $this->scalarEncoder->encode(123, new EncodingContext()));
     }
 }

@@ -12,11 +12,14 @@ namespace Opulence\Serialization\Tests\Encoding;
 
 use InvalidArgumentException;
 use Opulence\Serialization\Encoding\EncoderRegistry;
+use Opulence\Serialization\Encoding\EncodingContext;
 use Opulence\Serialization\Encoding\EncodingException;
 use Opulence\Serialization\Encoding\IEncoder;
 use Opulence\Serialization\Encoding\IPropertyNameFormatter;
 use Opulence\Serialization\Encoding\ObjectEncoder;
 use Opulence\Serialization\Encoding\ScalarEncoder;
+use Opulence\Serialization\Tests\Encoding\Mocks\CircularReferenceA;
+use Opulence\Serialization\Tests\Encoding\Mocks\CircularReferenceB;
 use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithArrayParams;
 use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithNullableParams;
 use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedParamAndPublicProperty;
@@ -50,40 +53,42 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
     public function testDecodingClassWithArrayConstructorParamThrowsExceptionIfEncodedValueIsNotArray(): void
     {
         $this->expectException(EncodingException::class);
-        $this->objectEncoder->decode(['foo' => 'bar'], ConstructorWithArrayParams::class);
+        $this->objectEncoder->decode(['foo' => 'bar'], ConstructorWithArrayParams::class, new EncodingContext());
     }
 
     public function testDecodingClassWithArrayConstructorParamWorksIfEncodedArrayContainsScalars(): void
     {
+        $context = new EncodingContext();
         $encodedValue = ['foo' => ['bar', 'baz']];
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->at(0))
             ->method('decode')
-            ->with(['bar', 'baz'], 'string[]')
+            ->with(['bar', 'baz'], 'string[]', $context)
             ->willReturn(['bar', 'baz']);
         $this->encoders->registerEncoder('array', $encoder);
-        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithArrayParams::class);
+        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithArrayParams::class, $context);
         $this->assertInstanceOf(ConstructorWithArrayParams::class, $value);
         $this->assertEquals(['bar', 'baz'], $value->getFoo());
     }
 
     public function testDecodingClassWithNoConstructorStillCreatesInstance(): void
     {
-        $value = $this->objectEncoder->decode([], NoConstructor::class);
+        $value = $this->objectEncoder->decode([], NoConstructor::class, new EncodingContext());
         $this->assertInstanceOf(NoConstructor::class, $value);
     }
 
     public function testDecodingClassWithPublicPropertySetsPropertyAfterInstantiation(): void
     {
         $encodedValue = ['foo' => 'dave', 'bar' => 'young'];
+        $context = new EncodingContext();
         $encoder = $this->createMock(IEncoder::class);
         // Public properties aren't decoded, hence why we done set that up on the mock
         $encoder->expects($this->at(0))
             ->method('decode')
-            ->with('young', 'string')
+            ->with('young', 'string', $context)
             ->willReturn('young');
         $this->encoders->registerEncoder('string', $encoder);
-        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithTypedParamAndPublicProperty::class);
+        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithTypedParamAndPublicProperty::class, $context);
         $this->assertInstanceOf(ConstructorWithTypedParamAndPublicProperty::class, $value);
         $this->assertEquals('dave', $value->foo);
         $this->assertEquals('young', $value->getBar());
@@ -92,17 +97,18 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
     public function testDecodingClassWithTypedConstructorParamsAndNoGettersDecodesByConstructorType(): void
     {
         $encodedValue = ['foo' => 'dave', 'bar' => 'young'];
+        $context = new EncodingContext();
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->at(0))
             ->method('decode')
-            ->with('dave', 'string')
+            ->with('dave', 'string', $context)
             ->willReturn('dave');
         $encoder->expects($this->at(1))
             ->method('decode')
             ->with('young', 'string')
             ->willReturn('young');
         $this->encoders->registerEncoder('string', $encoder);
-        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithTypedParamsAndNoGetters::class);
+        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithTypedParamsAndNoGetters::class, $context);
         $this->assertInstanceOf(ConstructorWithTypedParamsAndNoGetters::class, $value);
     }
 
@@ -110,13 +116,14 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
     {
         $expectedUser = new User(123, 'foo@bar.com');
         $encodedValue = ['user' => ['id' => 123, 'email' => 'foo@bar.com']];
+        $context = new EncodingContext();
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->at(0))
             ->method('decode')
-            ->with(['id' => 123, 'email' => 'foo@bar.com'], User::class)
+            ->with(['id' => 123, 'email' => 'foo@bar.com'], User::class, $context)
             ->willReturn($expectedUser);
         $this->encoders->registerEncoder(User::class, $encoder);
-        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithTypedParams::class);
+        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithTypedParams::class, $context);
         $this->assertInstanceOf(ConstructorWithTypedParams::class, $value);
         $this->assertEquals($expectedUser, $value->getUser());
     }
@@ -125,13 +132,14 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
     {
         $encodedValue = ['users' => [['id' => 123, 'foo@bar.com'], ['id' => 456, 'email' => 'bar@baz.com']]];
         $expectedUsers = [new User(123, 'foo@bar.com'), new User(456, 'bar@baz.com')];
+        $context = new EncodingContext();
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->at(0))
             ->method('decode')
-            ->with($encodedValue['users'], User::class . '[]')
+            ->with($encodedValue['users'], User::class . '[]', $context)
             ->willReturn($expectedUsers);
         $this->encoders->registerEncoder('array', $encoder);
-        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithTypedVariadicParams::class);
+        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithTypedVariadicParams::class, $context);
         $this->assertInstanceOf(ConstructorWithTypedVariadicParams::class, $value);
         $this->assertEquals($expectedUsers, $value->getUsers());
     }
@@ -139,17 +147,18 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
     public function testDecodingClassWithUntypedConstructorParamsAndUntypedGettersStillWorksIfEncodedValuesAreScalars(): void
     {
         $encodedValue = ['foo' => 123, 'bar' => 456];
+        $context = new EncodingContext();
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->at(0))
             ->method('decode')
-            ->with(123, 'integer')
+            ->with(123, 'integer', $context)
             ->willReturn(123);
         $encoder->expects($this->at(1))
             ->method('decode')
-            ->with(456, 'integer')
+            ->with(456, 'integer', $context)
             ->willReturn(456);
         $this->encoders->registerEncoder('integer', $encoder);
-        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithUntypedScalars::class);
+        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithUntypedScalars::class, $context);
         $this->assertInstanceOf(ConstructorWithUntypedScalars::class, $value);
         $this->assertEquals(123, $value->getFoo());
         $this->assertEquals(456, $value->getBar());
@@ -159,25 +168,27 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
     {
         $encodedValue = ['foo' => ['id' => 123, 'email' => 'foo@bar.com'], 'bar' => true, 'baz' => true];
         $expectedUser = new User(123, 'foo@bar.com');
+        $context = new EncodingContext();
         $userEncoder = $this->createMock(IEncoder::class);
         $userEncoder->expects($this->at(0))
             ->method('decode')
-            ->with($encodedValue['foo'], User::class)
+            ->with($encodedValue['foo'], User::class, $context)
             ->willReturn($expectedUser);
         $this->encoders->registerEncoder(User::class, $userEncoder);
         $boolEncoder = $this->createMock(IEncoder::class);
         $boolEncoder->expects($this->at(0))
             ->method('decode')
-            ->with(true, 'bool')
+            ->with(true, 'bool', $context)
             ->willReturn(true);
         $boolEncoder->expects($this->at(1))
             ->method('decode')
-            ->with(true, 'bool')
+            ->with(true, 'bool', $context)
             ->willReturn(true);
         $this->encoders->registerEncoder('bool', $boolEncoder);
         $value = $this->objectEncoder->decode(
             $encodedValue,
-            ConstructorWithUntypedPararmsWithTypedGetters::class
+            ConstructorWithUntypedPararmsWithTypedGetters::class,
+            $context
         );
         $this->assertInstanceOf(ConstructorWithUntypedPararmsWithTypedGetters::class, $value);
         $this->assertEquals($expectedUser, $value->getFoo());
@@ -188,33 +199,38 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
     public function testDecodingClassWitVariadicConstructorParamThrowsExceptionIfEncodedValueIsNotArray(): void
     {
         $this->expectException(EncodingException::class);
-        $this->objectEncoder->decode(['foo' => 'bar'], ConstructorWithUntypedVariadicParams::class);
+        $this->objectEncoder->decode(
+            ['foo' => 'bar'],
+            ConstructorWithUntypedVariadicParams::class,
+            new EncodingContext()
+        );
     }
 
     public function testDecodingClassWithUntypedVariadicParamsDecodesByEncodedValueType(): void
     {
         $encodedValue = ['foo' => ['bar', 'baz']];
+        $context = new EncodingContext();
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->at(0))
             ->method('decode')
-            ->with($encodedValue['foo'], 'string[]')
+            ->with($encodedValue['foo'], 'string[]', $context)
             ->willReturn($encodedValue['foo']);
         $this->encoders->registerEncoder('array', $encoder);
-        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithUntypedVariadicParams::class);
+        $value = $this->objectEncoder->decode($encodedValue, ConstructorWithUntypedVariadicParams::class, $context);
         $this->assertInstanceOf(ConstructorWithUntypedVariadicParams::class, $value);
         $this->assertEquals(['bar', 'baz'], $value->getFoo());
     }
 
     public function testDecodingHashWithMissingPropertyStillWorksIfConstructorParamIsNullable(): void
     {
-        $value = $this->objectEncoder->decode([], ConstructorWithNullableParams::class);
+        $value = $this->objectEncoder->decode([], ConstructorWithNullableParams::class, new EncodingContext());
         $this->assertInstanceOf(ConstructorWithNullableParams::class, $value);
         $this->assertNull($value->getFoo());
     }
 
     public function testDecodingHashMissingPropertyStillWorksIfUntypedConstructorParamIsOptional(): void
     {
-        $value = $this->objectEncoder->decode([], ConstructorWithUntypedOptionalParams::class);
+        $value = $this->objectEncoder->decode([], ConstructorWithUntypedOptionalParams::class, new EncodingContext());
         $this->assertInstanceOf(ConstructorWithUntypedOptionalParams::class, $value);
         $this->assertSame(1, $value->getFoo());
     }
@@ -222,59 +238,72 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
     public function testDecodingHashMissingRequiredPropertyThrowsException(): void
     {
         $this->expectException(EncodingException::class);
-        $this->objectEncoder->decode([], ConstructorWithTypedParams::class);
+        $this->objectEncoder->decode([], ConstructorWithTypedParams::class, new EncodingContext());
     }
 
     public function testDecodingNonArrayThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->objectEncoder->decode('foo', 'bar');
+        $this->objectEncoder->decode('foo', 'bar', new EncodingContext());
+    }
+
+    public function testEncodingCircularReferenceThrowsException(): void
+    {
+        $this->expectException(EncodingException::class);
+        $a = new CircularReferenceA();
+        $b = new CircularReferenceB($a);
+        $a->setFoo($b);
+        $this->encoders->registerDefaultObjectEncoder($this->objectEncoder);
+        $this->objectEncoder->encode($a, new EncodingContext());
     }
 
     public function testEncodingCreatesHashFromPropertiesOfClass(): void
     {
         $value = new ConstructorWithTypedParamsAndNoGetters('dave', 'young');
+        $context = new EncodingContext();
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->at(0))
             ->method('encode')
-            ->with('dave')
+            ->with('dave', $context)
             ->willReturn('dave');
         $encoder->expects($this->at(1))
             ->method('encode')
-            ->with('young')
+            ->with('young', $context)
             ->willReturn('young');
         $this->encoders->registerEncoder('string', $encoder);
-        $this->assertEquals(['foo' => 'dave', 'bar' => 'young'], $this->objectEncoder->encode($value));
+        $this->assertEquals(['foo' => 'dave', 'bar' => 'young'], $this->objectEncoder->encode($value, $context));
     }
 
     public function testEncodingDerivedClassIncludesPropertiesFromBaseClass(): void
     {
         $value = new DerivedClassWithProperties('dave', 'young');
         // Base class properties come first, which is why things are in the order they are
+        $context = new EncodingContext();
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->at(0))
             ->method('encode')
-            ->with('young')
+            ->with('young', $context)
             ->willReturn('young');
         $encoder->expects($this->at(1))
-            ->method('encode')
+            ->method('encode', $context)
             ->with('dave')
             ->willReturn('dave');
         $this->encoders->registerEncoder('string', $encoder);
-        $this->assertEquals(['bar' => 'young', 'foo' => 'dave'], $this->objectEncoder->encode($value));
+        $this->assertEquals(['bar' => 'young', 'foo' => 'dave'], $this->objectEncoder->encode($value, $context));
     }
 
     public function testEncodingDoesNotIncludeIgnoredProperties(): void
     {
         $user = new User(123, 'foo@bar.com');
         $this->objectEncoder->addIgnoredProperty(User::class, 'email');
+        $context = new EncodingContext();
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->at(0))
-            ->method('encode')
+            ->method('encode', $context)
             ->with(123)
             ->willReturn(123);
         $this->encoders->registerEncoder('integer', $encoder);
-        $this->assertEquals(['id' => 123], $this->objectEncoder->encode($user));
+        $this->assertEquals(['id' => 123], $this->objectEncoder->encode($user, $context));
     }
 
     public function testEncodingFormatsPropertyNameFormatterIfOneIsSpecified(): void
@@ -292,12 +321,15 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
             ->with('email')
             ->willReturn('_email');
         $user = new User(123, 'foo@bar.com');
-        $this->assertEquals(['_id' => 123, '_email' => 'foo@bar.com'], $objectEncoder->encode($user));
+        $this->assertEquals(
+            ['_id' => 123, '_email' => 'foo@bar.com'],
+            $objectEncoder->encode($user, new EncodingContext())
+        );
     }
 
     public function testEncodingNonObjectThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->objectEncoder->encode([]);
+        $this->objectEncoder->encode([], new EncodingContext());
     }
 }

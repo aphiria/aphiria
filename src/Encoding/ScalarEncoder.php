@@ -20,7 +20,7 @@ class ScalarEncoder implements IEncoder
     /**
      * @inheritdoc
      */
-    public function decode($value, string $type)
+    public function decode($value, string $type, EncodingContext $context)
     {
         switch ($type) {
             case 'boolean':
@@ -42,7 +42,7 @@ class ScalarEncoder implements IEncoder
     /**
      * @inheritdoc
      */
-    public function encode($value)
+    public function encode($value, EncodingContext $context)
     {
         if (!\is_scalar($value)) {
             throw new InvalidArgumentException('Value must be scalar');

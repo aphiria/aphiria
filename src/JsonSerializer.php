@@ -13,6 +13,7 @@ namespace Opulence\Serialization;
 use InvalidArgumentException;
 use Opulence\Serialization\Encoding\DefaultEncoderRegistrant;
 use Opulence\Serialization\Encoding\EncoderRegistry;
+use Opulence\Serialization\Encoding\EncodingContext;
 use Opulence\Serialization\Encoding\EncodingException;
 use OutOfBoundsException;
 
@@ -45,7 +46,7 @@ class JsonSerializer implements ISerializer
 
         try {
             return $this->encoders->getEncoderForType($type)
-                ->decode($encodedValue, $type);
+                ->decode($encodedValue, $type, new EncodingContext());
         } catch (EncodingException | InvalidArgumentException | OutOfBoundsException $ex) {
             throw new SerializationException('Failed to deserialize value', 0, $ex);
         }
@@ -58,7 +59,7 @@ class JsonSerializer implements ISerializer
     {
         try {
             $encodedValue = $this->encoders->getEncoderForValue($value)
-                ->encode($value);
+                ->encode($value, new EncodingContext());
         } catch (EncodingException | InvalidArgumentException | OutOfBoundsException $ex) {
             throw new SerializationException('Failed to serialize value', 0, $ex);
         }

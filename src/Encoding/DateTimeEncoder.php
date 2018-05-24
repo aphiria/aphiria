@@ -34,7 +34,7 @@ class DateTimeEncoder implements IEncoder
     /**
      * @inheritdoc
      */
-    public function decode($value, string $type)
+    public function decode($value, string $type, EncodingContext $context)
     {
         if ($type !== DateTime::class && $type !== DateTimeImmutable::class && $type !== DateTimeInterface::class) {
             throw new InvalidArgumentException(
@@ -53,7 +53,7 @@ class DateTimeEncoder implements IEncoder
     /**
      * @inheritdoc
      */
-    public function encode($value)
+    public function encode($value, EncodingContext $context)
     {
         if (!$value instanceof DateTimeInterface) {
             throw new InvalidArgumentException('Value must implement ' . DateTimeInterface::class);
