@@ -83,28 +83,20 @@ $serializer->serialize($users);
 
 <h2 id="encoders">Encoders</h2>
 
-Encoders define how to map your POPOs to values that a serializer can (de)serialize.  For most [objects](#object-encoder), this involves mapping an object to and from an associative array.
+Encoders define how to map your POPOs to values that a serializer can (de)serialize.  For most [objects](#object-encoder), this involves mapping an object to and from an associative array.  An `EncodingContext` is passed during encoding/decoding to track things like circular references.
 
 <h4 id="default-encoders">Default Encoders</h4>
 
-To make it easier for you, Opulence supports `array` and `DateTime` values via the `ArrayEncoder` and [`DateTimeEncoder`](#datetime-encoder).  If you do not pass in an encoder registry to your serializer, then you're already set.  If you want to customize your encoders, use `DefaultEncoderRegistrant` to register the default encoders:
+To make it easier for you, Opulence encodes/decodes `array` and `DateTime` values via the `ArrayEncoder` and [`DateTimeEncoder`](#datetime-encoder).  `DefaultEncoderRegistrant` registers these default encoders for you.  If you use this registrant, but want to customize some behavior, you can pass in a [property name formatter](#property-name-formatters) and [date format](#datetime-encoder):
 
 ```php
-use Opulence\Serialization\Encoding\DefaultEncoderRegistrant;
-use Opulence\Serialization\Encoding\EncoderRegistry;
-
-$encoders = new EncoderRegistry();
-(new DefaultEncoderRegistrant)->registerDefaultEncoders($encoders);
-// Register your custom encoders...
-```
-
-If you use this registrant, but want to customize some behavior, you can pass in a [property name formatter](#property-name-formatters) and [date format](#datetime-encoder):
-
-```php
+$encoderRegistry = new EncoderRegistry();
 $encoderRegistrant = new DefaultEncoderRegistrant(
     new CamelCasePropertyNameFormatter(),
     'F j, Y'
 );
+$encoderRegistrant->registerDefaultEncoders($encoderRegistry);
+// Pass $encoders into your serializer...
 ```
 
 <h4 id="object-encoder">Object Encoder</h4>
@@ -118,8 +110,7 @@ $encoderRegistrant = new DefaultEncoderRegistrant(
 Sometimes, you might want to ignore some properties when serializing your object.  You can specify them like so:
 
 ```php
-$encoders = new EncoderRegistry();
-$objectEncoder = new ObjectEncoder($encoders);
+// Create encoder registry...
 $objectEncoder->addIgnoredProperty(YourClass::class, 'nameOfPropertyToIgnore');
 $encoders->registerDefaultObjectEncoder($objectEncoder);
 // Pass $encoders into your serializer...
@@ -130,8 +121,10 @@ $encoders->registerDefaultObjectEncoder($objectEncoder);
 You might find yourself wanting to make your property names' formats consistent.  For example, you might want to camelCase them.  `CamelCasePropertyNameFormatter` and `SnakeCasePropertyNameFormatter` come out of the box.  To use one (or your own), pass it into `ObjectEncoder`:
 
 ```php
+// Create encoder registry...
 $objectEncoder = new ObjectEncoder($encoders, new CamelCasePropertyNameFormatter());
-// Register the encoder...
+$encoders->registerDefaultObjectEncoder($objectEncoder);
+// Pass $encoders into your serializer...
 ```
 
 <h4 id="custom-encoders">Custom Encoders</h4>
@@ -145,12 +138,12 @@ Due to PHP's type limitations, there are some objects that Opulence just can't (
 In these cases, you can register your own encoder (which must implement `IEncoder`) to the encoder registry:
 
 ```php
-$encoders = new Encoderegistry();
+// Create encoder registry...
 $encoders->registerEncoder(YourClass::class, new YourEncoder());
 // Pass $encoders into your serializer...
 ```
 
-Now, whenever an instance `YourClass` needs to be (de)serialized, `YourEncoder` will be used.
+Now, whenever an instance of `YourClass` needs to be (de)serialized, `YourEncoder` will be used.
 
 <h4 id="datetime-encoder">DateTime encoder</h4>
 
