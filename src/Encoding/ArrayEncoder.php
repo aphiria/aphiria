@@ -23,10 +23,9 @@ class ArrayEncoder implements IEncoder
     /**
      * @param EncoderRegistry $encoders The encoder registry
      */
-    public function __construct(EncoderRegistry $encoders, IPropertyNameFormatter $propertyNameFormatter = null)
+    public function __construct(EncoderRegistry $encoders)
     {
         $this->encoders = $encoders;
-        $this->propertyNameFormatter = $propertyNameFormatter;
     }
 
     /**

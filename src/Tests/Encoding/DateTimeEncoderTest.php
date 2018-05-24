@@ -32,21 +32,21 @@ class DateTimeEncoderTest extends \PHPUnit\Framework\TestCase
 
     public function testDecodingDateTimeCreatesDateTime(): void
     {
-        $encodedValue = (new DateTime)->format(DateTime::ISO8601);
+        $encodedValue = (new DateTime)->format(DateTime::ATOM);
         $value = $this->dateTimeEncoder->decode($encodedValue, DateTime::class, new EncodingContext());
         $this->assertInstanceOf(DateTime::class, $value);
     }
 
     public function testDecodingDateTimeImmutableCreatesDateTimeImmutable(): void
     {
-        $encodedValue = (new DateTimeImmutable)->format(DateTime::ISO8601);
+        $encodedValue = (new DateTimeImmutable)->format(DateTime::ATOM);
         $value = $this->dateTimeEncoder->decode($encodedValue, DateTimeImmutable::class, new EncodingContext());
         $this->assertInstanceOf(DateTimeImmutable::class, $value);
     }
 
     public function testDecodingDateTimeInterfaceCreatesDateTimeImmutable(): void
     {
-        $encodedValue = (new DateTime)->format(DateTime::ISO8601);
+        $encodedValue = (new DateTime)->format(DateTime::ATOM);
         $value = $this->dateTimeEncoder->decode($encodedValue, DateTimeInterface::class, new EncodingContext());
         $this->assertInstanceOf(DateTimeImmutable::class, $value);
     }
@@ -61,7 +61,7 @@ class DateTimeEncoderTest extends \PHPUnit\Framework\TestCase
     {
         $dateTime = new DateTime();
         $this->assertEquals(
-            $dateTime->format(DateTime::ISO8601),
+            $dateTime->format(DateTime::ATOM),
             $this->dateTimeEncoder->encode($dateTime, new EncodingContext())
         );
     }

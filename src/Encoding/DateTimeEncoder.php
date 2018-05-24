@@ -26,7 +26,7 @@ class DateTimeEncoder implements IEncoder
     /**
      * @param string $format The DateTime format to use
      */
-    public function __construct(string $format = DateTime::ISO8601)
+    public function __construct(string $format = DateTime::ATOM)
     {
         $this->format = $format;
     }
@@ -38,7 +38,7 @@ class DateTimeEncoder implements IEncoder
     {
         if ($type !== DateTime::class && $type !== DateTimeImmutable::class && $type !== DateTimeInterface::class) {
             throw new InvalidArgumentException(
-                'Type must be ' . DateTime::class . ', ' . DateTimeImmutable::class . ', or '. DateTimeInterface::class
+                'Type must be ' . DateTime::class . ', ' . DateTimeImmutable::class . ', or ' . DateTimeInterface::class
             );
         }
 

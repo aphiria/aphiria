@@ -12,6 +12,7 @@ namespace Opulence\Serialization\Encoding;
 
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 use ReflectionObject;
 use ReflectionParameter;
@@ -67,7 +68,12 @@ class ObjectEncoder implements IEncoder
             throw new InvalidArgumentException('Value must be an associative array');
         }
 
-        $reflectionClass = new ReflectionClass($type);
+        try {
+            $reflectionClass = new ReflectionClass($type);
+        } catch (ReflectionException $ex) {
+            throw new EncodingException("Reflection failed on type $type", 0, $ex);
+        }
+
         $normalizedPropertyNames = $this->normalizeHashProperties($objectHash);
         $unusedNormalizedPropertyNames = $normalizedPropertyNames;
         $constructorParams = [];
@@ -199,7 +205,7 @@ class ObjectEncoder implements IEncoder
                 ->decode($constructorParamValue, $type, $context);
         }
 
-        $type = gettype($constructorParamValue[0]) . '[]';
+        $type = \gettype($constructorParamValue[0]) . '[]';
 
         return $this->encoders->getEncoderForType($type)
             ->decode($constructorParamValue, $type, $context);
@@ -239,13 +245,13 @@ class ObjectEncoder implements IEncoder
         $decodedValue = null;
 
         if (
-            $this->tryDecodeValueFromGetterType(
-                $reflectionClass,
-                $normalizedHashPropertyName,
-                $constructorParamValue,
-                $context,
-                $decodedValue
-            )
+        $this->tryDecodeValueFromGetterType(
+            $reflectionClass,
+            $normalizedHashPropertyName,
+            $constructorParamValue,
+            $context,
+            $decodedValue
+        )
         ) {
             return $decodedValue;
         }
@@ -298,8 +304,7 @@ class ObjectEncoder implements IEncoder
      */
     protected function propertyIsIgnored(string $type, string $propertyName): bool
     {
-        return isset($this->ignoredEncodedPropertyNamesByType[$type]) &&
-            isset($this->ignoredEncodedPropertyNamesByType[$type][$this->normalizePropertyName($propertyName)]);
+        return isset($this->ignoredEncodedPropertyNamesByType[$type][$this->normalizePropertyName($propertyName)]);
     }
 
     /**
@@ -334,9 +339,9 @@ class ObjectEncoder implements IEncoder
             $propertyName = null;
 
             // Try to extract the property name from the getter/has-er/is-er
-            if (substr($reflectionMethod->name, 0, 3) === 'get' || substr($reflectionMethod->name, 0, 3) === 'has') {
+            if (strpos($reflectionMethod->name, 'get') === 0 || strpos($reflectionMethod->name, 'has') === 0) {
                 $propertyName = lcfirst(substr($reflectionMethod->name, 3));
-            } elseif (substr($reflectionMethod->name, 0, 2) === 'is') {
+            } elseif (strpos($reflectionMethod->name, 'is') === 0) {
                 $propertyName = lcfirst(substr($reflectionMethod->name, 2));
             }
 
@@ -348,10 +353,14 @@ class ObjectEncoder implements IEncoder
 
             // This getter matches the property name we're looking for
             if ($encodedPropertyName === $normalizedPropertyName) {
-                $decodedValue = $this->encoders->getEncoderForType($reflectionMethod->getReturnType())
-                    ->decode($encodedValue, $reflectionMethod->getReturnType(), $context);
+                try {
+                    $decodedValue = $this->encoders->getEncoderForType($reflectionMethod->getReturnType())
+                        ->decode($encodedValue, $reflectionMethod->getReturnType(), $context);
 
-                return true;
+                    return true;
+                } catch (EncodingException $ex) {
+                    return false;
+                }
             }
         }
 

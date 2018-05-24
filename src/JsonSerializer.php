@@ -40,7 +40,7 @@ class JsonSerializer implements ISerializer
     {
         $encodedValue = json_decode($value, true);
 
-        if (($jsonErrorCode = json_last_error()) !== JSON_ERROR_NONE) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new SerializationException('Failed to deserialize value: ' . json_last_error_msg());
         }
 

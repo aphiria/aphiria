@@ -25,11 +25,12 @@ class DefaultEncoderRegistrant
     private $dateTimeFormat;
 
     /**
+     * @param IPropertyNameFormatter $propertyNameFormatter The property name formatter to use
      * @param string $dateTimeFormat The DateTime format to use
      */
     public function __construct(
         IPropertyNameFormatter $propertyNameFormatter = null,
-        string $dateTimeFormat = DateTime::ISO8601
+        string $dateTimeFormat = DateTime::ATOM
     ) {
         $this->propertyNameFormatter = $propertyNameFormatter;
         $this->dateTimeFormat = $dateTimeFormat;
