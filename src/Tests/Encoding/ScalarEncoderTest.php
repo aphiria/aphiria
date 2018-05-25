@@ -37,10 +37,10 @@ class ScalarEncoderTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertTrue($this->scalarEncoder->decode(1, 'bool', new EncodingContext()));
         $this->assertTrue($this->scalarEncoder->decode(1, 'boolean', new EncodingContext()));
-        $this->assertEquals(1.0, $this->scalarEncoder->decode(1.0, 'float', new EncodingContext()));
-        $this->assertEquals(1.0, $this->scalarEncoder->decode(1.0, 'double', new EncodingContext()));
-        $this->assertEquals(1, $this->scalarEncoder->decode(1, 'int', new EncodingContext()));
-        $this->assertEquals(1, $this->scalarEncoder->decode(1, 'integer', new EncodingContext()));
+        $this->assertSame(1.0, $this->scalarEncoder->decode(1.0, 'float', new EncodingContext()));
+        $this->assertSame(1.0, $this->scalarEncoder->decode(1.0, 'double', new EncodingContext()));
+        $this->assertSame(1, $this->scalarEncoder->decode(1, 'int', new EncodingContext()));
+        $this->assertSame(1, $this->scalarEncoder->decode(1, 'integer', new EncodingContext()));
     }
 
     public function testEncodingNonScalarThrowsException(): void

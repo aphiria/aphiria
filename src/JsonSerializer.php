@@ -64,7 +64,7 @@ class JsonSerializer implements ISerializer
             throw new SerializationException('Failed to serialize value', 0, $ex);
         }
 
-        if (!($serializedValue = json_encode($encodedValue))) {
+        if (($serializedValue = json_encode($encodedValue)) === false) {
             throw new SerializationException('Failed to serialize value: ' . json_last_error_msg());
         }
 
