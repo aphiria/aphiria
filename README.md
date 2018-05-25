@@ -4,9 +4,10 @@
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [Serializers](#serializers)
+2. [Installation](#installation)
+3. [Serializers](#serializers)
     1. [JSON Serializer](#json-serializer)
-3. [Encoders](#encoders)
+4. [Encoders](#encoders)
     1. [Default Encoders](#default-encoders)
     2. [Object Encoder](#object-encoder)
     3. [Custom Encoders](#custom-encoders)
@@ -27,6 +28,14 @@ Similarly, deserializing an object is simple:
 ```php
 $serializedUser = '{"id":123,"email":"foo@bar.com"}';
 $user = $serializer->deserialize($serializedUser, User::class);
+```
+
+<h2 id="installation">Installation</h2>
+
+You can install this library by including the following package name in your _composer.json_:
+
+```
+"opulence/serialization": "1.0.*"
 ```
 
 <h2 id="serializers">Serializers</h2>
@@ -68,7 +77,7 @@ $serializer = new JsonSerializer($encoders);
 To deserialize an array of values, append the `$type` parameter with `[]`:
 
 ```php
-$serializer->deserialize($serializedUsers, User::class . '[]');
+$serializer->deserialize($serializedUsers, 'User[]');
 ```
 
 This will cause each value in `$serializedUsers` to be deserialized as an instance of `User`.
@@ -119,11 +128,11 @@ $encoders->registerDefaultObjectEncoder($objectEncoder);
 
 <h5 id="property-name-formatters">Property Name Formatters</h5>
 
-You might find yourself wanting to make your property names' formats consistent.  For example, you might want to camelCase them.  `CamelCasePropertyNameFormatter` and `SnakeCasePropertyNameFormatter` come out of the box.  To use one (or your own), pass it into [`DefaultEncoderRegistrant`](#default-encoders).
+You might find yourself wanting to make your property names' formats consistent (eg camelCase).  You can use an `IPropertyNameFormatter` to accomplish this.  `CamelCasePropertyNameFormatter` and `SnakeCasePropertyNameFormatter` come out of the box.  To use one (or your own), pass it into [`DefaultEncoderRegistrant`](#default-encoders).
 
 <h4 id="custom-encoders">Custom Encoders</h4>
 
-Due to PHP's type limitations, there are some objects that Opulence just can't (de)serialize automatically.  Some examples include:
+Due to PHP's type limitations, there are some objects that Opulence simply can't (de)serialize automatically.  Some examples include:
 
 * Classes that require custom instantiation/hydration logic
 * Object properties that contain an array of objects
