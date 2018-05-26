@@ -10,22 +10,22 @@
 
 namespace Opulence\Net\Http\Formatting;
 
-use Opulence\Serialization\JsonSerializer;
+use Opulence\Serialization\FormUrlEncodedSerializer;
 
 /**
- * Defines the JSON media type formatter
+ * Defines the form URL-encoded media type formatter
  */
-class JsonMediaTypeFormatter extends MediaTypeFormatter
+class FormUrlEncodedMediaTypeFormatter extends MediaTypeFormatter
 {
     /** @var array The list of supported character encodings */
-    private static $supportedEncodings = ['utf-8'];
+    private static $supportedEncodings = ['utf-8', 'ISO-8859-1'];
     /** @var array The list of supported media types */
-    private static $supportedMediaTypes = ['application/json', 'text/json'];
+    private static $supportedMediaTypes = ['application/x-www-form-urlencoded'];
 
     /**
-     * @param JsonSerializer $serializer The JSON serializer to use
+     * @param FormUrlEncodedSerializer $serializer The form URL-encoded serializer to use
      */
-    public function __construct(JsonSerializer $serializer)
+    public function __construct(FormUrlEncodedSerializer $serializer)
     {
         parent::__construct($serializer);
     }
