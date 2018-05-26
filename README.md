@@ -6,7 +6,9 @@
 1. [Introduction](#introduction)
 2. [Installation](#installation)
 3. [Serializers](#serializers)
-    1. [JSON Serializer](#json-serializer)
+    1. [Form URL-Encoded Serializer](#form-url-encoded-serializer)
+    2. [JSON Serializer](#json-serializer)
+    3. [Arrays of Values](#arrays-of-values)
 4. [Encoders](#encoders)
     1. [Default Encoders](#default-encoders)
     2. [Object Encoder](#object-encoder)
@@ -42,6 +44,7 @@ You can install this library by including the following package name in your _co
 
 Opulence provides the following serializers:
 
+* [`FormUrlEncodedSerializer`](#form-url-encoded-serializer)
 * [`JsonSerializer`](#json-serializer)
 
 Under the hood, serializing works like this:
@@ -51,6 +54,16 @@ Value &rarr; [encoded value](#encoders) &rarr; serialized value
 Deserializing works in the reverse order:
 
 Serialized value &rarr; [decoded value](#encoders) &rarr; deserialized value
+
+<h4 id="form-url-encoded-serializer">Form URL-Encoded Serializer</h4>
+
+`FormUrlEncodedSerializer` can (de)serialize values to and from form URL-encoded strings.  It's useful for things like (de)serializing values for use in a query string or in request/response bodies.  Creating one is simple:
+
+```php
+use Opulence\Serialization\FormUrlEncodedSerializer;
+
+$serializer = new FormUrlEncodedSerializer();
+```
 
 <h4 id="json-serializer">JSON Serializer</h4>
 
@@ -62,17 +75,7 @@ use Opulence\Serialization\JsonSerializer;
 $serializer = new JsonSerializer();
 ```
 
-If you need to register any [custom encoders](#custom-encoders), set up your encoder registry, and pass it in to the constructor:
-
-```php
-use Opulence\Serialization\Encoding\EncoderRegistry;
-
-$encoders = new EncoderRegistry();
-// Set up $encoders...
-$serializer = new JsonSerializer($encoders);
-```
-
-<h5 id="arrays-of-values">Arrays of Values</h5>
+<h4 id="arrays-of-values">Arrays of Values</h4>
 
 To deserialize an array of values, append the `$type` parameter with `[]`:
 
@@ -105,7 +108,7 @@ $encoderRegistrant = new DefaultEncoderRegistrant(
     'F j, Y'
 );
 $encoderRegistrant->registerDefaultEncoders($encoders);
-// Pass $encoders into your serializer...
+// Pass $encoders into your serializer constructor...
 ```
 
 <h4 id="object-encoder">Object Encoder</h4>
@@ -123,7 +126,7 @@ Sometimes, you might want to ignore some properties when serializing your object
 $objectEncoder = new ObjectEncoder($encoders);
 $objectEncoder->addIgnoredProperty(YourClass::class, 'nameOfPropertyToIgnore');
 $encoders->registerDefaultObjectEncoder($objectEncoder);
-// Pass $encoders into your serializer...
+// Pass $encoders into your serializer constructor...
 ```
 
 <h5 id="property-name-formatters">Property Name Formatters</h5>
@@ -143,7 +146,7 @@ In these cases, you can register your own encoder (which must implement `IEncode
 ```php
 // Create encoder registry...
 $encoders->registerEncoder(YourClass::class, new YourEncoder());
-// Pass $encoders into your serializer...
+// Pass $encoders into your serializer constructor...
 ```
 
 Now, whenever an instance of `YourClass` needs to be (de)serialized, `YourEncoder` will be used.
