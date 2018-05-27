@@ -10,8 +10,8 @@
 
 namespace Opulence\Net\Tests\Http\Formatting;
 
-use Opulence\Net\Http\Formatting\ContentNegotiationResult;
-use Opulence\Net\Http\Formatting\IMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
+use Opulence\Net\Http\ContentNegotiation\IMediaTypeFormatter;
 
 /**
  * Tests the content negotiation result

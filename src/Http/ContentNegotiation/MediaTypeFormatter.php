@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Formatting;
+namespace Opulence\Net\Http\ContentNegotiation;
 
 use Opulence\IO\Streams\IStream;
 use Opulence\Serialization\ISerializer;
@@ -32,7 +32,7 @@ abstract class MediaTypeFormatter implements IMediaTypeFormatter
     /**
      * @inheritdoc
      */
-    public function readFromStream(string $type, IStream $stream, bool $readAsArrayOfType = false)
+    public function readFromStream(IStream $stream, string $type, bool $readAsArrayOfType = false)
     {
         $formattedType = $readAsArrayOfType ? $type . '[]' : $type;
 

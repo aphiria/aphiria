@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Formatting;
+namespace Opulence\Net\Http\ContentNegotiation;
 
 /**
  * Defines the results of content negotiation

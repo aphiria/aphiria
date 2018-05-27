@@ -12,8 +12,8 @@ namespace Opulence\Net\Tests\Http\Formatting;
 
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
-use Opulence\Net\Http\Formatting\EncodingMatcher;
-use Opulence\Net\Http\Formatting\IMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\EncodingMatcher;
+use Opulence\Net\Http\ContentNegotiation\IMediaTypeFormatter;
 use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Opulence\Net\Http\Headers\ContentTypeHeaderValue;

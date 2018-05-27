@@ -8,9 +8,10 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Formatting;
+namespace Opulence\Net\Http\ContentNegotiation;
 
 use InvalidArgumentException;
+use Opulence\Net\Http\Formatting\RequestHeaderParser;
 use Opulence\Net\Http\IHttpRequestMessage;
 
 /**

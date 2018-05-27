@@ -11,7 +11,7 @@
 namespace Opulence\Net\Tests\Http\Formatting;
 
 use Opulence\IO\Streams\IStream;
-use Opulence\Net\Http\Formatting\FormUrlEncodedMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\FormUrlEncodedMediaTypeFormatter;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
 use Opulence\Serialization\FormUrlEncodedSerializer;
 
@@ -43,7 +43,7 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     {
         $stream = $this->createStreamWithStringBody('id=123&email=foo%40bar.com');
         $expectedUser = new User(123, 'foo@bar.com');
-        $actualUser = $this->formatter->readFromStream(User::class, $stream);
+        $actualUser = $this->formatter->readFromStream($stream, User::class);
         $this->assertEquals($expectedUser, $actualUser);
     }
 

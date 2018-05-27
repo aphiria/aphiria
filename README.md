@@ -543,9 +543,9 @@ Content negotiation is a process between the client and server to determine how 
 To negotiate the request content, simply call:
 
 ```php
-use Opulence\Net\Http\Formatting\ContentNegotiator;
-use Opulence\Net\Http\Formatting\FormUrlEncodedMediaTypeFormatter;
-use Opulence\Net\Http\Formatting\JsonMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\ContentNegotiator;
+use Opulence\Net\Http\ContentNegotiation\FormUrlEncodedMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\JsonMediaTypeFormatter;
 
 $mediaTypeFormatters = [
     new FormUrlEncodedMediaTypeFormatter(),
@@ -561,7 +561,7 @@ Media type formatters can read and write a particular data format to a stream.  
 
 ```php
 $mediaTypeFormatter = $result->getMediaTypeFormatter();
-$mediaTypeFormatter->readFromStream(User::class, $request->getBody());
+$mediaTypeFormatter->readFromStream($request->getBody(), User::class);
 ```
 
 Similarly, you can serialize a value and write it to the response body:

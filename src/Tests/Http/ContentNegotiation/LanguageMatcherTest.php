@@ -12,7 +12,7 @@ namespace Opulence\Net\Tests\Http\Formatting;
 
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
-use Opulence\Net\Http\Formatting\LanguageMatcher;
+use Opulence\Net\Http\ContentNegotiation\LanguageMatcher;
 use Opulence\Net\Http\Headers\AcceptLanguageHeaderValue;
 
 /**
