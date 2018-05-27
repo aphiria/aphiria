@@ -23,11 +23,11 @@ class JsonMediaTypeFormatter extends MediaTypeFormatter
     private static $supportedMediaTypes = ['application/json', 'text/json'];
 
     /**
-     * @param JsonSerializer $serializer The JSON serializer to use
+     * @param JsonSerializer|null $serializer The JSON serializer to use
      */
-    public function __construct(JsonSerializer $serializer)
+    public function __construct(JsonSerializer $serializer = null)
     {
-        parent::__construct($serializer);
+        parent::__construct($serializer ?? new JsonSerializer());
     }
 
     /**

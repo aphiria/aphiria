@@ -23,11 +23,11 @@ class FormUrlEncodedMediaTypeFormatter extends MediaTypeFormatter
     private static $supportedMediaTypes = ['application/x-www-form-urlencoded'];
 
     /**
-     * @param FormUrlEncodedSerializer $serializer The form URL-encoded serializer to use
+     * @param FormUrlEncodedSerializer|null $serializer The form URL-encoded serializer to use
      */
-    public function __construct(FormUrlEncodedSerializer $serializer)
+    public function __construct(FormUrlEncodedSerializer $serializer = null)
     {
-        parent::__construct($serializer);
+        parent::__construct($serializer ?? new FormUrlEncodedSerializer());
     }
 
     /**
