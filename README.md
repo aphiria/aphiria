@@ -129,6 +129,8 @@ $encoders->registerDefaultObjectEncoder($objectEncoder);
 // Pass $encoders into your serializer constructor...
 ```
 
+You can also specify an array of property names in `addIgnoredProperty()`.
+
 <h5 id="property-name-formatters">Property Name Formatters</h5>
 
 You might find yourself wanting to make your property names' formats consistent (eg camelCase).  You can use an `IPropertyNameFormatter` to accomplish this.  `CamelCasePropertyNameFormatter` and `SnakeCasePropertyNameFormatter` come out of the box.  To use one (or your own), pass it into [`DefaultEncoderRegistrant`](#default-encoders).

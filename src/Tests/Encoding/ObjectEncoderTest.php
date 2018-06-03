@@ -292,10 +292,24 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['bar' => 'young', 'foo' => 'dave'], $this->objectEncoder->encode($value, $context));
     }
 
-    public function testEncodingDoesNotIncludeIgnoredProperties(): void
+    public function testEncodingDoesNotIncludeIgnoredProperty(): void
     {
         $user = new User(123, 'foo@bar.com');
         $this->objectEncoder->addIgnoredProperty(User::class, 'email');
+        $context = new EncodingContext();
+        $encoder = $this->createMock(IEncoder::class);
+        $encoder->expects($this->at(0))
+            ->method('encode', $context)
+            ->with(123)
+            ->willReturn(123);
+        $this->encoders->registerEncoder('integer', $encoder);
+        $this->assertEquals(['id' => 123], $this->objectEncoder->encode($user, $context));
+    }
+
+    public function testEncodingDoesNotIncludeMultipleIgnoredProperties(): void
+    {
+        $user = new User(123, 'foo@bar.com');
+        $this->objectEncoder->addIgnoredProperty(User::class, ['email']);
         $context = new EncodingContext();
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->at(0))
@@ -331,5 +345,11 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->objectEncoder->encode([], new EncodingContext());
+    }
+
+    public function testIgnoringPropertyNameThatIsNotStringOrArrayThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->objectEncoder->addIgnoredProperty(User::class, $this);
     }
 }

@@ -44,15 +44,22 @@ class ObjectEncoder implements IEncoder
      * Adds a property to ignore during encoding
      *
      * @param string $type The type whose property we're ignoring
-     * @param string $propertyName The name of the property to ignore
+     * @param string|string[] $propertyNames The name or list of names of the properties to ignore
+     * @throws InvalidArgumentException Thrown if the property names were not a string or array
      */
-    public function addIgnoredProperty(string $type, string $propertyName): void
+    public function addIgnoredProperty(string $type, $propertyNames): void
     {
+        if (!\is_string($propertyNames) && !\is_array($propertyNames)) {
+            throw new InvalidArgumentException('Property name must be a string or array of strings');
+        }
+
         if (!isset($this->ignoredEncodedPropertyNamesByType[$type])) {
             $this->ignoredEncodedPropertyNamesByType[$type] = [];
         }
 
-        $this->ignoredEncodedPropertyNamesByType[$type][$this->normalizePropertyName($propertyName)] = true;
+        foreach ((array)$propertyNames as $propertyName) {
+            $this->ignoredEncodedPropertyNamesByType[$type][$this->normalizePropertyName($propertyName)] = true;
+        }
     }
 
     /**
