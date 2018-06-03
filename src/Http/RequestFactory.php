@@ -76,8 +76,8 @@ class RequestFactory
             $method = $server['X-HTTP-METHOD-OVERRIDE'];
         }
 
-        $uri = $this->createUriFromGlobals($server);
-        $headers = $this->createHeadersFromGlobals($server);
+        $uri = $this->createUriFromSuperglobals($server);
+        $headers = $this->createHeadersFromSuperglobals($server);
         $body = new StreamBody(new Stream(fopen('php://input', 'rb')));
         $properties = $this->createProperties($server);
 
@@ -92,19 +92,25 @@ class RequestFactory
      * @throws InvalidArgumentException Thrown if any of the headers were in an invalid format
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
-    protected function createHeadersFromGlobals(array $server): HttpHeaders
+    protected function createHeadersFromSuperglobals(array $server): HttpHeaders
     {
         $headers = new HttpHeaders();
 
-        foreach ($server as $name => $value) {
-            $decodedValue = isset(self::$headersToUrlDecode[$name]) ? urldecode($value) : $value;
+        foreach ($server as $name => $values) {
+            $containsMultipleValues = strpos($values, ',') !== false;
 
-            if (isset(self::$specialCaseHeaders[$name])) {
-                $headers->add($name, $decodedValue);
-            } elseif (strpos($name, 'HTTP_') === 0) {
-                // Drop the "HTTP_"
-                $normalizedName = substr($name, 5);
-                $headers->add($normalizedName, $decodedValue);
+            foreach (explode(',', $values) as $value) {
+                $decodedValue = isset(self::$headersToUrlDecode[$name]) ? urldecode($value) : $value;
+
+                if (isset(self::$specialCaseHeaders[$name])) {
+                    $headers->add($name, $decodedValue, $containsMultipleValues);
+                } elseif (strpos($name, 'HTTP_') === 0) {
+                    // Drop the "HTTP_"
+                    $normalizedName = substr($name, 5);
+                    $headers->add($normalizedName, $decodedValue, $containsMultipleValues);
+                }
+
+                // Purposely don't add other headers...
             }
         }
 
@@ -137,7 +143,7 @@ class RequestFactory
      * @return Uri The URI
      * @throws InvalidArgumentException Thrown if the host is malformed
      */
-    protected function createUriFromGlobals(array $server): Uri
+    protected function createUriFromSuperglobals(array $server): Uri
     {
         $isUsingTrustedProxy = $this->isUsingTrustedProxy($server);
 

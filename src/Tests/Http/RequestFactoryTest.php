@@ -230,6 +230,15 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('PUT', $request->getMethod());
     }
 
+    public function testMultipleHeaderValuesAreAppended(): void
+    {
+        $request = $this->factory->createRequestFromSuperglobals([
+            'HTTP_ACCEPT' => 'text/html,application/xhtml+xml',
+            'HTTP_HOST' => 'foo.com'
+        ]);
+        $this->assertEquals(['text/html', 'application/xhtml+xml'], $request->getHeaders()->get('Accept'));
+    }
+
     public function testPathWithQueryStringStripsTheQueryStringFromUriPath(): void
     {
         $request = $this->factory->createRequestFromSuperglobals([

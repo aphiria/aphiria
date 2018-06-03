@@ -548,8 +548,8 @@ use Opulence\Net\Http\ContentNegotiation\FormUrlEncodedMediaTypeFormatter;
 use Opulence\Net\Http\ContentNegotiation\JsonMediaTypeFormatter;
 
 $mediaTypeFormatters = [
-    new FormUrlEncodedMediaTypeFormatter(),
-    new JsonMediaTypeFormatter()
+    new JsonMediaTypeFormatter(),
+    new FormUrlEncodedMediaTypeFormatter()
 ];
 $contentNegotiator = new ContentNegotiator();
 $result = $contentNegotiator->negotiateRequestContent($request, $mediaTypeFormatters);
