@@ -42,6 +42,34 @@ class RequestFactory
         'HTTP_CLIENT_PORT' => 'HTTP_X_FORWARDED_PORT',
         'HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO'
     ];
+    /** @var array The list of HTTP request headers that permit multiple values */
+    private static $headersThatPermitMultipleValues = [
+        'HTTP_ACCEPT' => true,
+        'HTTP_ACCEPT_CHARSET' => true,
+        'HTTP_ACCEPT_ENCODING' => true,
+        'HTTP_ACCEPT_LANGUAGE' => true,
+        'HTTP_ACCEPT_PATCH' => true,
+        'HTTP_ACCEPT_RANGES' => true,
+        'HTTP_ALLOW' => true,
+        'HTTP_CACHE_CONTROL' => true,
+        'HTTP_CONNECTION' => true,
+        'HTTP_CONTENT_ENCODING' => true,
+        'HTTP_CONTENT_LANGUAGE' => true,
+        'HTTP_EXPECT' => true,
+        'HTTP_IF_MATCH' => true,
+        'HTTP_IF_NONE_MATCH' => true,
+        'HTTP_PRAGMA' => true,
+        'HTTP_PROXY_AUTHENTICATE' => true,
+        'HTTP_TE' => true,
+        'HTTP_TRAILER' => true,
+        'HTTP_TRANSFER_ENCODING' => true,
+        'HTTP_UPGRADE' => true,
+        'HTTP_VARY' => true,
+        'HTTP_VIA' => true,
+        'HTTP_WARNING' => true,
+        'HTTP_WWW_AUTHENTICATE' => true,
+        'HTTP_X_FORWARDED_FOR' => true
+    ];
     /** @var array The list of header names whose values should be URL-decoded */
     private static $headersToUrlDecode = ['HTTP_COOKIE' => true];
     /** @var array The list of trusted proxy IP addresses */
@@ -97,20 +125,16 @@ class RequestFactory
         $headers = new HttpHeaders();
 
         foreach ($server as $name => $values) {
-            $containsMultipleValues = strpos($values, ',') !== false;
+            // If this header supports multiple values and has unquoted string delimiters...
+            $containsMultipleValues = isset(self::$headersThatPermitMultipleValues[$name])
+                && \count($explodedValues = preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', $values)) > 1;
 
-            foreach (explode(',', $values) as $value) {
-                $decodedValue = isset(self::$headersToUrlDecode[$name]) ? urldecode($value) : $value;
-
-                if (isset(self::$specialCaseHeaders[$name])) {
-                    $headers->add($name, $decodedValue, $containsMultipleValues);
-                } elseif (strpos($name, 'HTTP_') === 0) {
-                    // Drop the "HTTP_"
-                    $normalizedName = substr($name, 5);
-                    $headers->add($normalizedName, $decodedValue, $containsMultipleValues);
+            if ($containsMultipleValues) {
+                foreach ($explodedValues as $value) {
+                    $this->addHeaderValue($headers, $name, $value, $containsMultipleValues);
                 }
-
-                // Purposely don't add other headers...
+            } else {
+                $this->addHeaderValue($headers, $name, $values, $containsMultipleValues);
             }
         }
 
@@ -271,5 +295,26 @@ class RequestFactory
     protected function isUsingTrustedProxy(array $server): bool
     {
         return \in_array($server['REMOTE_ADDR'] ?? '', $this->trustedProxyIPAddresses, true);
+    }
+
+    /**
+     * Adds a header value
+     *
+     * @param HttpHeaders $headers The headers to add to
+     * @param string $name The name of the header
+     * @param mixed $value The header value to add
+     * @param bool $containsMultipleValues Whether or not there are multiple header values
+     */
+    private function addHeaderValue(HttpHeaders $headers, string $name, $value, bool $containsMultipleValues): void
+    {
+        $decodedValue = trim(isset(self::$headersToUrlDecode[$name]) ? urldecode($value) : $value);
+
+        if (isset(self::$specialCaseHeaders[$name])) {
+            $headers->add($name, $decodedValue, $containsMultipleValues);
+        } elseif (strpos($name, 'HTTP_') === 0) {
+            // Drop the "HTTP_"
+            $normalizedName = substr($name, 5);
+            $headers->add($normalizedName, $decodedValue, $containsMultipleValues);
+        }
     }
 }

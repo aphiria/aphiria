@@ -155,6 +155,15 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(443, $request->getUri()->getPort());
     }
 
+    public function testCommaInHeaderThatDoesNotPermitMultipleValuesDoesNotSplitHeaderValue(): void
+    {
+        $request = $this->factory->createRequestFromSuperglobals([
+            'HTTP_FOO' => 'text/html,application/xhtml+xml',
+            'HTTP_HOST' => 'foo.com'
+        ]);
+        $this->assertEquals(['text/html,application/xhtml+xml'], $request->getHeaders()->get('Foo'));
+    }
+
     public function testCookiesAreAddedToHeaders(): void
     {
         $request = $this->factory->createRequestFromSuperglobals([
@@ -265,6 +274,15 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
             'HTTP_HOST' => 'foo.com'
         ]);
         $this->assertEquals('foo=bar', $request->getUri()->getQueryString());
+    }
+
+    public function testQuotedCommaInHeaderRemainsIntact(): void
+    {
+        $request = $this->factory->createRequestFromSuperglobals([
+            'HTTP_ACCEPT' => 'foo/bar;p="A,B",baz',
+            'HTTP_HOST' => 'foo.com'
+        ]);
+        $this->assertEquals(['foo/bar;p="A,B"', 'baz'], $request->getHeaders()->get('Accept'));
     }
 
     public function testRequestUriQueryStringIsUsedIfQueryStringServerPropertyDoesNotExist(): void
