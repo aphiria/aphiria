@@ -16,4 +16,4 @@ You can install this library by including the following package name in your _co
 
 ```
 "opulence/api": "1.0.*"
-```s).
+```
