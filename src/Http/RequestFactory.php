@@ -131,10 +131,10 @@ class RequestFactory
 
             if ($containsMultipleValues) {
                 foreach ($explodedValues as $value) {
-                    $this->addHeaderValue($headers, $name, $value, $containsMultipleValues);
+                    $this->addHeaderValue($headers, $name, $value, true);
                 }
             } else {
-                $this->addHeaderValue($headers, $name, $values, $containsMultipleValues);
+                $this->addHeaderValue($headers, $name, $values, false);
             }
         }
 
@@ -303,18 +303,18 @@ class RequestFactory
      * @param HttpHeaders $headers The headers to add to
      * @param string $name The name of the header
      * @param mixed $value The header value to add
-     * @param bool $containsMultipleValues Whether or not there are multiple header values
+     * @param bool $append Whether or not to append the value
      */
-    private function addHeaderValue(HttpHeaders $headers, string $name, $value, bool $containsMultipleValues): void
+    private function addHeaderValue(HttpHeaders $headers, string $name, $value, bool $append): void
     {
         $decodedValue = trim(isset(self::$headersToUrlDecode[$name]) ? urldecode($value) : $value);
 
         if (isset(self::$specialCaseHeaders[$name])) {
-            $headers->add($name, $decodedValue, $containsMultipleValues);
+            $headers->add($name, $decodedValue, $append);
         } elseif (strpos($name, 'HTTP_') === 0) {
             // Drop the "HTTP_"
             $normalizedName = substr($name, 5);
-            $headers->add($normalizedName, $decodedValue, $containsMultipleValues);
+            $headers->add($normalizedName, $decodedValue, $append);
         }
     }
 }

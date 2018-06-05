@@ -62,7 +62,7 @@ class ContentNegotiator implements IContentNegotiator
         $requestHeaders = $request->getHeaders();
         $contentTypeHeader = $this->headerParser->parseContentTypeHeader($requestHeaders);
         $language = null;
-        $requestHeaders->tryGetFirst('Content-Language', $languages);
+        $requestHeaders->tryGetFirst('Content-Language', $language);
 
         if ($contentTypeHeader === null) {
             // Default to the first registered media type formatter
@@ -88,7 +88,7 @@ class ContentNegotiator implements IContentNegotiator
             $mediaTypeFormatterMatch->getFormatter(),
             $mediaTypeFormatterMatch->getMediaType(),
             $encoding,
-            $languages
+            $language
         );
     }
 
