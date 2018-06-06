@@ -13,6 +13,7 @@ namespace Opulence\Api\Dispatchers;
 use Opulence\Api\Controller;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Routing\Matchers\MatchedRoute;
 
 /**
  * Defines the interface for controller method invokers to implement

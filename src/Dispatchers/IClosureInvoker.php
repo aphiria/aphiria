@@ -12,8 +12,8 @@ namespace Opulence\Api\Dispatchers;
 
 use Closure;
 use Opulence\Net\Http\IHttpRequestMessage;
-
 use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Routing\Matchers\MatchedRoute;
 
 /**
  * Defines the interface for closure invokers to implement
