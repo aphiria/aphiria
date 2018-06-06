@@ -10,20 +10,19 @@
 
 namespace Opulence\Api\Dispatchers;
 
+use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Routing\Matchers\MatchedRoute;
 
 /**
- * Defines the interface for route dispatchers to implement
+ * Defines the interface for controller request dispatchers to implement
  */
-interface IRouteDispatcher
+interface IControllerRequestDispatcher
 {
     /**
-     * Dispatches a matched route
+     * Dispatches a request to a controller
      *
-     * @param MatchedRoute $matchedRoute The matched route
      * @param IHttpRequestMessage $request The incoming request
      * @return IHttpResponseMessage The response
      */
-    public function dispatchRoute(MatchedRoute $matchedRoute, IHttpRequestMessage $request): IHttpResponseMessage;
+    public function dispatchRequest(IHttpRequestMessage $request): IHttpResponseMessage;
 }

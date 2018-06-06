@@ -8,30 +8,29 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Controller;
+namespace Opulence\Api;
 
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\RequestParser;
+use Opulence\Net\Http\Formatting\RequestParser;
 
 /**
  * Defines the base class for controllers to extend
  */
 abstract class Controller
 {
-    /** @var IHttpRequestMessage The current request */
-    protected $request;
+    /** @var ControllerContext The current controller context */
+    protected $context;
     /** @var RequestParser The parser to use to get data from the current request */
     protected $requestParser;
 
     /**
-     * Sets the current request
+     * Sets the current controller context
      *
-     * @param IHttpRequestMessage $request The current request
+     * @param ControllerContext $context The current controller context
      * @internal
      */
-    public function setRequest(IHttpRequestMessage $request): void
+    public function setControllerContext(ControllerContext $context): void
     {
-        $this->request = $request;
+        $this->context = $context;
     }
 
     /**

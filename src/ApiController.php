@@ -8,12 +8,11 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Controller;
+namespace Opulence\Api;
 
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
-use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpBody;
@@ -27,30 +26,10 @@ use Opulence\Net\Http\StringBody;
  */
 abstract class ApiController extends Controller
 {
-    /** @var ContentNegotiationResult|null The request content negotiation result */
-    protected $requestContentNegotiationResult;
-    /** @var ContentNegotiationResult|null The response content negotiation result */
-    protected $responseContentNegotiationResult;
-
-    /**
-     * Sets the content negotiation results
-     *
-     * @param ContentNegotiationResult|null $requestContentNegotiationResult The request content negotiation result
-     * @param ContentNegotiationResult|null $responseContentNegotiationResult The response content negotiation result
-     * @internal
-     */
-    public function setContentNegotiationResults(
-        ?ContentNegotiationResult $requestContentNegotiationResult,
-        ?ContentNegotiationResult $responseContentNegotiationResult
-    ): void {
-        $this->requestContentNegotiationResult = $requestContentNegotiationResult;
-        $this->responseContentNegotiationResult = $responseContentNegotiationResult;
-    }
-
     /**
      * Creates a bad request response
      *
-     * @param IHttpBody|IStream|scalar|array|object|null $body The raw response body
+     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      */
@@ -62,7 +41,7 @@ abstract class ApiController extends Controller
     /**
      * Creates a conflict response
      *
-     * @param IHttpBody|IStream|scalar|array|object|null $body The raw response body
+     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      */
@@ -74,7 +53,7 @@ abstract class ApiController extends Controller
     /**
      * Creates a created response
      *
-     * @param IHttpBody|IStream|scalar|array|object|null $body The raw response body
+     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      */
@@ -88,7 +67,7 @@ abstract class ApiController extends Controller
      *
      * @param int $statusCode The HTTP status code
      * @param HttpHeaders|null $headers The headers to use in the response
-     * @param IHttpBody|IStream|scalar|array|object|null $body The raw response body
+     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
      * @return IHttpResponseMessage The response
      * @throws FailedContentNegotiationException Thrown if content negotiation failed
      * @internal
@@ -97,11 +76,11 @@ abstract class ApiController extends Controller
     {
         $headers = $headers ?? new HttpHeaders();
 
-        if ($this->responseContentNegotiationResult === null) {
+        if ($this->context->getResponseContentNegotiationResult() === null) {
             throw new FailedContentNegotiationException('Response content could not be negotiated');
         }
 
-        $mediaType = $this->responseContentNegotiationResult->getMediaType();
+        $mediaType = $this->context->getResponseContentNegotiationResult()->getMediaType();
 
         if ($mediaType !== null) {
             $headers->add('Content-Type', $mediaType);
@@ -117,7 +96,7 @@ abstract class ApiController extends Controller
     /**
      * Creates a response body from a raw body value
      *
-     * @param IHttpBody|IStream|scalar|array|object $body The raw response body
+     * @param IHttpBody|IStream|scalar|array|\object $body The raw response body
      * @return IHttpBody|null The response body, or null if there is no body
      * @throws InvalidArgumentException Thrown if the body is not a supported type
      * @throws FailedContentNegotiationException Thrown if the response content could not be negotiated
@@ -140,12 +119,12 @@ abstract class ApiController extends Controller
             throw new InvalidArgumentException('Unsupported body type ' . \gettype($body));
         }
 
-        if ($this->responseContentNegotiationResult === null) {
+        if ($this->context->getResponseContentNegotiationResult() === null) {
             throw new FailedContentNegotiationException('Response content could not be negotiated');
         }
 
         $bodyStream = new Stream(fopen('php://temp', 'r+b'));
-        $this->responseContentNegotiationResult->getFormatter()->writeToStream($body, $bodyStream);
+        $this->context->getResponseContentNegotiationResult()->getFormatter()->writeToStream($body, $bodyStream);
 
         return new StreamBody($bodyStream);
     }
@@ -153,7 +132,7 @@ abstract class ApiController extends Controller
     /**
      * Creates a forbidden response
      *
-     * @param IHttpBody|IStream|scalar|array|object|null $body The raw response body
+     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      */
@@ -165,7 +144,7 @@ abstract class ApiController extends Controller
     /**
      * Creates an internal server error response
      *
-     * @param IHttpBody|IStream|scalar|array|object|null $body The raw response body
+     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      */
@@ -188,7 +167,7 @@ abstract class ApiController extends Controller
     /**
      * Creates a not found response
      *
-     * @param IHttpBody|IStream|scalar|array|object|null $body The raw response body
+     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      */
@@ -200,7 +179,7 @@ abstract class ApiController extends Controller
     /**
      * Creates an OK response
      *
-     * @param IHttpBody|IStream|scalar|array|object|null $body The raw response body
+     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      */
@@ -218,22 +197,22 @@ abstract class ApiController extends Controller
      */
     protected function readBodyAsArrayOf(string $type): array
     {
-        if ($this->requestContentNegotiationResult === null) {
+        if ($this->context->getRequestContentNegotiationResult() === null) {
             throw new FailedContentNegotiationException('Request content could not be negotiated');
         }
 
-        if (($body = $this->request->getBody()) === null) {
+        if (($body = $this->context->getRequest()->getBody()) === null) {
             return [];
         }
 
-        return $this->requestContentNegotiationResult->getFormatter()
+        return $this->context->getRequestContentNegotiationResult()->getFormatter()
             ->readFromStream($type, $body->readAsStream(), true);
     }
 
     /**
      * Creates a redirect response
      *
-     * @param IHttpBody|IStream|scalar|array|object|null $body The raw response body
+     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      */
@@ -245,7 +224,7 @@ abstract class ApiController extends Controller
     /**
      * Creates an unauthorized response
      *
-     * @param IHttpBody|IStream|scalar|array|object|null $body The raw response body
+     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      */
