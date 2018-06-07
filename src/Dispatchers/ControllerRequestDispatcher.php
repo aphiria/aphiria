@@ -39,19 +39,19 @@ class ControllerRequestDispatcher implements IControllerRequestDispatcher
     /**
      * @param IRouteMatcher $routeMatcher The route matcher
      * @param IDependencyResolver $dependencyResolver The dependency resolver
-     * @param IContentNegotiator $contentNegotiator The content negotiator
-     * @param IRouteActionInvoker $routeActionInvoker The route action invoker
+     * @param IContentNegotiator|null $contentNegotiator The content negotiator
+     * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
      */
     public function __construct(
         IRouteMatcher $routeMatcher,
         IDependencyResolver $dependencyResolver,
-        IContentNegotiator $contentNegotiator,
-        IRouteActionInvoker $routeActionInvoker
+        IContentNegotiator $contentNegotiator = null,
+        IRouteActionInvoker $routeActionInvoker = null
     ) {
         $this->routeMatcher = $routeMatcher;
         $this->dependencyResolver = $dependencyResolver;
-        $this->contentNegotiator = $contentNegotiator;
-        $this->routeActionInvoker = $routeActionInvoker;
+        $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
+        $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker();
     }
 
     /**
@@ -73,8 +73,7 @@ class ControllerRequestDispatcher implements IControllerRequestDispatcher
             // Todo: This doesn't handle global middleware at all
             $middleware = $this->resolveMiddleware($matchedRoute->getMiddlewareBindings());
 
-            return (new Pipeline())
-                ->send($request)
+            return (new Pipeline)->send($request)
                 ->through($middleware, 'handle')
                 ->then(function () use ($controllerContext) {
                     return $this->routeActionInvoker->invokeRouteAction($controllerContext);

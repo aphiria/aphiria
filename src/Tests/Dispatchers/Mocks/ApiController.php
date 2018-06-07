@@ -23,16 +23,25 @@ use RuntimeException;
 class ApiController extends BaseApiController
 {
     /**
-     * Mocks a method that takes in multiple parameters with some default values
+     * Mocks a method with a parameter with a default value
      *
-     * @param mixed $foo The first parameter
-     * @param mixed $bar The second parameter
-     * @param mixed $blah The optional third parameter
-     * @return IHttpResponseMessage The parameter names to their values
+     * @param string $foo The string
+     * @return IHttpResponseMessage The response
      */
-    public function multipleParametersWithDefaultValues($foo, $bar, $blah = '724'): IHttpResponseMessage
+    public function defaultValueParameter(string $foo = 'bar'): IHttpResponseMessage
     {
-        return $this->createResponseWithBody("foo:$foo, bar:$bar, blah:$blah");
+        return $this->createResponseWithBody($foo);
+    }
+
+    /**
+     * Mocks a method with an int parameter
+     *
+     * @param int $foo The int
+     * @return IHttpResponseMessage The response
+     */
+    public function intParameter(int $foo): IHttpResponseMessage
+    {
+        return $this->createResponseWithBody((string)$foo);
     }
 
     /**
@@ -43,6 +52,39 @@ class ApiController extends BaseApiController
     public function noParameters(): IHttpResponseMessage
     {
         return $this->createResponseWithBody('noParameters');
+    }
+
+    /**
+     * Mocks a method with a parameter with no type hint
+     *
+     * @param mixed $foo The parameter to use in the response
+     * @return Response The response
+     */
+    public function noTypeHintParameter($foo): IHttpResponseMessage
+    {
+        return $this->createResponseWithBody((string)$foo);
+    }
+
+    /**
+     * Mocks a method that takes in a nullable object parameter
+     *
+     * @param User|null $user The user
+     * @return Response The response
+     */
+    public function nullableObjectParameter(?User $user): IHttpResponseMessage
+    {
+        return $this->createResponseWithBody($user === null ? 'null' : 'notnull');
+    }
+
+    /**
+     * Mocks a method that takes in a nullable scalar parameter
+     *
+     * @param int|null $foo The nullable parameter
+     * @return Response The response
+     */
+    public function nullableScalarParameter(?int $foo): IHttpResponseMessage
+    {
+        return $this->createResponseWithBody($foo === null ? 'null' : 'notnull');
     }
 
     /**
@@ -57,17 +99,6 @@ class ApiController extends BaseApiController
     }
 
     /**
-     * Mocks a method that takes in a single parameter
-     *
-     * @param mixed $foo The parameter
-     * @return Response The parameter name to its value
-     */
-    public function oneParameter($foo): IHttpResponseMessage
-    {
-        return $this->createResponseWithBody("foo:$foo");
-    }
-
-    /**
      * Mocks a method that does not return anything
      */
     public function returnsNothing(): void
@@ -76,17 +107,14 @@ class ApiController extends BaseApiController
     }
 
     /**
-     * Mocks a method that takes in several parameters
+     * Mocks a method with a string parameter
      *
-     * @param mixed $foo The first parameter
-     * @param mixed $bar The second parameter
-     * @param mixed $baz The third parameter
-     * @param mixed $blah The fourth parameter
-     * @return Response The parameter names to their values
+     * @param string $foo The string
+     * @return IHttpResponseMessage The response
      */
-    public function severalParameters($foo, $bar, $baz, $blah): IHttpResponseMessage
+    public function stringParameter(string $foo): IHttpResponseMessage
     {
-        return $this->createResponseWithBody("foo:$foo, bar:$bar, baz:$baz, blah:$blah");
+        return $this->createResponseWithBody($foo);
     }
 
     /**
@@ -100,15 +128,11 @@ class ApiController extends BaseApiController
     }
 
     /**
-     * Mocks a method that takes in two parameters
-     *
-     * @param mixed $foo The first parameter
-     * @param mixed $bar The second parameter
-     * @return Response The parameter names to their values
+     * Mocks a method with a void return type;
      */
-    public function twoParameters($foo, $bar): IHttpResponseMessage
+    public function voidReturnType(): void
     {
-        return $this->createResponseWithBody("foo:$foo, bar:$bar");
+        // Don't do anything
     }
 
     /**
