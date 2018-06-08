@@ -10,7 +10,9 @@
 
 namespace Opulence\Net\Http;
 
+use InvalidArgumentException;
 use Opulence\Collections\HashTable;
+use Opulence\Collections\KeyValuePair;
 use OutOfBoundsException;
 use RuntimeException;
 
@@ -53,6 +55,20 @@ class HttpHeaders extends HashTable
             $currentValues = [];
             $this->tryGet($normalizedName, $currentValues);
             parent::add($normalizedName, array_merge($currentValues, (array)$values));
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addRange(array $kvps): void
+    {
+        foreach ($kvps as $kvp) {
+            if (!$kvp instanceof KeyValuePair) {
+                throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
+            }
+
+            $this->add($kvp->getKey(), $kvp->getValue());
         }
     }
 
