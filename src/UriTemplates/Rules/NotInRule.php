@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Rules;
+namespace Opulence\Routing\UriTemplates\Rules;
 
 /**
  * Defines the not-in-array rule
@@ -16,7 +16,7 @@ namespace Opulence\Routing\Matchers\UriTemplates\Rules;
 class NotInRule implements IRule
 {
     /** @var array The list of unacceptable values */
-    private $unacceptableValues = [];
+    private $unacceptableValues;
 
     /**
      * @param array $unacceptableValues The list of unacceptable values
@@ -29,7 +29,7 @@ class NotInRule implements IRule
     /**
      * @inheritdoc
      */
-    public static function getSlug() : string
+    public static function getSlug(): string
     {
         return 'notIn';
     }
@@ -37,8 +37,8 @@ class NotInRule implements IRule
     /**
      * @inheritdoc
      */
-    public function passes($value) : bool
+    public function passes($value): bool
     {
-        return !in_array($value, $this->unacceptableValues);
+        return !\in_array($value, $this->unacceptableValues, true);
     }
 }

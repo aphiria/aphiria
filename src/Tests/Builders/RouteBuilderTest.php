@@ -8,13 +8,13 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\Builders;
+namespace Opulence\Routing\Tests\Builders;
 
 use InvalidArgumentException;
 use LogicException;
-use Opulence\Routing\Matchers\Builders\RouteBuilder;
-use Opulence\Routing\Matchers\Middleware\MiddlewareBinding;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\Builders\RouteBuilder;
+use Opulence\Routing\Middleware\MiddlewareBinding;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Defines the tests for the route builder
@@ -22,29 +22,20 @@ use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
 class RouteBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /** @var RouteBuilder The route builder to use in tests */
-    private $routeBuilder = null;
+    private $routeBuilder;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->routeBuilder = new RouteBuilder(['GET'], new UriTemplate('/foo', false));
     }
 
-    /**
-     * Tests that building the route before setting an action throws an exception
-     */
-    public function testBuildingRouteBeforeSettingActionThrowsException() : void
+    public function testBuildingRouteBeforeSettingActionThrowsException(): void
     {
         $this->expectException(LogicException::class);
         $this->routeBuilder->build();
     }
 
-    /**
-     * Tests that chaining on fluent methods returns the correct instance
-     */
-    public function testChainingOnFluentMethodsReturnsCorrectInstance() : void
+    public function testChainingOnFluentMethodsReturnsCorrectInstance(): void
     {
         $this->assertSame($this->routeBuilder, $this->routeBuilder->toClosure(function () {
             // Don't do anything
@@ -57,10 +48,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withName('Foo'));
     }
 
-    /**
-     * Tests that the closure is set when using a closure action
-     */
-    public function testClosureIsSetWhenUsingClosureAction() : void
+    public function testClosureIsSetWhenUsingClosureAction(): void
     {
         $closure = function () {
             // Don't do anything
@@ -70,10 +58,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($closure, $route->getAction()->getClosure());
     }
 
-    /**
-     * Tests that attributes are set when passing them in as individual attributes
-     */
-    public function testAttributesAreSetWhenPassingIndividualAttributes() : void
+    public function testAttributesAreSetWhenPassingIndividualAttributes(): void
     {
         $this->routeBuilder->withAttribute('foo', 'bar');
         $this->routeBuilder->toMethod('class', 'method');
@@ -81,10 +66,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['foo' => 'bar'], $route->getAttributes());
     }
 
-    /**
-     * Tests that attributes are set when passing them in as multiple attributes
-     */
-    public function testAttributesAreSetWhenPassingMultipleAttributes() : void
+    public function testAttributesAreSetWhenPassingMultipleAttributes(): void
     {
         $this->routeBuilder->withManyAttributes(['foo' => 'bar']);
         $this->routeBuilder->toMethod('class', 'method');
@@ -92,19 +74,13 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['foo' => 'bar'], $route->getAttributes());
     }
 
-    /**
-     * Tests that an invalid middleware throws an exception
-     */
-    public function testInvalidManyMiddlewareThrowsException() : void
+    public function testInvalidManyMiddlewareThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->routeBuilder->withManyMiddleware([1]);
     }
 
-    /**
-     * Tests that many middleware bindings are set when passing them in as objects
-     */
-    public function testManyMiddlewareBindingsAreSetWhenPassingThemInAsObjects() : void
+    public function testManyMiddlewareBindingsAreSetWhenPassingThemInAsObjects(): void
     {
         $this->routeBuilder->withManyMiddleware([
             new MiddlewareBinding('foo', ['bar' => 'baz']),
@@ -121,10 +97,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['young' => 'cool'], $route->getMiddlewareBindings()[1]->getAttributes());
     }
 
-    /**
-     * Tests that many middleware bindings are set when passing them in as strings
-     */
-    public function testManyMiddlewareBindingsAreSetWhenPassingThemInAsStrings() : void
+    public function testManyMiddlewareBindingsAreSetWhenPassingThemInAsStrings(): void
     {
         $this->routeBuilder->withManyMiddleware(['foo', 'bar']);
         $this->routeBuilder->toMethod('class', 'method');
@@ -138,10 +111,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([], $route->getMiddlewareBindings()[1]->getAttributes());
     }
 
-    /**
-     * Tests that the method is set when using a method action
-     */
-    public function testMethodIsSetWhenUsingMethodAction() : void
+    public function testMethodIsSetWhenUsingMethodAction(): void
     {
         $this->routeBuilder->toMethod('foo', 'bar');
         $route = $this->routeBuilder->build();
@@ -149,10 +119,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('bar', $route->getAction()->getMethodName());
     }
 
-    /**
-     * Tests that a middleware binding is set
-     */
-    public function testMiddlewareBindingIsSet() : void
+    public function testMiddlewareBindingIsSet(): void
     {
         $this->routeBuilder->withMiddleware('foo', ['bar' => 'baz']);
         $this->routeBuilder->toMethod('class', 'method');
@@ -163,10 +130,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['bar' => 'baz'], $route->getMiddlewareBindings()[0]->getAttributes());
     }
 
-    /**
-     * Tests that the name is set on the route
-     */
-    public function testNameIsSet() : void
+    public function testNameIsSet(): void
     {
         $route = $this->routeBuilder->toMethod('class', 'method')
             ->withName('foo')

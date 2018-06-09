@@ -8,12 +8,12 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests;
+namespace Opulence\Routing\Tests;
 
-use Opulence\Routing\Matchers\Builders\RouteBuilderRegistry;
-use Opulence\Routing\Matchers\Caching\IRouteCache;
-use Opulence\Routing\Matchers\RouteCollection;
-use Opulence\Routing\Matchers\RouteFactory;
+use Opulence\Routing\Builders\RouteBuilderRegistry;
+use Opulence\Routing\Caching\IRouteCache;
+use Opulence\Routing\RouteCollection;
+use Opulence\Routing\RouteFactory;
 
 /**
  * Tests the route factory
@@ -21,20 +21,14 @@ use Opulence\Routing\Matchers\RouteFactory;
 class RouteFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /** @var IRouteCache|\PHPUnit_Framework_MockObject_MockObject The route cache to use */
-    private $routeCache = null;
+    private $routeCache;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->routeCache = $this->createMock(IRouteCache::class);
     }
 
-    /**
-     * Tests that a cache hit returns the cached routes
-     */
-    public function testCacheHitReturnsCachedRoutes() : void
+    public function testCacheHitReturnsCachedRoutes(): void
     {
         $callback = function (RouteBuilderRegistry $routes) {
             // Don't do anything
@@ -47,10 +41,7 @@ class RouteFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($routeCollection, $factory->createRoutes());
     }
 
-    /**
-     * Tests that a cache miss calls the route builder registry and caches its results
-     */
-    public function testCacheMissCallsRouteBuilderRegistryAndCachesItsResults() : void
+    public function testCacheMissCallsRouteBuilderRegistryAndCachesItsResults(): void
     {
         $callback = function (RouteBuilderRegistry $routes) {
             // Don't do anything
@@ -67,10 +58,7 @@ class RouteFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($routeCollection, $factory->createRoutes());
     }
 
-    /**
-     * Tests not using the cache causes the callback to be called every time
-     */
-    public function testNotUsingCacheCallCallbackEveryTime() : void
+    public function testNotUsingCacheCallCallbackEveryTime(): void
     {
         $callback = function (RouteBuilderRegistry $routes) {
             // Don't do anything

@@ -8,10 +8,10 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers;
+namespace Opulence\Routing\UriTemplates\Compilers\Parsers;
 
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\Node;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Nodes\Node;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
 
 /**
  * Defines a view abstract syntax tree
@@ -19,9 +19,9 @@ use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
 class AbstractSyntaxTree
 {
     /** @var Node The root node */
-    private $rootNode = null;
+    private $rootNode;
     /** @var Node The current node */
-    private $currentNode = null;
+    private $currentNode;
 
     public function __construct()
     {
@@ -31,7 +31,7 @@ class AbstractSyntaxTree
     /**
      * Clears all the non-root nodes
      */
-    public function clearNodes()
+    public function clearNodes(): void
     {
         $this->rootNode = new Node(NodeTypes::ROOT, null);
         $this->setCurrentNode($this->rootNode);
@@ -42,7 +42,7 @@ class AbstractSyntaxTree
      *
      * @return Node The current node
      */
-    public function getCurrentNode() : Node
+    public function getCurrentNode(): Node
     {
         return $this->currentNode;
     }
@@ -52,7 +52,7 @@ class AbstractSyntaxTree
      *
      * @return Node The root node
      */
-    public function getRootNode() : Node
+    public function getRootNode(): Node
     {
         return $this->rootNode;
     }
@@ -63,7 +63,7 @@ class AbstractSyntaxTree
      * @param Node $node The node to set
      * @return Node The current node
      */
-    public function setCurrentNode(Node $node) : Node
+    public function setCurrentNode(Node $node): Node
     {
         $this->currentNode = $node;
 

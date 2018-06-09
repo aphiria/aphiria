@@ -8,16 +8,17 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Builders;
+namespace Opulence\Routing\Builders;
 
 use Closure;
 use InvalidArgumentException;
 use LogicException;
-use Opulence\Routing\Matchers\ClosureRouteAction;
-use Opulence\Routing\Matchers\MethodRouteAction;
-use Opulence\Routing\Matchers\Middleware\MiddlewareBinding;
-use Opulence\Routing\Matchers\Route;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\ClosureRouteAction;
+use Opulence\Routing\MethodRouteAction;
+use Opulence\Routing\Middleware\MiddlewareBinding;
+use Opulence\Routing\Route;
+use Opulence\Routing\RouteAction;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Defines the route builder
@@ -25,17 +26,17 @@ use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
 class RouteBuilder
 {
     /** @var array The list of HTTP methods to match on */
-    private $httpMethods = [];
-    /** @var Closure The action the route takes */
-    private $action = null;
+    private $httpMethods;
+    /** @var RouteAction The action the route takes */
+    private $action;
     /** @var UriTemplate The URI template */
-    private $uriTemplate = null;
+    private $uriTemplate;
     /** @var array The mapping of custom route attribute names => values */
     private $attributes = [];
     /** @var MiddlewareBinding[] The list of middleware bindings on this route */
     private $middlewareBindings = [];
     /** @var string|null The name of this route */
-    private $name = null;
+    private $name;
 
     /**
      * @param array $httpMethods The list of HTTP methods the route matches on
@@ -53,7 +54,7 @@ class RouteBuilder
      * @return Route The built route
      * @throws LogicException Thrown if no controller was specified
      */
-    public function build() : Route
+    public function build(): Route
     {
         if ($this->action === null) {
             throw new LogicException('No controller specified for route');
@@ -75,7 +76,7 @@ class RouteBuilder
      * @param Closure $controller The closure the route uses
      * @return self For chaining
      */
-    public function toClosure(Closure $controller) : self
+    public function toClosure(Closure $controller): self
     {
         $this->action = new ClosureRouteAction($controller);
 
@@ -89,7 +90,7 @@ class RouteBuilder
      * @param string $controllerMethodName The name of the method the route goes to
      * @return self For chaining
      */
-    public function toMethod(string $controllerClassName, string $controllerMethodName) : self
+    public function toMethod(string $controllerClassName, string $controllerMethodName): self
     {
         $this->action = new MethodRouteAction($controllerClassName, $controllerMethodName);
 
@@ -104,7 +105,7 @@ class RouteBuilder
      * @param mixed $value The value of the attribute
      * @return self For chaining
      */
-    public function withAttribute(string $name, $value) : self
+    public function withAttribute(string $name, $value): self
     {
         $this->attributes[$name] = $value;
 
@@ -118,7 +119,7 @@ class RouteBuilder
      * @param array $attributes The mapping of custom attribute names => values
      * @return self For chaining
      */
-    public function withManyAttributes(array $attributes) : self
+    public function withManyAttributes(array $attributes): self
     {
         $this->attributes = array_merge($this->attributes, $attributes);
 
@@ -133,10 +134,10 @@ class RouteBuilder
      * @return self For chaining
      * @throws InvalidArgumentException Thrown if the middleware bindings are not the correct type
      */
-    public function withManyMiddleware(array $middlewareBindings) : self
+    public function withManyMiddleware(array $middlewareBindings): self
     {
         foreach ($middlewareBindings as $middlewareBinding) {
-            if (is_string($middlewareBinding)) {
+            if (\is_string($middlewareBinding)) {
                 $this->middlewareBindings[] = new MiddlewareBinding($middlewareBinding);
             } elseif ($middlewareBinding instanceof MiddlewareBinding) {
                 $this->middlewareBindings[] = $middlewareBinding;
@@ -157,7 +158,7 @@ class RouteBuilder
      * @param array $middlewareProperties Any properties this method relies on
      * @return self For chaining
      */
-    public function withMiddleware(string $middlewareClassName, array $middlewareProperties = []) : self
+    public function withMiddleware(string $middlewareClassName, array $middlewareProperties = []): self
     {
         $this->middlewareBindings[] = new MiddlewareBinding($middlewareClassName, $middlewareProperties);
 
@@ -170,7 +171,7 @@ class RouteBuilder
      * @param string $name The name of the route
      * @return self For chaining
      */
-    public function withName(string $name) : self
+    public function withName(string $name): self
     {
         $this->name = $name;
 

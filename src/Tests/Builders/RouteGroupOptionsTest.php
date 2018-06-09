@@ -8,10 +8,10 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\Builders;
+namespace Opulence\Routing\Tests\Builders;
 
-use Opulence\Routing\Matchers\Builders\RouteGroupOptions;
-use Opulence\Routing\Matchers\Middleware\MiddlewareBinding;
+use Opulence\Routing\Builders\RouteGroupOptions;
+use Opulence\Routing\Middleware\MiddlewareBinding;
 
 /**
  * Tests the route group options
@@ -19,14 +19,11 @@ use Opulence\Routing\Matchers\Middleware\MiddlewareBinding;
 class RouteGroupOptionsTest extends \PHPUnit\Framework\TestCase
 {
     /** @var RouteGroupOptions The options to use in tests */
-    private $routeGroupOptions = null;
+    private $routeGroupOptions;
     /** @var MiddlewareBinding[] The list of middleware bindings in the options */
     private $middlewareBindings = [];
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->middlewareBindings = [new MiddlewareBinding('foo')];
         $this->routeGroupOptions = new RouteGroupOptions(
@@ -38,42 +35,27 @@ class RouteGroupOptionsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests that the attributes to match are returned
-     */
-    public function testCorrectAttributesAreReturned() : void
+    public function testCorrectAttributesAreReturned(): void
     {
         $this->assertEquals(['foo' => 'bar'], $this->routeGroupOptions->getAttributes());
     }
 
-    /**
-     * Tests that the correct host is returned
-     */
-    public function testCorrectHostIsReturned() : void
+    public function testCorrectHostIsReturned(): void
     {
         $this->assertEquals('host', $this->routeGroupOptions->getHostTemplate());
     }
 
-    /**
-     * Tests that the correct HTTPS-only setting is returned
-     */
-    public function testCorrectHttpsOnlySettingIsReturned() : void
+    public function testCorrectHttpsOnlySettingIsReturned(): void
     {
         $this->assertTrue($this->routeGroupOptions->isHttpsOnly());
     }
 
-    /**
-     * Tests that the correct middleware bindings are returned
-     */
-    public function testCorrectMiddlewareBindingsAreReturned() : void
+    public function testCorrectMiddlewareBindingsAreReturned(): void
     {
         $this->assertEquals($this->middlewareBindings, $this->routeGroupOptions->getMiddlewareBindings());
     }
 
-    /**
-     * Tests that the correct path is returned
-     */
-    public function testCorrectPathIsReturned() : void
+    public function testCorrectPathIsReturned(): void
     {
         $this->assertEquals('path', $this->routeGroupOptions->getPathTemplate());
     }

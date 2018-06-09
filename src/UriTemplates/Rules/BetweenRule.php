@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Rules;
+namespace Opulence\Routing\UriTemplates\Rules;
 
 use InvalidArgumentException;
 
@@ -17,16 +17,16 @@ use InvalidArgumentException;
  */
 class BetweenRule implements IRule
 {
-    /** @var numeric The min value */
-    private $min = 0;
-    /** @var numeric The max value */
-    private $max = 0;
+    /** @var int|float The min value */
+    private $min;
+    /** @var int|float The max value */
+    private $max;
     /** @var bool Whether or not the extremes are inclusive */
-    private $isInclusive = true;
+    private $isInclusive;
 
     /**
-     * @param numeric $min The min value
-     * @param numeric $max The max value
+     * @param int|float $min The min value
+     * @param int|float $max The max value
      * @param bool $isInclusive Whether or not the extremes are inclusive
      * @throws InvalidArgumentException Thrown if the min or max values are invalid
      */
@@ -48,7 +48,7 @@ class BetweenRule implements IRule
     /**
      * @inheritdoc
      */
-    public static function getSlug() : string
+    public static function getSlug(): string
     {
         return 'between';
     }
@@ -56,12 +56,12 @@ class BetweenRule implements IRule
     /**
      * @inheritdoc
      */
-    public function passes($value) : bool
+    public function passes($value): bool
     {
         if ($this->isInclusive) {
             return $value >= $this->min && $value <= $this->max;
-        } else {
-            return $value > $this->min && $value < $this->max;
         }
+
+        return $value > $this->min && $value < $this->max;
     }
 }

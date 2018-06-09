@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Rules;
+namespace Opulence\Routing\UriTemplates\Rules;
 
 use DateTime;
 use InvalidArgumentException;
@@ -18,8 +18,8 @@ use InvalidArgumentException;
  */
 class DateRule
 {
-    /** @var The list of acceptable date formats */
-    private $formats = [];
+    /** @var array The list of acceptable date formats */
+    private $formats;
 
     /**
      * @param array|string $formats The format or list of acceptable formats
@@ -28,7 +28,7 @@ class DateRule
     {
         $formatArray = (array)$formats;
 
-        if (count($formatArray) === 0) {
+        if (\count($formatArray) === 0) {
             throw new InvalidArgumentException('No formats specified for ' . self::class);
         }
 
@@ -38,7 +38,7 @@ class DateRule
     /**
      * @inheritdoc
      */
-    public static function getSlug() : string
+    public static function getSlug(): string
     {
         return 'date';
     }
@@ -46,15 +46,16 @@ class DateRule
     /**
      * @inheritdoc
      */
-    public function passes($value) : bool
+    public function passes($value): bool
     {
         foreach ($this->formats as $format) {
             $dateTime = DateTime::createFromFormat($format, $value);
 
-            if ($dateTime !== false && $value == $dateTime->format($format)) {
+            if ($dateTime !== false && $value === $dateTime->format($format)) {
                 return true;
             }
         }
+
         return false;
     }
 }

@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Rules;
+namespace Opulence\Routing\UriTemplates\Rules;
 
 /**
  * Defines the interface for URI template rules to implement

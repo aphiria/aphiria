@@ -10,8 +10,9 @@
 
 namespace Opulence\Routing\Matchers;
 
-use Opulence\Routing\Matchers\Regexes\GroupRegexCollection;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
+use Opulence\Routing\Regexes\GroupRegexCollection;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Defines a route matcher
@@ -19,9 +20,9 @@ use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
 class RouteMatcher implements IRouteMatcher
 {
     /** @var GroupRegexCollection The list of regexes to match against */
-    private $regexes = [];
+    private $regexes;
     /** @var IRouteConstraint[] The list of custom route constraints to apply */
-    private $routeConstraints = [];
+    private $routeConstraints;
 
     /**
      * @param GroupRegexCollection $regexes The list of regexes to match against
@@ -36,7 +37,7 @@ class RouteMatcher implements IRouteMatcher
     /**
      * @inheritdoc
      */
-    public function match(string $httpMethod, string $host, string $path, array $headers = []) : MatchedRoute
+    public function match(string $httpMethod, string $host, string $path, array $headers = []): MatchedRoute
     {
         $hostAndPath = $host . $path;
         $regexesByMethod = $this->regexes->getByMethod(strtoupper($httpMethod));
@@ -58,7 +59,7 @@ class RouteMatcher implements IRouteMatcher
                 // value in matches is the subject, start with the next offset, which will contain the route variables
                 $routeVarNamesToValues = [];
                 $uriTemplate = $route->getUriTemplate();
-                $routeVarValues = array_slice($matches, $offset + 2, count($uriTemplate->getRouteVarNames()));
+                $routeVarValues = \array_slice($matches, $offset + 2, \count($uriTemplate->getRouteVarNames()));
                 $this->populateRouteVars(
                     $routeVarNamesToValues,
                     $uriTemplate->getRouteVarNames(),
@@ -100,12 +101,12 @@ class RouteMatcher implements IRouteMatcher
         array $routeVarNames,
         array $routeVarValues,
         array $defaultRouteVars
-    ) : void {
+    ): void {
         $routeVars = [];
 
         // Set any missing route vars to their default values, if they have any
         foreach ($defaultRouteVars as $name => $defaultValue) {
-            $routeVarIndex = array_search($name, $routeVarNames);
+            $routeVarIndex = array_search($name, $routeVarNames, true);
 
             if (!isset($routeVarValues[$routeVarIndex])) {
                 $routeVarValues[$routeVarIndex] = $defaultValue;
@@ -124,7 +125,7 @@ class RouteMatcher implements IRouteMatcher
      * @param array $routeVarNamesToValues The mapping of route var names to their values
      * @return bool True if the route vars match, otherwise false
      */
-    private function routeVarsMatch(UriTemplate $uriTemplate, array &$routeVarNamesToValues) : bool
+    private function routeVarsMatch(UriTemplate $uriTemplate, array &$routeVarNamesToValues): bool
     {
         foreach ($uriTemplate->getRouteVarRules() as $name => $rules) {
             foreach ($rules as $rule) {

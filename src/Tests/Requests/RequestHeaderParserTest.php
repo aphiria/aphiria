@@ -8,9 +8,9 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\Requests;
+namespace Opulence\Routing\Tests\Requests;
 
-use Opulence\Routing\Matchers\Requests\RequestHeaderParser;
+use Opulence\Routing\Requests\RequestHeaderParser;
 
 /**
  * Tests the request header parser
@@ -32,19 +32,13 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
         'HTTP_USER_AGENT' => 'user_agent'
     ];
     /** @var RequestHeaderParser The header parse to use in tests */
-    private $headerParser = null;
+    private $headerParser;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->headerParser = new RequestHeaderParser();
     }
 
-    /**
-     * Tests parsing raw header values returns correct values
-     */
     public function testParsingRawHeaderValuesReturnsCorrectValues()
     {
         $expectedHeaders = [];

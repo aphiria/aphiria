@@ -8,9 +8,14 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Caching;
+namespace Opulence\Routing\Caching;
 
-use Opulence\Routing\Matchers\RouteCollection;
+use Opulence\Routing\ClosureRouteAction;
+use Opulence\Routing\MethodRouteAction;
+use Opulence\Routing\Middleware\MiddlewareBinding;
+use Opulence\Routing\Route;
+use Opulence\Routing\RouteCollection;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Defines the file route cache
@@ -18,7 +23,7 @@ use Opulence\Routing\Matchers\RouteCollection;
 class FileRouteCache implements IRouteCache
 {
     /** @var string The path to the cached route file */
-    private $path = '';
+    private $path;
 
     /**
      * @param string $path The path to the cached route file
@@ -31,7 +36,7 @@ class FileRouteCache implements IRouteCache
     /**
      * @inheritdoc
      */
-    public function flush() : void
+    public function flush(): void
     {
         if ($this->has()) {
             @unlink($this->path);
@@ -47,7 +52,19 @@ class FileRouteCache implements IRouteCache
             return null;
         }
 
-        return unserialize(file_get_contents($this->path));
+        return unserialize(
+            file_get_contents($this->path),
+            [
+                'allowed_classes' => [
+                    ClosureRouteAction::class,
+                    MethodRouteAction::class,
+                    MiddlewareBinding::class,
+                    Route::class,
+                    RouteCollection::class,
+                    UriTemplate::class
+                ]
+            ]
+        );
     }
 
     /**

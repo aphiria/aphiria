@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers;
+namespace Opulence\Routing;
 
 /**
  * Defines a route action that uses a method

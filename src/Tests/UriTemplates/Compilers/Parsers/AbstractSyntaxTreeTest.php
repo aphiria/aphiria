@@ -8,11 +8,11 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\UriTemplates\Compilers\Parsers;
+namespace Opulence\Routing\Tests\UriTemplates\Compilers\Parsers;
 
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\AbstractSyntaxTree;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\Node;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\AbstractSyntaxTree;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Nodes\Node;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
 
 /**
  * Tests the route abstract syntax tree
@@ -20,19 +20,13 @@ use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
 class AbstractSyntaxTreeTest extends \PHPUnit\Framework\TestCase
 {
     /** @var AbstractSyntaxTree The tree to use in tests */
-    private $tree = null;
+    private $tree;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp()
     {
         $this->tree = new AbstractSyntaxTree();
     }
 
-    /**
-     * Tests clearing the nodes still retains a root node
-     */
     public function testClearingNodesRetainsARootNode()
     {
         /** @var Node|\PHPUnit_Framework_MockObject_MockObject $childNode */
@@ -44,9 +38,6 @@ class AbstractSyntaxTreeTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([], $this->tree->getRootNode()->getChildren());
     }
 
-    /**
-     * Tests getting the current node when none is set returns the root node
-     */
     public function testGettingCurrentNodeWhenNoneIsSetReturnsRootNode()
     {
         $this->assertInstanceOf(Node::class, $this->tree->getCurrentNode());
@@ -54,9 +45,6 @@ class AbstractSyntaxTreeTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([], $this->tree->getCurrentNode()->getChildren());
     }
 
-    /**
-     * Tests getting the root node returns a properly set node
-     */
     public function testGettingRootNodeReturnsProperlySetNode()
     {
         $this->assertInstanceOf(Node::class, $this->tree->getRootNode());
@@ -64,9 +52,6 @@ class AbstractSyntaxTreeTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([], $this->tree->getRootNode()->getChildren());
     }
 
-    /**
-     * Tests setting the current node
-     */
     public function testSettingCurrentNode()
     {
         /** @var Node $currentNode */

@@ -8,22 +8,23 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Regexes;
+namespace Opulence\Routing\Regexes;
 
-use Opulence\Routing\Matchers\Regexes\Caching\IGroupRegexCache;
-use Opulence\Routing\Matchers\RouteCollection;
+use Opulence\Routing\Regexes\Caching\IGroupRegexCache;
+use Opulence\Routing\Route;
+use Opulence\Routing\RouteCollection;
 
 /**
  * Creates group regexes
  */
 class GroupRegexFactory
 {
-    /** @var The number of routes' regexes to combine per group regex */
+    /** @const The number of routes' regexes to combine per group regex */
     private const ROUTE_CHUNK_SIZE = 10;
     /** @var RouteCollection The list of routes to create regexes from */
-    private $routes = null;
+    private $routes;
     /** @var IGroupRegexCache|null The regex cache if using one, otherwise null */
-    private $regexCache = null;
+    private $regexCache;
 
     /**
      * @param RouteCollection $routes The list of routes to create regexes from
@@ -38,9 +39,9 @@ class GroupRegexFactory
     /**
      * Creates group regexes from the list of routes
      *
-     * @return The list of group regexes
+     * @return GroupRegexCollection The list of group regexes
      */
-    public function createRegexes() : GroupRegexCollection
+    public function createRegexes(): GroupRegexCollection
     {
         if ($this->regexCache !== null && ($regexes = $this->regexCache->get()) !== null) {
             return $regexes;
@@ -70,7 +71,7 @@ class GroupRegexFactory
      * @param Route[] $routesByCapturingGroupOffsets The mapping of capturing group offsets to routes that we'll build
      * @return string The built regex
      */
-    private function buildRegex(array $routes, array &$routesByCapturingGroupOffsets) : string
+    private function buildRegex(array $routes, array &$routesByCapturingGroupOffsets): string
     {
         $routesByCapturingGroupOffsets = [];
         $capturingGroupOffset = 0;
@@ -81,7 +82,7 @@ class GroupRegexFactory
             $uriTemplate = $route->getUriTemplate();
             $regexes .= '(' . $uriTemplate->getRegex() . ')|';
             // Each regex has a capturing group around the entire thing, hence the + 1
-            $capturingGroupOffset += count($uriTemplate->getRouteVarNames()) + 1;
+            $capturingGroupOffset += \count($uriTemplate->getRouteVarNames()) + 1;
         }
 
         return '#^(?:' . rtrim($regexes, '|') . ')$#';

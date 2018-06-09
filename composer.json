@@ -1,35 +1,36 @@
 {
-    "name": "opulence/route-matcher",
-    "description": "The Opulence route matching library",
-    "keywords": [
-        "PHP",
-        "routing",
-        "matching"
-    ],
-    "authors": [
-        {
-            "name": "David Young",
-            "email": "dave@opulencephp.com",
-            "role": "Architect"
-        }
-    ],
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Opulence\\Routing\\Matchers\\": "src/"
-        }
-    },
-    "require": {
-        "php": "^7.1",
-        "opis/closure": "3.0.*"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "~6.2"
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0.x-dev"
-        }
-    },
-    "minimum-stability": "dev"
+  "name": "opulence/router",
+  "description": "The Opulence router library",
+  "keywords": [
+    "PHP",
+    "router",
+    "routing",
+    "matching"
+  ],
+  "authors": [
+    {
+      "name": "David Young",
+      "email": "dave@opulencephp.com",
+      "role": "Architect"
+    }
+  ],
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Opulence\\Routing\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^7.1",
+    "opis/closure": "3.0.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~7.3"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  },
+  "minimum-stability": "dev"
 }

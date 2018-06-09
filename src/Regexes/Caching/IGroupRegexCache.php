@@ -8,9 +8,9 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Regexes\Caching;
+namespace Opulence\Routing\Regexes\Caching;
 
-use Opulence\Routing\Matchers\Regexes\GroupRegexCollection;
+use Opulence\Routing\Regexes\GroupRegexCollection;
 
 /**
  * Defines the interface for group regex caches to implement

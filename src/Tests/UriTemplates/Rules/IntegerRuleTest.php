@@ -8,26 +8,20 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\UriTemplates\Rules;
+namespace Opulence\Routing\Tests\UriTemplates\Rules;
 
-use Opulence\Routing\Matchers\UriTemplates\Rules\IntegerRule;
+use Opulence\Routing\UriTemplates\Rules\IntegerRule;
 
 /**
  * Tests the integer rule
  */
 class IntegerRuleTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests that the correct slug is returned
-     */
     public function testCorrectSlugIsReturned() : void
     {
         $this->assertEquals('int', IntegerRule::getSlug());
     }
 
-    /**
-     * Tests that a failing value
-     */
     public function testFailingValue() : void
     {
         $rule = new IntegerRule();
@@ -37,9 +31,6 @@ class IntegerRuleTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($rule->passes('1.5'));
     }
 
-    /**
-     * Tests a passing value
-     */
     public function testPassingValue() : void
     {
         $rule = new IntegerRule();

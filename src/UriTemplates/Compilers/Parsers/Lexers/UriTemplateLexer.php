@@ -8,33 +8,33 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers;
+namespace Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers;
 
 use InvalidArgumentException;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\Token;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenTypes;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\Token;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenTypes;
 
 /**
  * Defines the lexer for URI templates
  */
 class UriTemplateLexer implements IUriTemplateLexer
 {
-    /** @var string The list of punctuation characters */
+    /** @const The list of punctuation characters */
     private const PUNCTUATION = '()[],=';
-    /** @var string The regex for finding a number */
-    private const NUMBER_REGEX = '/[0-9]+(?:\.[0-9]+)?/A';
-    /** @var string The regex for finding a quoted string */
+    /** @const The regex for finding a number */
+    private const NUMBER_REGEX = '/\d+(?:\.\d+)?/A';
+    /** @const The regex for finding a quoted string */
     private const QUOTED_STRING_REGEX = '/\s*"([^#"\\\\]*(?:\\\\.[^#"\\\\]*)*)"|\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'\s*/A';
-    /** @var string The regex for finding a variable name and default value */
-    private const VARIABLE_NAME_REGEX = '/:[a-zA-Z_][a-zA-Z0-9_]*/A';
-    /** @var The maximum length of a variable name */
+    /** @const The regex for finding a variable name and default value */
+    private const VARIABLE_NAME_REGEX = '/:[a-zA-Z_][\w]*/A';
+    /** @const The maximum length of a variable name */
     private const VARIABLE_NAME_MAX_LENGTH = 32;
 
     /**
      * @inheritdoc
      */
-    public function lex(string $template) : TokenStream
+    public function lex(string $template): TokenStream
     {
         $cursor = 0;
         $templateLength = mb_strlen($template);
@@ -75,7 +75,7 @@ class UriTemplateLexer implements IUriTemplateLexer
      * @param string $textBuffer The current text buffer
      * @param Token[] $tokens The list of tokens to add to
      */
-    private function flushTextBuffer(string &$textBuffer, array &$tokens) : void
+    private function flushTextBuffer(string &$textBuffer, array &$tokens): void
     {
         if ($textBuffer !== '') {
             $tokens[] = new Token(TokenTypes::T_TEXT, $textBuffer);
@@ -90,10 +90,10 @@ class UriTemplateLexer implements IUriTemplateLexer
      * @param Token[] $tokens The list of tokens to add to
      * @param int $cursor The current cursor
      */
-    private function lexNumber(string $number, array &$tokens, int &$cursor) : void
+    private function lexNumber(string $number, array &$tokens, int &$cursor): void
     {
-        $floatVal = floatval($number);
-        $intVal = intval($number);
+        $floatVal = (float)$number;
+        $intVal = (int)$number;
 
         // Determine if this was a float or not
         if ($floatVal && $intVal !== $floatVal) {
@@ -112,7 +112,7 @@ class UriTemplateLexer implements IUriTemplateLexer
      * @param Token[] $tokens The list of tokens to add to
      * @param int $cursor The current cursor
      */
-    private function lexPunctuation(string $punctuation, array &$tokens, int &$cursor) : void
+    private function lexPunctuation(string $punctuation, array &$tokens, int &$cursor): void
     {
         $tokens[] = new Token(TokenTypes::T_PUNCTUATION, $punctuation);
         $cursor++;
@@ -125,7 +125,7 @@ class UriTemplateLexer implements IUriTemplateLexer
      * @param Token[] $tokens The list of tokens to add to
      * @param int $cursor The current cursor
      */
-    private function lexQuotedString(string $quotedString, array &$tokens, int &$cursor) : void
+    private function lexQuotedString(string $quotedString, array &$tokens, int &$cursor): void
     {
         $tokens[] = new Token(TokenTypes::T_QUOTED_STRING, stripcslashes(substr(trim($quotedString), 1, -1)));
         $cursor += mb_strlen($quotedString);
@@ -138,7 +138,7 @@ class UriTemplateLexer implements IUriTemplateLexer
      * @param string $textBuffer The text buffer to add to
      * @param int $cursor The current cursor
      */
-    private function lexTextChar(string $char, string &$textBuffer, int &$cursor) : void
+    private function lexTextChar(string $char, string &$textBuffer, int &$cursor): void
     {
         $textBuffer .= $char;
         $cursor++;
@@ -151,7 +151,7 @@ class UriTemplateLexer implements IUriTemplateLexer
      * @param Token[] $tokens The list of tokens to add to
      * @param int $cursor The current cursor
      */
-    private function lexVariableName(string $variableName, array &$tokens, int &$cursor) : void
+    private function lexVariableName(string $variableName, array &$tokens, int &$cursor): void
     {
         // Remove the colon before the variable name
         $trimmedVariableName = substr($variableName, 1);

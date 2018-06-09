@@ -8,10 +8,10 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\UriTemplates;
+namespace Opulence\Routing\Tests\UriTemplates;
 
-use Opulence\Routing\Matchers\UriTemplates\Rules\IRule;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\UriTemplates\Rules\IRule;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Tests the URI template
@@ -19,14 +19,11 @@ use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
 class UriTemplateTest extends \PHPUnit\Framework\TestCase
 {
     /** @var UriTemplate The URI template to use in tests */
-    private $uriTemplate = null;
+    private $uriTemplate;
     /** @var IRule|\PHPUnit_Framework_MockObject_MockObject The rule to use in tests */
-    private $rule = null;
+    private $rule;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->rule = $this->createMock(IRule::class);
         $this->uriTemplate = new UriTemplate(
@@ -39,51 +36,33 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests that the default values are correct
-     */
-    public function testDefaultValuesAreCorrect() : void
+    public function testDefaultValuesAreCorrect(): void
     {
         $this->assertEquals(['foo' => 'bar'], $this->uriTemplate->getDefaultRouteVars());
     }
 
-    /**
-     * Tests that the HTTPS-only flag is correct
-     */
-    public function testHttpsOnlyFlagIsCorrect() : void
+    public function testHttpsOnlyFlagIsCorrect(): void
     {
         $this->assertTrue($this->uriTemplate->isHttpsOnly());
     }
 
-    /**
-     * Tests that the regex is correct
-     */
-    public function testRegexIsCorrect() : void
+    public function testRegexIsCorrect(): void
     {
         $this->assertEquals('regex', $this->uriTemplate->getRegex());
     }
 
-    /**
-     * Tests that the route var names are correct
-     */
-    public function testRouteVarNamesAreCorrect() : void
+    public function testRouteVarNamesAreCorrect(): void
     {
         $this->assertEquals(['var'], $this->uriTemplate->getRouteVarNames());
     }
 
-    /**
-     * Tests that the rule is correct
-     */
-    public function testRuleIsCorrect() : void
+    public function testRuleIsCorrect(): void
     {
         $expectedRules = ['baz' => [$this->rule]];
         $this->assertEquals($expectedRules, $this->uriTemplate->getRouteVarRules());
     }
 
-    /**
-     * Tests that a single rule is converted to a list of rules
-     */
-    public function testSingleRuleIsConvertedToListOfRules() : void
+    public function testSingleRuleIsConvertedToListOfRules(): void
     {
         $uriTemplate = new UriTemplate(
             'regex',
@@ -97,10 +76,7 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedRules, $uriTemplate->getRouteVarRules());
     }
 
-    /**
-     * Tests that the is-relative-URI flag returns correctly
-     */
-    public function testIsRelataiveUriReturnsCorrectValue() : void
+    public function testIsRelativeUriReturnsCorrectValue(): void
     {
         $this->assertTrue($this->uriTemplate->isAbsoluteUri());
     }

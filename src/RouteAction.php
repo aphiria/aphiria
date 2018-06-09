@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers;
+namespace Opulence\Routing;
 
 use Closure;
 use InvalidArgumentException;
@@ -21,11 +21,11 @@ class RouteAction
 {
     // Note - These are protected rather than private for serialization purposes
     /** @var string|null The name of the class the route routes to */
-    protected $className = null;
+    protected $className;
     /** @var string|null The name of the method the route routes to */
-    protected $methodName = null;
+    protected $methodName;
     /** @var Closure|null The closure the route routes to */
-    protected $closure = null;
+    protected $closure;
     /** @var bool Whether or not the action uses a method or a closure */
     protected $usesMethod = false;
     /** @var string The serialized closure */
@@ -41,7 +41,7 @@ class RouteAction
     {
         // Check if everything was set or nothing was set
         if (($className !== null && $closure !== null) ||
-            ($className === null || $methodName == null) && $closure === null) {
+            (($className === null || $methodName === null) && $closure === null)) {
             throw new InvalidArgumentException('Must specify either a class name or closure');
         }
 
@@ -66,7 +66,7 @@ class RouteAction
      *
      * @return array The list of properties to store
      */
-    public function __sleep() : array
+    public function __sleep(): array
     {
         if ($this->closure === null) {
             $this->serializedClosure = '';
@@ -87,7 +87,10 @@ class RouteAction
             $this->closure = null;
         } else {
             /** @var SerializableClosure $serializedClosure */
-            $serializedClosure = unserialize($this->serializedClosure);
+            $serializedClosure = unserialize(
+                $this->serializedClosure,
+                ['allowed_classes' => [SerializableClosure::class]]
+            );
             $this->closure = $serializedClosure->getClosure();
         }
 
@@ -95,21 +98,11 @@ class RouteAction
     }
 
     /**
-     * Gets the name of the method that is used in this action
-     *
-     * @return string|null The name of the method that is used in this action if one was set, otherwise null
-     */
-    public function getMethodName() : ?string
-    {
-        return $this->methodName;
-    }
-
-    /**
      * Gets the name of the class that is used in this action
      *
      * @return string|null The name of the class that is used in this action if one was set, otherwise null
      */
-    public function getClassName() : ?string
+    public function getClassName(): ?string
     {
         return $this->className;
     }
@@ -119,9 +112,19 @@ class RouteAction
      *
      * @return Closure The closure the route routes to
      */
-    public function getClosure() : ?Closure
+    public function getClosure(): ?Closure
     {
         return $this->closure;
+    }
+
+    /**
+     * Gets the name of the method that is used in this action
+     *
+     * @return string|null The name of the method that is used in this action if one was set, otherwise null
+     */
+    public function getMethodName(): ?string
+    {
+        return $this->methodName;
     }
 
     /**
@@ -129,7 +132,7 @@ class RouteAction
      *
      * @return bool True if the action used a class, otherwise false
      */
-    public function usesMethod() : bool
+    public function usesMethod(): bool
     {
         return $this->usesMethod;
     }

@@ -8,14 +8,14 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Builders;
+namespace Opulence\Routing\Builders;
 
 use Closure;
-use Opulence\Routing\Matchers\RouteCollection;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\IUriTemplateCompiler;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\UriTemplateCompiler;
-use Opulence\Routing\Matchers\UriTemplates\Rules\RuleFactory;
-use Opulence\Routing\Matchers\UriTemplates\Rules\RuleFactoryRegistrant;
+use Opulence\Routing\RouteCollection;
+use Opulence\Routing\UriTemplates\Compilers\IUriTemplateCompiler;
+use Opulence\Routing\UriTemplates\Compilers\UriTemplateCompiler;
+use Opulence\Routing\UriTemplates\Rules\RuleFactory;
+use Opulence\Routing\UriTemplates\Rules\RuleFactoryRegistrant;
 
 /**
  * Defines the route builder registry
@@ -25,7 +25,7 @@ class RouteBuilderRegistry
     /** @var RouteBuilder[] The list of registered route builders */
     private $routeBuilders = [];
     /** @var IUriTemplateCompiler The URI template compiler */
-    private $uriTemplateCompiler = null;
+    private $uriTemplateCompiler;
     /** @var RouteGroupOptions[] The stack of route group options */
     private $groupOptionsStack = [];
 
@@ -48,7 +48,7 @@ class RouteBuilderRegistry
      *
      * @return RouteCollection The list of routes built by this registry
      */
-    public function buildAll() : RouteCollection
+    public function buildAll(): RouteCollection
     {
         $builtRouteMaps = [];
 
@@ -68,9 +68,9 @@ class RouteBuilderRegistry
      * @param RouteGroupOptions $groupOptions The list of options shared by all routes in the group
      * @param Closure $callback The callback that accepts an instance of this class
      */
-    public function group(RouteGroupOptions $groupOptions, Closure $callback) : void
+    public function group(RouteGroupOptions $groupOptions, Closure $callback): void
     {
-        array_push($this->groupOptionsStack, $groupOptions);
+        $this->groupOptionsStack[] = $groupOptions;
         $callback($this);
         array_pop($this->groupOptionsStack);
     }
@@ -89,7 +89,7 @@ class RouteBuilderRegistry
         string $pathTemplate,
         string $hostTemplate = null,
         bool $isHttpsOnly = false
-    ) : RouteBuilder {
+    ): RouteBuilder {
         $this->applyGroupRouteTemplates($pathTemplate, $hostTemplate, $isHttpsOnly);
         $uriTemplate = $this->uriTemplateCompiler->compile($hostTemplate, $pathTemplate, $isHttpsOnly);
         $routeBuilder = new RouteBuilder((array)$httpMethods, $uriTemplate);
@@ -105,7 +105,7 @@ class RouteBuilderRegistry
      *
      * @param RouteBuilder $routeBuilder The route builder to bind attributes to
      */
-    private function applyGroupAttributes(RouteBuilder &$routeBuilder) : void
+    private function applyGroupAttributes(RouteBuilder $routeBuilder): void
     {
         $groupAttributes = [];
 
@@ -121,7 +121,7 @@ class RouteBuilderRegistry
      *
      * @param RouteBuilder $routeBuilder The route builder to bind middleware to
      */
-    private function applyGroupMiddleware(RouteBuilder &$routeBuilder) : void
+    private function applyGroupMiddleware(RouteBuilder $routeBuilder): void
     {
         $groupMiddlewareBindings = [];
 
@@ -143,7 +143,7 @@ class RouteBuilderRegistry
         string &$pathTemplate,
         string &$hostTemplate = null,
         bool &$isHttpsOnly = false
-    ) : void {
+    ): void {
         $groupPathTemplate = '';
         $groupHostTemplate = '';
         $groupIsHttpsOnly = false;

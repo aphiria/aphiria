@@ -8,9 +8,9 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Caching;
+namespace Opulence\Routing\Caching;
 
-use Opulence\Routing\Matchers\RouteCollection;
+use Opulence\Routing\RouteCollection;
 
 /**
  * Defines the interface for route builder caches to implement

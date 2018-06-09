@@ -8,13 +8,13 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\Builders;
+namespace Opulence\Routing\Tests\Builders;
 
-use Opulence\Routing\Matchers\Builders\RouteBuilderRegistry;
-use Opulence\Routing\Matchers\Builders\RouteGroupOptions;
-use Opulence\Routing\Matchers\Middleware\MiddlewareBinding;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\IUriTemplateCompiler;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\Builders\RouteBuilderRegistry;
+use Opulence\Routing\Builders\RouteGroupOptions;
+use Opulence\Routing\Middleware\MiddlewareBinding;
+use Opulence\Routing\UriTemplates\Compilers\IUriTemplateCompiler;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Tests the route builder registry
@@ -22,23 +22,17 @@ use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
 class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
 {
     /** @var RouteBuilderRegistry The registry to use in tests */
-    private $registry = null;
+    private $registry;
     /** @var IUriTemplateCompiler|\PHPUnit_Framework_MockObject_MockObject The URI template compiler to use within the registry */
-    private $uriTemplateCompiler = null;
+    private $uriTemplateCompiler;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->uriTemplateCompiler = $this->createMock(IUriTemplateCompiler::class);
         $this->registry = new RouteBuilderRegistry($this->uriTemplateCompiler);
     }
 
-    /**
-     * Tests building with no routes returns an empty collection
-     */
-    public function testBuildingWithNoRoutesReturnsEmptyCollection() : void
+    public function testBuildingWithNoRoutesReturnsEmptyCollection(): void
     {
         $routes = $this->registry->buildAll();
         $httpMethods = [
@@ -56,10 +50,7 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * Tests that attributes to match on are merged with those in its routes
-     */
-    public function testGroupAttributesToMatchOnAreMergedWithRouteAttributesToMatch() : void
+    public function testGroupAttributesToMatchOnAreMergedWithRouteAttributesToMatch(): void
     {
         $groupOptions = new RouteGroupOptions('foo', 'bar', false, [], ['H1' => 'val1']);
         $this->registry->group($groupOptions, function (RouteBuilderRegistry $registry) {
@@ -72,10 +63,7 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['H1' => 'val1', 'H2' => 'val2'], $routes[0]->getAttributes());
     }
 
-    /**
-     * Tests that a group's options do not apply to routes outside the group
-     */
-    public function testGroupOptionsDoNotApplyToRoutesAddedOutsideGroup() : void
+    public function testGroupOptionsDoNotApplyToRoutesAddedOutsideGroup(): void
     {
         // The route we're testing is added second, which is why we're testing at(1)
         $this->uriTemplateCompiler->expects($this->at(1))
@@ -93,10 +81,7 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(1, $routes);
     }
 
-    /**
-     * Tests grouping appends to the route's host template
-     */
-    public function testGroupingAppendsToRouteHostTemplate() : void
+    public function testGroupingAppendsToRouteHostTemplate(): void
     {
         $this->uriTemplateCompiler->expects($this->once())
             ->method('compile')
@@ -109,10 +94,7 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
         });
     }
 
-    /**
-     * Tests that middleware in the group are merged with middleware in its routes
-     */
-    public function testGroupMiddlewareAreMergedWithRouteMiddleware() : void
+    public function testGroupMiddlewareAreMergedWithRouteMiddleware(): void
     {
         $groupMiddlewareBinding = new MiddlewareBinding('foo');
         $routeMiddlewareBinding = new MiddlewareBinding('bar');
@@ -128,10 +110,7 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([$groupMiddlewareBinding, $routeMiddlewareBinding], $routes[0]->getMiddlewareBindings());
     }
 
-    /**
-     * Tests that an HTTPS-only group overrides the HTTPS setting in its routes
-     */
-    public function testHttpsOnlyGroupOverridesHttpsSettingInRoutes() : void
+    public function testHttpsOnlyGroupOverridesHttpsSettingInRoutes(): void
     {
         $this->uriTemplateCompiler->expects($this->once())
             ->method('compile')
@@ -143,10 +122,7 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
         });
     }
 
-    /**
-     * Tests that nested group options are added correctly to the route
-     */
-    public function testNestedGroupOptionsAreAddedCorrectlyToRoute() : void
+    public function testNestedGroupOptionsAreAddedCorrectlyToRoute(): void
     {
         $this->uriTemplateCompiler->expects($this->once())
             ->method('compile')
@@ -181,10 +157,7 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedMiddlewareBindings, $routes[0]->getMiddlewareBindings());
     }
 
-    /**
-     * Tests grouping prepends to the route's path template
-     */
-    public function testGroupingPrependsToRoutePathTemplate() : void
+    public function testGroupingPrependsToRoutePathTemplate(): void
     {
         $this->uriTemplateCompiler->expects($this->once())
             ->method('compile')
@@ -197,10 +170,7 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
         });
     }
 
-    /**
-     * Tests that the route builder is created with the attributes to match parameter
-     */
-    public function testRouteBuilderIsCreatedWithAttributesToMatchParameter() : void
+    public function testRouteBuilderIsCreatedWithAttributesToMatchParameter(): void
     {
         $routeBuilder = $this->registry->map('GET', '', null, false)
             ->toMethod('foo', 'bar')
@@ -209,10 +179,7 @@ class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['FOO' => 'BAR'], $route->getAttributes());
     }
 
-    /**
-     * Tests that the route builder is created with the HTTP method parameter
-     */
-    public function testRouteBuilderIsCreatedWithHttpMethodParameterSet() : void
+    public function testRouteBuilderIsCreatedWithHttpMethodParameterSet(): void
     {
         $routeBuilder = $this->registry->map(['GET', 'DELETE'], '')
             ->toMethod('foo', 'bar');

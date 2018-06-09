@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Requests;
+namespace Opulence\Routing\Requests;
 
 /**
  * Defines a parser that reads the request headers from the $_SERVER super global
@@ -32,7 +32,7 @@ class RequestHeaderParser
      * @param array $server The $_SERVER super global
      * @return array The mapping of header names => values
      */
-    public function parseHeaders(array $server) : array
+    public function parseHeaders(array $server): array
     {
         $headers = [];
 
@@ -40,10 +40,7 @@ class RequestHeaderParser
             $uppercasedKey = strtoupper($key);
 
             if (isset(self::$specialCaseHeaders[$uppercasedKey]) || strpos($uppercasedKey, 'HTTP_') === 0) {
-                if (!is_array($value)) {
-                    $value = [$value];
-                }
-
+                $value = (array)$value;
                 $headers[$this->normalizeName($key)] = $value;
             }
         }
@@ -57,11 +54,11 @@ class RequestHeaderParser
      * @param string $name The name to normalize
      * @return string The normalized name
      */
-    private function normalizeName($name)
+    private function normalizeName($name): string
     {
-        $dashedName = strtr($name, '_', '-');
+        $dashedName = str_replace('_', '-', $name);
 
-        if (strpos(strtoupper($dashedName), 'HTTP-') === 0) {
+        if (stripos($dashedName, 'HTTP-') === 0) {
             $dashedName = substr($dashedName, 5);
         }
 

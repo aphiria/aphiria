@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Rules;
+namespace Opulence\Routing\UriTemplates\Rules;
 
 /**
  * Defines the regex rule
@@ -16,7 +16,7 @@ namespace Opulence\Routing\Matchers\UriTemplates\Rules;
 class RegexRule implements IRule
 {
     /** @var string The regex the input must match */
-    private $regex = '';
+    private $regex;
 
     /**
      * @param string $regex The regex the input must match
@@ -29,7 +29,7 @@ class RegexRule implements IRule
     /**
      * @inheritdoc
      */
-    public static function getSlug() : string
+    public static function getSlug(): string
     {
         return 'regex';
     }
@@ -37,7 +37,7 @@ class RegexRule implements IRule
     /**
      * @inheritdoc
      */
-    public function passes($value) : bool
+    public function passes($value): bool
     {
         return preg_match($this->regex, $value) === 1;
     }

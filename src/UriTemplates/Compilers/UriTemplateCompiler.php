@@ -8,18 +8,19 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Compilers;
+namespace Opulence\Routing\UriTemplates\Compilers;
 
 use InvalidArgumentException;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\IUriTemplateParser;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\IUriTemplateLexer;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\UriTemplateLexer;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\Node;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\UriTemplateParser;
-use Opulence\Routing\Matchers\UriTemplates\Rules\IRuleFactory;
-use Opulence\Routing\Matchers\UriTemplates\Rules\RuleFactory;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\IUriTemplateParser;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\IUriTemplateLexer;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\UriTemplateLexer;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Nodes\Node;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\UriTemplateParser;
+use Opulence\Routing\UriTemplates\Rules\IRule;
+use Opulence\Routing\UriTemplates\Rules\IRuleFactory;
+use Opulence\Routing\UriTemplates\Rules\RuleFactory;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Defines the URI template compiler that compiles to URI templates
@@ -31,11 +32,11 @@ class UriTemplateCompiler implements IUriTemplateCompiler
     /** @var string The regex used to match route variables (stops at periods for host vars, slashes for path vars) */
     private const ROUTE_VAR_REGEX = '([^\/\.]+)';
     /** @var IRuleFactory The factory for rules found in the routes */
-    private $ruleFactory = null;
+    private $ruleFactory;
     /** @var IUriTemplateParser The URI template parser to use */
-    private $parser = null;
+    private $parser;
     /** @var IUriTemplateLexer The URI template lexer to use */
-    private $lexer = null;
+    private $lexer;
 
     /**
      * @param IRuleFactory $ruleFactory The factory for rules found in the routes
@@ -55,7 +56,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
     /**
      * @inheritdoc
      */
-    public function compile(?string $hostTemplate, string $pathTemplate, bool $isHttpsOnly = false) : UriTemplate
+    public function compile(?string $hostTemplate, string $pathTemplate, bool $isHttpsOnly = false): UriTemplate
     {
         $routeVarNames = [];
         $defaultRouteVars = [];
@@ -84,7 +85,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
 
         return new UriTemplate(
             "^$regex$",
-            !empty($hostTemplate),
+            $hostTemplate !== null,
             $routeVarNames,
             $isHttpsOnly,
             $defaultRouteVars,
@@ -107,7 +108,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
         array &$routeVarNames,
         array &$defaultRouteVars,
         array &$routeVarRules
-    ) : string {
+    ): string {
         $compiledRegex = '';
 
         foreach ($rootNode->getChildren() as $childNode) {
@@ -143,7 +144,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
      * Compiles an optional route part node
      *
      * @param Node $node The optional route part node to compile
-     * @param array $routeVarNames The list of route var names
+     * @param array $routeVarRegexPositions The route variable regex positions
      * @param array $defaultRouteVars The mapping of route var names to their default values
      * @param IRule[] $routeVarRules The mapping of route var names to their rules
      * @return string The compiled regex
@@ -153,7 +154,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
         array &$routeVarRegexPositions,
         array &$defaultRouteVars,
         array &$routeVarRules
-    ) : string {
+    ): string {
         return "(?:{$this->compileNodes($node, $routeVarRegexPositions, $defaultRouteVars, $routeVarRules)})?";
     }
 
@@ -172,7 +173,7 @@ class UriTemplateCompiler implements IUriTemplateCompiler
         array &$routeVarNames,
         array &$defaultRouteVars,
         array &$routeVarRules
-    ) : string {
+    ): string {
         $variableName = $node->getValue();
         $routeVarNames[] = $variableName;
 

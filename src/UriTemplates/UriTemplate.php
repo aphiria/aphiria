@@ -8,7 +8,9 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates;
+namespace Opulence\Routing\UriTemplates;
+
+use Opulence\Routing\UriTemplates\Rules\IRule;
 
 /**
  * Defines a URI template
@@ -16,15 +18,15 @@ namespace Opulence\Routing\Matchers\UriTemplates;
 class UriTemplate
 {
     /** @var string The regex to match with */
-    private $regex = '';
+    private $regex;
     /** @var bool Whether or not this URI is an absolute URI */
-    private $isAbsoluteUri = false;
+    private $isAbsoluteUri;
     /** @var array The list of route var names in the order they appear in the regex */
-    private $routeVarNames = [];
+    private $routeVarNames;
     /** @var bool Whether or not the URI is HTTPS-only */
-    private $isHttpsOnly = false;
+    private $isHttpsOnly;
     /** @var array The mapping of route var names to their default values */
-    private $defaultRouteVars = [];
+    private $defaultRouteVars;
     /** @var IRule[][] The mapping of route var names to their rules */
     private $routeVarRules = [];
 
@@ -51,11 +53,7 @@ class UriTemplate
         $this->defaultRouteVars = $defaultRouteVars;
 
         foreach ($routeVarRules as $name => $rules) {
-            if (!is_array($rules)) {
-                $rules = [$rules];
-            }
-
-            $this->routeVarRules[$name] = $rules;
+            $this->routeVarRules[$name] = \is_array($rules) ? $rules : [$rules];
         }
     }
 
@@ -64,7 +62,7 @@ class UriTemplate
      *
      * @return array The mapping of route var names to their default values
      */
-    public function getDefaultRouteVars() : array
+    public function getDefaultRouteVars(): array
     {
         return $this->defaultRouteVars;
     }
@@ -74,7 +72,7 @@ class UriTemplate
      *
      * @return string The regex
      */
-    public function getRegex() : string
+    public function getRegex(): string
     {
         return $this->regex;
     }
@@ -84,7 +82,7 @@ class UriTemplate
      *
      * @return array The list of route var names
      */
-    public function getRouteVarNames() : array
+    public function getRouteVarNames(): array
     {
         return $this->routeVarNames;
     }
@@ -92,9 +90,9 @@ class UriTemplate
     /**
      * Gets the rules for the route vars in the URI template
      *
-     * @return array The mapping of route var names to their rules
+     * @return IRule[][] The mapping of route var names to their rules
      */
-    public function getRouteVarRules() : array
+    public function getRouteVarRules(): array
     {
         return $this->routeVarRules;
     }
@@ -104,7 +102,7 @@ class UriTemplate
      *
      * @return bool True if the URI is absolute, otherwise false
      */
-    public function isAbsoluteUri() : bool
+    public function isAbsoluteUri(): bool
     {
         return $this->isAbsoluteUri;
     }
@@ -114,7 +112,7 @@ class UriTemplate
      *
      * @return bool True if the URI is HTTPS-only, otherwise false
      */
-    public function isHttpsOnly() : bool
+    public function isHttpsOnly(): bool
     {
         return $this->isHttpsOnly;
     }

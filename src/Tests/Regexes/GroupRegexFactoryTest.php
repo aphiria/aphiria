@@ -8,15 +8,15 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\Regexes;
+namespace Opulence\Routing\Tests\Regexes;
 
-use Opulence\Routing\Matchers\MethodRouteAction;
-use Opulence\Routing\Matchers\Regexes\Caching\IGroupRegexCache;
-use Opulence\Routing\Matchers\Regexes\GroupRegexCollection;
-use Opulence\Routing\Matchers\Regexes\GroupRegexFactory;
-use Opulence\Routing\Matchers\Route;
-use Opulence\Routing\Matchers\RouteCollection;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\MethodRouteAction;
+use Opulence\Routing\Regexes\Caching\IGroupRegexCache;
+use Opulence\Routing\Regexes\GroupRegexCollection;
+use Opulence\Routing\Regexes\GroupRegexFactory;
+use Opulence\Routing\Route;
+use Opulence\Routing\RouteCollection;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Tests the group regex factory
@@ -24,26 +24,20 @@ use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
 class GroupRegexFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /** @var GroupRegexFactory The factory to use in tests */
-    private $regexFactory = null;
+    private $regexFactory;
     /** @var RouteCollection The collection to use in the factory */
-    private $routes = null;
+    private $routes;
     /** @var IGroupRegexCache|\PHPUnit_Framework_MockObject_MockObject The regex cache to use in the factory */
-    private $regexCache = null;
+    private $regexCache;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->routes = new RouteCollection();
         $this->regexCache = $this->createMock(IGroupRegexCache::class);
         $this->regexFactory = new GroupRegexFactory($this->routes, $this->regexCache);
     }
 
-    /**
-     * Tests that built regexes are chunked
-     */
-    public function testBuildRegexesAreChunked() : void
+    public function testBuildRegexesAreChunked(): void
     {
         $this->regexCache->expects($this->once())
             ->method('get')
@@ -69,10 +63,7 @@ class GroupRegexFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('#^(?:' . implode('|', $regex2) . ')$#', $regexChunk2->getGroupRegex());
     }
 
-    /**
-     * Tests that a cache hit returns the cached regexes
-     */
-    public function testCacheHitReturnsCachedRegexes() : void
+    public function testCacheHitReturnsCachedRegexes(): void
     {
         $regexes = new GroupRegexCollection();
         $this->regexCache->expects($this->once())
@@ -81,10 +72,7 @@ class GroupRegexFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($regexes, $this->regexFactory->createRegexes());
     }
 
-    /**
-     * Tests that a cache miss builds the regexes
-     */
-    public function testCacheMissBuildsRegexes() : void
+    public function testCacheMissBuildsRegexes(): void
     {
         $this->regexCache->expects($this->once())
             ->method('get')
@@ -98,10 +86,7 @@ class GroupRegexFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([$route1, $route2], $regex->getRoutesByCapturingGroupOffsets());
     }
 
-    /**
-     * Tests that capturing group offsets respect route capturing groups in routes
-     */
-    public function testCapturingGroupOffsetsRespectRouteCapturingGroups() : void
+    public function testCapturingGroupOffsetsRespectRouteCapturingGroups(): void
     {
         $this->regexCache->expects($this->once())
             ->method('get')

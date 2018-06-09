@@ -10,7 +10,8 @@
 
 namespace Opulence\Routing\Matchers;
 
-use Opulence\Routing\Matchers\Middleware\MiddlewareBinding;
+use Opulence\Routing\Middleware\MiddlewareBinding;
+use Opulence\Routing\RouteAction;
 
 /**
  * Defines a matched route
@@ -18,11 +19,11 @@ use Opulence\Routing\Matchers\Middleware\MiddlewareBinding;
 class MatchedRoute
 {
     /** @var RouteAction The action that the route performs */
-    private $action = null;
+    private $action;
     /** @var array The mapping of route variables to their values */
-    private $routeVars = [];
+    private $routeVars;
     /** @var MiddlewareBinding[] The list of middleware bindings on this route */
-    private $middlewareBindings = [];
+    private $middlewareBindings;
 
     /**
      * @param RouteAction $action The action taken on this route
@@ -41,7 +42,7 @@ class MatchedRoute
      *
      * @return RouteAction The route's action
      */
-    public function getAction() : RouteAction
+    public function getAction(): RouteAction
     {
         return $this->action;
     }
@@ -51,7 +52,7 @@ class MatchedRoute
      *
      * @return MiddlewareBinding[] The list of middleware bindings
      */
-    public function getMiddlewareBindings() : array
+    public function getMiddlewareBindings(): array
     {
         return $this->middlewareBindings;
     }
@@ -61,7 +62,7 @@ class MatchedRoute
      *
      * @return array The mapping of route var names => values
      */
-    public function getRouteVars() : array
+    public function getRouteVars(): array
     {
         return $this->routeVars;
     }

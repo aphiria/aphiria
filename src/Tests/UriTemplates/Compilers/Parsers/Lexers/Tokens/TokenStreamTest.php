@@ -8,21 +8,18 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\UriTemplates\Compilers\Parsers\Lexers\Tokens;
+namespace Opulence\Routing\Tests\UriTemplates\Compilers\Parsers\Lexers\Tokens;
 
 use InvalidArgumentException;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\Token;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\Token;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
 
 /**
  * Tests the lexer token stream
  */
 class TokenStreamTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests checking the next token's type always returns the next's type
-     */
-    public function testCheckingNextTypeAlwaysReturnsNextType() : void
+    public function testCheckingNextTypeAlwaysReturnsNextType(): void
     {
         $token1 = new Token('foo', 'bar');
         $token2 = new Token('baz', 'blah');
@@ -36,10 +33,7 @@ class TokenStreamTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($stream->nextIfType('badtype'));
     }
 
-    /**
-     * Tests expect does not throw an exception on a match
-     */
-    public function testExpectDoesNotThrowExceptionOnMatch() : void
+    public function testExpectDoesNotThrowExceptionOnMatch(): void
     {
         $stream = new TokenStream([new Token('foo', 'bar')]);
         $stream->expect('foo');
@@ -48,30 +42,21 @@ class TokenStreamTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(true);
     }
 
-    /**
-     * Tests expect throws an exception on a miss
-     */
-    public function testExpectThrowsExceptionOnMiss() : void
+    public function testExpectThrowsExceptionOnMiss(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $stream = new TokenStream([new Token('foo', 'bar')]);
         $stream->expect('baz');
     }
 
-    /**
-     * Tests getting the current token when at the end returns null
-     */
-    public function testGettingCurrentTokenWhenAtEndReturnsNull() : void
+    public function testGettingCurrentTokenWhenAtEndReturnsNull(): void
     {
         $stream = new TokenStream([new Token('foo', 'bar')]);
         $stream->next();
         $this->assertNull($stream->getCurrent());
     }
 
-    /**
-     * Tests getting the current token always returns the current token
-     */
-    public function testGettingCurrentAlwaysReturnsCurrentToken() : void
+    public function testGettingCurrentAlwaysReturnsCurrentToken(): void
     {
         $token1 = new Token('foo', 'bar');
         $token2 = new Token('baz', 'blah');
@@ -81,10 +66,7 @@ class TokenStreamTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($token2, $stream->getCurrent());
     }
 
-    /**
-     * Tests getting the next token always returns the next token
-     */
-    public function testGettingNextAlwaysReturnsNextToken() : void
+    public function testGettingNextAlwaysReturnsNextToken(): void
     {
         $token1 = new Token('foo', 'bar');
         $token2 = new Token('baz', 'blah');
@@ -94,19 +76,13 @@ class TokenStreamTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($token3, $stream->next());
     }
 
-    /**
-     * Tests getting the next token when at the end returns null
-     */
-    public function testGettingNextWhenAtEndReturnsNull() : void
+    public function testGettingNextWhenAtEndReturnsNull(): void
     {
         $stream = new TokenStream([new Token('foo', 'bar')]);
         $this->assertNull($stream->next());
     }
 
-    /**
-     * Tests peeking always returns the next token
-     */
-    public function testPeekingAlwaysReturnsNextToken() : void
+    public function testPeekingAlwaysReturnsNextToken(): void
     {
         $token1 = new Token('foo', 'bar');
         $token2 = new Token('baz', 'blah');
@@ -117,10 +93,7 @@ class TokenStreamTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($token3, $stream->peek());
     }
 
-    /**
-     * Tests peeking when skipping always returns the correct token
-     */
-    public function testPeekingWhileSkippingReturnsTheCorrectToken() : void
+    public function testPeekingWhileSkippingReturnsTheCorrectToken(): void
     {
         $token1 = new Token('foo', 'bar');
         $token2 = new Token('baz', 'blah');
@@ -129,19 +102,13 @@ class TokenStreamTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($token3, $stream->peek(2));
     }
 
-    /**
-     * Tests peeking when at the end returns null
-     */
-    public function testPeekingWhenAtEndReturnsNull() : void
+    public function testPeekingWhenAtEndReturnsNull(): void
     {
         $stream = new TokenStream([new Token('foo', 'bar')]);
         $this->assertNull($stream->peek());
     }
 
-    /**
-     * Tests testing the next token's type
-     */
-    public function testTestingNextTokensType() : void
+    public function testTestingNextTokensType(): void
     {
         $token1 = new Token('foo', 'bar');
         $token2 = new Token('baz', 'blah');

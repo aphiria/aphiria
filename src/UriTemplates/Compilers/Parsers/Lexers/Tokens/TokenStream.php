@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens;
+namespace Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens;
 
 use InvalidArgumentException;
 
@@ -18,7 +18,7 @@ use InvalidArgumentException;
 class TokenStream
 {
     /** @var Token[] The list of tokens */
-    private $tokens = [];
+    private $tokens;
     /** @var int The current cursor */
     private $cursor = 0;
 
@@ -40,14 +40,13 @@ class TokenStream
      *      Any '%s' in the message is first populated with the expected type, and then with the expected value
      * @throws InvalidArgumentException Thrown if the current token didn't match the expected type and value
      */
-    public function expect(string $type, $value = null, string $message = null) : void
+    public function expect(string $type, $value = null, string $message = null): void
     {
         if ($this->test($type, $value)) {
             return;
         }
 
         $currentToken = $this->getCurrent();
-        $formattedMessage = '';
 
         if ($message === null) {
             // Let's create a default message
@@ -82,9 +81,9 @@ class TokenStream
      *
      * @return Token|null The current token
      */
-    public function getCurrent() : ?Token
+    public function getCurrent(): ?Token
     {
-        return count($this->tokens) > $this->cursor ? $this->tokens[$this->cursor] : null;
+        return \count($this->tokens) > $this->cursor ? $this->tokens[$this->cursor] : null;
     }
 
     /**
@@ -92,9 +91,9 @@ class TokenStream
      *
      * @return Token|null The next token, if there is one, otherwise false
      */
-    public function next() : ?Token
+    public function next(): ?Token
     {
-        return count($this->tokens) > ++$this->cursor ? $this->tokens[$this->cursor] : null;
+        return \count($this->tokens) > ++$this->cursor ? $this->tokens[$this->cursor] : null;
     }
 
     /**
@@ -104,7 +103,7 @@ class TokenStream
      * @param mixed $value The optional value to match against
      * @return bool True if the current token is of the input type, otherwise false
      */
-    public function nextIfType(string $type, $value = null) : bool
+    public function nextIfType(string $type, $value = null): bool
     {
         $currentToken = $this->getCurrent();
         $typeMatches = $currentToken !== null && $currentToken->getType() === $type;
@@ -124,9 +123,9 @@ class TokenStream
      * @param int $lookahead The number of tokens to look ahead
      * @return Token|null The token
      */
-    public function peek(int $lookahead = 1) : ?Token
+    public function peek(int $lookahead = 1): ?Token
     {
-        if ($this->cursor + $lookahead >= count($this->tokens)) {
+        if ($this->cursor + $lookahead >= \count($this->tokens)) {
             return null;
         }
 
@@ -140,15 +139,11 @@ class TokenStream
      * @param mixed $value The optional value to match against
      * @return bool True if the current token is of the input type, otherwise false
      */
-    public function test(string $type, $value = null) : bool
+    public function test(string $type, $value = null): bool
     {
         $currentToken = $this->getCurrent();
         $typeMatches = $currentToken !== null && $currentToken->getType() === $type;
 
-        if ($typeMatches && ($value === null || $currentToken->getValue() === $value)) {
-            return true;
-        }
-
-        return false;
+        return $typeMatches && ($value === null || $currentToken->getValue() === $value);
     }
 }

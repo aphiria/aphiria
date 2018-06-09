@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Rules;
+namespace Opulence\Routing\UriTemplates\Rules;
 
 /**
  * Defines the in-array rule
@@ -16,7 +16,7 @@ namespace Opulence\Routing\Matchers\UriTemplates\Rules;
 class InRule implements IRule
 {
     /** @var array The list of acceptable values */
-    private $acceptableValues = [];
+    private $acceptableValues;
 
     /**
      * @param array $acceptableValues The list of acceptable values
@@ -29,7 +29,7 @@ class InRule implements IRule
     /**
      * @inheritdoc
      */
-    public static function getSlug() : string
+    public static function getSlug(): string
     {
         return 'in';
     }
@@ -37,8 +37,8 @@ class InRule implements IRule
     /**
      * @inheritdoc
      */
-    public function passes($value) : bool
+    public function passes($value): bool
     {
-        return in_array($value, $this->acceptableValues);
+        return \in_array($value, $this->acceptableValues, true);
     }
 }

@@ -8,9 +8,10 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Regexes\Caching;
+namespace Opulence\Routing\Regexes\Caching;
 
-use Opulence\Routing\Matchers\Regexes\GroupRegexCollection;
+use Opulence\Routing\Regexes\GroupRegex;
+use Opulence\Routing\Regexes\GroupRegexCollection;
 
 /**
  * Defines the file group regex cache
@@ -18,7 +19,7 @@ use Opulence\Routing\Matchers\Regexes\GroupRegexCollection;
 class FileGroupRegexCache implements IGroupRegexCache
 {
     /** @var string The path to the cached group regex file */
-    private $path = '';
+    private $path;
 
     /**
      * @param string $path The path to the cached group regex file
@@ -31,7 +32,7 @@ class FileGroupRegexCache implements IGroupRegexCache
     /**
      * @inheritdoc
      */
-    public function flush() : void
+    public function flush(): void
     {
         if ($this->has()) {
             @unlink($this->path);
@@ -41,19 +42,22 @@ class FileGroupRegexCache implements IGroupRegexCache
     /**
      * @inheritdoc
      */
-    public function get() : ?GroupRegexCollection
+    public function get(): ?GroupRegexCollection
     {
         if (!file_exists($this->path)) {
             return null;
         }
 
-        return unserialize(file_get_contents($this->path));
+        return unserialize(
+            file_get_contents($this->path),
+            ['allowed_classes' => [GroupRegex::class, GroupRegexCollection::class]]
+        );
     }
 
     /**
      * @inheritdoc
      */
-    public function has() : bool
+    public function has(): bool
     {
         return file_exists($this->path);
     }
@@ -61,7 +65,7 @@ class FileGroupRegexCache implements IGroupRegexCache
     /**
      * @inheritdoc
      */
-    public function set(GroupRegexCollection $regexes) : void
+    public function set(GroupRegexCollection $regexes): void
     {
         // Clone the routes so that serialization doesn't affect the input regex object
         file_put_contents($this->path, serialize(clone $regexes));

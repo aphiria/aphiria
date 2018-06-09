@@ -8,9 +8,9 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\Regexes;
+namespace Opulence\Routing\Tests\Regexes;
 
-use Opulence\Routing\Matchers\Regexes\GroupRegex;
+use Opulence\Routing\Regexes\GroupRegex;
 
 /**
  * Tests the group regex
@@ -18,28 +18,19 @@ use Opulence\Routing\Matchers\Regexes\GroupRegex;
 class GroupRegexTest extends \PHPUnit\Framework\TestCase
 {
     /** @var GroupRegex The group regex to test */
-    private $regex = null;
+    private $regex;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->regex = new GroupRegex('foo', ['bar']);
     }
 
-    /**
-     * Tests getting the regex returns the correct value
-     */
-    public function testGettingRegexReturnsCorrectValue() : void
+    public function testGettingRegexReturnsCorrectValue(): void
     {
         $this->assertEquals('foo', $this->regex->getGroupRegex());
     }
 
-    /**
-     * Tests getting the routes by capturing group offsets returns the correct value
-     */
-    public function testGettingRoutesByCapturingGroupOffsetsReturnsCorrectValue() : void
+    public function testGettingRoutesByCapturingGroupOffsetsReturnsCorrectValue(): void
     {
         $this->assertEquals(['bar'], $this->regex->getRoutesByCapturingGroupOffsets());
     }

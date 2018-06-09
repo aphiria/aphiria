@@ -8,9 +8,9 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Regexes;
+namespace Opulence\Routing\Regexes;
 
-use Opulence\Routing\Matchers\Route;
+use Opulence\Routing\Route;
 
 /**
  * Defines a regex for a group of routes
@@ -18,9 +18,9 @@ use Opulence\Routing\Matchers\Route;
 class GroupRegex
 {
     /** @var string The group regex */
-    private $groupRegex = '';
+    private $groupRegex;
     /** @var Route[] The mapping of regex capturing group offsets to routes */
-    private $routesByCapturingGroupOffsets = [];
+    private $routesByCapturingGroupOffsets;
 
     /**
      * @param string $groupRegex The group regex
@@ -37,7 +37,7 @@ class GroupRegex
      *
      * @return string The group regex
      */
-    public function getGroupRegex() : string
+    public function getGroupRegex(): string
     {
         return $this->groupRegex;
     }
@@ -47,7 +47,7 @@ class GroupRegex
      *
      * @return Route[] The mapping of regex capturing group offsets to routes
      */
-    public function getRoutesByCapturingGroupOffsets() : array
+    public function getRoutesByCapturingGroupOffsets(): array
     {
         return $this->routesByCapturingGroupOffsets;
     }

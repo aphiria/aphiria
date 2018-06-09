@@ -8,27 +8,21 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\UriTemplates\Rules;
+namespace Opulence\Routing\Tests\UriTemplates\Rules;
 
-use Opulence\Routing\Matchers\UriTemplates\Rules\UuidV4Rule;
+use Opulence\Routing\UriTemplates\Rules\UuidV4Rule;
 
 /**
  * Tests the UUIDV4 rule
  */
 class UuidV4RuleTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests that the correct slug is returned
-     */
-    public function testCorrectSlugIsReturned() : void
+    public function testCorrectSlugIsReturned(): void
     {
         $this->assertEquals('uuidv4', UuidV4Rule::getSlug());
     }
 
-    /**
-     * Tests that a UUID passes
-     */
-    public function testMatchingStringsPass() : void
+    public function testMatchingStringsPass(): void
     {
         $rule = new UuidV4Rule();
         $string = \random_bytes(16);
@@ -39,10 +33,7 @@ class UuidV4RuleTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($rule->passes('{' . $uuid . '}'));
     }
 
-    /**
-     * Tests non-UUID fails
-     */
-    public function testNonMatchingStringsFail() : void
+    public function testNonMatchingStringsFail(): void
     {
         $rule = new UuidV4Rule();
         $this->assertFalse($rule->passes('foo'));

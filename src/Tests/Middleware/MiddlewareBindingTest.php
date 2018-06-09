@@ -8,28 +8,22 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\Middleware;
+namespace Opulence\Routing\Tests\Middleware;
 
-use Opulence\Routing\Matchers\Middleware\MiddlewareBinding;
+use Opulence\Routing\Middleware\MiddlewareBinding;
 
 /**
  * Tests middleware bindings
  */
 class MiddlewareBindingTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests that the correct attributes are returned
-     */
-    public function testCorrectAttributesAreReturned() : void
+    public function testCorrectAttributesAreReturned(): void
     {
         $middlewareBinding = new MiddlewareBinding('foo', ['bar' => 'baz']);
         $this->assertEquals(['bar' => 'baz'], $middlewareBinding->getAttributes());
     }
 
-    /**
-     * Tests that the correct class name is returned
-     */
-    public function testCorrectClassNameIsReturned() : void
+    public function testCorrectClassNameIsReturned(): void
     {
         $middlewareBinding = new MiddlewareBinding('foo', ['bar' => 'baz']);
         $this->assertEquals('foo', $middlewareBinding->getClassName());

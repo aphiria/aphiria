@@ -8,35 +8,32 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests;
+namespace Opulence\Routing\Tests;
 
-use Opulence\Routing\Matchers\Middleware\MiddlewareBinding;
-use Opulence\Routing\Matchers\Route;
-use Opulence\Routing\Matchers\RouteAction;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\Middleware\MiddlewareBinding;
+use Opulence\Routing\Route;
+use Opulence\Routing\RouteAction;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Tests the routes
  */
 class RouteTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var The name of the route to use */
+    /** @const The name of the route to use */
     private const ROUTE_NAME = 'route';
-    /** @var The list of attributes to match on */
+    /** @var array The list of attributes to match on */
     private static $attributes = ['foo' => 'bar'];
     /** @var Route The route to use in tests */
-    private $route = null;
+    private $route;
     /** @var UriTemplate|\PHPUnit_Framework_MockObject_MockObject The URI template used by the route */
-    private $uriTemplate = null;
+    private $uriTemplate;
     /** @var RouteAction|\PHPUnit_Framework_MockObject_MockObject The mocked route action */
-    private $routeAction = null;
+    private $routeAction;
     /** @var MiddlewareBinding[] The list of middleware bindings in the matched route */
     private $middlewareBindings = [];
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->routeAction = $this->createMock(RouteAction::class);
         $this->middlewareBindings = [new MiddlewareBinding('Foo')];
@@ -51,58 +48,37 @@ class RouteTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests that the correct action is returned
-     */
-    public function testCorrectActionIsReturned() : void
+    public function testCorrectActionIsReturned(): void
     {
         $this->assertSame($this->routeAction, $this->route->getAction());
     }
 
-    /**
-     * Tests that the correct attributes are returned
-     */
-    public function testCorrectAttributesAreReturned() : void
+    public function testCorrectAttributesAreReturned(): void
     {
         $this->assertSame(self::$attributes, $this->route->getAttributes());
     }
 
-    /**
-     * Tests that the correct HTTP methods are returned
-     */
-    public function testCorrectHttpMethodsAreReturned() : void
+    public function testCorrectHttpMethodsAreReturned(): void
     {
         $this->assertEquals(['GET'], $this->route->getHttpMethods());
     }
 
-    /**
-     * Tests that the correct middleware bindings are returned
-     */
-    public function testCorrectMiddlewareBindingsAreReturned() : void
+    public function testCorrectMiddlewareBindingsAreReturned(): void
     {
         $this->assertSame($this->middlewareBindings, $this->route->getMiddlewareBindings());
     }
 
-    /**
-     * Tests that the correct name is returned
-     */
-    public function testCorrectNameIsReturned() : void
+    public function testCorrectNameIsReturned(): void
     {
         $this->assertEquals(self::ROUTE_NAME, $this->route->getName());
     }
 
-    /**
-     * Tests that the correct URI template is returned
-     */
-    public function testCorrectUriTemplateIsReturned() : void
+    public function testCorrectUriTemplateIsReturned(): void
     {
         $this->assertSame($this->uriTemplate, $this->route->getUriTemplate());
     }
 
-    /**
-     * Tests that the name defaults to null
-     */
-    public function testNameDefaultsToNull() : void
+    public function testNameDefaultsToNull(): void
     {
         $this->routeAction = $this->createMock(RouteAction::class);
         $this->middlewareBindings = [new MiddlewareBinding('Foo')];

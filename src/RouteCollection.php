@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers;
+namespace Opulence\Routing;
 
 /**
  * Defines a list of routes that can be used by a router
@@ -49,7 +49,7 @@ class RouteCollection
      *
      * @param Route $route The route to add
      */
-    public function add(Route $route)
+    public function add(Route $route): void
     {
         foreach ($route->getHttpMethods() as $method) {
             $this->routes[$method][] = $route;
@@ -65,7 +65,7 @@ class RouteCollection
      *
      * @param Route[] $routes The routes to add
      */
-    public function addMany(array $routes)
+    public function addMany(array $routes): void
     {
         // I'm purposely copying the code from add() to reduce method calls with many routes
         foreach ($routes as $route) {
@@ -82,9 +82,9 @@ class RouteCollection
     /**
      * Gets all the routes
      *
-     * @return Route[] The list of routes
+     * @return Route[][] The list of routes
      */
-    public function getAll() : array
+    public function getAll(): array
     {
         return $this->routes;
     }
@@ -95,7 +95,7 @@ class RouteCollection
      * @param string The HTTP method whose routes we want
      * @return Route[] The list of routes
      */
-    public function getByMethod(string $method) : array
+    public function getByMethod(string $method): array
     {
         return $this->routes[$method] ?? [];
     }
@@ -106,7 +106,7 @@ class RouteCollection
      * @param string $name The name to search for
      * @return Route|null The route with the input name if one existed, otherwise null
      */
-    public function getNamedRoute(string $name) : ?Route
+    public function getNamedRoute(string $name): ?Route
     {
         if (isset($this->namedRoutes[$name])) {
             return $this->namedRoutes[$name];

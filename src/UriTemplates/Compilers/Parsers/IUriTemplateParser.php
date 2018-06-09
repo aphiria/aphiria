@@ -8,10 +8,10 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers;
+namespace Opulence\Routing\UriTemplates\Compilers\Parsers;
 
 use InvalidArgumentException;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
 
 /**
  * Defines the interface for URI template parsers to implement

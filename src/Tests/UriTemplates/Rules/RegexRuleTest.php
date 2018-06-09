@@ -8,36 +8,27 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\UriTemplates\Rules;
+namespace Opulence\Routing\Tests\UriTemplates\Rules;
 
-use Opulence\Routing\Matchers\UriTemplates\Rules\RegexRule;
+use Opulence\Routing\UriTemplates\Rules\RegexRule;
 
 /**
  * Tests the regex rule
  */
 class RegexRuleTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests that the correct slug is returned
-     */
-    public function testCorrectSlugIsReturned() : void
+    public function testCorrectSlugIsReturned(): void
     {
         $this->assertEquals('regex', RegexRule::getSlug());
     }
 
-    /**
-     * Tests that matching string pass
-     */
-    public function testMatchingStringsPass() : void
+    public function testMatchingStringsPass(): void
     {
         $rule = new RegexRule('/^[a-z]{3}$/');
         $this->assertTrue($rule->passes('foo'));
     }
 
-    /**
-     * Tests non-matching strings fail
-     */
-    public function testNonMatchingStringsFail() : void
+    public function testNonMatchingStringsFail(): void
     {
         $rule = new RegexRule('/^[a-z]{3}$/');
         $this->assertFalse($rule->passes('foobar'));

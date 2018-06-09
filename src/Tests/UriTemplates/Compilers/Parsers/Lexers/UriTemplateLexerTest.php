@@ -8,13 +8,13 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\UriTemplates\Compilers\Parsers\Lexers;
+namespace Opulence\Routing\Tests\UriTemplates\Compilers\Parsers\Lexers;
 
 use InvalidArgumentException;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\Token;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenTypes;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\UriTemplateLexer;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\Token;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenTypes;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\UriTemplateLexer;
 
 /**
  * Tests the URI template lexer
@@ -22,19 +22,13 @@ use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\UriTemplateL
 class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
 {
     /** @var UriTemplateLexer The lexer to use in tests */
-    private $lexer = null;
+    private $lexer;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->lexer = new UriTemplateLexer();
     }
 
-    /**
-     * Tests lexing a full URI
-     */
     public function testLexingFullUri(): void
     {
         $this->assertEquals(
@@ -45,9 +39,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path with a default value
-     */
     public function testLexingPathWithDefaultValue(): void
     {
         $this->assertEquals(
@@ -61,9 +52,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path with a default value and rules
-     */
     public function testLexingPathWithDefaultValueAndRules(): void
     {
         $this->assertEquals(
@@ -80,10 +68,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path with a float
-     */
-    public function testLexingPathWithFloat() : void
+    public function testLexingPathWithFloat(): void
     {
         $this->assertEquals(
             new TokenStream([
@@ -93,10 +78,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path with an int
-     */
-    public function testLexingPathWithInt() : void
+    public function testLexingPathWithInt(): void
     {
         $this->assertEquals(
             new TokenStream([
@@ -106,9 +88,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path a variable with multiple rules
-     */
     public function testLexingPathWithMultipleRule(): void
     {
         $this->assertEquals(
@@ -125,9 +104,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path a variable with multiple rules with spaces in between slugs and parameters
-     */
     public function testLexingPathWithMultipleRulesWithSpacesInBetweenSlugsAndParameters(): void
     {
         $this->assertEquals(
@@ -149,9 +125,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path with no variables
-     */
     public function testLexingPathWithNoVariables(): void
     {
         $this->assertEquals(
@@ -162,9 +135,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path a variable with optional parts
-     */
     public function testLexingPathWithOptionalParts(): void
     {
         $this->assertEquals(
@@ -178,9 +148,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path a variable with a single rule
-     */
     public function testLexingPathWithSingleRule(): void
     {
         $this->assertEquals(
@@ -195,9 +162,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path a variable with a single rule in the middle
-     */
     public function testLexingPathWithSingleRuleInTheMiddle(): void
     {
         $this->assertEquals(
@@ -213,9 +177,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path a variable with a single rule with a mix of string and number parameters
-     */
     public function testLexingPathWithSingleRuleWithMixOfStringAndNumberParameters(): void
     {
         $this->assertEquals(
@@ -235,9 +196,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path a variable with a single rule an array parameter
-     */
     public function testLexingPathWithSingleRuleWithArrayParameter(): void
     {
         $this->assertEquals(
@@ -261,9 +219,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path a variable with a single rule with multiple parameters
-     */
     public function testLexingPathWithSingleRuleWithMultipleParameters(): void
     {
         $this->assertEquals(
@@ -285,9 +240,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path a variable with a single rule with a single parameter
-     */
     public function testLexingPathWithSingleRuleWithSingleParameter(): void
     {
         $this->assertEquals(
@@ -305,9 +257,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path a variable at the beginning
-     */
     public function testLexingPathWithVariableAtBeginning(): void
     {
         $this->assertEquals(
@@ -319,9 +268,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path a variable at the end
-     */
     public function testLexingPathWithVariableAtEnd(): void
     {
         $this->assertEquals(
@@ -333,9 +279,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a path a variable in the middle
-     */
     public function testLexingPathWithVariableInMiddle(): void
     {
         $this->assertEquals(
@@ -348,9 +291,6 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * Tests lexing a variable name that is soo long throws an exception
-     */
     public function testLexingTooLongVariableNameThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

@@ -10,7 +10,7 @@
 
 namespace Opulence\Routing\Matchers\Constraints;
 
-use Opulence\Routing\Matchers\Route;
+use Opulence\Routing\Route;
 
 /**
  * Defines the interface for route constraints to implement

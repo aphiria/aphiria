@@ -8,18 +8,18 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\UriTemplates\Compilers;
+namespace Opulence\Routing\Tests\UriTemplates\Compilers;
 
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\AbstractSyntaxTree;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\IUriTemplateParser;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\IUriTemplateLexer;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\Node;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\UriTemplateCompiler;
-use Opulence\Routing\Matchers\UriTemplates\Rules\IRule;
-use Opulence\Routing\Matchers\UriTemplates\Rules\IRuleFactory;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\AbstractSyntaxTree;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\IUriTemplateParser;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\IUriTemplateLexer;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Nodes\Node;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
+use Opulence\Routing\UriTemplates\Compilers\UriTemplateCompiler;
+use Opulence\Routing\UriTemplates\Rules\IRule;
+use Opulence\Routing\UriTemplates\Rules\IRuleFactory;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Tests the URI template compiler
@@ -27,18 +27,15 @@ use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
 class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
 {
     /** @var UriTemplateCompiler The compiler to use in tests */
-    private $compiler = null;
+    private $compiler;
     /** @var IUriTemplateParser|\PHPUnit_Framework_MockObject_MockObject The parser to use in tests */
-    private $parser = null;
+    private $parser;
     /** @var IUriTemplateLexer|\PHPUnit_Framework_MockObject_MockObject The lexer to use in tests */
-    private $lexer = null;
+    private $lexer;
     /** @var IRuleFactory|\PHPUnit_Framework_MockObject_MockObject The rule factory to use in the compiler */
-    private $ruleFactory = null;
+    private $ruleFactory;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->ruleFactory = $this->createMock(IRuleFactory::class);
         $this->parser = $this->createMock(IUriTemplateParser::class);
@@ -48,10 +45,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->compiler = new UriTemplateCompiler($this->ruleFactory, $this->parser, $this->lexer);
     }
 
-    /**
-     * Tests compiling a host and path with slashes around them trims the slash between them
-     */
-    public function testCompilingHostAndPathWithSlashesTrimsSlashBetweenThem() : void
+    public function testCompilingHostAndPathWithSlashesTrimsSlashBetweenThem(): void
     {
         $ast = new AbstractSyntaxTree();
         $ast->getCurrentNode()
@@ -64,10 +58,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
-    /**
-     * Tests that compiling an HTTPS-only route forces HTTPS to be set in the regex
-     */
-    public function testCompilingHttpsOnlyRouteForcesHttpsToBeSet() : void
+    public function testCompilingHttpsOnlyRouteForcesHttpsToBeSet(): void
     {
         $ast = new AbstractSyntaxTree();
         $ast->getCurrentNode()
@@ -80,10 +71,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
-    /**
-     * Tests that compiling a path with no vars creates the correct regex
-     */
-    public function testCompilingPathWithNoVarsCreatesCorrectRegex() : void
+    public function testCompilingPathWithNoVarsCreatesCorrectRegex(): void
     {
         $ast = new AbstractSyntaxTree();
         $ast->getCurrentNode()
@@ -96,10 +84,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
-    /**
-     * Tests that compiling a path with a single optional var creates the correct regex
-     */
-    public function testCompilingPathWithSingleOptionalVarCreatesCorrectRegex() : void
+    public function testCompilingPathWithSingleOptionalVarCreatesCorrectRegex(): void
     {
         $optionalRoutePartNode = new Node(NodeTypes::OPTIONAL_ROUTE_PART, '[');
         $optionalRoutePartNode->addChild(new Node(NodeTypes::TEXT, '/'));
@@ -117,10 +102,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
-    /**
-     * Tests that compiling a path with a single var creates the correct regex
-     */
-    public function testCompilingPathWithSingleVarCreatesCorrectRegex() : void
+    public function testCompilingPathWithSingleVarCreatesCorrectRegex(): void
     {
         $ast = new AbstractSyntaxTree();
         $ast->getCurrentNode()
@@ -137,10 +119,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
-    /**
-     * Tests that compiling a path with a single var with a default value creates the correct regex
-     */
-    public function testCompilingPathWithSingleVarWithDefaultValueCreatesCorrectRegex() : void
+    public function testCompilingPathWithSingleVarWithDefaultValueCreatesCorrectRegex(): void
     {
         $ast = new AbstractSyntaxTree();
         $ast->getCurrentNode()
@@ -165,10 +144,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
-    /**
-     * Tests that compiling a route var with multiple rules creates the correct template
-     */
-    public function testCompilingRouteVarWithMultipleRulesCreatesCorrectTemplate() : void
+    public function testCompilingRouteVarWithMultipleRulesCreatesCorrectTemplate(): void
     {
         $rule1 = $this->createMock(IRule::class);
         $rule2 = $this->createMock(IRule::class);
@@ -203,10 +179,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
-    /**
-     * Tests that compiling a route var with multiple rules that contain a comma creates the correct template
-     */
-    public function testCompilingRouteVarWithMultipleRulesThatContainCommaCreatesCorrectTemplate() : void
+    public function testCompilingRouteVarWithMultipleRulesThatContainCommaCreatesCorrectTemplate(): void
     {
         $rule1 = $this->createMock(IRule::class);
         $rule2 = $this->createMock(IRule::class);
@@ -245,10 +218,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
-    /**
-     * Tests that compiling a route var with a single rule creates the correct template
-     */
-    public function testCompilingRouteVarWithSingleRuleCreatesCorrectTemplate() : void
+    public function testCompilingRouteVarWithSingleRuleCreatesCorrectTemplate(): void
     {
         $rule = $this->createMock(IRule::class);
         $this->ruleFactory->expects($this->once())
@@ -277,10 +247,7 @@ class UriTemplateCompilerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedUriTemplate, $actualUriTemplate);
     }
 
-    /**
-     * Tests that compiling a route var with a single rule with parameters creates the correct template
-     */
-    public function testCompilingRouteVarWithSingleWithParamsRuleCreatesCorrectTemplate() : void
+    public function testCompilingRouteVarWithSingleWithParamsRuleCreatesCorrectTemplate(): void
     {
         $rule = $this->createMock(IRule::class);
         $this->ruleFactory->expects($this->once())

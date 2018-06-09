@@ -8,16 +8,16 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\UriTemplates\Compilers\Parsers;
+namespace Opulence\Routing\Tests\UriTemplates\Compilers\Parsers;
 
 use InvalidArgumentException;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\AbstractSyntaxTree;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\Token;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenTypes;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\Node;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\UriTemplateParser;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\AbstractSyntaxTree;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\Token;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenTypes;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Nodes\Node;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\UriTemplateParser;
 
 /**
  * Tests the URI template parser
@@ -25,20 +25,14 @@ use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\UriTemplateParser;
 class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
 {
     /** @var UriTemplateParser The parser to use in tests */
-    private $parser = null;
+    private $parser;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp()
     {
         $this->parser = new UriTemplateParser();
     }
 
-    /**
-     * Test parsing invalid bracket in middle of rule throws exception
-     */
-    public function testParsingInvalidBracketInMiddleOfRuleThrowsException() : void
+    public function testParsingInvalidBracketInMiddleOfRuleThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $tokens = new TokenStream([
@@ -50,10 +44,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->parser->parse($tokens);
     }
 
-    /**
-     * Tests parsing nested optional route parts
-     */
-    public function testParsingNestedOptionalRouteParts() : void
+    public function testParsingNestedOptionalRouteParts(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '['),
@@ -74,10 +65,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
-    /**
-     * Test parsing optional route parts creates the correct nodes
-     */
-    public function testParsingOptionalRoutePartCreatesCorrectNodes() : void
+    public function testParsingOptionalRoutePartCreatesCorrectNodes(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_TEXT, 'foo'),
@@ -95,10 +83,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
-    /**
-     * Tests parsing a text-only route creates a single text node
-     */
-    public function testParsingTextOnlyRouteCreatesSingleTextNode() : void
+    public function testParsingTextOnlyRouteCreatesSingleTextNode(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_TEXT, '/foo')
@@ -109,10 +94,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
-    /**
-     * Test parsing unclosed rule parenthesis throws exception
-     */
-    public function testParsingUnclosedRuleParenthesisThrowsException() : void
+    public function testParsingUnclosedRuleParenthesisThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $tokens = new TokenStream([
@@ -123,10 +105,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->parser->parse($tokens);
     }
 
-    /**
-     * Tests parsing a variable name creates a variable name node
-     */
-    public function testParsingVariableNameCreatesVariableNameNode() : void
+    public function testParsingVariableNameCreatesVariableNameNode(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_VARIABLE, 'foo')
@@ -137,10 +116,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
-    /**
-     * Tests parsing a variable with a default value and rules creates the correct nodes
-     */
-    public function testParsingVariableWithDefaultValueAndRulesCreatesCorrectNodes() : void
+    public function testParsingVariableWithDefaultValueAndRulesCreatesCorrectNodes(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_VARIABLE, 'foo'),
@@ -172,10 +148,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
-    /**
-     * Tests parsing a variable with an equal sign but no text throws an exception
-     */
-    public function testParsingVariableWithEqualSignButNoTextThrowsException() : void
+    public function testParsingVariableWithEqualSignButNoTextThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $tokens = new TokenStream([
@@ -185,10 +158,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->parser->parse($tokens);
     }
 
-    /**
-     * Tests parsing a variable with a default value creates the correct nodes
-     */
-    public function testParsingVariableWithDefaultValueCreatesCorrectNodes() : void
+    public function testParsingVariableWithDefaultValueCreatesCorrectNodes(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_VARIABLE, 'foo'),
@@ -203,10 +173,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
-    /**
-     * Test parsing a variable with a rule with multiple parameters creates the correct nodes
-     */
-    public function testParsingVariableWithRuleWithMultipleParametersCreatesCorrectNodes() : void
+    public function testParsingVariableWithRuleWithMultipleParametersCreatesCorrectNodes(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_VARIABLE, 'foo'),
@@ -229,10 +196,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
-    /**
-     * Test parsing a variable with a rule with no parameters creates the correct nodes
-     */
-    public function testParsingVariableWithRuleWithNoParametersCreatesCorrectNodes() : void
+    public function testParsingVariableWithRuleWithNoParametersCreatesCorrectNodes(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_VARIABLE, 'foo'),
@@ -249,10 +213,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
-    /**
-     * Test parsing a variable with a rule with a single parameter creates the correct nodes
-     */
-    public function testParsingVariableWithRuleWithSingleParameterCreatesCorrectNodes() : void
+    public function testParsingVariableWithRuleWithSingleParameterCreatesCorrectNodes(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_VARIABLE, 'foo'),
@@ -273,10 +234,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
-    /**
-     * Test parsing a variable with a rule but with no slug throws an exception
-     */
-    public function testParsingVariableWithRuleButWithNoSlughrowsException() : void
+    public function testParsingVariableWithRuleButWithNoSlughrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $tokens = new TokenStream([
@@ -287,10 +245,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->parser->parse($tokens);
     }
 
-    /**
-     * Test parsing a variable with a rule with a trailing comma does not throw an exception
-     */
-    public function testParsingVariableWithRuleWithTrailingCommaDoesNotThrowException() : void
+    public function testParsingVariableWithRuleWithTrailingCommaDoesNotThrowException(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_VARIABLE, 'foo'),

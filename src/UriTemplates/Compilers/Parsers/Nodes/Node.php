@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes;
+namespace Opulence\Routing\UriTemplates\Compilers\Parsers\Nodes;
 
 /**
  * Defines a route node
@@ -16,11 +16,11 @@ namespace Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes;
 class Node
 {
     /** @var string The node type */
-    private $type = '';
+    private $type;
     /** @var mixed|null The value of the node */
-    private $value = null;
+    private $value;
     /** @var Node|null The parent node */
-    private $parent = null;
+    private $parent;
     /** @var Node[] The child nodes */
     private $children = [];
 
@@ -40,7 +40,7 @@ class Node
      * @param Node $node The child to add
      * @return Node Returns this for chaining
      */
-    public function addChild(Node $node) : Node
+    public function addChild(Node $node): Node
     {
         $node->setParent($this);
         $this->children[] = $node;
@@ -53,7 +53,7 @@ class Node
      *
      * @return Node[] The list of children
      */
-    public function getChildren() : array
+    public function getChildren(): array
     {
         return $this->children;
     }
@@ -63,7 +63,7 @@ class Node
      *
      * @return Node The parent node
      */
-    public function getParent() : Node
+    public function getParent(): Node
     {
         return $this->parent;
     }
@@ -73,7 +73,7 @@ class Node
      *
      * @return string The node type
      */
-    public function getType() : string
+    public function getType(): string
     {
         return $this->type;
     }
@@ -93,9 +93,9 @@ class Node
      *
      * @return bool True if this node has children, otherwise false
      */
-    public function hasChildren() : bool
+    public function hasChildren(): bool
     {
-        return count($this->children) > 0;
+        return \count($this->children) > 0;
     }
 
     /**
@@ -103,15 +103,17 @@ class Node
      *
      * @return bool True if this is a root node, otherwise false
      */
-    public function isRoot() : bool
+    public function isRoot(): bool
     {
         return $this->parent === null;
     }
 
     /**
-     * @param Node|null $parent
+     * Sets the parent node
+     *
+     * @param Node|null $parent The parent node
      */
-    public function setParent($parent)
+    public function setParent($parent): void
     {
         $this->parent = $parent;
     }

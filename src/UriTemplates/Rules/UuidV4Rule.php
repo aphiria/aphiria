@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Rules;
+namespace Opulence\Routing\UriTemplates\Rules;
 
 /**
  * Defines the UUIDV4 rule
@@ -21,7 +21,7 @@ class UuidV4Rule implements IRule
     /**
      * @inheritdoc
      */
-    public static function getSlug() : string
+    public static function getSlug(): string
     {
         return 'uuidv4';
     }
@@ -29,7 +29,7 @@ class UuidV4Rule implements IRule
     /**
      * @inheritdoc
      */
-    public function passes($value) : bool
+    public function passes($value): bool
     {
         return preg_match(self::UUIDV4_REGEX, $value) === 1;
     }

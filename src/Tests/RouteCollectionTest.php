@@ -8,12 +8,12 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests;
+namespace Opulence\Routing\Tests;
 
-use Opulence\Routing\Matchers\Route;
-use Opulence\Routing\Matchers\RouteAction;
-use Opulence\Routing\Matchers\RouteCollection;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\Route;
+use Opulence\Routing\RouteAction;
+use Opulence\Routing\RouteCollection;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Tests the route collection
@@ -21,16 +21,13 @@ use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
 class RouteCollectionTest extends \PHPUnit\Framework\TestCase
 {
     /** @var RouteCollection The collection with routes already added to use in tests */
-    private $seededCollection = null;
+    private $seededCollection;
     /** @var Route The route with a single GET method */
-    private $getRoute = null;
+    private $getRoute;
     /** @var Route The route with a GET and POST method */
-    private $getAndPostRoute = null;
+    private $getAndPostRoute;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->seededCollection = new RouteCollection();
         $this->getRoute = new Route(
@@ -51,10 +48,7 @@ class RouteCollectionTest extends \PHPUnit\Framework\TestCase
         $this->seededCollection->add($this->getAndPostRoute);
     }
 
-    /**
-     * Tests adding many routes adds them to the correct methods
-     */
-    public function testAddManyAddsRoutesToCorrectMethods() : void
+    public function testAddManyAddsRoutesToCorrectMethods(): void
     {
         $collection = new RouteCollection();
         $collection->addMany([$this->getRoute, $this->getAndPostRoute]);
@@ -67,10 +61,7 @@ class RouteCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($this->getAndPostRoute, $postRoutes[0]);
     }
 
-    /**
-     * Tests getting all routes returns all the routes
-     */
-    public function testGetAllReturnsAllRoutes() : void
+    public function testGetAllReturnsAllRoutes(): void
     {
         $routes = $this->seededCollection->getAll();
         $this->assertCount(7, $routes);
@@ -79,10 +70,7 @@ class RouteCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($this->getAndPostRoute, $routes['POST'][0]);
     }
 
-    /**
-     * Tests getting routes by method only returns routes with that method
-     */
-    public function testGetByMethodReturnsRoutesWithThatMethod() : void
+    public function testGetByMethodReturnsRoutesWithThatMethod(): void
     {
         $getRoutes = $this->seededCollection->getByMethod('GET');
         $postRoutes = $this->seededCollection->getByMethod('POST');
@@ -93,10 +81,7 @@ class RouteCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($this->getAndPostRoute, $postRoutes[0]);
     }
 
-    /**
-     * Tests that getting by name returns the correct routes
-     */
-    public function testGetByNameReturnsCorrectRoutes() : void
+    public function testGetByNameReturnsCorrectRoutes(): void
     {
         $this->assertSame($this->getRoute, $this->seededCollection->getNamedRoute('getRoute'));
         $this->assertSame($this->getAndPostRoute, $this->seededCollection->getNamedRoute('getAndPostRoute'));

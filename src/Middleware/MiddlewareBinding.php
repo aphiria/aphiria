@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Middleware;
+namespace Opulence\Routing\Middleware;
 
 /**
  * Defines a middleware binding
@@ -16,9 +16,9 @@ namespace Opulence\Routing\Matchers\Middleware;
 class MiddlewareBinding
 {
     /** @var string The name of the middleware class */
-    private $className = '';
+    private $className;
     /** @var array The name => value mapping of attributes bound to the middleware */
-    private $attributes = [];
+    private $attributes;
 
     /**
      * @param string $className The name of the middleware class
@@ -35,7 +35,7 @@ class MiddlewareBinding
      *
      * @return array The mapping of attribute names => values
      */
-    public function getAttributes() : array
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
@@ -45,7 +45,7 @@ class MiddlewareBinding
      *
      * @return string The middleware class name
      */
-    public function getClassName() : string
+    public function getClassName(): string
     {
         return $this->className;
     }

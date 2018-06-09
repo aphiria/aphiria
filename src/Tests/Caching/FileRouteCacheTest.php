@@ -8,15 +8,15 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\Caching;
+namespace Opulence\Routing\Tests\Caching;
 
-use Opulence\Routing\Matchers\Caching\FileRouteCache;
-use Opulence\Routing\Matchers\ClosureRouteAction;
-use Opulence\Routing\Matchers\MethodRouteAction;
-use Opulence\Routing\Matchers\Middleware\MiddlewareBinding;
-use Opulence\Routing\Matchers\Route;
-use Opulence\Routing\Matchers\RouteCollection;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\Caching\FileRouteCache;
+use Opulence\Routing\ClosureRouteAction;
+use Opulence\Routing\MethodRouteAction;
+use Opulence\Routing\Middleware\MiddlewareBinding;
+use Opulence\Routing\Route;
+use Opulence\Routing\RouteCollection;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Tests the file route cache
@@ -26,19 +26,13 @@ class FileRouteCacheTest extends \PHPUnit\Framework\TestCase
     /** @var string The path to the route cache */
     private const PATH = __DIR__ . '/tmp/routes.cache';
     /** @var FileRouteCache The cache to use in tests */
-    private $cache = null;
+    private $cache;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->cache = new FileRouteCache(self::PATH);
     }
 
-    /**
-     * Tears down the tests
-     */
     public function tearDown()
     {
         if (file_exists(self::PATH)) {
@@ -46,20 +40,14 @@ class FileRouteCacheTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * Tests that flushing deletes the file
-     */
-    public function testFlushDeletesFile() : void
+    public function testFlushDeletesFile(): void
     {
         file_put_contents(self::PATH, 'foo');
         $this->cache->flush();
         $this->assertFalse(file_exists(self::PATH));
     }
 
-    /**
-     * Tests that getting the routes on a hit returns cached routes
-     */
-    public function testGetOnHitReturnsCachedRoutes() : void
+    public function testGetOnHitReturnsCachedRoutes(): void
     {
         $routeCollection = new RouteCollection();
         $closureRoute = new Route(
@@ -86,17 +74,11 @@ class FileRouteCacheTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($routeCollection, $this->cache->get());
     }
 
-    /**
-     * Tests that getting the routes on a miss returns null
-     */
-    public function testGetOnMissReturnsNull() : void
+    public function testGetOnMissReturnsNull(): void
     {
         $this->assertNull($this->cache->get());
     }
 
-    /**
-     * Tests that checking for the existence of a cached routes file returns the correct value
-     */
     public function testHasCorrectlyReturnsTheExistenceOfFile(): void
     {
         $this->assertFalse($this->cache->has());

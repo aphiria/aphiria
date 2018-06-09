@@ -2,7 +2,7 @@
 
 1. [Introduction](#introduction)
     1. [Why Use This Library?](#why-use-this-library)
-    1. [Installation](#installation)
+    2. [Installation](#installation)
 2. [Basic Usage](#basic-usage)
     1. [Route Variables](#route-variables)
     2. [Optional Route Parts](#optional-route-parts)
@@ -23,7 +23,7 @@
 
 <h1 id="introduction">Introduction</h1>
 
-This library is a route matching library.  In other words, it lets you map URIs to actions, and attempts to match an input request to ones of those routes.
+This library is a routing library.  In other words, it lets you map URIs to actions, and attempts to match an input request to ones of those routes.
 
 <h2 id="why-use-this-library">Why Use This Library?</h2>
 
@@ -47,7 +47,7 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
 
 This library requires PHP 7.1 and above.  It can be installed via <a href="https://getcomposer.org/" target="_blank">Composer</a> by including the following in your _composer.json_:
 ```
-"opulence/route-matcher": "1.0.*@dev"
+"opulence/router": "1.0.*@dev"
 ```
 
 <h1 id="basic-usage">Basic Usage</h1>
@@ -57,11 +57,12 @@ Out of the box, this library provides a fluent syntax to help you build your rou
 First, let's import the namespaces and define our routes:
 
 ```php
-use Opulence\Routing\Matchers\Builders\RouteBuilderRegistry;
-use Opulence\Routing\Matchers\Caching\FileRouteCache;
-use Opulence\Routing\Matchers\Regexes\Caching\FileGroupRegexCache;
-use Opulence\Routing\Matchers\Regexes\GroupRegexFactory;
-use Opulence\Routing\Matchers\{RouteFactory, RouteMatcher, RouteNotFoundException};
+use Opulence\Routing\Builders\RouteBuilderRegistry;
+use Opulence\Routing\Caching\FileRouteCache;
+use Opulence\Routing\Matchers\{RouteMatcher, RouteNotFoundException};
+use Opulence\Routing\Regexes\Caching\FileGroupRegexCache;
+use Opulence\Routing\Regexes\GroupRegexFactory;
+use Opulence\Routing\RouteFactory;
 
 $routesCallback = function (RouteBuilderRegistry $routes) {
     $routes->map('GET', 'books/:bookId')
@@ -259,7 +260,7 @@ foreach ($matchedRoute->getMiddlewareBindings() as $middlewareBinding) {
 Often times, a lot of your routes will share similar properties, such as hosts and paths to match on, or middleware.  You can group these routes together using `RouteBuilderRegistry::group()` and specifying the options to apply to all routes within the group:
 
 ```php
-use Opulence\Routing\Matchers\Builders\RouteGroupOptions;
+use Opulence\Routing\Builders\RouteGroupOptions;
 
 $routesCallback = function (RouteBuilderRegistry $routes) {
     $routes->group(
@@ -353,7 +354,7 @@ If we hit _/comments_ with an "API-VERSION" header value of "v2.0", we'd match t
 PHP is irritatingly difficult to extract headers from `$_SERVER`.  If you're using a library/framework to grab headers, then use that.  Otherwise, you can use the `HeaderParser`:
 
 ```php
-use Opulence\Routing\Matchers\Requests\HeaderParser;
+use Opulence\Routing\Requests\HeaderParser;
 
 $headers = (new HeaderParser)->parseHeaders($_SERVER);
 ```
@@ -388,7 +389,7 @@ The following rules are built-into Opulence:
 You can register your own rule by implementing `IRule`.  Let's make a rule that enforces a certain minimum string length:
 
 ```php
-use Opulence\Routing\Matchers\UriTemplates\Rules\IRule;
+use Opulence\Routing\UriTemplates\Rules\IRule;
 
 class MinLengthRule implements IRule
 {
@@ -414,8 +415,8 @@ class MinLengthRule implements IRule
 Let's register our rule with the rule factory:
 
 ```php
-use Opulence\Routing\Matchers\UriTemplates\Rules\RuleFactory;
-use Opulence\Routing\Matchers\UriTemplates\Rules\RuleFactoryRegistrant;
+use Opulence\Routing\UriTemplates\Rules\RuleFactory;
+use Opulence\Routing\UriTemplates\Rules\RuleFactoryRegistrant;
 
 // Register some built-in rules to our factory
 $ruleFactory = (new RuleFactoryRegistrant)->registerRuleFactories(new RuleFactory);
@@ -429,10 +430,10 @@ $ruleFactory->registerRuleFactory(MinLengthRule::getSlug(), function (int $minLe
 Finally, register this rule factory with the URI template compiler:
 
 ```php
-use Opulence\Routing\Matchers\Builders\RouteBuilderRegistry;
-use Opulence\Routing\Matchers\Caching\FileRouteCache;
-use Opulence\Routing\Matchers\RouteFactory;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\UriTemplateCompiler;
+use Opulence\Routing\Builders\RouteBuilderRegistry;
+use Opulence\Routing\Caching\FileRouteCache;
+use Opulence\Routing\RouteFactory;
+use Opulence\Routing\UriTemplates\Compilers\UriTemplateCompiler;
 
 $routesCallback = function (RouteBuilderRegistry $routes) {
     $routes->map('parts/:serialNumber(minLength(6))')
@@ -482,13 +483,10 @@ Similar to the [route cache](#route-caching), you can optionally pass in `null` 
 If you don't want to use the route builders, and instead would rather create the routes yourself, you can.  Here's a complete example of how:
 
 ```php
-use Opulence\Routing\Matchers\ClosureRouteAction;
-use Opulence\Routing\Matchers\Regexes\GroupRegexFactory;
-use Opulence\Routing\Matchers\Route;
-use Opulence\Routing\Matchers\RouteCollection;
-use Opulence\Routing\Matchers\RouteMatcher;
-use Opulence\Routing\Matchers\RouteNotFoundException;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\{ClosureRouteAction, Route, RouteCollection};
+use Opulence\Routing\Matchers\{RouteMatcher, RouteNotFoundException};
+use Opulence\Routing\Regexes\GroupRegexFactory;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 $routes = new RouteCollection();
 $routes->add(new Route(

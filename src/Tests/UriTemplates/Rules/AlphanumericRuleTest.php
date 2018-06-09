@@ -8,19 +8,16 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\UriTemplates\Rules;
+namespace Opulence\Routing\Tests\UriTemplates\Rules;
 
-use Opulence\Routing\Matchers\UriTemplates\Rules\AlphanumericRule;
+use Opulence\Routing\UriTemplates\Rules\AlphanumericRule;
 
 /**
  * Tests the alphanumeric rule
  */
 class AlphanumericRuleTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests that alphabet chars pass
-     */
-    public function testAlphanumericCharsPass() : void
+    public function testAlphanumericCharsPass(): void
     {
         $rule = new AlphanumericRule();
         $this->assertTrue($rule->passes('1'));
@@ -29,18 +26,12 @@ class AlphanumericRuleTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($rule->passes('1abc'));
     }
 
-    /**
-     * Tests that the correct slug is returned
-     */
-    public function testCorrectSlugIsReturned() : void
+    public function testCorrectSlugIsReturned(): void
     {
         $this->assertEquals('alphanumeric', AlphanumericRule::getSlug());
     }
 
-    /**
-     * Tests that non-alphabet chars fail
-     */
-    public function testNonAlphanumericCharsFail() : void
+    public function testNonAlphanumericCharsFail(): void
     {
         $rule = new AlphanumericRule();
         $this->assertFalse($rule->passes(''));

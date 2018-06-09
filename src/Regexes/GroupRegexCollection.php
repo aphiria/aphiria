@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Regexes;
+namespace Opulence\Routing\Regexes;
 
 /**
  * Defines a list of group regexes that can be used for route matching
@@ -44,7 +44,7 @@ class GroupRegexCollection
      * @param string $method The HTTP method to add the regex to
      * @param GroupRegex $regex The regex to add
      */
-    public function add(string $method, GroupRegex $regex)
+    public function add(string $method, GroupRegex $regex): void
     {
         $this->regexes[$method][] = $regex;
     }
@@ -55,7 +55,7 @@ class GroupRegexCollection
      * @param string The HTTP method whose routes we want
      * @return GroupRegex[] The list of group regexes
      */
-    public function getByMethod(string $method) : array
+    public function getByMethod(string $method): array
     {
         return $this->regexes[$method] ?? [];
     }

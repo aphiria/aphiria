@@ -8,13 +8,13 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers;
+namespace Opulence\Routing\UriTemplates\Compilers\Parsers;
 
 use InvalidArgumentException;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenTypes;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\Node;
-use Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenStream;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens\TokenTypes;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Nodes\Node;
+use Opulence\Routing\UriTemplates\Compilers\Parsers\Nodes\NodeTypes;
 
 /**
  * Defines the URI template parser
@@ -24,7 +24,7 @@ class UriTemplateParser implements IUriTemplateParser
     /**
      * @inheritdoc
      */
-    public function parse(TokenStream $tokens) : AbstractSyntaxTree
+    public function parse(TokenStream $tokens): AbstractSyntaxTree
     {
         $ast = new AbstractSyntaxTree();
 
@@ -59,9 +59,11 @@ class UriTemplateParser implements IUriTemplateParser
      * @param TokenStream $tokens The stream of tokens to parse
      * @param AbstractSyntaxTree $ast The abstract syntax tree to add nodes to
      */
-    private function parsePunctuation(TokenStream $tokens, AbstractSyntaxTree $ast) : void
+    private function parsePunctuation(TokenStream $tokens, AbstractSyntaxTree $ast): void
     {
-        $token = $tokens->getCurrent();
+        if (($token = $tokens->getCurrent()) === null) {
+            return;
+        }
 
         switch ($token->getValue()) {
             case '[':
@@ -96,26 +98,18 @@ class UriTemplateParser implements IUriTemplateParser
     }
 
     /**
-     * Parses a number token
-     *
-     * @param TokenStream $tokens The stream of tokens to parse
-     * @param AbstractSyntaxTree $ast The abstract syntax tree to add nodes to
-     */
-    private function parseNumber(TokenStream $tokens, AbstractSyntaxTree $ast) : void
-    {
-        $ast->getCurrentNode()->addChild(new Node(NodeTypes::NUMBER, $tokens->getCurrent()->getValue()));
-        $tokens->next();
-    }
-
-    /**
      * Parses a text token
      *
      * @param TokenStream $tokens The stream of tokens to parse
      * @param AbstractSyntaxTree $ast The abstract syntax tree to add nodes to
      */
-    private function parseText(TokenStream $tokens, AbstractSyntaxTree $ast) : void
+    private function parseText(TokenStream $tokens, AbstractSyntaxTree $ast): void
     {
-        $ast->getCurrentNode()->addChild(new Node(NodeTypes::TEXT, $tokens->getCurrent()->getValue()));
+        if (($token = $tokens->getCurrent()) === null) {
+            return;
+        }
+
+        $ast->getCurrentNode()->addChild(new Node(NodeTypes::TEXT, $token->getValue()));
         $tokens->next();
     }
 
@@ -125,9 +119,13 @@ class UriTemplateParser implements IUriTemplateParser
      * @param TokenStream $tokens The stream of tokens to parse
      * @param AbstractSyntaxTree $ast The abstract syntax tree to add nodes to
      */
-    private function parseVariable(TokenStream $tokens, AbstractSyntaxTree $ast) : void
+    private function parseVariable(TokenStream $tokens, AbstractSyntaxTree $ast): void
     {
-        $variableNode = new Node(NodeTypes::VARIABLE, $tokens->getCurrent()->getValue());
+        if (($token = $tokens->getCurrent()) === null) {
+            return;
+        }
+
+        $variableNode = new Node(NodeTypes::VARIABLE, $token->getValue());
         $ast->getCurrentNode()->addChild($variableNode);
         $ast->setCurrentNode($variableNode);
         $tokens->next();
@@ -135,7 +133,12 @@ class UriTemplateParser implements IUriTemplateParser
         // Check for a default value
         if ($tokens->nextIfType(TokenTypes::T_PUNCTUATION, '=')) {
             $tokens->expect(TokenTypes::T_TEXT, null, 'Expected default value for variable, got %s');
-            $variableNode->addChild(new Node(NodeTypes::VARIABLE_DEFAULT_VALUE, $tokens->getCurrent()->getValue()));
+
+            if (($token = $tokens->getCurrent()) === null) {
+                return;
+            }
+
+            $variableNode->addChild(new Node(NodeTypes::VARIABLE_DEFAULT_VALUE, $token->getValue()));
             $tokens->next();
         }
 
@@ -159,11 +162,16 @@ class UriTemplateParser implements IUriTemplateParser
      * @param TokenStream $tokens The stream of tokens to parse
      * @param Node $variableNode The variable node to add nodes to
      */
-    private function parseVariableRule(TokenStream $tokens, Node $variableNode) : void
+    private function parseVariableRule(TokenStream $tokens, Node $variableNode): void
     {
         // Expect a rule name
         $tokens->expect(TokenTypes::T_TEXT, null, 'Expected rule name, got %s');
-        $variableRuleNode = new Node(NodeTypes::VARIABLE_RULE, $tokens->getCurrent()->getValue());
+
+        if (($token = $tokens->getCurrent()) === null) {
+            return;
+        }
+
+        $variableRuleNode = new Node(NodeTypes::VARIABLE_RULE, $token->getValue());
         $tokens->next();
 
         // Check for a parameter list for this rule
@@ -180,7 +188,11 @@ class UriTemplateParser implements IUriTemplateParser
             }
 
             $variableRuleNode->addChild(new Node(NodeTypes::VARIABLE_RULE_PARAMETERS, $parameters));
-            $tokens->expect(TokenTypes::T_PUNCTUATION, ')', 'Expected closing parenthesis after rule parameters, got %s');
+            $tokens->expect(
+                TokenTypes::T_PUNCTUATION,
+                ')',
+                'Expected closing parenthesis after rule parameters, got %s'
+            );
             $tokens->next();
         }
 

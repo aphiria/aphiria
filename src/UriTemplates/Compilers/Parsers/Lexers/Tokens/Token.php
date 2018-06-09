@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens;
+namespace Opulence\Routing\UriTemplates\Compilers\Parsers\Lexers\Tokens;
 
 /**
  * Defines a token created by a lexer
@@ -16,9 +16,9 @@ namespace Opulence\Routing\Matchers\UriTemplates\Compilers\Parsers\Lexers\Tokens
 class Token
 {
     /** @var string The token type */
-    private $type = '';
+    private $type;
     /** @var mixed The token value */
-    private $value = null;
+    private $value;
 
     /**
      * @param string $type The token type
@@ -33,7 +33,7 @@ class Token
     /**
      * @return string
      */
-    public function getType() : string
+    public function getType(): string
     {
         return $this->type;
     }

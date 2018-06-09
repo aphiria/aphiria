@@ -8,10 +8,10 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests;
+namespace Opulence\Routing\Tests;
 
 use Closure;
-use Opulence\Routing\Matchers\ClosureRouteAction;
+use Opulence\Routing\ClosureRouteAction;
 
 /**
  * Tests the closure route action
@@ -19,14 +19,11 @@ use Opulence\Routing\Matchers\ClosureRouteAction;
 class ClosureRouteActionTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ClosureRouteAction An instance that uses a closure as the action */
-    private $closureAction = null;
+    private $closureAction;
     /** @var Closure The closure used in the closure action */
-    private $closure = null;
+    private $closure;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->closure = function () {
             // Don't do anything
@@ -34,18 +31,12 @@ class ClosureRouteActionTest extends \PHPUnit\Framework\TestCase
         $this->closureAction = new ClosureRouteAction($this->closure);
     }
 
-    /**
-     * Tests that the correct instance of the closure is returned by closure instances
-     */
-    public function testCorrectClosureInstanceIsReturned() : void
+    public function testCorrectClosureInstanceIsReturned(): void
     {
         $this->assertSame($this->closure, $this->closureAction->getClosure());
     }
 
-    /**
-     * Tests that the method flag is set correctly
-     */
-    public function testMethodFlagSetCorrectly() : void
+    public function testMethodFlagSetCorrectly(): void
     {
         $this->assertFalse($this->closureAction->usesMethod());
     }

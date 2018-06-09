@@ -8,11 +8,11 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers;
+namespace Opulence\Routing;
 
 use Closure;
-use Opulence\Routing\Matchers\Builders\RouteBuilderRegistry;
-use Opulence\Routing\Matchers\Caching\IRouteCache;
+use Opulence\Routing\Builders\RouteBuilderRegistry;
+use Opulence\Routing\Caching\IRouteCache;
 
 /**
  * Defines a route factory
@@ -20,11 +20,11 @@ use Opulence\Routing\Matchers\Caching\IRouteCache;
 class RouteFactory
 {
     /** @var Closure The callback that builds routes */
-    private $routeBuilderCallback = null;
+    private $routeBuilderCallback;
     /** @var IRouteCache|null The cache that stores our routes, otherwise null if not using cache */
-    private $routeCache = null;
+    private $routeCache;
     /** @var RouteBuilderRegistry The route builder registry to build routes with */
-    private $routeBuilderRegistry = null;
+    private $routeBuilderRegistry;
 
     /**
      * @param Closure $routeBuilderCallback The callback that builds the routes
@@ -47,7 +47,7 @@ class RouteFactory
      *
      * @return RouteCollection The created routes
      */
-    public function createRoutes() : RouteCollection
+    public function createRoutes(): RouteCollection
     {
         if ($this->routeCache === null) {
             ($this->routeBuilderCallback)($this->routeBuilderRegistry);

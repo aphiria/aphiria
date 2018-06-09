@@ -8,10 +8,10 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests\Regexes;
+namespace Opulence\Routing\Tests\Regexes;
 
-use Opulence\Routing\Matchers\Regexes\GroupRegex;
-use Opulence\Routing\Matchers\Regexes\GroupRegexCollection;
+use Opulence\Routing\Regexes\GroupRegex;
+use Opulence\Routing\Regexes\GroupRegexCollection;
 
 /**
  * Tests the group regex collection
@@ -19,16 +19,13 @@ use Opulence\Routing\Matchers\Regexes\GroupRegexCollection;
 class GroupRegexCollectionTest extends \PHPUnit\Framework\TestCase
 {
     /** @var GroupRegexCollection The list of regexes to test */
-    private $regexes = null;
-    /** @var The regex for GET routes */
-    private $getRegex = null;
-    /** @var The regex for POST routes */
-    private $postRegex = null;
+    private $regexes;
+    /** @var string The regex for GET routes */
+    private $getRegex;
+    /** @var string The regex for POST routes */
+    private $postRegex;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->getRegex = new GroupRegex('foo', ['bar']);
         $this->postRegex = new GroupRegex('baz', ['blah']);
@@ -37,10 +34,7 @@ class GroupRegexCollectionTest extends \PHPUnit\Framework\TestCase
         $this->regexes->add('POST', $this->postRegex);
     }
 
-    /**
-     * Tests cloning the collection clones the regexes
-     */
-    public function testCloningClonesRegexes() : void
+    public function testCloningClonesRegexes(): void
     {
         $clonedRegexes = clone $this->regexes;
         $this->assertNotSame($this->getRegex, $clonedRegexes->getByMethod('GET')[0]);
@@ -49,10 +43,7 @@ class GroupRegexCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($this->postRegex, $clonedRegexes->getByMethod('POST')[0]);
     }
 
-    /**
-     * Tests getting by HTTP method returns the correct regexes
-     */
-    public function testGettingByHttpMethodReturnsCorrectRegexes() : void
+    public function testGettingByHttpMethodReturnsCorrectRegexes(): void
     {
         $this->assertEquals([$this->getRegex], $this->regexes->getByMethod('GET'));
         $this->assertEquals([$this->postRegex], $this->regexes->getByMethod('POST'));

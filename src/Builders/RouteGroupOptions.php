@@ -8,9 +8,9 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Builders;
+namespace Opulence\Routing\Builders;
 
-use Opulence\Routing\Matchers\Middleware\MiddlewareBinding;
+use Opulence\Routing\Middleware\MiddlewareBinding;
 
 /**
  * Defines the route group options
@@ -18,15 +18,15 @@ use Opulence\Routing\Matchers\Middleware\MiddlewareBinding;
 class RouteGroupOptions
 {
     /** @var string The path template that applies to the entire group */
-    private $pathTemplate = '';
+    private $pathTemplate;
     /** @var string|null The host template that applies to the entire group */
-    private $hostTemplate = null;
+    private $hostTemplate;
     /** @var MiddlewareBinding[] The list of middleware bindings that applies to the entire group */
-    private $middlewareBindings = [];
+    private $middlewareBindings;
     /** @var bool Whether or not the entire group is HTTPS-only */
-    private $isHttpsOnly = false;
+    private $isHttpsOnly;
     /** @var array The mapping of custom attribute names => values to match on for the entire group */
-    private $attributes = [];
+    private $attributes;
 
     /**
      * @param string $pathTemplate The path template that applies to the entire group
@@ -50,11 +50,11 @@ class RouteGroupOptions
     }
 
     /**
-     * Gets the maaping of custom route attribute names => values
+     * Gets the mapping of custom route attribute names => values
      *
      * @return array The mapping of attribute names => values
      */
-    public function getAttributes() : array
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
@@ -64,7 +64,7 @@ class RouteGroupOptions
      *
      * @return string|null The host template if one was defined, otherwise null
      */
-    public function getHostTemplate() : ?string
+    public function getHostTemplate(): ?string
     {
         return $this->hostTemplate;
     }
@@ -74,7 +74,7 @@ class RouteGroupOptions
      *
      * @return MiddlewareBinding[] The list of middleware bindings
      */
-    public function getMiddlewareBindings() : array
+    public function getMiddlewareBindings(): array
     {
         return $this->middlewareBindings;
     }
@@ -84,7 +84,7 @@ class RouteGroupOptions
      *
      * @return string The path template
      */
-    public function getPathTemplate() : string
+    public function getPathTemplate(): string
     {
         return $this->pathTemplate;
     }
@@ -94,7 +94,7 @@ class RouteGroupOptions
      *
      * @return bool True if the route group is HTTPS-only, otherwise false
      */
-    public function isHttpsOnly() : bool
+    public function isHttpsOnly(): bool
     {
         return $this->isHttpsOnly;
     }

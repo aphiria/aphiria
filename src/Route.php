@@ -8,10 +8,10 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers;
+namespace Opulence\Routing;
 
-use Opulence\Routing\Matchers\Middleware\MiddlewareBinding;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\Middleware\MiddlewareBinding;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Defines an HTTP route
@@ -19,21 +19,21 @@ use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
 class Route
 {
     /** @var array The list of HTTP methods this route handles */
-    private $httpMethods = [];
+    private $httpMethods;
     /** @var UriTemplate The URI template */
-    private $uriTemplate = null;
+    private $uriTemplate;
     /** @var array The mapping of custom attribute names => values */
-    private $attributes = [];
+    private $attributes;
     /** @var RouteAction The action this route performs */
-    private $action = null;
+    private $action;
     /** @var string|null The name of this route */
-    private $name = null;
+    private $name;
     /** @var MiddlewareBinding[] The list of any middleware bindings on this route */
-    private $middlewareBindings = [];
+    private $middlewareBindings;
 
     /**
      * @param array|string $httpMethods The HTTP method or list of methods this route matches on
-     * @param IRouteTemplate $uriTemplate The URI template for this route
+     * @param UriTemplate $uriTemplate The URI template for this route
      * @param RouteAction $action The action this route takes
      * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings
      * @param string|null $name The name of this route
@@ -69,7 +69,7 @@ class Route
      *
      * @return RouteAction The action this route takes
      */
-    public function getAction() : RouteAction
+    public function getAction(): RouteAction
     {
         return $this->action;
     }
@@ -79,7 +79,7 @@ class Route
      *
      * @return array The mapping of attribute names => values
      */
-    public function getAttributes() : array
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
@@ -89,7 +89,7 @@ class Route
      *
      * @return array The list of HTTP methods to match on
      */
-    public function getHttpMethods() : array
+    public function getHttpMethods(): array
     {
         return $this->httpMethods;
     }
@@ -99,7 +99,7 @@ class Route
      *
      * @return MiddlewareBinding[] The list of middleware bindings
      */
-    public function getMiddlewareBindings() : array
+    public function getMiddlewareBindings(): array
     {
         return $this->middlewareBindings;
     }
@@ -109,7 +109,7 @@ class Route
      *
      * @return string|null The name of this route if one was defined, other null
      */
-    public function getName() : ?string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -119,7 +119,7 @@ class Route
      *
      * @return UriTemplate The URI template
      */
-    public function getUriTemplate() : UriTemplate
+    public function getUriTemplate(): UriTemplate
     {
         return $this->uriTemplate;
     }

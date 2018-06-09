@@ -8,16 +8,16 @@
  * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Tests;
+namespace Opulence\Routing\Tests\Matchers;
 
 use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
-use Opulence\Routing\Matchers\Regexes\GroupRegex;
-use Opulence\Routing\Matchers\Regexes\GroupRegexCollection;
-use Opulence\Routing\Matchers\Route;
-use Opulence\Routing\Matchers\RouteAction;
 use Opulence\Routing\Matchers\RouteMatcher;
 use Opulence\Routing\Matchers\RouteNotFoundException;
-use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
+use Opulence\Routing\Regexes\GroupRegex;
+use Opulence\Routing\Regexes\GroupRegexCollection;
+use Opulence\Routing\Route;
+use Opulence\Routing\RouteAction;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Tests the route matcher
@@ -25,23 +25,17 @@ use Opulence\Routing\Matchers\UriTemplates\UriTemplate;
 class RouteMatcherTest extends \PHPUnit\Framework\TestCase
 {
     /** @var RouteMatcher The matcher to use in tests */
-    private $matcher = null;
+    private $matcher;
     /** @var GroupRegexCollection|\PHPUnit_Framework_MockObject_MockObject The regex collection to use in tests */
-    private $regexes = null;
+    private $regexes;
 
-    /**
-     * Sets up the tests
-     */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->regexes = $this->createMock(GroupRegexCollection::class);
         $this->matcher = new RouteMatcher($this->regexes);
     }
 
-    /**
-     * Tests that a matching route with a failed constraint causes the matcher to throw an exception
-     */
-    public function testFailedConstraintThrowsException() : void
+    public function testFailedConstraintThrowsException(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $expectedRoute = new Route('GET', new UriTemplate('', false), $this->createMock(RouteAction::class));
@@ -64,10 +58,7 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
         $matcher->match('GET', '', 'foo', ['foo' => 'bar']);
     }
 
-    /**
-     * Tests that matching can occur on URI templates with differing numbers of capturing groups
-     */
-    public function testMatchingCanOccurOnUriTemplatesWithDifferingNumbersOfCapturingGroups() : void
+    public function testMatchingCanOccurOnUriTemplatesWithDifferingNumbersOfCapturingGroups(): void
     {
         $expectedRegexes = [
             new GroupRegex(
@@ -107,10 +98,7 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * Tests a matching route with vars after a route that has no vars
-     */
-    public function testMatchingRouteWithVarsThatIsCheckedAfterMissedRouteWithNoVars() : void
+    public function testMatchingRouteWithVarsThatIsCheckedAfterMissedRouteWithNoVars(): void
     {
         $expectedMatchedAction = $this->createMock(RouteAction::class);
         $expectedRegexes = [
@@ -138,10 +126,7 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expectedMatchedAction, $matchedRoute->getAction());
     }
 
-    /**
-     * Tests no match for a URI throws an exception
-     */
-    public function testNoMatchForUriThrowsException() : void
+    public function testNoMatchForUriThrowsException(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $expectedRegexes = [
@@ -163,10 +148,7 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
         $this->matcher->match('GET', '', 'bar', []);
     }
 
-    /**
-     * Tests that a passing constraint does not filter a route
-     */
-    public function testPassingConstraintDoesNotFilterRoute() : void
+    public function testPassingConstraintDoesNotFilterRoute(): void
     {
         $expectedMatchedAction = $this->createMock(RouteAction::class);
         $expectedRoute = new Route(
