@@ -16,7 +16,7 @@ use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Opulence\Net\Http\ContentNegotiation\IMediaTypeFormatter;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Routing\Matchers\MatchedRoute;
-use Opulence\Routing\Matchers\RouteAction;
+use Opulence\Routing\RouteAction;
 
 /**
  * Tests the controller context

@@ -15,5 +15,9 @@ namespace Opulence\Api\Tests\Dispatchers;
  */
 class ControllerRequestDispatcherTest extends \PHPUnit\Framework\TestCase
 {
-    // Todo
+    public function testFoo(): void
+    {
+        // Todo
+        $this->assertTrue(true);
+    }
 }

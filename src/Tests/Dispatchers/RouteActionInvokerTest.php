@@ -16,14 +16,14 @@ use Opulence\Api\Tests\Dispatchers\Mocks\ApiController;
 use Opulence\Api\Tests\Dispatchers\Mocks\User;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Opulence\Net\Http\ContentNegotiation\IMediaTypeFormatter;
+use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\Request;
 use Opulence\Net\Http\StringBody;
 use Opulence\Net\Uri;
 use Opulence\Routing\Matchers\MatchedRoute;
-use Opulence\Routing\Matchers\RouteAction;
+use Opulence\Routing\RouteAction;
 use Opulence\Serialization\SerializationException;
-use RuntimeException;
 
 /**
  * Tests the route action invoker
@@ -41,9 +41,9 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
         $this->controller = new ApiController();
     }
 
-    public function testInvokingMethodThatThrowsException(): void
+    public function testInvokingMethodThatThrowsExceptionThrowsException(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(HttpException::class);
         $this->invoker->invokeRouteAction(
             new ControllerContext(
                 $this->controller,
@@ -82,7 +82,11 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
                 $this->createRequest('http://foo.com'),
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(ApiController::class, 'noTypeHintParameter', null), ['foo' => 'bar'], [])
+                new MatchedRoute(
+                    new RouteAction(ApiController::class, 'noTypeHintParameter', null),
+                    ['foo' => 'bar'],
+                    []
+                )
             )
         );
         $this->assertNotNull($response->getBody());
@@ -151,7 +155,7 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
 
     public function testInvokingMethodWithObjectParameterAndNoRequestBodyThrowsException(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(HttpException::class);
         $this->invoker->invokeRouteAction(
             new ControllerContext(
                 $this->controller,
@@ -186,9 +190,9 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('id:123, email:foo@bar.com', $response->getBody()->readAsString());
     }
 
-    public function testInvokingMethodWithScalarParameterAndMatchingVariableThrowsException(): void
+    public function testInvokingMethodWithScalarParameterAndNoMatchingVariableThrowsException(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(HttpException::class);
         $this->invoker->invokeRouteAction(
             new ControllerContext(
                 $this->controller,
@@ -270,7 +274,7 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
 
     public function testInvokingNonExistentMethodThrowsException(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(HttpException::class);
         $this->invoker->invokeRouteAction(
             new ControllerContext(
                 $this->controller,
@@ -284,7 +288,7 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
 
     public function testInvokingPrivateMethodThrowsException(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(HttpException::class);
         $this->invoker->invokeRouteAction(
             new ControllerContext(
                 $this->controller,
@@ -298,7 +302,7 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
 
     public function testInvokingProtectedMethodThrowsException(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(HttpException::class);
         $this->invoker->invokeRouteAction(
             new ControllerContext(
                 $this->controller,

@@ -13,6 +13,7 @@ namespace Opulence\Api;
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
+use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpBody;
@@ -20,6 +21,7 @@ use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\Response;
 use Opulence\Net\Http\StreamBody;
 use Opulence\Net\Http\StringBody;
+use Opulence\Serialization\SerializationException;
 
 /**
  * Defines the base class for API controllers to extend
@@ -29,9 +31,10 @@ abstract class ApiController extends Controller
     /**
      * Creates a bad request response
      *
-     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
+     * @param IHttpBody|IStream|int|float|string|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
+     * @throws HttpException Thrown if there was an error creating the response
      */
     protected function badRequest($body, HttpHeaders $headers = null): IHttpResponseMessage
     {
@@ -41,9 +44,10 @@ abstract class ApiController extends Controller
     /**
      * Creates a conflict response
      *
-     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
+     * @param IHttpBody|IStream|int|float|string|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
+     * @throws HttpException Thrown if there was an error creating the response
      */
     protected function conflict($body, HttpHeaders $headers = null): IHttpResponseMessage
     {
@@ -53,9 +57,10 @@ abstract class ApiController extends Controller
     /**
      * Creates a created response
      *
-     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
+     * @param IHttpBody|IStream|int|float|string|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
+     * @throws HttpException Thrown if there was an error creating the response
      */
     protected function created($body, HttpHeaders $headers = null): IHttpResponseMessage
     {
@@ -67,9 +72,9 @@ abstract class ApiController extends Controller
      *
      * @param int $statusCode The HTTP status code
      * @param HttpHeaders|null $headers The headers to use in the response
-     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
+     * @param IHttpBody|IStream|int|float|string|array|\object|null $body The raw response body
      * @return IHttpResponseMessage The response
-     * @throws FailedContentNegotiationException Thrown if content negotiation failed
+     * @throws HttpException Thrown if response content negotiation failed or if the body could not be serialized
      * @internal
      */
     protected function createResponse(int $statusCode, ?HttpHeaders $headers, $body): IHttpResponseMessage
@@ -77,7 +82,7 @@ abstract class ApiController extends Controller
         $headers = $headers ?? new HttpHeaders();
 
         if ($this->context->getResponseContentNegotiationResult() === null) {
-            throw new FailedContentNegotiationException('Response content could not be negotiated');
+            throw new HttpException(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, 'Response content could not be negotiated');
         }
 
         $mediaType = $this->context->getResponseContentNegotiationResult()->getMediaType();
@@ -86,20 +91,29 @@ abstract class ApiController extends Controller
             $headers->add('Content-Type', $mediaType);
         }
 
-        return new Response(
-            $statusCode,
-            $headers,
-            $this->createResponseBody($body)
-        );
+        try {
+            return new Response(
+                $statusCode,
+                $headers,
+                $this->createResponseBody($body)
+            );
+        } catch (InvalidArgumentException $ex) {
+            throw new HttpException(
+                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+                'Failed to create response body',
+                0,
+                $ex
+            );
+        }
     }
 
     /**
      * Creates a response body from a raw body value
      *
-     * @param IHttpBody|IStream|scalar|array|\object $body The raw response body
+     * @param IHttpBody|IStream|int|float|string|array|\object $body The raw response body
      * @return IHttpBody|null The response body, or null if there is no body
      * @throws InvalidArgumentException Thrown if the body is not a supported type
-     * @throws FailedContentNegotiationException Thrown if the response content could not be negotiated
+     * @throws HttpException Thrown if the response content could not be negotiated
      */
     protected function createResponseBody($body): ?IHttpBody
     {
@@ -120,11 +134,21 @@ abstract class ApiController extends Controller
         }
 
         if ($this->context->getResponseContentNegotiationResult() === null) {
-            throw new FailedContentNegotiationException('Response content could not be negotiated');
+            throw new HttpException(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, 'Response content could not be negotiated');
         }
 
         $bodyStream = new Stream(fopen('php://temp', 'r+b'));
-        $this->context->getResponseContentNegotiationResult()->getFormatter()->writeToStream($body, $bodyStream);
+
+        try {
+            $this->context->getResponseContentNegotiationResult()->getFormatter()->writeToStream($body, $bodyStream);
+        } catch (SerializationException $ex) {
+            throw new HttpException(
+                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+                'Failed to serialize response body',
+                0,
+                $ex
+            );
+        }
 
         return new StreamBody($bodyStream);
     }
@@ -132,9 +156,10 @@ abstract class ApiController extends Controller
     /**
      * Creates a forbidden response
      *
-     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
+     * @param IHttpBody|IStream|int|float|string|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
+     * @throws HttpException Thrown if there was an error creating the response
      */
     protected function forbidden($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
@@ -144,9 +169,10 @@ abstract class ApiController extends Controller
     /**
      * Creates an internal server error response
      *
-     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
+     * @param IHttpBody|IStream|int|float|string|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
+     * @throws HttpException Thrown if there was an error creating the response
      */
     protected function internalServerError($body, HttpHeaders $headers = null): IHttpResponseMessage
     {
@@ -158,6 +184,7 @@ abstract class ApiController extends Controller
      *
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
+     * @throws HttpException Thrown if there was an error creating the response
      */
     protected function noContent(HttpHeaders $headers = null): IHttpResponseMessage
     {
@@ -167,9 +194,10 @@ abstract class ApiController extends Controller
     /**
      * Creates a not found response
      *
-     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
+     * @param IHttpBody|IStream|int|float|string|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
+     * @throws HttpException Thrown if there was an error creating the response
      */
     protected function notFound($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
@@ -179,9 +207,10 @@ abstract class ApiController extends Controller
     /**
      * Creates an OK response
      *
-     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
+     * @param IHttpBody|IStream|int|float|string|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
+     * @throws HttpException Thrown if there was an error creating the response
      */
     protected function ok($body, HttpHeaders $headers = null): IHttpResponseMessage
     {
@@ -193,28 +222,38 @@ abstract class ApiController extends Controller
      *
      * @param string $type The type to read as an array of
      * @return array The body as an array of the input type
-     * @throws FailedContentNegotiationException Thrown if the request content could not be negotiated
+     * @throws HttpException Thrown if there was an error reading the body
      */
     protected function readBodyAsArrayOf(string $type): array
     {
         if ($this->context->getRequestContentNegotiationResult() === null) {
-            throw new FailedContentNegotiationException('Request content could not be negotiated');
+            throw new HttpException(HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE, 'Failed to read request body');
         }
 
         if (($body = $this->context->getRequest()->getBody()) === null) {
             return [];
         }
 
-        return $this->context->getRequestContentNegotiationResult()->getFormatter()
-            ->readFromStream($type, $body->readAsStream(), true);
+        try {
+            return $this->context->getRequestContentNegotiationResult()->getFormatter()
+                ->readFromStream($body->readAsStream(), $type, true);
+        } catch (SerializationException $ex) {
+            throw new HttpException(
+                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+                'Failed to deserialize request body',
+                0,
+                $ex
+            );
+        }
     }
 
     /**
      * Creates a redirect response
      *
-     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
+     * @param IHttpBody|IStream|int|float|string|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
+     * @throws HttpException Thrown if there was an error creating the response
      */
     protected function redirect($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
@@ -224,9 +263,10 @@ abstract class ApiController extends Controller
     /**
      * Creates an unauthorized response
      *
-     * @param IHttpBody|IStream|scalar|array|\object|null $body The raw response body
+     * @param IHttpBody|IStream|int|float|string|array|\object|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
+     * @throws HttpException Thrown if there was an error creating the response
      */
     protected function unauthorized($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {

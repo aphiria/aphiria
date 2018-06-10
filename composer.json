@@ -28,11 +28,11 @@
     "opulence/ioc": "1.1.*@dev",
     "opulence/net": "1.0.*@dev",
     "opulence/pipelines": "1.1.*@dev",
-    "opulence/route-matcher": "1.0.*@dev",
+    "opulence/router": "1.0.*@dev",
     "opulence/serialization": "1.0.*@dev"
   },
   "require-dev": {
-    "phpunit/phpunit": "~7.0"
+    "phpunit/phpunit": "~7.3"
   },
   "extra": {
     "branch-alias": {

@@ -11,8 +11,8 @@
 namespace Opulence\Api\Dispatchers;
 
 use Opulence\Api\ControllerContext;
+use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\IHttpResponseMessage;
-use RuntimeException;
 
 /**
  * Defines the interface for route action invokers to implement
@@ -24,7 +24,7 @@ interface IRouteActionInvoker
      *
      * @param ControllerContext $controllerContext The current controller context
      * @return IHttpResponseMessage The response
-     * @throws RuntimeException Thrown if the method did not exist
+     * @throws HttpException Thrown if there was any error processing the request
      */
     public function invokeRouteAction(ControllerContext $controllerContext): IHttpResponseMessage;
 }

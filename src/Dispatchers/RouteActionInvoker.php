@@ -10,20 +10,20 @@
 
 namespace Opulence\Api\Dispatchers;
 
+use Exception;
 use Opulence\Api\ControllerContext;
-use Opulence\Api\FailedContentNegotiationException;
 use Opulence\Net\Formatting\UriParser;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
+use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\Response;
-use Opulence\Routing\Matchers\RouteAction;
+use Opulence\Routing\RouteAction;
 use Opulence\Serialization\SerializationException;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionParameter;
-use RuntimeException;
 
 /**
  * Defines the route invoker
@@ -55,18 +55,21 @@ class RouteActionInvoker implements IRouteActionInvoker
         try {
             $reflectionMethod = new ReflectionMethod($routeAction->getClassName(), $routeAction->getMethodName());
         } catch (ReflectionException $ex) {
-            throw new RuntimeException(
+            throw new HttpException(
+                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
                 sprintf(
                     'Reflection failed for %s',
                     $this->getRouteActionDisplayName($routeAction)
                 ),
+                null,
                 0,
                 $ex
             );
         }
 
         if (!$reflectionMethod->isPublic()) {
-            throw new RuntimeException(
+            throw new HttpException(
+                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
                 sprintf(
                     'Controller method %s must be public',
                     $this->getRouteActionDisplayName($routeAction)
@@ -93,7 +96,8 @@ class RouteActionInvoker implements IRouteActionInvoker
             } elseif ($reflectionParameter->allowsNull()) {
                 $resolvedParameters[] = null;
             } else {
-                throw new RuntimeException(
+                throw new HttpException(
+                    HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
                     sprintf(
                         'Failed to resolve parameter %s when invoking %s',
                         $reflectionParameter->getName(),
@@ -103,8 +107,23 @@ class RouteActionInvoker implements IRouteActionInvoker
             }
         }
 
-        $response = $controllerContext->getController()->{$routeAction->getMethodName()}(...$resolvedParameters);
+        try {
+            $response = $controllerContext->getController()->{$routeAction->getMethodName()}(...$resolvedParameters);
+        } catch (Exception $ex) {
+            if ($ex instanceof HttpException) {
+                throw $ex;
+            }
 
+            throw new HttpException(
+                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+                'Failed to invoke route action',
+                null,
+                0,
+                $ex
+            );
+        }
+
+        // Handle void return types
         return $response ?? new Response(HttpStatusCodes::HTTP_NO_CONTENT);
     }
 
@@ -127,8 +146,7 @@ class RouteActionInvoker implements IRouteActionInvoker
      * @param ContentNegotiationResult|null $requestContentNegotiationResult The request content negotiation result
      * @param RouteAction $routeAction The matched route action
      * @return \object|null The resolved parameter
-     * @throws RuntimeException Thrown if the parameter could not be resolved
-     * @throws FailedContentNegotiationException Thrown if the request content could not be negotiated
+     * @throws HttpException Thrown if object parameter could not be resolved
      */
     private function resolveObjectParameter(
         ReflectionParameter $reflectionParameter,
@@ -138,7 +156,8 @@ class RouteActionInvoker implements IRouteActionInvoker
     ): ?object {
         if ($request->getBody() === null) {
             if (!$reflectionParameter->allowsNull()) {
-                throw new RuntimeException(
+                throw new HttpException(
+                    HttpStatusCodes::HTTP_BAD_REQUEST,
                     sprintf(
                         'Missing request body when invoking %s',
                         $this->getRouteActionDisplayName($routeAction)
@@ -151,7 +170,8 @@ class RouteActionInvoker implements IRouteActionInvoker
 
         if ($requestContentNegotiationResult === null) {
             if (!$reflectionParameter->allowsNull()) {
-                throw new FailedContentNegotiationException(
+                throw new HttpException(
+                    HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE,
                     sprintf(
                         'Failed to negotiation content when invoking %s',
                         $this->getRouteActionDisplayName($routeAction)
@@ -167,12 +187,14 @@ class RouteActionInvoker implements IRouteActionInvoker
                 ->readFromStream($request->getBody()->readAsStream(), $reflectionParameter->getType());
         } catch (SerializationException $ex) {
             if (!$reflectionParameter->allowsNull()) {
-                throw new RuntimeException(
+                throw new HttpException(
+                    HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY,
                     sprintf(
                         'Failed to resolve parameter %s when invoking %s',
                         $reflectionParameter->getName(),
                         $this->getRouteActionDisplayName($routeAction)
                     ),
+                    null,
                     0,
                     $ex
                 );
