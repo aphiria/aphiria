@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Http\Dispatchers;
 
+use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 
@@ -23,6 +24,7 @@ interface IRequestDispatcher
      *
      * @param IHttpRequestMessage $request The incoming request
      * @return IHttpResponseMessage The response
+     * @throws HttpException Thrown if there was an exception processing the request
      */
     public function dispatchRequest(IHttpRequestMessage $request): IHttpResponseMessage;
 }
