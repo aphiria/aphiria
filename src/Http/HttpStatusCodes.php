@@ -33,6 +33,12 @@ class HttpStatusCodes
     public const HTTP_RESET_CONTENT = 205;
     /** @const The request contains partial content */
     public const HTTP_PARTIAL_CONTENT = 206;
+    /** @const The request contains multiple status codes */
+    public const HTTP_MULTI_STATUS = 207;
+    /** @const The members of a DAV binding have been enumerated in a preceding part of the multi-status response */
+    public const HTTP_ALREADY_REPORTED = 208;
+    /** @const The server has fulfilled a request for the resource, and the response represents one or more instance-manipulations */
+    public const HTTP_IM_USED = 226;
     /** @const Multiple choice redirect */
     public const HTTP_MULTIPLE_CHOICE = 300;
     /** @const Moved permanently */
@@ -83,6 +89,26 @@ class HttpStatusCodes
     public const HTTP_REQUESTED_RANGE_NOT_SATISFIABLE = 416;
     /** @const The expected header cannot be met */
     public const HTTP_EXPECTATION_FAILED = 417;
+    /** @const The request is a teapot, and totally legit */
+    public const HTTP_TEAPOT = 418;
+    /** @const The request was directed at a server that is not able to produce a response */
+    public const HTTP_MISDIRECTED_REQUEST = 421;
+    /** @const The request was well-formed, but was unable to be followed due to semantic errors */
+    public const HTTP_UNPROCESSABLE_ENTITY = 422;
+    /** @const The resource that is being accessed is locked */
+    public const HTTP_LOCKED = 423;
+    /** @const The request failed because it depended on another request that failed */
+    public const HTTP_FAILED_DEPENDENCY = 424;
+    /** @const The client should switch to a different protocol */
+    public const HTTP_UPGRADE_REQUIRED = 426;
+    /** @const The origin server requires the request to be conditional */
+    public const HTTP_PRECONDITION_REQUIRED = 428;
+    /** @const The user has sent too many requests in a given amount of time */
+    public const HTTP_TOO_MANY_REQUESTS = 429;
+    /** @const The server is unwilling to process the request the header fields are too large */
+    public const HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE = 431;
+    /** @const The server has received a legal demand to deny access to a resource */
+    public const HTTP_UNAVAILABLE_FOR_LEGAL_REASONS = 451;
     /** @const The server encountered an unexpected condition which prevented it from fulfilling the request */
     public const HTTP_INTERNAL_SERVER_ERROR = 500;
     /** @const The server does not support the functionality required to fulfill the request */
@@ -95,6 +121,16 @@ class HttpStatusCodes
     public const HTTP_GATEWAY_TIMEOUT = 504;
     /** @const The HTTP version in the request isn't supported */
     public const HTTP_HTTP_VERSION_NOT_SUPPORTED = 505;
+    /** @const Transparent content negotiation for the request results in a circular reference */
+    public const HTTP_VARIANT_ALSO_NEGOTIATES = 506;
+    /** @const The server is unable to store the representation needed to complete the request */
+    public const HTTP_INSUFFICIENT_STORAGE = 507;
+    /** @const The server detected an infinite loop while processing the request */
+    public const HTTP_LOOP_DETECTED = 508;
+    /** @const Further extensions to the request are required for the server to fulfil it */
+    public const HTTP_NOT_EXTENDED = 510;
+    /** @const The client needs to authenticate to gain network access */
+    public const HTTP_NETWORK_AUTHENTICATION_REQUIRED = 511;
     /** @const @var array Maps HTTP status codes to their default reason phrases */
     private static $defaultReasonPhrases = [
         self::HTTP_CONTINUE => 'Continue',
