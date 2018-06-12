@@ -22,7 +22,6 @@ use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Pipelines\Pipeline;
-use Opulence\Pipelines\PipelineException;
 use Opulence\Routing\Matchers\IRouteMatcher;
 use Opulence\Routing\Matchers\RouteNotFoundException;
 use Opulence\Routing\Middleware\MiddlewareBinding;
@@ -106,10 +105,15 @@ class ControllerRequestDispatcher implements IRequestDispatcher
                 0,
                 $ex
             );
-        } catch (PipelineException | InvalidArgumentException $ex) {
+        } catch (Exception | Throwable $ex) {
+            // Don't re-throw it as an HttpException
+            if ($ex instanceof HttpException) {
+                throw $ex;
+            }
+
             throw new HttpException(
                 HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
-                'Failed to send request through middleware pipeline',
+                'Failed dispatch request',
                 0,
                 $ex
             );

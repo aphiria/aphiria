@@ -26,7 +26,7 @@ use ReflectionMethod;
 use ReflectionParameter;
 
 /**
- * Defines the route invoker
+ * Defines the route action invoker
  */
 class RouteActionInvoker implements IRouteActionInvoker
 {
@@ -107,21 +107,7 @@ class RouteActionInvoker implements IRouteActionInvoker
             }
         }
 
-        try {
-            $response = $controllerContext->getController()->{$routeAction->getMethodName()}(...$resolvedParameters);
-        } catch (Exception $ex) {
-            if ($ex instanceof HttpException) {
-                throw $ex;
-            }
-
-            throw new HttpException(
-                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
-                'Failed to invoke route action',
-                null,
-                0,
-                $ex
-            );
-        }
+        $response = $controllerContext->getController()->{$routeAction->getMethodName()}(...$resolvedParameters);
 
         // Handle void return types
         return $response ?? new Response(HttpStatusCodes::HTTP_NO_CONTENT);

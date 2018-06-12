@@ -24,6 +24,7 @@ use Opulence\Net\Uri;
 use Opulence\Routing\Matchers\MatchedRoute;
 use Opulence\Routing\RouteAction;
 use Opulence\Serialization\SerializationException;
+use RuntimeException;
 
 /**
  * Tests the route action invoker
@@ -43,7 +44,7 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
 
     public function testInvokingMethodThatThrowsExceptionThrowsException(): void
     {
-        $this->expectException(HttpException::class);
+        $this->expectException(RuntimeException::class);
         $this->invoker->invokeRouteAction(
             new ControllerContext(
                 $this->controller,
