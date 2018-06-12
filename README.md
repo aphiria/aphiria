@@ -187,8 +187,8 @@ A request handler simply takes in an HTTP request and returns a response.  It is
 Configuring your API is easy - you just need to set up a few things:
 
 * <a href="https://github.com/opulencephp/router" target="_blank">Routes</a>
-* <a href="https://github.com/opulencephp/serialization" target="_blank">Content negotiator</a>
-* [Dependency resolver](#dependency-resolver)
+* <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">Content negotiator</a>
+* [Dependency resolver](#controller-dependencies)
 
 Handling a request from beginning to end is simple:
 
