@@ -7,8 +7,8 @@
 1. [Introduction](#introduction)
     1. [Installation](#installation)
 2. [Controllers](#controllers)
-    1. [Controller Dependencies](#controller-dependencies)
-    2. [Parameter Resolution](#parameter-resolution)
+    1. [Parameter Resolution](#parameter-resolution)
+    2. [Controller Dependencies](#controller-dependencies)
 3. [Middleware](#middleware)
 4. [Request Handlers](#request-handlers)
     1. [Exception Handling](#exception-handling)
@@ -36,12 +36,14 @@ class UserController extends ApiController
     
     public function getAllUsers(): IHttpResponseMessage
     {
-        return $this->ok($this->userRepository->getAllUsers());
+        $users = $this->userRepository->getAllUsers();
+        
+        return $this->ok($users);
     }
 }
 ```
 
-The `ok()` helper method can serialize your domain models to the media type that the client requested (eg JSON).  This works on any POPOs.
+The `ok()` helper method can serialize your domain models to the media type that the client requested (eg JSON), and create a valid HTTP response.  This works on any POPOs.
 
 The following helper methods come bundled with `ApiController`:
 
@@ -57,6 +59,28 @@ The following helper methods come bundled with `ApiController`:
 * `unauthorized()`
 
 Your controller methods must be public and return `IHttpResponseMessage` or `void`.  In the case of a `void` return type, a 204 "No Content" response will be created automatically.
+
+<h3 id="headers">Headers</h3>
+
+Setting headers is simple, too:
+
+```php
+use Opulence\Net\Http\HttpHeaders;
+
+class UserController extends ApiController
+{
+    // ...
+    
+    public function getUserById(int $userId): IHttpResponseMessage
+    {
+        $user = $this->userRepository->getUserById($userId);
+        $headers = new HttpHeaders();
+        $headers->add('Cache-Control', 'no-cache');
+        
+        return $this->ok($user, $headers);
+    }
+}
+```
 
 <h3 id="controller-context">Controller Context</h3>
 
@@ -74,12 +98,6 @@ class UserController extends ApiController
     }
 }
 ```
-
-<h2 id="controller-dependencies">Controller Dependencies</h2>
-
-The API library provides support for auto-wiring your controllers.  In other words, it can scan your controllers' constructors for dependencies, resolve them, and then instantiate your controllers with those dependencies.  Dependency resolvers simply need to implement `IDependencyResolver`.  To make it easy for users of Opulence's DI container, you can use `ContainerDependencyResolver`.
-
-Once you've instantiated your dependency resolver, pass it into your [request handler](#request-handlers) for auto-wiring.
 
 <h2 id="parameter-resolution">Parameter Resolution</h2>
 
@@ -108,9 +126,11 @@ class UserController extends ApiController
 {
     // ...
     
-    public function getUser(int $userId): IHttpResponseMessage
+    public function getUserById(int $userId): IHttpResponseMessage
     {
-        return $this->ok($this->userRepository->getUserById($userId));
+        $user = $this->userRepository->getUserById($userId);
+        
+        return $this->ok($user);
     }
 }
 ```
@@ -124,12 +144,14 @@ class UserController extends ApiController
     
     public function getAllUsers(bool $includeDeletedUsers): IHttpResponseMessage
     {
-        return $this->ok($this->userRepository->getAllUsers($includeDeletedUsers));
+        $users = $this->userRepository->getAllUsers($includeDeletedUsers);
+        
+        return $this->ok($users);
     }
 }
 ```
 
-Opulence will first scan for scalar values in your route variables, and then, if no match is found, the query string.  Multiple scalar parameters are supported.  It also gracefully handles nullable values or parameters with default values.
+Opulence will first scan for matching scalar values by name in your route variables, and then, if no match is found, the query string.  Multiple scalar parameters are supported.  It also gracefully handles nullable values or parameters with default values.
 
 <h3 id="request-body-arrays">Request Body Arrays</h3>
 
@@ -147,6 +169,12 @@ class UserController extends ApiController
     }
 }
 ```
+
+<h2 id="controller-dependencies">Controller Dependencies</h2>
+
+The API library provides support for auto-wiring your controllers.  In other words, it can scan your controllers' constructors for dependencies, resolve them, and then instantiate your controllers with those dependencies.  Dependency resolvers simply need to implement `IDependencyResolver`.  To make it easy for users of Opulence's DI container, you can use `ContainerDependencyResolver`.
+
+Once you've instantiated your dependency resolver, pass it into your [request handler](#request-handlers) for auto-wiring.
 
 <h1 id="middleware">Middleware</h1>
 
