@@ -15,7 +15,7 @@
     3. [Custom Encoders](#custom-encoders)
     4. [DateTime Encoder](#datetime-encoder)
 
-<h2 id="introduction">Introduction</h2>
+<h1 id="introduction">Introduction</h1>
 
 By default, PHP does not have any way to serialize and deserialize POPO objects.  Opulence provides this functionality without bleeding into your code.  The best part is that you don't have to worry about how to (de)serialize nested objects or arrays of objects - Opulence does it for you.  Serializing an object is as easy as:
 
@@ -32,7 +32,7 @@ $serializedUser = '{"id":123,"email":"foo@bar.com"}';
 $user = $serializer->deserialize($serializedUser, User::class);
 ```
 
-<h2 id="installation">Installation</h2>
+<h1 id="installation">Installation</h1>
 
 You can install this library by including the following package name in your _composer.json_:
 
@@ -40,7 +40,7 @@ You can install this library by including the following package name in your _co
 "opulence/serialization": "1.0.*"
 ```
 
-<h2 id="serializers">Serializers</h2>
+<h1 id="serializers">Serializers</h1>
 
 Opulence provides the following serializers:
 
@@ -55,7 +55,7 @@ Deserializing works in the reverse order:
 
 Serialized value &rarr; [decoded value](#encoders) &rarr; deserialized value
 
-<h4 id="form-url-encoded-serializer">Form URL-Encoded Serializer</h4>
+<h2 id="form-url-encoded-serializer">Form URL-Encoded Serializer</h2>
 
 `FormUrlEncodedSerializer` can (de)serialize values to and from form URL-encoded strings.  It's useful for things like (de)serializing values for use in a query string or in request/response bodies.  Creating one is simple:
 
@@ -65,7 +65,7 @@ use Opulence\Serialization\FormUrlEncodedSerializer;
 $serializer = new FormUrlEncodedSerializer();
 ```
 
-<h4 id="json-serializer">JSON Serializer</h4>
+<h2 id="json-serializer">JSON Serializer</h2>
 
 `JsonSerializer` is able to serialize and deserialize values to and from JSON.  You can create an instance like this:
 
@@ -75,7 +75,7 @@ use Opulence\Serialization\JsonSerializer;
 $serializer = new JsonSerializer();
 ```
 
-<h4 id="arrays-of-values">Arrays of Values</h4>
+<h2 id="arrays-of-values">Arrays of Values</h2>
 
 To deserialize an array of values, append the `$type` parameter with `[]`:
 
@@ -93,11 +93,11 @@ $serializer->serialize($users);
 
 > **Note:** Opulence only supports arrays that contain a single type of value.  In other words, you cannot mix and match different types in a single array.
 
-<h2 id="encoders">Encoders</h2>
+<h1 id="encoders">Encoders</h1>
 
 Encoders define how to map your POPOs to values that a serializer can (de)serialize.  For most [objects](#object-encoder), this involves mapping an object to and from an associative array.  An `EncodingContext` is passed during encoding/decoding to track things like circular references.
 
-<h4 id="default-encoders">Default Encoders</h4>
+<h2 id="default-encoders">Default Encoders</h2>
 
 To make it easier for you, Opulence encodes/decodes `array` and `DateTime` values via the `ArrayEncoder` and [`DateTimeEncoder`](#datetime-encoder).  `DefaultEncoderRegistrant` registers these default encoders for you.  If you use this registrant, but want to customize some behavior, you can pass in a [property name formatter](#property-name-formatters) and [date format](#datetime-encoder):
 
@@ -111,13 +111,13 @@ $encoderRegistrant->registerDefaultEncoders($encoders);
 // Pass $encoders into your serializer constructor...
 ```
 
-<h4 id="object-encoder">Object Encoder</h4>
+<h2 id="object-encoder">Object Encoder</h2>
 
 `ObjectEncoder` uses reflection to get all the properties in a class, and creates an associative array of property names to encoded property values.  It even handles nested objects.  When decoding, `ObjectEncoder` scans the constructor parameters and decodes them using the type hints on the parameters, and then sets any public properties (only scalar properties are supported).  For best results, be sure to type your constructor parameters whenever possible.
 
 > **Note:** Since PHP has no typed arrays, it's impossible for `ObjectEncoder` to know how to decode an array of objects by type hints alone.  If your constructor requires an array of objects, [register a custom encoder](#custom-encoders).
 
-<h5 id="ignored-properties">Ignored Properties</h5>
+<h3 id="ignored-properties">Ignored Properties</h3>
 
 Sometimes, you might want to ignore some properties when serializing your object.  You can specify them like so:
 
@@ -131,11 +131,11 @@ $encoders->registerDefaultObjectEncoder($objectEncoder);
 
 You can also specify an array of property names in `addIgnoredProperty()`.
 
-<h5 id="property-name-formatters">Property Name Formatters</h5>
+<h3 id="property-name-formatters">Property Name Formatters</h3>
 
 You might find yourself wanting to make your property names' formats consistent (eg camelCase).  You can use an `IPropertyNameFormatter` to accomplish this.  `CamelCasePropertyNameFormatter` and `SnakeCasePropertyNameFormatter` come out of the box.  To use one (or your own), pass it into [`DefaultEncoderRegistrant`](#default-encoders).
 
-<h4 id="custom-encoders">Custom Encoders</h4>
+<h2 id="custom-encoders">Custom Encoders</h2>
 
 Due to PHP's type limitations, there are some objects that Opulence simply can't (de)serialize automatically.  Some examples include:
 
@@ -153,6 +153,6 @@ $encoders->registerEncoder(YourClass::class, new YourEncoder());
 
 Now, whenever an instance of `YourClass` needs to be (de)serialized, `YourEncoder` will be used.
 
-<h4 id="datetime-encoder">DateTime encoder</h4>
+<h2 id="datetime-encoder">DateTime encoder</h2>
 
 `DateTime` objects are typically serialized to a formatted date string, and deserialized from that string back to an instance of `DateTime`.  Opulence provides `DateTimeEncoder` to provide this functionality. By default, it uses <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601</a> when (de)serializing `DateTime`, `DateTimeImmutable`, and `DateTimeInterface` objects, but you can [customize the format](#default-encoders).
