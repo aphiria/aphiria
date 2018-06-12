@@ -5,7 +5,7 @@
 <h1>Table of Contents</h1>
 
 1. [Introduction](#introduction)
-2. [Installation](#installation)
+    1. [Installation](#installation)
 3. [Serializers](#serializers)
     1. [Form URL-Encoded Serializer](#form-url-encoded-serializer)
     2. [JSON Serializer](#json-serializer)
