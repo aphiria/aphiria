@@ -2,7 +2,8 @@
 
 > **Note:** This library is still in development.
 
-## Table of Contents
+<h1>Table of Contents</h1>
+
 1. [Introduction](#introduction)
 2. [Installation](#installation)
 3. [Serializers](#serializers)
