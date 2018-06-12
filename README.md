@@ -1,8 +1,9 @@
-# Net
+<h1>Net</h1>
 
 > **Note:** This library is still in development.
 
-## Table of Contents
+<h1>Table of Contents</h1>
+
 1. [Introduction](#introduction)
     1. [Requirements](#requirements)
     2. [Installation](#installation)
@@ -32,11 +33,11 @@
 7. [Content Negotiation](#content-negotiation)
     1. [Media Type Formatters](#media-type-formatters)
 
-<h2 id="introduction">Introduction</h2>
+<h1 id="introduction">Introduction</h1>
 
 Opulence's network library provides better abstractions for HTTP requests, responses, bodies, headers, and URIs.  It also comes built-in with support for RFC-compliant content negotiation for request and response bodies.
 
-<h4 id="requirements">Requirements</h4>
+<h2 id="requirements">Requirements</h2>
 
 PHP POST request bodies are read from `$_POST` and `$_FILES` for form data and for uploaded files, respectively.  All other request methods must be manually parsed from the `php://input` stream.  To work around PHP's inconsistencies, Opulence requires the following setting in either a <a href="http://php.net/manual/en/configuration.file.per-user.php" target="_blank">_.user.ini_</a> or your _php.ini_:
 
@@ -48,11 +49,11 @@ This will disable automatically parsing POST data into `$_POST` and uploaded fil
 
 > **Note:** If you're developing any non-Opulence applications on your web server, use <a href="http://php.net/manual/en/configuration.file.per-user.php" target="_blank">_.user.ini_</a> to limit this setting to only your Opulence application.  Alternatively, you can add `php_value enable_post_data_reading 0` to an _.htaccess_ file or to your _httpd.conf_.
 
-<h4 id="installation">Installation</h4>
+<h2 id="installation">Installation</h2>
 
 To install the Net library, simply add `opulence/net: 1.0.*` to your _composer.json_.
 
-<h4 id="why-not-use-psr-7">Why Not Use PSR-7?</h4>
+<h2 id="why-not-use-psr-7">Why Not Use PSR-7?</h2>
 
 PSR-7 was an attempt to standardize frameworks' HTTP components to be interopbile, but it contained many contested features:
 
@@ -65,7 +66,7 @@ PSR-7 was an attempt to standardize frameworks' HTTP components to be interopbil
 3. PSR-7 improperly abstracted uploaded files
     * They are part of the body, not the request message
 
-<h2 id="requests">Requests</h2>
+<h1 id="requests">Requests</h1>
 
 Requests are HTTP messages sent by clients to servers.  They contain the following methods:
 
@@ -79,7 +80,7 @@ Requests are HTTP messages sent by clients to servers.  They contain the followi
 
 > **Note:** The properties dictionary is a useful place to store metadata about a request, eg route variables.
 
-<h4 id="creating-requests">Creating Requests</h4>
+<h2 id="creating-requests">Creating Requests</h2>
 
 Creating a request is easy:
 
@@ -109,7 +110,7 @@ $request = new Request('POST', new Uri('https://example.com'), null, $body);
 $request->setBody($body);
 ```
 
-<h5 id="creating-request-from-superglobals">Creating a Request From Superglobals</h5>
+<h3 id="creating-request-from-superglobals">Creating a Request From Superglobals</h3>
 
 PHP has superglobal arrays that store information about the requests.  They're a mess, architecturally-speaking.  Opulence attempts to insulate developers from the nastiness of superglobals by giving you a simple method to create requests and responses.  To create a request, use `RequestFactory`:
 
@@ -121,7 +122,7 @@ $request = (new RequestFactory)->createRequestFromSuperglobals($_SERVER);
 
 Opulence reads all the information it needs from the `$_SERVER` superglobal - it doesn't need the others.
 
-<h5 id="trusted-proxies">Trusted Proxies</h5>
+<h3 id="trusted-proxies">Trusted Proxies</h3>
 
 If you're using a load balancer or some sort of proxy server, you'll need to add it to the list of trusted proxies.  You can also use your proxy to set custom, trusted headers.  You may specify them in the factory constructor:
 
@@ -131,7 +132,7 @@ $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_IP' => 'X-My-Proxy-
 $request = $factory->createRequestFromSuperglobals($_SERVER);
 ```
 
-<h4 id="getting-post-data">Getting POST Data</h4>
+<h2 id="getting-post-data">Getting POST Data</h2>
 
 In vanilla PHP, you can read URL-encoded form data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of form requests into a [dictionary](https://www.opulencephp.com/docs/1.1/collections#hash-tables).
 
@@ -143,7 +144,7 @@ $formInput = (new RequestParser)->readAsFormInput($request);
 echo $formInput->get('email'); // "foo@bar.com"
 ```
 
-<h4 id="getting-query-string-data">Getting Query String Data</h4>
+<h2 id="getting-query-string-data">Getting Query String Data</h2>
 
 In vanilla PHP, query string data is read from the `$_GET` superglobal.  In Opulence, it's stored in the request's URI.  `Uri::getQueryString()` returns the raw query string - to return it as an [immutable dictionary](https://www.opulencephp.com/docs/1.1/collections#immutable-hash-tables), use `RequestParser`:
 
@@ -155,7 +156,7 @@ $queryStringParams = (new RequestParser)->parseQueryString($request);
 echo $queryStringParams->get('foo'); // "bar"
 ```
 
-<h4 id="json-requests">JSON Requests</h4>
+<h2 id="json-requests">JSON Requests</h2>
 
 To check if a request is a JSON request, call
 
@@ -173,7 +174,7 @@ use Opulence\Net\Http\Formatting\RequestParser;
 $json = (new RequestParser)->readAsJson($request);
 ```
 
-<h4 id="multipart-requests">Multipart Requests</h4>
+<h2 id="multipart-requests">Multipart Requests</h2>
 
 Multipart requests contain multiple bodies, each with headers.  That's actually how file uploads work - each file gets a body with headers indicating the name, type, and size of the file.  Opulence can parse these multipart bodies into a `MultipartBody`, which extends [`StreamBody`](#stream-bodies).  It contains additional methods to get the boundary and the list of `MultipartBodyPart` objects that make up the body:
 
@@ -201,7 +202,7 @@ Each `MultipartBodyPart` contains the following methods:
 * `getBody(): ?IHttpBody`
 * `getHeaders(): HttpHeaders`
 
-<h5 id="saving-uploaded-files">Saving Uploaded Files</h5>
+<h3 id="saving-uploaded-files">Saving Uploaded Files</h3>
 
 To save a multipart body's parts to files in a memory-efficient manner, read each part as a stream and copy it to the destination path:
 
@@ -213,7 +214,7 @@ foreach ($multipartBody->getParts() as $multipartBodyPart) {
 }
 ```
 
-<h5 id="getting-mime-type-of-body">Getting MIME Type of Body</h5>
+<h3 id="getting-mime-type-of-body">Getting MIME Type of Body</h3>
 
 To grab the MIME type of an HTTP body, call
 
@@ -221,7 +222,7 @@ To grab the MIME type of an HTTP body, call
 (new RequestParser)->getMimeType($multipartBodyPart);
 ```
 
-<h5 id="creating-multipart-requests">Creating Multipart Requests</h5>
+<h3 id="creating-multipart-requests">Creating Multipart Requests</h3>
 
 The Net library makes it straightforward to create a multipart request manually.  The following example creates a request to upload two images:
 
@@ -262,7 +263,7 @@ $request = new Request(
 );
 ```
 
-<h4 id="getting-request-cookies">Getting Cookies</h4>
+<h2 id="getting-request-cookies">Getting Cookies</h2>
 
 Opulence has a helper to grab cookies from request headers as an [immutable dictionary](https://www.opulencephp.com/docs/1.1/collections#immutable-hash-tables):
 
@@ -273,7 +274,7 @@ $cookies = (new RequestParser)->parseCookies($request);
 $cookies->get('userid');
 ```
 
-<h4 id="getting-client-ip-address">Getting Client IP Address</h4>
+<h2 id="getting-client-ip-address">Getting Client IP Address</h2>
 
 If you use the [`RequestFactory`](#creating-request-from-superglobals) to create your request, the client IP address will be added to the request property `CLIENT_IP_ADDRESS`.  To make it easier to grab this value, you can use `RequestParser` to retrieve it:
 
@@ -285,7 +286,7 @@ $clientIPAddress = (new RequestParser)->getClientIPAddress($request);
 
 > **Note:** This will take into consideration any [trusted proxy header values](#trusted-proxies) when determining the original client IP address.
 
-<h4 id="header-parameters">Header Parameters</h4>
+<h2 id="header-parameters">Header Parameters</h2>
 
 Some header values are semicolon delimited, eg `Content-Type: text/html; charset=utf-8`.  It's sometimes convenient to grab those key => value pairs:
 
@@ -296,7 +297,7 @@ echo $contentTypeValues->get('text/html'); // null
 echo $contentTypeValues->get('charset'); // "utf-8"
 ```
 
-<h4 id="serializing-requests">Serializing Requests</h4>
+<h2 id="serializing-requests">Serializing Requests</h2>
 
 You can serialize a request per <a href="https://tools.ietf.org/html/rfc7230#section-3" target="_blank">RFC 7230</a> by casting it to a string:
 
@@ -327,7 +328,7 @@ The following request target types may be used:
 * <a href="https://tools.ietf.org/html/rfc7230#section-5.3.3" target="_blank">`RequestTargetTypes::AUTHORITY_FORM`</a>
 * <a href="https://tools.ietf.org/html/rfc7230#section-5.3.1" target="_blank">`RequestTargetTypes::ORIGIN_FORM`</a>
 
-<h2 id="responses">Responses</h2>
+<h1 id="responses">Responses</h1>
 
 Responses are HTTP messages that are sent by servers back to the client.  They contain the following methods:
 
@@ -339,7 +340,7 @@ Responses are HTTP messages that are sent by servers back to the client.  They c
 * `setBody(IHttpBody $body): void`
 * `setStatusCode(int $statusCode, ?string $reasonPhrase = null): void`
 
-<h4 id="creating-responses">Creating Responses</h4>
+<h2 id="creating-responses">Creating Responses</h2>
 
 Creating a response is easy:
 
@@ -357,7 +358,7 @@ $response = new Response(404);
 $response->setStatusCode(404);
 ```
 
-<h5 id="response-headers">Response Headers</h5>
+<h3 id="response-headers">Response Headers</h3>
 
 You can set response [headers](#http-headers) via `Response::getHeaders()`:
 
@@ -365,7 +366,7 @@ You can set response [headers](#http-headers) via `Response::getHeaders()`:
 $response->getHeaders()->add('Content-Type', 'application/json');
 ```
 
-<h5 id="response-bodies">Response Bodies</h5>
+<h3 id="response-bodies">Response Bodies</h3>
 
 You can pass the [body](#http-bodies) via the response constructor or via `Response::setBody()`:
 
@@ -375,7 +376,7 @@ $response = new Response(200, null, new StringBody('foo'));
 $response->setBody(new StringBody('foo'));
 ```
 
-<h4 id="json-responses">JSON Responses</h4>
+<h2 id="json-responses">JSON Responses</h2>
 
 Opulence provides an easy way to create common responses.  For example, to create a JSON response, use `ResponseFormatter`:
 
@@ -389,7 +390,7 @@ $response = new Response();
 
 This will set the contents of the response, as well as the appropriate `Content-Type` headers.
 
-<h4 id="redirect-responses">Redirect Responses</h4>
+<h2 id="redirect-responses">Redirect Responses</h2>
 
 You can also create a redirect response:
 
@@ -401,7 +402,7 @@ $response = new Response();
 (new ResponseFormatter)->redirectToUri($response, 'http://example.com');
 ```
 
-<h4 id="setting-response-cookies">Setting Cookies</h4>
+<h2 id="setting-response-cookies">Setting Cookies</h2>
 
 Cookies are headers that are automatically appended to each request from the client to the server.  To set one, use `ResponseFormatter`:
 
@@ -432,7 +433,7 @@ public function __construct(
 
 Use `ResponseFormatter::setCookies()` to set multiple cookies at once.
 
-<h5 id="deleting-response-cookies">Deleting Cookies</h5>
+<h3 id="deleting-response-cookies">Deleting Cookies</h3>
 
 To delete a cookie on the client, call
 
@@ -440,7 +441,7 @@ To delete a cookie on the client, call
 (new ResponseFormatter)->deleteCookie($response, 'userid');
 ```
 
-<h4 id="writing-responses">Writing Responses</h4>
+<h2 id="writing-responses">Writing Responses</h2>
 
 Once you're ready to start sending the response back to the client, you can use `ResponseWriter`:
 
@@ -457,7 +458,7 @@ $outputStream = new Stream(fopen('path/to/output', 'w'));
 (new ResponseWriter($outputStream))->writeResponse($response);
 ```
 
-<h4 id="serializing-responses">Serializing Responses</h4>
+<h2 id="serializing-responses">Serializing Responses</h2>
 
 Opulence can serialize responses per <a href="https://tools.ietf.org/html/rfc7230#section-3" target="_blank">RFC 7230</a>:
 
@@ -465,7 +466,7 @@ Opulence can serialize responses per <a href="https://tools.ietf.org/html/rfc723
 echo (string)$response;
 ```
 
-<h2 id="http-headers">HTTP Headers</h2>
+<h1 id="http-headers">HTTP Headers</h1>
 
 Headers provide metadata about the HTTP message.  In Opulence, they're implemented by `Opulence\Net\Http\HttpHeaders`, which extends  [`Opulence\Collections\HashTable`](https://www.opulencephp.com/docs/1.1/collections#hash-tables).  On top of the methods provided by `HashTable`, they also provide the following methods:
 
@@ -474,7 +475,7 @@ Headers provide metadata about the HTTP message.  In Opulence, they're implement
 
 > **Note:** Header names that are passed into the methods in `HttpHeaders` are automatically normalized to Train-Case.  In other words, `foo_bar` will become `Foo-Bar`.
 
-<h2 id="http-bodies">HTTP Bodies</h2>
+<h1 id="http-bodies">HTTP Bodies</h1>
 
 HTTP bodies contain data associated with the HTTP message, and are optional.  They're represented by `Opulence\Net\Http\IHttpBody`.  They provide a few methods to read and write their contents to streams and to strings:
 
@@ -483,7 +484,7 @@ HTTP bodies contain data associated with the HTTP message, and are optional.  Th
 * `readAsString(): string`
 * `writeToStream(IStream $stream): void`
 
-<h4 id="string-bodies">String Bodies</h4>
+<h2 id="string-bodies">String Bodies</h2>
 
 HTTP bodies are most commonly represented as strings.  Opulence makes it easy to create a string body via `StringBody`:
 
@@ -493,7 +494,7 @@ use Opulence\Net\Http\StringBody;
 $body = new StringBody('foo');
 ```
 
-<h4 id="stream-bodies">Stream Bodies</h4>
+<h2 id="stream-bodies">Stream Bodies</h2>
 
 Sometimes, bodies might be too big to hold entirely in memory.  This is where `StreamBody` comes in handy:
 
@@ -505,7 +506,7 @@ $stream = new Stream(fopen('foo.txt', 'r+'));
 $body = new StreamBody($stream);
 ```
 
-<h2 id="uris">URIs</h2>
+<h1 id="uris">URIs</h1>
 
 A URI identifies a resource, typically over a network.  They contain such information as the scheme, host, port, path, query string, and fragment.  Opulence represents them in `Opulence\Net\Uri`, and they include the following methods:
 
@@ -528,7 +529,7 @@ use Opulence\Net\Uri;
 $uri = new Uri('https://example.com/foo?bar=baz#blah');
 ```
 
-<h2 id="content-negotiation">Content Negotiation</h2>
+<h1 id="content-negotiation">Content Negotiation</h1>
 
 Content negotiation is a process between the client and server to determine how to best process a request and serve content back to the client.  This negotiation is typically done via headers, where the client says "Here's the type of content I'd prefer (eg JSON, XMl, etc)", and the server trying to accomodate the client's preferences.  For example, the process can involve negotiating the following for requests and responses per the <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html" target="_blank">HTTP spec</a>:
 
@@ -558,7 +559,7 @@ $result = $contentNegotiator->negotiateRequestContent($request);
 
 > **Note:** `ContentNegotiator` uses language tags from <a href="https://tools.ietf.org/html/rfc4646" target="_blank">RFC 4646</a>, and follows the lookup rules in <a href="https://tools.ietf.org/html/rfc4647#section-3.4" target="_blank">RFC 4647 Section 3.4</a>.
 
-<h4 id="media-type-formatters">Media Type Formatters</h4>
+<h2 id="media-type-formatters">Media Type Formatters</h2>
 
 Media type formatters can read and write a particular data format to a stream.  You can get the media type formatter from `ContentNegotiationResult`, and use it to deserialize a request body to a particular type (`User` in this example):
 
