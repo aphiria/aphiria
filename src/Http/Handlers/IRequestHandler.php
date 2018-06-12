@@ -8,23 +8,23 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Dispatchers;
+namespace Opulence\Net\Http\Handlers;
 
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 
 /**
- * Defines the interface for request dispatchers to implement
+ * Defines the interface for request handlers to implement
  */
-interface IRequestDispatcher
+interface IRequestHandler
 {
     /**
-     * Dispatches a request to a controller
+     * Handles a request and returns a response
      *
      * @param IHttpRequestMessage $request The incoming request
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an exception processing the request
      */
-    public function dispatchRequest(IHttpRequestMessage $request): IHttpResponseMessage;
+    public function handle(IHttpRequestMessage $request): IHttpResponseMessage;
 }
