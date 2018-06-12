@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests\Dispatchers\Mocks;
+namespace Opulence\Api\Tests\Handlers\Mocks;
 
 use Closure;
 use Opulence\Api\Middleware\IMiddleware;
@@ -16,19 +16,15 @@ use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 
 /**
- * Mocks a middleware that writes to the response's headers
+ * Mocks middleware that does not return something
  */
-class HeaderSetter implements IMiddleware
+class DoesNotReturnSomethingMiddleware implements IMiddleware
 {
     /**
      * @inheritdoc
      */
     public function handle(IHttpRequestMessage $request, Closure $next): IHttpResponseMessage
     {
-        /** @var IHttpResponseMessage $response */
-        $response = $next($request);
-        $response->getHeaders()->add('foo', 'bar');
-
-        return $response;
+        return $next($request);
     }
 }

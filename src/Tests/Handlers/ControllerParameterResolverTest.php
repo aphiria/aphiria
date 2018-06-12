@@ -8,76 +8,45 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests\Dispatchers;
+namespace Opulence\Api\Tests\Handlers;
 
 use Opulence\Api\ControllerContext;
-use Opulence\Api\Dispatchers\RouteActionInvoker;
-use Opulence\Api\Tests\Dispatchers\Mocks\ApiController;
-use Opulence\Api\Tests\Dispatchers\Mocks\User;
+use Opulence\Api\Handlers\ControllerParameterResolver;
+use Opulence\Api\Handlers\MissingControllerParameterValueException;
+use Opulence\Api\Tests\Handlers\Mocks\ApiController;
+use Opulence\Api\Tests\Handlers\Mocks\User;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Opulence\Net\Http\ContentNegotiation\IMediaTypeFormatter;
-use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\Request;
 use Opulence\Net\Http\StringBody;
 use Opulence\Net\Uri;
 use Opulence\Routing\Matchers\MatchedRoute;
 use Opulence\Routing\RouteAction;
 use Opulence\Serialization\SerializationException;
-use RuntimeException;
+use ReflectionParameter;
 
 /**
- * Tests the route action invoker
+ * Tests the controller parameter resolver
  */
-class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
+class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var RouteActionInvoker The invoker to use in tests */
-    private $invoker;
+    /** @var ControllerParameterResolver The resolver to use in tests */
+    private $resolver;
     /** @var ApiController The controller to use in tests */
     private $controller;
 
     public function setUp(): void
     {
-        $this->invoker = new RouteActionInvoker();
+        $this->resolver = new ControllerParameterResolver();
         $this->controller = new ApiController();
     }
 
-    public function testInvokingMethodThatThrowsExceptionThrowsException(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->invoker->invokeRouteAction(
-            new ControllerContext(
-                $this->controller,
-                $this->createRequest('http://foo.com'),
-                null,
-                null,
-                new MatchedRoute(new RouteAction(ApiController::class, 'throwsException', null), [], [])
-            )
-        );
-    }
-
-    public function testInvokingMethodWithNoParametersIsSuccessful(): void
+    public function testResolvingParameterWithNoTypeHintUsesVariableFromRoute(): void
     {
         /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $response = $this->invoker->invokeRouteAction(
-            new ControllerContext(
-                $this->controller,
-                $this->createRequest('http://foo.com'),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(ApiController::class, 'noParameters', null), [], [])
-            )
-        );
-        $this->assertNotNull($response->getBody());
-        $this->assertEquals('noParameters', $response->getBody()->readAsString());
-    }
-
-    public function testInvokingMethodWithNoTypeHintUsesVariableFromRequest(): void
-    {
-        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $response = $this->invoker->invokeRouteAction(
+        $resolvedParameter = $this->resolver->resolveParameter(
+            new ReflectionParameter([ApiController::class, 'noTypeHintParameter'], 'foo'),
             new ControllerContext(
                 $this->controller,
                 $this->createRequest('http://foo.com'),
@@ -90,11 +59,10 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
                 )
             )
         );
-        $this->assertNotNull($response->getBody());
-        $this->assertEquals('bar', $response->getBody()->readAsString());
+        $this->assertEquals('bar', $resolvedParameter);
     }
 
-    public function testInvokingMethodWithNullableObjectParameterWithBodyThatCannotDeserializeToTypePassesNull(): void
+    public function testResolvingNullableObjectParameterWithBodyThatCannotDeserializeToTypePassesNull(): void
     {
         $request = $this->createRequest('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
@@ -104,7 +72,8 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
             ->method('readFromStream')
             ->with($request->getBody()->readAsStream(), User::class)
             ->willThrowException(new SerializationException);
-        $response = $this->invoker->invokeRouteAction(
+        $resolvedParameter = $this->resolver->resolveParameter(
+            new ReflectionParameter([ApiController::class, 'nullableObjectParameter'], 'user'),
             new ControllerContext(
                 $this->controller,
                 $request,
@@ -113,17 +82,17 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
                 new MatchedRoute(new RouteAction(ApiController::class, 'nullableObjectParameter', null), [], [])
             )
         );
-        $this->assertNotNull($response->getBody());
-        $this->assertEquals('null', $response->getBody()->readAsString());
+        $this->assertNull($resolvedParameter);
     }
 
-    public function testInvokingMethodWithNullableObjectParameterWithoutBodyPassesNull(): void
+    public function testResolvingNullableObjectParameterWithoutBodyPassesNull(): void
     {
         /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->never())
             ->method('readFromStream');
-        $response = $this->invoker->invokeRouteAction(
+        $resolvedParameter = $this->resolver->resolveParameter(
+            new ReflectionParameter([ApiController::class, 'nullableObjectParameter'], 'user'),
             new ControllerContext(
                 $this->controller,
                 $this->createRequest('http://foo.com'),
@@ -132,16 +101,16 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
                 new MatchedRoute(new RouteAction(ApiController::class, 'nullableObjectParameter', null), [], [])
             )
         );
-        $this->assertNotNull($response->getBody());
-        $this->assertEquals('null', $response->getBody()->readAsString());
+        $this->assertNull($resolvedParameter);
     }
 
-    public function testInvokingMethodWithNullableScalarParameterWithNoMatchingValuePassesNull(): void
+    public function testResolvingNullableScalarParameterWithNoMatchingValuePassesNull(): void
     {
         $request = $this->createRequest('http://foo.com');
         /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $response = $this->invoker->invokeRouteAction(
+        $resolvedParameter = $this->resolver->resolveParameter(
+            new ReflectionParameter([ApiController::class, 'nullableScalarParameter'], 'foo'),
             new ControllerContext(
                 $this->controller,
                 $request,
@@ -150,14 +119,14 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
                 new MatchedRoute(new RouteAction(ApiController::class, 'nullableScalarParameter', null), [], [])
             )
         );
-        $this->assertNotNull($response->getBody());
-        $this->assertEquals('null', $response->getBody()->readAsString());
+        $this->assertNull($resolvedParameter);
     }
 
-    public function testInvokingMethodWithObjectParameterAndNoRequestBodyThrowsException(): void
+    public function testResolvingObjectParameterAndNoRequestBodyThrowsException(): void
     {
-        $this->expectException(HttpException::class);
-        $this->invoker->invokeRouteAction(
+        $this->expectException(MissingControllerParameterValueException::class);
+        $this->resolver->resolveParameter(
+            new ReflectionParameter([ApiController::class, 'objectParameter'], 'user'),
             new ControllerContext(
                 $this->controller,
                 $this->createRequest('http://foo.com'),
@@ -168,17 +137,19 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testInvokingMethodWithObjectParameterReadsFromRequestBodyFirst(): void
+    public function testResolvingObjectParameterReadsFromRequestBodyFirst(): void
     {
         $request = $this->createRequest('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
+        $expectedUser = new User(123, 'foo@bar.com');
         /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('readFromStream')
             ->with($request->getBody()->readAsStream(), User::class)
-            ->willReturn(new User(123, 'foo@bar.com'));
-        $response = $this->invoker->invokeRouteAction(
+            ->willReturn($expectedUser);
+        $resolvedParameter = $this->resolver->resolveParameter(
+            new ReflectionParameter([ApiController::class, 'objectParameter'], 'user'),
             new ControllerContext(
                 $this->controller,
                 $request,
@@ -187,14 +158,14 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
                 new MatchedRoute(new RouteAction(ApiController::class, 'objectParameter', null), [], [])
             )
         );
-        $this->assertNotNull($response->getBody());
-        $this->assertEquals('id:123, email:foo@bar.com', $response->getBody()->readAsString());
+        $this->assertEquals($expectedUser, $resolvedParameter);
     }
 
-    public function testInvokingMethodWithScalarParameterAndNoMatchingVariableThrowsException(): void
+    public function testResolvingScalarParameterAndNoMatchingVariableThrowsException(): void
     {
-        $this->expectException(HttpException::class);
-        $this->invoker->invokeRouteAction(
+        $this->expectException(MissingControllerParameterValueException::class);
+        $this->resolver->resolveParameter(
+            new ReflectionParameter([ApiController::class, 'stringParameter'], 'foo'),
             new ControllerContext(
                 $this->controller,
                 $this->createRequest('http://foo.com'),
@@ -205,11 +176,12 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testInvokingMethodWithScalarParameterAndNoMatchingVariableUsesDefaultValueIfAvailable(): void
+    public function testResolvingScalarParameterAndNoMatchingVariableUsesDefaultValueIfAvailable(): void
     {
         /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $response = $this->invoker->invokeRouteAction(
+        $resolvedParameter = $this->resolver->resolveParameter(
+            new ReflectionParameter([ApiController::class, 'defaultValueParameter'], 'foo'),
             new ControllerContext(
                 $this->controller,
                 $this->createRequest('http://foo.com'),
@@ -218,15 +190,15 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
                 new MatchedRoute(new RouteAction(ApiController::class, 'defaultValueParameter', null), [], [])
             )
         );
-        $this->assertNotNull($response->getBody());
-        $this->assertEquals('bar', $response->getBody()->readAsString());
+        $this->assertEquals('bar', $resolvedParameter);
     }
 
-    public function testInvokingMethodWithScalarParameterUsesMatchingQueryStringVariable(): void
+    public function testResolvingScalarParameterUsesMatchingQueryStringVariable(): void
     {
         /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $response = $this->invoker->invokeRouteAction(
+        $resolvedParameter = $this->resolver->resolveParameter(
+            new ReflectionParameter([ApiController::class, 'stringParameter'], 'foo'),
             new ControllerContext(
                 $this->controller,
                 $this->createRequest('http://foo.com/?foo=bar'),
@@ -235,15 +207,15 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
                 new MatchedRoute(new RouteAction(ApiController::class, 'stringParameter', null), [], [])
             )
         );
-        $this->assertNotNull($response->getBody());
-        $this->assertEquals('bar', $response->getBody()->readAsString());
+        $this->assertEquals('bar', $resolvedParameter);
     }
 
-    public function testInvokingMethodWithScalarParameterUsesMatchingRouteVariableOverQueryStringVariable(): void
+    public function testResolvingScalarParameterUsesMatchingRouteVariableOverQueryStringVariable(): void
     {
         /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $response = $this->invoker->invokeRouteAction(
+        $resolvedParameter = $this->resolver->resolveParameter(
+            new ReflectionParameter([ApiController::class, 'stringParameter'], 'foo'),
             new ControllerContext(
                 $this->controller,
                 $this->createRequest('http://foo.com/?foo=baz'),
@@ -252,67 +224,7 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
                 new MatchedRoute(new RouteAction(ApiController::class, 'stringParameter', null), ['foo' => 'dave'], [])
             )
         );
-        $this->assertNotNull($response->getBody());
-        $this->assertEquals('dave', $response->getBody()->readAsString());
-    }
-
-    public function testInvokingMethodWithVoidReturnTypeReturnsNoContentResponse(): void
-    {
-        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $response = $this->invoker->invokeRouteAction(
-            new ControllerContext(
-                $this->controller,
-                $this->createRequest('http://foo.com'),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(ApiController::class, 'voidReturnType', null), [], [])
-            )
-        );
-        $this->assertNull($response->getBody());
-        $this->assertEquals(HttpStatusCodes::HTTP_NO_CONTENT, $response->getStatusCode());
-    }
-
-    public function testInvokingNonExistentMethodThrowsException(): void
-    {
-        $this->expectException(HttpException::class);
-        $this->invoker->invokeRouteAction(
-            new ControllerContext(
-                $this->controller,
-                $this->createRequest('http://foo.com'),
-                null,
-                null,
-                new MatchedRoute(new RouteAction(ApiController::class, 'doesNotExist', null), [], [])
-            )
-        );
-    }
-
-    public function testInvokingPrivateMethodThrowsException(): void
-    {
-        $this->expectException(HttpException::class);
-        $this->invoker->invokeRouteAction(
-            new ControllerContext(
-                $this->controller,
-                $this->createRequest('http://foo.com'),
-                null,
-                null,
-                new MatchedRoute(new RouteAction(ApiController::class, 'privateMethod', null), [], [])
-            )
-        );
-    }
-
-    public function testInvokingProtectedMethodThrowsException(): void
-    {
-        $this->expectException(HttpException::class);
-        $this->invoker->invokeRouteAction(
-            new ControllerContext(
-                $this->controller,
-                $this->createRequest('http://foo.com'),
-                null,
-                null,
-                new MatchedRoute(new RouteAction(ApiController::class, 'protectedMethod', null), [], [])
-            )
-        );
+        $this->assertEquals('dave', $resolvedParameter);
     }
 
     /**

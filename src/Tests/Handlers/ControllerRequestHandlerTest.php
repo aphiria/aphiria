@@ -8,12 +8,12 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests\Dispatchers;
+namespace Opulence\Api\Tests\Handlers;
 
 /**
- * Tests the controller request dispatcher
+ * Tests the controller request handler
  */
-class ControllerRequestDispatcherTest extends \PHPUnit\Framework\TestCase
+class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
 {
     public function testFoo(): void
     {

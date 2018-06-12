@@ -36,7 +36,7 @@ abstract class ApiController extends Controller
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
      */
-    protected function badRequest($body, HttpHeaders $headers = null): IHttpResponseMessage
+    protected function badRequest($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
         return $this->createResponse(HttpStatusCodes::HTTP_BAD_REQUEST, $headers, $body);
     }
@@ -49,7 +49,7 @@ abstract class ApiController extends Controller
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
      */
-    protected function conflict($body, HttpHeaders $headers = null): IHttpResponseMessage
+    protected function conflict($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
         return $this->createResponse(HttpStatusCodes::HTTP_CONFLICT, $headers, $body);
     }
@@ -62,7 +62,7 @@ abstract class ApiController extends Controller
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
      */
-    protected function created($body, HttpHeaders $headers = null): IHttpResponseMessage
+    protected function created($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
         return $this->createResponse(HttpStatusCodes::HTTP_CREATED, $headers, $body);
     }
@@ -174,7 +174,7 @@ abstract class ApiController extends Controller
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
      */
-    protected function internalServerError($body, HttpHeaders $headers = null): IHttpResponseMessage
+    protected function internalServerError($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
         return $this->createResponse(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $headers, $body);
     }
@@ -212,7 +212,7 @@ abstract class ApiController extends Controller
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
      */
-    protected function ok($body, HttpHeaders $headers = null): IHttpResponseMessage
+    protected function ok($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
         return $this->createResponse(HttpStatusCodes::HTTP_OK, $headers, $body);
     }

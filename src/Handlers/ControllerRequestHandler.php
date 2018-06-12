@@ -8,15 +8,16 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Dispatchers;
+namespace Opulence\Api\Handlers;
 
+use Exception;
 use InvalidArgumentException;
 use Opulence\Api\Controller;
 use Opulence\Api\ControllerContext;
 use Opulence\Api\Middleware\AttributeMiddleware;
 use Opulence\Api\Middleware\IMiddleware;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
-use Opulence\Net\Http\Dispatchers\IRequestDispatcher;
+use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
@@ -25,11 +26,12 @@ use Opulence\Pipelines\Pipeline;
 use Opulence\Routing\Matchers\IRouteMatcher;
 use Opulence\Routing\Matchers\RouteNotFoundException;
 use Opulence\Routing\Middleware\MiddlewareBinding;
+use Throwable;
 
 /**
- * Defines the controller request dispatcher
+ * Defines the controller request handler
  */
-class ControllerRequestDispatcher implements IRequestDispatcher
+class ControllerRequestHandler implements IRequestHandler
 {
     /** @var IRouteMatcher The route matcher */
     private $routeMatcher;
@@ -55,13 +57,13 @@ class ControllerRequestDispatcher implements IRequestDispatcher
         $this->routeMatcher = $routeMatcher;
         $this->dependencyResolver = $dependencyResolver;
         $this->contentNegotiator = $contentNegotiator;
-        $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker();
+        $this->routeActionInvoker = $routeActionInvoker ?? new ReflectionRouteActionInvoker();
     }
 
     /**
      * @inheritdoc
      */
-    public function dispatchRequest(IHttpRequestMessage $request): IHttpResponseMessage
+    public function handle(IHttpRequestMessage $request): IHttpResponseMessage
     {
         try {
             $uri = $request->getUri();
