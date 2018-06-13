@@ -11,54 +11,50 @@
 namespace Opulence\Net\Tests\Http;
 
 use Exception;
-use Opulence\Collections\KeyValuePair;
+use InvalidArgumentException;
 use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\IHttpResponseMessage;
 
 /**
  * Tests the HTTP exception
  */
 class HttpExceptionTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var HttpException The exception to use in tests */
-    private $exception;
-    /** @var Exception The previous exception */
-    private $previousException;
-
-    public function setUp()
+    public function testCodeIsSameOneSetInConstructor(): void
     {
-        $this->previousException = new Exception();
-        $this->exception = new HttpException(
-            404,
-            'foo',
-            new HttpHeaders([new KeyValuePair('bar', 'baz')]),
-            4,
-            $this->previousException
-        );
+        $exception = new HttpException(500, '', 4);
+        $this->assertEquals(4, $exception->getCode());
     }
 
-    public function testGettingCode(): void
+    public function testInvalidStatusCodeOrResponseThrowsException(): void
     {
-        $this->assertEquals(4, $this->exception->getCode());
+        $this->expectException(InvalidArgumentException::class);
+        new HttpException('foo');
     }
 
-    public function testGettingHeaders(): void
+    public function testIntStatusCodeIsSetInResponse(): void
     {
-        $this->assertEquals('baz', $this->exception->getHeaders()->getFirst('bar'));
+        $exception = new HttpException(500);
+        $this->assertEquals(500, $exception->getResponse()->getStatusCode());
     }
 
-    public function testGettingMessage(): void
+    public function testMessageIsSameOneSetInConstructor(): void
     {
-        $this->assertEquals('foo', $this->exception->getMessage());
+        $exception = new HttpException(500, 'foo');
+        $this->assertEquals('foo', $exception->getMessage());
     }
 
-    public function testGettingPreviousException(): void
+    public function testPreviousExceptionIsSameOneSetInConstructor(): void
     {
-        $this->assertSame($this->previousException, $this->exception->getPrevious());
+        $previousException = new Exception();
+        $exception = new HttpException(500, '', 0, $previousException);
+        $this->assertSame($previousException, $exception->getPrevious());
     }
 
-    public function testGettingStatusCode(): void
+    public function testResponseSetInConstructorIsUsedAsResponseInException(): void
     {
-        $this->assertEquals(404, $this->exception->getStatusCode());
+        $response = $this->createMock(IHttpResponseMessage::class);
+        $exception = new HttpException($response);
+        $this->assertSame($response, $exception->getResponse());
     }
 }

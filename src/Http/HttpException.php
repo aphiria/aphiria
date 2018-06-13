@@ -11,52 +11,45 @@
 namespace Opulence\Net\Http;
 
 use Exception;
+use InvalidArgumentException;
 
 /**
  * Defines an exception that is thrown by an HTTP component
  */
 class HttpException extends Exception
 {
-    /** @var int The HTTP status code */
-    private $statusCode;
-    /** @var HttpHeaders The headers to include */
-    private $headers;
+    /** @var IHttpResponseMessage The response */
+    private $response;
 
     /**
      * @inheritdoc
-     * @param int $statusCode The HTTP status code
-     * @param HttpHeaders|null $headers The HTTP headers
+     * @param int|IHttpResponseMessage $statusCodeOrResponse The status code or fully-formed response
+     * @throws InvalidArgumentException Thrown if the first parameter is neither a status code nor an HTTP response
      */
     public function __construct(
-        int $statusCode,
+        $statusCodeOrResponse,
         string $message = '',
-        HttpHeaders $headers = null,
         int $code = 0,
         Exception $previous = null
     ) {
         parent::__construct($message, $code, $previous);
 
-        $this->statusCode = $statusCode;
-        $this->headers = $headers ?? new HttpHeaders();
+        if (\is_int($statusCodeOrResponse)) {
+            $this->response = new Response($statusCodeOrResponse);
+        } elseif ($statusCodeOrResponse instanceof IHttpResponseMessage) {
+            $this->response = $statusCodeOrResponse;
+        } else {
+            throw new InvalidArgumentException('First parameter must be either a status code or an HTTP response');
+        }
     }
 
     /**
-     * Gets the headers
+     * Gets the response
      *
-     * @return HttpHeaders The headers
+     * @return IHttpResponseMessage The response
      */
-    public function getHeaders(): HttpHeaders
+    public function getResponse(): IHttpResponseMessage
     {
-        return $this->headers;
-    }
-
-    /**
-     * Gets the HTTP status code
-     *
-     * @return int The HTTP status code
-     */
-    public function getStatusCode(): int
-    {
-        return $this->statusCode;
+        return $this->response;
     }
 }
