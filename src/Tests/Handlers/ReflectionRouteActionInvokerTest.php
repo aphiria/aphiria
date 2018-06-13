@@ -65,7 +65,7 @@ class ReflectionRouteActionInvokerTest extends \PHPUnit\Framework\TestCase
             $this->invoker->invokeRouteAction($controllerContext);
             $this->fail('Failed to assert that a 415 was thrown');
         } catch (HttpException $ex) {
-            $this->assertEquals(HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE, $ex->getStatusCode());
+            $this->assertEquals(HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE, $ex->getResponse()->getStatusCode());
         }
     }
 
@@ -177,7 +177,7 @@ class ReflectionRouteActionInvokerTest extends \PHPUnit\Framework\TestCase
             $this->invoker->invokeRouteAction($controllerContext);
             $this->fail('Failed to assert that a 400 was thrown');
         } catch (HttpException $ex) {
-            $this->assertEquals(HttpStatusCodes::HTTP_BAD_REQUEST, $ex->getStatusCode());
+            $this->assertEquals(HttpStatusCodes::HTTP_BAD_REQUEST, $ex->getResponse()->getStatusCode());
         }
     }
 
@@ -199,7 +199,7 @@ class ReflectionRouteActionInvokerTest extends \PHPUnit\Framework\TestCase
             $this->invoker->invokeRouteAction($controllerContext);
             $this->fail('Failed to assert that a 522 was thrown');
         } catch (HttpException $ex) {
-            $this->assertEquals(HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY, $ex->getStatusCode());
+            $this->assertEquals(HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY, $ex->getResponse()->getStatusCode());
         }
     }
 

@@ -90,7 +90,9 @@ class ControllerParameterResolver implements IControllerParameterResolver
     ): ?object {
         if ($request->getBody() === null) {
             if (!$reflectionParameter->allowsNull()) {
-                throw new MissingControllerParameterValueException('Missing request body');
+                throw new MissingControllerParameterValueException(
+                    "Body is null when resolving parameter {$reflectionParameter->getName()}"
+                );
             }
 
             return null;
@@ -98,7 +100,7 @@ class ControllerParameterResolver implements IControllerParameterResolver
 
         if ($requestContentNegotiationResult === null) {
             if (!$reflectionParameter->allowsNull()) {
-                throw new FailedRequestContentNegotiationException('Failed to negotiation content when invoking');
+                throw new FailedRequestContentNegotiationException('Failed to negotiate request content');
             }
 
             return null;

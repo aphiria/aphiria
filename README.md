@@ -89,6 +89,8 @@ To grab context about the current request (such as the request object itself or 
 ```php
 class UserController extends ApiController
 {
+    // ...
+
     public function getAllUsers(): IHttpResponseMessage
     {
         $request = $this->controllerContext->getRequest();
@@ -151,7 +153,7 @@ class UserController extends ApiController
 }
 ```
 
-Opulence will first scan for matching scalar values by name in your route variables, and then, if no match is found, the query string.  Multiple scalar parameters are supported.  It also gracefully handles nullable values or parameters with default values.
+Opulence will first scan for matching scalar values by name in your route variables, and then, if no match is found, the query string.  Multiple scalar parameters are supported.  It also gracefully handles nullable values and parameters with default values.
 
 <h3 id="request-body-arrays">Request Body Arrays</h3>
 

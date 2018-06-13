@@ -51,7 +51,6 @@ class ReflectionRouteActionInvoker implements IRouteActionInvoker
                     'Reflection failed for %s',
                     $this->getRouteActionDisplayName($routeAction)
                 ),
-                null,
                 0,
                 $ex
             );
@@ -80,7 +79,6 @@ class ReflectionRouteActionInvoker implements IRouteActionInvoker
             throw new HttpException(
                 HttpStatusCodes::HTTP_BAD_REQUEST,
                 "Failed to invoke {$this->getRouteActionDisplayName($routeAction)}",
-                null,
                 0,
                 $ex
             );
@@ -88,7 +86,6 @@ class ReflectionRouteActionInvoker implements IRouteActionInvoker
             throw new HttpException(
                 HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 "Failed to invoke {$this->getRouteActionDisplayName($routeAction)}",
-                null,
                 0,
                 $ex
             );
@@ -96,7 +93,6 @@ class ReflectionRouteActionInvoker implements IRouteActionInvoker
             throw new HttpException(
                 HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY,
                 "Failed to invoke {$this->getRouteActionDisplayName($routeAction)}",
-                null,
                 0,
                 $ex
             );
