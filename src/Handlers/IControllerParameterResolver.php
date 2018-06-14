@@ -10,7 +10,7 @@
 
 namespace Opulence\Api\Handlers;
 
-use Opulence\Api\ControllerContext;
+use Opulence\Api\RequestContext;
 use ReflectionParameter;
 
 /**
@@ -22,11 +22,11 @@ interface IControllerParameterResolver
      * Resolved a controller parameter
      *
      * @param ReflectionParameter $reflectionParameter The reflected parameter
-     * @param ControllerContext $controllerContext The current controller context
+     * @param RequestContext $controllerContext The current controller context
      * @return mixed The resolved parameter value
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
      * @throws RequestBodyDeserializationException Thrown if the request body could not be deserialized
      */
-    public function resolveParameter(ReflectionParameter $reflectionParameter, ControllerContext $controllerContext);
+    public function resolveParameter(ReflectionParameter $reflectionParameter, RequestContext $controllerContext);
 }

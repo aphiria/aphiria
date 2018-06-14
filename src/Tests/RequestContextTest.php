@@ -10,8 +10,7 @@
 
 namespace Opulence\Api\Tests;
 
-use Opulence\Api\Controller;
-use Opulence\Api\ControllerContext;
+use Opulence\Api\RequestContext;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Opulence\Net\Http\ContentNegotiation\IMediaTypeFormatter;
 use Opulence\Net\Http\IHttpRequestMessage;
@@ -19,14 +18,12 @@ use Opulence\Routing\Matchers\MatchedRoute;
 use Opulence\Routing\RouteAction;
 
 /**
- * Tests the controller context
+ * Tests the request context
  */
-class ControllerContextTest extends \PHPUnit\Framework\TestCase
+class RequestContextTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ControllerContext The context to use in tests */
+    /** @var RequestContext The context to use in tests */
     private $context;
-    /** @var Controller The controller to use in tests */
-    private $controller;
     /** @var IHttpRequestMessage The request to use in tests */
     private $request;
     /** @var ContentNegotiationResult The request content negotiation result to use in tests */
@@ -38,7 +35,6 @@ class ControllerContextTest extends \PHPUnit\Framework\TestCase
 
     public function setUp(): void
     {
-        $this->controller = $this->createMock(Controller::class);
         $this->request = $this->createMock(IHttpRequestMessage::class);
         $this->requestContentNegotiationResult = new ContentNegotiationResult(
             $this->createMock(IMediaTypeFormatter::class),
@@ -55,18 +51,12 @@ class ControllerContextTest extends \PHPUnit\Framework\TestCase
         /** @var RouteAction $routeAction */
         $routeAction = $this->createMock(RouteAction::class);
         $this->matchedRoute = new MatchedRoute($routeAction, [], []);
-        $this->context = new ControllerContext(
-            $this->controller,
+        $this->context = new RequestContext(
             $this->request,
             $this->requestContentNegotiationResult,
             $this->responseContentNegotiationResult,
             $this->matchedRoute
         );
-    }
-
-    public function testGettingControllerReturnsSameOneSetInConstructor(): void
-    {
-        $this->assertSame($this->controller, $this->context->getController());
     }
 
     public function testGettingMatchedRouteReturnsSameOneSetInConstructor(): void

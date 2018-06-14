@@ -10,7 +10,7 @@
 
 namespace Opulence\Api\Tests\Handlers\Mocks;
 
-use Opulence\Api\ApiController as BaseApiController;
+use Opulence\Api\Controller as BaseController;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\Response;
@@ -20,7 +20,7 @@ use RuntimeException;
 /**
  * Defines a mock controller for use in testing
  */
-class ApiController extends BaseApiController
+class Controller extends BaseController
 {
     /**
      * Mocks a method with a parameter with a default value

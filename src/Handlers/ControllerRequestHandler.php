@@ -10,12 +10,13 @@
 
 namespace Opulence\Api\Handlers;
 
+use Closure;
 use Exception;
 use InvalidArgumentException;
 use Opulence\Api\Controller;
-use Opulence\Api\ControllerContext;
 use Opulence\Api\Middleware\AttributeMiddleware;
 use Opulence\Api\Middleware\IMiddleware;
+use Opulence\Api\RequestContext;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\HttpException;
@@ -68,7 +69,7 @@ class ControllerRequestHandler implements IRequestHandler
         try {
             $uri = $request->getUri();
             $matchedRoute = $this->routeMatcher->match($request->getMethod(), $uri->getHost(), $uri->getPath());
-            $controller = $this->dependencyResolver->resolve($matchedRoute->getAction()->getClassName());
+            $routeAction = $matchedRoute->getAction();
 
             if (!$controller instanceof Controller) {
                 throw new InvalidArgumentException(
@@ -76,21 +77,33 @@ class ControllerRequestHandler implements IRequestHandler
                 );
             }
 
-            $controllerContext = new ControllerContext(
-                $controller,
+            $requestContext = new RequestContext(
                 $request,
                 $this->contentNegotiator->negotiateRequestContent($request),
                 $this->contentNegotiator->negotiateResponseContent($request),
                 $matchedRoute
             );
-            $controller->setControllerContext($controllerContext);
+
+            if ($routeAction->usesMethod()) {
+                $controller = $this->dependencyResolver->resolve($routeAction->getClassName());
+                $controllerCallable = [$controller, $routeAction->getMethodName()];
+            } else {
+                $controller = new Controller();
+                $controllerCallable = Closure::bind($routeAction->getClosure(), $controller, Controller::class);
+            }
+
+            if (!\is_callable($controllerCallable)) {
+                throw new InvalidArgumentException('Route action must be a callable');
+            }
+
+            $controller->setRequestContext($requestContext);
             // Todo: This doesn't handle global middleware at all
             $middleware = $this->resolveMiddleware($matchedRoute->getMiddlewareBindings());
 
             return (new Pipeline)->send($request)
                 ->through($middleware, 'handle')
-                ->then(function () use ($controllerContext) {
-                    return $this->routeActionInvoker->invokeRouteAction($controllerContext);
+                ->then(function () use ($controllerCallable, $requestContext) {
+                    return $this->routeActionInvoker->invokeRouteAction($controllerCallable, $requestContext);
                 })
                 ->execute();
         } catch (RouteNotFoundException $ex) {

@@ -10,7 +10,7 @@
 
 namespace Opulence\Api\Handlers;
 
-use Opulence\Api\ControllerContext;
+use Opulence\Api\RequestContext;
 use Opulence\Net\Formatting\UriParser;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Opulence\Net\Http\IHttpRequestMessage;
@@ -36,7 +36,7 @@ class ControllerParameterResolver implements IControllerParameterResolver
     /**
      * @inheritdoc
      */
-    public function resolveParameter(ReflectionParameter $reflectionParameter, ControllerContext $controllerContext)
+    public function resolveParameter(ReflectionParameter $reflectionParameter, RequestContext $controllerContext)
     {
         $request = $controllerContext->getRequest();
         $requestContentNegotiationResult = $controllerContext->getRequestContentNegotiationResult();

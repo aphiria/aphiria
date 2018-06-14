@@ -10,13 +10,13 @@
 
 namespace Opulence\Api\Handlers;
 
-use Opulence\Api\ControllerContext;
+use Opulence\Api\RequestContext;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\Response;
-use Opulence\Routing\RouteAction;
 use ReflectionException;
+use ReflectionFunction;
 use ReflectionMethod;
 
 /**
@@ -38,12 +38,14 @@ class ReflectionRouteActionInvoker implements IRouteActionInvoker
     /**
      * @inheritdoc
      */
-    public function invokeRouteAction(ControllerContext $controllerContext): IHttpResponseMessage
+    public function invokeRouteAction(callable $routeAction, RequestContext $requestContext): IHttpResponseMessage
     {
-        $routeAction = $controllerContext->getMatchedRoute()->getAction();
-
         try {
-            $reflectionMethod = new ReflectionMethod($routeAction->getClassName(), $routeAction->getMethodName());
+            if (\is_array($routeAction)) {
+                $reflectionFunction = new ReflectionMethod($routeAction[0], $routeAction[1]);
+            } else {
+                $reflectionFunction = new ReflectionFunction($routeAction);
+            }
         } catch (ReflectionException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
@@ -56,7 +58,7 @@ class ReflectionRouteActionInvoker implements IRouteActionInvoker
             );
         }
 
-        if (!$reflectionMethod->isPublic()) {
+        if (!$reflectionFunction->isPublic()) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
                 sprintf(
@@ -69,10 +71,10 @@ class ReflectionRouteActionInvoker implements IRouteActionInvoker
         $resolvedParameters = [];
 
         try {
-            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+            foreach ($reflectionFunction->getParameters() as $reflectionParameter) {
                 $resolvedParameters[] = $this->controllerParameterResolver->resolveParameter(
                     $reflectionParameter,
-                    $controllerContext
+                    $requestContext
                 );
             }
         } catch (MissingControllerParameterValueException $ex) {
@@ -98,7 +100,7 @@ class ReflectionRouteActionInvoker implements IRouteActionInvoker
             );
         }
 
-        $response = $controllerContext->getController()->{$routeAction->getMethodName()}(...$resolvedParameters);
+        $response = $routeAction(...$resolvedParameters);
 
         // Handle void return types
         return $response ?? new Response(HttpStatusCodes::HTTP_NO_CONTENT);
@@ -107,11 +109,15 @@ class ReflectionRouteActionInvoker implements IRouteActionInvoker
     /**
      * Gets the display name for a route action for use in exception messages
      *
-     * @param RouteAction $routeAction The route action whose display name we want
+     * @param callable $routeAction The route action whose display name we want
      * @return string The route action display name
      */
-    private function getRouteActionDisplayName(RouteAction $routeAction): string
+    private function getRouteActionDisplayName(callable $routeAction): string
     {
-        return "{$routeAction->getClassName()}::{$routeAction->getMethodName()}";
+        if (\is_array($routeAction)) {
+            return (\is_string($routeAction[0]) ? $routeAction[0] : get_class($routeAction[0])) . '::' . $routeAction[1];
+        }
+
+        return 'anonymous function';
     }
 }

@@ -9,6 +9,7 @@
 2. [Controllers](#controllers)
     1. [Parameter Resolution](#parameter-resolution)
     2. [Controller Dependencies](#controller-dependencies)
+    3. [Closure Controllers](#closure-controllers)
 3. [Middleware](#middleware)
 4. [Request Handlers](#request-handlers)
     1. [Exception Handling](#exception-handling)
@@ -27,10 +28,10 @@ You can install this library by including the following package name in your _co
 
 <h1 id="controllers">Controllers</h1>
 
-`ApiController` is the base class controllers must extend.  It comes packed with helper methods to make your code less cluttered.  For example, let's say you wanted to return an array of `User` objects from your API.  Simple:
+Your controllers can either extend `Controller` or be a [`Closure`](#closure-controllers).  It comes packed with helper methods to make your code less cluttered.  For example, let's say you wanted to return an array of `User` objects from your API.  Simple:
 
 ```php
-class UserController extends ApiController
+class UserController extends Controller
 {
     // ...
     
@@ -45,7 +46,7 @@ class UserController extends ApiController
 
 The `ok()` helper method can serialize your domain models to the media type that the client requested (eg JSON), and create a valid HTTP response.  This works on any POPOs.
 
-The following helper methods come bundled with `ApiController`:
+The following helper methods come bundled with `Controller`:
 
 * `badRequest()`
 * `conflict()`
@@ -67,7 +68,7 @@ Setting headers is simple, too:
 ```php
 use Opulence\Net\Http\HttpHeaders;
 
-class UserController extends ApiController
+class UserController extends Controller
 {
     // ...
     
@@ -82,19 +83,19 @@ class UserController extends ApiController
 }
 ```
 
-<h3 id="controller-context">Controller Context</h3>
+<h3 id="request-context">Request Context</h3>
 
-To grab context about the current request (such as the request object itself or the matched route), you can grab the `ControllerContext` from your controller:
+To grab context about the current request (such as the request object itself or the matched route), you can grab the `RequestContext` from your controller:
 
 ```php
-class UserController extends ApiController
+class UserController extends Controller
 {
     // ...
 
     public function getAllUsers(): IHttpResponseMessage
     {
-        $request = $this->controllerContext->getRequest();
-        $matchedRoute = $this->controllerContext->getMatchedRoute();
+        $request = $this->requestContext->getRequest();
+        $matchedRoute = $this->requestContext->getMatchedRoute();
         
         // ...
     }
@@ -106,7 +107,7 @@ class UserController extends ApiController
 Your controller methods will frequently need to do things like deserialize the request body or read route/query string values.  Opulence simplifies this process enormously by allowing your method signatures to be expressive.  For example, if you specify any object type hint, it will automatically deserialize the request body to any POPO:
 
 ```php
-class UserController extends ApiController
+class UserController extends Controller
 {
     // ...
     
@@ -124,7 +125,7 @@ This works for any media type (eg JSON) that you've registered to your <a href="
 Need a route path variable?  Just type-hint it with a scalar type hint:
 
 ```php
-class UserController extends ApiController
+class UserController extends Controller
 {
     // ...
     
@@ -140,7 +141,7 @@ class UserController extends ApiController
 You can even grab values from the query string using scalar type-hints:
 
 ```php
-class UserController extends ApiController
+class UserController extends Controller
 {
     // ...
     
@@ -160,7 +161,7 @@ Opulence will first scan for matching scalar values by name in your route variab
 Request bodies might contain an array of values.  Because PHP doesn't support generics or typed arrays, you cannot use type-hints alone to deserialize arrays of values.  However, it's still easy to do:
 
 ```php
-class UserController extends ApiController
+class UserController extends Controller
 {
     public function createManyUsers(): IHttpResponseMessage
     {
@@ -177,6 +178,19 @@ class UserController extends ApiController
 The API library provides support for auto-wiring your controllers.  In other words, it can scan your controllers' constructors for dependencies, resolve them, and then instantiate your controllers with those dependencies.  Dependency resolvers simply need to implement `IDependencyResolver`.  To make it easy for users of Opulence's DI container, you can use `ContainerDependencyResolver`.
 
 Once you've instantiated your dependency resolver, pass it into your [request handler](#request-handlers) for auto-wiring.
+
+<h2 id="closure-controllers">Closure Controllers</h2>
+
+Sometimes, a controller class is overkill for a route that does very little.  In this case, you can use a `Closure` when defining your routes:
+
+```php
+ $routes->map('GET', 'ping')
+    ->toClosure(function () {
+        return $this->ok();
+    });
+```
+
+Here's the cool part - Opulence will bind an instance of `Controller` to your closure, which means you can use [all the methods](#controllers) available inside of `Controller` via `$this`.
 
 <h1 id="middleware">Middleware</h1>
 

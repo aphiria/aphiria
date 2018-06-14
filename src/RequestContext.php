@@ -15,12 +15,10 @@ use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Routing\Matchers\MatchedRoute;
 
 /**
- * Defines a context around controller actions
+ * Defines the request context
  */
-class ControllerContext
+class RequestContext
 {
-    /** @var Controller The controller in the context */
-    private $controller;
     /** @var IHttpRequestMessage The request in the context */
     private $request;
     /** @var ContentNegotiationResult|null The request content negotiation result */
@@ -31,34 +29,21 @@ class ControllerContext
     private $matchedRoute;
 
     /**
-     * @param Controller $controller The controller in the context
      * @param IHttpRequestMessage $request The request in the context
      * @param ContentNegotiationResult|null $requestContentNegotiationResult The request content negotiation result
      * @param ContentNegotiationResult|null $responseContentNegotiationResult The response content negotiation result
      * @param MatchedRoute $matchedRoute The matched route in the context
      */
     public function __construct(
-        Controller $controller,
         IHttpRequestMessage $request,
         ?ContentNegotiationResult $requestContentNegotiationResult,
         ?ContentNegotiationResult $responseContentNegotiationResult,
         MatchedRoute $matchedRoute
     ) {
-        $this->controller = $controller;
         $this->request = $request;
         $this->requestContentNegotiationResult = $requestContentNegotiationResult;
         $this->responseContentNegotiationResult = $responseContentNegotiationResult;
         $this->matchedRoute = $matchedRoute;
-    }
-
-    /**
-     * Gets the controller
-     *
-     * @return Controller The controller
-     */
-    public function getController(): Controller
-    {
-        return $this->controller;
     }
 
     /**
