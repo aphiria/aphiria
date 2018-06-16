@@ -168,8 +168,10 @@ class Controller
         $bodyStream = new Stream(fopen('php://temp', 'r+b'));
 
         try {
-            $this->requestContext->getResponseContentNegotiationResult()->getFormatter()->writeToStream($body,
-                $bodyStream);
+            $this->requestContext->getResponseContentNegotiationResult()->getFormatter()->writeToStream(
+                $body,
+                $bodyStream
+            );
         } catch (SerializationException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,

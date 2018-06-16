@@ -10,6 +10,7 @@
 
 namespace Opulence\Api\ResponseFactories;
 
+use Opulence\Api\RequestContext;
 use Opulence\Net\Http\IHttpResponseMessage;
 
 /**
@@ -20,8 +21,8 @@ interface IResponseFactory
     /**
      * Creates a response from a context
      *
-     * @param TODO $context The current context to create a response from
+     * @param RequestContext $requestContext The current request context
      * @return IHttpResponseMessage The created response
      */
-    public function createResponse(/* TODO */): IHttpResponseMessage;
+    public function createResponse(RequestContext $requestContext): IHttpResponseMessage;
 }
