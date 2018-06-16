@@ -10,12 +10,24 @@
 
 namespace Opulence\Api;
 
+use InvalidArgumentException;
+use Opulence\IO\Streams\IStream;
+use Opulence\IO\Streams\Stream;
 use Opulence\Net\Http\Formatting\RequestParser;
+use Opulence\Net\Http\HttpException;
+use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\HttpStatusCodes;
+use Opulence\Net\Http\IHttpBody;
+use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\Response;
+use Opulence\Net\Http\StreamBody;
+use Opulence\Net\Http\StringBody;
+use Opulence\Serialization\SerializationException;
 
 /**
  * Defines the base class for controllers to extend
  */
-abstract class Controller
+class Controller
 {
     /** @var RequestContext The current request context */
     protected $requestContext;
@@ -47,7 +59,7 @@ abstract class Controller
     /**
      * Creates a bad request response
      *
-     * @param \object|scalar|array|null $body The raw response body
+     * @param \object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -60,7 +72,7 @@ abstract class Controller
     /**
      * Creates a conflict response
      *
-     * @param \object|scalar|array|null $body The raw response body
+     * @param \object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -73,7 +85,7 @@ abstract class Controller
     /**
      * Creates a created response
      *
-     * @param \object|scalar|array|null $body The raw response body
+     * @param \object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -88,7 +100,7 @@ abstract class Controller
      *
      * @param int $statusCode The HTTP status code
      * @param HttpHeaders|null $headers The headers to use in the response
-     * @param \object|scalar|array|null $body The raw response body
+     * @param \object|string|int|float|array|null $body The raw response body
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if response content negotiation failed or if the body could not be serialized
      * @internal
@@ -156,7 +168,8 @@ abstract class Controller
         $bodyStream = new Stream(fopen('php://temp', 'r+b'));
 
         try {
-            $this->requestContext->getResponseContentNegotiationResult()->getFormatter()->writeToStream($body, $bodyStream);
+            $this->requestContext->getResponseContentNegotiationResult()->getFormatter()->writeToStream($body,
+                $bodyStream);
         } catch (SerializationException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
@@ -172,7 +185,7 @@ abstract class Controller
     /**
      * Creates a forbidden response
      *
-     * @param \object|scalar|array|null $body The raw response body
+     * @param \object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -185,7 +198,7 @@ abstract class Controller
     /**
      * Creates an internal server error response
      *
-     * @param \object|scalar|array|null $body The raw response body
+     * @param \object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -210,7 +223,7 @@ abstract class Controller
     /**
      * Creates a not found response
      *
-     * @param \object|scalar|array|null $body The raw response body
+     * @param \object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -223,7 +236,7 @@ abstract class Controller
     /**
      * Creates an OK response
      *
-     * @param \object|scalar|array|null $body The raw response body
+     * @param \object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -266,7 +279,7 @@ abstract class Controller
     /**
      * Creates a redirect response
      *
-     * @param \object|scalar|array|null $body The raw response body
+     * @param \object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -279,7 +292,7 @@ abstract class Controller
     /**
      * Creates an unauthorized response
      *
-     * @param \object|scalar|array|null $body The raw response body
+     * @param \object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response

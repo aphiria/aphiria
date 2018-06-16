@@ -71,12 +71,6 @@ class ControllerRequestHandler implements IRequestHandler
             $matchedRoute = $this->routeMatcher->match($request->getMethod(), $uri->getHost(), $uri->getPath());
             $routeAction = $matchedRoute->getAction();
 
-            if (!$controller instanceof Controller) {
-                throw new InvalidArgumentException(
-                    sprintf('Controller %s does not extend %s', \get_class($controller), Controller::class)
-                );
-            }
-
             $requestContext = new RequestContext(
                 $request,
                 $this->contentNegotiator->negotiateRequestContent($request),
@@ -90,6 +84,12 @@ class ControllerRequestHandler implements IRequestHandler
             } else {
                 $controller = new Controller();
                 $controllerCallable = Closure::bind($routeAction->getClosure(), $controller, Controller::class);
+            }
+
+            if (!$controller instanceof Controller) {
+                throw new InvalidArgumentException(
+                    sprintf('Controller %s does not extend %s', \get_class($controller), Controller::class)
+                );
             }
 
             if (!\is_callable($controllerCallable)) {

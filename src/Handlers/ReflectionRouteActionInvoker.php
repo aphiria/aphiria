@@ -115,7 +115,7 @@ class ReflectionRouteActionInvoker implements IRouteActionInvoker
     private function getRouteActionDisplayName(callable $routeAction): string
     {
         if (\is_array($routeAction)) {
-            return (\is_string($routeAction[0]) ? $routeAction[0] : get_class($routeAction[0])) . '::' . $routeAction[1];
+            return (\is_string($routeAction[0]) ? $routeAction[0] : \get_class($routeAction[0])) . '::' . $routeAction[1];
         }
 
         return 'anonymous function';
