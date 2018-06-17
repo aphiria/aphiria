@@ -58,7 +58,7 @@ class ControllerRequestHandler implements IRequestHandler
         $this->routeMatcher = $routeMatcher;
         $this->dependencyResolver = $dependencyResolver;
         $this->contentNegotiator = $contentNegotiator;
-        $this->routeActionInvoker = $routeActionInvoker ?? new ReflectionRouteActionInvoker();
+        $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker();
     }
 
     /**
@@ -97,7 +97,6 @@ class ControllerRequestHandler implements IRequestHandler
             }
 
             $controller->setRequestContext($requestContext);
-            // Todo: This doesn't handle global middleware at all
             $middleware = $this->resolveMiddleware($matchedRoute->getMiddlewareBindings());
 
             return (new Pipeline)->send($request)

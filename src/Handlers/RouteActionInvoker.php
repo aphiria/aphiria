@@ -22,9 +22,9 @@ use ReflectionFunction;
 use ReflectionMethod;
 
 /**
- * Defines the reflection route action invoker
+ * Defines the route action invoker
  */
-class ReflectionRouteActionInvoker implements IRouteActionInvoker
+class RouteActionInvoker implements IRouteActionInvoker
 {
     /** @var IControllerParameterResolver The controller parameter resolver to use */
     private $controllerParameterResolver;

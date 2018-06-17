@@ -14,8 +14,8 @@ use Opulence\Api\Handlers\ControllerParameterResolver;
 use Opulence\Api\Handlers\FailedRequestContentNegotiationException;
 use Opulence\Api\Handlers\IControllerParameterResolver;
 use Opulence\Api\Handlers\MissingControllerParameterValueException;
-use Opulence\Api\Handlers\ReflectionRouteActionInvoker;
 use Opulence\Api\Handlers\RequestBodyDeserializationException;
+use Opulence\Api\Handlers\RouteActionInvoker;
 use Opulence\Api\RequestContext;
 use Opulence\Api\Tests\Handlers\Mocks\Controller;
 use Opulence\Api\Tests\Handlers\Mocks\User;
@@ -32,11 +32,11 @@ use Opulence\Routing\RouteAction;
 use RuntimeException;
 
 /**
- * Tests the reflection route action invoker
+ * Tests the route action invoker
  */
-class ReflectionRouteActionInvokerTest extends \PHPUnit\Framework\TestCase
+class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ReflectionRouteActionInvoker The invoker to use in tests */
+    /** @var RouteActionInvoker The invoker to use in tests */
     private $invoker;
     /** @var ControllerParameterResolver|\PHPUnit_Framework_MockObject_MockObject The controller parameter resolver to use in tests */
     private $parameterResolver;
@@ -46,7 +46,7 @@ class ReflectionRouteActionInvokerTest extends \PHPUnit\Framework\TestCase
     public function setUp(): void
     {
         $this->parameterResolver = $this->createMock(IControllerParameterResolver::class);
-        $this->invoker = new ReflectionRouteActionInvoker($this->parameterResolver);
+        $this->invoker = new RouteActionInvoker($this->parameterResolver);
         $this->controller = new Controller();
     }
 
