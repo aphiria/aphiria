@@ -11,6 +11,7 @@
 namespace Opulence\Api\Tests\Handlers\Mocks;
 
 use Opulence\Api\Controller as BaseController;
+use Opulence\Api\ResponseFactories\OkResponseFactory;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\Response;
@@ -96,6 +97,26 @@ class Controller extends BaseController
     public function objectParameter(User $user): IHttpResponseMessage
     {
         return $this->createResponseWithBody("id:{$user->getId()}, email:{$user->getEmail()}");
+    }
+
+    /**
+     * Mocks a method that returns a POPO
+     *
+     * @return User The POPO
+     */
+    public function popo(): User
+    {
+        return new User(123, 'foo@bar.com');
+    }
+
+    /**
+     * Mocks a method that returns a response factory
+     *
+     * @return OkResponseFactory The response factory
+     */
+    public function responseFactory(): OkResponseFactory
+    {
+        return new OkResponseFactory(null, 'foo');
     }
 
     /**

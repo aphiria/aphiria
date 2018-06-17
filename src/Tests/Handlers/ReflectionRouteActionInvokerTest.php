@@ -18,10 +18,13 @@ use Opulence\Api\Handlers\ReflectionRouteActionInvoker;
 use Opulence\Api\Handlers\RequestBodyDeserializationException;
 use Opulence\Api\RequestContext;
 use Opulence\Api\Tests\Handlers\Mocks\Controller;
+use Opulence\Api\Tests\Handlers\Mocks\User;
+use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Opulence\Net\Http\ContentNegotiation\IMediaTypeFormatter;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
+use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\Request;
 use Opulence\Net\Uri;
 use Opulence\Routing\Matchers\MatchedRoute;
@@ -66,6 +69,48 @@ class ReflectionRouteActionInvokerTest extends \PHPUnit\Framework\TestCase
         } catch (HttpException $ex) {
             $this->assertEquals(HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE, $ex->getResponse()->getStatusCode());
         }
+    }
+
+    public function testInvokingMethodThatReturnsPopoCreatesOkResponseFromReturnValue(): void
+    {
+        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
+        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
+        $mediaTypeFormatter->expects($this->once())
+            ->method('writeToStream')
+            ->with($this->isInstanceOf(User::class), $this->isInstanceOf(IStream::class));
+        $response = $this->invoker->invokeRouteAction(
+            [$this->controller, 'popo'],
+            new RequestContext(
+                $this->createRequest('http://foo.com'),
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
+                new MatchedRoute(new RouteAction(Controller::class, 'popo', null), [], [])
+            )
+        );
+        $this->assertInstanceOf(IHttpResponseMessage::class, $response);
+        $this->assertEquals(HttpStatusCodes::HTTP_OK, $response->getStatusCode());
+        /**
+         *  Note: I cannot (easily) test what the body is because I cannot set up my formatter mock to write
+         *  specific serialized POPO contents to the body
+         */
+    }
+
+    public function testInvokingMethodThatReturnsResponseFactoryCreatesResponseFromFactory(): void
+    {
+        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
+        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
+        $response = $this->invoker->invokeRouteAction(
+            [$this->controller, 'responseFactory'],
+            new RequestContext(
+                $this->createRequest('http://foo.com'),
+                null,
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
+                new MatchedRoute(new RouteAction(Controller::class, 'responseFactory', null), [], [])
+            )
+        );
+        $this->assertInstanceOf(IHttpResponseMessage::class, $response);
+        $this->assertEquals(HttpStatusCodes::HTTP_OK, $response->getStatusCode());
+        $this->assertEquals('foo', (string)$response->getBody());
     }
 
     public function testInvokingMethodThatThrowsExceptionThrowsException(): void

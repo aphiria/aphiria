@@ -12,8 +12,8 @@ namespace Opulence\Api\ResponseFactories;
 
 use InvalidArgumentException;
 use Opulence\Api\RequestContext;
-use Opulence\IO\IStream;
-use Opulence\IO\Stream;
+use Opulence\IO\Streams\IStream;
+use Opulence\IO\Streams\Stream;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
@@ -28,7 +28,7 @@ use Opulence\Serialization\SerializationException;
 /**
  * Defines the base response factory
  */
-abstract class ResponseFactory implements IResponseFactory
+class ResponseFactory implements IResponseFactory
 {
     /** @var int The HTTP status code */
     protected $statusCode;
@@ -39,6 +39,8 @@ abstract class ResponseFactory implements IResponseFactory
 
     /**
      * @param int $statusCode The HTTP status code
+     * @param HttpHeaders|null $headers The headers of the response
+     * @param \object|string|int|float|array|null $rawBody The raw body to use in the response
      */
     public function __construct(int $statusCode, HttpHeaders $headers = null, $rawBody = null)
     {
@@ -66,7 +68,7 @@ abstract class ResponseFactory implements IResponseFactory
             return new Response(
                 $this->statusCode,
                 $this->headers,
-                $this->createResponseBody($this->rawBody, $requestContext->getRequestContentNegotiationResult())
+                $this->createResponseBody($requestContext->getRequestContentNegotiationResult())
             );
         } catch (InvalidArgumentException $ex) {
             throw new HttpException(
@@ -81,28 +83,27 @@ abstract class ResponseFactory implements IResponseFactory
     /**
      * Creates a response body from a raw body value
      *
-     * @param IHttpBody|IStream|int|float|string|array|\object $body The raw response body
      * @param ContentNegotiationResult|null $requestContentNegotiationResult The request content negotiation result
      * @return IHttpBody|null The response body, or null if there is no body
      * @throws InvalidArgumentException Thrown if the body is not a supported type
      * @throws HttpException Thrown if the response content could not be negotiated
      */
-    protected function createResponseBody($body, ?ContentNegotiationResult $requestContentNegotiationResult): ?IHttpBody
+    protected function createResponseBody(?ContentNegotiationResult $requestContentNegotiationResult): ?IHttpBody
     {
-        if ($body === null || $body instanceof IHttpBody) {
-            return $body;
+        if ($this->rawBody === null || $this->rawBody instanceof IHttpBody) {
+            return $this->rawBody;
         }
 
-        if ($body instanceof IStream) {
-            return new StreamBody($body);
+        if ($this->rawBody instanceof IStream) {
+            return new StreamBody($this->rawBody);
         }
 
-        if (\is_scalar($body)) {
-            return new StringBody((string)$body);
+        if (\is_scalar($this->rawBody)) {
+            return new StringBody((string)$this->rawBody);
         }
 
-        if (!\is_object($body) && !\is_array($body)) {
-            throw new InvalidArgumentException('Unsupported body type ' . \gettype($body));
+        if (\is_callable($this->rawBody) || (!\is_object($this->rawBody) && !\is_array($this->rawBody))) {
+            throw new InvalidArgumentException('Unsupported body type ' . \gettype($this->rawBody));
         }
 
         if ($requestContentNegotiationResult === null) {
@@ -113,7 +114,7 @@ abstract class ResponseFactory implements IResponseFactory
 
         try {
             $requestContentNegotiationResult->getFormatter()->writeToStream(
-                $body,
+                $this->rawBody,
                 $bodyStream
             );
         } catch (SerializationException $ex) {

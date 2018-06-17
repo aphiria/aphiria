@@ -11,17 +11,24 @@
 namespace Opulence\Api;
 
 use InvalidArgumentException;
-use Opulence\IO\Streams\IStream;
-use Opulence\IO\Streams\Stream;
+use LogicException;
+use Opulence\Api\ResponseFactories\BadRequestResponseFactory;
+use Opulence\Api\ResponseFactories\ConflictResponseFactory;
+use Opulence\Api\ResponseFactories\CreatedResponseFactory;
+use Opulence\Api\ResponseFactories\ForbiddenResponseFactory;
+use Opulence\Api\ResponseFactories\FoundResponseFactory;
+use Opulence\Api\ResponseFactories\InternalServerErrorResponseFactory;
+use Opulence\Api\ResponseFactories\MovedPermanentlyResponseFactory;
+use Opulence\Api\ResponseFactories\NoContentResponseFactory;
+use Opulence\Api\ResponseFactories\NotFoundResponseFactory;
+use Opulence\Api\ResponseFactories\OkResponseFactory;
+use Opulence\Api\ResponseFactories\UnauthorizedResponseFactory;
 use Opulence\Net\Http\Formatting\RequestParser;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\HttpStatusCodes;
-use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\Response;
-use Opulence\Net\Http\StreamBody;
-use Opulence\Net\Http\StringBody;
+use Opulence\Net\Uri;
 use Opulence\Serialization\SerializationException;
 
 /**
@@ -63,10 +70,15 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
+     * @throws LogicException Thrown if the request context is not set
      */
     protected function badRequest($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        return $this->createResponse(HttpStatusCodes::HTTP_BAD_REQUEST, $headers, $body);
+        if (!$this->requestContext instanceof RequestContext) {
+            throw new LogicException('Request context is not set');
+        }
+
+        return (new BadRequestResponseFactory($headers, $body))->createResponse($this->requestContext);
     }
 
     /**
@@ -76,10 +88,15 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
+     * @throws LogicException Thrown if the request context is not set
      */
     protected function conflict($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        return $this->createResponse(HttpStatusCodes::HTTP_CONFLICT, $headers, $body);
+        if (!$this->requestContext instanceof RequestContext) {
+            throw new LogicException('Request context is not set');
+        }
+
+        return (new ConflictResponseFactory($headers, $body))->createResponse($this->requestContext);
     }
 
     /**
@@ -89,99 +106,15 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
+     * @throws LogicException Thrown if the request context is not set
      */
     protected function created($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        return $this->createResponse(HttpStatusCodes::HTTP_CREATED, $headers, $body);
-    }
-
-    /**
-     * Creates a response
-     *
-     * @param int $statusCode The HTTP status code
-     * @param HttpHeaders|null $headers The headers to use in the response
-     * @param \object|string|int|float|array|null $body The raw response body
-     * @return IHttpResponseMessage The response
-     * @throws HttpException Thrown if response content negotiation failed or if the body could not be serialized
-     * @internal
-     */
-    protected function createResponse(int $statusCode, ?HttpHeaders $headers, $body): IHttpResponseMessage
-    {
-        $headers = $headers ?? new HttpHeaders();
-
-        if ($this->requestContext->getResponseContentNegotiationResult() === null) {
-            throw new HttpException(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, 'Response content could not be negotiated');
+        if (!$this->requestContext instanceof RequestContext) {
+            throw new LogicException('Request context is not set');
         }
 
-        $mediaType = $this->requestContext->getResponseContentNegotiationResult()->getMediaType();
-
-        if ($mediaType !== null) {
-            $headers->add('Content-Type', $mediaType);
-        }
-
-        try {
-            return new Response(
-                $statusCode,
-                $headers,
-                $this->createResponseBody($body)
-            );
-        } catch (InvalidArgumentException $ex) {
-            throw new HttpException(
-                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
-                'Failed to create response body',
-                0,
-                $ex
-            );
-        }
-    }
-
-    /**
-     * Creates a response body from a raw body value
-     *
-     * @param IHttpBody|IStream|int|float|string|array|\object $body The raw response body
-     * @return IHttpBody|null The response body, or null if there is no body
-     * @throws InvalidArgumentException Thrown if the body is not a supported type
-     * @throws HttpException Thrown if the response content could not be negotiated
-     */
-    protected function createResponseBody($body): ?IHttpBody
-    {
-        if ($body === null || $body instanceof IHttpBody) {
-            return $body;
-        }
-
-        if ($body instanceof IStream) {
-            return new StreamBody($body);
-        }
-
-        if (\is_scalar($body)) {
-            return new StringBody((string)$body);
-        }
-
-        if (!\is_object($body) && !\is_array($body)) {
-            throw new InvalidArgumentException('Unsupported body type ' . \gettype($body));
-        }
-
-        if ($this->requestContext->getResponseContentNegotiationResult() === null) {
-            throw new HttpException(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, 'Response content could not be negotiated');
-        }
-
-        $bodyStream = new Stream(fopen('php://temp', 'r+b'));
-
-        try {
-            $this->requestContext->getResponseContentNegotiationResult()->getFormatter()->writeToStream(
-                $body,
-                $bodyStream
-            );
-        } catch (SerializationException $ex) {
-            throw new HttpException(
-                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
-                'Failed to serialize response body',
-                0,
-                $ex
-            );
-        }
-
-        return new StreamBody($bodyStream);
+        return (new CreatedResponseFactory($headers, $body))->createResponse($this->requestContext);
     }
 
     /**
@@ -191,10 +124,35 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
+     * @throws LogicException Thrown if the request context is not set
      */
     protected function forbidden($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        return $this->createResponse(HttpStatusCodes::HTTP_FORBIDDEN, $headers, $body);
+        if (!$this->requestContext instanceof RequestContext) {
+            throw new LogicException('Request context is not set');
+        }
+
+        return (new ForbiddenResponseFactory($headers, $body))->createResponse($this->requestContext);
+    }
+
+    /**
+     * Creates a found redirect response
+     *
+     * @param string|Uri $uri The URI to redirect to
+     * @param \object|string|int|float|array|null $body The raw response body
+     * @param HttpHeaders|null $headers The headers to use
+     * @return IHttpResponseMessage The response
+     * @throws InvalidArgumentException Thrown if the URI is not a string nor a URI
+     * @throws HttpException Thrown if there was an error creating the response
+     * @throws LogicException Thrown if the request context is not set
+     */
+    protected function found($uri, $body = null, HttpHeaders $headers = null): IHttpResponseMessage
+    {
+        if (!$this->requestContext instanceof RequestContext) {
+            throw new LogicException('Request context is not set');
+        }
+
+        return (new FoundResponseFactory($uri, $headers, $body))->createResponse($this->requestContext);
     }
 
     /**
@@ -204,10 +162,35 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
+     * @throws LogicException Thrown if the request context is not set
      */
     protected function internalServerError($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        return $this->createResponse(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $headers, $body);
+        if (!$this->requestContext instanceof RequestContext) {
+            throw new LogicException('Request context is not set');
+        }
+
+        return (new InternalServerErrorResponseFactory($headers, $body))->createResponse($this->requestContext);
+    }
+
+    /**
+     * Creates a moved permanently redirect response
+     *
+     * @param string|Uri $uri The URI to redirect to
+     * @param \object|string|int|float|array|null $body The raw response body
+     * @param HttpHeaders|null $headers The headers to use
+     * @return IHttpResponseMessage The response
+     * @throws InvalidArgumentException Thrown if the URI is not a string nor a URI
+     * @throws HttpException Thrown if there was an error creating the response
+     * @throws LogicException Thrown if the request context is not set
+     */
+    protected function movedPermanently($uri, $body = null, HttpHeaders $headers = null): IHttpResponseMessage
+    {
+        if (!$this->requestContext instanceof RequestContext) {
+            throw new LogicException('Request context is not set');
+        }
+
+        return (new MovedPermanentlyResponseFactory($uri, $headers, $body))->createResponse($this->requestContext);
     }
 
     /**
@@ -216,10 +199,15 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
+     * @throws LogicException Thrown if the request context is not set
      */
     protected function noContent(HttpHeaders $headers = null): IHttpResponseMessage
     {
-        return $this->createResponse(HttpStatusCodes::HTTP_NO_CONTENT, $headers, null);
+        if (!$this->requestContext instanceof RequestContext) {
+            throw new LogicException('Request context is not set');
+        }
+
+        return (new NoContentResponseFactory($headers))->createResponse($this->requestContext);
     }
 
     /**
@@ -229,10 +217,15 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
+     * @throws LogicException Thrown if the request context is not set
      */
     protected function notFound($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        return $this->createResponse(HttpStatusCodes::HTTP_NOT_FOUND, $headers, $body);
+        if (!$this->requestContext instanceof RequestContext) {
+            throw new LogicException('Request context is not set');
+        }
+
+        return (new NotFoundResponseFactory($headers, $body))->createResponse($this->requestContext);
     }
 
     /**
@@ -242,10 +235,15 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
+     * @throws LogicException Thrown if the request context is not set
      */
     protected function ok($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        return $this->createResponse(HttpStatusCodes::HTTP_OK, $headers, $body);
+        if (!$this->requestContext instanceof RequestContext) {
+            throw new LogicException('Request context is not set');
+        }
+
+        return (new OkResponseFactory($headers, $body))->createResponse($this->requestContext);
     }
 
     /**
@@ -279,28 +277,20 @@ class Controller
     }
 
     /**
-     * Creates a redirect response
-     *
-     * @param \object|string|int|float|array|null $body The raw response body
-     * @param HttpHeaders|null $headers The headers to use
-     * @return IHttpResponseMessage The response
-     * @throws HttpException Thrown if there was an error creating the response
-     */
-    protected function redirect($body = null, HttpHeaders $headers = null): IHttpResponseMessage
-    {
-        return $this->createResponse(HttpStatusCodes::HTTP_MOVED_PERMANENTLY, $headers, $body);
-    }
-
-    /**
      * Creates an unauthorized response
      *
      * @param \object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
+     * @throws LogicException Thrown if the request context is not set
      */
     protected function unauthorized($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        return $this->createResponse(HttpStatusCodes::HTTP_UNAUTHORIZED, $headers, $body);
+        if (!$this->requestContext instanceof RequestContext) {
+            throw new LogicException('Request context is not set');
+        }
+
+        return (new UnauthorizedResponseFactory($headers, $body))->createResponse($this->requestContext);
     }
 }

@@ -11,6 +11,8 @@
 namespace Opulence\Api\Handlers;
 
 use Opulence\Api\RequestContext;
+use Opulence\Api\ResponseFactories\IResponseFactory;
+use Opulence\Api\ResponseFactories\OkResponseFactory;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpResponseMessage;
@@ -102,8 +104,22 @@ class ReflectionRouteActionInvoker implements IRouteActionInvoker
 
         $response = $routeAction(...$resolvedParameters);
 
+        if ($response instanceof IHttpResponseMessage) {
+            return $response;
+        }
+
         // Handle void return types
-        return $response ?? new Response(HttpStatusCodes::HTTP_NO_CONTENT);
+        if ($response === null) {
+            return new Response(HttpStatusCodes::HTTP_NO_CONTENT);
+        }
+
+        // Create a response from the factory
+        if ($response instanceof IResponseFactory) {
+            return $response->createResponse($requestContext);
+        }
+
+        // Attempt to create an OK response from the return value
+        return (new OkResponseFactory(null, $response))->createResponse($requestContext);
     }
 
     /**

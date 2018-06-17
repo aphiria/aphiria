@@ -35,16 +35,30 @@ class UserController extends Controller
 {
     // ...
     
-    public function getAllUsers(): IHttpResponseMessage
+    public function getUserById(int $userId): User
     {
-        $users = $this->userRepository->getAllUsers();
-        
-        return $this->ok($users);
+        return $this->userRepository->getById($userId);
     }
 }
 ```
 
-The `ok()` helper method can serialize your domain models to the media type that the client requested (eg JSON), and create a valid HTTP response.  This works on any POPOs.
+Opulence will create a 200 response whose body is the serialized return value.  It uses content negotiation to determine the media type to serialize to (eg JSON).  You can also be a bit more explicit and return a response yourself.  For example, the following controller method is functionally identical to the previous example:
+
+```php
+class UserController extends Controller
+{
+    // ...
+    
+    public function getUserById(int $userId): IHttpResponseMessage
+    {
+        $user = $this->userRepository->getById($userId);
+
+        return $this->ok($user);
+    }
+}
+```
+
+The `ok()` helper method uses a `ResponseFactory` to build a response using the current [request context](#request-context).  You can pass in a POPO as the response body, and the factory will use content negotiation to determine how to serialize it.
 
 The following helper methods come bundled with `Controller`:
 
@@ -52,14 +66,15 @@ The following helper methods come bundled with `Controller`:
 * `conflict()`
 * `created()`
 * `forbidden()`
+* `found()`
 * `internalServerError()`
+* `movedPermanently()`
 * `noContent()`
 * `notFound()`
 * `ok()`
-* `redirect()`
 * `unauthorized()`
 
-Your controller methods must be public and return `IHttpResponseMessage` or `void`.  In the case of a `void` return type, a 204 "No Content" response will be created automatically.
+If your controller method has a `void` return type, a 204 "No Content" response will be created automatically.
 
 <h3 id="headers">Headers</h3>
 
