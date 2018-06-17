@@ -163,7 +163,7 @@ class UserController extends Controller
 
 Nullable parameters and parameters with default values are also supported.
 
-<h3 id="request-body-arrays">Request Body Arrays</h3>
+<h3 id="arrays-in-request-body">Arrays in Request Body</h3>
 
 Request bodies might contain an array of values.  Because PHP doesn't support generics or typed arrays, you cannot use type-hints alone to deserialize arrays of values.  However, it's still easy to do:
 
@@ -174,7 +174,7 @@ class UserController extends Controller
 
     public function createManyUsers(): IHttpResponseMessage
     {
-        $users = $this->readBodyAsArrayOf(User::class);
+        $users = $this->readRequestBodyAsArrayOfType(User::class);
         $this->userRepository->addManyUsers($users);
         
         return $this->created();

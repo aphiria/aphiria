@@ -253,7 +253,7 @@ class Controller
      * @return array The body as an array of the input type
      * @throws HttpException Thrown if there was an error reading the body
      */
-    protected function readBodyAsArrayOf(string $type): array
+    protected function readRequestBodyAsArrayOfType(string $type): array
     {
         if ($this->requestContext->getRequestContentNegotiationResult() === null) {
             throw new HttpException(HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE, 'Failed to read request body');
