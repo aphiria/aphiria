@@ -38,7 +38,6 @@ class UserController extends Controller
 {
     // ...
     
-    // Assume route template is "users"
     public function createUser(User $user): User
     {
         $this->userRepository->addUser($user);
@@ -57,7 +56,6 @@ class UserController extends Controller
 {
     // ...
     
-    // Assume route template is "users"
     public function createUser(User $user): IHttpResponseMessage
     {
         $this->userRepository->addUser($user);
@@ -235,11 +233,9 @@ class Authentication implements IMiddleware
     {
         if (!$this->authenticator->isLoggedIn()) {
             $headers = new HttpHeaders();
+            $headers->add('Location', '/login');
 
-            return new Response(
-                301,
-                $headers->add('Location', '/login');
-            );
+            return new Response(301, $headers);
         }
 
         return $next($request);

@@ -29,6 +29,7 @@ use Opulence\Net\Http\Request;
 use Opulence\Net\Uri;
 use Opulence\Routing\Matchers\MatchedRoute;
 use Opulence\Routing\RouteAction;
+use ReflectionParameter;
 use RuntimeException;
 
 /**
@@ -69,6 +70,28 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
         } catch (HttpException $ex) {
             $this->assertEquals(HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE, $ex->getResponse()->getStatusCode());
         }
+    }
+
+    public function testInvokingClosureReturnsResponseReturnedFromClosure(): void
+    {
+        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
+        $closure = function (int $foo) use ($expectedResponse) {
+            $this->assertEquals(123, $foo);
+
+            return $expectedResponse;
+        };
+        $requestContext = new RequestContext(
+            $this->createRequest('http://foo.com'),
+            null,
+            null,
+            new MatchedRoute(new RouteAction(null, null, $closure), [], [])
+        );
+        $this->parameterResolver->expects($this->once())
+            ->method('resolveParameter')
+            ->with($this->isInstanceOf(ReflectionParameter::class), $requestContext)
+            ->willReturn(123);
+        $actualResponse = $this->invoker->invokeRouteAction($closure, $requestContext);
+        $this->assertSame($expectedResponse, $actualResponse);
     }
 
     public function testInvokingMethodThatReturnsPopoCreatesOkResponseFromReturnValue(): void

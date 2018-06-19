@@ -10,6 +10,7 @@
 
 namespace Opulence\Api\Handlers;
 
+use Closure;
 use Opulence\Api\RequestContext;
 use Opulence\Api\ResponseFactories\IResponseFactory;
 use Opulence\Api\ResponseFactories\OkResponseFactory;
@@ -45,6 +46,16 @@ class RouteActionInvoker implements IRouteActionInvoker
         try {
             if (\is_array($routeAction)) {
                 $reflectionFunction = new ReflectionMethod($routeAction[0], $routeAction[1]);
+
+                if (!$reflectionFunction->isPublic()) {
+                    throw new HttpException(
+                        HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+                        sprintf(
+                            'Controller method %s must be public',
+                            $this->getRouteActionDisplayName($routeAction)
+                        )
+                    );
+                }
             } else {
                 $reflectionFunction = new ReflectionFunction($routeAction);
             }
@@ -57,16 +68,6 @@ class RouteActionInvoker implements IRouteActionInvoker
                 ),
                 0,
                 $ex
-            );
-        }
-
-        if (!$reflectionFunction->isPublic()) {
-            throw new HttpException(
-                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
-                sprintf(
-                    'Controller method %s must be public',
-                    $this->getRouteActionDisplayName($routeAction)
-                )
             );
         }
 
@@ -102,24 +103,24 @@ class RouteActionInvoker implements IRouteActionInvoker
             );
         }
 
-        $response = $routeAction(...$resolvedParameters);
+        $actionResult = $routeAction(...$resolvedParameters);
 
-        if ($response instanceof IHttpResponseMessage) {
-            return $response;
+        if ($actionResult instanceof IHttpResponseMessage) {
+            return $actionResult;
         }
 
         // Handle void return types
-        if ($response === null) {
+        if ($actionResult === null) {
             return new Response(HttpStatusCodes::HTTP_NO_CONTENT);
         }
 
         // Create a response from the factory
-        if ($response instanceof IResponseFactory) {
-            return $response->createResponse($requestContext);
+        if ($actionResult instanceof IResponseFactory) {
+            return $actionResult->createResponse($requestContext);
         }
 
         // Attempt to create an OK response from the return value
-        return (new OkResponseFactory(null, $response))->createResponse($requestContext);
+        return (new OkResponseFactory(null, $actionResult))->createResponse($requestContext);
     }
 
     /**
@@ -131,9 +132,13 @@ class RouteActionInvoker implements IRouteActionInvoker
     private function getRouteActionDisplayName(callable $routeAction): string
     {
         if (\is_array($routeAction)) {
-            return (\is_string($routeAction[0]) ? $routeAction[0] : \get_class($routeAction[0])) . '::' . $routeAction[1];
+            if (\is_string($routeAction[0])) {
+                return $routeAction[0];
+            }
+
+            return \get_class($routeAction[0]) . '::' . $routeAction[1];
         }
 
-        return 'anonymous function';
+        return Closure::class;
     }
 }
