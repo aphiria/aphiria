@@ -11,6 +11,7 @@
 namespace Opulence\Api\ResponseFactories;
 
 use Opulence\Api\RequestContext;
+use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\IHttpResponseMessage;
 
 /**
@@ -23,6 +24,7 @@ interface IResponseFactory
      *
      * @param RequestContext $requestContext The current request context
      * @return IHttpResponseMessage The created response
+     * @throws HttpException Thrown if there was an error creating the response
      */
     public function createResponse(RequestContext $requestContext): IHttpResponseMessage;
 }

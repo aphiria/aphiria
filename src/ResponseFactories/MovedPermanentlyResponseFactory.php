@@ -11,6 +11,7 @@
 namespace Opulence\Api\ResponseFactories;
 
 use InvalidArgumentException;
+use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Uri;
 

@@ -102,7 +102,7 @@ class ResponseFactory implements IResponseFactory
             return new StringBody((string)$this->rawBody);
         }
 
-        if (\is_callable($this->rawBody) || (!\is_object($this->rawBody) && !\is_array($this->rawBody))) {
+        if ((!\is_object($this->rawBody) && !\is_array($this->rawBody)) || \is_callable($this->rawBody)) {
             throw new InvalidArgumentException('Unsupported body type ' . \gettype($this->rawBody));
         }
 
