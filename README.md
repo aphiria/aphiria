@@ -31,22 +31,24 @@ You can install this library by including the following package name in your _co
 
 <h1 id="controllers">Controllers</h1>
 
-Your controllers can either extend `Controller` or be a [`Closure`](#closure-controllers).  Let's say you wanted to get a user from an ID passed via the route.  Simple:
+Your controllers can either extend `Controller` or be a [`Closure`](#closure-controllers).  Let's say you wanted to create a user.  Simple:
 
 ```php
 class UserController extends Controller
 {
     // ...
     
-    // Assume route template is "users/:userId"
-    public function getUserById(int $userId): User
+    // Assume route template is "users"
+    public function createUser(User $user): User
     {
-        return $this->userRepository->getById($userId);
+        $this->userRepository->addUser($user);
+
+        return $user;
     }
 }
 ```
 
-Opulence will [pass in the user ID from the path](#parameter-resolution) and create a 200 response whose body is the serialized return value.  It uses content negotiation to determine the media type to serialize to (eg JSON).
+Opulence will [automatically deserialize the request body to an instance of `User`](#parameter-resolution) and create a 200 response whose body is the serialized user object.  Here's the nice part - your models can be POPOs, and Opulence will automatically know how to (de)serialize them.  It uses <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a> to determine the media type to serialize to (eg JSON).
 
 You can also be a bit more explicit and return a response yourself.  For example, the following controller method is functionally identical to the previous example:
 
@@ -55,10 +57,10 @@ class UserController extends Controller
 {
     // ...
     
-    // Assume route template is "users/:userId"
-    public function getUserById(int $userId): IHttpResponseMessage
+    // Assume route template is "users"
+    public function createUser(User $user): IHttpResponseMessage
     {
-        $user = $this->userRepository->getById($userId);
+        $this->userRepository->addUser($user);
 
         return $this->ok($user);
     }
@@ -144,7 +146,7 @@ class UserController extends Controller
 
 This works for any media type (eg JSON) that you've registered to your <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiator</a>.
 
-Opulence will scan route variables, and then, if no matches are found, the query string for scalar parameters in your controllers.  For example, this method will grab `includeDeletedUsers` from the query string and cast it to a `bool`:
+Opulence also supports resolving scalar values in your controller methods.  It will scan route variables, and then, if no matches are found, the query string for scalar parameters.  For example, this method will grab `includeDeletedUsers` from the query string and cast it to a `bool`:
 
 ```php
 class UserController extends Controller
@@ -305,7 +307,7 @@ class ResponseManipulator implements IMiddleware
 
 <h2 id="middleware-attributes">Middleware Attributes</h2>
 
-Occasionally, you'll find yourself wanting to pass in primitive values to middleware to indicate something such as a required role to see a page.  In these cases, your middleware should extend `Opulence\Api\Middleware\AttributeMiddleware`:
+Occasionally, you'll find yourself wanting to pass primitive values to middleware to indicate something such as a required role to execute an action.  In these cases, your middleware should extend `Opulence\Api\Middleware\AttributeMiddleware`:
 
 ```php
 use Closure;
