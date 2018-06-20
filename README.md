@@ -152,11 +152,9 @@ class UserController extends Controller
     // ...
     
     // Assume path and query string is "users?includeDeletedUsers=1"
-    public function getAllUsers(bool $includeDeletedUsers): IHttpResponseMessage
+    public function getAllUsers(bool $includeDeletedUsers): array
     {
-        $users = $this->userRepository->getAllUsers($includeDeletedUsers);
-        
-        return $this->ok($users);
+        return $this->userRepository->getAllUsers($includeDeletedUsers);
     }
 }
 ```
@@ -336,7 +334,7 @@ class RoleMiddleware extends AttributeMiddleware
 }
 ```
 
-To actually specify `role`, pass it into your router configuration:
+To actually specify `role`, pass it into your route configuration:
 
 ```php
 $routes->map('GET', 'foo')
