@@ -29,7 +29,8 @@
     "opulence/net": "1.0.*@dev",
     "opulence/pipelines": "1.1.*@dev",
     "opulence/router": "1.0.*@dev",
-    "opulence/serialization": "1.0.*@dev"
+    "opulence/serialization": "1.0.*@dev",
+    "psr/log": "~1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "~7.3"
