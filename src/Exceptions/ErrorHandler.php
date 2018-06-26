@@ -11,6 +11,8 @@
 namespace Opulence\Api\Exceptions;
 
 use ErrorException;
+use Monolog\Handler\ErrorLogHandler;
+use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -28,19 +30,24 @@ class ErrorHandler implements IErrorHandler
     protected $thrownLevels;
 
     /**
-     * @param LoggerInterface $logger The logger
-     * @param IExceptionHandler $exceptionHandler The exception handler
+     * @param LoggerInterface|null $logger The logger, or null if using the default error logger
+     * @param IExceptionHandler|null $exceptionHandler The exception handler
      * @param int|null $loggedLevels The bitwise value of error levels that are to be logged
      * @param int|null $thrownLevels The bitwise value of error levels that are to be thrown as exceptions
      */
     public function __construct(
-        LoggerInterface $logger,
-        IExceptionHandler $exceptionHandler,
+        LoggerInterface $logger = null,
+        IExceptionHandler $exceptionHandler = null,
         int $loggedLevels = null,
         int $thrownLevels = null
     ) {
+        if ($logger === null) {
+            $logger = new Logger('app');
+            $logger->pushHandler(new ErrorLogHandler());
+        }
+
         $this->logger = $logger;
-        $this->exceptionHandler = $exceptionHandler;
+        $this->exceptionHandler = $exceptionHandler ?? new ExceptionHandler();
         $this->loggedLevels = $loggedLevels ?? 0;
         $this->thrownLevels = $thrownLevels ?? (E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED));
     }
@@ -64,9 +71,9 @@ class ErrorHandler implements IErrorHandler
      */
     public function handleShutdown(): void
     {
-        $error = error_get_last();
+        $error = \error_get_last();
 
-        if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        if ($error !== null && \in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
             $this->exceptionHandler->handle(new FatalErrorException(
                 $error['message'],
                 $error['type'],
@@ -82,10 +89,10 @@ class ErrorHandler implements IErrorHandler
      */
     public function register(): void
     {
-        ini_set('display_errors', 'off');
-        error_reporting(-1);
-        set_error_handler([$this, 'handle']);
-        register_shutdown_function([$this, 'handleShutdown']);
+        \ini_set('display_errors', 'off');
+        \error_reporting(-1);
+        \set_error_handler([$this, 'handle']);
+        \register_shutdown_function([$this, 'handleShutdown']);
     }
 
     /**

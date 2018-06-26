@@ -14,6 +14,8 @@ use Closure;
 use Exception;
 use InvalidArgumentException;
 use Opulence\Api\Controller;
+use Opulence\Api\Exceptions\ExceptionHandler;
+use Opulence\Api\Exceptions\IExceptionHandler;
 use Opulence\Api\Middleware\AttributeMiddleware;
 use Opulence\Api\Middleware\IMiddleware;
 use Opulence\Api\RequestContext;
@@ -40,6 +42,8 @@ class ControllerRequestHandler implements IRequestHandler
     private $dependencyResolver;
     /** @var IContentNegotiator The content negotiator */
     private $contentNegotiator;
+    /** @var IExceptionHandler The exception handler to use */
+    private $exceptionHandler;
     /** @var IRouteActionInvoker The route action invoker */
     private $routeActionInvoker;
 
@@ -47,17 +51,20 @@ class ControllerRequestHandler implements IRequestHandler
      * @param IRouteMatcher $routeMatcher The route matcher
      * @param IDependencyResolver $dependencyResolver The dependency resolver
      * @param IContentNegotiator $contentNegotiator The content negotiator
+     * @param IExceptionHandler $exceptionHandler The exception handler touse
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
      */
     public function __construct(
         IRouteMatcher $routeMatcher,
         IDependencyResolver $dependencyResolver,
         IContentNegotiator $contentNegotiator,
+        IExceptionHandler $exceptionHandler = null,
         IRouteActionInvoker $routeActionInvoker = null
     ) {
         $this->routeMatcher = $routeMatcher;
         $this->dependencyResolver = $dependencyResolver;
         $this->contentNegotiator = $contentNegotiator;
+        $this->exceptionHandler = $exceptionHandler ?? new ExceptionHandler();
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker();
     }
 
@@ -77,6 +84,7 @@ class ControllerRequestHandler implements IRequestHandler
                 $this->contentNegotiator->negotiateResponseContent($request),
                 $matchedRoute
             );
+            $this->exceptionHandler->setRequestContext($requestContext);
 
             if ($routeAction->usesMethod()) {
                 $controller = $this->dependencyResolver->resolve($routeAction->getClassName());

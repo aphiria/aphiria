@@ -10,6 +10,7 @@
 
 namespace Opulence\Api\Exceptions;
 
+use Opulence\Api\RequestContext;
 use Throwable;
 
 /**
@@ -28,4 +29,12 @@ interface IExceptionHandler
      * Registers the handler with PHP
      */
     public function register(): void;
+
+    /**
+     * Sets the request context for use when handling a request
+     * This can't be set via a constructor because it's not known until a little way into the app pipeline
+     *
+     * @param RequestContext $requestContext The current request context
+     */
+    public function setRequestContext(RequestContext $requestContext): void;
 }
