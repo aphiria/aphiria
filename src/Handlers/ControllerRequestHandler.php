@@ -42,30 +42,30 @@ class ControllerRequestHandler implements IRequestHandler
     private $dependencyResolver;
     /** @var IContentNegotiator The content negotiator */
     private $contentNegotiator;
-    /** @var IExceptionHandler The exception handler to use */
-    private $exceptionHandler;
     /** @var IRouteActionInvoker The route action invoker */
     private $routeActionInvoker;
+    /** @var IExceptionHandler The exception handler to use */
+    private $exceptionHandler;
 
     /**
      * @param IRouteMatcher $routeMatcher The route matcher
      * @param IDependencyResolver $dependencyResolver The dependency resolver
      * @param IContentNegotiator $contentNegotiator The content negotiator
-     * @param IExceptionHandler $exceptionHandler The exception handler touse
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
+     * @param IExceptionHandler $exceptionHandler The exception handler to use
      */
     public function __construct(
         IRouteMatcher $routeMatcher,
         IDependencyResolver $dependencyResolver,
         IContentNegotiator $contentNegotiator,
-        IExceptionHandler $exceptionHandler = null,
-        IRouteActionInvoker $routeActionInvoker = null
+        IRouteActionInvoker $routeActionInvoker = null,
+        IExceptionHandler $exceptionHandler = null
     ) {
         $this->routeMatcher = $routeMatcher;
         $this->dependencyResolver = $dependencyResolver;
         $this->contentNegotiator = $contentNegotiator;
-        $this->exceptionHandler = $exceptionHandler ?? new ExceptionHandler();
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker();
+        $this->exceptionHandler = $exceptionHandler ?? new ExceptionHandler();
     }
 
     /**
@@ -98,10 +98,6 @@ class ControllerRequestHandler implements IRequestHandler
                 throw new InvalidArgumentException(
                     sprintf('Controller %s does not extend %s', \get_class($controller), Controller::class)
                 );
-            }
-
-            if (!\is_callable($controllerCallable)) {
-                throw new InvalidArgumentException('Route action must be a callable');
             }
 
             $controller->setRequestContext($requestContext);

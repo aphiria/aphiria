@@ -47,7 +47,7 @@ class UserController extends Controller
 }
 ```
 
-Opulence will [automatically deserialize the request body to an instance of `User`](#parameter-resolution) and create a 200 response whose body is the serialized user object.  Here's the nice part - your models can be POPOs, and Opulence will automatically know how to (de)serialize them.  It uses <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a> to determine the media type to serialize to (eg JSON).
+Opulence will see the `User` parameter and [automatically deserialize the request body to an instance of `User`](#parameter-resolution).  It will also detect that a `User` object was returned, and create a 200 response whose body is the serialized user object.  Here's the nice part - your models can be POPOs, and Opulence will automatically know how to (de)serialize them.  It uses <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a> to determine the media type to serialize to (eg JSON).
 
 You can also be a bit more explicit and return a response yourself.  For example, the following controller method is functionally identical to the previous example:
 
@@ -373,3 +373,5 @@ $response = $requestHandler->handle($request);
 <h2 id="exception-handling">Exception Handling</h2>
 
 Todo
+
+* Notes to self: Mention having to call `setRequestContext()` for nice responses

@@ -19,14 +19,31 @@ use Throwable;
 interface IExceptionHandler
 {
     /**
+     * Handles an error
+     *
+     * @param int $level The level of the error
+     * @param string $message The message
+     * @param string $file The file the error occurred in
+     * @param int $line The line number the error occurred at
+     * @param array $context The symbol table
+     * @throws ErrorException Thrown because the error is converted to an exception
+     */
+    public function handleError(int $level, string $message, string $file = '', int $line = 0, array $context = []): void;
+
+    /**
      * Handles an exception
      *
      * @param Throwable $ex The exception to handle
      */
-    public function handle($ex): void;
+    public function handleException($ex): void;
 
     /**
-     * Registers the handler with PHP
+     * Handles a PHP shutdown
+     */
+    public function handleShutdown(): void;
+
+    /**
+     * Registers the exception and error handlers with PHP
      */
     public function register(): void;
 

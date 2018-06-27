@@ -37,6 +37,10 @@ class ExceptionHandler implements IExceptionHandler
     protected $responseWriter;
     /** @var array The list of exception classes to not log */
     protected $exceptionsNotLogged;
+    /** @var int $loggedLevels The bitwise value of error levels that are to be logged */
+    protected $loggedLevels;
+    /** @var int $thrownLevels The bitwise value of error levels that are to be thrown as exceptions */
+    protected $thrownLevels;
     /** @var RequestContext|null The current request context, or null if there is none */
     protected $requestContext;
 
@@ -45,12 +49,16 @@ class ExceptionHandler implements IExceptionHandler
      * @param ExceptionResponseFactoryRegistry|null $exceptionResponseFactories The exception response factory registry
      * @param ResponseWriter $responseWriter What to use to write a response
      * @param string|array $exceptionsNotLogged The exception or list of exceptions to not log when thrown
+     * @param int|null $loggedLevels The bitwise value of error levels that are to be logged
+     * @param int|null $thrownLevels The bitwise value of error levels that are to be thrown as exceptions
      */
     public function __construct(
         LoggerInterface $logger = null,
         ExceptionResponseFactoryRegistry $exceptionResponseFactories = null,
         ResponseWriter $responseWriter = null,
-        $exceptionsNotLogged = []
+        $exceptionsNotLogged = [],
+        int $loggedLevels = null,
+        int $thrownLevels = null
     ) {
         if ($logger === null) {
             $logger = new Logger('app');
@@ -60,25 +68,41 @@ class ExceptionHandler implements IExceptionHandler
         $this->logger = $logger;
 
         if ($exceptionResponseFactories === null) {
-            $exceptionResponseFactories = $this->createDefaultExceptionResponseFactoryRegistry();
+            $exceptionResponseFactories = $this->createDefaultExceptionResponseFactories();
         }
 
         $this->exceptionResponseFactories = $exceptionResponseFactories;
         $this->responseWriter = $responseWriter ?? new ResponseWriter();
         $this->exceptionsNotLogged = (array)$exceptionsNotLogged;
+        $this->loggedLevels = $loggedLevels ?? 0;
+        $this->thrownLevels = $thrownLevels ?? (E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED));
     }
 
     /**
      * @inheritdoc
      */
-    public function handle($ex): void
+    public function handleError(int $level, string $message, string $file = '', int $line = 0, array $context = []): void
+    {
+        if ($this->shouldLogError($level)) {
+            $this->logger->log($level, $message, $context);
+        }
+
+        if ($this->shouldThrowError($level)) {
+            throw new ErrorException($message, 0, $level, $file, $line);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function handleException($ex): void
     {
         // It's Throwable, but not an Exception
         if (!$ex instanceof Exception) {
             $ex = new FatalThrowableError($ex);
         }
 
-        if ($this->shouldLog($ex)) {
+        if ($this->shouldLogException($ex)) {
             $this->logger->error($ex);
         }
 
@@ -105,9 +129,27 @@ class ExceptionHandler implements IExceptionHandler
     /**
      * @inheritdoc
      */
+    public function handleShutdown(): void
+    {
+        $error = \error_get_last();
+
+        if ($error !== null && \in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+            $this->handleException(
+                new FatalErrorException($error['message'], $error['type'], 0, $error['file'], $error['line'])
+            );
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function register(): void
     {
-        \set_exception_handler([$this, 'handle']);
+        \set_exception_handler([$this, 'handleException']);
+        \ini_set('display_errors', 'off');
+        \error_reporting(-1);
+        \set_error_handler([$this, 'handleError']);
+        \register_shutdown_function([$this, 'handleShutdown']);
     }
 
     /**
@@ -119,44 +161,33 @@ class ExceptionHandler implements IExceptionHandler
     }
 
     /**
-     * Determines whether or not an exception should be logged
-     *
-     * @param Throwable|Exception $ex The exception to check
-     * @return bool True if the exception should be logged, otherwise false
-     */
-    protected function shouldLog($ex): bool
-    {
-        return !\in_array(\get_class($ex), $this->exceptionsNotLogged);
-    }
-
-    /**
      * Creates the default exception response factory registry if none was specified
      *
      * @return ExceptionResponseFactoryRegistry The default response factory registry
      */
-    protected function createDefaultExceptionResponseFactoryRegistry(): ExceptionResponseFactoryRegistry
+    protected function createDefaultExceptionResponseFactories(): ExceptionResponseFactoryRegistry
     {
-        $responseFactoryRegistry = new ExceptionResponseFactoryRegistry();
-        $responseFactoryRegistry->registerFactory(
+        $responseFactories = new ExceptionResponseFactoryRegistry();
+        $responseFactories->registerFactory(
             HttpException::class,
             function (HttpException $ex, RequestContext $requestContext) {
                 return $ex->getResponse();
             }
         );
-        $responseFactoryRegistry->registerFactory(
+        $responseFactories->registerFactory(
             RouteNotFoundException::class,
             function (RouteNotFoundException $ex, RequestContext $requestContext) {
                 return (new NotFoundResponseFactory)->createResponse($requestContext);
             }
         );
-        $responseFactoryRegistry->registerFactory(
+        $responseFactories->registerFactory(
             DependencyResolutionException::class,
             function (DependencyResolutionException $ex, RequestContext $requestContext) {
                 return (new InternalServerErrorResponseFactory)->createResponse($requestContext);
             }
         );
 
-        return $responseFactoryRegistry;
+        return $responseFactories;
     }
 
     /**
@@ -175,5 +206,38 @@ class ExceptionHandler implements IExceptionHandler
         $headers->add('Content-Type', 'application/json');
 
         return new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $headers);
+    }
+
+    /**
+     * Determines whether or not the error level is loggable
+     *
+     * @param int $level The bitwise level
+     * @return bool True if the level is loggable, otherwise false
+     */
+    protected function shouldLogError(int $level): bool
+    {
+        return ($this->loggedLevels & $level) !== 0;
+    }
+
+    /**
+     * Determines whether or not an exception should be logged
+     *
+     * @param Throwable|Exception $ex The exception to check
+     * @return bool True if the exception should be logged, otherwise false
+     */
+    protected function shouldLogException($ex): bool
+    {
+        return !\in_array(\get_class($ex), $this->exceptionsNotLogged);
+    }
+
+    /**
+     * Gets whether or not the error level is throwable
+     *
+     * @param int $level The bitwise level
+     * @return bool True if the level is throwable, otherwise false
+     */
+    protected function shouldThrowError(int $level): bool
+    {
+        return ($this->thrownLevels & $level) !== 0;
     }
 }
