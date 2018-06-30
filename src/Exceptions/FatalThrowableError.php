@@ -21,7 +21,7 @@ use TypeError;
 class FatalThrowableError extends ErrorException
 {
     /**
-     * @param Throwablw $error The throwable that caused the error
+     * @param Throwable $error The throwable that caused the error
      */
     public function __construct(Throwable $error)
     {

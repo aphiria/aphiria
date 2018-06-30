@@ -10,6 +10,7 @@
 
 namespace Opulence\Api\Exceptions;
 
+use ErrorException;
 use Opulence\Api\RequestContext;
 use Throwable;
 
@@ -28,7 +29,13 @@ interface IExceptionHandler
      * @param array $context The symbol table
      * @throws ErrorException Thrown because the error is converted to an exception
      */
-    public function handleError(int $level, string $message, string $file = '', int $line = 0, array $context = []): void;
+    public function handleError(
+        int $level,
+        string $message,
+        string $file = '',
+        int $line = 0,
+        array $context = []
+    ): void;
 
     /**
      * Handles an exception

@@ -10,17 +10,18 @@
 
 namespace Opulence\Api\Exceptions;
 
+use ErrorException;
 use Exception;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
-use Opulence\Api\Handlers\DependencyResolutionException;
 use Opulence\Api\RequestContext;
+use Opulence\Api\ResponseFactories\InternalServerErrorResponseFactory;
 use Opulence\Net\Http\Formatting\ResponseWriter;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\Response;
-use Opulence\Routing\Matchers\RouteNotFoundException;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -48,7 +49,7 @@ class ExceptionHandler implements IExceptionHandler
      * @param LoggerInterface|null $logger The logger to use, or null if using the default error logger
      * @param ExceptionResponseFactoryRegistry|null $exceptionResponseFactories The exception response factory registry
      * @param ResponseWriter $responseWriter What to use to write a response
-     * @param string|array $exceptionsNotLogged The exception or list of exceptions to not log when thrown
+     * @param array $exceptionsNotLogged The exception or list of exceptions to not log when thrown
      * @param int|null $loggedLevels The bitwise value of error levels that are to be logged
      * @param int|null $thrownLevels The bitwise value of error levels that are to be thrown as exceptions
      */
@@ -56,7 +57,7 @@ class ExceptionHandler implements IExceptionHandler
         LoggerInterface $logger = null,
         ExceptionResponseFactoryRegistry $exceptionResponseFactories = null,
         ResponseWriter $responseWriter = null,
-        $exceptionsNotLogged = [],
+        array $exceptionsNotLogged = [],
         int $loggedLevels = null,
         int $thrownLevels = null
     ) {
@@ -73,7 +74,7 @@ class ExceptionHandler implements IExceptionHandler
 
         $this->exceptionResponseFactories = $exceptionResponseFactories;
         $this->responseWriter = $responseWriter ?? new ResponseWriter();
-        $this->exceptionsNotLogged = (array)$exceptionsNotLogged;
+        $this->exceptionsNotLogged = $exceptionsNotLogged;
         $this->loggedLevels = $loggedLevels ?? 0;
         $this->thrownLevels = $thrownLevels ?? (E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED));
     }
@@ -81,8 +82,13 @@ class ExceptionHandler implements IExceptionHandler
     /**
      * @inheritdoc
      */
-    public function handleError(int $level, string $message, string $file = '', int $line = 0, array $context = []): void
-    {
+    public function handleError(
+        int $level,
+        string $message,
+        string $file = '',
+        int $line = 0,
+        array $context = []
+    ): void {
         if ($this->shouldLogError($level)) {
             $this->logger->log($level, $message, $context);
         }
@@ -172,18 +178,6 @@ class ExceptionHandler implements IExceptionHandler
             HttpException::class,
             function (HttpException $ex, RequestContext $requestContext) {
                 return $ex->getResponse();
-            }
-        );
-        $responseFactories->registerFactory(
-            RouteNotFoundException::class,
-            function (RouteNotFoundException $ex, RequestContext $requestContext) {
-                return (new NotFoundResponseFactory)->createResponse($requestContext);
-            }
-        );
-        $responseFactories->registerFactory(
-            DependencyResolutionException::class,
-            function (DependencyResolutionException $ex, RequestContext $requestContext) {
-                return (new InternalServerErrorResponseFactory)->createResponse($requestContext);
             }
         );
 
