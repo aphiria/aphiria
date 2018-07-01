@@ -11,7 +11,6 @@
 namespace Opulence\Api\Handlers;
 
 use Closure;
-use Exception;
 use InvalidArgumentException;
 use Opulence\Api\Controller;
 use Opulence\Api\Exceptions\ExceptionHandler;
@@ -29,7 +28,6 @@ use Opulence\Pipelines\Pipeline;
 use Opulence\Routing\Matchers\IRouteMatcher;
 use Opulence\Routing\Matchers\RouteNotFoundException;
 use Opulence\Routing\Middleware\MiddlewareBinding;
-use Throwable;
 
 /**
  * Defines the controller request handler
@@ -113,25 +111,6 @@ class ControllerRequestHandler implements IRequestHandler
             throw new HttpException(
                 HttpStatusCodes::HTTP_NOT_FOUND,
                 "No route found for {$request->getUri()}",
-                0,
-                $ex
-            );
-        } catch (DependencyResolutionException $ex) {
-            throw new HttpException(
-                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
-                'Could not resolve controller',
-                0,
-                $ex
-            );
-        } catch (Exception | Throwable $ex) {
-            // Don't re-throw it as an HttpException
-            if ($ex instanceof HttpException) {
-                throw $ex;
-            }
-
-            throw new HttpException(
-                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
-                'Failed dispatch request',
                 0,
                 $ex
             );
