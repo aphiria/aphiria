@@ -50,7 +50,7 @@ class ControllerRequestHandler implements IRequestHandler
      * @param IDependencyResolver $dependencyResolver The dependency resolver
      * @param IContentNegotiator $contentNegotiator The content negotiator
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
-     * @param IExceptionHandler $exceptionHandler The exception handler to use
+     * @param IExceptionHandler|null $exceptionHandler The exception handler to use
      */
     public function __construct(
         IRouteMatcher $routeMatcher,

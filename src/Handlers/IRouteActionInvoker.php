@@ -10,8 +10,8 @@
 
 namespace Opulence\Api\Handlers;
 
+use Exception;
 use Opulence\Api\RequestContext;
-use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\IHttpResponseMessage;
 
 /**
@@ -25,7 +25,7 @@ interface IRouteActionInvoker
      * @param callable $routeAction The route action callable to invoke
      * @param RequestContext $requestContext The current request context
      * @return IHttpResponseMessage The response
-     * @throws HttpException Thrown if there was any error processing the request
+     * @throws Exception Thrown if there was any error processing the request
      */
     public function invokeRouteAction(callable $routeAction, RequestContext $requestContext): IHttpResponseMessage;
 }

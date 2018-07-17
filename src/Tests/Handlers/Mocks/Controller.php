@@ -11,6 +11,7 @@
 namespace Opulence\Api\Tests\Handlers\Mocks;
 
 use Opulence\Api\Controller as BaseController;
+use Opulence\Api\RequestContext;
 use Opulence\Api\ResponseFactories\OkResponseFactory;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpResponseMessage;
@@ -32,6 +33,16 @@ class Controller extends BaseController
     public function defaultValueParameter(string $foo = 'bar'): IHttpResponseMessage
     {
         return $this->createResponseWithBody($foo);
+    }
+
+    /**
+     * Gets the current request context (for use in tests)
+     *
+     * @return RequestContext The request context
+     */
+    public function getRequestContext(): RequestContext
+    {
+        return $this->requestContext;
     }
 
     /**
