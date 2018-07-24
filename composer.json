@@ -23,7 +23,6 @@
     ]
   },
   "require": {
-    "php": "^7.2",
     "monolog/monolog": "1.23.*",
     "opulence/io": "1.1.*@dev",
     "opulence/ioc": "1.1.*@dev",
@@ -31,6 +30,7 @@
     "opulence/pipelines": "1.1.*@dev",
     "opulence/router": "1.0.*@dev",
     "opulence/serialization": "1.0.*@dev",
+    "php": "^7.2",
     "psr/log": "~1.0"
   },
   "require-dev": {

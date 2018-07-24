@@ -28,6 +28,7 @@ use Opulence\Pipelines\Pipeline;
 use Opulence\Routing\Matchers\IRouteMatcher;
 use Opulence\Routing\Matchers\RouteNotFoundException;
 use Opulence\Routing\Middleware\MiddlewareBinding;
+use Throwable;
 
 /**
  * Defines the controller request handler
@@ -75,7 +76,6 @@ class ControllerRequestHandler implements IRequestHandler
             $uri = $request->getUri();
             $matchedRoute = $this->routeMatcher->match($request->getMethod(), $uri->getHost(), $uri->getPath());
             $routeAction = $matchedRoute->getAction();
-
             $requestContext = new RequestContext(
                 $request,
                 $this->contentNegotiator->negotiateRequestContent($request),
@@ -108,12 +108,16 @@ class ControllerRequestHandler implements IRequestHandler
                 })
                 ->execute();
         } catch (RouteNotFoundException $ex) {
-            throw new HttpException(
+            $httpException = new HttpException(
                 HttpStatusCodes::HTTP_NOT_FOUND,
                 "No route found for {$request->getUri()}",
                 0,
                 $ex
             );
+
+            return $this->exceptionHandler->handleCaughtException($httpException);
+        } catch (Throwable $ex) {
+            return $this->exceptionHandler->handleCaughtException($ex);
         }
     }
 

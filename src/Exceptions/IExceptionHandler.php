@@ -12,6 +12,7 @@ namespace Opulence\Api\Exceptions;
 
 use ErrorException;
 use Opulence\Api\RequestContext;
+use Opulence\Net\Http\IHttpResponseMessage;
 use Throwable;
 
 /**
@@ -19,6 +20,14 @@ use Throwable;
  */
 interface IExceptionHandler
 {
+    /**
+     * Handles a caught exception and creates a response from it
+     *
+     * @param Throwable $ex The caught exception to create a request from
+     * @return IHttpResponseMessage The response
+     */
+    public function handleCaughtException(Throwable $ex): IHttpResponseMessage;
+
     /**
      * Handles an error
      *
@@ -29,7 +38,7 @@ interface IExceptionHandler
      * @param array $context The symbol table
      * @throws ErrorException Thrown because the error is converted to an exception
      */
-    public function handleError(
+    public function handleUncaughtError(
         int $level,
         string $message,
         string $file = '',
@@ -42,7 +51,7 @@ interface IExceptionHandler
      *
      * @param Throwable $ex The exception to handle
      */
-    public function handleException($ex): void;
+    public function handleUncaughtException(Throwable $ex): void;
 
     /**
      * Handles a PHP shutdown

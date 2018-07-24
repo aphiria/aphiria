@@ -82,7 +82,39 @@ class ExceptionHandler implements IExceptionHandler
     /**
      * @inheritdoc
      */
-    public function handleError(
+    public function handleCaughtException(Throwable $ex): IHttpResponseMessage
+    {
+        // It's Throwable, but not an Exception
+        if (!$ex instanceof Exception) {
+            $ex = new FatalThrowableError($ex);
+        }
+
+        if ($this->shouldLogException($ex)) {
+            $this->logger->error($ex);
+        }
+
+        if ($this->requestContext === null) {
+            return $this->createDefaultInternalServerErrorResponse($ex, null);
+        }
+
+        $exceptionType = \get_class($ex);
+
+        try {
+            if (($responseFactory = $this->exceptionResponseFactories->getFactory($exceptionType)) === null) {
+                return (new InternalServerErrorResponseFactory)->createResponse($this->requestContext);
+            }
+
+            return $responseFactory($ex, $this->requestContext);
+        } catch (Exception $ex) {
+            // An exception occurred while making the response, eg content negotiation failed
+            return $this->createDefaultInternalServerErrorResponse($ex, $this->requestContext);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function handleUncaughtError(
         int $level,
         string $message,
         string $file = '',
@@ -101,34 +133,9 @@ class ExceptionHandler implements IExceptionHandler
     /**
      * @inheritdoc
      */
-    public function handleException($ex): void
+    public function handleUncaughtException(Throwable $ex): void
     {
-        // It's Throwable, but not an Exception
-        if (!$ex instanceof Exception) {
-            $ex = new FatalThrowableError($ex);
-        }
-
-        if ($this->shouldLogException($ex)) {
-            $this->logger->error($ex);
-        }
-
-        if ($this->requestContext === null) {
-            $response = $this->createDefaultInternalServerErrorResponse($ex, null);
-        } else {
-            $exceptionType = \get_class($ex);
-
-            try {
-                if (($responseFactory = $this->exceptionResponseFactories->getFactory($exceptionType)) === null) {
-                    $response = (new InternalServerErrorResponseFactory)->createResponse($this->requestContext);
-                } else {
-                    $response = $responseFactory($ex, $this->requestContext);
-                }
-            } catch (Exception $ex) {
-                // An exception occurred while making the response, eg content negotiation failed
-                $response = $this->createDefaultInternalServerErrorResponse($ex, $this->requestContext);
-            }
-        }
-
+        $response = $this->handleCaughtException($ex);
         $this->responseWriter->writeResponse($response);
     }
 
@@ -140,7 +147,7 @@ class ExceptionHandler implements IExceptionHandler
         $error = \error_get_last();
 
         if ($error !== null && \in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
-            $this->handleException(
+            $this->handleUncaughtException(
                 new FatalErrorException($error['message'], $error['type'], 0, $error['file'], $error['line'])
             );
         }
@@ -151,10 +158,10 @@ class ExceptionHandler implements IExceptionHandler
      */
     public function register(): void
     {
-        \set_exception_handler([$this, 'handleException']);
+        \set_exception_handler([$this, 'handleUncaughtException']);
         \ini_set('display_errors', 'off');
         \error_reporting(-1);
-        \set_error_handler([$this, 'handleError']);
+        \set_error_handler([$this, 'handleUncaughtError']);
         \register_shutdown_function([$this, 'handleShutdown']);
     }
 
