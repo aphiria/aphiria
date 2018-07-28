@@ -32,6 +32,16 @@ class ResponseWriter
     }
 
     /**
+     * Gets whether or not the headers have already been sent
+     *
+     * @return bool True if the headers have already been sent, otherwise false
+     */
+    public function headersAreSent(): bool
+    {
+        return \headers_sent();
+    }
+
+    /**
      * Writes the response to the output stream
      *
      * @param IHttpResponseMessage $response The response to write
@@ -39,16 +49,20 @@ class ResponseWriter
      */
     public function writeResponse(IHttpResponseMessage $response): void
     {
+        if ($this->headersAreSent()) {
+            return;
+        }
+
         $startLine = "HTTP/{$response->getProtocolVersion()} {$response->getStatusCode()}";
 
         if (($reasonPhrase = $response->getReasonPhrase()) !== null) {
             $startLine .= " $reasonPhrase";
         }
 
-        header($startLine);
+        \header($startLine);
 
         foreach ($response->getHeaders() as $kvp) {
-            header($kvp->getKey() . ': ' . implode(', ', $kvp->getValue()));
+            \header($kvp->getKey() . ': ' . implode(', ', $kvp->getValue()));
         }
 
         if (($body = $response->getBody()) !== null) {
