@@ -17,13 +17,12 @@ use Opulence\Api\Exceptions\IExceptionHandler;
 use Opulence\Api\Handlers\ControllerRequestHandler;
 use Opulence\Api\Handlers\IDependencyResolver;
 use Opulence\Api\Handlers\IRouteActionInvoker;
-use Opulence\Api\Tests\Handlers\Mocks\AttributeMiddleware;
 use Opulence\Api\Tests\Handlers\Mocks\Controller as ControllerMock;
 use Opulence\Api\Tests\Handlers\Mocks\MiddlewareThatAddsHeader;
+use Opulence\Api\Tests\Middleware\Mocks\AttributeMiddleware;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Uri;
@@ -32,7 +31,6 @@ use Opulence\Routing\Matchers\MatchedRoute;
 use Opulence\Routing\Matchers\RouteNotFoundException;
 use Opulence\Routing\Middleware\MiddlewareBinding;
 use Opulence\Routing\RouteAction;
-use Throwable;
 
 /**
  * Tests the controller request handler
@@ -102,6 +100,7 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
 
     public function testInvalidMiddlewareThrowsExceptionThatIsCaught(): void
     {
+        $this->expectException(InvalidArgumentException::class);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $middleware = $this;
         $controller = new ControllerMock();
@@ -122,14 +121,7 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
             ->method('match')
             ->with('GET', 'foo.com', '/bar')
             ->willReturn($matchedRoute);
-        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
-        $this->exceptionHandler->expects($this->once())
-            ->method('handleCaughtException')
-            ->with($this->callback(function (Throwable $ex) {
-                return $ex instanceof InvalidArgumentException;
-            }))
-            ->willReturn($expectedResponse);
-        $this->assertSame($expectedResponse, $this->requestHandler->handle($request));
+        $this->requestHandler->handle($request);
     }
 
     public function testMiddlewareIsResolvedAndIsInvoked(): void
@@ -170,20 +162,13 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
 
     public function testNoMatchingRouteThrows404ThatIsCaught(): void
     {
+        $this->expectException(HttpException::class);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $this->routeMatcher->expects($this->once())
             ->method('match')
             ->with('GET', 'foo.com', '/bar')
             ->willThrowException(new RouteNotFoundException());
-        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
-        $this->exceptionHandler->expects($this->once())
-            ->method('handleCaughtException')
-            ->with($this->callback(function (Throwable $ex) {
-                return $ex instanceof HttpException
-                    && $ex->getResponse()->getStatusCode() === HttpStatusCodes::HTTP_NOT_FOUND;
-            }))
-            ->willReturn($expectedResponse);
-        $this->assertSame($expectedResponse, $this->requestHandler->handle($request));
+        $this->requestHandler->handle($request);
     }
 
     public function testRouteActionWithClosureControllerBindsItToControllerObjectAndInvokesIt(): void
@@ -238,6 +223,7 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
 
     public function testRouteActionWithInvalidControllerInstanceThrowsExceptionThatIsCaught(): void
     {
+        $this->expectException(InvalidArgumentException::class);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         // Purposely bind a non-controller class's method to the route action
         $matchedRoute = new MatchedRoute(new RouteAction(__CLASS__, __METHOD__, null), [], []);
@@ -249,14 +235,7 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
             ->method('match')
             ->with('GET', 'foo.com', '/bar')
             ->willReturn($matchedRoute);
-        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
-        $this->exceptionHandler->expects($this->once())
-            ->method('handleCaughtException')
-            ->with($this->callback(function (Throwable $ex) {
-                return $ex instanceof InvalidArgumentException;
-            }))
-            ->willReturn($expectedResponse);
-        $this->assertSame($expectedResponse, $this->requestHandler->handle($request));
+        $this->requestHandler->handle($request);
     }
 
     /**

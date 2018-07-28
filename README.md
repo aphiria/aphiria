@@ -15,7 +15,9 @@
     2. [Manipulating the Response](#manipulating-the-response)
     3. [Middleware Attributes](#middleware-attributes)
 4. [Request Handlers](#request-handlers)
-    1. [Exception Handling](#exception-handling)
+5. [Exception Handling](#exception-handling)
+    1. [Exception Response Factories](#exception-response-factories)
+    2. [Logging](#logging)
 
 <h1 id="introduction">Introduction</h1>
 
@@ -370,8 +372,82 @@ $response = $requestHandler->handle($request);
 (new ResponseWriter)->writeResponse($response);
 ```
 
-<h2 id="exception-handling">Exception Handling</h2>
+<h1 id="exception-handling">Exception Handling</h1>
 
-Todo
+Sometimes, your application is going to throw an unhandled exception or shut down unexpectedly.  When this happens, instead of showing an ugly PHP error, you can convert it to a nicely-formatted response.  To get set up, you can simply instantiate `ExceptionHandler` and register it:
 
-* Notes to self: Mention having to call `setRequestContext()` for nice responses
+```php
+use Opulence\Api\Exceptions\ExceptionHandler;
+
+$exceptionHandler = new ExceptionHandler();
+$exceptionHandler->register();
+```
+
+By default, `ExceptionHandler` will convert any exception to a 500 response and use <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a> to determine the best format for the response body.  However, you can [customize your exception responses](#exception-response-factories).
+
+<h2 id="exception-response-factories">Exception Response Factories</h2>
+
+You might find yourself wanting to map a particular exception to a certain response.  In this case, you can use an exception response factory.  They are closures that take in the exception and the request context and return a response.
+
+As an example, let's say that you want to return a 404 response when an `EntityNotFound` exception is thrown:
+
+```php
+use Opulence\Api\Exceptions\ExceptionResponseFactoryRegistry;
+use Opulence\Net\Http\HttpStatusCodes;
+use Opulence\Net\Http\Response;
+
+// Set up the response factory
+$exceptionResponseFactories = new ExceptionResponseFactoryRegistry();
+$exceptionResponseFactories->registerFactory(
+    EntityNotFound::class,
+    function (EntityNotFound $ex, RequestContext $requestContext) {
+        return new Response(HttpStatusCodes::HTTP_NOT_FOUND);
+    }
+);
+
+// Add it to the exception handler
+$exceptionHandler = new ExceptionHandler(null, $exceptionResponseFactories);
+$exceptionHandler->register();
+```
+
+If you want to take advantage of automatic content negotiation, you can use a `ResponseFactory` in your closure:
+
+```php
+use Opulence\Api\ResponseFactories\NotFoundResponseFactory;
+
+// ...
+$exceptionResponseFactories->registerFactory(
+    EntityNotFound::class,
+    function (EntityNotFound $ex, RequestContext $requestContext) {
+        return (new NotFoundResponseFactory)->createResponse($requestContext);
+    }
+);
+```
+
+<h2 id="logging">Logging</h2>
+
+Unless you specify otherwise, a <a href="https://github.com/Seldaek/monolog" target="_blank">Monolog</a> logger to log all exceptions to the PHP error log.  However, you can override this with any PSR-3 logger:
+
+```php
+use Monolog\Handler\ErrorLogHandler;
+use Monolog\Logger;
+
+$logger = new Logger('app');
+$logger->pushHandler(new SyslogHandler());
+$exceptionHandler = new ExceptionHandler($logger);
+$exceptionHandler->register();
+```
+
+If you don't want to log particular exceptions, you can specify them:
+
+```php
+$exceptionHandler = new ExceptionHandler(null, null, null, null, null, ['MyException']);
+$exceptionHandler->register();
+```
+
+You can also control the level of PHP errors that are logged by specifying a bitwise value similar to what's in your _php.ini_:
+
+```php
+$exceptionHandler = new ExceptionHandler(null, null, null, E_ALL & ~E_NOTICE);
+$exceptionHandler->register();
+```
