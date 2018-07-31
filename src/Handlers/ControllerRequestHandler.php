@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpInternalEntityUsedInspection */
+<?php
 
 /*
  * Opulence
@@ -19,6 +19,7 @@ use Opulence\Api\Middleware\AttributeMiddleware;
 use Opulence\Api\Middleware\IMiddleware;
 use Opulence\Api\RequestContext;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
+use Opulence\Net\Http\Formatting\RequestParser;
 use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
@@ -98,6 +99,7 @@ class ControllerRequestHandler implements IRequestHandler
             }
 
             $controller->setRequestContext($requestContext);
+            $controller->setRequestParser(new RequestParser);
             $middleware = $this->resolveMiddleware($matchedRoute->getMiddlewareBindings());
 
             return (new Pipeline)->send($request)

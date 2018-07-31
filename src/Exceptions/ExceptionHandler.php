@@ -15,13 +15,7 @@ use Exception;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
 use Opulence\Api\RequestContext;
-use Opulence\Api\ResponseFactories\InternalServerErrorResponseFactory;
 use Opulence\Net\Http\Formatting\ResponseWriter;
-use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\HttpStatusCodes;
-use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\Response;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -32,8 +26,8 @@ class ExceptionHandler implements IExceptionHandler
 {
     /** @var LoggerInterface The logger */
     protected $logger;
-    /** @var ExceptionResponseFactoryRegistry The registry of exception response factories */
-    protected $exceptionResponseFactories;
+    /** @var IExceptionResponseFactory The exception response factory */
+    protected $exceptionResponseFactory;
     /** @var ResponseWriter What to use to write a response */
     protected $responseWriter;
     /** @var int $loggedLevels The bitwise value of error levels that are to be logged */
@@ -47,7 +41,7 @@ class ExceptionHandler implements IExceptionHandler
 
     /**
      * @param LoggerInterface|null $logger The logger to use, or null if using the default error logger
-     * @param ExceptionResponseFactoryRegistry|null $exceptionResponseFactories The exception response factory registry
+     * @param IExceptionResponseFactory|null $exceptionResponseFactory The exception response factory
      * @param ResponseWriter $responseWriter What to use to write a response
      * @param int|null $loggedLevels The bitwise value of error levels that are to be logged
      * @param int|null $thrownLevels The bitwise value of error levels that are to be thrown as exceptions
@@ -55,7 +49,7 @@ class ExceptionHandler implements IExceptionHandler
      */
     public function __construct(
         LoggerInterface $logger = null,
-        ExceptionResponseFactoryRegistry $exceptionResponseFactories = null,
+        IExceptionResponseFactory $exceptionResponseFactory = null,
         ResponseWriter $responseWriter = null,
         int $loggedLevels = null,
         int $thrownLevels = null,
@@ -67,12 +61,7 @@ class ExceptionHandler implements IExceptionHandler
         }
 
         $this->logger = $logger;
-
-        if ($exceptionResponseFactories === null) {
-            $exceptionResponseFactories = $this->createDefaultExceptionResponseFactories();
-        }
-
-        $this->exceptionResponseFactories = $exceptionResponseFactories;
+        $this->exceptionResponseFactory = $exceptionResponseFactory ?? new ExceptionResponseFactory();
         $this->responseWriter = $responseWriter ?? new ResponseWriter();
         $this->loggedLevels = $loggedLevels ?? 0;
         $this->thrownLevels = $thrownLevels ?? (E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED));
@@ -112,7 +101,7 @@ class ExceptionHandler implements IExceptionHandler
             $this->logger->error($ex);
         }
 
-        $response = $this->createResponseFromException($ex);
+        $response = $this->exceptionResponseFactory->createResponseFromException($ex, $this->requestContext);
         $this->responseWriter->writeResponse($response);
     }
 
@@ -148,68 +137,6 @@ class ExceptionHandler implements IExceptionHandler
     public function setRequestContext(RequestContext $requestContext): void
     {
         $this->requestContext = $requestContext;
-    }
-
-    /**
-     * Creates the default exception response factory registry if none was specified
-     *
-     * @return ExceptionResponseFactoryRegistry The default response factory registry
-     */
-    protected function createDefaultExceptionResponseFactories(): ExceptionResponseFactoryRegistry
-    {
-        $responseFactories = new ExceptionResponseFactoryRegistry();
-        $responseFactories->registerFactory(
-            HttpException::class,
-            function (HttpException $ex, RequestContext $requestContext) {
-                return $ex->getResponse();
-            }
-        );
-
-        return $responseFactories;
-    }
-
-    /**
-     * Creates the default internal server error response in the case that content negotiation failed
-     *
-     * @param Exception $ex The exception that was thrown
-     * @param RequestContext|null $requestContext The current request context if there is one, otherwise null
-     * @return IHttpResponseMessage The default response
-     */
-    protected function createDefaultInternalServerErrorResponse(
-        Exception $ex,
-        ?RequestContext $requestContext
-    ): IHttpResponseMessage {
-        // We purposely aren't using the parameters - they're more for derived classes that might override this method
-        $headers = new HttpHeaders();
-        $headers->add('Content-Type', 'application/json');
-
-        return new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $headers);
-    }
-
-    /**
-     * Creates a response from an exception
-     *
-     * @param Exception $ex The exception to create a response from
-     * @return IHttpResponseMessage The response
-     */
-    protected function createResponseFromException(Exception $ex): IHttpResponseMessage
-    {
-        if ($this->requestContext === null) {
-            return $this->createDefaultInternalServerErrorResponse($ex, null);
-        }
-
-        $exceptionType = \get_class($ex);
-
-        try {
-            if (($responseFactory = $this->exceptionResponseFactories->getFactory($exceptionType)) === null) {
-                return (new InternalServerErrorResponseFactory)->createResponse($this->requestContext);
-            }
-
-            return $responseFactory($ex, $this->requestContext);
-        } catch (Exception $ex) {
-            // An exception occurred while making the response, eg content negotiation failed
-            return $this->createDefaultInternalServerErrorResponse($ex, $this->requestContext);
-        }
     }
 
     /**

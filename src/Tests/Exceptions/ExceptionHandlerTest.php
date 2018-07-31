@@ -11,14 +11,11 @@
 namespace Opulence\Api\Tests\Exceptions;
 
 use ErrorException;
-use Exception;
 use InvalidArgumentException;
 use Opulence\Api\Exceptions\ExceptionHandler;
-use Opulence\Api\Exceptions\ExceptionResponseFactoryRegistry;
+use Opulence\Api\Exceptions\IExceptionResponseFactory;
 use Opulence\Api\RequestContext;
 use Opulence\Net\Http\Formatting\ResponseWriter;
-use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Psr\Log\LoggerInterface;
 
@@ -29,15 +26,15 @@ class ExceptionHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject The mocked logger */
     private $logger;
-    /** @var ExceptionResponseFactoryRegistry The exception response factory */
-    private $exceptionResponseFactories;
+    /** @var IExceptionResponseFactory|\PHPUnit_Framework_MockObject_MockObject The exception response factory */
+    private $exceptionResponseFactory;
     /** @var ResponseWriter|\PHPUnit_Framework_MockObject_MockObject The response writer */
     private $responseWriter;
 
     public function setUp(): void
     {
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->exceptionResponseFactories = new ExceptionResponseFactoryRegistry();
+        $this->exceptionResponseFactory = $this->createMock(IExceptionResponseFactory::class);
         $this->responseWriter = $this->createMock(ResponseWriter::class);
     }
 
@@ -105,89 +102,23 @@ class ExceptionHandlerTest extends \PHPUnit\Framework\TestCase
         $handler->handleException(new InvalidArgumentException);
     }
 
-    public function testHandlingExceptionWithNoRequestContextSetUsesDefaultResponse(): void
+    public function testHandlingExceptionCreatesResponseFromResponseFactoryWithRequestContext(): void
     {
         $handler = $this->createExceptionHandler();
-        $this->responseWriter->expects($this->once())
-            ->method('writeResponse')
-            ->with($this->callback(function (IHttpResponseMessage $response) {
-                return $response->getStatusCode() === HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR
-                    && $response->getHeaders()->getFirst('Content-Type') === 'application/json';
-            }));
-        $handler->handleException(new InvalidArgumentException);
-    }
-
-    public function testHandlingExceptionWithRequestContextAndNoResponseFactoryCreates500Response(): void
-    {
-        $handler = $this->createExceptionHandler();
-        /** @var RequestContext $expectedRequestContext */
-        $expectedRequestContext = $this->createMock(RequestContext::class);
-        $handler->setRequestContext($expectedRequestContext);
-        $this->responseWriter->expects($this->once())
-            ->method('writeResponse')
-            ->with($this->callback(function (IHttpResponseMessage $response) {
-                return $response->getStatusCode() === HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR;
-            }));
-        $handler->handleException(new InvalidArgumentException);
-    }
-
-    public function testHandlingExceptionWithRequestContextAndResponseFactoryCreatesResponseFromFactory(): void
-    {
-        $handler = $this->createExceptionHandler();
-        /** @var RequestContext $expectedRequestContext */
-        $expectedRequestContext = $this->createMock(RequestContext::class);
-        $handler->setRequestContext($expectedRequestContext);
         $expectedResponse = $this->createMock(IHttpResponseMessage::class);
-        $this->exceptionResponseFactories->registerFactory(
-            InvalidArgumentException::class,
-            function (
-                InvalidArgumentException $ex,
-                RequestContext $requestContext
-            ) use ($expectedRequestContext, $expectedResponse) {
-                $this->assertEquals($expectedRequestContext, $requestContext);
-
-                return $expectedResponse;
-            }
-        );
-        $this->responseWriter->expects($this->once())
-            ->method('writeResponse')
-            ->with($expectedResponse);
-        $handler->handleException(new InvalidArgumentException);
-    }
-
-    public function testHandlingExceptionWithRequestContextAndResponseFactoryThatThrowsCreatesDefaultResponse(): void
-    {
-        $handler = $this->createExceptionHandler();
+        $expectedException = new InvalidArgumentException();
         /** @var RequestContext $expectedRequestContext */
         $expectedRequestContext = $this->createMock(RequestContext::class);
+        $this->exceptionResponseFactory->expects($this->once())
+            ->method('createResponseFromException')
+            ->with($expectedException, $expectedRequestContext)
+            ->willReturn($expectedResponse);
         $handler->setRequestContext($expectedRequestContext);
-        $this->exceptionResponseFactories->registerFactory(
-            InvalidArgumentException::class,
-            function (InvalidArgumentException $ex, RequestContext $requestContext) {
-                throw new Exception;
-            }
-        );
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
-            ->with($this->callback(function (IHttpResponseMessage $response) {
-                return $response->getStatusCode() === HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR
-                    && $response->getHeaders()->getFirst('Content-Type') === 'application/json';
+            ->with($this->callback(function (IHttpResponseMessage $response) use ($expectedResponse) {
+                return $response === $expectedResponse;
             }));
-        $handler->handleException(new InvalidArgumentException);
-    }
-
-    public function testHandlingHttpExceptionsUseBuiltInResponseFactory(): void
-    {
-        $handler = new ExceptionHandler($this->logger, null, $this->responseWriter);
-        /** @var RequestContext $expectedRequestContext */
-        $expectedRequestContext = $this->createMock(RequestContext::class);
-        $handler->setRequestContext($expectedRequestContext);
-        /** @var IHttpResponseMessage|\PHPUnit_Framework_MockObject_MockObject $expectedResponse */
-        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
-        $expectedException = new HttpException($expectedResponse);
-        $this->responseWriter->expects($this->once())
-            ->method('writeResponse')
-            ->with($expectedResponse);
         $handler->handleException($expectedException);
     }
 
@@ -206,7 +137,7 @@ class ExceptionHandlerTest extends \PHPUnit\Framework\TestCase
     ): ExceptionHandler {
         $exceptionHandler = new ExceptionHandler(
             $this->logger,
-            $this->exceptionResponseFactories,
+            $this->exceptionResponseFactory,
             $this->responseWriter,
             $loggedLevels,
             $thrownLevels,

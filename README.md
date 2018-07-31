@@ -387,26 +387,28 @@ By default, `ExceptionHandler` will convert any exception to a 500 response and 
 
 <h2 id="exception-response-factories">Exception Response Factories</h2>
 
-You might find yourself wanting to map a particular exception to a certain response.  In this case, you can use an exception response factory.  They are closures that take in the exception and the request context and return a response.
+You might find yourself wanting to map a particular exception to a certain response.  In this case, you can use an exception response factory.  They are closures that take in the exception and the request context, and return a response.
 
 As an example, let's say that you want to return a 404 response when an `EntityNotFound` exception is thrown:
 
 ```php
+use Opulence\Api\Exceptions\ExceptionResponseFactory;
 use Opulence\Api\Exceptions\ExceptionResponseFactoryRegistry;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\Response;
 
 // Set up the response factory
-$exceptionResponseFactories = new ExceptionResponseFactoryRegistry();
-$exceptionResponseFactories->registerFactory(
+$exceptionResponseFactoryRegistry = new ExceptionResponseFactoryRegistry();
+$exceptionResponseFactoryRegistry->registerFactory(
     EntityNotFound::class,
     function (EntityNotFound $ex, RequestContext $requestContext) {
         return new Response(HttpStatusCodes::HTTP_NOT_FOUND);
     }
 );
+$exceptionResponseFactory = new ExceptionResponseFactory($exceptionResponseFactoryRegistry);
 
 // Add it to the exception handler
-$exceptionHandler = new ExceptionHandler(null, $exceptionResponseFactories);
+$exceptionHandler = new ExceptionHandler(null, $exceptionResponseFactory);
 $exceptionHandler->register();
 ```
 
@@ -416,7 +418,7 @@ If you want to take advantage of automatic content negotiation, you can use a `R
 use Opulence\Api\ResponseFactories\NotFoundResponseFactory;
 
 // ...
-$exceptionResponseFactories->registerFactory(
+$exceptionResponseFactoryRegistry->registerFactory(
     EntityNotFound::class,
     function (EntityNotFound $ex, RequestContext $requestContext) {
         return (new NotFoundResponseFactory)->createResponse($requestContext);
