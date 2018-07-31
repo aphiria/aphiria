@@ -412,6 +412,8 @@ $exceptionHandler = new ExceptionHandler(null, $exceptionResponseFactory);
 $exceptionHandler->register();
 ```
 
+That's it.  Now, whenever an unhandled `EntityNotFound` exception is thrown, your application will return a 404 response.
+
 If you want to take advantage of automatic content negotiation, you can use a `ResponseFactory` in your closure:
 
 ```php
