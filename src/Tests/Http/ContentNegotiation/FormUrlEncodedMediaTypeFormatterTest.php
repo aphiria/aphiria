@@ -11,7 +11,7 @@
 namespace Opulence\Net\Tests\Http\Formatting;
 
 use Opulence\IO\Streams\IStream;
-use Opulence\Net\Http\ContentNegotiation\FormUrlEncodedMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\FormUrlEncodedSerializerMediaTypeFormatter;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
 use Opulence\Serialization\FormUrlEncodedSerializer;
 
@@ -20,13 +20,13 @@ use Opulence\Serialization\FormUrlEncodedSerializer;
  */
 class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var FormUrlEncodedMediaTypeFormatter The formatter to use in tests */
+    /** @var FormUrlEncodedSerializerMediaTypeFormatter The formatter to use in tests */
     private $formatter;
 
     public function setUp(): void
     {
         $serializer = new FormUrlEncodedSerializer();
-        $this->formatter = new FormUrlEncodedMediaTypeFormatter($serializer);
+        $this->formatter = new FormUrlEncodedSerializerMediaTypeFormatter($serializer);
     }
 
     public function testCorrectSupportedEncodingsAreReturned(): void

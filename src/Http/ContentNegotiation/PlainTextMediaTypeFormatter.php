@@ -10,25 +10,15 @@
 
 namespace Opulence\Net\Http\ContentNegotiation;
 
-use Opulence\Serialization\JsonSerializer;
-
 /**
- * Defines the JSON media type formatter
+ * Defines the plain text media type formatter
  */
-class JsonMediaTypeFormatter extends SerializerMediaTypeFormatter
+class PlainTextMediaTypeFormatter extends TextMediaTypeFormatter
 {
     /** @var array The list of supported character encodings */
     private static $supportedEncodings = ['utf-8'];
     /** @var array The list of supported media types */
-    private static $supportedMediaTypes = ['application/json', 'text/json'];
-
-    /**
-     * @param JsonSerializer|null $serializer The JSON serializer to use
-     */
-    public function __construct(JsonSerializer $serializer = null)
-    {
-        parent::__construct($serializer ?? new JsonSerializer());
-    }
+    private static $supportedMediaTypes = ['text/plain'];
 
     /**
      * @inheritdoc

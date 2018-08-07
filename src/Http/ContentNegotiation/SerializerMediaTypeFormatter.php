@@ -14,9 +14,9 @@ use Opulence\IO\Streams\IStream;
 use Opulence\Serialization\ISerializer;
 
 /**
- * Defines the base class for media type formatters to extend
+ * Defines the base class for media type formatters that use serializers to extend
  */
-abstract class MediaTypeFormatter implements IMediaTypeFormatter
+abstract class SerializerMediaTypeFormatter implements IMediaTypeFormatter
 {
     /** @var ISerializer The serializer this formatter uses */
     private $serializer;

@@ -548,6 +548,7 @@ use Opulence\Net\Http\ContentNegotiation\ContentNegotiator;
 use Opulence\Net\Http\ContentNegotiation\FormUrlEncodedMediaTypeFormatter;
 use Opulence\Net\Http\ContentNegotiation\JsonMediaTypeFormatter;
 
+// Register whatever media type formatters you support
 $mediaTypeFormatters = [
     new JsonMediaTypeFormatter(),
     new FormUrlEncodedMediaTypeFormatter()
@@ -577,6 +578,8 @@ $mediaTypeFormatter->writeToStream($valueToWrite, $response->getBody());
   Opulence provides the following formatters out of the box:
 
 * `FormUrlEncodedMediaTypeFormatter`
+* `HtmlMediaTypeFormatter`
 * `JsonMediaTypeFormatter`
+* `PlainTextMediaTypeFormatter`
 
-Under the hood, media type formatters use Opulence's <a href="https://github.com/opulencephp/serialization" target="_blank">serialization library</a> to read and write values to a particular data format.
+Under the hood, `FormUrlEncodedMediaTypeFormatter` and `JsonMediaTypeFormatter` use Opulence's <a href="https://github.com/opulencephp/serialization" target="_blank">serialization library</a> to (de)serialize values.  `HtmlMediaTypeFormatter` and `PlainTextMediaTypeFormatter` only handle strings - they do not deal with objects or arrays.

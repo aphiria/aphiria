@@ -10,25 +10,15 @@
 
 namespace Opulence\Net\Http\ContentNegotiation;
 
-use Opulence\Serialization\FormUrlEncodedSerializer;
-
 /**
- * Defines the form URL-encoded media type formatter
+ * Defines the HTML media type formatter
  */
-class FormUrlEncodedMediaTypeFormatter extends MediaTypeFormatter
+class HtmlMediaTypeFormatter extends TextMediaTypeFormatter
 {
     /** @var array The list of supported character encodings */
-    private static $supportedEncodings = ['utf-8', 'ISO-8859-1'];
+    private static $supportedEncodings = ['utf-8', 'utf-16'];
     /** @var array The list of supported media types */
-    private static $supportedMediaTypes = ['application/x-www-form-urlencoded'];
-
-    /**
-     * @param FormUrlEncodedSerializer|null $serializer The form URL-encoded serializer to use
-     */
-    public function __construct(FormUrlEncodedSerializer $serializer = null)
-    {
-        parent::__construct($serializer ?? new FormUrlEncodedSerializer());
-    }
+    private static $supportedMediaTypes = ['text/html'];
 
     /**
      * @inheritdoc
