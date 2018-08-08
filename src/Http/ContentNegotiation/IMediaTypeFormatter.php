@@ -49,7 +49,8 @@ interface IMediaTypeFormatter
      *
      * @param int|double|float|bool|string|\object|array $object The object to write
      * @param IStream $stream The stream to write to
+     * @param string $encoding The character encoding to use
      * @throws SerializationException Thrown if the content could not be converted to the input type and written
      */
-    public function writeToStream($object, IStream $stream): void;
+    public function writeToStream($object, IStream $stream, string $encoding): void;
 }

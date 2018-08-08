@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Http\ContentNegotiation;
 
+use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Opulence\Serialization\ISerializer;
 
@@ -42,9 +43,28 @@ abstract class SerializerMediaTypeFormatter implements IMediaTypeFormatter
     /**
      * @inheritdoc
      */
-    public function writeToStream($object, IStream $stream): void
+    public function writeToStream($object, IStream $stream, string $encoding): void
     {
+        if (!$this->encodingIsSupported($encoding)) {
+            throw new InvalidArgumentException("$encoding is not supported for " . static::class);
+        }
+
         $serializedObject = $this->serializer->serialize($object);
-        $stream->write($serializedObject);
+        $encodedSerializedObject = \mb_convert_encoding($serializedObject, $encoding);
+        $stream->write($encodedSerializedObject);
+    }
+
+    /**
+     * Checks whether or not an encoding is supported
+     *
+     * @param string $encoding The encoding to check
+     * @return bool True if the encoding is supported, otherwise false
+     */
+    private function encodingIsSupported(string $encoding): bool
+    {
+        $lowercaseSupportedEncodings = array_map('strtolower', $this->getSupportedEncodings());
+        $lowercaseEncoding = \strtolower($encoding);
+
+        return \in_array($lowercaseEncoding, $lowercaseSupportedEncodings, true);
     }
 }

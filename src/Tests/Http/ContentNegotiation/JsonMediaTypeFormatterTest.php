@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Tests\Http\Formatting;
 
+use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\ContentNegotiation\JsonMediaTypeFormatter;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
@@ -51,7 +52,14 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     {
         $stream = $this->createStreamThatExpectsBody('{"id":123,"email":"foo@bar.com"}');
         $user = new User(123, 'foo@bar.com');
-        $this->formatter->writeToStream($user, $stream);
+        $this->formatter->writeToStream($user, $stream, 'utf-8');
+    }
+
+    public function testWritingUsingUnsupportedEncodingThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $user = new User(123, 'foo@bar.com');
+        $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
     }
 
     /**

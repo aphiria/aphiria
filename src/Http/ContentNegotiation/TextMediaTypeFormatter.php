@@ -37,12 +37,31 @@ abstract class TextMediaTypeFormatter implements IMediaTypeFormatter
     /**
      * @inheritdoc
      */
-    public function writeToStream($value, IStream $stream): void
+    public function writeToStream($value, IStream $stream, string $encoding): void
     {
         if (!\is_string($value)) {
             throw new InvalidArgumentException(static::class . ' can only write strings');
         }
 
-        $stream->write($value);
+        if (!$this->encodingIsSupported($encoding)) {
+            throw new InvalidArgumentException("$encoding is not supported for " . static::class);
+        }
+
+        $encodedValue = \mb_convert_encoding($value, $encoding);
+        $stream->write($encodedValue);
+    }
+
+    /**
+     * Checks whether or not an encoding is supported
+     *
+     * @param string $encoding The encoding to check
+     * @return bool True if the encoding is supported, otherwise false
+     */
+    private function encodingIsSupported(string $encoding): bool
+    {
+        $lowercaseSupportedEncodings = array_map('strtolower', $this->getSupportedEncodings());
+        $lowercaseEncoding = \strtolower($encoding);
+
+        return \in_array($lowercaseEncoding, $lowercaseSupportedEncodings, true);
     }
 }

@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Tests\Http\Formatting;
 
+use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\ContentNegotiation\FormUrlEncodedSerializerMediaTypeFormatter;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
@@ -51,7 +52,25 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     {
         $stream = $this->createStreamThatExpectsBody('id=123&email=foo%40bar.com');
         $user = new User(123, 'foo@bar.com');
-        $this->formatter->writeToStream($user, $stream);
+        $this->formatter->writeToStream($user, $stream, 'utf-8');
+    }
+
+    public function testWritingConvertsToInputEncoding(): void
+    {
+        $stream = $this->createMock(IStream::class);
+        $user = new User(123, 'foo@bar.com');
+        $expectedEncodedValue = \mb_convert_encoding('id=123&email=foo%40bar.com', 'ISO-8859-1');
+        $stream->expects($this->once())
+            ->method('write')
+            ->with($expectedEncodedValue);
+        $this->formatter->writeToStream($user, $stream, 'ISO-8859-1');
+    }
+
+    public function testWritingUsingUnsupportedEncodingThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $user = new User(123, 'foo@bar.com');
+        $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
     }
 
     /**

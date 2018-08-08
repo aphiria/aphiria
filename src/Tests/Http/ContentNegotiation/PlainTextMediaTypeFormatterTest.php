@@ -59,13 +59,19 @@ class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     public function testWritingNonStringThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->formatter->writeToStream($this, $this->createMock(IStream::class));
+        $this->formatter->writeToStream($this, $this->createMock(IStream::class), 'utf-8');
     }
 
     public function testWritingToStreamSerializesInput(): void
     {
         $stream = $this->createStreamThatExpectsBody('foo');
-        $this->formatter->writeToStream('foo', $stream);
+        $this->formatter->writeToStream('foo', $stream, 'utf-8');
+    }
+
+    public function testWritingUsingUnsupportedEncodingThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->formatter->writeToStream('foo', $this->createMock(IStream::class), 'bar');
     }
 
     /**
