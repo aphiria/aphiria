@@ -16,7 +16,7 @@ use Opulence\IO\Streams\IStream;
 /**
  * Defines the base class for text-based media type formatters
  */
-abstract class TextMediaTypeFormatter implements IMediaTypeFormatter
+abstract class TextMediaTypeFormatter extends MediaTypeFormatter
 {
     /**
      * @inheritdoc
@@ -37,8 +37,10 @@ abstract class TextMediaTypeFormatter implements IMediaTypeFormatter
     /**
      * @inheritdoc
      */
-    public function writeToStream($value, IStream $stream, string $encoding): void
+    public function writeToStream($value, IStream $stream, ?string $encoding): void
     {
+        $encoding = $encoding ?? $this->getDefaultEncoding();
+
         if (!\is_string($value)) {
             throw new InvalidArgumentException(static::class . ' can only write strings');
         }
@@ -49,19 +51,5 @@ abstract class TextMediaTypeFormatter implements IMediaTypeFormatter
 
         $encodedValue = \mb_convert_encoding($value, $encoding);
         $stream->write($encodedValue);
-    }
-
-    /**
-     * Checks whether or not an encoding is supported
-     *
-     * @param string $encoding The encoding to check
-     * @return bool True if the encoding is supported, otherwise false
-     */
-    private function encodingIsSupported(string $encoding): bool
-    {
-        $lowercaseSupportedEncodings = array_map('strtolower', $this->getSupportedEncodings());
-        $lowercaseEncoding = \strtolower($encoding);
-
-        return \in_array($lowercaseEncoding, $lowercaseSupportedEncodings, true);
     }
 }

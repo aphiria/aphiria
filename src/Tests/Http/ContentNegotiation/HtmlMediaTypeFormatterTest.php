@@ -37,6 +37,16 @@ class HtmlMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['text/html'], $this->formatter->getSupportedMediaTypes());
     }
 
+    public function testDefaultEncodingReturnsFirstSupportedEncoding(): void
+    {
+        $this->assertEquals('utf-8', $this->formatter->getDefaultEncoding());
+    }
+
+    public function testDefaultMediaTypeReturnsFirstSupportedMediaType(): void
+    {
+        $this->assertEquals('text/html', $this->formatter->getDefaultMediaType());
+    }
+
     public function testReadingAsArrayOfStringsThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -82,6 +92,16 @@ class HtmlMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->formatter->writeToStream('foo', $this->createMock(IStream::class), 'bar');
+    }
+
+    public function testWritingWithNullEncodingUsesDefaultEncoding(): void
+    {
+        $stream = $this->createMock(IStream::class);
+        $expectedEncodedValue = \mb_convert_encoding('‡', 'utf-8');
+        $stream->expects($this->once())
+            ->method('write')
+            ->with($expectedEncodedValue);
+        $this->formatter->writeToStream('‡', $stream, null);
     }
 
     /**

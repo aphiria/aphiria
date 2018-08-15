@@ -47,21 +47,28 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         new ContentNegotiator([], []);
     }
 
-    public function testNoMatchingRequestFormatterReturnsNull(): void
+    public function testNoMatchingRequestFormatterReturnsResultWithAllNullProperties(): void
     {
         $formatter = $this->createFormatterMock(['application/json'], 1);
         $this->headers->add('Content-Type', 'text/html');
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateRequestContent($this->request);
-        $this->assertNull($result);
+        $this->assertNull($result->getFormatter());
+        $this->assertNull($result->getMediaType());
+        $this->assertNull($result->getEncoding());
+        $this->assertNull($result->getLanguage());
     }
 
-    public function testNoMatchingResponseFormatterReturnsNull(): void
+    public function testNoMatchingResponseFormatterReturnsResultWithAllNullProperties(): void
     {
         $formatter = $this->createFormatterMock(['text/html'], 1);
         $this->headers->add('Accept', 'application/json');
         $negotiator = new ContentNegotiator([$formatter]);
-        $this->assertNull($negotiator->negotiateResponseContent($this->request));
+        $result = $negotiator->negotiateResponseContent($this->request);
+        $this->assertNull($result->getFormatter());
+        $this->assertNull($result->getMediaType());
+        $this->assertNull($result->getEncoding());
+        $this->assertNull($result->getLanguage());
     }
 
     public function testRequestResultEncodingIsSetFromContentTypeHeaderIfSet(): void
@@ -80,13 +87,12 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('en-US', $result->getLanguage());
     }
 
-    public function testRequestFormatterIsFirstFormatterRegisteredWithNoContentTypeSpecified(): void
+    public function testRequestFormatterIsNullWithNoContentTypeSpecified(): void
     {
-        $formatter1 = $this->createMock(IMediaTypeFormatter::class);
-        $formatter2 = $this->createMock(IMediaTypeFormatter::class);
-        $negotiator = new ContentNegotiator([$formatter1, $formatter2]);
+        $formatter = $this->createMock(IMediaTypeFormatter::class);
+        $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateRequestContent($this->request);
-        $this->assertSame($formatter1, $result->getFormatter());
+        $this->assertNull($result->getFormatter());
         $this->assertEquals('application/octet-stream', $result->getMediaType());
         $this->assertNull($result->getEncoding());
     }

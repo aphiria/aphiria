@@ -40,6 +40,16 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['application/x-www-form-urlencoded'], $this->formatter->getSupportedMediaTypes());
     }
 
+    public function testDefaultEncodingReturnsFirstSupportedEncoding(): void
+    {
+        $this->assertEquals('utf-8', $this->formatter->getDefaultEncoding());
+    }
+
+    public function testDefaultMediaTypeReturnsFirstSupportedMediaType(): void
+    {
+        $this->assertEquals('application/x-www-form-urlencoded', $this->formatter->getDefaultMediaType());
+    }
+
     public function testReadingFromStreamDeserializesStreamContents(): void
     {
         $stream = $this->createStreamWithStringBody('id=123&email=foo%40bar.com');
@@ -71,6 +81,17 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->expectException(InvalidArgumentException::class);
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
+    }
+
+    public function testWritingWithNullEncodingUsesDefaultEncoding(): void
+    {
+        $stream = $this->createMock(IStream::class);
+        $user = new User(123, 'foo@bar.com');
+        $expectedEncodedValue = \mb_convert_encoding('id=123&email=foo%40bar.com', 'utf-8');
+        $stream->expects($this->once())
+            ->method('write')
+            ->with($expectedEncodedValue);
+        $this->formatter->writeToStream($user, $stream, null);
     }
 
     /**

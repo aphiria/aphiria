@@ -19,6 +19,20 @@ use Opulence\Serialization\SerializationException;
 interface IMediaTypeFormatter
 {
     /**
+     * Gets the default character encoding this formatter supports
+     *
+     * @return string The default character encoding
+     */
+    public function getDefaultEncoding(): string;
+
+    /**
+     * Gets the default media type this formatter supports
+     *
+     * @return string The default media type
+     */
+    public function getDefaultMediaType(): string;
+
+    /**
      * Gets the list of character encodings this formatter supports
      *
      * @return array The list of supported character encodings
@@ -49,8 +63,8 @@ interface IMediaTypeFormatter
      *
      * @param int|double|float|bool|string|\object|array $object The object to write
      * @param IStream $stream The stream to write to
-     * @param string $encoding The character encoding to use
+     * @param string|null $encoding The character encoding to use, or null if using the default one
      * @throws SerializationException Thrown if the content could not be converted to the input type and written
      */
-    public function writeToStream($object, IStream $stream, string $encoding): void;
+    public function writeToStream($object, IStream $stream, ?string $encoding): void;
 }

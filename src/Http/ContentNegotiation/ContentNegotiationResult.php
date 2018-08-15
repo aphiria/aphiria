@@ -15,7 +15,7 @@ namespace Opulence\Net\Http\ContentNegotiation;
  */
 class ContentNegotiationResult
 {
-    /** @var IMediaTypeFormatter The matched media type formatter */
+    /** @var IMediaTypeFormatter|null The matched media type formatter if there was one, otherwise null */
     private $formatter;
     /** @var string|null The matched media type, or null if no media type was specified */
     private $mediaType;
@@ -25,13 +25,17 @@ class ContentNegotiationResult
     private $language;
 
     /**
-     * @param IMediaTypeFormatter $formatter The matched media type formatter
+     * @param IMediaTypeFormatter|null $formatter The matched media type formatter if there was one, otherwise null
      * @param string|null $mediaType The matched media type if there was one, otherwise null
      * @param string|null $encoding The matched encoding if there was one, otherwise null
      * @param string|null $language The matched language if there was one, otherwise null
      */
-    public function __construct(IMediaTypeFormatter $formatter, ?string $mediaType, ?string $encoding, ?string $language)
-    {
+    public function __construct(
+        ?IMediaTypeFormatter $formatter,
+        ?string $mediaType,
+        ?string $encoding,
+        ?string $language
+    ) {
         $this->formatter = $formatter;
         $this->mediaType = $mediaType;
         $this->encoding = $encoding;
@@ -51,9 +55,9 @@ class ContentNegotiationResult
     /**
      * Gets the matched media type formatter
      *
-     * @return IMediaTypeFormatter The matched media type formatter
+     * @return IMediaTypeFormatter|null The matched media type formatter if there was one, otherwise null
      */
-    public function getFormatter(): IMediaTypeFormatter
+    public function getFormatter(): ?IMediaTypeFormatter
     {
         return $this->formatter;
     }
