@@ -22,11 +22,11 @@ interface IControllerParameterResolver
      * Resolved a controller parameter
      *
      * @param ReflectionParameter $reflectionParameter The reflected parameter
-     * @param RequestContext $controllerContext The current controller context
+     * @param RequestContext $requestContext The current request context
      * @return mixed The resolved parameter value
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
      * @throws RequestBodyDeserializationException Thrown if the request body could not be deserialized
      */
-    public function resolveParameter(ReflectionParameter $reflectionParameter, RequestContext $controllerContext);
+    public function resolveParameter(ReflectionParameter $reflectionParameter, RequestContext $requestContext);
 }

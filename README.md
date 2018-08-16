@@ -203,7 +203,7 @@ Once you've instantiated your dependency resolver, pass it into your [request ha
 
 <h1 id="middleware">Middleware</h1>
 
-HTTP middleware are classes that sit in between the `RequestHandler` and `Controller`.  They manipulate the request and response to do things like authenticate users or enforce CSRF protection for certain routes.  They are executed in series in a pipepline.
+HTTP middleware are classes that sit in between the `RequestHandler` and `Controller`.  They manipulate the request and response to do things like authenticate users or enforce CSRF protection for certain routes.  They are executed in series in a pipeline.
 
 Opulence uses dependency injection for type-hinted objects in a `Middleware` constructor.  So, if you need any objects in your `handle()` method, just specify them in the constructor.  Let's take a look at an example:
 

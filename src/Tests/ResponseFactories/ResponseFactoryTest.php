@@ -39,7 +39,10 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $headers = new HttpHeaders();
         $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, $headers, null);
-        $requestContext = $this->createBasicRequestContext();
+        $requestContext = $this->createBasicRequestContext(
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null)
+        );
         $response = $responseFactory->createResponse($requestContext);
         $this->assertSame($headers, $response->getHeaders());
     }
@@ -48,7 +51,10 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $expectedBody = $this->createMock(IHttpBody::class);
         $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, null, $expectedBody);
-        $requestContext = $this->createBasicRequestContext();
+        $requestContext = $this->createBasicRequestContext(
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null)
+        );
         $response = $responseFactory->createResponse($requestContext);
         $this->assertSame($expectedBody, $response->getBody());
     }
@@ -59,7 +65,10 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
             // Don't do anything
         };
         $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, null, $rawBody);
-        $requestContext = $this->createBasicRequestContext();
+        $requestContext = $this->createBasicRequestContext(
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null)
+        );
 
         try {
             $responseFactory->createResponse($requestContext);
@@ -69,14 +78,14 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testCreatingResponseWithObjectBodyAndNoRequestContentNegotiationResultThrowsException(): void
+    public function testCreatingResponseWithObjectBodyAndNoNegotiatedMediaTypeFormatterThrowsException(): void
     {
         $rawBody = new User(123, 'foo@bar.com');
         $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, null, $rawBody);
         $requestContext = new RequestContext(
             $this->createRequest('http://foo.com'),
-            null,
-            $this->createBasicContentNegotiationResult(),
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null),
             new MatchedRoute(new RouteAction('Foo', 'bar', null), [], [])
         );
 
@@ -95,9 +104,9 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
         $requestMediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $requestMediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
-            ->with($rawBody, $this->isInstanceOf(Stream::class))
+            ->with($rawBody, $this->isInstanceOf(Stream::class), null)
             ->willThrowException(new SerializationException);
-        $requestContentNegotiationResult = new ContentNegotiationResult(
+        $responseContentNegotiationResult = new ContentNegotiationResult(
             $requestMediaTypeFormatter,
             null,
             null,
@@ -105,8 +114,8 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
         );
         $requestContext = new RequestContext(
             $this->createRequest('http://foo.com'),
-            $requestContentNegotiationResult,
-            $this->createBasicContentNegotiationResult(),
+            new ContentNegotiationResult(null, null, null, null),
+            $responseContentNegotiationResult,
             new MatchedRoute(new RouteAction('Foo', 'bar', null), [], [])
         );
 
@@ -118,24 +127,24 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testCreatingResponseWithObjectBodyWritesToResponseBodyUsingMediaTypeFormatter(): void
+    public function testCreatingResponseWithObjectBodyWritesToResponseBodyUsingMediaTypeFormatterAndMatchedEncoding(): void
     {
         $rawBody = new User(123, 'foo@bar.com');
         $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, null, $rawBody);
         $requestMediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $requestMediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
-            ->with($rawBody, $this->isInstanceOf(Stream::class));
-        $requestContentNegotiationResult = new ContentNegotiationResult(
+            ->with($rawBody, $this->isInstanceOf(Stream::class), 'utf-8');
+        $responseContentNegotiationResult = new ContentNegotiationResult(
             $requestMediaTypeFormatter,
             null,
-            null,
+            'utf-8',
             null
         );
         $requestContext = new RequestContext(
             $this->createRequest('http://foo.com'),
-            $requestContentNegotiationResult,
-            $this->createBasicContentNegotiationResult(),
+            new ContentNegotiationResult(null, null, null, null),
+            $responseContentNegotiationResult,
             new MatchedRoute(new RouteAction('Foo', 'bar', null), [], [])
         );
         $response = $responseFactory->createResponse($requestContext);
@@ -146,7 +155,10 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $rawBody = 'foo';
         $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, null, $rawBody);
-        $requestContext = $this->createBasicRequestContext();
+        $requestContext = $this->createBasicRequestContext(
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null)
+        );
         $response = $responseFactory->createResponse($requestContext);
         $this->assertInstanceOf(StringBody::class, $response->getBody());
         $this->assertEquals('foo', (string)$response->getBody());
@@ -156,7 +168,10 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $rawBody = $this->createMock(IStream::class);
         $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, null, $rawBody);
-        $requestContext = $this->createBasicRequestContext();
+        $requestContext = $this->createBasicRequestContext(
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null)
+        );
         $response = $responseFactory->createResponse($requestContext);
         $this->assertInstanceOf(StreamBody::class, $response->getBody());
     }
@@ -164,14 +179,17 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
     public function testCreatingResponseUsesStatusCodeSetInConstructor(): void
     {
         $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_ACCEPTED);
-        $requestContext = $this->createBasicRequestContext();
+        $requestContext = $this->createBasicRequestContext(
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null)
+        );
         $response = $responseFactory->createResponse($requestContext);
         $this->assertEquals(HttpStatusCodes::HTTP_ACCEPTED, $response->getStatusCode());
     }
 
     public function testCreatingResponseWillSetContentTypeResponseHeaderFromMediaTypeFormatterMediaType(): void
     {
-        $requestContentNegotiationResult = $this->createBasicContentNegotiationResult();
+        $requestContentNegotiationResult = new ContentNegotiationResult(null, null, null, null);
         $responseContentNegotiationResult = new ContentNegotiationResult(
             $this->createMock(IMediaTypeFormatter::class),
             'foo/bar',
@@ -189,44 +207,17 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo/bar', $response->getHeaders()->getFirst('Content-Type'));
     }
 
-    public function testCreatingResponseWithNullResponseContentNegotiationResultThrowsException(): void
-    {
-        $this->expectException(HttpException::class);
-        $requestContext = new RequestContext(
-            $this->createRequest('http://foo.com'),
-            null,
-            null,
-            new MatchedRoute(new RouteAction('Foo', 'bar', null), [], [])
-        );
-        $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK);
-        $responseFactory->createResponse($requestContext);
-    }
-
-    /**
-     * Creates a basic content negotiation result
-     *
-     * @return ContentNegotiationResult The content negotiation result
-     */
-    private function createBasicContentNegotiationResult(): ContentNegotiationResult
-    {
-        return new ContentNegotiationResult(
-            $this->createMock(IMediaTypeFormatter::class),
-            null,
-            null,
-            null
-        );
-    }
-
     /**
      * Creates a basic request context
      *
+     * @param ContentNegotiationResult $requestContentNegotiationResult The request content negotiation result
+     * @param ContentNegotiationResult $responseContentNegotiationResult The response content negotiation result
      * @return RequestContext The request context
      */
-    private function createBasicRequestContext(): RequestContext
-    {
-        $requestContentNegotiationResult = $this->createBasicContentNegotiationResult();
-        $responseContentNegotiationResult = $this->createBasicContentNegotiationResult();
-
+    private function createBasicRequestContext(
+        ContentNegotiationResult $requestContentNegotiationResult,
+        ContentNegotiationResult $responseContentNegotiationResult
+    ): RequestContext {
         return new RequestContext(
             $this->createRequest('http://foo.com'),
             $requestContentNegotiationResult,

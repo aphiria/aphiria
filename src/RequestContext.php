@@ -21,23 +21,23 @@ class RequestContext
 {
     /** @var IHttpRequestMessage The request in the context */
     private $request;
-    /** @var ContentNegotiationResult|null The request content negotiation result */
+    /** @var ContentNegotiationResult The request content negotiation result */
     private $requestContentNegotiationResult;
-    /** @var ContentNegotiationResult|null The response content negotiation result */
+    /** @var ContentNegotiationResult The response content negotiation result */
     private $responseContentNegotiationResult;
     /** @var MatchedRoute The matched route in the context */
     private $matchedRoute;
 
     /**
      * @param IHttpRequestMessage $request The request in the context
-     * @param ContentNegotiationResult|null $requestContentNegotiationResult The request content negotiation result
-     * @param ContentNegotiationResult|null $responseContentNegotiationResult The response content negotiation result
+     * @param ContentNegotiationResult $requestContentNegotiationResult The request content negotiation result
+     * @param ContentNegotiationResult $responseContentNegotiationResult The response content negotiation result
      * @param MatchedRoute $matchedRoute The matched route in the context
      */
     public function __construct(
         IHttpRequestMessage $request,
-        ?ContentNegotiationResult $requestContentNegotiationResult,
-        ?ContentNegotiationResult $responseContentNegotiationResult,
+        ContentNegotiationResult $requestContentNegotiationResult,
+        ContentNegotiationResult $responseContentNegotiationResult,
         MatchedRoute $matchedRoute
     ) {
         $this->request = $request;
@@ -69,9 +69,9 @@ class RequestContext
     /**
      * Gets the request content negotiation result
      *
-     * @return ContentNegotiationResult|null The request content negotiation result if there was one, otherwise null
+     * @return ContentNegotiationResult The request content negotiation result
      */
-    public function getRequestContentNegotiationResult(): ?ContentNegotiationResult
+    public function getRequestContentNegotiationResult(): ContentNegotiationResult
     {
         return $this->requestContentNegotiationResult;
     }
@@ -79,9 +79,9 @@ class RequestContext
     /**
      * Gets the response content negotiation result
      *
-     * @return ContentNegotiationResult|null The response content negotiation result if there was one, otherwise null
+     * @return ContentNegotiationResult The response content negotiation result
      */
-    public function getResponseContentNegotiationResult(): ?ContentNegotiationResult
+    public function getResponseContentNegotiationResult(): ContentNegotiationResult
     {
         return $this->responseContentNegotiationResult;
     }

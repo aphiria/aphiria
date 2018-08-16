@@ -36,11 +36,11 @@ class ControllerParameterResolver implements IControllerParameterResolver
     /**
      * @inheritdoc
      */
-    public function resolveParameter(ReflectionParameter $reflectionParameter, RequestContext $controllerContext)
+    public function resolveParameter(ReflectionParameter $reflectionParameter, RequestContext $requestContext)
     {
-        $request = $controllerContext->getRequest();
-        $requestContentNegotiationResult = $controllerContext->getRequestContentNegotiationResult();
-        $routeVars = $controllerContext->getMatchedRoute()->getRouteVars();
+        $request = $requestContext->getRequest();
+        $requestContentNegotiationResult = $requestContext->getRequestContentNegotiationResult();
+        $routeVars = $requestContext->getMatchedRoute()->getRouteVars();
         $queryStringVars = $this->uriParser->parseQueryString($request->getUri());
 
         if ($reflectionParameter->getClass() !== null) {
@@ -77,7 +77,7 @@ class ControllerParameterResolver implements IControllerParameterResolver
      *
      * @param ReflectionParameter $reflectionParameter The parameter to resolve
      * @param IHttpRequestMessage $request The current request
-     * @param ContentNegotiationResult|null $requestContentNegotiationResult The request content negotiation result
+     * @param ContentNegotiationResult $requestContentNegotiationResult The request content negotiation result
      * @return \object|null The resolved parameter
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
@@ -86,7 +86,7 @@ class ControllerParameterResolver implements IControllerParameterResolver
     private function resolveObjectParameter(
         ReflectionParameter $reflectionParameter,
         IHttpRequestMessage $request,
-        ?ContentNegotiationResult $requestContentNegotiationResult
+        ContentNegotiationResult $requestContentNegotiationResult
     ): ?object {
         if ($request->getBody() === null) {
             if (!$reflectionParameter->allowsNull()) {
@@ -98,7 +98,9 @@ class ControllerParameterResolver implements IControllerParameterResolver
             return null;
         }
 
-        if ($requestContentNegotiationResult === null) {
+        $mediaTypeFormatter = $requestContentNegotiationResult->getFormatter();
+
+        if ($mediaTypeFormatter === null) {
             if (!$reflectionParameter->allowsNull()) {
                 throw new FailedRequestContentNegotiationException('Failed to negotiate request content');
             }
@@ -107,7 +109,7 @@ class ControllerParameterResolver implements IControllerParameterResolver
         }
 
         try {
-            return $requestContentNegotiationResult->getFormatter()
+            return $mediaTypeFormatter
                 ->readFromStream($request->getBody()->readAsStream(), $reflectionParameter->getType());
         } catch (SerializationException $ex) {
             if (!$reflectionParameter->allowsNull()) {

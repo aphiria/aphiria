@@ -24,6 +24,8 @@ use Throwable;
  */
 class ExceptionHandler implements IExceptionHandler
 {
+    /** @const The default name to use for the logger */
+    private const DEFAULT_LOGGER_NAME = 'app';
     /** @var LoggerInterface The logger */
     protected $logger;
     /** @var IExceptionResponseFactory The exception response factory */
@@ -56,7 +58,7 @@ class ExceptionHandler implements IExceptionHandler
         array $exceptionsNotLogged = []
     ) {
         if ($logger === null) {
-            $logger = new Logger('app');
+            $logger = new Logger(self::DEFAULT_LOGGER_NAME);
             $logger->pushHandler(new ErrorLogHandler());
         }
 
@@ -153,10 +155,10 @@ class ExceptionHandler implements IExceptionHandler
     /**
      * Determines whether or not an exception should be logged
      *
-     * @param Throwable|Exception $ex The exception to check
+     * @param Exception $ex The exception to check
      * @return bool True if the exception should be logged, otherwise false
      */
-    protected function shouldLogException($ex): bool
+    protected function shouldLogException(Exception $ex): bool
     {
         return !\in_array(\get_class($ex), $this->exceptionsNotLogged);
     }

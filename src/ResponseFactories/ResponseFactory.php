@@ -54,11 +54,8 @@ class ResponseFactory implements IResponseFactory
      */
     public function createResponse(RequestContext $requestContext): IHttpResponseMessage
     {
-        if ($requestContext->getResponseContentNegotiationResult() === null) {
-            throw new HttpException(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, 'Response content could not be negotiated');
-        }
-
-        $mediaType = $requestContext->getResponseContentNegotiationResult()->getMediaType();
+        $responseContentNegotiationResult = $requestContext->getResponseContentNegotiationResult();
+        $mediaType = $responseContentNegotiationResult->getMediaType();
 
         if ($mediaType !== null) {
             $this->headers->add('Content-Type', $mediaType);
@@ -68,7 +65,7 @@ class ResponseFactory implements IResponseFactory
             return new Response(
                 $this->statusCode,
                 $this->headers,
-                $this->createResponseBody($requestContext->getRequestContentNegotiationResult())
+                $this->createResponseBody($responseContentNegotiationResult)
             );
         } catch (InvalidArgumentException $ex) {
             throw new HttpException(
@@ -83,12 +80,12 @@ class ResponseFactory implements IResponseFactory
     /**
      * Creates a response body from a raw body value
      *
-     * @param ContentNegotiationResult|null $requestContentNegotiationResult The request content negotiation result
+     * @param ContentNegotiationResult $responseContentNegotiationResult The response content negotiation result
      * @return IHttpBody|null The response body, or null if there is no body
      * @throws InvalidArgumentException Thrown if the body is not a supported type
      * @throws HttpException Thrown if the response content could not be negotiated
      */
-    protected function createResponseBody(?ContentNegotiationResult $requestContentNegotiationResult): ?IHttpBody
+    protected function createResponseBody(ContentNegotiationResult $responseContentNegotiationResult): ?IHttpBody
     {
         if ($this->rawBody === null || $this->rawBody instanceof IHttpBody) {
             return $this->rawBody;
@@ -106,16 +103,19 @@ class ResponseFactory implements IResponseFactory
             throw new InvalidArgumentException('Unsupported body type ' . \gettype($this->rawBody));
         }
 
-        if ($requestContentNegotiationResult === null) {
+        $mediaTypeFormatter = $responseContentNegotiationResult->getFormatter();
+
+        if ($mediaTypeFormatter === null) {
             throw new HttpException(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, 'Response content could not be negotiated');
         }
 
         $bodyStream = new Stream(fopen('php://temp', 'r+b'));
 
         try {
-            $requestContentNegotiationResult->getFormatter()->writeToStream(
+            $mediaTypeFormatter->writeToStream(
                 $this->rawBody,
-                $bodyStream
+                $bodyStream,
+                $responseContentNegotiationResult->getEncoding()
             );
         } catch (SerializationException $ex) {
             throw new HttpException(

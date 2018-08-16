@@ -122,8 +122,8 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             new ReflectionParameter([Controller::class, 'objectParameter'], 'user'),
             new RequestContext(
                 $this->createRequest('http://foo.com'),
-                null,
-                null,
+                new ContentNegotiationResult(null, null, null, null),
+                new ContentNegotiationResult(null, null, null, null),
                 new MatchedRoute(new RouteAction(Controller::class, 'objectParameter', null), [], [])
             )
         );
@@ -159,8 +159,8 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             new ReflectionParameter([Controller::class, 'stringParameter'], 'foo'),
             new RequestContext(
                 $this->createRequest('http://foo.com'),
-                null,
-                null,
+                new ContentNegotiationResult(null, null, null, null),
+                new ContentNegotiationResult(null, null, null, null),
                 new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], [])
             )
         );

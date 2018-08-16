@@ -255,8 +255,13 @@ class Controller
      */
     protected function readRequestBodyAsArrayOfType(string $type): array
     {
-        if ($this->requestContext->getRequestContentNegotiationResult() === null) {
-            throw new HttpException(HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE, 'Failed to read request body');
+        $mediaTypeFormatter = $this->requestContext->getRequestContentNegotiationResult()->getFormatter();
+
+        if ($mediaTypeFormatter === null) {
+            throw new HttpException(
+                HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                'No available media type formatter to read request body'
+            );
         }
 
         if (($body = $this->requestContext->getRequest()->getBody()) === null) {
@@ -264,8 +269,7 @@ class Controller
         }
 
         try {
-            return $this->requestContext->getRequestContentNegotiationResult()->getFormatter()
-                ->readFromStream($body->readAsStream(), $type, true);
+            return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type, true);
         } catch (SerializationException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,

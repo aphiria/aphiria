@@ -12,7 +12,6 @@ namespace Opulence\Api\Tests\ResponseFactories;
 
 use Opulence\Api\RequestContext;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
-use Opulence\Net\Http\ContentNegotiation\IMediaTypeFormatter;
 use Opulence\Net\Http\Request;
 use Opulence\Net\Uri;
 use Opulence\Routing\Matchers\MatchedRoute;
@@ -31,7 +30,7 @@ abstract class ResponseFactoryTestCase extends \PHPUnit\Framework\TestCase
     protected function createBasicContentNegotiationResult(): ContentNegotiationResult
     {
         return new ContentNegotiationResult(
-            $this->createMock(IMediaTypeFormatter::class),
+            null,
             null,
             null,
             null

@@ -55,8 +55,8 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
     {
         $requestContext = new RequestContext(
             $this->createRequest('http://foo.com'),
-            null,
-            null,
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null),
             new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], [])
         );
 
@@ -82,8 +82,8 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
         };
         $requestContext = new RequestContext(
             $this->createRequest('http://foo.com'),
-            null,
-            null,
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null),
             new MatchedRoute(new RouteAction(null, null, $closure), [], [])
         );
         $this->parameterResolver->expects($this->once())
@@ -110,7 +110,6 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
                 new MatchedRoute(new RouteAction(Controller::class, 'popo', null), [], [])
             )
         );
-        $this->assertInstanceOf(IHttpResponseMessage::class, $response);
         $this->assertEquals(HttpStatusCodes::HTTP_OK, $response->getStatusCode());
         /**
          *  Note: I cannot (easily) test what the body is because I cannot set up my formatter mock to write
@@ -126,12 +125,11 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
             [$this->controller, 'responseFactory'],
             new RequestContext(
                 $this->createRequest('http://foo.com'),
-                null,
+                new ContentNegotiationResult(null, null, null, null),
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
                 new MatchedRoute(new RouteAction(Controller::class, 'responseFactory', null), [], [])
             )
         );
-        $this->assertInstanceOf(IHttpResponseMessage::class, $response);
         $this->assertEquals(HttpStatusCodes::HTTP_OK, $response->getStatusCode());
         $this->assertEquals('foo', (string)$response->getBody());
     }
@@ -143,8 +141,8 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
             [$this->controller, 'throwsException'],
             new RequestContext(
                 $this->createRequest('http://foo.com'),
-                null,
-                null,
+                new ContentNegotiationResult(null, null, null, null),
+                new ContentNegotiationResult(null, null, null, null),
                 new MatchedRoute(new RouteAction(Controller::class, 'throwsException', null), [], [])
             )
         );
@@ -188,8 +186,8 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
     {
         $requestContext = new RequestContext(
             $this->createRequest('http://foo.com'),
-            null,
-            null,
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null),
             new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], [])
         );
 
@@ -209,8 +207,8 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
     {
         $requestContext = new RequestContext(
             $this->createRequest('http://foo.com'),
-            null,
-            null,
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null),
             new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], [])
         );
 
