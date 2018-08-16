@@ -531,7 +531,7 @@ $uri = new Uri('https://example.com/foo?bar=baz#blah');
 
 <h1 id="content-negotiation">Content Negotiation</h1>
 
-Content negotiation is a process between the client and server to determine how to best process a request and serve content back to the client.  This negotiation is typically done via headers, where the client says "Here's the type of content I'd prefer (eg JSON, XMl, etc)", and the server trying to accomodate the client's preferences.  For example, the process can involve negotiating the following for requests and responses per the <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html" target="_blank">HTTP spec</a>:
+Content negotiation is a process between the client and server to determine how to best process a request and serve content back to the client.  This negotiation is typically done via headers, where the client says "Here's the type of content I'd prefer (eg JSON, XMl, etc)", and the server trying to accommodate the client's preferences.  For example, the process can involve negotiating the following for requests and responses per the <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html" target="_blank">HTTP spec</a>:
 
 * Content type
     * Controlled by the `Content-Type` and `Accept` headers
@@ -565,7 +565,7 @@ $result = $contentNegotiator->negotiateRequestContent($request);
 Media type formatters can read and write a particular data format to a stream.  You can get the media type formatter from `ContentNegotiationResult`, and use it to deserialize a request body to a particular type (`User` in this example):
 
 ```php
-$mediaTypeFormatter = $result->getMediaTypeFormatter();
+$mediaTypeFormatter = $result->getFormatter();
 $mediaTypeFormatter->readFromStream($request->getBody(), User::class);
 ```
 
