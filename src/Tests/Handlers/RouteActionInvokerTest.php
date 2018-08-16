@@ -21,7 +21,7 @@ use Opulence\Api\Tests\Handlers\Mocks\Controller;
 use Opulence\Api\Tests\Handlers\Mocks\User;
 use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
-use Opulence\Net\Http\ContentNegotiation\IMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpResponseMessage;

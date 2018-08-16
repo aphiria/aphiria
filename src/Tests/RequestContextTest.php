@@ -12,7 +12,7 @@ namespace Opulence\Api\Tests;
 
 use Opulence\Api\RequestContext;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
-use Opulence\Net\Http\ContentNegotiation\IMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Routing\Matchers\MatchedRoute;
 use Opulence\Routing\RouteAction;

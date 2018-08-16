@@ -16,7 +16,7 @@ use Opulence\Api\RequestContext;
 use Opulence\Api\Tests\Handlers\Mocks\Controller;
 use Opulence\Api\Tests\Handlers\Mocks\User;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
-use Opulence\Net\Http\ContentNegotiation\IMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Opulence\Net\Http\Request;
 use Opulence\Net\Http\StringBody;
 use Opulence\Net\Uri;
