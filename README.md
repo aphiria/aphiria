@@ -560,7 +560,7 @@ $contentNegotiator = new ContentNegotiator($mediaTypeFormatters, $supportedLangu
 $result = $contentNegotiator->negotiateRequestContent($request);
 ```
 
-> **Note:** `ContentNegotiator` uses language tags from <a href="https://tools.ietf.org/html/rfc4646" target="_blank">RFC 4646</a>, and follows the lookup rules in <a href="https://tools.ietf.org/html/rfc4647#section-3.4" target="_blank">RFC 4647 Section 3.4</a>.
+> **Note:** `ContentNegotiator` uses language tags from <a href="https://tools.ietf.org/html/rfc5646" target="_blank">RFC 5646</a>, and follows the lookup rules in <a href="https://tools.ietf.org/html/rfc4647#section-3.4" target="_blank">RFC 4647 Section 3.4</a>.
 
 <h2 id="media-type-formatters">Media Type Formatters</h2>
 

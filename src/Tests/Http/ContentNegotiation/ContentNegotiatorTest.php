@@ -116,11 +116,15 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
     public function testResponseFormatterIsFirstFormatterRegisteredWithNoAcceptSpecified(): void
     {
         $formatter1 = $this->createMock(IMediaTypeFormatter::class);
+        $formatter1->expects($this->once())
+            ->method('getDefaultMediaType')
+            ->willReturn('application/json');
         $formatter2 = $this->createMock(IMediaTypeFormatter::class);
         $negotiator = new ContentNegotiator([$formatter1, $formatter2]);
         $result = $negotiator->negotiateResponseContent($this->request);
         $this->assertSame($formatter1, $result->getFormatter());
-        $this->assertEquals('application/octet-stream', $result->getMediaType());
+        // Verify it's using the default media type
+        $this->assertEquals('application/json', $result->getMediaType());
         $this->assertNull($result->getEncoding());
     }
 
@@ -130,12 +134,15 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         $formatter->expects($this->once())
             ->method('getSupportedEncodings')
             ->willReturn(['utf-16']);
+        $formatter->expects($this->once())
+            ->method('getDefaultMediaType')
+            ->willReturn('application/json');
         $this->headers->add('Accept-Charset', 'utf-16');
         $this->headers->add('Accept-Language', 'en-US');
         $negotiator = new ContentNegotiator([$formatter], ['en-US']);
         $result = $negotiator->negotiateResponseContent($this->request);
         $this->assertSame($formatter, $result->getFormatter());
-        $this->assertEquals('application/octet-stream', $result->getMediaType());
+        $this->assertEquals('application/json', $result->getMediaType());
         $this->assertEquals('utf-16', $result->getEncoding());
         $this->assertEquals('en-US', $result->getLanguage());
     }
@@ -160,12 +167,15 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         $formatter->expects($this->once())
             ->method('getSupportedEncodings')
             ->willReturn(['utf-8']);
+        $formatter->expects($this->once())
+            ->method('getDefaultMediaType')
+            ->willReturn('application/json');
         $this->headers->add('Accept-Charset', 'utf-8');
         $this->headers->add('Accept-Language', 'en-US');
         $negotiator = new ContentNegotiator([$formatter], ['en-US']);
         $result = $negotiator->negotiateResponseContent($this->request);
         $this->assertSame($formatter, $result->getFormatter());
-        $this->assertEquals('application/octet-stream', $result->getMediaType());
+        $this->assertEquals('application/json', $result->getMediaType());
         $this->assertEquals('utf-8', $result->getEncoding());
         $this->assertEquals('en-US', $result->getLanguage());
     }

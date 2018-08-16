@@ -20,8 +20,8 @@ use Opulence\Net\Http\IHttpRequestMessage;
  */
 class ContentNegotiator implements IContentNegotiator
 {
-    /** @const The default media type if none is found (RFC-7231) */
-    private const DEFAULT_MEDIA_TYPE = 'application/octet-stream';
+    /** @const The default media type if none is found (RFC 7231) */
+    private const DEFAULT_REQUEST_MEDIA_TYPE = 'application/octet-stream';
     /** @var IMediaTypeFormatter[] The list of media type formatters */
     private $mediaTypeFormatters;
     /** @var array The list of supported languages */
@@ -76,7 +76,7 @@ class ContentNegotiator implements IContentNegotiator
 
         if ($contentTypeHeader === null) {
             // Default to the first registered media type formatter
-            return new ContentNegotiationResult(null, self::DEFAULT_MEDIA_TYPE, null, $language);
+            return new ContentNegotiationResult(null, self::DEFAULT_REQUEST_MEDIA_TYPE, null, $language);
         }
 
         $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestMediaTypeFormatterMatch(
@@ -122,7 +122,7 @@ class ContentNegotiator implements IContentNegotiator
 
             return new ContentNegotiationResult(
                 $this->mediaTypeFormatters[0],
-                self::DEFAULT_MEDIA_TYPE,
+                $this->mediaTypeFormatters[0]->getDefaultMediaType(),
                 $encoding,
                 $language
             );
