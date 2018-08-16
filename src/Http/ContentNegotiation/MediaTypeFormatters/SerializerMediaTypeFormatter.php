@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\ContentNegotiation;
+namespace Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;

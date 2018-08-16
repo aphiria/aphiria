@@ -11,6 +11,7 @@
 namespace Opulence\Net\Http\ContentNegotiation;
 
 use InvalidArgumentException;
+use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Opulence\Net\Http\Formatting\RequestHeaderParser;
 use Opulence\Net\Http\IHttpRequestMessage;
 

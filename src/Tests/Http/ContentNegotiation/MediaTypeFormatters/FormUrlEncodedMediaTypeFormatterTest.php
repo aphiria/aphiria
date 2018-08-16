@@ -8,33 +8,36 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Tests\Http\ContentNegotiation;
+namespace Opulence\Net\Tests\Http\Formatting;
 
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
-use Opulence\Net\Http\ContentNegotiation\HtmlMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedSerializerMediaTypeFormatter;
+use Opulence\Net\Tests\Http\Formatting\Mocks\User;
+use Opulence\Serialization\FormUrlEncodedSerializer;
 
 /**
- * Tests the HTML media type formatter
+ * Tests the form URL-encoded media type formatter
  */
-class HtmlMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
+class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var HtmlMediaTypeFormatter The formatter to use in tests */
+    /** @var FormUrlEncodedSerializerMediaTypeFormatter The formatter to use in tests */
     private $formatter;
 
     public function setUp(): void
     {
-        $this->formatter = new HtmlMediaTypeFormatter();
+        $serializer = new FormUrlEncodedSerializer();
+        $this->formatter = new FormUrlEncodedSerializerMediaTypeFormatter($serializer);
     }
 
     public function testCorrectSupportedEncodingsAreReturned(): void
     {
-        $this->assertEquals(['utf-8', 'utf-16'], $this->formatter->getSupportedEncodings());
+        $this->assertEquals(['utf-8', 'ISO-8859-1'], $this->formatter->getSupportedEncodings());
     }
 
     public function testCorrectSupportedMediaTypesAreReturned(): void
     {
-        $this->assertEquals(['text/html'], $this->formatter->getSupportedMediaTypes());
+        $this->assertEquals(['application/x-www-form-urlencoded'], $this->formatter->getSupportedMediaTypes());
     }
 
     public function testDefaultEncodingReturnsFirstSupportedEncoding(): void
@@ -44,64 +47,51 @@ class HtmlMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 
     public function testDefaultMediaTypeReturnsFirstSupportedMediaType(): void
     {
-        $this->assertEquals('text/html', $this->formatter->getDefaultMediaType());
+        $this->assertEquals('application/x-www-form-urlencoded', $this->formatter->getDefaultMediaType());
     }
 
-    public function testReadingAsArrayOfStringsThrowsException(): void
+    public function testReadingFromStreamDeserializesStreamContents(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->formatter->readFromStream($this->createMock(IStream::class), 'string', true);
+        $stream = $this->createStreamWithStringBody('id=123&email=foo%40bar.com');
+        $expectedUser = new User(123, 'foo@bar.com');
+        $actualUser = $this->formatter->readFromStream($stream, User::class);
+        $this->assertEquals($expectedUser, $actualUser);
     }
 
-    public function testReadingFromStreamReturnsSerializedStream(): void
+    public function testWritingToStreamSetsStreamContentsFromSerializedValue(): void
     {
-        $stream = $this->createStreamWithStringBody('foo');
-        $value = $this->formatter->readFromStream($stream, 'string');
-        $this->assertEquals('foo', $value);
-    }
-
-    public function testReadingNonStringThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->formatter->readFromStream($this->createMock(IStream::class), self::class);
-    }
-
-    public function testWritingNonStringThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->formatter->writeToStream($this, $this->createMock(IStream::class), 'utf-8');
-    }
-
-    public function testWritingToStreamSerializesInput(): void
-    {
-        $stream = $this->createStreamThatExpectsBody('foo');
-        $this->formatter->writeToStream('foo', $stream, 'utf-8');
+        $stream = $this->createStreamThatExpectsBody('id=123&email=foo%40bar.com');
+        $user = new User(123, 'foo@bar.com');
+        $this->formatter->writeToStream($user, $stream, 'utf-8');
     }
 
     public function testWritingConvertsToInputEncoding(): void
     {
         $stream = $this->createMock(IStream::class);
-        $expectedEncodedValue = \mb_convert_encoding('‡', 'utf-16');
+        $user = new User(123, 'foo@bar.com');
+        $expectedEncodedValue = \mb_convert_encoding('id=123&email=foo%40bar.com', 'ISO-8859-1');
         $stream->expects($this->once())
             ->method('write')
             ->with($expectedEncodedValue);
-        $this->formatter->writeToStream('‡', $stream, 'utf-16');
+        $this->formatter->writeToStream($user, $stream, 'ISO-8859-1');
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->formatter->writeToStream('foo', $this->createMock(IStream::class), 'bar');
+        $user = new User(123, 'foo@bar.com');
+        $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
     }
 
     public function testWritingWithNullEncodingUsesDefaultEncoding(): void
     {
         $stream = $this->createMock(IStream::class);
-        $expectedEncodedValue = \mb_convert_encoding('‡', 'utf-8');
+        $user = new User(123, 'foo@bar.com');
+        $expectedEncodedValue = \mb_convert_encoding('id=123&email=foo%40bar.com', 'utf-8');
         $stream->expects($this->once())
             ->method('write')
             ->with($expectedEncodedValue);
-        $this->formatter->writeToStream('‡', $stream, null);
+        $this->formatter->writeToStream($user, $stream, null);
     }
 
     /**

@@ -35,7 +35,7 @@
 
 <h1 id="introduction">Introduction</h1>
 
-Opulence's network library provides better abstractions for HTTP requests, responses, bodies, headers, and URIs.  It also comes built-in with support for RFC-compliant content negotiation for request and response bodies.
+Opulence's network library provides better abstractions for HTTP requests, responses, bodies, headers, and URIs.  It also comes built-in with support for RFC-compliant [content negotiation](#content-negotiation) for request and response bodies.
 
 <h2 id="requirements">Requirements</h2>
 
@@ -55,7 +55,7 @@ To install the Net library, simply add `opulence/net: 1.0.*` to your _composer.j
 
 <h2 id="why-not-use-psr-7">Why Not Use PSR-7?</h2>
 
-PSR-7 was an attempt to standardize frameworks' HTTP components to be interopbile, but it contained many contested features:
+This library isn't just a bunch of HTTP-abstractions - it also contains RFC-compliant [content negotiation](#content-negotiation).  PSR-7 was an attempt to standardize frameworks' HTTP components to be interoperable.  However, it contained many contested features:
 
 1. Request and response immutability
     * This has often been considered cumbersome, bug-prone, and a bad use-case for immutability
@@ -65,6 +65,8 @@ PSR-7 was an attempt to standardize frameworks' HTTP components to be interopbil
     * Bodies aren't inherently streams - they should be _readable as_ streams, and _writable to_ streams
 3. PSR-7 improperly abstracted uploaded files
     * They are part of the body, not the request message
+    
+This library addresses these shortcomings, and handles many more nitty-gritty details of the HTTP spec.
 
 <h1 id="requests">Requests</h1>
 
@@ -545,8 +547,8 @@ To negotiate the request content, simply call:
 
 ```php
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiator;
-use Opulence\Net\Http\ContentNegotiation\FormUrlEncodedMediaTypeFormatter;
-use Opulence\Net\Http\ContentNegotiation\JsonMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 
 // Register whatever media type formatters you support
 $mediaTypeFormatters = [

@@ -12,32 +12,32 @@ namespace Opulence\Net\Tests\Http\Formatting;
 
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
-use Opulence\Net\Http\ContentNegotiation\FormUrlEncodedSerializerMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
-use Opulence\Serialization\FormUrlEncodedSerializer;
+use Opulence\Serialization\JsonSerializer;
 
 /**
- * Tests the form URL-encoded media type formatter
+ * Tests the JSON media type formatter
  */
-class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
+class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var FormUrlEncodedSerializerMediaTypeFormatter The formatter to use in tests */
+    /** @var JsonMediaTypeFormatter The formatter to use in tests */
     private $formatter;
 
     public function setUp(): void
     {
-        $serializer = new FormUrlEncodedSerializer();
-        $this->formatter = new FormUrlEncodedSerializerMediaTypeFormatter($serializer);
+        $serializer = new JsonSerializer();
+        $this->formatter = new JsonMediaTypeFormatter($serializer);
     }
 
     public function testCorrectSupportedEncodingsAreReturned(): void
     {
-        $this->assertEquals(['utf-8', 'ISO-8859-1'], $this->formatter->getSupportedEncodings());
+        $this->assertEquals(['utf-8'], $this->formatter->getSupportedEncodings());
     }
 
     public function testCorrectSupportedMediaTypesAreReturned(): void
     {
-        $this->assertEquals(['application/x-www-form-urlencoded'], $this->formatter->getSupportedMediaTypes());
+        $this->assertEquals(['application/json', 'text/json'], $this->formatter->getSupportedMediaTypes());
     }
 
     public function testDefaultEncodingReturnsFirstSupportedEncoding(): void
@@ -47,12 +47,12 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 
     public function testDefaultMediaTypeReturnsFirstSupportedMediaType(): void
     {
-        $this->assertEquals('application/x-www-form-urlencoded', $this->formatter->getDefaultMediaType());
+        $this->assertEquals('application/json', $this->formatter->getDefaultMediaType());
     }
 
     public function testReadingFromStreamDeserializesStreamContents(): void
     {
-        $stream = $this->createStreamWithStringBody('id=123&email=foo%40bar.com');
+        $stream = $this->createStreamWithStringBody('{"id":123,"email":"foo@bar.com"}');
         $expectedUser = new User(123, 'foo@bar.com');
         $actualUser = $this->formatter->readFromStream($stream, User::class);
         $this->assertEquals($expectedUser, $actualUser);
@@ -60,20 +60,9 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 
     public function testWritingToStreamSetsStreamContentsFromSerializedValue(): void
     {
-        $stream = $this->createStreamThatExpectsBody('id=123&email=foo%40bar.com');
+        $stream = $this->createStreamThatExpectsBody('{"id":123,"email":"foo@bar.com"}');
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $stream, 'utf-8');
-    }
-
-    public function testWritingConvertsToInputEncoding(): void
-    {
-        $stream = $this->createMock(IStream::class);
-        $user = new User(123, 'foo@bar.com');
-        $expectedEncodedValue = \mb_convert_encoding('id=123&email=foo%40bar.com', 'ISO-8859-1');
-        $stream->expects($this->once())
-            ->method('write')
-            ->with($expectedEncodedValue);
-        $this->formatter->writeToStream($user, $stream, 'ISO-8859-1');
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void
@@ -87,7 +76,7 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     {
         $stream = $this->createMock(IStream::class);
         $user = new User(123, 'foo@bar.com');
-        $expectedEncodedValue = \mb_convert_encoding('id=123&email=foo%40bar.com', 'utf-8');
+        $expectedEncodedValue = \mb_convert_encoding('{"id":123,"email":"foo@bar.com"}', 'utf-8');
         $stream->expects($this->once())
             ->method('write')
             ->with($expectedEncodedValue);

@@ -8,26 +8,23 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Tests\Http\Formatting;
+namespace Opulence\Net\Tests\Http\ContentNegotiation;
 
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
-use Opulence\Net\Http\ContentNegotiation\JsonMediaTypeFormatter;
-use Opulence\Net\Tests\Http\Formatting\Mocks\User;
-use Opulence\Serialization\JsonSerializer;
+use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 
 /**
- * Tests the JSON media type formatter
+ * Tests the plain text media type formatter
  */
-class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
+class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var JsonMediaTypeFormatter The formatter to use in tests */
+    /** @var PlainTextMediaTypeFormatter The formatter to use in tests */
     private $formatter;
 
     public function setUp(): void
     {
-        $serializer = new JsonSerializer();
-        $this->formatter = new JsonMediaTypeFormatter($serializer);
+        $this->formatter = new PlainTextMediaTypeFormatter();
     }
 
     public function testCorrectSupportedEncodingsAreReturned(): void
@@ -37,7 +34,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 
     public function testCorrectSupportedMediaTypesAreReturned(): void
     {
-        $this->assertEquals(['application/json', 'text/json'], $this->formatter->getSupportedMediaTypes());
+        $this->assertEquals(['text/plain'], $this->formatter->getSupportedMediaTypes());
     }
 
     public function testDefaultEncodingReturnsFirstSupportedEncoding(): void
@@ -47,40 +44,54 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 
     public function testDefaultMediaTypeReturnsFirstSupportedMediaType(): void
     {
-        $this->assertEquals('application/json', $this->formatter->getDefaultMediaType());
+        $this->assertEquals('text/plain', $this->formatter->getDefaultMediaType());
     }
 
-    public function testReadingFromStreamDeserializesStreamContents(): void
+    public function testReadingAsArrayOfStringsThrowsException(): void
     {
-        $stream = $this->createStreamWithStringBody('{"id":123,"email":"foo@bar.com"}');
-        $expectedUser = new User(123, 'foo@bar.com');
-        $actualUser = $this->formatter->readFromStream($stream, User::class);
-        $this->assertEquals($expectedUser, $actualUser);
+        $this->expectException(InvalidArgumentException::class);
+        $this->formatter->readFromStream($this->createMock(IStream::class), 'string', true);
     }
 
-    public function testWritingToStreamSetsStreamContentsFromSerializedValue(): void
+    public function testReadingFromStreamReturnsSerializedStream(): void
     {
-        $stream = $this->createStreamThatExpectsBody('{"id":123,"email":"foo@bar.com"}');
-        $user = new User(123, 'foo@bar.com');
-        $this->formatter->writeToStream($user, $stream, 'utf-8');
+        $stream = $this->createStreamWithStringBody('foo');
+        $value = $this->formatter->readFromStream($stream, 'string');
+        $this->assertEquals('foo', $value);
+    }
+
+    public function testReadingNonStringThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->formatter->readFromStream($this->createMock(IStream::class), self::class);
+    }
+
+    public function testWritingNonStringThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->formatter->writeToStream($this, $this->createMock(IStream::class), 'utf-8');
+    }
+
+    public function testWritingToStreamSerializesInput(): void
+    {
+        $stream = $this->createStreamThatExpectsBody('foo');
+        $this->formatter->writeToStream('foo', $stream, 'utf-8');
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $user = new User(123, 'foo@bar.com');
-        $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
+        $this->formatter->writeToStream('foo', $this->createMock(IStream::class), 'bar');
     }
 
     public function testWritingWithNullEncodingUsesDefaultEncoding(): void
     {
         $stream = $this->createMock(IStream::class);
-        $user = new User(123, 'foo@bar.com');
-        $expectedEncodedValue = \mb_convert_encoding('{"id":123,"email":"foo@bar.com"}', 'utf-8');
+        $expectedEncodedValue = \mb_convert_encoding('‡', 'utf-8');
         $stream->expects($this->once())
             ->method('write')
             ->with($expectedEncodedValue);
-        $this->formatter->writeToStream($user, $stream, null);
+        $this->formatter->writeToStream('‡', $stream, null);
     }
 
     /**

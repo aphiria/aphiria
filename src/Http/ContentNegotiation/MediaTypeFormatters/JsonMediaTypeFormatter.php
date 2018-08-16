@@ -8,17 +8,27 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\ContentNegotiation;
+namespace Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters;
+
+use Opulence\Serialization\JsonSerializer;
 
 /**
- * Defines the plain text media type formatter
+ * Defines the JSON media type formatter
  */
-class PlainTextMediaTypeFormatter extends TextMediaTypeFormatter
+class JsonMediaTypeFormatter extends SerializerMediaTypeFormatter
 {
     /** @var array The list of supported character encodings */
     private static $supportedEncodings = ['utf-8'];
     /** @var array The list of supported media types */
-    private static $supportedMediaTypes = ['text/plain'];
+    private static $supportedMediaTypes = ['application/json', 'text/json'];
+
+    /**
+     * @param JsonSerializer|null $serializer The JSON serializer to use
+     */
+    public function __construct(JsonSerializer $serializer = null)
+    {
+        parent::__construct($serializer ?? new JsonSerializer());
+    }
 
     /**
      * @inheritdoc

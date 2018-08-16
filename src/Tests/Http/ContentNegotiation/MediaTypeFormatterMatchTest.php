@@ -10,8 +10,8 @@
 
 namespace Opulence\Net\Tests\Http\Formatting;
 
-use Opulence\Net\Http\ContentNegotiation\IMediaTypeFormatter;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatterMatch;
+use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
 
 /**

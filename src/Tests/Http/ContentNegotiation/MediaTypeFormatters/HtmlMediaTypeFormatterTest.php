@@ -12,29 +12,29 @@ namespace Opulence\Net\Tests\Http\ContentNegotiation;
 
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
-use Opulence\Net\Http\ContentNegotiation\PlainTextMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
 
 /**
- * Tests the plain text media type formatter
+ * Tests the HTML media type formatter
  */
-class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
+class HtmlMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var PlainTextMediaTypeFormatter The formatter to use in tests */
+    /** @var HtmlMediaTypeFormatter The formatter to use in tests */
     private $formatter;
 
     public function setUp(): void
     {
-        $this->formatter = new PlainTextMediaTypeFormatter();
+        $this->formatter = new HtmlMediaTypeFormatter();
     }
 
     public function testCorrectSupportedEncodingsAreReturned(): void
     {
-        $this->assertEquals(['utf-8'], $this->formatter->getSupportedEncodings());
+        $this->assertEquals(['utf-8', 'utf-16'], $this->formatter->getSupportedEncodings());
     }
 
     public function testCorrectSupportedMediaTypesAreReturned(): void
     {
-        $this->assertEquals(['text/plain'], $this->formatter->getSupportedMediaTypes());
+        $this->assertEquals(['text/html'], $this->formatter->getSupportedMediaTypes());
     }
 
     public function testDefaultEncodingReturnsFirstSupportedEncoding(): void
@@ -44,7 +44,7 @@ class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
 
     public function testDefaultMediaTypeReturnsFirstSupportedMediaType(): void
     {
-        $this->assertEquals('text/plain', $this->formatter->getDefaultMediaType());
+        $this->assertEquals('text/html', $this->formatter->getDefaultMediaType());
     }
 
     public function testReadingAsArrayOfStringsThrowsException(): void
@@ -76,6 +76,16 @@ class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     {
         $stream = $this->createStreamThatExpectsBody('foo');
         $this->formatter->writeToStream('foo', $stream, 'utf-8');
+    }
+
+    public function testWritingConvertsToInputEncoding(): void
+    {
+        $stream = $this->createMock(IStream::class);
+        $expectedEncodedValue = \mb_convert_encoding('‡', 'utf-16');
+        $stream->expects($this->once())
+            ->method('write')
+            ->with($expectedEncodedValue);
+        $this->formatter->writeToStream('‡', $stream, 'utf-16');
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void

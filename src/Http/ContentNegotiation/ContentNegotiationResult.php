@@ -10,6 +10,8 @@
 
 namespace Opulence\Net\Http\ContentNegotiation;
 
+use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+
 /**
  * Defines the results of content negotiation
  */

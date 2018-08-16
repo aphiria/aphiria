@@ -10,6 +10,7 @@
 
 namespace Opulence\Net\Http\ContentNegotiation;
 
+use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Opulence\Net\Http\Headers\IHeaderValueWithQualityScore;
 use Opulence\Net\Http\Headers\MediaTypeHeaderValue;
