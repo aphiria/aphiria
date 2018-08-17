@@ -589,7 +589,7 @@ Under the hood, `FormUrlEncodedMediaTypeFormatter` and `JsonMediaTypeFormatter` 
 
 <h3 id="request-context">Request Context</h3>
 
-A request context contains a request, and the negotiated request and response content results.  Like its name implies, it conveys information about the current request, and assists applications that handle the request and convert it to a response.
+A request context contains the request and the negotiated request and response content results.  Like its name implies, it conveys information about the current request, and assists applications convert a request into a response.
 
 To create a request context, use `RequestContextFactory`:
 
