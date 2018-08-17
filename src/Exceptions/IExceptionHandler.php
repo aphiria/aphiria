@@ -11,7 +11,7 @@
 namespace Opulence\Api\Exceptions;
 
 use ErrorException;
-use Opulence\Api\RequestContext;
+use Opulence\Net\Http\RequestContext;
 use Throwable;
 
 /**

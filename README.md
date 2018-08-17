@@ -67,7 +67,7 @@ class UserController extends Controller
 }
 ```
 
-The `ok()` helper method uses a `ResponseFactory` to build a response using the current [request context](#request-context).  You can pass in a POPO as the response body, and the factory will use content negotiation to determine how to serialize it.
+The `ok()` helper method uses a `ResponseFactory` to build a response using the current <a href="https://github.com/opulencephp/net#request-context" target="_blank">request context</a>.  You can pass in a POPO as the response body, and the factory will use content negotiation to determine how to serialize it.
 
 The following helper methods come bundled with `Controller`:
 
@@ -103,25 +103,6 @@ class UserController extends Controller
         $headers->add('Cache-Control', 'no-cache');
         
         return $this->ok($user, $headers);
-    }
-}
-```
-
-<h3 id="request-context">Request Context</h3>
-
-To grab context about the current request (such as the request object itself or the matched route), you can grab the `RequestContext` from your controller:
-
-```php
-class UserController extends Controller
-{
-    // ...
-
-    public function getAllUsers(): IHttpResponseMessage
-    {
-        $request = $this->requestContext->getRequest();
-        $matchedRoute = $this->requestContext->getMatchedRoute();
-        
-        // ...
     }
 }
 ```
@@ -361,11 +342,11 @@ use Opulence\Api\Handlers\ControllerRequestHandler;
 use Opulence\Net\Http\Formatting\ResponseWriter;
 use Opulence\Net\Http\RequestFactory;
 
-// Assume your route matcher, dependency resolver, and content negotiator are already set
+// Assume your route matcher, dependency resolver, and request context factory are already set
 $requestHandler = new ControllerRequestHandler(
     $routeMatcher,
     $dependencyResolver,
-    $contentNegotiator
+    $requestContextFactory
 );
 $request = RequestFactory::createRequestFromSuperglobals($_SERVER);
 $response = $requestHandler->handle($request);

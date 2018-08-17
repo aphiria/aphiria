@@ -14,10 +14,10 @@ use Exception;
 use InvalidArgumentException;
 use Opulence\Api\Exceptions\ExceptionResponseFactory;
 use Opulence\Api\Exceptions\ExceptionResponseFactoryRegistry;
-use Opulence\Api\RequestContext;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\RequestContext;
 
 /**
  * Tests the exception response factory

@@ -11,13 +11,13 @@
 namespace Opulence\Api\Exceptions;
 
 use Exception;
-use Opulence\Api\RequestContext;
-use Opulence\Api\ResponseFactories\InternalServerErrorResponseFactory;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\RequestContext;
 use Opulence\Net\Http\Response;
+use Opulence\Net\Http\ResponseFactories\InternalServerErrorResponseFactory;
 
 /**
  * Defines a factory for responses created from exceptions

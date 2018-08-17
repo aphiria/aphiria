@@ -12,12 +12,12 @@ namespace Opulence\Api\Tests\Handlers;
 
 use Opulence\Api\Handlers\ControllerParameterResolver;
 use Opulence\Api\Handlers\MissingControllerParameterValueException;
-use Opulence\Api\RequestContext;
 use Opulence\Api\Tests\Handlers\Mocks\Controller;
 use Opulence\Api\Tests\Handlers\Mocks\User;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Opulence\Net\Http\Request;
+use Opulence\Net\Http\RequestContext;
 use Opulence\Net\Http\StringBody;
 use Opulence\Net\Uri;
 use Opulence\Routing\Matchers\MatchedRoute;
@@ -47,12 +47,12 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             new RequestContext(
                 $this->createRequest('http://foo.com'),
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(
-                    new RouteAction(Controller::class, 'noTypeHintParameter', null),
-                    ['foo' => 'bar'],
-                    []
-                )
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
+            ),
+            new MatchedRoute(
+                new RouteAction(Controller::class, 'noTypeHintParameter', null),
+                ['foo' => 'bar'],
+                []
             )
         );
         $this->assertEquals('bar', $resolvedParameter);
@@ -73,9 +73,9 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             new RequestContext(
                 $request,
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'nullableObjectParameter', null), [], [])
-            )
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
+            ),
+            new MatchedRoute(new RouteAction(Controller::class, 'nullableObjectParameter', null), [], [])
         );
         $this->assertNull($resolvedParameter);
     }
@@ -91,9 +91,9 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             new RequestContext(
                 $this->createRequest('http://foo.com'),
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'nullableObjectParameter', null), [], [])
-            )
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
+            ),
+            new MatchedRoute(new RouteAction(Controller::class, 'nullableObjectParameter', null), [], [])
         );
         $this->assertNull($resolvedParameter);
     }
@@ -108,9 +108,9 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             new RequestContext(
                 $request,
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'nullableScalarParameter', null), [], [])
-            )
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
+            ),
+            new MatchedRoute(new RouteAction(Controller::class, 'nullableScalarParameter', null), [], [])
         );
         $this->assertNull($resolvedParameter);
     }
@@ -123,9 +123,9 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             new RequestContext(
                 $this->createRequest('http://foo.com'),
                 new ContentNegotiationResult(null, null, null, null),
-                new ContentNegotiationResult(null, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'objectParameter', null), [], [])
-            )
+                new ContentNegotiationResult(null, null, null, null)
+            ),
+            new MatchedRoute(new RouteAction(Controller::class, 'objectParameter', null), [], [])
         );
     }
 
@@ -145,9 +145,9 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             new RequestContext(
                 $request,
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'objectParameter', null), [], [])
-            )
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
+            ),
+            new MatchedRoute(new RouteAction(Controller::class, 'objectParameter', null), [], [])
         );
         $this->assertEquals($expectedUser, $resolvedParameter);
     }
@@ -160,9 +160,9 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             new RequestContext(
                 $this->createRequest('http://foo.com'),
                 new ContentNegotiationResult(null, null, null, null),
-                new ContentNegotiationResult(null, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], [])
-            )
+                new ContentNegotiationResult(null, null, null, null)
+            ),
+            new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], [])
         );
     }
 
@@ -175,9 +175,9 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             new RequestContext(
                 $this->createRequest('http://foo.com'),
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'defaultValueParameter', null), [], [])
-            )
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
+            ),
+            new MatchedRoute(new RouteAction(Controller::class, 'defaultValueParameter', null), [], [])
         );
         $this->assertEquals('bar', $resolvedParameter);
     }
@@ -191,9 +191,9 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             new RequestContext(
                 $this->createRequest('http://foo.com/?foo=bar'),
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], [])
-            )
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
+            ),
+            new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], [])
         );
         $this->assertEquals('bar', $resolvedParameter);
     }
@@ -207,9 +207,9 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             new RequestContext(
                 $this->createRequest('http://foo.com/?foo=baz'),
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), ['foo' => 'dave'], [])
-            )
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
+            ),
+            new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), ['foo' => 'dave'], [])
         );
         $this->assertEquals('dave', $resolvedParameter);
     }

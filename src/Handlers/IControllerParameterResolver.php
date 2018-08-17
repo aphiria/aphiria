@@ -10,7 +10,8 @@
 
 namespace Opulence\Api\Handlers;
 
-use Opulence\Api\RequestContext;
+use Opulence\Net\Http\RequestContext;
+use Opulence\Routing\Matchers\MatchedRoute;
 use ReflectionParameter;
 
 /**
@@ -23,10 +24,15 @@ interface IControllerParameterResolver
      *
      * @param ReflectionParameter $reflectionParameter The reflected parameter
      * @param RequestContext $requestContext The current request context
+     * @param MatchedRoute $matchedRoute The matched route
      * @return mixed The resolved parameter value
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
      * @throws RequestBodyDeserializationException Thrown if the request body could not be deserialized
      */
-    public function resolveParameter(ReflectionParameter $reflectionParameter, RequestContext $requestContext);
+    public function resolveParameter(
+        ReflectionParameter $reflectionParameter,
+        RequestContext $requestContext,
+        MatchedRoute $matchedRoute
+    );
 }

@@ -11,13 +11,14 @@
 namespace Opulence\Api\Handlers;
 
 use Closure;
-use Opulence\Api\RequestContext;
-use Opulence\Api\ResponseFactories\IResponseFactory;
-use Opulence\Api\ResponseFactories\OkResponseFactory;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\RequestContext;
 use Opulence\Net\Http\Response;
+use Opulence\Net\Http\ResponseFactories\IResponseFactory;
+use Opulence\Net\Http\ResponseFactories\OkResponseFactory;
+use Opulence\Routing\Matchers\MatchedRoute;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -41,8 +42,11 @@ class RouteActionInvoker implements IRouteActionInvoker
     /**
      * @inheritdoc
      */
-    public function invokeRouteAction(callable $routeAction, RequestContext $requestContext): IHttpResponseMessage
-    {
+    public function invokeRouteAction(
+        callable $routeAction,
+        RequestContext $requestContext,
+        MatchedRoute $matchedRoute
+    ): IHttpResponseMessage {
         try {
             if (\is_array($routeAction)) {
                 $reflectionFunction = new ReflectionMethod($routeAction[0], $routeAction[1]);
@@ -77,7 +81,8 @@ class RouteActionInvoker implements IRouteActionInvoker
             foreach ($reflectionFunction->getParameters() as $reflectionParameter) {
                 $resolvedParameters[] = $this->controllerParameterResolver->resolveParameter(
                     $reflectionParameter,
-                    $requestContext
+                    $requestContext,
+                    $matchedRoute
                 );
             }
         } catch (MissingControllerParameterValueException $ex) {

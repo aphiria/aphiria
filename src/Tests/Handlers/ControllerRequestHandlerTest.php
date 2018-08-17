@@ -25,6 +25,7 @@ use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\RequestContextFactory;
 use Opulence\Net\Uri;
 use Opulence\Routing\Matchers\IRouteMatcher;
 use Opulence\Routing\Matchers\MatchedRoute;
@@ -47,6 +48,8 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
     private $routeActionInvoker;
     /** @var IContentNegotiator|\PHPUnit_Framework_MockObject_MockObject The content negotiator to use */
     private $contentNegotiator;
+    /** @var RequestContextFactory The context factory to use */
+    private $requestContextFactory;
     /** @var IRouteMatcher|\PHPUnit_Framework_MockObject_MockObject The route matcher to use */
     private $routeMatcher;
 
@@ -55,12 +58,13 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
         $this->routeMatcher = $this->createMock(IRouteMatcher::class);
         $this->dependencyResolver = $this->createMock(IDependencyResolver::class);
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
+        $this->requestContextFactory = new RequestContextFactory($this->contentNegotiator);
         $this->routeActionInvoker = $this->createMock(IRouteActionInvoker::class);
         $this->exceptionHandler = $this->createMock(IExceptionHandler::class);
         $this->requestHandler = new ControllerRequestHandler(
             $this->routeMatcher,
             $this->dependencyResolver,
-            $this->contentNegotiator,
+            $this->requestContextFactory,
             $this->routeActionInvoker,
             $this->exceptionHandler
         );
@@ -218,7 +222,6 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expectedResponse, $this->requestHandler->handle($request));
         // Verify the request context was set
         $this->assertSame($request, $controller->getRequestContext()->getRequest());
-        $this->assertSame($matchedRoute, $controller->getRequestContext()->getMatchedRoute());
     }
 
     public function testRouteActionWithInvalidControllerInstanceThrowsExceptionThatIsCaught(): void

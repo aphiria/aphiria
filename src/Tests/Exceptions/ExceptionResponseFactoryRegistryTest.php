@@ -12,8 +12,8 @@ namespace Opulence\Api\Tests\Exceptions;
 
 use InvalidArgumentException;
 use Opulence\Api\Exceptions\ExceptionResponseFactoryRegistry;
-use Opulence\Api\RequestContext;
 use Opulence\Net\Http\HttpException;
+use Opulence\Net\Http\RequestContext;
 
 /**
  * Tests the exception response factory registry

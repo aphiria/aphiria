@@ -11,8 +11,8 @@
 namespace Opulence\Api\Exceptions;
 
 use Exception;
-use Opulence\Api\RequestContext;
 use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\RequestContext;
 
 /**
  * Defines the interface for exception response factories to implement

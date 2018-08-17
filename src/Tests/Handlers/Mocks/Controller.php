@@ -11,11 +11,11 @@
 namespace Opulence\Api\Tests\Handlers\Mocks;
 
 use Opulence\Api\Controller as BaseController;
-use Opulence\Api\RequestContext;
-use Opulence\Api\ResponseFactories\OkResponseFactory;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\RequestContext;
 use Opulence\Net\Http\Response;
+use Opulence\Net\Http\ResponseFactories\OkResponseFactory;
 use Opulence\Net\Http\StringBody;
 use RuntimeException;
 

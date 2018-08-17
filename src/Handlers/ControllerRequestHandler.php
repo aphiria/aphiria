@@ -17,14 +17,13 @@ use Opulence\Api\Exceptions\ExceptionHandler;
 use Opulence\Api\Exceptions\IExceptionHandler;
 use Opulence\Api\Middleware\AttributeMiddleware;
 use Opulence\Api\Middleware\IMiddleware;
-use Opulence\Api\RequestContext;
-use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\Formatting\RequestParser;
 use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\RequestContextFactory;
 use Opulence\Pipelines\Pipeline;
 use Opulence\Routing\Matchers\IRouteMatcher;
 use Opulence\Routing\Matchers\RouteNotFoundException;
@@ -39,8 +38,8 @@ class ControllerRequestHandler implements IRequestHandler
     private $routeMatcher;
     /** @var IDependencyResolver The dependency resolver */
     private $dependencyResolver;
-    /** @var IContentNegotiator The content negotiator */
-    private $contentNegotiator;
+    /** @var RequestContextFactory The factory to create request contexts with */
+    private $requestContextFactory;
     /** @var IRouteActionInvoker The route action invoker */
     private $routeActionInvoker;
     /** @var IExceptionHandler The exception handler to use */
@@ -49,20 +48,20 @@ class ControllerRequestHandler implements IRequestHandler
     /**
      * @param IRouteMatcher $routeMatcher The route matcher
      * @param IDependencyResolver $dependencyResolver The dependency resolver
-     * @param IContentNegotiator $contentNegotiator The content negotiator
+     * @param RequestContextFactory $requestContextFactory The factory to create request contexts with
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
      * @param IExceptionHandler|null $exceptionHandler The exception handler to use
      */
     public function __construct(
         IRouteMatcher $routeMatcher,
         IDependencyResolver $dependencyResolver,
-        IContentNegotiator $contentNegotiator,
+        RequestContextFactory $requestContextFactory,
         IRouteActionInvoker $routeActionInvoker = null,
         IExceptionHandler $exceptionHandler = null
     ) {
         $this->routeMatcher = $routeMatcher;
         $this->dependencyResolver = $dependencyResolver;
-        $this->contentNegotiator = $contentNegotiator;
+        $this->requestContextFactory = $requestContextFactory;
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker();
         $this->exceptionHandler = $exceptionHandler ?? new ExceptionHandler();
     }
@@ -76,12 +75,7 @@ class ControllerRequestHandler implements IRequestHandler
             $uri = $request->getUri();
             $matchedRoute = $this->routeMatcher->match($request->getMethod(), $uri->getHost(), $uri->getPath());
             $routeAction = $matchedRoute->getAction();
-            $requestContext = new RequestContext(
-                $request,
-                $this->contentNegotiator->negotiateRequestContent($request),
-                $this->contentNegotiator->negotiateResponseContent($request),
-                $matchedRoute
-            );
+            $requestContext = $this->requestContextFactory->createRequestContext($request);
             $this->exceptionHandler->setRequestContext($requestContext);
 
             if ($routeAction->usesMethod()) {
@@ -104,8 +98,12 @@ class ControllerRequestHandler implements IRequestHandler
 
             return (new Pipeline)->send($request)
                 ->through($middleware, 'handle')
-                ->then(function () use ($controllerCallable, $requestContext) {
-                    return $this->routeActionInvoker->invokeRouteAction($controllerCallable, $requestContext);
+                ->then(function () use ($controllerCallable, $requestContext, $matchedRoute) {
+                    return $this->routeActionInvoker->invokeRouteAction(
+                        $controllerCallable,
+                        $requestContext,
+                        $matchedRoute
+                    );
                 })
                 ->execute();
         } catch (RouteNotFoundException $ex) {

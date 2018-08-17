@@ -16,7 +16,6 @@ use Opulence\Api\Handlers\IControllerParameterResolver;
 use Opulence\Api\Handlers\MissingControllerParameterValueException;
 use Opulence\Api\Handlers\RequestBodyDeserializationException;
 use Opulence\Api\Handlers\RouteActionInvoker;
-use Opulence\Api\RequestContext;
 use Opulence\Api\Tests\Handlers\Mocks\Controller;
 use Opulence\Api\Tests\Handlers\Mocks\User;
 use Opulence\IO\Streams\IStream;
@@ -26,6 +25,7 @@ use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\Request;
+use Opulence\Net\Http\RequestContext;
 use Opulence\Net\Uri;
 use Opulence\Routing\Matchers\MatchedRoute;
 use Opulence\Routing\RouteAction;
@@ -56,8 +56,7 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
         $requestContext = new RequestContext(
             $this->createRequest('http://foo.com'),
             new ContentNegotiationResult(null, null, null, null),
-            new ContentNegotiationResult(null, null, null, null),
-            new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], [])
+            new ContentNegotiationResult(null, null, null, null)
         );
 
         try {
@@ -65,7 +64,8 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
                 ->method('resolveParameter')
                 ->with($this->anything(), $this->anything())
                 ->willThrowException(new FailedRequestContentNegotiationException);
-            $this->invoker->invokeRouteAction([$this->controller, 'stringParameter'], $requestContext);
+            $matchedRoute = new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], []);
+            $this->invoker->invokeRouteAction([$this->controller, 'stringParameter'], $requestContext, $matchedRoute);
             $this->fail('Failed to assert that a 415 was thrown');
         } catch (HttpException $ex) {
             $this->assertEquals(HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE, $ex->getResponse()->getStatusCode());
@@ -83,14 +83,14 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
         $requestContext = new RequestContext(
             $this->createRequest('http://foo.com'),
             new ContentNegotiationResult(null, null, null, null),
-            new ContentNegotiationResult(null, null, null, null),
-            new MatchedRoute(new RouteAction(null, null, $closure), [], [])
+            new ContentNegotiationResult(null, null, null, null)
         );
         $this->parameterResolver->expects($this->once())
             ->method('resolveParameter')
             ->with($this->isInstanceOf(ReflectionParameter::class), $requestContext)
             ->willReturn(123);
-        $actualResponse = $this->invoker->invokeRouteAction($closure, $requestContext);
+        $matchedRoute = new MatchedRoute(new RouteAction(null, null, $closure), [], []);
+        $actualResponse = $this->invoker->invokeRouteAction($closure, $requestContext, $matchedRoute);
         $this->assertSame($expectedResponse, $actualResponse);
     }
 
@@ -101,14 +101,15 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
         $mediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
             ->with($this->isInstanceOf(User::class), $this->isInstanceOf(IStream::class));
+        $matchedRoute = new MatchedRoute(new RouteAction(Controller::class, 'popo', null), [], []);
         $response = $this->invoker->invokeRouteAction(
             [$this->controller, 'popo'],
             new RequestContext(
                 $this->createRequest('http://foo.com'),
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'popo', null), [], [])
-            )
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
+            ),
+            $matchedRoute
         );
         $this->assertEquals(HttpStatusCodes::HTTP_OK, $response->getStatusCode());
         /**
@@ -121,14 +122,15 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
     {
         /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
+        $matchedRoute = new MatchedRoute(new RouteAction(Controller::class, 'responseFactory', null), [], []);
         $response = $this->invoker->invokeRouteAction(
             [$this->controller, 'responseFactory'],
             new RequestContext(
                 $this->createRequest('http://foo.com'),
                 new ContentNegotiationResult(null, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'responseFactory', null), [], [])
-            )
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
+            ),
+            $matchedRoute
         );
         $this->assertEquals(HttpStatusCodes::HTTP_OK, $response->getStatusCode());
         $this->assertEquals('foo', (string)$response->getBody());
@@ -137,14 +139,15 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
     public function testInvokingMethodThatThrowsExceptionThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
+        $matchedRoute = new MatchedRoute(new RouteAction(Controller::class, 'throwsException', null), [], []);
         $this->invoker->invokeRouteAction(
             [$this->controller, 'throwsException'],
             new RequestContext(
                 $this->createRequest('http://foo.com'),
                 new ContentNegotiationResult(null, null, null, null),
-                new ContentNegotiationResult(null, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'throwsException', null), [], [])
-            )
+                new ContentNegotiationResult(null, null, null, null)
+            ),
+            $matchedRoute
         );
     }
 
@@ -152,14 +155,15 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
     {
         /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
+        $matchedRoute = new MatchedRoute(new RouteAction(Controller::class, 'noParameters', null), [], []);
         $response = $this->invoker->invokeRouteAction(
             [$this->controller, 'noParameters'],
             new RequestContext(
                 $this->createRequest('http://foo.com'),
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'noParameters', null), [], [])
-            )
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
+            ),
+            $matchedRoute
         );
         $this->assertNotNull($response->getBody());
         $this->assertEquals('noParameters', $response->getBody()->readAsString());
@@ -169,14 +173,15 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
     {
         /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
+        $matchedRoute = new MatchedRoute(new RouteAction(Controller::class, 'voidReturnType', null), [], []);
         $response = $this->invoker->invokeRouteAction(
             [$this->controller, 'voidReturnType'],
             new RequestContext(
                 $this->createRequest('http://foo.com'),
                 new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new MatchedRoute(new RouteAction(Controller::class, 'voidReturnType', null), [], [])
-            )
+                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
+            ),
+            $matchedRoute
         );
         $this->assertNull($response->getBody());
         $this->assertEquals(HttpStatusCodes::HTTP_NO_CONTENT, $response->getStatusCode());
@@ -187,8 +192,7 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
         $requestContext = new RequestContext(
             $this->createRequest('http://foo.com'),
             new ContentNegotiationResult(null, null, null, null),
-            new ContentNegotiationResult(null, null, null, null),
-            new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], [])
+            new ContentNegotiationResult(null, null, null, null)
         );
 
         try {
@@ -196,7 +200,8 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
                 ->method('resolveParameter')
                 ->with($this->anything(), $this->anything())
                 ->willThrowException(new MissingControllerParameterValueException);
-            $this->invoker->invokeRouteAction([$this->controller, 'stringParameter'], $requestContext);
+            $matchedRoute = new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], []);
+            $this->invoker->invokeRouteAction([$this->controller, 'stringParameter'], $requestContext, $matchedRoute);
             $this->fail('Failed to assert that a 400 was thrown');
         } catch (HttpException $ex) {
             $this->assertEquals(HttpStatusCodes::HTTP_BAD_REQUEST, $ex->getResponse()->getStatusCode());
@@ -208,8 +213,7 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
         $requestContext = new RequestContext(
             $this->createRequest('http://foo.com'),
             new ContentNegotiationResult(null, null, null, null),
-            new ContentNegotiationResult(null, null, null, null),
-            new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], [])
+            new ContentNegotiationResult(null, null, null, null)
         );
 
         try {
@@ -217,7 +221,8 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
                 ->method('resolveParameter')
                 ->with($this->anything(), $this->anything())
                 ->willThrowException(new RequestBodyDeserializationException);
-            $this->invoker->invokeRouteAction([$this->controller, 'stringParameter'], $requestContext);
+            $matchedRoute = new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], []);
+            $this->invoker->invokeRouteAction([$this->controller, 'stringParameter'], $requestContext, $matchedRoute);
             $this->fail('Failed to assert that a 522 was thrown');
         } catch (HttpException $ex) {
             $this->assertEquals(HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY, $ex->getResponse()->getStatusCode());

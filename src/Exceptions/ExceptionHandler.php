@@ -14,8 +14,8 @@ use ErrorException;
 use Exception;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
-use Opulence\Api\RequestContext;
 use Opulence\Net\Http\Formatting\ResponseWriter;
+use Opulence\Net\Http\RequestContext;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
