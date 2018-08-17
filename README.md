@@ -398,7 +398,7 @@ That's it.  Now, whenever an unhandled `EntityNotFound` exception is thrown, you
 If you want to take advantage of automatic content negotiation, you can use a `ResponseFactory` in your closure:
 
 ```php
-use Opulence\Api\ResponseFactories\NotFoundResponseFactory;
+use Opulence\Net\Http\ResponseFactories\NotFoundResponseFactory;
 
 // ...
 $exceptionResponseFactoryRegistry->registerFactory(
