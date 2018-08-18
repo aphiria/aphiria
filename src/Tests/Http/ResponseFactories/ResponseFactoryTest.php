@@ -33,6 +33,62 @@ use Opulence\Serialization\SerializationException;
  */
 class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
 {
+    public function testCreatingResponseFromStreamWillSetContentLengthHeader(): void
+    {
+        $rawBody = $this->createMock(IStream::class);
+        $rawBody->expects($this->once())
+            ->method('getLength')
+            ->willReturn(123);
+        $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, null, $rawBody);
+        $requestContext = $this->createBasicRequestContext(
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null)
+        );
+        $response = $responseFactory->createResponse($requestContext);
+        $this->assertEquals(123, $response->getHeaders()->getFirst('Content-Length'));
+    }
+
+    public function testCreatingResponseFromStreamWithUnknownLengthWillNotSetContentLengthHeader(): void
+    {
+        $rawBody = $this->createMock(IStream::class);
+        $rawBody->expects($this->once())
+            ->method('getLength')
+            ->willReturn(null);
+        $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, null, $rawBody);
+        $requestContext = $this->createBasicRequestContext(
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null)
+        );
+        $response = $responseFactory->createResponse($requestContext);
+        $this->assertFalse($response->getHeaders()->containsKey('Content-Length'));
+    }
+
+    public function testCreatingResponseFromStringWillSetContentLengthHeader(): void
+    {
+        $rawBody = 'foo';
+        $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, null, $rawBody);
+        $requestContext = $this->createBasicRequestContext(
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null)
+        );
+        $response = $responseFactory->createResponse($requestContext);
+        $this->assertEquals(\mb_strlen($rawBody), $response->getHeaders()->getFirst('Content-Length'));
+    }
+
+    public function testCreatingResponseFromStringWithAlreadySetContentLengthHeaderDoesNotOverwriteContentLength(): void
+    {
+        $rawBody = 'foo';
+        $headers = new HttpHeaders();
+        $headers->add('Content-Length', 123);
+        $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, $headers, $rawBody);
+        $requestContext = $this->createBasicRequestContext(
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null)
+        );
+        $response = $responseFactory->createResponse($requestContext);
+        $this->assertEquals(123, $response->getHeaders()->getFirst('Content-Length'));
+    }
+
     public function testCreatingResponseUsesStatusCodeSetInConstructor(): void
     {
         $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_ACCEPTED);
@@ -42,6 +98,25 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
         );
         $response = $responseFactory->createResponse($requestContext);
         $this->assertEquals(HttpStatusCodes::HTTP_ACCEPTED, $response->getStatusCode());
+    }
+
+    public function testCreatingResponseWillSetContentTypeResponseHeaderFromMediaTypeFormatterMediaType(): void
+    {
+        $requestContentNegotiationResult = new ContentNegotiationResult(null, null, null, null);
+        $responseContentNegotiationResult = new ContentNegotiationResult(
+            $this->createMock(IMediaTypeFormatter::class),
+            'foo/bar',
+            null,
+            null
+        );
+        $requestContext = new RequestContext(
+            $this->createRequest('http://foo.com'),
+            $requestContentNegotiationResult,
+            $responseContentNegotiationResult
+        );
+        $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK);
+        $response = $responseFactory->createResponse($requestContext);
+        $this->assertEquals('foo/bar', $response->getHeaders()->getFirst('Content-Type'));
     }
 
     public function testCreatingResponseWithHeadersUsesThoseHeaders(): void
@@ -169,25 +244,6 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
         $response = $responseFactory->createResponse($requestContext);
         $this->assertInstanceOf(StringBody::class, $response->getBody());
         $this->assertEquals('foo', (string)$response->getBody());
-    }
-
-    public function testCreatingResponseWillSetContentTypeResponseHeaderFromMediaTypeFormatterMediaType(): void
-    {
-        $requestContentNegotiationResult = new ContentNegotiationResult(null, null, null, null);
-        $responseContentNegotiationResult = new ContentNegotiationResult(
-            $this->createMock(IMediaTypeFormatter::class),
-            'foo/bar',
-            null,
-            null
-        );
-        $requestContext = new RequestContext(
-            $this->createRequest('http://foo.com'),
-            $requestContentNegotiationResult,
-            $responseContentNegotiationResult
-        );
-        $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK);
-        $response = $responseFactory->createResponse($requestContext);
-        $this->assertEquals('foo/bar', $response->getHeaders()->getFirst('Content-Type'));
     }
 
     public function testCreatingResponseWithStreamBodyCreatesBodyFromStream(): void

@@ -92,11 +92,16 @@ class ResponseFactory implements IResponseFactory
         }
 
         if ($this->rawBody instanceof IStream) {
+            $this->addContentLengthHeader($this->rawBody->getLength());
+
             return new StreamBody($this->rawBody);
         }
 
         if (\is_scalar($this->rawBody)) {
-            return new StringBody((string)$this->rawBody);
+            $stringBody = (string)$this->rawBody;
+            $this->addContentLengthHeader(\mb_strlen($stringBody, '8bit'));
+
+            return new StringBody($stringBody);
         }
 
         if ((!\is_object($this->rawBody) && !\is_array($this->rawBody)) || \is_callable($this->rawBody)) {
@@ -128,7 +133,23 @@ class ResponseFactory implements IResponseFactory
 
         // We need to rewind so that the stream can be read from the beginning
         $bodyStream->rewind();
+        $this->addContentLengthHeader($bodyStream->getLength());
 
         return new StreamBody($bodyStream);
+    }
+
+    /**
+     * Adds the Content-Length header if it does not already exist
+     *
+     * @param int|null $contentLength The content length, or null if it isn't known
+     */
+    private function addContentLengthHeader(?int $contentLength): void
+    {
+        // Don't bother if the Content-Length header is already set
+        if ($contentLength === null || $this->headers->containsKey('Content-Length')) {
+            return;
+        }
+
+        $this->headers->add('Content-Length', $contentLength);
     }
 }
