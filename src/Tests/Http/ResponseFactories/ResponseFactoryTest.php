@@ -33,6 +33,17 @@ use Opulence\Serialization\SerializationException;
  */
 class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
 {
+    public function testCreatingResponseUsesStatusCodeSetInConstructor(): void
+    {
+        $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_ACCEPTED);
+        $requestContext = $this->createBasicRequestContext(
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null)
+        );
+        $response = $responseFactory->createResponse($requestContext);
+        $this->assertEquals(HttpStatusCodes::HTTP_ACCEPTED, $response->getStatusCode());
+    }
+
     public function testCreatingResponseWithHeadersUsesThoseHeaders(): void
     {
         $headers = new HttpHeaders();
@@ -123,7 +134,8 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testCreatingResponseWithObjectBodyWritesToResponseBodyUsingMediaTypeFormatterAndMatchedEncoding(): void
+    public function testCreatingResponseWithObjectBodyWritesToResponseBodyUsingMediaTypeFormatterAndMatchedEncoding(
+    ): void
     {
         $rawBody = new User(123, 'foo@bar.com');
         $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, null, $rawBody);
@@ -159,29 +171,6 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo', (string)$response->getBody());
     }
 
-    public function testCreatingResponseWithStreamBodyCreatesBodyFromStream(): void
-    {
-        $rawBody = $this->createMock(IStream::class);
-        $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, null, $rawBody);
-        $requestContext = $this->createBasicRequestContext(
-            new ContentNegotiationResult(null, null, null, null),
-            new ContentNegotiationResult(null, null, null, null)
-        );
-        $response = $responseFactory->createResponse($requestContext);
-        $this->assertInstanceOf(StreamBody::class, $response->getBody());
-    }
-
-    public function testCreatingResponseUsesStatusCodeSetInConstructor(): void
-    {
-        $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_ACCEPTED);
-        $requestContext = $this->createBasicRequestContext(
-            new ContentNegotiationResult(null, null, null, null),
-            new ContentNegotiationResult(null, null, null, null)
-        );
-        $response = $responseFactory->createResponse($requestContext);
-        $this->assertEquals(HttpStatusCodes::HTTP_ACCEPTED, $response->getStatusCode());
-    }
-
     public function testCreatingResponseWillSetContentTypeResponseHeaderFromMediaTypeFormatterMediaType(): void
     {
         $requestContentNegotiationResult = new ContentNegotiationResult(null, null, null, null);
@@ -199,6 +188,18 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
         $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK);
         $response = $responseFactory->createResponse($requestContext);
         $this->assertEquals('foo/bar', $response->getHeaders()->getFirst('Content-Type'));
+    }
+
+    public function testCreatingResponseWithStreamBodyCreatesBodyFromStream(): void
+    {
+        $rawBody = $this->createMock(IStream::class);
+        $responseFactory = new ResponseFactory(HttpStatusCodes::HTTP_OK, null, $rawBody);
+        $requestContext = $this->createBasicRequestContext(
+            new ContentNegotiationResult(null, null, null, null),
+            new ContentNegotiationResult(null, null, null, null)
+        );
+        $response = $responseFactory->createResponse($requestContext);
+        $this->assertInstanceOf(StreamBody::class, $response->getBody());
     }
 
     /**

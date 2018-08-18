@@ -28,7 +28,7 @@ class ResponseWriter
      */
     public function __construct(IStream $outputStream = null)
     {
-        $this->outputStream = $outputStream ?? new Stream(fopen('php://output', 'r+b'));
+        $this->outputStream = $outputStream ?? new Stream(fopen('php://output', 'wb'));
     }
 
     /**
