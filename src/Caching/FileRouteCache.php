@@ -14,6 +14,7 @@ use Opulence\Routing\ClosureRouteAction;
 use Opulence\Routing\MethodRouteAction;
 use Opulence\Routing\Middleware\MiddlewareBinding;
 use Opulence\Routing\Route;
+use Opulence\Routing\RouteAction;
 use Opulence\Routing\RouteCollection;
 use Opulence\Routing\UriTemplates\UriTemplate;
 
@@ -56,6 +57,7 @@ class FileRouteCache implements IRouteCache
             file_get_contents($this->path),
             [
                 'allowed_classes' => [
+                    RouteAction::class,
                     ClosureRouteAction::class,
                     MethodRouteAction::class,
                     MiddlewareBinding::class,

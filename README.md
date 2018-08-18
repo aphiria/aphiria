@@ -43,7 +43,7 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
     * With 100 routes with 9 route variables each, it can match any route in less than 1ms
 * Its [fluent syntax](#route-builders) keeps you from having to memorize how to set up config arrays
 * It supports [matching hosts](#route-builders)
-* It is built to support the latest PHP 7.1 features
+* It is built to support the latest PHP 7.2 features
 
 > **Note:** This is *not* a route dispatching library.  This library does not call controllers or closures on the matched route.  Why?  Usually, such actions are tightly coupled to an HTTP library or to a framework.  By not dispatching the matched route, you're free to use the library/framework of your choice, while still getting the benefits of performance and fluent syntax.
 
@@ -125,7 +125,7 @@ To get the [middleware bindings](#binding-middleware), call:
 $matchedRoute->getMiddlewareBindings();
 ```
 
-> **Note:** If you're using another HTTP library (eg Opulence, Symfony, or Laravel) in your application, it's better to use their methods to get the request method, host, and URI.  They account for things like trusted proxies as well as provide more robust handling of certain request headers.
+> **Note:** If you're using another HTTP library (eg <a href="https://github.com/opulencephp/net" target="_blank">Opulence</a>, Symfony, or Laravel) in your application, it's better to use their methods to get the request method, host, and URI.  They account for things like trusted proxies as well as provide more robust handling of certain request headers.
 
 <h2 id="route-variables">Route Variables</h2>
 
@@ -307,12 +307,12 @@ Sometimes, you might find it useful to add some custom logic for matching routes
 $routesCallback = function (RouteBuilderRegistry $routes) {
     // This route will require an API-VERSION value of 'v1.0'
     $routes->map('GET', 'comments')
-        ->toMethod(CommentController::class, 'getAllComments')
+        ->toMethod(CommentController::class, 'getAllComments1_0')
         ->withAttribute('API-VERSION', 'v1.0');
 
     // This route will require an API-VERSION value of 'v2.0'
     $routes->map('GET', 'comments')
-        ->toMethod(CommentController::class, 'getAllComments')
+        ->toMethod(CommentController::class, 'getAllComments2_0')
         ->withAttribute('API-VERSION', 'v2.0');
 };
 ```

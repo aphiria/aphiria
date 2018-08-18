@@ -10,9 +10,13 @@
 
 namespace Opulence\Routing\Tests\Regexes\Caching;
 
+use Opulence\Routing\Middleware\MiddlewareBinding;
 use Opulence\Routing\Regexes\Caching\FileGroupRegexCache;
 use Opulence\Routing\Regexes\GroupRegex;
 use Opulence\Routing\Regexes\GroupRegexCollection;
+use Opulence\Routing\Route;
+use Opulence\Routing\RouteAction;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Tests the file group regex cache
@@ -43,10 +47,17 @@ class FileGroupRegexCacheTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(file_exists(self::PATH));
     }
 
-    public function testGetOnHitReturnsRegexes(): void
+    public function testGetOnHitReturnsRegexesAndIncludesRoutesWithAllPropertiesSet(): void
     {
         $regexes = new GroupRegexCollection();
-        $regexes->add('GET', new GroupRegex('foo', ['baz']));
+        // We are purposely testing setting every type of property inside the route to test that they're all unserializable
+        $route = new Route(
+            'GET',
+            new UriTemplate('/^foo$/', false),
+            new RouteAction('foo', 'bar', null),
+            [new MiddlewareBinding('foo')]
+        );
+        $regexes->add('GET', new GroupRegex('foo', [$route]));
         $this->cache->set($regexes);
         $this->assertEquals($regexes, $this->cache->get());
     }

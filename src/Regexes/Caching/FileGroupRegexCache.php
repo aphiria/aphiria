@@ -10,8 +10,14 @@
 
 namespace Opulence\Routing\Regexes\Caching;
 
+use Opulence\Routing\ClosureRouteAction;
+use Opulence\Routing\MethodRouteAction;
+use Opulence\Routing\Middleware\MiddlewareBinding;
 use Opulence\Routing\Regexes\GroupRegex;
 use Opulence\Routing\Regexes\GroupRegexCollection;
+use Opulence\Routing\Route;
+use Opulence\Routing\RouteAction;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Defines the file group regex cache
@@ -50,7 +56,18 @@ class FileGroupRegexCache implements IGroupRegexCache
 
         return unserialize(
             file_get_contents($this->path),
-            ['allowed_classes' => [GroupRegex::class, GroupRegexCollection::class]]
+            [
+                'allowed_classes' => [
+                    GroupRegex::class,
+                    GroupRegexCollection::class,
+                    Route::class,
+                    UriTemplate::class,
+                    RouteAction::class,
+                    MethodRouteAction::class,
+                    ClosureRouteAction::class,
+                    MiddlewareBinding::class
+                ]
+            ]
         );
     }
 
