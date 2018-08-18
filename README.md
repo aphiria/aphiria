@@ -348,7 +348,7 @@ $requestHandler = new ControllerRequestHandler(
     $dependencyResolver,
     $requestContextFactory
 );
-$request = RequestFactory::createRequestFromSuperglobals($_SERVER);
+$request = (new RequestFactory)->createRequestFromSuperglobals($_SERVER);
 $response = $requestHandler->handle($request);
 (new ResponseWriter)->writeResponse($response);
 ```
@@ -361,7 +361,7 @@ Sometimes, your application is going to throw an unhandled exception or shut dow
 use Opulence\Api\Exceptions\ExceptionHandler;
 
 $exceptionHandler = new ExceptionHandler();
-$exceptionHandler->register();
+$exceptionHandler->registerWithPhp();
 ```
 
 By default, `ExceptionHandler` will convert any exception to a 500 response and use <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a> to determine the best format for the response body.  However, you can [customize your exception responses](#exception-response-factories).
@@ -390,10 +390,19 @@ $exceptionResponseFactory = new ExceptionResponseFactory($exceptionResponseFacto
 
 // Add it to the exception handler
 $exceptionHandler = new ExceptionHandler(null, $exceptionResponseFactory);
-$exceptionHandler->register();
+$exceptionHandler->registerWithPhp();
 ```
 
-That's it.  Now, whenever an unhandled `EntityNotFound` exception is thrown, your application will return a 404 response.
+That's it.  Now, whenever an unhandled `EntityNotFound` exception is thrown, your application will return a 404 response.  You can also register multiple exception factories at once.  Just pass in an array, keyed by exception type:
+
+```php
+$exceptionResponseFactoryRegistry->registerFactories([
+    EntityNotFound::class => function (EntityNotFound $ex, RequestContext $requestContext) {
+        return new Response(HttpStatusCodes::HTTP_NOT_FOUND);
+    },
+    // ...
+]);
+```
 
 If you want to take advantage of automatic content negotiation, you can use a `ResponseFactory` in your closure:
 
@@ -420,19 +429,19 @@ use Monolog\Logger;
 $logger = new Logger('app');
 $logger->pushHandler(new SyslogHandler());
 $exceptionHandler = new ExceptionHandler($logger);
-$exceptionHandler->register();
+$exceptionHandler->registerWithPhp();
 ```
 
 If you don't want to log particular exceptions, you can specify them:
 
 ```php
 $exceptionHandler = new ExceptionHandler(null, null, null, null, null, ['MyException']);
-$exceptionHandler->register();
+$exceptionHandler->registerWithPhp();
 ```
 
 You can also control the level of PHP errors that are logged by specifying a bitwise value similar to what's in your _php.ini_:
 
 ```php
 $exceptionHandler = new ExceptionHandler(null, null, null, E_ALL & ~E_NOTICE);
-$exceptionHandler->register();
+$exceptionHandler->registerWithPhp();
 ```

@@ -124,7 +124,7 @@ class ExceptionHandler implements IExceptionHandler
     /**
      * @inheritdoc
      */
-    public function register(): void
+    public function registerWithPhp(): void
     {
         \ini_set('display_errors', 'off');
         \error_reporting(-1);

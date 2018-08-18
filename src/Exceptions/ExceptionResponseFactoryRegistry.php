@@ -38,6 +38,18 @@ class ExceptionResponseFactoryRegistry
     /**
      * Registers a response factory for an exception type
      *
+     * @param Closure[] $exceptionTypesToFactories The exception types to factories
+     */
+    public function registerFactories(array $exceptionTypesToFactories): void
+    {
+        foreach ($exceptionTypesToFactories as $exceptionType => $responseFactory) {
+            $this->registerFactory($exceptionType, $responseFactory);
+        }
+    }
+
+    /**
+     * Registers a response factory for an exception type
+     *
      * @param string $exceptionType The type the response factory applies to
      * @param Closure $responseFactory The response factory that takes in an exception instance and request context
      */

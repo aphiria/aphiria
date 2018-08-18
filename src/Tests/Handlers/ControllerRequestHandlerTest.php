@@ -175,6 +175,19 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
         $this->requestHandler->handle($request);
     }
 
+    public function testRequestContextStillSetOnExceptionHandlerWhenNoMatchingRouteIsFound(): void
+    {
+        $this->expectException(HttpException::class);
+        $request = $this->createRequestMock('GET', 'http://foo.com/bar');
+        $this->exceptionHandler->expects($this->once())
+            ->method('setRequestContext');
+        $this->routeMatcher->expects($this->once())
+            ->method('match')
+            ->with('GET', 'foo.com', '/bar')
+            ->willThrowException(new RouteNotFoundException());
+        $this->requestHandler->handle($request);
+    }
+
     public function testRouteActionWithClosureControllerBindsItToControllerObjectAndInvokesIt(): void
     {
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
@@ -199,6 +212,23 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
             }))
             ->willReturn($expectedResponse);
         $this->assertSame($expectedResponse, $this->requestHandler->handle($request));
+    }
+
+    public function testRouteActionWithNonExistentControllerMethodThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $request = $this->createRequestMock('GET', 'http://foo.com/bar');
+        $controller = new ControllerMock();
+        $this->dependencyResolver->expects($this->once())
+            ->method('resolve')
+            ->with(ControllerMock::class)
+            ->willReturn($controller);
+        $matchedRoute = new MatchedRoute(new RouteAction(ControllerMock::class, 'doesNotExist', null), [], []);
+        $this->routeMatcher->expects($this->once())
+            ->method('match')
+            ->with('GET', 'foo.com', '/bar')
+            ->willReturn($matchedRoute);
+        $this->requestHandler->handle($request);
     }
 
     public function testRouteActionWithControllerClassNameResolvesItAndInvokesIt(): void

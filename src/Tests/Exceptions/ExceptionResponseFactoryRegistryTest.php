@@ -41,4 +41,20 @@ class ExceptionResponseFactoryRegistryTest extends \PHPUnit\Framework\TestCase
         $this->registry->registerFactory(InvalidArgumentException::class, $expectedFactory);
         $this->assertSame($expectedFactory, $this->registry->getFactory(InvalidArgumentException::class));
     }
+
+    public function testRegisteringMultipleFactoriesStoresFactoriesByExceptionType(): void
+    {
+        $expectedFactory1 = function (InvalidArgumentException $ex, RequestContext $requestContext) {
+            // Don't do anything
+        };
+        $expectedFactory2 = function (HttpException $ex, RequestContext $requestContext) {
+            // Don't do anything
+        };
+        $this->registry->registerFactories([
+            InvalidArgumentException::class => $expectedFactory1,
+            HttpException::class => $expectedFactory2
+        ]);
+        $this->assertSame($expectedFactory1, $this->registry->getFactory(InvalidArgumentException::class));
+        $this->assertSame($expectedFactory2, $this->registry->getFactory(HttpException::class));
+    }
 }

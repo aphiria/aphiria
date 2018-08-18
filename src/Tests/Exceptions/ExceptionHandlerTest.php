@@ -143,7 +143,7 @@ class ExceptionHandlerTest extends \PHPUnit\Framework\TestCase
             $thrownLevels,
             $exceptionsNotLogged
         );
-        $exceptionHandler->register();
+        $exceptionHandler->registerWithPhp();
 
         return $exceptionHandler;
     }

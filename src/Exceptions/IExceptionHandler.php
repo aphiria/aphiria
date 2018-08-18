@@ -52,7 +52,7 @@ interface IExceptionHandler
     /**
      * Registers the exception and error handlers with PHP
      */
-    public function register(): void;
+    public function registerWithPhp(): void;
 
     /**
      * Sets the request context for use when handling a request

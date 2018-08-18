@@ -63,7 +63,13 @@ class ControllerRequestHandler implements IRequestHandler
         $this->dependencyResolver = $dependencyResolver;
         $this->requestContextFactory = $requestContextFactory;
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker();
-        $this->exceptionHandler = $exceptionHandler ?? new ExceptionHandler();
+
+        if ($exceptionHandler === null) {
+            $exceptionHandler = new ExceptionHandler();
+            $exceptionHandler->registerWithPhp();
+        }
+
+        $this->exceptionHandler = $exceptionHandler;
     }
 
     /**
@@ -71,41 +77,12 @@ class ControllerRequestHandler implements IRequestHandler
      */
     public function handle(IHttpRequestMessage $request): IHttpResponseMessage
     {
+        $requestContext = $this->requestContextFactory->createRequestContext($request);
+        $this->exceptionHandler->setRequestContext($requestContext);
+        $uri = $request->getUri();
+
         try {
-            $uri = $request->getUri();
             $matchedRoute = $this->routeMatcher->match($request->getMethod(), $uri->getHost(), $uri->getPath());
-            $routeAction = $matchedRoute->getAction();
-            $requestContext = $this->requestContextFactory->createRequestContext($request);
-            $this->exceptionHandler->setRequestContext($requestContext);
-
-            if ($routeAction->usesMethod()) {
-                $controller = $this->dependencyResolver->resolve($routeAction->getClassName());
-                $controllerCallable = [$controller, $routeAction->getMethodName()];
-            } else {
-                $controller = new Controller();
-                $controllerCallable = Closure::bind($routeAction->getClosure(), $controller, Controller::class);
-            }
-
-            if (!$controller instanceof Controller) {
-                throw new InvalidArgumentException(
-                    sprintf('Controller %s does not extend %s', \get_class($controller), Controller::class)
-                );
-            }
-
-            $controller->setRequestContext($requestContext);
-            $controller->setRequestParser(new RequestParser);
-            $middleware = $this->resolveMiddleware($matchedRoute->getMiddlewareBindings());
-
-            return (new Pipeline)->send($request)
-                ->through($middleware, 'handle')
-                ->then(function () use ($controllerCallable, $requestContext, $matchedRoute) {
-                    return $this->routeActionInvoker->invokeRouteAction(
-                        $controllerCallable,
-                        $requestContext,
-                        $matchedRoute
-                    );
-                })
-                ->execute();
         } catch (RouteNotFoundException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_NOT_FOUND,
@@ -114,6 +91,47 @@ class ControllerRequestHandler implements IRequestHandler
                 $ex
             );
         }
+
+        $routeAction = $matchedRoute->getAction();
+
+        if ($routeAction->usesMethod()) {
+            $controller = $this->dependencyResolver->resolve($routeAction->getClassName());
+            $controllerCallable = [$controller, $routeAction->getMethodName()];
+
+            if (!\is_callable($controllerCallable)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Controller method %s::%s() does not exist',
+                        $routeAction->getClassName(),
+                        $routeAction->getMethodName()
+                    )
+                );
+            }
+        } else {
+            $controller = new Controller();
+            $controllerCallable = Closure::bind($routeAction->getClosure(), $controller, Controller::class);
+        }
+
+        if (!$controller instanceof Controller) {
+            throw new InvalidArgumentException(
+                sprintf('Controller %s does not extend %s', \get_class($controller), Controller::class)
+            );
+        }
+
+        $controller->setRequestContext($requestContext);
+        $controller->setRequestParser(new RequestParser);
+        $middleware = $this->resolveMiddleware($matchedRoute->getMiddlewareBindings());
+
+        return (new Pipeline)->send($request)
+            ->through($middleware, 'handle')
+            ->then(function () use ($controllerCallable, $requestContext, $matchedRoute) {
+                return $this->routeActionInvoker->invokeRouteAction(
+                    $controllerCallable,
+                    $requestContext,
+                    $matchedRoute
+                );
+            })
+            ->execute();
     }
 
     /**
