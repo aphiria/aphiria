@@ -131,8 +131,6 @@ class ResponseFactory implements IResponseFactory
             );
         }
 
-        // We need to rewind so that the stream can be read from the beginning
-        $bodyStream->rewind();
         $this->addContentLengthHeader($bodyStream->getLength());
 
         return new StreamBody($bodyStream);

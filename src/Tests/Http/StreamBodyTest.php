@@ -54,6 +54,48 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests writing to a stream writes to an underlying stream
      */
+    public function testWritingToStreamForNonSeekableStreamDoesNotRewindItBeforeCopyingIt(): void
+    {
+        /** @var IStream $outputStream */
+        $outputStream = $this->createMock(IStream::class);
+        /** @var IStream|\PHPUnit_Framework_MockObject_MockObject $underlyingStream */
+        $underlyingStream = $this->createMock(IStream::class);
+        $underlyingStream->expects($this->once())
+            ->method('copyToStream')
+            ->with($outputStream);
+        $underlyingStream->expects($this->once())
+            ->method('isSeekable')
+            ->willReturn(false);
+        $underlyingStream->expects($this->never())
+            ->method('rewind');
+        $body = new StreamBody($underlyingStream);
+        $body->writeToStream($outputStream);
+    }
+
+    /**
+     * Tests writing to a stream writes to an underlying stream
+     */
+    public function testWritingToStreamForSeekableStreamRewindsItBeforeCopyingIt(): void
+    {
+        /** @var IStream $outputStream */
+        $outputStream = $this->createMock(IStream::class);
+        /** @var IStream|\PHPUnit_Framework_MockObject_MockObject $underlyingStream */
+        $underlyingStream = $this->createMock(IStream::class);
+        $underlyingStream->expects($this->once())
+            ->method('copyToStream')
+            ->with($outputStream);
+        $underlyingStream->expects($this->once())
+            ->method('isSeekable')
+            ->willReturn(true);
+        $underlyingStream->expects($this->once())
+            ->method('rewind');
+        $body = new StreamBody($underlyingStream);
+        $body->writeToStream($outputStream);
+    }
+
+    /**
+     * Tests writing to a stream writes to an underlying stream
+     */
     public function testWritingToStreamWritesToUnderlyingStream(): void
     {
         /** @var IStream $outputStream */

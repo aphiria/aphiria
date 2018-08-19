@@ -57,6 +57,10 @@ class StreamBody implements IHttpBody
      */
     public function writeToStream(IStream $stream): void
     {
+        if ($this->stream->isSeekable()) {
+            $this->stream->rewind();
+        }
+
         $this->stream->copyToStream($stream);
     }
 }
