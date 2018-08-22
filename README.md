@@ -339,8 +339,8 @@ Handling a request from beginning to end is simple:
 
 ```php
 use Opulence\Api\Handlers\ControllerRequestHandler;
-use Opulence\Net\Http\Formatting\ResponseWriter;
 use Opulence\Net\Http\RequestFactory;
+use Opulence\Net\Http\ResponseWriter;
 
 // Assume your route matcher, dependency resolver, and request context factory are already set
 $requestHandler = new ControllerRequestHandler(
