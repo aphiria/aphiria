@@ -449,7 +449,7 @@ To delete a cookie on the client, call
 Once you're ready to start sending the response back to the client, you can use `ResponseWriter`:
 
 ```php
-use Opulence\Net\Http\Formatting\ResponseWriter;
+use Opulence\Net\Http\ResponseWriter;
 
 (new ResponseWriter)->writeResponse($response);
 ```

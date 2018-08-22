@@ -8,11 +8,10 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Formatting;
+namespace Opulence\Net\Http;
 
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
-use Opulence\Net\Http\IHttpResponseMessage;
 use RuntimeException;
 
 /**
