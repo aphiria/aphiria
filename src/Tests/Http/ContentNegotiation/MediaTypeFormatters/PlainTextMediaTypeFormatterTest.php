@@ -13,6 +13,7 @@ namespace Opulence\Net\Tests\Http\ContentNegotiation;
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
+use Opulence\Net\Tests\Http\Formatting\Mocks\User;
 
 /**
  * Tests the plain text media type formatter
@@ -25,6 +26,18 @@ class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     public function setUp(): void
     {
         $this->formatter = new PlainTextMediaTypeFormatter();
+    }
+
+    public function testCanReadOnlyStrings(): void
+    {
+        $this->assertTrue($this->formatter->canReadType('string'));
+        $this->assertFalse($this->formatter->canReadType(User::class));
+    }
+
+    public function testCanWriteOnlyStrings(): void
+    {
+        $this->assertTrue($this->formatter->canReadType('string'));
+        $this->assertFalse($this->formatter->canReadType(User::class));
     }
 
     public function testCorrectSupportedEncodingsAreReturned(): void
@@ -66,6 +79,13 @@ class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter->readFromStream($this->createMock(IStream::class), self::class);
     }
 
+    public function testReadingTypeThatCannotBeReadThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $stream = $this->createMock(IStream::class);
+        $this->formatter->readFromStream($stream, User::class);
+    }
+
     public function testWritingNonStringThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -76,6 +96,12 @@ class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     {
         $stream = $this->createStreamThatExpectsBody('foo');
         $this->formatter->writeToStream('foo', $stream, 'utf-8');
+    }
+
+    public function testWritingTypeThatCannotBeWrittenThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->formatter->writeToStream(new User(123, 'foo@bar.com'), $this->createMock(IStream::class), null);
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void

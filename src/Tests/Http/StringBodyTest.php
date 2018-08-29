@@ -24,6 +24,12 @@ class StringBodyTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo', (string)$body);
     }
 
+    public function testGettingLengthReturnsStringLength(): void
+    {
+        $body = new StringBody('foo');
+        $this->assertEquals(3, $body->getLength());
+    }
+
     public function testReadingAsStreamReturnsSameStreamInstanceEveryTime(): void
     {
         $body = new StringBody('foo');

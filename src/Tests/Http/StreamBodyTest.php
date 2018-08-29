@@ -29,6 +29,22 @@ class StreamBodyTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo', (string)$body);
     }
 
+    public function testGettingLengthReturnsUnderlyingStreamLength(): void
+    {
+        $nullLengthStream = $this->createMock(IStream::class);
+        $nullLengthStream->expects($this->once())
+            ->method('getLength')
+            ->willReturn(null);
+        $nullLengthBody = new StreamBody($nullLengthStream);
+        $this->assertNull($nullLengthBody->getLength());
+        $definedLengthStream = $this->createMock(IStream::class);
+        $definedLengthStream->expects($this->once())
+            ->method('getLength')
+            ->willReturn(1);
+        $definedLengthBody = new StreamBody($definedLengthStream);
+        $this->assertEquals(1, $definedLengthBody->getLength());
+    }
+
     public function testReadingAsStreamReturnsUnderlyingStream(): void
     {
         /** @var IStream $stream */

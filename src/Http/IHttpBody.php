@@ -26,6 +26,13 @@ interface IHttpBody
     public function __toString(): string;
 
     /**
+     * Gets the length of the HTTP body
+     *
+     * @return int|null The length if it could be computed, otherwise null
+     */
+    public function getLength(): ?int;
+
+    /**
      * Reads the HTTP body as a stream
      *
      * @return IStream The stream

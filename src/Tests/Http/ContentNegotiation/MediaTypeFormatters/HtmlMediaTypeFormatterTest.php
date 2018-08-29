@@ -13,6 +13,7 @@ namespace Opulence\Net\Tests\Http\ContentNegotiation;
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
+use Opulence\Net\Tests\Http\Formatting\Mocks\User;
 
 /**
  * Tests the HTML media type formatter
@@ -25,6 +26,18 @@ class HtmlMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     public function setUp(): void
     {
         $this->formatter = new HtmlMediaTypeFormatter();
+    }
+
+    public function testCanReadOnlyStrings(): void
+    {
+        $this->assertTrue($this->formatter->canReadType('string'));
+        $this->assertFalse($this->formatter->canReadType(User::class));
+    }
+
+    public function testCanWriteOnlyStrings(): void
+    {
+        $this->assertTrue($this->formatter->canReadType('string'));
+        $this->assertFalse($this->formatter->canReadType(User::class));
     }
 
     public function testCorrectSupportedEncodingsAreReturned(): void
@@ -66,6 +79,23 @@ class HtmlMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter->readFromStream($this->createMock(IStream::class), self::class);
     }
 
+    public function testReadingTypeThatCannotBeReadThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $stream = $this->createMock(IStream::class);
+        $this->formatter->readFromStream($stream, User::class);
+    }
+
+    public function testWritingConvertsToInputEncoding(): void
+    {
+        $stream = $this->createMock(IStream::class);
+        $expectedEncodedValue = \mb_convert_encoding('‡', 'utf-16');
+        $stream->expects($this->once())
+            ->method('write')
+            ->with($expectedEncodedValue);
+        $this->formatter->writeToStream('‡', $stream, 'utf-16');
+    }
+
     public function testWritingNonStringThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -78,14 +108,10 @@ class HtmlMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter->writeToStream('foo', $stream, 'utf-8');
     }
 
-    public function testWritingConvertsToInputEncoding(): void
+    public function testWritingTypeThatCannotBeWrittenThrowsException(): void
     {
-        $stream = $this->createMock(IStream::class);
-        $expectedEncodedValue = \mb_convert_encoding('‡', 'utf-16');
-        $stream->expects($this->once())
-            ->method('write')
-            ->with($expectedEncodedValue);
-        $this->formatter->writeToStream('‡', $stream, 'utf-16');
+        $this->expectException(InvalidArgumentException::class);
+        $this->formatter->writeToStream(new User(123, 'foo@bar.com'), $this->createMock(IStream::class), null);
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void

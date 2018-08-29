@@ -21,18 +21,20 @@ interface IContentNegotiator
     /**
      * Gets the negotiation result for the request body
      *
+     * @param string $type The type to negotiate
      * @param IHttpRequestMessage $request The request to negotiate with
      * @return ContentNegotiationResult The content negotiation result
      * @throws InvalidArgumentException Thrown if the Content-Type header was incorrectly formatted
      */
-    public function negotiateRequestContent(IHttpRequestMessage $request): ContentNegotiationResult;
+    public function negotiateRequestContent(string $type, IHttpRequestMessage $request): ContentNegotiationResult;
 
     /**
      * Gets the negotiation result for the response body
      *
+     * @param string $type The type to negotiate
      * @param IHttpRequestMessage $request The request to negotiate with
      * @return ContentNegotiationResult The content negotiation result
      * @throws InvalidArgumentException Thrown if the Accept header's media types were incorrectly formatted
      */
-    public function negotiateResponseContent(IHttpRequestMessage $request): ContentNegotiationResult;
+    public function negotiateResponseContent(string $type, IHttpRequestMessage $request): ContentNegotiationResult;
 }

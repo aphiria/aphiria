@@ -30,6 +30,18 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter = new FormUrlEncodedSerializerMediaTypeFormatter($serializer);
     }
 
+    public function testCanReadOnlyObjects(): void
+    {
+        $this->assertTrue($this->formatter->canReadType(User::class));
+        $this->assertFalse($this->formatter->canReadType('string'));
+    }
+
+    public function testCanWriteOnlyObjects(): void
+    {
+        $this->assertTrue($this->formatter->canWriteType(User::class));
+        $this->assertFalse($this->formatter->canWriteType('string'));
+    }
+
     public function testCorrectSupportedEncodingsAreReturned(): void
     {
         $this->assertEquals(['utf-8', 'ISO-8859-1'], $this->formatter->getSupportedEncodings());
@@ -58,6 +70,13 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedUser, $actualUser);
     }
 
+    public function testReadingTypeThatCannotBeReadThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $stream = $this->createMock(IStream::class);
+        $this->formatter->readFromStream($stream, 'string');
+    }
+
     public function testWritingToStreamSetsStreamContentsFromSerializedValue(): void
     {
         $stream = $this->createStreamThatExpectsBody('id=123&email=foo%40bar.com');
@@ -74,6 +93,12 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
             ->method('write')
             ->with($expectedEncodedValue);
         $this->formatter->writeToStream($user, $stream, 'ISO-8859-1');
+    }
+
+    public function testWritingTypeThatCannotBeWrittenThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->formatter->writeToStream('foo', $this->createMock(IStream::class), null);
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void

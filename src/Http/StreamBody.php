@@ -39,6 +39,14 @@ class StreamBody implements IHttpBody
     /**
      * @inheritdoc
      */
+    public function getLength(): ?int
+    {
+        return $this->stream->getLength();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function readAsStream(): IStream
     {
         return $this->stream;

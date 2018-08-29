@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Tests\Http\ResponseFactories\Mocks;
+namespace Opulence\Net\Tests\Http\ContentNegotiation\Mocks;
 
 /**
  * Defines a simple use model for use in tests

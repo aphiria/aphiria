@@ -32,7 +32,6 @@
 6. [URIs](#uris)
 7. [Content Negotiation](#content-negotiation)
     1. [Media Type Formatters](#media-type-formatters)
-    2. [Request Context](#request-context)
 
 <h1 id="introduction">Introduction</h1>
 
@@ -558,7 +557,8 @@ $mediaTypeFormatters = [
 ];
 $supportedLanguages = ['en-US'];
 $contentNegotiator = new ContentNegotiator($mediaTypeFormatters, $supportedLanguages);
-$result = $contentNegotiator->negotiateRequestContent($request);
+$type = '\App\Domain\Users\User';
+$result = $contentNegotiator->negotiateRequestContent($type, $request);
 ```
 
 > **Note:** `ContentNegotiator` uses language tags from <a href="https://tools.ietf.org/html/rfc5646" target="_blank">RFC 5646</a>, and follows the lookup rules in <a href="https://tools.ietf.org/html/rfc4647#section-3.4" target="_blank">RFC 4647 Section 3.4</a>.
@@ -586,17 +586,3 @@ $mediaTypeFormatter->writeToStream($valueToWrite, $response->getBody());
 * `PlainTextMediaTypeFormatter`
 
 Under the hood, `FormUrlEncodedMediaTypeFormatter` and `JsonMediaTypeFormatter` use Opulence's <a href="https://github.com/opulencephp/serialization" target="_blank">serialization library</a> to (de)serialize values.  `HtmlMediaTypeFormatter` and `PlainTextMediaTypeFormatter` only handle strings - they do not deal with objects or arrays.
-
-<h3 id="request-context">Request Context</h3>
-
-A request context contains the request and the negotiated request and response content results.  Like its name implies, it conveys information about the current request, and assists applications convert a request into a response.
-
-To create a request context, use `RequestContextFactory`:
-
-```php
-use Opulence\Net\Http\RequestContextFactory;
-
-// Assume the content negotiator and request are already set up
-$requestContextFactory = new RequestContextFactory($contentNegotiator);
-$requestContext = $requestContextFactory->createRequestContext($request);
-```

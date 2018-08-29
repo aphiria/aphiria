@@ -30,6 +30,18 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter = new JsonMediaTypeFormatter($serializer);
     }
 
+    public function testCanReadOnlyObjects(): void
+    {
+        $this->assertTrue($this->formatter->canReadType(User::class));
+        $this->assertFalse($this->formatter->canReadType('string'));
+    }
+
+    public function testCanWriteOnlyObjects(): void
+    {
+        $this->assertTrue($this->formatter->canWriteType(User::class));
+        $this->assertFalse($this->formatter->canWriteType('string'));
+    }
+
     public function testCorrectSupportedEncodingsAreReturned(): void
     {
         $this->assertEquals(['utf-8'], $this->formatter->getSupportedEncodings());
@@ -58,11 +70,24 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedUser, $actualUser);
     }
 
+    public function testReadingTypeThatCannotBeReadThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $stream = $this->createMock(IStream::class);
+        $this->formatter->readFromStream($stream, 'string');
+    }
+
     public function testWritingToStreamSetsStreamContentsFromSerializedValue(): void
     {
         $stream = $this->createStreamThatExpectsBody('{"id":123,"email":"foo@bar.com"}');
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $stream, 'utf-8');
+    }
+
+    public function testWritingTypeThatCannotBeWrittenThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->formatter->writeToStream('foo', $this->createMock(IStream::class), null);
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void

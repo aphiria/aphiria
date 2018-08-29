@@ -67,7 +67,7 @@ class ContentNegotiator implements IContentNegotiator
     /**
      * @inheritdoc
      */
-    public function negotiateRequestContent(IHttpRequestMessage $request): ContentNegotiationResult
+    public function negotiateRequestContent(string $type, IHttpRequestMessage $request): ContentNegotiationResult
     {
         $requestHeaders = $request->getHeaders();
         $contentTypeHeader = $this->headerParser->parseContentTypeHeader($requestHeaders);
@@ -79,9 +79,10 @@ class ContentNegotiator implements IContentNegotiator
             return new ContentNegotiationResult(null, self::DEFAULT_REQUEST_MEDIA_TYPE, null, $language);
         }
 
-        $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestMediaTypeFormatterMatch(
+        $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestRequestMediaTypeFormatterMatch(
+            $type,
             $this->mediaTypeFormatters,
-            [$contentTypeHeader]
+            $contentTypeHeader
         );
 
         if ($mediaTypeFormatterMatch === null) {
@@ -105,7 +106,7 @@ class ContentNegotiator implements IContentNegotiator
     /**
      * @inheritdoc
      */
-    public function negotiateResponseContent(IHttpRequestMessage $request): ContentNegotiationResult
+    public function negotiateResponseContent(string $type, IHttpRequestMessage $request): ContentNegotiationResult
     {
         $requestHeaders = $request->getHeaders();
         $acceptCharsetHeaders = $this->headerParser->parseAcceptCharsetHeader($requestHeaders);
@@ -113,23 +114,30 @@ class ContentNegotiator implements IContentNegotiator
         $language = $this->languageMatcher->getBestLanguageMatch($this->supportedLanguages, $acceptLanguageHeaders);
 
         if (!$requestHeaders->containsKey('Accept')) {
+            $defaultMediaTypeFormatter = $this->mediaTypeFormatters[0];
+
+            if (!$defaultMediaTypeFormatter->canWriteType($type)) {
+                return new ContentNegotiationResult(null, null, null, $language);
+            }
+
             // Default to the first registered media type formatter
             $encoding = $this->encodingMatcher->getBestEncodingMatch(
-                $this->mediaTypeFormatters[0],
+                $defaultMediaTypeFormatter,
                 $acceptCharsetHeaders,
                 null
             );
 
             return new ContentNegotiationResult(
-                $this->mediaTypeFormatters[0],
-                $this->mediaTypeFormatters[0]->getDefaultMediaType(),
+                $defaultMediaTypeFormatter,
+                $defaultMediaTypeFormatter->getDefaultMediaType(),
                 $encoding,
                 $language
             );
         }
 
         $mediaTypeHeaders = $this->headerParser->parseAcceptHeader($requestHeaders);
-        $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestMediaTypeFormatterMatch(
+        $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestResponseMediaTypeFormatterMatch(
+            $type,
             $this->mediaTypeFormatters,
             $mediaTypeHeaders
         );

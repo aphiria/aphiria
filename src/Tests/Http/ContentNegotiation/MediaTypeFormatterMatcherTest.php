@@ -17,6 +17,7 @@ use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
+use Opulence\Net\Tests\Http\Formatting\Mocks\User;
 
 /**
  * Tests the media type formatter matcher
@@ -34,9 +35,21 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
     public function testBestFormatterCanMatchWithWildcardSubType(): void
     {
         $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter1->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
         $formatter2 = $this->createFormatterMock(['text/html'], 1);
+        $formatter2->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
         $acceptHeader = new AcceptMediaTypeHeaderValue('text/*');
-        $match = $this->matcher->getBestMediaTypeFormatterMatch([$formatter1, $formatter2], [$acceptHeader]);
+        $match = $this->matcher->getBestResponseMediaTypeFormatterMatch(
+            User::class,
+            [$formatter1, $formatter2],
+            [$acceptHeader]
+        );
         $this->assertSame($formatter2, $match->getFormatter());
         $this->assertEquals('text/html', $match->getMediaType());
     }
@@ -44,9 +57,17 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
     public function testBestFormatterCanMatchWithWildcardType(): void
     {
         $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter1->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
         $formatter2 = $this->createFormatterMock(['text/html'], 0);
         $acceptHeader = new AcceptMediaTypeHeaderValue('*/*');
-        $match = $this->matcher->getBestMediaTypeFormatterMatch([$formatter1, $formatter2], [$acceptHeader]);
+        $match = $this->matcher->getBestResponseMediaTypeFormatterMatch(
+            User::class,
+            [$formatter1, $formatter2],
+            [$acceptHeader]
+        );
         $this->assertSame($formatter1, $match->getFormatter());
         $this->assertEquals('application/json', $match->getMediaType());
     }
@@ -54,9 +75,21 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
     public function testBestFormatterIsSelectedByMatchingSupportedMediaTypesInContentTypeHeader(): void
     {
         $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter1->expects($this->once())
+            ->method('canReadType')
+            ->with(User::class)
+            ->willReturn(true);
         $formatter2 = $this->createFormatterMock(['text/html'], 1);
+        $formatter2->expects($this->once())
+            ->method('canReadType')
+            ->with(User::class)
+            ->willReturn(true);
         $contentTypeHeader = new ContentTypeHeaderValue('text/html');
-        $match = $this->matcher->getBestMediaTypeFormatterMatch([$formatter1, $formatter2], [$contentTypeHeader]);
+        $match = $this->matcher->getBestRequestMediaTypeFormatterMatch(
+            User::class,
+            [$formatter1, $formatter2],
+            $contentTypeHeader
+        );
         $this->assertSame($formatter2, $match->getFormatter());
         $this->assertEquals('text/html', $match->getMediaType());
     }
@@ -64,14 +97,27 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
     public function testBestFormatterMatchesMostSpecificMediaTypeWithEqualQualityMediaTypes(): void
     {
         $formatter1 = $this->createFormatterMock(['text/plain'], 1);
+        $formatter1->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
         $formatter2 = $this->createFormatterMock(['text/xml'], 1);
+        $formatter2->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
         $formatter3 = $this->createFormatterMock(['text/html'], 1);
+        $formatter3->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
         $acceptHeaders = [
             new AcceptMediaTypeHeaderValue('*/*'),
             new AcceptMediaTypeHeaderValue('text/*'),
             new AcceptMediaTypeHeaderValue('text/html')
         ];
-        $match = $this->matcher->getBestMediaTypeFormatterMatch(
+        $match = $this->matcher->getBestResponseMediaTypeFormatterMatch(
+            User::class,
             [$formatter1, $formatter2, $formatter3],
             $acceptHeaders
         );
@@ -82,11 +128,19 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
     public function testBestFormatterMatchesWildcardSubTypeWithHigherQualityScoreThanSpecificMediaType(): void
     {
         $formatter = $this->createFormatterMock(['text/plain', 'text/html'], 1);
+        $formatter->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
         $acceptHeaders = [
             new AcceptMediaTypeHeaderValue('text/*', new ImmutableHashTable([new KeyValuePair('q', 0.5)])),
             new AcceptMediaTypeHeaderValue('text/html', new ImmutableHashTable([new KeyValuePair('q', 0.3)]))
         ];
-        $match = $this->matcher->getBestMediaTypeFormatterMatch([$formatter], $acceptHeaders);
+        $match = $this->matcher->getBestResponseMediaTypeFormatterMatch(
+            User::class,
+            [$formatter],
+            $acceptHeaders
+        );
         $this->assertSame($formatter, $match->getFormatter());
         $this->assertEquals('text/plain', $match->getMediaType());
     }
@@ -94,11 +148,19 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
     public function tesBestFormatterMatchesWildcardTypeWithHigherQualityScoreThanSpecificMediaType(): void
     {
         $formatter = $this->createFormatterMock(['application/json', 'text/html'], 1);
+        $formatter->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
         $acceptHeaders = [
             new AcceptMediaTypeHeaderValue('*/*', new ImmutableHashTable([new KeyValuePair('q', 0.5)])),
             new AcceptMediaTypeHeaderValue('text/html', new ImmutableHashTable([new KeyValuePair('q', 0.3)]))
         ];
-        $match = $this->matcher->getBestMediaTypeFormatterMatch([$formatter], $acceptHeaders);
+        $match = $this->matcher->getBestResponseMediaTypeFormatterMatch(
+            User::class,
+            [$formatter],
+            $acceptHeaders
+        );
         $this->assertSame($formatter, $match->getFormatter());
         $this->assertEquals('application/json', $match->getMediaType());
     }
@@ -111,7 +173,11 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
             'text/html',
             new ImmutableHashTable([new KeyValuePair('q', 0.0)])
         );
-        $match = $this->matcher->getBestMediaTypeFormatterMatch([$formatter], [$acceptHeader]);
+        $match = $this->matcher->getBestResponseMediaTypeFormatterMatch(
+            User::class,
+            [$formatter],
+            [$acceptHeader]
+        );
         $this->assertNull($match);
     }
 
@@ -121,7 +187,7 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
 
         try {
             $acceptHeader = new AcceptMediaTypeHeaderValue('text');
-            $this->matcher->getBestMediaTypeFormatterMatch([$formatter], [$acceptHeader]);
+            $this->matcher->getBestResponseMediaTypeFormatterMatch(User::class, [$formatter], [$acceptHeader]);
             $this->fail('"text" is not a valid media type');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
@@ -129,7 +195,7 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
 
         try {
             $acceptHeader = new AcceptMediaTypeHeaderValue('text/');
-            $this->matcher->getBestMediaTypeFormatterMatch([$formatter], [$acceptHeader]);
+            $this->matcher->getBestResponseMediaTypeFormatterMatch(User::class, [$formatter], [$acceptHeader]);
             $this->fail('"text/" is not a valid media type');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
@@ -137,11 +203,54 @@ class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
 
         try {
             $acceptHeader = new AcceptMediaTypeHeaderValue('/html');
-            $this->matcher->getBestMediaTypeFormatterMatch([$formatter], [$acceptHeader]);
+            $this->matcher->getBestResponseMediaTypeFormatterMatch(User::class, [$formatter], [$acceptHeader]);
             $this->fail('"/html" is not a valid media type');
         } catch (InvalidArgumentException $ex) {
             $this->assertTrue(true);
         }
+    }
+
+    public function testBestRequestFormatterIsSkippedIfItCannotReadType(): void
+    {
+        $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter1->expects($this->once())
+            ->method('canReadType')
+            ->with(User::class)
+            ->willReturn(false);
+        $formatter2 = $this->createFormatterMock(['text/html'], 1);
+        $formatter2->expects($this->once())
+            ->method('canReadType')
+            ->with(User::class)
+            ->willReturn(true);
+        $match = $this->matcher->getBestRequestMediaTypeFormatterMatch(
+            User::class,
+            [$formatter1, $formatter2],
+            new ContentTypeHeaderValue('*/*')
+        );
+        $this->assertSame($formatter2, $match->getFormatter());
+        $this->assertEquals('text/html', $match->getMediaType());
+    }
+
+    public function testBestResponseFormatterIsSkippedIfItCannotWriteType(): void
+    {
+        $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter1->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(false);
+        $formatter2 = $this->createFormatterMock(['text/html'], 1);
+        $formatter2->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
+        $acceptHeader = new AcceptMediaTypeHeaderValue('*/*');
+        $match = $this->matcher->getBestResponseMediaTypeFormatterMatch(
+            User::class,
+            [$formatter1, $formatter2],
+            [$acceptHeader]
+        );
+        $this->assertSame($formatter2, $match->getFormatter());
+        $this->assertEquals('text/html', $match->getMediaType());
     }
 
     /**

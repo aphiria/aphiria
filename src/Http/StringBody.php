@@ -42,6 +42,14 @@ class StringBody implements IHttpBody
     /**
      * @inheritdoc
      */
+    public function getLength(): ?int
+    {
+        return \mb_strlen($this->content);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function readAsStream(): IStream
     {
         if ($this->stream === null) {
