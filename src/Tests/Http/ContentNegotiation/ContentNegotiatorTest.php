@@ -149,6 +149,29 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($result->getEncoding());
     }
 
+    public function testResponseFormatterIsFirstFormatterThatCanWriteTypeWithNoAcceptSpecified(): void
+    {
+        $formatter1 = $this->createMock(IMediaTypeFormatter::class);
+        $formatter1->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(false);
+        $formatter2 = $this->createMock(IMediaTypeFormatter::class);
+        $formatter2->expects($this->once())
+            ->method('getDefaultMediaType')
+            ->willReturn('application/json');
+        $formatter2->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
+        $negotiator = new ContentNegotiator([$formatter1, $formatter2]);
+        $result = $negotiator->negotiateResponseContent(User::class, $this->request);
+        $this->assertSame($formatter2, $result->getFormatter());
+        // Verify it's using the default media type
+        $this->assertEquals('application/json', $result->getMediaType());
+        $this->assertNull($result->getEncoding());
+    }
+
     public function testResponseFormatterIsNullWhenFirstFormatterRegisteredCannotWriteType(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);

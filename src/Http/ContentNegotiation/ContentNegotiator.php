@@ -75,7 +75,7 @@ class ContentNegotiator implements IContentNegotiator
         $requestHeaders->tryGetFirst('Content-Language', $language);
 
         if ($contentTypeHeader === null) {
-            // Default to the first registered media type formatter
+            // We cannot negotiate the request content
             return new ContentNegotiationResult(null, self::DEFAULT_REQUEST_MEDIA_TYPE, null, $language);
         }
 
@@ -114,22 +114,29 @@ class ContentNegotiator implements IContentNegotiator
         $language = $this->languageMatcher->getBestLanguageMatch($this->supportedLanguages, $acceptLanguageHeaders);
 
         if (!$requestHeaders->containsKey('Accept')) {
-            $defaultMediaTypeFormatter = $this->mediaTypeFormatters[0];
+            // Default to the first registered media type formatter that can write the input type
+            $selectedMediaTypeFormatter = null;
 
-            if (!$defaultMediaTypeFormatter->canWriteType($type)) {
+            foreach ($this->mediaTypeFormatters as $mediaTypeFormatter) {
+                if ($mediaTypeFormatter->canWriteType($type)) {
+                    $selectedMediaTypeFormatter = $mediaTypeFormatter;
+                    break;
+                }
+            }
+
+            if ($selectedMediaTypeFormatter === null) {
                 return new ContentNegotiationResult(null, null, null, $language);
             }
 
-            // Default to the first registered media type formatter
             $encoding = $this->encodingMatcher->getBestEncodingMatch(
-                $defaultMediaTypeFormatter,
+                $selectedMediaTypeFormatter,
                 $acceptCharsetHeaders,
                 null
             );
 
             return new ContentNegotiationResult(
-                $defaultMediaTypeFormatter,
-                $defaultMediaTypeFormatter->getDefaultMediaType(),
+                $selectedMediaTypeFormatter,
+                $selectedMediaTypeFormatter->getDefaultMediaType(),
                 $encoding,
                 $language
             );

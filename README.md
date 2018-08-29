@@ -561,6 +561,8 @@ $type = '\App\Domain\Users\User';
 $result = $contentNegotiator->negotiateRequestContent($type, $request);
 ```
 
+If no `Accept` header is specified in the request, then the first registered media type formatter that can write the response body will be used.
+
 > **Note:** `ContentNegotiator` uses language tags from <a href="https://tools.ietf.org/html/rfc5646" target="_blank">RFC 5646</a>, and follows the lookup rules in <a href="https://tools.ietf.org/html/rfc4647#section-3.4" target="_blank">RFC 4647 Section 3.4</a>.
 
 <h2 id="media-type-formatters">Media Type Formatters</h2>
