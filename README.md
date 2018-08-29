@@ -67,7 +67,7 @@ class UserController extends Controller
 }
 ```
 
-The `ok()` helper method uses a `ResponseFactory` to build a response using the current <a href="https://github.com/opulencephp/net#request-context" target="_blank">request context</a>.  You can pass in a POPO as the response body, and the factory will use content negotiation to determine how to serialize it.
+The `ok()` helper method uses a `NegotiatedResponseFactory` to build a response using the current request and <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a>.  You can pass in a POPO as the response body, and the factory will use content negotiation to determine how to serialize it.
 
 The following helper methods come bundled with `Controller`:
 
@@ -342,10 +342,12 @@ use Opulence\Api\Handlers\ControllerRequestHandler;
 use Opulence\Net\Http\RequestFactory;
 use Opulence\Net\Http\ResponseWriter;
 
+// TODO!!!!!!!!!! UPDATE THIS COMMENT
 // Assume your route matcher, dependency resolver, and request context factory are already set
 $requestHandler = new ControllerRequestHandler(
     $routeMatcher,
     $dependencyResolver,
+    // TODO!!!!!! UPDATE ONCE I HAVE UPDATED THIS LOGIC
     $requestContextFactory
 );
 $request = (new RequestFactory)->createRequestFromSuperglobals($_SERVER);
@@ -368,7 +370,7 @@ By default, `ExceptionHandler` will convert any exception to a 500 response and 
 
 <h2 id="exception-response-factories">Exception Response Factories</h2>
 
-You might find yourself wanting to map a particular exception to a certain response.  In this case, you can use an exception response factory.  They are closures that take in the exception and the request context, and return a response.
+You might find yourself wanting to map a particular exception to a certain response.  In this case, you can use an exception response factory.  They are closures that take in the exception and the request, and return a response.
 
 As an example, let's say that you want to return a 404 response when an `EntityNotFound` exception is thrown:
 
@@ -382,7 +384,7 @@ use Opulence\Net\Http\Response;
 $exceptionResponseFactoryRegistry = new ExceptionResponseFactoryRegistry();
 $exceptionResponseFactoryRegistry->registerFactory(
     EntityNotFound::class,
-    function (EntityNotFound $ex, RequestContext $requestContext) {
+    function (EntityNotFound $ex, IHttpRequestMessage $request) {
         return new Response(HttpStatusCodes::HTTP_NOT_FOUND);
     }
 );
@@ -397,23 +399,25 @@ That's it.  Now, whenever an unhandled `EntityNotFound` exception is thrown, you
 
 ```php
 $exceptionResponseFactoryRegistry->registerFactories([
-    EntityNotFound::class => function (EntityNotFound $ex, RequestContext $requestContext) {
+    EntityNotFound::class => function (EntityNotFound $ex, IHttpRequestMessage $request) {
         return new Response(HttpStatusCodes::HTTP_NOT_FOUND);
     },
     // ...
 ]);
 ```
 
-If you want to take advantage of automatic content negotiation, you can use a `ResponseFactory` in your closure:
+If you want to take advantage of automatic content negotiation, you can use a `NegotiatedResponseFactory` in your closure:
 
 ```php
-use Opulence\Net\Http\ResponseFactories\NotFoundResponseFactory;
+use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 
+// Assume the content negotiator was already set up
+$negotiatedResponseFactory = NegotiatedResponseFactory($contentNegotiator);
 // ...
 $exceptionResponseFactoryRegistry->registerFactory(
     EntityNotFound::class,
-    function (EntityNotFound $ex, RequestContext $requestContext) {
-        return (new NotFoundResponseFactory)->createResponse($requestContext);
+    function (EntityNotFound $ex, Request $request) use ($negotiatedResponseFactory) {
+        return $negotiatedResponseFactory->createResponse($request);
     }
 );
 ```

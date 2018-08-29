@@ -11,13 +11,13 @@
 namespace Opulence\Api\Exceptions;
 
 use Exception;
+use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\HttpStatusCodes;
+use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\RequestContext;
 use Opulence\Net\Http\Response;
-use Opulence\Net\Http\ResponseFactories\InternalServerErrorResponseFactory;
 
 /**
  * Defines a factory for responses created from exceptions
@@ -40,9 +40,9 @@ class ExceptionResponseFactory implements IExceptionResponseFactory
      */
     public function createResponseFromException(
         Exception $ex,
-        ?RequestContext $requestContext
+        ?IHttpRequestMessage $request
     ): IHttpResponseMessage {
-        if ($requestContext === null) {
+        if ($request === null) {
             return $this->createDefaultInternalServerErrorResponse($ex, null);
         }
 
@@ -50,13 +50,14 @@ class ExceptionResponseFactory implements IExceptionResponseFactory
 
         try {
             if (($responseFactory = $this->exceptionResponseFactories->getFactory($exceptionType)) === null) {
-                return (new InternalServerErrorResponseFactory)->createResponse($requestContext);
+                // Todo: Can I even handle content negotiation in this case?  Would I need to inject the NegotiatedResponseFactory or something?
+                return (new InternalServerErrorResponseFactory)->createResponse($request);
             }
 
-            return $responseFactory($ex, $requestContext);
+            return $responseFactory($ex, $request);
         } catch (Exception $ex) {
             // An exception occurred while making the response, eg content negotiation failed
-            return $this->createDefaultInternalServerErrorResponse($ex, $requestContext);
+            return $this->createDefaultInternalServerErrorResponse($ex, $request);
         }
     }
 
@@ -70,7 +71,7 @@ class ExceptionResponseFactory implements IExceptionResponseFactory
         $responseFactories = new ExceptionResponseFactoryRegistry();
         $responseFactories->registerFactory(
             HttpException::class,
-            function (HttpException $ex, RequestContext $requestContext) {
+            function (HttpException $ex, IHttpRequestMessage $request) {
                 return $ex->getResponse();
             }
         );
@@ -82,12 +83,12 @@ class ExceptionResponseFactory implements IExceptionResponseFactory
      * Creates the default internal server error response in the case that content negotiation failed
      *
      * @param Exception $ex The exception that was thrown
-     * @param RequestContext|null $requestContext The current request context if there is one, otherwise null
+     * @param IHttpRequestMessage|null $request The current request if there is one, otherwise null
      * @return IHttpResponseMessage The default response
      */
     protected function createDefaultInternalServerErrorResponse(
         Exception $ex,
-        ?RequestContext $requestContext
+        ?IHttpRequestMessage $request
     ): IHttpResponseMessage {
         // We purposely aren't using the parameters - they're more for derived classes that might override this method
         $headers = new HttpHeaders();

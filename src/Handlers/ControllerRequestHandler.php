@@ -17,13 +17,13 @@ use Opulence\Api\Exceptions\ExceptionHandler;
 use Opulence\Api\Exceptions\IExceptionHandler;
 use Opulence\Api\Middleware\AttributeMiddleware;
 use Opulence\Api\Middleware\IMiddleware;
+use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\Formatting\RequestParser;
 use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\RequestContextFactory;
 use Opulence\Pipelines\Pipeline;
 use Opulence\Routing\Matchers\IRouteMatcher;
 use Opulence\Routing\Matchers\RouteNotFoundException;
@@ -38,8 +38,8 @@ class ControllerRequestHandler implements IRequestHandler
     private $routeMatcher;
     /** @var IDependencyResolver The dependency resolver */
     private $dependencyResolver;
-    /** @var RequestContextFactory The factory to create request contexts with */
-    private $requestContextFactory;
+    /** @var IContentNegotiator The content negotiator */
+    private $contentNegotiator;
     /** @var IRouteActionInvoker The route action invoker */
     private $routeActionInvoker;
     /** @var IExceptionHandler The exception handler to use */
@@ -48,20 +48,20 @@ class ControllerRequestHandler implements IRequestHandler
     /**
      * @param IRouteMatcher $routeMatcher The route matcher
      * @param IDependencyResolver $dependencyResolver The dependency resolver
-     * @param RequestContextFactory $requestContextFactory The factory to create request contexts with
+     * @param IContentNegotiator $contentNegotiator The content negotiator
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
      * @param IExceptionHandler|null $exceptionHandler The exception handler to use
      */
     public function __construct(
         IRouteMatcher $routeMatcher,
         IDependencyResolver $dependencyResolver,
-        RequestContextFactory $requestContextFactory,
+        IContentNegotiator $contentNegotiator,
         IRouteActionInvoker $routeActionInvoker = null,
         IExceptionHandler $exceptionHandler = null
     ) {
         $this->routeMatcher = $routeMatcher;
         $this->dependencyResolver = $dependencyResolver;
-        $this->requestContextFactory = $requestContextFactory;
+        $this->contentNegotiator = $contentNegotiator;
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker();
 
         if ($exceptionHandler === null) {
@@ -77,8 +77,7 @@ class ControllerRequestHandler implements IRequestHandler
      */
     public function handle(IHttpRequestMessage $request): IHttpResponseMessage
     {
-        $requestContext = $this->requestContextFactory->createRequestContext($request);
-        $this->exceptionHandler->setRequestContext($requestContext);
+        $this->exceptionHandler->setRequest($request);
         $uri = $request->getUri();
 
         try {
@@ -118,16 +117,16 @@ class ControllerRequestHandler implements IRequestHandler
             );
         }
 
-        $controller->setRequestContext($requestContext);
+        $controller->setRequest($request);
         $controller->setRequestParser(new RequestParser);
         $middleware = $this->resolveMiddleware($matchedRoute->getMiddlewareBindings());
 
         return (new Pipeline)->send($request)
             ->through($middleware, 'handle')
-            ->then(function () use ($controllerCallable, $requestContext, $matchedRoute) {
+            ->then(function () use ($controllerCallable, $request, $matchedRoute) {
                 return $this->routeActionInvoker->invokeRouteAction(
                     $controllerCallable,
-                    $requestContext,
+                    $request,
                     $matchedRoute
                 );
             })

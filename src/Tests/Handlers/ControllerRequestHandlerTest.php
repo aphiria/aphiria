@@ -180,7 +180,8 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
         $this->expectException(HttpException::class);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $this->exceptionHandler->expects($this->once())
-            ->method('setRequestContext');
+            ->method('setRequest')
+            ->with($request);
         $this->routeMatcher->expects($this->once())
             ->method('match')
             ->with('GET', 'foo.com', '/bar')

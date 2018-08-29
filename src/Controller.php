@@ -16,8 +16,8 @@ use Opulence\Net\Http\Formatting\RequestParser;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\HttpStatusCodes;
+use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\RequestContext;
 use Opulence\Net\Http\ResponseFactories\BadRequestResponseFactory;
 use Opulence\Net\Http\ResponseFactories\ConflictResponseFactory;
 use Opulence\Net\Http\ResponseFactories\CreatedResponseFactory;
@@ -37,20 +37,20 @@ use Opulence\Serialization\SerializationException;
  */
 class Controller
 {
-    /** @var RequestContext The current request context */
-    protected $requestContext;
+    /** @var IHttpRequestMessage The current request */
+    protected $request;
     /** @var RequestParser The parser to use to get data from the current request */
     protected $requestParser;
 
     /**
-     * Sets the current request context
+     * Sets the current request
      *
-     * @param RequestContext $requestContext The current request context
+     * @param IHttpRequestMessage $request The current request
      * @internal
      */
-    public function setRequestContext(RequestContext $requestContext): void
+    public function setRequest(IHttpRequestMessage $request): void
     {
-        $this->requestContext = $requestContext;
+        $this->request = $request;
     }
 
     /**
@@ -71,12 +71,12 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
-     * @throws LogicException Thrown if the request context is not set
+     * @throws LogicException Thrown if the request is not set
      */
     protected function badRequest($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        if (!$this->requestContext instanceof RequestContext) {
-            throw new LogicException('Request context is not set');
+        if (!$this->request instanceof IHttpRequestMessage) {
+            throw new LogicException('Request is not set');
         }
 
         return (new BadRequestResponseFactory($headers, $body))->createResponse($this->requestContext);
@@ -89,12 +89,12 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
-     * @throws LogicException Thrown if the request context is not set
+     * @throws LogicException Thrown if the request is not set
      */
     protected function conflict($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        if (!$this->requestContext instanceof RequestContext) {
-            throw new LogicException('Request context is not set');
+        if (!$this->request instanceof IHttpRequestMessage) {
+            throw new LogicException('Request is not set');
         }
 
         return (new ConflictResponseFactory($headers, $body))->createResponse($this->requestContext);
@@ -107,12 +107,12 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
-     * @throws LogicException Thrown if the request context is not set
+     * @throws LogicException Thrown if the request is not set
      */
     protected function created($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        if (!$this->requestContext instanceof RequestContext) {
-            throw new LogicException('Request context is not set');
+        if (!$this->request instanceof IHttpRequestMessage) {
+            throw new LogicException('Request is not set');
         }
 
         return (new CreatedResponseFactory($headers, $body))->createResponse($this->requestContext);
@@ -125,12 +125,12 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
-     * @throws LogicException Thrown if the request context is not set
+     * @throws LogicException Thrown if the request is not set
      */
     protected function forbidden($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        if (!$this->requestContext instanceof RequestContext) {
-            throw new LogicException('Request context is not set');
+        if (!$this->request instanceof IHttpRequestMessage) {
+            throw new LogicException('Request is not set');
         }
 
         return (new ForbiddenResponseFactory($headers, $body))->createResponse($this->requestContext);
@@ -145,12 +145,12 @@ class Controller
      * @return IHttpResponseMessage The response
      * @throws InvalidArgumentException Thrown if the URI is not a string nor a URI
      * @throws HttpException Thrown if there was an error creating the response
-     * @throws LogicException Thrown if the request context is not set
+     * @throws LogicException Thrown if the request is not set
      */
     protected function found($uri, $body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        if (!$this->requestContext instanceof RequestContext) {
-            throw new LogicException('Request context is not set');
+        if (!$this->request instanceof IHttpRequestMessage) {
+            throw new LogicException('Request is not set');
         }
 
         return (new FoundResponseFactory($uri, $headers, $body))->createResponse($this->requestContext);
@@ -163,12 +163,12 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
-     * @throws LogicException Thrown if the request context is not set
+     * @throws LogicException Thrown if the request is not set
      */
     protected function internalServerError($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        if (!$this->requestContext instanceof RequestContext) {
-            throw new LogicException('Request context is not set');
+        if (!$this->request instanceof IHttpRequestMessage) {
+            throw new LogicException('Request is not set');
         }
 
         return (new InternalServerErrorResponseFactory($headers, $body))->createResponse($this->requestContext);
@@ -183,12 +183,12 @@ class Controller
      * @return IHttpResponseMessage The response
      * @throws InvalidArgumentException Thrown if the URI is not a string nor a URI
      * @throws HttpException Thrown if there was an error creating the response
-     * @throws LogicException Thrown if the request context is not set
+     * @throws LogicException Thrown if the request is not set
      */
     protected function movedPermanently($uri, $body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        if (!$this->requestContext instanceof RequestContext) {
-            throw new LogicException('Request context is not set');
+        if (!$this->request instanceof IHttpRequestMessage) {
+            throw new LogicException('Request is not set');
         }
 
         return (new MovedPermanentlyResponseFactory($uri, $headers, $body))->createResponse($this->requestContext);
@@ -200,12 +200,12 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
-     * @throws LogicException Thrown if the request context is not set
+     * @throws LogicException Thrown if the request is not set
      */
     protected function noContent(HttpHeaders $headers = null): IHttpResponseMessage
     {
-        if (!$this->requestContext instanceof RequestContext) {
-            throw new LogicException('Request context is not set');
+        if (!$this->request instanceof IHttpRequestMessage) {
+            throw new LogicException('Request is not set');
         }
 
         return (new NoContentResponseFactory($headers))->createResponse($this->requestContext);
@@ -218,12 +218,12 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
-     * @throws LogicException Thrown if the request context is not set
+     * @throws LogicException Thrown if the request is not set
      */
     protected function notFound($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        if (!$this->requestContext instanceof RequestContext) {
-            throw new LogicException('Request context is not set');
+        if (!$this->request instanceof IHttpRequestMessage) {
+            throw new LogicException('Request is not set');
         }
 
         return (new NotFoundResponseFactory($headers, $body))->createResponse($this->requestContext);
@@ -236,12 +236,12 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
-     * @throws LogicException Thrown if the request context is not set
+     * @throws LogicException Thrown if the request is not set
      */
     protected function ok($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        if (!$this->requestContext instanceof RequestContext) {
-            throw new LogicException('Request context is not set');
+        if (!$this->request instanceof IHttpRequestMessage) {
+            throw new LogicException('Request is not set');
         }
 
         return (new OkResponseFactory($headers, $body))->createResponse($this->requestContext);
@@ -256,6 +256,7 @@ class Controller
      */
     protected function readRequestBodyAsArrayOfType(string $type): array
     {
+        // Todo: Need to overhaul now that content negotiation happens elsewhere
         $mediaTypeFormatter = $this->requestContext->getRequestContentNegotiationResult()->getFormatter();
 
         if ($mediaTypeFormatter === null) {
@@ -265,7 +266,7 @@ class Controller
             );
         }
 
-        if (($body = $this->requestContext->getRequest()->getBody()) === null) {
+        if (($body = $this->request->getBody()) === null) {
             return [];
         }
 
@@ -288,14 +289,14 @@ class Controller
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
-     * @throws LogicException Thrown if the request context is not set
+     * @throws LogicException Thrown if the request is not set
      */
     protected function unauthorized($body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        if (!$this->requestContext instanceof RequestContext) {
-            throw new LogicException('Request context is not set');
+        if (!$this->request instanceof IHttpRequestMessage) {
+            throw new LogicException('Request is not set');
         }
 
-        return (new UnauthorizedResponseFactory($headers, $body))->createResponse($this->requestContext);
+        return (new UnauthorizedResponseFactory($headers, $body))->createResponse($this->request);
     }
 }

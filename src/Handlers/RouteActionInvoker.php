@@ -13,11 +13,9 @@ namespace Opulence\Api\Handlers;
 use Closure;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
+use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\RequestContext;
 use Opulence\Net\Http\Response;
-use Opulence\Net\Http\ResponseFactories\IResponseFactory;
-use Opulence\Net\Http\ResponseFactories\OkResponseFactory;
 use Opulence\Routing\Matchers\MatchedRoute;
 use ReflectionException;
 use ReflectionFunction;
@@ -44,7 +42,7 @@ class RouteActionInvoker implements IRouteActionInvoker
      */
     public function invokeRouteAction(
         callable $routeAction,
-        RequestContext $requestContext,
+        IHttpRequestMessage $request,
         MatchedRoute $matchedRoute
     ): IHttpResponseMessage {
         try {
@@ -81,7 +79,7 @@ class RouteActionInvoker implements IRouteActionInvoker
             foreach ($reflectionFunction->getParameters() as $reflectionParameter) {
                 $resolvedParameters[] = $this->controllerParameterResolver->resolveParameter(
                     $reflectionParameter,
-                    $requestContext,
+                    $request,
                     $matchedRoute
                 );
             }
@@ -120,12 +118,14 @@ class RouteActionInvoker implements IRouteActionInvoker
         }
 
         // Create a response from the factory
+        // Todo: Should the controller just create the response right there?  Any need to wait until right here to do so anymore now that the params have been moved from the constructor to the method signature?
         if ($actionResult instanceof IResponseFactory) {
-            return $actionResult->createResponse($requestContext);
+            return $actionResult->createResponse($request);
         }
 
         // Attempt to create an OK response from the return value
-        return (new OkResponseFactory(null, $actionResult))->createResponse($requestContext);
+        // Todo: This probably needs the NegotiatedResponseFactory now
+        return (new OkResponseFactory(null, $actionResult))->createResponse($request);
     }
 
     /**

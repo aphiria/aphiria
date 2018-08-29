@@ -13,7 +13,6 @@ namespace Opulence\Api\Handlers;
 use Opulence\Net\Formatting\UriParser;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\RequestContext;
 use Opulence\Routing\Matchers\MatchedRoute;
 use Opulence\Serialization\SerializationException;
 use ReflectionParameter;
@@ -39,10 +38,10 @@ class ControllerParameterResolver implements IControllerParameterResolver
      */
     public function resolveParameter(
         ReflectionParameter $reflectionParameter,
-        RequestContext $requestContext,
+        IHttpRequestMessage $request,
         MatchedRoute $matchedRoute
     ) {
-        $request = $requestContext->getRequest();
+        // Todo: Need to somehow get content negotiation in here
         $requestContentNegotiationResult = $requestContext->getRequestContentNegotiationResult();
         $routeVars = $matchedRoute->getRouteVars();
         $queryStringVars = $this->uriParser->parseQueryString($request->getUri());

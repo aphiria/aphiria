@@ -11,7 +11,7 @@
 namespace Opulence\Api\Exceptions;
 
 use ErrorException;
-use Opulence\Net\Http\RequestContext;
+use Opulence\Net\Http\IHttpRequestMessage;
 use Throwable;
 
 /**
@@ -55,10 +55,10 @@ interface IExceptionHandler
     public function registerWithPhp(): void;
 
     /**
-     * Sets the request context for use when handling a request
+     * Sets the current request
      * This can't be set via a constructor because it's not known until a little way into the app pipeline
      *
-     * @param RequestContext $requestContext The current request context
+     * @param IHttpRequestMessage $request The current request
      */
-    public function setRequestContext(RequestContext $requestContext): void;
+    public function setRequest(IHttpRequestMessage $request): void;
 }

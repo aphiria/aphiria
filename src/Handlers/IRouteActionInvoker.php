@@ -11,8 +11,8 @@
 namespace Opulence\Api\Handlers;
 
 use Exception;
+use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\RequestContext;
 use Opulence\Routing\Matchers\MatchedRoute;
 
 /**
@@ -24,14 +24,14 @@ interface IRouteActionInvoker
      * Invokes a route action
      *
      * @param callable $routeAction The route action callable to invoke
-     * @param RequestContext $requestContext The current request context
+     * @param IHttpRequestMessage $request The current request
      * @param MatchedRoute $matchedRoute The matched route
      * @return IHttpResponseMessage The response
      * @throws Exception Thrown if there was any error processing the request
      */
     public function invokeRouteAction(
         callable $routeAction,
-        RequestContext $requestContext,
+        IHttpRequestMessage $request,
         MatchedRoute $matchedRoute
     ): IHttpResponseMessage;
 }

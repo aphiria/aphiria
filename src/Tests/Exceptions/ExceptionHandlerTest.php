@@ -15,7 +15,6 @@ use InvalidArgumentException;
 use Opulence\Api\Exceptions\ExceptionHandler;
 use Opulence\Api\Exceptions\IExceptionResponseFactory;
 use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\RequestContext;
 use Opulence\Net\Http\ResponseWriter;
 use Psr\Log\LoggerInterface;
 

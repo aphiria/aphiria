@@ -14,7 +14,7 @@ use ErrorException;
 use Exception;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
-use Opulence\Net\Http\RequestContext;
+use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\ResponseWriter;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -38,8 +38,8 @@ class ExceptionHandler implements IExceptionHandler
     protected $thrownLevels;
     /** @var array The list of exception classes to not log */
     protected $exceptionsNotLogged;
-    /** @var RequestContext|null The current request context, or null if there is none */
-    protected $requestContext;
+    /** @var IHttpRequestMessage|null The current request, or null if there is none */
+    protected $request;
 
     /**
      * @param LoggerInterface|null $logger The logger to use, or null if using the default error logger
@@ -103,7 +103,7 @@ class ExceptionHandler implements IExceptionHandler
             $this->logger->error($ex);
         }
 
-        $response = $this->exceptionResponseFactory->createResponseFromException($ex, $this->requestContext);
+        $response = $this->exceptionResponseFactory->createResponseFromException($ex, $this->request);
         $this->responseWriter->writeResponse($response);
     }
 
@@ -136,9 +136,9 @@ class ExceptionHandler implements IExceptionHandler
     /**
      * @inheritdoc
      */
-    public function setRequestContext(RequestContext $requestContext): void
+    public function setRequest(IHttpRequestMessage $request): void
     {
-        $this->requestContext = $requestContext;
+        $this->request = $request;
     }
 
     /**
