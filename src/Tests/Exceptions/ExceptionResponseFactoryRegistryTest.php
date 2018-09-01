@@ -13,7 +13,7 @@ namespace Opulence\Api\Tests\Exceptions;
 use InvalidArgumentException;
 use Opulence\Api\Exceptions\ExceptionResponseFactoryRegistry;
 use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\RequestContext;
+use Opulence\Net\Http\IHttpRequestMessage;
 
 /**
  * Tests the exception response factory registry
@@ -35,7 +35,7 @@ class ExceptionResponseFactoryRegistryTest extends \PHPUnit\Framework\TestCase
 
     public function testGettingFactoryForExceptionTypeThatHasFactoryReturnsTheFactory(): void
     {
-        $expectedFactory = function (HttpException $ex, RequestContext $requestContext) {
+        $expectedFactory = function (HttpException $ex, ?IHttpRequestMessage $request) {
             // Don't do anything
         };
         $this->registry->registerFactory(InvalidArgumentException::class, $expectedFactory);
@@ -44,10 +44,10 @@ class ExceptionResponseFactoryRegistryTest extends \PHPUnit\Framework\TestCase
 
     public function testRegisteringMultipleFactoriesStoresFactoriesByExceptionType(): void
     {
-        $expectedFactory1 = function (InvalidArgumentException $ex, RequestContext $requestContext) {
+        $expectedFactory1 = function (InvalidArgumentException $ex, ?IHttpRequestMessage $request) {
             // Don't do anything
         };
-        $expectedFactory2 = function (HttpException $ex, RequestContext $requestContext) {
+        $expectedFactory2 = function (HttpException $ex, ?IHttpRequestMessage $request) {
             // Don't do anything
         };
         $this->registry->registerFactories([

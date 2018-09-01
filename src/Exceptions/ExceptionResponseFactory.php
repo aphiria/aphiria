@@ -24,14 +24,20 @@ use Opulence\Net\Http\Response;
  */
 class ExceptionResponseFactory implements IExceptionResponseFactory
 {
+    /** @var NegotiatedResponseFactory The negotiated response factory */
+    protected $negotiatedResponseFactory;
     /** @var ExceptionResponseFactoryRegistry The registry of exception response factories */
     protected $exceptionResponseFactories;
 
     /**
+     * @param NegotiatedResponseFactory $negotiatedResponseFactory
      * @param ExceptionResponseFactoryRegistry|null $exceptionResponseFactories The exception response factory registry
      */
-    public function __construct(ExceptionResponseFactoryRegistry $exceptionResponseFactories = null)
-    {
+    public function __construct(
+        NegotiatedResponseFactory $negotiatedResponseFactory,
+        ExceptionResponseFactoryRegistry $exceptionResponseFactories = null
+    ) {
+        $this->negotiatedResponseFactory = $negotiatedResponseFactory;
         $this->exceptionResponseFactories = $exceptionResponseFactories ?? $this->createDefaultExceptionResponseFactories();
     }
 
@@ -50,8 +56,12 @@ class ExceptionResponseFactory implements IExceptionResponseFactory
 
         try {
             if (($responseFactory = $this->exceptionResponseFactories->getFactory($exceptionType)) === null) {
-                // Todo: Can I even handle content negotiation in this case?  Would I need to inject the NegotiatedResponseFactory or something?
-                return (new InternalServerErrorResponseFactory)->createResponse($request);
+                return $this->negotiatedResponseFactory->createResponse(
+                    $request,
+                    HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+                    null,
+                    null
+                );
             }
 
             return $responseFactory($ex, $request);
@@ -71,7 +81,7 @@ class ExceptionResponseFactory implements IExceptionResponseFactory
         $responseFactories = new ExceptionResponseFactoryRegistry();
         $responseFactories->registerFactory(
             HttpException::class,
-            function (HttpException $ex, IHttpRequestMessage $request) {
+            function (HttpException $ex, ?IHttpRequestMessage $request) {
                 return $ex->getResponse();
             }
         );

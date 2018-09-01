@@ -42,32 +42,27 @@ class ExceptionHandler implements IExceptionHandler
     protected $request;
 
     /**
+     * @param IExceptionResponseFactory $exceptionResponseFactory The exception response factory
      * @param LoggerInterface|null $logger The logger to use, or null if using the default error logger
-     * @param IExceptionResponseFactory|null $exceptionResponseFactory The exception response factory
-     * @param ResponseWriter $responseWriter What to use to write a response
      * @param int|null $loggedLevels The bitwise value of error levels that are to be logged
      * @param int|null $thrownLevels The bitwise value of error levels that are to be thrown as exceptions
      * @param array $exceptionsNotLogged The exception or list of exceptions to not log when thrown
+     * @param ResponseWriter $responseWriter What to use to write a response
      */
     public function __construct(
+        IExceptionResponseFactory $exceptionResponseFactory,
         LoggerInterface $logger = null,
-        IExceptionResponseFactory $exceptionResponseFactory = null,
-        ResponseWriter $responseWriter = null,
         int $loggedLevels = null,
         int $thrownLevels = null,
-        array $exceptionsNotLogged = []
+        array $exceptionsNotLogged = [],
+        ResponseWriter $responseWriter = null
     ) {
-        if ($logger === null) {
-            $logger = new Logger(self::DEFAULT_LOGGER_NAME);
-            $logger->pushHandler(new ErrorLogHandler());
-        }
-
-        $this->logger = $logger;
-        $this->exceptionResponseFactory = $exceptionResponseFactory ?? new ExceptionResponseFactory();
-        $this->responseWriter = $responseWriter ?? new ResponseWriter();
+        $this->exceptionResponseFactory = $exceptionResponseFactory;
+        $this->logger = $logger ?? new Logger(self::DEFAULT_LOGGER_NAME, [new ErrorLogHandler()]);
         $this->loggedLevels = $loggedLevels ?? 0;
         $this->thrownLevels = $thrownLevels ?? (E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED));
         $this->exceptionsNotLogged = $exceptionsNotLogged;
+        $this->responseWriter = $responseWriter ?? new ResponseWriter();
     }
 
     /**

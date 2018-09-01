@@ -342,13 +342,11 @@ use Opulence\Api\Handlers\ControllerRequestHandler;
 use Opulence\Net\Http\RequestFactory;
 use Opulence\Net\Http\ResponseWriter;
 
-// TODO!!!!!!!!!! UPDATE THIS COMMENT
-// Assume your route matcher, dependency resolver, and request context factory are already set
+// Assume your route matcher, dependency resolver, and content negotiator are already set
 $requestHandler = new ControllerRequestHandler(
     $routeMatcher,
     $dependencyResolver,
-    // TODO!!!!!! UPDATE ONCE I HAVE UPDATED THIS LOGIC
-    $requestContextFactory
+    $contentNegotiator
 );
 $request = (new RequestFactory)->createRequestFromSuperglobals($_SERVER);
 $response = $requestHandler->handle($request);
@@ -357,12 +355,19 @@ $response = $requestHandler->handle($request);
 
 <h1 id="exception-handling">Exception Handling</h1>
 
-Sometimes, your application is going to throw an unhandled exception or shut down unexpectedly.  When this happens, instead of showing an ugly PHP error, you can convert it to a nicely-formatted response.  To get set up, you can simply instantiate `ExceptionHandler` and register it:
+Sometimes, your application is going to throw an unhandled exception or shut down unexpectedly.  When this happens, instead of showing an ugly PHP error, you can convert it to a nicely-formatted response.  To get set up, you can simply instantiate `ExceptionHandler` and register it with PHP:
 
 ```php
 use Opulence\Api\Exceptions\ExceptionHandler;
+use Opulence\Api\Exceptions\ExceptionResponseFactory;
+use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 
-$exceptionHandler = new ExceptionHandler();
+// Assume the content negotiator was already set up
+$exceptionResponseFactory = new ExceptionResponseFactory(
+    new NegotiatedResponseFactory($contentNegotiator)
+);
+
+$exceptionHandler = new ExceptionHandler($exceptionResponseFactory);
 $exceptionHandler->registerWithPhp();
 ```
 
@@ -380,18 +385,23 @@ use Opulence\Api\Exceptions\ExceptionResponseFactoryRegistry;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\Response;
 
-// Set up the response factory
+// Register your custom exception response factories
 $exceptionResponseFactoryRegistry = new ExceptionResponseFactoryRegistry();
 $exceptionResponseFactoryRegistry->registerFactory(
     EntityNotFound::class,
-    function (EntityNotFound $ex, IHttpRequestMessage $request) {
+    function (EntityNotFound $ex, ?IHttpRequestMessage $request) {
         return new Response(HttpStatusCodes::HTTP_NOT_FOUND);
     }
 );
-$exceptionResponseFactory = new ExceptionResponseFactory($exceptionResponseFactoryRegistry);
+
+// Assume the content negotiator was already set up
+$exceptionResponseFactory = new ExceptionResponseFactory(
+    new NegotiatedResponseFactory($contentNegotiator),
+    $exceptionResponseFactoryRegistry
+);
 
 // Add it to the exception handler
-$exceptionHandler = new ExceptionHandler(null, $exceptionResponseFactory);
+$exceptionHandler = new ExceptionHandler($exceptionResponseFactory);
 $exceptionHandler->registerWithPhp();
 ```
 
@@ -399,7 +409,7 @@ That's it.  Now, whenever an unhandled `EntityNotFound` exception is thrown, you
 
 ```php
 $exceptionResponseFactoryRegistry->registerFactories([
-    EntityNotFound::class => function (EntityNotFound $ex, IHttpRequestMessage $request) {
+    EntityNotFound::class => function (EntityNotFound $ex, ?IHttpRequestMessage $request) {
         return new Response(HttpStatusCodes::HTTP_NOT_FOUND);
     },
     // ...
@@ -412,15 +422,22 @@ If you want to take advantage of automatic content negotiation, you can use a `N
 use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 
 // Assume the content negotiator was already set up
-$negotiatedResponseFactory = NegotiatedResponseFactory($contentNegotiator);
+$negotiatedResponseFactory = new NegotiatedResponseFactory($contentNegotiator);
 // ...
 $exceptionResponseFactoryRegistry->registerFactory(
     EntityNotFound::class,
-    function (EntityNotFound $ex, Request $request) use ($negotiatedResponseFactory) {
-        return $negotiatedResponseFactory->createResponse($request);
+    function (EntityNotFound $ex, ?IHttpRequestMessage $request) use ($negotiatedResponseFactory) {
+        return $negotiatedResponseFactory->createResponse(
+            $request,
+            HttpStatusCodes::HTTP_NOT_FOUND,
+            null,
+            new SomeCustomMessage('Entity not found')
+        );
     }
 );
 ```
+
+If an unhandled `EntityNotFound` exception was thrown, your exception factory will use content negotiation to serialize `SomeCustomMessage` in the response body.
 
 <h2 id="logging">Logging</h2>
 
@@ -432,20 +449,20 @@ use Monolog\Logger;
 
 $logger = new Logger('app');
 $logger->pushHandler(new SyslogHandler());
-$exceptionHandler = new ExceptionHandler($logger);
+$exceptionHandler = new ExceptionHandler(null, $logger);
 $exceptionHandler->registerWithPhp();
 ```
 
 If you don't want to log particular exceptions, you can specify them:
 
 ```php
-$exceptionHandler = new ExceptionHandler(null, null, null, null, null, ['MyException']);
+$exceptionHandler = new ExceptionHandler(null, null, null, null, ['MyException']);
 $exceptionHandler->registerWithPhp();
 ```
 
 You can also control the level of PHP errors that are logged by specifying a bitwise value similar to what's in your _php.ini_:
 
 ```php
-$exceptionHandler = new ExceptionHandler(null, null, null, E_ALL & ~E_NOTICE);
+$exceptionHandler = new ExceptionHandler(null, null, E_ALL & ~E_NOTICE);
 $exceptionHandler->registerWithPhp();
 ```

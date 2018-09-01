@@ -14,10 +14,12 @@ use Exception;
 use InvalidArgumentException;
 use Opulence\Api\Exceptions\ExceptionResponseFactory;
 use Opulence\Api\Exceptions\ExceptionResponseFactoryRegistry;
+use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
+use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
+use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\RequestContext;
 
 /**
  * Tests the exception response factory
@@ -26,61 +28,64 @@ class ExceptionResponseFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ExceptionResponseFactory The response factory to use in tests */
     private $factory;
+    /** @var NegotiatedResponseFactory The negotiated response factory to use */
+    private $negotiatedResponseFactory;
+    /** @var IContentNegotiator|\PHPUnit_Framework_MockObject_MockObject The content negotiator */
+    private $contentNegotiator;
     /** @var ExceptionResponseFactoryRegistry The registry to use in tests */
     private $responseFactories;
 
     public function setUp(): void
     {
+        $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
+        $this->negotiatedResponseFactory = new NegotiatedResponseFactory($this->contentNegotiator);
         $this->responseFactories = new ExceptionResponseFactoryRegistry();
-        $this->factory = new ExceptionResponseFactory($this->responseFactories);
+        $this->factory = new ExceptionResponseFactory($this->negotiatedResponseFactory, $this->responseFactories);
     }
 
-    public function testCreatingResponseForExceptionWithNoRequestContextSetUsesDefaultResponse(): void
+    public function testCreatingResponseForExceptionWithNoRequestSetUsesDefaultResponse(): void
     {
         $response = $this->factory->createResponseFromException(new InvalidArgumentException, null);
         $this->assertEquals(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaders()->getFirst('Content-Type'));
     }
 
-    public function testCreatingResponseForExceptionWithRequestContextAndNoResponseFactoryCreates500Response(): void
+    public function testCreatingResponseForExceptionWithRequestAndNoResponseFactoryCreates500Response(): void
     {
-        /** @var RequestContext $expectedRequestContext */
-        $expectedRequestContext = $this->createMock(RequestContext::class);
-        $response = $this->factory->createResponseFromException(new InvalidArgumentException, $expectedRequestContext);
+        $expectedRequest = $this->createMock(IHttpRequestMessage::class);
+        $response = $this->factory->createResponseFromException(new InvalidArgumentException, $expectedRequest);
         $this->assertEquals(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
     }
 
-    public function testCreatingResponseForExceptionWithRequestContextAndResponseFactoryCreatesResponseFromFactory(): void
+    public function testCreatingResponseForExceptionWithRequestAndResponseFactoryCreatesResponseFromFactory(): void
     {
-        /** @var RequestContext $expectedRequestContext */
-        $expectedRequestContext = $this->createMock(RequestContext::class);
+        $expectedRequest = $this->createMock(IHttpRequestMessage::class);
         $expectedResponse = $this->createMock(IHttpResponseMessage::class);
         $this->responseFactories->registerFactory(
             InvalidArgumentException::class,
             function (
                 InvalidArgumentException $ex,
-                RequestContext $requestContext
-            ) use ($expectedRequestContext, $expectedResponse) {
-                $this->assertEquals($expectedRequestContext, $requestContext);
+                IHttpRequestMessage $request
+            ) use ($expectedRequest, $expectedResponse) {
+                $this->assertEquals($expectedRequest, $request);
 
                 return $expectedResponse;
             }
         );
-        $response = $this->factory->createResponseFromException(new InvalidArgumentException, $expectedRequestContext);
+        $response = $this->factory->createResponseFromException(new InvalidArgumentException, $expectedRequest);
         $this->assertSame($expectedResponse, $response);
     }
 
-    public function testCreatingResponseForExceptionWithRequestContextAndResponseFactoryThatThrowsCreatesDefaultResponse(): void
+    public function testCreatingResponseForExceptionWithRequestAndResponseFactoryThatThrowsCreatesDefaultResponse(): void
     {
-        /** @var RequestContext $expectedRequestContext */
-        $expectedRequestContext = $this->createMock(RequestContext::class);
+        $expectedRequest = $this->createMock(IHttpRequestMessage::class);
         $this->responseFactories->registerFactory(
             InvalidArgumentException::class,
-            function (InvalidArgumentException $ex, RequestContext $requestContext) {
+            function (InvalidArgumentException $ex, IHttpRequestMessage $request) {
                 throw new Exception();
             }
         );
-        $response = $this->factory->createResponseFromException(new InvalidArgumentException, $expectedRequestContext);
+        $response = $this->factory->createResponseFromException(new InvalidArgumentException, $expectedRequest);
         $this->assertEquals(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaders()->getFirst('Content-Type'));
     }
@@ -88,12 +93,11 @@ class ExceptionResponseFactoryTest extends \PHPUnit\Framework\TestCase
     public function testCreatingResponseForHttpExceptionsUseBuiltInResponseFactory(): void
     {
         // Purposely don't use a registry
-        $factory = new ExceptionResponseFactory();
-        /** @var RequestContext $expectedRequestContext */
-        $expectedRequestContext = $this->createMock(RequestContext::class);
+        $factory = new ExceptionResponseFactory($this->negotiatedResponseFactory);
+        $expectedRequest = $this->createMock(IHttpRequestMessage::class);
         /** @var IHttpResponseMessage|\PHPUnit_Framework_MockObject_MockObject $expectedResponse */
         $expectedResponse = $this->createMock(IHttpResponseMessage::class);
-        $response = $factory->createResponseFromException(new HttpException($expectedResponse), $expectedRequestContext);
+        $response = $factory->createResponseFromException(new HttpException($expectedResponse), $expectedRequest);
         $this->assertSame($expectedResponse, $response);
     }
 }

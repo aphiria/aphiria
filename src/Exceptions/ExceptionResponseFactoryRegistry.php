@@ -51,7 +51,7 @@ class ExceptionResponseFactoryRegistry
      * Registers a response factory for an exception type
      *
      * @param string $exceptionType The type the response factory applies to
-     * @param Closure $responseFactory The response factory that takes in an exception instance and request
+     * @param Closure $responseFactory The response factory that takes in an exception instance and nullable request
      */
     public function registerFactory(string $exceptionType, Closure $responseFactory): void
     {

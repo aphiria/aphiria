@@ -12,23 +12,14 @@ namespace Opulence\Api;
 
 use InvalidArgumentException;
 use LogicException;
+use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
+use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Opulence\Net\Http\Formatting\RequestParser;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\ResponseFactories\BadRequestResponseFactory;
-use Opulence\Net\Http\ResponseFactories\ConflictResponseFactory;
-use Opulence\Net\Http\ResponseFactories\CreatedResponseFactory;
-use Opulence\Net\Http\ResponseFactories\ForbiddenResponseFactory;
-use Opulence\Net\Http\ResponseFactories\FoundResponseFactory;
-use Opulence\Net\Http\ResponseFactories\InternalServerErrorResponseFactory;
-use Opulence\Net\Http\ResponseFactories\MovedPermanentlyResponseFactory;
-use Opulence\Net\Http\ResponseFactories\NoContentResponseFactory;
-use Opulence\Net\Http\ResponseFactories\NotFoundResponseFactory;
-use Opulence\Net\Http\ResponseFactories\OkResponseFactory;
-use Opulence\Net\Http\ResponseFactories\UnauthorizedResponseFactory;
 use Opulence\Net\Uri;
 use Opulence\Serialization\SerializationException;
 
@@ -41,6 +32,32 @@ class Controller
     protected $request;
     /** @var RequestParser The parser to use to get data from the current request */
     protected $requestParser;
+    /** @var IContentNegotiator The content negotiator */
+    protected $contentNegotiator;
+    /** @var NegotiatedResponseFactory The negotiated response factory */
+    protected $negotiatedResponseFactory;
+
+    /**
+     * Sets the content negotiator
+     *
+     * @param IContentNegotiator $contentNegotiator The content negotiator
+     * @internal
+     */
+    public function setContentNegotiator(IContentNegotiator $contentNegotiator): void
+    {
+        $this->contentNegotiator = $contentNegotiator;
+    }
+
+    /**
+     * Sets the negotiated response factory
+     *
+     * @param NegotiatedResponseFactory $negotiatedResponseFactory The negotiated response factory
+     * @internal
+     */
+    public function setNegotiatedResponseFactory(NegotiatedResponseFactory $negotiatedResponseFactory): void
+    {
+        $this->negotiatedResponseFactory = $negotiatedResponseFactory;
+    }
 
     /**
      * Sets the current request
@@ -79,7 +96,12 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return (new BadRequestResponseFactory($headers, $body))->createResponse($this->requestContext);
+        return $this->negotiatedResponseFactory->createResponse(
+            $this->request,
+            HttpStatusCodes::HTTP_BAD_REQUEST,
+            $headers,
+            $body
+        );
     }
 
     /**
@@ -97,7 +119,12 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return (new ConflictResponseFactory($headers, $body))->createResponse($this->requestContext);
+        return $this->negotiatedResponseFactory->createResponse(
+            $this->request,
+            HttpStatusCodes::HTTP_CONFLICT,
+            $headers,
+            $body
+        );
     }
 
     /**
@@ -115,7 +142,12 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return (new CreatedResponseFactory($headers, $body))->createResponse($this->requestContext);
+        return $this->negotiatedResponseFactory->createResponse(
+            $this->request,
+            HttpStatusCodes::HTTP_CREATED,
+            $headers,
+            $body
+        );
     }
 
     /**
@@ -133,7 +165,12 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return (new ForbiddenResponseFactory($headers, $body))->createResponse($this->requestContext);
+        return $this->negotiatedResponseFactory->createResponse(
+            $this->request,
+            HttpStatusCodes::HTTP_FORBIDDEN,
+            $headers,
+            $body
+        );
     }
 
     /**
@@ -146,6 +183,7 @@ class Controller
      * @throws InvalidArgumentException Thrown if the URI is not a string nor a URI
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
+     * @throws InvalidArgumentException Thrown if the URI is not a string nor an instance of Uri
      */
     protected function found($uri, $body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
@@ -153,7 +191,23 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return (new FoundResponseFactory($uri, $headers, $body))->createResponse($this->requestContext);
+        if (\is_string($uri)) {
+            $uriString = $uri;
+        } elseif ($uri instanceof Uri) {
+            $uriString = (string)$uri;
+        } else {
+            throw new InvalidArgumentException('URI must be a string or instance of ' . Uri::class);
+        }
+
+        $response = $this->negotiatedResponseFactory->createResponse(
+            $this->request,
+            HttpStatusCodes::HTTP_FOUND,
+            $headers,
+            $body
+        );
+        $response->getHeaders()->add('Location', $uriString);
+
+        return $response;
     }
 
     /**
@@ -171,7 +225,12 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return (new InternalServerErrorResponseFactory($headers, $body))->createResponse($this->requestContext);
+        return $this->negotiatedResponseFactory->createResponse(
+            $this->request,
+            HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+            $headers,
+            $body
+        );
     }
 
     /**
@@ -191,7 +250,23 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return (new MovedPermanentlyResponseFactory($uri, $headers, $body))->createResponse($this->requestContext);
+        if (\is_string($uri)) {
+            $uriString = $uri;
+        } elseif ($uri instanceof Uri) {
+            $uriString = (string)$uri;
+        } else {
+            throw new InvalidArgumentException('URI must be a string or instance of ' . Uri::class);
+        }
+
+        $response = $this->negotiatedResponseFactory->createResponse(
+            $this->request,
+            HttpStatusCodes::HTTP_MOVED_PERMANENTLY,
+            $headers,
+            $body
+        );
+        $response->getHeaders()->add('Location', $uriString);
+
+        return $response;
     }
 
     /**
@@ -208,7 +283,12 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return (new NoContentResponseFactory($headers))->createResponse($this->requestContext);
+        return $this->negotiatedResponseFactory->createResponse(
+            $this->request,
+            HttpStatusCodes::HTTP_NO_CONTENT,
+            $headers,
+            null
+        );
     }
 
     /**
@@ -226,7 +306,12 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return (new NotFoundResponseFactory($headers, $body))->createResponse($this->requestContext);
+        return $this->negotiatedResponseFactory->createResponse(
+            $this->request,
+            HttpStatusCodes::HTTP_NOT_FOUND,
+            $headers,
+            $body
+        );
     }
 
     /**
@@ -244,7 +329,12 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return (new OkResponseFactory($headers, $body))->createResponse($this->requestContext);
+        return $this->negotiatedResponseFactory->createResponse(
+            $this->request,
+            HttpStatusCodes::HTTP_OK,
+            $headers,
+            $body
+        );
     }
 
     /**
@@ -253,11 +343,16 @@ class Controller
      * @param string $type The type to read as an array of
      * @return array The body as an array of the input type
      * @throws HttpException Thrown if there was an error reading the body
+     * @throws LogicException Thrown if the request is not set
      */
     protected function readRequestBodyAsArrayOfType(string $type): array
     {
-        // Todo: Need to overhaul now that content negotiation happens elsewhere
-        $mediaTypeFormatter = $this->requestContext->getRequestContentNegotiationResult()->getFormatter();
+        if (!$this->request instanceof IHttpRequestMessage) {
+            throw new LogicException('Request is not set');
+        }
+
+        $contentNegotiationResult = $this->contentNegotiator->negotiateRequestContent($type, $this->request);
+        $mediaTypeFormatter = $contentNegotiationResult->getFormatter();
 
         if ($mediaTypeFormatter === null) {
             throw new HttpException(
@@ -297,6 +392,11 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return (new UnauthorizedResponseFactory($headers, $body))->createResponse($this->request);
+        return $this->negotiatedResponseFactory->createResponse(
+            $this->request,
+            HttpStatusCodes::HTTP_UNAUTHORIZED,
+            $headers,
+            $body
+        );
     }
 }

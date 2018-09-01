@@ -11,7 +11,7 @@
 namespace Opulence\Api\Handlers;
 
 use Opulence\Net\Formatting\UriParser;
-use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
+use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Routing\Matchers\MatchedRoute;
 use Opulence\Serialization\SerializationException;
@@ -22,14 +22,18 @@ use ReflectionParameter;
  */
 class ControllerParameterResolver implements IControllerParameterResolver
 {
+    /** @var IContentNegotiator The content negotiator */
+    private $contentNegotiator;
     /** @var UriParser The URI parser to use */
     private $uriParser;
 
     /**
+     * @param IContentNegotiator $contentNegotiator The content negotiator
      * @param UriParser $uriParser The URI parser to use
      */
-    public function __construct(UriParser $uriParser = null)
+    public function __construct(IContentNegotiator $contentNegotiator, UriParser $uriParser = null)
     {
+        $this->contentNegotiator = $contentNegotiator;
         $this->uriParser = $uriParser ?? new UriParser();
     }
 
@@ -41,16 +45,13 @@ class ControllerParameterResolver implements IControllerParameterResolver
         IHttpRequestMessage $request,
         MatchedRoute $matchedRoute
     ) {
-        // Todo: Need to somehow get content negotiation in here
-        $requestContentNegotiationResult = $requestContext->getRequestContentNegotiationResult();
         $routeVars = $matchedRoute->getRouteVars();
         $queryStringVars = $this->uriParser->parseQueryString($request->getUri());
 
         if ($reflectionParameter->getClass() !== null) {
             return $this->resolveObjectParameter(
                 $reflectionParameter,
-                $request,
-                $requestContentNegotiationResult
+                $request
             );
         }
 
@@ -76,11 +77,10 @@ class ControllerParameterResolver implements IControllerParameterResolver
     }
 
     /**
-     * Resolves an object parameter
+     * Resolves an object parameter using content negotiator
      *
      * @param ReflectionParameter $reflectionParameter The parameter to resolve
      * @param IHttpRequestMessage $request The current request
-     * @param ContentNegotiationResult $requestContentNegotiationResult The request content negotiation result
      * @return \object|null The resolved parameter
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
@@ -88,8 +88,7 @@ class ControllerParameterResolver implements IControllerParameterResolver
      */
     private function resolveObjectParameter(
         ReflectionParameter $reflectionParameter,
-        IHttpRequestMessage $request,
-        ContentNegotiationResult $requestContentNegotiationResult
+        IHttpRequestMessage $request
     ): ?object {
         if ($request->getBody() === null) {
             if (!$reflectionParameter->allowsNull()) {
@@ -101,6 +100,7 @@ class ControllerParameterResolver implements IControllerParameterResolver
             return null;
         }
 
+        $requestContentNegotiationResult = $this->contentNegotiator->negotiateRequestContent($reflectionParameter->getType(), $request);
         $mediaTypeFormatter = $requestContentNegotiationResult->getFormatter();
 
         if ($mediaTypeFormatter === null) {

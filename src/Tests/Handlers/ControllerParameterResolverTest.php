@@ -15,9 +15,10 @@ use Opulence\Api\Handlers\MissingControllerParameterValueException;
 use Opulence\Api\Tests\Handlers\Mocks\Controller;
 use Opulence\Api\Tests\Handlers\Mocks\User;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
+use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\Request;
-use Opulence\Net\Http\RequestContext;
 use Opulence\Net\Http\StringBody;
 use Opulence\Net\Uri;
 use Opulence\Routing\Matchers\MatchedRoute;
@@ -32,23 +33,20 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ControllerParameterResolver The resolver to use in tests */
     private $resolver;
+    /** @var IContentNegotiator|\PHPUnit_Framework_MockObject_MockObject The content negotiator */
+    private $contentNegotiator;
 
     public function setUp(): void
     {
-        $this->resolver = new ControllerParameterResolver();
+        $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
+        $this->resolver = new ControllerParameterResolver($this->contentNegotiator);
     }
 
     public function testResolvingParameterWithNoTypeHintUsesVariableFromRoute(): void
     {
-        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'noTypeHintParameter'], 'foo'),
-            new RequestContext(
-                $this->createRequest('http://foo.com'),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
-            ),
+            $this->createMock(IHttpRequestMessage::class),
             new MatchedRoute(
                 new RouteAction(Controller::class, 'noTypeHintParameter', null),
                 ['foo' => 'bar'],
@@ -60,7 +58,7 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
 
     public function testResolvingNullableObjectParameterWithBodyThatCannotDeserializeToTypePassesNull(): void
     {
-        $request = $this->createRequest('http://foo.com');
+        $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
         /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
@@ -68,13 +66,13 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             ->method('readFromStream')
             ->with($request->getBody()->readAsStream(), User::class)
             ->willThrowException(new SerializationException);
+        $this->contentNegotiator->expects($this->once())
+            ->method('negotiateRequestContent')
+            ->with(User::class, $request)
+            ->willReturn(new ContentNegotiationResult($mediaTypeFormatter, null, null, null));
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'nullableObjectParameter'], 'user'),
-            new RequestContext(
-                $request,
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
-            ),
+            $request,
             new MatchedRoute(new RouteAction(Controller::class, 'nullableObjectParameter', null), [], [])
         );
         $this->assertNull($resolvedParameter);
@@ -82,17 +80,10 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
 
     public function testResolvingNullableObjectParameterWithoutBodyPassesNull(): void
     {
-        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $mediaTypeFormatter->expects($this->never())
-            ->method('readFromStream');
+        $request = $this->createRequestWithoutBody('http://foo.com');
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'nullableObjectParameter'], 'user'),
-            new RequestContext(
-                $this->createRequest('http://foo.com'),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
-            ),
+            $request,
             new MatchedRoute(new RouteAction(Controller::class, 'nullableObjectParameter', null), [], [])
         );
         $this->assertNull($resolvedParameter);
@@ -100,16 +91,9 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
 
     public function testResolvingNullableScalarParameterWithNoMatchingValuePassesNull(): void
     {
-        $request = $this->createRequest('http://foo.com');
-        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'nullableScalarParameter'], 'foo'),
-            new RequestContext(
-                $request,
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
-            ),
+            $this->createRequestWithoutBody('http://foo.com'),
             new MatchedRoute(new RouteAction(Controller::class, 'nullableScalarParameter', null), [], [])
         );
         $this->assertNull($resolvedParameter);
@@ -120,18 +104,14 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
         $this->expectException(MissingControllerParameterValueException::class);
         $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'objectParameter'], 'user'),
-            new RequestContext(
-                $this->createRequest('http://foo.com'),
-                new ContentNegotiationResult(null, null, null, null),
-                new ContentNegotiationResult(null, null, null, null)
-            ),
+            $this->createRequestWithoutBody('http://foo.com'),
             new MatchedRoute(new RouteAction(Controller::class, 'objectParameter', null), [], [])
         );
     }
 
     public function testResolvingObjectParameterReadsFromRequestBodyFirst(): void
     {
-        $request = $this->createRequest('http://foo.com');
+        $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
         $expectedUser = new User(123, 'foo@bar.com');
         /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
@@ -140,13 +120,13 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
             ->method('readFromStream')
             ->with($request->getBody()->readAsStream(), User::class)
             ->willReturn($expectedUser);
+        $this->contentNegotiator->expects($this->once())
+            ->method('negotiateRequestContent')
+            ->with(User::class, $request)
+            ->willReturn(new ContentNegotiationResult($mediaTypeFormatter, null, null, null));
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'objectParameter'], 'user'),
-            new RequestContext(
-                $request,
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
-            ),
+            $request,
             new MatchedRoute(new RouteAction(Controller::class, 'objectParameter', null), [], [])
         );
         $this->assertEquals($expectedUser, $resolvedParameter);
@@ -157,26 +137,16 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
         $this->expectException(MissingControllerParameterValueException::class);
         $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'stringParameter'], 'foo'),
-            new RequestContext(
-                $this->createRequest('http://foo.com'),
-                new ContentNegotiationResult(null, null, null, null),
-                new ContentNegotiationResult(null, null, null, null)
-            ),
+            $this->createRequestWithoutBody('http://foo.com'),
             new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], [])
         );
     }
 
     public function testResolvingScalarParameterAndNoMatchingVariableUsesDefaultValueIfAvailable(): void
     {
-        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'defaultValueParameter'], 'foo'),
-            new RequestContext(
-                $this->createRequest('http://foo.com'),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
-            ),
+            $this->createRequestWithoutBody('http://foo.com'),
             new MatchedRoute(new RouteAction(Controller::class, 'defaultValueParameter', null), [], [])
         );
         $this->assertEquals('bar', $resolvedParameter);
@@ -184,15 +154,9 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
 
     public function testResolvingScalarParameterUsesMatchingQueryStringVariable(): void
     {
-        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'stringParameter'], 'foo'),
-            new RequestContext(
-                $this->createRequest('http://foo.com/?foo=bar'),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
-            ),
+            $this->createRequestWithoutBody('http://foo.com/?foo=bar'),
             new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), [], [])
         );
         $this->assertEquals('bar', $resolvedParameter);
@@ -200,27 +164,21 @@ class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
 
     public function testResolvingScalarParameterUsesMatchingRouteVariableOverQueryStringVariable(): void
     {
-        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'stringParameter'], 'foo'),
-            new RequestContext(
-                $this->createRequest('http://foo.com/?foo=baz'),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null),
-                new ContentNegotiationResult($mediaTypeFormatter, null, null, null)
-            ),
+            $this->createRequestWithoutBody('http://foo.com/?foo=baz'),
             new MatchedRoute(new RouteAction(Controller::class, 'stringParameter', null), ['foo' => 'dave'], [])
         );
         $this->assertEquals('dave', $resolvedParameter);
     }
 
     /**
-     * Creates a request with the input URI
+     * Creates a request with the input URI and no body
      *
      * @param string $uri The URI to use
      * @return Request The request
      */
-    private function createRequest(string $uri): Request
+    private function createRequestWithoutBody(string $uri): Request
     {
         return new Request('GET', new Uri($uri));
     }

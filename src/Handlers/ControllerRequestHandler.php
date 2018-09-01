@@ -13,11 +13,10 @@ namespace Opulence\Api\Handlers;
 use Closure;
 use InvalidArgumentException;
 use Opulence\Api\Controller;
-use Opulence\Api\Exceptions\ExceptionHandler;
-use Opulence\Api\Exceptions\IExceptionHandler;
 use Opulence\Api\Middleware\AttributeMiddleware;
 use Opulence\Api\Middleware\IMiddleware;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
+use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Opulence\Net\Http\Formatting\RequestParser;
 use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\HttpException;
@@ -42,34 +41,23 @@ class ControllerRequestHandler implements IRequestHandler
     private $contentNegotiator;
     /** @var IRouteActionInvoker The route action invoker */
     private $routeActionInvoker;
-    /** @var IExceptionHandler The exception handler to use */
-    private $exceptionHandler;
 
     /**
      * @param IRouteMatcher $routeMatcher The route matcher
      * @param IDependencyResolver $dependencyResolver The dependency resolver
      * @param IContentNegotiator $contentNegotiator The content negotiator
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
-     * @param IExceptionHandler|null $exceptionHandler The exception handler to use
      */
     public function __construct(
         IRouteMatcher $routeMatcher,
         IDependencyResolver $dependencyResolver,
         IContentNegotiator $contentNegotiator,
-        IRouteActionInvoker $routeActionInvoker = null,
-        IExceptionHandler $exceptionHandler = null
+        IRouteActionInvoker $routeActionInvoker = null
     ) {
         $this->routeMatcher = $routeMatcher;
         $this->dependencyResolver = $dependencyResolver;
         $this->contentNegotiator = $contentNegotiator;
-        $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker();
-
-        if ($exceptionHandler === null) {
-            $exceptionHandler = new ExceptionHandler();
-            $exceptionHandler->registerWithPhp();
-        }
-
-        $this->exceptionHandler = $exceptionHandler;
+        $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }
 
     /**
@@ -77,7 +65,6 @@ class ControllerRequestHandler implements IRequestHandler
      */
     public function handle(IHttpRequestMessage $request): IHttpResponseMessage
     {
-        $this->exceptionHandler->setRequest($request);
         $uri = $request->getUri();
 
         try {
@@ -119,6 +106,8 @@ class ControllerRequestHandler implements IRequestHandler
 
         $controller->setRequest($request);
         $controller->setRequestParser(new RequestParser);
+        $controller->setContentNegotiator($this->contentNegotiator);
+        $controller->setNegotiatedResponseFactory(new NegotiatedResponseFactory($this->contentNegotiator));
         $middleware = $this->resolveMiddleware($matchedRoute->getMiddlewareBindings());
 
         return (new Pipeline)->send($request)

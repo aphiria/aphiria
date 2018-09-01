@@ -13,7 +13,6 @@ namespace Opulence\Api\Tests\Handlers;
 use Closure;
 use InvalidArgumentException;
 use Opulence\Api\Controller;
-use Opulence\Api\Exceptions\IExceptionHandler;
 use Opulence\Api\Handlers\ControllerRequestHandler;
 use Opulence\Api\Handlers\IDependencyResolver;
 use Opulence\Api\Handlers\IRouteActionInvoker;
@@ -25,7 +24,6 @@ use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\RequestContextFactory;
 use Opulence\Net\Uri;
 use Opulence\Routing\Matchers\IRouteMatcher;
 use Opulence\Routing\Matchers\MatchedRoute;
@@ -40,16 +38,12 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ControllerRequestHandler The handler to use in tests */
     private $requestHandler;
-    /** @var IExceptionHandler|\PHPUnit_Framework_MockObject_MockObject The exception handler to use */
-    private $exceptionHandler;
     /** @var IDependencyResolver|\PHPUnit_Framework_MockObject_MockObject The dependency resolver to use */
     private $dependencyResolver;
     /** @var IRouteActionInvoker|\PHPUnit_Framework_MockObject_MockObject The route action invoker to use */
     private $routeActionInvoker;
     /** @var IContentNegotiator|\PHPUnit_Framework_MockObject_MockObject The content negotiator to use */
     private $contentNegotiator;
-    /** @var RequestContextFactory The context factory to use */
-    private $requestContextFactory;
     /** @var IRouteMatcher|\PHPUnit_Framework_MockObject_MockObject The route matcher to use */
     private $routeMatcher;
 
@@ -58,15 +52,12 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
         $this->routeMatcher = $this->createMock(IRouteMatcher::class);
         $this->dependencyResolver = $this->createMock(IDependencyResolver::class);
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
-        $this->requestContextFactory = new RequestContextFactory($this->contentNegotiator);
         $this->routeActionInvoker = $this->createMock(IRouteActionInvoker::class);
-        $this->exceptionHandler = $this->createMock(IExceptionHandler::class);
         $this->requestHandler = new ControllerRequestHandler(
             $this->routeMatcher,
             $this->dependencyResolver,
-            $this->requestContextFactory,
-            $this->routeActionInvoker,
-            $this->exceptionHandler
+            $this->contentNegotiator,
+            $this->routeActionInvoker
         );
     }
 
@@ -175,20 +166,6 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
         $this->requestHandler->handle($request);
     }
 
-    public function testRequestContextStillSetOnExceptionHandlerWhenNoMatchingRouteIsFound(): void
-    {
-        $this->expectException(HttpException::class);
-        $request = $this->createRequestMock('GET', 'http://foo.com/bar');
-        $this->exceptionHandler->expects($this->once())
-            ->method('setRequest')
-            ->with($request);
-        $this->routeMatcher->expects($this->once())
-            ->method('match')
-            ->with('GET', 'foo.com', '/bar')
-            ->willThrowException(new RouteNotFoundException());
-        $this->requestHandler->handle($request);
-    }
-
     public function testRouteActionWithClosureControllerBindsItToControllerObjectAndInvokesIt(): void
     {
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
@@ -251,8 +228,8 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
             ->with([$controller, 'noParameters'])
             ->willReturn($expectedResponse);
         $this->assertSame($expectedResponse, $this->requestHandler->handle($request));
-        // Verify the request context was set
-        $this->assertSame($request, $controller->getRequestContext()->getRequest());
+        // Verify the request was set
+        $this->assertSame($request, $controller->getRequest());
     }
 
     public function testRouteActionWithInvalidControllerInstanceThrowsExceptionThatIsCaught(): void

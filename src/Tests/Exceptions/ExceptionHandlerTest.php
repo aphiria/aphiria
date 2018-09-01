@@ -14,6 +14,7 @@ use ErrorException;
 use InvalidArgumentException;
 use Opulence\Api\Exceptions\ExceptionHandler;
 use Opulence\Api\Exceptions\IExceptionResponseFactory;
+use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\ResponseWriter;
 use Psr\Log\LoggerInterface;
@@ -101,18 +102,17 @@ class ExceptionHandlerTest extends \PHPUnit\Framework\TestCase
         $handler->handleException(new InvalidArgumentException);
     }
 
-    public function testHandlingExceptionCreatesResponseFromResponseFactoryWithRequestContext(): void
+    public function testHandlingExceptionCreatesResponseFromResponseFactoryWithRequest(): void
     {
         $handler = $this->createExceptionHandler();
         $expectedResponse = $this->createMock(IHttpResponseMessage::class);
         $expectedException = new InvalidArgumentException();
-        /** @var RequestContext $expectedRequestContext */
-        $expectedRequestContext = $this->createMock(RequestContext::class);
+        $expectedRequest = $this->createMock(IHttpRequestMessage::class);
         $this->exceptionResponseFactory->expects($this->once())
             ->method('createResponseFromException')
-            ->with($expectedException, $expectedRequestContext)
+            ->with($expectedException, $expectedRequest)
             ->willReturn($expectedResponse);
-        $handler->setRequestContext($expectedRequestContext);
+        $handler->setRequest($expectedRequest);
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($this->callback(function (IHttpResponseMessage $response) use ($expectedResponse) {
@@ -135,12 +135,12 @@ class ExceptionHandlerTest extends \PHPUnit\Framework\TestCase
         array $exceptionsNotLogged = []
     ): ExceptionHandler {
         $exceptionHandler = new ExceptionHandler(
-            $this->logger,
             $this->exceptionResponseFactory,
-            $this->responseWriter,
+            $this->logger,
             $loggedLevels,
             $thrownLevels,
-            $exceptionsNotLogged
+            $exceptionsNotLogged,
+            $this->responseWriter
         );
         $exceptionHandler->registerWithPhp();
 

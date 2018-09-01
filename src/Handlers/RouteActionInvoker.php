@@ -11,6 +11,8 @@
 namespace Opulence\Api\Handlers;
 
 use Closure;
+use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
+use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
@@ -26,15 +28,23 @@ use ReflectionMethod;
  */
 class RouteActionInvoker implements IRouteActionInvoker
 {
+    /** @var NegotiatedResponseFactory The negotiated response factory */
+    private $negotiatedResponseFactory;
     /** @var IControllerParameterResolver The controller parameter resolver to use */
     private $controllerParameterResolver;
 
     /**
+     * @param IContentNegotiator $contentNegotiator The content negotiator
+     * @param NegotiatedResponseFactory|null $negotiatedResponseFactory The negotiated response factory
      * @param IControllerParameterResolver|null $controllerParameterResolver The controller parameter resolver to use
      */
-    public function __construct(IControllerParameterResolver $controllerParameterResolver = null)
-    {
-        $this->controllerParameterResolver = $controllerParameterResolver ?? new ControllerParameterResolver();
+    public function __construct(
+        IContentNegotiator $contentNegotiator,
+        NegotiatedResponseFactory $negotiatedResponseFactory = null,
+        IControllerParameterResolver $controllerParameterResolver = null
+    ) {
+        $this->negotiatedResponseFactory = $negotiatedResponseFactory ?? new NegotiatedResponseFactory($contentNegotiator);
+        $this->controllerParameterResolver = $controllerParameterResolver ?? new ControllerParameterResolver($contentNegotiator);
     }
 
     /**
@@ -117,15 +127,8 @@ class RouteActionInvoker implements IRouteActionInvoker
             return new Response(HttpStatusCodes::HTTP_NO_CONTENT);
         }
 
-        // Create a response from the factory
-        // Todo: Should the controller just create the response right there?  Any need to wait until right here to do so anymore now that the params have been moved from the constructor to the method signature?
-        if ($actionResult instanceof IResponseFactory) {
-            return $actionResult->createResponse($request);
-        }
-
         // Attempt to create an OK response from the return value
-        // Todo: This probably needs the NegotiatedResponseFactory now
-        return (new OkResponseFactory(null, $actionResult))->createResponse($request);
+        return $this->negotiatedResponseFactory->createResponse($request, HttpStatusCodes::HTTP_OK, null, $actionResult);
     }
 
     /**

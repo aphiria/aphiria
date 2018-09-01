@@ -12,10 +12,9 @@ namespace Opulence\Api\Tests\Handlers\Mocks;
 
 use Opulence\Api\Controller as BaseController;
 use Opulence\Net\Http\HttpStatusCodes;
+use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\RequestContext;
 use Opulence\Net\Http\Response;
-use Opulence\Net\Http\ResponseFactories\OkResponseFactory;
 use Opulence\Net\Http\StringBody;
 use RuntimeException;
 
@@ -36,13 +35,13 @@ class Controller extends BaseController
     }
 
     /**
-     * Gets the current request context (for use in tests)
+     * Gets the current request (for use in tests)
      *
-     * @return RequestContext The request context
+     * @return IHttpRequestMessage The current request
      */
-    public function getRequestContext(): RequestContext
+    public function getRequest(): IHttpRequestMessage
     {
-        return $this->requestContext;
+        return $this->request;
     }
 
     /**
@@ -118,16 +117,6 @@ class Controller extends BaseController
     public function popo(): User
     {
         return new User(123, 'foo@bar.com');
-    }
-
-    /**
-     * Mocks a method that returns a response factory
-     *
-     * @return OkResponseFactory The response factory
-     */
-    public function responseFactory(): OkResponseFactory
-    {
-        return new OkResponseFactory(null, 'foo');
     }
 
     /**
