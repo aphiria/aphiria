@@ -13,6 +13,7 @@ namespace Opulence\Net\Http\ContentNegotiation;
 use InvalidArgumentException;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Opulence\Net\Http\Formatting\RequestHeaderParser;
+use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Opulence\Net\Http\IHttpRequestMessage;
 
 /**
@@ -114,32 +115,7 @@ class ContentNegotiator implements IContentNegotiator
         $language = $this->languageMatcher->getBestLanguageMatch($this->supportedLanguages, $acceptLanguageHeaders);
 
         if (!$requestHeaders->containsKey('Accept')) {
-            // Default to the first registered media type formatter that can write the input type
-            $selectedMediaTypeFormatter = null;
-
-            foreach ($this->mediaTypeFormatters as $mediaTypeFormatter) {
-                if ($mediaTypeFormatter->canWriteType($type)) {
-                    $selectedMediaTypeFormatter = $mediaTypeFormatter;
-                    break;
-                }
-            }
-
-            if ($selectedMediaTypeFormatter === null) {
-                return new ContentNegotiationResult(null, null, null, $language);
-            }
-
-            $encoding = $this->encodingMatcher->getBestEncodingMatch(
-                $selectedMediaTypeFormatter,
-                $acceptCharsetHeaders,
-                null
-            );
-
-            return new ContentNegotiationResult(
-                $selectedMediaTypeFormatter,
-                $selectedMediaTypeFormatter->getDefaultMediaType(),
-                $encoding,
-                $language
-            );
+            return $this->createDefaultResponseContentNegotiationResult($type, $language, $acceptCharsetHeaders);
         }
 
         $mediaTypeHeaders = $this->headerParser->parseAcceptHeader($requestHeaders);
@@ -162,6 +138,47 @@ class ContentNegotiator implements IContentNegotiator
         return new ContentNegotiationResult(
             $mediaTypeFormatterMatch->getFormatter(),
             $mediaTypeFormatterMatch->getMediaType(),
+            $encoding,
+            $language
+        );
+    }
+
+    /**
+     * Creates the default content negotiation result in case no Accept header was specified
+     *
+     * @param string $type The type to negotiate
+     * @param string|null $language The selected language
+     * @param AcceptCharsetHeaderValue[] $acceptCharsetHeaders The list of Accept-Charset headers
+     * @return ContentNegotiationResult The content negotiation result
+     */
+    private function createDefaultResponseContentNegotiationResult(
+        string $type,
+        ?string $language,
+        array $acceptCharsetHeaders
+    ): ContentNegotiationResult {
+        // Default to the first registered media type formatter that can write the input type
+        $selectedMediaTypeFormatter = null;
+
+        foreach ($this->mediaTypeFormatters as $mediaTypeFormatter) {
+            if ($mediaTypeFormatter->canWriteType($type)) {
+                $selectedMediaTypeFormatter = $mediaTypeFormatter;
+                break;
+            }
+        }
+
+        if ($selectedMediaTypeFormatter === null) {
+            return new ContentNegotiationResult(null, null, null, $language);
+        }
+
+        $encoding = $this->encodingMatcher->getBestEncodingMatch(
+            $selectedMediaTypeFormatter,
+            $acceptCharsetHeaders,
+            null
+        );
+
+        return new ContentNegotiationResult(
+            $selectedMediaTypeFormatter,
+            $selectedMediaTypeFormatter->getDefaultMediaType(),
             $encoding,
             $language
         );
