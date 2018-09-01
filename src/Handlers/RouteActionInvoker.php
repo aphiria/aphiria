@@ -128,7 +128,12 @@ class RouteActionInvoker implements IRouteActionInvoker
         }
 
         // Attempt to create an OK response from the return value
-        return $this->negotiatedResponseFactory->createResponse($request, HttpStatusCodes::HTTP_OK, null, $actionResult);
+        return $this->negotiatedResponseFactory->createResponse(
+            $request,
+            HttpStatusCodes::HTTP_OK,
+            null,
+            $actionResult
+        );
     }
 
     /**

@@ -76,8 +76,8 @@ class ExceptionResponseFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expectedResponse, $response);
     }
 
-    public function testCreatingResponseForExceptionWithRequestAndResponseFactoryThatThrowsCreatesDefaultResponse(): void
-    {
+    public function testCreatingResponseForExceptionWithRequestAndResponseFactoryThatThrowsCreatesDefaultResponse(
+    ): void {
         $expectedRequest = $this->createMock(IHttpRequestMessage::class);
         $this->responseFactories->registerFactory(
             InvalidArgumentException::class,

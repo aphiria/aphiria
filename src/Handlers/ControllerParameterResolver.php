@@ -100,7 +100,10 @@ class ControllerParameterResolver implements IControllerParameterResolver
             return null;
         }
 
-        $requestContentNegotiationResult = $this->contentNegotiator->negotiateRequestContent($reflectionParameter->getType(), $request);
+        $requestContentNegotiationResult = $this->contentNegotiator->negotiateRequestContent(
+            $reflectionParameter->getType(),
+            $request
+        );
         $mediaTypeFormatter = $requestContentNegotiationResult->getFormatter();
 
         if ($mediaTypeFormatter === null) {
