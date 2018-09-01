@@ -23,6 +23,7 @@ use Opulence\Net\Http\Response;
 use Opulence\Net\Http\StreamBody;
 use Opulence\Net\Http\StringBody;
 use Opulence\Serialization\SerializationException;
+use Opulence\Serialization\TypeResolver;
 
 /**
  * Defines the factory that generates HTTP responses from negotiated content
@@ -121,10 +122,22 @@ class NegotiatedResponseFactory
             throw new InvalidArgumentException('Unsupported body type ' . \gettype($rawBody));
         }
 
-        $responseContentNegotiationResult = $this->contentNegotiator->negotiateResponseContent(
-            \get_class($rawBody),
-            $request
-        );
+        if (\is_array($rawBody)) {
+            if (\count($rawBody) === 0) {
+                return null;
+            }
+
+            $responseContentNegotiationResult = $this->contentNegotiator->negotiateResponseContent(
+                TypeResolver::resolveType($rawBody[0]),
+                $request
+            );
+        } else {
+            $responseContentNegotiationResult = $this->contentNegotiator->negotiateResponseContent(
+                TypeResolver::resolveType($rawBody),
+                $request
+            );
+        }
+
         $mediaTypeFormatter = $responseContentNegotiationResult->getFormatter();
 
         if ($mediaTypeFormatter === null) {
