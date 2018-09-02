@@ -55,7 +55,7 @@ class NegotiatedResponseFactoryTest extends \PHPUnit\Framework\TestCase
             ->method('writeToStream')
             ->with($rawBody, $this->isInstanceOf(IStream::class), 'utf-8');
         $this->setUpContentNegotiationMock(
-            User::class,
+            User::class . '[]',
             $request,
             new ContentNegotiationResult(
                 $mediaTypeFormatter,
@@ -68,11 +68,26 @@ class NegotiatedResponseFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(StreamBody::class, $response->getBody());
     }
 
-    public function testCreatingResponseFromEmptyArrayWillSetNullBody(): void
+    public function testCreatingResponseFromEmptyArrayWillSetStillNegotiateContent(): void
     {
         $request = $this->createRequest('http://foo.com');
+        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
+        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
+        $mediaTypeFormatter->expects($this->once())
+            ->method('writeToStream')
+            ->with([], $this->isInstanceOf(IStream::class), null);
+        $this->setUpContentNegotiationMock(
+            'array',
+            $request,
+            new ContentNegotiationResult(
+                $mediaTypeFormatter,
+                null,
+                null,
+                null
+            )
+        );
         $response = $this->factory->createResponse($request, 200, null, []);
-        $this->assertNull($response->getBody());
+        $this->assertNotNull($response->getBody());
     }
 
     public function testCreatingResponseFromStreamWillSetContentLengthHeader(): void

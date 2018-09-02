@@ -122,11 +122,7 @@ class NegotiatedResponseFactory
             throw new InvalidArgumentException('Unsupported body type ' . \gettype($rawBody));
         }
 
-        if (\is_array($rawBody) && \count($rawBody) === 0) {
-            return null;
-        }
-
-        $type = TypeResolver::resolveType(\is_array($rawBody) ? $rawBody[0] : $rawBody);
+        $type = TypeResolver::resolveType($rawBody);
         $responseContentNegotiationResult = $this->contentNegotiator->negotiateResponseContent(
             $type,
             $request
@@ -146,7 +142,7 @@ class NegotiatedResponseFactory
         $bodyStream = new Stream(fopen('php://temp', 'r+b'));
 
         try {
-            $responseContentNegotiationResult->getFormatter()->writeToStream(
+            $mediaTypeFormatter->writeToStream(
                 $rawBody,
                 $bodyStream,
                 $responseContentNegotiationResult->getEncoding()

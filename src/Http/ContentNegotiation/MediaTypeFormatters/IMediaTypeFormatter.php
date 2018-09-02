@@ -21,7 +21,7 @@ interface IMediaTypeFormatter
     /**
      * Gets whether or not the formatter can read the input type
      *
-     * @param string $type The type to check
+     * @param string $type The type to check (best to use TypeResolver::resolveType())
      * @return bool True if this formatter can read the input type, otherwise false
      */
     public function canReadType(string $type): bool;
@@ -29,7 +29,7 @@ interface IMediaTypeFormatter
     /**
      * Gets whether or not the formatter can write the input type
      *
-     * @param string $type The type to check
+     * @param string $type The type to check (best to use TypeResolver::resolveType())
      * @return bool True if this formatter can write the input type, otherwise false
      */
     public function canWriteType(string $type): bool;
@@ -67,7 +67,7 @@ interface IMediaTypeFormatter
      * Reads content from a string and converts it to the input type
      *
      * @param IStream $stream The stream to read from
-     * @param string $type The type to convert to
+     * @param string $type The type to convert to (best to use TypeResolver::resolveType())
      * @return int|double|float|bool|string|\object|array The converted content
      * @throws SerializationException Thrown if the content could not be read and converted to the input type
      */

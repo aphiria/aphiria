@@ -11,6 +11,7 @@
 namespace Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
 use Opulence\Serialization\FormUrlEncodedSerializer;
+use Opulence\Serialization\TypeResolver;
 
 /**
  * Defines the form URL-encoded media type formatter
@@ -35,7 +36,7 @@ class FormUrlEncodedSerializerMediaTypeFormatter extends SerializerMediaTypeForm
      */
     public function canReadType(string $type): bool
     {
-        return $type === 'array' || substr($type, -2) === '[]' || \class_exists($type);
+        return TypeResolver::typeIsArray($type) || \class_exists($type);
     }
 
     /**
@@ -43,7 +44,7 @@ class FormUrlEncodedSerializerMediaTypeFormatter extends SerializerMediaTypeForm
      */
     public function canWriteType(string $type): bool
     {
-        return $type === 'array' || substr($type, -2) === '[]' || \class_exists($type);
+        return TypeResolver::typeIsArray($type) || \class_exists($type);
     }
 
     /**

@@ -580,7 +580,7 @@ Similarly, you can serialize a value and write it to the response body:
 $mediaTypeFormatter->writeToStream($valueToWrite, $response->getBody());
 ```
 
-  Opulence provides the following formatters out of the box:
+Opulence provides the following formatters out of the box:
 
 * `FormUrlEncodedMediaTypeFormatter`
 * `HtmlMediaTypeFormatter`
