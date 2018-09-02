@@ -18,6 +18,18 @@ use Opulence\Serialization\TypeResolver;
  */
 class TypeResolverTest extends \PHPUnit\Framework\TestCase
 {
+    public function testGettingArrayTypeReturnsNullForNonTypedArrays(): void
+    {
+        $this->assertNull(TypeResolver::getArrayType('string'));
+        $this->assertNull(TypeResolver::getArrayType('[]'));
+        $this->assertNull(TypeResolver::getArrayType('array'));
+    }
+
+    public function testGettingArrayTypeReturnsTypeTypedArrays(): void
+    {
+        $this->assertEquals(User::class, TypeResolver::getArrayType(User::class . '[]'));
+    }
+
     public function testResolvingEmptyArrayReturnsArrayType(): void
     {
         $this->assertEquals('array', TypeResolver::resolveType([]));
@@ -39,5 +51,12 @@ class TypeResolverTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('integer', TypeResolver::resolveType(1));
         $this->assertEquals('double', TypeResolver::resolveType(1.5));
         $this->assertEquals('string', TypeResolver::resolveType('foo'));
+    }
+
+    public function testTypeIsArrayReturnsTrueOnlyForArraysOfTypes(): void
+    {
+        $this->assertTrue(TypeResolver::typeIsArray('array'));
+        $this->assertTrue(TypeResolver::typeIsArray(User::class . '[]'));
+        $this->assertFalse(TypeResolver::typeIsArray('string'));
     }
 }
