@@ -18,6 +18,16 @@ use Opulence\Serialization\TypeResolver;
  */
 class TypeResolverTest extends \PHPUnit\Framework\TestCase
 {
+    public function testResolvingEmptyArrayReturnsArrayType(): void
+    {
+        $this->assertEquals('array', TypeResolver::resolveType([]));
+    }
+
+    public function testResolvingNonEmptyArrayReturnsTypeOfFirstValue(): void
+    {
+        $this->assertEquals('string[]', TypeResolver::resolveType(['foo', 'bar']));
+    }
+
     public function testResolvingTypeForObjectUsesObjectsClassName(): void
     {
         $this->assertEquals(User::class, TypeResolver::resolveType(new User(123, 'foo@bar.com')));
@@ -25,7 +35,6 @@ class TypeResolverTest extends \PHPUnit\Framework\TestCase
 
     public function testResolvingTypeForScalarUsesScalarType(): void
     {
-        $this->assertEquals('array', TypeResolver::resolveType([1]));
         $this->assertEquals('boolean', TypeResolver::resolveType(true));
         $this->assertEquals('integer', TypeResolver::resolveType(1));
         $this->assertEquals('double', TypeResolver::resolveType(1.5));

@@ -24,6 +24,14 @@ class TypeResolver
      */
     public static function resolveType($value): string
     {
+        if (\is_array($value)) {
+            if (\count($value) === 0) {
+                return 'array';
+            }
+
+            return self::resolveType($value[0]) . '[]';
+        }
+
         return \is_object($value) ? \get_class($value) : \gettype($value);
     }
 }
