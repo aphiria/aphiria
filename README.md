@@ -157,7 +157,7 @@ class UserController extends Controller
 
     public function createManyUsers(): IHttpResponseMessage
     {
-        $users = $this->readRequestBodyAsArrayOfType(User::class);
+        $users = $this->readRequestBodyAs(User::class . '[]');
         $this->userRepository->addManyUsers($users);
         
         return $this->created();

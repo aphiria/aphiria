@@ -338,14 +338,14 @@ class Controller
     }
 
     /**
-     * Reads the request body as an array of a type
+     * Reads the request body as a particular type
      *
-     * @param string $type The type to read as an array of
-     * @return array The body as an array of the input type
+     * @param string $type The type to read as (should end with '[]' if it's an array of a type)
+     * @return mixed The body converted to the input type
      * @throws HttpException Thrown if there was any error with content negotiation
      * @throws LogicException Thrown if the request is not set
      */
-    protected function readRequestBodyAsArrayOfType(string $type): array
+    protected function readRequestBodyAs(string $type)
     {
         if (!$this->request instanceof IHttpRequestMessage) {
             throw new LogicException('Request is not set');
@@ -366,11 +366,11 @@ class Controller
         }
 
         try {
-            return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type . '[]');
+            return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type);
         } catch (SerializationException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY,
-                "Failed to deserialize request body when resolving body as array of type $type"
+                "Failed to deserialize request body when resolving body as type $type"
             );
         }
     }
