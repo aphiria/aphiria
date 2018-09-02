@@ -63,7 +63,7 @@ class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     public function testReadingAsArrayOfStringsThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->formatter->readFromStream($this->createMock(IStream::class), 'string', true);
+        $this->formatter->readFromStream($this->createMock(IStream::class), 'string[]');
     }
 
     public function testReadingFromStreamReturnsSerializedStream(): void

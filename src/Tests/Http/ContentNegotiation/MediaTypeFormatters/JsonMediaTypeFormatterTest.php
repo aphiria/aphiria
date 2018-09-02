@@ -30,16 +30,16 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter = new JsonMediaTypeFormatter($serializer);
     }
 
-    public function testCanReadOnlyObjects(): void
+    public function testCanReadAnyType(): void
     {
         $this->assertTrue($this->formatter->canReadType(User::class));
-        $this->assertFalse($this->formatter->canReadType('string'));
+        $this->assertTrue($this->formatter->canReadType('string'));
     }
 
-    public function testCanWriteOnlyObjects(): void
+    public function testCanWriteAnyType(): void
     {
         $this->assertTrue($this->formatter->canWriteType(User::class));
-        $this->assertFalse($this->formatter->canWriteType('string'));
+        $this->assertTrue($this->formatter->canWriteType('string'));
     }
 
     public function testCorrectSupportedEncodingsAreReturned(): void
@@ -70,11 +70,11 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedUser, $actualUser);
     }
 
-    public function testReadingTypeThatCannotBeReadThrowsException(): void
+    public function testWritingArrayOfObjectsIsSuccessful(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $stream = $this->createMock(IStream::class);
-        $this->formatter->readFromStream($stream, 'string');
+        $stream = $this->createStreamThatExpectsBody('[{"id":123,"email":"foo@bar.com"}]');
+        $user = new User(123, 'foo@bar.com');
+        $this->formatter->writeToStream([$user], $stream, 'utf-8');
     }
 
     public function testWritingToStreamSetsStreamContentsFromSerializedValue(): void
@@ -82,12 +82,6 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $stream = $this->createStreamThatExpectsBody('{"id":123,"email":"foo@bar.com"}');
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $stream, 'utf-8');
-    }
-
-    public function testWritingTypeThatCannotBeWrittenThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->formatter->writeToStream('foo', $this->createMock(IStream::class), null);
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void

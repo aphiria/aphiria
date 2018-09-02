@@ -34,31 +34,13 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
     /**
      * @inheritdoc
      */
-    public function canReadType(string $type): bool
-    {
-        return \class_exists($type);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function canWriteType(string $type): bool
-    {
-        return \class_exists($type);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function readFromStream(IStream $stream, string $type, bool $readAsArrayOfType = false)
+    public function readFromStream(IStream $stream, string $type)
     {
         if (!$this->canReadType($type)) {
-            throw new InvalidArgumentException(static::class . ' can only read objects');
+            throw new InvalidArgumentException(static::class . " cannot read type $type");
         }
 
-        $formattedType = $readAsArrayOfType ? $type . '[]' : $type;
-
-        return $this->serializer->deserialize((string)$stream, $formattedType);
+        return $this->serializer->deserialize((string)$stream, $type);
     }
 
     /**
@@ -66,8 +48,10 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
      */
     public function writeToStream($value, IStream $stream, ?string $encoding): void
     {
-        if (!$this->canWriteType(TypeResolver::resolveType($value))) {
-            throw new InvalidArgumentException(static::class . ' can only write objects');
+        $type = TypeResolver::resolveType($value);
+
+        if (!$this->canWriteType($type)) {
+            throw new InvalidArgumentException(static::class . " cannot write type $type");
         }
 
         $encoding = $encoding ?? $this->getDefaultEncoding();

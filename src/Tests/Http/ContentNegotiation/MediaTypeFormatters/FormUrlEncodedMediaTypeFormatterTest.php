@@ -30,15 +30,21 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter = new FormUrlEncodedSerializerMediaTypeFormatter($serializer);
     }
 
-    public function testCanReadOnlyObjects(): void
+    public function testCanReadOnlyObjectsAndArrays(): void
     {
         $this->assertTrue($this->formatter->canReadType(User::class));
+        $this->assertTrue($this->formatter->canReadType('array'));
+        $this->assertTrue($this->formatter->canReadType('string[]'));
+        $this->assertTrue($this->formatter->canReadType(User::class . '[]'));
         $this->assertFalse($this->formatter->canReadType('string'));
     }
 
-    public function testCanWriteOnlyObjects(): void
+    public function testCanWriteOnlyObjectsAndArrays(): void
     {
         $this->assertTrue($this->formatter->canWriteType(User::class));
+        $this->assertTrue($this->formatter->canWriteType('array'));
+        $this->assertTrue($this->formatter->canWriteType('string[]'));
+        $this->assertTrue($this->formatter->canWriteType(User::class . '[]'));
         $this->assertFalse($this->formatter->canWriteType('string'));
     }
 
@@ -75,6 +81,13 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
         $this->expectException(InvalidArgumentException::class);
         $stream = $this->createMock(IStream::class);
         $this->formatter->readFromStream($stream, 'string');
+    }
+
+    public function testWritingArrayOfObjectsIsSuccessful(): void
+    {
+        $stream = $this->createStreamThatExpectsBody('0%5Bid%5D=123&0%5Bemail%5D=foo%40bar.com');
+        $user = new User(123, 'foo@bar.com');
+        $this->formatter->writeToStream([$user], $stream, 'utf-8');
     }
 
     public function testWritingToStreamSetsStreamContentsFromSerializedValue(): void

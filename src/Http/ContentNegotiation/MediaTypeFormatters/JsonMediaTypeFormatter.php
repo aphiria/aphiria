@@ -33,6 +33,24 @@ class JsonMediaTypeFormatter extends SerializerMediaTypeFormatter
     /**
      * @inheritdoc
      */
+    public function canReadType(string $type): bool
+    {
+        // We default to true and let a SerializationException bubble up in case it cannot read this type
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function canWriteType(string $type): bool
+    {
+        // We default to true and let a SerializationException bubble up in case it cannot write this type
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getSupportedEncodings(): array
     {
         return self::$supportedEncodings;

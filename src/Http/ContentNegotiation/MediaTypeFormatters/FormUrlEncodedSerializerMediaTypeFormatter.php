@@ -33,6 +33,22 @@ class FormUrlEncodedSerializerMediaTypeFormatter extends SerializerMediaTypeForm
     /**
      * @inheritdoc
      */
+    public function canReadType(string $type): bool
+    {
+        return $type === 'array' || substr($type, -2) === '[]' || \class_exists($type);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function canWriteType(string $type): bool
+    {
+        return $type === 'array' || substr($type, -2) === '[]' || \class_exists($type);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getSupportedEncodings(): array
     {
         return self::$supportedEncodings;

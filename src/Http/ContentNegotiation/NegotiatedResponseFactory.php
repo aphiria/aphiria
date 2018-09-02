@@ -122,21 +122,14 @@ class NegotiatedResponseFactory
             throw new InvalidArgumentException('Unsupported body type ' . \gettype($rawBody));
         }
 
-        if (\is_array($rawBody)) {
-            if (\count($rawBody) === 0) {
-                return null;
-            }
-
-            $responseContentNegotiationResult = $this->contentNegotiator->negotiateResponseContent(
-                TypeResolver::resolveType($rawBody[0]),
-                $request
-            );
-        } else {
-            $responseContentNegotiationResult = $this->contentNegotiator->negotiateResponseContent(
-                TypeResolver::resolveType($rawBody),
-                $request
-            );
+        if (\is_array($rawBody) && \count($rawBody) === 0) {
+            return null;
         }
+
+        $responseContentNegotiationResult = $this->contentNegotiator->negotiateResponseContent(
+            TypeResolver::resolveType(\is_array($rawBody) ? $rawBody[0] : $rawBody),
+            $request
+        );
 
         $mediaTypeFormatter = $responseContentNegotiationResult->getFormatter();
 
