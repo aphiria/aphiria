@@ -366,7 +366,7 @@ class Controller
         }
 
         try {
-            return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type, true);
+            return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type . '[]');
         } catch (SerializationException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,

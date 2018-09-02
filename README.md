@@ -85,6 +85,8 @@ The following helper methods come bundled with `Controller`:
 
 If your controller method has a `void` return type, a 204 "No Content" response will be created automatically.
 
+If you need access to the current request, use `$this->request` within your controller method.
+
 <h3 id="headers">Headers</h3>
 
 Setting headers is simple, too:
