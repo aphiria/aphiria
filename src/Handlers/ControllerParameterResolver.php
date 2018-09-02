@@ -100,15 +100,18 @@ class ControllerParameterResolver implements IControllerParameterResolver
             return null;
         }
 
+        $type = $reflectionParameter->getType();
         $requestContentNegotiationResult = $this->contentNegotiator->negotiateRequestContent(
-            $reflectionParameter->getType(),
+            $type,
             $request
         );
         $mediaTypeFormatter = $requestContentNegotiationResult->getFormatter();
 
         if ($mediaTypeFormatter === null) {
             if (!$reflectionParameter->allowsNull()) {
-                throw new FailedRequestContentNegotiationException('Failed to negotiate request content');
+                throw new FailedRequestContentNegotiationException(
+                    "Failed to negotiate request content with type $type"
+                );
             }
 
             return null;
@@ -116,7 +119,7 @@ class ControllerParameterResolver implements IControllerParameterResolver
 
         try {
             return $mediaTypeFormatter
-                ->readFromStream($request->getBody()->readAsStream(), $reflectionParameter->getType());
+                ->readFromStream($request->getBody()->readAsStream(), $type);
         } catch (SerializationException $ex) {
             if (!$reflectionParameter->allowsNull()) {
                 throw new RequestBodyDeserializationException(

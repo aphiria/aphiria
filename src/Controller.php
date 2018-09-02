@@ -342,7 +342,7 @@ class Controller
      *
      * @param string $type The type to read as an array of
      * @return array The body as an array of the input type
-     * @throws HttpException Thrown if there was an error reading the body
+     * @throws HttpException Thrown if there was any error with content negotiation
      * @throws LogicException Thrown if the request is not set
      */
     protected function readRequestBodyAsArrayOfType(string $type): array
@@ -357,7 +357,7 @@ class Controller
         if ($mediaTypeFormatter === null) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                'No available media type formatter to read request body'
+                "Failed to negotiate request content with type $type"
             );
         }
 
@@ -369,10 +369,8 @@ class Controller
             return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type . '[]');
         } catch (SerializationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
-                'Failed to deserialize request body',
-                0,
-                $ex
+                HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY,
+                "Failed to deserialize request body when resolving body as array of type $type"
             );
         }
     }
