@@ -154,6 +154,6 @@ $encoders->registerEncoder(YourClass::class, new YourEncoder());
 
 Now, whenever an instance of `YourClass` needs to be (de)serialized, `YourEncoder` will be used.
 
-<h2 id="datetime-encoder">DateTime encoder</h2>
+<h2 id="datetime-encoder">DateTime Encoder</h2>
 
 `DateTime` objects are typically serialized to a formatted date string, and deserialized from that string back to an instance of `DateTime`.  Opulence provides `DateTimeEncoder` to provide this functionality. By default, it uses <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601</a> when (de)serializing `DateTime`, `DateTimeImmutable`, and `DateTimeInterface` objects, but you can [customize the format](#default-encoders).
