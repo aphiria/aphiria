@@ -19,6 +19,14 @@ use Opulence\Net\Http\IHttpRequestMessage;
 interface IContentNegotiator
 {
     /**
+     * Gets the list of acceptable response media types for a particular type
+     *
+     * @param string $type The type to check for
+     * @return array The list of acceptable media types
+     */
+    public function getAcceptableResponseMediaTypes(string $type): array;
+
+    /**
      * Gets the negotiation result for the request body
      *
      * @param string $type The type to negotiate

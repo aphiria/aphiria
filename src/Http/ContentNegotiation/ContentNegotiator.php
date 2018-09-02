@@ -68,6 +68,25 @@ class ContentNegotiator implements IContentNegotiator
     /**
      * @inheritdoc
      */
+    public function getAcceptableResponseMediaTypes(string $type): array
+    {
+        $acceptableMediaTypes = [];
+
+        foreach ($this->mediaTypeFormatters as $mediaTypeFormatter) {
+            if ($mediaTypeFormatter->canWriteType($type)) {
+                $acceptableMediaTypes = array_merge(
+                    $acceptableMediaTypes,
+                    $mediaTypeFormatter->getSupportedMediaTypes()
+                );
+            }
+        }
+
+        return \array_unique($acceptableMediaTypes);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function negotiateRequestContent(string $type, IHttpRequestMessage $request): ContentNegotiationResult
     {
         $requestHeaders = $request->getHeaders();

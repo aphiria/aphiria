@@ -30,11 +30,11 @@ use Opulence\Net\Uri;
 use Opulence\Serialization\SerializationException;
 
 /**
- * Tests the negotiated response body factory
+ * Tests the negotiated response factory
  */
-class NegotiatedResponseBodyFactoryTest extends \PHPUnit\Framework\TestCase
+class NegotiatedResponseFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var NegotiatedResponseFactory The response body factory to test */
+    /** @var NegotiatedResponseFactory The response factory to test */
     private $factory;
     /** @var IContentNegotiator|\PHPUnit_Framework_MockObject_MockObject The content negotiator */
     private $contentNegotiator;
@@ -175,12 +175,18 @@ class NegotiatedResponseBodyFactoryTest extends \PHPUnit\Framework\TestCase
             $request,
             new ContentNegotiationResult(null, null, null, null)
         );
+        $this->contentNegotiator->expects($this->once())
+            ->method('getAcceptableResponseMediaTypes')
+            ->willReturn(['foo/bar']);
 
         try {
             $this->factory->createResponse($request, 200, null, $rawBody);
             $this->fail('Expected exception to be thrown');
         } catch (HttpException $ex) {
-            $this->assertEquals(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, $ex->getResponse()->getStatusCode());
+            $response = $ex->getResponse();
+            $this->assertEquals(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, $response->getStatusCode());
+            $this->assertEquals('application/json', $response->getHeaders()->getFirst('Content-Type'));
+            $this->assertEquals('["foo\/bar"]', (string)$response->getBody());
         }
     }
 

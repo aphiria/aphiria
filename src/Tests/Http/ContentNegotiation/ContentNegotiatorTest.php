@@ -48,6 +48,55 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
         new ContentNegotiator([], []);
     }
 
+    public function testGettingAcceptableResponseMediaTypesDoesNotReturnDuplicates(): void
+    {
+        $formatter1 = $this->createMock(IMediaTypeFormatter::class);
+        $formatter1->expects($this->once())
+            ->method('canWriteType')
+            ->with('foo')
+            ->willReturn(true);
+        $formatter1->expects($this->once())
+            ->method('getSupportedMediaTypes')
+            ->willReturn(['foo/bar']);
+        $formatter2 = $this->createMock(IMediaTypeFormatter::class);
+        $formatter2->expects($this->once())
+            ->method('canWriteType')
+            ->with('foo')
+            ->willReturn(true);
+        $formatter2->expects($this->once())
+            ->method('getSupportedMediaTypes')
+            ->willReturn(['foo/bar']);
+        $contentNegotiator = new ContentNegotiator([$formatter1, $formatter2]);
+        $this->assertEquals(['foo/bar'], $contentNegotiator->getAcceptableResponseMediaTypes('foo'));
+    }
+
+    public function testGettingAcceptableResponseMediaTypesReturnsFormattersMediaTypesThatCanWriteType(): void
+    {
+        $formatter1 = $this->createMock(IMediaTypeFormatter::class);
+        $formatter1->expects($this->once())
+            ->method('canWriteType')
+            ->with('foo')
+            ->willReturn(true);
+        $formatter1->expects($this->once())
+            ->method('getSupportedMediaTypes')
+            ->willReturn(['foo/bar']);
+        $formatter2 = $this->createMock(IMediaTypeFormatter::class);
+        $formatter2->expects($this->once())
+            ->method('canWriteType')
+            ->with('foo')
+            ->willReturn(false);
+        $formatter3 = $this->createMock(IMediaTypeFormatter::class);
+        $formatter3->expects($this->once())
+            ->method('canWriteType')
+            ->with('foo')
+            ->willReturn(true);
+        $formatter3->expects($this->once())
+            ->method('getSupportedMediaTypes')
+            ->willReturn(['baz/blah']);
+        $contentNegotiator = new ContentNegotiator([$formatter1, $formatter2, $formatter3]);
+        $this->assertEquals(['foo/bar', 'baz/blah'], $contentNegotiator->getAcceptableResponseMediaTypes('foo'));
+    }
+
     public function testNoMatchingRequestFormatterReturnsResultWithAllNullProperties(): void
     {
         $formatter = $this->createFormatterMock(['application/json'], 1);

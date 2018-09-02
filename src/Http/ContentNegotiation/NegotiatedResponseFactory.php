@@ -126,15 +126,21 @@ class NegotiatedResponseFactory
             return null;
         }
 
+        $type = TypeResolver::resolveType(\is_array($rawBody) ? $rawBody[0] : $rawBody);
         $responseContentNegotiationResult = $this->contentNegotiator->negotiateResponseContent(
-            TypeResolver::resolveType(\is_array($rawBody) ? $rawBody[0] : $rawBody),
+            $type,
             $request
         );
 
         $mediaTypeFormatter = $responseContentNegotiationResult->getFormatter();
 
         if ($mediaTypeFormatter === null) {
-            throw new HttpException(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, 'Response content could not be negotiated');
+            $headers = new HttpHeaders();
+            $headers->add('Content-Type', 'application/json');
+            $body = new StringBody(\json_encode($this->contentNegotiator->getAcceptableResponseMediaTypes($type)));
+            $response = new Response(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, $headers, $body);
+
+            throw new HttpException($response);
         }
 
         $bodyStream = new Stream(fopen('php://temp', 'r+b'));
