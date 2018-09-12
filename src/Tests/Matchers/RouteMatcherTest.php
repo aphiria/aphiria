@@ -17,6 +17,7 @@ use Opulence\Routing\Regexes\GroupRegex;
 use Opulence\Routing\Regexes\GroupRegexCollection;
 use Opulence\Routing\Route;
 use Opulence\Routing\RouteAction;
+use Opulence\Routing\UriTemplates\Rules\IRule;
 use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
@@ -56,6 +57,47 @@ class RouteMatcherTest extends \PHPUnit\Framework\TestCase
             ->with('GET')
             ->willReturn($expectedRegexes);
         $matcher->match('GET', '', 'foo', ['foo' => 'bar']);
+    }
+
+    public function testFailingRulesCanStillMatchSubsequentRoutes(): void
+    {
+        // Todo: Fix the underlying bug
+        $this->markTestIncomplete('Still pending a bug fix');
+        /**
+         * Note:  This covers a bug I noticed when the path was "users/random", and
+         * I had the routes "users/:id(int)" and "users/random" registered (in that order).
+         * The integer constraint on the first meant that users/random passed the regex, but
+         * not the constraint.  So, the second regex would need to be matched against.
+         */
+        $idRule = $this->createMock(IRule::class);
+        $idRule->expects($this->once())
+            ->method('passes')
+            ->with('random')
+            ->willReturn(false);
+        $failedRoute = new Route(
+            'GET',
+            new UriTemplate('', false, ['id'], false, [], ['id' => $idRule]),
+            $this->createMock(RouteAction::class)
+        );
+        $expectedRoute = new Route(
+            'GET',
+            new UriTemplate('', false),
+            $this->createMock(RouteAction::class)
+        );
+        $expectedRegexes = [
+            new GroupRegex(
+                '#^(^users/(.+)$)|(^users/random$)$#',
+                // Second one is at 2 because the first regex has a nested regex
+                [0 => $failedRoute, 2 => $expectedRoute]
+            )
+        ];
+        $matcher = new RouteMatcher($this->regexes);
+        $this->regexes->expects($this->once())
+            ->method('getByMethod')
+            ->with('GET')
+            ->willReturn($expectedRegexes);
+        $matchedRoute = $matcher->match('GET', '', 'users/random');
+        $this->assertSame($expectedRoute->getAction(), $matchedRoute->getAction());
     }
 
     public function testMatchingCanOccurOnUriTemplatesWithDifferingNumbersOfCapturingGroups(): void

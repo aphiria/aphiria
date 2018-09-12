@@ -10,13 +10,7 @@
 
 namespace Opulence\Routing\Caching;
 
-use Opulence\Routing\ClosureRouteAction;
-use Opulence\Routing\MethodRouteAction;
-use Opulence\Routing\Middleware\MiddlewareBinding;
-use Opulence\Routing\Route;
-use Opulence\Routing\RouteAction;
 use Opulence\Routing\RouteCollection;
-use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Defines the file route cache
@@ -53,20 +47,7 @@ class FileRouteCache implements IRouteCache
             return null;
         }
 
-        return unserialize(
-            file_get_contents($this->path),
-            [
-                'allowed_classes' => [
-                    RouteAction::class,
-                    ClosureRouteAction::class,
-                    MethodRouteAction::class,
-                    MiddlewareBinding::class,
-                    Route::class,
-                    RouteCollection::class,
-                    UriTemplate::class
-                ]
-            ]
-        );
+        return unserialize(file_get_contents($this->path));
     }
 
     /**

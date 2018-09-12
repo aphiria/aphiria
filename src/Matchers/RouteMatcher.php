@@ -45,13 +45,13 @@ class RouteMatcher implements IRouteMatcher
         foreach ($regexesByMethod as $regex) {
             $matches = [];
 
-            if (preg_match($regex->getGroupRegex(), $hostAndPath, $matches) !== 1) {
+            if (preg_match($regex->getGroupRegex(), $hostAndPath, $matches, PREG_UNMATCHED_AS_NULL) !== 1) {
                 continue;
             }
 
             foreach ($regex->getRoutesByCapturingGroupOffsets() as $offset => $route) {
                 // The first values in the matches is the subject, so skip that one
-                if ($matches[$offset + 1] === '') {
+                if ($matches[$offset + 1] === null) {
                     continue;
                 }
 
