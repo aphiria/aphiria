@@ -13,6 +13,7 @@ namespace Opulence\Net\Tests\Http;
 use Opulence\Collections\KeyValuePair;
 use Opulence\Net\Http\HttpHeaders;
 use OutOfBoundsException;
+use InvalidArgumentException;
 
 /**
  * Tests the HTTP headers
@@ -169,5 +170,11 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
         $this->headers->add('foo', 'bar');
         $this->assertTrue($this->headers->tryGetFirst('foo', $value));
         $this->assertEquals('bar', $value);
+    }
+
+    public function testAddRangeOnInvalidValue(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->headers->addRange(['invalid KeyValuePair']);
     }
 }
