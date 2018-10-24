@@ -89,4 +89,10 @@ class JsonSerializerTest extends \PHPUnit\Framework\TestCase
         $this->encoders->registerEncoder(User::class, $encoder);
         $this->serializer->serialize($user);
     }
+
+    public function testSerializeThrowSerializationExceptionDuringJsonEncoding(): void
+    {
+        $this->expectException(SerializationException::class);
+        $this->serializer->serialize(123456);
+    }
 }
