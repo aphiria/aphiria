@@ -75,4 +75,15 @@ class ArrayEncoderTest extends \PHPUnit\Framework\TestCase
         $this->encoders->registerEncoder('int', $encoder);
         $this->assertEquals([123, 456], $this->arrayEncoder->encode([123, 456], $context));
     }
+
+    public function testEncodingThrowInvalidArgumentExceptionWithNonArrayValues(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->arrayEncoder->encode(12345, new EncodingContext());
+    }
+
+    public function testEncodingShouldReturnEmptyArrayWithEmptyArrayValues(): void
+    {
+        $this->assertCount(0, $this->arrayEncoder->encode([], new EncodingContext()));
+    }
 }

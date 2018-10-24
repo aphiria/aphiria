@@ -352,4 +352,10 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->objectEncoder->addIgnoredProperty(User::class, $this);
     }
+
+    public function testDecodingWithNonArrayObjectHashShouldThrowInvalidArgumentException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->objectEncoder->decode(12345, 'InvalidArgumentException', new EncodingContext());
+    }
 }
