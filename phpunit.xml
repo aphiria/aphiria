@@ -4,4 +4,12 @@
     <testsuite name="RouteMatcher">
         <directory>src/Tests</directory>
     </testsuite>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+            <exclude>
+                <directory suffix=".php">src/Tests</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>

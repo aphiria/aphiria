@@ -45,8 +45,18 @@ class TokenStreamTest extends \PHPUnit\Framework\TestCase
     public function testExpectThrowsExceptionOnMiss(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected token type baz, got foo with value \"bar\"');
         $stream = new TokenStream([new Token('foo', 'bar')]);
         $stream->expect('baz');
+    }
+
+    public function testExpectThrowsExceptionOnEndOfStream(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected token type bar, got end of stream');
+        $stream = new TokenStream([new Token('foo', 'bar')]);
+        $stream->next();
+        $stream->expect('bar');
     }
 
     public function testGettingCurrentTokenWhenAtEndReturnsNull(): void

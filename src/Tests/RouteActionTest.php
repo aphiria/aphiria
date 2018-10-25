@@ -12,6 +12,7 @@ namespace Opulence\Routing\Tests;
 
 use Closure;
 use Opulence\Routing\RouteAction;
+use InvalidArgumentException;
 
 /**
  * Tests the route action
@@ -36,6 +37,14 @@ class RouteActionTest extends \PHPUnit\Framework\TestCase
         };
         $this->closureAction = new RouteAction(null, null, $this->closure);
         $this->methodAction = new RouteAction(self::CLASS_NAME, self::METHOD_NAME, null);
+    }
+
+    public function testConstructorOnNullArguments(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Must specify either a class name or closure');
+
+        new RouteAction(null, null, null);
     }
 
     public function testCorrectClassNameIsReturned(): void

@@ -96,7 +96,7 @@ class UriTemplateLexer implements IUriTemplateLexer
         $intVal = (int)$number;
 
         // Determine if this was a float or not
-        if ($floatVal && $intVal !== $floatVal) {
+        if ($floatVal && $intVal != $floatVal) {
             $tokens[] = new Token(TokenTypes::T_NUMBER, $floatVal);
         } else {
             $tokens[] = new Token(TokenTypes::T_NUMBER, $intVal);

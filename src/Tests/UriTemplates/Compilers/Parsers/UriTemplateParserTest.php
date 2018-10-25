@@ -94,6 +94,28 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
+    public function testParsingNumberOnlyRouteCreatesSingleNumber(): void
+    {
+        $tokens = new TokenStream([
+            new Token(TokenTypes::T_NUMBER, 12345)
+        ]);
+        $expectedAst = new AbstractSyntaxTree();
+        $expectedAst->getCurrentNode()
+            ->addChild(new Node(NodeTypes::TEXT, 12345));
+        $this->assertEquals($expectedAst, $this->parser->parse($tokens));
+    }
+
+    public function testParsingQuotedStringOnlyRouteCreatesSingleString(): void
+    {
+        $tokens = new TokenStream([
+            new Token(TokenTypes::T_QUOTED_STRING, '"12345"')
+        ]);
+        $expectedAst = new AbstractSyntaxTree();
+        $expectedAst->getCurrentNode()
+            ->addChild(new Node(NodeTypes::TEXT, '"12345"'));
+        $this->assertEquals($expectedAst, $this->parser->parse($tokens));
+    }
+
     public function testParsingUnclosedRuleParenthesisThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

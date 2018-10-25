@@ -86,4 +86,9 @@ class RouteCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($this->getRoute, $this->seededCollection->getNamedRoute('getRoute'));
         $this->assertSame($this->getAndPostRoute, $this->seededCollection->getNamedRoute('getAndPostRoute'));
     }
+
+    public function testGetByNameReturnsNullRoutes(): void
+    {
+        $this->assertNull($this->seededCollection->getNamedRoute('getNullRoute'));
+    }
 }

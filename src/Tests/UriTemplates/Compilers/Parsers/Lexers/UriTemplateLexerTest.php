@@ -68,13 +68,24 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testLexingPathWithFloat(): void
+    public function lexingPathWithFloatProvider(): array
+    {
+        return [
+            [1.23, '1.23'],
+            [123.0, '123.0'],
+        ];
+    }
+
+    /**
+     * @dataProvider lexingPathWithFloatProvider
+     */
+    public function testLexingPathWithFloat($number, $expectedValue): void
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_NUMBER, 1.23)
+                new Token(TokenTypes::T_NUMBER, $number)
             ]),
-            $this->lexer->lex('1.23')
+            $this->lexer->lex($expectedValue)
         );
     }
 
