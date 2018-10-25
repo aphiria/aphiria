@@ -10,6 +10,7 @@
 
 namespace Opulence\Api\Tests\Exceptions;
 
+use Error;
 use ErrorException;
 use InvalidArgumentException;
 use Opulence\Api\Exceptions\ExceptionHandler;
@@ -92,6 +93,14 @@ class ExceptionHandlerTest extends \PHPUnit\Framework\TestCase
             ->method('error')
             ->with($expectedException);
         $handler->handleException($expectedException);
+    }
+
+    public function testHandlingExceptionWithErrorThatNotShouldBeThrownIsNotThrown(): void
+    {
+        $handler = $this->createExceptionHandler();
+        $error = new Error;
+        $handler->handleException($error);
+        $this->assertTrue(true);
     }
 
     public function testHandlingExceptionThatShouldNotBeLoggedIsNotLogged(): void
