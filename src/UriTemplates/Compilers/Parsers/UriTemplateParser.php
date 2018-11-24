@@ -153,6 +153,10 @@ class UriTemplateParser implements IUriTemplateParser
             $tokens->next();
         }
 
+        if ($tokens->test(TokenTypes::T_VARIABLE)) {
+            throw new InvalidArgumentException('Cannot have consecutive variables without a delimiter');
+        }
+
         $ast->setCurrentNode($ast->getCurrentNode()->getParent());
     }
 

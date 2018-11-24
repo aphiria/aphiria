@@ -116,6 +116,16 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
+    public function testParsingSequentialVariablesThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $tokens = new TokenStream([
+            new Token(TokenTypes::T_VARIABLE, 'foo'),
+            new Token(TokenTypes::T_VARIABLE, 'foo')
+        ]);
+        $this->parser->parse($tokens);
+    }
+
     public function testParsingUnclosedRuleParenthesisThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
