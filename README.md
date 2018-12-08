@@ -49,7 +49,7 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
 
 <h2 id="installation">Installation</h2>
 
-This library requires PHP 7.1 and above.  It can be installed via <a href="https://getcomposer.org/" target="_blank">Composer</a> by including the following in your _composer.json_:
+This library requires PHP 7.3 and above.  It can be installed via <a href="https://getcomposer.org/" target="_blank">Composer</a> by including the following in your _composer.json_:
 ```
 "opulence/router": "1.0.*@dev"
 ```
