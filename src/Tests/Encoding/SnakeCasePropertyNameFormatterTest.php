@@ -17,7 +17,7 @@ use Opulence\Serialization\Encoding\SnakeCasePropertyNameFormatter;
  */
 class SnakeCasePropertyNameFormatterTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var CamelCasePropertyNameFormatter The formatter to use in tests */
+    /** @var SnakeCasePropertyNameFormatter The formatter to use in tests */
     private $formatter;
 
     public function setUp(): void
