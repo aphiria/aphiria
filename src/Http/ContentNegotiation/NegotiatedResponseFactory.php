@@ -61,9 +61,9 @@ class NegotiatedResponseFactory
         $headers = $headers ?? new HttpHeaders;
 
         try {
-            /** @var ContentNegotiationResult|null $responseContentNegotiationResult */
-            $responseContentNegotiationResult = null;
-            $body = $this->createBody($request, $rawBody, $responseContentNegotiationResult);
+            /** @var ContentNegotiationResult|null $contentNegotiationResult */
+            $contentNegotiationResult = null;
+            $body = $this->createBody($request, $rawBody, $contentNegotiationResult);
         } catch (InvalidArgumentException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
@@ -74,8 +74,8 @@ class NegotiatedResponseFactory
         }
 
         if (
-            $responseContentNegotiationResult !== null
-            && ($mediaType = $responseContentNegotiationResult->getMediaType()) !== null
+            $contentNegotiationResult !== null
+            && ($mediaType = $contentNegotiationResult->getMediaType()) !== null
         ) {
             $headers->add('Content-Type', $mediaType);
         }
@@ -96,7 +96,7 @@ class NegotiatedResponseFactory
      *
      * @param IHttpRequestMessage $request The current request
      * @param \object|string|int|float|array|null $rawBody The raw body to use in the response
-     * @param ContentNegotiationResult|null $responseContentNegotiationResult The response content negotiation result
+     * @param ContentNegotiationResult|null $contentNegotiationResult The response content negotiation result
      * @return IHttpBody|null The body if one was created, otherwise null
      * @throws InvalidArgumentException Thrown if the body is not a supported type
      * @throws HttpException Thrown if the response content could not be negotiated
@@ -104,7 +104,7 @@ class NegotiatedResponseFactory
     private function createBody(
         IHttpRequestMessage $request,
         $rawBody,
-        ContentNegotiationResult &$responseContentNegotiationResult = null
+        ContentNegotiationResult &$contentNegotiationResult = null
     ): ?IHttpBody {
         if ($rawBody === null || $rawBody instanceof IHttpBody) {
             return $rawBody;
@@ -123,20 +123,11 @@ class NegotiatedResponseFactory
         }
 
         $type = TypeResolver::resolveType($rawBody);
-        $responseContentNegotiationResult = $this->contentNegotiator->negotiateResponseContent(
-            $type,
-            $request
-        );
-
-        $mediaTypeFormatter = $responseContentNegotiationResult->getFormatter();
+        $contentNegotiationResult = $this->contentNegotiator->negotiateResponseContent($type, $request);
+        $mediaTypeFormatter = $contentNegotiationResult->getFormatter();
 
         if ($mediaTypeFormatter === null) {
-            $headers = new HttpHeaders();
-            $headers->add('Content-Type', 'application/json');
-            $body = new StringBody(\json_encode($this->contentNegotiator->getAcceptableResponseMediaTypes($type)));
-            $response = new Response(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, $headers, $body);
-
-            throw new HttpException($response);
+            throw $this->createNotAcceptableException($type);
         }
 
         $bodyStream = new Stream(fopen('php://temp', 'r+b'));
@@ -145,7 +136,7 @@ class NegotiatedResponseFactory
             $mediaTypeFormatter->writeToStream(
                 $rawBody,
                 $bodyStream,
-                $responseContentNegotiationResult->getEncoding()
+                $contentNegotiationResult->getEncoding()
             );
         } catch (SerializationException $ex) {
             throw new HttpException(
@@ -157,5 +148,21 @@ class NegotiatedResponseFactory
         }
 
         return new StreamBody($bodyStream);
+    }
+
+    /**
+     * Creates a 406 Not Acceptable exception
+     *
+     * @param string $type The type that was attempted to be written
+     * @return HttpException The exception with the response set
+     */
+    private function createNotAcceptableException(string $type): HttpException
+    {
+        $headers = new HttpHeaders();
+        $headers->add('Content-Type', 'application/json');
+        $body = new StringBody(\json_encode($this->contentNegotiator->getAcceptableResponseMediaTypes($type)));
+        $response = new Response(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, $headers, $body);
+
+        return new HttpException($response);
     }
 }
