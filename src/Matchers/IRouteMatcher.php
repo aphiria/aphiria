@@ -4,8 +4,8 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2017 David Young
- * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
 namespace Opulence\Routing\Matchers;
@@ -16,14 +16,13 @@ namespace Opulence\Routing\Matchers;
 interface IRouteMatcher
 {
     /**
-     * Tries to match a request to the list of routes
+     * Tries to match a request to the configured routes
      *
      * @param string $httpMethod The HTTP method of the request
      * @param string $host The host of the request
      * @param string $path The path of the request
      * @param array $headers The mapping of header names to values
-     * @return MatchedRoute The matched route, if one was found
-     * @throws RouteNotFoundException Thrown if no matching route was found
+     * @return RouteMatchingResult The result of the route matching
      */
-    public function match(string $httpMethod, string $host, string $path, array $headers = []) : MatchedRoute;
+    public function matchRoute(string $httpMethod, string $host, string $path, array $headers = []): RouteMatchingResult;
 }

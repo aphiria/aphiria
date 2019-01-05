@@ -4,8 +4,8 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2017 David Young
- * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
 namespace Opulence\Routing;
@@ -22,13 +22,5 @@ class MethodRouteAction extends RouteAction
     public function __construct(string $className, string $methodName)
     {
         parent::__construct($className, $methodName, null);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function usesMethod() : bool
-    {
-        return true;
     }
 }

@@ -4,116 +4,46 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2017 David Young
- * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
 namespace Opulence\Routing\UriTemplates;
-
-use Opulence\Routing\UriTemplates\Rules\IRule;
 
 /**
  * Defines a URI template
  */
 class UriTemplate
 {
-    /** @var string The regex to match with */
-    private $regex;
-    /** @var bool Whether or not this URI is an absolute URI */
-    private $isAbsoluteUri;
-    /** @var array The list of route var names in the order they appear in the regex */
-    private $routeVarNames;
-    /** @var bool Whether or not the URI is HTTPS-only */
-    private $isHttpsOnly;
-    /** @var array The mapping of route var names to their default values */
-    private $defaultRouteVars;
-    /** @var IRule[][] The mapping of route var names to their rules */
-    private $routeVarRules = [];
+    /** @var string|null The host template */
+    public $hostTemplate;
+    /** @var string|null The path template */
+    public $pathTemplate;
+    /** @var bool Whether or not this URI template is https-only */
+    public $isHttpsOnly;
+    /** @var bool Whether or not the URI is absolute */
+    public $isAbsoluteUri;
 
     /**
-     * @param string $regex The regex to match with
-     * @param bool $isAbsoluteUri Whether or not this URI is an absolute URI
-     * @param array $routeVarNames The list of route var names
-     * @param bool $isHttpsOnly Whether or not the URI is HTTPS-only
-     * @param array $defaultRouteVars The mapping of route var names to their default values
-     * @param array $routeVarRules The mapping of route var names to their rules
+     * @param string $pathTemplate The path template
+     * @param string|null $hostTemplate The host template, or null if there is none
+     * @param bool $isHttpsOnly Whether or not this URI template is https-only
      */
-    public function __construct(
-        string $regex,
-        bool $isAbsoluteUri,
-        array $routeVarNames = [],
-        bool $isHttpsOnly = false,
-        array $defaultRouteVars = [],
-        array $routeVarRules = []
-    ) {
-        $this->regex = $regex;
-        $this->isAbsoluteUri = $isAbsoluteUri;
-        $this->routeVarNames = $routeVarNames;
+    public function __construct(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = true)
+    {
+        $this->pathTemplate = '/' . ltrim($pathTemplate, '/');
+        $this->hostTemplate = $hostTemplate === null ? null : rtrim($hostTemplate, '/');
         $this->isHttpsOnly = $isHttpsOnly;
-        $this->defaultRouteVars = $defaultRouteVars;
-
-        foreach ($routeVarRules as $name => $rules) {
-            $this->routeVarRules[$name] = \is_array($rules) ? $rules : [$rules];
-        }
+        $this->isAbsoluteUri = $this->hostTemplate !== null;
     }
 
     /**
-     * Gets the default values for the route vars in the URI template
+     * Serializes this template to a string
      *
-     * @return array The mapping of route var names to their default values
+     * @return string The URI template string
      */
-    public function getDefaultRouteVars(): array
+    public function __toString(): string
     {
-        return $this->defaultRouteVars;
-    }
-
-    /**
-     * Gets the regex
-     *
-     * @return string The regex
-     */
-    public function getRegex(): string
-    {
-        return $this->regex;
-    }
-
-    /**
-     * Gets the ordered list of route var names in the regex
-     *
-     * @return array The list of route var names
-     */
-    public function getRouteVarNames(): array
-    {
-        return $this->routeVarNames;
-    }
-
-    /**
-     * Gets the rules for the route vars in the URI template
-     *
-     * @return IRule[][] The mapping of route var names to their rules
-     */
-    public function getRouteVarRules(): array
-    {
-        return $this->routeVarRules;
-    }
-
-    /**
-     * Gets whether or not the URI is an absolute URI
-     *
-     * @return bool True if the URI is absolute, otherwise false
-     */
-    public function isAbsoluteUri(): bool
-    {
-        return $this->isAbsoluteUri;
-    }
-
-    /**
-     * Gets whether or not the URI is HTTPS-only
-     *
-     * @return bool True if the URI is HTTPS-only, otherwise false
-     */
-    public function isHttpsOnly(): bool
-    {
-        return $this->isHttpsOnly;
+        return ($this->hostTemplate ?? '') . $this->pathTemplate;
     }
 }

@@ -11,19 +11,18 @@
     1. [Route Variables](#route-variables)
     2. [Optional Route Parts](#optional-route-parts)
     3. [Route Builders](#route-builders)
-3. [Route Action](#route-actions)
+3. [Route Actions](#route-actions)
 4. [Binding Middleware](#binding-middleware)
     1. [Middleware Attributes](#middleware-attributes)
 5. [Grouping Routes](#grouping-routes)
 6. [Custom Constraints](#custom-constraints)
-    1. [Getting Headers in PHP](#getting-php-headers)
+    1. [Example - Versioned API](#versioned-api-example)
+    2. [Getting Headers in PHP](#getting-php-headers)
 7. [Route Variable Rules](#route-variable-rules)
     1. [Built-In Rules](#built-in-rules)
     2. [Making Your Own Custom Rules](#making-your-own-custom-rules)
 8. [Caching](#caching)
-    1. [Route Caching](#route-caching)
-    2. [Regex Caching](#regex-caching)
-9. [Micro-Library](#micro-library)
+9. [Matching Algorithm](#matching-algorithm)
 
 <h1 id="introduction">Introduction</h1>
 
@@ -40,10 +39,10 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
     * [The ability to match on header values](#custom-constraints), which makes things like versioning your routes a cinch
     * [Binding controller methods and closures to the route action](#route-actions)
 * It is fast
-    * With 100 routes with 9 route variables each, it can match any route in less than 1ms
+    * With 400 routes, it takes ~0.0025ms to match any route (**~200% faster than FastRoute**)
+    * The speed is due to the unique [trie-based matching algorithm](#matching-algorithm)
 * Its [fluent syntax](#route-builders) keeps you from having to memorize how to set up config arrays
-* It supports [matching hosts](#route-builders)
-* It is built to support the latest PHP 7.2 features
+* It is built to support the latest PHP 7.3 features
 
 > **Note:** This is *not* a route dispatching library.  This library does not call controllers or closures on the matched route.  Why?  Usually, such actions are tightly coupled to an HTTP library or to a framework.  By not dispatching the matched route, you're free to use the library/framework of your choice, while still getting the benefits of performance and fluent syntax.
 
@@ -62,67 +61,61 @@ First, let's import the namespaces and define our routes:
 
 ```php
 use Opulence\Routing\Builders\RouteBuilderRegistry;
-use Opulence\Routing\Caching\FileRouteCache;
-use Opulence\Routing\Matchers\{RouteMatcher, RouteNotFoundException};
-use Opulence\Routing\Regexes\Caching\FileGroupRegexCache;
-use Opulence\Routing\Regexes\GroupRegexFactory;
+use Opulence\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
 use Opulence\Routing\RouteFactory;
 
-$routesCallback = function (RouteBuilderRegistry $routes) {
+// Register the routes
+$routeCallback = function (RouteBuilderRegistry $routes) {
+    // A leading '/' in the path is optional
     $routes->map('GET', 'books/:bookId')
         ->toMethod(BookController::class, 'getBooksById')
         ->withMiddleware(AuthMiddleware::class);
 };
+
+// Set up the route matcher
+$routeFactory = new RouteFactory($routeCallback);
+$trieFactory = new TrieFactory($routeFactory, null);
+$routeMatcher = new TrieRouteMatcher($trieFactory->createTree());
+
+// Finally, let's find a matching route
+$result = $routeMatcher->matchRoute(
+    $_SERVER['REQUEST_METHOD'],
+    $_SERVER['HTTP_HOST'],
+    $_SERVER['REQUEST_URI']
+);
 ```
 
-Next, let's set up some factories to build your routes:
+Let's say the request was `GET /books/123`.  You can check if a match was found by calling:
 
 ```php
-$routeFactory = new RouteFactory(
-    $routesCallback,
-    new FileRouteCache('/tmp/routes.cache')
-);
-$regexFactory = new GroupRegexFactory(
-    $routeFactory->createRoutes(),
-    new FileGroupRegexCache('/tmp/regexes.cache')
-);
-```
-
-Finally, let's find a matching route:
-
-```php
-try {
-    $routeMatcher = new RouteMatcher($regexFactory->createRegexes());
-    $matchedRoute = $routeMatcher->match(
-        $_SERVER['REQUEST_METHOD'],
-        $_SERVER['HTTP_HOST'],
-        $_SERVER['REQUEST_URI']
-    );
-
-    // Use your library/framework of choice to dispatch $matchedRoute...
-} catch (RouteNotFoundException $ex) {
-    header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found', true, 404);
-    exit;
+if ($result->matchFound) {
+    // ...
 }
 ```
 
-Using our example, if we hit _example.com/books/123_, then `$matchedRoute` would be an instance of `MatchedRoute`.  Grabbing the matched controller info is as simple as:
+Grabbing the matched controller info is as simple as:
 
 ```php
-$matchedRoute->getAction()->getControllerName(); // "BookController"
-$matchedRoute->getAction()->getMethodName(); // "getBooksById"
+$result->route->action->controllerName; // "BookController"
+$result->route->action->methodName; // "getBooksById"
 ```
 
 To get the [route variables](#route-variables), call:
 
 ```php
-$matchedRoute->getRouteVars(); // ["bookId" => "123"]
+$result->routeVariables; // ["bookId" => "123"]
 ```
 
 To get the [middleware bindings](#binding-middleware), call:
 
 ```php
-$matchedRoute->getMiddlewareBindings();
+$result->route->middlewareBindings;
+```
+
+If `$result->matchFound` is `false`, you can return a 405 response with a list of allowed methods:
+
+```php
+header('Allow', implode(', ', $result->allowedMethods));
 ```
 
 > **Note:** If you're using another HTTP library (eg <a href="https://github.com/opulencephp/net" target="_blank">Opulence</a>, Symfony, or Laravel) in your application, it's better to use their methods to get the request method, host, and URI.  They account for things like trusted proxies as well as provide more robust handling of certain request headers.
@@ -133,12 +126,6 @@ Opulence provides a simple syntax for your URIs.  To capture variables in your r
 
 ```php
 users/:userId/profile
-```
-
-If you want to specify a default value, then you'd write:
-
-```php
-users/:userId=me/profile
 ```
 
 If you'd like to use [rules](#route-variable-rules), then put them in parentheses after the variable:
@@ -195,16 +182,7 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
 };
 ```
 
-To determine the type of action (controller method or closure) the matched route uses, check `RouteAction::usesClosure()`:
-
-```php
-if ($matchedRoute->getAction()->usesClosure()) {
-    $closure = $matchedRoute->getAction()->getClosure();
-} else {
-    $controllerName = $matchedRoute->getAction()->getControllerName();
-    $methodName = $matchedRoute->getAction()->getMethodName();
-}
-```
+To determine the type of action (controller method or closure) the matched route uses, check `RouteAction::usesMethod()`.
 
 <h1 id="binding-middleware">Binding Middleware</h1>
 
@@ -253,9 +231,9 @@ $routes->map('GET', 'foo')
 Here's how you can grab the middleware on a matched route:
 
 ```php
-foreach ($matchedRoute->getMiddlewareBindings() as $middlewareBinding) {
-    $middlewareBinding->getClassName(); // "AuthMiddleware"
-    $middlewareBinding->getAttributes(); // ["role" => "admin"]
+foreach ($result->middlewareBindings as $middlewareBinding) {
+    $middlewareBinding->className; // "AuthMiddleware"
+    $middlewareBinding->attributes; // ["role" => "admin"]
 }
 ```
 
@@ -291,6 +269,7 @@ This creates two routes with a host suffix of _example.com_ and a route prefix o
     * This value is suffixed to the hosts of all routes within the group
 * `bool $isHttpsOnly` (optional)
     * Whether or not the routes in this group are HTTPS-only
+* `IRouteConstraint[] $constraints` (optional)
 * `array $attributes` (optional)
     * The mapping of route attribute names => values
     * These attribute can be used with [custom constraint](#custom-constraints) matching
@@ -301,54 +280,53 @@ It is possible to nest route groups.
 
 <h1 id="custom-constraints">Custom Constraints</h1>
 
-Sometimes, you might find it useful to add some custom logic for matching routes.  For example, let's say your app sends an API version header, and you want to match an endpoint that supports that version.  You could do this by using a route "attribute" and a route constraint.  Let's create some routes that have the same path, but support different versions of the API:
+Sometimes, you might find it useful to add some custom logic for matching routes.  This could involve enforcing anything from only allowing certain HTTP methods for a route (eg `HttpMethodRouteConstraint`) or only allowing HTTPS requests to a particular endpoint.  Let's go into some concrete examples...
+
+<h2 id="versioned-api-example">Example - Versioned API</h2>
+
+Let's say your app sends an API version header, and you want to match an endpoint that supports that version.  You could do this by using a route "attribute" and a route constraint.  Let's create some routes that have the same path, but support different versions of the API:
 
 ```php
 $routesCallback = function (RouteBuilderRegistry $routes) {
     // This route will require an API-VERSION value of 'v1.0'
     $routes->map('GET', 'comments')
         ->toMethod(CommentController::class, 'getAllComments1_0')
-        ->withAttribute('API-VERSION', 'v1.0');
+        ->withAttribute('API-VERSION', 'v1.0')
+        ->withConstraint(new ApiVersionConstraint);
 
     // This route will require an API-VERSION value of 'v2.0'
     $routes->map('GET', 'comments')
         ->toMethod(CommentController::class, 'getAllComments2_0')
-        ->withAttribute('API-VERSION', 'v2.0');
+        ->withAttribute('API-VERSION', 'v2.0')
+        ->withConstraint(new ApiVersionConstraint);
 };
 ```
 
-> **Note:** If you plan on adding many attributes to your routes, use `RouteBuilder::withManyAttributes()`.
+> **Note:** If you plan on adding many attributes or constraints to your routes, use `RouteBuilder::withManyAttributes()` and `RouteBuilder::withManyConstraints()`, respectively.
 
 Now, let's add a route constraint to match the "API-VERSION" header to the attribute on our route:
 
 ```php
 use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
+use Opulence\Routing\Matchers\MatchedRouteCandidate;
 
 class ApiVersionConstraint implements IRouteConstraint
 {
-    public function isMatch(string $host, string $path, array $headers, Route $route) : bool
-    {
-        $attributes = $route->getAttributes();
+    public function passes(
+        MatchedRouteCandidate $matchedRouteCandidate,
+        string $host,
+        string $path,
+        array $headers
+    ): bool {
+        $attributes = $matchedRouteCandidate->route->attributes;
 
         if (!isset($attributes['API-VERSION'])) {
             return false;
         }
 
-        return $headers['API-VERSION'] === $attributes['API-VERSION'];
+        return array_search($attributes['API-VERSION'], $headers['API-VERSION']) !== false;
     }
 }
-```
-
-Finally, we need to let the route matcher know to use our `ApiVersionConstraint`:
-
-```php
-$routeMatcher = new RouteMatcher($regexFactory->createRegexes(), [new ApiVersionConstraint()]);
-$matchedRoute = $routeMatcher->match(
-    $_SERVER['REQUEST_METHOD'],
-    $_SERVER['HTTP_HOST'],
-    $_SERVER['REQUEST_URI'],
-    $headers
-);
 ```
 
 If we hit _/comments_ with an "API-VERSION" header value of "v2.0", we'd match the second route in our example.
@@ -393,7 +371,7 @@ The following rules are built-into Opulence:
 You can register your own rule by implementing `IRule`.  Let's make a rule that enforces a certain minimum string length:
 
 ```php
-use Opulence\Routing\UriTemplates\Rules\IRule;
+use Opulence\Routing\Matchers\Rules\IRule;
 
 class MinLengthRule implements IRule
 {
@@ -404,12 +382,12 @@ class MinLengthRule implements IRule
         $this->minLength = $minLength;
     }
 
-    public static function getSlug() : string
+    public static function getSlug(): string
     {
         return 'minLength';
     }
 
-    public function passes($value) : bool
+    public function passes($value): bool
     {
         return mb_strlen($value) >= $this->minLength;
     }
@@ -419,8 +397,7 @@ class MinLengthRule implements IRule
 Let's register our rule with the rule factory:
 
 ```php
-use Opulence\Routing\UriTemplates\Rules\RuleFactory;
-use Opulence\Routing\UriTemplates\Rules\RuleFactoryRegistrant;
+use Opulence\Routing\Matchers\Rules\{RuleFactory, RuleFactoryRegistrant};
 
 // Register some built-in rules to our factory
 $ruleFactory = (new RuleFactoryRegistrant)->registerRuleFactories(new RuleFactory);
@@ -431,91 +408,51 @@ $ruleFactory->registerRuleFactory(MinLengthRule::getSlug(), function (int $minLe
 });
 ```
 
-Finally, register this rule factory with the URI template compiler:
+Finally, register this rule factory with the trie compiler:
 
 ```php
 use Opulence\Routing\Builders\RouteBuilderRegistry;
-use Opulence\Routing\Caching\FileRouteCache;
+use Opulence\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
 use Opulence\Routing\RouteFactory;
-use Opulence\Routing\UriTemplates\Compilers\UriTemplateCompiler;
 
-$routesCallback = function (RouteBuilderRegistry $routes) {
-    $routes->map('parts/:serialNumber(minLength(6))')
+$routeCallback = function (RouteBuilderRegistry $routes) {
+     $routes->map('parts/:serialNumber(minLength(6))')
         ->toMethod(PartController::class, 'getPartBySerialNumber');
 };
-$routeFactory = new RouteFactory(
-    $routesCallback,
-    new FileRouteCache('/tmp/routes.cache'),
-    new RouteBuilderRegistry(new UriTemplateCompiler($ruleFactory))
-);
+
+$routeFactory = new RouteFactory($routeCallback);
+$trieCompiler = new TrieCompiler($ruleFactory);
+$trieFactory = new TrieFactory($routeFactory, null, $trieCompiler);
+$routeMatcher = new TrieRouteMatcher($trieFactory->createTree());
 ```
 
 Our route will now enforce a serial number with minimum length 6.
 
 <h1 id="caching">Caching</h1>
 
-<h2 id="route-caching">Route Caching</h2>
-
-To speed up the compilation of your routes, Opulence supports caching (`FileRouteCache` is enabled by default).  If you're actively developing and adding new routes, it's best not to enable caching, which can be done by passing `null` into the `RouteFactory`:
+To speed up the compilation of your route trie, Opulence supports caching (`FileTrieCache` is provided by default).  If you're actively developing and adding new routes, it's best not to enable caching, which can be done by passing `null` into the `TrieFactory`:
 
 ```php
-$routeFactory = new RouteFactory($routesCallback, null);
+$routeFactory = new RouteFactory($routesCallback);
+$trieFactory = new TrieFactory($routeFactory, null);
 ```
 
 If you want to enable caching for a particular environment, you could do so:
 
 ```php
 // Let's say that your environment name is stored in an environment var named 'ENV_NAME'
-$routeCache = getenv('ENV_NAME') === 'production' ? new FileRouteCache('/tmp/routes.cache') : null;
-$routeFactory = new RouteFactory($routesCallback, $routeCache);
+$routeFactory = new RouteFactory($routesCallback);
+$trieCache = getenv('ENV_NAME') === 'production' ? new FileTrieCache('/tmp/trie.cache') : null;
+$trieFactory = new TrieFactory($routeFactory, $trieCache);
 ```
 
-<h2 id="regex-caching">Regex Caching</h2>
+<h1 id="matching-algorithm">Matching Algorithm</h1>
 
-The route matcher processes groups of routes at a time while trying to find a match.  This requires combining those routes' URI templates' regexes.  This process is repetitive, and only really needs to happen once.  So, Opulence provides a cache (`FileGroupRegexCache` is enabled by default) to make this process faster.  This cache is passed in as the second parameter to `GroupRegexFactory`:
+Rather than the typical regex approach to route matching, we decided to go with a <a href="https://en.wikipedia.org/wiki/Trie" target="_blank">trie-based</a> approach.  Each node maps to a segment in the path, and could either contain a literal or a variable value.  We try to proceed down the tree to match what's in the request URI, always giving preference to literal matches over variable ones, even if variable segments are declared first in the routing config.  This logic not only applies to the first segment, but recursively to all subsequent segments.  The benefit to this approach is that it doesn't matter what order routes are defined.  Additionally, literal segments use simple hash table lookups.  What determines performance is the length of a path and the number of variable segments.
 
-```php
-$regexFactory = new GroupRegexFactory($routes, new FileGroupRegexCache('/tmp/regexes.cache'));
-```
+The matching algorithm goes as follows:
 
-Similar to the [route cache](#route-caching), you can optionally pass in `null` if you do not wish to cache the regexes.
-
-> **Note:** If you flush the route cache, you should also flush the regex cache (and vice versa).
-
-<h1 id="micro-library">Micro-Library</h1>
-
-If you don't want to use the route builders, and instead would rather create the routes yourself, you can.  Here's a complete example of how:
-
-```php
-use Opulence\Routing\{ClosureRouteAction, Route, RouteCollection};
-use Opulence\Routing\Matchers\{RouteMatcher, RouteNotFoundException};
-use Opulence\Routing\Regexes\GroupRegexFactory;
-use Opulence\Routing\UriTemplates\UriTemplate;
-
-$routes = new RouteCollection();
-$routes->add(new Route(
-    'GET',
-    new UriTemplate('^[^/]+/users/(\d+)$', false, ['userId']),
-    new ClosureRouteAction(function () {
-        return 'Hello, world';
-    })
-));
-$regexFactory = new GroupRegexFactory($routes);
-
-// Find a matching route
-try {
-    $routeMatcher = new RouteMatcher($regexFactory->createRegexes());
-    $matchedRoute = $routeMatcher->match(
-        $_SERVER['REQUEST_METHOD'],
-        $_SERVER['HTTP_HOST'],
-        $_SERVER['REQUEST_URI']
-    );
-
-    // Use your library/framework of choice to dispatch $matchedRoute...
-} catch (RouteNotFoundException $ex) {
-    header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found', true, 404);
-    exit;
-}
-```
-
-In your `UriTemplate`, use regex capturing groups to grab any variables from the route.  Then, map the capturing groups to a list of variable names (order is important).  In the above example, `(\d+)` would map to a route variable named `userId`.
+1. Incoming request data is passed to a `TrieRouteMatcher::matchRoute()`, which loops through each segment of the URI path and proceeds only if there is either a literal or variable match in the URI tree
+    * If there's a match, then we scan all child nodes against the next segment of the URI path and repeat step 1 until we don't find a match or we've matched the entire URI path
+    * `TrieRouteMatcher::matchRoute()` uses <a href="http://php.net/manual/en/language.generators.syntax.php" target="_blank">generators</a> so we only descend the URI tree as many times as we need to find a match candidate
+2. If the match candidate passes constraint checks (eg HTTP method constraints), then it's our matching route, and we're done.  Otherwise, repeat step 1, which will yield the next possible match candidate.

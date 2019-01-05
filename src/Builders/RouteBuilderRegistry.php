@@ -4,18 +4,15 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2017 David Young
- * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
 namespace Opulence\Routing\Builders;
 
 use Closure;
-use Opulence\Routing\RouteCollection;
-use Opulence\Routing\UriTemplates\Compilers\IUriTemplateCompiler;
-use Opulence\Routing\UriTemplates\Compilers\UriTemplateCompiler;
-use Opulence\Routing\UriTemplates\Rules\RuleFactory;
-use Opulence\Routing\UriTemplates\Rules\RuleFactoryRegistrant;
+use Opulence\Routing\Route;
+use Opulence\Routing\UriTemplates\UriTemplate;
 
 /**
  * Defines the route builder registry
@@ -24,42 +21,23 @@ class RouteBuilderRegistry
 {
     /** @var RouteBuilder[] The list of registered route builders */
     private $routeBuilders = [];
-    /** @var IUriTemplateCompiler The URI template compiler */
-    private $uriTemplateCompiler;
     /** @var RouteGroupOptions[] The stack of route group options */
     private $groupOptionsStack = [];
 
     /**
-     * @param IUriTemplateCompiler|null $uriTemplateCompiler The URI template compiler to use
-     */
-    public function __construct(IUriTemplateCompiler $uriTemplateCompiler = null)
-    {
-        if ($uriTemplateCompiler === null) {
-            // Use the default compiler and register the built-in rule factories
-            $ruleFactory = (new RuleFactoryRegistrant)->registerRuleFactories(new RuleFactory);
-            $this->uriTemplateCompiler = new UriTemplateCompiler($ruleFactory);
-        } else {
-            $this->uriTemplateCompiler = $uriTemplateCompiler;
-        }
-    }
-
-    /**
      * Builds all the route builders in the registry
      *
-     * @return RouteCollection The list of routes built by this registry
+     * @return Route[] The list of routes built by this registry
      */
-    public function buildAll(): RouteCollection
+    public function buildAll(): array
     {
-        $builtRouteMaps = [];
+        $builtRoutes = [];
 
-        foreach ($this->routeBuilders as $routeMapBuilder) {
-            $builtRouteMaps[] = $routeMapBuilder->build();
+        foreach ($this->routeBuilders as $routeBuilder) {
+            $builtRoutes[] = $routeBuilder->build();
         }
 
-        $routeCollection = new RouteCollection();
-        $routeCollection->addMany($builtRouteMaps);
-
-        return $routeCollection;
+        return $builtRoutes;
     }
 
     /**
@@ -91,8 +69,11 @@ class RouteBuilderRegistry
         bool $isHttpsOnly = false
     ): RouteBuilder {
         $this->applyGroupRouteTemplates($pathTemplate, $hostTemplate, $isHttpsOnly);
-        $uriTemplate = $this->uriTemplateCompiler->compile($hostTemplate, $pathTemplate, $isHttpsOnly);
-        $routeBuilder = new RouteBuilder((array)$httpMethods, $uriTemplate);
+        $routeBuilder = new RouteBuilder(
+            (array)$httpMethods,
+            new UriTemplate($pathTemplate, $hostTemplate, $isHttpsOnly)
+        );
+        $this->applyGroupConstraints($routeBuilder);
         $this->applyGroupMiddleware($routeBuilder);
         $this->applyGroupAttributes($routeBuilder);
         $this->routeBuilders[] = $routeBuilder;
@@ -110,10 +91,26 @@ class RouteBuilderRegistry
         $groupAttributes = [];
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupAttributes = array_merge($groupAttributes, $groupOptions->getAttributes());
+            $groupAttributes = array_merge($groupAttributes, $groupOptions->attributes);
         }
 
         $routeBuilder->withManyAttributes($groupAttributes);
+    }
+
+    /**
+     * Applies a group's constraints to the input route builder
+     *
+     * @param RouteBuilder $routeBuilder The route builder to bind constraints to
+     */
+    private function applyGroupConstraints(RouteBuilder $routeBuilder): void
+    {
+        $groupConstraintBindings = [];
+
+        foreach ($this->groupOptionsStack as $groupOptions) {
+            $groupConstraintBindings = array_merge($groupConstraintBindings, $groupOptions->constraints);
+        }
+
+        $routeBuilder->withManyConstraints($groupConstraintBindings);
     }
 
     /**
@@ -126,7 +123,7 @@ class RouteBuilderRegistry
         $groupMiddlewareBindings = [];
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupMiddlewareBindings = array_merge($groupMiddlewareBindings, $groupOptions->getMiddlewareBindings());
+            $groupMiddlewareBindings = array_merge($groupMiddlewareBindings, $groupOptions->middlewareBindings);
         }
 
         $routeBuilder->withManyMiddleware($groupMiddlewareBindings);
@@ -149,9 +146,9 @@ class RouteBuilderRegistry
         $groupIsHttpsOnly = false;
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupPathTemplate .= $groupOptions->getPathTemplate();
-            $groupHostTemplate = $groupOptions->getHostTemplate() . $groupHostTemplate;
-            $groupIsHttpsOnly = $groupIsHttpsOnly || $groupOptions->isHttpsOnly();
+            $groupPathTemplate .= $groupOptions->pathTemplate;
+            $groupHostTemplate = $groupOptions->hostTemplate . $groupHostTemplate;
+            $groupIsHttpsOnly = $groupIsHttpsOnly || $groupOptions->isHttpsOnly;
         }
 
         $pathTemplate = $groupPathTemplate . $pathTemplate;

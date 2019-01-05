@@ -4,8 +4,8 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2017 David Young
- * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
 namespace Opulence\Routing\Tests\Builders;
@@ -13,8 +13,10 @@ namespace Opulence\Routing\Tests\Builders;
 use InvalidArgumentException;
 use LogicException;
 use Opulence\Routing\Builders\RouteBuilder;
+use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
 use Opulence\Routing\Middleware\MiddlewareBinding;
 use Opulence\Routing\UriTemplates\UriTemplate;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Defines the tests for the route builder
@@ -26,7 +28,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function setUp(): void
     {
-        $this->routeBuilder = new RouteBuilder(['GET'], new UriTemplate('/foo', false));
+        $this->routeBuilder = new RouteBuilder(['GET'], new UriTemplate('/foo', 'example.com'));
     }
 
     public function testBuildingRouteBeforeSettingActionThrowsException(): void
@@ -48,22 +50,12 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withName('Foo'));
     }
 
-    public function testClosureIsSetWhenUsingClosureAction(): void
-    {
-        $closure = function () {
-            // Don't do anything
-        };
-        $this->routeBuilder->toClosure($closure);
-        $route = $this->routeBuilder->build();
-        $this->assertSame($closure, $route->getAction()->getClosure());
-    }
-
     public function testAttributesAreSetWhenPassingIndividualAttributes(): void
     {
         $this->routeBuilder->withAttribute('foo', 'bar');
         $this->routeBuilder->toMethod('class', 'method');
         $route = $this->routeBuilder->build();
-        $this->assertEquals(['foo' => 'bar'], $route->getAttributes());
+        $this->assertEquals(['foo' => 'bar'], $route->attributes);
     }
 
     public function testAttributesAreSetWhenPassingMultipleAttributes(): void
@@ -71,7 +63,27 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->routeBuilder->withManyAttributes(['foo' => 'bar']);
         $this->routeBuilder->toMethod('class', 'method');
         $route = $this->routeBuilder->build();
-        $this->assertEquals(['foo' => 'bar'], $route->getAttributes());
+        $this->assertEquals(['foo' => 'bar'], $route->attributes);
+    }
+
+    public function testClosureIsSetWhenUsingClosureAction(): void
+    {
+        $closure = function () {
+            // Don't do anything
+        };
+        $this->routeBuilder->toClosure($closure);
+        $route = $this->routeBuilder->build();
+        $this->assertSame($closure, $route->action->closure);
+    }
+
+    public function testConstraintBindingIsSet(): void
+    {
+        /** @var IRouteConstraint|MockObject $constraint */
+        $constraint = $this->createMock(IRouteConstraint::class);
+        $this->routeBuilder->withConstraint($constraint);
+        $this->routeBuilder->toMethod('class', 'method');
+        $route = $this->routeBuilder->build();
+        $this->assertContains($constraint, $route->constraints);
     }
 
     public function testInvalidManyMiddlewareThrowsException(): void
@@ -88,13 +100,22 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->routeBuilder->toMethod('class', 'method');
         $route = $this->routeBuilder->build();
-        $this->assertCount(2, $route->getMiddlewareBindings());
-        $this->assertInstanceOf(MiddlewareBinding::class, $route->getMiddlewareBindings()[0]);
-        $this->assertInstanceOf(MiddlewareBinding::class, $route->getMiddlewareBindings()[1]);
-        $this->assertEquals('foo', $route->getMiddlewareBindings()[0]->getClassName());
-        $this->assertEquals('dave', $route->getMiddlewareBindings()[1]->getClassName());
-        $this->assertEquals(['bar' => 'baz'], $route->getMiddlewareBindings()[0]->getAttributes());
-        $this->assertEquals(['young' => 'cool'], $route->getMiddlewareBindings()[1]->getAttributes());
+        $this->assertCount(2, $route->middlewareBindings);
+        $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[0]);
+        $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[1]);
+        $this->assertEquals('foo', $route->middlewareBindings[0]->className);
+        $this->assertEquals('dave', $route->middlewareBindings[1]->className);
+        $this->assertEquals(['bar' => 'baz'], $route->middlewareBindings[0]->attributes);
+        $this->assertEquals(['young' => 'cool'], $route->middlewareBindings[1]->attributes);
+    }
+
+    public function testManyConstraintBindingIsSet(): void
+    {
+        $constraints = [$this->createMock(IRouteConstraint::class)];
+        $this->routeBuilder->withManyConstraints($constraints);
+        $this->routeBuilder->toMethod('class', 'method');
+        $route = $this->routeBuilder->build();
+        $this->assertContains($constraints[0], $route->constraints);
     }
 
     public function testManyMiddlewareBindingsAreSetWhenPassingThemInAsStrings(): void
@@ -102,21 +123,21 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->routeBuilder->withManyMiddleware(['foo', 'bar']);
         $this->routeBuilder->toMethod('class', 'method');
         $route = $this->routeBuilder->build();
-        $this->assertCount(2, $route->getMiddlewareBindings());
-        $this->assertInstanceOf(MiddlewareBinding::class, $route->getMiddlewareBindings()[0]);
-        $this->assertInstanceOf(MiddlewareBinding::class, $route->getMiddlewareBindings()[1]);
-        $this->assertEquals('foo', $route->getMiddlewareBindings()[0]->getClassName());
-        $this->assertEquals('bar', $route->getMiddlewareBindings()[1]->getClassName());
-        $this->assertEquals([], $route->getMiddlewareBindings()[0]->getAttributes());
-        $this->assertEquals([], $route->getMiddlewareBindings()[1]->getAttributes());
+        $this->assertCount(2, $route->middlewareBindings);
+        $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[0]);
+        $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[1]);
+        $this->assertEquals('foo', $route->middlewareBindings[0]->className);
+        $this->assertEquals('bar', $route->middlewareBindings[1]->className);
+        $this->assertEquals([], $route->middlewareBindings[0]->attributes);
+        $this->assertEquals([], $route->middlewareBindings[1]->attributes);
     }
 
     public function testMethodIsSetWhenUsingMethodAction(): void
     {
         $this->routeBuilder->toMethod('foo', 'bar');
         $route = $this->routeBuilder->build();
-        $this->assertSame('foo', $route->getAction()->getClassName());
-        $this->assertSame('bar', $route->getAction()->getMethodName());
+        $this->assertSame('foo', $route->action->className);
+        $this->assertSame('bar', $route->action->methodName);
     }
 
     public function testMiddlewareBindingIsSet(): void
@@ -124,10 +145,10 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $this->routeBuilder->withMiddleware('foo', ['bar' => 'baz']);
         $this->routeBuilder->toMethod('class', 'method');
         $route = $this->routeBuilder->build();
-        $this->assertCount(1, $route->getMiddlewareBindings());
-        $this->assertInstanceOf(MiddlewareBinding::class, $route->getMiddlewareBindings()[0]);
-        $this->assertEquals('foo', $route->getMiddlewareBindings()[0]->getClassName());
-        $this->assertEquals(['bar' => 'baz'], $route->getMiddlewareBindings()[0]->getAttributes());
+        $this->assertCount(1, $route->middlewareBindings);
+        $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[0]);
+        $this->assertEquals('foo', $route->middlewareBindings[0]->className);
+        $this->assertEquals(['bar' => 'baz'], $route->middlewareBindings[0]->attributes);
     }
 
     public function testNameIsSet(): void
@@ -135,6 +156,15 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
         $route = $this->routeBuilder->toMethod('class', 'method')
             ->withName('foo')
             ->build();
-        $this->assertEquals('foo', $route->getName());
+        $this->assertEquals('foo', $route->name);
+    }
+
+    public function testUriTemplateIsSet(): void
+    {
+        $expectedUriTemplate = new UriTemplate('foo', 'example.com', true);
+        $routeBuilder = new RouteBuilder(['GET'], $expectedUriTemplate);
+        $routeBuilder->toMethod('Foo', 'bar');
+        $route = $routeBuilder->build();
+        $this->assertSame($expectedUriTemplate, $route->uriTemplate);
     }
 }

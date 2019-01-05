@@ -1,6 +1,6 @@
 <phpunit
-    bootstrap="vendor/autoload.php"
-    colors="true">
+        bootstrap="vendor/autoload.php"
+        colors="true">
     <testsuite name="RouteMatcher">
         <directory>src/Tests</directory>
     </testsuite>

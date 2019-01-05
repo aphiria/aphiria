@@ -4,8 +4,8 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2017 David Young
- * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
 namespace Opulence\Routing;
@@ -16,15 +16,7 @@ namespace Opulence\Routing;
 class RouteCollection
 {
     /** @var array The list of methods to their various routes */
-    private $routes = [
-        'DELETE' => [],
-        'GET' => [],
-        'POST' => [],
-        'PUT' => [],
-        'HEAD' => [],
-        'OPTIONS' => [],
-        'PATCH' => []
-    ];
+    private $routes = [];
     /** @var Route[] The mapping of route names to routes */
     private $namedRoutes = [];
 
@@ -33,10 +25,8 @@ class RouteCollection
      */
     public function __clone()
     {
-        foreach ($this->routes as $method => $routesByMethod) {
-            foreach ($routesByMethod as $index => $route) {
-                $this->routes[$method][$index] = clone $route;
-            }
+        foreach ($this->routes as $index => $route) {
+            $this->routes[$index] = clone $route;
         }
 
         foreach ($this->namedRoutes as $name => $route) {
@@ -51,12 +41,10 @@ class RouteCollection
      */
     public function add(Route $route): void
     {
-        foreach ($route->getHttpMethods() as $method) {
-            $this->routes[$method][] = $route;
+        $this->routes[] = $route;
 
-            if ($route->getName() !== null) {
-                $this->namedRoutes[$route->getName()] =& $route;
-            }
+        if ($route->name !== null) {
+            $this->namedRoutes[$route->name] =& $route;
         }
     }
 
@@ -67,15 +55,8 @@ class RouteCollection
      */
     public function addMany(array $routes): void
     {
-        // I'm purposely copying the code from add() to reduce method calls with many routes
         foreach ($routes as $route) {
-            foreach ($route->getHttpMethods() as $method) {
-                $this->routes[$method][] = $route;
-
-                if ($route->getName() !== null) {
-                    $this->namedRoutes[$route->getName()] =& $route;
-                }
-            }
+            $this->add($route);
         }
     }
 
@@ -90,17 +71,6 @@ class RouteCollection
     }
 
     /**
-     * Gets all the routes for a particular HTTP method
-     *
-     * @param string The HTTP method whose routes we want
-     * @return Route[] The list of routes
-     */
-    public function getByMethod(string $method): array
-    {
-        return $this->routes[$method] ?? [];
-    }
-
-    /**
      * Gets the route with the input name
      *
      * @param string $name The name to search for
@@ -108,10 +78,10 @@ class RouteCollection
      */
     public function getNamedRoute(string $name): ?Route
     {
-        if (isset($this->namedRoutes[$name])) {
-            return $this->namedRoutes[$name];
+        if (!isset($this->namedRoutes[$name])) {
+            return null;
         }
 
-        return null;
+        return $this->namedRoutes[$name];
     }
 }

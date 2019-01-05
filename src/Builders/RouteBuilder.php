@@ -4,8 +4,8 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2017 David Young
- * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
 namespace Opulence\Routing\Builders;
@@ -14,6 +14,8 @@ use Closure;
 use InvalidArgumentException;
 use LogicException;
 use Opulence\Routing\ClosureRouteAction;
+use Opulence\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
+use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
 use Opulence\Routing\MethodRouteAction;
 use Opulence\Routing\Middleware\MiddlewareBinding;
 use Opulence\Routing\Route;
@@ -25,8 +27,6 @@ use Opulence\Routing\UriTemplates\UriTemplate;
  */
 class RouteBuilder
 {
-    /** @var array The list of HTTP methods to match on */
-    private $httpMethods;
     /** @var RouteAction The action the route takes */
     private $action;
     /** @var UriTemplate The URI template */
@@ -37,6 +37,8 @@ class RouteBuilder
     private $middlewareBindings = [];
     /** @var string|null The name of this route */
     private $name;
+    /** @var IRouteConstraint[] The list of constraints */
+    private $constraints = [];
 
     /**
      * @param array $httpMethods The list of HTTP methods the route matches on
@@ -44,7 +46,7 @@ class RouteBuilder
      */
     public function __construct(array $httpMethods, UriTemplate $uriTemplate)
     {
-        $this->httpMethods = $httpMethods;
+        $this->constraints[] = new HttpMethodRouteConstraint($httpMethods);
         $this->uriTemplate = $uriTemplate;
     }
 
@@ -61,9 +63,9 @@ class RouteBuilder
         }
 
         return new Route(
-            $this->httpMethods,
             $this->uriTemplate,
             $this->action,
+            $this->constraints,
             $this->middlewareBindings,
             $this->name,
             $this->attributes
@@ -113,6 +115,19 @@ class RouteBuilder
     }
 
     /**
+     * Binds a constraint to this route
+     *
+     * @param IRouteConstraint $constraint The constraint to add
+     * @return self For chaining
+     */
+    public function withConstraint(IRouteConstraint $constraint): self
+    {
+        $this->constraints[] = $constraint;
+
+        return $this;
+    }
+
+    /**
      * Binds many custom attributes to the route
      * This is useful for custom route constraint matching
      *
@@ -122,6 +137,19 @@ class RouteBuilder
     public function withManyAttributes(array $attributes): self
     {
         $this->attributes = array_merge($this->attributes, $attributes);
+
+        return $this;
+    }
+
+    /**
+     * Binds constraints to this route
+     *
+     * @param IRouteConstraint[] $constraints The constraints to add
+     * @return self For chaining
+     */
+    public function withManyConstraints(array $constraints): self
+    {
+        $this->constraints = array_merge($this->constraints, $constraints);
 
         return $this;
     }

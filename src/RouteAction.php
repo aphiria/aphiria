@@ -4,8 +4,8 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2017 David Young
- * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
 namespace Opulence\Routing;
@@ -21,13 +21,11 @@ class RouteAction
 {
     // Note - These are protected rather than private for serialization purposes
     /** @var string|null The name of the class the route routes to */
-    protected $className;
+    public $className;
     /** @var string|null The name of the method the route routes to */
-    protected $methodName;
+    public $methodName;
     /** @var Closure|null The closure the route routes to */
-    protected $closure;
-    /** @var bool Whether or not the action uses a method or a closure */
-    protected $usesMethod = false;
+    public $closure;
     /** @var string The serialized closure */
     protected $serializedClosure = '';
 
@@ -40,15 +38,16 @@ class RouteAction
     public function __construct(?string $className, ?string $methodName, ?Closure $closure)
     {
         // Check if everything was set or nothing was set
-        if (($className !== null && $closure !== null) ||
-            (($className === null || $methodName === null) && $closure === null)) {
+        if (
+            ($className !== null && $closure !== null)
+            || (($className === null || $methodName === null) && $closure === null)
+        ) {
             throw new InvalidArgumentException('Must specify either a class name or closure');
         }
 
         $this->className = $className;
         $this->methodName = $methodName;
         $this->closure = $closure;
-        $this->usesMethod = $closure === null;
     }
 
     /**
@@ -98,42 +97,12 @@ class RouteAction
     }
 
     /**
-     * Gets the name of the class that is used in this action
+     * Gets whether or not this action uses a method
      *
-     * @return string|null The name of the class that is used in this action if one was set, otherwise null
-     */
-    public function getClassName(): ?string
-    {
-        return $this->className;
-    }
-
-    /**
-     * Gets the closure the route routes to
-     *
-     * @return Closure The closure the route routes to
-     */
-    public function getClosure(): ?Closure
-    {
-        return $this->closure;
-    }
-
-    /**
-     * Gets the name of the method that is used in this action
-     *
-     * @return string|null The name of the method that is used in this action if one was set, otherwise null
-     */
-    public function getMethodName(): ?string
-    {
-        return $this->methodName;
-    }
-
-    /**
-     * Gets whether or not this action used a method rather than a closure
-     *
-     * @return bool True if the action used a class, otherwise false
+     * @return bool True if this uses a method, otherwise false
      */
     public function usesMethod(): bool
     {
-        return $this->usesMethod;
+        return $this->closure === null;
     }
 }

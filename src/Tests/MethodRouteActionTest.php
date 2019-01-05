@@ -4,8 +4,8 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2017 David Young
- * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
 namespace Opulence\Routing\Tests;
@@ -31,12 +31,12 @@ class MethodRouteActionTest extends \PHPUnit\Framework\TestCase
 
     public function testCorrectClassNameIsReturned(): void
     {
-        $this->assertEquals(self::CLASS_NAME, $this->methodAction->getClassName());
+        $this->assertEquals(self::CLASS_NAME, $this->methodAction->className);
     }
 
     public function testCorrectMethodNameIsReturned(): void
     {
-        $this->assertEquals(self::METHOD_NAME, $this->methodAction->getMethodName());
+        $this->assertEquals(self::METHOD_NAME, $this->methodAction->methodName);
     }
 
     public function testMethodFlagSetCorrectly(): void
@@ -46,6 +46,6 @@ class MethodRouteActionTest extends \PHPUnit\Framework\TestCase
 
     public function testNullClosureIsReturnedByMethodAction(): void
     {
-        $this->assertNull($this->methodAction->getClosure());
+        $this->assertNull($this->methodAction->closure);
     }
 }

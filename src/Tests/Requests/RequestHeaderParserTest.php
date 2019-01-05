@@ -4,8 +4,8 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2017 David Young
- * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
 namespace Opulence\Routing\Tests\Requests;
@@ -39,7 +39,7 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
         $this->headerParser = new RequestHeaderParser();
     }
 
-    public function testParsingRawHeaderValuesReturnsCorrectValues()
+    public function testParsingRawHeaderValuesReturnsCorrectValues(): void
     {
         $expectedHeaders = [];
 
@@ -68,7 +68,7 @@ class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
      * @param string $name The name to normalize
      * @return string The normalized name
      */
-    private function normalizeName($name)
+    private function normalizeName($name): string
     {
         $dashedName = strtr($name, '_', '-');
 

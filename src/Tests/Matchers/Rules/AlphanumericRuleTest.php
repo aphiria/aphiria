@@ -1,0 +1,41 @@
+<?php
+
+/*
+ * Opulence
+ *
+ * @link      https://www.opulencephp.com
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ */
+
+namespace Opulence\Routing\Tests\Matchers\Rules;
+
+use Opulence\Routing\Matchers\Rules\AlphanumericRule;
+
+/**
+ * Tests the alphanumeric rule
+ */
+class AlphanumericRuleTest extends \PHPUnit\Framework\TestCase
+{
+    public function testAlphanumericCharsPass(): void
+    {
+        $rule = new AlphanumericRule();
+        $this->assertTrue($rule->passes('1'));
+        $this->assertTrue($rule->passes('a'));
+        $this->assertTrue($rule->passes('a1'));
+        $this->assertTrue($rule->passes('1abc'));
+    }
+
+    public function testCorrectSlugIsReturned(): void
+    {
+        $this->assertEquals('alphanumeric', AlphanumericRule::getSlug());
+    }
+
+    public function testNonAlphanumericCharsFail(): void
+    {
+        $rule = new AlphanumericRule();
+        $this->assertFalse($rule->passes(''));
+        $this->assertFalse($rule->passes('.'));
+        $this->assertFalse($rule->passes('a1 b'));
+    }
+}

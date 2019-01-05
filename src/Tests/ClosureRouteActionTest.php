@@ -4,8 +4,8 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2017 David Young
- * @license   https://github.com/opulencephp/route-matcher/blob/master/LICENSE.md
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
 namespace Opulence\Routing\Tests;
@@ -33,7 +33,7 @@ class ClosureRouteActionTest extends \PHPUnit\Framework\TestCase
 
     public function testCorrectClosureInstanceIsReturned(): void
     {
-        $this->assertSame($this->closure, $this->closureAction->getClosure());
+        $this->assertSame($this->closure, $this->closureAction->closure);
     }
 
     public function testMethodFlagSetCorrectly(): void
