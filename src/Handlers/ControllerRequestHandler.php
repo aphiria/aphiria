@@ -23,6 +23,7 @@ use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\Response;
 use Opulence\Pipelines\Pipeline;
 use Opulence\Routing\Matchers\IRouteMatcher;
 use Opulence\Routing\Middleware\MiddlewareBinding;
@@ -68,7 +69,14 @@ class ControllerRequestHandler implements IRequestHandler
         $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->getHost(), $uri->getPath());
 
         if (!$matchingResult->matchFound) {
-            throw new HttpException(HttpStatusCodes::HTTP_NOT_FOUND, "No route found for {$request->getUri()}");
+            if ($matchingResult->methodIsAllowed) {
+                throw new HttpException(HttpStatusCodes::HTTP_NOT_FOUND, "No route found for {$request->getUri()}");
+            }
+
+            $response = new Response(HttpStatusCodes::HTTP_METHOD_NOT_ALLOWED);
+            $response->getHeaders()->add('Accept', $matchingResult->allowedMethods);
+
+            throw new HttpException($response, 'Method not allowed');
         }
 
         $routeAction = $matchingResult->route->action;

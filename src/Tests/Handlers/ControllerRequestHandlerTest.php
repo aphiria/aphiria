@@ -131,6 +131,25 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
         $this->requestHandler->handle($request);
     }
 
+    public function testMethodNotAllowedSetsAcceptHeaderInExceptionResponse(): void
+    {
+        $exceptionThrown = false;
+
+        try {
+            $request = $this->createRequestMock('GET', 'http://foo.com/bar');
+            $this->routeMatcher->expects($this->once())
+                ->method('matchRoute')
+                ->with('GET', 'foo.com', '/bar')
+                ->willReturn(new RouteMatchingResult(null, [], ['GET']));
+            $this->requestHandler->handle($request);
+        } catch (HttpException $ex) {
+            $exceptionThrown = true;
+            $this->assertEquals('GET', $ex->getResponse()->getHeaders()->getFirst('Accept'));
+        }
+
+        $this->assertTrue($exceptionThrown, 'Failed to throw exception');
+    }
+
     public function testMiddlewareIsResolvedAndIsInvoked(): void
     {
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
@@ -172,14 +191,14 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('bar', $expectedHeaders->getFirst('Foo'));
     }
 
-    public function testNoMatchingRouteThrows404ThatIsCaught(): void
+    public function testNoMatchingRouteThrows404Exception(): void
     {
         $this->expectException(HttpException::class);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $this->routeMatcher->expects($this->once())
             ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
-            ->willReturn(new RouteMatchingResult(null, [], ['GET']));
+            ->willReturn(new RouteMatchingResult(null, [], []));
         $this->requestHandler->handle($request);
     }
 
