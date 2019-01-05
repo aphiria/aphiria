@@ -14,6 +14,7 @@ use Opulence\Api\Handlers\ContainerDependencyResolver;
 use Opulence\Api\Handlers\DependencyResolutionException;
 use Opulence\Ioc\IContainer;
 use Opulence\Ioc\IocException;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Tests the dependency resolver
@@ -22,7 +23,7 @@ class ContainerDependencyResolverTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ContainerDependencyResolver The dependency resolver to use in tests */
     private $dependencyResolver;
-    /** @var IContainer|\PHPUnit_Framework_MockObject_MockObject The IoC container to use in tests */
+    /** @var IContainer|MockObject The IoC container to use in tests */
     private $container;
 
     public function setUp(): void

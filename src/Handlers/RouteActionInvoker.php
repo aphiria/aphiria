@@ -4,7 +4,7 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2018 David Young
+ * @copyright Copyright (c) 2019 David Young
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
@@ -18,7 +18,7 @@ use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\Response;
-use Opulence\Routing\Matchers\MatchedRoute;
+use Opulence\Routing\Matchers\RouteMatchingResult;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -53,7 +53,7 @@ class RouteActionInvoker implements IRouteActionInvoker
     public function invokeRouteAction(
         callable $routeAction,
         IHttpRequestMessage $request,
-        MatchedRoute $matchedRoute
+        RouteMatchingResult $matchingResult
     ): IHttpResponseMessage {
         try {
             if (\is_array($routeAction)) {
@@ -90,7 +90,7 @@ class RouteActionInvoker implements IRouteActionInvoker
                 $resolvedParameters[] = $this->controllerParameterResolver->resolveParameter(
                     $reflectionParameter,
                     $request,
-                    $matchedRoute
+                    $matchingResult
                 );
             }
         } catch (MissingControllerParameterValueException $ex) {
