@@ -112,7 +112,7 @@ To get the [middleware bindings](#binding-middleware), call:
 $result->route->middlewareBindings;
 ```
 
-If `$result->matchFound` is `false`, you can return a 405 response with a list of allowed methods:
+If `$result->methodIsAllowed` is `false`, you can return a 405 response with a list of allowed methods:
 
 ```php
 header('Allow', implode(', ', $result->allowedMethods));

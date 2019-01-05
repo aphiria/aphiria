@@ -23,6 +23,8 @@ class RouteMatchingResult
     public $route;
     /** @var array The matched route variables */
     public $routeVariables;
+    /** @var bool|null Whether or not the request method was allowed, or null if no match was found */
+    public $methodIsAllowed;
     /** @var array The list of allowed routes if a match was found but did not support the input HTTP method */
     public $allowedMethods;
 
@@ -35,11 +37,19 @@ class RouteMatchingResult
     public function __construct(
         ?Route $route,
         array $routeVariables,
-        array $allowedMethods
+        array $allowedMethods = []
     ) {
-        $this->matchFound = $route !== null;
         $this->route = $route;
+        $this->matchFound = $this->route !== null;
         $this->routeVariables = $routeVariables;
         $this->allowedMethods = $allowedMethods;
+
+        if ($this->matchFound) {
+            $this->methodIsAllowed = true;
+        } else if (\count($this->allowedMethods) === 0 ) {
+            $this->methodIsAllowed = null;
+        } else {
+            $this->methodIsAllowed = false;
+        }
     }
 }

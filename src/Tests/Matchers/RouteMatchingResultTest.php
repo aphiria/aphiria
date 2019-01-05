@@ -25,6 +25,16 @@ class RouteMatchingResultTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($routeMatchingResult->matchFound);
     }
 
+    public function testMethodAllowedOnlyIfRouteIsNullAndAllowedMethodsIsPopulated(): void
+    {
+        $resultWithPopulatedRoute = new RouteMatchingResult($this->createMock(Route::class), []);
+        $this->assertTrue($resultWithPopulatedRoute->methodIsAllowed);
+        $resultWithUnpopulatedRouteAndNoAllowedMethods = new RouteMatchingResult(null, []);
+        $this->assertNull($resultWithUnpopulatedRouteAndNoAllowedMethods->methodIsAllowed);
+        $resultWithUnpopulatedRouteAndAllowedMethods = new RouteMatchingResult(null, [], ['GET']);
+        $this->assertFalse($resultWithUnpopulatedRouteAndAllowedMethods->methodIsAllowed);
+    }
+
     public function testPropertiesSetInConstructor(): void
     {
         /** @var Route|MockObject $expectedMatchedRoute */
