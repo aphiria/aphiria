@@ -4,7 +4,7 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2018 David Young
+ * @copyright Copyright (c) 2019 David Young
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
@@ -25,7 +25,6 @@ use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Pipelines\Pipeline;
 use Opulence\Routing\Matchers\IRouteMatcher;
-use Opulence\Routing\Matchers\RouteNotFoundException;
 use Opulence\Routing\Middleware\MiddlewareBinding;
 
 /**
@@ -66,36 +65,30 @@ class ControllerRequestHandler implements IRequestHandler
     public function handle(IHttpRequestMessage $request): IHttpResponseMessage
     {
         $uri = $request->getUri();
+        $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->getHost(), $uri->getPath());
 
-        try {
-            $matchedRoute = $this->routeMatcher->match($request->getMethod(), $uri->getHost(), $uri->getPath());
-        } catch (RouteNotFoundException $ex) {
-            throw new HttpException(
-                HttpStatusCodes::HTTP_NOT_FOUND,
-                "No route found for {$request->getUri()}",
-                0,
-                $ex
-            );
+        if (!$matchingResult->matchFound) {
+            throw new HttpException(HttpStatusCodes::HTTP_NOT_FOUND, "No route found for {$request->getUri()}");
         }
 
-        $routeAction = $matchedRoute->getAction();
+        $routeAction = $matchingResult->route->action;
 
         if ($routeAction->usesMethod()) {
-            $controller = $this->dependencyResolver->resolve($routeAction->getClassName());
-            $controllerCallable = [$controller, $routeAction->getMethodName()];
+            $controller = $this->dependencyResolver->resolve($routeAction->className);
+            $controllerCallable = [$controller, $routeAction->methodName];
 
             if (!\is_callable($controllerCallable)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Controller method %s::%s() does not exist',
-                        $routeAction->getClassName(),
-                        $routeAction->getMethodName()
+                        $routeAction->className,
+                        $routeAction->methodName
                     )
                 );
             }
         } else {
             $controller = new Controller();
-            $controllerCallable = Closure::bind($routeAction->getClosure(), $controller, Controller::class);
+            $controllerCallable = Closure::bind($routeAction->closure, $controller, Controller::class);
         }
 
         if (!$controller instanceof Controller) {
@@ -108,15 +101,15 @@ class ControllerRequestHandler implements IRequestHandler
         $controller->setRequestParser(new RequestParser);
         $controller->setContentNegotiator($this->contentNegotiator);
         $controller->setNegotiatedResponseFactory(new NegotiatedResponseFactory($this->contentNegotiator));
-        $middleware = $this->resolveMiddleware($matchedRoute->getMiddlewareBindings());
+        $middleware = $this->resolveMiddleware($matchingResult->route->middlewareBindings);
 
         return (new Pipeline)->send($request)
             ->through($middleware, 'handle')
-            ->then(function () use ($controllerCallable, $request, $matchedRoute) {
+            ->then(function () use ($controllerCallable, $request, $matchingResult) {
                 return $this->routeActionInvoker->invokeRouteAction(
                     $controllerCallable,
                     $request,
-                    $matchedRoute
+                    $matchingResult
                 );
             })
             ->execute();
@@ -135,7 +128,7 @@ class ControllerRequestHandler implements IRequestHandler
         $resolvedMiddleware = [];
 
         foreach ($middlewareBindings as $middlewareBinding) {
-            $middleware = $this->dependencyResolver->resolve($middlewareBinding->getClassName());
+            $middleware = $this->dependencyResolver->resolve($middlewareBinding->className);
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(
@@ -144,7 +137,7 @@ class ControllerRequestHandler implements IRequestHandler
             }
 
             if ($middleware instanceof AttributeMiddleware) {
-                $middleware->setAttributes($middlewareBinding->getAttributes());
+                $middleware->setAttributes($middlewareBinding->attributes);
             }
 
             $resolvedMiddleware[] = $middleware;

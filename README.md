@@ -307,10 +307,8 @@ class RoleMiddleware extends AttributeMiddleware
 
     public function handle(IHttpRequestMessage $request, Closure $next): IHttpResponseMessage
     {
-        // Attributes are available via $this->getAttribte()
-        // You may pass in a second parameter as the default value if the attribute
-        // was not found
-        if (!$this->user->hasRole($this->getAttribute('role'))) {
+        // Attributes are available via $this->attributes
+        if (!$this->user->hasRole($this->attributes['role'])) {
             throw new HttpException(403);
         }
 

@@ -4,7 +4,7 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2018 David Young
+ * @copyright Copyright (c) 2019 David Young
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
@@ -26,10 +26,12 @@ use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Uri;
 use Opulence\Routing\Matchers\IRouteMatcher;
-use Opulence\Routing\Matchers\MatchedRoute;
-use Opulence\Routing\Matchers\RouteNotFoundException;
+use Opulence\Routing\Matchers\RouteMatchingResult;
 use Opulence\Routing\Middleware\MiddlewareBinding;
+use Opulence\Routing\Route;
 use Opulence\Routing\RouteAction;
+use Opulence\Routing\UriTemplates\UriTemplate;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Tests the controller request handler
@@ -38,13 +40,13 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ControllerRequestHandler The handler to use in tests */
     private $requestHandler;
-    /** @var IDependencyResolver|\PHPUnit_Framework_MockObject_MockObject The dependency resolver to use */
+    /** @var IDependencyResolver|MockObject The dependency resolver to use */
     private $dependencyResolver;
-    /** @var IRouteActionInvoker|\PHPUnit_Framework_MockObject_MockObject The route action invoker to use */
+    /** @var IRouteActionInvoker|MockObject The route action invoker to use */
     private $routeActionInvoker;
-    /** @var IContentNegotiator|\PHPUnit_Framework_MockObject_MockObject The content negotiator to use */
+    /** @var IContentNegotiator|MockObject The content negotiator to use */
     private $contentNegotiator;
-    /** @var IRouteMatcher|\PHPUnit_Framework_MockObject_MockObject The route matcher to use */
+    /** @var IRouteMatcher|MockObject The route matcher to use */
     private $routeMatcher;
 
     public function setUp(): void
@@ -75,15 +77,20 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
             ->method('resolve')
             ->with(AttributeMiddleware::class)
             ->willReturn($middleware);
-        $matchedRoute = new MatchedRoute(
-            new RouteAction(ControllerMock::class, 'noParameters', null),
+        $matchingResult = new RouteMatchingResult(
+            new Route(
+                new UriTemplate('foo'),
+                new RouteAction(ControllerMock::class, 'noParameters', null),
+                [],
+                [new MiddlewareBinding(AttributeMiddleware::class, ['foo' => 'bar'])]
+            ),
             [],
-            [new MiddlewareBinding(AttributeMiddleware::class, ['foo' => 'bar'])]
+            []
         );
         $this->routeMatcher->expects($this->once())
-            ->method('match')
+            ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
-            ->willReturn($matchedRoute);
+            ->willReturn($matchingResult);
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')
             ->with([$controller, 'noParameters'])
@@ -107,15 +114,20 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
             ->method('resolve')
             ->with(__CLASS__)
             ->willReturn($middleware);
-        $matchedRoute = new MatchedRoute(
-            new RouteAction(ControllerMock::class, 'noParameters', null),
+        $matchingResult = new RouteMatchingResult(
+            new Route(
+                new UriTemplate('foo'),
+                new RouteAction(ControllerMock::class, 'noParameters', null),
+                [],
+                [new MiddlewareBinding(__CLASS__)]
+            ),
             [],
-            [new MiddlewareBinding(__CLASS__)]
+            []
         );
         $this->routeMatcher->expects($this->once())
-            ->method('match')
+            ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
-            ->willReturn($matchedRoute);
+            ->willReturn($matchingResult);
         $this->requestHandler->handle($request);
     }
 
@@ -137,15 +149,20 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
             ->method('resolve')
             ->with(MiddlewareThatAddsHeader::class)
             ->willReturn($middleware);
-        $matchedRoute = new MatchedRoute(
-            new RouteAction(ControllerMock::class, 'noParameters', null),
+        $matchingResult = new RouteMatchingResult(
+            new Route(
+                new UriTemplate('foo'),
+                new RouteAction(ControllerMock::class, 'noParameters', null),
+                [],
+                [new MiddlewareBinding(MiddlewareThatAddsHeader::class)]
+            ),
             [],
-            [new MiddlewareBinding(MiddlewareThatAddsHeader::class)]
+            []
         );
         $this->routeMatcher->expects($this->once())
-            ->method('match')
+            ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
-            ->willReturn($matchedRoute);
+            ->willReturn($matchingResult);
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')
             ->with([$controller, 'noParameters'])
@@ -160,9 +177,9 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
         $this->expectException(HttpException::class);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $this->routeMatcher->expects($this->once())
-            ->method('match')
+            ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
-            ->willThrowException(new RouteNotFoundException());
+            ->willReturn(new RouteMatchingResult(null, [], ['GET']));
         $this->requestHandler->handle($request);
     }
 
@@ -174,11 +191,20 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
             // Purposely getting $this to verify that it's bound to an instance of Controller later on
             return $this;
         };
-        $matchedRoute = new MatchedRoute(new RouteAction(null, null, $controllerClosure), [], []);
+        $matchingResult = new RouteMatchingResult(
+            new Route(
+                new UriTemplate('foo'),
+                new RouteAction(null, null, $controllerClosure),
+                [],
+                []
+            ),
+            [],
+            []
+        );
         $this->routeMatcher->expects($this->once())
-            ->method('match')
+            ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
-            ->willReturn($matchedRoute);
+            ->willReturn($matchingResult);
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')
             ->with($this->callback(function (Closure $closure) {
@@ -201,11 +227,20 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
             ->method('resolve')
             ->with(ControllerMock::class)
             ->willReturn($controller);
-        $matchedRoute = new MatchedRoute(new RouteAction(ControllerMock::class, 'doesNotExist', null), [], []);
+        $matchingResult = new RouteMatchingResult(
+            new Route(
+                new UriTemplate('foo'),
+                new RouteAction(ControllerMock::class, 'doesNotExist', null),
+                [],
+                []
+            ),
+            [],
+            []
+        );
         $this->routeMatcher->expects($this->once())
-            ->method('match')
+            ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
-            ->willReturn($matchedRoute);
+            ->willReturn($matchingResult);
         $this->requestHandler->handle($request);
     }
 
@@ -218,11 +253,20 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
             ->method('resolve')
             ->with(ControllerMock::class)
             ->willReturn($controller);
-        $matchedRoute = new MatchedRoute(new RouteAction(ControllerMock::class, 'noParameters', null), [], []);
+        $matchingResult = new RouteMatchingResult(
+            new Route(
+                new UriTemplate('foo'),
+                new RouteAction(ControllerMock::class, 'noParameters', null),
+                [],
+                []
+            ),
+            [],
+            []
+        );
         $this->routeMatcher->expects($this->once())
-            ->method('match')
+            ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
-            ->willReturn($matchedRoute);
+            ->willReturn($matchingResult);
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')
             ->with([$controller, 'noParameters'])
@@ -237,15 +281,24 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
         $this->expectException(InvalidArgumentException::class);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         // Purposely bind a non-controller class's method to the route action
-        $matchedRoute = new MatchedRoute(new RouteAction(__CLASS__, __METHOD__, null), [], []);
+        $matchingResult = new RouteMatchingResult(
+            new Route(
+                new UriTemplate('foo'),
+                new RouteAction(__CLASS__, __METHOD__, null),
+                [],
+                []
+            ),
+            [],
+            []
+        );
         $this->dependencyResolver->expects($this->once())
             ->method('resolve')
             ->with(__CLASS__)
             ->willReturn($this);
         $this->routeMatcher->expects($this->once())
-            ->method('match')
+            ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
-            ->willReturn($matchedRoute);
+            ->willReturn($matchingResult);
         $this->requestHandler->handle($request);
     }
 
@@ -254,7 +307,7 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
      *
      * @param string $method The HTTP method to use
      * @param string $uri The URI to use
-     * @return IHttpRequestMessage|\PHPUnit_Framework_MockObject_MockObject The mocked request
+     * @return IHttpRequestMessage|MockObject The mocked request
      */
     private function createRequestMock(string $method, string $uri): IHttpRequestMessage
     {

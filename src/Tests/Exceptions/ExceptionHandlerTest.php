@@ -4,7 +4,7 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2018 David Young
+ * @copyright Copyright (c) 2019 David Young
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
@@ -18,6 +18,7 @@ use Opulence\Api\Exceptions\IExceptionResponseFactory;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\ResponseWriter;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -25,11 +26,11 @@ use Psr\Log\LoggerInterface;
  */
 class ExceptionHandlerTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject The mocked logger */
+    /** @var LoggerInterface|MockObject The mocked logger */
     private $logger;
-    /** @var IExceptionResponseFactory|\PHPUnit_Framework_MockObject_MockObject The exception response factory */
+    /** @var IExceptionResponseFactory|MockObject The exception response factory */
     private $exceptionResponseFactory;
-    /** @var ResponseWriter|\PHPUnit_Framework_MockObject_MockObject The response writer */
+    /** @var ResponseWriter|MockObject The response writer */
     private $responseWriter;
 
     public function setUp(): void
@@ -116,6 +117,7 @@ class ExceptionHandlerTest extends \PHPUnit\Framework\TestCase
         $handler = $this->createExceptionHandler();
         $expectedResponse = $this->createMock(IHttpResponseMessage::class);
         $expectedException = new InvalidArgumentException();
+        /** @var IHttpRequestMessage|MockObject $expectedRequest */
         $expectedRequest = $this->createMock(IHttpRequestMessage::class);
         $this->exceptionResponseFactory->expects($this->once())
             ->method('createResponseFromException')

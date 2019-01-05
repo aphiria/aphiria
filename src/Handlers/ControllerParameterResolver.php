@@ -4,7 +4,7 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2018 David Young
+ * @copyright Copyright (c) 2019 David Young
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
@@ -13,7 +13,7 @@ namespace Opulence\Api\Handlers;
 use Opulence\Net\Formatting\UriParser;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Routing\Matchers\MatchedRoute;
+use Opulence\Routing\Matchers\RouteMatchingResult;
 use Opulence\Serialization\SerializationException;
 use ReflectionParameter;
 
@@ -43,9 +43,8 @@ class ControllerParameterResolver implements IControllerParameterResolver
     public function resolveParameter(
         ReflectionParameter $reflectionParameter,
         IHttpRequestMessage $request,
-        MatchedRoute $matchedRoute
+        RouteMatchingResult $matchingResult
     ) {
-        $routeVars = $matchedRoute->getRouteVars();
         $queryStringVars = $this->uriParser->parseQueryString($request->getUri());
 
         if ($reflectionParameter->getClass() !== null) {
@@ -55,8 +54,8 @@ class ControllerParameterResolver implements IControllerParameterResolver
             );
         }
 
-        if (isset($routeVars[$reflectionParameter->getName()])) {
-            return $routeVars[$reflectionParameter->getName()];
+        if (isset($matchingResult->routeVariables[$reflectionParameter->getName()])) {
+            return $matchingResult->routeVariables[$reflectionParameter->getName()];
         }
 
         if (isset($queryStringVars[$reflectionParameter->getName()])) {

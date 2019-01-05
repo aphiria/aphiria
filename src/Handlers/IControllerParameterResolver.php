@@ -4,14 +4,14 @@
  * Opulence
  *
  * @link      https://www.opulencephp.com
- * @copyright Copyright (C) 2018 David Young
+ * @copyright Copyright (c) 2019 David Young
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
 namespace Opulence\Api\Handlers;
 
 use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Routing\Matchers\MatchedRoute;
+use Opulence\Routing\Matchers\RouteMatchingResult;
 use ReflectionParameter;
 
 /**
@@ -24,7 +24,7 @@ interface IControllerParameterResolver
      *
      * @param ReflectionParameter $reflectionParameter The reflected parameter
      * @param IHttpRequestMessage $request The current request
-     * @param MatchedRoute $matchedRoute The matched route
+     * @param RouteMatchingResult $matchingResult The result of the route matching
      * @return mixed The resolved parameter value
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
@@ -33,6 +33,6 @@ interface IControllerParameterResolver
     public function resolveParameter(
         ReflectionParameter $reflectionParameter,
         IHttpRequestMessage $request,
-        MatchedRoute $matchedRoute
+        RouteMatchingResult $matchingResult
     );
 }
