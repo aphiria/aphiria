@@ -74,7 +74,7 @@ class ControllerRequestHandler implements IRequestHandler
             }
 
             $response = new Response(HttpStatusCodes::HTTP_METHOD_NOT_ALLOWED);
-            $response->getHeaders()->add('Accept', $matchingResult->allowedMethods);
+            $response->getHeaders()->add('Allow', $matchingResult->allowedMethods);
 
             throw new HttpException($response, 'Method not allowed');
         }

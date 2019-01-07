@@ -131,7 +131,7 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
         $this->requestHandler->handle($request);
     }
 
-    public function testMethodNotAllowedSetsAcceptHeaderInExceptionResponse(): void
+    public function testMethodNotAllowedSetsAllowHeaderInExceptionResponse(): void
     {
         $exceptionThrown = false;
 
@@ -144,7 +144,7 @@ class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
             $this->requestHandler->handle($request);
         } catch (HttpException $ex) {
             $exceptionThrown = true;
-            $this->assertEquals('GET', $ex->getResponse()->getHeaders()->getFirst('Accept'));
+            $this->assertEquals('GET', $ex->getResponse()->getHeaders()->getFirst('Allow'));
         }
 
         $this->assertTrue($exceptionThrown, 'Failed to throw exception');
