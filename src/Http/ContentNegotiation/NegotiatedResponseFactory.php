@@ -28,7 +28,7 @@ use Opulence\Serialization\TypeResolver;
 /**
  * Defines the factory that generates HTTP responses from negotiated content
  */
-class NegotiatedResponseFactory
+class NegotiatedResponseFactory implements INegotiatedResponseFactory
 {
     /** @var IContentNegotiator The content negotiator to use */
     private $contentNegotiator;
@@ -42,15 +42,7 @@ class NegotiatedResponseFactory
     }
 
     /**
-     * Creates a response with a negotiated body
-     *
-     * @param IHttpRequestMessage $request The current request
-     * @param int $statusCode The status code to use
-     * @param HttpHeaders|null $headers The headers to use
-     * @param \object|string|int|float|array|null $rawBody The raw body to use in the response
-     * @return IHttpResponseMessage The created response
-     * @throws InvalidArgumentException Thrown if the body is not a supported type
-     * @throws HttpException Thrown if the response content could not be negotiated
+     * @inheritdoc
      */
     public function createResponse(
         IHttpRequestMessage $request,
