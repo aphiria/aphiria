@@ -14,11 +14,12 @@ use DateTime;
 use Opulence\Net\Http\Cookie;
 use Opulence\Net\Http\Formatting\ResponseHeaderFormatter;
 use Opulence\Net\Http\HttpHeaders;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the HTTP response header formatter
  */
-class ResponseHeaderFormatterTest extends \PHPUnit\Framework\TestCase
+class ResponseHeaderFormatterTest extends TestCase
 {
     /** @var ResponseHeaderFormatter The formatter to use in tests */
     private $formatter;

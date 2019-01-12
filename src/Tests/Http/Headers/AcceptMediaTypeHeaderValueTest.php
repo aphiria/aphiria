@@ -14,29 +14,30 @@ use InvalidArgumentException;
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the Accept media type header value
  */
-class AcceptMediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
+class AcceptMediaTypeHeaderValueTest extends TestCase
 {
-    public function testExceptionThrownWithQualityScoreOutsideAcceptedRange(): void
+    public function qualityScoreOutsideAcceptedRangeProvider(): array
     {
-        try {
-            $parameters = new ImmutableHashTable([new KeyValuePair('q', '-1')]);
-            new AcceptMediaTypeHeaderValue('foo/bar', $parameters);
-            $this->fail('Failed to throw exception for quality score less than 0');
-        } catch (InvalidArgumentException $ex) {
-            $this->assertTrue(true);
-        }
+        return [
+            ['-1'],
+            ['1.5'],
+        ];
+    }
 
-        try {
-            $parameters = new ImmutableHashTable([new KeyValuePair('q', '1.5')]);
-            new AcceptMediaTypeHeaderValue('foo/bar', $parameters);
-            $this->fail('Failed to throw exception for quality score greater than 1');
-        } catch (InvalidArgumentException $ex) {
-            $this->assertTrue(true);
-        }
+    /**
+     * @dataProvider qualityScoreOutsideAcceptedRangeProvider
+     */
+    public function testExceptionThrownWithQualityScoreOutsideAcceptedRange($invalidScore): void
+    {
+        $parameters = new ImmutableHashTable([new KeyValuePair('q', $invalidScore)]);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Quality score must be between 0 and 1, inclusive');
+        new AcceptMediaTypeHeaderValue('foo/bar', $parameters);
     }
 
     public function testGettingQualityReturnsCorrectQuality(): void

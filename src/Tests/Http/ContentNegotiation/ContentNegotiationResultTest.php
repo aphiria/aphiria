@@ -12,11 +12,12 @@ namespace Opulence\Net\Tests\Http\Formatting;
 
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the content negotiation result
  */
-class ContentNegotiationResultTest extends \PHPUnit\Framework\TestCase
+class ContentNegotiationResultTest extends TestCase
 {
     public function testGettingEncodingReturnsSameOneInConstructor(): void
     {

@@ -10,15 +10,16 @@
 
 namespace Opulence\Net\Tests\Http;
 
-use Opulence\Collections\KeyValuePair;
-use Opulence\Net\Http\HttpHeaders;
 use OutOfBoundsException;
 use InvalidArgumentException;
+use Opulence\Collections\KeyValuePair;
+use Opulence\Net\Http\HttpHeaders;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the HTTP headers
  */
-class HttpHeadersTest extends \PHPUnit\Framework\TestCase
+class HttpHeadersTest extends TestCase
 {
     /** @var HttpHeaders The headers to use */
     private $headers;
@@ -56,6 +57,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     public function testGettingFirstValueWhenKeyDoesNotExistThrowsException(): void
     {
         $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage('Header "foo" does not exist');
         $this->headers->getFirst('foo');
     }
 
@@ -153,7 +155,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
          */
         foreach ($this->headers->toArray() as $key => $value) {
             // Verify that the key is numeric, not associative
-            $this->assertTrue(\is_int($key));
+            $this->assertInternalType('integer', $key);
             $this->assertInstanceOf(KeyValuePair::class, $value);
             $actualValues[$value->getKey()] = $value->getValue();
         }
@@ -175,6 +177,7 @@ class HttpHeadersTest extends \PHPUnit\Framework\TestCase
     public function testAddRangeOnInvalidValue(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Value must be instance of %s', KeyValuePair::class));
         $this->headers->addRange(['invalid KeyValuePair']);
     }
 }

@@ -17,11 +17,12 @@ use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter
 use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the encoding matcher
  */
-class EncodingMatcherTest extends \PHPUnit\Framework\TestCase
+class EncodingMatcherTest extends TestCase
 {
     /** @var EncodingMatcher The matcher to use in tests */
     private $matcher;

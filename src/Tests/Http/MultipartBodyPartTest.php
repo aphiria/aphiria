@@ -13,11 +13,12 @@ namespace Opulence\Net\Tests\Http;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\MultipartBodyPart;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the multipart body part
  */
-class MultipartBodyPartTest extends \PHPUnit\Framework\TestCase
+class MultipartBodyPartTest extends TestCase
 {
     /** @var MultipartBodyPart The body part to use in tests */
     private $bodyPart;

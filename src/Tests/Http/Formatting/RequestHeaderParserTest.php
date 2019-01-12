@@ -12,11 +12,12 @@ namespace Opulence\Net\Tests\Http\Formatting;
 
 use Opulence\Net\Http\Formatting\RequestHeaderParser;
 use Opulence\Net\Http\HttpHeaders;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the request header parser
  */
-class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
+class RequestHeaderParserTest extends TestCase
 {
     /** @var RequestHeaderParser The parser to use in tests */
     private $parser;

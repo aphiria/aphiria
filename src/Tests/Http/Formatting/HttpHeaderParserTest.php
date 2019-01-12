@@ -13,11 +13,12 @@ namespace Opulence\Net\Tests\Http\Formatting;
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Net\Http\Formatting\HttpHeaderParser;
 use Opulence\Net\Http\HttpHeaders;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the HTTP header parser
  */
-class HttpHeaderParserTest extends \PHPUnit\Framework\TestCase
+class HttpHeaderParserTest extends TestCase
 {
     /** @var HttpHeaderParser The parser to use in tests */
     private $parser = null;

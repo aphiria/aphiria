@@ -17,11 +17,12 @@ use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\MultipartBody;
 use Opulence\Net\Http\MultipartBodyPart;
 use Opulence\Net\Http\StringBody;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the multipart body
  */
-class MultipartBodyTest extends \PHPUnit\Framework\TestCase
+class MultipartBodyTest extends TestCase
 {
     public function testGettingBoundaryReturnsBoundarySpecifiedInConstructor(): void
     {

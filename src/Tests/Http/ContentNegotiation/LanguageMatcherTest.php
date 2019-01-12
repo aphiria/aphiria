@@ -14,11 +14,12 @@ use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
 use Opulence\Net\Http\ContentNegotiation\LanguageMatcher;
 use Opulence\Net\Http\Headers\AcceptLanguageHeaderValue;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the language matcher
  */
-class LanguageMatcherTest extends \PHPUnit\Framework\TestCase
+class LanguageMatcherTest extends TestCase
 {
     /** @var LanguageMatcher The language matcher to use in tests */
     private $matcher;

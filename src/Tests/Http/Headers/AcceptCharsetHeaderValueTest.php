@@ -15,29 +15,30 @@ use Opulence\Collections\IImmutableDictionary;
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
 use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the Accept-Charset header value
  */
-class AcceptCharsetHeaderValueTest extends \PHPUnit\Framework\TestCase
+class AcceptCharsetHeaderValueTest extends TestCase
 {
-    public function testExceptionThrownWithQualityScoreOutsideAcceptedRange(): void
+    public function qualityScoreOutsideAcceptedRangeProvider(): array
     {
-        try {
-            $parameters = new ImmutableHashTable([new KeyValuePair('q', '-1')]);
-            new AcceptCharsetHeaderValue('utf-8', $parameters);
-            $this->fail('Failed to throw exception for quality score less than 0');
-        } catch (InvalidArgumentException $ex) {
-            $this->assertTrue(true);
-        }
+        return [
+            ['-1'],
+            ['1.5'],
+        ];
+    }
 
-        try {
-            $parameters = new ImmutableHashTable([new KeyValuePair('q', '1.5')]);
-            new AcceptCharsetHeaderValue('utf-8', $parameters);
-            $this->fail('Failed to throw exception for quality score greater than 1');
-        } catch (InvalidArgumentException $ex) {
-            $this->assertTrue(true);
-        }
+    /**
+     * @dataProvider qualityScoreOutsideAcceptedRangeProvider
+     */
+    public function testExceptionThrownWithQualityScoreOutsideAcceptedRange($invalidScore): void
+    {
+        $parameters = new ImmutableHashTable([new KeyValuePair('q', $invalidScore)]);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Quality score must be between 0 and 1, inclusive');
+        new AcceptCharsetHeaderValue('utf-8', $parameters);
     }
 
     public function testGettingCharsetReturnsSameOneSetInConstructor(): void

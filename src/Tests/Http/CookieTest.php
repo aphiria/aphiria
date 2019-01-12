@@ -13,11 +13,12 @@ namespace Opulence\Net\Tests\Http;
 use DateTime;
 use InvalidArgumentException;
 use Opulence\Net\Http\Cookie;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests cookies
  */
-class CookieTest extends \PHPUnit\Framework\TestCase
+class CookieTest extends TestCase
 {
     /** @var Cookie The cookie to use in tests */
     private $cookie;
@@ -128,6 +129,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     public function testInvalidNameThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cookie name "=" contains invalid characters');
         $this->cookie->setName('=');
     }
 
@@ -142,6 +144,7 @@ class CookieTest extends \PHPUnit\Framework\TestCase
     public function testSettingInvalidExpirationValueThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expiration must be integer or DateTime');
         new Cookie('foo', 'bar', 'baz');
     }
 

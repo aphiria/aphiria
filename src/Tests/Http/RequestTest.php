@@ -18,11 +18,12 @@ use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\Request;
 use Opulence\Net\Http\RequestTargetTypes;
 use Opulence\Net\Uri;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the request
  */
-class RequestTest extends \PHPUnit\Framework\TestCase
+class RequestTest extends TestCase
 {
     /** @var Request The request to use in tests */
     private $request;
@@ -92,6 +93,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     public function testInvalidRequestTargetTypeThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Request target type foo is invalid');
         new Request('GET', new Uri('https://example.com'), null, null, null, '1.1', 'foo');
     }
 
@@ -148,17 +150,22 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("GET www.example.com:4343 HTTP/1.1\r\n\r\n", (string)$request);
     }
 
-    public function testRequestTargetTypeOriginFormIncludesHostHeader(): void
+    public function requestTargetQueryStringProvider(): array
     {
-        $requestWithUriWithoutQueryString = new Request('GET', new Uri('https://example.com/foo'));
-        $this->assertEquals(
-            "GET /foo HTTP/1.1\r\nHost: example.com\r\n\r\n",
-            (string)$requestWithUriWithoutQueryString
-        );
-        $requestWithUriWithoutPort = new Request('GET', new Uri('https://example.com/foo?bar'));
-        $this->assertEquals("GET /foo?bar HTTP/1.1\r\nHost: example.com\r\n\r\n", (string)$requestWithUriWithoutPort);
-        $requestWithUriWithPort = new Request('GET', new Uri('https://example.com:8080/foo?bar'));
-        $this->assertEquals("GET /foo?bar HTTP/1.1\r\nHost: example.com:8080\r\n\r\n", (string)$requestWithUriWithPort);
+        return [
+            ['GET', 'https://example.com/foo', "GET /foo HTTP/1.1\r\nHost: example.com\r\n\r\n"],
+            ['GET', 'https://example.com/foo?bar', "GET /foo?bar HTTP/1.1\r\nHost: example.com\r\n\r\n"],
+            ['GET', 'https://example.com:8080/foo?bar', "GET /foo?bar HTTP/1.1\r\nHost: example.com:8080\r\n\r\n"],
+        ];
+    }
+
+    /**
+     * @dataProvider requestTargetQueryStringProvider
+     */
+    public function testRequestTargetTypeOriginFormIncludesHostHeader($requestQueryString, $uri, $expectedRequestQueryString): void
+    {
+        $requestQueryString = new Request($requestQueryString, new Uri($uri));
+        $this->assertEquals($expectedRequestQueryString, (string)$requestQueryString);
     }
 
     public function testRequestWithHeadersButNoBodyEndsWithBlankLine(): void
@@ -185,6 +192,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     public function testSettingInvalidMethodThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid HTTP method FOO');
         new Request('foo', $this->uri, $this->headers, $this->body);
     }
 }

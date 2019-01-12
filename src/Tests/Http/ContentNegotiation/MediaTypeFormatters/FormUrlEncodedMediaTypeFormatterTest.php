@@ -15,11 +15,12 @@ use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedSerializerMediaTypeFormatter;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
 use Opulence\Serialization\FormUrlEncodedSerializer;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the form URL-encoded media type formatter
  */
-class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
+class FormUrlEncodedMediaTypeFormatterTest extends TestCase
 {
     /** @var FormUrlEncodedSerializerMediaTypeFormatter The formatter to use in tests */
     private $formatter;
@@ -79,6 +80,7 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     public function testReadingTypeThatCannotBeReadThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('% s cannot read type string', FormUrlEncodedSerializerMediaTypeFormatter::class));
         $stream = $this->createMock(IStream::class);
         $this->formatter->readFromStream($stream, 'string');
     }
@@ -111,12 +113,14 @@ class FormUrlEncodedMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     public function testWritingTypeThatCannotBeWrittenThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('%s cannot write type string', FormUrlEncodedSerializerMediaTypeFormatter::class));
         $this->formatter->writeToStream('foo', $this->createMock(IStream::class), null);
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('foo is not supported for %s', FormUrlEncodedSerializerMediaTypeFormatter::class));
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
     }

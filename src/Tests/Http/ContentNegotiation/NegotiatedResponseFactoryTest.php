@@ -228,8 +228,7 @@ class NegotiatedResponseFactoryTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testCreatingResponseWithObjectBodyWritesToResponseBodyUsingMediaTypeFormatterAndMatchedEncoding(
-    ): void
+    public function testCreatingResponseWithObjectBodyWritesToResponseBodyUsingMediaTypeFormatterAndMatchedEncoding(): void
     {
         $rawBody = new User(123, 'foo@bar.com');
         $responseMediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);

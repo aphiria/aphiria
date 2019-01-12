@@ -15,11 +15,12 @@ use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
 use Opulence\Serialization\JsonSerializer;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the JSON media type formatter
  */
-class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
+class JsonMediaTypeFormatterTest extends TestCase
 {
     /** @var JsonMediaTypeFormatter The formatter to use in tests */
     private $formatter;
@@ -87,6 +88,7 @@ class JsonMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     public function testWritingUsingUnsupportedEncodingThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('foo is not supported for %s', JsonMediaTypeFormatter::class));
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
     }

@@ -12,11 +12,12 @@ namespace Opulence\Net\Tests\Formatting;
 
 use Opulence\Net\Formatting\UriParser;
 use Opulence\Net\Uri;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the URI parser
  */
-class UriParserTest extends \PHPUnit\Framework\TestCase
+class UriParserTest extends TestCase
 {
     /** @var UriParser The URI parser to use in tests */
     private $parser;

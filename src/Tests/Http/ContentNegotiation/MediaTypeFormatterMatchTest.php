@@ -13,11 +13,12 @@ namespace Opulence\Net\Tests\Http\Formatting;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatterMatch;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the media type formatter match result
  */
-class MediaTypeFormatterMatchTest extends \PHPUnit\Framework\TestCase
+class MediaTypeFormatterMatchTest extends TestCase
 {
     public function testGettingFormatterReturnsSameOneInConstructor(): void
     {

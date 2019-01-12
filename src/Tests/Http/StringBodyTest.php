@@ -12,11 +12,12 @@ namespace Opulence\Net\Tests\Http;
 
 use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\StringBody;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the string body
  */
-class StringBodyTest extends \PHPUnit\Framework\TestCase
+class StringBodyTest extends TestCase
 {
     public function testCastingToStringReturnsContents(): void
     {

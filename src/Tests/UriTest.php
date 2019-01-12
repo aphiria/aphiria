@@ -13,11 +13,12 @@ namespace Opulence\Net\Tests;
 use Exception;
 use InvalidArgumentException;
 use Opulence\Net\Uri;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the URI
  */
-class UriTest extends \PHPUnit\Framework\TestCase
+class UriTest extends TestCase
 {
     /** @var Uri The URI to use in tests */
     private $uri;
@@ -37,6 +38,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
     public function testDoubleSlashPathWithoutAuthorityThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('URI http:////path is malformed');
         new Uri('http:////path');
     }
 
@@ -46,12 +48,21 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('dave=%25young', $uri->getFragment());
     }
 
-    public function testGettingAuthorityWithNoUserOrPasswordAndWithNonStandardPort(): void
+    public function authorityWithNoUserPasswordProvider(): array
     {
-        $httpUri = new Uri('http://host:8080');
-        $this->assertEquals('host:8080', $httpUri->getAuthority());
-        $httpsUri = new Uri('https://host:4343');
-        $this->assertEquals('host:4343', $httpsUri->getAuthority());
+        return [
+            ['http://host:8080', 'host:8080'],
+            ['https://host:4343', 'host:4343'],
+        ];
+    }
+
+    /**
+     * @dataProvider authorityWithNoUserPasswordProvider
+     */
+    public function testGettingAuthorityWithNoUserOrPasswordAndWithNonStandardPort($uri, $expectedUri): void
+    {
+        $httpUri = new Uri($uri);
+        $this->assertEquals($expectedUri, $httpUri->getAuthority());
     }
 
     public function testGettingAuthorityWithNoHostOrUserInfoReturnsNull(): void
@@ -60,14 +71,22 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($httpUri->getAuthority());
     }
 
-    public function testGettingAuthorityWithUserAndPasswordIncludesUserAndPassword(): void
+    public function authorityWithUserPasswordProvider(): array
     {
-        $uriWithUserAndPassword = new Uri('http://user:password@host');
-        $this->assertEquals('user:password@host', $uriWithUserAndPassword->getAuthority());
+        return [
+            ['http://user:password@host', 'user:password@host'],
+            ['http://user:@host', 'user@host'],
+        ];
+    }
+
+    /**
+     * @dataProvider authorityWithUserPasswordProvider
+     */
+    public function testGettingAuthorityWithUserAndPasswordIncludesUserAndPassword($uri, $expectedUri): void
+    {
+        $uriWithUserAndPassword = new Uri($uri);
+        $this->assertEquals($expectedUri, $uriWithUserAndPassword->getAuthority());
         $this->assertEquals('host', $uriWithUserAndPassword->getAuthority(false));
-        $uriWithUserButNoPassword = new Uri('http://user:@host');
-        $this->assertEquals('user@host', $uriWithUserButNoPassword->getAuthority());
-        $this->assertEquals('host', $uriWithUserButNoPassword->getAuthority(false));
     }
 
     public function testGettingFragment(): void
@@ -119,38 +138,33 @@ class UriTest extends \PHPUnit\Framework\TestCase
     public function testInvalidSchemeThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Scheme "foo" is invalid');
         new Uri('foo://bar.com');
     }
 
     public function testMalformedUriThrowsExceptionWhenCreatingFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('URI host:65536 is malformed');
         new Uri('host:65536');
     }
 
-    public function testOutOfRangePortThrowsException(): void
+    public function outOfRangePortProvider(): array
     {
-        try {
-            new Uri('foo.com:0');
-            $this->fail('Port below acceptable range was accepted');
-        } catch (InvalidArgumentException $ex) {
-            // Verify we got here
-            $this->assertTrue(true);
-        } catch (Exception $ex) {
-            // Don't want to get here
-            $this->assertTrue(false);
-        }
+        return [
+            ['foo.com:0'],
+            ['foo.com:65536'],
+        ];
+    }
 
-        try {
-            new Uri('foo.com:65536');
-            $this->fail('Port above acceptable range was accepted');
-        } catch (InvalidArgumentException $ex) {
-            // Verify we got here
-            $this->assertTrue(true);
-        } catch (Exception $ex) {
-            // Don't want to get here
-            $this->assertTrue(false);
-        }
+    /**
+     * @dataProvider outOfRangePortProvider
+     */
+    public function testOutOfRangePortThrowsException($invalidUri): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("{$invalidUri} is malformed");
+        new Uri($invalidUri);
     }
 
     public function testPathReservedCharsAreEncoded(): void
@@ -183,12 +197,21 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('http://host#fragment', (string)$uri);
     }
 
-    public function testToStringWithNonStandardPortIncludesPort(): void
+    public function httpUriProvider(): array
     {
-        $httpUri = new Uri('http://host:8080');
-        $this->assertEquals('http://host:8080', (string)$httpUri);
-        $httpsUri = new Uri('https://host:1234');
-        $this->assertEquals('https://host:1234', (string)$httpsUri);
+        return [
+            ['http://host:8080'],
+            ['https://host:1234'],
+        ];
+    }
+
+    /**
+     * @dataProvider httpUriProvider
+     */
+    public function testToStringWithNonStandardPortIncludesPort($uri): void
+    {
+        $httpUri = new Uri($uri);
+        $this->assertEquals($uri, (string)$httpUri);
     }
 
     public function testToStringWithNoSchemedDoesNotIncludeThatValue(): void

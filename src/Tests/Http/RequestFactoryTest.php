@@ -14,11 +14,12 @@ use InvalidArgumentException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\RequestFactory;
 use Opulence\Net\Http\StreamBody;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the request factory
  */
-class RequestFactoryTest extends \PHPUnit\Framework\TestCase
+class RequestFactoryTest extends TestCase
 {
     /** @var RequestFactory The request factory to use in tests */
     private $factory;
@@ -67,24 +68,28 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('192.168.1.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
     }
 
-    public function testClientIPAddressIsSetFromForwardedHeaderWhenUsingTrustedProxy(): void
+    public function clientIPDataProvider(): array
     {
-        $ipData = [
+        return [
             ['for="_gazonk"', '_gazonk'],
             ['for="[2001:db8:cafe::17]:4711"', '2001:db8:cafe::17'],
             ['for=192.0.2.60;proto=http;by=203.0.113.43', '192.0.2.60'],
-            ['for=192.0.2.43, for=198.51.100.17', '198.51.100.17']
+            ['for=192.0.2.43, for=198.51.100.17', '198.51.100.17'],
         ];
+    }
 
-        foreach ($ipData as $ipDatum) {
-            $_SERVER['HTTP_FORWARDED'] = $ipDatum[0];
-            $factory = new RequestFactory([], ['HTTP_FORWARDED' => 'HTTP_FORWARDED']);
-            $request = $factory->createRequestFromSuperglobals([
-                'HTTP_FORWARDED' => $ipDatum[0],
-                'HTTP_HOST' => 'foo.com'
-            ]);
-            $this->assertEquals($ipDatum[1], $request->getProperties()->get('CLIENT_IP_ADDRESS'));
-        }
+    /**
+     * @dataProvider clientIPDataProvider
+     */
+    public function testClientIPAddressIsSetFromForwardedHeaderWhenUsingTrustedProxy($ipDatum1, $expectedIpDatum): void
+    {
+        $_SERVER['HTTP_FORWARDED'] = $ipDatum1;
+        $factory = new RequestFactory([], ['HTTP_FORWARDED' => 'HTTP_FORWARDED']);
+        $request = $factory->createRequestFromSuperglobals([
+            'HTTP_FORWARDED' => $ipDatum1,
+            'HTTP_HOST' => 'foo.com'
+        ]);
+        $this->assertEquals($expectedIpDatum, $request->getProperties()->get('CLIENT_IP_ADDRESS'));
     }
 
     public function testClientIPHeaderUsedWhenSet()
@@ -108,40 +113,28 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(8080, $request->getUri()->getPort());
     }
 
-    public function testClientProtoUsedToSetSchemeWithTrustedProxy()
+    public function clientProtoProvider(): array
     {
-        // Try with HTTPS
+        return [
+            ['192.168.1.1', 'HTTPS', 'foo.com', 'https', 'Try with HTTPS'],
+            ['192.168.1.1', 'ssl', 'foo.com', 'https', 'Try with SSL'],
+            ['192.168.1.1', 'on', 'foo.com', 'https', 'Try with "on"'],
+            ['192.168.1.1', 'HTTP', 'foo.com', 'http', 'Try with HTTP'],
+        ];
+    }
+
+    /**
+     * @dataProvider clientProtoProvider
+     */
+    public function testClientProtoUsedToSetSchemeWithTrustedProxy($remoteAddress, $forwaredProto, $host, $expectedScheme, $message): void
+    {
         $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO']);
         $request = $factory->createRequestFromSuperglobals([
-            'REMOTE_ADDR' => '192.168.1.1',
-            'HTTP_X_FORWARDED_PROTO' => 'HTTPS',
-            'HTTP_HOST' => 'foo.com'
+            'REMOTE_ADDR' => $remoteAddress,
+            'HTTP_X_FORWARDED_PROTO' => $forwaredProto,
+            'HTTP_HOST' => $host,
         ]);
-        $this->assertEquals('https', $request->getUri()->getScheme());
-
-        // Try with SSL
-        $request = $factory->createRequestFromSuperglobals([
-            'REMOTE_ADDR' => '192.168.1.1',
-            'HTTP_X_FORWARDED_PROTO' => 'ssl',
-            'HTTP_HOST' => 'foo.com'
-        ]);
-        $this->assertEquals('https', $request->getUri()->getScheme());
-
-        // Try with "on"
-        $request = $factory->createRequestFromSuperglobals([
-            'REMOTE_ADDR' => '192.168.1.1',
-            'HTTP_X_FORWARDED_PROTO' => 'on',
-            'HTTP_HOST' => 'foo.com'
-        ]);
-        $this->assertEquals('https', $request->getUri()->getScheme());
-
-        // Try with HTTP
-        $request = $factory->createRequestFromSuperglobals([
-            'REMOTE_ADDR' => '192.168.1.1',
-            'HTTP_X_FORWARDED_PROTO' => 'HTTP',
-            'HTTP_HOST' => 'foo.com'
-        ]);
-        $this->assertEquals('http', $request->getUri()->getScheme());
+        $this->assertEquals($expectedScheme, $request->getUri()->getScheme(), $message);
     }
 
     public function testClientProtoUsedToDeterminePortWithTrustedProxy()
@@ -176,6 +169,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     public function testExceptionThrownWhenUsingUntrustedProxyHost()
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid host "192.168.1.1, 192.168.1.2, 192.168.1.3"');
         $this->factory->createRequestFromSuperglobals(['HTTP_HOST' => '192.168.1.1, 192.168.1.2, 192.168.1.3']);
     }
 
@@ -193,25 +187,42 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo.com', $request->getUri()->getHost());
     }
 
-    public function testHttpsServerPropertyControlsSchemeOfUri(): void
+    public function httpServerPropertyProvider(): array
     {
-        $httpsOnRequest = $this->factory->createRequestFromSuperglobals([
-            'SERVER_PROTOCOL' => 'HTTP/1.1',
-            'HTTPS' => 'on',
-            'HTTP_HOST' => 'foo.com'
-        ]);
-        $this->assertEquals('https', $httpsOnRequest->getUri()->getScheme());
-        $httpsOffRequest = $this->factory->createRequestFromSuperglobals([
-            'SERVER_PROTOCOL' => 'HTTP/1.1',
-            'HTTPS' => 'off',
-            'HTTP_HOST' => 'foo.com'
-        ]);
-        $this->assertEquals('http', $httpsOffRequest->getUri()->getScheme());
-        $noHttpsRequest = $this->factory->createRequestFromSuperglobals([
-            'SERVER_PROTOCOL' => 'HTTP/1.1',
-            'HTTP_HOST' => 'foo.com'
-        ]);
-        $this->assertEquals('http', $noHttpsRequest->getUri()->getScheme());
+        return [
+            [
+                [
+                    'SERVER_PROTOCOL' => 'HTTP/1.1',
+                    'HTTPS' => 'on',
+                    'HTTP_HOST' => 'foo.com',
+                ],
+                'https',
+            ],
+            [
+                [
+                    'SERVER_PROTOCOL' => 'HTTP/1.1',
+                    'HTTPS' => 'off',
+                    'HTTP_HOST' => 'foo.com',
+                ],
+                'http',
+            ],
+            [
+                [
+                    'SERVER_PROTOCOL' => 'HTTP/1.1',
+                    'HTTP_HOST' => 'foo.com',
+                ],
+                'http',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider httpServerPropertyProvider
+     */
+    public function testHttpsServerPropertyControlsSchemeOfUri($properties, $expectedScheme): void
+    {
+        $httpsOnRequest = $this->factory->createRequestFromSuperglobals($properties);
+        $this->assertEquals($expectedScheme, $httpsOnRequest->getUri()->getScheme());
     }
 
     public function testInputMethodIsSetInRequest(): void
@@ -226,6 +237,7 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
     public function testInvalidHostCharThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid host "!"');
         $this->factory->createRequestFromSuperglobals(['HTTP_HOST' => '!']);
     }
 

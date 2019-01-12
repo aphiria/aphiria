@@ -16,11 +16,12 @@ use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\StringBody;
 use Opulence\Net\Uri;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the HTTP response message formatter
  */
-class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
+class ResponseFormatterTest extends TestCase
 {
     /** @var ResponseFormatter The formatter to use in tests */
     private $formatter;
@@ -71,6 +72,7 @@ class ResponseFormatterTest extends \PHPUnit\Framework\TestCase
     public function testRedirectingToUriThatIsNotUriNorStringThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Uri must be instance of %s or string', Uri::class));
         $this->formatter->redirectToUri($this->response, [], 301);
     }
 }

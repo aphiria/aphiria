@@ -18,11 +18,12 @@ use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter
 use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the media type formatter matcher
  */
-class MediaTypeFormatterMatcherTest extends \PHPUnit\Framework\TestCase
+class MediaTypeFormatterMatcherTest extends TestCase
 {
     /** @var MediaTypeFormatterMatcher The matcher to use in tests */
     private $matcher;

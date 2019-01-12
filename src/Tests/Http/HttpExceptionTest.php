@@ -14,11 +14,12 @@ use Exception;
 use InvalidArgumentException;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\IHttpResponseMessage;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the HTTP exception
  */
-class HttpExceptionTest extends \PHPUnit\Framework\TestCase
+class HttpExceptionTest extends TestCase
 {
     public function testCodeIsSameOneSetInConstructor(): void
     {
@@ -29,6 +30,7 @@ class HttpExceptionTest extends \PHPUnit\Framework\TestCase
     public function testInvalidStatusCodeOrResponseThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('First parameter must be either a status code or an HTTP response');
         new HttpException('foo');
     }
 

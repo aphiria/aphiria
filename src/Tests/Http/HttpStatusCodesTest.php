@@ -11,11 +11,12 @@
 namespace Opulence\Net\Tests\Http;
 
 use Opulence\Net\Http\HttpStatusCodes;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the HTTP status codes
  */
-class HttpStatusCodesTest extends \PHPUnit\Framework\TestCase
+class HttpStatusCodesTest extends TestCase
 {
     public function testExistingStatusCodeReturnsDefaultStatusText(): void
     {

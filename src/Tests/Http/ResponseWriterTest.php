@@ -15,11 +15,12 @@ use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\ResponseWriter;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the response writer
  */
-class ResponseWriterTest extends \PHPUnit\Framework\TestCase
+class ResponseWriterTest extends TestCase
 {
     /** @var ResponseWriter The response writer to use in tests */
     private $writer;

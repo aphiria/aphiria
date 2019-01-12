@@ -14,11 +14,12 @@ use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpBody;
 use Opulence\Net\Http\Response;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the response class
  */
-class ResponseTest extends \PHPUnit\Framework\TestCase
+class ResponseTest extends TestCase
 {
     public function testDefaultReasonPhraseIsSet(): void
     {

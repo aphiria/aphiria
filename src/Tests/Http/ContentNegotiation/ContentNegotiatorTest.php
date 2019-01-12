@@ -16,11 +16,12 @@ use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the content negotiator
  */
-class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
+class ContentNegotiatorTest extends TestCase
 {
     /** @var IHttpRequestMessage|\PHPUnit_Framework_MockObject_MockObject The request message to use in tests */
     private $request;
@@ -39,12 +40,14 @@ class ContentNegotiatorTest extends \PHPUnit\Framework\TestCase
     public function testEmptyListOfFormattersThrowsExceptionWhenNegotiatingRequest(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('List of formatters cannot be empty');
         new ContentNegotiator([], []);
     }
 
     public function testEmptyListOfFormattersThrowsExceptionWhenNegotiatingResponse(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('List of formatters cannot be empty');
         new ContentNegotiator([], []);
     }
 

@@ -14,11 +14,12 @@ use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Opulence\Net\Tests\Http\Formatting\Mocks\User;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the plain text media type formatter
  */
-class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
+class PlainTextMediaTypeFormatterTest extends TestCase
 {
     /** @var PlainTextMediaTypeFormatter The formatter to use in tests */
     private $formatter;
@@ -63,6 +64,7 @@ class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     public function testReadingAsArrayOfStringsThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('%s can only read strings', PlainTextMediaTypeFormatter::class));
         $this->formatter->readFromStream($this->createMock(IStream::class), 'string[]');
     }
 
@@ -76,12 +78,14 @@ class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     public function testReadingNonStringThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('%s can only read strings', PlainTextMediaTypeFormatter::class));
         $this->formatter->readFromStream($this->createMock(IStream::class), self::class);
     }
 
     public function testReadingTypeThatCannotBeReadThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('%s can only read strings', PlainTextMediaTypeFormatter::class));
         $stream = $this->createMock(IStream::class);
         $this->formatter->readFromStream($stream, User::class);
     }
@@ -89,6 +93,7 @@ class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     public function testWritingNonStringThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('%s can only write strings', PlainTextMediaTypeFormatter::class));
         $this->formatter->writeToStream($this, $this->createMock(IStream::class), 'utf-8');
     }
 
@@ -101,12 +106,14 @@ class PlainTextMediaTypeFormatterTest extends \PHPUnit\Framework\TestCase
     public function testWritingTypeThatCannotBeWrittenThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('%s can only write strings', PlainTextMediaTypeFormatter::class));
         $this->formatter->writeToStream(new User(123, 'foo@bar.com'), $this->createMock(IStream::class), null);
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(PlainTextMediaTypeFormatter::class);
         $this->formatter->writeToStream('foo', $this->createMock(IStream::class), 'bar');
     }
 

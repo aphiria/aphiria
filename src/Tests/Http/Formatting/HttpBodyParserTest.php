@@ -10,15 +10,16 @@
 
 namespace Opulence\Net\Tests\Http\Formatting;
 
+use RuntimeException;
 use Opulence\Collections\HashTable;
 use Opulence\Net\Http\Formatting\HttpBodyParser;
 use Opulence\Net\Http\IHttpBody;
-use RuntimeException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the HTTP body parser
  */
-class HttpBodyParserTest extends \PHPUnit\Framework\TestCase
+class HttpBodyParserTest extends TestCase
 {
     /** @var HttpBodyParser The parser to use in tests */
     private $parser;
@@ -76,6 +77,7 @@ class HttpBodyParserTest extends \PHPUnit\Framework\TestCase
     public function testParsingJsonWithIncorrectlyFormattedJsonThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Body could not be decoded as JSON');
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn("\x0");

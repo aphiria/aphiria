@@ -15,11 +15,12 @@ use Opulence\Collections\IImmutableDictionary;
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
 use Opulence\Net\Http\Headers\MediaTypeHeaderValue;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the media type header value
  */
-class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
+class MediaTypeHeaderValueTest extends TestCase
 {
     public function testGettingCharsetReturnsOneSetInConstructor(): void
     {
@@ -47,27 +48,22 @@ class MediaTypeHeaderValueTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo', $value->getType());
     }
 
-    public function testIncorrectlyFormattedMediaTypeThrowsException(): void
+    public function incorrectlyFormattedMediaTypeProvider(): array
     {
-        try {
-            new MediaTypeHeaderValue('foo', $this->createMock(IImmutableDictionary::class));
-            $this->fail('"foo" is in invalid media type');
-        } catch (InvalidArgumentException $ex) {
-            $this->assertTrue(true);
-        }
+        return [
+            ['foo'],
+            ['foo/'],
+            ['/foo'],
+        ];
+    }
 
-        try {
-            new MediaTypeHeaderValue('foo/', $this->createMock(IImmutableDictionary::class));
-            $this->fail('"foo/" is in invalid media type');
-        } catch (InvalidArgumentException $ex) {
-            $this->assertTrue(true);
-        }
-
-        try {
-            new MediaTypeHeaderValue('/foo', $this->createMock(IImmutableDictionary::class));
-            $this->fail('"/foo" is in invalid media type');
-        } catch (InvalidArgumentException $ex) {
-            $this->assertTrue(true);
-        }
+    /**
+     * @dataProvider incorrectlyFormattedMediaTypeProvider
+     */
+    public function testIncorrectlyFormattedMediaTypeThrowsException($incorrectlyFormattedMediaType): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Media type must be in format {type}/{sub-type}, received {$incorrectlyFormattedMediaType}");
+        new MediaTypeHeaderValue($incorrectlyFormattedMediaType, $this->createMock(IImmutableDictionary::class));
     }
 }
