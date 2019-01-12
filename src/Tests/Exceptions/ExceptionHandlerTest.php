@@ -19,12 +19,13 @@ use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\ResponseWriter;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
  * Tests the exception handler
  */
-class ExceptionHandlerTest extends \PHPUnit\Framework\TestCase
+class ExceptionHandlerTest extends TestCase
 {
     /** @var LoggerInterface|MockObject The mocked logger */
     private $logger;

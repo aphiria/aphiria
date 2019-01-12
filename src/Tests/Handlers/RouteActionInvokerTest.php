@@ -18,10 +18,8 @@ use Opulence\Api\Handlers\RequestBodyDeserializationException;
 use Opulence\Api\Handlers\RouteActionInvoker;
 use Opulence\Api\Tests\Handlers\Mocks\Controller;
 use Opulence\Api\Tests\Handlers\Mocks\User;
-use Opulence\IO\Streams\IStream;
-use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
-use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Opulence\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
@@ -33,13 +31,14 @@ use Opulence\Routing\Route;
 use Opulence\Routing\RouteAction;
 use Opulence\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
 use RuntimeException;
 
 /**
  * Tests the route action invoker
  */
-class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
+class RouteActionInvokerTest extends TestCase
 {
     /** @var RouteActionInvoker The invoker to use in tests */
     private $invoker;
@@ -47,14 +46,21 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
     private $parameterResolver;
     /** @var IContentNegotiator|MockObject The content negotiator to use */
     private $contentNegotiator;
+    /** @var INegotiatedResponseFactory|MockObject The negotiated response factory */
+    private $negotiatedResponseFactory;
     /** @var Controller The controller to use in tests */
     private $controller;
 
     public function setUp(): void
     {
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
+        $this->negotiatedResponseFactory = $this->createMock(INegotiatedResponseFactory::class);
         $this->parameterResolver = $this->createMock(IControllerParameterResolver::class);
-        $this->invoker = new RouteActionInvoker($this->contentNegotiator, null, $this->parameterResolver);
+        $this->invoker = new RouteActionInvoker(
+            $this->contentNegotiator,
+            $this->negotiatedResponseFactory,
+            $this->parameterResolver
+        );
         $this->controller = new Controller();
     }
 
@@ -116,15 +122,12 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
     {
         /** @var IHttpRequestMessage|MockObject $request */
         $request = $this->createMock(IHttpRequestMessage::class);
-        /** @var IMediaTypeFormatter|MockObject $mediaTypeFormatter */
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $mediaTypeFormatter->expects($this->once())
-            ->method('writeToStream')
-            ->with($this->isInstanceOf(User::class), $this->isInstanceOf(IStream::class));
-        $this->contentNegotiator->expects($this->once())
-            ->method('negotiateResponseContent')
-            ->with(User::class, $request)
-            ->willReturn(new ContentNegotiationResult($mediaTypeFormatter, null, null, null));
+        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
+        $this->negotiatedResponseFactory->method('createResponse')
+            ->with($request, HttpStatusCodes::HTTP_OK, null, $this->callback(function ($actionResult) {
+                return $actionResult instanceof User;
+            }))
+            ->willReturn($expectedResponse);
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
@@ -134,16 +137,12 @@ class RouteActionInvokerTest extends \PHPUnit\Framework\TestCase
             [],
             []
         );
-        $response = $this->invoker->invokeRouteAction(
+        $actualResponse = $this->invoker->invokeRouteAction(
             [$this->controller, 'popo'],
             $request,
             $matchingResult
         );
-        $this->assertEquals(HttpStatusCodes::HTTP_OK, $response->getStatusCode());
-        /**
-         *  Note: I cannot (easily) test what the body is because I cannot set up my formatter mock to write
-         *  specific serialized POPO contents to the body
-         */
+        $this->assertSame($expectedResponse, $actualResponse);
     }
 
     public function testInvokingMethodThatThrowsExceptionThrowsException(): void

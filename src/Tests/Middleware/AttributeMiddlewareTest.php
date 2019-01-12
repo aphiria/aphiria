@@ -11,11 +11,12 @@
 namespace Opulence\Api\Tests\Middleware;
 
 use Opulence\Api\Tests\Middleware\Mocks\AttributeMiddleware;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the attribute middleware
  */
-class AttributeMiddlewareTest extends \PHPUnit\Framework\TestCase
+class AttributeMiddlewareTest extends TestCase
 {
     /** @var AttributeMiddleware The middleware to use in tests */
     private $middleware;

@@ -32,11 +32,12 @@ use Opulence\Routing\Route;
 use Opulence\Routing\RouteAction;
 use Opulence\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the controller request handler
  */
-class ControllerRequestHandlerTest extends \PHPUnit\Framework\TestCase
+class ControllerRequestHandlerTest extends TestCase
 {
     /** @var ControllerRequestHandler The handler to use in tests */
     private $requestHandler;

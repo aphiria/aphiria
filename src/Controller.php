@@ -13,7 +13,7 @@ namespace Opulence\Api;
 use InvalidArgumentException;
 use LogicException;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
-use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
+use Opulence\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Opulence\Net\Http\Formatting\RequestParser;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
@@ -34,7 +34,7 @@ class Controller
     protected $requestParser;
     /** @var IContentNegotiator The content negotiator */
     protected $contentNegotiator;
-    /** @var NegotiatedResponseFactory The negotiated response factory */
+    /** @var INegotiatedResponseFactory The negotiated response factory */
     protected $negotiatedResponseFactory;
 
     /**
@@ -51,10 +51,10 @@ class Controller
     /**
      * Sets the negotiated response factory
      *
-     * @param NegotiatedResponseFactory $negotiatedResponseFactory The negotiated response factory
+     * @param INegotiatedResponseFactory $negotiatedResponseFactory The negotiated response factory
      * @internal
      */
-    public function setNegotiatedResponseFactory(NegotiatedResponseFactory $negotiatedResponseFactory): void
+    public function setNegotiatedResponseFactory(INegotiatedResponseFactory $negotiatedResponseFactory): void
     {
         $this->negotiatedResponseFactory = $negotiatedResponseFactory;
     }

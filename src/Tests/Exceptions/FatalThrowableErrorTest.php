@@ -15,8 +15,9 @@ use ParseError;
 use ErrorException;
 use InvalidArgumentException;
 use Opulence\Api\Exceptions\FatalThrowableError;
+use PHPUnit\Framework\TestCase;
 
-class FatalThrowableErrorTest extends \PHPUnit\Framework\TestCase
+class FatalThrowableErrorTest extends TestCase
 {
     public function throwableProvider(): array
     {

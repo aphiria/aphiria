@@ -11,7 +11,7 @@
 namespace Opulence\Api\Exceptions;
 
 use Exception;
-use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
+use Opulence\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\HttpStatusCodes;
@@ -24,17 +24,17 @@ use Opulence\Net\Http\Response;
  */
 class ExceptionResponseFactory implements IExceptionResponseFactory
 {
-    /** @var NegotiatedResponseFactory The negotiated response factory */
+    /** @var INegotiatedResponseFactory The negotiated response factory */
     protected $negotiatedResponseFactory;
     /** @var ExceptionResponseFactoryRegistry The registry of exception response factories */
     protected $exceptionResponseFactories;
 
     /**
-     * @param NegotiatedResponseFactory $negotiatedResponseFactory
+     * @param INegotiatedResponseFactory $negotiatedResponseFactory
      * @param ExceptionResponseFactoryRegistry|null $exceptionResponseFactories The exception response factory registry
      */
     public function __construct(
-        NegotiatedResponseFactory $negotiatedResponseFactory,
+        INegotiatedResponseFactory $negotiatedResponseFactory,
         ExceptionResponseFactoryRegistry $exceptionResponseFactories = null
     ) {
         $this->negotiatedResponseFactory = $negotiatedResponseFactory;

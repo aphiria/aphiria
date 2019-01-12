@@ -15,11 +15,12 @@ use Opulence\Api\Handlers\DependencyResolutionException;
 use Opulence\Ioc\IContainer;
 use Opulence\Ioc\IocException;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the dependency resolver
  */
-class ContainerDependencyResolverTest extends \PHPUnit\Framework\TestCase
+class ContainerDependencyResolverTest extends TestCase
 {
     /** @var ContainerDependencyResolver The dependency resolver to use in tests */
     private $dependencyResolver;

@@ -27,12 +27,13 @@ use Opulence\Routing\RouteAction;
 use Opulence\Routing\UriTemplates\UriTemplate;
 use Opulence\Serialization\SerializationException;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
 
 /**
  * Tests the controller parameter resolver
  */
-class ControllerParameterResolverTest extends \PHPUnit\Framework\TestCase
+class ControllerParameterResolverTest extends TestCase
 {
     /** @var ControllerParameterResolver The resolver to use in tests */
     private $resolver;

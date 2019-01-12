@@ -12,6 +12,7 @@ namespace Opulence\Api\Handlers;
 
 use Closure;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
+use Opulence\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpStatusCodes;
@@ -28,19 +29,19 @@ use ReflectionMethod;
  */
 class RouteActionInvoker implements IRouteActionInvoker
 {
-    /** @var NegotiatedResponseFactory The negotiated response factory */
+    /** @var INegotiatedResponseFactory The negotiated response factory */
     private $negotiatedResponseFactory;
     /** @var IControllerParameterResolver The controller parameter resolver to use */
     private $controllerParameterResolver;
 
     /**
      * @param IContentNegotiator $contentNegotiator The content negotiator
-     * @param NegotiatedResponseFactory|null $negotiatedResponseFactory The negotiated response factory
+     * @param INegotiatedResponseFactory|null $negotiatedResponseFactory The negotiated response factory
      * @param IControllerParameterResolver|null $controllerParameterResolver The controller parameter resolver to use
      */
     public function __construct(
         IContentNegotiator $contentNegotiator,
-        NegotiatedResponseFactory $negotiatedResponseFactory = null,
+        INegotiatedResponseFactory $negotiatedResponseFactory = null,
         IControllerParameterResolver $controllerParameterResolver = null
     ) {
         $this->negotiatedResponseFactory = $negotiatedResponseFactory ?? new NegotiatedResponseFactory($contentNegotiator);

@@ -191,15 +191,15 @@ HTTP middleware are classes that sit in between the `RequestHandler` and `Contro
 Opulence uses dependency injection for type-hinted objects in a `Middleware` constructor.  So, if you need any objects in your `handle()` method, just specify them in the constructor.  Let's take a look at an example:
 
 ```php
-namespace Project\Application\Http\Middleware;
+namespace App\Application\Http\Middleware;
 
+use App\Domain\Authentication\Authenticator;
 use Closure;
 use Opulence\Api\Middleware\IMiddleware;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\Response;
-use Project\Domain\Authentication\Authenticator;
 
 class Authentication implements IMiddleware
 {

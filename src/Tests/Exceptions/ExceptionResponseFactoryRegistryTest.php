@@ -14,11 +14,12 @@ use InvalidArgumentException;
 use Opulence\Api\Exceptions\ExceptionResponseFactoryRegistry;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\IHttpRequestMessage;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the exception response factory registry
  */
-class ExceptionResponseFactoryRegistryTest extends \PHPUnit\Framework\TestCase
+class ExceptionResponseFactoryRegistryTest extends TestCase
 {
     /** @var ExceptionResponseFactoryRegistry The registry to use in tests */
     private $registry;
