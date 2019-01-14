@@ -14,11 +14,12 @@ use Opulence\Serialization\Encoding\EncoderRegistry;
 use Opulence\Serialization\Encoding\IEncoder;
 use Opulence\Serialization\Tests\Encoding\Mocks\User;
 use OutOfBoundsException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the encoder registry
  */
-class EncoderRegistryTest extends \PHPUnit\Framework\TestCase
+class EncoderRegistryTest extends TestCase
 {
     /** @var EncoderRegistry The encoder registry to test */
     private $encoderRegistry;
@@ -45,6 +46,7 @@ class EncoderRegistryTest extends \PHPUnit\Framework\TestCase
     public function testGettingEncoderByTypeForObjectWithoutEncoderThrowsException(): void
     {
         $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage('No default object encoder is registered');
         $this->encoderRegistry->getEncoderForType(User::class);
     }
 
@@ -58,6 +60,7 @@ class EncoderRegistryTest extends \PHPUnit\Framework\TestCase
     public function testGettingEncoderByTypeForScalarWithoutEncoderThrowsException(): void
     {
         $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage('No default scalar encoder is registered');
         $this->encoderRegistry->getEncoderForType('int');
     }
 
@@ -68,18 +71,22 @@ class EncoderRegistryTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expectedEncoder, $this->encoderRegistry->getEncoderForType('foo'));
     }
 
-    public function testGettingEncoderByTypeNormalizesType(): void
+    public function gettingEncoderByTypeNormalizesTypeProvider(): array
     {
-        $data = [
+        return [
             ['bool', 'boolean', $this->createMock(IEncoder::class)],
             ['float', 'double', $this->createMock(IEncoder::class)],
-            ['int', 'integer', $this->createMock(IEncoder::class)]
+            ['int', 'integer', $this->createMock(IEncoder::class)],
         ];
+    }
 
-        foreach ($data as $datum) {
-            $this->encoderRegistry->registerEncoder($datum[0], $datum[2]);
-            $this->assertSame($datum[2], $this->encoderRegistry->getEncoderForType($datum[1]));
-        }
+    /**
+     * @dataProvider gettingEncoderByTypeNormalizesTypeProvider
+     */
+    public function testGettingEncoderByTypeNormalizesType($aliasType, $type, $expectedEncoder): void
+    {
+        $this->encoderRegistry->registerEncoder($aliasType, $expectedEncoder);
+        $this->assertSame($expectedEncoder, $this->encoderRegistry->getEncoderForType($type));
     }
 
     public function testGettingEncoderByValueForObjectUsesDefaultEncoder(): void

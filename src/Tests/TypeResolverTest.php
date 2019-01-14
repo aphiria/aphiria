@@ -12,11 +12,12 @@ namespace Opulence\Serialization\Tests;
 
 use Opulence\Serialization\Tests\Encoding\Mocks\User;
 use Opulence\Serialization\TypeResolver;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the type resolver
  */
-class TypeResolverTest extends \PHPUnit\Framework\TestCase
+class TypeResolverTest extends TestCase
 {
     public function testGettingArrayTypeReturnsNullForNonTypedArrays(): void
     {
@@ -27,7 +28,7 @@ class TypeResolverTest extends \PHPUnit\Framework\TestCase
 
     public function testGettingArrayTypeReturnsTypeTypedArrays(): void
     {
-        $this->assertEquals(User::class, TypeResolver::getArrayType(User::class . '[]'));
+        $this->assertSame(User::class, TypeResolver::getArrayType(User::class . '[]'));
     }
 
     public function testResolvingEmptyArrayReturnsArrayType(): void
@@ -42,7 +43,7 @@ class TypeResolverTest extends \PHPUnit\Framework\TestCase
 
     public function testResolvingTypeForObjectUsesObjectsClassName(): void
     {
-        $this->assertEquals(User::class, TypeResolver::resolveType(new User(123, 'foo@bar.com')));
+        $this->assertSame(User::class, TypeResolver::resolveType(new User(123, 'foo@bar.com')));
     }
 
     public function testResolvingTypeForScalarUsesScalarType(): void

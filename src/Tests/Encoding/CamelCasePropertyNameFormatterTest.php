@@ -11,11 +11,12 @@
 namespace Opulence\Serialization\Tests\Encoding;
 
 use Opulence\Serialization\Encoding\CamelCasePropertyNameFormatter;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the camel case property name formatter
  */
-class CamelCasePropertyNameFormatterTest extends \PHPUnit\Framework\TestCase
+class CamelCasePropertyNameFormatterTest extends TestCase
 {
     /** @var CamelCasePropertyNameFormatter The formatter to use in tests */
     private $formatter;
@@ -25,16 +26,24 @@ class CamelCasePropertyNameFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter = new CamelCasePropertyNameFormatter();
     }
 
-    public function testPropertyNamesAreCamelCased(): void
+    public function propertyNamesAreCamelCasedProvider(): array
     {
-        $propertyNames = ['foo_bar', 'bar-baz', 'baz blah', 'blahDave'];
-        $expectedFormattedPropertyNames = ['fooBar', 'barBaz', 'bazBlah', 'blahDave'];
+        return [
+            ['foo_bar', 'fooBar'],
+            ['bar-baz', 'barBaz'],
+            ['baz blah', 'bazBlah'],
+            ['blahDave', 'blahDave'],
+        ];
+    }
 
-        for ($i = 0;$i < count($propertyNames);$i++) {
-            $this->assertEquals(
-                $expectedFormattedPropertyNames[$i],
-                $this->formatter->formatPropertyName($propertyNames[$i])
-            );
-        }
+    /**
+     * @dataProvider propertyNamesAreCamelCasedProvider
+     */
+    public function testPropertyNamesAreCamelCased($propertyName, $expectedFormattedPropertyName): void
+    {
+        $this->assertEquals(
+            $expectedFormattedPropertyName,
+            $this->formatter->formatPropertyName($propertyName)
+        );
     }
 }

@@ -11,11 +11,12 @@
 namespace Opulence\Serialization\Tests\Encoding;
 
 use Opulence\Serialization\Encoding\SnakeCasePropertyNameFormatter;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the snake case property name formatter
  */
-class SnakeCasePropertyNameFormatterTest extends \PHPUnit\Framework\TestCase
+class SnakeCasePropertyNameFormatterTest extends TestCase
 {
     /** @var SnakeCasePropertyNameFormatter The formatter to use in tests */
     private $formatter;
@@ -25,16 +26,24 @@ class SnakeCasePropertyNameFormatterTest extends \PHPUnit\Framework\TestCase
         $this->formatter = new SnakeCasePropertyNameFormatter();
     }
 
-    public function testPropertyNamesAreSnakeCased(): void
+    public function propertyNamesAreSnakeCasedProvider(): array
     {
-        $propertyNames = ['foo_bar', 'bar-baz', 'baz blah', 'blahDave'];
-        $expectedFormattedPropertyNames = ['foo_bar', 'bar_baz', 'baz_blah', 'blah_dave'];
+        return [
+            ['foo_bar', 'foo_bar'],
+            ['bar-baz', 'bar_baz'],
+            ['baz blah', 'baz_blah'],
+            ['blahDave', 'blah_dave'],
+        ];
+    }
 
-        for ($i = 0;$i < count($propertyNames);$i++) {
-            $this->assertEquals(
-                $expectedFormattedPropertyNames[$i],
-                $this->formatter->formatPropertyName($propertyNames[$i])
-            );
-        }
+    /**
+     * @dataProvider propertyNamesAreSnakeCasedProvider
+     */
+    public function testPropertyNamesAreSnakeCased($propertyName, $expectedFormattedPropertyName): void
+    {
+        $this->assertEquals(
+            $expectedFormattedPropertyName,
+            $this->formatter->formatPropertyName($propertyName)
+        );
     }
 }

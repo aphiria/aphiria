@@ -12,11 +12,12 @@ namespace Opulence\Serialization\Tests\Encoding;
 
 use Opulence\Serialization\Encoding\EncodingContext;
 use Opulence\Serialization\Tests\Encoding\Mocks\User;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the encoding context
  */
-class EncodingContextTest extends \PHPUnit\Framework\TestCase
+class EncodingContextTest extends TestCase
 {
     /** @var EncodingContext The context to test */
     private $context;

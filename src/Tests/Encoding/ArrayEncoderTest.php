@@ -15,11 +15,12 @@ use Opulence\Serialization\Encoding\ArrayEncoder;
 use Opulence\Serialization\Encoding\EncoderRegistry;
 use Opulence\Serialization\Encoding\EncodingContext;
 use Opulence\Serialization\Encoding\IEncoder;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the array encoder
  */
-class ArrayEncoderTest extends \PHPUnit\Framework\TestCase
+class ArrayEncoderTest extends TestCase
 {
     /** @var EncoderRegistry The encoder registry */
     private $encoders;
@@ -51,12 +52,14 @@ class ArrayEncoderTest extends \PHPUnit\Framework\TestCase
     public function testDecodingNonArrayThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value must be an array');
         $this->arrayEncoder->decode('foo', 'string[]', new EncodingContext());
     }
 
     public function testDecodingTypeThatDoesNotEndInBracketsThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Type must end in "[]"');
         $this->arrayEncoder->decode(['foo'], 'bar', new EncodingContext());
     }
 
@@ -79,6 +82,7 @@ class ArrayEncoderTest extends \PHPUnit\Framework\TestCase
     public function testEncodingThrowInvalidArgumentExceptionWithNonArrayValues(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value must be an array');
         $this->arrayEncoder->encode(12345, new EncodingContext());
     }
 

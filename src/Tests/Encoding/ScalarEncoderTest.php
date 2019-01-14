@@ -13,11 +13,12 @@ namespace Opulence\Serialization\Tests\Encoding;
 use InvalidArgumentException;
 use Opulence\Serialization\Encoding\EncodingContext;
 use Opulence\Serialization\Encoding\ScalarEncoder;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the scalar encoder
  */
-class ScalarEncoderTest extends \PHPUnit\Framework\TestCase
+class ScalarEncoderTest extends TestCase
 {
     /** @var ScalarEncoder The encoder to use in tests */
     private $scalarEncoder;
@@ -30,6 +31,7 @@ class ScalarEncoderTest extends \PHPUnit\Framework\TestCase
     public function testDecodingNonScalarThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Type string[] is an invalid scalar');
         $this->scalarEncoder->decode(['foo'], 'string[]', new EncodingContext());
     }
 
@@ -46,6 +48,7 @@ class ScalarEncoderTest extends \PHPUnit\Framework\TestCase
     public function testEncodingNonScalarThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value must be scalar');
         $this->scalarEncoder->encode([], new EncodingContext());
     }
 
