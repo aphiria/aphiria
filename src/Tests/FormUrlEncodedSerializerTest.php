@@ -16,11 +16,12 @@ use Opulence\Serialization\Encoding\IEncoder;
 use Opulence\Serialization\FormUrlEncodedSerializer;
 use Opulence\Serialization\SerializationException;
 use Opulence\Serialization\Tests\Encoding\Mocks\User;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the form URL-encoded serializer
  */
-class FormUrlEncodedSerializerTest extends \PHPUnit\Framework\TestCase
+class FormUrlEncodedSerializerTest extends TestCase
 {
     /** @var FormUrlEncodedSerializer The serializer to use in tests */
     private $serializer;
@@ -62,6 +63,7 @@ class FormUrlEncodedSerializerTest extends \PHPUnit\Framework\TestCase
     public function testEncodingExceptionThrownDuringDeserializationIsRethrown(): void
     {
         $this->expectException(SerializationException::class);
+        $this->expectExceptionMessage('Failed to deserialize value');
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->once())
             ->method('decode')
@@ -74,6 +76,7 @@ class FormUrlEncodedSerializerTest extends \PHPUnit\Framework\TestCase
     public function testEncodingExceptionThrownDuringSerializationIsRethrown(): void
     {
         $this->expectException(SerializationException::class);
+        $this->expectExceptionMessage('Failed to serialize value');
         $user = new User(123, 'foo@bar.com');
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->once())

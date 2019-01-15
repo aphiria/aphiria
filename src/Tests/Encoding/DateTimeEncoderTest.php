@@ -16,11 +16,12 @@ use DateTimeInterface;
 use InvalidArgumentException;
 use Opulence\Serialization\Encoding\DateTimeEncoder;
 use Opulence\Serialization\Encoding\EncodingContext;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the DateTime encoder
  */
-class DateTimeEncoderTest extends \PHPUnit\Framework\TestCase
+class DateTimeEncoderTest extends TestCase
 {
     /** @var DateTimeEncoder The encoder to test */
     private $dateTimeEncoder;
@@ -54,6 +55,7 @@ class DateTimeEncoderTest extends \PHPUnit\Framework\TestCase
     public function testDecodingNonDateTimeTypesThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Type must be DateTime, DateTimeImmutable, or DateTimeInterface');
         $this->dateTimeEncoder->decode(123, 'foo', new EncodingContext());
     }
 
@@ -69,6 +71,7 @@ class DateTimeEncoderTest extends \PHPUnit\Framework\TestCase
     public function testEncodingNonDateTimeThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value must implement DateTimeInterface');
         $this->dateTimeEncoder->encode('foo', new EncodingContext());
     }
 }

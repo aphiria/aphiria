@@ -33,11 +33,12 @@ use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedVariadicPa
 use Opulence\Serialization\Tests\Encoding\Mocks\DerivedClassWithProperties;
 use Opulence\Serialization\Tests\Encoding\Mocks\NoConstructor;
 use Opulence\Serialization\Tests\Encoding\Mocks\User;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the object encoder
  */
-class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
+class ObjectEncoderTest extends TestCase
 {
     /** @var EncoderRegistry The encoder registry */
     private $encoders;
@@ -53,6 +54,7 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
     public function testDecodingClassWithArrayConstructorParamThrowsExceptionIfEncodedValueIsNotArray(): void
     {
         $this->expectException(EncodingException::class);
+        $this->expectExceptionMessage('Value must be an array');
         $this->objectEncoder->decode(['foo' => 'bar'], ConstructorWithArrayParams::class, new EncodingContext());
     }
 
@@ -199,6 +201,7 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
     public function testDecodingClassWitVariadicConstructorParamThrowsExceptionIfEncodedValueIsNotArray(): void
     {
         $this->expectException(EncodingException::class);
+        $this->expectExceptionMessage('Value must be an array');
         $this->objectEncoder->decode(
             ['foo' => 'bar'],
             ConstructorWithUntypedVariadicParams::class,
@@ -238,18 +241,21 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
     public function testDecodingHashMissingRequiredPropertyThrowsException(): void
     {
         $this->expectException(EncodingException::class);
+        $this->expectExceptionMessage('No value specified for parameter "user"');
         $this->objectEncoder->decode([], ConstructorWithTypedParams::class, new EncodingContext());
     }
 
     public function testDecodingNonArrayThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Type bar is not a valid class name');
         $this->objectEncoder->decode('foo', 'bar', new EncodingContext());
     }
 
     public function testEncodingCircularReferenceThrowsException(): void
     {
         $this->expectException(EncodingException::class);
+        $this->expectExceptionMessage('Circular reference detected');
         $a = new CircularReferenceA();
         $b = new CircularReferenceB($a);
         $a->setFoo($b);
@@ -344,18 +350,21 @@ class ObjectEncoderTest extends \PHPUnit\Framework\TestCase
     public function testEncodingNonObjectThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value must be an object');
         $this->objectEncoder->encode([], new EncodingContext());
     }
 
     public function testIgnoringPropertyNameThatIsNotStringOrArrayThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Property name must be a string or array of strings');
         $this->objectEncoder->addIgnoredProperty(User::class, $this);
     }
 
     public function testDecodingWithNonArrayObjectHashShouldThrowInvalidArgumentException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value must be an associative array');
         $this->objectEncoder->decode(12345, 'InvalidArgumentException', new EncodingContext());
     }
 }
