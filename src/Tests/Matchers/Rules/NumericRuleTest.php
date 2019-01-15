@@ -11,11 +11,12 @@
 namespace Opulence\Routing\Tests\Matchers\Rules;
 
 use Opulence\Routing\Matchers\Rules\NumericRule;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the numeric rule
  */
-class NumericRuleTest extends \PHPUnit\Framework\TestCase
+class NumericRuleTest extends TestCase
 {
     public function testAlphaCharsPass(): void
     {

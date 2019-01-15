@@ -11,11 +11,12 @@
 namespace Opulence\Routing\Tests\Middleware;
 
 use Opulence\Routing\Middleware\MiddlewareBinding;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests middleware bindings
  */
-class MiddlewareBindingTest extends \PHPUnit\Framework\TestCase
+class MiddlewareBindingTest extends TestCase
 {
     public function testPropertiesAreSetInConstructor(): void
     {

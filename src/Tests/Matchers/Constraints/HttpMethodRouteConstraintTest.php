@@ -13,11 +13,12 @@ namespace Opulence\Routing\Tests\Matchers\Constraints;
 use InvalidArgumentException;
 use Opulence\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Opulence\Routing\Matchers\MatchedRouteCandidate;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the HTTP method constraint
  */
-class HttpMethodRouteConstraintTest extends \PHPUnit\Framework\TestCase
+class HttpMethodRouteConstraintTest extends TestCase
 {
     public function testCreatingWithLowercaseStringNormalizesItToUppercase(): void
     {
@@ -27,6 +28,7 @@ class HttpMethodRouteConstraintTest extends \PHPUnit\Framework\TestCase
     public function testCreatingWithNonStringNorArrayThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Allowed methods must be a string or array of strings');
         new HttpMethodRouteConstraint(123);
     }
 

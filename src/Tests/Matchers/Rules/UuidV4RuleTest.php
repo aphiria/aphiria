@@ -11,11 +11,12 @@
 namespace Opulence\Routing\Tests\Matchers\Rules;
 
 use Opulence\Routing\Matchers\Rules\UuidV4Rule;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the UUIDV4 rule
  */
-class UuidV4RuleTest extends \PHPUnit\Framework\TestCase
+class UuidV4RuleTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {

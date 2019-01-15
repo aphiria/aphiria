@@ -12,11 +12,12 @@ namespace Opulence\Routing\Tests;
 
 use Closure;
 use Opulence\Routing\ClosureRouteAction;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the closure route action
  */
-class ClosureRouteActionTest extends \PHPUnit\Framework\TestCase
+class ClosureRouteActionTest extends TestCase
 {
     /** @var ClosureRouteAction An instance that uses a closure as the action */
     private $closureAction;

@@ -15,11 +15,12 @@ use Opulence\Routing\UriTemplates\Parsers\Lexers\Token;
 use Opulence\Routing\UriTemplates\Parsers\Lexers\TokenStream;
 use Opulence\Routing\UriTemplates\Parsers\Lexers\TokenTypes;
 use Opulence\Routing\UriTemplates\Parsers\Lexers\UriTemplateLexer;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the URI template lexer
  */
-class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
+class UriTemplateLexerTest extends TestCase
 {
     /** @var UriTemplateLexer The lexer to use in tests */
     private $lexer;
@@ -342,6 +343,7 @@ class UriTemplateLexerTest extends \PHPUnit\Framework\TestCase
     public function testLexingTooLongVariableNameThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
         $invalidVariableName = str_repeat('a', 33);
         $this->lexer->lex(":$invalidVariableName");
     }

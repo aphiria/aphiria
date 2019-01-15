@@ -12,11 +12,12 @@ namespace Opulence\Routing\Tests\Matchers\Rules;
 
 use InvalidArgumentException;
 use Opulence\Routing\Matchers\Rules\BetweenRule;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the between rule
  */
-class BetweenRuleTest extends \PHPUnit\Framework\TestCase
+class BetweenRuleTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {
@@ -50,12 +51,14 @@ class BetweenRuleTest extends \PHPUnit\Framework\TestCase
     public function testInvalidMaxValueThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Max value must be numeric');
         new BetweenRule(1, false);
     }
 
     public function testInvalidMinValueThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Min value must be numeric');
         new BetweenRule(false, 1);
     }
 }

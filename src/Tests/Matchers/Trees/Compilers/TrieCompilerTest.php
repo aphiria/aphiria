@@ -27,11 +27,12 @@ use Opulence\Routing\UriTemplates\Parsers\AstNode;
 use Opulence\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Opulence\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the trie compiler
  */
-class TrieCompilerTest extends \PHPUnit\Framework\TestCase
+class TrieCompilerTest extends TestCase
 {
     /** @var TrieCompiler */
     private $compiler;

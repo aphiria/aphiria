@@ -11,11 +11,12 @@
 namespace Opulence\Routing\Tests;
 
 use Opulence\Routing\UriTemplates\UriTemplate;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the URI template
  */
-class UriTemplateTest extends \PHPUnit\Framework\TestCase
+class UriTemplateTest extends TestCase
 {
     public function testHostIsNullIfNoValueIsSpecified(): void
     {
@@ -31,12 +32,21 @@ class UriTemplateTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($uriTemplate->isAbsoluteUri);
     }
 
-    public function testLeadingSlashIsAddedToPath(): void
+    public function leadingSlashUriProvider(): array
     {
-        $uriTemplate = new UriTemplate('foo');
-        $this->assertEquals('/foo', $uriTemplate->pathTemplate);
-        $uriTemplate = new UriTemplate('/foo');
-        $this->assertEquals('/foo', $uriTemplate->pathTemplate);
+        return [
+            ['foo', '/foo'],
+            ['/foo', '/foo'],
+        ];
+    }
+
+    /**
+     * @dataProvider leadingSlashUriProvider
+     */
+    public function testLeadingSlashIsAddedToPath($uri, $expectedUri): void
+    {
+        $uriTemplate = new UriTemplate($uri);
+        $this->assertEquals($expectedUri, $uriTemplate->pathTemplate);
     }
 
     public function testPropertiesAreSetInConstructor(): void

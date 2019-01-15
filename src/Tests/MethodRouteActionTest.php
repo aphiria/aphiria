@@ -11,11 +11,12 @@
 namespace Opulence\Routing\Tests;
 
 use Opulence\Routing\MethodRouteAction;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the method route action
  */
-class MethodRouteActionTest extends \PHPUnit\Framework\TestCase
+class MethodRouteActionTest extends TestCase
 {
     /** @const The name of the class used in our method action */
     private const CLASS_NAME = 'Foo';

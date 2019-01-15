@@ -18,11 +18,12 @@ use Opulence\Routing\MethodRouteAction;
 use Opulence\Routing\Middleware\MiddlewareBinding;
 use Opulence\Routing\Route;
 use Opulence\Routing\UriTemplates\UriTemplate;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the file trie cache
  */
-class FileTrieCacheTest extends \PHPUnit\Framework\TestCase
+class FileTrieCacheTest extends TestCase
 {
     /** @var string The path to the route cache */
     private const PATH = __DIR__ . '/tmp/routes.cache';

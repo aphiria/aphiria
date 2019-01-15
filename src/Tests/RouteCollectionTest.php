@@ -14,11 +14,12 @@ use Opulence\Routing\MethodRouteAction;
 use Opulence\Routing\Route;
 use Opulence\Routing\RouteCollection;
 use Opulence\Routing\UriTemplates\UriTemplate;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the route collection
  */
-class RouteCollectionTest extends \PHPUnit\Framework\TestCase
+class RouteCollectionTest extends TestCase
 {
     /** @var RouteCollection */
     private $collection;

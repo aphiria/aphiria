@@ -12,11 +12,12 @@ namespace Opulence\Routing\Tests\Matchers\Trees;
 
 use Opulence\Routing\Matchers\Rules\IRule;
 use Opulence\Routing\Matchers\Trees\RouteVariable;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the route variable
  */
-class RouteVariableTest extends \PHPUnit\Framework\TestCase
+class RouteVariableTest extends TestCase
 {
     public function testPropertiesAreSetFromConstructor(): void
     {

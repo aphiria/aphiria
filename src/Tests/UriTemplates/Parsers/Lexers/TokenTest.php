@@ -12,11 +12,12 @@ namespace Opulence\Routing\Tests\UriTemplates\Parsers\Lexers;
 
 use Opulence\Routing\UriTemplates\Parsers\Lexers\Token;
 use Opulence\Routing\UriTemplates\Parsers\Lexers\TokenTypes;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests a lexer token
  */
-class TokenTest extends \PHPUnit\Framework\TestCase
+class TokenTest extends TestCase
 {
     public function testPropertiesAreSetInConstructor(): void
     {

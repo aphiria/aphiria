@@ -11,11 +11,12 @@
 namespace Opulence\Routing\Tests\Matchers\Rules;
 
 use Opulence\Routing\Matchers\Rules\RegexRule;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the regex rule
  */
-class RegexRuleTest extends \PHPUnit\Framework\TestCase
+class RegexRuleTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {

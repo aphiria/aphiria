@@ -12,11 +12,12 @@ namespace Opulence\Routing\Tests\UriTemplates\Parsers;
 
 use Opulence\Routing\UriTemplates\Parsers\AstNode;
 use Opulence\Routing\UriTemplates\Parsers\AstNodeTypes;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the abstract syntax tree node
  */
-class AstNodeTest extends \PHPUnit\Framework\TestCase
+class AstNodeTest extends TestCase
 {
     public function testCheckingForChildrenReturnsCorrectValue(): void
     {

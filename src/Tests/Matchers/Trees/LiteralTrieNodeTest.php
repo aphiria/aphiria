@@ -14,11 +14,12 @@ use Opulence\Routing\Matchers\Trees\LiteralTrieNode;
 use Opulence\Routing\Matchers\Trees\TrieNode;
 use Opulence\Routing\Route;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the literal trie node
  */
-class LiteralTrieNodeTest extends \PHPUnit\Framework\TestCase
+class LiteralTrieNodeTest extends TestCase
 {
     public function testCreatingWithSingleRouteConvertsItToArrayOfRoutes(): void
     {

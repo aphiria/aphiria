@@ -13,11 +13,12 @@ namespace Opulence\Routing\Tests\Matchers\Rules;
 use DateTime;
 use InvalidArgumentException;
 use Opulence\Routing\Matchers\Rules\DateRule;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the date rule
  */
-class DateRuleTest extends \PHPUnit\Framework\TestCase
+class DateRuleTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {
@@ -43,6 +44,7 @@ class DateRuleTest extends \PHPUnit\Framework\TestCase
     public function testEmptyListOfFormatsThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('No formats specified for %s', DateRule::class));
         new DateRule([]);
     }
 

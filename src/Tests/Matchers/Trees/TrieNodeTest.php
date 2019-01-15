@@ -16,11 +16,12 @@ use Opulence\Routing\Matchers\Trees\RouteVariable;
 use Opulence\Routing\Matchers\Trees\VariableTrieNode;
 use Opulence\Routing\Route;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the trie node
  */
-class TrieNodeTest extends \PHPUnit\Framework\TestCase
+class TrieNodeTest extends TestCase
 {
     /** @var TrieNode|MockObject */
     private $node;

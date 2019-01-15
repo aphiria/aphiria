@@ -13,11 +13,12 @@ namespace Opulence\Routing\Tests\Builders;
 use Opulence\Routing\Builders\RouteGroupOptions;
 use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
 use Opulence\Routing\Middleware\MiddlewareBinding;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the route group options
  */
-class RouteGroupOptionsTest extends \PHPUnit\Framework\TestCase
+class RouteGroupOptionsTest extends TestCase
 {
     /** @var RouteGroupOptions The options to use in tests */
     private $routeGroupOptions;

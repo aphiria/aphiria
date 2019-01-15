@@ -15,11 +15,12 @@ use Opulence\Routing\MethodRouteAction;
 use Opulence\Routing\Middleware\MiddlewareBinding;
 use Opulence\Routing\Route;
 use Opulence\Routing\UriTemplates\UriTemplate;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests a route
  */
-class RouteTest extends \PHPUnit\Framework\TestCase
+class RouteTest extends TestCase
 {
     /** @var Route */
     private $route;

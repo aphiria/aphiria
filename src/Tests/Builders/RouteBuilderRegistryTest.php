@@ -15,11 +15,12 @@ use Opulence\Routing\Builders\RouteGroupOptions;
 use Opulence\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
 use Opulence\Routing\Middleware\MiddlewareBinding;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the route builder registry
  */
-class RouteBuilderRegistryTest extends \PHPUnit\Framework\TestCase
+class RouteBuilderRegistryTest extends TestCase
 {
     /** @var RouteBuilderRegistry The registry to use in tests */
     private $registry;

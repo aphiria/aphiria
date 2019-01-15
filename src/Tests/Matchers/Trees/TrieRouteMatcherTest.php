@@ -20,11 +20,12 @@ use Opulence\Routing\Matchers\Trees\VariableTrieNode;
 use Opulence\Routing\MethodRouteAction;
 use Opulence\Routing\Route;
 use Opulence\Routing\UriTemplates\UriTemplate;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the trie route matcher
  */
-class TrieRouteMatcherTest extends \PHPUnit\Framework\TestCase
+class TrieRouteMatcherTest extends TestCase
 {
     /** @var TrieRouteMatcher */
     private $matcher;

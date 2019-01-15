@@ -18,15 +18,17 @@ use Opulence\Routing\Matchers\Trees\TrieNode;
 use Opulence\Routing\Matchers\Trees\VariableTrieNode;
 use Opulence\Routing\Route;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the variable trie node
  */
-class VariableTrieNodeTest extends \PHPUnit\Framework\TestCase
+class VariableTrieNodeTest extends TestCase
 {
     public function testCreatingWithEmptyPartsThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Must have at least one variable part');
         new VariableTrieNode([], []);
     }
 

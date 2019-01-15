@@ -11,14 +11,15 @@
 namespace Opulence\Routing\Tests\Matchers\Rules;
 
 use InvalidArgumentException;
+use RuntimeException;
 use Opulence\Routing\Matchers\Rules\IRule;
 use Opulence\Routing\Matchers\Rules\RuleFactory;
-use RuntimeException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the rule factory
  */
-class RuleFactoryTest extends \PHPUnit\Framework\TestCase
+class RuleFactoryTest extends TestCase
 {
     /** @var RuleFactory The rule factory to use in tests */
     private $ruleFactory;
@@ -31,6 +32,7 @@ class RuleFactoryTest extends \PHPUnit\Framework\TestCase
     public function testClosureThatDoesNotReturnRuleInstanceThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Factory for rule "foo" does not return an instance of IRule');
         $factory = function () {
             return [];
         };
@@ -41,6 +43,7 @@ class RuleFactoryTest extends \PHPUnit\Framework\TestCase
     public function testCreatingRuleWithNoFactoryRegisteredThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('No factory registered for rule "foo"');
         $this->ruleFactory->createRule('foo');
     }
 

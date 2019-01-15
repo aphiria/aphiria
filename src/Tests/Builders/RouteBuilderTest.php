@@ -17,11 +17,12 @@ use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
 use Opulence\Routing\Middleware\MiddlewareBinding;
 use Opulence\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Defines the tests for the route builder
  */
-class RouteBuilderTest extends \PHPUnit\Framework\TestCase
+class RouteBuilderTest extends TestCase
 {
     /** @var RouteBuilder The route builder to use in tests */
     private $routeBuilder;
@@ -34,6 +35,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
     public function testBuildingRouteBeforeSettingActionThrowsException(): void
     {
         $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('No controller specified for route');
         $this->routeBuilder->build();
     }
 
@@ -89,6 +91,7 @@ class RouteBuilderTest extends \PHPUnit\Framework\TestCase
     public function testInvalidManyMiddlewareThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Middleware binding must either be a string or an instance of %s', MiddlewareBinding::class));
         $this->routeBuilder->withManyMiddleware([1]);
     }
 

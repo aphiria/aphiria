@@ -12,11 +12,12 @@ namespace Opulence\Routing\Tests;
 
 use Opulence\Routing\Builders\RouteBuilderRegistry;
 use Opulence\Routing\RouteFactory;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the route factory
  */
-class RouteFactoryTest extends \PHPUnit\Framework\TestCase
+class RouteFactoryTest extends TestCase
 {
     public function testCreatingRoutesRunsCallbackAndBuildsRegistry(): void
     {

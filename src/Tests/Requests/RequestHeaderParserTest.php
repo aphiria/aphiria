@@ -11,11 +11,12 @@
 namespace Opulence\Routing\Tests\Requests;
 
 use Opulence\Routing\Requests\RequestHeaderParser;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the request header parser
  */
-class RequestHeaderParserTest extends \PHPUnit\Framework\TestCase
+class RequestHeaderParserTest extends TestCase
 {
     /** @var array The $_SERVER super global to use */
     private static $serverArray = [

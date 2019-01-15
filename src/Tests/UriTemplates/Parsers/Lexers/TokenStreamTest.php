@@ -13,11 +13,12 @@ namespace Opulence\Routing\Tests\UriTemplates\Parsers\Lexers;
 use InvalidArgumentException;
 use Opulence\Routing\UriTemplates\Parsers\Lexers\Token;
 use Opulence\Routing\UriTemplates\Parsers\Lexers\TokenStream;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the lexer token stream
  */
-class TokenStreamTest extends \PHPUnit\Framework\TestCase
+class TokenStreamTest extends TestCase
 {
     public function testCheckingNextTypeAlwaysReturnsNextType(): void
     {

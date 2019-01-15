@@ -11,11 +11,12 @@
 namespace Opulence\Routing\Tests\Matchers\Rules;
 
 use Opulence\Routing\Matchers\Rules\AlphanumericRule;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the alphanumeric rule
  */
-class AlphanumericRuleTest extends \PHPUnit\Framework\TestCase
+class AlphanumericRuleTest extends TestCase
 {
     public function testAlphanumericCharsPass(): void
     {

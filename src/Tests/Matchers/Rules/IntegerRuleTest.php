@@ -11,11 +11,12 @@
 namespace Opulence\Routing\Tests\Matchers\Rules;
 
 use Opulence\Routing\Matchers\Rules\IntegerRule;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the integer rule
  */
-class IntegerRuleTest extends \PHPUnit\Framework\TestCase
+class IntegerRuleTest extends TestCase
 {
     public function testCorrectSlugIsReturned() : void
     {

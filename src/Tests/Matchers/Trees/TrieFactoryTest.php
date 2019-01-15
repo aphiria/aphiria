@@ -18,11 +18,12 @@ use Opulence\Routing\Route;
 use Opulence\Routing\RouteCollection;
 use Opulence\Routing\RouteFactory;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the trie factory
  */
-class TrieFactoryTest extends \PHPUnit\Framework\TestCase
+class TrieFactoryTest extends TestCase
 {
     /** @var TrieFactory */
     private $trieFactory;

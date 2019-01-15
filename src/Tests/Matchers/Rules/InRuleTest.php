@@ -11,11 +11,12 @@
 namespace Opulence\Routing\Tests\Matchers\Rules;
 
 use Opulence\Routing\Matchers\Rules\InRule;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the in-array rule
  */
-class InRuleTest extends \PHPUnit\Framework\TestCase
+class InRuleTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {

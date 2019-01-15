@@ -13,11 +13,12 @@ namespace Opulence\Routing\Tests\Matchers;
 use Opulence\Routing\Matchers\RouteMatchingResult;
 use Opulence\Routing\Route;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the route matching result
  */
-class RouteMatchingResultTest extends \PHPUnit\Framework\TestCase
+class RouteMatchingResultTest extends TestCase
 {
     public function testMatchFoundIsFalseIfMatchedRouteIsNull(): void
     {

@@ -11,11 +11,12 @@
 namespace Opulence\Routing\Tests\Matchers\Rules;
 
 use Opulence\Routing\Matchers\Rules\NotInRule;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the not-in-array rule
  */
-class NotInRuleTest extends \PHPUnit\Framework\TestCase
+class NotInRuleTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {

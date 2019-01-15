@@ -17,11 +17,12 @@ use Opulence\Routing\UriTemplates\Parsers\Lexers\TokenTypes;
 use Opulence\Routing\UriTemplates\Parsers\AstNode;
 use Opulence\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Opulence\Routing\UriTemplates\Parsers\UriTemplateParser;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the URI template parser
  */
-class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
+class UriTemplateParserTest extends TestCase
 {
     /** @var UriTemplateParser The parser to use in tests */
     private $parser;
@@ -34,6 +35,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
     public function testParsingInvalidBracketInMiddleOfRuleThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Expected optional path part to start with '/', got T_VARIABLE");
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '/'),
             new Token(TokenTypes::T_PUNCTUATION, '['),
@@ -113,6 +115,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
     public function testParsingNestedOptionalHostPartThatDoesEndWithPeriodThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Expected optional host part to end with '.'");
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '['),
             new Token(TokenTypes::T_TEXT, 'foo'),
@@ -133,6 +136,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
     public function testParsingOptionalHostPartThatDoesEndWithPeriodThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Expected optional host part to end with '.'");
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '['),
             new Token(TokenTypes::T_TEXT, 'api'),
@@ -171,6 +175,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
     public function testParsingOptionalPathPartThatDoesNotBeginWithSlashThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Expected optional path part to start with '/', got T_TEXT");
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '/'),
             new Token(TokenTypes::T_TEXT, 'foo'),
@@ -252,6 +257,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
     public function testParsingSequentialVariablesThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cannot have consecutive variables without a delimiter');
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '/'),
             new Token(TokenTypes::T_VARIABLE, 'foo'),
@@ -263,6 +269,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
     public function testParsingUnclosedRuleParenthesisThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected closing parenthesis after rules, got T_EOF');
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '/'),
             new Token(TokenTypes::T_VARIABLE, 'foo'),
@@ -359,6 +366,7 @@ class UriTemplateParserTest extends \PHPUnit\Framework\TestCase
     public function testParsingVariableInPathWithRuleButWithNoSlugThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected rule name, got T_PUNCTUATION');
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '/'),
             new Token(TokenTypes::T_VARIABLE, 'foo'),

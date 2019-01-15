@@ -11,13 +11,14 @@
 namespace Opulence\Routing\Tests;
 
 use Closure;
-use Opulence\Routing\RouteAction;
 use InvalidArgumentException;
+use Opulence\Routing\RouteAction;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the route action
  */
-class RouteActionTest extends \PHPUnit\Framework\TestCase
+class RouteActionTest extends TestCase
 {
     /** @const The name of the class used in our method action */
     private const CLASS_NAME = 'Foo';
