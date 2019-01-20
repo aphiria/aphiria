@@ -10,8 +10,8 @@
 
 namespace Opulence\Api\Tests\Middleware\Mocks;
 
-use Closure;
 use Opulence\Api\Middleware\AttributeMiddleware as BaseAttributeMiddleware;
+use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 
@@ -35,8 +35,8 @@ class AttributeMiddleware extends BaseAttributeMiddleware
     /**
      * @inheritdoc
      */
-    public function handle(IHttpRequestMessage $request, Closure $next): IHttpResponseMessage
+    public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
     {
-        return $next($request);
+        return $next->handle($request);
     }
 }

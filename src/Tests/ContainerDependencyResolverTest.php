@@ -8,10 +8,10 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests\Handlers;
+namespace Opulence\Api\Tests;
 
-use Opulence\Api\Handlers\ContainerDependencyResolver;
-use Opulence\Api\Handlers\DependencyResolutionException;
+use Opulence\Api\ContainerDependencyResolver;
+use Opulence\Api\DependencyResolutionException;
 use Opulence\Ioc\IContainer;
 use Opulence\Ioc\IocException;
 use PHPUnit\Framework\MockObject\MockObject;

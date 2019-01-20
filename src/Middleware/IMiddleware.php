@@ -10,7 +10,7 @@
 
 namespace Opulence\Api\Middleware;
 
-use Closure;
+use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 
@@ -23,8 +23,8 @@ interface IMiddleware
      * Handles a request
      *
      * @param IHttpRequestMessage $request The request to handle
-     * @param Closure $next The next middleware item
+     * @param IRequestHandler $next The next request handler in the pipeline
      * @return IHttpResponseMessage The response after the middleware was run
      */
-    public function handle(IHttpRequestMessage $request, Closure $next): IHttpResponseMessage;
+    public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage;
 }

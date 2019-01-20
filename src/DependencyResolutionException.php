@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/route-dispatcher/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Handlers;
+namespace Opulence\Api;
 
 use Exception;
 

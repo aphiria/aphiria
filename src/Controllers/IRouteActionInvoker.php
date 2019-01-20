@@ -8,12 +8,11 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Handlers;
+namespace Opulence\Api\Controllers;
 
 use Exception;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Routing\Matchers\RouteMatchingResult;
 
 /**
  * Defines the interface for route action invokers to implement
@@ -25,13 +24,13 @@ interface IRouteActionInvoker
      *
      * @param callable $routeAction The route action callable to invoke
      * @param IHttpRequestMessage $request The current request
-     * @param RouteMatchingResult $matchingResult The result of the route matching
+     * @param array $routeVariables The route variables
      * @return IHttpResponseMessage The response
      * @throws Exception Thrown if there was any error processing the request
      */
     public function invokeRouteAction(
         callable $routeAction,
         IHttpRequestMessage $request,
-        RouteMatchingResult $matchingResult
+        array $routeVariables
     ): IHttpResponseMessage;
 }

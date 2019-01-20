@@ -8,9 +8,9 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests\Handlers\Mocks;
+namespace Opulence\Api\Tests\Controllers\Mocks;
 
-use Opulence\Api\Controller as BaseController;
+use Opulence\Api\Controllers\Controller as BaseController;
 use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;

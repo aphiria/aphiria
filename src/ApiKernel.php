@@ -1,0 +1,184 @@
+<?php
+
+/*
+ * Opulence
+ *
+ * @link      https://www.opulencephp.com
+ * @copyright Copyright (C) 2018 David Young
+ * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ */
+
+namespace Opulence\Api;
+
+use Closure;
+use InvalidArgumentException;
+use Opulence\Api\Controllers\Controller;
+use Opulence\Api\Controllers\ControllerRequestHandler;
+use Opulence\Api\Controllers\IRouteActionInvoker;
+use Opulence\Api\Controllers\RouteActionInvoker;
+use Opulence\Api\Middleware\MiddlewareRequestHandlerResolver;
+use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
+use Opulence\Net\Http\Handlers\IRequestHandler;
+use Opulence\Net\Http\HttpException;
+use Opulence\Net\Http\HttpStatusCodes;
+use Opulence\Net\Http\IHttpRequestMessage;
+use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\Response;
+use Opulence\Pipelines\Pipeline;
+use Opulence\Routing\Matchers\IRouteMatcher;
+use Opulence\Routing\Matchers\RouteMatchingResult;
+use Opulence\Routing\Middleware\MiddlewareBinding;
+use Opulence\Routing\RouteAction;
+
+/**
+ * Defines the API kernel
+ */
+class ApiKernel implements IRequestHandler
+{
+    /** @var IRouteMatcher The route matcher */
+    private $routeMatcher;
+    /** @var IDependencyResolver The dependency resolver*/
+    private $dependencyResolver;
+    /** @var IContentNegotiator The content negotiator */
+    private $contentNegotiator;
+    /** @var MiddlewareRequestHandlerResolver The middleware request handler resolver */
+    private $middlewareRequestHandlerResolver;
+    /** @var IRouteActionInvoker The route action invoker */
+    private $routeActionInvoker;
+
+    /**
+     * @param IRouteMatcher $routeMatcher The route matcher
+     * @param IDependencyResolver $dependencyResolver The dependency resolver
+     * @param IContentNegotiator $contentNegotiator The content negotiator
+     * @param MiddlewareRequestHandlerResolver $middlewareRequestHandlerResolver THe middleware request handler resolver
+     * @param IRouteActionInvoker $routeActionInvoker The route action invoker
+     */
+    public function __construct(
+        IRouteMatcher $routeMatcher,
+        IDependencyResolver $dependencyResolver,
+        IContentNegotiator $contentNegotiator,
+        MiddlewareRequestHandlerResolver $middlewareRequestHandlerResolver,
+        IRouteActionInvoker $routeActionInvoker = null
+    ) {
+        $this->routeMatcher = $routeMatcher;
+        $this->dependencyResolver = $dependencyResolver;
+        $this->contentNegotiator = $contentNegotiator;
+        $this->middlewareRequestHandlerResolver = $middlewareRequestHandlerResolver;
+        $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function handle(IHttpRequestMessage $request): IHttpResponseMessage
+    {
+        $matchingResult = $this->getMatchingRoute($request);
+        $controller = $controllerCallable = null;
+        $this->createController($matchingResult->route->action, $controller, $controllerCallable);
+        $controllerRequestHandler = new ControllerRequestHandler(
+            $controller,
+            $controllerCallable,
+            $matchingResult->routeVariables,
+            $this->contentNegotiator,
+            $this->routeActionInvoker
+        );
+        $middlewareRequestHandlers = $this->createMiddlewareRequestHandlers(
+            $matchingResult->route->middlewareBindings,
+            $controllerRequestHandler
+        );
+
+        // TODO: This will not inject IRequestHandler as $next.  It will inject Closure $next.
+        return (new Pipeline())->send($request)
+            ->through($middlewareRequestHandlers, 'handle')
+            ->execute();
+    }
+
+    /**
+     * Creates a controller from a route action
+     *
+     * @param RouteAction $routeAction The route action to create the controller from
+     * @param Controller $controller The "out" parameter that will contain the controller
+     * @param callable $controllerCallable The "out" parameter that will contain the controller callable
+     * @throws DependencyResolutionException Thrown if the controller could not be resolved
+     */
+    private function createController(
+        RouteAction $routeAction,
+        Controller &$controller = null,
+        callable &$controllerCallable = null
+    ): void {
+        if ($routeAction->usesMethod()) {
+            $controller = $this->dependencyResolver->resolve($routeAction->className);
+            $controllerCallable = [$controller, $routeAction->methodName];
+
+            if (!\is_callable($controllerCallable)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Controller method %s::%s() does not exist',
+                        $routeAction->className,
+                        $routeAction->methodName
+                    )
+                );
+            }
+        } else {
+            $controller = new Controller();
+            $controllerCallable = Closure::bind($routeAction->closure, $controller, Controller::class);
+        }
+
+        if (!$controller instanceof Controller) {
+            throw new InvalidArgumentException(
+                sprintf('Controller %s does not extend %s', \get_class($controller), Controller::class)
+            );
+        }
+    }
+
+    /**
+     * Creates middleware request handlers from middleware bindings
+     *
+     * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings to create request handlers from
+     * @param IRequestHandler $controllerRequestHandler The request handler for the controller
+     * @return IRequestHandler[] The request handlers for the middleware
+     * @throws DependencyResolutionException Thrown if the middleware could not be resolved
+     */
+    private function createMiddlewareRequestHandlers(
+        array $middlewareBindings,
+        IRequestHandler $controllerRequestHandler
+    ): array  {
+        $middlewareRequestHandlers = [];
+        $next = $controllerRequestHandler;
+
+        foreach (\array_reverse($middlewareBindings) as $middlewareBinding) {
+            $middlewareRequestHandler = $this->middlewareRequestHandlerResolver->resolve($middlewareBinding, $next);
+            $middlewareRequestHandlers[] = $middlewareRequestHandler;
+            $next = $middlewareRequestHandler;
+        }
+
+        // We had to construct them in reverse order, so let's put them in the correct order again
+        return \array_reverse($middlewareRequestHandlers);
+    }
+
+    /**
+     * Gets the matching route for the input request
+     *
+     * @param IHttpRequestMessage $request The current request
+     * @return RouteMatchingResult The route matching result
+     * @throws HttpException Thrown if there was no matching route, or if the request was invalid for the matched route
+     */
+    private function getMatchingRoute(IHttpRequestMessage $request): RouteMatchingResult
+    {
+        $uri = $request->getUri();
+        $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->getHost(), $uri->getPath());
+
+        if (!$matchingResult->matchFound) {
+            if ($matchingResult->methodIsAllowed) {
+                throw new HttpException(HttpStatusCodes::HTTP_NOT_FOUND, "No route found for {$request->getUri()}");
+            }
+
+            $response = new Response(HttpStatusCodes::HTTP_METHOD_NOT_ALLOWED);
+            $response->getHeaders()->add('Allow', $matchingResult->allowedMethods);
+
+            throw new HttpException($response, 'Method not allowed');
+        }
+
+        return $matchingResult;
+    }
+}

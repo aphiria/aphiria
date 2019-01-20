@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests\Handlers\Mocks;
+namespace Opulence\Api\Tests\Controllers\Mocks;
 
 /**
  * Defines a simple use model for use in tests

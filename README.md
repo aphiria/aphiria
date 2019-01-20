@@ -186,7 +186,7 @@ Once you've instantiated your dependency resolver, pass it into your [request ha
 
 <h1 id="middleware">Middleware</h1>
 
-HTTP middleware are classes that sit in between the `RequestHandler` and `Controller`.  They manipulate the request and response to do things like authenticate users or enforce CSRF protection for certain routes.  They are executed in series in a pipeline.
+HTTP middleware are classes that are executed in a series of pipeline stages.  They manipulate the request and response to do things like authenticate users or enforce CSRF protection for certain routes.  They are executed in series in a pipeline.
 
 Opulence uses dependency injection for type-hinted objects in a `Middleware` constructor.  So, if you need any objects in your `handle()` method, just specify them in the constructor.  Let's take a look at an example:
 
@@ -196,6 +196,7 @@ namespace App\Application\Http\Middleware;
 use App\Domain\Authentication\Authenticator;
 use Closure;
 use Opulence\Api\Middleware\IMiddleware;
+use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
@@ -211,8 +212,8 @@ class Authentication implements IMiddleware
         $this->authenticator = $authenticator;
     }
 
-    // $next consists of the next middleware in the pipeline
-    public function handle(IHttpRequestMessage $request, Closure $next): IHttpResponseMessage
+    // $next consists of the next request handler in the pipeline
+    public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
     {
         if (!$this->authenticator->isLoggedIn()) {
             $headers = new HttpHeaders();
@@ -221,7 +222,7 @@ class Authentication implements IMiddleware
             return new Response(301, $headers);
         }
 
-        return $next($request);
+        return $next->handle($request);
     }
 }
 ```
@@ -236,7 +237,7 @@ $routes->map('POST', 'posts')
 
 Now, the `Authenticate` middleware will be run before the `createPost()` method is called.  If the user is not logged in, s/he'll be redirected to the login page.
 
-> **Note:** If middleware does not specifically call the `$next` closure, none of the middleware after it in the pipeline will be run.
+> **Note:** If middleware does not specifically call the `$next` request handler, none of the middleware after it in the pipeline will be run.
 
 <h2 id="manipulating-the-request">Manipulating the Request</h2>
 
@@ -245,17 +246,18 @@ To manipulate the request before it gets to the controller, make changes to it b
 ```php
 use Closure;
 use Opulence\Api\Middleware\IMiddleware;
+use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 
 class RequestManipulator implements IMiddleware
 {
-    public function handle(IHttpRequestMessage $request, Closure $next): IHttpResponseMessage
+    public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
     {
-        // Do our work before returning $next($request)
+        // Do our work before returning $next->handle($request)
         $request->getProperties()->add('Foo', 'bar');
 
-        return $next($request);
+        return $next->handle($request);
     }
 }
 ```
@@ -267,14 +269,15 @@ To manipulate the response after the controller has done its work, do the follow
 ```php
 use Closure;
 use Opulence\Api\Middleware\IMiddleware;
+use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 
 class ResponseManipulator implements IMiddleware
 {
-    public function handle(IHttpRequestMessage $request, Closure $next): IHttpResponseMessage
+    public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
     {
-        $response = $next($request);
+        $response = $next->handle($request);
 
         // Make our changes
         $response->getHeaders()->add('Foo', 'bar');
@@ -291,6 +294,7 @@ Occasionally, you'll find yourself wanting to pass primitive values to middlewar
 ```php
 use Closure;
 use Opulence\Api\Middleware\AttributeMiddleware;
+use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
@@ -305,14 +309,14 @@ class RoleMiddleware extends AttributeMiddleware
         $this->user = $user;
     }
 
-    public function handle(IHttpRequestMessage $request, Closure $next): IHttpResponseMessage
+    public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
     {
         // Attributes are available via $this->attributes
         if (!$this->user->hasRole($this->attributes['role'])) {
             throw new HttpException(403);
         }
 
-        return $next($request);
+        return $next->handle($request);
     }
 }
 ```
@@ -338,7 +342,7 @@ Configuring your API is easy - you just need to set up a few things:
 Handling a request from beginning to end is simple:
 
 ```php
-use Opulence\Api\Handlers\ControllerRequestHandler;
+use Opulence\Api\Controllers\ControllerRequestHandler;
 use Opulence\Net\Http\RequestFactory;
 use Opulence\Net\Http\ResponseWriter;
 

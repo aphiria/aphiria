@@ -8,12 +8,12 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests\Handlers;
+namespace Opulence\Api\Tests\Controllers;
 
-use Opulence\Api\Handlers\ControllerParameterResolver;
-use Opulence\Api\Handlers\MissingControllerParameterValueException;
-use Opulence\Api\Tests\Handlers\Mocks\Controller;
-use Opulence\Api\Tests\Handlers\Mocks\User;
+use Opulence\Api\Controllers\ControllerParameterResolver;
+use Opulence\Api\Controllers\MissingControllerParameterValueException;
+use Opulence\Api\Tests\Controllers\Mocks\Controller;
+use Opulence\Api\Tests\Controllers\Mocks\User;
 use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
@@ -21,10 +21,6 @@ use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\Request;
 use Opulence\Net\Http\StringBody;
 use Opulence\Net\Uri;
-use Opulence\Routing\Matchers\RouteMatchingResult;
-use Opulence\Routing\Route;
-use Opulence\Routing\RouteAction;
-use Opulence\Routing\UriTemplates\UriTemplate;
 use Opulence\Serialization\SerializationException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -51,15 +47,7 @@ class ControllerParameterResolverTest extends TestCase
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'noTypeHintParameter'], 'foo'),
             $this->createMock(IHttpRequestMessage::class),
-            new RouteMatchingResult(
-                new Route(
-                    new UriTemplate('foo'),
-                    new RouteAction(Controller::class, 'noTypeHintParameter', null),
-                    []
-                ),
-                ['foo' => 'bar'],
-                []
-            )
+            ['foo' => 'bar']
         );
         $this->assertEquals('bar', $resolvedParameter);
     }
@@ -81,15 +69,7 @@ class ControllerParameterResolverTest extends TestCase
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'nullableObjectParameter'], 'user'),
             $request,
-            new RouteMatchingResult(
-                new Route(
-                    new UriTemplate('foo'),
-                    new RouteAction(Controller::class, 'nullableObjectParameter', null),
-                    []
-                ),
-                [],
-                []
-            )
+            []
         );
         $this->assertNull($resolvedParameter);
     }
@@ -100,15 +80,7 @@ class ControllerParameterResolverTest extends TestCase
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'nullableObjectParameter'], 'user'),
             $request,
-            new RouteMatchingResult(
-                new Route(
-                    new UriTemplate('foo'),
-                    new RouteAction(Controller::class, 'nullableObjectParameter', null),
-                    []
-                ),
-                [],
-                []
-            )
+            []
         );
         $this->assertNull($resolvedParameter);
     }
@@ -118,15 +90,7 @@ class ControllerParameterResolverTest extends TestCase
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'nullableScalarParameter'], 'foo'),
             $this->createRequestWithoutBody('http://foo.com'),
-            new RouteMatchingResult(
-                new Route(
-                    new UriTemplate('foo'),
-                    new RouteAction(Controller::class, 'nullableScalarParameter', null),
-                    []
-                ),
-                [],
-                []
-            )
+            []
         );
         $this->assertNull($resolvedParameter);
     }
@@ -137,15 +101,7 @@ class ControllerParameterResolverTest extends TestCase
         $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'objectParameter'], 'user'),
             $this->createRequestWithoutBody('http://foo.com'),
-            new RouteMatchingResult(
-                new Route(
-                    new UriTemplate('foo'),
-                    new RouteAction(Controller::class, 'objectParameter', null),
-                    []
-                ),
-                [],
-                []
-            )
+            []
         );
     }
 
@@ -167,15 +123,7 @@ class ControllerParameterResolverTest extends TestCase
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'objectParameter'], 'user'),
             $request,
-            new RouteMatchingResult(
-                new Route(
-                    new UriTemplate('foo'),
-                    new RouteAction(Controller::class, 'objectParameter', null),
-                    []
-                ),
-                [],
-                []
-            )
+            []
         );
         $this->assertEquals($expectedUser, $resolvedParameter);
     }
@@ -186,15 +134,7 @@ class ControllerParameterResolverTest extends TestCase
         $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'stringParameter'], 'foo'),
             $this->createRequestWithoutBody('http://foo.com'),
-            new RouteMatchingResult(
-                new Route(
-                    new UriTemplate('foo'),
-                    new RouteAction(Controller::class, 'stringParameter', null),
-                    []
-                ),
-                [],
-                []
-            )
+            []
         );
     }
 
@@ -203,15 +143,7 @@ class ControllerParameterResolverTest extends TestCase
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'defaultValueParameter'], 'foo'),
             $this->createRequestWithoutBody('http://foo.com'),
-            new RouteMatchingResult(
-                new Route(
-                    new UriTemplate('foo'),
-                    new RouteAction(Controller::class, 'defaultValueParameter', null),
-                    []
-                ),
-                [],
-                []
-            )
+            []
         );
         $this->assertEquals('bar', $resolvedParameter);
     }
@@ -221,15 +153,7 @@ class ControllerParameterResolverTest extends TestCase
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'stringParameter'], 'foo'),
             $this->createRequestWithoutBody('http://foo.com/?foo=bar'),
-            new RouteMatchingResult(
-                new Route(
-                    new UriTemplate('foo'),
-                    new RouteAction(Controller::class, 'stringParameter', null),
-                    []
-                ),
-                [],
-                []
-            )
+            []
         );
         $this->assertEquals('bar', $resolvedParameter);
     }
@@ -239,15 +163,7 @@ class ControllerParameterResolverTest extends TestCase
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'stringParameter'], 'foo'),
             $this->createRequestWithoutBody('http://foo.com/?foo=baz'),
-            new RouteMatchingResult(
-                new Route(
-                    new UriTemplate('foo'),
-                    new RouteAction(Controller::class, 'stringParameter', null),
-                    []
-                ),
-                ['foo' => 'dave'],
-                []
-            )
+            ['foo' => 'dave']
         );
         $this->assertEquals('dave', $resolvedParameter);
     }

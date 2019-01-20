@@ -8,12 +8,11 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Handlers;
+namespace Opulence\Api\Controllers;
 
 use Opulence\Net\Formatting\UriParser;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Routing\Matchers\RouteMatchingResult;
 use Opulence\Serialization\SerializationException;
 use ReflectionParameter;
 
@@ -43,7 +42,7 @@ class ControllerParameterResolver implements IControllerParameterResolver
     public function resolveParameter(
         ReflectionParameter $reflectionParameter,
         IHttpRequestMessage $request,
-        RouteMatchingResult $matchingResult
+        array $routeVariables
     ) {
         $queryStringVars = $this->uriParser->parseQueryString($request->getUri());
 
@@ -54,8 +53,8 @@ class ControllerParameterResolver implements IControllerParameterResolver
             );
         }
 
-        if (isset($matchingResult->routeVariables[$reflectionParameter->getName()])) {
-            return $matchingResult->routeVariables[$reflectionParameter->getName()];
+        if (isset($routeVariables[$reflectionParameter->getName()])) {
+            return $routeVariables[$reflectionParameter->getName()];
         }
 
         if (isset($queryStringVars[$reflectionParameter->getName()])) {

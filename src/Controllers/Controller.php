@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api;
+namespace Opulence\Api\Controllers;
 
 use InvalidArgumentException;
 use LogicException;

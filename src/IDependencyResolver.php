@@ -8,7 +8,7 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Handlers;
+namespace Opulence\Api;
 
 /**
  * Defines the interface for dependency resolvers to implement

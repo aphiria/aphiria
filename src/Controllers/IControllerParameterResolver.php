@@ -8,10 +8,9 @@
  * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Handlers;
+namespace Opulence\Api\Controllers;
 
 use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Routing\Matchers\RouteMatchingResult;
 use ReflectionParameter;
 
 /**
@@ -24,7 +23,7 @@ interface IControllerParameterResolver
      *
      * @param ReflectionParameter $reflectionParameter The reflected parameter
      * @param IHttpRequestMessage $request The current request
-     * @param RouteMatchingResult $matchingResult The result of the route matching
+     * @param array $routeVariables The list of route variables
      * @return mixed The resolved parameter value
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
@@ -33,6 +32,6 @@ interface IControllerParameterResolver
     public function resolveParameter(
         ReflectionParameter $reflectionParameter,
         IHttpRequestMessage $request,
-        RouteMatchingResult $matchingResult
+        array $routeVariables
     );
 }
