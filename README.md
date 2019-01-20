@@ -331,7 +331,7 @@ $routes->map('GET', 'foo')
 
 <h1 id="request-handlers">Request Handlers</h1>
 
-A request handler simply takes in an HTTP request and returns a response.  It is capable of matching a route and sending the request and response through [middleware](#middleware) to the [controller](#controllers).
+A request handler simply takes in an HTTP request and returns a response.  The API kernel, middleware, and route actions are all wrapped in request handlers.  `ApiKernel` is capable of matching a route and sending the request and response through [middleware](#middleware) to the [controller](#controllers).
 
 Configuring your API is easy - you just need to set up a few things:
 
