@@ -49,7 +49,7 @@ class UserController extends Controller
 }
 ```
 
-Opulence will see the `User` parameter and [automatically deserialize the request body to an instance of `User`](#parameter-resolution).  It will also detect that a `User` object was returned, and create a 200 response whose body is the serialized user object.  Here's the nice part - your models can be POPOs, and Opulence will automatically know how to (de)serialize them.  It uses <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a> to determine the media type to serialize to (eg JSON).
+Opulence will see the `User` parameter and [automatically deserialize the request body to an instance of `User`](#parameter-resolution), which can be a POPO.  It will also detect that a `User` object was returned, and create a 200 response whose body is the serialized user object.  It uses <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a> to determine the media type to (de)serialize to (eg JSON).
 
 You can also be a bit more explicit and return a response yourself.  For example, the following controller method is functionally identical to the previous example:
 
@@ -194,13 +194,9 @@ Opulence uses dependency injection for type-hinted objects in a `Middleware` con
 namespace App\Application\Http\Middleware;
 
 use App\Domain\Authentication\Authenticator;
-use Closure;
 use Opulence\Api\Middleware\IMiddleware;
 use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\Response;
+use Opulence\Net\Http\{IHttpRequestMessage, IHttpResponseMessage, Response};
 
 class Authentication implements IMiddleware
 {
@@ -215,11 +211,8 @@ class Authentication implements IMiddleware
     // $next is the next request handler in the pipeline
     public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
     {
-        if (!$this->authenticator->isLoggedIn()) {
-            $headers = new HttpHeaders();
-            $headers->add('Location', '/login');
-
-            return new Response(301, $headers);
+        if (!$this->authenticator->isLoggedIn($request)) {
+            return new Response(401);
         }
 
         return $next->handle($request);
@@ -235,7 +228,7 @@ $routes->map('POST', 'posts')
     ->withMiddleware(Authentication::class);
 ```
 
-Now, the `Authenticate` middleware will be run before the `createPost()` method is called.  If the user is not logged in, s/he'll be redirected to the login page.
+Now, the `Authenticate` middleware will be run before the `createPost()` controller method is called.  If the user is not logged in, s/he'll be given an unauthorized (401) response.
 
 > **Note:** If middleware does not specifically call the `$next` request handler, none of the middleware after it in the pipeline will be run.
 
@@ -244,11 +237,9 @@ Now, the `Authenticate` middleware will be run before the `createPost()` method 
 To manipulate the request before it gets to the controller, make changes to it before calling `$next($request)`:
 
 ```php
-use Closure;
 use Opulence\Api\Middleware\IMiddleware;
 use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\{IHttpRequestMessage, IHttpResponseMessage};
 
 class RequestManipulator implements IMiddleware
 {
@@ -267,11 +258,9 @@ class RequestManipulator implements IMiddleware
 To manipulate the response after the controller has done its work, do the following:
 
 ```php
-use Closure;
 use Opulence\Api\Middleware\IMiddleware;
 use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\{IHttpRequestMessage, IHttpResponseMessage};
 
 class ResponseManipulator implements IMiddleware
 {
@@ -292,12 +281,9 @@ class ResponseManipulator implements IMiddleware
 Occasionally, you'll find yourself wanting to pass primitive values to middleware to indicate something such as a required role to execute an action.  In these cases, your middleware should extend `Opulence\Api\Middleware\AttributeMiddleware`:
 
 ```php
-use Closure;
 use Opulence\Api\Middleware\AttributeMiddleware;
 use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\{HttpException, IHttpRequestMessage, IHttpResponseMessage};
 
 class RoleMiddleware extends AttributeMiddleware
 {
@@ -343,8 +329,7 @@ Handling a request from beginning to end is simple:
 
 ```php
 use Opulence\Api\ApiKernel;
-use Opulence\Net\Http\RequestFactory;
-use Opulence\Net\Http\ResponseWriter;
+use Opulence\Net\Http\{RequestFactory, ResponseWriter};
 
 // Assume your route matcher, dependency resolver, and content negotiator are already set
 $request = (new RequestFactory)->createRequestFromSuperglobals($_SERVER);
@@ -362,8 +347,7 @@ $response = $apiKernel->handle($request);
 Sometimes, your application is going to throw an unhandled exception or shut down unexpectedly.  When this happens, instead of showing an ugly PHP error, you can convert it to a nicely-formatted response.  To get set up, you can simply instantiate `ExceptionHandler` and register it with PHP:
 
 ```php
-use Opulence\Api\Exceptions\ExceptionHandler;
-use Opulence\Api\Exceptions\ExceptionResponseFactory;
+use Opulence\Api\Exceptions\{ExceptionHandler, ExceptionResponseFactory};
 use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 
 // Assume the content negotiator was already set up
@@ -384,10 +368,8 @@ You might find yourself wanting to map a particular exception to a certain respo
 As an example, let's say that you want to return a 404 response when an `EntityNotFound` exception is thrown:
 
 ```php
-use Opulence\Api\Exceptions\ExceptionResponseFactory;
-use Opulence\Api\Exceptions\ExceptionResponseFactoryRegistry;
-use Opulence\Net\Http\HttpStatusCodes;
-use Opulence\Net\Http\Response;
+use Opulence\Api\Exceptions\{ExceptionResponseFactory, ExceptionResponseFactoryRegistry};
+use Opulence\Net\Http\{HttpStatusCodes, Response};
 
 // Register your custom exception response factories
 $exceptionResponseFactoryRegistry = new ExceptionResponseFactoryRegistry();
@@ -435,13 +417,13 @@ $exceptionResponseFactoryRegistry->registerFactory(
             $request,
             HttpStatusCodes::HTTP_NOT_FOUND,
             null,
-            new SomeCustomMessage('Entity not found')
+            new MyErrorObject('Entity not found')
         );
     }
 );
 ```
 
-If an unhandled `EntityNotFound` exception was thrown, your exception factory will use content negotiation to serialize `SomeCustomMessage` in the response body.
+If an unhandled `EntityNotFound` exception was thrown, your exception factory will use content negotiation to serialize `MyErrorObject` in the response body.
 
 <h2 id="logging">Logging</h2>
 
