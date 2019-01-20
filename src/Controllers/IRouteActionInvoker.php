@@ -22,14 +22,14 @@ interface IRouteActionInvoker
     /**
      * Invokes a route action
      *
-     * @param callable $routeAction The route action callable to invoke
+     * @param callable $routeActionDelegate The route action delegate to invoke
      * @param IHttpRequestMessage $request The current request
      * @param array $routeVariables The route variables
      * @return IHttpResponseMessage The response
      * @throws Exception Thrown if there was any error processing the request
      */
     public function invokeRouteAction(
-        callable $routeAction,
+        callable $routeActionDelegate,
         IHttpRequestMessage $request,
         array $routeVariables
     ): IHttpResponseMessage;

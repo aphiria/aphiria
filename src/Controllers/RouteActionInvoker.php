@@ -51,32 +51,32 @@ class RouteActionInvoker implements IRouteActionInvoker
      * @inheritdoc
      */
     public function invokeRouteAction(
-        callable $routeAction,
+        callable $routeActionDelegate,
         IHttpRequestMessage $request,
         array $routeVariables
     ): IHttpResponseMessage {
         try {
-            if (\is_array($routeAction)) {
-                $reflectionFunction = new ReflectionMethod($routeAction[0], $routeAction[1]);
+            if (\is_array($routeActionDelegate)) {
+                $reflectionFunction = new ReflectionMethod($routeActionDelegate[0], $routeActionDelegate[1]);
 
                 if (!$reflectionFunction->isPublic()) {
                     throw new HttpException(
                         HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
                         sprintf(
                             'Controller method %s must be public',
-                            $this->getRouteActionDisplayName($routeAction)
+                            $this->getRouteActionDisplayName($routeActionDelegate)
                         )
                     );
                 }
             } else {
-                $reflectionFunction = new ReflectionFunction($routeAction);
+                $reflectionFunction = new ReflectionFunction($routeActionDelegate);
             }
         } catch (ReflectionException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
                 sprintf(
                     'Reflection failed for %s',
-                    $this->getRouteActionDisplayName($routeAction)
+                    $this->getRouteActionDisplayName($routeActionDelegate)
                 ),
                 0,
                 $ex
@@ -96,27 +96,27 @@ class RouteActionInvoker implements IRouteActionInvoker
         } catch (MissingControllerParameterValueException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_BAD_REQUEST,
-                "Failed to invoke {$this->getRouteActionDisplayName($routeAction)}",
+                "Failed to invoke {$this->getRouteActionDisplayName($routeActionDelegate)}",
                 0,
                 $ex
             );
         } catch (FailedRequestContentNegotiationException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                "Failed to invoke {$this->getRouteActionDisplayName($routeAction)}",
+                "Failed to invoke {$this->getRouteActionDisplayName($routeActionDelegate)}",
                 0,
                 $ex
             );
         } catch (RequestBodyDeserializationException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY,
-                "Failed to invoke {$this->getRouteActionDisplayName($routeAction)}",
+                "Failed to invoke {$this->getRouteActionDisplayName($routeActionDelegate)}",
                 0,
                 $ex
             );
         }
 
-        $actionResult = $routeAction(...$resolvedParameters);
+        $actionResult = $routeActionDelegate(...$resolvedParameters);
 
         if ($actionResult instanceof IHttpResponseMessage) {
             return $actionResult;
@@ -139,17 +139,17 @@ class RouteActionInvoker implements IRouteActionInvoker
     /**
      * Gets the display name for a route action for use in exception messages
      *
-     * @param callable $routeAction The route action whose display name we want
+     * @param callable $routeActionDelegate The route action delegate whose display name we want
      * @return string The route action display name
      */
-    private function getRouteActionDisplayName(callable $routeAction): string
+    private function getRouteActionDisplayName(callable $routeActionDelegate): string
     {
-        if (\is_array($routeAction)) {
-            if (\is_string($routeAction[0])) {
-                return $routeAction[0];
+        if (\is_array($routeActionDelegate)) {
+            if (\is_string($routeActionDelegate[0])) {
+                return $routeActionDelegate[0];
             }
 
-            return \get_class($routeAction[0]) . '::' . $routeAction[1];
+            return \get_class($routeActionDelegate[0]) . '::' . $routeActionDelegate[1];
         }
 
         return Closure::class;

@@ -342,18 +342,18 @@ Configuring your API is easy - you just need to set up a few things:
 Handling a request from beginning to end is simple:
 
 ```php
-use Opulence\Api\Controllers\ControllerRequestHandler;
+use Opulence\Api\ApiKernel;
 use Opulence\Net\Http\RequestFactory;
 use Opulence\Net\Http\ResponseWriter;
 
 // Assume your route matcher, dependency resolver, and content negotiator are already set
-$requestHandler = new ControllerRequestHandler(
+$request = (new RequestFactory)->createRequestFromSuperglobals($_SERVER);
+$apiKernel = new ApiKernel(
     $routeMatcher,
     $dependencyResolver,
     $contentNegotiator
 );
-$request = (new RequestFactory)->createRequestFromSuperglobals($_SERVER);
-$response = $requestHandler->handle($request);
+$response = $apiKernel->handle($request);
 (new ResponseWriter)->writeResponse($response);
 ```
 

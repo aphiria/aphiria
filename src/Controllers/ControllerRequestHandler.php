@@ -21,8 +21,8 @@ class ControllerRequestHandler implements IRequestHandler
 {
     /** @var Controller The controller */
     private $controller;
-    /** @var callable The controller callable to call */
-    private $controllerCallable;
+    /** @var callable Theroute action delegate */
+    private $routeActionDelegate;
     /** @var array The route variables */
     private $routeVariables;
     /** @var IContentNegotiator The content negotiator */
@@ -32,20 +32,20 @@ class ControllerRequestHandler implements IRequestHandler
 
     /**
      * @param Controller $controller The controller
-     * @param callable $controllerCallable The controller callable to call
+     * @param callable $routeActionDelegate The route action delegate
      * @param array $routeVariables The route variables
      * @param IContentNegotiator $contentNegotiator The content negotiator
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker to use
      */
     public function __construct(
         Controller $controller,
-        callable $controllerCallable,
+        callable $routeActionDelegate,
         array $routeVariables,
         IContentNegotiator $contentNegotiator,
         IRouteActionInvoker $routeActionInvoker = null
     ) {
         $this->controller = $controller;
-        $this->controllerCallable = $controllerCallable;
+        $this->routeActionDelegate = $routeActionDelegate;
         $this->routeVariables = $routeVariables;
         $this->contentNegotiator = $contentNegotiator;
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
@@ -62,7 +62,7 @@ class ControllerRequestHandler implements IRequestHandler
         $this->controller->setNegotiatedResponseFactory(new NegotiatedResponseFactory($this->contentNegotiator));
 
         return $this->routeActionInvoker->invokeRouteAction(
-            $this->controllerCallable,
+            $this->routeActionDelegate,
             $request,
             $this->routeVariables
         );

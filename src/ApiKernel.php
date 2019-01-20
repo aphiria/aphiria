@@ -24,7 +24,6 @@ use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Http\Response;
-use Opulence\Pipelines\Pipeline;
 use Opulence\Routing\Matchers\IRouteMatcher;
 use Opulence\Routing\Matchers\RouteMatchingResult;
 use Opulence\Routing\Middleware\MiddlewareBinding;
@@ -37,7 +36,7 @@ class ApiKernel implements IRequestHandler
 {
     /** @var IRouteMatcher The route matcher */
     private $routeMatcher;
-    /** @var IDependencyResolver The dependency resolver*/
+    /** @var IDependencyResolver The dependency resolver */
     private $dependencyResolver;
     /** @var IContentNegotiator The content negotiator */
     private $contentNegotiator;
@@ -57,13 +56,14 @@ class ApiKernel implements IRequestHandler
         IRouteMatcher $routeMatcher,
         IDependencyResolver $dependencyResolver,
         IContentNegotiator $contentNegotiator,
-        MiddlewareRequestHandlerResolver $middlewareRequestHandlerResolver,
+        MiddlewareRequestHandlerResolver $middlewareRequestHandlerResolver = null,
         IRouteActionInvoker $routeActionInvoker = null
     ) {
         $this->routeMatcher = $routeMatcher;
         $this->dependencyResolver = $dependencyResolver;
         $this->contentNegotiator = $contentNegotiator;
-        $this->middlewareRequestHandlerResolver = $middlewareRequestHandlerResolver;
+        $this->middlewareRequestHandlerResolver = $middlewareRequestHandlerResolver
+            ?? new MiddlewareRequestHandlerResolver($this->dependencyResolver);
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }
 
@@ -73,11 +73,11 @@ class ApiKernel implements IRequestHandler
     public function handle(IHttpRequestMessage $request): IHttpResponseMessage
     {
         $matchingResult = $this->getMatchingRoute($request);
-        $controller = $controllerCallable = null;
-        $this->createController($matchingResult->route->action, $controller, $controllerCallable);
+        $controller = $routeActionDelegate = null;
+        $this->createController($matchingResult->route->action, $controller, $routeActionDelegate);
         $controllerRequestHandler = new ControllerRequestHandler(
             $controller,
-            $controllerCallable,
+            $routeActionDelegate,
             $matchingResult->routeVariables,
             $this->contentNegotiator,
             $this->routeActionInvoker
@@ -87,10 +87,11 @@ class ApiKernel implements IRequestHandler
             $controllerRequestHandler
         );
 
-        // TODO: This will not inject IRequestHandler as $next.  It will inject Closure $next.
-        return (new Pipeline())->send($request)
-            ->through($middlewareRequestHandlers, 'handle')
-            ->execute();
+        if (\count($middlewareRequestHandlers) === 0) {
+            return $controllerRequestHandler->handle($request);
+        }
+
+        return $middlewareRequestHandlers[0]->handle($request);
     }
 
     /**
@@ -98,19 +99,19 @@ class ApiKernel implements IRequestHandler
      *
      * @param RouteAction $routeAction The route action to create the controller from
      * @param Controller $controller The "out" parameter that will contain the controller
-     * @param callable $controllerCallable The "out" parameter that will contain the controller callable
+     * @param callable $routeActionDelegate The "out" parameter that will contain the route action delegate
      * @throws DependencyResolutionException Thrown if the controller could not be resolved
      */
     private function createController(
         RouteAction $routeAction,
         Controller &$controller = null,
-        callable &$controllerCallable = null
+        callable &$routeActionDelegate = null
     ): void {
         if ($routeAction->usesMethod()) {
             $controller = $this->dependencyResolver->resolve($routeAction->className);
-            $controllerCallable = [$controller, $routeAction->methodName];
+            $routeActionDelegate = [$controller, $routeAction->methodName];
 
-            if (!\is_callable($controllerCallable)) {
+            if (!\is_callable($routeActionDelegate)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Controller method %s::%s() does not exist',
@@ -121,7 +122,7 @@ class ApiKernel implements IRequestHandler
             }
         } else {
             $controller = new Controller();
-            $controllerCallable = Closure::bind($routeAction->closure, $controller, Controller::class);
+            $routeActionDelegate = Closure::bind($routeAction->closure, $controller, Controller::class);
         }
 
         if (!$controller instanceof Controller) {
