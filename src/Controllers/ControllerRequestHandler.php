@@ -21,7 +21,7 @@ class ControllerRequestHandler implements IRequestHandler
 {
     /** @var Controller The controller */
     private $controller;
-    /** @var callable Theroute action delegate */
+    /** @var callable The route action delegate */
     private $routeActionDelegate;
     /** @var array The route variables */
     private $routeVariables;

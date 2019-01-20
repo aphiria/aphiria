@@ -162,7 +162,7 @@ class ApiKernel implements IRequestHandler
         $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->getHost(), $uri->getPath());
 
         if (!$matchingResult->matchFound) {
-            if ($matchingResult->methodIsAllowed) {
+            if ($matchingResult->methodIsAllowed === null) {
                 throw new HttpException(HttpStatusCodes::HTTP_NOT_FOUND, "No route found for {$request->getUri()}");
             }
 

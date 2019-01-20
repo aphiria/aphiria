@@ -22,6 +22,7 @@ use Opulence\Api\Tests\Controllers\Mocks\MiddlewareThatAddsHeader;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
+use Opulence\Net\Http\HttpStatusCodes;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 use Opulence\Net\Uri;
@@ -130,13 +131,17 @@ class ApiKernelTest extends TestCase
 
     public function testNoMatchingRouteThrows404Exception(): void
     {
-        $this->expectException(HttpException::class);
-        $request = $this->createRequestMock('GET', 'http://foo.com/bar');
-        $this->routeMatcher->expects($this->once())
-            ->method('matchRoute')
-            ->with('GET', 'foo.com', '/bar')
-            ->willReturn(new RouteMatchingResult(null, [], []));
-        $this->apiKernel->handle($request);
+        try {
+            $request = $this->createRequestMock('GET', 'http://foo.com/bar');
+            $this->routeMatcher->expects($this->once())
+                ->method('matchRoute')
+                ->with('GET', 'foo.com', '/bar')
+                ->willReturn(new RouteMatchingResult(null, [], []));
+            $this->apiKernel->handle($request);
+            $this->fail('Failed to throw exception');
+        } catch (HttpException $ex) {
+            $this->assertEquals(HttpStatusCodes::HTTP_NOT_FOUND, $ex->getResponse()->getStatusCode());
+        }
     }
 
     public function testRouteActionWithClosureControllerBindsItToControllerObjectAndInvokesIt(): void
