@@ -16,15 +16,25 @@ use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
 
 /**
- * Mocks middleware that sets a header for use in tests
+ * Mocks middleware that increments a header value for use in tests
  */
-class MiddlewareThatAddsHeader implements IMiddleware
+class MiddlewareThatIncrementsHeader implements IMiddleware
 {
+    /**
+     * @inheritdoc
+     */
     public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
     {
         /** @var IHttpResponseMessage $response */
         $response = $next->handle($request);
-        $response->getHeaders()->add('Foo', 'bar');
+        $currValues = [];
+
+        // Keep appending an incrementing value to a header
+        if ($response->getHeaders()->tryGet('Foo', $currValues)) {
+            $response->getHeaders()->add('Foo', $currValues[\count($currValues) - 1] + 1, true);
+        } else {
+            $response->getHeaders()->add('Foo', 1);
+        }
 
         return $response;
     }

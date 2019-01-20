@@ -139,8 +139,8 @@ class ApiKernel implements IRequestHandler
         $middlewareRequestHandlers = [];
         $next = $controllerRequestHandler;
 
-        foreach (\array_reverse($middlewareBindings) as $middlewareBinding) {
-            $middlewareRequestHandler = $this->middlewareRequestHandlerResolver->resolve($middlewareBinding, $next);
+        for ($i = \count($middlewareBindings) - 1;$i >= 0;$i--) {
+            $middlewareRequestHandler = $this->middlewareRequestHandlerResolver->resolve($middlewareBindings[$i], $next);
             $middlewareRequestHandlers[] = $middlewareRequestHandler;
             $next = $middlewareRequestHandler;
         }

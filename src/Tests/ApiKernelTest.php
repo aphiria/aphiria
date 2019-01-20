@@ -18,7 +18,7 @@ use Opulence\Api\Controllers\IRouteActionInvoker;
 use Opulence\Api\IDependencyResolver;
 use Opulence\Api\Middleware\MiddlewareRequestHandlerResolver;
 use Opulence\Api\Tests\Controllers\Mocks\Controller as ControllerMock;
-use Opulence\Api\Tests\Controllers\Mocks\MiddlewareThatAddsHeader;
+use Opulence\Api\Tests\Controllers\Mocks\MiddlewareThatIncrementsHeader;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
@@ -88,15 +88,15 @@ class ApiKernelTest extends TestCase
         $this->assertTrue($exceptionThrown, 'Failed to throw exception');
     }
 
-    public function testMiddlewareIsResolvedAndIsInvoked(): void
+    public function testMiddlewareIsResolvedAndIsInvokedInCorrectOrder(): void
     {
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $expectedHeaders = new HttpHeaders();
         $expectedResponse = $this->createMock(IHttpResponseMessage::class);
-        $expectedResponse->expects($this->once())
-            ->method('getHeaders')
+        $expectedResponse->method('getHeaders')
             ->willReturn($expectedHeaders);
-        $middleware = new MiddlewareThatAddsHeader();
+        $middleware1 = new MiddlewareThatIncrementsHeader();
+        $middleware2 = new MiddlewareThatIncrementsHeader();
         $controller = new ControllerMock();
         $this->dependencyResolver->expects($this->at(0))
             ->method('resolve')
@@ -104,14 +104,21 @@ class ApiKernelTest extends TestCase
             ->willReturn($controller);
         $this->dependencyResolver->expects($this->at(1))
             ->method('resolve')
-            ->with(MiddlewareThatAddsHeader::class)
-            ->willReturn($middleware);
+            ->with(MiddlewareThatIncrementsHeader::class)
+            ->willReturn($middleware1);
+        $this->dependencyResolver->expects($this->at(2))
+            ->method('resolve')
+            ->with(MiddlewareThatIncrementsHeader::class)
+            ->willReturn($middleware2);
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
                 new RouteAction(ControllerMock::class, 'noParameters', null),
                 [],
-                [new MiddlewareBinding(MiddlewareThatAddsHeader::class)]
+                [
+                    new MiddlewareBinding(MiddlewareThatIncrementsHeader::class),
+                    new MiddlewareBinding(MiddlewareThatIncrementsHeader::class)
+                ]
             ),
             [],
             []
@@ -126,7 +133,7 @@ class ApiKernelTest extends TestCase
             ->willReturn($expectedResponse);
         $this->assertSame($expectedResponse, $this->apiKernel->handle($request));
         // Test that the middleware actually set the headers
-        $this->assertEquals('bar', $expectedHeaders->getFirst('Foo'));
+        $this->assertEquals([1, 2], $expectedHeaders->get('Foo'));
     }
 
     public function testNoMatchingRouteThrows404Exception(): void
