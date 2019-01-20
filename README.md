@@ -212,7 +212,7 @@ class Authentication implements IMiddleware
         $this->authenticator = $authenticator;
     }
 
-    // $next consists of the next request handler in the pipeline
+    // $next is the next request handler in the pipeline
     public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
     {
         if (!$this->authenticator->isLoggedIn()) {

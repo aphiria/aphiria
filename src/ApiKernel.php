@@ -12,20 +12,12 @@ namespace Opulence\Api;
 
 use Closure;
 use InvalidArgumentException;
-use Opulence\Api\Controllers\Controller;
-use Opulence\Api\Controllers\ControllerRequestHandler;
-use Opulence\Api\Controllers\IRouteActionInvoker;
-use Opulence\Api\Controllers\RouteActionInvoker;
+use Opulence\Api\Controllers\{Controller, ControllerRequestHandler, IRouteActionInvoker, RouteActionInvoker};
 use Opulence\Api\Middleware\MiddlewareRequestHandlerResolver;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\HttpStatusCodes;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\Response;
-use Opulence\Routing\Matchers\IRouteMatcher;
-use Opulence\Routing\Matchers\RouteMatchingResult;
+use Opulence\Net\Http\{HttpException, HttpStatusCodes, IHttpRequestMessage, IHttpResponseMessage, Response};
+use Opulence\Routing\Matchers\{IRouteMatcher, RouteMatchingResult};
 use Opulence\Routing\Middleware\MiddlewareBinding;
 use Opulence\Routing\RouteAction;
 
@@ -104,8 +96,8 @@ class ApiKernel implements IRequestHandler
      */
     private function createController(
         RouteAction $routeAction,
-        Controller &$controller = null,
-        callable &$routeActionDelegate = null
+        ?Controller &$controller,
+        ?callable &$routeActionDelegate
     ): void {
         if ($routeAction->usesMethod()) {
             $controller = $this->dependencyResolver->resolve($routeAction->className);
