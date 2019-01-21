@@ -11,7 +11,8 @@
     2. [Closure Controllers](#closure-controllers)
     3. [Controller Dependencies](#controller-dependencies)
 3. [Middleware](#middleware)
-4. [Request Handlers](#request-handlers)
+    1. [Configuring Middleware](#configuring-middleware)
+4. [API Kernel](#api-kernel)
 5. [Exception Handling](#exception-handling)
     1. [Exception Response Factories](#exception-response-factories)
     2. [Logging](#logging)
@@ -187,7 +188,52 @@ HTTP middleware are classes that are executed in a series of pipeline stages.  T
 
 The API library uses Opulence's middleware library.  Learn more about it by <a href="https://github.com/opulencephp/middleware#introduction" target="_blank">reading its documentation</a>.
 
-<h1 id="request-handlers">Request Handlers</h1>
+<h2 id="configuring-middleware">Configuring Middleware</h2>
+
+Opulence uses dependency injection for type-hinted objects in middleware constructors.  So, if you need any objects in your `handle()` method, just specify them in the constructor.  Let's take a look at an example:
+
+```php
+namespace App\Application\Http\Middleware;
+
+use App\Domain\Authentication\Authenticator;
+use Opulence\Middleware\IMiddleware;
+use Opulence\Net\Http\Handlers\IRequestHandler;
+use Opulence\Net\Http\{IHttpRequestMessage, IHttpResponseMessage, Response};
+
+class Authentication implements IMiddleware
+{
+    private $authenticator = null;
+
+    // Inject any dependencies your middleware needs
+    public function __construct(Authenticator $authenticator)
+    {
+        $this->authenticator = $authenticator;
+    }
+
+    public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
+    {
+        if (!$this->authenticator->isLoggedIn($request)) {
+            return new Response(401);
+        }
+
+        return $next->handle($request);
+    }
+}
+```
+
+You can then bind the middleware to your route:
+
+```php
+$routes->map('POST', 'posts')
+    ->toMethod(PostController::class, 'createPost')
+    ->withMiddleware(Authentication::class);
+```
+
+Now, the `Authenticate` middleware will be run before the `createPost()` controller method is called.  If the user is not logged in, s/he'll be given an unauthorized (401) response.
+
+> **Note:** If middleware does not specifically call the `$next` request handler, none of the middleware after it in the pipeline will be run.
+
+<h1 id="api-kernel">API Kernel</h1>
 
 A request handler simply takes in an HTTP request and returns a response.  The API kernel, middleware, and route actions are all wrapped in request handlers.  `ApiKernel` is capable of matching a route and sending the request and response through [middleware](#middleware) to the [controller](#controllers).
 
