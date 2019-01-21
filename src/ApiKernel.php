@@ -13,7 +13,9 @@ namespace Opulence\Api;
 use Closure;
 use InvalidArgumentException;
 use Opulence\Api\Controllers\{Controller, ControllerRequestHandler, IRouteActionInvoker, RouteActionInvoker};
-use Opulence\Api\Middleware\MiddlewareRequestHandlerResolver;
+use Opulence\Middleware\AttributeMiddleware;
+use Opulence\Middleware\IMiddleware;
+use Opulence\Middleware\MiddlewarePipelineFactory;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\{HttpException, HttpStatusCodes, IHttpRequestMessage, IHttpResponseMessage, Response};
@@ -32,8 +34,8 @@ class ApiKernel implements IRequestHandler
     private $dependencyResolver;
     /** @var IContentNegotiator The content negotiator */
     private $contentNegotiator;
-    /** @var MiddlewareRequestHandlerResolver The middleware request handler resolver */
-    private $middlewareRequestHandlerResolver;
+    /** @var MiddlewarePipelineFactory The middleware pipeline factory */
+    private $middlewarePipelineFactory;
     /** @var IRouteActionInvoker The route action invoker */
     private $routeActionInvoker;
 
@@ -41,21 +43,20 @@ class ApiKernel implements IRequestHandler
      * @param IRouteMatcher $routeMatcher The route matcher
      * @param IDependencyResolver $dependencyResolver The dependency resolver
      * @param IContentNegotiator $contentNegotiator The content negotiator
-     * @param MiddlewareRequestHandlerResolver $middlewareRequestHandlerResolver THe middleware request handler resolver
-     * @param IRouteActionInvoker $routeActionInvoker The route action invoker
+     * @param MiddlewarePipelineFactory|null $middlewarePipelineFactory THe middleware pipeline factory
+     * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
      */
     public function __construct(
         IRouteMatcher $routeMatcher,
         IDependencyResolver $dependencyResolver,
         IContentNegotiator $contentNegotiator,
-        MiddlewareRequestHandlerResolver $middlewareRequestHandlerResolver = null,
+        MiddlewarePipelineFactory $middlewarePipelineFactory = null,
         IRouteActionInvoker $routeActionInvoker = null
     ) {
         $this->routeMatcher = $routeMatcher;
         $this->dependencyResolver = $dependencyResolver;
         $this->contentNegotiator = $contentNegotiator;
-        $this->middlewareRequestHandlerResolver = $middlewareRequestHandlerResolver
-            ?? new MiddlewareRequestHandlerResolver($this->dependencyResolver);
+        $this->middlewarePipelineFactory = $middlewarePipelineFactory ?? new MiddlewarePipelineFactory();
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }
 
@@ -64,7 +65,7 @@ class ApiKernel implements IRequestHandler
      */
     public function handle(IHttpRequestMessage $request): IHttpResponseMessage
     {
-        $matchingResult = $this->getMatchingRoute($request);
+        $matchingResult = $this->matchRoute($request);
         $controller = $routeActionDelegate = null;
         $this->createController($matchingResult->route->action, $controller, $routeActionDelegate);
         $controllerRequestHandler = new ControllerRequestHandler(
@@ -74,16 +75,12 @@ class ApiKernel implements IRequestHandler
             $this->contentNegotiator,
             $this->routeActionInvoker
         );
-        $middlewareRequestHandlers = $this->createMiddlewareRequestHandlers(
-            $matchingResult->route->middlewareBindings,
+        $middlewarePipeline = $this->middlewarePipelineFactory->createPipeline(
+            $this->createMiddlewareFromBindings($matchingResult->route->middlewareBindings),
             $controllerRequestHandler
         );
 
-        if (\count($middlewareRequestHandlers) === 0) {
-            return $controllerRequestHandler->handle($request);
-        }
-
-        return $middlewareRequestHandlers[0]->handle($request);
+        return $middlewarePipeline->handle($request);
     }
 
     /**
@@ -125,28 +122,32 @@ class ApiKernel implements IRequestHandler
     }
 
     /**
-     * Creates middleware request handlers from middleware bindings
+     * Creates middleware instances from middleware bindings
      *
-     * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings to create request handlers from
-     * @param IRequestHandler $controllerRequestHandler The request handler for the controller
-     * @return IRequestHandler[] The request handlers for the middleware
+     * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings to create instances from
+     * @return IMiddleware[] The middleware instances
      * @throws DependencyResolutionException Thrown if the middleware could not be resolved
      */
-    private function createMiddlewareRequestHandlers(
-        array $middlewareBindings,
-        IRequestHandler $controllerRequestHandler
-    ): array  {
-        $middlewareRequestHandlers = [];
-        $next = $controllerRequestHandler;
+    private function createMiddlewareFromBindings(array $middlewareBindings): array {
+        $middlewareList = [];
 
-        for ($i = \count($middlewareBindings) - 1;$i >= 0;$i--) {
-            $middlewareRequestHandler = $this->middlewareRequestHandlerResolver->resolve($middlewareBindings[$i], $next);
-            $middlewareRequestHandlers[] = $middlewareRequestHandler;
-            $next = $middlewareRequestHandler;
+        foreach ($middlewareBindings as $middlewareBinding) {
+            $middleware = $this->dependencyResolver->resolve($middlewareBinding->className);
+
+            if (!$middleware instanceof IMiddleware) {
+                throw new InvalidArgumentException(
+                    sprintf('Middleware %s does not implement %s', \get_class($middleware), IMiddleware::class)
+                );
+            }
+
+            if ($middleware instanceof AttributeMiddleware) {
+                $middleware->setAttributes($middlewareBinding->attributes);
+            }
+
+            $middlewareList[] = $middleware;
         }
 
-        // We had to construct them in reverse order, so let's put them in the correct order again
-        return \array_reverse($middlewareRequestHandlers);
+        return $middlewareList;
     }
 
     /**
@@ -156,7 +157,7 @@ class ApiKernel implements IRequestHandler
      * @return RouteMatchingResult The route matching result
      * @throws HttpException Thrown if there was no matching route, or if the request was invalid for the matched route
      */
-    private function getMatchingRoute(IHttpRequestMessage $request): RouteMatchingResult
+    private function matchRoute(IHttpRequestMessage $request): RouteMatchingResult
     {
         $uri = $request->getUri();
         $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->getHost(), $uri->getPath());

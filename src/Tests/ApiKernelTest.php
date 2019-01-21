@@ -16,9 +16,10 @@ use Opulence\Api\ApiKernel;
 use Opulence\Api\Controllers\Controller;
 use Opulence\Api\Controllers\IRouteActionInvoker;
 use Opulence\Api\IDependencyResolver;
-use Opulence\Api\Middleware\MiddlewareRequestHandlerResolver;
 use Opulence\Api\Tests\Controllers\Mocks\Controller as ControllerMock;
-use Opulence\Api\Tests\Controllers\Mocks\MiddlewareThatIncrementsHeader;
+use Opulence\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;
+use Opulence\Api\Tests\Mocks\AttributeMiddleware;
+use Opulence\Middleware\MiddlewarePipelineFactory;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
@@ -48,8 +49,8 @@ class ApiKernelTest extends TestCase
     private $dependencyResolver;
     /** @var IContentNegotiator|MockObject */
     private $contentNegotiator;
-    /** @var MiddlewareRequestHandlerResolver */
-    private $middlewareRequestHandlerResolver;
+    /** @var MiddlewarePipelineFactory */
+    private $middlewarePipelineFactory;
     /** @var IRouteActionInvoker|MockObject */
     private $routeActionInvoker;
 
@@ -58,15 +59,80 @@ class ApiKernelTest extends TestCase
         $this->routeMatcher = $this->createMock(IRouteMatcher::class);
         $this->dependencyResolver = $this->createMock(IDependencyResolver::class);
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
-        $this->middlewareRequestHandlerResolver = new MiddlewareRequestHandlerResolver($this->dependencyResolver);
+        $this->middlewarePipelineFactory = new MiddlewarePipelineFactory();
         $this->routeActionInvoker = $this->createMock(IRouteActionInvoker::class);
         $this->apiKernel = new ApiKernel(
             $this->routeMatcher,
             $this->dependencyResolver,
             $this->contentNegotiator,
-            $this->middlewareRequestHandlerResolver,
+            $this->middlewarePipelineFactory,
             $this->routeActionInvoker
         );
+    }
+
+    public function testAttributeMiddlewareIsResolvedAndAttributesAreSet(): void
+    {
+        $middleware = new AttributeMiddleware();
+        $middlewareBinding = new MiddlewareBinding(AttributeMiddleware::class, ['foo' => 'bar']);
+        $request = $this->createRequestMock('GET', 'http://foo.com/bar');
+        $controller = new ControllerMock();
+        $this->dependencyResolver->expects($this->at(0))
+            ->method('resolve')
+            ->with(ControllerMock::class)
+            ->willReturn($controller);
+        $this->dependencyResolver->expects($this->at(1))
+            ->method('resolve')
+            ->with(AttributeMiddleware::class)
+            ->willReturn($middleware);
+        $matchingResult = new RouteMatchingResult(
+            new Route(
+                new UriTemplate('foo'),
+                new RouteAction(ControllerMock::class, 'noParameters', null),
+                [],
+                [$middlewareBinding]
+            ),
+            [],
+            []
+        );
+        $this->routeMatcher->expects($this->once())
+            ->method('matchRoute')
+            ->with('GET', 'foo.com', '/bar')
+            ->willReturn($matchingResult);
+        $this->apiKernel->handle($request);
+        // Test that the middleware actually set the headers
+        $this->assertEquals('bar', $middleware->getAttribute('foo'));
+    }
+
+    public function testInvalidMiddlewareThrowsExceptionThatIsCaught(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $middleware = $this;
+        $middlewareBinding = new MiddlewareBinding(__CLASS__);
+        $request = $this->createRequestMock('GET', 'http://foo.com/bar');
+        $controller = new ControllerMock();
+        $this->dependencyResolver->expects($this->at(0))
+            ->method('resolve')
+            ->with(ControllerMock::class)
+            ->willReturn($controller);
+        $this->dependencyResolver->expects($this->at(1))
+            ->method('resolve')
+            ->with(__CLASS__)
+            ->willReturn($middleware);
+        $matchingResult = new RouteMatchingResult(
+            new Route(
+                new UriTemplate('foo'),
+                new RouteAction(ControllerMock::class, 'noParameters', null),
+                [],
+                [$middlewareBinding]
+            ),
+            [],
+            []
+        );
+        $this->routeMatcher->expects($this->once())
+            ->method('matchRoute')
+            ->with('GET', 'foo.com', '/bar')
+            ->willReturn($matchingResult);
+        $this->apiKernel->handle($request);
     }
 
     public function testMethodNotAllowedSetsAllowHeaderInExceptionResponse(): void
