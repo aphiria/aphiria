@@ -11,8 +11,7 @@
 namespace Opulence\Middleware;
 
 use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
+use Opulence\Net\Http\{IHttpRequestMessage, IHttpResponseMessage};
 
 /**
  * Defines the interface for route middleware to implement

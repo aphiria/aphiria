@@ -6,10 +6,11 @@
 
 1. [Introduction](#introduction)
     1. [Installation](#installation)
-2. [Middleware](#middleware)
+2. [Basic Usage](#basic-usage)
     1. [Manipulating the Request](#manipulating-the-request)
     2. [Manipulating the Response](#manipulating-the-response)
     3. [Middleware Attributes](#middleware-attributes)
+3. [Executing Middleware](#executing-middleware)
 
 <h1 id="introduction">Introduction</h1>
 
@@ -23,53 +24,26 @@ You can install this library by including the following package name in your _co
 "opulence/middleware": "1.0.*"
 ```
 
-<h1 id="middleware">Middleware</h1>
+<h1 id="basic-usage">Basic Usage</h1>
 
-HTTP middleware are classes that are executed in a series of pipeline stages.  They manipulate the request and response to do things like authenticate users or enforce CSRF protection for certain routes.  They are executed in series in a pipeline.
-
-Opulence uses dependency injection for type-hinted objects in a `Middleware` constructor.  So, if you need any objects in your `handle()` method, just specify them in the constructor.  Let's take a look at an example:
+Middleware have a simple signature:
 
 ```php
-namespace App\Application\Http\Middleware;
-
-use App\Domain\Authentication\Authenticator;
-use Opulence\Middleware\IMiddleware;
 use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\{IHttpRequestMessage, IHttpResponseMessage, Response};
+use Opulence\Net\Http\{IHttpRequestMessage, IHttpResponseMessage};
 
-class Authentication implements IMiddleware
+interface IMiddleware
 {
-    private $authenticator = null;
-
-    // Inject any dependencies your middleware needs
-    public function __construct(Authenticator $authenticator)
-    {
-        $this->authenticator = $authenticator;
-    }
-
-    // $next is the next request handler in the pipeline
-    public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
-    {
-        if (!$this->authenticator->isLoggedIn($request)) {
-            return new Response(401);
-        }
-
-        return $next->handle($request);
-    }
+    public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage;
 }
 ```
 
-You can then bind the middleware to your route:
+`IMiddleware::handle()` takes in the current request and
 
-```php
-$routes->map('POST', 'posts')
-    ->toMethod(PostController::class, 'createPost')
-    ->withMiddleware(Authentication::class);
-```
-
-Now, the `Authenticate` middleware will be run before the `createPost()` controller method is called.  If the user is not logged in, s/he'll be given an unauthorized (401) response.
-
-> **Note:** If middleware does not specifically call the `$next` request handler, none of the middleware after it in the pipeline will be run.
+1. Optionally manipulates it
+2. Passes the request on to the next request handler in the pipeline
+3. Optionally manipulates the response returned by the next request handler
+4. Returns the response
 
 <h2 id="manipulating-the-request">Manipulating the Request</h2>
 
@@ -152,4 +126,30 @@ To actually specify `role`, pass it into your route configuration:
 $routes->map('GET', 'foo')
     ->toMethod(MyController::class, 'myMethod')
     ->withMiddleware(RoleMiddleware::class, ['role' => 'admin']);
+```
+
+<h1 id="executing-middleware">Executing Middleware</h1>
+
+Typically, middleware are wrapped in request handlers (eg `MiddlewareRequestHandler`) and executed in a pipeline (as in Opulence's <a href="https://github.com/opulencephp/api" target="_blank">API library</a>).  You can create this pipeline using `MiddlewarePipelineFactory`:
+
+```php
+use Opulence\Middleware\MiddlewarePipelineFactory;
+use Opulence\Net\Http\RequestFactory;
+
+// Assume these are defined by your application
+$loggingMiddleware = new LoggingMiddleware();
+$authMiddleware = new AuthenticationMiddleware();
+$controllerHandler = new ControllerRequestHandler();
+
+$pipeline = (new MiddlewarePipelineFactory)->createPipeline(
+    [$loggingMiddleware, $authMiddleware],
+    $controllerHandler
+);
+``` 
+
+`$pipeline` will itself be a request handler, which you can then send a request through and receive a response:
+
+```php
+$request = (new RequestFactory)->createRequestFromSuperglobals($_SERVER);
+$response = $pipeline->handle($request);
 ```

@@ -21,16 +21,16 @@ class MiddlewarePipelineFactory
      * Creates a pipeline that will execute middleware, ending with the execution of a controller action
      *
      * @param IMiddleware[] $middleware The list of middleware to add to the pipeline
-     * @param IRequestHandler $controllerRequestHandler The request handler that executes the controller action
+     * @param IRequestHandler $terminalRequestHandler The request handler that is last in the pipeline (eg controller)
      * @return IRequestHandler The pipeline
      */
-    public function createPipeline(array $middleware, IRequestHandler $controllerRequestHandler): IRequestHandler
+    public function createPipeline(array $middleware, IRequestHandler $terminalRequestHandler): IRequestHandler
     {
         if (\count($middleware) === 0) {
-            return $controllerRequestHandler;
+            return $terminalRequestHandler;
         }
 
-        $next = $controllerRequestHandler;
+        $next = $terminalRequestHandler;
         $curr = null;
 
         for ($i = \count($middleware) - 1;$i >= 0;$i--) {
