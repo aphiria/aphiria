@@ -13,6 +13,7 @@ namespace Opulence\Api\Controllers;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Opulence\Net\Http\Formatting\RequestParser;
+use Opulence\Net\Http\Formatting\ResponseFormatter;
 use Opulence\Net\Http\Handlers\IRequestHandler;
 use Opulence\Net\Http\IHttpRequestMessage;
 use Opulence\Net\Http\IHttpResponseMessage;
@@ -58,6 +59,7 @@ class ControllerRequestHandler implements IRequestHandler
     {
         $this->controller->setRequest($request);
         $this->controller->setRequestParser(new RequestParser);
+        $this->controller->setResponseFormatter(new ResponseFormatter);
         $this->controller->setContentNegotiator($this->contentNegotiator);
         $this->controller->setNegotiatedResponseFactory(new NegotiatedResponseFactory($this->contentNegotiator));
 

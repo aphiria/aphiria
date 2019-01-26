@@ -15,6 +15,7 @@ use LogicException;
 use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
 use Opulence\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Opulence\Net\Http\Formatting\RequestParser;
+use Opulence\Net\Http\Formatting\ResponseFormatter;
 use Opulence\Net\Http\HttpException;
 use Opulence\Net\Http\HttpHeaders;
 use Opulence\Net\Http\HttpStatusCodes;
@@ -32,6 +33,8 @@ class Controller
     protected $request;
     /** @var RequestParser The parser to use to get data from the current request */
     protected $requestParser;
+    /** @var ResponseFormatter The formatter to use to write data to the response */
+    protected $responseFormatter;
     /** @var IContentNegotiator The content negotiator */
     protected $contentNegotiator;
     /** @var INegotiatedResponseFactory The negotiated response factory */
@@ -79,6 +82,17 @@ class Controller
     public function setRequestParser(RequestParser $requestParser): void
     {
         $this->requestParser = $requestParser;
+    }
+
+    /**
+     * Sets the response formatter
+     *
+     * @param ResponseFormatter $responseFormatter The response formatter
+     * @internal
+     */
+    public function setResponseFormatter(ResponseFormatter $responseFormatter): void
+    {
+        $this->responseFormatter = $responseFormatter;
     }
 
     /**

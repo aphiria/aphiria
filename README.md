@@ -8,8 +8,10 @@
     1. [Installation](#installation)
 2. [Controllers](#controllers)
     1. [Parameter Resolution](#parameter-resolution)
-    2. [Closure Controllers](#closure-controllers)
-    3. [Controller Dependencies](#controller-dependencies)
+    2. [Parsing Request Data](#parsing-request-data)
+    3. [Formatting Response Data](#formatting-response-data)
+    4. [Closure Controllers](#closure-controllers)
+    5. [Controller Dependencies](#controller-dependencies)
 3. [Middleware](#middleware)
     1. [Configuring Middleware](#configuring-middleware)
 4. [API Kernel](#api-kernel)
@@ -109,7 +111,11 @@ class UserController extends Controller
 
 <h2 id="parameter-resolution">Parameter Resolution</h2>
 
-Your controller methods will frequently need to do things like deserialize the request body or read route/query string values.  Opulence simplifies this process enormously by allowing your method signatures to be expressive.  For example, if you specify any object type hint, it will automatically deserialize the request body to any POPO:
+Your controller methods will frequently need to do things like deserialize the request body or read route/query string values.  Opulence simplifies this process enormously by allowing your method signatures to be expressive.  
+
+<h3 id="request-body-parameters">Request Bodies</h3>
+
+If you specify any object type hint, it will automatically deserialize the request body to any POPO:
 
 ```php
 class UserController extends Controller
@@ -126,6 +132,8 @@ class UserController extends Controller
 ```
 
 This works for any media type (eg JSON) that you've registered to your <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiator</a>.
+
+<h3 id="uri-parameters">URI Parameters</h3>
 
 Opulence also supports resolving scalar values in your controller methods.  It will scan route variables, and then, if no matches are found, the query string for scalar parameters.  For example, this method will grab `includeDeletedUsers` from the query string and cast it to a `bool`:
 
@@ -159,6 +167,57 @@ class UserController extends Controller
         $this->userRepository->addManyUsers($users);
         
         return $this->created();
+    }
+}
+```
+
+<h2 id="parsing-request-data">Parsing Request Data</h2>
+
+Your controllers might need to do more advanced reading of request data, such as reading cookies, reading multipart bodies, or determining the content type of the request.  To simplify this kind of work, and instance of `RequestParser` is set in your controller:
+
+```php
+class JsonPrettifierController extends Controller
+{
+    // ...
+
+    public function prettifyJson(): IHttpResponseMessage
+    {
+        if (!$this->requestParser->isJson($this->request)) {
+            return $this->badRequest();
+        }
+        
+        $prettyJson = json_encode($this->request->getBody()->readAsString(), JSON_PRETTY_PRINT);
+        $response = new Response(200, new StringBody($prettyJson));
+        
+        return $response;
+    }
+}
+```
+
+<h2 id="formatting-response-data">Formatting Response Data</h2>
+
+If you need to write data back to the response, eg cookies or creating a redirect, an instance of `ResponseFormatter` is available in the controller:
+
+```php
+class LoginController extends Controller
+{
+    // ...
+
+    public function logIn(string $username, string $password): IHttpResponseMessage
+    {
+        $authResults = null;
+        
+        // Assume this logic resides in your application
+        if (!$this->authenticator->tryLogin($username, $password, $authResults)) {
+            return $this->unauthorized();
+        }
+        
+        // Write a cookie containing the auth token back to the response
+        $response = new Response(200);
+        $authTokenCookie = new Cookie('authtoken', $authResults->getAuthToken(), time() + 3600);
+        $this->responseFormatter->setCookie($response, $authTokenCookie);
+        
+        return $response;
     }
 }
 ```
