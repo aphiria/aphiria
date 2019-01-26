@@ -49,7 +49,7 @@ class RequestParser
     ) {
         $this->headerParser = $headerParser ?? new RequestHeaderParser();
         $this->bodyParser = $bodyParser ?? new HttpBodyParser();
-        $this->uriParser = $uriParser;
+        $this->uriParser = $uriParser ?? new UriParser();
     }
 
     /**
