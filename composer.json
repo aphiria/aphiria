@@ -1,0 +1,40 @@
+{
+  "name": "opulence/configuration",
+  "description": "The Opulence application configuration library",
+  "keywords": [
+    "PHP",
+    "application",
+    "configuration"
+  ],
+  "authors": [
+    {
+      "name": "David Young",
+      "email": "dave@opulencephp.com",
+      "role": "Architect"
+    }
+  ],
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Opulence\\Configuration\\": "src"
+    },
+    "exclude-from-classmap": [
+      "**/Tests/"
+    ]
+  },
+  "require": {
+    "psr/log": "~1.0",
+    "opulence/api": "1.0.*@dev",
+    "opulence/environments": "1.1.*@dev",
+    "php": "^7.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~7.5"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  },
+  "minimum-stability": "dev"
+}
