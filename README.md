@@ -16,7 +16,7 @@
     1. [Configuring Middleware](#configuring-middleware)
 4. [API Kernel](#api-kernel)
 5. [Exception Handling](#exception-handling)
-    1. [Exception Response Factories](#exception-response-factories)
+    1. [Customizing Exception Responses](#customizing-exception-responses)
     2. [Logging](#logging)
 
 <h1 id="introduction">Introduction</h1>
@@ -33,7 +33,7 @@ You can install this library by including the following package name in your _co
 
 <h1 id="controllers">Controllers</h1>
 
-Your controllers can either extend `Controller` or be a [`Closure`](#closure-controllers).  Let's say you wanted to create a user.  Simple:
+Your controllers can either extend `Controller` or be a [`Closure`](#closure-controllers).  Let's say you needed an endpoint to create a user.  Simple:
 
 ```php
 class UserController extends Controller
@@ -49,7 +49,7 @@ class UserController extends Controller
 }
 ```
 
-Opulence will see the `User` parameter and [automatically deserialize the request body to an instance of `User`](#parameter-resolution), which can be a POPO.  It will also detect that a `User` object was returned, and create a 200 response whose body is the serialized user object.  It uses <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a> to determine the media type to (de)serialize to (eg JSON).
+Opulence will see the `User` method parameter and [automatically deserialize the request body to an instance of `User`](#parameter-resolution) (which can be a POPO) using <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a>.  It will also detect that a `User` object was returned by the method, and create a 200 response whose body is the serialized user object.  It uses <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a> to determine the media type to (de)serialize to (eg JSON).
 
 You can also be a bit more explicit and return a response yourself.  For example, the following controller method is functionally identical to the previous example:
 
@@ -115,7 +115,7 @@ Your controller methods will frequently need to do things like deserialize the r
 
 <h3 id="request-body-parameters">Request Bodies</h3>
 
-If you specify any object type hint, it will automatically deserialize the request body to any POPO:
+Object type hints are always assumed to be the request body, and can be automatically deserialized to any POPO:
 
 ```php
 class UserController extends Controller
@@ -135,7 +135,7 @@ This works for any media type (eg JSON) that you've registered to your <a href="
 
 <h3 id="uri-parameters">URI Parameters</h3>
 
-Opulence also supports resolving scalar values in your controller methods.  It will scan route variables, and then, if no matches are found, the query string for scalar parameters.  For example, this method will grab `includeDeletedUsers` from the query string and cast it to a `bool`:
+Opulence also supports resolving scalar parameters in your controller methods.  It will scan route variables, and then, if no matches are found, the query string for scalar parameters.  For example, this method will grab `includeDeletedUsers` from the query string and cast it to a `bool`:
 
 ```php
 class UserController extends Controller
@@ -150,11 +150,11 @@ class UserController extends Controller
 }
 ```
 
-Nullable parameters and parameters with default values are also supported.
+Nullable parameters and parameters with default values are also supported.  If you a query string parameter is optional, it _must_ be either nullable or have a default value.
 
 <h3 id="arrays-in-request-body">Arrays in Request Body</h3>
 
-Request bodies might contain an array of values.  Because PHP doesn't support generics or typed arrays, you cannot use type-hints alone to deserialize arrays of values.  However, it's still easy to do:
+Request bodies might contain an array of values.  Because PHP doesn't support generics or typed arrays, you cannot use type-hints alone to deserialize arrays of values.  However, it's still easy to do within your controller methods:
 
 ```php
 class UserController extends Controller
@@ -187,7 +187,7 @@ class JsonPrettifierController extends Controller
         }
         
         $prettyJson = json_encode($this->request->getBody()->readAsString(), JSON_PRETTY_PRINT);
-        $response = new Response(200, new StringBody($prettyJson));
+        $response = new Response(200, null, new StringBody($prettyJson));
         
         return $response;
     }
@@ -233,11 +233,19 @@ Sometimes, a controller class is overkill for a route that does very little.  In
     });
 ```
 
-Closures support the same [parameter resolution](#parameter-resolution) features as controller methods.  Here's the cool part - Opulence will bind an instance of `Controller` to your closure, which means you can use [all the methods](#controllers) available inside of `Controller` via `$this`.
+Closures support the same [parameter resolution](#parameter-resolution) features as controller methods.  Here's the cool part - Opulence will bind an instance of `Controller` to your closure, which means you can use [all the methods](#controllers), [request parsers](#parsing-request-data), and [response formatters](#formatting-response-data) available inside of `Controller` via `$this`.
 
 <h2 id="controller-dependencies">Controller Dependencies</h2>
 
 The API library provides support for auto-wiring your controllers.  In other words, it can scan your controllers' constructors for dependencies, resolve them, and then instantiate your controllers with those dependencies.  Dependency resolvers simply need to implement `IDependencyResolver`.  To make it easy for users of Opulence's DI container, you can use `ContainerDependencyResolver`.
+
+```php
+use Opulence\Api\ContainerDependencyResolver;
+use Opulence\Ioc\Container;
+
+$container = new Container();
+$dependencyResolver = new ContainerDependencyResolver($container);
+```
 
 Once you've instantiated your dependency resolver, pass it into your [request handler](#request-handlers) for auto-wiring.
 
@@ -261,10 +269,10 @@ use Opulence\Net\Http\{IHttpRequestMessage, IHttpResponseMessage, Response};
 
 class Authentication implements IMiddleware
 {
-    private $authenticator = null;
+    private $authenticator;
 
     // Inject any dependencies your middleware needs
-    public function __construct(Authenticator $authenticator)
+    public function __construct(IAuthenticator $authenticator)
     {
         $this->authenticator = $authenticator;
     }
@@ -283,12 +291,12 @@ class Authentication implements IMiddleware
 You can then bind the middleware to your route:
 
 ```php
-$routes->map('POST', 'posts')
-    ->toMethod(PostController::class, 'createPost')
+$routes->map('POST', 'articles')
+    ->toMethod(ArticleController::class, 'createArticle')
     ->withMiddleware(Authentication::class);
 ```
 
-Now, the `Authenticate` middleware will be run before the `createPost()` controller method is called.  If the user is not logged in, s/he'll be given an unauthorized (401) response.
+Now, the `Authenticate` middleware will be run before the `createArticle()` controller method is called.  If the user is not logged in, s/he'll be given an unauthorized (401) response.
 
 > **Note:** If middleware does not specifically call the `$next` request handler, none of the middleware after it in the pipeline will be run.
 
@@ -338,7 +346,7 @@ $exceptionHandler->registerWithPhp();
 
 By default, `ExceptionHandler` will convert any exception to a 500 response and use <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a> to determine the best format for the response body.  However, you can [customize your exception responses](#exception-response-factories).
 
-<h2 id="exception-response-factories">Exception Response Factories</h2>
+<h2 id="customizing-exception-responses">Customizing Exception Responses</h2>
 
 You might find yourself wanting to map a particular exception to a certain response.  In this case, you can use an exception response factory.  They are closures that take in the exception and the request, and return a response.
 
@@ -349,8 +357,8 @@ use Opulence\Api\Exceptions\{ExceptionResponseFactory, ExceptionResponseFactoryR
 use Opulence\Net\Http\{HttpStatusCodes, Response};
 
 // Register your custom exception response factories
-$exceptionResponseFactoryRegistry = new ExceptionResponseFactoryRegistry();
-$exceptionResponseFactoryRegistry->registerFactory(
+$exceptionResponseFactories = new ExceptionResponseFactoryRegistry();
+$exceptionResponseFactories->registerFactory(
     EntityNotFound::class,
     function (EntityNotFound $ex, ?IHttpRequestMessage $request) {
         return new Response(HttpStatusCodes::HTTP_NOT_FOUND);
@@ -360,7 +368,7 @@ $exceptionResponseFactoryRegistry->registerFactory(
 // Assume the content negotiator was already set up
 $exceptionResponseFactory = new ExceptionResponseFactory(
     new NegotiatedResponseFactory($contentNegotiator),
-    $exceptionResponseFactoryRegistry
+    $exceptionResponseFactories
 );
 
 // Add it to the exception handler
@@ -371,7 +379,7 @@ $exceptionHandler->registerWithPhp();
 That's it.  Now, whenever an unhandled `EntityNotFound` exception is thrown, your application will return a 404 response.  You can also register multiple exception factories at once.  Just pass in an array, keyed by exception type:
 
 ```php
-$exceptionResponseFactoryRegistry->registerFactories([
+$exceptionResponseFactories->registerFactories([
     EntityNotFound::class => function (EntityNotFound $ex, ?IHttpRequestMessage $request) {
         return new Response(HttpStatusCodes::HTTP_NOT_FOUND);
     },
@@ -379,7 +387,7 @@ $exceptionResponseFactoryRegistry->registerFactories([
 ]);
 ```
 
-If you want to take advantage of automatic content negotiation, you can use a `NegotiatedResponseFactory` in your closure:
+If you want to take advantage of automatic content negotiation, you can use a `NegotiatedResponseFactory` in your factory:
 
 ```php
 use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
@@ -387,7 +395,7 @@ use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 // Assume the content negotiator was already set up
 $negotiatedResponseFactory = new NegotiatedResponseFactory($contentNegotiator);
 // ...
-$exceptionResponseFactoryRegistry->registerFactory(
+$exceptionResponseFactories->registerFactory(
     EntityNotFound::class,
     function (EntityNotFound $ex, ?IHttpRequestMessage $request) use ($negotiatedResponseFactory) {
         return $negotiatedResponseFactory->createResponse(
