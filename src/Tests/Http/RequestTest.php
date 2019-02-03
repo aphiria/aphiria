@@ -1,23 +1,23 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Tests\Http;
+namespace Aphiria\Net\Tests\Http;
 
 use InvalidArgumentException;
 use Opulence\Collections\HashTable;
 use Opulence\Collections\KeyValuePair;
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\IHttpBody;
-use Opulence\Net\Http\Request;
-use Opulence\Net\Http\RequestTargetTypes;
-use Opulence\Net\Uri;
+use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\IHttpBody;
+use Aphiria\Net\Http\Request;
+use Aphiria\Net\Http\RequestTargetTypes;
+use Aphiria\Net\Uri;
 use PHPUnit\Framework\TestCase;
 
 /**

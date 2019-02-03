@@ -1,20 +1,20 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2018 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\ContentNegotiation;
+namespace Aphiria\Net\Http\ContentNegotiation;
 
 use InvalidArgumentException;
-use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\HttpException;
+use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
 
 /**
  * Defines interface for negotiated response factories to implement

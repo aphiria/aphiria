@@ -1,25 +1,25 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/net/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Formatting;
+namespace Aphiria\Net\Http\Formatting;
 
 use finfo;
 use InvalidArgumentException;
 use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
 use Opulence\Collections\KeyValuePair;
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\IHttpBody;
-use Opulence\Net\Http\MultipartBody;
-use Opulence\Net\Http\MultipartBodyPart;
-use Opulence\Net\Http\StringBody;
+use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\IHttpBody;
+use Aphiria\Net\Http\MultipartBody;
+use Aphiria\Net\Http\MultipartBodyPart;
+use Aphiria\Net\Http\StringBody;
 use RuntimeException;
 
 /**

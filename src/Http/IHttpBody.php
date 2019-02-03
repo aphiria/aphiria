@@ -1,14 +1,14 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/net/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http;
+namespace Aphiria\Net\Http;
 
 use Opulence\IO\Streams\IStream;
 use RuntimeException;

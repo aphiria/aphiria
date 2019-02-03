@@ -1,19 +1,19 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Tests\Http\ContentNegotiation;
+namespace Aphiria\Net\Tests\Http\ContentNegotiation;
 
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
-use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
-use Opulence\Net\Tests\Http\Formatting\Mocks\User;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
+use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use PHPUnit\Framework\TestCase;
 
 /**

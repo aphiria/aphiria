@@ -1,27 +1,27 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\ContentNegotiation;
+namespace Aphiria\Net\Http\ContentNegotiation;
 
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
-use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\HttpStatusCodes;
-use Opulence\Net\Http\IHttpBody;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\Response;
-use Opulence\Net\Http\StreamBody;
-use Opulence\Net\Http\StringBody;
+use Aphiria\Net\Http\HttpException;
+use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\IHttpBody;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\Response;
+use Aphiria\Net\Http\StreamBody;
+use Aphiria\Net\Http\StringBody;
 use Opulence\Serialization\SerializationException;
 use Opulence\Serialization\TypeResolver;
 

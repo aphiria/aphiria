@@ -1,32 +1,32 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Tests\Http\ResponseFactories;
+namespace Aphiria\Net\Tests\Http\ResponseFactories;
 
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
-use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
-use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
-use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
-use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
-use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\HttpStatusCodes;
-use Opulence\Net\Http\IHttpBody;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\Request;
-use Opulence\Net\Http\StreamBody;
-use Opulence\Net\Http\StringBody;
-use Opulence\Net\Tests\Http\ContentNegotiation\Mocks\User;
-use Opulence\Net\Uri;
+use Aphiria\Net\Http\ContentNegotiation\ContentNegotiationResult;
+use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
+use Aphiria\Net\Http\HttpException;
+use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\IHttpBody;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\Request;
+use Aphiria\Net\Http\StreamBody;
+use Aphiria\Net\Http\StringBody;
+use Aphiria\Net\Tests\Http\ContentNegotiation\Mocks\User;
+use Aphiria\Net\Uri;
 use Opulence\Serialization\SerializationException;
 
 /**

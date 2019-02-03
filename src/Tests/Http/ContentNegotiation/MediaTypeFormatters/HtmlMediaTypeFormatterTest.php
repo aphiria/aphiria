@@ -1,19 +1,19 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Tests\Http\ContentNegotiation;
+namespace Aphiria\Net\Tests\Http\ContentNegotiation;
 
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
-use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
-use Opulence\Net\Tests\Http\Formatting\Mocks\User;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
+use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -103,7 +103,7 @@ class HtmlMediaTypeFormatterTest extends TestCase
     public function testWritingNonStringThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter can only write strings');
+        $this->expectExceptionMessage('Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter can only write strings');
         $this->formatter->writeToStream($this, $this->createMock(IStream::class), 'utf-8');
     }
 

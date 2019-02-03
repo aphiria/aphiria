@@ -1,21 +1,21 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Tests\Http\Formatting;
+namespace Aphiria\Net\Tests\Http\Formatting;
 
 use InvalidArgumentException;
-use Opulence\Net\Http\Formatting\ResponseFormatter;
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\StringBody;
-use Opulence\Net\Uri;
+use Aphiria\Net\Http\Formatting\ResponseFormatter;
+use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\StringBody;
+use Aphiria\Net\Uri;
 use PHPUnit\Framework\TestCase;
 
 /**

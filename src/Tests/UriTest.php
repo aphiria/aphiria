@@ -1,18 +1,18 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Tests;
+namespace Aphiria\Net\Tests;
 
 use Exception;
 use InvalidArgumentException;
-use Opulence\Net\Uri;
+use Aphiria\Net\Uri;
 use PHPUnit\Framework\TestCase;
 
 /**

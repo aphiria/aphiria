@@ -1,17 +1,17 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Tests\Formatting;
+namespace Aphiria\Net\Tests\Formatting;
 
-use Opulence\Net\Formatting\UriParser;
-use Opulence\Net\Uri;
+use Aphiria\Net\Formatting\UriParser;
+use Aphiria\Net\Uri;
 use PHPUnit\Framework\TestCase;
 
 /**

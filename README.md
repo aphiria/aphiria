@@ -39,7 +39,7 @@ Opulence's network library provides better abstractions for HTTP requests, respo
 
 <h2 id="requirements">Requirements</h2>
 
-PHP POST request bodies are read from `$_POST` and `$_FILES` for form data and for uploaded files, respectively.  All other request methods must be manually parsed from the `php://input` stream.  To work around PHP's inconsistencies, Opulence requires the following setting in either a <a href="http://php.net/manual/en/configuration.file.per-user.php" target="_blank">_.user.ini_</a> or your _php.ini_:
+PHP POST request bodies are read from `$_POST` and `$_FILES` for form data and for uploaded files, respectively.  All other request methods must be manually parsed from the `php://input` stream.  To work around PHP's inconsistencies, Aphiria requires the following setting in either a <a href="http://php.net/manual/en/configuration.file.per-user.php" target="_blank">_.user.ini_</a> or your _php.ini_:
 
 ```
 enable_post_data_reading = 0
@@ -47,7 +47,7 @@ enable_post_data_reading = 0
 
 This will disable automatically parsing POST data into `$_POST` and uploaded files into `$_FILES`.
 
-> **Note:** If you're developing any non-Opulence applications on your web server, use <a href="http://php.net/manual/en/configuration.file.per-user.php" target="_blank">_.user.ini_</a> to limit this setting to only your Opulence application.  Alternatively, you can add `php_value enable_post_data_reading 0` to an _.htaccess_ file or to your _httpd.conf_.
+> **Note:** If you're developing any non-Aphiria applications on your web server, use <a href="http://php.net/manual/en/configuration.file.per-user.php" target="_blank">_.user.ini_</a> to limit this setting to only your Aphiria application.  Alternatively, you can add `php_value enable_post_data_reading 0` to an _.htaccess_ file or to your _httpd.conf_.
 
 <h2 id="installation">Installation</h2>
 
@@ -87,8 +87,8 @@ Requests are HTTP messages sent by clients to servers.  They contain the followi
 Creating a request is easy:
 
 ```php
-use Opulence\Net\Http\Request;
-use Opulence\Net\Uri;
+use Aphiria\Net\Http\Request;
+use Aphiria\Net\Uri;
 
 $request = new Request('GET', new Uri('https://example.com'));
 ```
@@ -102,7 +102,7 @@ $request->getHeaders()->add('Foo', 'bar');
 You can either set the body via the constructor or via `Request::setBody()`:
 
 ```php
-use Opulence\Net\Http\StringBody;
+use Aphiria\Net\Http\StringBody;
 
 // Via constructor:
 $body = new StringBody('foo');
@@ -114,15 +114,15 @@ $request->setBody($body);
 
 <h3 id="creating-request-from-superglobals">Creating a Request From Superglobals</h3>
 
-PHP has superglobal arrays that store information about the requests.  They're a mess, architecturally-speaking.  Opulence attempts to insulate developers from the nastiness of superglobals by giving you a simple method to create requests and responses.  To create a request, use `RequestFactory`:
+PHP has superglobal arrays that store information about the requests.  They're a mess, architecturally-speaking.  Aphiria attempts to insulate developers from the nastiness of superglobals by giving you a simple method to create requests and responses.  To create a request, use `RequestFactory`:
 
 ```php
-use Opulence\Net\Http\RequestFactory;
+use Aphiria\Net\Http\RequestFactory;
 
 $request = (new RequestFactory)->createRequestFromSuperglobals($_SERVER);
 ```
 
-Opulence reads all the information it needs from the `$_SERVER` superglobal - it doesn't need the others.
+Aphiria reads all the information it needs from the `$_SERVER` superglobal - it doesn't need the others.
 
 <h3 id="trusted-proxies">Trusted Proxies</h3>
 
@@ -136,10 +136,10 @@ $request = $factory->createRequestFromSuperglobals($_SERVER);
 
 <h2 id="getting-post-data">Getting POST Data</h2>
 
-In vanilla PHP, you can read URL-encoded form data via the `$_POST` superglobal.  Opulence gives you a helper to parse the body of form requests into a [dictionary](https://www.opulencephp.com/docs/1.1/collections#hash-tables).
+In vanilla PHP, you can read URL-encoded form data via the `$_POST` superglobal.  Aphiria gives you a helper to parse the body of form requests into a [dictionary](https://www.opulencephp.com/docs/1.1/collections#hash-tables).
 
 ```php
-use Opulence\Net\Http\Formatting\RequestParser;
+use Aphiria\Net\Http\Formatting\RequestParser;
 
 // Let's assume the raw body is "email=foo%40bar.com"
 $formInput = (new RequestParser)->readAsFormInput($request);
@@ -148,10 +148,10 @@ echo $formInput->get('email'); // "foo@bar.com"
 
 <h2 id="getting-query-string-data">Getting Query String Data</h2>
 
-In vanilla PHP, query string data is read from the `$_GET` superglobal.  In Opulence, it's stored in the request's URI.  `Uri::getQueryString()` returns the raw query string - to return it as an [immutable dictionary](https://www.opulencephp.com/docs/1.1/collections#immutable-hash-tables), use `RequestParser`:
+In vanilla PHP, query string data is read from the `$_GET` superglobal.  In Aphiria, it's stored in the request's URI.  `Uri::getQueryString()` returns the raw query string - to return it as an [immutable dictionary](https://www.opulencephp.com/docs/1.1/collections#immutable-hash-tables), use `RequestParser`:
 
 ```php
-use Opulence\Net\Http\Formatting\RequestParser;
+use Aphiria\Net\Http\Formatting\RequestParser;
 
 // Assume the query string was "?foo=bar"
 $queryStringParams = (new RequestParser)->parseQueryString($request);
@@ -163,7 +163,7 @@ echo $queryStringParams->get('foo'); // "bar"
 To check if a request is a JSON request, call
 
 ```php
-use Opulence\Net\Http\Formatting\RequestParser;
+use Aphiria\Net\Http\Formatting\RequestParser;
 
 $isJson = (new RequestParser)->isJson($request);
 ```
@@ -171,14 +171,14 @@ $isJson = (new RequestParser)->isJson($request);
 Rather than having to parse a JSON body yourself, you can use `RequestParser` to do it for you:
 
 ```php
-use Opulence\Net\Http\Formatting\RequestParser;
+use Aphiria\Net\Http\Formatting\RequestParser;
 
 $json = (new RequestParser)->readAsJson($request);
 ```
 
 <h2 id="multipart-requests">Multipart Requests</h2>
 
-Multipart requests contain multiple bodies, each with headers.  That's actually how file uploads work - each file gets a body with headers indicating the name, type, and size of the file.  Opulence can parse these multipart bodies into a `MultipartBody`, which extends [`StreamBody`](#stream-bodies).  It contains additional methods to get the boundary and the list of `MultipartBodyPart` objects that make up the body:
+Multipart requests contain multiple bodies, each with headers.  That's actually how file uploads work - each file gets a body with headers indicating the name, type, and size of the file.  Aphiria can parse these multipart bodies into a `MultipartBody`, which extends [`StreamBody`](#stream-bodies).  It contains additional methods to get the boundary and the list of `MultipartBodyPart` objects that make up the body:
 
 * `getBoundary(): string`
 * `getParts(): MultipartBodyPart[]`
@@ -186,7 +186,7 @@ Multipart requests contain multiple bodies, each with headers.  That's actually 
 You can check if a request is a multipart request:
 
 ```php
-use Opulence\Net\Http\Formatting\RequestParser;
+use Aphiria\Net\Http\Formatting\RequestParser;
 
 $isMultipart = (new RequestParser)->isMultipart($request);
 ```
@@ -194,7 +194,7 @@ $isMultipart = (new RequestParser)->isMultipart($request);
 To parse a request body as a multipart body, call
 
 ```php
-use Opulence\Net\Http\Formatting\RequestParser;
+use Aphiria\Net\Http\Formatting\RequestParser;
 
 $multipartBody = (new RequestParser)->readAsMultipart($request);
 ```
@@ -229,12 +229,12 @@ To grab the MIME type of an HTTP body, call
 The Net library makes it straightforward to create a multipart request manually.  The following example creates a request to upload two images:
 
 ```php
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\MultipartBody;
-use Opulence\Net\Http\MultipartBodyPart;
-use Opulence\Net\Http\Request;
-use Opulence\Net\Http\StreamBody;
-use Opulence\Net\Uri;
+use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\MultipartBody;
+use Aphiria\Net\Http\MultipartBodyPart;
+use Aphiria\Net\Http\Request;
+use Aphiria\Net\Http\StreamBody;
+use Aphiria\Net\Uri;
 
 // Build the first image's headers and body
 $image1Headers = new HttpHeaders();
@@ -267,10 +267,10 @@ $request = new Request(
 
 <h2 id="getting-request-cookies">Getting Cookies</h2>
 
-Opulence has a helper to grab cookies from request headers as an [immutable dictionary](https://www.opulencephp.com/docs/1.1/collections#immutable-hash-tables):
+Aphiria has a helper to grab cookies from request headers as an [immutable dictionary](https://www.opulencephp.com/docs/1.1/collections#immutable-hash-tables):
 
 ```php
-use Opulence\Net\Http\Formatting\RequestParser;
+use Aphiria\Net\Http\Formatting\RequestParser;
 
 $cookies = (new RequestParser)->parseCookies($request);
 $cookies->get('userid');
@@ -281,7 +281,7 @@ $cookies->get('userid');
 If you use the [`RequestFactory`](#creating-request-from-superglobals) to create your request, the client IP address will be added to the request property `CLIENT_IP_ADDRESS`.  To make it easier to grab this value, you can use `RequestParser` to retrieve it:
 
 ```php
-use Opulence\Net\Http\Formatting\RequestParser;
+use Aphiria\Net\Http\Formatting\RequestParser;
 
 $clientIPAddress = (new RequestParser)->getClientIPAddress($request);
 ```
@@ -310,7 +310,7 @@ echo (string)$request;
 By default, this will use <a href="https://tools.ietf.org/html/rfc7230#section-5.3.1" target="_blank">origin-form</a> for the request target, but you can override the request type via the constructor:
 
 ```php
-use Opulence\Net\Http\RequestTargetTypes;
+use Aphiria\Net\Http\RequestTargetTypes;
 
 $request = new Request(
     'GET',
@@ -347,7 +347,7 @@ Responses are HTTP messages that are sent by servers back to the client.  They c
 Creating a response is easy:
 
 ```php
-use Opulence\Net\Http\Response;
+use Aphiria\Net\Http\Response;
 
 $response = new Response();
 ```
@@ -380,11 +380,11 @@ $response->setBody(new StringBody('foo'));
 
 <h2 id="json-responses">JSON Responses</h2>
 
-Opulence provides an easy way to create common responses.  For example, to create a JSON response, use `ResponseFormatter`:
+Aphiria provides an easy way to create common responses.  For example, to create a JSON response, use `ResponseFormatter`:
 
 ```php
-use Opulence\Net\Http\Formatting\ResponseFormatter;
-use Opulence\Net\Http\Response;
+use Aphiria\Net\Http\Formatting\ResponseFormatter;
+use Aphiria\Net\Http\Response;
 
 $response = new Response();
 (new ResponseFormatter)->writeJson($response, ['foo' => 'bar']);
@@ -397,8 +397,8 @@ This will set the contents of the response, as well as the appropriate `Content-
 You can also create a redirect response:
 
 ```php
-use Opulence\Net\Http\Formatting\ResponseFormatter;
-use Opulence\Net\Http\Response;
+use Aphiria\Net\Http\Formatting\ResponseFormatter;
+use Aphiria\Net\Http\Response;
 
 $response = new Response();
 (new ResponseFormatter)->redirectToUri($response, 'http://example.com');
@@ -409,8 +409,8 @@ $response = new Response();
 Cookies are headers that are automatically appended to each request from the client to the server.  To set one, use `ResponseFormatter`:
 
 ```php
-use Opulence\Net\Http\Cookie;
-use Opulence\Net\Http\Formatting\ResponseFormatter;
+use Aphiria\Net\Http\Cookie;
+use Aphiria\Net\Http\Formatting\ResponseFormatter;
 
 (new ResponseFormatter)->setCookie(
     $response,
@@ -448,7 +448,7 @@ To delete a cookie on the client, call
 Once you're ready to start sending the response back to the client, you can use `ResponseWriter`:
 
 ```php
-use Opulence\Net\Http\ResponseWriter;
+use Aphiria\Net\Http\ResponseWriter;
 
 (new ResponseWriter)->writeResponse($response);
 ```
@@ -462,7 +462,7 @@ $outputStream = new Stream(fopen('path/to/output', 'w'));
 
 <h2 id="serializing-responses">Serializing Responses</h2>
 
-Opulence can serialize responses per <a href="https://tools.ietf.org/html/rfc7230#section-3" target="_blank">RFC 7230</a>:
+Aphiria can serialize responses per <a href="https://tools.ietf.org/html/rfc7230#section-3" target="_blank">RFC 7230</a>:
 
 ```php
 echo (string)$response;
@@ -470,7 +470,7 @@ echo (string)$response;
 
 <h1 id="http-headers">HTTP Headers</h1>
 
-Headers provide metadata about the HTTP message.  In Opulence, they're implemented by `Opulence\Net\Http\HttpHeaders`, which extends  [`Opulence\Collections\HashTable`](https://www.opulencephp.com/docs/1.1/collections#hash-tables).  On top of the methods provided by `HashTable`, they also provide the following methods:
+Headers provide metadata about the HTTP message.  In Aphiria, they're implemented by `Aphiria\Net\Http\HttpHeaders`, which extends  [`Opulence\Collections\HashTable`](https://www.opulencephp.com/docs/1.1/collections#hash-tables).  On top of the methods provided by `HashTable`, they also provide the following methods:
 
 * `getFirst(string $name): mixed`
 * `tryGetFirst(string $name, &$value): bool`
@@ -479,7 +479,7 @@ Headers provide metadata about the HTTP message.  In Opulence, they're implement
 
 <h1 id="http-bodies">HTTP Bodies</h1>
 
-HTTP bodies contain data associated with the HTTP message, and are optional.  They're represented by `Opulence\Net\Http\IHttpBody`.  They provide a few methods to read and write their contents to streams and to strings:
+HTTP bodies contain data associated with the HTTP message, and are optional.  They're represented by `Aphiria\Net\Http\IHttpBody`.  They provide a few methods to read and write their contents to streams and to strings:
 
 * `__toString(): string`
 * `readAsStream(): IStream`
@@ -488,10 +488,10 @@ HTTP bodies contain data associated with the HTTP message, and are optional.  Th
 
 <h2 id="string-bodies">String Bodies</h2>
 
-HTTP bodies are most commonly represented as strings.  Opulence makes it easy to create a string body via `StringBody`:
+HTTP bodies are most commonly represented as strings.  Aphiria makes it easy to create a string body via `StringBody`:
 
 ```php
-use Opulence\Net\Http\StringBody;
+use Aphiria\Net\Http\StringBody;
 
 $body = new StringBody('foo');
 ```
@@ -501,8 +501,8 @@ $body = new StringBody('foo');
 Sometimes, bodies might be too big to hold entirely in memory.  This is where `StreamBody` comes in handy:
 
 ```php
-use Opulence\IO\Streams\Stream;
-use Opulence\Net\Http\StreamBody;
+use Aphiria\IO\Streams\Stream;
+use Aphiria\Net\Http\StreamBody;
 
 $stream = new Stream(fopen('foo.txt', 'r+'));
 $body = new StreamBody($stream);
@@ -510,7 +510,7 @@ $body = new StreamBody($stream);
 
 <h1 id="uris">URIs</h1>
 
-A URI identifies a resource, typically over a network.  They contain such information as the scheme, host, port, path, query string, and fragment.  Opulence represents them in `Opulence\Net\Uri`, and they include the following methods:
+A URI identifies a resource, typically over a network.  They contain such information as the scheme, host, port, path, query string, and fragment.  Aphiria represents them in `Aphiria\Net\Uri`, and they include the following methods:
 
 * `__toString(): string`
 * `getAuthority(bool $includeUserInfo = true): ?string`
@@ -526,7 +526,7 @@ A URI identifies a resource, typically over a network.  They contain such inform
 To create an instance of `Uri`, pass the raw URI string into the constructor:
 
 ```php
-use Opulence\Net\Uri;
+use Aphiria\Net\Uri;
 
 $uri = new Uri('https://example.com/foo?bar=baz#blah');
 ```
@@ -546,9 +546,9 @@ Content negotiation is a process between the client and server to determine how 
 To negotiate the request content, simply call:
 
 ```php
-use Opulence\Net\Http\ContentNegotiation\ContentNegotiator;
-use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedMediaTypeFormatter;
-use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 
 // Register whatever media type formatters you support
 $mediaTypeFormatters = [
@@ -580,11 +580,11 @@ Similarly, you can serialize a value and write it to the response body:
 $mediaTypeFormatter->writeToStream($valueToWrite, $response->getBody());
 ```
 
-Opulence provides the following formatters out of the box:
+Aphiria provides the following formatters out of the box:
 
 * `FormUrlEncodedMediaTypeFormatter`
 * `HtmlMediaTypeFormatter`
 * `JsonMediaTypeFormatter`
 * `PlainTextMediaTypeFormatter`
 
-Under the hood, `FormUrlEncodedMediaTypeFormatter` and `JsonMediaTypeFormatter` use Opulence's <a href="https://github.com/opulencephp/serialization" target="_blank">serialization library</a> to (de)serialize values.  `HtmlMediaTypeFormatter` and `PlainTextMediaTypeFormatter` only handle strings - they do not deal with objects or arrays.
+Under the hood, `FormUrlEncodedMediaTypeFormatter` and `JsonMediaTypeFormatter` use Aphiria's <a href="https://github.com/opulencephp/serialization" target="_blank">serialization library</a> to (de)serialize values.  `HtmlMediaTypeFormatter` and `PlainTextMediaTypeFormatter` only handle strings - they do not deal with objects or arrays.

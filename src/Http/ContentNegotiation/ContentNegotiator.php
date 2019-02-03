@@ -1,20 +1,20 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\ContentNegotiation;
+namespace Aphiria\Net\Http\ContentNegotiation;
 
 use InvalidArgumentException;
-use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
-use Opulence\Net\Http\Formatting\RequestHeaderParser;
-use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
-use Opulence\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\Net\Http\Formatting\RequestHeaderParser;
+use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
+use Aphiria\Net\Http\IHttpRequestMessage;
 
 /**
  * Defines the default content negotiator

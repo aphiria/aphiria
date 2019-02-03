@@ -1,26 +1,26 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/net/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\Formatting;
+namespace Aphiria\Net\Http\Formatting;
 
 use InvalidArgumentException;
 use Opulence\Collections\IDictionary;
 use Opulence\Collections\IImmutableDictionary;
-use Opulence\Net\Formatting\UriParser;
-use Opulence\Net\Http\Headers\AcceptCharsetHeaderValue;
-use Opulence\Net\Http\Headers\AcceptLanguageHeaderValue;
-use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
-use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\MultipartBody;
-use Opulence\Net\Http\MultipartBodyPart;
+use Aphiria\Net\Formatting\UriParser;
+use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
+use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
+use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
+use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\MultipartBody;
+use Aphiria\Net\Http\MultipartBodyPart;
 use RuntimeException;
 
 /**

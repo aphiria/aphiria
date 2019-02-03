@@ -1,23 +1,23 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Tests\Http\Formatting;
+namespace Aphiria\Net\Tests\Http\Formatting;
 
 use InvalidArgumentException;
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
-use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
-use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
-use Opulence\Net\Http\Headers\AcceptMediaTypeHeaderValue;
-use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
-use Opulence\Net\Tests\Http\Formatting\Mocks\User;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
+use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
+use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use PHPUnit\Framework\TestCase;
 
 /**

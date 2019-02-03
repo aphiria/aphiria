@@ -1,17 +1,17 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Http\ContentNegotiation;
+namespace Aphiria\Net\Http\ContentNegotiation;
 
-use Opulence\Net\Http\Headers\AcceptLanguageHeaderValue;
-use Opulence\Net\Http\Headers\IHeaderValueWithQualityScore;
+use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
+use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
 
 /**
  * Defines the language matcher

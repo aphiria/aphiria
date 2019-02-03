@@ -1,22 +1,22 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Tests\Http;
+namespace Aphiria\Net\Tests\Http;
 
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\MultiStream;
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\IHttpBody;
-use Opulence\Net\Http\MultipartBody;
-use Opulence\Net\Http\MultipartBodyPart;
-use Opulence\Net\Http\StringBody;
+use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\IHttpBody;
+use Aphiria\Net\Http\MultipartBody;
+use Aphiria\Net\Http\MultipartBodyPart;
+use Aphiria\Net\Http\StringBody;
 use PHPUnit\Framework\TestCase;
 
 /**

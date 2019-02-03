@@ -1,6 +1,6 @@
 {
-  "name": "opulence/net",
-  "description": "The Opulence network library",
+  "name": "aphiria/net",
+  "description": "The Aphiria network library",
   "keywords": [
     "PHP",
     "network",
@@ -12,25 +12,25 @@
   "authors": [
     {
       "name": "David Young",
-      "email": "dave@opulencephp.com",
+      "email": "dave@aphiria.com",
       "role": "Architect"
     }
   ],
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Opulence\\Net\\": "src"
+      "Aphiria\\Net\\": "src"
     },
     "exclude-from-classmap": [
       "**/Tests/"
     ]
   },
   "require": {
+    "aphiria/serialization": "1.0.*@dev",
     "ext-json": "*",
     "ext-mbstring": "*",
     "opulence/collections": "1.1.*@dev",
     "opulence/io": "1.1.*@dev",
-    "opulence/serialization": "1.0.*@dev",
     "php": "^7.3"
   },
   "require-dev": {

@@ -1,18 +1,18 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
-namespace Opulence\Net\Tests\Http\Formatting;
+namespace Aphiria\Net\Tests\Http\Formatting;
 
-use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatterMatch;
-use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
-use Opulence\Net\Http\Headers\ContentTypeHeaderValue;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatch;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use PHPUnit\Framework\TestCase;
 
 /**
