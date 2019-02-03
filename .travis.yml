@@ -12,7 +12,7 @@ script: vendor/bin/phpunit --verbose
 
 notifications:
   email:
-    - dave@opulencephp.com
+    - dave@aphiria.com
 
 sudo: false
 
