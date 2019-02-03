@@ -155,7 +155,7 @@ class HttpHeadersTest extends TestCase
          */
         foreach ($this->headers->toArray() as $key => $value) {
             // Verify that the key is numeric, not associative
-            $this->assertInternalType('integer', $key);
+            $this->assertIsInt($key);
             $this->assertInstanceOf(KeyValuePair::class, $value);
             $actualValues[$value->getKey()] = $value->getValue();
         }
