@@ -28,7 +28,7 @@
   },
   "require-dev": {
     "nikic/fast-route": "1.2",
-    "phpunit/phpunit": "~7.5",
+    "phpunit/phpunit": "~8.0",
     "symfony/routing": "4.2.*"
   },
   "extra": {
