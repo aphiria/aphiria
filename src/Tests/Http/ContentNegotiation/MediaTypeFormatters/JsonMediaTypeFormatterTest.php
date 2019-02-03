@@ -14,7 +14,7 @@ use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
-use Opulence\Serialization\JsonSerializer;
+use Aphiria\Serialization\JsonSerializer;
 use PHPUnit\Framework\TestCase;
 
 /**

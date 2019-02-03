@@ -14,7 +14,7 @@ use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedSerializerMediaTypeFormatter;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
-use Opulence\Serialization\FormUrlEncodedSerializer;
+use Aphiria\Serialization\FormUrlEncodedSerializer;
 use PHPUnit\Framework\TestCase;
 
 /**

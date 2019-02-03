@@ -10,7 +10,7 @@
 
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
-use Opulence\Serialization\JsonSerializer;
+use Aphiria\Serialization\JsonSerializer;
 
 /**
  * Defines the JSON media type formatter

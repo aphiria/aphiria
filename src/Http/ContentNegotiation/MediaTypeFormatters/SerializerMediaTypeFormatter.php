@@ -12,8 +12,8 @@ namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
 use InvalidArgumentException;
 use Opulence\IO\Streams\IStream;
-use Opulence\Serialization\ISerializer;
-use Opulence\Serialization\TypeResolver;
+use Aphiria\Serialization\ISerializer;
+use Aphiria\Serialization\TypeResolver;
 
 /**
  * Defines the base class for media type formatters that use serializers to extend

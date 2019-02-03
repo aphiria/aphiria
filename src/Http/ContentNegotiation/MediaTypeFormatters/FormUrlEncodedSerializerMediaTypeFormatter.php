@@ -10,8 +10,8 @@
 
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
-use Opulence\Serialization\FormUrlEncodedSerializer;
-use Opulence\Serialization\TypeResolver;
+use Aphiria\Serialization\FormUrlEncodedSerializer;
+use Aphiria\Serialization\TypeResolver;
 
 /**
  * Defines the form URL-encoded media type formatter

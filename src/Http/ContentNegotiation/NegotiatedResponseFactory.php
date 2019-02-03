@@ -22,8 +22,8 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Http\StringBody;
-use Opulence\Serialization\SerializationException;
-use Opulence\Serialization\TypeResolver;
+use Aphiria\Serialization\SerializationException;
+use Aphiria\Serialization\TypeResolver;
 
 /**
  * Defines the factory that generates HTTP responses from negotiated content

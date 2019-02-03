@@ -27,7 +27,7 @@ use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Tests\Http\ContentNegotiation\Mocks\User;
 use Aphiria\Net\Uri;
-use Opulence\Serialization\SerializationException;
+use Aphiria\Serialization\SerializationException;
 
 /**
  * Tests the negotiated response factory
