@@ -1,25 +1,25 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Tests\Matchers\Trees;
+namespace Aphiria\Routing\Tests\Matchers\Trees;
 
-use Opulence\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
-use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
-use Opulence\Routing\Matchers\Trees\LiteralTrieNode;
-use Opulence\Routing\Matchers\Trees\RootTrieNode;
-use Opulence\Routing\Matchers\Trees\RouteVariable;
-use Opulence\Routing\Matchers\Trees\TrieRouteMatcher;
-use Opulence\Routing\Matchers\Trees\VariableTrieNode;
-use Opulence\Routing\MethodRouteAction;
-use Opulence\Routing\Route;
-use Opulence\Routing\UriTemplates\UriTemplate;
+use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
+use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
+use Aphiria\Routing\Matchers\Trees\LiteralTrieNode;
+use Aphiria\Routing\Matchers\Trees\RootTrieNode;
+use Aphiria\Routing\Matchers\Trees\RouteVariable;
+use Aphiria\Routing\Matchers\Trees\TrieRouteMatcher;
+use Aphiria\Routing\Matchers\Trees\VariableTrieNode;
+use Aphiria\Routing\MethodRouteAction;
+use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -1,19 +1,19 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Tests\Matchers\Rules;
+namespace Aphiria\Routing\Tests\Matchers\Rules;
 
 use InvalidArgumentException;
 use RuntimeException;
-use Opulence\Routing\Matchers\Rules\IRule;
-use Opulence\Routing\Matchers\Rules\RuleFactory;
+use Aphiria\Routing\Matchers\Rules\IRule;
+use Aphiria\Routing\Matchers\Rules\RuleFactory;
 use PHPUnit\Framework\TestCase;
 
 /**

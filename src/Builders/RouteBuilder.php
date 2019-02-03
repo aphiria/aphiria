@@ -1,26 +1,26 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Builders;
+namespace Aphiria\Routing\Builders;
 
 use Closure;
 use InvalidArgumentException;
 use LogicException;
-use Opulence\Routing\ClosureRouteAction;
-use Opulence\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
-use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
-use Opulence\Routing\MethodRouteAction;
-use Opulence\Routing\Middleware\MiddlewareBinding;
-use Opulence\Routing\Route;
-use Opulence\Routing\RouteAction;
-use Opulence\Routing\UriTemplates\UriTemplate;
+use Aphiria\Routing\ClosureRouteAction;
+use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
+use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
+use Aphiria\Routing\MethodRouteAction;
+use Aphiria\Routing\Middleware\MiddlewareBinding;
+use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
+use Aphiria\Routing\UriTemplates\UriTemplate;
 
 /**
  * Defines the route builder

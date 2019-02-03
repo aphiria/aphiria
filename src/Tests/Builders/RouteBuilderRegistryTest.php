@@ -1,20 +1,20 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Tests\Builders;
+namespace Aphiria\Routing\Tests\Builders;
 
-use Opulence\Routing\Builders\RouteBuilderRegistry;
-use Opulence\Routing\Builders\RouteGroupOptions;
-use Opulence\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
-use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
-use Opulence\Routing\Middleware\MiddlewareBinding;
+use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\Builders\RouteGroupOptions;
+use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
+use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
+use Aphiria\Routing\Middleware\MiddlewareBinding;
 use PHPUnit\Framework\TestCase;
 
 /**

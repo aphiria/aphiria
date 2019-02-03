@@ -50,7 +50,7 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
 
 This library requires PHP 7.3 and above.  It can be installed via <a href="https://getcomposer.org/" target="_blank">Composer</a> by including the following in your _composer.json_:
 ```
-"opulence/router": "1.0.*@dev"
+"aphiria/router": "1.0.*@dev"
 ```
 
 <h1 id="basic-usage">Basic Usage</h1>
@@ -60,9 +60,9 @@ Out of the box, this library provides a fluent syntax to help you build your rou
 First, let's import the namespaces and define our routes:
 
 ```php
-use Opulence\Routing\Builders\RouteBuilderRegistry;
-use Opulence\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
-use Opulence\Routing\RouteFactory;
+use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
+use Aphiria\Routing\RouteFactory;
 
 // Register the routes
 $routeCallback = function (RouteBuilderRegistry $routes) {
@@ -118,11 +118,11 @@ If `$result->methodIsAllowed` is `false`, you can return a 405 response with a l
 header('Allow', implode(', ', $result->allowedMethods));
 ```
 
-> **Note:** If you're using another HTTP library (eg <a href="https://github.com/opulencephp/net" target="_blank">Opulence</a>, Symfony, or Laravel) in your application, it's better to use their methods to get the request method, host, and URI.  They account for things like trusted proxies as well as provide more robust handling of certain request headers.
+> **Note:** If you're using another HTTP library (eg <a href="https://github.com/aphiria/net" target="_blank">Aphiria</a>, Symfony, or Laravel) in your application, it's better to use their methods to get the request method, host, and URI.  They account for things like trusted proxies as well as provide more robust handling of certain request headers.
 
 <h2 id="route-variables">Route Variables</h2>
 
-Opulence provides a simple syntax for your URIs.  To capture variables in your route, use `:varName`, eg:
+Aphiria provides a simple syntax for your URIs.  To capture variables in your route, use `:varName`, eg:
 
 ```php
 users/:userId/profile
@@ -166,7 +166,7 @@ Route builders give you a fluent syntax for mapping your routes to closures or c
 
 <h1 id="route-actions">Route Actions</h1>
 
-Opulence supports mapping routes to both controller methods and to closures:
+Aphiria supports mapping routes to both controller methods and to closures:
 
 ```php
 $routesCallback = function (RouteBuilderRegistry $routes) {
@@ -186,7 +186,7 @@ To determine the type of action (controller method or closure) the matched route
 
 <h1 id="binding-middleware">Binding Middleware</h1>
 
-Middleware are a great way to modify both the request and the response on an endpoint.  Opulence lets you define middleware on your endpoints without binding you to any particular library/framework's middleware implementations.
+Middleware are a great way to modify both the request and the response on an endpoint.  Aphiria lets you define middleware on your endpoints without binding you to any particular library/framework's middleware implementations.
 
 To bind a single middleware class to your route, call:
 
@@ -211,7 +211,7 @@ Under the hood, these class names get converted to instances of `MiddlewareBindi
 
 <h2 id="middleware-attributes">Middleware Attributes</h2>
 
-Some frameworks, such as Opulence and Laravel, let you bind attributes to middleware.  For example, if you have an `AuthMiddleware`, but need to bind the user role that's necessary to access that route, you might want to pass in the required user role.  Here's how you can do it:
+Some frameworks, such as Aphiria and Laravel, let you bind attributes to middleware.  For example, if you have an `AuthMiddleware`, but need to bind the user role that's necessary to access that route, you might want to pass in the required user role.  Here's how you can do it:
 
 ```php
 $routes->map('GET', 'foo')
@@ -242,7 +242,7 @@ foreach ($result->middlewareBindings as $middlewareBinding) {
 Often times, a lot of your routes will share similar properties, such as hosts and paths to match on, or middleware.  You can group these routes together using `RouteBuilderRegistry::group()` and specifying the options to apply to all routes within the group:
 
 ```php
-use Opulence\Routing\Builders\RouteGroupOptions;
+use Aphiria\Routing\Builders\RouteGroupOptions;
 
 $routesCallback = function (RouteBuilderRegistry $routes) {
     $routes->group(
@@ -307,8 +307,8 @@ $routesCallback = function (RouteBuilderRegistry $routes) {
 Now, let's add a route constraint to match the "API-VERSION" header to the attribute on our route:
 
 ```php
-use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
-use Opulence\Routing\Matchers\MatchedRouteCandidate;
+use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
+use Aphiria\Routing\Matchers\MatchedRouteCandidate;
 
 class ApiVersionConstraint implements IRouteConstraint
 {
@@ -336,7 +336,7 @@ If we hit _/comments_ with an "API-VERSION" header value of "v2.0", we'd match t
 PHP is irritatingly difficult to extract headers from `$_SERVER`.  If you're using a library/framework to grab headers, then use that.  Otherwise, you can use the `HeaderParser`:
 
 ```php
-use Opulence\Routing\Requests\HeaderParser;
+use Aphiria\Routing\Requests\HeaderParser;
 
 $headers = (new HeaderParser)->parseHeaders($_SERVER);
 ```
@@ -353,7 +353,7 @@ You can enforce certain rules to pass before matching on a route.  These rules c
 
 <h2 id="built-in-rules">Built-In Rules</h2>
 
-The following rules are built-into Opulence:
+The following rules are built-into Aphiria:
 
 * `alpha`
 * `alphanumeric`
@@ -371,7 +371,7 @@ The following rules are built-into Opulence:
 You can register your own rule by implementing `IRule`.  Let's make a rule that enforces a certain minimum string length:
 
 ```php
-use Opulence\Routing\Matchers\Rules\IRule;
+use Aphiria\Routing\Matchers\Rules\IRule;
 
 class MinLengthRule implements IRule
 {
@@ -397,7 +397,7 @@ class MinLengthRule implements IRule
 Let's register our rule with the rule factory:
 
 ```php
-use Opulence\Routing\Matchers\Rules\{RuleFactory, RuleFactoryRegistrant};
+use Aphiria\Routing\Matchers\Rules\{RuleFactory, RuleFactoryRegistrant};
 
 // Register some built-in rules to our factory
 $ruleFactory = (new RuleFactoryRegistrant)->registerRuleFactories(new RuleFactory);
@@ -411,9 +411,9 @@ $ruleFactory->registerRuleFactory(MinLengthRule::getSlug(), function (int $minLe
 Finally, register this rule factory with the trie compiler:
 
 ```php
-use Opulence\Routing\Builders\RouteBuilderRegistry;
-use Opulence\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
-use Opulence\Routing\RouteFactory;
+use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
+use Aphiria\Routing\RouteFactory;
 
 $routeCallback = function (RouteBuilderRegistry $routes) {
      $routes->map('parts/:serialNumber(minLength(6))')
@@ -430,7 +430,7 @@ Our route will now enforce a serial number with minimum length 6.
 
 <h1 id="caching">Caching</h1>
 
-To speed up the compilation of your route trie, Opulence supports caching (`FileTrieCache` is provided by default).  If you're actively developing and adding new routes, it's best not to enable caching, which can be done by passing `null` into the `TrieFactory`:
+To speed up the compilation of your route trie, Aphiria supports caching (`FileTrieCache` is provided by default).  If you're actively developing and adding new routes, it's best not to enable caching, which can be done by passing `null` into the `TrieFactory`:
 
 ```php
 $routeFactory = new RouteFactory($routesCallback);

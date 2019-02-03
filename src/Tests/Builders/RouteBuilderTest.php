@@ -1,21 +1,21 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Tests\Builders;
+namespace Aphiria\Routing\Tests\Builders;
 
 use InvalidArgumentException;
 use LogicException;
-use Opulence\Routing\Builders\RouteBuilder;
-use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
-use Opulence\Routing\Middleware\MiddlewareBinding;
-use Opulence\Routing\UriTemplates\UriTemplate;
+use Aphiria\Routing\Builders\RouteBuilder;
+use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
+use Aphiria\Routing\Middleware\MiddlewareBinding;
+use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

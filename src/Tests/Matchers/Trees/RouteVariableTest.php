@@ -1,17 +1,17 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Tests\Matchers\Trees;
+namespace Aphiria\Routing\Tests\Matchers\Trees;
 
-use Opulence\Routing\Matchers\Rules\IRule;
-use Opulence\Routing\Matchers\Trees\RouteVariable;
+use Aphiria\Routing\Matchers\Rules\IRule;
+use Aphiria\Routing\Matchers\Trees\RouteVariable;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -1,22 +1,22 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Tests\UriTemplates\Parsers;
+namespace Aphiria\Routing\Tests\UriTemplates\Parsers;
 
 use InvalidArgumentException;
-use Opulence\Routing\UriTemplates\Parsers\Lexers\Token;
-use Opulence\Routing\UriTemplates\Parsers\Lexers\TokenStream;
-use Opulence\Routing\UriTemplates\Parsers\Lexers\TokenTypes;
-use Opulence\Routing\UriTemplates\Parsers\AstNode;
-use Opulence\Routing\UriTemplates\Parsers\AstNodeTypes;
-use Opulence\Routing\UriTemplates\Parsers\UriTemplateParser;
+use Aphiria\Routing\UriTemplates\Parsers\Lexers\Token;
+use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenStream;
+use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenTypes;
+use Aphiria\Routing\UriTemplates\Parsers\AstNode;
+use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
+use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -1,19 +1,19 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Trees;
+namespace Aphiria\Routing\Matchers\Trees;
 
-use Opulence\Routing\Matchers\Trees\Caching\ITrieCache;
-use Opulence\Routing\Matchers\Trees\Compilers\ITrieCompiler;
-use Opulence\Routing\Matchers\Trees\Compilers\TrieCompiler;
-use Opulence\Routing\RouteFactory;
+use Aphiria\Routing\Matchers\Trees\Caching\ITrieCache;
+use Aphiria\Routing\Matchers\Trees\Compilers\ITrieCompiler;
+use Aphiria\Routing\Matchers\Trees\Compilers\TrieCompiler;
+use Aphiria\Routing\RouteFactory;
 
 /**
  * Defines a factory for tries

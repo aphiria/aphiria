@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/Aphiria/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Trees\Caching;
+namespace Aphiria\Routing\Matchers\Trees\Caching;
 
-use Opulence\Routing\Matchers\Trees\TrieNode;
+use Aphiria\Routing\Matchers\Trees\TrieNode;
 
 /**
  * Defines the file trie cache

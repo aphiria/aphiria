@@ -1,18 +1,18 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Tests\UriTemplates\Parsers\Lexers;
+namespace Aphiria\Routing\Tests\UriTemplates\Parsers\Lexers;
 
 use InvalidArgumentException;
-use Opulence\Routing\UriTemplates\Parsers\Lexers\Token;
-use Opulence\Routing\UriTemplates\Parsers\Lexers\TokenStream;
+use Aphiria\Routing\UriTemplates\Parsers\Lexers\Token;
+use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenStream;
 use PHPUnit\Framework\TestCase;
 
 /**

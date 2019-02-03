@@ -1,22 +1,22 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Tests\Matchers\Trees;
+namespace Aphiria\Routing\Tests\Matchers\Trees;
 
-use Opulence\Routing\Matchers\Trees\Caching\ITrieCache;
-use Opulence\Routing\Matchers\Trees\Compilers\ITrieCompiler;
-use Opulence\Routing\Matchers\Trees\RootTrieNode;
-use Opulence\Routing\Matchers\Trees\TrieFactory;
-use Opulence\Routing\Route;
-use Opulence\Routing\RouteCollection;
-use Opulence\Routing\RouteFactory;
+use Aphiria\Routing\Matchers\Trees\Caching\ITrieCache;
+use Aphiria\Routing\Matchers\Trees\Compilers\ITrieCompiler;
+use Aphiria\Routing\Matchers\Trees\RootTrieNode;
+use Aphiria\Routing\Matchers\Trees\TrieFactory;
+use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteCollection;
+use Aphiria\Routing\RouteFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

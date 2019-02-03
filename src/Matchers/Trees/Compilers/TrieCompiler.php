@@ -1,21 +1,21 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Matchers\Trees\Compilers;
+namespace Aphiria\Routing\Matchers\Trees\Compilers;
 
 use InvalidArgumentException;
-use Opulence\Routing\Matchers\Rules\{IRuleFactory, RuleFactory, RuleFactoryRegistrant};
-use Opulence\Routing\Matchers\Trees\{LiteralTrieNode, RootTrieNode, RouteVariable, TrieNode, VariableTrieNode};
-use Opulence\Routing\Route;
-use Opulence\Routing\UriTemplates\Parsers\{AstNode, AstNodeTypes, IUriTemplateParser, UriTemplateParser};
-use Opulence\Routing\UriTemplates\Parsers\Lexers\{IUriTemplateLexer, UriTemplateLexer};
+use Aphiria\Routing\Matchers\Rules\{IRuleFactory, RuleFactory, RuleFactoryRegistrant};
+use Aphiria\Routing\Matchers\Trees\{LiteralTrieNode, RootTrieNode, RouteVariable, TrieNode, VariableTrieNode};
+use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\Parsers\{AstNode, AstNodeTypes, IUriTemplateParser, UriTemplateParser};
+use Aphiria\Routing\UriTemplates\Parsers\Lexers\{IUriTemplateLexer, UriTemplateLexer};
 
 /**
  * Defines a compiler for a trie

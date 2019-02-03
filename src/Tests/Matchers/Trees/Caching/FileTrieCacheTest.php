@@ -1,23 +1,23 @@
 <?php
 
 /**
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/Aphiria/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Tests\Matchers\Trees\Caching;
+namespace Aphiria\Routing\Tests\Matchers\Trees\Caching;
 
-use Opulence\Routing\Matchers\Constraints\IRouteConstraint;
-use Opulence\Routing\Matchers\Trees\Caching\FileTrieCache;
-use Opulence\Routing\Matchers\Trees\LiteralTrieNode;
-use Opulence\Routing\Matchers\Trees\RootTrieNode;
-use Opulence\Routing\MethodRouteAction;
-use Opulence\Routing\Middleware\MiddlewareBinding;
-use Opulence\Routing\Route;
-use Opulence\Routing\UriTemplates\UriTemplate;
+use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
+use Aphiria\Routing\Matchers\Trees\Caching\FileTrieCache;
+use Aphiria\Routing\Matchers\Trees\LiteralTrieNode;
+use Aphiria\Routing\Matchers\Trees\RootTrieNode;
+use Aphiria\Routing\MethodRouteAction;
+use Aphiria\Routing\Middleware\MiddlewareBinding;
+use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
 /**

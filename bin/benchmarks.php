@@ -12,9 +12,9 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use FastRoute\RouteCollector;
-use Opulence\Routing\Builders\RouteBuilderRegistry;
-use Opulence\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
-use Opulence\Routing\RouteFactory;
+use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
+use Aphiria\Routing\RouteFactory;
 use Symfony\Component\Routing\Matcher\Dumper\PhpMatcherDumper;
 use Symfony\Component\Routing\{RequestContext, Route as SymfonyRoute, RouteCollection};
 
@@ -70,7 +70,7 @@ for ($testIter = 0;$testIter < $numTests;$testIter++) {
 echo formatResults('Symfony', memory_get_usage() - $startMemory, microtime(true) - $startTime);
 
 /**
- * Opulence benchmark
+ * Aphiria benchmark
  */
 
 $startMemory = memory_get_usage();
@@ -91,7 +91,7 @@ for ($testIter = 0;$testIter < $numTests;$testIter++) {
     }
 }
 
-echo formatResults('Opulence', memory_get_usage() - $startMemory, microtime(true) - $startTime);
+echo formatResults('Aphiria', memory_get_usage() - $startMemory, microtime(true) - $startTime);
 
 /**
  * FastRoute benchmark

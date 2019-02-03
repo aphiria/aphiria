@@ -1,6 +1,6 @@
 {
-  "name": "opulence/router",
-  "description": "The Opulence router library",
+  "name": "aphiria/router",
+  "description": "The Aphiria router library",
   "keywords": [
     "PHP",
     "router",
@@ -10,14 +10,14 @@
   "authors": [
     {
       "name": "David Young",
-      "email": "dave@opulencephp.com",
+      "email": "dave@aphiria.com",
       "role": "Architect"
     }
   ],
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Opulence\\Routing\\": "src/"
+      "Aphiria\\Routing\\": "src/"
     }
   },
   "require": {

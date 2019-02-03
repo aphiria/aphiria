@@ -1,17 +1,17 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Tests\Matchers;
+namespace Aphiria\Routing\Tests\Matchers;
 
-use Opulence\Routing\Matchers\MatchedRouteCandidate;
-use Opulence\Routing\Route;
+use Aphiria\Routing\Matchers\MatchedRouteCandidate;
+use Aphiria\Routing\Route;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

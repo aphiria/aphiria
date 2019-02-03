@@ -1,17 +1,17 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
-namespace Opulence\Routing\Tests;
+namespace Aphiria\Routing\Tests;
 
-use Opulence\Routing\Builders\RouteBuilderRegistry;
-use Opulence\Routing\RouteFactory;
+use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\RouteFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
