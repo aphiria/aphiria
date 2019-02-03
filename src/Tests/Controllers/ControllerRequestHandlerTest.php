@@ -1,22 +1,22 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests\Controllers;
+namespace Aphiria\Api\Tests\Controllers;
 
-use Opulence\Api\Tests\Controllers\Mocks\Controller;
-use Opulence\Api\Controllers\ControllerRequestHandler;
-use Opulence\Api\Controllers\IRouteActionInvoker;
-use Opulence\Api\IDependencyResolver;
-use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
+use Aphiria\Api\Tests\Controllers\Mocks\Controller;
+use Aphiria\Api\Controllers\ControllerRequestHandler;
+use Aphiria\Api\Controllers\IRouteActionInvoker;
+use Aphiria\Api\IDependencyResolver;
+use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

@@ -1,27 +1,27 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api;
+namespace Aphiria\Api;
 
 use Closure;
 use InvalidArgumentException;
-use Opulence\Api\Controllers\{Controller, ControllerRequestHandler, IRouteActionInvoker, RouteActionInvoker};
-use Opulence\Middleware\AttributeMiddleware;
-use Opulence\Middleware\IMiddleware;
-use Opulence\Middleware\MiddlewarePipelineFactory;
-use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
-use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\{HttpException, HttpStatusCodes, IHttpRequestMessage, IHttpResponseMessage, Response};
-use Opulence\Routing\Matchers\{IRouteMatcher, RouteMatchingResult};
-use Opulence\Routing\Middleware\MiddlewareBinding;
-use Opulence\Routing\RouteAction;
+use Aphiria\Api\Controllers\{Controller, ControllerRequestHandler, IRouteActionInvoker, RouteActionInvoker};
+use Aphiria\Middleware\AttributeMiddleware;
+use Aphiria\Middleware\IMiddleware;
+use Aphiria\Middleware\MiddlewarePipelineFactory;
+use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
+use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\{HttpException, HttpStatusCodes, IHttpRequestMessage, IHttpResponseMessage, Response};
+use Aphiria\Routing\Matchers\{IRouteMatcher, RouteMatchingResult};
+use Aphiria\Routing\Middleware\MiddlewareBinding;
+use Aphiria\Routing\RouteAction;
 
 /**
  * Defines the API kernel

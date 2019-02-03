@@ -1,25 +1,25 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests\Exceptions;
+namespace Aphiria\Api\Tests\Exceptions;
 
 use Exception;
 use InvalidArgumentException;
-use Opulence\Api\Exceptions\ExceptionResponseFactory;
-use Opulence\Api\Exceptions\ExceptionResponseFactoryRegistry;
-use Opulence\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
-use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
-use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\HttpStatusCodes;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
+use Aphiria\Api\Exceptions\ExceptionResponseFactory;
+use Aphiria\Api\Exceptions\ExceptionResponseFactoryRegistry;
+use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
+use Aphiria\Net\Http\HttpException;
+use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

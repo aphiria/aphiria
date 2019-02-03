@@ -1,23 +1,23 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests\Exceptions;
+namespace Aphiria\Api\Tests\Exceptions;
 
 use Error;
 use ErrorException;
 use InvalidArgumentException;
-use Opulence\Api\Exceptions\ExceptionHandler;
-use Opulence\Api\Exceptions\IExceptionResponseFactory;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\ResponseWriter;
+use Aphiria\Api\Exceptions\ExceptionHandler;
+use Aphiria\Api\Exceptions\IExceptionResponseFactory;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\ResponseWriter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;

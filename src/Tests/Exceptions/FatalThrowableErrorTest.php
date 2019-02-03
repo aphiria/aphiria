@@ -1,20 +1,20 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests\Exceptions;
+namespace Aphiria\Api\Tests\Exceptions;
 
 use TypeError;
 use ParseError;
 use ErrorException;
 use InvalidArgumentException;
-use Opulence\Api\Exceptions\FatalThrowableError;
+use Aphiria\Api\Exceptions\FatalThrowableError;
 use PHPUnit\Framework\TestCase;
 
 class FatalThrowableErrorTest extends TestCase

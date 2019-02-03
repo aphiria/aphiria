@@ -21,14 +21,14 @@
 
 <h1 id="introduction">Introduction</h1>
 
-The API library makes it simpler for you to get your application's API up and running.  It acts as the entry point into your application, and takes advantage of several of Opulence's other libraries to handle things like route matching and content negotiation.
+The API library makes it simpler for you to get your application's API up and running.  It acts as the entry point into your application, and takes advantage of several of Aphiria's other libraries to handle things like route matching and content negotiation.
 
 <h2 id="installation">Installation</h2>
 
 You can install this library by including the following package name in your _composer.json_:
 
 ```
-"opulence/api": "1.0.*"
+"aphiria/api": "1.0.*"
 ```
 
 <h1 id="controllers">Controllers</h1>
@@ -49,7 +49,7 @@ class UserController extends Controller
 }
 ```
 
-Opulence will see the `User` method parameter and [automatically deserialize the request body to an instance of `User`](#parameter-resolution) (which can be a POPO) using <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a>.  It will also detect that a `User` object was returned by the method, and create a 200 response whose body is the serialized user object.  It uses <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a> to determine the media type to (de)serialize to (eg JSON).
+Aphiria will see the `User` method parameter and [automatically deserialize the request body to an instance of `User`](#parameter-resolution) (which can be a POPO) using <a href="https://github.com/aphiria/net#content-negotiation" target="_blank">content negotiation</a>.  It will also detect that a `User` object was returned by the method, and create a 200 response whose body is the serialized user object.  It uses <a href="https://github.com/aphiria/net#content-negotiation" target="_blank">content negotiation</a> to determine the media type to (de)serialize to (eg JSON).
 
 You can also be a bit more explicit and return a response yourself.  For example, the following controller method is functionally identical to the previous example:
 
@@ -67,7 +67,7 @@ class UserController extends Controller
 }
 ```
 
-The `ok()` helper method uses a `NegotiatedResponseFactory` to build a response using the current request and <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a>.  You can pass in a POPO as the response body, and the factory will use content negotiation to determine how to serialize it.
+The `ok()` helper method uses a `NegotiatedResponseFactory` to build a response using the current request and <a href="https://github.com/aphiria/net#content-negotiation" target="_blank">content negotiation</a>.  You can pass in a POPO as the response body, and the factory will use content negotiation to determine how to serialize it.
 
 The following helper methods come bundled with `Controller`:
 
@@ -92,7 +92,7 @@ If you need access to the current request, use `$this->request` within your cont
 Setting headers is simple, too:
 
 ```php
-use Opulence\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\HttpHeaders;
 
 class UserController extends Controller
 {
@@ -111,7 +111,7 @@ class UserController extends Controller
 
 <h2 id="parameter-resolution">Parameter Resolution</h2>
 
-Your controller methods will frequently need to do things like deserialize the request body or read route/query string values.  Opulence simplifies this process enormously by allowing your method signatures to be expressive.  
+Your controller methods will frequently need to do things like deserialize the request body or read route/query string values.  Aphiria simplifies this process enormously by allowing your method signatures to be expressive.  
 
 <h3 id="request-body-parameters">Request Bodies</h3>
 
@@ -131,11 +131,11 @@ class UserController extends Controller
 }
 ```
 
-This works for any media type (eg JSON) that you've registered to your <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiator</a>.
+This works for any media type (eg JSON) that you've registered to your <a href="https://github.com/aphiria/net#content-negotiation" target="_blank">content negotiator</a>.
 
 <h3 id="uri-parameters">URI Parameters</h3>
 
-Opulence also supports resolving scalar parameters in your controller methods.  It will scan route variables, and then, if no matches are found, the query string for scalar parameters.  For example, this method will grab `includeDeletedUsers` from the query string and cast it to a `bool`:
+Aphiria also supports resolving scalar parameters in your controller methods.  It will scan route variables, and then, if no matches are found, the query string for scalar parameters.  For example, this method will grab `includeDeletedUsers` from the query string and cast it to a `bool`:
 
 ```php
 class UserController extends Controller
@@ -233,14 +233,14 @@ Sometimes, a controller class is overkill for a route that does very little.  In
     });
 ```
 
-Closures support the same [parameter resolution](#parameter-resolution) features as controller methods.  Here's the cool part - Opulence will bind an instance of `Controller` to your closure, which means you can use [all the methods](#controllers), [request parsers](#parsing-request-data), and [response formatters](#formatting-response-data) available inside of `Controller` via `$this`.
+Closures support the same [parameter resolution](#parameter-resolution) features as controller methods.  Here's the cool part - Aphiria will bind an instance of `Controller` to your closure, which means you can use [all the methods](#controllers), [request parsers](#parsing-request-data), and [response formatters](#formatting-response-data) available inside of `Controller` via `$this`.
 
 <h2 id="controller-dependencies">Controller Dependencies</h2>
 
 The API library provides support for auto-wiring your controllers.  In other words, it can scan your controllers' constructors for dependencies, resolve them, and then instantiate your controllers with those dependencies.  Dependency resolvers simply need to implement `IDependencyResolver`.  To make it easy for users of Opulence's DI container, you can use `ContainerDependencyResolver`.
 
 ```php
-use Opulence\Api\ContainerDependencyResolver;
+use Aphiria\Api\ContainerDependencyResolver;
 use Opulence\Ioc\Container;
 
 $container = new Container();
@@ -253,19 +253,19 @@ Once you've instantiated your dependency resolver, pass it into your [request ha
 
 HTTP middleware are classes that are executed in a series of pipeline stages.  They manipulate the request and response to do things like authenticate users or enforce CSRF protection for certain routes.
 
-The API library uses Opulence's middleware library.  Learn more about it by <a href="https://github.com/opulencephp/middleware#introduction" target="_blank">reading its documentation</a>.
+The API library uses Aphiria's middleware library.  Learn more about it by <a href="https://github.com/aphiria/middleware#introduction" target="_blank">reading its documentation</a>.
 
 <h2 id="configuring-middleware">Configuring Middleware</h2>
 
-Opulence uses dependency injection for type-hinted objects in middleware constructors.  So, if you need any objects in your `handle()` method, just specify them in the constructor.  Let's take a look at an example:
+Aphiria uses dependency injection for type-hinted objects in middleware constructors.  So, if you need any objects in your `handle()` method, just specify them in the constructor.  Let's take a look at an example:
 
 ```php
 namespace App\Application\Http\Middleware;
 
+use Aphiria\Middleware\IMiddleware;
+use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\{IHttpRequestMessage, IHttpResponseMessage, Response};
 use App\Domain\Authentication\Authenticator;
-use Opulence\Middleware\IMiddleware;
-use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\{IHttpRequestMessage, IHttpResponseMessage, Response};
 
 class Authentication implements IMiddleware
 {
@@ -306,15 +306,15 @@ A request handler simply takes in an HTTP request and returns a response.  The A
 
 Configuring your API is easy - you just need to set up a few things:
 
-* <a href="https://github.com/opulencephp/router#basic-usage" target="_blank">Routes</a>
-* <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">Content negotiator</a>
+* <a href="https://github.com/aphiria/router#basic-usage" target="_blank">Routes</a>
+* <a href="https://github.com/aphiria/net#content-negotiation" target="_blank">Content negotiator</a>
 * [Dependency resolver](#controller-dependencies)
 
 Handling a request from beginning to end is simple:
 
 ```php
-use Opulence\Api\ApiKernel;
-use Opulence\Net\Http\{RequestFactory, ResponseWriter};
+use Aphiria\Api\ApiKernel;
+use Aphiria\Net\Http\{RequestFactory, ResponseWriter};
 
 // Assume your route matcher, dependency resolver, and content negotiator are already set
 $request = (new RequestFactory)->createRequestFromSuperglobals($_SERVER);
@@ -332,8 +332,8 @@ $response = $apiKernel->handle($request);
 Sometimes, your application is going to throw an unhandled exception or shut down unexpectedly.  When this happens, instead of showing an ugly PHP error, you can convert it to a nicely-formatted response.  To get set up, you can simply instantiate `ExceptionHandler` and register it with PHP:
 
 ```php
-use Opulence\Api\Exceptions\{ExceptionHandler, ExceptionResponseFactory};
-use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
+use Aphiria\Api\Exceptions\{ExceptionHandler, ExceptionResponseFactory};
+use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 
 // Assume the content negotiator was already set up
 $exceptionResponseFactory = new ExceptionResponseFactory(
@@ -344,7 +344,7 @@ $exceptionHandler = new ExceptionHandler($exceptionResponseFactory);
 $exceptionHandler->registerWithPhp();
 ```
 
-By default, `ExceptionHandler` will convert any exception to a 500 response and use <a href="https://github.com/opulencephp/net#content-negotiation" target="_blank">content negotiation</a> to determine the best format for the response body.  However, you can [customize your exception responses](#exception-response-factories).
+By default, `ExceptionHandler` will convert any exception to a 500 response and use <a href="https://github.com/aphiria/net#content-negotiation" target="_blank">content negotiation</a> to determine the best format for the response body.  However, you can [customize your exception responses](#exception-response-factories).
 
 <h2 id="customizing-exception-responses">Customizing Exception Responses</h2>
 
@@ -353,8 +353,8 @@ You might find yourself wanting to map a particular exception to a certain respo
 As an example, let's say that you want to return a 404 response when an `EntityNotFound` exception is thrown:
 
 ```php
-use Opulence\Api\Exceptions\{ExceptionResponseFactory, ExceptionResponseFactoryRegistry};
-use Opulence\Net\Http\{HttpStatusCodes, Response};
+use Aphiria\Api\Exceptions\{ExceptionResponseFactory, ExceptionResponseFactoryRegistry};
+use Aphiria\Net\Http\{HttpStatusCodes, Response};
 
 // Register your custom exception response factories
 $exceptionResponseFactories = new ExceptionResponseFactoryRegistry();
@@ -390,7 +390,7 @@ $exceptionResponseFactories->registerFactories([
 If you want to take advantage of automatic content negotiation, you can use a `NegotiatedResponseFactory` in your factory:
 
 ```php
-use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
+use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 
 // Assume the content negotiator was already set up
 $negotiatedResponseFactory = new NegotiatedResponseFactory($contentNegotiator);

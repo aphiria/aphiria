@@ -1,22 +1,22 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Controllers;
+namespace Aphiria\Api\Controllers;
 
-use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
-use Opulence\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
-use Opulence\Net\Http\Formatting\RequestParser;
-use Opulence\Net\Http\Formatting\ResponseFormatter;
-use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
+use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
+use Aphiria\Net\Http\Formatting\RequestParser;
+use Aphiria\Net\Http\Formatting\ResponseFormatter;
+use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
 
 class ControllerRequestHandler implements IRequestHandler
 {

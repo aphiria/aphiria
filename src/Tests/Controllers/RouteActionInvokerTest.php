@@ -1,31 +1,31 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests\Controllers;
+namespace Aphiria\Api\Tests\Controllers;
 
-use Opulence\Api\Controllers\ControllerParameterResolver;
-use Opulence\Api\Controllers\FailedRequestContentNegotiationException;
-use Opulence\Api\Controllers\IControllerParameterResolver;
-use Opulence\Api\Controllers\MissingControllerParameterValueException;
-use Opulence\Api\Controllers\RequestBodyDeserializationException;
-use Opulence\Api\Controllers\RouteActionInvoker;
-use Opulence\Api\Tests\Controllers\Mocks\Controller;
-use Opulence\Api\Tests\Controllers\Mocks\User;
-use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
-use Opulence\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
-use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\HttpStatusCodes;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Http\Request;
-use Opulence\Net\Uri;
+use Aphiria\Api\Controllers\ControllerParameterResolver;
+use Aphiria\Api\Controllers\FailedRequestContentNegotiationException;
+use Aphiria\Api\Controllers\IControllerParameterResolver;
+use Aphiria\Api\Controllers\MissingControllerParameterValueException;
+use Aphiria\Api\Controllers\RequestBodyDeserializationException;
+use Aphiria\Api\Controllers\RouteActionInvoker;
+use Aphiria\Api\Tests\Controllers\Mocks\Controller;
+use Aphiria\Api\Tests\Controllers\Mocks\User;
+use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
+use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\HttpException;
+use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\Request;
+use Aphiria\Net\Uri;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;

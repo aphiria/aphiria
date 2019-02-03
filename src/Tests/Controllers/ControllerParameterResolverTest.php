@@ -1,27 +1,27 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests\Controllers;
+namespace Aphiria\Api\Tests\Controllers;
 
-use Opulence\Api\Controllers\ControllerParameterResolver;
-use Opulence\Api\Controllers\MissingControllerParameterValueException;
-use Opulence\Api\Tests\Controllers\Mocks\Controller;
-use Opulence\Api\Tests\Controllers\Mocks\User;
-use Opulence\Net\Http\ContentNegotiation\ContentNegotiationResult;
-use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
-use Opulence\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\Request;
-use Opulence\Net\Http\StringBody;
-use Opulence\Net\Uri;
-use Opulence\Serialization\SerializationException;
+use Aphiria\Api\Controllers\ControllerParameterResolver;
+use Aphiria\Api\Controllers\MissingControllerParameterValueException;
+use Aphiria\Api\Tests\Controllers\Mocks\Controller;
+use Aphiria\Api\Tests\Controllers\Mocks\User;
+use Aphiria\Net\Http\ContentNegotiation\ContentNegotiationResult;
+use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\Request;
+use Aphiria\Net\Http\StringBody;
+use Aphiria\Net\Uri;
+use Aphiria\Serialization\SerializationException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;

@@ -1,19 +1,19 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Controllers;
+namespace Aphiria\Api\Controllers;
 
-use Opulence\Net\Formatting\UriParser;
-use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Serialization\SerializationException;
+use Aphiria\Net\Formatting\UriParser;
+use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Serialization\SerializationException;
 use ReflectionParameter;
 
 /**

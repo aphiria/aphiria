@@ -1,17 +1,17 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2017 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests;
+namespace Aphiria\Api\Tests;
 
-use Opulence\Api\ContainerDependencyResolver;
-use Opulence\Api\DependencyResolutionException;
+use Aphiria\Api\ContainerDependencyResolver;
+use Aphiria\Api\DependencyResolutionException;
 use Opulence\Ioc\IContainer;
 use Opulence\Ioc\IocException;
 use PHPUnit\Framework\MockObject\MockObject;

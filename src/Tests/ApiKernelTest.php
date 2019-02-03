@@ -1,38 +1,38 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Tests;
+namespace Aphiria\Api\Tests;
 
 use Closure;
 use InvalidArgumentException;
-use Opulence\Api\ApiKernel;
-use Opulence\Api\Controllers\Controller;
-use Opulence\Api\Controllers\IRouteActionInvoker;
-use Opulence\Api\IDependencyResolver;
-use Opulence\Api\Tests\Controllers\Mocks\Controller as ControllerMock;
-use Opulence\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;
-use Opulence\Api\Tests\Mocks\AttributeMiddleware;
-use Opulence\Middleware\MiddlewarePipelineFactory;
-use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
-use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\HttpStatusCodes;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Uri;
-use Opulence\Routing\Matchers\IRouteMatcher;
-use Opulence\Routing\Matchers\RouteMatchingResult;
-use Opulence\Routing\Middleware\MiddlewareBinding;
-use Opulence\Routing\Route;
-use Opulence\Routing\RouteAction;
-use Opulence\Routing\UriTemplates\UriTemplate;
+use Aphiria\Api\ApiKernel;
+use Aphiria\Api\Controllers\Controller;
+use Aphiria\Api\Controllers\IRouteActionInvoker;
+use Aphiria\Api\IDependencyResolver;
+use Aphiria\Api\Tests\Controllers\Mocks\Controller as ControllerMock;
+use Aphiria\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;
+use Aphiria\Api\Tests\Mocks\AttributeMiddleware;
+use Aphiria\Middleware\MiddlewarePipelineFactory;
+use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
+use Aphiria\Net\Http\HttpException;
+use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Uri;
+use Aphiria\Routing\Matchers\IRouteMatcher;
+use Aphiria\Routing\Matchers\RouteMatchingResult;
+use Aphiria\Routing\Middleware\MiddlewareBinding;
+use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
+use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

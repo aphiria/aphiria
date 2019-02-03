@@ -1,21 +1,21 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Exceptions;
+namespace Aphiria\Api\Exceptions;
 
 use ErrorException;
 use Exception;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\ResponseWriter;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\ResponseWriter;
 use Psr\Log\LoggerInterface;
 use Throwable;
 

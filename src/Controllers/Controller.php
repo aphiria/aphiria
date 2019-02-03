@@ -1,28 +1,28 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
 
-namespace Opulence\Api\Controllers;
+namespace Aphiria\Api\Controllers;
 
 use InvalidArgumentException;
 use LogicException;
-use Opulence\Net\Http\ContentNegotiation\IContentNegotiator;
-use Opulence\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
-use Opulence\Net\Http\Formatting\RequestParser;
-use Opulence\Net\Http\Formatting\ResponseFormatter;
-use Opulence\Net\Http\HttpException;
-use Opulence\Net\Http\HttpHeaders;
-use Opulence\Net\Http\HttpStatusCodes;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
-use Opulence\Net\Uri;
-use Opulence\Serialization\SerializationException;
+use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
+use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\Formatting\RequestParser;
+use Aphiria\Net\Http\Formatting\ResponseFormatter;
+use Aphiria\Net\Http\HttpException;
+use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Uri;
+use Aphiria\Serialization\SerializationException;
 
 /**
  * Defines the base class for controllers to extend
