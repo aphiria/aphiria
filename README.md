@@ -56,7 +56,11 @@ This will disable automatically parsing POST data into `$_POST` and uploaded fil
 
 <h2 id="installation">Installation</h2>
 
-To install the Net library, simply add `opulence/net: 1.0.*` to your _composer.json_.
+To install the Net library, simply add the following to your _composer.json_:
+
+```
+"aphiria/net": "1.0.*@dev"
+```
 
 <h2 id="why-not-use-psr-7">Why Not Use PSR-7?</h2>
 
@@ -592,4 +596,4 @@ Aphiria provides the following formatters out of the box:
 * `JsonMediaTypeFormatter`
 * `PlainTextMediaTypeFormatter`
 
-Under the hood, `FormUrlEncodedMediaTypeFormatter` and `JsonMediaTypeFormatter` use Aphiria's <a href="https://github.com/opulencephp/serialization" target="_blank">serialization library</a> to (de)serialize values.  `HtmlMediaTypeFormatter` and `PlainTextMediaTypeFormatter` only handle strings - they do not deal with objects or arrays.
+Under the hood, `FormUrlEncodedMediaTypeFormatter` and `JsonMediaTypeFormatter` use Aphiria's <a href="https://github.com/aphiria/serialization" target="_blank">serialization library</a> to (de)serialize values.  `HtmlMediaTypeFormatter` and `PlainTextMediaTypeFormatter` only handle strings - they do not deal with objects or arrays.
