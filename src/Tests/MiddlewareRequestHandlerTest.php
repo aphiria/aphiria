@@ -1,20 +1,20 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/middleware/blob/master/LICENSE.md
  */
 
-namespace Opulence\Middleware\Tests;
+namespace Aphiria\Middleware\Tests;
 
-use Opulence\Middleware\IMiddleware;
-use Opulence\Middleware\MiddlewareRequestHandler;
-use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\IHttpRequestMessage;
-use Opulence\Net\Http\IHttpResponseMessage;
+use Aphiria\Middleware\IMiddleware;
+use Aphiria\Middleware\MiddlewareRequestHandler;
+use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

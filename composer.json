@@ -1,6 +1,6 @@
 {
-  "name": "opulence/middleware",
-  "description": "The Opulence middleware library",
+  "name": "aphiria/middleware",
+  "description": "The Aphiria middleware library",
   "keywords": [
     "PHP",
     "middleware"
@@ -8,21 +8,21 @@
   "authors": [
     {
       "name": "David Young",
-      "email": "dave@opulencephp.com",
+      "email": "dave@aphiria.com",
       "role": "Architect"
     }
   ],
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Opulence\\Middleware\\": "src"
+      "Aphiria\\Middleware\\": "src"
     },
     "exclude-from-classmap": [
       "**/Tests/"
     ]
   },
   "require": {
-    "opulence/net": "1.0.*@dev",
+    "aphiria/net": "1.0.*@dev",
     "php": "^7.3"
   },
   "require-dev": {

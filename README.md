@@ -21,7 +21,7 @@ The middleware library provides developers a way of defining route middleware fo
 You can install this library by including the following package name in your _composer.json_:
 
 ```
-"opulence/middleware": "1.0.*"
+"aphiria/middleware": "1.0.*"
 ```
 
 <h1 id="basic-usage">Basic Usage</h1>
@@ -29,8 +29,8 @@ You can install this library by including the following package name in your _co
 Middleware have a simple signature:
 
 ```php
-use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\{IHttpRequestMessage, IHttpResponseMessage};
+use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\{IHttpRequestMessage, IHttpResponseMessage};
 
 interface IMiddleware
 {
@@ -50,9 +50,9 @@ interface IMiddleware
 To manipulate the request before it gets to the controller, make changes to it before calling `$next($request)`:
 
 ```php
-use Opulence\Middleware\IMiddleware;
-use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\{IHttpRequestMessage, IHttpResponseMessage};
+use Aphiria\Middleware\IMiddleware;
+use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\{IHttpRequestMessage, IHttpResponseMessage};
 
 class RequestManipulator implements IMiddleware
 {
@@ -71,9 +71,9 @@ class RequestManipulator implements IMiddleware
 To manipulate the response after the controller has done its work, do the following:
 
 ```php
-use Opulence\Middleware\IMiddleware;
-use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\{IHttpRequestMessage, IHttpResponseMessage};
+use Aphiria\Middleware\IMiddleware;
+use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\{IHttpRequestMessage, IHttpResponseMessage};
 
 class ResponseManipulator implements IMiddleware
 {
@@ -91,12 +91,12 @@ class ResponseManipulator implements IMiddleware
 
 <h2 id="middleware-attributes">Middleware Attributes</h2>
 
-Occasionally, you'll find yourself wanting to pass primitive values to middleware to indicate something such as a required role to execute an action.  In these cases, your middleware should extend `Opulence\Middleware\AttributeMiddleware`:
+Occasionally, you'll find yourself wanting to pass primitive values to middleware to indicate something such as a required role to execute an action.  In these cases, your middleware should extend `Aphiria\Middleware\AttributeMiddleware`:
 
 ```php
-use Opulence\Middleware\AttributeMiddleware;
-use Opulence\Net\Http\Handlers\IRequestHandler;
-use Opulence\Net\Http\{HttpException, IHttpRequestMessage, IHttpResponseMessage};
+use Aphiria\Middleware\AttributeMiddleware;
+use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\{HttpException, IHttpRequestMessage, IHttpResponseMessage};
 
 class RoleMiddleware extends AttributeMiddleware
 {
@@ -130,11 +130,11 @@ $routes->map('GET', 'foo')
 
 <h1 id="executing-middleware">Executing Middleware</h1>
 
-Typically, middleware are wrapped in request handlers (eg `MiddlewareRequestHandler`) and executed in a pipeline (as in Opulence's <a href="https://github.com/opulencephp/api" target="_blank">API library</a>).  You can create this pipeline using `MiddlewarePipelineFactory`:
+Typically, middleware are wrapped in request handlers (eg `MiddlewareRequestHandler`) and executed in a pipeline (as in Aphiria's <a href="https://github.com/aphiria/api" target="_blank">API library</a>).  You can create this pipeline using `MiddlewarePipelineFactory`:
 
 ```php
-use Opulence\Middleware\MiddlewarePipelineFactory;
-use Opulence\Net\Http\RequestFactory;
+use Aphiria\Middleware\MiddlewarePipelineFactory;
+use Aphiria\Net\Http\RequestFactory;
 
 // Assume these are defined by your application
 $loggingMiddleware = new LoggingMiddleware();
