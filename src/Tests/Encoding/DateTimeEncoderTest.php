@@ -1,21 +1,21 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/serialization/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Tests\Encoding;
+namespace Aphiria\Serialization\Tests\Encoding;
 
+use Aphiria\Serialization\Encoding\DateTimeEncoder;
+use Aphiria\Serialization\Encoding\EncodingContext;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use InvalidArgumentException;
-use Opulence\Serialization\Encoding\DateTimeEncoder;
-use Opulence\Serialization\Encoding\EncodingContext;
 use PHPUnit\Framework\TestCase;
 
 /**

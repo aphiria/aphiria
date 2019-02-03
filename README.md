@@ -18,7 +18,7 @@
 
 <h1 id="introduction">Introduction</h1>
 
-By default, PHP does not have any way to serialize and deserialize POPO objects.  Opulence provides this functionality without bleeding into your code.  The best part is that you don't have to worry about how to (de)serialize nested objects or arrays of objects - Opulence does it for you.  Serializing an object is as easy as:
+By default, PHP does not have any way to serialize and deserialize POPO objects.  Aphiria provides this functionality without bleeding into your code.  The best part is that you don't have to worry about how to (de)serialize nested objects or arrays of objects - Aphiria does it for you.  Serializing an object is as easy as:
 
 ```php
 $user = new User(123, 'foo@bar.com');
@@ -38,12 +38,12 @@ $user = $serializer->deserialize($serializedUser, User::class);
 You can install this library by including the following package name in your _composer.json_:
 
 ```
-"opulence/serialization": "1.0.*"
+"aphiria/serialization": "1.0.*"
 ```
 
 <h1 id="serializers">Serializers</h1>
 
-Opulence provides the following serializers:
+Aphiria provides the following serializers:
 
 * [`FormUrlEncodedSerializer`](#form-url-encoded-serializer)
 * [`JsonSerializer`](#json-serializer)
@@ -61,7 +61,7 @@ Serialized value &rarr; [decoded value](#encoders) &rarr; deserialized value
 `FormUrlEncodedSerializer` can (de)serialize values to and from form URL-encoded strings.  It's useful for things like (de)serializing values for use in a query string or in request/response bodies.  Creating one is simple:
 
 ```php
-use Opulence\Serialization\FormUrlEncodedSerializer;
+use Aphiria\Serialization\FormUrlEncodedSerializer;
 
 $serializer = new FormUrlEncodedSerializer();
 ```
@@ -71,7 +71,7 @@ $serializer = new FormUrlEncodedSerializer();
 `JsonSerializer` is able to serialize and deserialize values to and from JSON.  You can create an instance like this:
 
 ```php
-use Opulence\Serialization\JsonSerializer;
+use Aphiria\Serialization\JsonSerializer;
 
 $serializer = new JsonSerializer();
 ```
@@ -86,13 +86,13 @@ $serializer->deserialize($serializedUsers, 'User[]');
 
 This will cause each value in `$serializedUsers` to be deserialized as an instance of `User`.
 
-You don't have to do anything special to serialize an array of values - just pass it in, and Opulence will know what to do:
+You don't have to do anything special to serialize an array of values - just pass it in, and Aphiria will know what to do:
 
 ```php
 $serializer->serialize($users);
 ```
 
-> **Note:** Opulence only supports arrays that contain a single type of value.  In other words, you cannot mix and match different types in a single array.
+> **Note:** Aphiria only supports arrays that contain a single type of value.  In other words, you cannot mix and match different types in a single array.
 
 <h1 id="encoders">Encoders</h1>
 
@@ -100,7 +100,7 @@ Encoders define how to map your POPOs to values that a serializer can (de)serial
 
 <h2 id="default-encoders">Default Encoders</h2>
 
-To make it easier for you, Opulence encodes/decodes `array` and `DateTime` values via the `ArrayEncoder` and [`DateTimeEncoder`](#datetime-encoder).  `DefaultEncoderRegistrant` registers these default encoders for you.  If you use this registrant, but want to customize some behavior, you can pass in a [property name formatter](#property-name-formatters) and [date format](#datetime-encoder):
+To make it easier for you, Aphiria encodes/decodes `array` and `DateTime` values via the `ArrayEncoder` and [`DateTimeEncoder`](#datetime-encoder).  `DefaultEncoderRegistrant` registers these default encoders for you.  If you use this registrant, but want to customize some behavior, you can pass in a [property name formatter](#property-name-formatters) and [date format](#datetime-encoder):
 
 ```php
 $encoders = new EncoderRegistry();
@@ -138,7 +138,7 @@ You might find yourself wanting to make your property names' formats consistent 
 
 <h2 id="custom-encoders">Custom Encoders</h2>
 
-Due to PHP's type limitations, there are some objects that Opulence simply can't (de)serialize automatically.  Some examples include:
+Due to PHP's type limitations, there are some objects that Aphiria simply can't (de)serialize automatically.  Some examples include:
 
 * Classes that require custom instantiation/hydration logic
 * Object properties that contain an array of objects
@@ -156,4 +156,4 @@ Now, whenever an instance of `YourClass` needs to be (de)serialized, `YourEncode
 
 <h2 id="datetime-encoder">DateTime Encoder</h2>
 
-`DateTime` objects are typically serialized to a formatted date string, and deserialized from that string back to an instance of `DateTime`.  Opulence provides `DateTimeEncoder` to provide this functionality. By default, it uses <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601</a> when (de)serializing `DateTime`, `DateTimeImmutable`, and `DateTimeInterface` objects, but you can [customize the format](#default-encoders).
+`DateTime` objects are typically serialized to a formatted date string, and deserialized from that string back to an instance of `DateTime`.  Aphiria provides `DateTimeEncoder` to provide this functionality. By default, it uses <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601</a> when (de)serializing `DateTime`, `DateTimeImmutable`, and `DateTimeInterface` objects, but you can [customize the format](#default-encoders).

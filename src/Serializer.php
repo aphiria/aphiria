@@ -1,20 +1,20 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/serialization/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization;
+namespace Aphiria\Serialization;
 
+use Aphiria\Serialization\Encoding\DefaultEncoderRegistrant;
+use Aphiria\Serialization\Encoding\EncoderRegistry;
+use Aphiria\Serialization\Encoding\EncodingContext;
+use Aphiria\Serialization\Encoding\EncodingException;
 use InvalidArgumentException;
-use Opulence\Serialization\Encoding\DefaultEncoderRegistrant;
-use Opulence\Serialization\Encoding\EncoderRegistry;
-use Opulence\Serialization\Encoding\EncodingContext;
-use Opulence\Serialization\Encoding\EncodingException;
 use OutOfBoundsException;
 
 /**

@@ -1,18 +1,18 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/serialization/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Tests\Encoding;
+namespace Aphiria\Serialization\Tests\Encoding;
 
-use Opulence\Serialization\Encoding\EncoderRegistry;
-use Opulence\Serialization\Encoding\IEncoder;
-use Opulence\Serialization\Tests\Encoding\Mocks\User;
+use Aphiria\Serialization\Encoding\EncoderRegistry;
+use Aphiria\Serialization\Encoding\IEncoder;
+use Aphiria\Serialization\Tests\Encoding\Mocks\User;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 

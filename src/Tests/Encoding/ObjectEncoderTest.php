@@ -1,38 +1,38 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/serialization/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Tests\Encoding;
+namespace Aphiria\Serialization\Tests\Encoding;
 
+use Aphiria\Serialization\Encoding\EncoderRegistry;
+use Aphiria\Serialization\Encoding\EncodingContext;
+use Aphiria\Serialization\Encoding\EncodingException;
+use Aphiria\Serialization\Encoding\IEncoder;
+use Aphiria\Serialization\Encoding\IPropertyNameFormatter;
+use Aphiria\Serialization\Encoding\ObjectEncoder;
+use Aphiria\Serialization\Encoding\ScalarEncoder;
+use Aphiria\Serialization\Tests\Encoding\Mocks\CircularReferenceA;
+use Aphiria\Serialization\Tests\Encoding\Mocks\CircularReferenceB;
+use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithArrayParams;
+use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithNullableParams;
+use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedParamAndPublicProperty;
+use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedParams;
+use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedParamsAndNoGetters;
+use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedVariadicParams;
+use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedOptionalParams;
+use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedPararmsWithTypedGetters;
+use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedScalars;
+use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedVariadicParams;
+use Aphiria\Serialization\Tests\Encoding\Mocks\DerivedClassWithProperties;
+use Aphiria\Serialization\Tests\Encoding\Mocks\NoConstructor;
+use Aphiria\Serialization\Tests\Encoding\Mocks\User;
 use InvalidArgumentException;
-use Opulence\Serialization\Encoding\EncoderRegistry;
-use Opulence\Serialization\Encoding\EncodingContext;
-use Opulence\Serialization\Encoding\EncodingException;
-use Opulence\Serialization\Encoding\IEncoder;
-use Opulence\Serialization\Encoding\IPropertyNameFormatter;
-use Opulence\Serialization\Encoding\ObjectEncoder;
-use Opulence\Serialization\Encoding\ScalarEncoder;
-use Opulence\Serialization\Tests\Encoding\Mocks\CircularReferenceA;
-use Opulence\Serialization\Tests\Encoding\Mocks\CircularReferenceB;
-use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithArrayParams;
-use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithNullableParams;
-use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedParamAndPublicProperty;
-use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedParams;
-use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedParamsAndNoGetters;
-use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedVariadicParams;
-use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedOptionalParams;
-use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedPararmsWithTypedGetters;
-use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedScalars;
-use Opulence\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedVariadicParams;
-use Opulence\Serialization\Tests\Encoding\Mocks\DerivedClassWithProperties;
-use Opulence\Serialization\Tests\Encoding\Mocks\NoConstructor;
-use Opulence\Serialization\Tests\Encoding\Mocks\User;
 use PHPUnit\Framework\TestCase;
 
 /**

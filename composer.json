@@ -1,6 +1,6 @@
 {
-  "name": "opulence/serialization",
-  "description": "The Opulence serialization library",
+  "name": "aphiria/serialization",
+  "description": "The Aphiria serialization library",
   "keywords": [
     "PHP",
     "serialization",
@@ -12,14 +12,14 @@
   "authors": [
     {
       "name": "David Young",
-      "email": "dave@opulencephp.com",
+      "email": "dave@aphiria.com",
       "role": "Architect"
     }
   ],
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Opulence\\Serialization\\": "src"
+      "Aphiria\\Serialization\\": "src"
     },
     "exclude-from-classmap": [
       "**/Tests/"

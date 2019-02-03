@@ -1,18 +1,18 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/serialization/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Tests\Encoding;
+namespace Aphiria\Serialization\Tests\Encoding;
 
+use Aphiria\Serialization\Encoding\EncodingContext;
+use Aphiria\Serialization\Encoding\ScalarEncoder;
 use InvalidArgumentException;
-use Opulence\Serialization\Encoding\EncodingContext;
-use Opulence\Serialization\Encoding\ScalarEncoder;
 use PHPUnit\Framework\TestCase;
 
 /**

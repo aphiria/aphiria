@@ -1,14 +1,14 @@
 <?php
 
 /*
- * Opulence
+ * Aphiria
  *
- * @link      https://www.opulencephp.com
+ * @link      https://www.aphiria.com
  * @copyright Copyright (c) 2019 David Young
- * @license   https://github.com/opulencephp/Opulence/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/serialization/blob/master/LICENSE.md
  */
 
-namespace Opulence\Serialization\Tests\Encoding\Mocks;
+namespace Aphiria\Serialization\Tests\Encoding\Mocks;
 
 /**
  * Defines a constructor with untyped optional params
