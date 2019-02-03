@@ -1,5 +1,10 @@
 <h1>Router</h1>
 
+[![Build Status](https://travis-ci.com/aphiria/router.svg?branch=master)](https://travis-ci.com/aphiria/router.svg?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/aphiria/router/v/stable.svg)](https://packagist.org/packages/aphiria/router)
+[![Latest Unstable Version](https://poser.pugx.org/aphiria/router/v/unstable.svg)](https://packagist.org/packages/aphiria/router)
+[![License](https://poser.pugx.org/aphiria/router/license.svg)](https://packagist.org/packages/aphiria/router)
+
 > **Note:** This library is still in development.
 
 <h1>Table of Contents</h1>

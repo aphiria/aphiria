@@ -35,7 +35,7 @@ class FileTrieCacheTest extends TestCase
         $this->cache = new FileTrieCache(self::PATH);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if (file_exists(self::PATH)) {
             @unlink(self::PATH);

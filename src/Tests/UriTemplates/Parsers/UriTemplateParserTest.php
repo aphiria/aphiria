@@ -27,7 +27,7 @@ class UriTemplateParserTest extends TestCase
     /** @var UriTemplateParser The parser to use in tests */
     private $parser;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->parser = new UriTemplateParser();
     }
