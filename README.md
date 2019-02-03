@@ -1,5 +1,10 @@
 <h1>Net</h1>
 
+[![Build Status](https://travis-ci.com/aphiria/net.svg?branch=master)](https://travis-ci.com/aphiria/net.svg?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/aphiria/net/v/stable.svg)](https://packagist.org/packages/aphiria/net)
+[![Latest Unstable Version](https://poser.pugx.org/aphiria/net/v/unstable.svg)](https://packagist.org/packages/aphiria/net)
+[![License](https://poser.pugx.org/aphiria/net/license.svg)](https://packagist.org/packages/aphiria/net)
+
 > **Note:** This library is still in development.
 
 <h1>Table of Contents</h1>
