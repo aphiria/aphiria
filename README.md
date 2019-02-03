@@ -1,5 +1,10 @@
 <h1>API</h1>
 
+[![Build Status](https://travis-ci.com/aphiria/api.svg?branch=master)](https://travis-ci.com/aphiria/api.svg?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/aphiria/api/v/stable.svg)](https://packagist.org/packages/aphiria/api)
+[![Latest Unstable Version](https://poser.pugx.org/aphiria/api/v/unstable.svg)](https://packagist.org/packages/aphiria/api)
+[![License](https://poser.pugx.org/aphiria/api/license.svg)](https://packagist.org/packages/aphiria/api)
+
 > **Note:** This library is still in development.
 
 <h1>Table of Contents</h1>
