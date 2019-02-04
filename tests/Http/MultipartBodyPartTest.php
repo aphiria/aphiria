@@ -13,6 +13,7 @@ namespace Aphiria\Net\Tests\Http;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\MultipartBodyPart;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,7 +25,7 @@ class MultipartBodyPartTest extends TestCase
     private $bodyPart;
     /** @var HttpHeaders The headers to use in tests */
     private $headers;
-    /** @var IHttpBody|\PHPUnit_Framework_MockObject_MockObject The body to use in tests */
+    /** @var IHttpBody|MockObject The body to use in tests */
     private $body;
 
     public function setUp(): void

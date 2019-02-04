@@ -20,10 +20,12 @@
   "autoload": {
     "psr-4": {
       "Aphiria\\Net\\": "src"
-    },
-    "exclude-from-classmap": [
-      "**/Tests/"
-    ]
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Aphiria\\Net\\Tests\\": "tests"
+    }
   },
   "require": {
     "aphiria/serialization": "1.0.*@dev",

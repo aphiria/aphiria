@@ -10,6 +10,7 @@
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use Opulence\Collections\HashTable;
 use Aphiria\Net\Http\Formatting\HttpBodyParser;
@@ -23,7 +24,7 @@ class HttpBodyParserTest extends TestCase
 {
     /** @var HttpBodyParser The parser to use in tests */
     private $parser;
-    /** @var IHttpBody|\PHPUnit_Framework_MockObject_MockObject The body to use in tests */
+    /** @var IHttpBody|MockObject The body to use in tests */
     private $body;
 
     public function setUp(): void

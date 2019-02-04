@@ -16,6 +16,7 @@ use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -25,7 +26,7 @@ class ResponseFormatterTest extends TestCase
 {
     /** @var ResponseFormatter The formatter to use in tests */
     private $formatter;
-    /** @var IHttpResponseMessage|\PHPUnit_Framework_MockObject_MockObject The message to use in tests */
+    /** @var IHttpResponseMessage|MockObject The message to use in tests */
     private $response;
     /** @var HttpHeaders The HTTP headers to use in tests */
     private $headers;

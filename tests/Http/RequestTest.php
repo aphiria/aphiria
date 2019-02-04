@@ -18,6 +18,7 @@ use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\RequestTargetTypes;
 use Aphiria\Net\Uri;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -29,7 +30,7 @@ class RequestTest extends TestCase
     private $request;
     /** @var HttpHeaders The headers */
     private $headers;
-    /** @var IHttpBody|\PHPUnit_Framework_MockObject_MockObject The mock body */
+    /** @var IHttpBody|MockObject The mock body */
     private $body;
     /** @var Uri The request URI */
     private $uri;

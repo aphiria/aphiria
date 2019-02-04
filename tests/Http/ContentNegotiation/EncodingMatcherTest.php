@@ -17,6 +17,7 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -134,7 +135,7 @@ class EncodingMatcherTest extends TestCase
 
     public function testBestEncodingIsNullWhenMatchingZeroQualityScoreCharset(): void
     {
-        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $formatter */
+        /** @var IMediaTypeFormatter|MockObject $formatter */
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $acceptCharsetHeader = new AcceptCharsetHeaderValue(
             'utf-8',
@@ -148,7 +149,7 @@ class EncodingMatcherTest extends TestCase
      * Creates a mock media type formatter with a list of supported encodings
      *
      * @param array $supportedEncodings The list of supported encodings
-     * @return IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject The mocked formatter
+     * @return IMediaTypeFormatter|MockObject The mocked formatter
      */
     private function createFormatterMock(array $supportedEncodings): IMediaTypeFormatter
     {

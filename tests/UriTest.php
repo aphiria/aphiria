@@ -10,7 +10,6 @@
 
 namespace Aphiria\Net\Tests;
 
-use Exception;
 use InvalidArgumentException;
 use Aphiria\Net\Uri;
 use PHPUnit\Framework\TestCase;

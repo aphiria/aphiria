@@ -18,6 +18,7 @@ use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\IHttpRequestMessage;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,13 +28,13 @@ class RequestParserTest extends TestCase
 {
     /** @var RequestParser The parser to use in tests */
     private $parser;
-    /** @var IHttpRequestMessage|\PHPUnit_Framework_MockObject_MockObject The request message to use in tests */
+    /** @var IHttpRequestMessage|MockObject The request message to use in tests */
     private $request;
     /** @var HttpHeaders The headers to use in tests */
     private $headers;
-    /** @var IHttpBody|\PHPUnit_Framework_MockObject_MockObject The body to use in tests */
+    /** @var IHttpBody|MockObject The body to use in tests */
     private $body;
-    /** @var IDictionary|\PHPUnit_Framework_MockObject_MockObject The request properties to use in tests */
+    /** @var IDictionary|MockObject The request properties to use in tests */
     private $properties;
 
     public function setUp(): void

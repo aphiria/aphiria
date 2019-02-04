@@ -16,6 +16,7 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ContentNegotiatorTest extends TestCase
 {
-    /** @var IHttpRequestMessage|\PHPUnit_Framework_MockObject_MockObject The request message to use in tests */
+    /** @var IHttpRequestMessage|MockObject The request message to use in tests */
     private $request;
     /** @var HttpHeaders The headers to use in tests */
     private $headers;
@@ -308,7 +309,7 @@ class ContentNegotiatorTest extends TestCase
      *
      * @param array $supportedMediaTypes The list of supported media types
      * @param int $numTimesSupportedMediaTypesCalled The number of times the formatter's supported media types will be checked
-     * @return IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject The mocked formatter
+     * @return IMediaTypeFormatter|MockObject The mocked formatter
      */
     private function createFormatterMock(
         array $supportedMediaTypes,

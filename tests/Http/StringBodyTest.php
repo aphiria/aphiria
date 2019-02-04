@@ -12,6 +12,7 @@ namespace Aphiria\Net\Tests\Http;
 
 use Opulence\IO\Streams\IStream;
 use Aphiria\Net\Http\StringBody;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -53,7 +54,7 @@ class StringBodyTest extends TestCase
 
     public function testWritingToStreamActuallyWritesContentsToStream(): void
     {
-        /** @var IStream|\PHPUnit_Framework_MockObject_MockObject $stream */
+        /** @var IStream|MockObject $stream */
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('write')

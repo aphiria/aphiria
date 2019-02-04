@@ -15,6 +15,7 @@ use Opulence\IO\Streams\IStream;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedSerializerMediaTypeFormatter;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use Aphiria\Serialization\FormUrlEncodedSerializer;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -140,7 +141,7 @@ class FormUrlEncodedMediaTypeFormatterTest extends TestCase
      * Creates a stream with an expected body that will be written to it
      *
      * @param string $body The expected body of the stream
-     * @return IStream|\PHPUnit_Framework_MockObject_MockObject The stream that expects the input body
+     * @return IStream|MockObject The stream that expects the input body
      */
     private function createStreamThatExpectsBody(string $body): IStream
     {
@@ -156,7 +157,7 @@ class FormUrlEncodedMediaTypeFormatterTest extends TestCase
      * Creates a stream with a string body
      *
      * @param string $body The body of the stream
-     * @return IStream|\PHPUnit_Framework_MockObject_MockObject The stream with the input body as its string body
+     * @return IStream|MockObject The stream with the input body as its string body
      */
     private function createStreamWithStringBody(string $body): IStream
     {

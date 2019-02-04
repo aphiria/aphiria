@@ -15,6 +15,7 @@ use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\ResponseWriter;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -26,11 +27,11 @@ class ResponseWriterTest extends TestCase
     private $writer;
     /** @var Stream The output stream to use in tests */
     private $outputStream;
-    /** @var IHttpResponseMessage|\PHPUnit_Framework_MockObject_MockObject The response to use in tests */
+    /** @var IHttpResponseMessage|MockObject The response to use in tests */
     private $response;
     /** @var HttpHeaders The response headers to use in tests */
     private $headers;
-    /** @var IHttpBody|\PHPUnit_Framework_MockObject_MockObject the response body to use in tests */
+    /** @var IHttpBody|MockObject the response body to use in tests */
     private $body;
 
     public function setUp(): void

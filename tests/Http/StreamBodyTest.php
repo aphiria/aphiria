@@ -12,6 +12,7 @@ namespace Aphiria\Net\Tests\Http;
 
 use Opulence\IO\Streams\IStream;
 use Aphiria\Net\Http\StreamBody;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -21,7 +22,7 @@ class StreamBodyTest extends TestCase
 {
     public function testCastingToStringConvertsUnderlyingStreamToString(): void
     {
-        /** @var IStream $stream */
+        /** @var IStream|MockObject $stream */
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('__toString')
@@ -59,7 +60,7 @@ class StreamBodyTest extends TestCase
      */
     public function testReadingAsStringConvertsUnderlyingStreamToString(): void
     {
-        /** @var IStream|\PHPUnit_Framework_MockObject_MockObject $stream */
+        /** @var IStream|MockObject $stream */
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('__toString')
@@ -75,7 +76,7 @@ class StreamBodyTest extends TestCase
     {
         /** @var IStream $outputStream */
         $outputStream = $this->createMock(IStream::class);
-        /** @var IStream|\PHPUnit_Framework_MockObject_MockObject $underlyingStream */
+        /** @var IStream|MockObject $underlyingStream */
         $underlyingStream = $this->createMock(IStream::class);
         $underlyingStream->expects($this->once())
             ->method('copyToStream')
@@ -96,7 +97,7 @@ class StreamBodyTest extends TestCase
     {
         /** @var IStream $outputStream */
         $outputStream = $this->createMock(IStream::class);
-        /** @var IStream|\PHPUnit_Framework_MockObject_MockObject $underlyingStream */
+        /** @var IStream|MockObject $underlyingStream */
         $underlyingStream = $this->createMock(IStream::class);
         $underlyingStream->expects($this->once())
             ->method('copyToStream')
@@ -117,7 +118,7 @@ class StreamBodyTest extends TestCase
     {
         /** @var IStream $outputStream */
         $outputStream = $this->createMock(IStream::class);
-        /** @var IStream|\PHPUnit_Framework_MockObject_MockObject $underlyingStream */
+        /** @var IStream|MockObject $underlyingStream */
         $underlyingStream = $this->createMock(IStream::class);
         $underlyingStream->expects($this->once())
             ->method('copyToStream')

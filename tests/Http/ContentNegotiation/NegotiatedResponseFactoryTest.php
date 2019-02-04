@@ -28,6 +28,7 @@ use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Tests\Http\ContentNegotiation\Mocks\User;
 use Aphiria\Net\Uri;
 use Aphiria\Serialization\SerializationException;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Tests the negotiated response factory
@@ -36,7 +37,7 @@ class NegotiatedResponseFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /** @var NegotiatedResponseFactory The response factory to test */
     private $factory;
-    /** @var IContentNegotiator|\PHPUnit_Framework_MockObject_MockObject The content negotiator */
+    /** @var IContentNegotiator|MockObject The content negotiator */
     private $contentNegotiator;
 
     public function setUp(): void
@@ -49,7 +50,7 @@ class NegotiatedResponseFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $request = $this->createRequest('http://foo.com');
         $rawBody = [new User(123, 'foo@bar.com'), new User(456, 'bar@baz.com')];
-        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
+        /** @var IMediaTypeFormatter|MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
@@ -71,7 +72,7 @@ class NegotiatedResponseFactoryTest extends \PHPUnit\Framework\TestCase
     public function testCreatingResponseFromEmptyArrayWillSetStillNegotiateContent(): void
     {
         $request = $this->createRequest('http://foo.com');
-        /** @var IMediaTypeFormatter|\PHPUnit_Framework_MockObject_MockObject $mediaTypeFormatter */
+        /** @var IMediaTypeFormatter|MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
