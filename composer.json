@@ -16,10 +16,12 @@
   "autoload": {
     "psr-4": {
       "Aphiria\\Middleware\\": "src"
-    },
-    "exclude-from-classmap": [
-      "**/Tests/"
-    ]
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Aphiria\\Middleware\\Tests\\": "tests"
+    }
   },
   "require": {
     "aphiria/net": "1.0.*@dev",
