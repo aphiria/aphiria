@@ -15,7 +15,7 @@ use Aphiria\Net\Http\Handlers\IRequestHandler;
 /**
  * Defines the factory for middleware pipelines
  */
-class MiddlewarePipelineFactory
+final class MiddlewarePipelineFactory
 {
     /**
      * Creates a pipeline that will execute middleware, ending with the execution of a controller action

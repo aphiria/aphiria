@@ -16,7 +16,7 @@ use Aphiria\Net\Http\{IHttpRequestMessage, IHttpResponseMessage};
 /**
  * Defines the middleware request handler
  */
-class MiddlewareRequestHandler implements IRequestHandler
+final class MiddlewareRequestHandler implements IRequestHandler
 {
     /** @var IMiddleware The middleware that will handle the request */
     private $middleware;
