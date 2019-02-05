@@ -29,6 +29,7 @@
   },
   "require": {
     "aphiria/serialization": "1.0.*@dev",
+    "ext-fileinfo": "*",
     "ext-json": "*",
     "ext-mbstring": "*",
     "opulence/collections": "1.1.*@dev",

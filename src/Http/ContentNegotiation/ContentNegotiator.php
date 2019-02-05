@@ -19,7 +19,7 @@ use Aphiria\Net\Http\IHttpRequestMessage;
 /**
  * Defines the default content negotiator
  */
-class ContentNegotiator implements IContentNegotiator
+final class ContentNegotiator implements IContentNegotiator
 {
     /** @const The default media type if none is found (RFC 7231) */
     private const DEFAULT_REQUEST_MEDIA_TYPE = 'application/octet-stream';

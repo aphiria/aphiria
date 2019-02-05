@@ -16,7 +16,7 @@ use InvalidArgumentException;
 /**
  * Defines an HTTP cookie
  */
-class Cookie
+final class Cookie
 {
     /** @const The lax same-site value */
     public const SAME_SITE_LAX = 'lax';

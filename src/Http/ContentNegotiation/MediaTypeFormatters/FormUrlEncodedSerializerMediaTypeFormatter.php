@@ -16,7 +16,7 @@ use Aphiria\Serialization\TypeResolver;
 /**
  * Defines the form URL-encoded media type formatter
  */
-class FormUrlEncodedSerializerMediaTypeFormatter extends SerializerMediaTypeFormatter
+final class FormUrlEncodedSerializerMediaTypeFormatter extends SerializerMediaTypeFormatter
 {
     /** @var array The list of supported character encodings */
     private static $supportedEncodings = ['utf-8', 'ISO-8859-1'];

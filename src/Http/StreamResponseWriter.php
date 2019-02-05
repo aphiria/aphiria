@@ -12,12 +12,11 @@ namespace Aphiria\Net\Http;
 
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
-use RuntimeException;
 
 /**
- * Defines the response writer
+ * Defines the stream response writer
  */
-class ResponseWriter
+final class StreamResponseWriter implements IResponseWriter
 {
     /** @var IStream The output stream to write the body to */
     private $outputStream;
@@ -31,9 +30,7 @@ class ResponseWriter
     }
 
     /**
-     * Gets whether or not the headers have already been sent
-     *
-     * @return bool True if the headers have already been sent, otherwise false
+     * @inheritdoc
      */
     public function headersAreSent(): bool
     {
@@ -41,10 +38,7 @@ class ResponseWriter
     }
 
     /**
-     * Writes the response to the output stream
-     *
-     * @param IHttpResponseMessage $response The response to write
-     * @throws RuntimeException Thrown if the output stream could not be written to
+     * @inheritdoc
      */
     public function writeResponse(IHttpResponseMessage $response): void
     {

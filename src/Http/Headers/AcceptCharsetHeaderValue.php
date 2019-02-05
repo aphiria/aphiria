@@ -17,14 +17,14 @@ use Opulence\Collections\ImmutableHashTable;
 /**
  * Defines the Accept-Charset header value
  */
-class AcceptCharsetHeaderValue implements IHeaderValueWithQualityScore
+final class AcceptCharsetHeaderValue implements IHeaderValueWithQualityScore
 {
     /** @var string The value of the header */
-    protected $charset;
+    private $charset;
     /** @var IImmutableDictionary The dictionary of parameter names to values */
-    protected $parameters;
+    private $parameters;
     /** @var float The quality score of the header */
-    protected $quality;
+    private $quality;
 
     /**
      * @param string $charset The charset value

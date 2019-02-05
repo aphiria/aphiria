@@ -16,7 +16,7 @@ use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
 /**
  * Defines the language matcher
  */
-class LanguageMatcher
+final class LanguageMatcher
 {
     /**
      * Gets the best language match between a list of supported languages and Accept-Language headers

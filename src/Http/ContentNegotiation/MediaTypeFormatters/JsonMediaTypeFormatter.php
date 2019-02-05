@@ -15,7 +15,7 @@ use Aphiria\Serialization\JsonSerializer;
 /**
  * Defines the JSON media type formatter
  */
-class JsonMediaTypeFormatter extends SerializerMediaTypeFormatter
+final class JsonMediaTypeFormatter extends SerializerMediaTypeFormatter
 {
     /** @var array The list of supported character encodings */
     private static $supportedEncodings = ['utf-8'];

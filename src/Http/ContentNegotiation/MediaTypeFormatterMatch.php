@@ -16,7 +16,7 @@ use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
 /**
  * Defines a media type formatter match
  */
-class MediaTypeFormatterMatch
+final class MediaTypeFormatterMatch
 {
     /** @var IMediaTypeFormatter The matched media type formatter */
     private $formatter;

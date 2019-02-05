@@ -13,7 +13,7 @@ namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 /**
  * Defines the HTML media type formatter
  */
-class HtmlMediaTypeFormatter extends TextMediaTypeFormatter
+final class HtmlMediaTypeFormatter extends TextMediaTypeFormatter
 {
     /** @var array The list of supported character encodings */
     private static $supportedEncodings = ['utf-8', 'utf-16'];

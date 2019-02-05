@@ -18,7 +18,7 @@ use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
 /**
  * Defines the character encoding matcher
  */
-class EncodingMatcher
+final class EncodingMatcher
 {
     /**
      * Gets the best character encoding match for the input media type formatter

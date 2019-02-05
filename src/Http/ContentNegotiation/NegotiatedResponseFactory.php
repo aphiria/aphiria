@@ -28,7 +28,7 @@ use Aphiria\Serialization\TypeResolver;
 /**
  * Defines the factory that generates HTTP responses from negotiated content
  */
-class NegotiatedResponseFactory implements INegotiatedResponseFactory
+final class NegotiatedResponseFactory implements INegotiatedResponseFactory
 {
     /** @var IContentNegotiator The content negotiator to use */
     private $contentNegotiator;

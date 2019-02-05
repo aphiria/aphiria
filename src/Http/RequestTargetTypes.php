@@ -13,7 +13,7 @@ namespace Aphiria\Net\Http;
 /**
  * Defines the various request target types
  */
-class RequestTargetTypes
+final class RequestTargetTypes
 {
     /** @const The origin form */
     public const ORIGIN_FORM = 'origin-form';

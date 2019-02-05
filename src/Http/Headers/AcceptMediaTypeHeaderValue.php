@@ -16,10 +16,10 @@ use Opulence\Collections\IImmutableDictionary;
 /**
  * Defines the Accept media type header value
  */
-class AcceptMediaTypeHeaderValue extends MediaTypeHeaderValue implements IHeaderValueWithQualityScore
+final class AcceptMediaTypeHeaderValue extends MediaTypeHeaderValue implements IHeaderValueWithQualityScore
 {
     /** @var float The quality score of the media type */
-    protected $quality;
+    private $quality;
 
     /**
      * @inheritdoc

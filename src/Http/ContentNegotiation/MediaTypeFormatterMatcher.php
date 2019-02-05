@@ -19,7 +19,7 @@ use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
 /**
  * Defines the media type formatter matcher
  */
-class MediaTypeFormatterMatcher
+final class MediaTypeFormatterMatcher
 {
     /** @const The type of formatter to match on for requests */
     private const FORMATTER_TYPE_INPUT = 'input';

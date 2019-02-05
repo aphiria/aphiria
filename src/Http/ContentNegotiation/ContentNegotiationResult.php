@@ -15,7 +15,7 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 /**
  * Defines the results of content negotiation
  */
-class ContentNegotiationResult
+final class ContentNegotiationResult
 {
     /** @var IMediaTypeFormatter|null The matched media type formatter if there was one, otherwise null */
     private $formatter;

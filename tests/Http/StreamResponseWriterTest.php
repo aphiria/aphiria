@@ -14,16 +14,16 @@ use Opulence\IO\Streams\Stream;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\IHttpResponseMessage;
-use Aphiria\Net\Http\ResponseWriter;
+use Aphiria\Net\Http\StreamResponseWriter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the response writer
+ * Tests the stream response writer
  */
-class ResponseWriterTest extends TestCase
+class StreamResponseWriterTest extends TestCase
 {
-    /** @var ResponseWriter The response writer to use in tests */
+    /** @var StreamResponseWriter The response writer to use in tests */
     private $writer;
     /** @var Stream The output stream to use in tests */
     private $outputStream;
@@ -37,7 +37,7 @@ class ResponseWriterTest extends TestCase
     public function setUp(): void
     {
         $this->outputStream = new Stream(fopen('php://temp', 'r+b'));
-        $this->writer = new ResponseWriter($this->outputStream);
+        $this->writer = new StreamResponseWriter($this->outputStream);
         $this->headers = new HttpHeaders();
         $this->body = $this->createMock(IHttpBody::class);
         // The body will always get written to the output stream in every test

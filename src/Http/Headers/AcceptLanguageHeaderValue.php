@@ -17,14 +17,14 @@ use Opulence\Collections\ImmutableHashTable;
 /**
  * Defines the Accept-Language header value
  */
-class AcceptLanguageHeaderValue implements IHeaderValueWithQualityScore
+final class AcceptLanguageHeaderValue implements IHeaderValueWithQualityScore
 {
     /** @var string The value of the header */
-    protected $language;
+    private $language;
     /** @var IImmutableDictionary The dictionary of parameter names to values */
-    protected $parameters;
+    private $parameters;
     /** @var float The quality score of the header */
-    protected $quality;
+    private $quality;
 
     /**
      * @param string $language The language value
