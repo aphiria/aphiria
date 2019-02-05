@@ -13,7 +13,7 @@ namespace Aphiria\Serialization\Encoding;
 /**
  * Defines the context to use while encoding/decoding values
  */
-class EncodingContext
+final class EncodingContext
 {
     /** @var array A hash table of object hashes that have already been encoded */
     private $circularReferenceHashTable = [];

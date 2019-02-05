@@ -29,6 +29,7 @@
   },
   "require": {
     "ext-json": "*",
+    "ext-mbstring": "*",
     "php": "^7.3"
   },
   "require-dev": {

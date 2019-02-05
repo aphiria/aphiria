@@ -21,7 +21,7 @@ use ReflectionProperty;
 /**
  * Defines an object encoder
  */
-class ObjectEncoder implements IEncoder
+final class ObjectEncoder implements IEncoder
 {
     /** @var EncoderRegistry The encoder registry */
     private $encoders;

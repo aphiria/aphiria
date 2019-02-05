@@ -21,7 +21,7 @@ use InvalidArgumentException;
 class DateTimeEncoder implements IEncoder
 {
     /** @var string The DateTime format to use */
-    protected $format;
+    private $format;
 
     /**
      * @param string $format The DateTime format to use

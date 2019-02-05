@@ -15,7 +15,7 @@ use InvalidArgumentException;
 /**
  * Defines a scalar encoder
  */
-class ScalarEncoder implements IEncoder
+final class ScalarEncoder implements IEncoder
 {
     /**
      * @inheritdoc

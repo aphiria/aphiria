@@ -13,7 +13,7 @@ namespace Aphiria\Serialization\Encoding;
 /**
  * Defines the snake-case property name formatter
  */
-class SnakeCasePropertyNameFormatter implements IPropertyNameFormatter
+final class SnakeCasePropertyNameFormatter implements IPropertyNameFormatter
 {
     /** @var string The delimiter to use */
     private $delimiter;

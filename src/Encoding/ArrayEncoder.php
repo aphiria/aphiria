@@ -15,7 +15,7 @@ use InvalidArgumentException;
 /**
  * Defines the array encoder
  */
-class ArrayEncoder implements IEncoder
+final class ArrayEncoder implements IEncoder
 {
     /** @var EncoderRegistry The encoder registry */
     private $encoders;

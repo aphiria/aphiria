@@ -13,7 +13,7 @@ namespace Aphiria\Serialization;
 /**
  * Defines the form URL-encoded serializer
  */
-class FormUrlEncodedSerializer extends Serializer
+final class FormUrlEncodedSerializer extends Serializer
 {
     /**
      * @inheritdoc

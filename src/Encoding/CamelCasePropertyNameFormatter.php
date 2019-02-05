@@ -13,7 +13,7 @@ namespace Aphiria\Serialization\Encoding;
 /**
  * Defines the camel-case property name formatter
  */
-class CamelCasePropertyNameFormatter implements IPropertyNameFormatter
+final class CamelCasePropertyNameFormatter implements IPropertyNameFormatter
 {
     /**
      * @inheritdoc

@@ -13,7 +13,7 @@ namespace Aphiria\Serialization;
 /**
  * Defines a type resolver
  */
-class TypeResolver
+final class TypeResolver
 {
     /**
      * Gets the type of the array if there is one

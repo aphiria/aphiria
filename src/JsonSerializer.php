@@ -15,7 +15,7 @@ use JsonException;
 /**
  * Defines a JSON serializer
  */
-class JsonSerializer extends Serializer
+final class JsonSerializer extends Serializer
 {
     /**
      * @inheritdoc

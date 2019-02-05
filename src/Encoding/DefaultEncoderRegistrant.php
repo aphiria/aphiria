@@ -17,7 +17,7 @@ use DateTimeInterface;
 /**
  * Defines the default encoder registrant
  */
-class DefaultEncoderRegistrant
+final class DefaultEncoderRegistrant
 {
     /** @var IPropertyNameFormatter|null The property name formatter to use */
     private $propertyNameFormatter;

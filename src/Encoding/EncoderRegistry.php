@@ -16,7 +16,7 @@ use OutOfBoundsException;
 /**
  * Defines a registry of encoders
  */
-class EncoderRegistry
+final class EncoderRegistry
 {
     /** @var IEncoder[] The mapping of types to encoders */
     private $encodersByType = [];
