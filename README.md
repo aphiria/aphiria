@@ -1,6 +1,6 @@
 <h1>API</h1>
 
-[![Build Status](https://travis-ci.com/aphiria/api.svg?branch=master)](https://travis-ci.com/aphiria/api.svg?branch=master)
+[![Build Status](https://travis-ci.com/aphiria/api.svg)](https://travis-ci.com/aphiria/api.svg)
 [![Latest Stable Version](https://poser.pugx.org/aphiria/api/v/stable.svg)](https://packagist.org/packages/aphiria/api)
 [![Latest Unstable Version](https://poser.pugx.org/aphiria/api/v/unstable.svg)](https://packagist.org/packages/aphiria/api)
 [![License](https://poser.pugx.org/aphiria/api/license.svg)](https://packagist.org/packages/aphiria/api)
@@ -32,7 +32,7 @@ The API library makes it simpler for you to get your application's API up and ru
 
 You can install this library by including the following package name in your _composer.json_:
 
-```
+```bash
 "aphiria/api": "1.0.*"
 ```
 
@@ -208,12 +208,12 @@ class LoginController extends Controller
 {
     // ...
 
-    public function logIn(string $username, string $password): IHttpResponseMessage
+    public function logIn(LoginRequest $loginRequest): IHttpResponseMessage
     {
         $authResults = null;
         
         // Assume this logic resides in your application
-        if (!$this->authenticator->tryLogin($username, $password, $authResults)) {
+        if (!$this->authenticator->tryLogin($loginRequest->username, $loginRequest->password, $authResults)) {
             return $this->unauthorized();
         }
         
