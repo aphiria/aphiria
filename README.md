@@ -1,6 +1,6 @@
 # Serialization
 
-[![Build Status](https://travis-ci.com/aphiria/serialization.svg?branch=master)](https://travis-ci.com/aphiria/serialization.svg?branch=master)
+[![Build Status](https://travis-ci.com/aphiria/serialization.svg)](https://travis-ci.com/aphiria/serialization.svg)
 [![Latest Stable Version](https://poser.pugx.org/aphiria/serialization/v/stable.svg)](https://packagist.org/packages/aphiria/serialization)
 [![Latest Unstable Version](https://poser.pugx.org/aphiria/serialization/v/unstable.svg)](https://packagist.org/packages/aphiria/serialization)
 [![License](https://poser.pugx.org/aphiria/serialization/license.svg)](https://packagist.org/packages/aphiria/serialization)
@@ -42,7 +42,7 @@ $user = $serializer->deserialize($serializedUser, User::class);
 
 You can install this library by including the following package name in your _composer.json_:
 
-```
+```bash
 "aphiria/serialization": "1.0.*"
 ```
 
