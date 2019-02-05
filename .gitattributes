@@ -6,4 +6,4 @@
 .gitignore export-ignore
 /bin export-ignore
 phpunit.xml export-ignore
-/src/Tests export-ignore
+/tests export-ignore

@@ -1,6 +1,6 @@
 <h1>Router</h1>
 
-[![Build Status](https://travis-ci.com/aphiria/router.svg?branch=master)](https://travis-ci.com/aphiria/router.svg?branch=master)
+[![Build Status](https://travis-ci.com/aphiria/router.svg)](https://travis-ci.com/aphiria/router.svg)
 [![Latest Stable Version](https://poser.pugx.org/aphiria/router/v/stable.svg)](https://packagist.org/packages/aphiria/router)
 [![Latest Unstable Version](https://poser.pugx.org/aphiria/router/v/unstable.svg)](https://packagist.org/packages/aphiria/router)
 [![License](https://poser.pugx.org/aphiria/router/license.svg)](https://packagist.org/packages/aphiria/router)
@@ -54,7 +54,8 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
 <h2 id="installation">Installation</h2>
 
 This library requires PHP 7.3 and above.  It can be installed via <a href="https://getcomposer.org/" target="_blank">Composer</a> by including the following in your _composer.json_:
-```
+
+```bash
 "aphiria/router": "1.0.*@dev"
 ```
 

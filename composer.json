@@ -20,6 +20,11 @@
       "Aphiria\\Routing\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Aphiria\\Routing\\Tests\\": "tests"
+    }
+  },
   "require": {
     "ext-ctype": "*",
     "ext-mbstring": "*",
