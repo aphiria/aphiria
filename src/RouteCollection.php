@@ -13,7 +13,7 @@ namespace Aphiria\Routing;
 /**
  * Defines a list of routes that can be used by a router
  */
-class RouteCollection
+final class RouteCollection
 {
     /** @var array The list of methods to their various routes */
     private $routes = [];

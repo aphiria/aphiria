@@ -13,7 +13,7 @@ namespace Aphiria\Routing\Matchers\Rules;
 /**
  * Defines the not-in-array rule
  */
-class NotInRule implements IRule
+final class NotInRule implements IRule
 {
     /** @var array The list of unacceptable values */
     private $unacceptableValues;

@@ -14,7 +14,9 @@ use Aphiria\Routing\Matchers\Trees\LiteralTrieNode;
 use Aphiria\Routing\Matchers\Trees\TrieNode;
 use Aphiria\Routing\Matchers\Trees\RouteVariable;
 use Aphiria\Routing\Matchers\Trees\VariableTrieNode;
+use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -33,7 +35,7 @@ class TrieNodeTest extends TestCase
 
     public function testAddingChildWithMoreLevelsAddsThemAll(): void
     {
-        $fooRoutes = [$this->createMock(Route::class)];
+        $fooRoutes = [new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), [])];
         $this->node->addChild(
             new LiteralTrieNode(
                 'foo',
@@ -41,8 +43,8 @@ class TrieNodeTest extends TestCase
                 $fooRoutes
             )
         );
-        $barRoutes = [$this->createMock(Route::class)];
-        $bazRoutes = [$this->createMock(Route::class)];
+        $barRoutes = [new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), [])];
+        $bazRoutes = [new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), [])];
         $this->node->addChild(new LiteralTrieNode(
             'bar',
             [
@@ -77,8 +79,8 @@ class TrieNodeTest extends TestCase
 
     public function testAddingChildThatHasLessLevelsStillItsChildren(): void
     {
-        $fooRoutes = [$this->createMock(Route::class)];
-        $barRoutes = [$this->createMock(Route::class)];
+        $fooRoutes = [new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), [])];
+        $barRoutes = [new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), [])];
         $this->node->addChild(new LiteralTrieNode(
             'foo',
             [
@@ -90,7 +92,7 @@ class TrieNodeTest extends TestCase
             ],
             $fooRoutes
         ));
-        $bazRoutes = [$this->createMock(Route::class)];
+        $bazRoutes = [new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), [])];
         $this->node->addChild(new LiteralTrieNode(
             'baz',
             [],
@@ -126,8 +128,8 @@ class TrieNodeTest extends TestCase
 
     public function testAddingLiteralChildWithDifferentValueAddsItAsSeparateChild(): void
     {
-        $fooRoutes = [$this->createMock(Route::class)];
-        $barRoutes = [$this->createMock(Route::class)];
+        $fooRoutes = [new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), [])];
+        $barRoutes = [new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), [])];
         $this->node->addChild(new LiteralTrieNode(
             'foo',
             [],
@@ -155,8 +157,8 @@ class TrieNodeTest extends TestCase
 
     public function testAddingVariableChildDifferingVariablePartsAddsItAsSeparateChild(): void
     {
-        $fooRoutes = [$this->createMock(Route::class)];
-        $barRoutes = [$this->createMock(Route::class)];
+        $fooRoutes = [new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), [])];
+        $barRoutes = [new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), [])];
         $this->node->addChild(new VariableTrieNode(
             new RouteVariable('foo'),
             [],
@@ -184,12 +186,12 @@ class TrieNodeTest extends TestCase
 
     public function testAddingChildrenWithSameTwoLevelsOfChildrenMergesRoutesOnThirdLevel(): void
     {
-        $fooARoute = $this->createMock(Route::class);
-        $fooBRoute = $this->createMock(Route::class);
-        $barARoute = $this->createMock(Route::class);
-        $barBRoute = $this->createMock(Route::class);
-        $bazARoute = $this->createMock(Route::class);
-        $bazBRoute = $this->createMock(Route::class);
+        $fooARoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
+        $fooBRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
+        $barARoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
+        $barBRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
+        $bazARoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
+        $bazBRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
         $this->node->addChild(new LiteralTrieNode(
             'foo',
             [
@@ -248,8 +250,8 @@ class TrieNodeTest extends TestCase
 
     public function testAddingChildWithSameLiteralValueMergesRoutes(): void
     {
-        $fooRoute = $this->createMock(Route::class);
-        $barRoute = $this->createMock(Route::class);
+        $fooRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
+        $barRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
         $this->node->addChild(new LiteralTrieNode(
             'foo',
             [],
@@ -272,8 +274,8 @@ class TrieNodeTest extends TestCase
 
     public function testAddingChildWithSameVariablePartsMergesRoutes(): void
     {
-        $fooRoute = $this->createMock(Route::class);
-        $barRoute = $this->createMock(Route::class);
+        $fooRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
+        $barRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
         $this->node->addChild(new VariableTrieNode(
             new RouteVariable('foo'),
             [],

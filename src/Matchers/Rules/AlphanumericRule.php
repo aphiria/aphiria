@@ -13,7 +13,7 @@ namespace Aphiria\Routing\Matchers\Rules;
 /**
  * Defines the alphanumeric rule
  */
-class AlphanumericRule implements IRule
+final class AlphanumericRule implements IRule
 {
     /**
      * @inheritdoc

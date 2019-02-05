@@ -10,6 +10,8 @@
 
 namespace Aphiria\Routing\Tests\Matchers\Trees;
 
+use Aphiria\Routing\MethodRouteAction;
+use Aphiria\Routing\UriTemplates\UriTemplate;
 use InvalidArgumentException;
 use Aphiria\Routing\Matchers\Rules\IRule;
 use Aphiria\Routing\Matchers\Trees\LiteralTrieNode;
@@ -42,7 +44,7 @@ class VariableTrieNodeTest extends TestCase
 
     public function testCreatingWithSingleRouteConvertsItToArrayOfRoutes(): void
     {
-        $expectedRoute = $this->createMock(Route::class);
+        $expectedRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
         $node = new VariableTrieNode(new RouteVariable('foo'), [], $expectedRoute);
         $this->assertCount(1, $node->routes);
         $this->assertSame($expectedRoute, $node->routes[0]);
@@ -155,7 +157,7 @@ class VariableTrieNodeTest extends TestCase
     {
         $expectedParts = [new RouteVariable('foo')];
         $expectedChildren = [new LiteralTrieNode('bar', [])];
-        $expectedRoutes = [$this->createMock(Route::class)];
+        $expectedRoutes = [new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), [])];
         $expectedHostTrie = $this->createMockNode();
         $node = new VariableTrieNode($expectedParts, $expectedChildren, $expectedRoutes, $expectedHostTrie);
         $this->assertSame($expectedParts, $node->parts);

@@ -15,7 +15,7 @@ use InvalidArgumentException;
 /**
  * Defines a token stream
  */
-class TokenStream
+final class TokenStream
 {
     /** @var int The length of the stream */
     public $length;

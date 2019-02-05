@@ -16,7 +16,7 @@ use Aphiria\Routing\Matchers\MatchedRouteCandidate;
 /**
  * Defines the HTTP method route constraint
  */
-class HttpMethodRouteConstraint implements IRouteConstraint
+final class HttpMethodRouteConstraint implements IRouteConstraint
 {
     /** @var array The hash map of allowed methods */
     private $allowedMethods = [];

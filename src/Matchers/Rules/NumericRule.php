@@ -13,7 +13,7 @@ namespace Aphiria\Routing\Matchers\Rules;
 /**
  * Defines the numeric rule
  */
-class NumericRule implements IRule
+final class NumericRule implements IRule
 {
     /**
      * @inheritdoc

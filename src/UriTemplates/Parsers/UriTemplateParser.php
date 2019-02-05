@@ -16,7 +16,7 @@ use Aphiria\Routing\UriTemplates\Parsers\Lexers\{TokenStream, TokenTypes};
 /**
  * Defines the URI template parser
  */
-class UriTemplateParser implements IUriTemplateParser
+final class UriTemplateParser implements IUriTemplateParser
 {
     /**
      * @inheritdoc

@@ -13,7 +13,7 @@ namespace Aphiria\Routing\UriTemplates\Parsers;
 /**
  * Defines the list of abstract syntax tree node types
  */
-class AstNodeTypes
+final class AstNodeTypes
 {
     /** @const The host node type */
     public const HOST = 'HOST';

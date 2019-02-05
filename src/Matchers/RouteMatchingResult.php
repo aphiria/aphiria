@@ -15,7 +15,7 @@ use Aphiria\Routing\Route;
 /**
  * Defines the result of an attempt to match a route
  */
-class RouteMatchingResult
+final class RouteMatchingResult
 {
     /** @var bool Whether or not a match was found */
     public $matchFound;

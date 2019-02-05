@@ -10,12 +10,11 @@
 
 namespace Aphiria\Routing\Tests\Matchers\Trees;
 
+use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\Matchers\Trees\Caching\ITrieCache;
 use Aphiria\Routing\Matchers\Trees\Compilers\ITrieCompiler;
 use Aphiria\Routing\Matchers\Trees\RootTrieNode;
 use Aphiria\Routing\Matchers\Trees\TrieFactory;
-use Aphiria\Routing\Route;
-use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +35,11 @@ class TrieFactoryTest extends TestCase
 
     public function setUp(): void
     {
-        $this->routeFactory = $this->createMock(RouteFactory::class);
+        $this->routeFactory = new RouteFactory(function (RouteBuilderRegistry $routes) {
+            // It doesn't really matter what this route is
+            $routes->map('GET', 'foo')
+                ->toMethod('Foo', 'bar');
+        });
         $this->trieCache = $this->createMock(ITrieCache::class);
         $this->trieCompiler = $this->createMock(ITrieCompiler::class);
         $this->trieFactory = new TrieFactory($this->routeFactory, $this->trieCache, $this->trieCompiler);
@@ -57,16 +60,8 @@ class TrieFactoryTest extends TestCase
         $this->trieCache->expects($this->once())
             ->method('get')
             ->willReturn(null);
-        /** @var Route|MockObject $route */
-        $route = $this->createMock(Route::class);
-        $routeCollection = new RouteCollection();
-        $routeCollection->add($route);
-        $this->routeFactory->expects($this->once())
-            ->method('createRoutes')
-            ->willReturn($routeCollection);
         $this->trieCompiler->expects($this->once())
             ->method('compile')
-            ->with($route)
             ->willReturn($expectedTrie);
         $this->trieCache->expects($this->once())
             ->method('set')
@@ -79,16 +74,8 @@ class TrieFactoryTest extends TestCase
     {
         $trieFactory = new TrieFactory($this->routeFactory, null, $this->trieCompiler);
         $expectedTrie = new RootTrieNode();
-        /** @var Route|MockObject $route */
-        $route = $this->createMock(Route::class);
-        $routeCollection = new RouteCollection();
-        $routeCollection->add($route);
-        $this->routeFactory->expects($this->once())
-            ->method('createRoutes')
-            ->willReturn($routeCollection);
         $this->trieCompiler->expects($this->once())
             ->method('compile')
-            ->with($route)
             ->willReturn($expectedTrie);
         // Specifically not testing for same trie because createTrie() creates a brand new node when not using a cache
         $this->assertEquals($expectedTrie, $trieFactory->createTrie());

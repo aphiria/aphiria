@@ -11,8 +11,9 @@
 namespace Aphiria\Routing\Tests\Matchers;
 
 use Aphiria\Routing\Matchers\RouteMatchingResult;
+use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
-use PHPUnit\Framework\MockObject\MockObject;
+use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,7 +29,8 @@ class RouteMatchingResultTest extends TestCase
 
     public function testMethodAllowedOnlyIfRouteIsNullAndAllowedMethodsIsPopulated(): void
     {
-        $resultWithPopulatedRoute = new RouteMatchingResult($this->createMock(Route::class), []);
+        $route = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
+        $resultWithPopulatedRoute = new RouteMatchingResult($route, []);
         $this->assertTrue($resultWithPopulatedRoute->methodIsAllowed);
         $resultWithUnpopulatedRouteAndNoAllowedMethods = new RouteMatchingResult(null, []);
         $this->assertNull($resultWithUnpopulatedRouteAndNoAllowedMethods->methodIsAllowed);
@@ -38,8 +40,7 @@ class RouteMatchingResultTest extends TestCase
 
     public function testPropertiesSetInConstructor(): void
     {
-        /** @var Route|MockObject $expectedMatchedRoute */
-        $expectedMatchedRoute = $this->createMock(Route::class);
+        $expectedMatchedRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
         $expectedRouteVariables = ['foo' => 'bar'];
         $expectedAllowedMethods = ['GET'];
         $routeMatchingResult = new RouteMatchingResult(

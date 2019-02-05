@@ -13,7 +13,7 @@ namespace Aphiria\Routing\Matchers\Rules;
 /**
  * Defines the regex rule
  */
-class RegexRule implements IRule
+final class RegexRule implements IRule
 {
     /** @var string The regex the input must match */
     private $regex;

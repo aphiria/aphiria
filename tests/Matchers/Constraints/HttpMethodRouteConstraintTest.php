@@ -10,9 +10,12 @@
 
 namespace Aphiria\Routing\Tests\Matchers\Constraints;
 
-use InvalidArgumentException;
+use Aphiria\Routing\MethodRouteAction;
+use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\UriTemplate;
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\Matchers\MatchedRouteCandidate;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -52,8 +55,10 @@ class HttpMethodRouteConstraintTest extends TestCase
     public function testPassesOnlyReturnsTrueOnAllowedMethods(): void
     {
         $constraint = new HttpMethodRouteConstraint(['GET']);
-        /** @var MatchedRouteCandidate $matchedRoute */
-        $matchedRoute = $this->createMock(MatchedRouteCandidate::class);
+        $matchedRoute = new MatchedRouteCandidate(
+            new Route(new UriTemplate('foo'), new MethodRouteAction('Foo', 'bar'), []),
+            []
+        );
         $this->assertTrue($constraint->passes($matchedRoute, 'GET', 'example.com', '/foo', []));
         $this->assertTrue($constraint->passes($matchedRoute, 'HEAD', 'example.com', '/foo', []));
         $this->assertFalse($constraint->passes($matchedRoute, 'POST', 'example.com', '/foo', []));
@@ -62,8 +67,10 @@ class HttpMethodRouteConstraintTest extends TestCase
     public function testPassesWorksOnLowercaseMethods(): void
     {
         $constraint = new HttpMethodRouteConstraint(['POST']);
-        /** @var MatchedRouteCandidate $matchedRoute */
-        $matchedRoute = $this->createMock(MatchedRouteCandidate::class);
+        $matchedRoute = new MatchedRouteCandidate(
+            new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []),
+            []
+        );
         $this->assertTrue($constraint->passes($matchedRoute, 'post', 'example.com', '/', []));
     }
 }

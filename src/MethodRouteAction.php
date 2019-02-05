@@ -13,7 +13,7 @@ namespace Aphiria\Routing;
 /**
  * Defines a route action that uses a method
  */
-class MethodRouteAction extends RouteAction
+final class MethodRouteAction extends RouteAction
 {
     /**
      * @param string $className The name of the class the route routes to

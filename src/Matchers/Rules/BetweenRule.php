@@ -15,7 +15,7 @@ use InvalidArgumentException;
 /**
  * Defines the between rule
  */
-class BetweenRule implements IRule
+final class BetweenRule implements IRule
 {
     /** @var int|float The min value */
     private $min;

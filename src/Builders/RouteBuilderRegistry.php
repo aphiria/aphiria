@@ -17,7 +17,7 @@ use Aphiria\Routing\UriTemplates\UriTemplate;
 /**
  * Defines the route builder registry
  */
-class RouteBuilderRegistry
+final class RouteBuilderRegistry
 {
     /** @var RouteBuilder[] The list of registered route builders */
     private $routeBuilders = [];

@@ -13,7 +13,7 @@ namespace Aphiria\Routing\Requests;
 /**
  * Defines a parser that reads the request headers from the $_SERVER super global
  */
-class RequestHeaderParser
+final class RequestHeaderParser
 {
     /** @var array These headers do not have the HTTP_ prefix */
     private static $specialCaseHeaders = [

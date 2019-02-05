@@ -13,7 +13,7 @@ namespace Aphiria\Routing\Matchers\Rules;
 /**
  * Defines the alpha rule
  */
-class AlphaRule implements IRule
+final class AlphaRule implements IRule
 {
     /**
      * @inheritdoc

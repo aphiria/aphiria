@@ -15,7 +15,7 @@ use InvalidArgumentException;
 /**
  * Defines the lexer for URI templates
  */
-class UriTemplateLexer implements IUriTemplateLexer
+final class UriTemplateLexer implements IUriTemplateLexer
 {
     /** @const The list of punctuation characters */
     private const PUNCTUATION = '.()[],/';

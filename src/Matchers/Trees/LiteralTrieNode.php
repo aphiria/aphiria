@@ -15,7 +15,7 @@ use Aphiria\Routing\Route;
 /**
  * Defines a trie node that contains a literal segment
  */
-class LiteralTrieNode extends TrieNode
+final class LiteralTrieNode extends TrieNode
 {
     /** @var string The value of this node */
     public $value;

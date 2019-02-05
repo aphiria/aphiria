@@ -13,7 +13,7 @@ namespace Aphiria\Routing\Matchers\Rules;
 /**
  * Defines the in-array rule
  */
-class InRule implements IRule
+final class InRule implements IRule
 {
     /** @var array The list of acceptable values */
     private $acceptableValues;

@@ -15,7 +15,7 @@ use Aphiria\Routing\Route;
 /**
  * Defines a matched route candidate
  */
-class MatchedRouteCandidate
+final class MatchedRouteCandidate
 {
     /** @var Route The route that was matched */
     public $route;

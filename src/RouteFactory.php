@@ -16,7 +16,7 @@ use Aphiria\Routing\Builders\RouteBuilderRegistry;
 /**
  * Defines a route factory
  */
-class RouteFactory
+final class RouteFactory
 {
     /** @var Closure The callback that builds routes */
     private $routeBuilderCallback;

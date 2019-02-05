@@ -15,7 +15,7 @@ use Aphiria\Routing\Matchers\Rules\IRule;
 /**
  * Defines a route variable
  */
-class RouteVariable
+final class RouteVariable
 {
     /** @var string The name of the variable */
     public $name;

@@ -13,7 +13,7 @@ namespace Aphiria\Routing\UriTemplates\Parsers\Lexers;
 /**
  * Defines a token created by a lexer
  */
-class Token
+final class Token
 {
     /** @var string The token type */
     public $type;

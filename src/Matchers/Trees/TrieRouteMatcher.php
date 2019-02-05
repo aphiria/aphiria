@@ -15,7 +15,7 @@ use Aphiria\Routing\Matchers\{Constraints\HttpMethodRouteConstraint, IRouteMatch
 /**
  * Defines the route matcher that uses a trie structure for matching
  */
-class TrieRouteMatcher implements IRouteMatcher
+final class TrieRouteMatcher implements IRouteMatcher
 {
     /** @var TrieNode The root node */
     private $rootNode;

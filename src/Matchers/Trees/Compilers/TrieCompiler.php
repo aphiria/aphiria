@@ -20,7 +20,7 @@ use Aphiria\Routing\UriTemplates\Parsers\Lexers\{IUriTemplateLexer, UriTemplateL
 /**
  * Defines a compiler for a trie
  */
-class TrieCompiler implements ITrieCompiler
+final class TrieCompiler implements ITrieCompiler
 {
     /** @var IRuleFactory The factory that will create rules */
     private $ruleFactory;

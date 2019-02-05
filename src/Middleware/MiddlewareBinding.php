@@ -13,7 +13,7 @@ namespace Aphiria\Routing\Middleware;
 /**
  * Defines a middleware binding
  */
-class MiddlewareBinding
+final class MiddlewareBinding
 {
     /** @var string The name of the middleware class */
     public $className;

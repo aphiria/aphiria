@@ -17,7 +17,7 @@ use Aphiria\Routing\UriTemplates\UriTemplate;
 /**
  * Defines a route
  */
-class Route
+final class Route
 {
     /** @var UriTemplate The raw URI template */
     public $uriTemplate;

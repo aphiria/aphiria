@@ -17,7 +17,7 @@ use RuntimeException;
 /**
  * Defines the rule factory
  */
-class RuleFactory implements IRuleFactory
+final class RuleFactory implements IRuleFactory
 {
     /** @var Closure The mapping of rule slugs to factories */
     private $factories = [];

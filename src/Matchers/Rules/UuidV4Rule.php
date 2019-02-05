@@ -13,7 +13,7 @@ namespace Aphiria\Routing\Matchers\Rules;
 /**
  * Defines the UUIDV4 rule
  */
-class UuidV4Rule implements IRule
+final class UuidV4Rule implements IRule
 {
     /** @var string The UUIDV4 regex */
     private const UUIDV4_REGEX = '/^\{?[a-f\d]{8}-(?:[a-f\d]{4}-){3}[a-f\d]{12}\}?$/i';

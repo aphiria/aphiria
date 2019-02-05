@@ -13,7 +13,7 @@ namespace Aphiria\Routing\UriTemplates;
 /**
  * Defines a URI template
  */
-class UriTemplate
+final class UriTemplate
 {
     /** @var string|null The host template */
     public $hostTemplate;

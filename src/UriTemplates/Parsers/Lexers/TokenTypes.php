@@ -13,7 +13,7 @@ namespace Aphiria\Routing\UriTemplates\Parsers\Lexers;
 /**
  * Defines the various token types
  */
-class TokenTypes
+final class TokenTypes
 {
     /** @const A text token type */
     public const T_TEXT = 'T_TEXT';

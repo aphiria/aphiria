@@ -13,7 +13,7 @@ namespace Aphiria\Routing\UriTemplates\Parsers;
 /**
  * Defines an abstract syntax tree node
  */
-class AstNode
+final class AstNode
 {
     /** @var string The node type */
     public $type;

@@ -11,8 +11,9 @@
 namespace Aphiria\Routing\Tests\Matchers;
 
 use Aphiria\Routing\Matchers\MatchedRouteCandidate;
+use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
-use PHPUnit\Framework\MockObject\MockObject;
+use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,8 +23,7 @@ class MatchedRouteCandidateTest extends TestCase
 {
     public function testPropertiesSetCorrectlyInConstructor(): void
     {
-        /** @var Route|MockObject $expectedRoute */
-        $expectedRoute = $this->createMock(Route::class);
+        $expectedRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
         $expectedRouteVariables = ['foo' => 'bar'];
         $matchedRoute = new MatchedRouteCandidate($expectedRoute, $expectedRouteVariables);
         $this->assertSame($expectedRoute, $matchedRoute->route);

@@ -16,7 +16,7 @@ use Aphiria\Routing\Route;
 /**
  * Defines a trie node that contains a variable value
  */
-class VariableTrieNode extends TrieNode
+final class VariableTrieNode extends TrieNode
 {
     /** @var string[]|RouteVariable[] The parts that make up this node  */
     public $parts;

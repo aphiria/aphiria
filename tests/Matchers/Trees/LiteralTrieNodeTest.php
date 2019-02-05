@@ -12,7 +12,9 @@ namespace Aphiria\Routing\Tests\Matchers\Trees;
 
 use Aphiria\Routing\Matchers\Trees\LiteralTrieNode;
 use Aphiria\Routing\Matchers\Trees\TrieNode;
+use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -23,7 +25,7 @@ class LiteralTrieNodeTest extends TestCase
 {
     public function testCreatingWithSingleRouteConvertsItToArrayOfRoutes(): void
     {
-        $expectedRoute = $this->createMock(Route::class);
+        $expectedRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
         $expectedHostTrie = $this->createMockNode();
         $node = new LiteralTrieNode('foo', [], $expectedRoute, $expectedHostTrie);
         $this->assertCount(1, $node->routes);
@@ -34,7 +36,7 @@ class LiteralTrieNodeTest extends TestCase
     public function testPropertiesAreSetInConstructor(): void
     {
         $expectedChildren = [new LiteralTrieNode('bar', [])];
-        $expectedRoutes = [$this->createMock(Route::class)];
+        $expectedRoutes = [new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), [])];
         $expectedHostTrie = $this->createMockNode();
         $node = new LiteralTrieNode('foo', $expectedChildren, $expectedRoutes, $expectedHostTrie);
         $this->assertEquals('foo', $node->value);

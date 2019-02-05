@@ -13,7 +13,7 @@ namespace Aphiria\Routing\Matchers\Rules;
 /**
  * Defines the rule factory registrant that registers all the built-in rules' factories
  */
-class RuleFactoryRegistrant
+final class RuleFactoryRegistrant
 {
     /**
      * Registers the built-in rule factories

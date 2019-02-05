@@ -18,7 +18,7 @@ use Aphiria\Routing\RouteFactory;
 /**
  * Defines a factory for tries
  */
-class TrieFactory
+final class TrieFactory
 {
     /** @var RouteFactory The route factory to use in case the trie needs to be generated */
     private $routeFactory;

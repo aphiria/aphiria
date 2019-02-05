@@ -16,7 +16,7 @@ use InvalidArgumentException;
 /**
  * Defines the date rule
  */
-class DateRule
+final class DateRule
 {
     /** @var array The list of acceptable date formats */
     private $formats;

@@ -15,7 +15,7 @@ use Closure;
 /**
  * Defines a route action that uses a closure
  */
-class ClosureRouteAction extends RouteAction
+final class ClosureRouteAction extends RouteAction
 {
     /**
      * @param Closure $closure The closure the route routes to
