@@ -15,7 +15,7 @@ use Closure;
 /**
  * Defines the exception response factory registry
  */
-class ExceptionResponseFactoryRegistry
+final class ExceptionResponseFactoryRegistry
 {
     /** @var Closure[] The mapping of exception types to response factories */
     private $factories = [];

@@ -19,7 +19,7 @@ use ReflectionParameter;
 /**
  * Defines the default controller parameter resolver
  */
-class ControllerParameterResolver implements IControllerParameterResolver
+final class ControllerParameterResolver implements IControllerParameterResolver
 {
     /** @var IContentNegotiator The content negotiator */
     private $contentNegotiator;

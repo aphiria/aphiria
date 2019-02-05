@@ -17,7 +17,7 @@ use Aphiria\Api\Exceptions\ExceptionHandler;
 use Aphiria\Api\Exceptions\IExceptionResponseFactory;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
-use Aphiria\Net\Http\ResponseWriter;
+use Aphiria\Net\Http\IResponseWriter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -31,14 +31,14 @@ class ExceptionHandlerTest extends TestCase
     private $logger;
     /** @var IExceptionResponseFactory|MockObject The exception response factory */
     private $exceptionResponseFactory;
-    /** @var ResponseWriter|MockObject The response writer */
+    /** @var IResponseWriter|MockObject The response writer */
     private $responseWriter;
 
     public function setUp(): void
     {
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->exceptionResponseFactory = $this->createMock(IExceptionResponseFactory::class);
-        $this->responseWriter = $this->createMock(ResponseWriter::class);
+        $this->responseWriter = $this->createMock(IResponseWriter::class);
     }
 
     public function tearDown(): void

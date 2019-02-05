@@ -16,7 +16,7 @@ use Opulence\Ioc\IocException;
 /**
  * Defines a dependency resolver that uses Opulence's DI container
  */
-class ContainerDependencyResolver implements IDependencyResolver
+final class ContainerDependencyResolver implements IDependencyResolver
 {
     /** @var IContainer The IoC container */
     private $container;

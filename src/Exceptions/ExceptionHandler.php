@@ -15,7 +15,8 @@ use Exception;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
 use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\ResponseWriter;
+use Aphiria\Net\Http\IResponseWriter;
+use Aphiria\Net\Http\StreamResponseWriter;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -30,7 +31,7 @@ class ExceptionHandler implements IExceptionHandler
     protected $logger;
     /** @var IExceptionResponseFactory The exception response factory */
     protected $exceptionResponseFactory;
-    /** @var ResponseWriter What to use to write a response */
+    /** @var IResponseWriter What to use to write a response */
     protected $responseWriter;
     /** @var int $loggedLevels The bitwise value of error levels that are to be logged */
     protected $loggedLevels;
@@ -47,7 +48,7 @@ class ExceptionHandler implements IExceptionHandler
      * @param int|null $loggedLevels The bitwise value of error levels that are to be logged
      * @param int|null $thrownLevels The bitwise value of error levels that are to be thrown as exceptions
      * @param array $exceptionsNotLogged The exception or list of exceptions to not log when thrown
-     * @param ResponseWriter $responseWriter What to use to write a response
+     * @param IResponseWriter $responseWriter What to use to write a response
      */
     public function __construct(
         IExceptionResponseFactory $exceptionResponseFactory,
@@ -55,14 +56,14 @@ class ExceptionHandler implements IExceptionHandler
         int $loggedLevels = null,
         int $thrownLevels = null,
         array $exceptionsNotLogged = [],
-        ResponseWriter $responseWriter = null
+        IResponseWriter $responseWriter = null
     ) {
         $this->exceptionResponseFactory = $exceptionResponseFactory;
         $this->logger = $logger ?? new Logger(self::DEFAULT_LOGGER_NAME, [new ErrorLogHandler()]);
         $this->loggedLevels = $loggedLevels ?? 0;
         $this->thrownLevels = $thrownLevels ?? (E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED));
         $this->exceptionsNotLogged = $exceptionsNotLogged;
-        $this->responseWriter = $responseWriter ?? new ResponseWriter();
+        $this->responseWriter = $responseWriter ?? new StreamResponseWriter();
     }
 
     /**

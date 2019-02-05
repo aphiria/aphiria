@@ -26,7 +26,7 @@ use ReflectionMethod;
 /**
  * Defines the route action invoker
  */
-class RouteActionInvoker implements IRouteActionInvoker
+final class RouteActionInvoker implements IRouteActionInvoker
 {
     /** @var INegotiatedResponseFactory The negotiated response factory */
     private $negotiatedResponseFactory;
