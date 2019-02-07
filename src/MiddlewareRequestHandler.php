@@ -11,7 +11,8 @@
 namespace Aphiria\Middleware;
 
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use Aphiria\Net\Http\{IHttpRequestMessage, IHttpResponseMessage};
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
 
 /**
  * Defines the middleware request handler
