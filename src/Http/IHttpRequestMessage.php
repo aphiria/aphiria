@@ -10,8 +10,8 @@
 
 namespace Aphiria\Net\Http;
 
-use Opulence\Collections\IDictionary;
 use Aphiria\Net\Uri;
+use Opulence\Collections\IDictionary;
 
 /**
  * Defines the interface for HTTP request messages to implement

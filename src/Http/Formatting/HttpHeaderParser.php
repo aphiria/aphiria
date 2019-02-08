@@ -10,10 +10,10 @@
 
 namespace Aphiria\Net\Http\Formatting;
 
+use Aphiria\Net\Http\HttpHeaders;
 use Opulence\Collections\IImmutableDictionary;
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
-use Aphiria\Net\Http\HttpHeaders;
 use RuntimeException;
 
 /**

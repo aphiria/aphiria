@@ -10,11 +10,11 @@
 
 namespace Aphiria\Net\Tests\Http\Headers;
 
+use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use InvalidArgumentException;
 use Opulence\Collections\IImmutableDictionary;
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
-use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use PHPUnit\Framework\TestCase;
 
 /**

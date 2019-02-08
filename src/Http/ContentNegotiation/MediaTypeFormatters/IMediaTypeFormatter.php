@@ -10,8 +10,8 @@
 
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
-use Opulence\IO\Streams\IStream;
 use Aphiria\Serialization\SerializationException;
+use Opulence\IO\Streams\IStream;
 
 /**
  * Defines the interface for media type formatters to implement

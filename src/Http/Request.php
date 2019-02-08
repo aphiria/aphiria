@@ -10,10 +10,10 @@
 
 namespace Aphiria\Net\Http;
 
+use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
-use Aphiria\Net\Uri;
 use RuntimeException;
 
 /**

@@ -10,11 +10,11 @@
 
 namespace Aphiria\Net\Http;
 
+use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
 use Opulence\IO\Streams\Stream;
-use Aphiria\Net\Uri;
 use RuntimeException;
 
 /**

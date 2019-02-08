@@ -10,16 +10,16 @@
 
 namespace Aphiria\Net\Http\Formatting;
 
-use finfo;
-use InvalidArgumentException;
-use Opulence\Collections\HashTable;
-use Opulence\Collections\IDictionary;
-use Opulence\Collections\KeyValuePair;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
+use finfo;
+use InvalidArgumentException;
+use Opulence\Collections\HashTable;
+use Opulence\Collections\IDictionary;
+use Opulence\Collections\KeyValuePair;
 use RuntimeException;
 
 /**

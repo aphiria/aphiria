@@ -10,9 +10,9 @@
 
 namespace Aphiria\Net\Tests\Http;
 
+use Aphiria\Net\Http\Cookie;
 use DateTime;
 use InvalidArgumentException;
-use Aphiria\Net\Http\Cookie;
 use PHPUnit\Framework\TestCase;
 
 /**

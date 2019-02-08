@@ -10,10 +10,10 @@
 
 namespace Aphiria\Net\Tests\Http\ContentNegotiation;
 
-use InvalidArgumentException;
-use Opulence\IO\Streams\IStream;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
+use InvalidArgumentException;
+use Opulence\IO\Streams\IStream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

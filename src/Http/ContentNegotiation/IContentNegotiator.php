@@ -10,8 +10,8 @@
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
-use InvalidArgumentException;
 use Aphiria\Net\Http\IHttpRequestMessage;
+use InvalidArgumentException;
 
 /**
  * Defines the interface for content negotiators to implement

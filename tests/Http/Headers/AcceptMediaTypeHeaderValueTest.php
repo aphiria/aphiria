@@ -10,10 +10,10 @@
 
 namespace Aphiria\Net\Tests\Http\Headers;
 
+use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use InvalidArgumentException;
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
-use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use PHPUnit\Framework\TestCase;
 
 /**

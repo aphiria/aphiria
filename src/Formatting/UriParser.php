@@ -10,10 +10,10 @@
 
 namespace Aphiria\Net\Formatting;
 
+use Aphiria\Net\Uri;
 use Opulence\Collections\IImmutableDictionary;
 use Opulence\Collections\ImmutableHashTable;
 use Opulence\Collections\KeyValuePair;
-use Aphiria\Net\Uri;
 
 /**
  * Defines the URI parser

@@ -10,8 +10,8 @@
 
 namespace Aphiria\Net\Tests\Http;
 
-use Opulence\IO\Streams\IStream;
 use Aphiria\Net\Http\StringBody;
+use Opulence\IO\Streams\IStream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
