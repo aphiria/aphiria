@@ -291,8 +291,8 @@ class ObjectEncoderTest extends TestCase
             ->with('young', $context)
             ->willReturn('young');
         $encoder->expects($this->at(1))
-            ->method('encode', $context)
-            ->with('dave')
+            ->method('encode')
+            ->with('dave', $context)
             ->willReturn('dave');
         $this->encoders->registerEncoder('string', $encoder);
         $this->assertEquals(['bar' => 'young', 'foo' => 'dave'], $this->objectEncoder->encode($value, $context));
@@ -305,8 +305,8 @@ class ObjectEncoderTest extends TestCase
         $context = new EncodingContext();
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->at(0))
-            ->method('encode', $context)
-            ->with(123)
+            ->method('encode')
+            ->with(123, $context)
             ->willReturn(123);
         $this->encoders->registerEncoder('integer', $encoder);
         $this->assertEquals(['id' => 123], $this->objectEncoder->encode($user, $context));
@@ -319,8 +319,8 @@ class ObjectEncoderTest extends TestCase
         $context = new EncodingContext();
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->at(0))
-            ->method('encode', $context)
-            ->with(123)
+            ->method('encode')
+            ->with(123, $context)
             ->willReturn(123);
         $this->encoders->registerEncoder('integer', $encoder);
         $this->assertEquals(['id' => 123], $this->objectEncoder->encode($user, $context));

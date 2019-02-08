@@ -229,7 +229,7 @@ final class ObjectEncoder implements IEncoder
      * @return mixed The decoded constructor parameter value
      * @throws EncodingException Thrown if the value could not be automatically decoded
      */
-    protected function decodeConstructorParamValue(
+    private function decodeConstructorParamValue(
         ReflectionParameter $constructorParam,
         $constructorParamValue,
         ReflectionClass $reflectionClass,
@@ -280,7 +280,7 @@ final class ObjectEncoder implements IEncoder
      * @param array $objectHash The object hash whose properties we're normalizing
      * @return array The mapping of normalized names to original names
      */
-    protected function normalizeHashProperties(array $objectHash): array
+    private function normalizeHashProperties(array $objectHash): array
     {
         $encodedHashProperties = [];
 
@@ -297,7 +297,7 @@ final class ObjectEncoder implements IEncoder
      * @param string $propertyName The property name to normalize
      * @return string The normalized property name
      */
-    protected function normalizePropertyName(string $propertyName): string
+    private function normalizePropertyName(string $propertyName): string
     {
         return strtolower(str_replace('_', '', $propertyName));
     }
@@ -309,7 +309,7 @@ final class ObjectEncoder implements IEncoder
      * @param string $propertyName The property name to check
      * @return bool True if the property should be ignored, otherwise false
      */
-    protected function propertyIsIgnored(string $type, string $propertyName): bool
+    private function propertyIsIgnored(string $type, string $propertyName): bool
     {
         return isset($this->ignoredEncodedPropertyNamesByType[$type][$this->normalizePropertyName($propertyName)]);
     }
@@ -324,7 +324,7 @@ final class ObjectEncoder implements IEncoder
      * @param mixed The decoded value
      * @return bool Returns true if the value was successfully decoded, otherwise false
      */
-    protected function tryDecodeValueFromGetterType(
+    private function tryDecodeValueFromGetterType(
         ReflectionClass $reflectionClass,
         string $normalizedPropertyName,
         $encodedValue,
