@@ -10,8 +10,6 @@
 
 namespace Aphiria\Api\Controllers;
 
-use InvalidArgumentException;
-use LogicException;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Aphiria\Net\Http\Formatting\RequestParser;
@@ -23,6 +21,8 @@ use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Uri;
 use Aphiria\Serialization\SerializationException;
+use InvalidArgumentException;
+use LogicException;
 
 /**
  * Defines the base class for controllers to extend

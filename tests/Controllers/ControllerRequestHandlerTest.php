@@ -10,10 +10,10 @@
 
 namespace Aphiria\Api\Tests\Controllers;
 
-use Aphiria\Api\Tests\Controllers\Mocks\Controller;
 use Aphiria\Api\Controllers\ControllerRequestHandler;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\IDependencyResolver;
+use Aphiria\Api\Tests\Controllers\Mocks\Controller;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;

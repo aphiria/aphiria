@@ -10,7 +10,6 @@
 
 namespace Aphiria\Api\Controllers;
 
-use Closure;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
@@ -19,6 +18,7 @@ use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\Response;
+use Closure;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;

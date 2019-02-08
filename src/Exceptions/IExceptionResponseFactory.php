@@ -10,9 +10,9 @@
 
 namespace Aphiria\Api\Exceptions;
 
-use Exception;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
+use Exception;
 
 /**
  * Defines the interface for exception response factories to implement

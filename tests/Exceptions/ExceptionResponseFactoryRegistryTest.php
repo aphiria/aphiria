@@ -10,10 +10,10 @@
 
 namespace Aphiria\Api\Tests\Exceptions;
 
-use InvalidArgumentException;
 use Aphiria\Api\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\IHttpRequestMessage;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**

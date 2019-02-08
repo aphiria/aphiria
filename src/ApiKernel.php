@@ -10,18 +10,26 @@
 
 namespace Aphiria\Api;
 
-use Closure;
-use InvalidArgumentException;
-use Aphiria\Api\Controllers\{Controller, ControllerRequestHandler, IRouteActionInvoker, RouteActionInvoker};
+use Aphiria\Api\Controllers\Controller;
+use Aphiria\Api\Controllers\ControllerRequestHandler;
+use Aphiria\Api\Controllers\IRouteActionInvoker;
+use Aphiria\Api\Controllers\RouteActionInvoker;
 use Aphiria\Middleware\AttributeMiddleware;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use Aphiria\Net\Http\{HttpException, HttpStatusCodes, IHttpRequestMessage, IHttpResponseMessage, Response};
-use Aphiria\Routing\Matchers\{IRouteMatcher, RouteMatchingResult};
+use Aphiria\Net\Http\HttpException;
+use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\Response;
+use Aphiria\Routing\Matchers\IRouteMatcher;
+use Aphiria\Routing\Matchers\RouteMatchingResult;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\RouteAction;
+use Closure;
+use InvalidArgumentException;
 
 /**
  * Defines the API kernel
@@ -128,7 +136,8 @@ class ApiKernel implements IRequestHandler
      * @return IMiddleware[] The middleware instances
      * @throws DependencyResolutionException Thrown if the middleware could not be resolved
      */
-    private function createMiddlewareFromBindings(array $middlewareBindings): array {
+    private function createMiddlewareFromBindings(array $middlewareBindings): array
+    {
         $middlewareList = [];
 
         foreach ($middlewareBindings as $middlewareBinding) {

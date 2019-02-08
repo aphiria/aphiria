@@ -10,8 +10,6 @@
 
 namespace Aphiria\Api\Tests\Exceptions;
 
-use Exception;
-use InvalidArgumentException;
 use Aphiria\Api\Exceptions\ExceptionResponseFactory;
 use Aphiria\Api\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
@@ -20,6 +18,8 @@ use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
+use Exception;
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -84,8 +84,7 @@ class ExceptionResponseFactoryTest extends TestCase
     }
 
     public function testCreatingResponseForExceptionWithRequestAndResponseFactoryThatThrowsCreatesDefaultResponse(
-    ): void
-    {
+    ): void {
         /** @var IHttpRequestMessage|MockObject $expectedRequest */
         $expectedRequest = $this->createMock(IHttpRequestMessage::class);
         $this->responseFactories->registerFactory(

@@ -10,15 +10,13 @@
 
 namespace Aphiria\Api\Tests;
 
-use Closure;
-use InvalidArgumentException;
 use Aphiria\Api\ApiKernel;
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\IDependencyResolver;
 use Aphiria\Api\Tests\Controllers\Mocks\Controller as ControllerMock;
-use Aphiria\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;
 use Aphiria\Api\Tests\Mocks\AttributeMiddleware;
+use Aphiria\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\HttpException;
@@ -33,6 +31,8 @@ use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\UriTemplate;
+use Closure;
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

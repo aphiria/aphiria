@@ -10,7 +10,6 @@
 
 namespace Aphiria\Api\Exceptions;
 
-use Exception;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpHeaders;
@@ -18,6 +17,7 @@ use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\Response;
+use Exception;
 
 /**
  * Defines a factory for responses created from exceptions

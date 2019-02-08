@@ -10,14 +10,14 @@
 
 namespace Aphiria\Api\Tests\Exceptions;
 
-use Error;
-use ErrorException;
-use InvalidArgumentException;
 use Aphiria\Api\Exceptions\ExceptionHandler;
 use Aphiria\Api\Exceptions\IExceptionResponseFactory;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\IResponseWriter;
+use Error;
+use ErrorException;
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;

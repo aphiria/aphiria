@@ -10,12 +10,12 @@
 
 namespace Aphiria\Api\Tests\Exceptions;
 
-use TypeError;
-use ParseError;
+use Aphiria\Api\Exceptions\FatalThrowableError;
 use ErrorException;
 use InvalidArgumentException;
-use Aphiria\Api\Exceptions\FatalThrowableError;
+use ParseError;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 
 class FatalThrowableErrorTest extends TestCase
 {
