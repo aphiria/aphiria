@@ -10,8 +10,8 @@
 
 namespace Aphiria\Api\Exceptions;
 
-use ErrorException;
 use Aphiria\Net\Http\IHttpRequestMessage;
+use ErrorException;
 use Throwable;
 
 /**

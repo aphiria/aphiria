@@ -10,13 +10,13 @@
 
 namespace Aphiria\Api\Exceptions;
 
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IResponseWriter;
+use Aphiria\Net\Http\StreamResponseWriter;
 use ErrorException;
 use Exception;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IResponseWriter;
-use Aphiria\Net\Http\StreamResponseWriter;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
