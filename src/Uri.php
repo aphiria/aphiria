@@ -44,14 +44,14 @@ class Uri
             throw new InvalidArgumentException("URI $uri is malformed");
         }
 
-        $this->scheme = $this->filterScheme($parsedUri['scheme'] ?? null);
+        $this->scheme = self::filterScheme($parsedUri['scheme'] ?? null);
         $this->user = $parsedUri['user'] ?? null;
         $this->password = $parsedUri['pass'] ?? null;
-        $this->host = $this->filterHost($parsedUri['host'] ?? null);
+        $this->host = self::filterHost($parsedUri['host'] ?? null);
         $this->port = $parsedUri['port'] ?? null;
-        $this->path = $this->filterPath($parsedUri['path'] ?? null);
-        $this->queryString = $this->filterQueryString($parsedUri['query'] ?? null);
-        $this->fragment = $this->filterFragment($parsedUri['fragment'] ?? null);
+        $this->path = self::filterPath($parsedUri['path'] ?? null);
+        $this->queryString = self::filterQueryString($parsedUri['query'] ?? null);
+        $this->fragment = self::filterFragment($parsedUri['fragment'] ?? null);
         $this->validateProperties();
     }
 
@@ -102,7 +102,7 @@ class Uri
             // The password can be empty
             $authority = $this->user;
 
-            if ($this->password !== null && \strlen($this->password) > 0) {
+            if ($this->password !== null && $this->password !== '') {
                 $authority .= ":{$this->password}";
             }
 
@@ -206,9 +206,9 @@ class Uri
      * @param string|null $fragment The fragment to filter if one is set, otherwise null
      * @return string|null The filtered fragment, or null if the fragment was already null
      */
-    private function filterFragment(?string $fragment): ?string
+    private static function filterFragment(?string $fragment): ?string
     {
-        return $this->filterQueryString($fragment);
+        return self::filterQueryString($fragment);
     }
 
     /**
@@ -217,7 +217,7 @@ class Uri
      * @param string|null $host The host to filter if one is set, otherwise null
      * @return string|null The filtered host, or null if the host was already null
      */
-    private function filterHost(?string $host): ?string
+    private static function filterHost(?string $host): ?string
     {
         if ($host === null) {
             return null;
@@ -233,7 +233,7 @@ class Uri
      * @param string|null $path The path to filter if one is set, otherwise null
      * @return string|null The filtered path, or null if the path was already null
      */
-    private function filterPath(?string $path): ?string
+    private static function filterPath(?string $path): ?string
     {
         if ($path === null) {
             return null;
@@ -255,7 +255,7 @@ class Uri
      * @param string|null $queryString The query string to filter if one is set, otherwise null
      * @return string|null The filtered query string, or null if the query string was already null
      */
-    private function filterQueryString(?string $queryString): ?string
+    private static function filterQueryString(?string $queryString): ?string
     {
         if ($queryString === null) {
             return null;
@@ -277,7 +277,7 @@ class Uri
      * @param string|null $scheme The scheme to filter if one is set, otherwise null
      * @return string|null The filtered scheme, or null if the scheme was already null
      */
-    private function filterScheme(?string $scheme): ?string
+    private static function filterScheme(?string $scheme): ?string
     {
         if ($scheme === null) {
             return null;
@@ -316,7 +316,7 @@ class Uri
         }
 
         $authority = $this->getAuthority();
-        $pathIsSet = $this->path !== null && \strlen($this->path) > 0;
+        $pathIsSet = $this->path !== null && $this->path !== '';
 
         /** @link https://tools.ietf.org/html/rfc3986#section-3 */
         if ($authority !== null && $pathIsSet > 0 && $this->path[0] !== '/') {

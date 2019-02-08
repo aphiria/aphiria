@@ -35,7 +35,7 @@ class MultipartBody extends StreamBody
     public function __construct(array $parts, string $boundary = null)
     {
         $this->parts = $parts;
-        $this->boundary = $boundary ?? $this->createDefaultBoundary();
+        $this->boundary = $boundary ?? self::createDefaultBoundary();
         $stream = new MultiStream();
 
         // Create the header boundary
@@ -90,7 +90,7 @@ class MultipartBody extends StreamBody
      * @return string The default boundary
      * @throws RuntimeException Thrown if random bytes could not be generated
      */
-    private function createDefaultBoundary(): string
+    private static function createDefaultBoundary(): string
     {
         try {
             // The following creates a UUID v4

@@ -65,7 +65,7 @@ class Response implements IHttpResponseMessage
         $response = $startLine . $headers . "\r\n\r\n";
 
         if ($this->body !== null) {
-            $response .= (string)$this->getBody();
+            $response .= $this->getBody();
         }
 
         return $response;

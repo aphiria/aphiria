@@ -36,8 +36,7 @@ class ResponseFormatterTest extends TestCase
         $this->formatter = new ResponseFormatter();
         $this->headers = new HttpHeaders();
         $this->response = $this->createMock(IHttpResponseMessage::class);
-        $this->response->expects($this->any())
-            ->method('getHeaders')
+        $this->response->method('getHeaders')
             ->willReturn($this->headers);
     }
 

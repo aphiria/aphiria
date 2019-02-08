@@ -116,7 +116,7 @@ class Request implements IHttpRequestMessage
         $request = $startLine . $headers . "\r\n\r\n";
 
         if ($this->body !== null) {
-            $request .= (string)$this->getBody();
+            $request .= $this->getBody();
         }
 
         return $request;
@@ -194,7 +194,7 @@ class Request implements IHttpRequestMessage
                     $requestTarget = '/';
                 }
 
-                if (($queryString = $this->uri->getQueryString()) !== null && \strlen($queryString) > 0) {
+                if (($queryString = $this->uri->getQueryString()) !== null && $queryString !== '') {
                     $requestTarget .= "?$queryString";
                 }
 

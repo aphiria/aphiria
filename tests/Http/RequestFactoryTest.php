@@ -10,7 +10,6 @@
 
 namespace Aphiria\Net\Tests\Http;
 
-use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\RequestFactory;
 use Aphiria\Net\Http\StreamBody;
 use InvalidArgumentException;
@@ -92,7 +91,7 @@ class RequestFactoryTest extends TestCase
         $this->assertEquals($expectedIpDatum, $request->getProperties()->get('CLIENT_IP_ADDRESS'));
     }
 
-    public function testClientIPHeaderUsedWhenSet()
+    public function testClientIPHeaderUsedWhenSet(): void
     {
         $factory = new RequestFactory([], ['HTTP_CLIENT_IP' => 'HTTP_CLIENT_IP', 'HTTP_FORWARDED' => 'FORWARDED']);
         $request = $factory->createRequestFromSuperglobals([
@@ -102,7 +101,7 @@ class RequestFactoryTest extends TestCase
         $this->assertEquals('192.168.1.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
     }
 
-    public function testClientPortUsedToDeterminePortWithTrustedProxy()
+    public function testClientPortUsedToDeterminePortWithTrustedProxy(): void
     {
         $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_PORT' => 'HTTP_X_FORWARDED_PORT']);
         $request = $factory->createRequestFromSuperglobals([
@@ -137,7 +136,7 @@ class RequestFactoryTest extends TestCase
         $this->assertEquals($expectedScheme, $request->getUri()->getScheme(), $message);
     }
 
-    public function testClientProtoUsedToDeterminePortWithTrustedProxy()
+    public function testClientProtoUsedToDeterminePortWithTrustedProxy(): void
     {
         $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO']);
         $request = $factory->createRequestFromSuperglobals([
@@ -166,7 +165,7 @@ class RequestFactoryTest extends TestCase
         $this->assertEquals('foo=bar; baz=blah', $request->getHeaders()->getFirst('Cookie'));
     }
 
-    public function testExceptionThrownWhenUsingUntrustedProxyHost()
+    public function testExceptionThrownWhenUsingUntrustedProxyHost(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid host "192.168.1.1, 192.168.1.2, 192.168.1.3"');
@@ -328,7 +327,6 @@ class RequestFactoryTest extends TestCase
             'Php-Auth-User' => ['php_auth_user']
         ];
         $headers = $this->factory->createRequestFromSuperglobals($server)->getHeaders();
-        $this->assertInstanceOf(HttpHeaders::class, $headers);
 
         foreach ($expectedHeaders as $expectedName => $expectedValue) {
             $this->assertEquals($expectedValue, $headers->get($expectedName));

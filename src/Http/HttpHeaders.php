@@ -47,7 +47,7 @@ final class HttpHeaders extends HashTable
      */
     public function add($name, $values, bool $append = false): void
     {
-        $normalizedName = $this->normalizeHeaderName($name);
+        $normalizedName = self::normalizeHeaderName($name);
 
         if (!$append || !$this->containsKey($normalizedName)) {
             parent::add($normalizedName, (array)$values);
@@ -77,7 +77,7 @@ final class HttpHeaders extends HashTable
      */
     public function containsKey($name): bool
     {
-        return parent::containsKey($this->normalizeHeaderName($name));
+        return parent::containsKey(self::normalizeHeaderName($name));
     }
 
     /**
@@ -85,7 +85,7 @@ final class HttpHeaders extends HashTable
      */
     public function get($name)
     {
-        return parent::get($this->normalizeHeaderName($name));
+        return parent::get(self::normalizeHeaderName($name));
     }
 
     /**
@@ -110,7 +110,7 @@ final class HttpHeaders extends HashTable
      */
     public function removeKey($name): void
     {
-        parent::removeKey($this->normalizeHeaderName($name));
+        parent::removeKey(self::normalizeHeaderName($name));
     }
 
     /**
@@ -138,7 +138,7 @@ final class HttpHeaders extends HashTable
      * @param string $name The name of the header to normalize
      * @return string The normalized header name
      */
-    private function normalizeHeaderName(string $name): string
+    private static function normalizeHeaderName(string $name): string
     {
         return ucwords(str_replace('_', '-', strtolower($name)), '-');
     }

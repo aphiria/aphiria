@@ -47,17 +47,13 @@ class StreamResponseWriterTest extends TestCase
 
         // Set up the response
         $this->response = $this->createMock(IHttpResponseMessage::class);
-        $this->response->expects($this->any())
-            ->method('getHeaders')
+        $this->response->method('getHeaders')
             ->willReturn($this->headers);
-        $this->response->expects($this->any())
-            ->method('getBody')
+        $this->response->method('getBody')
             ->willReturn($this->body);
-        $this->response->expects($this->any())
-            ->method('getProtocolVersion')
+        $this->response->method('getProtocolVersion')
             ->willReturn('1.1');
-        $this->response->expects($this->any())
-            ->method('getStatusCode')
+        $this->response->method('getStatusCode')
             ->willReturn(200);
     }
 

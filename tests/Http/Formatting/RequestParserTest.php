@@ -44,14 +44,11 @@ class RequestParserTest extends TestCase
         $this->body = $this->createMock(IHttpBody::class);
         $this->properties = new HashTable();
         $this->request = $this->createMock(IHttpRequestMessage::class);
-        $this->request->expects($this->any())
-            ->method('getHeaders')
+        $this->request->method('getHeaders')
             ->willReturn($this->headers);
-        $this->request->expects($this->any())
-            ->method('getBody')
+        $this->request->method('getBody')
             ->willReturn($this->body);
-        $this->request->expects($this->any())
-            ->method('getProperties')
+        $this->request->method('getProperties')
             ->willReturn($this->properties);
     }
 

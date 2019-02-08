@@ -140,7 +140,7 @@ class HttpHeadersTest extends TestCase
     public function testSettingHeaderWithoutAppendingReplacesIt(): void
     {
         $this->headers->add('foo', 'bar');
-        $this->headers->add('foo', 'baz', false);
+        $this->headers->add('foo', 'baz');
         $this->assertEquals(['baz'], $this->headers->get('foo'));
     }
 

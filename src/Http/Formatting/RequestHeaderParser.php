@@ -120,7 +120,7 @@ class RequestHeaderParser extends HttpHeaderParser
             return null;
         }
 
-        $contentTypeHeaderParameters = $this->parseParameters($headers, 'Content-Type', 0);
+        $contentTypeHeaderParameters = $this->parseParameters($headers, 'Content-Type');
         $contentType = $contentTypeHeaderParameters->getKeys()[0];
 
         return new ContentTypeHeaderValue($contentType, $contentTypeHeaderParameters);
