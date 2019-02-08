@@ -64,7 +64,7 @@ final class RouteActionInvoker implements IRouteActionInvoker
                         HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
                         sprintf(
                             'Controller method %s must be public',
-                            $this->getRouteActionDisplayName($routeActionDelegate)
+                            self::getRouteActionDisplayName($routeActionDelegate)
                         )
                     );
                 }
@@ -76,7 +76,7 @@ final class RouteActionInvoker implements IRouteActionInvoker
                 HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
                 sprintf(
                     'Reflection failed for %s',
-                    $this->getRouteActionDisplayName($routeActionDelegate)
+                    self::getRouteActionDisplayName($routeActionDelegate)
                 ),
                 0,
                 $ex
@@ -96,21 +96,21 @@ final class RouteActionInvoker implements IRouteActionInvoker
         } catch (MissingControllerParameterValueException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_BAD_REQUEST,
-                "Failed to invoke {$this->getRouteActionDisplayName($routeActionDelegate)}",
+                'Failed to invoke ' . self::getRouteActionDisplayName($routeActionDelegate),
                 0,
                 $ex
             );
         } catch (FailedRequestContentNegotiationException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                "Failed to invoke {$this->getRouteActionDisplayName($routeActionDelegate)}",
+                'Failed to invoke ' . self::getRouteActionDisplayName($routeActionDelegate),
                 0,
                 $ex
             );
         } catch (RequestBodyDeserializationException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY,
-                "Failed to invoke {$this->getRouteActionDisplayName($routeActionDelegate)}",
+                'Failed to invoke ' . self::getRouteActionDisplayName($routeActionDelegate),
                 0,
                 $ex
             );
@@ -142,7 +142,7 @@ final class RouteActionInvoker implements IRouteActionInvoker
      * @param callable $routeActionDelegate The route action delegate whose display name we want
      * @return string The route action display name
      */
-    private function getRouteActionDisplayName(callable $routeActionDelegate): string
+    private static function getRouteActionDisplayName(callable $routeActionDelegate): string
     {
         if (\is_array($routeActionDelegate)) {
             if (\is_string($routeActionDelegate[0])) {
