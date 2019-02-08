@@ -10,11 +10,11 @@
 
 namespace Aphiria\Net\Http\Formatting;
 
-use InvalidArgumentException;
 use Aphiria\Net\Http\Cookie;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**

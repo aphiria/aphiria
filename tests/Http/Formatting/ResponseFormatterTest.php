@@ -10,12 +10,12 @@
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
-use InvalidArgumentException;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

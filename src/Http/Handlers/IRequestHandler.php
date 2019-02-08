@@ -10,10 +10,10 @@
 
 namespace Aphiria\Net\Http\Handlers;
 
-use Exception;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
+use Exception;
 
 /**
  * Defines the interface for request handlers to implement

@@ -10,11 +10,11 @@
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
-use InvalidArgumentException;
-use Opulence\IO\Streams\IStream;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedSerializerMediaTypeFormatter;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use Aphiria\Serialization\FormUrlEncodedSerializer;
+use InvalidArgumentException;
+use Opulence\IO\Streams\IStream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

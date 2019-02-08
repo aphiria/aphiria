@@ -10,14 +10,14 @@
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
-use InvalidArgumentException;
-use Opulence\Collections\HashTable;
-use Opulence\Collections\IDictionary;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpBody;
-use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\MultipartBodyPart;
+use InvalidArgumentException;
+use Opulence\Collections\HashTable;
+use Opulence\Collections\IDictionary;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

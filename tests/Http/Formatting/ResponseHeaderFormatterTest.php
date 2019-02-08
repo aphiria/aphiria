@@ -10,10 +10,10 @@
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
-use DateTime;
 use Aphiria\Net\Http\Cookie;
 use Aphiria\Net\Http\Formatting\ResponseHeaderFormatter;
 use Aphiria\Net\Http\HttpHeaders;
+use DateTime;
 use PHPUnit\Framework\TestCase;
 
 /**

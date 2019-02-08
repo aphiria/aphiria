@@ -10,11 +10,11 @@
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
-use InvalidArgumentException;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
+use InvalidArgumentException;
 
 /**
  * Defines interface for negotiated response factories to implement

@@ -10,9 +10,9 @@
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
-use Opulence\Collections\ImmutableHashTable;
 use Aphiria\Net\Http\Formatting\HttpHeaderParser;
 use Aphiria\Net\Http\HttpHeaders;
+use Opulence\Collections\ImmutableHashTable;
 use PHPUnit\Framework\TestCase;
 
 /**

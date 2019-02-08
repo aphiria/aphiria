@@ -10,14 +10,14 @@
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
-use InvalidArgumentException;
-use Opulence\Collections\ImmutableHashTable;
-use Opulence\Collections\KeyValuePair;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
+use InvalidArgumentException;
+use Opulence\Collections\ImmutableHashTable;
+use Opulence\Collections\KeyValuePair;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

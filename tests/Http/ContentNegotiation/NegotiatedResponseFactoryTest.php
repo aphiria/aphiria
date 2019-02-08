@@ -10,9 +10,6 @@
 
 namespace Aphiria\Net\Tests\Http\ResponseFactories;
 
-use InvalidArgumentException;
-use Opulence\IO\Streams\IStream;
-use Opulence\IO\Streams\Stream;
 use Aphiria\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
@@ -28,12 +25,16 @@ use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Tests\Http\ContentNegotiation\Mocks\User;
 use Aphiria\Net\Uri;
 use Aphiria\Serialization\SerializationException;
+use InvalidArgumentException;
+use Opulence\IO\Streams\IStream;
+use Opulence\IO\Streams\Stream;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the negotiated response factory
  */
-class NegotiatedResponseFactoryTest extends \PHPUnit\Framework\TestCase
+class NegotiatedResponseFactoryTest extends TestCase
 {
     /** @var NegotiatedResponseFactory The response factory to test */
     private $factory;

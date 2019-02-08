@@ -10,10 +10,10 @@
 
 namespace Aphiria\Net\Tests\Http;
 
-use OutOfBoundsException;
+use Aphiria\Net\Http\HttpHeaders;
 use InvalidArgumentException;
 use Opulence\Collections\KeyValuePair;
-use Aphiria\Net\Http\HttpHeaders;
+use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
 /**

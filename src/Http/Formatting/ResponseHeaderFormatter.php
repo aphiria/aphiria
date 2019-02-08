@@ -10,9 +10,9 @@
 
 namespace Aphiria\Net\Http\Formatting;
 
-use DateTime;
 use Aphiria\Net\Http\Cookie;
 use Aphiria\Net\Http\HttpHeaders;
+use DateTime;
 use RuntimeException;
 
 /**

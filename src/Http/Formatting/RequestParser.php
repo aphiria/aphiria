@@ -10,9 +10,6 @@
 
 namespace Aphiria\Net\Http\Formatting;
 
-use InvalidArgumentException;
-use Opulence\Collections\IDictionary;
-use Opulence\Collections\IImmutableDictionary;
 use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
@@ -21,6 +18,9 @@ use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
+use InvalidArgumentException;
+use Opulence\Collections\IDictionary;
+use Opulence\Collections\IImmutableDictionary;
 use RuntimeException;
 
 /**

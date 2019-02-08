@@ -10,13 +10,13 @@
 
 namespace Aphiria\Net\Http\Formatting;
 
-use InvalidArgumentException;
-use Opulence\Collections\IImmutableDictionary;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use Aphiria\Net\Http\HttpHeaders;
+use InvalidArgumentException;
+use Opulence\Collections\IImmutableDictionary;
 
 /**
  * Defines the request header parser

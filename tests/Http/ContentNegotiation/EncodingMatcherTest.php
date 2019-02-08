@@ -10,13 +10,13 @@
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
-use Opulence\Collections\ImmutableHashTable;
-use Opulence\Collections\KeyValuePair;
 use Aphiria\Net\Http\ContentNegotiation\EncodingMatcher;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
+use Opulence\Collections\ImmutableHashTable;
+use Opulence\Collections\KeyValuePair;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

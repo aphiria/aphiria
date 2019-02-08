@@ -40,7 +40,8 @@ final class MediaTypeFormatterMatcher
         ContentTypeHeaderValue $contentTypeHeaderValue
     ): ?MediaTypeFormatterMatch {
         return $this->getBestMediaTypeFormatterMatch(
-            $type, $formatters,
+            $type,
+            $formatters,
             [$contentTypeHeaderValue],
             self::FORMATTER_TYPE_INPUT
         );

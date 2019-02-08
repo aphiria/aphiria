@@ -10,10 +10,10 @@
 
 namespace Aphiria\Net\Tests\Http;
 
-use InvalidArgumentException;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\RequestFactory;
 use Aphiria\Net\Http\StreamBody;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -10,9 +10,6 @@
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
-use InvalidArgumentException;
-use Opulence\IO\Streams\IStream;
-use Opulence\IO\Streams\Stream;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\HttpStatusCodes;
@@ -24,6 +21,9 @@ use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Serialization\SerializationException;
 use Aphiria\Serialization\TypeResolver;
+use InvalidArgumentException;
+use Opulence\IO\Streams\IStream;
+use Opulence\IO\Streams\Stream;
 
 /**
  * Defines the factory that generates HTTP responses from negotiated content

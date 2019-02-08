@@ -10,11 +10,11 @@
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
-use InvalidArgumentException;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\IHttpRequestMessage;
+use InvalidArgumentException;
 
 /**
  * Defines the default content negotiator

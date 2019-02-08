@@ -10,11 +10,11 @@
 
 namespace Aphiria\Net\Tests\Http;
 
-use Opulence\IO\Streams\Stream;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\StreamResponseWriter;
+use Opulence\IO\Streams\Stream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
