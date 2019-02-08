@@ -10,7 +10,6 @@
 
 namespace Aphiria\Routing\Tests\Matchers\Trees\Compilers;
 
-use InvalidArgumentException;
 use Aphiria\Routing\Matchers\Rules\IRule;
 use Aphiria\Routing\Matchers\Rules\IRuleFactory;
 use Aphiria\Routing\Matchers\Trees\Compilers\TrieCompiler;
@@ -20,12 +19,13 @@ use Aphiria\Routing\Matchers\Trees\RouteVariable;
 use Aphiria\Routing\Matchers\Trees\VariableTrieNode;
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\Parsers\AstNode;
+use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Parsers\Lexers\IUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenStream;
-use Aphiria\Routing\UriTemplates\Parsers\AstNode;
-use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\UriTemplate;
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -90,7 +90,8 @@ class TrieCompilerTest extends TestCase
         $pathAst = (new AstNode(AstNodeTypes::PATH, null))
             ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
             ->addChild(new AstNode(AstNodeTypes::TEXT, 'foo'))
-            ->addChild((new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART, '['))
+            ->addChild(
+                (new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART, '['))
                 ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
                 ->addChild(new AstNode(AstNodeTypes::TEXT, 'bar'))
             );
@@ -128,7 +129,8 @@ class TrieCompilerTest extends TestCase
     public function testCompilingHostWithOptionalPartAddsRouteToItAndLastNonOptionalHostPart(): void
     {
         $hostAst = (new AstNode(AstNodeTypes::HOST, null))
-            ->addChild((new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART, '['))
+            ->addChild(
+                (new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART, '['))
                 ->addChild(new AstNode(AstNodeTypes::TEXT, 'api'))
                 ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '.'))
             )

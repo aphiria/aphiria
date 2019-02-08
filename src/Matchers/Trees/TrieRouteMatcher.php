@@ -10,7 +10,10 @@
 
 namespace Aphiria\Routing\Matchers\Trees;
 
-use Aphiria\Routing\Matchers\{Constraints\HttpMethodRouteConstraint, IRouteMatcher, MatchedRouteCandidate, RouteMatchingResult};
+use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
+use Aphiria\Routing\Matchers\IRouteMatcher;
+use Aphiria\Routing\Matchers\MatchedRouteCandidate;
+use Aphiria\Routing\Matchers\RouteMatchingResult;
 
 /**
  * Defines the route matcher that uses a trie structure for matching

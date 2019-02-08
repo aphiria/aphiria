@@ -11,12 +11,15 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use FastRoute\RouteCollector;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
-use Aphiria\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
+use Aphiria\Routing\Matchers\Trees\TrieFactory;
+use Aphiria\Routing\Matchers\Trees\TrieRouteMatcher;
 use Aphiria\Routing\RouteFactory;
+use FastRoute\RouteCollector;
 use Symfony\Component\Routing\Matcher\Dumper\PhpMatcherDumper;
-use Symfony\Component\Routing\{RequestContext, Route as SymfonyRoute, RouteCollection};
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Route as SymfonyRoute;
+use Symfony\Component\Routing\RouteCollection;
 
 $numTests = 100;
 $numRoutes = 400;
@@ -29,7 +32,8 @@ $numRoutes = 400;
  * @param float $timeTakenSeconds The amount of time taken in seconds
  * @return string The formatted results
  */
-function formatResults(string $library, float $memoryTakenBytes, float $timeTakenSeconds): string {
+function formatResults(string $library, float $memoryTakenBytes, float $timeTakenSeconds): string
+{
     global $numTests, $numRoutes;
 
     return sprintf(

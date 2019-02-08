@@ -10,9 +10,9 @@
 
 namespace Aphiria\Routing\Matchers\Trees\Compilers;
 
-use InvalidArgumentException;
 use Aphiria\Routing\Matchers\Trees\TrieNode;
 use Aphiria\Routing\Route;
+use InvalidArgumentException;
 
 /**
  * Defines the interface for trie compilers to implement

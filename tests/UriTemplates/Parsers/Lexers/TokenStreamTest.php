@@ -10,9 +10,9 @@
 
 namespace Aphiria\Routing\Tests\UriTemplates\Parsers\Lexers;
 
-use InvalidArgumentException;
 use Aphiria\Routing\UriTemplates\Parsers\Lexers\Token;
 use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenStream;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**

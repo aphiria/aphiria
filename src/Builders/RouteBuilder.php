@@ -10,9 +10,6 @@
 
 namespace Aphiria\Routing\Builders;
 
-use Closure;
-use InvalidArgumentException;
-use LogicException;
 use Aphiria\Routing\ClosureRouteAction;
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
@@ -21,6 +18,9 @@ use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\UriTemplate;
+use Closure;
+use InvalidArgumentException;
+use LogicException;
 
 /**
  * Defines the route builder

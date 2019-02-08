@@ -10,12 +10,12 @@
 
 namespace Aphiria\Routing\Tests\Builders;
 
-use InvalidArgumentException;
-use LogicException;
 use Aphiria\Routing\Builders\RouteBuilder;
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\UriTemplates\UriTemplate;
+use InvalidArgumentException;
+use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

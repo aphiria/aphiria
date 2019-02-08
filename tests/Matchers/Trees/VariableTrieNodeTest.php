@@ -10,15 +10,15 @@
 
 namespace Aphiria\Routing\Tests\Matchers\Trees;
 
-use Aphiria\Routing\MethodRouteAction;
-use Aphiria\Routing\UriTemplates\UriTemplate;
-use InvalidArgumentException;
 use Aphiria\Routing\Matchers\Rules\IRule;
 use Aphiria\Routing\Matchers\Trees\LiteralTrieNode;
 use Aphiria\Routing\Matchers\Trees\RouteVariable;
 use Aphiria\Routing\Matchers\Trees\TrieNode;
 use Aphiria\Routing\Matchers\Trees\VariableTrieNode;
+use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\UriTemplate;
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

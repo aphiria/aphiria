@@ -10,8 +10,8 @@
 
 namespace Aphiria\Routing\Matchers\Trees;
 
-use InvalidArgumentException;
 use Aphiria\Routing\Route;
+use InvalidArgumentException;
 
 /**
  * Defines a trie node that contains a variable value

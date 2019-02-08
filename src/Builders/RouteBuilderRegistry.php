@@ -10,9 +10,9 @@
 
 namespace Aphiria\Routing\Builders;
 
-use Closure;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\UriTemplates\UriTemplate;
+use Closure;
 
 /**
  * Defines the route builder registry

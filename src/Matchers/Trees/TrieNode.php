@@ -10,8 +10,8 @@
 
 namespace Aphiria\Routing\Matchers\Trees;
 
-use InvalidArgumentException;
 use Aphiria\Routing\Route;
+use InvalidArgumentException;
 
 /**
  * Defines the base class for trie nodes to extend
@@ -61,7 +61,7 @@ abstract class TrieNode
     {
         if ($childNode instanceof LiteralTrieNode) {
             $this->addLiteralChildNode($childNode);
-        } else if ($childNode instanceof VariableTrieNode) {
+        } elseif ($childNode instanceof VariableTrieNode) {
             $this->addVariableChildNode($childNode);
         } else {
             throw new InvalidArgumentException('Unexpected trie node type ' . \get_class($childNode));

@@ -10,11 +10,11 @@
 
 namespace Aphiria\Routing\Tests\Matchers\Rules;
 
-use InvalidArgumentException;
-use RuntimeException;
 use Aphiria\Routing\Matchers\Rules\IRule;
 use Aphiria\Routing\Matchers\Rules\RuleFactory;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * Tests the rule factory

@@ -10,12 +10,22 @@
 
 namespace Aphiria\Routing\Matchers\Trees\Compilers;
 
-use InvalidArgumentException;
-use Aphiria\Routing\Matchers\Rules\{IRuleFactory, RuleFactory, RuleFactoryRegistrant};
-use Aphiria\Routing\Matchers\Trees\{LiteralTrieNode, RootTrieNode, RouteVariable, TrieNode, VariableTrieNode};
+use Aphiria\Routing\Matchers\Rules\IRuleFactory;
+use Aphiria\Routing\Matchers\Rules\RuleFactory;
+use Aphiria\Routing\Matchers\Rules\RuleFactoryRegistrant;
+use Aphiria\Routing\Matchers\Trees\LiteralTrieNode;
+use Aphiria\Routing\Matchers\Trees\RootTrieNode;
+use Aphiria\Routing\Matchers\Trees\RouteVariable;
+use Aphiria\Routing\Matchers\Trees\TrieNode;
+use Aphiria\Routing\Matchers\Trees\VariableTrieNode;
 use Aphiria\Routing\Route;
-use Aphiria\Routing\UriTemplates\Parsers\{AstNode, AstNodeTypes, IUriTemplateParser, UriTemplateParser};
-use Aphiria\Routing\UriTemplates\Parsers\Lexers\{IUriTemplateLexer, UriTemplateLexer};
+use Aphiria\Routing\UriTemplates\Parsers\AstNode;
+use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
+use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
+use Aphiria\Routing\UriTemplates\Parsers\Lexers\IUriTemplateLexer;
+use Aphiria\Routing\UriTemplates\Parsers\Lexers\UriTemplateLexer;
+use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
+use InvalidArgumentException;
 
 /**
  * Defines a compiler for a trie

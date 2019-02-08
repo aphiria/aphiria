@@ -10,8 +10,8 @@
 
 namespace Aphiria\Routing\Matchers\Constraints;
 
-use InvalidArgumentException;
 use Aphiria\Routing\Matchers\MatchedRouteCandidate;
+use InvalidArgumentException;
 
 /**
  * Defines the HTTP method route constraint
