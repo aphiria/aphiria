@@ -11,8 +11,8 @@
 namespace Aphiria\Routing\Tests\Matchers\Trees;
 
 use Aphiria\Routing\Matchers\Trees\LiteralTrieNode;
-use Aphiria\Routing\Matchers\Trees\TrieNode;
 use Aphiria\Routing\Matchers\Trees\RouteVariable;
+use Aphiria\Routing\Matchers\Trees\TrieNode;
 use Aphiria\Routing\Matchers\Trees\VariableTrieNode;
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;

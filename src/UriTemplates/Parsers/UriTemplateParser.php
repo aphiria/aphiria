@@ -10,8 +10,9 @@
 
 namespace Aphiria\Routing\UriTemplates\Parsers;
 
+use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenStream;
+use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenTypes;
 use InvalidArgumentException;
-use Aphiria\Routing\UriTemplates\Parsers\Lexers\{TokenStream, TokenTypes};
 
 /**
  * Defines the URI template parser

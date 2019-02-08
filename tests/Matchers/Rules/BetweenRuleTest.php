@@ -10,8 +10,8 @@
 
 namespace Aphiria\Routing\Tests\Matchers\Rules;
 
-use InvalidArgumentException;
 use Aphiria\Routing\Matchers\Rules\BetweenRule;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**

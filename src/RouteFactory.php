@@ -10,8 +10,8 @@
 
 namespace Aphiria\Routing;
 
-use Closure;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Closure;
 
 /**
  * Defines a route factory

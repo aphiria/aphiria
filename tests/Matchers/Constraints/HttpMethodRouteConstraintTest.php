@@ -10,11 +10,11 @@
 
 namespace Aphiria\Routing\Tests\Matchers\Constraints;
 
+use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
+use Aphiria\Routing\Matchers\MatchedRouteCandidate;
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\UriTemplates\UriTemplate;
-use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
-use Aphiria\Routing\Matchers\MatchedRouteCandidate;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

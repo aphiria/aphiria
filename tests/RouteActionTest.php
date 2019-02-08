@@ -10,9 +10,9 @@
 
 namespace Aphiria\Routing\Tests;
 
+use Aphiria\Routing\RouteAction;
 use Closure;
 use InvalidArgumentException;
-use Aphiria\Routing\RouteAction;
 use PHPUnit\Framework\TestCase;
 
 /**

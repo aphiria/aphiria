@@ -10,8 +10,8 @@
 
 namespace Aphiria\Routing\Tests;
 
-use Closure;
 use Aphiria\Routing\ClosureRouteAction;
+use Closure;
 use PHPUnit\Framework\TestCase;
 
 /**

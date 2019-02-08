@@ -10,9 +10,9 @@
 
 namespace Aphiria\Routing\Tests\Matchers\Rules;
 
+use Aphiria\Routing\Matchers\Rules\DateRule;
 use DateTime;
 use InvalidArgumentException;
-use Aphiria\Routing\Matchers\Rules\DateRule;
 use PHPUnit\Framework\TestCase;
 
 /**

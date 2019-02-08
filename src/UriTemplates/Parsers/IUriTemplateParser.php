@@ -10,8 +10,8 @@
 
 namespace Aphiria\Routing\UriTemplates\Parsers;
 
-use InvalidArgumentException;
 use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenStream;
+use InvalidArgumentException;
 
 /**
  * Defines the interface for URI template parsers to implement
