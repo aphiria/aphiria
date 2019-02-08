@@ -1,6 +1,6 @@
 # Serialization
 
-[![Build Status](https://travis-ci.com/aphiria/serialization.svg)](https://travis-ci.com/aphiria/serialization.svg)
+[![Build Status](https://travis-ci.com/aphiria/serialization.svg)](https://travis-ci.com/aphiria/serialization)
 [![Latest Stable Version](https://poser.pugx.org/aphiria/serialization/v/stable.svg)](https://packagist.org/packages/aphiria/serialization)
 [![Latest Unstable Version](https://poser.pugx.org/aphiria/serialization/v/unstable.svg)](https://packagist.org/packages/aphiria/serialization)
 [![License](https://poser.pugx.org/aphiria/serialization/license.svg)](https://packagist.org/packages/aphiria/serialization)
