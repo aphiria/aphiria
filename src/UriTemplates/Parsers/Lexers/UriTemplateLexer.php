@@ -44,24 +44,24 @@ final class UriTemplateLexer implements IUriTemplateLexer
             if ($uriTemplate[$cursor] === ' ') {
                 $cursor++;
             } elseif (strpos(self::PUNCTUATION, $uriTemplate[$cursor]) !== false) {
-                $this->flushTextBuffer($textBuffer, $tokens);
-                $this->lexPunctuation($uriTemplate[$cursor], $tokens, $cursor);
+                self::flushTextBuffer($textBuffer, $tokens);
+                self::lexPunctuation($uriTemplate[$cursor], $tokens, $cursor);
             } elseif (preg_match(self::VARIABLE_NAME_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
-                $this->flushTextBuffer($textBuffer, $tokens);
-                $this->lexVariableName($matches[0], $tokens, $cursor);
+                self::flushTextBuffer($textBuffer, $tokens);
+                self::lexVariableName($matches[0], $tokens, $cursor);
             } elseif (preg_match(self::NUMBER_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
-                $this->flushTextBuffer($textBuffer, $tokens);
-                $this->lexNumber($matches[0], $tokens, $cursor);
+                self::flushTextBuffer($textBuffer, $tokens);
+                self::lexNumber($matches[0], $tokens, $cursor);
             } elseif (preg_match(self::QUOTED_STRING_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
-                $this->flushTextBuffer($textBuffer, $tokens);
-                $this->lexQuotedString($matches[0], $tokens, $cursor);
+                self::flushTextBuffer($textBuffer, $tokens);
+                self::lexQuotedString($matches[0], $tokens, $cursor);
             } else {
-                $this->lexTextChar($uriTemplate[$cursor], $textBuffer, $cursor);
+                self::lexTextChar($uriTemplate[$cursor], $textBuffer, $cursor);
             }
         }
 
         // In case there's anything left in the buffer, flush it
-        $this->flushTextBuffer($textBuffer, $tokens);
+        self::flushTextBuffer($textBuffer, $tokens);
 
         return new TokenStream($tokens);
     }
@@ -72,7 +72,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      * @param string $textBuffer The current text buffer
      * @param Token[] $tokens The list of tokens to add to
      */
-    private function flushTextBuffer(string &$textBuffer, array &$tokens): void
+    private static function flushTextBuffer(string &$textBuffer, array &$tokens): void
     {
         if ($textBuffer !== '') {
             $tokens[] = new Token(TokenTypes::T_TEXT, $textBuffer);
@@ -87,7 +87,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      * @param Token[] $tokens The list of tokens to add to
      * @param int $cursor The current cursor
      */
-    private function lexNumber(string $number, array &$tokens, int &$cursor): void
+    private static function lexNumber(string $number, array &$tokens, int &$cursor): void
     {
         $floatVal = (float)$number;
         $intVal = (int)$number;
@@ -109,7 +109,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      * @param Token[] $tokens The list of tokens to add to
      * @param int $cursor The current cursor
      */
-    private function lexPunctuation(string $punctuation, array &$tokens, int &$cursor): void
+    private static function lexPunctuation(string $punctuation, array &$tokens, int &$cursor): void
     {
         $tokens[] = new Token(TokenTypes::T_PUNCTUATION, $punctuation);
         $cursor++;
@@ -122,7 +122,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      * @param Token[] $tokens The list of tokens to add to
      * @param int $cursor The current cursor
      */
-    private function lexQuotedString(string $quotedString, array &$tokens, int &$cursor): void
+    private static function lexQuotedString(string $quotedString, array &$tokens, int &$cursor): void
     {
         $tokens[] = new Token(TokenTypes::T_QUOTED_STRING, stripcslashes(substr(trim($quotedString), 1, -1)));
         $cursor += \mb_strlen($quotedString);
@@ -135,7 +135,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      * @param string $textBuffer The text buffer to add to
      * @param int $cursor The current cursor
      */
-    private function lexTextChar(string $char, string &$textBuffer, int &$cursor): void
+    private static function lexTextChar(string $char, string &$textBuffer, int &$cursor): void
     {
         $textBuffer .= $char;
         $cursor++;
@@ -148,7 +148,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      * @param Token[] $tokens The list of tokens to add to
      * @param int $cursor The current cursor
      */
-    private function lexVariableName(string $variableName, array &$tokens, int &$cursor): void
+    private static function lexVariableName(string $variableName, array &$tokens, int &$cursor): void
     {
         // Remove the colon before the variable name
         $trimmedVariableName = substr($variableName, 1);

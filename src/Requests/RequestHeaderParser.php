@@ -41,7 +41,7 @@ final class RequestHeaderParser
 
             if (isset(self::$specialCaseHeaders[$uppercasedKey]) || strpos($uppercasedKey, 'HTTP_') === 0) {
                 $value = (array)$value;
-                $headers[$this->normalizeName($key)] = $value;
+                $headers[self::normalizeName($key)] = $value;
             }
         }
 
@@ -54,7 +54,7 @@ final class RequestHeaderParser
      * @param string $name The name to normalize
      * @return string The normalized name
      */
-    private function normalizeName($name): string
+    private static function normalizeName($name): string
     {
         $dashedName = str_replace('_', '-', $name);
 

@@ -125,7 +125,7 @@ final class TrieCompiler implements ITrieCompiler
                 case AstNodeTypes::SEGMENT_DELIMITER:
                     // Checking if this is an endpoint handles the case of a route at the root path
                     if ($isEndpoint || \count($segmentBuffer) > 0) {
-                        $newTrieNode = $this->createTrieNode(
+                        $newTrieNode = self::createTrieNode(
                             $segmentBuffer,
                             $segmentContainsVariable,
                             $isEndpoint,
@@ -140,7 +140,7 @@ final class TrieCompiler implements ITrieCompiler
                 case AstNodeTypes::OPTIONAL_ROUTE_PART:
                     // Handles flushing 'foo' in the case of 'foo[/bar]'
                     if (\count($segmentBuffer) > 0) {
-                        $newTrieNode = $this->createTrieNode(
+                        $newTrieNode = self::createTrieNode(
                             $segmentBuffer,
                             $segmentContainsVariable,
                             $isEndpoint,
@@ -168,7 +168,7 @@ final class TrieCompiler implements ITrieCompiler
         // Check if we need to flush the buffer
         if (\count($segmentBuffer) > 0) {
             $currTrieNode->addChild(
-                $this->createTrieNode($segmentBuffer, $segmentContainsVariable, $isEndpoint, $route, $hostTrie)
+                self::createTrieNode($segmentBuffer, $segmentContainsVariable, $isEndpoint, $route, $hostTrie)
             );
         }
     }
@@ -205,7 +205,7 @@ final class TrieCompiler implements ITrieCompiler
      * @param TrieNode|null $hostTrie The host trie
      * @return TrieNode The created node
      */
-    private function createTrieNode(
+    private static function createTrieNode(
         array &$segmentBuffer,
         bool &$segmentContainsVariable,
         bool $isEndpoint,
