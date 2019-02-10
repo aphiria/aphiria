@@ -359,7 +359,7 @@ As an example, let's say that you want to return a 404 response when an `EntityN
 
 ```php
 use Aphiria\Api\Exceptions\{ExceptionResponseFactory, ExceptionResponseFactoryRegistry};
-use Aphiria\Net\Http\{HttpStatusCodes, Response};
+use Aphiria\Net\Http\Response;
 
 // Register your custom exception response factories
 $exceptionResponseFactories = new ExceptionResponseFactoryRegistry();
@@ -386,7 +386,7 @@ That's it.  Now, whenever an unhandled `EntityNotFound` exception is thrown, you
 ```php
 $exceptionResponseFactories->registerFactories([
     EntityNotFound::class => function (EntityNotFound $ex, ?IHttpRequestMessage $request) {
-        return new Response(HttpStatusCodes::HTTP_NOT_FOUND);
+        return new Response(404);
     },
     // ...
 ]);
@@ -403,17 +403,38 @@ $negotiatedResponseFactory = new NegotiatedResponseFactory($contentNegotiator);
 $exceptionResponseFactories->registerFactory(
     EntityNotFound::class,
     function (EntityNotFound $ex, ?IHttpRequestMessage $request) use ($negotiatedResponseFactory) {
-        return $negotiatedResponseFactory->createResponse(
-            $request,
-            HttpStatusCodes::HTTP_NOT_FOUND,
-            null,
-            new MyErrorObject('Entity not found')
-        );
+        $error = new MyErrorObject('Entity not found');
+    
+        return $negotiatedResponseFactory->createResponse($request, 404, null, $error);
     }
 );
 ```
 
 If an unhandled `EntityNotFound` exception was thrown, your exception factory will use content negotiation to serialize `MyErrorObject` in the response body.
+
+<h3 id="using-classes-to-create-exception-responses">Using Classes to Create Exception Responses</h3>
+
+Sometimes, the logic inside your exception response factory might get a little too complicated to be easily readable in a `Closure`.  In this case, you can also use a POPO to encapsulate your response creation logic:
+
+```php
+class WhoopsResponseFactory
+{
+    public function createResponse(Exception $ex, ?IHttpRequestMessage $request): IHttpResponseMessage
+    {
+        $response = new Response();
+        // Finish creating your response...
+        
+        return $response;
+    }
+}
+
+$exceptionResponseFactories->registerFactory(
+    Exception::class,
+    function (Exception $ex, ?IHttpRequestMessage $request) {
+        return (new WhoopsResponseFactory)->createResponse($ex, $request);
+    }
+);
+```
 
 <h2 id="logging">Logging</h2>
 
