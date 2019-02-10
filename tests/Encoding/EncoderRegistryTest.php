@@ -14,6 +14,7 @@ use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\Serialization\Encoding\IEncoder;
 use Aphiria\Serialization\Tests\Encoding\Mocks\User;
 use OutOfBoundsException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -29,8 +30,18 @@ class EncoderRegistryTest extends TestCase
         $this->encoderRegistry = new EncoderRegistry();
     }
 
+    public function testGettingEncoderForScalarTypeNormalizesTypeString(): void
+    {
+        /** @var IEncoder|MockObject $expectedEncoder */
+        $expectedEncoder = $this->createMock(IEncoder::class);
+        $this->encoderRegistry->registerEncoder('INT', $expectedEncoder);
+        $this->assertSame($expectedEncoder, $this->encoderRegistry->getEncoderForType('INT'));
+        $this->assertSame($expectedEncoder, $this->encoderRegistry->getEncoderForType('int'));
+    }
+
     public function testGettingEncoderByTypeForArrayOfTypeGetsEncoderForArray(): void
     {
+        /** @var IEncoder|MockObject $arrayEncoder */
         $arrayEncoder = $this->createMock(IEncoder::class);
         $this->encoderRegistry->registerEncoder('array', $arrayEncoder);
         $this->assertSame($arrayEncoder, $this->encoderRegistry->getEncoderForType('foo[]'));
@@ -38,9 +49,10 @@ class EncoderRegistryTest extends TestCase
 
     public function testGettingEncoderByTypeForObjectUsesDefaultEncoder(): void
     {
-        $encoder = $this->createMock(IEncoder::class);
-        $this->encoderRegistry->registerDefaultObjectEncoder($encoder);
-        $this->assertSame($encoder, $this->encoderRegistry->getEncoderForType(User::class));
+        /** @var IEncoder|MockObject $expectedEncoder */
+        $expectedEncoder = $this->createMock(IEncoder::class);
+        $this->encoderRegistry->registerDefaultObjectEncoder($expectedEncoder);
+        $this->assertSame($expectedEncoder, $this->encoderRegistry->getEncoderForType(User::class));
     }
 
     public function testGettingEncoderByTypeForObjectWithoutEncoderThrowsException(): void
@@ -52,9 +64,10 @@ class EncoderRegistryTest extends TestCase
 
     public function testGettingEncoderByTypeForScalarUsesDefaultEncoder(): void
     {
-        $encoder = $this->createMock(IEncoder::class);
-        $this->encoderRegistry->registerDefaultScalarEncoder($encoder);
-        $this->assertSame($encoder, $this->encoderRegistry->getEncoderForType('int'));
+        /** @var IEncoder|MockObject $expectedEncoder */
+        $expectedEncoder = $this->createMock(IEncoder::class);
+        $this->encoderRegistry->registerDefaultScalarEncoder($expectedEncoder);
+        $this->assertSame($expectedEncoder, $this->encoderRegistry->getEncoderForType('int'));
     }
 
     public function testGettingEncoderByTypeForScalarWithoutEncoderThrowsException(): void
@@ -66,6 +79,7 @@ class EncoderRegistryTest extends TestCase
 
     public function testGettingEncoderByTypeUsesCustomEncoderIfOneIsRegistered(): void
     {
+        /** @var IEncoder|MockObject $expectedEncoder */
         $expectedEncoder = $this->createMock(IEncoder::class);
         $this->encoderRegistry->registerEncoder('foo', $expectedEncoder);
         $this->assertSame($expectedEncoder, $this->encoderRegistry->getEncoderForType('foo'));
@@ -91,20 +105,23 @@ class EncoderRegistryTest extends TestCase
 
     public function testGettingEncoderByValueForObjectUsesDefaultEncoder(): void
     {
-        $encoder = $this->createMock(IEncoder::class);
-        $this->encoderRegistry->registerDefaultObjectEncoder($encoder);
-        $this->assertSame($encoder, $this->encoderRegistry->getEncoderForValue(new User(123, 'foo@bar.com')));
+        /** @var IEncoder|MockObject $expectedEncoder */
+        $expectedEncoder = $this->createMock(IEncoder::class);
+        $this->encoderRegistry->registerDefaultObjectEncoder($expectedEncoder);
+        $this->assertSame($expectedEncoder, $this->encoderRegistry->getEncoderForValue(new User(123, 'foo@bar.com')));
     }
 
     public function testGettingEncoderByValueForScalarUsesDefaultEncoder(): void
     {
-        $encoder = $this->createMock(IEncoder::class);
-        $this->encoderRegistry->registerDefaultScalarEncoder($encoder);
-        $this->assertSame($encoder, $this->encoderRegistry->getEncoderForValue(123));
+        /** @var IEncoder|MockObject $expectedEncoder */
+        $expectedEncoder = $this->createMock(IEncoder::class);
+        $this->encoderRegistry->registerDefaultScalarEncoder($expectedEncoder);
+        $this->assertSame($expectedEncoder, $this->encoderRegistry->getEncoderForValue(123));
     }
 
     public function testGettingEncoderByValueUsesCustomEncoderIfOneIsRegistered(): void
     {
+        /** @var IEncoder|MockObject $expectedEncoder */
         $expectedEncoder = $this->createMock(IEncoder::class);
         $this->encoderRegistry->registerEncoder(User::class, $expectedEncoder);
         $this->assertSame($expectedEncoder, $this->encoderRegistry->getEncoderForValue(new User(123, 'foo@bar.com')));

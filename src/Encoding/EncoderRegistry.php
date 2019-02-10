@@ -33,10 +33,10 @@ final class EncoderRegistry
      */
     public function getEncoderForType(string $type): IEncoder
     {
-        $encodedType = self::normalizeType($type);
+        $normalizedType = self::normalizeType($type);
 
-        if (isset($this->encodersByType[$encodedType])) {
-            return $this->encodersByType[$encodedType];
+        if (isset($this->encodersByType[$normalizedType])) {
+            return $this->encodersByType[$normalizedType];
         }
 
         if (\class_exists($type)) {
@@ -95,8 +95,8 @@ final class EncoderRegistry
      */
     public function registerEncoder(string $type, IEncoder $encoder): void
     {
-        $encodedType = self::normalizeType($type);
-        $this->encodersByType[$encodedType] = $encoder;
+        $normalizedType = self::normalizeType($type);
+        $this->encodersByType[$normalizedType] = $encoder;
     }
 
     /**
@@ -107,7 +107,7 @@ final class EncoderRegistry
      */
     private static function normalizeType(string $type): string
     {
-        switch ($type) {
+        switch (\strtolower($type)) {
             case 'boolean':
             case 'bool':
                 return 'bool';
