@@ -307,7 +307,7 @@ Now, the `Authenticate` middleware will be run before the `createArticle()` cont
 
 <h1 id="api-kernel">API Kernel</h1>
 
-A request handler simply takes in an HTTP request and returns a response.  The API kernel, middleware, and route actions are all wrapped in request handlers.  `ApiKernel` is capable of matching a route and sending the request and response through [middleware](#middleware) to the [controller](#controllers).
+`ApiKernel` is usually the top layer of your application logic.  It is capable of matching a route and sending the request and response through [middleware](#middleware) to the [controller](#controllers).
 
 Configuring your API is easy - you just need to set up a few things:
 
