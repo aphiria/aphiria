@@ -18,11 +18,11 @@
     2. [Getting POST Data](#getting-post-data)
     3. [Getting Query String Data](#getting-query-string-data)
     4. [JSON Requests](#json-requests)
-    5. [Multipart Requests](#multipart-requests)
-    6. [Getting Cookies](#getting-request-cookies)
-    7. [Getting Client IP Address](#getting-client-ip-address)
-    8. [Header Parameters](#header-parameters)
-    9. [Serializing Requests](#serializing-requests)
+    5. [Getting Cookies](#getting-request-cookies)
+    6. [Getting Client IP Address](#getting-client-ip-address)
+    7. [Header Parameters](#header-parameters)
+    8. [Serializing Requests](#serializing-requests)
+    9. [Multipart Requests](#multipart-requests)
 3. [Responses](#responses)
     1. [Creating Responses](#creating-responses)
     2. [JSON Responses](#json-responses)
@@ -185,6 +185,71 @@ use Aphiria\Net\Http\Formatting\RequestParser;
 $json = (new RequestParser)->readAsJson($request);
 ```
 
+<h2 id="getting-request-cookies">Getting Cookies</h2>
+
+Aphiria has a helper to grab cookies from request headers as an [immutable dictionary](https://www.opulencephp.com/docs/1.1/collections#immutable-hash-tables):
+
+```php
+use Aphiria\Net\Http\Formatting\RequestParser;
+
+$cookies = (new RequestParser)->parseCookies($request);
+$cookies->get('userid');
+```
+
+<h2 id="getting-client-ip-address">Getting Client IP Address</h2>
+
+If you use the [`RequestFactory`](#creating-request-from-superglobals) to create your request, the client IP address will be added to the request property `CLIENT_IP_ADDRESS`.  To make it easier to grab this value, you can use `RequestParser` to retrieve it:
+
+```php
+use Aphiria\Net\Http\Formatting\RequestParser;
+
+$clientIPAddress = (new RequestParser)->getClientIPAddress($request);
+```
+
+> **Note:** This will take into consideration any [trusted proxy header values](#trusted-proxies) when determining the original client IP address.
+
+<h2 id="header-parameters">Header Parameters</h2>
+
+Some header values are semicolon delimited, eg `Content-Type: text/html; charset=utf-8`.  It's sometimes convenient to grab those key => value pairs:
+
+```php
+$contentTypeValues = $requestParser->parseParameters($request, 'Content-Type');
+// Keys without values will return null:
+echo $contentTypeValues->get('text/html'); // null
+echo $contentTypeValues->get('charset'); // "utf-8"
+```
+
+<h2 id="serializing-requests">Serializing Requests</h2>
+
+You can serialize a request per <a href="https://tools.ietf.org/html/rfc7230#section-3" target="_blank">RFC 7230</a> by casting it to a string:
+
+```php
+echo (string)$request;
+```
+
+By default, this will use <a href="https://tools.ietf.org/html/rfc7230#section-5.3.1" target="_blank">origin-form</a> for the request target, but you can override the request type via the constructor:
+
+```php
+use Aphiria\Net\Http\RequestTargetTypes;
+
+$request = new Request(
+    'GET',
+    new Uri('https://example.com/foo?bar'),
+    null,
+    null,
+    null,
+    '1.1',
+    RequestTargetTypes::AUTHORITY_FORM
+);
+```
+
+The following request target types may be used:
+
+* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.2" target="_blank">`RequestTargetTypes::ABSOLUTE_FORM`</a>
+* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.4" target="_blank">`RequestTargetTypes::ASTERISK_FORM`</a>
+* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.3" target="_blank">`RequestTargetTypes::AUTHORITY_FORM`</a>
+* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.1" target="_blank">`RequestTargetTypes::ORIGIN_FORM`</a>
+
 <h2 id="multipart-requests">Multipart Requests</h2>
 
 Multipart requests contain multiple bodies, each with headers.  That's actually how file uploads work - each file gets a body with headers indicating the name, type, and size of the file.  Aphiria can parse these multipart bodies into a `MultipartBody`, which extends [`StreamBody`](#stream-bodies).  It contains additional methods to get the boundary and the list of `MultipartBodyPart` objects that make up the body:
@@ -273,71 +338,6 @@ $request = new Request(
     $body
 );
 ```
-
-<h2 id="getting-request-cookies">Getting Cookies</h2>
-
-Aphiria has a helper to grab cookies from request headers as an [immutable dictionary](https://www.opulencephp.com/docs/1.1/collections#immutable-hash-tables):
-
-```php
-use Aphiria\Net\Http\Formatting\RequestParser;
-
-$cookies = (new RequestParser)->parseCookies($request);
-$cookies->get('userid');
-```
-
-<h2 id="getting-client-ip-address">Getting Client IP Address</h2>
-
-If you use the [`RequestFactory`](#creating-request-from-superglobals) to create your request, the client IP address will be added to the request property `CLIENT_IP_ADDRESS`.  To make it easier to grab this value, you can use `RequestParser` to retrieve it:
-
-```php
-use Aphiria\Net\Http\Formatting\RequestParser;
-
-$clientIPAddress = (new RequestParser)->getClientIPAddress($request);
-```
-
-> **Note:** This will take into consideration any [trusted proxy header values](#trusted-proxies) when determining the original client IP address.
-
-<h2 id="header-parameters">Header Parameters</h2>
-
-Some header values are semicolon delimited, eg `Content-Type: text/html; charset=utf-8`.  It's sometimes convenient to grab those key => value pairs:
-
-```php
-$contentTypeValues = $requestParser->parseParameters($request, 'Content-Type');
-// Keys without values will return null:
-echo $contentTypeValues->get('text/html'); // null
-echo $contentTypeValues->get('charset'); // "utf-8"
-```
-
-<h2 id="serializing-requests">Serializing Requests</h2>
-
-You can serialize a request per <a href="https://tools.ietf.org/html/rfc7230#section-3" target="_blank">RFC 7230</a> by casting it to a string:
-
-```php
-echo (string)$request;
-```
-
-By default, this will use <a href="https://tools.ietf.org/html/rfc7230#section-5.3.1" target="_blank">origin-form</a> for the request target, but you can override the request type via the constructor:
-
-```php
-use Aphiria\Net\Http\RequestTargetTypes;
-
-$request = new Request(
-    'GET',
-    new Uri('https://example.com/foo?bar'),
-    null,
-    null,
-    null,
-    '1.1',
-    RequestTargetTypes::AUTHORITY_FORM
-);
-```
-
-The following request target types may be used:
-
-* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.2" target="_blank">`RequestTargetTypes::ABSOLUTE_FORM`</a>
-* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.4" target="_blank">`RequestTargetTypes::ASTERISK_FORM`</a>
-* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.3" target="_blank">`RequestTargetTypes::AUTHORITY_FORM`</a>
-* <a href="https://tools.ietf.org/html/rfc7230#section-5.3.1" target="_blank">`RequestTargetTypes::ORIGIN_FORM`</a>
 
 <h1 id="responses">Responses</h1>
 
