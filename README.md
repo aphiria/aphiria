@@ -155,7 +155,7 @@ class UserController extends Controller
 }
 ```
 
-Nullable parameters and parameters with default values are also supported.  If you a query string parameter is optional, it _must_ be either nullable or have a default value.
+Nullable parameters and parameters with default values are also supported.  If a query string parameter is optional, it _must_ be either nullable or have a default value.
 
 <h3 id="arrays-in-request-body">Arrays in Request Body</h3>
 
@@ -178,7 +178,7 @@ class UserController extends Controller
 
 <h2 id="parsing-request-data">Parsing Request Data</h2>
 
-Your controllers might need to do more advanced reading of request data, such as reading cookies, reading multipart bodies, or determining the content type of the request.  To simplify this kind of work, and instance of `RequestParser` is set in your controller:
+Your controllers might need to do more advanced reading of request data, such as reading cookies, reading multipart bodies, or determining the content type of the request.  To simplify this kind of work, an instance of `RequestParser` is set in your controller:
 
 ```php
 class JsonPrettifierController extends Controller
@@ -349,7 +349,7 @@ $exceptionHandler = new ExceptionHandler($exceptionResponseFactory);
 $exceptionHandler->registerWithPhp();
 ```
 
-By default, `ExceptionHandler` will convert any exception to a 500 response and use <a href="https://github.com/aphiria/net#content-negotiation" target="_blank">content negotiation</a> to determine the best format for the response body.  However, you can [customize your exception responses](#exception-response-factories).
+By default, `ExceptionHandler` will convert any exception to a 500 response and use <a href="https://github.com/aphiria/net#content-negotiation" target="_blank">content negotiation</a> to determine the best format for the response body.  However, you can [customize your exception responses](#customizing-exception-responses).
 
 <h2 id="customizing-exception-responses">Customizing Exception Responses</h2>
 
