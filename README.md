@@ -40,7 +40,7 @@
 
 <h1 id="introduction">Introduction</h1>
 
-Opulence's network library provides better abstractions for HTTP requests, responses, bodies, headers, and URIs.  It also comes built-in with support for RFC-compliant [content negotiation](#content-negotiation) for request and response bodies.
+Aphiria's network library provides better abstractions for HTTP requests, responses, bodies, headers, and URIs.  It also comes built-in with support for RFC-compliant [content negotiation](#content-negotiation) for request and response bodies.
 
 <h2 id="requirements">Requirements</h2>
 
