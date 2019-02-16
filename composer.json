@@ -1,0 +1,40 @@
+{
+  "name": "aphiria/console",
+  "description": "The Aphiria console library",
+  "keywords": [
+    "PHP",
+    "console",
+    "cli"
+  ],
+  "authors": [
+    {
+      "name": "David Young",
+      "email": "dave@aphiria.com",
+      "role": "Architect"
+    }
+  ],
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Aphiria\\Console\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Aphiria\\Console\\Tests\\": "tests"
+    }
+  },
+  "require": {
+    "php": "^7.3"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "~2.14",
+    "phpunit/phpunit": "~8.0"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  },
+  "minimum-stability": "dev"
+}

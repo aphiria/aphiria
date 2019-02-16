@@ -1,0 +1,22 @@
+language: php
+
+php:
+  - 7.3
+
+before_script:
+  - composer self-update
+  - composer install
+  - composer dump-autoload -o
+
+script:
+  - vendor/bin/phpunit --verbose
+  - php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix . --dry-run --verbose --diff
+
+notifications:
+  email:
+    - dave@aphiria.com
+
+sudo: false
+
+matrix:
+  fast_finish: true

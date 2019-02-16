@@ -1,0 +1,281 @@
+<?php
+
+/*
+ * Opulence
+ *
+ * @link      https://www.aphiria.com
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
+ */
+
+namespace Aphiria\Console\Tests\Responses\Compilers\Parsers;
+
+use Aphiria\Console\Responses\Compilers\Lexers\Tokens\Token;
+use Aphiria\Console\Responses\Compilers\Lexers\Tokens\TokenTypes;
+use Aphiria\Console\Responses\Compilers\Parsers\AbstractSyntaxTree;
+use Aphiria\Console\Responses\Compilers\Parsers\Nodes\TagNode;
+use Aphiria\Console\Responses\Compilers\Parsers\Nodes\WordNode;
+use Aphiria\Console\Responses\Compilers\Parsers\Parser;
+use PHPUnit\Framework\TestCase;
+use RuntimeException;
+
+/**
+ * Tests the response parser
+ */
+class ParserTest extends TestCase
+{
+    /** @var Parser The parser to use in tests */
+    private $parser;
+
+    /**
+     * Sets up the tests
+     */
+    public function setUp(): void
+    {
+        $this->parser = new Parser();
+    }
+
+    /**
+     * Tests incorrectly nested tags
+     */
+    public function testIncorrectlyNestedTags(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $tokens = [
+            new Token(TokenTypes::T_TAG_OPEN, 'foo', 1),
+            new Token(TokenTypes::T_TAG_OPEN, 'bar', 1),
+            new Token(TokenTypes::T_WORD, 'blah', 1),
+            new Token(TokenTypes::T_TAG_CLOSE, 'foo', 1),
+            new Token(TokenTypes::T_TAG_CLOSE, 'bar', 1),
+            new Token(TokenTypes::T_EOF, null, 1)
+        ];
+        $this->parser->parse($tokens);
+    }
+
+    /**
+     * Tests parsing adjacent elements
+     */
+    public function testParsingAdjacentElements(): void
+    {
+        $tokens = [
+            new Token(TokenTypes::T_TAG_OPEN, 'foo', 1),
+            new Token(TokenTypes::T_WORD, 'baz', 1),
+            new Token(TokenTypes::T_TAG_CLOSE, 'foo', 1),
+            new Token(TokenTypes::T_TAG_OPEN, 'bar', 1),
+            new Token(TokenTypes::T_WORD, 'blah', 1),
+            new Token(TokenTypes::T_TAG_CLOSE, 'bar', 1),
+            new Token(TokenTypes::T_EOF, null, 1)
+        ];
+        $expectedOutput = new AbstractSyntaxTree();
+        $fooNode = new TagNode('foo');
+        $fooNode->addChild(new WordNode('baz'));
+        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $barNode = new TagNode('bar');
+        $barNode->addChild(new WordNode('blah'));
+        $expectedOutput->getCurrentNode()->addChild($barNode);
+        $this->assertEquals(
+            $expectedOutput,
+            $this->parser->parse($tokens)
+        );
+    }
+
+    /**
+     * Tests parsing an element with no children
+     */
+    public function testParsingElementWithNoChildren(): void
+    {
+        $tokens = [
+            new Token(TokenTypes::T_TAG_OPEN, 'foo', 1),
+            new Token(TokenTypes::T_TAG_CLOSE, 'foo', 1),
+            new Token(TokenTypes::T_EOF, null, 1)
+        ];
+        $expectedOutput = new AbstractSyntaxTree();
+        $fooNode = new TagNode('foo');
+        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $this->assertEquals(
+            $expectedOutput,
+            $this->parser->parse($tokens)
+        );
+    }
+
+    /**
+     * Tests parsing an escaped tag at the beginning of the string
+     */
+    public function testParsingEscapedTagAtBeginning(): void
+    {
+        $tokens = [
+            new Token(TokenTypes::T_WORD, '<bar>', 1),
+            new Token(TokenTypes::T_EOF, null, 1)
+        ];
+        $expectedOutput = new AbstractSyntaxTree();
+        $fooNode = new WordNode('<bar>');
+        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $this->assertEquals($expectedOutput, $this->parser->parse($tokens));
+    }
+
+    /**
+     * Tests parsing an escaped tag in between tags
+     */
+    public function testParsingEscapedTagInBetweenTags(): void
+    {
+        $tokens = [
+            new Token(TokenTypes::T_TAG_OPEN, 'foo', 1),
+            new Token(TokenTypes::T_WORD, '<bar>', 1),
+            new Token(TokenTypes::T_TAG_CLOSE, 'foo', 1),
+            new Token(TokenTypes::T_EOF, null, 1)
+        ];
+        $expectedOutput = new AbstractSyntaxTree();
+        $fooNode = new TagNode('foo');
+        $fooNode->addChild(new WordNode('<bar>'));
+        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $this->assertEquals($expectedOutput, $this->parser->parse($tokens));
+    }
+
+    /**
+     * Tests parsing nested elements
+     */
+    public function testParsingNestedElements(): void
+    {
+        $tokens = [
+            new Token(TokenTypes::T_TAG_OPEN, 'foo', 1),
+            new Token(TokenTypes::T_WORD, 'bar', 1),
+            new Token(TokenTypes::T_TAG_OPEN, 'bar', 1),
+            new Token(TokenTypes::T_WORD, 'blah', 1),
+            new Token(TokenTypes::T_TAG_CLOSE, 'bar', 1),
+            new Token(TokenTypes::T_WORD, 'baz', 1),
+            new Token(TokenTypes::T_TAG_CLOSE, 'foo', 1),
+            new Token(TokenTypes::T_EOF, null, 1)
+        ];
+        $expectedOutput = new AbstractSyntaxTree();
+        $fooNode = new TagNode('foo');
+        $fooNode->addChild(new WordNode('bar'));
+        $barNode = new TagNode('bar');
+        $barNode->addChild(new WordNode('blah'));
+        $fooNode->addChild($barNode);
+        $fooNode->addChild(new WordNode('baz'));
+        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $this->assertEquals(
+            $expectedOutput,
+            $this->parser->parse($tokens)
+        );
+    }
+
+    /**
+     * Tests parsing nested elements surrounded by words
+     */
+    public function testParsingNestedElementsSurroundedByWords(): void
+    {
+        $tokens = [
+            new Token(TokenTypes::T_WORD, 'dave', 1),
+            new Token(TokenTypes::T_TAG_OPEN, 'foo', 1),
+            new Token(TokenTypes::T_WORD, 'bar', 1),
+            new Token(TokenTypes::T_TAG_OPEN, 'bar', 1),
+            new Token(TokenTypes::T_WORD, 'blah', 1),
+            new Token(TokenTypes::T_TAG_CLOSE, 'bar', 1),
+            new Token(TokenTypes::T_WORD, 'baz', 1),
+            new Token(TokenTypes::T_TAG_CLOSE, 'foo', 1),
+            new Token(TokenTypes::T_WORD, 'young', 1),
+            new Token(TokenTypes::T_EOF, null, 1)
+        ];
+        $expectedOutput = new AbstractSyntaxTree();
+        $expectedOutput->getCurrentNode()->addChild(new WordNode('dave'));
+        $fooNode = new TagNode('foo');
+        $fooNode->addChild(new WordNode('bar'));
+        $barNode = new TagNode('bar');
+        $barNode->addChild(new WordNode('blah'));
+        $fooNode->addChild($barNode);
+        $fooNode->addChild(new WordNode('baz'));
+        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $expectedOutput->getCurrentNode()->addChild(new WordNode('young'));
+        $this->assertEquals(
+            $expectedOutput,
+            $this->parser->parse($tokens)
+        );
+    }
+
+    /**
+     * Tests parsing nested elements with no children
+     */
+    public function testParsingNestedElementsWithNoChildren(): void
+    {
+        $tokens = [
+            new Token(TokenTypes::T_TAG_OPEN, 'foo', 1),
+            new Token(TokenTypes::T_TAG_OPEN, 'bar', 1),
+            new Token(TokenTypes::T_TAG_CLOSE, 'bar', 1),
+            new Token(TokenTypes::T_TAG_CLOSE, 'foo', 1),
+            new Token(TokenTypes::T_EOF, null, 1)
+        ];
+        $expectedOutput = new AbstractSyntaxTree();
+        $fooNode = new TagNode('foo');
+        $fooNode->addChild(new TagNode('bar'));
+        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $this->assertEquals(
+            $expectedOutput,
+            $this->parser->parse($tokens)
+        );
+    }
+
+    /**
+     * Tests parsing plain text
+     */
+    public function testParsingPlainText(): void
+    {
+        $tokens = [
+            new Token(TokenTypes::T_WORD, 'foobar', 1),
+            new Token(TokenTypes::T_EOF, null, 1)
+        ];
+        $expectedOutput = new AbstractSyntaxTree();
+        $node = new WordNode('foobar');
+        $expectedOutput->getCurrentNode()->addChild($node);
+        $this->assertEquals(
+            $expectedOutput,
+            $this->parser->parse($tokens)
+        );
+    }
+
+    /**
+     * Tests parsing a single element
+     */
+    public function testParsingSingleElement(): void
+    {
+        $tokens = [
+            new Token(TokenTypes::T_TAG_OPEN, 'foo', 1),
+            new Token(TokenTypes::T_WORD, 'bar', 1),
+            new Token(TokenTypes::T_TAG_CLOSE, 'foo', 1),
+            new Token(TokenTypes::T_EOF, null, 1)
+        ];
+        $expectedOutput = new AbstractSyntaxTree();
+        $fooNode = new TagNode('foo');
+        $fooNode->addChild(new WordNode('bar'));
+        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $this->assertEquals($expectedOutput, $this->parser->parse($tokens));
+    }
+
+    /**
+     * Tests parsing with an unclosed tag
+     */
+    public function testParsingWithUnclosedTag(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $tokens = [
+            new Token(TokenTypes::T_TAG_OPEN, 'foo', 1),
+            new Token(TokenTypes::T_WORD, 'bar', 1),
+            new Token(TokenTypes::T_EOF, null, 1)
+        ];
+        $this->parser->parse($tokens);
+    }
+
+    /**
+     * Tests parsing with an unopened tag
+     */
+    public function testParsingWithUnopenedTag(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $tokens = [
+            new Token(TokenTypes::T_WORD, 'foo', 0),
+            new Token(TokenTypes::T_TAG_CLOSE, 'bar', 3),
+            new Token(TokenTypes::T_EOF, null, 9)
+        ];
+        $this->parser->parse($tokens);
+    }
+}
