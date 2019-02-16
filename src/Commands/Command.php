@@ -236,7 +236,7 @@ abstract class Command implements ICommand
      * Sets the arguments and options for this command
      * Provides a convenient place to write down the definition for a command
      */
-    abstract protected function define();
+    abstract protected function define(): void;
 
     /**
      * Actually executes the command
