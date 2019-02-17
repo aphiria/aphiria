@@ -10,11 +10,11 @@
 
 namespace Aphiria\Console\Prompts;
 
-use InvalidArgumentException;
 use Aphiria\Console\Prompts\Questions\IQuestion;
 use Aphiria\Console\Prompts\Questions\MultipleChoice;
 use Aphiria\Console\Responses\Formatters\PaddingFormatter;
 use Aphiria\Console\Responses\IResponse;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**

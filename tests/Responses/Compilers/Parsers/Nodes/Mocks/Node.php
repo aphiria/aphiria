@@ -20,7 +20,7 @@ class Node extends BaseNode
     /**
      * @inheritdoc
      */
-    public function isTag() : bool
+    public function isTag(): bool
     {
         return false;
     }

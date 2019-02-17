@@ -10,9 +10,9 @@
 
 namespace Aphiria\Console\Requests\Parsers;
 
-use InvalidArgumentException;
 use Aphiria\Console\Requests\IRequest;
 use Aphiria\Console\Requests\Tokenizers\ArrayListTokenizer;
+use InvalidArgumentException;
 
 /**
  * Defines the array list parser

@@ -10,7 +10,6 @@
 
 namespace Aphiria\Console\Tests\Commands;
 
-use InvalidArgumentException;
 use Aphiria\Console\Commands\CommandCollection;
 use Aphiria\Console\Commands\Compilers\Compiler as CommandCompiler;
 use Aphiria\Console\Responses\Compilers\Compiler;
@@ -20,6 +19,7 @@ use Aphiria\Console\Responses\SilentResponse;
 use Aphiria\Console\Tests\Commands\Mocks\HappyHolidayCommand;
 use Aphiria\Console\Tests\Commands\Mocks\SimpleCommand;
 use Aphiria\Console\Tests\Responses\Mocks\Response;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**

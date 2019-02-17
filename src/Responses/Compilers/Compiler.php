@@ -10,11 +10,11 @@
 
 namespace Aphiria\Console\Responses\Compilers;
 
-use InvalidArgumentException;
 use Aphiria\Console\Responses\Compilers\Elements\Style;
 use Aphiria\Console\Responses\Compilers\Lexers\ILexer;
 use Aphiria\Console\Responses\Compilers\Parsers\IParser;
 use Aphiria\Console\Responses\Compilers\Parsers\Nodes\Node;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**

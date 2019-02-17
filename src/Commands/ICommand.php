@@ -10,10 +10,10 @@
 
 namespace Aphiria\Console\Commands;
 
-use InvalidArgumentException;
 use Aphiria\Console\Requests\Argument;
 use Aphiria\Console\Requests\Option;
 use Aphiria\Console\Responses\IResponse;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**

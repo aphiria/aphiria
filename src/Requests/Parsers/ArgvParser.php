@@ -10,9 +10,9 @@
 
 namespace Aphiria\Console\Requests\Parsers;
 
-use InvalidArgumentException;
 use Aphiria\Console\Requests\IRequest;
 use Aphiria\Console\Requests\Tokenizers\ArgvTokenizer;
+use InvalidArgumentException;
 
 /**
  * Defines the argv parser

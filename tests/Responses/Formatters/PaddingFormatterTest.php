@@ -44,8 +44,10 @@ class PaddingFormatterTest extends TestCase
         $formattedText = $this->formatter->format($rows, function ($row) {
             return $row[0] . '-' . $row[1];
         });
-        $this->assertEquals('a++-b++' . PHP_EOL . 'cd+-ee+' . PHP_EOL . 'fg+-hhh' . PHP_EOL . 'ijk-ll+',
-            $formattedText);
+        $this->assertEquals(
+            'a++-b++' . PHP_EOL . 'cd+-ee+' . PHP_EOL . 'fg+-hhh' . PHP_EOL . 'ijk-ll+',
+            $formattedText
+        );
     }
 
     /**
@@ -148,15 +150,19 @@ class PaddingFormatterTest extends TestCase
         $formattedRows = $this->formatter->format($rows, function ($row) {
             return $row[0] . '-' . $row[1];
         });
-        $this->assertEquals('a  -b  ' . PHP_EOL . 'cd -ee ' . PHP_EOL . 'fg -hhh' . PHP_EOL . 'ijk-ll ',
-            $formattedRows);
+        $this->assertEquals(
+            'a  -b  ' . PHP_EOL . 'cd -ee ' . PHP_EOL . 'fg -hhh' . PHP_EOL . 'ijk-ll ',
+            $formattedRows
+        );
         // Format with the padding before the string
         $this->formatter->setPadAfter(false);
         $formattedRows = $this->formatter->format($rows, function ($row) {
             return $row[0] . '-' . $row[1];
         });
-        $this->assertEquals('  a-  b' . PHP_EOL . ' cd- ee' . PHP_EOL . ' fg-hhh' . PHP_EOL . 'ijk- ll',
-            $formattedRows);
+        $this->assertEquals(
+            '  a-  b' . PHP_EOL . ' cd- ee' . PHP_EOL . ' fg-hhh' . PHP_EOL . 'ijk- ll',
+            $formattedRows
+        );
     }
 
     /**

@@ -10,8 +10,8 @@
 
 namespace Aphiria\Console\Responses;
 
-use InvalidArgumentException;
 use Aphiria\Console\Responses\Compilers\ICompiler;
+use InvalidArgumentException;
 
 /**
  * Defines the stream response

@@ -123,7 +123,8 @@ EOF;
             $commandTexts[] = [$command->getName(), $command->getDescription()];
         }
 
-        return $this->paddingFormatter->format($commandTexts,
+        return $this->paddingFormatter->format(
+            $commandTexts,
             function ($row) use ($categorizedCommandNames, $firstCommandNamesToCategories) {
                 $output = '';
 
@@ -135,6 +136,7 @@ EOF;
                 }
 
                 return $output . "  <info>{$row[0]}</info> - {$row[1]}";
-            });
+            }
+        );
     }
 }

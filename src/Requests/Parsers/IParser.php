@@ -10,8 +10,8 @@
 
 namespace Aphiria\Console\Requests\Parsers;
 
-use InvalidArgumentException;
 use Aphiria\Console\Requests\IRequest;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
