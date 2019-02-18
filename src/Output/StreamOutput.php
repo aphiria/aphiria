@@ -23,10 +23,10 @@ class StreamOutput extends Output
 
     /**
      * @param resource $stream The stream to write to
-     * @param IOutputCompiler $compiler The output compiler to use
+     * @param IOutputCompiler|null $compiler The output compiler to use
      * @throws InvalidArgumentException Thrown if the stream is not a resource
      */
-    public function __construct($stream, IOutputCompiler $compiler)
+    public function __construct($stream, IOutputCompiler $compiler = null)
     {
         if (!is_resource($stream)) {
             throw new InvalidArgumentException('The stream must be a resource');

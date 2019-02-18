@@ -21,7 +21,6 @@ use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\Console\Input\Compilers\ArgvInputCompiler;
 use Aphiria\Console\Input\Compilers\IInputCompiler;
 use Aphiria\Console\Input\Input;
-use Aphiria\Console\Output\Compilers\OutputCompiler;
 use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
 use Exception;
@@ -66,9 +65,7 @@ final class Kernel
      */
     public function handle($rawInput, IOutput $output = null): int
     {
-        if ($output === null) {
-            $output = new ConsoleOutput(new OutputCompiler());
-        }
+        $output = $output ?? new ConsoleOutput();
 
         try {
             $input = $this->inputCompiler->compile($rawInput);

@@ -18,9 +18,9 @@ use Aphiria\Console\Output\Compilers\IOutputCompiler;
 final class ConsoleOutput extends StreamOutput
 {
     /**
-     * @param IOutputCompiler $outputCompiler The output compiler to use
+     * @param IOutputCompiler|null $outputCompiler The output compiler to use
      */
-    public function __construct(IOutputCompiler $outputCompiler)
+    public function __construct(IOutputCompiler $outputCompiler = null)
     {
         parent::__construct(fopen('php://stdout', 'wb'), $outputCompiler);
     }
