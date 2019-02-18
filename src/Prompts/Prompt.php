@@ -28,18 +28,13 @@ class Prompt
     private $inputStream;
 
     /***
-     * @param PaddingFormatter $paddingFormatter The space padding formatter to use
+     * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use
      * @param resource|null $inputStream The input stream to look for answers in
      */
-    public function __construct(PaddingFormatter $paddingFormatter, $inputStream = null)
+    public function __construct(PaddingFormatter $paddingFormatter = null, $inputStream = null)
     {
-        $this->paddingFormatter = $paddingFormatter;
-
-        if ($inputStream === null) {
-            $inputStream = STDIN;
-        }
-
-        $this->setInputStream($inputStream);
+        $this->paddingFormatter = $paddingFormatter ?? new PaddingFormatter();
+        $this->setInputStream($inputStream ?? STDIN);
     }
 
     /**
