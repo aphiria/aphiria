@@ -23,7 +23,7 @@ final class AboutCommand extends Command
             'about',
             [],
             [],
-            'Describes the Apex console application'
+            'Describes the Aphiria console application'
         );
     }
 }

@@ -20,7 +20,7 @@ use Aphiria\Console\Output\Compilers\Elements\TextStyles;
 final class ElementRegistrant
 {
     /**
-     * Registers the Apex elements
+     * Registers the built-in elements
      *
      * @param IOutputCompiler $compiler The compiler to register to
      */

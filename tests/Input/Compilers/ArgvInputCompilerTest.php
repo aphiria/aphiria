@@ -29,13 +29,13 @@ class ArgvInputCompilerTest extends TestCase
 
     public function testBackslashesAreRespected(): void
     {
-        $input = $this->compiler->compile(['apex', 'foo', 'bar\\baz']);
+        $input = $this->compiler->compile(['aphiria', 'foo', 'bar\\baz']);
         $this->assertEquals(['bar\\baz'], $input->argumentValues);
     }
 
     public function testCompilingArgumentsAndOptions(): void
     {
-        $input = $this->compiler->compile(['apex', 'foo', 'bar', '-r', '--name=dave']);
+        $input = $this->compiler->compile(['aphiria', 'foo', 'bar', '-r', '--name=dave']);
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals(['bar'], $input->argumentValues);
         $this->assertNull($input->options['r']);
@@ -44,7 +44,7 @@ class ArgvInputCompilerTest extends TestCase
 
     public function testCompilingNullString(): void
     {
-        $_SERVER['argv'] = ['apex', 'foo', 'bar', '-r', '--name=dave'];
+        $_SERVER['argv'] = ['aphiria', 'foo', 'bar', '-r', '--name=dave'];
         $input = $this->compiler->compile(null);
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals(['bar'], $input->argumentValues);
@@ -54,7 +54,7 @@ class ArgvInputCompilerTest extends TestCase
 
     public function testCompilingOptionWithNoValue(): void
     {
-        $input = $this->compiler->compile(['apex', 'foo', '--name']);
+        $input = $this->compiler->compile(['aphiria', 'foo', '--name']);
         $this->assertNull($input->options['name']);
     }
 
