@@ -14,8 +14,8 @@ use Aphiria\Console\Commands\CommandHandlerBinding;
 use Aphiria\Console\Commands\CommandHandlerBindingRegistry;
 use Aphiria\Console\Commands\CommandInput;
 use Aphiria\Console\Commands\ICommandHandler;
-use Aphiria\Console\Responses\Formatters\PaddingFormatter;
-use Aphiria\Console\Responses\IResponse;
+use Aphiria\Console\Output\Formatters\PaddingFormatter;
+use Aphiria\Console\Output\IOutput;
 
 /**
  * Defines the about command handler
@@ -49,13 +49,13 @@ EOF;
     /**
      * @inheritDoc
      */
-    public function handle(CommandInput $commandInput, IResponse $response)
+    public function handle(CommandInput $commandInput, IOutput $output)
     {
         // Compile the template
         $compiledTemplate = self::$template;
         $compiledTemplate = str_replace('{{commands}}', $this->getCommandText(), $compiledTemplate);
 
-        $response->writeln($compiledTemplate);
+        $output->writeln($compiledTemplate);
     }
 
     /**

@@ -18,12 +18,12 @@ use Aphiria\Console\Commands\Defaults\AboutCommandHandler;
 use Aphiria\Console\Commands\Defaults\HelpCommand;
 use Aphiria\Console\Commands\Defaults\HelpCommandHandler;
 use Aphiria\Console\Commands\ICommandBus;
-use Aphiria\Console\Requests\Compilers\ArgvRequestCompiler;
-use Aphiria\Console\Requests\Compilers\IRequestCompiler;
-use Aphiria\Console\Requests\Request;
-use Aphiria\Console\Responses\Compilers\ResponseCompiler;
-use Aphiria\Console\Responses\ConsoleResponse;
-use Aphiria\Console\Responses\IResponse;
+use Aphiria\Console\Input\Compilers\ArgvInputCompiler;
+use Aphiria\Console\Input\Compilers\IInputCompiler;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\Compilers\OutputCompiler;
+use Aphiria\Console\Output\ConsoleOutput;
+use Aphiria\Console\Output\IOutput;
 use Exception;
 use InvalidArgumentException;
 use Throwable;
@@ -35,16 +35,16 @@ final class Kernel
 {
     /** @var ICommandBus The command bus that can handle commands */
     private $commandBus;
-    /** @var IRequestCompiler The request compiler to use */
-    private $requestCompiler;
+    /** @var IInputCompiler The input compiler to use */
+    private $inputCompiler;
 
     /**
      * @param CommandHandlerBindingRegistry $commandHandlerBindings The command handler bindings
-     * @param IRequestCompiler|null $requestCompiler The request compiler to use
+     * @param IInputCompiler|null $inputCompiler The input compiler to use
      */
     public function __construct(
         CommandHandlerBindingRegistry $commandHandlerBindings,
-        IRequestCompiler $requestCompiler = null
+        IInputCompiler $inputCompiler = null
     ) {
         // Set up our default command handlers
         $commandHandlerBindings->registerCommandHandlerBinding(
@@ -54,39 +54,39 @@ final class Kernel
             new CommandHandlerBinding(new AboutCommand(), new AboutCommandHandler($commandHandlerBindings))
         );
         $this->commandBus = new CommandBus($commandHandlerBindings);
-        $this->requestCompiler = $requestCompiler ?? new ArgvRequestCompiler();
+        $this->inputCompiler = $inputCompiler ?? new ArgvInputCompiler();
     }
 
     /**
      * Handles a console command
      *
-     * @param mixed $input The raw input to parse
-     * @param IResponse $response The response to write to
+     * @param mixed $rawInput The raw input to parse
+     * @param IOutput $output The output to write to
      * @return int The status code
      */
-    public function handle($input, IResponse $response = null): int
+    public function handle($rawInput, IOutput $output = null): int
     {
-        if ($response === null) {
-            $response = new ConsoleResponse(new ResponseCompiler());
+        if ($output === null) {
+            $output = new ConsoleOutput(new OutputCompiler());
         }
 
         try {
-            $request = $this->requestCompiler->compile($input);
+            $input = $this->inputCompiler->compile($rawInput);
 
             // Handle no command name being invoked as the same thing as invoking the about command
-            if ($request->commandName === '') {
-                $aboutRequest = new Request('about', $request->argumentValues, $request->options);
+            if ($input->commandName === '') {
+                $aboutInput = new Input('about', $input->argumentValues, $input->options);
 
-                return $this->commandBus->handle($aboutRequest, $response);
+                return $this->commandBus->handle($aboutInput, $output);
             }
 
-            return $this->commandBus->handle($request, $response);
+            return $this->commandBus->handle($input, $output);
         } catch (InvalidArgumentException $ex) {
-            $response->writeln("<error>{$ex->getMessage()}</error>");
+            $output->writeln("<error>{$ex->getMessage()}</error>");
 
             return StatusCodes::ERROR;
         } catch (Exception | Throwable $ex) {
-            $response->writeln("<fatal>{$ex->getMessage()}</fatal>");
+            $output->writeln("<fatal>{$ex->getMessage()}</fatal>");
 
             return StatusCodes::FATAL;
         }

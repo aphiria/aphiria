@@ -16,8 +16,8 @@ use Aphiria\Console\Commands\CommandHandlerBinding;
 use Aphiria\Console\Commands\CommandHandlerBindingRegistry;
 use Aphiria\Console\Commands\CommandInput;
 use Aphiria\Console\Commands\ICommandHandler;
-use Aphiria\Console\Requests\Request;
-use Aphiria\Console\Responses\IResponse;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCodes;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -31,27 +31,27 @@ class CommandBusTest extends TestCase
     private $commandHandlerBindings;
     /** @var CommandBus */
     private $commandBus;
-    /** @var IResponse|MockObject */
-    private $response;
+    /** @var IOutput|MockObject */
+    private $output;
 
     public function setUp(): void
     {
         $this->commandHandlerBindings = new CommandHandlerBindingRegistry();
-        $this->response = $this->createMock(IResponse::class);
+        $this->output = $this->createMock(IOutput::class);
         $this->commandBus = new CommandBus($this->commandHandlerBindings);
     }
 
     public function testHandlingWithHandlerThatDoesNotReturnAnythingDefaultsToOk(): void
     {
         $command = new Command('foo', [], [], '');
-        $commandHandler = function (CommandInput $commandInput, IResponse $response) {
-            $this->assertSame($this->response, $response);
+        $commandHandler = function (CommandInput $commandInput, IOutput $output) {
+            $this->assertSame($this->output, $output);
         };
-        $request = new Request('foo', [], []);
+        $input = new Input('foo', [], []);
         $this->commandHandlerBindings->registerCommandHandlerBinding(
             new CommandHandlerBinding($command, $commandHandler)
         );
-        $statusCode = $this->commandBus->handle($request, $this->response);
+        $statusCode = $this->commandBus->handle($input, $this->output);
         $this->assertEquals(StatusCodes::OK, $statusCode);
     }
 
@@ -59,17 +59,17 @@ class CommandBusTest extends TestCase
     {
         $command = new Command('foo', [], [], '');
         $closureWasInvoked = false;
-        $commandHandler = function (CommandInput $commandInput, IResponse $response) use (&$closureWasInvoked) {
-            $this->assertSame($this->response, $response);
+        $commandHandler = function (CommandInput $commandInput, IOutput $output) use (&$closureWasInvoked) {
+            $this->assertSame($this->output, $output);
             $closureWasInvoked = true;
 
             return StatusCodes::OK;
         };
-        $request = new Request('foo', [], []);
+        $input = new Input('foo', [], []);
         $this->commandHandlerBindings->registerCommandHandlerBinding(
             new CommandHandlerBinding($command, $commandHandler)
         );
-        $statusCode = $this->commandBus->handle($request, $this->response);
+        $statusCode = $this->commandBus->handle($input, $this->output);
         $this->assertEquals(StatusCodes::OK, $statusCode);
         $this->assertTrue($closureWasInvoked);
     }
@@ -86,18 +86,18 @@ class CommandBusTest extends TestCase
                 $this->handlerWasInvoked = &$handlerWasInvoked;
             }
 
-            public function handle(CommandInput $commandInput, IResponse $response)
+            public function handle(CommandInput $commandInput, IOutput $output)
             {
                 $this->handlerWasInvoked = true;
 
                 return StatusCodes::OK;
             }
         };
-        $request = new Request('foo', [], []);
+        $input = new Input('foo', [], []);
         $this->commandHandlerBindings->registerCommandHandlerBinding(
             new CommandHandlerBinding($command, $commandHandler)
         );
-        $statusCode = $this->commandBus->handle($request, $this->response);
+        $statusCode = $this->commandBus->handle($input, $this->output);
         $this->assertEquals(StatusCodes::OK, $statusCode);
         $this->assertTrue($handlerWasInvoked);
     }

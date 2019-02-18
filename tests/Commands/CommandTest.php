@@ -11,10 +11,10 @@
 namespace Aphiria\Console\Tests\Commands;
 
 use Aphiria\Console\Commands\Command;
-use Aphiria\Console\Requests\Argument;
-use Aphiria\Console\Requests\ArgumentTypes;
-use Aphiria\Console\Requests\Option;
-use Aphiria\Console\Requests\OptionTypes;
+use Aphiria\Console\Input\Argument;
+use Aphiria\Console\Input\ArgumentTypes;
+use Aphiria\Console\Input\Option;
+use Aphiria\Console\Input\OptionTypes;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

@@ -10,8 +10,8 @@
 
 namespace Aphiria\Console\Commands;
 
-use Aphiria\Console\Requests\Request;
-use Aphiria\Console\Responses\IResponse;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\IOutput;
 use InvalidArgumentException;
 
 /**
@@ -22,10 +22,10 @@ interface ICommandBus
     /**
      * Handles a command by name
      *
-     * @param Request $request The request to handle
-     * @param IResponse $response The response to write to
+     * @param Input $input The input to handle
+     * @param IOutput $output The output to write to
      * @return int The exit code
-     * @throws InvalidArgumentException Thrown if the command did not exist or the request was invalid
+     * @throws InvalidArgumentException Thrown if the command did not exist or the input was invalid
      */
-    public function handle(Request $request, IResponse $response): int;
+    public function handle(Input $input, IOutput $output): int;
 }

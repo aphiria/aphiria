@@ -12,11 +12,11 @@ namespace Aphiria\Console\Tests\Commands;
 
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandInputFactory;
-use Aphiria\Console\Requests\Argument;
-use Aphiria\Console\Requests\ArgumentTypes;
-use Aphiria\Console\Requests\Option;
-use Aphiria\Console\Requests\OptionTypes;
-use Aphiria\Console\Requests\Request;
+use Aphiria\Console\Input\Argument;
+use Aphiria\Console\Input\ArgumentTypes;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Input\Option;
+use Aphiria\Console\Input\OptionTypes;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -36,8 +36,8 @@ class CommandInputFactoryTest extends TestCase
     public function testCompilingArrayArgument(): void
     {
         $command = new Command('name', [new Argument('foo', ArgumentTypes::IS_ARRAY, 'descr')], [], '', '');
-        $request = new Request('name', ['bar', 'baz'], []);
-        $commandInput = $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', ['bar', 'baz'], []);
+        $commandInput = $this->factory->createCommandInput($command, $input);
         $this->assertEquals(['bar', 'baz'], $commandInput->arguments['foo']);
     }
 
@@ -53,8 +53,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', ['bar', 'baz'], []);
-        $commandInput = $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', ['bar', 'baz'], []);
+        $commandInput = $this->factory->createCommandInput($command, $input);
         $this->assertEquals(['bar', 'baz'], $commandInput->arguments['foo']);
         $this->assertEquals('baz', $commandInput->arguments['bar']);
     }
@@ -72,8 +72,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', ['bar', 'baz'], []);
-        $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', ['bar', 'baz'], []);
+        $this->factory->createCommandInput($command, $input);
     }
 
     public function testCompilingNoValueOption(): void
@@ -85,8 +85,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', [], []);
-        $commandInput = $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', [], []);
+        $commandInput = $this->factory->createCommandInput($command, $input);
         $this->assertFalse(isset($commandInput->options['foo']));
     }
 
@@ -100,8 +100,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', [], ['foo' => 'bar']);
-        $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', [], ['foo' => 'bar']);
+        $this->factory->createCommandInput($command, $input);
     }
 
     public function testCompilingOptionWithNullShortNameStillCompiles(): void
@@ -113,8 +113,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', [], ['foo' => 'bar']);
-        $commandInput = $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', [], ['foo' => 'bar']);
+        $commandInput = $this->factory->createCommandInput($command, $input);
         $this->assertEquals('bar', $commandInput->options['foo']);
     }
 
@@ -127,8 +127,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', ['bar'], []);
-        $commandInput = $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', ['bar'], []);
+        $commandInput = $this->factory->createCommandInput($command, $input);
         $this->assertEquals('bar', $commandInput->arguments['foo']);
     }
 
@@ -141,8 +141,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', [], []);
-        $commandInput = $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', [], []);
+        $commandInput = $this->factory->createCommandInput($command, $input);
         $this->assertEquals('baz', $commandInput->arguments['foo']);
     }
 
@@ -158,8 +158,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', [], []);
-        $commandInput = $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', [], []);
+        $commandInput = $this->factory->createCommandInput($command, $input);
         $this->assertEquals('fooValue', $commandInput->arguments['foo']);
         $this->assertEquals('barValue', $commandInput->arguments['bar']);
     }
@@ -173,8 +173,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', [], ['foo' => null]);
-        $commandInput = $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', [], ['foo' => null]);
+        $commandInput = $this->factory->createCommandInput($command, $input);
         $this->assertEquals('bar', $commandInput->options['foo']);
     }
 
@@ -190,8 +190,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', ['bar'], []);
-        $commandInput = $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', ['bar'], []);
+        $commandInput = $this->factory->createCommandInput($command, $input);
         $this->assertEquals('bar', $commandInput->arguments['foo']);
         $this->assertEquals('baz', $commandInput->arguments['bar']);
     }
@@ -205,8 +205,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', ['bar'], []);
-        $commandInput = $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', ['bar'], []);
+        $commandInput = $this->factory->createCommandInput($command, $input);
         $this->assertEquals('bar', $commandInput->arguments['foo']);
     }
 
@@ -220,8 +220,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', [], []);
-        $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', [], []);
+        $this->factory->createCommandInput($command, $input);
     }
 
     public function testCompilingRequiredArgumentsWithoutSpecifyingAllValues(): void
@@ -237,8 +237,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', ['bar'], []);
-        $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', ['bar'], []);
+        $this->factory->createCommandInput($command, $input);
     }
 
     public function testCompilingRequiredValueOption(): void
@@ -250,8 +250,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', [], ['foo' => 'bar']);
-        $commandInput = $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', [], ['foo' => 'bar']);
+        $commandInput = $this->factory->createCommandInput($command, $input);
         $this->assertEquals('bar', $commandInput->options['foo']);
     }
 
@@ -265,8 +265,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', [], ['foo' => null]);
-        $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', [], ['foo' => null]);
+        $this->factory->createCommandInput($command, $input);
     }
 
     public function testDefaultValueIsUsedForOptionsThatAreNotSet(): void
@@ -282,8 +282,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', [], []);
-        $commandInput = $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', [], []);
+        $commandInput = $this->factory->createCommandInput($command, $input);
         $this->assertEquals('foo value', $commandInput->options['foo']);
         $this->assertEquals('bar value', $commandInput->options['bar']);
         $this->assertFalse(isset($commandInput->options['baz']));
@@ -299,8 +299,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', ['bar', 'baz'], []);
-        $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', ['bar', 'baz'], []);
+        $this->factory->createCommandInput($command, $input);
     }
 
     public function testThatShortAndLongOptionsPointToSameOption(): void
@@ -312,8 +312,8 @@ class CommandInputFactoryTest extends TestCase
             '',
             ''
         );
-        $request = new Request('name', [], ['f' => null]);
-        $commandInput = $this->factory->createCommandInput($command, $request);
+        $input = new Input('name', [], ['f' => null]);
+        $commandInput = $this->factory->createCommandInput($command, $input);
         $this->assertEquals('bar', $commandInput->options['foo']);
     }
 }

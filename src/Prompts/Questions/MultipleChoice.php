@@ -27,7 +27,7 @@ class MultipleChoice extends Question
     /*
      * @param string $question The question text
      * @param array $choices The list of choices
-     * @param mixed $defaultResponse The default answer to the question
+     * @param mixed $defaultAnswer The default answer to the question
      */
     public function __construct(string $text, array $choices, $defaultAnswer = null)
     {

@@ -14,15 +14,15 @@ use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandHandlerBinding;
 use Aphiria\Console\Commands\CommandHandlerBindingRegistry;
 use Aphiria\Console\Commands\CommandInput;
+use Aphiria\Console\Input\Argument;
+use Aphiria\Console\Input\ArgumentTypes;
+use Aphiria\Console\Input\Compilers\StringInputCompiler;
+use Aphiria\Console\Input\Option;
+use Aphiria\Console\Input\OptionTypes;
 use Aphiria\Console\Kernel;
-use Aphiria\Console\Requests\Argument;
-use Aphiria\Console\Requests\ArgumentTypes;
-use Aphiria\Console\Requests\Compilers\StringRequestCompiler;
-use Aphiria\Console\Requests\Option;
-use Aphiria\Console\Requests\OptionTypes;
-use Aphiria\Console\Responses\IResponse;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCodes;
-use Aphiria\Console\Tests\Responses\Mocks\Response;
+use Aphiria\Console\Tests\Output\Mocks\Output;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -30,27 +30,27 @@ use PHPUnit\Framework\TestCase;
  */
 class KernelTest extends TestCase
 {
-    /** @var StringRequestCompiler */
-    private $requestCompiler;
+    /** @var StringInputCompiler */
+    private $inputCompiler;
     /** @var CommandHandlerBindingRegistry */
     private $commandHandlerBindings;
-    /** @var Response */
-    private $response;
+    /** @var Output */
+    private $output;
     /** @var Kernel */
     private $kernel;
 
     public function setUp(): void
     {
         $this->commandHandlerBindings = new CommandHandlerBindingRegistry();
-        $this->requestCompiler = new StringRequestCompiler();
-        $this->kernel = new Kernel($this->commandHandlerBindings, $this->requestCompiler);
-        $this->response = new Response();
+        $this->inputCompiler = new StringInputCompiler();
+        $this->kernel = new Kernel($this->commandHandlerBindings, $this->inputCompiler);
+        $this->output = new Output();
     }
 
     public function testHandlingException(): void
     {
         ob_start();
-        $status = $this->kernel->handle("unclosed quote '", $this->response);
+        $status = $this->kernel->handle("unclosed quote '", $this->output);
         ob_end_clean();
         $this->assertEquals(StatusCodes::FATAL, $status);
     }
@@ -60,18 +60,18 @@ class KernelTest extends TestCase
         // Try with command name
         $this->commandHandlerBindings->registerCommandHandlerBinding(new CommandHandlerBinding(
             new Command('holiday', [], [], ''),
-            function (CommandInput $commandInput, IResponse $response) {
+            function (CommandInput $commandInput, IOutput $output) {
                 // Don't do anything
             }
         ));
         ob_start();
-        $status = $this->kernel->handle('help holiday', $this->response);
+        $status = $this->kernel->handle('help holiday', $this->output);
         ob_get_clean();
         $this->assertEquals(StatusCodes::OK, $status);
 
         // Try with command name with no argument
         ob_start();
-        $status = $this->kernel->handle('help', $this->response);
+        $status = $this->kernel->handle('help', $this->output);
         ob_get_clean();
         $this->assertEquals(StatusCodes::OK, $status);
     }
@@ -79,7 +79,7 @@ class KernelTest extends TestCase
     public function testHandlingHelpCommandWithNonExistentCommand(): void
     {
         ob_start();
-        $status = $this->kernel->handle('help fake', $this->response);
+        $status = $this->kernel->handle('help fake', $this->output);
         ob_end_clean();
         $this->assertEquals(StatusCodes::ERROR, $status);
     }
@@ -94,24 +94,24 @@ class KernelTest extends TestCase
                 [new Option('yell', 'y', OptionTypes::OPTIONAL_VALUE, '', 'yes')],
                 ''
             ),
-            function (CommandInput $commandInput, IResponse $response) {
+            function (CommandInput $commandInput, IOutput $output) {
                 $message = 'Happy ' . $commandInput->arguments['holiday'];
 
                 if ($commandInput->options['yell'] === 'yes') {
                     $message .= '!';
                 }
 
-                $response->write($message);
+                $output->write($message);
             }
         ));
         ob_start();
-        $status = $this->kernel->handle('holiday birthday -y', $this->response);
+        $status = $this->kernel->handle('holiday birthday -y', $this->output);
         $this->assertEquals('Happy birthday!', ob_get_clean());
         $this->assertEquals(StatusCodes::OK, $status);
 
         // Test with long option
         ob_start();
-        $status = $this->kernel->handle('holiday Easter --yell=no', $this->response);
+        $status = $this->kernel->handle('holiday Easter --yell=no', $this->output);
         $this->assertEquals('Happy Easter', ob_get_clean());
         $this->assertEquals(StatusCodes::OK, $status);
     }
@@ -119,7 +119,7 @@ class KernelTest extends TestCase
     public function testHandlingMissingCommand(): void
     {
         ob_start();
-        $status = $this->kernel->handle('fake', $this->response);
+        $status = $this->kernel->handle('fake', $this->output);
         ob_get_clean();
         $this->assertEquals(StatusCodes::ERROR, $status);
     }
@@ -128,12 +128,12 @@ class KernelTest extends TestCase
     {
         $this->commandHandlerBindings->registerCommandHandlerBinding(new CommandHandlerBinding(
             new Command('foo', [], [], ''),
-            function (CommandInput $commandInput, IResponse $response) {
-                $response->write('foo');
+            function (CommandInput $commandInput, IOutput $output) {
+                $output->write('foo');
             }
         ));
         ob_start();
-        $status = $this->kernel->handle('foo', $this->response);
+        $status = $this->kernel->handle('foo', $this->output);
         $this->assertEquals('foo', ob_get_clean());
         $this->assertEquals(StatusCodes::OK, $status);
     }

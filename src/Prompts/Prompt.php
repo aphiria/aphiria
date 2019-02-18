@@ -10,10 +10,10 @@
 
 namespace Aphiria\Console\Prompts;
 
+use Aphiria\Console\Output\Formatters\PaddingFormatter;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\Prompts\Questions\MultipleChoice;
 use Aphiria\Console\Prompts\Questions\Question;
-use Aphiria\Console\Responses\Formatters\PaddingFormatter;
-use Aphiria\Console\Responses\IResponse;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -46,17 +46,17 @@ class Prompt
      * Prompts the user to answer a question
      *
      * @param Question $question The question to ask
-     * @param IResponse $response The response to write output to
+     * @param IOutput $output The output to write to
      * @return mixed The user's answer to the question
      * @throws RuntimeException Thrown if we failed to get the user's answer
      */
-    public function ask(Question $question, IResponse $response)
+    public function ask(Question $question, IOutput $output)
     {
-        $response->write("<question>{$question->text}</question>");
+        $output->write("<question>{$question->text}</question>");
 
         if ($question instanceof MultipleChoice) {
             /** @var MultipleChoice $question */
-            $response->writeln('');
+            $output->writeln('');
             $choicesAreAssociative = $question->choicesAreAssociative();
             $choiceTexts = [];
 
@@ -69,10 +69,10 @@ class Prompt
                 $choiceTexts[] = [$key . ')', $choice];
             }
 
-            $response->writeln($this->paddingFormatter->format($choiceTexts, function ($row) {
+            $output->writeln($this->paddingFormatter->format($choiceTexts, function ($row) {
                 return "  {$row[0]} {$row[1]}";
             }));
-            $response->write($question->getAnswerLineString());
+            $output->write($question->getAnswerLineString());
         }
 
         $answer = fgets($this->inputStream, 4096);

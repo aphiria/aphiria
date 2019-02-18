@@ -14,10 +14,10 @@ use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandHandlerBindingRegistry;
 use Aphiria\Console\Commands\CommandInput;
 use Aphiria\Console\Commands\ICommandHandler;
-use Aphiria\Console\Requests\Option;
-use Aphiria\Console\Responses\Formatters\CommandFormatter;
-use Aphiria\Console\Responses\Formatters\PaddingFormatter;
-use Aphiria\Console\Responses\IResponse;
+use Aphiria\Console\Input\Option;
+use Aphiria\Console\Output\Formatters\CommandFormatter;
+use Aphiria\Console\Output\Formatters\PaddingFormatter;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCodes;
 use InvalidArgumentException;
 
@@ -65,11 +65,11 @@ EOF;
     /**
      * @inheritDoc
      */
-    public function handle(CommandInput $commandInput, IResponse $response)
+    public function handle(CommandInput $commandInput, IOutput $output)
     {
         try {
             if (!isset($commandInput->arguments['command'])) {
-                $response->writeln("<comment>Pass in the name of the command you'd like help with</comment>");
+                $output->writeln("<comment>Pass in the name of the command you'd like help with</comment>");
 
                 return StatusCodes::OK;
             }
@@ -99,9 +99,9 @@ EOF;
                 ],
                 self::$template
             );
-            $response->writeln($compiledTemplate);
+            $output->writeln($compiledTemplate);
         } catch (InvalidArgumentException $ex) {
-            $response->writeln("<error>Command {$commandInput->arguments['command']} does not exist</error>");
+            $output->writeln("<error>Command {$commandInput->arguments['command']} does not exist</error>");
 
             return StatusCodes::ERROR;
         }

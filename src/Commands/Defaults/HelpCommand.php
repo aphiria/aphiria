@@ -11,8 +11,8 @@
 namespace Aphiria\Console\Commands\Defaults;
 
 use Aphiria\Console\Commands\Command;
-use Aphiria\Console\Requests\Argument;
-use Aphiria\Console\Requests\ArgumentTypes;
+use Aphiria\Console\Input\Argument;
+use Aphiria\Console\Input\ArgumentTypes;
 
 /**
  * Defines the help command

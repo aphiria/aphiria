@@ -31,7 +31,7 @@ class QuestionTest extends TestCase
         $this->assertEquals('foo', $this->question->formatAnswer('foo'));
     }
 
-    public function testGettingDefaultResponse(): void
+    public function testGettingDefaultAnswer(): void
     {
         $this->assertEquals('foo', $this->question->defaultAnswer);
     }

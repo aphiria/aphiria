@@ -10,6 +10,9 @@
 
 namespace Aphiria\Console\Commands;
 
+/**
+ * Defines input that's associated with a command
+ */
 final class CommandInput
 {
     /** @var array The mapping of argument names to values */

@@ -10,8 +10,8 @@
 
 namespace Aphiria\Console\Commands;
 
-use Aphiria\Console\Requests\Request;
-use Aphiria\Console\Responses\IResponse;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCodes;
 
 /**
@@ -39,16 +39,16 @@ final class CommandBus implements ICommandBus
     /**
      * @inheritDoc
      */
-    public function handle(Request $request, IResponse $response): int
+    public function handle(Input $input, IOutput $output): int
     {
-        $binding = $this->commandHandlerBindings->getCommandHandlerBinding($request->commandName);
-        $commandInput = $this->commandInputFactory->createCommandInput($binding->command, $request);
+        $binding = $this->commandHandlerBindings->getCommandHandlerBinding($input->commandName);
+        $commandInput = $this->commandInputFactory->createCommandInput($binding->command, $input);
 
         if ($binding->commandHandler instanceof ICommandHandler) {
-            $statusCode = $binding->commandHandler->handle($commandInput, $response);
+            $statusCode = $binding->commandHandler->handle($commandInput, $output);
         } else {
             // Assume a closure
-            $statusCode = ($binding->commandHandler)($commandInput, $response);
+            $statusCode = ($binding->commandHandler)($commandInput, $output);
         }
 
         return $statusCode ?? StatusCodes::OK;

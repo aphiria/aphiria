@@ -10,14 +10,14 @@
 
 namespace Aphiria\Console\Tests\Prompts;
 
+use Aphiria\Console\Output\Compilers\OutputCompiler;
+use Aphiria\Console\Output\Compilers\Parsers\Lexers\OutputLexer;
+use Aphiria\Console\Output\Compilers\Parsers\OutputParser;
+use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Prompts\Prompt;
 use Aphiria\Console\Prompts\Questions\MultipleChoice;
 use Aphiria\Console\Prompts\Questions\Question;
-use Aphiria\Console\Responses\Compilers\Lexers\ResponseLexer;
-use Aphiria\Console\Responses\Compilers\Parsers\ResponseParser;
-use Aphiria\Console\Responses\Compilers\ResponseCompiler;
-use Aphiria\Console\Responses\Formatters\PaddingFormatter;
-use Aphiria\Console\Tests\Responses\Mocks\Response;
+use Aphiria\Console\Tests\Output\Mocks\Output;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -26,14 +26,14 @@ use PHPUnit\Framework\TestCase;
  */
 class PromptTest extends TestCase
 {
-    /** @var Response The response to use in tests */
-    private $response;
+    /** @var Output The output to use in tests */
+    private $output;
     /** @var PaddingFormatter The space padding formatter to use in tests */
     private $paddingFormatter;
 
     public function setUp(): void
     {
-        $this->response = new Response(new ResponseCompiler(new ResponseLexer(), new ResponseParser()));
+        $this->output = new Output(new OutputCompiler(new OutputLexer(), new OutputParser()));
         $this->paddingFormatter = new PaddingFormatter();
     }
 
@@ -42,7 +42,7 @@ class PromptTest extends TestCase
         $prompt = new Prompt($this->paddingFormatter, $this->getInputStream('  Dave  '));
         $question = new Question('Name of dev', 'unknown');
         ob_start();
-        $answer = $prompt->ask($question, $this->response);
+        $answer = $prompt->ask($question, $this->output);
         $questionText = ob_get_clean();
         $this->assertEquals("\033[37;44m{$question->text}\033[39;49m", $questionText);
         $this->assertEquals('Dave', $answer);
@@ -53,7 +53,7 @@ class PromptTest extends TestCase
         $prompt = new Prompt($this->paddingFormatter, $this->getInputStream('2'));
         $question = new MultipleChoice('Pick', ['foo', 'bar']);
         ob_start();
-        $answer = $prompt->ask($question, $this->response);
+        $answer = $prompt->ask($question, $this->output);
         $questionText = ob_get_clean();
         $this->assertEquals(
             "\033[37;44m{$question->text}\033[39;49m" . PHP_EOL . '  1) foo' . PHP_EOL . '  2) bar' . PHP_EOL . '  > ',
@@ -67,7 +67,7 @@ class PromptTest extends TestCase
         $prompt = new Prompt($this->paddingFormatter, $this->getInputStream('c'));
         $question = new MultipleChoice('Pick', ['a' => 'b', 'c' => 'd']);
         ob_start();
-        $answer = $prompt->ask($question, $this->response);
+        $answer = $prompt->ask($question, $this->output);
         $questionText = ob_get_clean();
         $this->assertEquals(
             "\033[37;44m{$question->text}\033[39;49m" . PHP_EOL . '  a) b' . PHP_EOL . '  c) d' . PHP_EOL . '  > ',
@@ -82,7 +82,7 @@ class PromptTest extends TestCase
         $question = new MultipleChoice('Pick', ['foo', 'bar']);
         $question->setAnswerLineString('  : ');
         ob_start();
-        $answer = $prompt->ask($question, $this->response);
+        $answer = $prompt->ask($question, $this->output);
         $questionText = ob_get_clean();
         $this->assertEquals(
             "\033[37;44m{$question->text}\033[39;49m" . PHP_EOL . '  1) foo' . PHP_EOL . '  2) bar' . PHP_EOL . '  : ',
@@ -96,7 +96,7 @@ class PromptTest extends TestCase
         $prompt = new Prompt($this->paddingFormatter, $this->getInputStream('Dave'));
         $question = new Question('Name of dev', 'unknown');
         ob_start();
-        $answer = $prompt->ask($question, $this->response);
+        $answer = $prompt->ask($question, $this->output);
         $questionText = ob_get_clean();
         $this->assertEquals("\033[37;44m{$question->text}\033[39;49m", $questionText);
         $this->assertEquals('Dave', $answer);
@@ -110,7 +110,7 @@ class PromptTest extends TestCase
         ob_start();
 
         try {
-            $prompt->ask($question, $this->response);
+            $prompt->ask($question, $this->output);
         } catch (InvalidArgumentException $ex) {
             $triggeredException = true;
             ob_end_clean();
@@ -127,7 +127,7 @@ class PromptTest extends TestCase
         ob_start();
 
         try {
-            $prompt->ask($question, $this->response);
+            $prompt->ask($question, $this->output);
         } catch (InvalidArgumentException $ex) {
             $triggeredException = true;
             ob_end_clean();
@@ -136,12 +136,12 @@ class PromptTest extends TestCase
         $this->assertTrue($triggeredException);
     }
 
-    public function testNotReceivingResponse(): void
+    public function testNotReceivingAnswer(): void
     {
         $prompt = new Prompt($this->paddingFormatter, $this->getInputStream(' '));
         $question = new Question('Name of dev', 'unknown');
         ob_start();
-        $answer = $prompt->ask($question, $this->response);
+        $answer = $prompt->ask($question, $this->output);
         $questionText = ob_get_clean();
         $this->assertEquals("\033[37;44m{$question->text}\033[39;49m", $questionText);
         $this->assertEquals('unknown', $answer);

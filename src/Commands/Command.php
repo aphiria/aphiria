@@ -10,8 +10,8 @@
 
 namespace Aphiria\Console\Commands;
 
-use Aphiria\Console\Requests\Argument;
-use Aphiria\Console\Requests\Option;
+use Aphiria\Console\Input\Argument;
+use Aphiria\Console\Input\Option;
 use InvalidArgumentException;
 
 /**
