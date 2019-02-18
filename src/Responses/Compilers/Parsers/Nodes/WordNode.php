@@ -13,7 +13,7 @@ namespace Aphiria\Console\Responses\Compilers\Parsers\Nodes;
 /**
  * Defines a word node
  */
-class WordNode extends Node
+final class WordNode extends Node
 {
     /**
      * @inheritdoc

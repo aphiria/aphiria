@@ -17,14 +17,14 @@ use Aphiria\Console\Responses\Compilers\Elements\TextStyles;
 /**
  * Defines the element registrant
  */
-class ElementRegistrant
+final class ElementRegistrant
 {
     /**
      * Registers the Apex elements
      *
-     * @param ICompiler $compiler The compiler to register to
+     * @param IResponseCompiler $compiler The compiler to register to
      */
-    public function registerElements(ICompiler $compiler): void
+    public function registerElements(IResponseCompiler $compiler): void
     {
         $compiler->registerElement('success', new Style(Colors::BLACK, Colors::GREEN));
         $compiler->registerElement('info', new Style(Colors::GREEN));

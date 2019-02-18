@@ -13,7 +13,7 @@ namespace Aphiria\Console\Responses\Compilers\Lexers\Tokens;
 /**
  * Defines the different token types
  */
-class TokenTypes
+final class TokenTypes
 {
     /** Defines an unknown token type */
     public const T_UNKNOWN = 'T_UNKNOWN';

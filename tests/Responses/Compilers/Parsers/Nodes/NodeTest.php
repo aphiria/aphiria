@@ -18,21 +18,15 @@ use PHPUnit\Framework\TestCase;
  */
 class NodeTest extends TestCase
 {
-    /**
-     * Tests adding a child
-     */
     public function testAddingChild(): void
     {
         $parent = new Node('foo');
         $child = new Node('bar');
         $parent->addChild($child);
-        $this->assertEquals([$child], $parent->getChildren());
-        $this->assertSame($parent, $child->getParent());
+        $this->assertEquals([$child], $parent->children);
+        $this->assertSame($parent, $child->parent);
     }
 
-    /**
-     * Tests checking if nodes are leaves
-     */
     public function testCheckingIfLeaves(): void
     {
         $parent = new Node('foo');
@@ -42,9 +36,6 @@ class NodeTest extends TestCase
         $this->assertTrue($child->isLeaf());
     }
 
-    /**
-     * Tests checking if nodes are roots
-     */
     public function testCheckingIfRoots(): void
     {
         $parent = new Node('foo');
@@ -54,12 +45,9 @@ class NodeTest extends TestCase
         $this->assertFalse($child->isRoot());
     }
 
-    /**
-     * Tests getting the value
-     */
     public function testGettingValue(): void
     {
         $node = new Node('foo');
-        $this->assertEquals('foo', $node->getValue());
+        $this->assertEquals('foo', $node->value);
     }
 }

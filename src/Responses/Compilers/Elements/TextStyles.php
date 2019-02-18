@@ -13,7 +13,7 @@ namespace Aphiria\Console\Responses\Compilers\Elements;
 /**
  * Defines the list of text styles
  */
-class TextStyles
+final class TextStyles
 {
     /** Text is blinking */
     public const BLINK = 'blink';

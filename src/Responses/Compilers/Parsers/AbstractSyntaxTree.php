@@ -16,7 +16,7 @@ use Aphiria\Console\Responses\Compilers\Parsers\Nodes\RootNode;
 /**
  * Defines a response syntax tree
  */
-class AbstractSyntaxTree
+final class AbstractSyntaxTree
 {
     /** @var RootNode The root node */
     private $rootNode;

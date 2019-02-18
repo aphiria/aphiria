@@ -15,18 +15,18 @@ use InvalidArgumentException;
 /**
  * Defines a console command option
  */
-class Option
+final class Option
 {
     /** @var string The name of the option */
-    private $name;
+    public $name;
     /** @var string|null The short name of the option if it has one, otherwise null */
-    private $shortName;
+    public $shortName;
     /** @var int The type of option this is */
-    private $type;
+    public $type;
     /** @var string A brief description of the option */
-    private $description;
+    public $description;
     /** @var mixed The default value for the option if it's optional */
-    private $defaultValue;
+    public $defaultValue;
 
     /**
      * @param string $name The name of the option
@@ -36,7 +36,7 @@ class Option
      * @param mixed $defaultValue The default value for the option if it's optional
      * @throws InvalidArgumentException Thrown if the type is invalid
      */
-    public function __construct(string $name, $shortName, int $type, string $description, $defaultValue = null)
+    public function __construct(string $name, ?string $shortName, int $type, string $description, $defaultValue = null)
     {
         if (($type & 3) === 3) {
             throw new InvalidArgumentException('Option type cannot be both optional and required');
@@ -61,38 +61,6 @@ class Option
         $this->type = $type;
         $this->description = $description;
         $this->defaultValue = $defaultValue;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDefaultValue()
-    {
-        return $this->defaultValue;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getShortName(): ?string
-    {
-        return $this->shortName;
     }
 
     /**

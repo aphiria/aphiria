@@ -15,7 +15,7 @@ use InvalidArgumentException;
 /**
  * Defines the style of an element
  */
-class Style
+final class Style
 {
     /**
      * The list of possible foreground colors
@@ -61,11 +61,11 @@ class Style
         TextStyles::BLINK => [5, 25]
     ];
     /** @var string|null The foreground color */
-    private $foregroundColor;
+    public $foregroundColor;
     /** @var string|null The background color */
-    private $backgroundColor;
+    public $backgroundColor;
     /** @var array The list of text styles */
-    private $textStyles = [];
+    public $textStyles = [];
 
     /**
      * @param string|null $foregroundColor The foreground color
@@ -74,8 +74,8 @@ class Style
      */
     public function __construct(string $foregroundColor = null, string $backgroundColor = null, array $textStyles = [])
     {
-        $this->setForegroundColor($foregroundColor);
-        $this->setBackgroundColor($backgroundColor);
+        $this->foregroundColor = $foregroundColor;
+        $this->backgroundColor = $backgroundColor;
         $this->addTextStyles($textStyles);
     }
 
@@ -92,7 +92,7 @@ class Style
         }
 
         // Don't double-add a style
-        if (!in_array($style, $this->textStyles)) {
+        if (!in_array($style, $this->textStyles, true)) {
             $this->textStyles[] = $style;
         }
     }
@@ -154,30 +154,6 @@ class Style
     }
 
     /**
-     * @return string|null
-     */
-    public function getBackgroundColor(): ?string
-    {
-        return $this->backgroundColor;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getForegroundColor(): ?string
-    {
-        return $this->foregroundColor;
-    }
-
-    /**
-     * @return array
-     */
-    public function getTextStyles(): array
-    {
-        return $this->textStyles;
-    }
-
-    /**
      * Removes a text style
      *
      * @param string $style The style to remove
@@ -189,34 +165,8 @@ class Style
             throw new InvalidArgumentException("Invalid text style \"$style\"");
         }
 
-        if (($index = array_search($style, $this->textStyles)) !== false) {
+        if (($index = array_search($style, $this->textStyles, true)) !== false) {
             unset($this->textStyles[$index]);
         }
-    }
-
-    /**
-     * @param string|null $backgroundColor
-     * @throws InvalidArgumentException Thrown if the color was invalid
-     */
-    public function setBackgroundColor(string $backgroundColor = null): void
-    {
-        if ($backgroundColor !== null && !isset(self::$supportedBackgroundColors[$backgroundColor])) {
-            throw new InvalidArgumentException("Invalid background color \"$backgroundColor\"");
-        }
-
-        $this->backgroundColor = $backgroundColor;
-    }
-
-    /**
-     * @param string|null $foregroundColor
-     * @throws InvalidArgumentException Thrown if the color was invalid
-     */
-    public function setForegroundColor(string $foregroundColor = null): void
-    {
-        if ($foregroundColor !== null && !isset(self::$supportedForegroundColors[$foregroundColor])) {
-            throw new InvalidArgumentException("Invalid foreground color \"$foregroundColor\"");
-        }
-
-        $this->foregroundColor = $foregroundColor;
     }
 }

@@ -16,12 +16,12 @@ namespace Aphiria\Console\Prompts\Questions;
 class Confirmation extends Question
 {
     /**
-     * @param string $question The question text
+     * @param string $text The question text
      * @param bool $defaultAnswer The default answer to the question
      */
-    public function __construct(string $question, bool $defaultAnswer = true)
+    public function __construct(string $text, bool $defaultAnswer = true)
     {
-        parent::__construct($question, $defaultAnswer);
+        parent::__construct($text, $defaultAnswer);
     }
 
     /**

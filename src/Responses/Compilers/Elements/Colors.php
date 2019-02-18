@@ -13,7 +13,7 @@ namespace Aphiria\Console\Responses\Compilers\Elements;
 /**
  * Defines the list of colors used by a console
  */
-class Colors
+final class Colors
 {
     /** The color black */
     public const BLACK = 'black';

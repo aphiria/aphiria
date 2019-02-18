@@ -13,14 +13,14 @@ namespace Aphiria\Console\Responses\Compilers\Lexers\Tokens;
 /**
  * Defines a response token
  */
-class Token
+final class Token
 {
     /** @var int The token type */
-    private $type;
+    public $type;
     /** @var mixed The value of the token */
-    private $value;
+    public $value;
     /** @var int The position of the token in the original text */
-    private $position;
+    public $position;
 
     /**
      * @param string $type The token type
@@ -32,29 +32,5 @@ class Token
         $this->type = $type;
         $this->value = $value;
         $this->position = $position;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPosition(): int
-    {
-        return $this->position;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getValue()
-    {
-        return $this->value;
     }
 }

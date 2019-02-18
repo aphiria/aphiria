@@ -10,19 +10,19 @@
 
 namespace Aphiria\Console;
 
-use Aphiria\Console\Commands\AboutCommand;
-use Aphiria\Console\Commands\CommandCollection;
-use Aphiria\Console\Commands\Compilers\ICompiler as ICommandCompiler;
-use Aphiria\Console\Commands\HelpCommand;
-use Aphiria\Console\Commands\ICommand;
-use Aphiria\Console\Requests\IRequest;
-use Aphiria\Console\Requests\Parsers\IParser;
-use Aphiria\Console\Responses\Compilers\Compiler;
-use Aphiria\Console\Responses\Compilers\Lexers\Lexer;
-use Aphiria\Console\Responses\Compilers\Parsers\Parser;
+use Aphiria\Console\Commands\CommandBus;
+use Aphiria\Console\Commands\CommandHandlerBinding;
+use Aphiria\Console\Commands\CommandHandlerBindingRegistry;
+use Aphiria\Console\Commands\Defaults\AboutCommand;
+use Aphiria\Console\Commands\Defaults\AboutCommandHandler;
+use Aphiria\Console\Commands\Defaults\HelpCommand;
+use Aphiria\Console\Commands\Defaults\HelpCommandHandler;
+use Aphiria\Console\Commands\ICommandBus;
+use Aphiria\Console\Requests\Compilers\ArgvRequestCompiler;
+use Aphiria\Console\Requests\Compilers\IRequestCompiler;
+use Aphiria\Console\Requests\Request;
+use Aphiria\Console\Responses\Compilers\ResponseCompiler;
 use Aphiria\Console\Responses\ConsoleResponse;
-use Aphiria\Console\Responses\Formatters\CommandFormatter;
-use Aphiria\Console\Responses\Formatters\PaddingFormatter;
 use Aphiria\Console\Responses\IResponse;
 use Exception;
 use InvalidArgumentException;
@@ -31,28 +31,30 @@ use Throwable;
 /**
  * Defines the console kernel
  */
-class Kernel
+final class Kernel
 {
-    /** @var IParser The request parser to use */
-    private $requestParser;
-    /** @var ICommandCompiler The command compiler to use */
-    private $commandCompiler;
-    /** @var CommandCollection The list of commands to choose from */
-    private $commandCollection;
+    /** @var ICommandBus The command bus that can handle commands */
+    private $commandBus;
+    /** @var IRequestCompiler The request compiler to use */
+    private $requestCompiler;
 
     /**
-     * @param IParser $requestParser The request parser to use
-     * @param ICommandCompiler $commandCompiler The command compiler to use
-     * @param CommandCollection $commandCollection The list of commands to choose from
+     * @param CommandHandlerBindingRegistry $commandHandlerBindings The command handler bindings
+     * @param IRequestCompiler|null $requestCompiler The request compiler to use
      */
     public function __construct(
-        IParser $requestParser,
-        ICommandCompiler $commandCompiler,
-        CommandCollection $commandCollection
+        CommandHandlerBindingRegistry $commandHandlerBindings,
+        IRequestCompiler $requestCompiler = null
     ) {
-        $this->requestParser = $requestParser;
-        $this->commandCompiler = $commandCompiler;
-        $this->commandCollection = $commandCollection;
+        // Set up our default command handlers
+        $commandHandlerBindings->registerCommandHandlerBinding(
+            new CommandHandlerBinding(new HelpCommand(), new HelpCommandHandler($commandHandlerBindings))
+        );
+        $commandHandlerBindings->registerCommandHandlerBinding(
+            new CommandHandlerBinding(new AboutCommand(), new AboutCommandHandler($commandHandlerBindings))
+        );
+        $this->commandBus = new CommandBus($commandHandlerBindings);
+        $this->requestCompiler = $requestCompiler ?? new ArgvRequestCompiler();
     }
 
     /**
@@ -65,89 +67,28 @@ class Kernel
     public function handle($input, IResponse $response = null): int
     {
         if ($response === null) {
-            $response = new ConsoleResponse(new Compiler(new Lexer(), new Parser()));
+            $response = new ConsoleResponse(new ResponseCompiler());
         }
 
         try {
-            $request = $this->requestParser->parse($input);
+            $request = $this->requestCompiler->compile($input);
 
-            if ($this->isInvokingHelpCommand($request)) {
-                // We are going to execute the help command
-                $compiledCommand = $this->getCompiledHelpCommand($request);
-            } elseif ($this->commandCollection->has($request->getCommandName())) {
-                // We are going to execute the command that was entered
-                $command = $this->commandCollection->get($request->getCommandName());
-                $compiledCommand = $this->commandCompiler->compile($command, $request);
-            } else {
-                // We are defaulting to the about command
-                $compiledCommand = new AboutCommand($this->commandCollection, new PaddingFormatter());
+            // Handle no command name being invoked as the same thing as invoking the about command
+            if ($request->commandName === '') {
+                $aboutRequest = new Request('about', $request->argumentValues, $request->options);
+
+                return $this->commandBus->handle($aboutRequest, $response);
             }
 
-            $statusCode = $compiledCommand->execute($response);
-
-            if ($statusCode === null) {
-                return StatusCodes::OK;
-            }
-
-            return $statusCode;
+            return $this->commandBus->handle($request, $response);
         } catch (InvalidArgumentException $ex) {
             $response->writeln("<error>{$ex->getMessage()}</error>");
 
             return StatusCodes::ERROR;
-        } catch (Exception $ex) {
-            $response->writeln("<fatal>{$ex->getMessage()}</fatal>");
-
-            return StatusCodes::FATAL;
-        } catch (Throwable $ex) {
+        } catch (Exception | Throwable $ex) {
             $response->writeln("<fatal>{$ex->getMessage()}</fatal>");
 
             return StatusCodes::FATAL;
         }
-    }
-
-    /**
-     * Gets the compiled help command
-     *
-     * @param IRequest $request The parsed request
-     * @return ICommand The compiled help command
-     * @throws InvalidArgumentException Thrown if the command that is requesting help does not exist
-     */
-    private function getCompiledHelpCommand(IRequest $request): ICommand
-    {
-        $helpCommand = new HelpCommand(new CommandFormatter(), new PaddingFormatter());
-        $commandName = null;
-
-        if ($request->getCommandName() === 'help') {
-            $compiledHelpCommand = $this->commandCompiler->compile($helpCommand, $request);
-
-            if ($compiledHelpCommand->argumentValueIsSet('command')) {
-                $commandName = $compiledHelpCommand->getArgumentValue('command');
-            }
-        } else {
-            $commandName = $request->getCommandName();
-        }
-
-        // Set the command only if it was passed as an argument to the help command
-        if ($commandName !== null && $commandName !== '') {
-            if (!$this->commandCollection->has($commandName)) {
-                throw new InvalidArgumentException("No command with name \"$commandName\" exists");
-            }
-
-            $command = $this->commandCollection->get($commandName);
-            $helpCommand->setCommand($command);
-        }
-
-        return $helpCommand;
-    }
-
-    /**
-     * Gets whether or not the input is invoking the help command
-     *
-     * @param IRequest $request The parsed request
-     * @return bool True if it is invoking the help command, otherwise false
-     */
-    private function isInvokingHelpCommand(IRequest $request): bool
-    {
-        return $request->getCommandName() === 'help' || $request->optionIsSet('h') || $request->optionIsSet('help');
     }
 }

@@ -27,17 +27,11 @@ class ParserTest extends TestCase
     /** @var Parser The parser to use in tests */
     private $parser;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->parser = new Parser();
     }
 
-    /**
-     * Tests incorrectly nested tags
-     */
     public function testIncorrectlyNestedTags(): void
     {
         $this->expectException(RuntimeException::class);
@@ -52,9 +46,6 @@ class ParserTest extends TestCase
         $this->parser->parse($tokens);
     }
 
-    /**
-     * Tests parsing adjacent elements
-     */
     public function testParsingAdjacentElements(): void
     {
         $tokens = [
@@ -79,9 +70,6 @@ class ParserTest extends TestCase
         );
     }
 
-    /**
-     * Tests parsing an element with no children
-     */
     public function testParsingElementWithNoChildren(): void
     {
         $tokens = [
@@ -98,9 +86,6 @@ class ParserTest extends TestCase
         );
     }
 
-    /**
-     * Tests parsing an escaped tag at the beginning of the string
-     */
     public function testParsingEscapedTagAtBeginning(): void
     {
         $tokens = [
@@ -113,9 +98,6 @@ class ParserTest extends TestCase
         $this->assertEquals($expectedOutput, $this->parser->parse($tokens));
     }
 
-    /**
-     * Tests parsing an escaped tag in between tags
-     */
     public function testParsingEscapedTagInBetweenTags(): void
     {
         $tokens = [
@@ -131,9 +113,6 @@ class ParserTest extends TestCase
         $this->assertEquals($expectedOutput, $this->parser->parse($tokens));
     }
 
-    /**
-     * Tests parsing nested elements
-     */
     public function testParsingNestedElements(): void
     {
         $tokens = [
@@ -160,9 +139,6 @@ class ParserTest extends TestCase
         );
     }
 
-    /**
-     * Tests parsing nested elements surrounded by words
-     */
     public function testParsingNestedElementsSurroundedByWords(): void
     {
         $tokens = [
@@ -193,9 +169,6 @@ class ParserTest extends TestCase
         );
     }
 
-    /**
-     * Tests parsing nested elements with no children
-     */
     public function testParsingNestedElementsWithNoChildren(): void
     {
         $tokens = [
@@ -215,9 +188,6 @@ class ParserTest extends TestCase
         );
     }
 
-    /**
-     * Tests parsing plain text
-     */
     public function testParsingPlainText(): void
     {
         $tokens = [
@@ -233,9 +203,6 @@ class ParserTest extends TestCase
         );
     }
 
-    /**
-     * Tests parsing a single element
-     */
     public function testParsingSingleElement(): void
     {
         $tokens = [
@@ -251,9 +218,6 @@ class ParserTest extends TestCase
         $this->assertEquals($expectedOutput, $this->parser->parse($tokens));
     }
 
-    /**
-     * Tests parsing with an unclosed tag
-     */
     public function testParsingWithUnclosedTag(): void
     {
         $this->expectException(RuntimeException::class);
@@ -265,9 +229,6 @@ class ParserTest extends TestCase
         $this->parser->parse($tokens);
     }
 
-    /**
-     * Tests parsing with an unopened tag
-     */
     public function testParsingWithUnopenedTag(): void
     {
         $this->expectException(RuntimeException::class);

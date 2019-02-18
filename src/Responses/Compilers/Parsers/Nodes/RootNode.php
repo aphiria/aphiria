@@ -13,19 +13,11 @@ namespace Aphiria\Console\Responses\Compilers\Parsers\Nodes;
 /**
  * Defines a root node
  */
-class RootNode extends Node
+final class RootNode extends Node
 {
     public function __construct()
     {
         parent::__construct();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getParent(): Node
-    {
-        return $this;
     }
 
     /**

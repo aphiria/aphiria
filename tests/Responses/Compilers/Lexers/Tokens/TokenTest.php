@@ -19,38 +19,11 @@ use PHPUnit\Framework\TestCase;
  */
 class TokenTest extends TestCase
 {
-    /** @var Token The token to use in tests */
-    private $token;
-
-    /**
-     * Sets up the tests
-     */
-    public function setUp(): void
+    public function testPropertiesAreSetInConstructor(): void
     {
-        $this->token = new Token(TokenTypes::T_WORD, 'foo', 24);
-    }
-
-    /**
-     * Tests getting the position
-     */
-    public function testGettingPosition(): void
-    {
-        $this->assertEquals(24, $this->token->getPosition());
-    }
-
-    /**
-     * Tests getting the type
-     */
-    public function testGettingType(): void
-    {
-        $this->assertEquals(TokenTypes::T_WORD, $this->token->getType());
-    }
-
-    /**
-     * Tests getting the value
-     */
-    public function testGettingValue(): void
-    {
-        $this->assertEquals('foo', $this->token->getValue());
+        $token = new Token(TokenTypes::T_WORD, 'foo', 24);
+        $this->assertEquals(TokenTypes::T_WORD, $token->type);
+        $this->assertEquals('foo', $token->value);
+        $this->assertEquals(24, $token->position);
     }
 }

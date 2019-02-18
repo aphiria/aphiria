@@ -10,7 +10,7 @@
 
 namespace Aphiria\Console\Responses;
 
-use Aphiria\Console\Responses\Compilers\ICompiler;
+use Aphiria\Console\Responses\Compilers\IResponseCompiler;
 use InvalidArgumentException;
 
 /**
@@ -23,10 +23,10 @@ class StreamResponse extends Response
 
     /**
      * @param resource $stream The stream to write to
-     * @param ICompiler $compiler The response compiler to use
+     * @param IResponseCompiler $compiler The response compiler to use
      * @throws InvalidArgumentException Thrown if the stream is not a resource
      */
-    public function __construct($stream, ICompiler $compiler)
+    public function __construct($stream, IResponseCompiler $compiler)
     {
         if (!is_resource($stream)) {
             throw new InvalidArgumentException('The stream must be a resource');

@@ -19,28 +19,19 @@ use PHPUnit\Framework\TestCase;
  */
 class TableFormatterTest extends TestCase
 {
-    /** @var TableFormatter The formatter to use in tests */
+    /** @var TableFormatter */
     private $formatter;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->formatter = new TableFormatter(new PaddingFormatter());
     }
 
-    /**
-     * Tests formatting an empty table
-     */
     public function testFormattingEmptyTable(): void
     {
         $this->assertEmpty($this->formatter->format([]));
     }
 
-    /**
-     * Tests formatting a table with a single header and column
-     */
     public function testFormattingSingleHeaderAndColumn(): void
     {
         $headers = ['foo'];
@@ -54,9 +45,6 @@ class TableFormatterTest extends TestCase
         $this->assertEquals($expected, $this->formatter->format($rows, $headers));
     }
 
-    /**
-     * Tests formatting a table with a single row
-     */
     public function testFormattingSingleRow(): void
     {
         $rows = [['a', 'bb', 'ccc']];
@@ -67,9 +55,6 @@ class TableFormatterTest extends TestCase
         $this->assertEquals($expected, $this->formatter->format($rows));
     }
 
-    /**
-     * Tests formatting a table with a single row and column
-     */
     public function testFormattingSingleRowAndColumn(): void
     {
         $rows = [['a']];
@@ -80,9 +65,6 @@ class TableFormatterTest extends TestCase
         $this->assertEquals($expected, $this->formatter->format($rows));
     }
 
-    /**
-     * Tests formatting a table with all custom characters
-     */
     public function testFormattingTableWithCustomCharacters(): void
     {
         $headers = ['foo', 'bar'];
@@ -108,9 +90,6 @@ class TableFormatterTest extends TestCase
         $this->assertEquals($expected, $this->formatter->format($rows, $headers));
     }
 
-    /**
-     * Tests formatting a table with a custom padding string
-     */
     public function testFormattingTableWithCustomPaddingString(): void
     {
         $rows = [['a']];
@@ -122,17 +101,11 @@ class TableFormatterTest extends TestCase
         $this->assertEquals($expected, $this->formatter->format($rows));
     }
 
-    /**
-     * Tests formatting a table with headers but without rows
-     */
     public function testFormattingTableWithHeadersButWithoutRows(): void
     {
         $this->assertEmpty($this->formatter->format([], ['foo', 'bar']));
     }
 
-    /**
-     * Tests formatting a table with more headers than row columns
-     */
     public function testFormattingTableWithMoreHeadersThanRowColumns(): void
     {
         $headers = ['foo', 'bar', 'baz', 'blah'];
@@ -152,9 +125,6 @@ class TableFormatterTest extends TestCase
         $this->assertEquals($expected, $this->formatter->format($rows, $headers));
     }
 
-    /**
-     * Tests formatting a table with more row columns than headers
-     */
     public function testFormattingTableWithMoreRowColumnsThanHeaders(): void
     {
         $headers = ['foo', 'bar'];
@@ -174,9 +144,6 @@ class TableFormatterTest extends TestCase
         $this->assertEquals($expected, $this->formatter->format($rows, $headers));
     }
 
-    /**
-     * Tests formatting a table without headers
-     */
     public function testFormattingTableWithoutHeaders(): void
     {
         $rows = [
@@ -193,9 +160,6 @@ class TableFormatterTest extends TestCase
         $this->assertEquals($expected, $this->formatter->format($rows));
     }
 
-    /**
-     * Tests setting the rows to non-array values
-     */
     public function testSettingRowsWithNonArrayValues(): void
     {
         $expected =

@@ -13,7 +13,7 @@ namespace Aphiria\Console\Requests;
 /**
  * Defines the different types of options
  */
-class OptionTypes
+final class OptionTypes
 {
     /** The argument is required */
     public const REQUIRED_VALUE = 1;

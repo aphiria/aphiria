@@ -21,17 +21,11 @@ class SilentResponseTest extends TestCase
     /** @var SilentResponse The response to use in tests */
     private $response;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->response = new SilentResponse();
     }
 
-    /**
-     * Tests writing without a new line
-     */
     public function testWrite(): void
     {
         ob_start();
@@ -39,9 +33,6 @@ class SilentResponseTest extends TestCase
         $this->assertEmpty(ob_get_clean());
     }
 
-    /**
-     * Tests writing with a new line
-     */
     public function testWriteln(): void
     {
         ob_start();

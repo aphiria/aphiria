@@ -24,17 +24,11 @@ class LexerTest extends TestCase
     /** @var Lexer The lexer to use in tests */
     private $lexer;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->lexer = new Lexer();
     }
 
-    /**
-     * Tests lexing adjacent elements
-     */
     public function testLexingAdjacentElements(): void
     {
         $expectedOutput = [
@@ -52,9 +46,6 @@ class LexerTest extends TestCase
         );
     }
 
-    /**
-     * Tests lexing an element with no children
-     */
     public function testLexingElementWithNoChildren(): void
     {
         $expectedOutput = [
@@ -68,9 +59,6 @@ class LexerTest extends TestCase
         );
     }
 
-    /**
-     * Tests lexing an escaped tag at the beginning of the string
-     */
     public function testLexingEscapedTagAtBeginning(): void
     {
         $expectedOutput = [
@@ -80,9 +68,6 @@ class LexerTest extends TestCase
         $this->assertEquals($expectedOutput, $this->lexer->lex('\\<bar>'));
     }
 
-    /**
-     * Tests lexing an escaped tag in between tags
-     */
     public function testLexingEscapedTagInBetweenTags(): void
     {
         $expectedOutput = [
@@ -94,9 +79,6 @@ class LexerTest extends TestCase
         $this->assertEquals($expectedOutput, $this->lexer->lex('<foo>\\<bar></foo>'));
     }
 
-    /**
-     * Tests lexing multiple lines
-     */
     public function testLexingMultipleLines(): void
     {
         // We record the EOL length because it differs on OSs
@@ -115,9 +97,6 @@ class LexerTest extends TestCase
         );
     }
 
-    /**
-     * Tests lexing nested elements
-     */
     public function testLexingNestedElements(): void
     {
         $expectedOutput = [
@@ -136,9 +115,6 @@ class LexerTest extends TestCase
         );
     }
 
-    /**
-     * Tests lexing nested elements with no children
-     */
     public function testLexingNestedElementsWithNoChildren(): void
     {
         $expectedOutput = [
@@ -154,27 +130,18 @@ class LexerTest extends TestCase
         );
     }
 
-    /**
-     * Tests lexing input with an close tag inside of another close tag
-     */
     public function testLexingOpenTagInsideOfCloseTag(): void
     {
         $this->expectException(RuntimeException::class);
         $this->lexer->lex('<foo></<bar>foo>');
     }
 
-    /**
-     * Tests lexing input with an open tag inside of another open tag
-     */
     public function testLexingOpenTagInsideOfOpenTag(): void
     {
         $this->expectException(RuntimeException::class);
         $this->lexer->lex('<foo<bar>>');
     }
 
-    /**
-     * Tests lexing plain text
-     */
     public function testLexingPlainText(): void
     {
         $expectedOutput = [
@@ -187,9 +154,6 @@ class LexerTest extends TestCase
         );
     }
 
-    /**
-     * Tests lexing a single tag
-     */
     public function testLexingSingleElement(): void
     {
         $expectedOutput = [
@@ -201,9 +165,6 @@ class LexerTest extends TestCase
         $this->assertEquals($expectedOutput, $this->lexer->lex('<foo>bar</foo>'));
     }
 
-    /**
-     * Tests lexing an unopened tag
-     */
     public function testLexingUnopenedTag(): void
     {
         $expectedOutput = [

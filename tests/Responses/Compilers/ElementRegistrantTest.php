@@ -14,7 +14,7 @@ use Aphiria\Console\Responses\Compilers\ElementRegistrant;
 use Aphiria\Console\Responses\Compilers\Elements\Colors;
 use Aphiria\Console\Responses\Compilers\Elements\Style;
 use Aphiria\Console\Responses\Compilers\Elements\TextStyles;
-use Aphiria\Console\Responses\Compilers\ICompiler;
+use Aphiria\Console\Responses\Compilers\IResponseCompiler;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -26,21 +26,15 @@ class ElementRegistrantTest extends TestCase
     /** @var ElementRegistrant The registrant to use in tests */
     private $registrant;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->registrant = new ElementRegistrant();
     }
 
-    /**
-     * Tests that the correct elements are registered
-     */
     public function testCorrectElementsAreRegistered(): void
     {
-        /** @var ICompiler|MockObject $compiler */
-        $compiler = $this->createMock(ICompiler::class);
+        /** @var IResponseCompiler|MockObject $compiler */
+        $compiler = $this->createMock(IResponseCompiler::class);
         $compiler->expects($this->at(0))
             ->method('registerElement')
             ->with('success', new Style(Colors::BLACK, Colors::GREEN));

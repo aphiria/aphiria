@@ -13,7 +13,7 @@ namespace Aphiria\Console\Responses\Compilers\Parsers\Nodes;
 /**
  * Defines a tag node
  */
-class TagNode extends Node
+final class TagNode extends Node
 {
     /**
      * @inheritdoc

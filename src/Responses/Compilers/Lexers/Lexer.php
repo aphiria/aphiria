@@ -17,7 +17,7 @@ use RuntimeException;
 /**
  * Defines the response lexer
  */
-class Lexer implements ILexer
+final class Lexer implements ILexer
 {
     /**
      * @inheritdoc

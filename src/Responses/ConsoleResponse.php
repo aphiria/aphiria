@@ -10,19 +10,19 @@
 
 namespace Aphiria\Console\Responses;
 
-use Aphiria\Console\Responses\Compilers\ICompiler;
+use Aphiria\Console\Responses\Compilers\IResponseCompiler;
 
 /**
  * Defines the console response
  */
-class ConsoleResponse extends StreamResponse
+final class ConsoleResponse extends StreamResponse
 {
     /**
-     * @param ICompiler $compiler The response compiler to use
+     * @param IResponseCompiler $responseCompiler The response compiler to use
      */
-    public function __construct(ICompiler $compiler)
+    public function __construct(IResponseCompiler $responseCompiler)
     {
-        parent::__construct(fopen('php://stdout', 'wb'), $compiler);
+        parent::__construct(fopen('php://stdout', 'wb'), $responseCompiler);
     }
 
     /**

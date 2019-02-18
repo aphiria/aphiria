@@ -18,20 +18,14 @@ use PHPUnit\Framework\TestCase;
  */
 class ConfirmationTest extends TestCase
 {
-    /** @var Confirmation The question to use in tests */
+    /** @var Confirmation */
     private $question;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->question = new Confirmation('Is Dave cool (yn)');
     }
 
-    /**
-     * Tests formatting false values
-     */
     public function testFormattingFalseValues(): void
     {
         $this->assertFalse($this->question->formatAnswer('n'));
@@ -40,9 +34,6 @@ class ConfirmationTest extends TestCase
         $this->assertFalse($this->question->formatAnswer('NO'));
     }
 
-    /**
-     * Tests formatting true values
-     */
     public function testFormattingTrueValues(): void
     {
         $this->assertTrue($this->question->formatAnswer('y'));

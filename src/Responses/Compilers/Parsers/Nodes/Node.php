@@ -16,11 +16,11 @@ namespace Aphiria\Console\Responses\Compilers\Parsers\Nodes;
 abstract class Node
 {
     /** @var mixed|null The value of the node */
-    protected $value;
+    public $value;
     /** @var Node|null The parent node */
-    protected $parent;
+    public $parent;
     /** @var Node[] The child nodes */
-    protected $children = [];
+    public $children = [];
 
     /**
      * @param mixed $value The value of the node
@@ -45,40 +45,10 @@ abstract class Node
      */
     public function addChild(Node $node): self
     {
-        $node->setParent($this);
+        $node->parent = $this;
         $this->children[] = $node;
 
         return $this;
-    }
-
-    /**
-     * Gets the list of children of this node
-     *
-     * @return Node[] The list of children
-     */
-    public function getChildren(): array
-    {
-        return $this->children;
-    }
-
-    /**
-     * Gets the parent node
-     *
-     * @return Node The parent node
-     */
-    public function getParent(): Node
-    {
-        return $this->parent;
-    }
-
-    /**
-     * Gets the value of this node
-     *
-     * @return mixed|null The value of this node if there is one, otherwise null
-     */
-    public function getValue()
-    {
-        return $this->value;
     }
 
     /**
@@ -99,13 +69,5 @@ abstract class Node
     public function isRoot(): bool
     {
         return $this->parent === null;
-    }
-
-    /**
-     * @param Node|null $parent
-     */
-    public function setParent($parent): void
-    {
-        $this->parent = $parent;
     }
 }

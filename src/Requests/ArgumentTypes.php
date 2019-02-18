@@ -13,7 +13,7 @@ namespace Aphiria\Console\Requests;
 /**
  * Defines the different types of arguments
  */
-class ArgumentTypes
+final class ArgumentTypes
 {
     /** The argument is required */
     public const REQUIRED = 1;

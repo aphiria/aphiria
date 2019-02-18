@@ -10,7 +10,7 @@
 
 namespace Aphiria\Console\Responses\Formatters;
 
-use Aphiria\Console\Commands\ICommand;
+use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Requests\Argument;
 use Aphiria\Console\Requests\Option;
 
@@ -22,15 +22,15 @@ class CommandFormatter
     /**
      * Gets the command as text
      *
-     * @param ICommand $command The command to convert
+     * @param Command $command The command to convert
      * @return string The command as text
      */
-    public function format(ICommand $command): string
+    public function format(Command $command): string
     {
-        $text = $command->getName() . ' ';
+        $text = $command->name . ' ';
 
         // Output the options
-        foreach ($command->getOptions() as $option) {
+        foreach ($command->options as $option) {
             $text .= $this->formatOption($option) . ' ';
         }
 
@@ -42,7 +42,7 @@ class CommandFormatter
         $arrayArgument = null;
 
         // Categorize each argument
-        foreach ($command->getArguments() as $argument) {
+        foreach ($command->arguments as $argument) {
             if ($argument->isRequired() && !$argument->isArray()) {
                 $requiredArguments[] = $argument;
             } elseif ($argument->isOptional() && !$argument->isArray()) {
@@ -56,12 +56,12 @@ class CommandFormatter
 
         // Output the required arguments
         foreach ($requiredArguments as $argument) {
-            $text .= $argument->getName() . ' ';
+            $text .= $argument->name . ' ';
         }
 
         // Output the optional arguments
         foreach ($optionalArguments as $argument) {
-            $text .= "[{$argument->getName()}] ";
+            $text .= "[{$argument->name}] ";
         }
 
         // Output the array argument
@@ -80,8 +80,8 @@ class CommandFormatter
      */
     private function formatArrayArgument(Argument $argument): string
     {
-        $arrayArgumentTextOne = $argument->getName() . '1';
-        $arrayArgumentTextN = $argument->getName() . 'N';
+        $arrayArgumentTextOne = $argument->name . '1';
+        $arrayArgumentTextN = $argument->name . 'N';
 
         if ($argument->isOptional()) {
             $arrayArgumentTextOne = "[$arrayArgumentTextOne]";
@@ -99,14 +99,14 @@ class CommandFormatter
      */
     private function formatOption(Option $option): string
     {
-        $text = "[--{$option->getName()}";
+        $text = "[--{$option->name}";
 
         if ($option->valueIsOptional()) {
-            $text .= '=' . $option->getDefaultValue();
+            $text .= '=' . $option->defaultValue;
         }
 
-        if ($option->getShortName() !== null) {
-            $text .= "|-{$option->getShortName()}";
+        if ($option->shortName !== null) {
+            $text .= "|-{$option->shortName}";
         }
 
         $text .= ']';

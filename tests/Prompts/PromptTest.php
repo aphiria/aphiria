@@ -13,7 +13,7 @@ namespace Aphiria\Console\Tests\Prompts;
 use Aphiria\Console\Prompts\Prompt;
 use Aphiria\Console\Prompts\Questions\MultipleChoice;
 use Aphiria\Console\Prompts\Questions\Question;
-use Aphiria\Console\Responses\Compilers\Compiler;
+use Aphiria\Console\Responses\Compilers\ResponseCompiler;
 use Aphiria\Console\Responses\Compilers\Lexers\Lexer;
 use Aphiria\Console\Responses\Compilers\Parsers\Parser;
 use Aphiria\Console\Responses\Formatters\PaddingFormatter;
@@ -31,18 +31,12 @@ class PromptTest extends TestCase
     /** @var PaddingFormatter The space padding formatter to use in tests */
     private $paddingFormatter;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
-        $this->response = new Response(new Compiler(new Lexer(), new Parser()));
+        $this->response = new Response(new ResponseCompiler(new Lexer(), new Parser()));
         $this->paddingFormatter = new PaddingFormatter();
     }
 
-    /**
-     * Tests an answer with spaces
-     */
     public function testAnsweringWithSpaces(): void
     {
         $prompt = new Prompt($this->paddingFormatter, $this->getInputStream('  Dave  '));
@@ -50,13 +44,10 @@ class PromptTest extends TestCase
         ob_start();
         $answer = $prompt->ask($question, $this->response);
         $questionText = ob_get_clean();
-        $this->assertEquals("\033[37;44m{$question->getText()}\033[39;49m", $questionText);
+        $this->assertEquals("\033[37;44m{$question->text}\033[39;49m", $questionText);
         $this->assertEquals('Dave', $answer);
     }
 
-    /**
-     * Tests asking an indexed multiple choice question
-     */
     public function testAskingIndexedMultipleChoiceQuestion(): void
     {
         $prompt = new Prompt($this->paddingFormatter, $this->getInputStream('2'));
@@ -65,15 +56,12 @@ class PromptTest extends TestCase
         $answer = $prompt->ask($question, $this->response);
         $questionText = ob_get_clean();
         $this->assertEquals(
-            "\033[37;44m{$question->getText()}\033[39;49m" . PHP_EOL . '  1) foo' . PHP_EOL . '  2) bar' . PHP_EOL . '  > ',
+            "\033[37;44m{$question->text}\033[39;49m" . PHP_EOL . '  1) foo' . PHP_EOL . '  2) bar' . PHP_EOL . '  > ',
             $questionText
         );
         $this->assertEquals('bar', $answer);
     }
 
-    /**
-     * Tests asking a keyed multiple choice question
-     */
     public function testAskingKeyedMultipleChoiceQuestion(): void
     {
         $prompt = new Prompt($this->paddingFormatter, $this->getInputStream('c'));
@@ -82,15 +70,12 @@ class PromptTest extends TestCase
         $answer = $prompt->ask($question, $this->response);
         $questionText = ob_get_clean();
         $this->assertEquals(
-            "\033[37;44m{$question->getText()}\033[39;49m" . PHP_EOL . '  a) b' . PHP_EOL . '  c) d' . PHP_EOL . '  > ',
+            "\033[37;44m{$question->text}\033[39;49m" . PHP_EOL . '  a) b' . PHP_EOL . '  c) d' . PHP_EOL . '  > ',
             $questionText
         );
         $this->assertEquals('d', $answer);
     }
 
-    /**
-     * Tests asking a multiple choice question with custom answer line string
-     */
     public function testAskingMultipleChoiceQuestionWithCustomAnswerLineString(): void
     {
         $prompt = new Prompt($this->paddingFormatter, $this->getInputStream('1'));
@@ -100,15 +85,12 @@ class PromptTest extends TestCase
         $answer = $prompt->ask($question, $this->response);
         $questionText = ob_get_clean();
         $this->assertEquals(
-            "\033[37;44m{$question->getText()}\033[39;49m" . PHP_EOL . '  1) foo' . PHP_EOL . '  2) bar' . PHP_EOL . '  : ',
+            "\033[37;44m{$question->text}\033[39;49m" . PHP_EOL . '  1) foo' . PHP_EOL . '  2) bar' . PHP_EOL . '  : ',
             $questionText
         );
         $this->assertEquals('foo', $answer);
     }
 
-    /**
-     * Tests asking a question
-     */
     public function testAskingQuestion(): void
     {
         $prompt = new Prompt($this->paddingFormatter, $this->getInputStream('Dave'));
@@ -116,13 +98,10 @@ class PromptTest extends TestCase
         ob_start();
         $answer = $prompt->ask($question, $this->response);
         $questionText = ob_get_clean();
-        $this->assertEquals("\033[37;44m{$question->getText()}\033[39;49m", $questionText);
+        $this->assertEquals("\033[37;44m{$question->text}\033[39;49m", $questionText);
         $this->assertEquals('Dave', $answer);
     }
 
-    /**
-     * Tests an empty default answer to indexed choices
-     */
     public function testEmptyDefaultAnswerToIndexedChoices(): void
     {
         $triggeredException = false;
@@ -130,19 +109,16 @@ class PromptTest extends TestCase
         $question = new MultipleChoice('Dummy question', ['foo', 'bar']);
         ob_start();
 
-        try {
+    try {
             $prompt->ask($question, $this->response);
         } catch (InvalidArgumentException $ex) {
             $triggeredException = true;
             ob_end_clean();
         }
 
-        $this->assertTrue($triggeredException);
+    $this->assertTrue($triggeredException);
     }
 
-    /**
-     * Tests an empty default answer to keyed choices
-     */
     public function testEmptyDefaultAnswerToKeyedChoices(): void
     {
         $triggeredException = false;
@@ -150,19 +126,16 @@ class PromptTest extends TestCase
         $question = new MultipleChoice('Dummy question', ['foo' => 'bar', 'baz' => 'blah']);
         ob_start();
 
-        try {
+    try {
             $prompt->ask($question, $this->response);
         } catch (InvalidArgumentException $ex) {
             $triggeredException = true;
             ob_end_clean();
         }
 
-        $this->assertTrue($triggeredException);
+    $this->assertTrue($triggeredException);
     }
 
-    /**
-     * Tests not receiving a response
-     */
     public function testNotReceivingResponse(): void
     {
         $prompt = new Prompt($this->paddingFormatter, $this->getInputStream(' '));
@@ -170,22 +143,16 @@ class PromptTest extends TestCase
         ob_start();
         $answer = $prompt->ask($question, $this->response);
         $questionText = ob_get_clean();
-        $this->assertEquals("\033[37;44m{$question->getText()}\033[39;49m", $questionText);
+        $this->assertEquals("\033[37;44m{$question->text}\033[39;49m", $questionText);
         $this->assertEquals('unknown', $answer);
     }
 
-    /**
-     * Tests setting an invalid input stream through the constructor
-     */
     public function testSettingInvalidInputStreamThroughConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Prompt($this->paddingFormatter, 'foo');
     }
 
-    /**
-     * Tests setting an invalid input stream through the setter
-     */
     public function testSettingInvalidInputStreamThroughSetter(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -205,6 +172,6 @@ class PromptTest extends TestCase
         fwrite($stream, $input);
         rewind($stream);
 
-        return $stream;
+    return $stream;
     }
 }

@@ -18,30 +18,21 @@ use PHPUnit\Framework\TestCase;
  */
 class RootNodeTest extends TestCase
 {
-    /**
-     * Tests getting the parent
-     */
-    public function testGettingParent(): void
-    {
-        $node = new RootNode();
-        $this->assertSame($node, $node->getParent());
-    }
-
-    /**
-     * Tests checking if a root node is root
-     */
     public function testIsRoot(): void
     {
         $node = new RootNode();
         $this->assertTrue($node->isRoot());
     }
 
-    /**
-     * Tests checking if a root node is a tag
-     */
     public function testIsTag(): void
     {
         $node = new RootNode();
         $this->assertFalse($node->isTag());
+    }
+
+    public function testParentIsNull(): void
+    {
+        $node = new RootNode();
+        $this->assertNull($node->parent);
     }
 }

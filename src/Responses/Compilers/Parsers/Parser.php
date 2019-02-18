@@ -19,7 +19,7 @@ use RuntimeException;
 /**
  * Defines the response parser
  */
-class Parser implements IParser
+final class Parser implements IParser
 {
     /**
      * @inheritdoc
@@ -30,30 +30,30 @@ class Parser implements IParser
         $ast = new AbstractSyntaxTree();
 
         foreach ($tokens as $token) {
-            switch ($token->getType()) {
+            switch ($token->type) {
                 case TokenTypes::T_WORD:
-                    $ast->getCurrentNode()->addChild(new WordNode($token->getValue()));
+                    $ast->getCurrentNode()->addChild(new WordNode($token->value));
 
                     break;
                 case TokenTypes::T_TAG_OPEN:
-                    $childNode = new TagNode($token->getValue());
+                    $childNode = new TagNode($token->value);
                     $ast->getCurrentNode()->addChild($childNode);
                     $ast->setCurrentNode($childNode);
 
                     break;
                 case TokenTypes::T_TAG_CLOSE:
-                    if ($ast->getCurrentNode()->getValue() != $token->getValue()) {
+                    if ($ast->getCurrentNode()->value != $token->value) {
                         throw new RuntimeException(
                             sprintf(
                                 'Improperly nested tag "%s" near character #%d',
-                                $token->getValue(),
-                                $token->getPosition()
+                                $token->value,
+                                $token->position
                             )
                         );
                     }
 
                     // Move up one in the tree
-                    $ast->setCurrentNode($ast->getCurrentNode()->getParent());
+                    $ast->setCurrentNode($ast->getCurrentNode()->parent);
 
                     break;
                 case TokenTypes::T_EOF:
@@ -62,7 +62,7 @@ class Parser implements IParser
                             sprintf(
                                 'Unclosed %s "%s"',
                                 $ast->getCurrentNode()->isTag() ? 'tag' : 'node',
-                                $ast->getCurrentNode()->getValue()
+                                $ast->getCurrentNode()->value
                             )
                         );
                     }
@@ -72,9 +72,9 @@ class Parser implements IParser
                     throw new RuntimeException(
                         sprintf(
                             'Unknown token type "%s" with value "%s" near character #%d',
-                            $token->getType(),
-                            $token->getValue(),
-                            $token->getPosition()
+                            $token->type,
+                            $token->value,
+                            $token->position
                         )
                     );
             }

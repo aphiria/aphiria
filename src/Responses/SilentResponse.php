@@ -10,16 +10,16 @@
 
 namespace Aphiria\Console\Responses;
 
-use Aphiria\Console\Responses\Compilers\MockCompiler;
+use Aphiria\Console\Responses\Compilers\MockResponseCompiler;
 
 /**
  * Defines the silent response, which does not write anything
  */
-class SilentResponse extends Response
+final class SilentResponse extends Response
 {
     public function __construct()
     {
-        parent::__construct(new MockCompiler());
+        parent::__construct(new MockResponseCompiler());
     }
 
     /**

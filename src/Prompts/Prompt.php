@@ -10,8 +10,8 @@
 
 namespace Aphiria\Console\Prompts;
 
-use Aphiria\Console\Prompts\Questions\IQuestion;
 use Aphiria\Console\Prompts\Questions\MultipleChoice;
+use Aphiria\Console\Prompts\Questions\Question;
 use Aphiria\Console\Responses\Formatters\PaddingFormatter;
 use Aphiria\Console\Responses\IResponse;
 use InvalidArgumentException;
@@ -45,14 +45,14 @@ class Prompt
     /**
      * Prompts the user to answer a question
      *
-     * @param IQuestion $question The question to ask
+     * @param Question $question The question to ask
      * @param IResponse $response The response to write output to
      * @return mixed The user's answer to the question
      * @throws RuntimeException Thrown if we failed to get the user's answer
      */
-    public function ask(IQuestion $question, IResponse $response)
+    public function ask(Question $question, IResponse $response)
     {
-        $response->write("<question>{$question->getText()}</question>");
+        $response->write("<question>{$question->text}</question>");
 
         if ($question instanceof MultipleChoice) {
             /** @var MultipleChoice $question */
@@ -60,7 +60,7 @@ class Prompt
             $choicesAreAssociative = $question->choicesAreAssociative();
             $choiceTexts = [];
 
-            foreach ($question->getChoices() as $key => $choice) {
+            foreach ($question->choices as $key => $choice) {
                 if (!$choicesAreAssociative) {
                     // Make the choice 1-indexed
                     ++$key;
@@ -84,7 +84,7 @@ class Prompt
         $answer = trim($answer);
 
         if ($answer === '') {
-            $answer = $question->getDefaultAnswer();
+            $answer = $question->defaultAnswer;
         }
 
         return $question->formatAnswer($answer);

@@ -10,22 +10,23 @@
 
 namespace Aphiria\Console\Responses;
 
-use Aphiria\Console\Responses\Compilers\ICompiler;
+use Aphiria\Console\Responses\Compilers\IResponseCompiler;
+use Aphiria\Console\Responses\Compilers\ResponseCompiler;
 
 /**
  * Defines a basic response
  */
 abstract class Response implements IResponse
 {
-    /** @var ICompiler The response compiler to use */
-    protected $compiler;
+    /** @var IResponseCompiler The response compiler to use */
+    protected $responseCompiler;
 
     /**
-     * @param ICompiler $compiler The response compiler to use
+     * @param IResponseCompiler|null $responseCompiler The response compiler to use
      */
-    public function __construct(ICompiler $compiler)
+    public function __construct(IResponseCompiler $responseCompiler = null)
     {
-        $this->compiler = $compiler;
+        $this->responseCompiler = $responseCompiler ?? new ResponseCompiler();
     }
 
     /**
@@ -33,7 +34,7 @@ abstract class Response implements IResponse
      */
     public function setStyled(bool $isStyled): void
     {
-        $this->compiler->setStyled($isStyled);
+        $this->responseCompiler->setStyled($isStyled);
     }
 
     /**
@@ -42,7 +43,7 @@ abstract class Response implements IResponse
     public function write($messages): void
     {
         foreach ((array)$messages as $message) {
-            $this->doWrite($this->compiler->compile($message), false);
+            $this->doWrite($this->responseCompiler->compile($message), false);
         }
     }
 
@@ -52,7 +53,7 @@ abstract class Response implements IResponse
     public function writeln($messages): void
     {
         foreach ((array)$messages as $message) {
-            $this->doWrite($this->compiler->compile($message), true);
+            $this->doWrite($this->responseCompiler->compile($message), true);
         }
     }
 

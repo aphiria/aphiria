@@ -15,16 +15,16 @@ use InvalidArgumentException;
 /**
  * Defines a console command argument
  */
-class Argument
+final class Argument
 {
     /** @var string The name of the argument */
-    private $name;
+    public $name;
     /** @var int The type of argument this is */
-    private $type;
+    public $type;
     /** @var string A brief description of the argument */
-    private $description;
+    public $description;
     /** @var mixed The default value for the argument if it's optional */
-    private $defaultValue;
+    public $defaultValue;
 
     /**
      * @param string $name The name of the argument
@@ -43,30 +43,6 @@ class Argument
         $this->type = $type;
         $this->description = $description;
         $this->defaultValue = $defaultValue;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDefaultValue()
-    {
-        return $this->defaultValue;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
     }
 
     /**

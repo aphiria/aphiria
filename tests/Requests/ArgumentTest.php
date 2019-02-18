@@ -23,17 +23,11 @@ class ArgumentTest extends TestCase
     /** @var Argument The argument to use in tests */
     private $argument;
 
-    /**
-     * Sets up the tests
-     */
     public function setUp(): void
     {
         $this->argument = new Argument('foo', ArgumentTypes::OPTIONAL, 'Foo argument', 'bar');
     }
 
-    /**
-     * Tests checking whether or not the argument is an array
-     */
     public function testCheckingIsArray(): void
     {
         $requiredArgument = new Argument('foo', ArgumentTypes::REQUIRED, 'Foo argument', 'bar');
@@ -48,9 +42,6 @@ class ArgumentTest extends TestCase
         $this->assertTrue($arrayArgument->isArray());
     }
 
-    /**
-     * Tests checking whether or not the argument is optional
-     */
     public function testCheckingIsOptional(): void
     {
         $requiredArgument = new Argument('foo', ArgumentTypes::REQUIRED, 'Foo argument', 'bar');
@@ -61,9 +52,6 @@ class ArgumentTest extends TestCase
         $this->assertTrue($optionalArrayArgument->isOptional());
     }
 
-    /**
-     * Tests checking whether or not the argument is required
-     */
     public function testCheckingIsRequired(): void
     {
         $requiredArgument = new Argument('foo', ArgumentTypes::REQUIRED, 'Foo argument', 'bar');
@@ -74,33 +62,21 @@ class ArgumentTest extends TestCase
         $this->assertFalse($optionalArgument->isRequired());
     }
 
-    /**
-     * Tests getting the default value
-     */
     public function testGettingDefaultValue(): void
     {
-        $this->assertEquals('bar', $this->argument->getDefaultValue());
+        $this->assertEquals('bar', $this->argument->defaultValue);
     }
 
-    /**
-     * Tests getting the description
-     */
     public function testGettingDescription(): void
     {
-        $this->assertEquals('Foo argument', $this->argument->getDescription());
+        $this->assertEquals('Foo argument', $this->argument->description);
     }
 
-    /**
-     * Tests getting the name
-     */
     public function testGettingName(): void
     {
-        $this->assertEquals('foo', $this->argument->getName());
+        $this->assertEquals('foo', $this->argument->name);
     }
 
-    /**
-     * Tests setting the type to both optional and required
-     */
     public function testSettingTypeToOptionalAndRequired(): void
     {
         $this->expectException(InvalidArgumentException::class);
