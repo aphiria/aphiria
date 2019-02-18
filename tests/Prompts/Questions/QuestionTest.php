@@ -13,7 +13,7 @@ namespace Aphiria\Console\Tests\Prompts\Questions;
 use Aphiria\Console\Prompts\Questions\Question;
 use PHPUnit\Framework\TestCase;
 
-    /**
+/**
  * Tests the console prompt question
  */
 class QuestionTest extends TestCase

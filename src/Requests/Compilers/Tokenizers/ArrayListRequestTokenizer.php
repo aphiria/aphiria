@@ -13,9 +13,9 @@ namespace Aphiria\Console\Requests\Compilers\Tokenizers;
 use RuntimeException;
 
 /**
- * Defines the array list tokenizer
+ * Defines the array list request tokenizer
  */
-final class ArrayListTokenizer implements ITokenizer
+final class ArrayListRequestTokenizer implements IRequestTokenizer
 {
     /**
      * @inheritdoc

@@ -13,7 +13,7 @@ namespace Aphiria\Console\Requests\Compilers\Tokenizers;
 /**
  * Defines the interface for tokenizers to implement
  */
-interface ITokenizer
+interface IRequestTokenizer
 {
     /**
      * Tokenizes a request string

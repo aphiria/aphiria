@@ -10,20 +10,20 @@
 
 namespace Aphiria\Console\Tests\Requests\Compilers\Tokenizers;
 
-use Aphiria\Console\Requests\Compilers\Tokenizers\ArgvTokenizer;
+use Aphiria\Console\Requests\Compilers\Tokenizers\ArgvRequestTokenizer;
 use PHPUnit\Framework\TestCase;
 
-    /**
+/**
  * Tests the argv tokenizer
  */
 class ArgvTokenizerTest extends TestCase
 {
-    /** @var ArgvTokenizer The tokenizer to use in tests */
+    /** @var ArgvRequestTokenizer The tokenizer to use in tests */
     private $tokenizer;
 
     public function setUp(): void
     {
-        $this->tokenizer = new ArgvTokenizer();
+        $this->tokenizer = new ArgvRequestTokenizer();
     }
 
     public function testTokenizingEscapedDoubleQuote(): void

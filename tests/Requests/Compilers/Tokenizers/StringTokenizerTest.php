@@ -10,7 +10,7 @@
 
 namespace Aphiria\Console\Tests\Requests\Compilers\Tokenizers;
 
-use Aphiria\Console\Requests\Compilers\Tokenizers\StringTokenizer;
+use Aphiria\Console\Requests\Compilers\Tokenizers\StringRequestTokenizer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -19,12 +19,12 @@ use RuntimeException;
  */
 class StringTokenizerTest extends TestCase
 {
-    /** @var StringTokenizer The tokenizer to use in tests */
+    /** @var StringRequestTokenizer The tokenizer to use in tests */
     private $tokenizer;
 
     public function setUp(): void
     {
-        $this->tokenizer = new StringTokenizer();
+        $this->tokenizer = new StringRequestTokenizer();
     }
 
     public function testTokenizingArgumentAndOptionWithSpaceAroundIt(): void

@@ -10,8 +10,8 @@
 
 namespace Aphiria\Console\Requests\Compilers;
 
+use Aphiria\Console\Requests\Compilers\Tokenizers\ArgvRequestTokenizer;
 use Aphiria\Console\Requests\Request;
-use Aphiria\Console\Requests\Compilers\Tokenizers\ArgvTokenizer;
 use InvalidArgumentException;
 
 /**
@@ -19,12 +19,12 @@ use InvalidArgumentException;
  */
 final class ArgvRequestCompiler extends RequestCompiler
 {
-    /** @var ArgvTokenizer The tokenizer to use */
+    /** @var ArgvRequestTokenizer The tokenizer to use */
     private $tokenizer;
 
     public function __construct()
     {
-        $this->tokenizer = new ArgvTokenizer();
+        $this->tokenizer = new ArgvRequestTokenizer();
     }
 
     /**

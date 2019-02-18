@@ -11,9 +11,9 @@
 namespace Aphiria\Console\Requests\Compilers\Tokenizers;
 
 /**
- * Defines the argv tokenizer
+ * Defines the argv request tokenizer
  */
-final class ArgvTokenizer implements ITokenizer
+final class ArgvRequestTokenizer implements IRequestTokenizer
 {
     /**
      * @inheritdoc

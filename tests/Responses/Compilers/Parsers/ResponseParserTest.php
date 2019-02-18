@@ -15,21 +15,21 @@ use Aphiria\Console\Responses\Compilers\Lexers\Tokens\TokenTypes;
 use Aphiria\Console\Responses\Compilers\Parsers\AbstractSyntaxTree;
 use Aphiria\Console\Responses\Compilers\Parsers\Nodes\TagNode;
 use Aphiria\Console\Responses\Compilers\Parsers\Nodes\WordNode;
-use Aphiria\Console\Responses\Compilers\Parsers\Parser;
+use Aphiria\Console\Responses\Compilers\Parsers\ResponseParser;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 /**
  * Tests the response parser
  */
-class ParserTest extends TestCase
+class ResponseParserTest extends TestCase
 {
-    /** @var Parser The parser to use in tests */
+    /** @var ResponseParser The parser to use in tests */
     private $parser;
 
     public function setUp(): void
     {
-        $this->parser = new Parser();
+        $this->parser = new ResponseParser();
     }
 
     public function testIncorrectlyNestedTags(): void

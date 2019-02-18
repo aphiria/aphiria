@@ -10,7 +10,7 @@
 
 namespace Aphiria\Console\Tests\Responses\Compilers\Lexers;
 
-use Aphiria\Console\Responses\Compilers\Lexers\Lexer;
+use Aphiria\Console\Responses\Compilers\Lexers\ResponseLexer;
 use Aphiria\Console\Responses\Compilers\Lexers\Tokens\Token;
 use Aphiria\Console\Responses\Compilers\Lexers\Tokens\TokenTypes;
 use PHPUnit\Framework\TestCase;
@@ -19,14 +19,14 @@ use RuntimeException;
 /**
  * Tests the response lexer
  */
-class LexerTest extends TestCase
+class ResponseLexerTest extends TestCase
 {
-    /** @var Lexer The lexer to use in tests */
+    /** @var ResponseLexer The lexer to use in tests */
     private $lexer;
 
     public function setUp(): void
     {
-        $this->lexer = new Lexer();
+        $this->lexer = new ResponseLexer();
     }
 
     public function testLexingAdjacentElements(): void

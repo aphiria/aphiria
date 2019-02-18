@@ -16,7 +16,7 @@ use RuntimeException;
 /**
  * Defines the interface for response lexers to implement
  */
-interface ILexer
+interface IResponseLexer
 {
     /**
      * Lexes input text and returns a list of tokens

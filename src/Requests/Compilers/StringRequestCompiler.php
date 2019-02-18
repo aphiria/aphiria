@@ -10,20 +10,20 @@
 
 namespace Aphiria\Console\Requests\Compilers;
 
+use Aphiria\Console\Requests\Compilers\Tokenizers\StringRequestTokenizer;
 use Aphiria\Console\Requests\Request;
-use Aphiria\Console\Requests\Compilers\Tokenizers\StringTokenizer;
 
 /**
  * Defines the string compiler
  */
 final class StringRequestCompiler extends RequestCompiler
 {
-    /** @var StringTokenizer The tokenizer to use */
+    /** @var StringRequestTokenizer The tokenizer to use */
     private $tokenizer;
 
     public function __construct()
     {
-        $this->tokenizer = new StringTokenizer();
+        $this->tokenizer = new StringRequestTokenizer();
     }
 
     /**

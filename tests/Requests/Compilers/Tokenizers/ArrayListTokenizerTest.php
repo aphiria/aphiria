@@ -8,23 +8,23 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-    namespace Aphiria\Console\Tests\Requests\Compilers\Tokenizers;
+namespace Aphiria\Console\Tests\Requests\Compilers\Tokenizers;
 
-    use Aphiria\Console\Requests\Compilers\Tokenizers\ArrayListTokenizer;
+use Aphiria\Console\Requests\Compilers\Tokenizers\ArrayListRequestTokenizer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-    /**
+/**
  * Tests the array list tokenizer
  */
 class ArrayListTokenizerTest extends TestCase
 {
-    /** @var ArrayListTokenizer The tokenizer to use in tests */
+    /** @var ArrayListRequestTokenizer The tokenizer to use in tests */
     private $tokenizer;
 
     public function setUp(): void
     {
-        $this->tokenizer = new ArrayListTokenizer();
+        $this->tokenizer = new ArrayListRequestTokenizer();
     }
 
     public function testNotPassingCommandName(): void

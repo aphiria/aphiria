@@ -10,9 +10,9 @@
 
 namespace Aphiria\Console\Tests\Responses;
 
+use Aphiria\Console\Responses\Compilers\Lexers\ResponseLexer;
+use Aphiria\Console\Responses\Compilers\Parsers\ResponseParser;
 use Aphiria\Console\Responses\Compilers\ResponseCompiler;
-use Aphiria\Console\Responses\Compilers\Lexers\Lexer;
-use Aphiria\Console\Responses\Compilers\Parsers\Parser;
 use Aphiria\Console\Responses\StreamResponse;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +29,7 @@ class StreamResponseTest extends TestCase
 
     public function setUp(): void
     {
-        $this->compiler = new ResponseCompiler(new Lexer(), new Parser());
+        $this->compiler = new ResponseCompiler(new ResponseLexer(), new ResponseParser());
         $this->response = new StreamResponse(fopen('php://memory', 'wb'), $this->compiler);
     }
 

@@ -16,7 +16,7 @@ use RuntimeException;
 /**
  * Defines the interface for response parsers to implement
  */
-interface IParser
+interface IResponseParser
 {
     /**
      * Parses tokens into an abstract syntax tree

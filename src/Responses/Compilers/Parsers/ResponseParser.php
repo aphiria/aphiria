@@ -19,7 +19,7 @@ use RuntimeException;
 /**
  * Defines the response parser
  */
-final class Parser implements IParser
+final class ResponseParser implements IResponseParser
 {
     /**
      * @inheritdoc

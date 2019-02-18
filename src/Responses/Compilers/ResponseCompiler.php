@@ -11,11 +11,11 @@
 namespace Aphiria\Console\Responses\Compilers;
 
 use Aphiria\Console\Responses\Compilers\Elements\Style;
-use Aphiria\Console\Responses\Compilers\Lexers\ILexer;
-use Aphiria\Console\Responses\Compilers\Lexers\Lexer;
-use Aphiria\Console\Responses\Compilers\Parsers\IParser;
+use Aphiria\Console\Responses\Compilers\Lexers\IResponseLexer;
+use Aphiria\Console\Responses\Compilers\Lexers\ResponseLexer;
+use Aphiria\Console\Responses\Compilers\Parsers\IResponseParser;
 use Aphiria\Console\Responses\Compilers\Parsers\Nodes\Node;
-use Aphiria\Console\Responses\Compilers\Parsers\Parser;
+use Aphiria\Console\Responses\Compilers\Parsers\ResponseParser;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -24,9 +24,9 @@ use RuntimeException;
  */
 final class ResponseCompiler implements IResponseCompiler
 {
-    /** @var ILexer The lexer to use */
+    /** @var IResponseLexer The lexer to use */
     private $lexer;
-    /** @var IParser The parser to use */
+    /** @var IResponseParser The parser to use */
     private $parser;
     /** @var Style[] The list of elements registered to the compiler */
     private $elements = [];
@@ -34,13 +34,13 @@ final class ResponseCompiler implements IResponseCompiler
     private $isStyled = true;
 
     /**
-     * @param ILexer|null $lexer The lexer to use
-     * @param IParser|null $parser The parser to use
+     * @param IResponseLexer|null $lexer The lexer to use
+     * @param IResponseParser|null $parser The parser to use
      */
-    public function __construct(ILexer $lexer = null, IParser $parser = null)
+    public function __construct(IResponseLexer $lexer = null, IResponseParser $parser = null)
     {
-        $this->lexer = $lexer ?? new Lexer();
-        $this->parser = $parser ?? new Parser();
+        $this->lexer = $lexer ?? new ResponseLexer();
+        $this->parser = $parser ?? new ResponseParser();
         // Register built-in elements
         (new ElementRegistrant())->registerElements($this);
     }

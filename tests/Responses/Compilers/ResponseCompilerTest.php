@@ -10,10 +10,10 @@
 
 namespace Aphiria\Console\Tests\Responses\Compilers;
 
-use Aphiria\Console\Responses\Compilers\ResponseCompiler;
 use Aphiria\Console\Responses\Compilers\Elements\Style;
-use Aphiria\Console\Responses\Compilers\Lexers\Lexer;
-use Aphiria\Console\Responses\Compilers\Parsers\Parser;
+use Aphiria\Console\Responses\Compilers\Lexers\ResponseLexer;
+use Aphiria\Console\Responses\Compilers\Parsers\ResponseParser;
+use Aphiria\Console\Responses\Compilers\ResponseCompiler;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -27,7 +27,7 @@ class ResponseCompilerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->compiler = new ResponseCompiler(new Lexer(), new Parser());
+        $this->compiler = new ResponseCompiler(new ResponseLexer(), new ResponseParser());
     }
 
     public function testCompilingAdjacentElements(): void

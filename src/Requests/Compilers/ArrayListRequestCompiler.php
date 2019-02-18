@@ -11,7 +11,7 @@
 namespace Aphiria\Console\Requests\Compilers;
 
 use Aphiria\Console\Requests\Request;
-use Aphiria\Console\Requests\Compilers\Tokenizers\ArrayListTokenizer;
+use Aphiria\Console\Requests\Compilers\Tokenizers\ArrayListRequestTokenizer;
 use InvalidArgumentException;
 
 /**
@@ -19,12 +19,12 @@ use InvalidArgumentException;
  */
 final class ArrayListRequestCompiler extends RequestCompiler
 {
-    /** @var ArrayListTokenizer The tokenizer to use */
+    /** @var ArrayListRequestTokenizer The tokenizer to use */
     private $tokenizer;
 
     public function __construct()
     {
-        $this->tokenizer = new ArrayListTokenizer();
+        $this->tokenizer = new ArrayListRequestTokenizer();
     }
 
     /**

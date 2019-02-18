@@ -13,9 +13,9 @@ namespace Aphiria\Console\Tests\Prompts;
 use Aphiria\Console\Prompts\Prompt;
 use Aphiria\Console\Prompts\Questions\MultipleChoice;
 use Aphiria\Console\Prompts\Questions\Question;
+use Aphiria\Console\Responses\Compilers\Lexers\ResponseLexer;
+use Aphiria\Console\Responses\Compilers\Parsers\ResponseParser;
 use Aphiria\Console\Responses\Compilers\ResponseCompiler;
-use Aphiria\Console\Responses\Compilers\Lexers\Lexer;
-use Aphiria\Console\Responses\Compilers\Parsers\Parser;
 use Aphiria\Console\Responses\Formatters\PaddingFormatter;
 use Aphiria\Console\Tests\Responses\Mocks\Response;
 use InvalidArgumentException;
@@ -33,7 +33,7 @@ class PromptTest extends TestCase
 
     public function setUp(): void
     {
-        $this->response = new Response(new ResponseCompiler(new Lexer(), new Parser()));
+        $this->response = new Response(new ResponseCompiler(new ResponseLexer(), new ResponseParser()));
         $this->paddingFormatter = new PaddingFormatter();
     }
 
@@ -109,14 +109,14 @@ class PromptTest extends TestCase
         $question = new MultipleChoice('Dummy question', ['foo', 'bar']);
         ob_start();
 
-    try {
+        try {
             $prompt->ask($question, $this->response);
         } catch (InvalidArgumentException $ex) {
             $triggeredException = true;
             ob_end_clean();
         }
 
-    $this->assertTrue($triggeredException);
+        $this->assertTrue($triggeredException);
     }
 
     public function testEmptyDefaultAnswerToKeyedChoices(): void
@@ -126,14 +126,14 @@ class PromptTest extends TestCase
         $question = new MultipleChoice('Dummy question', ['foo' => 'bar', 'baz' => 'blah']);
         ob_start();
 
-    try {
-            $prompt->ask($question, $this->response);
-        } catch (InvalidArgumentException $ex) {
-            $triggeredException = true;
-            ob_end_clean();
-        }
+        try {
+                $prompt->ask($question, $this->response);
+            } catch (InvalidArgumentException $ex) {
+                $triggeredException = true;
+                ob_end_clean();
+            }
 
-    $this->assertTrue($triggeredException);
+        $this->assertTrue($triggeredException);
     }
 
     public function testNotReceivingResponse(): void
@@ -172,6 +172,6 @@ class PromptTest extends TestCase
         fwrite($stream, $input);
         rewind($stream);
 
-    return $stream;
+        return $stream;
     }
 }

@@ -10,9 +10,9 @@
 
 namespace Aphiria\Console\Tests\Responses;
 
+use Aphiria\Console\Responses\Compilers\Lexers\ResponseLexer;
+use Aphiria\Console\Responses\Compilers\Parsers\ResponseParser;
 use Aphiria\Console\Responses\Compilers\ResponseCompiler;
-use Aphiria\Console\Responses\Compilers\Lexers\Lexer;
-use Aphiria\Console\Responses\Compilers\Parsers\Parser;
 use Aphiria\Console\Tests\Responses\Mocks\Response;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +26,7 @@ class ResponseTest extends TestCase
 
     public function setUp(): void
     {
-        $this->response = new Response(new ResponseCompiler(new Lexer(), new Parser()));
+        $this->response = new Response(new ResponseCompiler(new ResponseLexer(), new ResponseParser()));
     }
 
     public function testClearingResponse(): void

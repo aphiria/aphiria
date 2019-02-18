@@ -40,7 +40,7 @@ abstract class RequestCompiler implements IRequestCompiler
                 foreach ($this->parseShortOption($token) as $option) {
                     self::addOption($options, $option[0], $option[1]);
                 }
-            } else if (!$hasParsedCommandName) {
+            } elseif (!$hasParsedCommandName) {
                 // We consider this to be the command name
                 $commandName = $token;
                 $hasParsedCommandName = true;

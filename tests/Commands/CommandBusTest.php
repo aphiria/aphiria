@@ -92,7 +92,6 @@ class CommandBusTest extends TestCase
 
                 return StatusCodes::OK;
             }
-
         };
         $request = new Request('foo', [], []);
         $this->commandHandlerBindings->registerCommandHandlerBinding(
