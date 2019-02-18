@@ -127,11 +127,11 @@ class PromptTest extends TestCase
         ob_start();
 
         try {
-                $prompt->ask($question, $this->response);
-            } catch (InvalidArgumentException $ex) {
-                $triggeredException = true;
-                ob_end_clean();
-            }
+            $prompt->ask($question, $this->response);
+        } catch (InvalidArgumentException $ex) {
+            $triggeredException = true;
+            ob_end_clean();
+        }
 
         $this->assertTrue($triggeredException);
     }

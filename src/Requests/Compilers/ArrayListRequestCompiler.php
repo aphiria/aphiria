@@ -10,8 +10,8 @@
 
 namespace Aphiria\Console\Requests\Compilers;
 
-use Aphiria\Console\Requests\Request;
 use Aphiria\Console\Requests\Compilers\Tokenizers\ArrayListRequestTokenizer;
+use Aphiria\Console\Requests\Request;
 use InvalidArgumentException;
 
 /**
