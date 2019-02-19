@@ -22,6 +22,17 @@
     1. [Example](#example)
     2. [Registering Your Command](#registering-your-command)
   4. [Calling From Code](#calling-from-code)
+5. [Prompts](#prompts)
+  1. [Confirmation](#confirmation)
+  2. [Multiple Choice](#multiple-choice)
+6. [Output](#output)
+7. [Formatters](#formatters)
+  1. [Padding](#padding)
+  2. [Tables](#tables)
+8. [Style Elements](#style-elements)
+  1. [Built-In Elements](#built-in-elements)
+  2. [Custom Elements](#custom-elements)
+  3. [Overriding Built-In Elements](#overriding-built-in-elements)
   
 <h2 id="introduction">Introduction</h2>
 
@@ -175,3 +186,220 @@ $commandHandler = function (CommandInput $input, IOutput $output) use ($commandH
 If you want to call the other command but not write its output, use the `Aphiria\Console\Output\SilentOutput` output.
 
 > **Note:** If a command is being called by a lot of other commands, it might be best to refactor its actions into a separate class.  This way, it can be used by multiple commands without the extra overhead of calling console commands through PHP code.
+
+<h2 id="prompts">Prompts</h2>
+
+Prompts are great for asking users for input beyond what is accepted by arguments.  For example, you might want to confirm with a user before doing an administrative task, or you might ask her to select from a list of possible choices.  Prompts accept `Aphiria\Console\Prompts\Questions\Question` objects.
+
+<h4 id="confirmation">Confirmation</h4>
+
+To ask a user to confirm an action with a simple "y" or "yes", use an `Aphiria\Console\Prompts\Questions\Confirmation`:
+
+```php
+use Aphiria\Console\Prompts\Prompt;
+use Aphiria\Console\Prompts\Questions\Confirmation;
+
+$prompt = new Prompt();
+// This will return true if the answer began with "y" or "Y"
+$prompt->ask(new Confirmation('Are you sure you want to continue?'));
+```
+
+<h4 id="multiple-choice">Multiple Choice</h4>
+
+Multiple choice questions are great for listing choices that might otherwise be difficult for a user to remember.  An `Aphiria\Console\Prompts\Questions\MultipleChoice` accepts question text and a list of choices:
+
+```php
+use Aphiria\Console\Prompts\Questions\MultipleChoice;
+
+$choices = ['Boeing 747', 'Boeing 757', 'Boeing 787'];
+$question = new MultipleChoice('Select your favorite airplane', $choices);
+$prompt->ask($question);
+```
+
+This will display:
+
+```php
+Select your favorite airplane
+  1) Boeing 747
+  2) Boeing 757
+  3) Boeing 787
+  >
+```
+
+If the `$choices` array is associative, then the keys will map to values rather than 1)...N).
+
+<h2 id="output">Output</h2>
+
+Outputs are classes that allow you to write output to an end user.  The different output classes include:
+
+1. `Aphiria\Console\Output\ConsoleOutput`
+  * Used to write output to the console
+  * The output used by default
+2. `Aphiria\Console\Output\SilentOutput`
+  * Used when we don't want any output to be written
+  * Useful for when one command calls another
+
+Each output offers three methods:
+
+1. `write()`
+  * Writes a message to the existing line
+2. `writeln()`
+  * Writes a message to a new line
+3. `clear()`
+  * Clears the current screen
+  * Only works in `ConsoleOutput`
+
+<h2 id="formatters">Formatters</h2>
+
+Formatters are great for nicely-formatting output to the console.
+
+<h4 id="padding">Padding</h4>
+
+The `Aphiria\Console\Output\Formatters\PaddingFormatter` formatter allows you to create column-like output.  It accepts an array of column values.  The second parameter is a callback that will format each row's contents.  Let's look at an example:
+
+```php
+use Aphiria\Console\Output\Formatters\PaddingFormatter;
+
+$paddingFormatter = new PaddingFormatter();
+$rows = [
+    ['George', 'Carlin', 'great'],
+    ['Chris', 'Rock', 'good'],
+    ['Jim', 'Gaffigan', 'pale']
+];
+$paddingFormatter->format($rows, function ($row) {
+    return $row[0] . ' - ' . $row[1] . ' - ' . $row[2];
+});
+```
+
+This will return:
+```
+George - Carlin   - great
+Chris  - Rock     - good
+Jim    - Gaffigan - pale
+```
+
+There are a few useful functions for customizing the padding formatter:
+
+* `setEolChar()`
+  * Sets the end-of-line character
+* `setPadAfter()`
+  * Sets whether to pad before or after strings
+* `setPaddingString()`
+  * Sets the padding string
+
+<h4 id="tables">Tables</h4>
+
+ASCII tables are a great way to show tabular data in a console.  To create a table, use `Aphiria\Console\Output\Formatters\TableFormatter`:
+
+```php
+use Aphiria\Console\Output\Formatters\PaddingFormatter;
+use Aphiria\Console\Output\Formatters\TableFormatter;
+
+$table = new TableFormatter();
+$rows = [
+    ['Sean', 'Connery'],
+    ['Pierce', 'Brosnan']
+];
+$table->format($rows);
+```
+
+This will return:
+
+```
++--------+---------+
+| Sean   | Connery |
+| Pierce | Brosnan |
++--------+---------+
+```
+
+Headers can also be included in tables:
+
+```php
+$headers = ['First', 'Last'];
+$table->format($rows, $headers);
+```
+
+This will return:
+
+```
++--------+---------+
+| First  | Last    |
++--------+---------+
+| Sean   | Connery |
+| Pierce | Brosnan |
++--------+---------+
+```
+
+There are a few useful functions for customizing the look of tables:
+
+* `setCellPaddingString()`
+  * Sets the cell padding string
+* `setEolChar()`
+  * Sets the end-of-line character
+* `setHorizontalBorderChar()`
+  * Sets the horizontal border character
+* `setIntersectionChar()`
+  * Sets the row/column intersection character
+* `setPadAfter()`
+  * Sets whether to pad before or after strings
+* `setVerticalBorderChar()`
+  * Sets the vertical border character
+
+<h2 id="style-elements">Style Elements</h2>
+
+Aphiria supports HTML-like style elements to perform basic output formatting like background color, foreground color, boldening, and underlining.  For example, writing:
+
+```
+<b>Hello!</b>
+```
+
+...will output "<b>Hello!</b>".  You can even nest elements:
+
+```
+<u>Hello, <b>Dave</b></u>
+```
+
+..., which will output an underlined string where "Dave" is both bold AND underlined.
+
+<h4 id="built-in-elements">Built-In Elements</h4>
+
+The following elements come built-into Aphiria:
+* &lt;success&gt;&lt;/success&gt;
+* &lt;info&gt;&lt;/info&gt;
+* &lt;question&gt;&lt;/question&gt;
+* &lt;comment&gt;&lt;/comment&gt;
+* &lt;error&gt;&lt;/error&gt;
+* &lt;fatal&gt;&lt;/fatal&gt;
+* &lt;b&gt;&lt;/b&gt;
+* &lt;u&gt;&lt;/u&gt;
+
+<h4 id="custom-elements">Custom Elements</h4>
+
+You can create your own style elements.  Elements are registered to `Aphiria\Console\Output\Compilers\Elements\ElementRegistry`.
+
+```php
+use Aphiria\Console\Output\Compilers\Elements\{Colors, Element, ElementRegistry, Style, TextStyles};
+use Aphiria\Console\Output\Compilers\OutputCompiler;
+use Aphiria\Console\Output\ConsoleOutput;
+
+$elements = new ElementRegistry();
+$elements->registerElement(
+    new Element('foo', new Style(Colors::BLACK, Colors::YELLOW, [TextStyles::BOLD])
+);
+$outputCompiler = new OutputCompiler($elements);
+$output = new ConsoleOutput($outputCompiler);
+
+// Now, pass it into the kernel (assume it's already set up)
+global $argv;
+exit($kernel->handle($argv, $output));
+```
+
+<h4 id="overriding-built-in-elements">Overriding Built-In Elements</h4>
+
+To override a built-in element, just re-register it:
+
+```php
+$compiler->registerElement(
+    new Element('success', new Style(Colors::GREEN, Colors::BLACK))
+);
+```
