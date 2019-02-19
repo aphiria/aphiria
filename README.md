@@ -12,19 +12,21 @@
 1. [Introduction](#introduction)
 2. [Running Commands](#running-commands)
 3. [Getting Help](#getting-help)
-4. [Creating Commands](#creating-commands)
-    1. [Arguments](#arguments)
-    2. [Options](#options)
-    3. [Creating Commands](#creating-commands)
-    4. [Calling From Code](#calling-from-code)
-5. [Prompts](#prompts)
+4. [Arguments](#arguments)
+5. [Options](#options)
+    1. [Short Names](#short-names)
+    2. [Long Names](#long-names)
+    3. [Array Options](#array-options)
+6. [Creating Commands](#creating-commands)
+    1. [Calling From Code](#calling-from-code)
+7. [Prompts](#prompts)
     1. [Confirmation](#confirmation)
     2. [Multiple Choice](#multiple-choice)
-6. [Output](#output)
-7. [Formatters](#formatters)
+8. [Output](#output)
+9. [Formatters](#formatters)
     1. [Padding](#padding)
     2. [Tables](#tables)
-8. [Style Elements](#style-elements)
+10. [Style Elements](#style-elements)
     1. [Built-In Elements](#built-in-elements)
     2. [Custom Elements](#custom-elements)
     3. [Overriding Built-In Elements](#overriding-built-in-elements)
@@ -45,9 +47,7 @@ To get help with any command, use the help command:
 php aphiria help COMMAND_NAME
 ```
 
-<h2 id="creating-commands">Creating Commands</h2>
-
-<h3 id="arguments">Arguments</h3>
+<h2 id="arguments">Arguments</h2>
 
 Console commands can accept arguments from the user.  Arguments can be required, optional, and/or arrays.  You specify the type by bitwise OR-ing the different arguments types.  Array arguments allow a variable number of arguments to be passed in, like "php aphiria foo arg1 arg2 arg3 ...".  The only catch is that array arguments must be the last argument defined for the command.
 
@@ -65,22 +65,22 @@ $argument = new Argument('foo', $type, 'The foo argument');
 
 >**Note:** Like array arguments, optional arguments must appear after any required arguments.
 
-<h3 id="options">Options</h3>
+<h2 id="options">Options</h2>
 
 You might want different behavior in your command depending on whether or not an option is set.  This is possible using `Aphiria\Console\Input\Option`.  Options have two formats:
 
 1. Short, eg "-h"
 2. Long, eg "--help"
 
-<h4 id="short-names">Short Names</h4>
+<h3 id="short-names">Short Names</h3>
 
 Short option names are always a single letter.  Multiple short options can be grouped together.  For example, `-rf` means that options with short codes "r" and "f" have been specified.  The default value will be used for short options.
 
-<h4 id="long-names">Long Names</h4>
+<h3 id="long-names">Long Names</h3>
 
 Long option names can specify values in two ways:  `--foo=bar` or `--foo bar`.  If you only specify `--foo` for an optional-value option, then the default value will be used.
 
-<h4 id="array-options">Array Options</h4>
+<h3 id="array-options">Array Options</h3>
 
 Options can be arrays, eg `--foo=bar --foo=baz` will set the "foo" option to `["bar", "baz"]`.
 
@@ -94,7 +94,7 @@ $type = OptionTypes::IS_ARRAY | OptionTypes::REQUIRED_VALUE;
 $option = new Option('foo', 'f', $types, 'The foo option');
 ```
 
-<h3 id="creating-commands">Creating Commands</h3>
+<h2 id="creating-commands">Creating Commands</h2>
 
 Creating a command is simple - create the command, associate it with a command handler, and register it.  The command defines the types of arguments and options a command takes, and a command handler actually processes input for that command.
 
@@ -131,7 +131,7 @@ $input->arguments['argName']; // The value of 'argName'
 $input->options['optionName']; // The value of 'optionName'
 ```
 
-<h4 id="registering-commands">Registering Commands</h4>
+<h3 id="registering-commands">Registering Commands</h3>
 
 Before you can use your commands, you must register them so that the `Kernel` knows about them:
 
