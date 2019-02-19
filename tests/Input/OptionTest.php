@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class OptionTest extends TestCase
 {
-    /** @var Option The option to use in tests */
+    /** @var Option */
     private $option;
 
     public function setUp(): void

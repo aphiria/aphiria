@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class AbstractSyntaxTreeTest extends TestCase
 {
-    /** @var AbstractSyntaxTree The tree to use in tests */
+    /** @var AbstractSyntaxTree */
     private $tree;
 
     public function setUp(): void

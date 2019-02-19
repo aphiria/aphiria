@@ -19,7 +19,7 @@ use RuntimeException;
  */
 class ArrayListInputTokenizerTest extends TestCase
 {
-    /** @var ArrayListInputTokenizer The tokenizer to use in tests */
+    /** @var ArrayListInputTokenizer */
     private $tokenizer;
 
     public function setUp(): void

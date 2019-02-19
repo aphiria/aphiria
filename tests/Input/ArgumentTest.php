@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ArgumentTest extends TestCase
 {
-    /** @var Argument The argument to use in tests */
+    /** @var Argument */
     private $argument;
 
     public function setUp(): void

@@ -20,6 +20,8 @@ abstract class Output implements IOutput
 {
     /** @var IOutputCompiler The output compiler to use */
     protected $outputCompiler;
+    /** @var bool Whether or not to include styling on output messages */
+    protected $includeStyles = true;
 
     /**
      * @param IOutputCompiler|null $outputCompiler The output compiler to use
@@ -30,11 +32,11 @@ abstract class Output implements IOutput
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function setStyled(bool $isStyled): void
+    public function includeStyles(bool $includeStyles): void
     {
-        $this->outputCompiler->setStyled($isStyled);
+        $this->includeStyles = $includeStyles;
     }
 
     /**
@@ -43,7 +45,7 @@ abstract class Output implements IOutput
     public function write($messages): void
     {
         foreach ((array)$messages as $message) {
-            $this->doWrite($this->outputCompiler->compile($message), false);
+            $this->doWrite($this->outputCompiler->compile($message, $this->includeStyles), false);
         }
     }
 

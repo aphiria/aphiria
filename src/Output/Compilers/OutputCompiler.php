@@ -10,7 +10,7 @@
 
 namespace Aphiria\Console\Output\Compilers;
 
-use Aphiria\Console\Output\Compilers\Elements\Style;
+use Aphiria\Console\Output\Compilers\Elements\ElementRegistry;
 use Aphiria\Console\Output\Compilers\Parsers\IOutputParser;
 use Aphiria\Console\Output\Compilers\Parsers\Lexers\IOutputLexer;
 use Aphiria\Console\Output\Compilers\Parsers\Lexers\OutputLexer;
@@ -24,33 +24,34 @@ use RuntimeException;
  */
 final class OutputCompiler implements IOutputCompiler
 {
+    /** @var ElementRegistry The registry of elements */
+    private $elements;
     /** @var IOutputLexer The lexer to use */
     private $lexer;
     /** @var IOutputParser The parser to use */
     private $parser;
-    /** @var Style[] The list of elements registered to the compiler */
-    private $elements = [];
-    /** @var bool Whether or not messages should be styled */
-    private $isStyled = true;
 
     /**
+     * @param ElementRegistry $elements The registry of elements
      * @param IOutputLexer|null $lexer The lexer to use
      * @param IOutputParser|null $parser The parser to use
      */
-    public function __construct(IOutputLexer $lexer = null, IOutputParser $parser = null)
-    {
+    public function __construct(
+        ElementRegistry $elements = null,
+        IOutputLexer $lexer = null,
+        IOutputParser $parser = null
+    ) {
+        $this->elements = $elements ?? new ElementRegistry();
         $this->lexer = $lexer ?? new OutputLexer();
         $this->parser = $parser ?? new OutputParser();
-        // Register built-in elements
-        (new ElementRegistrant())->registerElements($this);
     }
 
     /**
      * @inheritdoc
      */
-    public function compile(string $message): string
+    public function compile(string $message, bool $includeStyles = true): string
     {
-        if (!$this->isStyled) {
+        if (!$includeStyles) {
             return strip_tags($message);
         }
 
@@ -62,22 +63,6 @@ final class OutputCompiler implements IOutputCompiler
         } catch (InvalidArgumentException $ex) {
             throw new RuntimeException('Failed to compile console output', 0, $ex);
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function registerElement(string $name, Style $style): void
-    {
-        $this->elements[$name] = $style;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setStyled(bool $isStyled): void
-    {
-        $this->isStyled = $isStyled;
     }
 
     /**
@@ -103,11 +88,7 @@ final class OutputCompiler implements IOutputCompiler
 
         foreach ($node->children as $childNode) {
             if ($node->isTag()) {
-                if (!isset($this->elements[$node->value])) {
-                    throw new InvalidArgumentException("No style registered for element \"{$node->value}\"");
-                }
-
-                $style = $this->elements[$node->value];
+                $style = $this->elements->getElement($node->value)->style;
                 $output .= $style->format($this->compileNode($childNode));
             } else {
                 $output .= $this->compileNode($childNode);

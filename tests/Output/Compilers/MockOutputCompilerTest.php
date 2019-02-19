@@ -21,14 +21,12 @@ class MockOutputCompilerTest extends TestCase
     public function testCompilingStyledMessage(): void
     {
         $compiler = new MockOutputCompiler();
-        $compiler->setStyled(true);
-        $this->assertEquals('<foo>bar</foo>', $compiler->compile('<foo>bar</foo>'));
+        $this->assertEquals('<foo>bar</foo>', $compiler->compile('<foo>bar</foo>', true));
     }
 
     public function testCompilingUnstyledMessage(): void
     {
         $compiler = new MockOutputCompiler();
-        $compiler->setStyled(false);
-        $this->assertEquals('<foo>bar</foo>', $compiler->compile('<foo>bar</foo>'));
+        $this->assertEquals('<foo>bar</foo>', $compiler->compile('<foo>bar</foo>', false));
     }
 }

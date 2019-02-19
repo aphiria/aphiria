@@ -19,9 +19,9 @@ use PHPUnit\Framework\TestCase;
  */
 class MultipleChoiceTest extends TestCase
 {
-    /** @var MultipleChoice The indexed-choice question to use in tests */
+    /** @var MultipleChoice */
     private $indexedChoiceQuestion;
-    /** @var MultipleChoice The keyed-choice question to use in tests */
+    /** @var MultipleChoice */
     private $keyedChoiceQuestion;
 
     public function setUp(): void

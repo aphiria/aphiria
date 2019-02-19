@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  */
 class QuestionTest extends TestCase
 {
-    /** @var Question The question to use in tests */
+    /** @var Question */
     private $question;
 
     public function setUp(): void

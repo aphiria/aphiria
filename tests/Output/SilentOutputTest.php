@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  */
 class SilentOutputTest extends TestCase
 {
-    /** @var SilentOutput The output to use in tests */
+    /** @var SilentOutput */
     private $output;
 
     public function setUp(): void

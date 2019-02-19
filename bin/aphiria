@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+// Check if we're bin the vendor bin
+if (file_exists($vendorBinAutoload = __DIR__ . '/../../autoload.php')) {
+    require_once $vendorBinAutoload;
+} else {
+    // Assume we're in the local bin directory
+    require_once __DIR__ . '/../vendor/autoload.php';
+}
+
+use Aphiria\Console\Commands\CommandHandlerBindingRegistry;
+use Aphiria\Console\Kernel;
+
+$commandHandlerBindings = new CommandHandlerBindingRegistry();
+$kernel = new Kernel($commandHandlerBindings);
+global $argv;
+exit($kernel->handle($argv));

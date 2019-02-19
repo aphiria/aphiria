@@ -82,7 +82,7 @@ EOF;
                 $descriptionText = $binding->command->description;
             }
 
-            if ($binding->command->helpText !== '') {
+            if ($binding->command->helpText !== null && $binding->command->helpText !== '') {
                 $helpText = PHP_EOL . '<comment>Help:</comment>' . PHP_EOL . '  ' . $binding->command->helpText;
             }
 

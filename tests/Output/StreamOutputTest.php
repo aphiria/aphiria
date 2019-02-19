@@ -11,8 +11,6 @@
 namespace Aphiria\Console\Tests\Output;
 
 use Aphiria\Console\Output\Compilers\OutputCompiler;
-use Aphiria\Console\Output\Compilers\Parsers\Lexers\OutputLexer;
-use Aphiria\Console\Output\Compilers\Parsers\OutputParser;
 use Aphiria\Console\Output\StreamOutput;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -22,14 +20,14 @@ use PHPUnit\Framework\TestCase;
  */
 class StreamOutputTest extends TestCase
 {
-    /** @var StreamOutput The output to use in tests */
+    /** @var StreamOutput */
     private $output;
-    /** @var OutputCompiler The compiler to use in tests */
+    /** @var OutputCompiler */
     private $compiler;
 
     public function setUp(): void
     {
-        $this->compiler = new OutputCompiler(new OutputLexer(), new OutputParser());
+        $this->compiler = new OutputCompiler();
         $this->output = new StreamOutput(fopen('php://memory', 'wb'), $this->compiler);
     }
 

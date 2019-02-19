@@ -10,9 +10,6 @@
 
 namespace Aphiria\Console\Tests\Output;
 
-use Aphiria\Console\Output\Compilers\OutputCompiler;
-use Aphiria\Console\Output\Compilers\Parsers\Lexers\OutputLexer;
-use Aphiria\Console\Output\Compilers\Parsers\OutputParser;
 use Aphiria\Console\Tests\Output\Mocks\Output;
 use PHPUnit\Framework\TestCase;
 
@@ -21,12 +18,12 @@ use PHPUnit\Framework\TestCase;
  */
 class OutputTest extends TestCase
 {
-    /** @var Output The output to use in tests */
+    /** @var Output */
     private $output;
 
     public function setUp(): void
     {
-        $this->output = new Output(new OutputCompiler(new OutputLexer(), new OutputParser()));
+        $this->output = new Output();
     }
 
     public function testClearingOutput(): void
@@ -67,7 +64,7 @@ class OutputTest extends TestCase
     public function testWritingStyledMessageWithStylingDisabled(): void
     {
         ob_start();
-        $this->output->setStyled(false);
+        $this->output->includeStyles(false);
         $this->output->write('<b>foo</b>');
         $this->assertEquals('foo', ob_get_clean());
     }

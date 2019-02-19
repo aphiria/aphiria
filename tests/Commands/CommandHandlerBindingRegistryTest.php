@@ -68,4 +68,20 @@ class CommandHandlerBindingRegistryTest extends TestCase
         $this->registry->registerCommandHandlerBinding($expectedBinding);
         $this->assertSame($expectedBinding, $this->registry->getCommandHandlerBinding('name'));
     }
+
+    public function testRegisteringManyBindingsReturnsAddsAllToRegistry(): void
+    {
+        $expectedBindings = [
+            new CommandHandlerBinding(
+                new Command('foo', [], [], ''),
+                $this->createMock(ICommandHandler::class)
+            ),
+            new CommandHandlerBinding(
+                new Command('bar', [], [], ''),
+                $this->createMock(ICommandHandler::class)
+            )
+        ];
+        $this->registry->registerManyCommandHandlerBindings($expectedBindings);
+        $this->assertSame($expectedBindings, $this->registry->getAllCommandHandlerBindings());
+    }
 }

@@ -31,6 +31,9 @@
     "friendsofphp/php-cs-fixer": "~2.14",
     "phpunit/phpunit": "~8.0"
   },
+  "bin": [
+    "bin/aphiria"
+  ],
   "extra": {
     "branch-alias": {
       "dev-master": "1.0.x-dev"

@@ -21,7 +21,7 @@ use RuntimeException;
  */
 class OutputLexerTest extends TestCase
 {
-    /** @var OutputLexer The lexer to use in tests */
+    /** @var OutputLexer */
     private $lexer;
 
     public function setUp(): void

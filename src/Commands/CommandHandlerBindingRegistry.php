@@ -59,6 +59,18 @@ final class CommandHandlerBindingRegistry
     }
 
     /**
+     * Registers many command handler bindings
+     *
+     * @param CommandHandlerBinding[] $bindings The bindings to register
+     */
+    public function registerManyCommandHandlerBindings(array $bindings): void
+    {
+        foreach ($bindings as $binding) {
+            $this->registerCommandHandlerBinding($binding);
+        }
+    }
+
+    /**
      * Normalizes a command name for use in the registry
      *
      * @param string $commandName The command name to normalize

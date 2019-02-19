@@ -10,7 +10,6 @@
 
 namespace Aphiria\Console\Output\Compilers;
 
-use Aphiria\Console\Output\Compilers\Elements\Style;
 use RuntimeException;
 
 /**
@@ -22,23 +21,9 @@ interface IOutputCompiler
      * Compiles a message
      *
      * @param string $message The message to compile
+     * @param bool $includeStyles Whether or not to include output styles
      * @return string The compiled message
      * @throws RuntimeException Thrown if there was an issue compiling the message
      */
-    public function compile(string $message): string;
-
-    /**
-     * Registers an element
-     *
-     * @param string $name The name of the element
-     * @param Style $style The style of the element
-     */
-    public function registerElement(string $name, Style $style): void;
-
-    /**
-     * Sets whether or not messages should be styled
-     *
-     * @param bool $isStyled Whether or not messages should be styled
-     */
-    public function setStyled(bool $isStyled): void;
+    public function compile(string $message, bool $includeStyles = true): string;
 }

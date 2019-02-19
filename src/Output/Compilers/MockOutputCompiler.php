@@ -10,8 +10,6 @@
 
 namespace Aphiria\Console\Output\Compilers;
 
-use Aphiria\Console\Output\Compilers\Elements\Style;
-
 /**
  * Defines a mock console compiler (useful for silent outputs)
  */
@@ -20,21 +18,8 @@ final class MockOutputCompiler implements IOutputCompiler
     /**
      * @inheritdoc
      */
-    public function compile(string $message): string
+    public function compile(string $message, bool $includeStyles = true): string
     {
         return $message;
-    }
-
-    public function registerElement(string $name, Style $style): void
-    {
-        // Don't do anything
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setStyled(bool $isStyled): void
-    {
-        // Don't do anything
     }
 }

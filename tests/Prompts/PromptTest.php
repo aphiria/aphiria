@@ -10,9 +10,6 @@
 
 namespace Aphiria\Console\Tests\Prompts;
 
-use Aphiria\Console\Output\Compilers\OutputCompiler;
-use Aphiria\Console\Output\Compilers\Parsers\Lexers\OutputLexer;
-use Aphiria\Console\Output\Compilers\Parsers\OutputParser;
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Prompts\Prompt;
 use Aphiria\Console\Prompts\Questions\MultipleChoice;
@@ -26,14 +23,14 @@ use PHPUnit\Framework\TestCase;
  */
 class PromptTest extends TestCase
 {
-    /** @var Output The output to use in tests */
+    /** @var Output */
     private $output;
-    /** @var PaddingFormatter The space padding formatter to use in tests */
+    /** @var PaddingFormatter */
     private $paddingFormatter;
 
     public function setUp(): void
     {
-        $this->output = new Output(new OutputCompiler(new OutputLexer(), new OutputParser()));
+        $this->output = new Output();
         $this->paddingFormatter = new PaddingFormatter();
     }
 

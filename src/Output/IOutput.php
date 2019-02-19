@@ -25,9 +25,9 @@ interface IOutput
     /**
      * Sets whether or not messages should be styled
      *
-     * @param bool $isStyled Whether or not messages should be styled
+     * @param bool $includeStyles Whether or not messages should be styled
      */
-    public function setStyled(bool $isStyled): void;
+    public function includeStyles(bool $includeStyles): void;
 
     /**
      * Writes to output

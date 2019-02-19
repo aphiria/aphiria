@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ArgvInputTokenizerTest extends TestCase
 {
-    /** @var ArgvInputTokenizer The tokenizer to use in tests */
+    /** @var ArgvInputTokenizer */
     private $tokenizer;
 
     public function setUp(): void
