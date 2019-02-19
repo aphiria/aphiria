@@ -13,26 +13,21 @@
 2. [Running Commands](#running-commands)
 3. [Getting Help](#getting-help)
 4. [Creating Commands](#creating-commands)
-  1. [Arguments](#arguments)
-  2. [Options](#options)
-    1. [Short Names](#short-names)
-    2. [Long Names](#long-names)
-    3. [Array Options](#array-options)
-  3. [Creating Commands](#creating-commands)
-    1. [Example](#example)
-    2. [Registering Your Command](#registering-your-command)
-  4. [Calling From Code](#calling-from-code)
+    1. [Arguments](#arguments)
+    2. [Options](#options)
+    3. [Creating Commands](#creating-commands)
+    4. [Calling From Code](#calling-from-code)
 5. [Prompts](#prompts)
-  1. [Confirmation](#confirmation)
-  2. [Multiple Choice](#multiple-choice)
+    1. [Confirmation](#confirmation)
+    2. [Multiple Choice](#multiple-choice)
 6. [Output](#output)
 7. [Formatters](#formatters)
-  1. [Padding](#padding)
-  2. [Tables](#tables)
+    1. [Padding](#padding)
+    2. [Tables](#tables)
 8. [Style Elements](#style-elements)
-  1. [Built-In Elements](#built-in-elements)
-  2. [Custom Elements](#custom-elements)
-  3. [Overriding Built-In Elements](#overriding-built-in-elements)
+    1. [Built-In Elements](#built-in-elements)
+    2. [Custom Elements](#custom-elements)
+    3. [Overriding Built-In Elements](#overriding-built-in-elements)
   
 <h2 id="introduction">Introduction</h2>
 
@@ -233,21 +228,21 @@ If the `$choices` array is associative, then the keys will map to values rather 
 Outputs are classes that allow you to write output to an end user.  The different output classes include:
 
 1. `Aphiria\Console\Output\ConsoleOutput`
-  * Used to write output to the console
-  * The output used by default
+    * Used to write output to the console
+    * The output used by default
 2. `Aphiria\Console\Output\SilentOutput`
-  * Used when we don't want any output to be written
-  * Useful for when one command calls another
+    * Used when we don't want any output to be written
+    * Useful for when one command calls another
 
 Each output offers three methods:
 
 1. `write()`
-  * Writes a message to the existing line
+    * Writes a message to the existing line
 2. `writeln()`
-  * Writes a message to a new line
+    * Writes a message to a new line
 3. `clear()`
-  * Clears the current screen
-  * Only works in `ConsoleOutput`
+    * Clears the current screen
+    * Only works in `ConsoleOutput`
 
 <h2 id="formatters">Formatters</h2>
 
@@ -281,18 +276,17 @@ Jim    - Gaffigan - pale
 There are a few useful functions for customizing the padding formatter:
 
 * `setEolChar()`
-  * Sets the end-of-line character
+    * Sets the end-of-line character
 * `setPadAfter()`
-  * Sets whether to pad before or after strings
+    * Sets whether to pad before or after strings
 * `setPaddingString()`
-  * Sets the padding string
+    * Sets the padding string
 
 <h4 id="tables">Tables</h4>
 
 ASCII tables are a great way to show tabular data in a console.  To create a table, use `Aphiria\Console\Output\Formatters\TableFormatter`:
 
 ```php
-use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\Formatters\TableFormatter;
 
 $table = new TableFormatter();
@@ -333,17 +327,17 @@ This will return:
 There are a few useful functions for customizing the look of tables:
 
 * `setCellPaddingString()`
-  * Sets the cell padding string
+    * Sets the cell padding string
 * `setEolChar()`
-  * Sets the end-of-line character
+    * Sets the end-of-line character
 * `setHorizontalBorderChar()`
-  * Sets the horizontal border character
+    * Sets the horizontal border character
 * `setIntersectionChar()`
-  * Sets the row/column intersection character
+    * Sets the row/column intersection character
 * `setPadAfter()`
-  * Sets whether to pad before or after strings
+    * Sets whether to pad before or after strings
 * `setVerticalBorderChar()`
-  * Sets the vertical border character
+    * Sets the vertical border character
 
 <h2 id="style-elements">Style Elements</h2>
 
