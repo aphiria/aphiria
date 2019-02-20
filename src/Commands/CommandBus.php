@@ -43,13 +43,7 @@ final class CommandBus implements ICommandBus
     {
         $binding = $this->commandBindings->getCommandBinding($input->commandName);
         $commandInput = $this->commandInputFactory->createCommandInput($binding->command, $input);
-
-        if ($binding->commandHandler instanceof ICommandHandler) {
-            $statusCode = $binding->commandHandler->handle($commandInput, $output);
-        } else {
-            // Assume a closure
-            $statusCode = ($binding->commandHandler)($commandInput, $output);
-        }
+        $statusCode = $binding->commandHandler->handle($commandInput, $output);
 
         return $statusCode ?? StatusCodes::OK;
     }

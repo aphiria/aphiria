@@ -225,13 +225,13 @@ If the `$choices` array is associative, then the keys will map to values rather 
 
 <h2 id="output">Output</h2>
 
-Outputs are classes that allow you to write output to an end user.  The different output classes include:
+Outputs allow you to write messages to an end user.  The different outputs include:
 
 1. `Aphiria\Console\Output\ConsoleOutput`
-    * Used to write output to the console
+    * Used to write messages to the console
     * The output used by default
 2. `Aphiria\Console\Output\SilentOutput`
-    * Used when we don't want any output to be written
+    * Used when we don't want any messages to be written
     * Useful for when one command calls another
 
 Each output offers three methods:
