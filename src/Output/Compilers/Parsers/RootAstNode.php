@@ -8,12 +8,12 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Output\Compilers\Parsers\Nodes;
+namespace Aphiria\Console\Output\Compilers\Parsers;
 
 /**
  * Defines a root node
  */
-final class RootNode extends Node
+final class RootAstNode extends AstNode
 {
     public function __construct()
     {

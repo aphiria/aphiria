@@ -10,10 +10,8 @@
 
 namespace Aphiria\Console\Output\Compilers\Parsers;
 
-use Aphiria\Console\Output\Compilers\Parsers\Lexers\Tokens\OutputToken;
-use Aphiria\Console\Output\Compilers\Parsers\Lexers\Tokens\OutputTokenTypes;
-use Aphiria\Console\Output\Compilers\Parsers\Nodes\TagNode;
-use Aphiria\Console\Output\Compilers\Parsers\Nodes\WordNode;
+use Aphiria\Console\Output\Compilers\Parsers\Lexers\OutputToken;
+use Aphiria\Console\Output\Compilers\Parsers\Lexers\OutputTokenTypes;
 use RuntimeException;
 
 /**
@@ -25,24 +23,25 @@ final class OutputParser implements IOutputParser
      * @inheritdoc
      * @param OutputToken[] $tokens The list of tokens to parse
      */
-    public function parse(array $tokens): AbstractSyntaxTree
+    public function parse(array $tokens): AstNode
     {
-        $ast = new AbstractSyntaxTree();
+        $ast = new RootAstNode();
+        $currNode = $ast;
 
         foreach ($tokens as $token) {
             switch ($token->type) {
                 case OutputTokenTypes::T_WORD:
-                    $ast->getCurrentNode()->addChild(new WordNode($token->value));
+                    $currNode->addChild(new WordAstNode($token->value));
 
                     break;
                 case OutputTokenTypes::T_TAG_OPEN:
-                    $childNode = new TagNode($token->value);
-                    $ast->getCurrentNode()->addChild($childNode);
-                    $ast->setCurrentNode($childNode);
+                    $childNode = new TagAstNode($token->value);
+                    $currNode->addChild($childNode);
+                    $currNode = $childNode;
 
                     break;
                 case OutputTokenTypes::T_TAG_CLOSE:
-                    if ($ast->getCurrentNode()->value != $token->value) {
+                    if ($currNode->value != $token->value) {
                         throw new RuntimeException(
                             sprintf(
                                 'Improperly nested tag "%s" near character #%d',
@@ -53,16 +52,16 @@ final class OutputParser implements IOutputParser
                     }
 
                     // Move up one in the tree
-                    $ast->setCurrentNode($ast->getCurrentNode()->parent);
+                    $currNode = $currNode->parent;
 
                     break;
                 case OutputTokenTypes::T_EOF:
-                    if (!$ast->getCurrentNode()->isRoot()) {
+                    if (!$currNode->isRoot()) {
                         throw new RuntimeException(
                             sprintf(
                                 'Unclosed %s "%s"',
-                                $ast->getCurrentNode()->isTag() ? 'tag' : 'node',
-                                $ast->getCurrentNode()->value
+                                $currNode->isTag() ? 'tag' : 'node',
+                                $currNode->value
                             )
                         );
                     }

@@ -124,7 +124,7 @@ $greetingCommandHandler = function (CommandInput $input, IOutput $output) {
 };
 ```
 
-Your command handler can either be a `Closure` that takes the input and output as parameters, or it can implement `ICommandHandler`, which has a single method `handle()` that accepts the same parameters.  The following properties are available to you in `CommandInput`:
+Your command handler can either be a `Closure` that takes the input and output as parameters, or it can implement `ICommandHandler`, which has a single method `handle()` that accepts the same parameters.  If you pass in a `Closure`, it will be wrapped in a `ClosureCommandHandler`.  The following properties are available to you in `CommandInput`:
 
 ```php
 $input->arguments['argName']; // The value of 'argName'
@@ -136,18 +136,18 @@ $input->options['optionName']; // The value of 'optionName'
 Before you can use your commands, you must register them so that the `Kernel` knows about them:
 
 ```php
-use Aphiria\Console\Commands\CommandHandlerBinding;
-use Aphiria\Console\Commands\CommandHandlerBindingRegistry;
+use Aphiria\Console\Commands\CommandBinding;
+use Aphiria\Console\Commands\CommandBindingRegistry;
 use Aphiria\Console\Kernel;
 
-$commandHandlers = new CommandHandlerBindingRegistry();
-$commandHandlers->registerCommandHandlerBinding(
-    new CommandHandlerBinding($greetingCommand, $greetingCommandHandler)
+$commandBindings = new CommandBindingRegistry();
+$commandBindings->registerCommandBinding(
+    new CommandBinding($greetingCommand, $greetingCommandHandler)
 );
 
 // Actually run the kernel
 global $argv;
-exit((new Kernel($commandHandlers))->handle($argv));
+exit((new Kernel($commandBindings))->handle($argv));
 ```
 
 To call this command, run:
@@ -164,17 +164,17 @@ HELLO, DAVE
 
 <h3 id="calling-from-code">Calling From Code</h3>
 
-It's possible to call a command from another command by using `CommandHandlerBindingRegistry`:
+It's possible to call a command from another command by using `CommandBindingRegistry`:
 
 ```php
 use Aphiria\Console\Commands\Command;
-use Aphiria\Console\Commands\CommandHandlerBindingRegistry;
+use Aphiria\Console\Commands\CommandBindingRegistry;
 use Aphiria\Console\Commands\CommandInput;
 use Aphiria\Console\Output\IOutput;
 
-$commandHandler = function (CommandInput $input, IOutput $output) use ($commandHandlerBindings) {
-    $fooHandler = $commandHandlerBindings->getCommandHandlerBinding('foo')->commandHandler;
-    $fooHandler(new CommandInput(['arg1' => 'value'], ['option1' => 'value']), $output);
+$commandHandler = function (CommandInput $input, IOutput $output) use ($commandBindings) {
+    $fooHandler = $commandBindings->getCommandBinding('foo')->commandHandler;
+    $fooHandler->handle(new CommandInput(['arg1' => 'value'], ['option1' => 'value']), $output);
 };
 ```
 

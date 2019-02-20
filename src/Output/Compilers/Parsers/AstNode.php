@@ -8,18 +8,18 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Output\Compilers\Parsers\Nodes;
+namespace Aphiria\Console\Output\Compilers\Parsers;
 
 /**
- * Defines an output node
+ * Defines an output abstract syntax tree node
  */
-abstract class Node
+abstract class AstNode
 {
     /** @var mixed|null The value of the node */
     public $value;
-    /** @var Node|null The parent node */
+    /** @var AstNode|null The parent node */
     public $parent;
-    /** @var Node[] The child nodes */
+    /** @var AstNode[] The child nodes */
     public $children = [];
 
     /**
@@ -40,10 +40,10 @@ abstract class Node
     /**
      * Adds a child to this node
      *
-     * @param Node $node The child to add
+     * @param AstNode $node The child to add
      * @return self Returns this for chaining
      */
-    public function addChild(Node $node): self
+    public function addChild(AstNode $node): self
     {
         $node->parent = $this;
         $this->children[] = $node;

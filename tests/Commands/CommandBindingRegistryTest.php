@@ -11,24 +11,24 @@
 namespace Aphiria\Console\Tests\Commands;
 
 use Aphiria\Console\Commands\Command;
-use Aphiria\Console\Commands\CommandHandlerBinding;
-use Aphiria\Console\Commands\CommandHandlerBindingRegistry;
+use Aphiria\Console\Commands\CommandBinding;
+use Aphiria\Console\Commands\CommandBindingRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the command handler binding registry
+ * Tests the command binding registry
  */
-class CommandHandlerBindingRegistryTest extends TestCase
+class CommandBindingRegistryTest extends TestCase
 {
-    /** @var CommandHandlerBindingRegistry */
+    /** @var CommandBindingRegistry */
     private $registry;
 
     public function setUp(): void
     {
-        $this->registry = new CommandHandlerBindingRegistry();
+        $this->registry = new CommandBindingRegistry();
     }
 
     public function testGettingAllBindingsReturnsAllBindings(): void
@@ -36,9 +36,9 @@ class CommandHandlerBindingRegistryTest extends TestCase
         $command = new Command('name', [], [], '', '');
         /** @var ICommandHandler|MockObject $commandHandler */
         $commandHandler = $this->createMock(ICommandHandler::class);
-        $expectedBinding = new CommandHandlerBinding($command, $commandHandler);
-        $this->registry->registerCommandHandlerBinding($expectedBinding);
-        $actualBindings = $this->registry->getAllCommandHandlerBindings();
+        $expectedBinding = new CommandBinding($command, $commandHandler);
+        $this->registry->registerCommandBinding($expectedBinding);
+        $actualBindings = $this->registry->getAllCommandBindings();
         $this->assertCount(1, $actualBindings);
         $this->assertSame($expectedBinding, $actualBindings[0]);
     }
@@ -46,7 +46,7 @@ class CommandHandlerBindingRegistryTest extends TestCase
     public function testGettingNonExistentBindingThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->registry->getCommandHandlerBinding('foo');
+        $this->registry->getCommandBinding('foo');
     }
 
     public function testGettingRegisteredBindingNormalizesName(): void
@@ -54,9 +54,9 @@ class CommandHandlerBindingRegistryTest extends TestCase
         $command = new Command('name', [], [], '', '');
         /** @var ICommandHandler|MockObject $commandHandler */
         $commandHandler = $this->createMock(ICommandHandler::class);
-        $expectedBinding = new CommandHandlerBinding($command, $commandHandler);
-        $this->registry->registerCommandHandlerBinding($expectedBinding);
-        $this->assertSame($expectedBinding, $this->registry->getCommandHandlerBinding('NAME'));
+        $expectedBinding = new CommandBinding($command, $commandHandler);
+        $this->registry->registerCommandBinding($expectedBinding);
+        $this->assertSame($expectedBinding, $this->registry->getCommandBinding('NAME'));
     }
 
     public function testGettingRegisteredBindingReturnsSameInstanceThatWasRegistered(): void
@@ -64,24 +64,24 @@ class CommandHandlerBindingRegistryTest extends TestCase
         $command = new Command('name', [], [], '', '');
         /** @var ICommandHandler|MockObject $commandHandler */
         $commandHandler = $this->createMock(ICommandHandler::class);
-        $expectedBinding = new CommandHandlerBinding($command, $commandHandler);
-        $this->registry->registerCommandHandlerBinding($expectedBinding);
-        $this->assertSame($expectedBinding, $this->registry->getCommandHandlerBinding('name'));
+        $expectedBinding = new CommandBinding($command, $commandHandler);
+        $this->registry->registerCommandBinding($expectedBinding);
+        $this->assertSame($expectedBinding, $this->registry->getCommandBinding('name'));
     }
 
     public function testRegisteringManyBindingsReturnsAddsAllToRegistry(): void
     {
         $expectedBindings = [
-            new CommandHandlerBinding(
+            new CommandBinding(
                 new Command('foo', [], [], ''),
                 $this->createMock(ICommandHandler::class)
             ),
-            new CommandHandlerBinding(
+            new CommandBinding(
                 new Command('bar', [], [], ''),
                 $this->createMock(ICommandHandler::class)
             )
         ];
-        $this->registry->registerManyCommandHandlerBindings($expectedBindings);
-        $this->assertSame($expectedBindings, $this->registry->getAllCommandHandlerBindings());
+        $this->registry->registerManyCommandBindings($expectedBindings);
+        $this->assertSame($expectedBindings, $this->registry->getAllCommandBindings());
     }
 }

@@ -8,7 +8,7 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Output\Compilers\Parsers\Lexers\Tokens;
+namespace Aphiria\Console\Output\Compilers\Parsers\Lexers;
 
 /**
  * Defines a output token

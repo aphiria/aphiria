@@ -10,8 +10,6 @@
 
 namespace Aphiria\Console\Output\Compilers\Parsers\Lexers;
 
-use Aphiria\Console\Output\Compilers\Parsers\Lexers\Tokens\OutputToken;
-use Aphiria\Console\Output\Compilers\Parsers\Lexers\Tokens\OutputTokenTypes;
 use RuntimeException;
 
 /**
@@ -48,7 +46,6 @@ final class OutputLexer implements IOutputLexer
                             )
                         );
                     } else {
-
                         // Check if this is a closing tag
                         if ($this->peek($charArray, $charIter) === '/') {
                             $inCloseTag = true;

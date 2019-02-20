@@ -11,10 +11,10 @@
 namespace Aphiria\Console\Output\Compilers;
 
 use Aphiria\Console\Output\Compilers\Elements\ElementRegistry;
+use Aphiria\Console\Output\Compilers\Parsers\AstNode;
 use Aphiria\Console\Output\Compilers\Parsers\IOutputParser;
 use Aphiria\Console\Output\Compilers\Parsers\Lexers\IOutputLexer;
 use Aphiria\Console\Output\Compilers\Parsers\Lexers\OutputLexer;
-use Aphiria\Console\Output\Compilers\Parsers\Nodes\Node;
 use Aphiria\Console\Output\Compilers\Parsers\OutputParser;
 use InvalidArgumentException;
 use RuntimeException;
@@ -59,7 +59,7 @@ final class OutputCompiler implements IOutputCompiler
             $tokens = $this->lexer->lex($message);
             $ast = $this->parser->parse($tokens);
 
-            return $this->compileNode($ast->getRootNode());
+            return $this->compileNode($ast);
         } catch (InvalidArgumentException $ex) {
             throw new RuntimeException('Failed to compile console output', 0, $ex);
         }
@@ -68,12 +68,12 @@ final class OutputCompiler implements IOutputCompiler
     /**
      * Recursively compiles a node and its children
      *
-     * @param Node $node The node to compile
+     * @param AstNode $node The node to compile
      * @return string The compiled node
      * @throws RuntimeException Thrown if there was an error compiling the node
      * @throws InvalidArgumentException Thrown if there is no matching element for a particular tag
      */
-    private function compileNode(Node $node): string
+    private function compileNode(AstNode $node): string
     {
         if ($node->isLeaf()) {
             // Don't compile a leaf that is a tag because that means it doesn't have any content

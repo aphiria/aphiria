@@ -10,8 +10,8 @@
 
 namespace Aphiria\Console\Commands\Defaults;
 
-use Aphiria\Console\Commands\CommandHandlerBinding;
-use Aphiria\Console\Commands\CommandHandlerBindingRegistry;
+use Aphiria\Console\Commands\CommandBinding;
+use Aphiria\Console\Commands\CommandBindingRegistry;
 use Aphiria\Console\Commands\CommandInput;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
@@ -29,20 +29,20 @@ About <b>Aphiria</b>
 -----------------------------
 {{commands}}
 EOF;
-    /** @var CommandHandlerBindingRegistry The command handler bindings */
-    private $commandHandlerBindings;
+    /** @var CommandBindingRegistry The command bindings */
+    private $commandBindings;
     /** @var PaddingFormatter The space padding formatter to use */
     private $paddingFormatter;
 
     /**
-     * @param CommandHandlerBindingRegistry $commandHandlerBindings The command handler bindings
+     * @param CommandBindingRegistry $commandBindings The command bindings
      * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use
      */
     public function __construct(
-        CommandHandlerBindingRegistry $commandHandlerBindings,
+        CommandBindingRegistry $commandBindings,
         PaddingFormatter $paddingFormatter = null
     ) {
-        $this->commandHandlerBindings = $commandHandlerBindings;
+        $this->commandBindings = $commandBindings;
         $this->paddingFormatter = $paddingFormatter ?? new PaddingFormatter();
     }
 
@@ -65,7 +65,7 @@ EOF;
      */
     private function getCommandText(): string
     {
-        $bindings = $this->commandHandlerBindings->getAllCommandHandlerBindings();
+        $bindings = $this->commandBindings->getAllCommandBindings();
 
         if (count($bindings) === 0) {
             return '  <info>No commands</info>';
@@ -75,8 +75,8 @@ EOF;
          * Sorts the commands by name
          * Uncategorized (commands without ":" in their names) always come first
          *
-         * @param CommandHandlerBinding $a
-         * @param CommandHandlerBinding $b
+         * @param CommandBinding $a
+         * @param CommandBinding $b
          * @return int The result of the comparison
          */
         $sort = function ($a, $b) {

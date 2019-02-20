@@ -10,7 +10,7 @@
 
 namespace Aphiria\Console\Output\Compilers\Parsers;
 
-use Aphiria\Console\Output\Compilers\Parsers\Lexers\Tokens\OutputToken;
+use Aphiria\Console\Output\Compilers\Parsers\Lexers\OutputToken;
 use RuntimeException;
 
 /**
@@ -22,8 +22,8 @@ interface IOutputParser
      * Parses tokens into an abstract syntax tree
      *
      * @param OutputToken[] $tokens The list of tokens to parse
-     * @return AbstractSyntaxTree The abstract syntax tree made from the tokens
+     * @return AstNode The abstract syntax tree made from the tokens
      * @throws RuntimeException Thrown if there was an error in the tokens
      */
-    public function parse(array $tokens): AbstractSyntaxTree;
+    public function parse(array $tokens): AstNode;
 }

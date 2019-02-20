@@ -11,9 +11,9 @@
 namespace Aphiria\Console\Tests\Commands;
 
 use Aphiria\Console\Commands\Command;
+use Aphiria\Console\Commands\CommandBinding;
+use Aphiria\Console\Commands\CommandBindingRegistry;
 use Aphiria\Console\Commands\CommandBus;
-use Aphiria\Console\Commands\CommandHandlerBinding;
-use Aphiria\Console\Commands\CommandHandlerBindingRegistry;
 use Aphiria\Console\Commands\CommandInput;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Input;
@@ -27,8 +27,8 @@ use PHPUnit\Framework\TestCase;
  */
 class CommandBusTest extends TestCase
 {
-    /** @var CommandHandlerBindingRegistry */
-    private $commandHandlerBindings;
+    /** @var CommandBindingRegistry */
+    private $commandBindings;
     /** @var CommandBus */
     private $commandBus;
     /** @var IOutput|MockObject */
@@ -36,9 +36,9 @@ class CommandBusTest extends TestCase
 
     public function setUp(): void
     {
-        $this->commandHandlerBindings = new CommandHandlerBindingRegistry();
+        $this->commandBindings = new CommandBindingRegistry();
         $this->output = $this->createMock(IOutput::class);
-        $this->commandBus = new CommandBus($this->commandHandlerBindings);
+        $this->commandBus = new CommandBus($this->commandBindings);
     }
 
     public function testHandlingWithHandlerThatDoesNotReturnAnythingDefaultsToOk(): void
@@ -48,8 +48,8 @@ class CommandBusTest extends TestCase
             $this->assertSame($this->output, $output);
         };
         $input = new Input('foo', [], []);
-        $this->commandHandlerBindings->registerCommandHandlerBinding(
-            new CommandHandlerBinding($command, $commandHandler)
+        $this->commandBindings->registerCommandBinding(
+            new CommandBinding($command, $commandHandler)
         );
         $statusCode = $this->commandBus->handle($input, $this->output);
         $this->assertEquals(StatusCodes::OK, $statusCode);
@@ -66,8 +66,8 @@ class CommandBusTest extends TestCase
             return StatusCodes::OK;
         };
         $input = new Input('foo', [], []);
-        $this->commandHandlerBindings->registerCommandHandlerBinding(
-            new CommandHandlerBinding($command, $commandHandler)
+        $this->commandBindings->registerCommandBinding(
+            new CommandBinding($command, $commandHandler)
         );
         $statusCode = $this->commandBus->handle($input, $this->output);
         $this->assertEquals(StatusCodes::OK, $statusCode);
@@ -94,8 +94,8 @@ class CommandBusTest extends TestCase
             }
         };
         $input = new Input('foo', [], []);
-        $this->commandHandlerBindings->registerCommandHandlerBinding(
-            new CommandHandlerBinding($command, $commandHandler)
+        $this->commandBindings->registerCommandBinding(
+            new CommandBinding($command, $commandHandler)
         );
         $statusCode = $this->commandBus->handle($input, $this->output);
         $this->assertEquals(StatusCodes::OK, $statusCode);

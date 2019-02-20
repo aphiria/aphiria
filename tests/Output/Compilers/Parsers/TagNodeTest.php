@@ -8,19 +8,19 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Tests\Output\Compilers\Parsers\Nodes;
+namespace Aphiria\Console\Tests\Output\Compilers\Parsers;
 
-use Aphiria\Console\Output\Compilers\Parsers\Nodes\WordNode;
+use Aphiria\Console\Output\Compilers\Parsers\TagAstNode;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the word node
+ * Tests the tag node
  */
-class WordNodeTest extends TestCase
+class TagNodeTest extends TestCase
 {
     public function testIsTag(): void
     {
-        $node = new WordNode('foo');
-        $this->assertFalse($node->isTag());
+        $node = new TagAstNode('foo');
+        $this->assertTrue($node->isTag());
     }
 }

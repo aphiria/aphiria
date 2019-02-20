@@ -8,10 +8,10 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Tests\Output\Compilers\Parsers\Lexers\Tokens;
+namespace Aphiria\Console\Tests\Output\Compilers\Parsers\Lexers;
 
-use Aphiria\Console\Output\Compilers\Parsers\Lexers\Tokens\OutputToken;
-use Aphiria\Console\Output\Compilers\Parsers\Lexers\Tokens\OutputTokenTypes;
+use Aphiria\Console\Output\Compilers\Parsers\Lexers\OutputToken;
+use Aphiria\Console\Output\Compilers\Parsers\Lexers\OutputTokenTypes;
 use PHPUnit\Framework\TestCase;
 
 /**

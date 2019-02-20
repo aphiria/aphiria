@@ -8,9 +8,9 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Tests\Output\Compilers\Parsers\Nodes;
+namespace Aphiria\Console\Tests\Output\Compilers\Parsers;
 
-use Aphiria\Console\Tests\Output\Compilers\Parsers\Nodes\Mocks\Node;
+use Aphiria\Console\Tests\Output\Compilers\Parsers\Mocks\AstNode;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -20,8 +20,8 @@ class NodeTest extends TestCase
 {
     public function testAddingChild(): void
     {
-        $parent = new Node('foo');
-        $child = new Node('bar');
+        $parent = new AstNode('foo');
+        $child = new AstNode('bar');
         $parent->addChild($child);
         $this->assertEquals([$child], $parent->children);
         $this->assertSame($parent, $child->parent);
@@ -29,8 +29,8 @@ class NodeTest extends TestCase
 
     public function testCheckingIfLeaves(): void
     {
-        $parent = new Node('foo');
-        $child = new Node('bar');
+        $parent = new AstNode('foo');
+        $child = new AstNode('bar');
         $this->assertSame($parent, $parent->addChild($child));
         $this->assertFalse($parent->isLeaf());
         $this->assertTrue($child->isLeaf());
@@ -38,8 +38,8 @@ class NodeTest extends TestCase
 
     public function testCheckingIfRoots(): void
     {
-        $parent = new Node('foo');
-        $child = new Node('bar');
+        $parent = new AstNode('foo');
+        $child = new AstNode('bar');
         $parent->addChild($child);
         $this->assertTrue($parent->isRoot());
         $this->assertFalse($child->isRoot());
@@ -47,7 +47,7 @@ class NodeTest extends TestCase
 
     public function testGettingValue(): void
     {
-        $node = new Node('foo');
+        $node = new AstNode('foo');
         $this->assertEquals('foo', $node->value);
     }
 }

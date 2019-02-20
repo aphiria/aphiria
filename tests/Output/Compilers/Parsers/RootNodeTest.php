@@ -8,9 +8,9 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Tests\Output\Compilers\Parsers\Nodes;
+namespace Aphiria\Console\Tests\Output\Compilers\Parsers;
 
-use Aphiria\Console\Output\Compilers\Parsers\Nodes\RootNode;
+use Aphiria\Console\Output\Compilers\Parsers\RootAstNode;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -20,19 +20,19 @@ class RootNodeTest extends TestCase
 {
     public function testIsRoot(): void
     {
-        $node = new RootNode();
+        $node = new RootAstNode();
         $this->assertTrue($node->isRoot());
     }
 
     public function testIsTag(): void
     {
-        $node = new RootNode();
+        $node = new RootAstNode();
         $this->assertFalse($node->isTag());
     }
 
     public function testParentIsNull(): void
     {
-        $node = new RootNode();
+        $node = new RootAstNode();
         $this->assertNull($node->parent);
     }
 }

@@ -10,12 +10,12 @@
 
 namespace Aphiria\Console\Tests\Output\Compilers\Parsers;
 
-use Aphiria\Console\Output\Compilers\Parsers\AbstractSyntaxTree;
-use Aphiria\Console\Output\Compilers\Parsers\Lexers\Tokens\OutputToken;
-use Aphiria\Console\Output\Compilers\Parsers\Lexers\Tokens\OutputTokenTypes;
-use Aphiria\Console\Output\Compilers\Parsers\Nodes\TagNode;
-use Aphiria\Console\Output\Compilers\Parsers\Nodes\WordNode;
+use Aphiria\Console\Output\Compilers\Parsers\Lexers\OutputToken;
+use Aphiria\Console\Output\Compilers\Parsers\Lexers\OutputTokenTypes;
 use Aphiria\Console\Output\Compilers\Parsers\OutputParser;
+use Aphiria\Console\Output\Compilers\Parsers\RootAstNode;
+use Aphiria\Console\Output\Compilers\Parsers\TagAstNode;
+use Aphiria\Console\Output\Compilers\Parsers\WordAstNode;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -57,13 +57,13 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'bar', 1),
             new OutputToken(OutputTokenTypes::T_EOF, null, 1)
         ];
-        $expectedOutput = new AbstractSyntaxTree();
-        $fooNode = new TagNode('foo');
-        $fooNode->addChild(new WordNode('baz'));
-        $expectedOutput->getCurrentNode()->addChild($fooNode);
-        $barNode = new TagNode('bar');
-        $barNode->addChild(new WordNode('blah'));
-        $expectedOutput->getCurrentNode()->addChild($barNode);
+        $expectedOutput = new RootAstNode();
+        $fooNode = new TagAstNode('foo');
+        $fooNode->addChild(new WordAstNode('baz'));
+        $expectedOutput->addChild($fooNode);
+        $barNode = new TagAstNode('bar');
+        $barNode->addChild(new WordAstNode('blah'));
+        $expectedOutput->addChild($barNode);
         $this->assertEquals(
             $expectedOutput,
             $this->parser->parse($tokens)
@@ -77,9 +77,9 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 1),
             new OutputToken(OutputTokenTypes::T_EOF, null, 1)
         ];
-        $expectedOutput = new AbstractSyntaxTree();
-        $fooNode = new TagNode('foo');
-        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $expectedOutput = new RootAstNode();
+        $fooNode = new TagAstNode('foo');
+        $expectedOutput->addChild($fooNode);
         $this->assertEquals(
             $expectedOutput,
             $this->parser->parse($tokens)
@@ -92,9 +92,9 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenTypes::T_WORD, '<bar>', 1),
             new OutputToken(OutputTokenTypes::T_EOF, null, 1)
         ];
-        $expectedOutput = new AbstractSyntaxTree();
-        $fooNode = new WordNode('<bar>');
-        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $expectedOutput = new RootAstNode();
+        $fooNode = new WordAstNode('<bar>');
+        $expectedOutput->addChild($fooNode);
         $this->assertEquals($expectedOutput, $this->parser->parse($tokens));
     }
 
@@ -106,10 +106,10 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 1),
             new OutputToken(OutputTokenTypes::T_EOF, null, 1)
         ];
-        $expectedOutput = new AbstractSyntaxTree();
-        $fooNode = new TagNode('foo');
-        $fooNode->addChild(new WordNode('<bar>'));
-        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $expectedOutput = new RootAstNode();
+        $fooNode = new TagAstNode('foo');
+        $fooNode->addChild(new WordAstNode('<bar>'));
+        $expectedOutput->addChild($fooNode);
         $this->assertEquals($expectedOutput, $this->parser->parse($tokens));
     }
 
@@ -125,14 +125,14 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 1),
             new OutputToken(OutputTokenTypes::T_EOF, null, 1)
         ];
-        $expectedOutput = new AbstractSyntaxTree();
-        $fooNode = new TagNode('foo');
-        $fooNode->addChild(new WordNode('bar'));
-        $barNode = new TagNode('bar');
-        $barNode->addChild(new WordNode('blah'));
+        $expectedOutput = new RootAstNode();
+        $fooNode = new TagAstNode('foo');
+        $fooNode->addChild(new WordAstNode('bar'));
+        $barNode = new TagAstNode('bar');
+        $barNode->addChild(new WordAstNode('blah'));
         $fooNode->addChild($barNode);
-        $fooNode->addChild(new WordNode('baz'));
-        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $fooNode->addChild(new WordAstNode('baz'));
+        $expectedOutput->addChild($fooNode);
         $this->assertEquals(
             $expectedOutput,
             $this->parser->parse($tokens)
@@ -153,16 +153,16 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenTypes::T_WORD, 'young', 1),
             new OutputToken(OutputTokenTypes::T_EOF, null, 1)
         ];
-        $expectedOutput = new AbstractSyntaxTree();
-        $expectedOutput->getCurrentNode()->addChild(new WordNode('dave'));
-        $fooNode = new TagNode('foo');
-        $fooNode->addChild(new WordNode('bar'));
-        $barNode = new TagNode('bar');
-        $barNode->addChild(new WordNode('blah'));
+        $expectedOutput = new RootAstNode();
+        $expectedOutput->addChild(new WordAstNode('dave'));
+        $fooNode = new TagAstNode('foo');
+        $fooNode->addChild(new WordAstNode('bar'));
+        $barNode = new TagAstNode('bar');
+        $barNode->addChild(new WordAstNode('blah'));
         $fooNode->addChild($barNode);
-        $fooNode->addChild(new WordNode('baz'));
-        $expectedOutput->getCurrentNode()->addChild($fooNode);
-        $expectedOutput->getCurrentNode()->addChild(new WordNode('young'));
+        $fooNode->addChild(new WordAstNode('baz'));
+        $expectedOutput->addChild($fooNode);
+        $expectedOutput->addChild(new WordAstNode('young'));
         $this->assertEquals(
             $expectedOutput,
             $this->parser->parse($tokens)
@@ -178,10 +178,10 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 1),
             new OutputToken(OutputTokenTypes::T_EOF, null, 1)
         ];
-        $expectedOutput = new AbstractSyntaxTree();
-        $fooNode = new TagNode('foo');
-        $fooNode->addChild(new TagNode('bar'));
-        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $expectedOutput = new RootAstNode();
+        $fooNode = new TagAstNode('foo');
+        $fooNode->addChild(new TagAstNode('bar'));
+        $expectedOutput->addChild($fooNode);
         $this->assertEquals(
             $expectedOutput,
             $this->parser->parse($tokens)
@@ -194,9 +194,9 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenTypes::T_WORD, 'foobar', 1),
             new OutputToken(OutputTokenTypes::T_EOF, null, 1)
         ];
-        $expectedOutput = new AbstractSyntaxTree();
-        $node = new WordNode('foobar');
-        $expectedOutput->getCurrentNode()->addChild($node);
+        $expectedOutput = new RootAstNode();
+        $node = new WordAstNode('foobar');
+        $expectedOutput->addChild($node);
         $this->assertEquals(
             $expectedOutput,
             $this->parser->parse($tokens)
@@ -211,10 +211,10 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 1),
             new OutputToken(OutputTokenTypes::T_EOF, null, 1)
         ];
-        $expectedOutput = new AbstractSyntaxTree();
-        $fooNode = new TagNode('foo');
-        $fooNode->addChild(new WordNode('bar'));
-        $expectedOutput->getCurrentNode()->addChild($fooNode);
+        $expectedOutput = new RootAstNode();
+        $fooNode = new TagAstNode('foo');
+        $fooNode->addChild(new WordAstNode('bar'));
+        $expectedOutput->addChild($fooNode);
         $this->assertEquals($expectedOutput, $this->parser->parse($tokens));
     }
 

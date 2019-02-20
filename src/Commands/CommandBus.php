@@ -19,20 +19,20 @@ use Aphiria\Console\StatusCodes;
  */
 final class CommandBus implements ICommandBus
 {
-    /** @var CommandHandlerBindingRegistry The command handler bindings */
-    private $commandHandlerBindings;
+    /** @var CommandBindingRegistry The command bindings */
+    private $commandBindings;
     /** @var CommandInputFactory The factory to create command inputs with */
     private $commandInputFactory;
 
     /**
-     * @param CommandHandlerBindingRegistry $commandHandlerBindings The command handler bindings
+     * @param CommandBindingRegistry $commandBindings The command bindings
      * @param CommandInputFactory|null $commandInputFactory The factory to create command inputs with
      */
     public function __construct(
-        CommandHandlerBindingRegistry $commandHandlerBindings,
+        CommandBindingRegistry $commandBindings,
         CommandInputFactory $commandInputFactory = null
     ) {
-        $this->commandHandlerBindings = $commandHandlerBindings;
+        $this->commandBindings = $commandBindings;
         $this->commandInputFactory = $commandInputFactory ?? new CommandInputFactory();
     }
 
@@ -41,7 +41,7 @@ final class CommandBus implements ICommandBus
      */
     public function handle(Input $input, IOutput $output): int
     {
-        $binding = $this->commandHandlerBindings->getCommandHandlerBinding($input->commandName);
+        $binding = $this->commandBindings->getCommandBinding($input->commandName);
         $commandInput = $this->commandInputFactory->createCommandInput($binding->command, $input);
 
         if ($binding->commandHandler instanceof ICommandHandler) {

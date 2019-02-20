@@ -10,9 +10,9 @@
 
 namespace Aphiria\Console;
 
+use Aphiria\Console\Commands\CommandBinding;
+use Aphiria\Console\Commands\CommandBindingRegistry;
 use Aphiria\Console\Commands\CommandBus;
-use Aphiria\Console\Commands\CommandHandlerBinding;
-use Aphiria\Console\Commands\CommandHandlerBindingRegistry;
 use Aphiria\Console\Commands\Defaults\AboutCommand;
 use Aphiria\Console\Commands\Defaults\AboutCommandHandler;
 use Aphiria\Console\Commands\Defaults\HelpCommand;
@@ -38,21 +38,21 @@ final class Kernel
     private $inputCompiler;
 
     /**
-     * @param CommandHandlerBindingRegistry $commandHandlerBindings The command handler bindings
+     * @param CommandBindingRegistry $commandBindings The command bindings
      * @param IInputCompiler|null $inputCompiler The input compiler to use
      */
     public function __construct(
-        CommandHandlerBindingRegistry $commandHandlerBindings,
+        CommandBindingRegistry $commandBindings,
         IInputCompiler $inputCompiler = null
     ) {
-        // Set up our default command handlers
-        $commandHandlerBindings->registerCommandHandlerBinding(
-            new CommandHandlerBinding(new HelpCommand(), new HelpCommandHandler($commandHandlerBindings))
+        // Set up our default commands
+        $commandBindings->registerCommandBinding(
+            new CommandBinding(new HelpCommand(), new HelpCommandHandler($commandBindings))
         );
-        $commandHandlerBindings->registerCommandHandlerBinding(
-            new CommandHandlerBinding(new AboutCommand(), new AboutCommandHandler($commandHandlerBindings))
+        $commandBindings->registerCommandBinding(
+            new CommandBinding(new AboutCommand(), new AboutCommandHandler($commandBindings))
         );
-        $this->commandBus = new CommandBus($commandHandlerBindings);
+        $this->commandBus = new CommandBus($commandBindings);
         $this->inputCompiler = $inputCompiler ?? new ArgvInputCompiler();
     }
 

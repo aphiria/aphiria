@@ -10,7 +10,6 @@
 
 namespace Aphiria\Console\Output\Compilers\Parsers\Lexers;
 
-use Aphiria\Console\Output\Compilers\Parsers\Lexers\Tokens\OutputToken;
 use RuntimeException;
 
 /**

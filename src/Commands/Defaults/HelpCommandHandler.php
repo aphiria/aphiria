@@ -11,7 +11,7 @@
 namespace Aphiria\Console\Commands\Defaults;
 
 use Aphiria\Console\Commands\Command;
-use Aphiria\Console\Commands\CommandHandlerBindingRegistry;
+use Aphiria\Console\Commands\CommandBindingRegistry;
 use Aphiria\Console\Commands\CommandInput;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Option;
@@ -40,24 +40,24 @@ Command: <info>{{name}}</info>
 <comment>Options:</comment>
 {{options}}{{helpText}}
 EOF;
-    /** @var CommandHandlerBindingRegistry The command handler bindings */
-    private $commandHandlerBindings;
+    /** @var CommandBindingRegistry The command bindings */
+    private $commandBindings;
     /** @var CommandFormatter The command formatter to use */
     private $commandFormatter;
     /** @var PaddingFormatter The space padding formatter to use */
     private $paddingFormatter;
 
     /**
-     * @param CommandHandlerBindingRegistry $commandHandlerBindings The command handler bindings
+     * @param CommandBindingRegistry $commandBindings The command bindings
      * @param CommandFormatter|null $commandFormatter The command formatter to use
      * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use
      */
     public function __construct(
-        CommandHandlerBindingRegistry $commandHandlerBindings,
+        CommandBindingRegistry $commandBindings,
         CommandFormatter $commandFormatter = null,
         PaddingFormatter $paddingFormatter = null
     ) {
-        $this->commandHandlerBindings = $commandHandlerBindings;
+        $this->commandBindings = $commandBindings;
         $this->commandFormatter = $commandFormatter ?? new CommandFormatter();
         $this->paddingFormatter = $paddingFormatter ?? new PaddingFormatter();
     }
@@ -74,7 +74,7 @@ EOF;
                 return StatusCodes::OK;
             }
 
-            $binding = $this->commandHandlerBindings->getCommandHandlerBinding($commandInput->arguments['command']);
+            $binding = $this->commandBindings->getCommandBinding($commandInput->arguments['command']);
             $descriptionText = 'No description';
             $helpText = '';
 

@@ -8,14 +8,14 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Tests\Output\Compilers\Parsers\Nodes\Mocks;
+namespace Aphiria\Console\Tests\Output\Compilers\Parsers\Mocks;
 
-use Aphiria\Console\Output\Compilers\Parsers\Nodes\Node as BaseNode;
+use Aphiria\Console\Output\Compilers\Parsers\AstNode as BaseNode;
 
 /**
  * Mocks a node for use in testing
  */
-class Node extends BaseNode
+class AstNode extends BaseNode
 {
     /**
      * @inheritdoc
