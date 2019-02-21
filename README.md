@@ -136,18 +136,15 @@ $input->options['optionName']; // The value of 'optionName'
 Before you can use your commands, you must register them so that the `Kernel` knows about them:
 
 ```php
-use Aphiria\Console\Commands\CommandBinding;
-use Aphiria\Console\Commands\CommandBindingRegistry;
+use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Kernel;
 
-$commandBindings = new CommandBindingRegistry();
-$commandBindings->registerCommandBinding(
-    new CommandBinding($greetingCommand, $greetingCommandHandler)
-);
+$commands = new CommandRegistry();
+$commands->registerCommand($greetingCommand, $greetingCommandHandler);
 
 // Actually run the kernel
 global $argv;
-exit((new Kernel($commandBindings))->handle($argv));
+exit((new Kernel($commands))->handle($argv));
 ```
 
 To call this command, run:
@@ -164,18 +161,23 @@ HELLO, DAVE
 
 <h3 id="calling-from-code">Calling From Code</h3>
 
-It's possible to call a command from another command by using `CommandBindingRegistry`:
+It's possible to call a command from another command by using `CommandRegistry`:
 
 ```php
-use Aphiria\Console\Commands\Command;
-use Aphiria\Console\Commands\CommandBindingRegistry;
 use Aphiria\Console\Commands\CommandInput;
 use Aphiria\Console\Output\IOutput;
 
-$commandHandler = function (CommandInput $input, IOutput $output) use ($commandBindings) {
-    $fooHandler = $commandBindings->getCommandBinding('foo')->commandHandler;
+$commandHandler = function (CommandInput $input, IOutput $output) use ($commands) {
+    $fooHandler = null;
+    
+    if (!$commands->tryGetHandler('foo', $fooHandler)) {
+        throw new \RuntimeException('"foo" is not registered');
+    }
+
     $fooHandler->handle(new CommandInput(['arg1' => 'value'], ['option1' => 'value']), $output);
 };
+
+// Register your commands...
 ```
 
 If you want to call the other command but not write its output, use the `Aphiria\Console\Output\SilentOutput` output.

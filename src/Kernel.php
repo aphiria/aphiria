@@ -11,8 +11,8 @@
 namespace Aphiria\Console;
 
 use Aphiria\Console\Commands\CommandBinding;
-use Aphiria\Console\Commands\CommandBindingRegistry;
 use Aphiria\Console\Commands\CommandBus;
+use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\Defaults\AboutCommand;
 use Aphiria\Console\Commands\Defaults\AboutCommandHandler;
 use Aphiria\Console\Commands\Defaults\HelpCommand;
@@ -38,21 +38,19 @@ final class Kernel
     private $inputCompiler;
 
     /**
-     * @param CommandBindingRegistry $commandBindings The command bindings
+     * @param CommandRegistry $commands The commands
      * @param IInputCompiler|null $inputCompiler The input compiler to use
      */
     public function __construct(
-        CommandBindingRegistry $commandBindings,
+        CommandRegistry $commands,
         IInputCompiler $inputCompiler = null
     ) {
         // Set up our default commands
-        $commandBindings->registerCommandBinding(
-            new CommandBinding(new HelpCommand(), new HelpCommandHandler($commandBindings))
-        );
-        $commandBindings->registerCommandBinding(
-            new CommandBinding(new AboutCommand(), new AboutCommandHandler($commandBindings))
-        );
-        $this->commandBus = new CommandBus($commandBindings);
+        $commands->registerManyCommands([
+            new CommandBinding(new HelpCommand(), new HelpCommandHandler($commands)),
+            new CommandBinding(new AboutCommand(), new AboutCommandHandler($commands))
+        ]);
+        $this->commandBus = new CommandBus($commands);
         $this->inputCompiler = $inputCompiler ?? new ArgvInputCompiler();
     }
 

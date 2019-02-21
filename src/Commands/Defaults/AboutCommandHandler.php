@@ -10,9 +10,9 @@
 
 namespace Aphiria\Console\Commands\Defaults;
 
-use Aphiria\Console\Commands\CommandBinding;
-use Aphiria\Console\Commands\CommandBindingRegistry;
+use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandInput;
+use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\IOutput;
@@ -29,20 +29,20 @@ About <b>Aphiria</b>
 -----------------------------
 {{commands}}
 EOF;
-    /** @var CommandBindingRegistry The command bindings */
-    private $commandBindings;
+    /** @var CommandRegistry The commands */
+    private $commands;
     /** @var PaddingFormatter The space padding formatter to use */
     private $paddingFormatter;
 
     /**
-     * @param CommandBindingRegistry $commandBindings The command bindings
+     * @param CommandRegistry $commands The commands
      * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use
      */
     public function __construct(
-        CommandBindingRegistry $commandBindings,
+        CommandRegistry $commands,
         PaddingFormatter $paddingFormatter = null
     ) {
-        $this->commandBindings = $commandBindings;
+        $this->commands = $commands;
         $this->paddingFormatter = $paddingFormatter ?? new PaddingFormatter();
     }
 
@@ -65,9 +65,9 @@ EOF;
      */
     private function getCommandText(): string
     {
-        $bindings = $this->commandBindings->getAllCommandBindings();
+        $commands = $this->commands->getAllCommands();
 
-        if (count($bindings) === 0) {
+        if (count($commands) === 0) {
             return '  <info>No commands</info>';
         }
 
@@ -75,37 +75,37 @@ EOF;
          * Sorts the commands by name
          * Uncategorized (commands without ":" in their names) always come first
          *
-         * @param CommandBinding $a
-         * @param CommandBinding $b
+         * @param Command $a
+         * @param Command $b
          * @return int The result of the comparison
          */
         $sort = function ($a, $b) {
-            if (strpos($a->command->name, ':') === false) {
-                if (strpos($b->command->name, ':') === false) {
+            if (strpos($a->name, ':') === false) {
+                if (strpos($b->name, ':') === false) {
                     // They're both uncategorized
-                    return $a->command->name < $b->command->name ? -1 : 1;
+                    return $a->name < $b->name ? -1 : 1;
                 }
 
                 // B is categorized
                 return -1;
             }
 
-            if (strpos($b->command->name, ':') === false) {
+            if (strpos($b->name, ':') === false) {
                 // A is categorized
                 return 1;
             }
 
             // They're both categorized
-            return $a->command->name < $b->command->name ? -1 : 1;
+            return $a->name < $b->name ? -1 : 1;
         };
 
-        usort($bindings, $sort);
+        usort($commands, $sort);
         $categorizedCommandNames = [];
         $commandTexts = [];
         $firstCommandNamesToCategories = [];
 
-        foreach ($bindings as $binding) {
-            $commandName = $binding->command->name;
+        foreach ($commands as $command) {
+            $commandName = $command->name;
             $commandNameParts = explode(':', $commandName);
 
             if (count($commandNameParts) > 1 && !in_array($commandNameParts[0], $firstCommandNamesToCategories, true)) {
@@ -117,7 +117,7 @@ EOF;
                 }
             }
 
-            $commandTexts[] = [$commandName, $binding->command->description];
+            $commandTexts[] = [$commandName, $command->description];
         }
 
         return $this->paddingFormatter->format(

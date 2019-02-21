@@ -11,8 +11,8 @@
 namespace Aphiria\Console\Commands\Defaults;
 
 use Aphiria\Console\Commands\Command;
-use Aphiria\Console\Commands\CommandBindingRegistry;
 use Aphiria\Console\Commands\CommandInput;
+use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Output\Formatters\CommandFormatter;
@@ -40,24 +40,24 @@ Command: <info>{{name}}</info>
 <comment>Options:</comment>
 {{options}}{{helpText}}
 EOF;
-    /** @var CommandBindingRegistry The command bindings */
-    private $commandBindings;
+    /** @var CommandRegistry The commands */
+    private $commands;
     /** @var CommandFormatter The command formatter to use */
     private $commandFormatter;
     /** @var PaddingFormatter The space padding formatter to use */
     private $paddingFormatter;
 
     /**
-     * @param CommandBindingRegistry $commandBindings The command bindings
+     * @param CommandRegistry $commands The commands
      * @param CommandFormatter|null $commandFormatter The command formatter to use
      * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use
      */
     public function __construct(
-        CommandBindingRegistry $commandBindings,
+        CommandRegistry $commands,
         CommandFormatter $commandFormatter = null,
         PaddingFormatter $paddingFormatter = null
     ) {
-        $this->commandBindings = $commandBindings;
+        $this->commands = $commands;
         $this->commandFormatter = $commandFormatter ?? new CommandFormatter();
         $this->paddingFormatter = $paddingFormatter ?? new PaddingFormatter();
     }
@@ -74,27 +74,29 @@ EOF;
                 return StatusCodes::OK;
             }
 
-            $binding = $this->commandBindings->getCommandBinding($commandInput->arguments['command']);
-            $descriptionText = 'No description';
-            $helpText = '';
+            $command = null;
 
-            if ($binding->command->description !== '') {
-                $descriptionText = $binding->command->description;
+            if (!$this->commands->tryGetCommand($commandInput->arguments['command'], $command)) {
+                throw new InvalidArgumentException(
+                    "Command \"{$commandInput->arguments['command']}\" is not registered"
+                );
             }
 
-            if ($binding->command->helpText !== null && $binding->command->helpText !== '') {
-                $helpText = PHP_EOL . '<comment>Help:</comment>' . PHP_EOL . '  ' . $binding->command->helpText;
+            $helpText = '';
+
+            if ($command->helpText !== null && $command->helpText !== '') {
+                $helpText = PHP_EOL . '<comment>Help:</comment>' . PHP_EOL . '  ' . $command->helpText;
             }
 
             // Compile the template
             $compiledTemplate = str_replace(
                 ['{{command}}', '{{description}}', '{{name}}', '{{arguments}}', '{{options}}', '{{helpText}}'],
                 [
-                    $this->commandFormatter->format($binding->command),
-                    $descriptionText,
-                    $binding->command->name,
-                    $this->getArgumentText($binding->command),
-                    $this->getOptionText($binding->command),
+                    $this->commandFormatter->format($command),
+                    $command->description === '' ? 'No description' : $command->description,
+                    $command->name,
+                    $this->getArgumentText($command),
+                    $this->getOptionText($command),
                     $helpText
                 ],
                 self::$template

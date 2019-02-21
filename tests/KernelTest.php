@@ -11,9 +11,8 @@
 namespace Aphiria\Console\Tests;
 
 use Aphiria\Console\Commands\Command;
-use Aphiria\Console\Commands\CommandBinding;
-use Aphiria\Console\Commands\CommandBindingRegistry;
 use Aphiria\Console\Commands\CommandInput;
+use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\ArgumentTypes;
 use Aphiria\Console\Input\Compilers\StringInputCompiler;
@@ -32,8 +31,8 @@ class KernelTest extends TestCase
 {
     /** @var StringInputCompiler */
     private $inputCompiler;
-    /** @var CommandBindingRegistry */
-    private $commandBindings;
+    /** @var CommandRegistry */
+    private $commands;
     /** @var Output */
     private $output;
     /** @var Kernel */
@@ -41,9 +40,9 @@ class KernelTest extends TestCase
 
     public function setUp(): void
     {
-        $this->commandBindings = new CommandBindingRegistry();
+        $this->commands = new CommandRegistry();
         $this->inputCompiler = new StringInputCompiler();
-        $this->kernel = new Kernel($this->commandBindings, $this->inputCompiler);
+        $this->kernel = new Kernel($this->commands, $this->inputCompiler);
         $this->output = new Output();
     }
 
@@ -58,12 +57,12 @@ class KernelTest extends TestCase
     public function testHandlingHelpCommand(): void
     {
         // Try with command name
-        $this->commandBindings->registerCommandBinding(new CommandBinding(
+        $this->commands->registerCommand(
             new Command('holiday', [], [], ''),
             function (CommandInput $commandInput, IOutput $output) {
                 // Don't do anything
             }
-        ));
+        );
         ob_start();
         $status = $this->kernel->handle('help holiday', $this->output);
         ob_get_clean();
@@ -87,7 +86,7 @@ class KernelTest extends TestCase
     public function testHandlingHolidayCommand(): void
     {
         // Test with short option
-        $this->commandBindings->registerCommandBinding(new CommandBinding(
+        $this->commands->registerCommand(
             new Command(
                 'holiday',
                 [new Argument('holiday', ArgumentTypes::REQUIRED, '')],
@@ -103,7 +102,7 @@ class KernelTest extends TestCase
 
                 $output->write($message);
             }
-        ));
+        );
         ob_start();
         $status = $this->kernel->handle('holiday birthday -y', $this->output);
         $this->assertEquals('Happy birthday!', ob_get_clean());
@@ -126,12 +125,12 @@ class KernelTest extends TestCase
 
     public function testHandlingSimpleCommand(): void
     {
-        $this->commandBindings->registerCommandBinding(new CommandBinding(
+        $this->commands->registerCommand(
             new Command('foo', [], [], ''),
             function (CommandInput $commandInput, IOutput $output) {
                 $output->write('foo');
             }
-        ));
+        );
         ob_start();
         $status = $this->kernel->handle('foo', $this->output);
         $this->assertEquals('foo', ob_get_clean());
