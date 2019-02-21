@@ -29,10 +29,8 @@ final class CommandBus implements ICommandBus
      * @param CommandRegistry $commands The command registry
      * @param CommandInputFactory|null $commandInputFactory The factory to create command inputs with
      */
-    public function __construct(
-        CommandRegistry $commands,
-        CommandInputFactory $commandInputFactory = null
-    ) {
+    public function __construct(CommandRegistry $commands, CommandInputFactory $commandInputFactory = null)
+    {
         $this->commands = $commands;
         $this->commandInputFactory = $commandInputFactory ?? new CommandInputFactory();
     }

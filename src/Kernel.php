@@ -41,10 +41,8 @@ final class Kernel
      * @param CommandRegistry $commands The commands
      * @param IInputCompiler|null $inputCompiler The input compiler to use
      */
-    public function __construct(
-        CommandRegistry $commands,
-        IInputCompiler $inputCompiler = null
-    ) {
+    public function __construct(CommandRegistry $commands, IInputCompiler $inputCompiler = null)
+    {
         // Set up our default commands
         $commands->registerManyCommands([
             new CommandBinding(new HelpCommand(), new HelpCommandHandler($commands)),

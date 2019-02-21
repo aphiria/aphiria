@@ -112,18 +112,20 @@ final class CommandRegistry
     public function tryGetHandler($command, ?ICommandHandler &$commandHandler): bool
     {
         if (is_string($command)) {
-            $normalizedCommandName = self::normalizeCommandName($command);
+            $commandName = $command;
         } elseif ($command instanceof Command) {
-            $normalizedCommandName = self::normalizeCommandName($command->name);
+            $commandName = $command->name;
         } else {
             throw new InvalidArgumentException('Command must be either a string or an instance of ' . Command::class);
         }
 
-        if (!isset($this->bindings[$normalizedCommandName])) {
+        $binding = null;
+
+        if (!$this->tryGetBinding($commandName, $binding)) {
             return false;
         }
 
-        $commandHandler = $this->bindings[$normalizedCommandName]->commandHandler;
+        $commandHandler = $binding->commandHandler;
 
         return true;
     }
