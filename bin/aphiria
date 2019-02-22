@@ -8,10 +8,10 @@ if (file_exists($vendorBinAutoload = __DIR__ . '/../../autoload.php')) {
     require_once __DIR__ . '/../vendor/autoload.php';
 }
 
-use Aphiria\Console\Commands\CommandBindingRegistry;
+use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Kernel;
 
-$commandBindings = new CommandBindingRegistry();
-$kernel = new Kernel($commandBindings);
+$commands = new CommandRegistry();
+$kernel = new Kernel($commands);
 global $argv;
 exit($kernel->handle($argv));
