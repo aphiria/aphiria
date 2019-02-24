@@ -14,7 +14,6 @@ use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\Prompts\Questions\MultipleChoice;
 use Aphiria\Console\Prompts\Questions\Question;
-use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -24,17 +23,13 @@ class Prompt
 {
     /** @var PaddingFormatter The space padding formatter to use */
     private $paddingFormatter;
-    /** @var resource The input stream to look for answers in */
-    private $inputStream;
 
     /***
      * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use
-     * @param resource|null $inputStream The input stream to look for answers in
      */
-    public function __construct(PaddingFormatter $paddingFormatter = null, $inputStream = null)
+    public function __construct(PaddingFormatter $paddingFormatter = null)
     {
         $this->paddingFormatter = $paddingFormatter ?? new PaddingFormatter();
-        $this->setInputStream($inputStream ?? STDIN);
     }
 
     /**
@@ -70,7 +65,7 @@ class Prompt
             $output->write($question->getAnswerLineString());
         }
 
-        $answer = fgets($this->inputStream, 4096);
+        $answer = $output->readLine();
 
         if ($answer === false) {
             throw new RuntimeException('Failed to get answer');
@@ -83,20 +78,5 @@ class Prompt
         }
 
         return $question->formatAnswer($answer);
-    }
-
-    /**
-     * Sets the input stream
-     *
-     * @param resource $inputStream The input stream to look for answers in
-     * @throws InvalidArgumentException Thrown if the input stream is not a resource
-     */
-    public function setInputStream($inputStream): void
-    {
-        if (!is_resource($inputStream)) {
-            throw new InvalidArgumentException('Input stream must be resource');
-        }
-
-        $this->inputStream = $inputStream;
     }
 }

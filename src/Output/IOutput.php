@@ -30,6 +30,14 @@ interface IOutput
     public function includeStyles(bool $includeStyles): void;
 
     /**
+     * Reads a line from input
+     *
+     * @return string The line that was input
+     * @throws RuntimeException Thrown if there was an issue reading the input
+     */
+    public function readLine(): string;
+
+    /**
      * Writes to output
      *
      * @param string|array $messages The message or messages to display

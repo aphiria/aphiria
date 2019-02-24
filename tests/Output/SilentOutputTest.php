@@ -26,6 +26,11 @@ class SilentOutputTest extends TestCase
         $this->output = new SilentOutput();
     }
 
+    public function testReadLineReturnsEmptyString(): void
+    {
+        $this->assertEquals('', $this->output->readLine());
+    }
+
     public function testWrite(): void
     {
         ob_start();

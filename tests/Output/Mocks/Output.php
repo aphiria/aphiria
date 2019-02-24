@@ -26,6 +26,14 @@ class Output extends BaseOutput
     }
 
     /**
+     * @inheritDoc
+     */
+    public function readLine(): string
+    {
+        return '';
+    }
+
+    /**
      * @inheritdoc
      */
     protected function doWrite(string $message, bool $includeNewLine): void

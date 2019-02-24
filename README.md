@@ -198,7 +198,7 @@ use Aphiria\Console\Prompts\Questions\Confirmation;
 
 $prompt = new Prompt();
 // This will return true if the answer began with "y" or "Y"
-$prompt->ask(new Confirmation('Are you sure you want to continue?'));
+$prompt->ask(new Confirmation('Are you sure you want to continue?'), $output);
 ```
 
 <h4 id="multiple-choice">Multiple Choice</h4>
@@ -210,7 +210,7 @@ use Aphiria\Console\Prompts\Questions\MultipleChoice;
 
 $choices = ['Boeing 747', 'Boeing 757', 'Boeing 787'];
 $question = new MultipleChoice('Select your favorite airplane', $choices);
-$prompt->ask($question);
+$prompt->ask($question, $output);
 ```
 
 This will display:
@@ -238,6 +238,8 @@ Outputs allow you to write messages to an end user.  The different outputs inclu
 
 Each output offers three methods:
 
+1. `readLine()`
+    * Reads a line of input
 1. `write()`
     * Writes a message to the existing line
 2. `writeln()`

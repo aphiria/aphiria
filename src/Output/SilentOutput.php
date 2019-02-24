@@ -31,6 +31,14 @@ final class SilentOutput extends Output
     }
 
     /**
+     * @inheritDoc
+     */
+    public function readLine(): string
+    {
+        return '';
+    }
+
+    /**
      * @inheritdoc
      */
     public function write($messages): void

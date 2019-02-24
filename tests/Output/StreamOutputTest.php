@@ -22,18 +22,21 @@ class StreamOutputTest extends TestCase
 {
     /** @var StreamOutput */
     private $output;
+    /** @var resource */
+    private $inputStream;
     /** @var OutputCompiler */
     private $compiler;
 
     public function setUp(): void
     {
+        $this->inputStream = fopen('php://memory', 'wb');
         $this->compiler = new OutputCompiler();
-        $this->output = new StreamOutput(fopen('php://memory', 'wb'), $this->compiler);
+        $this->output = new StreamOutput(fopen('php://memory', 'wb'), $this->inputStream, $this->compiler);
     }
 
     public function testGettingStream(): void
     {
-        $this->assertTrue(is_resource($this->output->getStream()));
+        $this->assertTrue(is_resource($this->output->getOutputStream()));
     }
 
     public function testInvalidStream(): void
@@ -42,32 +45,38 @@ class StreamOutputTest extends TestCase
         new StreamOutput('foo', $this->compiler);
     }
 
+    public function testReadingLineReadsFromInputStream(): void
+    {
+        fwrite($this->inputStream, 'foo');
+        rewind($this->inputStream);
+        $this->assertEquals('foo', $this->output->readLine());
+    }
 
     public function testWriteOnArray(): void
     {
         $this->output->write(['foo', 'bar']);
-        rewind($this->output->getStream());
-        $this->assertEquals('foobar', stream_get_contents($this->output->getStream()));
+        rewind($this->output->getOutputStream());
+        $this->assertEquals('foobar', stream_get_contents($this->output->getOutputStream()));
     }
 
     public function testWriteOnString(): void
     {
         $this->output->write('foo');
-        rewind($this->output->getStream());
-        $this->assertEquals('foo', stream_get_contents($this->output->getStream()));
+        rewind($this->output->getOutputStream());
+        $this->assertEquals('foo', stream_get_contents($this->output->getOutputStream()));
     }
 
     public function testWritelnOnArray(): void
     {
         $this->output->writeln(['foo', 'bar']);
-        rewind($this->output->getStream());
-        $this->assertEquals('foo' . PHP_EOL . 'bar' . PHP_EOL, stream_get_contents($this->output->getStream()));
+        rewind($this->output->getOutputStream());
+        $this->assertEquals('foo' . PHP_EOL . 'bar' . PHP_EOL, stream_get_contents($this->output->getOutputStream()));
     }
 
     public function testWritelnOnString(): void
     {
         $this->output->writeln('foo');
-        rewind($this->output->getStream());
-        $this->assertEquals('foo' . PHP_EOL, stream_get_contents($this->output->getStream()));
+        rewind($this->output->getOutputStream());
+        $this->assertEquals('foo' . PHP_EOL, stream_get_contents($this->output->getOutputStream()));
     }
 }
