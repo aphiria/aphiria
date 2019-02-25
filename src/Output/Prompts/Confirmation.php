@@ -8,7 +8,7 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Output\Prompts\Questions;
+namespace Aphiria\Console\Output\Prompts;
 
 /**
  * Defines a confirmation question

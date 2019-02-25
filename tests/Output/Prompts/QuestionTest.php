@@ -8,9 +8,9 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Tests\Output\Prompts\Questions;
+namespace Aphiria\Console\Tests\Output\Prompts;
 
-use Aphiria\Console\Output\Prompts\Questions\Question;
+use Aphiria\Console\Output\Prompts\Question;
 use PHPUnit\Framework\TestCase;
 
 /**
