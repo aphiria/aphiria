@@ -8,9 +8,9 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Tests\Prompts\Questions;
+namespace Aphiria\Console\Tests\Output\Prompts\Questions;
 
-use Aphiria\Console\Prompts\Questions\MultipleChoice;
+use Aphiria\Console\Output\Prompts\Questions\MultipleChoice;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

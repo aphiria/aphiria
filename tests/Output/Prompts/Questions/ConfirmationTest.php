@@ -8,9 +8,9 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Tests\Prompts\Questions;
+namespace Aphiria\Console\Tests\Output\Prompts\Questions;
 
-use Aphiria\Console\Prompts\Questions\Confirmation;
+use Aphiria\Console\Output\Prompts\Questions\Confirmation;
 use PHPUnit\Framework\TestCase;
 
 /**

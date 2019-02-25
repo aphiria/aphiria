@@ -186,15 +186,15 @@ If you want to call the other command but not write its output, use the `Aphiria
 
 <h2 id="prompts">Prompts</h2>
 
-Prompts are great for asking users for input beyond what is accepted by arguments.  For example, you might want to confirm with a user before doing an administrative task, or you might ask her to select from a list of possible choices.  Prompts accept `Aphiria\Console\Prompts\Questions\Question` objects.
+Prompts are great for asking users for input beyond what is accepted by arguments.  For example, you might want to confirm with a user before doing an administrative task, or you might ask her to select from a list of possible choices.  Prompts accept `Aphiria\Console\Output\Prompts\Questions\Question` objects.
 
 <h4 id="confirmation">Confirmation</h4>
 
-To ask a user to confirm an action with a simple "y" or "yes", use an `Aphiria\Console\Prompts\Questions\Confirmation`:
+To ask a user to confirm an action with a simple "y" or "yes", use an `Aphiria\Console\Output\Prompts\Questions\Confirmation`:
 
 ```php
-use Aphiria\Console\Prompts\Prompt;
-use Aphiria\Console\Prompts\Questions\Confirmation;
+use Aphiria\Console\Output\Prompts\Prompt;
+use Aphiria\Console\Output\Prompts\Questions\Confirmation;
 
 $prompt = new Prompt();
 // This will return true if the answer began with "y" or "Y"
@@ -203,10 +203,10 @@ $prompt->ask(new Confirmation('Are you sure you want to continue?'), $output);
 
 <h4 id="multiple-choice">Multiple Choice</h4>
 
-Multiple choice questions are great for listing choices that might otherwise be difficult for a user to remember.  An `Aphiria\Console\Prompts\Questions\MultipleChoice` accepts question text and a list of choices:
+Multiple choice questions are great for listing choices that might otherwise be difficult for a user to remember.  An `Aphiria\Console\Output\Prompts\Questions\MultipleChoice` accepts question text and a list of choices:
 
 ```php
-use Aphiria\Console\Prompts\Questions\MultipleChoice;
+use Aphiria\Console\Output\Prompts\Questions\MultipleChoice;
 
 $choices = ['Boeing 747', 'Boeing 757', 'Boeing 787'];
 $question = new MultipleChoice('Select your favorite airplane', $choices);

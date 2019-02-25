@@ -8,13 +8,13 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Tests\Prompts;
+namespace Aphiria\Console\Tests\Output\Prompts;
 
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\Prompts\Prompt;
-use Aphiria\Console\Prompts\Questions\MultipleChoice;
-use Aphiria\Console\Prompts\Questions\Question;
+use Aphiria\Console\Output\Prompts\Prompt;
+use Aphiria\Console\Output\Prompts\Questions\MultipleChoice;
+use Aphiria\Console\Output\Prompts\Questions\Question;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

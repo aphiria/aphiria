@@ -8,7 +8,7 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Prompts\Questions;
+namespace Aphiria\Console\Output\Prompts\Questions;
 
 use InvalidArgumentException;
 
