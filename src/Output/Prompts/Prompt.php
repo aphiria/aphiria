@@ -12,8 +12,6 @@ namespace Aphiria\Console\Output\Prompts;
 
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\Output\Prompts\MultipleChoice;
-use Aphiria\Console\Output\Prompts\Question;
 use RuntimeException;
 
 /**
