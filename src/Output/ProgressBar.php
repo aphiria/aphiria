@@ -23,6 +23,8 @@ final class ProgressBar
     private const PROGRESS_BAR_WIDTH = 80;
     /** @var string The progress character */
     public $progressChar = '=';
+    /** @var string The remaining progress character */
+    public $remainingProgressChar = '-';
     /** @var IOutput The output to draw to */
     private $output;
     /** @var int The max number of steps */
@@ -44,6 +46,7 @@ final class ProgressBar
      * @param string|null $outputFormat The output format to use, or null if using the default
      *      Acceptable placeholders are 'progress', 'maxSteps', 'bar', and 'timeRemaining'
      * @throws InvalidArgumentException Thrown if the max steps are invalid
+     * @throws Exception Thrown if there was an unhandled exception creating the start time
      */
     public function __construct(IOutput$output, int $maxSteps, string $outputFormat = null)
     {
@@ -65,6 +68,7 @@ final class ProgressBar
      */
     public function advance(int $step = 1): void
     {
+        // Purposely call this so we benefit from the draw functionality
         $this->setProgress($this->progress + $step);
     }
 
@@ -77,7 +81,6 @@ final class ProgressBar
     {
         // Purposely call this so we benefit from the draw functionality
         $this->setProgress($this->maxSteps);
-        $this->output->writeln('');
     }
 
     /**
@@ -90,17 +93,16 @@ final class ProgressBar
     {
         $shouldRedraw = $progress === $this->maxSteps
             || floor($progress / $this->redrawFrequency) !== floor($this->progress / $this->redrawFrequency);
-
-        if ($progress > $this->maxSteps) {
-            $this->progress = $this->maxSteps;
-        } elseif ($progress < 0) {
-            $this->progress = 0;
-        } else {
-            $this->progress = $progress;
-        }
+        // Bound the progress between 0 and the max steps
+        $this->progress = max(0, min($this->maxSteps, $progress));
 
         if ($shouldRedraw) {
             $this->output->write($this->formatOutput());
+        }
+
+        // Give ourselves a new line if the progress bar is finished
+        if ($this->progress === $this->maxSteps) {
+            $this->output->writeln('');
         }
     }
 
@@ -118,9 +120,15 @@ final class ProgressBar
             $progressLeftString = '';
         } else {
             $percentComplete = floor(100 * $this->progress / $this->maxSteps);
-            $paddedBarProgress = str_pad("$percentComplete%%", 3, '-');
-            $progressCompleteString = str_repeat($this->progressChar, max(0, floor($this->progress / $this->maxSteps * (self::PROGRESS_BAR_WIDTH - 2) - strlen($paddedBarProgress)))) . $paddedBarProgress;
-            $progressLeftString = str_repeat('-', self::PROGRESS_BAR_WIDTH - 1 - strlen($progressCompleteString));
+            $paddedBarProgress = str_pad("$percentComplete%%", 3, $this->remainingProgressChar);
+            $progressCompleteString = str_repeat(
+                $this->progressChar,
+                max(0, floor($this->progress / $this->maxSteps * (self::PROGRESS_BAR_WIDTH - 2) - strlen($paddedBarProgress)))
+            ) . $paddedBarProgress;
+            $progressLeftString = str_repeat(
+                $this->remainingProgressChar,
+                self::PROGRESS_BAR_WIDTH - 1 - strlen($progressCompleteString)
+            );
         }
 
         $compiledOutput = str_replace(
@@ -137,6 +145,7 @@ final class ProgressBar
         if ($this->isFirstOutput) {
             $this->isFirstOutput = false;
 
+            // Still use sprintf() because there's some formatted strings in the output
             return sprintf($compiledOutput, '');
         }
 
@@ -153,8 +162,8 @@ final class ProgressBar
      */
     private function getEstimatedTimeRemaining(): string
     {
-        // We cannot estimate the time remaining if no progress has been made
         if ($this->progress === 0) {
+            // We cannot estimate the time remaining if no progress has been made
             return 'Estimating...';
         }
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-// Check if we're bin the vendor bin
+// Check if we're in the vendor bin
 if (file_exists($vendorBinAutoload = __DIR__ . '/../../autoload.php')) {
     require_once $vendorBinAutoload;
 } else {
