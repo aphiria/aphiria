@@ -27,7 +27,7 @@ class ArrayEncoderTest extends TestCase
     /** @var ArrayEncoder The encoder to use in tests */
     private $arrayEncoder;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->encoders = new EncoderRegistry();
         $this->arrayEncoder = new ArrayEncoder($this->encoders);

@@ -25,7 +25,7 @@ class EncoderRegistryTest extends TestCase
     /** @var EncoderRegistry The encoder registry to test */
     private $encoderRegistry;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->encoderRegistry = new EncoderRegistry();
     }

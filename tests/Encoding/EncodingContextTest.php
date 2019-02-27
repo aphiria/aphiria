@@ -22,7 +22,7 @@ class EncodingContextTest extends TestCase
     /** @var EncodingContext The context to test */
     private $context;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->context = new EncodingContext();
     }

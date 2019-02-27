@@ -28,7 +28,7 @@ class FormUrlEncodedSerializerTest extends TestCase
     /** @var EncoderRegistry The encoder registry to use in tests */
     private $encoders;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->encoders = new EncoderRegistry();
         $this->serializer = new FormUrlEncodedSerializer($this->encoders);

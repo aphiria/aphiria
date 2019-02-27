@@ -26,7 +26,7 @@ class DateTimeEncoderTest extends TestCase
     /** @var DateTimeEncoder The encoder to test */
     private $dateTimeEncoder;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->dateTimeEncoder = new DateTimeEncoder();
     }

@@ -21,7 +21,7 @@ class SnakeCasePropertyNameFormatterTest extends TestCase
     /** @var SnakeCasePropertyNameFormatter The formatter to use in tests */
     private $formatter;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->formatter = new SnakeCasePropertyNameFormatter();
     }

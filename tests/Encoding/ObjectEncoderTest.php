@@ -45,7 +45,7 @@ class ObjectEncoderTest extends TestCase
     /** @var ObjectEncoder The object encoder */
     private $objectEncoder;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->encoders = new EncoderRegistry();
         $this->objectEncoder = new ObjectEncoder($this->encoders);

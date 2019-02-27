@@ -23,7 +23,7 @@ class ScalarEncoderTest extends TestCase
     /** @var ScalarEncoder The encoder to use in tests */
     private $scalarEncoder;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->scalarEncoder = new ScalarEncoder();
     }

@@ -21,7 +21,7 @@ class CamelCasePropertyNameFormatterTest extends TestCase
     /** @var CamelCasePropertyNameFormatter The formatter to use in tests */
     private $formatter;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->formatter = new CamelCasePropertyNameFormatter();
     }
