@@ -11,7 +11,7 @@
 namespace Aphiria\Console;
 
 use Aphiria\Console\Commands\CommandBinding;
-use Aphiria\Console\Commands\CommandBus;
+use Aphiria\Console\Commands\CommandInputFactory;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\Defaults\AboutCommand;
 use Aphiria\Console\Commands\Defaults\AboutCommandHandler;
@@ -20,7 +20,6 @@ use Aphiria\Console\Commands\Defaults\HelpCommandHandler;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\Console\Input\Compilers\ArgvInputCompiler;
 use Aphiria\Console\Input\Compilers\IInputCompiler;
-use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
 use Exception;
@@ -30,50 +29,55 @@ use Throwable;
 /**
  * Defines the console kernel
  */
-final class Kernel
+final class Kernel implements ICommandBus
 {
-    /** @var ICommandBus The command bus that can handle commands */
-    private $commandBus;
+    /** @var CommandRegistry The commands registered to the kernel */
+    private $commands;
     /** @var IInputCompiler The input compiler to use */
     private $inputCompiler;
+    /** @var CommandInputFactory The factory to create command inputs with */
+    private $commandInputFactory;
 
     /**
      * @param CommandRegistry $commands The commands
      * @param IInputCompiler|null $inputCompiler The input compiler to use
+     * @param CommandInputFactory $commandInputFactory The factory that can create command inputs
      */
-    public function __construct(CommandRegistry $commands, IInputCompiler $inputCompiler = null)
-    {
+    public function __construct(
+        CommandRegistry $commands,
+        IInputCompiler $inputCompiler = null,
+        CommandInputFactory $commandInputFactory = null
+    ) {
         // Set up our default commands
         $commands->registerManyCommands([
             new CommandBinding(new HelpCommand(), new HelpCommandHandler($commands)),
             new CommandBinding(new AboutCommand(), new AboutCommandHandler($commands))
         ]);
-        $this->commandBus = new CommandBus($commands);
+        $this->commands = $commands;
         $this->inputCompiler = $inputCompiler ?? new ArgvInputCompiler();
+        $this->commandInputFactory = $commandInputFactory ?? new CommandInputFactory();
     }
 
     /**
-     * Handles a console command
-     *
-     * @param mixed $rawInput The raw input to parse
-     * @param IOutput $output The output to write to
-     * @return int The status code
+     * @inheritDoc
      */
     public function handle($rawInput, IOutput $output = null): int
     {
         $output = $output ?? new ConsoleOutput();
 
         try {
-            $input = $this->inputCompiler->compile($rawInput);
+            // Default to the 'about' command if no command name is given
+            $input = $this->inputCompiler->compile($rawInput === '' || $rawInput === [] ? 'about' : $rawInput);
+            $binding = null;
 
-            // Handle no command name being invoked as the same thing as invoking the about command
-            if ($input->commandName === '') {
-                $aboutInput = new Input('about', $input->argumentValues, $input->options);
-
-                return $this->commandBus->handle($aboutInput, $output);
+            if (!$this->commands->tryGetBinding($input->commandName, $binding)) {
+                throw new InvalidArgumentException("Command \"{$input->commandName}\" is not registered");
             }
 
-            return $this->commandBus->handle($input, $output);
+            $commandInput = $this->commandInputFactory->createCommandInput($binding->command, $input);
+            $statusCode = $binding->commandHandler->handle($commandInput, $output);
+
+            return $statusCode ?? StatusCodes::OK;
         } catch (InvalidArgumentException $ex) {
             $output->writeln("<error>{$ex->getMessage()}</error>");
 

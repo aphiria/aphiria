@@ -161,23 +161,45 @@ HELLO, DAVE
 
 <h3 id="calling-from-code">Calling From Code</h3>
 
-It's possible to call a command from another command by using `CommandRegistry`:
+It's possible to call a command from another command by using `Kernel`:
 
 ```php
 use Aphiria\Console\Commands\CommandInput;
 use Aphiria\Console\Output\IOutput;
 
-$commandHandler = function (CommandInput $input, IOutput $output) use ($commands) {
-    $fooHandler = null;
+$commandHandler = function (CommandInput $input, IOutput $output) use ($kernel) {
+    $kernel->handle('foo arg1 --option1=value', $output);
     
-    if (!$commands->tryGetHandler('foo', $fooHandler)) {
-        throw new \RuntimeException('"foo" is not registered');
-    }
-
-    $fooHandler->handle(new CommandInput(['arg1' => 'value'], ['option1' => 'value']), $output);
+    // Do other stuff...
 };
 
 // Register your commands...
+```
+
+Alternatively, if your handler is a class, you could inject the kernel via the constructor:
+
+```php
+use Aphiria\Console\Commands\CommandInput;
+use Aphiria\Console\Commands\ICommandBus;
+use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Output\IOutput;
+
+class FooCommandHandler implements ICommandHandler
+{
+    private $kernel;
+    
+    public function __construct(ICommandBus $kernel)
+    {
+        $this->kernel = $kernel;
+    }
+    
+    public function handle(CommandInput $input, IOutput $output)
+    {
+        $this->kernel->handle('foo arg1 --option1=value', $output);
+    
+        // Do other stuff...
+    };
+}
 ```
 
 If you want to call the other command but not write its output, use the `Aphiria\Console\Output\SilentOutput` output.

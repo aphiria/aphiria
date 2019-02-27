@@ -136,4 +136,15 @@ class KernelTest extends TestCase
         $this->assertEquals('foo', ob_get_clean());
         $this->assertEquals(StatusCodes::OK, $status);
     }
+
+    public function testHandlingWithHandlerThatDoesNotReturnAnythingDefaultsToOk(): void
+    {
+        $command = new Command('foo', [], [], '');
+        $commandHandler = function (CommandInput $commandInput, IOutput $output) {
+            $this->assertSame($this->output, $output);
+        };
+        $this->commands->registerCommand($command, $commandHandler);
+        $statusCode = $this->kernel->handle('foo', $this->output);
+        $this->assertEquals(StatusCodes::OK, $statusCode);
+    }
 }

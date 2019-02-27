@@ -10,7 +10,6 @@
 
 namespace Aphiria\Console\Commands;
 
-use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 use InvalidArgumentException;
 
@@ -20,12 +19,12 @@ use InvalidArgumentException;
 interface ICommandBus
 {
     /**
-     * Handles a command by name
+     * Handles a console command
      *
-     * @param Input $input The input to handle
+     * @param mixed $rawInput The raw input to parse
      * @param IOutput $output The output to write to
-     * @return int The exit code
-     * @throws InvalidArgumentException Thrown if the command did not exist or the input was invalid
+     * @return int The status code
+     * @throws InvalidArgumentException Thrown if the raw input was invalid in any way
      */
-    public function handle(Input $input, IOutput $output): int;
+    public function handle($rawInput, IOutput $output = null): int;
 }
