@@ -26,7 +26,7 @@ class ResponseHeaderFormatterTest extends TestCase
     /** @var HttpHeaders The HTTP headers to use in tests */
     private $headers;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->formatter = new ResponseHeaderFormatter();
         $this->headers = new HttpHeaders();

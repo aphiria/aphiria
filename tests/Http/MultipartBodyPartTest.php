@@ -28,7 +28,7 @@ class MultipartBodyPartTest extends TestCase
     /** @var IHttpBody|MockObject The body to use in tests */
     private $body;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->headers = new HttpHeaders();
         $this->body = $this->createMock(IHttpBody::class);

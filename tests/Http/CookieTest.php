@@ -23,7 +23,7 @@ class CookieTest extends TestCase
     /** @var Cookie The cookie to use in tests */
     private $cookie;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->cookie = new Cookie('name', 'value', 1234, '/', 'foo.com', true, true, Cookie::SAME_SITE_LAX);
     }

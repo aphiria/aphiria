@@ -14,6 +14,7 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatt
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use Aphiria\Serialization\JsonSerializer;
 use InvalidArgumentException;
+use function mb_convert_encoding;
 use Opulence\IO\Streams\IStream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +27,7 @@ class JsonMediaTypeFormatterTest extends TestCase
     /** @var JsonMediaTypeFormatter The formatter to use in tests */
     private $formatter;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $serializer = new JsonSerializer();
         $this->formatter = new JsonMediaTypeFormatter($serializer);
@@ -98,7 +99,7 @@ class JsonMediaTypeFormatterTest extends TestCase
     {
         $stream = $this->createMock(IStream::class);
         $user = new User(123, 'foo@bar.com');
-        $expectedEncodedValue = \mb_convert_encoding('{"id":123,"email":"foo@bar.com"}', 'utf-8');
+        $expectedEncodedValue = mb_convert_encoding('{"id":123,"email":"foo@bar.com"}', 'utf-8');
         $stream->expects($this->once())
             ->method('write')
             ->with($expectedEncodedValue);

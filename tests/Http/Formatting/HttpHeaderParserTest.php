@@ -23,7 +23,7 @@ class HttpHeaderParserTest extends TestCase
     /** @var HttpHeaderParser The parser to use in tests */
     private $parser;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->parser = new HttpHeaderParser();
     }

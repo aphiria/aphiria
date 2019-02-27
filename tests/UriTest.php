@@ -22,7 +22,7 @@ class UriTest extends TestCase
     /** @var Uri The URI to use in tests */
     private $uri;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->uri = new Uri('http://user:password@host:80/path?query#fragment');
     }

@@ -37,7 +37,7 @@ class RequestParserTest extends TestCase
     /** @var IDictionary|MockObject The request properties to use in tests */
     private $properties;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->parser = new RequestParser();
         $this->headers = new HttpHeaders();

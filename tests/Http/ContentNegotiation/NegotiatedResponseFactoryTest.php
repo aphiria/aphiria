@@ -26,6 +26,7 @@ use Aphiria\Net\Tests\Http\ContentNegotiation\Mocks\User;
 use Aphiria\Net\Uri;
 use Aphiria\Serialization\SerializationException;
 use InvalidArgumentException;
+use function mb_strlen;
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -41,7 +42,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     /** @var IContentNegotiator|MockObject The content negotiator */
     private $contentNegotiator;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
         $this->factory = new NegotiatedResponseFactory($this->contentNegotiator);
@@ -119,7 +120,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $rawBody = 'foo';
         $request = $this->createRequest('http://foo.com');
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
-        $this->assertEquals(\mb_strlen($rawBody), $response->getHeaders()->getFirst('Content-Length'));
+        $this->assertEquals(mb_strlen($rawBody), $response->getHeaders()->getFirst('Content-Length'));
     }
 
     public function testCreatingResponseFromStringWithAlreadySetContentLengthHeaderDoesNotOverwriteContentLength(): void

@@ -24,7 +24,7 @@ class HttpHeadersTest extends TestCase
     /** @var HttpHeaders The headers to use */
     private $headers;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->headers = new HttpHeaders();
     }

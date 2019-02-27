@@ -28,7 +28,7 @@ class EncodingMatcherTest extends TestCase
     /** @var EncodingMatcher The matcher to use in tests */
     private $matcher;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->matcher = new EncodingMatcher();
     }

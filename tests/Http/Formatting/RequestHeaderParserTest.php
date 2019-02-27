@@ -24,7 +24,7 @@ class RequestHeaderParserTest extends TestCase
     /** @var HttpHeaders The headers to use in tests */
     private $headers;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->parser = new RequestHeaderParser();
         $this->headers = new HttpHeaders();

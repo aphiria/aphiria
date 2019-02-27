@@ -24,7 +24,7 @@ class LanguageMatcherTest extends TestCase
     /** @var LanguageMatcher The language matcher to use in tests */
     private $matcher;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->matcher = new LanguageMatcher();
     }

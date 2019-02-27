@@ -37,7 +37,7 @@ class RequestTest extends TestCase
     /** @var HashTable The request properties */
     private $properties;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->headers = new HttpHeaders();
         $this->body = $this->createMock(IHttpBody::class);

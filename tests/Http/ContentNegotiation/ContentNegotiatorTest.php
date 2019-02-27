@@ -29,7 +29,7 @@ class ContentNegotiatorTest extends TestCase
     /** @var HttpHeaders The headers to use in tests */
     private $headers;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->headers = new HttpHeaders();
         $this->request = $this->createMock(IHttpRequestMessage::class);

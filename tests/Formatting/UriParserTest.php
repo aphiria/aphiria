@@ -22,7 +22,7 @@ class UriParserTest extends TestCase
     /** @var UriParser The URI parser to use in tests */
     private $parser;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->parser = new UriParser();
     }

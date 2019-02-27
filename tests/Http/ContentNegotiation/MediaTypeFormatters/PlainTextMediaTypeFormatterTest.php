@@ -13,6 +13,7 @@ namespace Aphiria\Net\Tests\Http\ContentNegotiation;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use InvalidArgumentException;
+use function mb_convert_encoding;
 use Opulence\IO\Streams\IStream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +26,7 @@ class PlainTextMediaTypeFormatterTest extends TestCase
     /** @var PlainTextMediaTypeFormatter The formatter to use in tests */
     private $formatter;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->formatter = new PlainTextMediaTypeFormatter();
     }
@@ -121,7 +122,7 @@ class PlainTextMediaTypeFormatterTest extends TestCase
     public function testWritingWithNullEncodingUsesDefaultEncoding(): void
     {
         $stream = $this->createMock(IStream::class);
-        $expectedEncodedValue = \mb_convert_encoding('‡', 'utf-8');
+        $expectedEncodedValue = mb_convert_encoding('‡', 'utf-8');
         $stream->expects($this->once())
             ->method('write')
             ->with($expectedEncodedValue);
