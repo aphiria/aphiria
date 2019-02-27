@@ -22,6 +22,7 @@ use Aphiria\Console\Kernel;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCodes;
 use Aphiria\Console\Tests\Output\Mocks\Output;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -113,6 +114,12 @@ class KernelTest extends TestCase
         $status = $this->kernel->handle('holiday Easter --yell=no', $this->output);
         $this->assertEquals('Happy Easter', ob_get_clean());
         $this->assertEquals(StatusCodes::OK, $status);
+    }
+
+    public function testHandlingInvalidInputThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->kernel->handle($this, $this->output);
     }
 
     public function testHandlingMissingCommand(): void

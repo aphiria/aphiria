@@ -21,7 +21,7 @@ interface ICommandBus
     /**
      * Handles a console command
      *
-     * @param mixed $rawInput The raw input to parse
+     * @param string|array $rawInput The raw input to parse
      * @param IOutput $output The output to write to
      * @return int The status code
      * @throws InvalidArgumentException Thrown if the raw input was invalid in any way

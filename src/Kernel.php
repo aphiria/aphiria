@@ -63,18 +63,22 @@ final class Kernel implements ICommandBus
      */
     public function handle($rawInput, IOutput $output = null): int
     {
+        if (!is_string($rawInput) && !is_array($rawInput)) {
+            throw new InvalidArgumentException('Input must be a string or an array');
+        }
+
         $output = $output ?? new ConsoleOutput();
 
         try {
             // Default to the 'about' command if no command name is given
-            $input = $this->inputCompiler->compile($rawInput === '' || $rawInput === [] ? 'about' : $rawInput);
+            $compiledInput = $this->inputCompiler->compile($rawInput === '' || $rawInput === [] ? 'about' : $rawInput);
             $binding = null;
 
-            if (!$this->commands->tryGetBinding($input->commandName, $binding)) {
-                throw new InvalidArgumentException("Command \"{$input->commandName}\" is not registered");
+            if (!$this->commands->tryGetBinding($compiledInput->commandName, $binding)) {
+                throw new InvalidArgumentException("Command \"{$compiledInput->commandName}\" is not registered");
             }
 
-            $commandInput = $this->commandInputFactory->createCommandInput($binding->command, $input);
+            $commandInput = $this->commandInputFactory->createCommandInput($binding->command, $compiledInput);
             $statusCode = $binding->commandHandler->handle($commandInput, $output);
 
             return $statusCode ?? StatusCodes::OK;
