@@ -36,7 +36,7 @@ class ControllerParameterResolverTest extends TestCase
     /** @var IContentNegotiator|MockObject The content negotiator */
     private $contentNegotiator;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
         $this->resolver = new ControllerParameterResolver($this->contentNegotiator);

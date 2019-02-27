@@ -27,7 +27,7 @@ class ContainerDependencyResolverTest extends TestCase
     /** @var IContainer|MockObject The IoC container to use in tests */
     private $container;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->container = $this->createMock(IContainer::class);
         $this->dependencyResolver = new ContainerDependencyResolver($this->container);

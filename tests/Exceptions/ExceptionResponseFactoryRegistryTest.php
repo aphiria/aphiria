@@ -24,7 +24,7 @@ class ExceptionResponseFactoryRegistryTest extends TestCase
     /** @var ExceptionResponseFactoryRegistry The registry to use in tests */
     private $registry;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->registry = new ExceptionResponseFactoryRegistry();
     }

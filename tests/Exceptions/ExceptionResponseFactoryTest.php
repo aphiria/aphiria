@@ -35,7 +35,7 @@ class ExceptionResponseFactoryTest extends TestCase
     /** @var ExceptionResponseFactoryRegistry The registry to use in tests */
     private $responseFactories;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->negotiatedResponseFactory = $this->createMock(INegotiatedResponseFactory::class);
         $this->responseFactories = new ExceptionResponseFactoryRegistry();

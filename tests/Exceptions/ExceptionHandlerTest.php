@@ -34,14 +34,14 @@ class ExceptionHandlerTest extends TestCase
     /** @var IResponseWriter|MockObject The response writer */
     private $responseWriter;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->exceptionResponseFactory = $this->createMock(IExceptionResponseFactory::class);
         $this->responseWriter = $this->createMock(IResponseWriter::class);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         restore_exception_handler();
     }

@@ -47,7 +47,7 @@ class RouteActionInvokerTest extends TestCase
     /** @var Controller The controller to use in tests */
     private $controller;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
         $this->negotiatedResponseFactory = $this->createMock(INegotiatedResponseFactory::class);

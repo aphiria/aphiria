@@ -54,7 +54,7 @@ class ApiKernelTest extends TestCase
     /** @var IRouteActionInvoker|MockObject */
     private $routeActionInvoker;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->routeMatcher = $this->createMock(IRouteMatcher::class);
         $this->dependencyResolver = $this->createMock(IDependencyResolver::class);

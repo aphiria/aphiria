@@ -32,7 +32,7 @@ class ControllerRequestHandlerTest extends TestCase
     /** @var IContentNegotiator|MockObject */
     private $contentNegotiator;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->dependencyResolver = $this->createMock(IDependencyResolver::class);
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
