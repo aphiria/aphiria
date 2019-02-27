@@ -33,7 +33,7 @@ class TrieFactoryTest extends TestCase
     /** @var ITrieCompiler|MockObject */
     private $trieCompiler;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->routeFactory = new RouteFactory(function (RouteBuilderRegistry $routes) {
             // It doesn't really matter what this route is

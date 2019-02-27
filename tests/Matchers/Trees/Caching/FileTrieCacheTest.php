@@ -30,12 +30,12 @@ class FileTrieCacheTest extends TestCase
     /** @var FileTrieCache The cache to test */
     private $cache;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->cache = new FileTrieCache(self::PATH);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         if (file_exists(self::PATH)) {
             @unlink(self::PATH);

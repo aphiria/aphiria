@@ -35,7 +35,7 @@ class RouteTest extends TestCase
     /** @var array */
     private $attributes;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->routeAction = new MethodRouteAction('Foo', 'bar');
         $this->uriTemplate = new UriTemplate('foo');

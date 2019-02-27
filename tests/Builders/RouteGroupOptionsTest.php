@@ -27,7 +27,7 @@ class RouteGroupOptionsTest extends TestCase
     /** @var MiddlewareBinding[] The list of middleware bindings in the options */
     private $middlewareBindings = [];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->constraints = [$this->createMock(IRouteConstraint::class)];
         $this->middlewareBindings = [new MiddlewareBinding('foo')];

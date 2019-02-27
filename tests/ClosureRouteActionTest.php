@@ -24,7 +24,7 @@ class ClosureRouteActionTest extends TestCase
     /** @var Closure The closure used in the closure action */
     private $closure;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->closure = function () {
             // Don't do anything

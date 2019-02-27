@@ -27,7 +27,7 @@ class RouteBuilderTest extends TestCase
     /** @var RouteBuilder The route builder to use in tests */
     private $routeBuilder;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->routeBuilder = new RouteBuilder(['GET'], new UriTemplate('/foo', 'example.com'));
     }

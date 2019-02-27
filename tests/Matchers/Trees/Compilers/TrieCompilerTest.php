@@ -28,6 +28,7 @@ use Aphiria\Routing\UriTemplates\UriTemplate;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 
 /**
  * Tests the trie compiler
@@ -47,7 +48,7 @@ class TrieCompilerTest extends TestCase
     /** @var RootTrieNode */
     private $expectedTrie;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->ruleFactory = $this->createMock(IRuleFactory::class);
         $this->parser = $this->createMock(IUriTemplateParser::class);
@@ -281,9 +282,9 @@ class TrieCompilerTest extends TestCase
         $this->ast->addChild($pathAst);
 
         // Set up rule factory
-        /** @var IRule|\PHPUnit_Framework_MockObject_MockObject $rule1 */
+        /** @var IRule|PHPUnit_Framework_MockObject_MockObject $rule1 */
         $rule1 = $this->createMock(IRule::class);
-        /** @var IRule|\PHPUnit_Framework_MockObject_MockObject $rule2 */
+        /** @var IRule|PHPUnit_Framework_MockObject_MockObject $rule2 */
         $rule2 = $this->createMock(IRule::class);
         $this->ruleFactory->expects($this->at(0))
             ->method('createRule')
@@ -337,7 +338,7 @@ class TrieCompilerTest extends TestCase
         $this->ast->addChild($pathAst);
 
         // Set up rule factory
-        /** @var IRule|\PHPUnit_Framework_MockObject_MockObject $rule */
+        /** @var IRule|PHPUnit_Framework_MockObject_MockObject $rule */
         $rule = $this->createMock(IRule::class);
         $this->ruleFactory->expects($this->at(0))
             ->method('createRule')

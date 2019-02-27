@@ -19,6 +19,7 @@ use Aphiria\Routing\Route;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Tests the trie node
@@ -28,7 +29,7 @@ class TrieNodeTest extends TestCase
     /** @var TrieNode|MockObject */
     private $node;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->node = $this->createMockNode();
     }
@@ -309,7 +310,7 @@ class TrieNodeTest extends TestCase
      * Creates a mock node for use in tests
      *
      * @return MockObject|TrieNode The mock node
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function createMockNode(): MockObject
     {

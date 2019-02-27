@@ -32,7 +32,7 @@ class TrieRouteMatcherTest extends TestCase
     /** @var RootTrieNode */
     private $rootNode;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->rootNode = new RootTrieNode();
         $this->matcher = new TrieRouteMatcher($this->rootNode);

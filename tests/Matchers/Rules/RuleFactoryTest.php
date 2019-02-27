@@ -24,7 +24,7 @@ class RuleFactoryTest extends TestCase
     /** @var RuleFactory The rule factory to use in tests */
     private $ruleFactory;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->ruleFactory = new RuleFactory();
     }

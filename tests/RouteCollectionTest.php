@@ -24,7 +24,7 @@ class RouteCollectionTest extends TestCase
     /** @var RouteCollection */
     private $collection;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->collection = new RouteCollection();
     }

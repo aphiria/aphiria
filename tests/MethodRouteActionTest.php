@@ -25,7 +25,7 @@ class MethodRouteActionTest extends TestCase
     /** @var MethodRouteAction An instance that uses a method as the action */
     private $methodAction;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->methodAction = new MethodRouteAction(self::CLASS_NAME, self::METHOD_NAME);
     }

@@ -35,7 +35,7 @@ class RequestHeaderParserTest extends TestCase
     /** @var RequestHeaderParser The header parse to use in tests */
     private $headerParser;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->headerParser = new RequestHeaderParser();
     }

@@ -25,7 +25,7 @@ class RouteBuilderRegistryTest extends TestCase
     /** @var RouteBuilderRegistry The registry to use in tests */
     private $registry;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->registry = new RouteBuilderRegistry();
     }

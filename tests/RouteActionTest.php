@@ -31,7 +31,7 @@ class RouteActionTest extends TestCase
     /** @var RouteAction An instance that uses a method as the action */
     private $methodAction;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->closure = function () {
             // Don't do anything
