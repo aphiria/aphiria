@@ -27,7 +27,7 @@ class OutputCompilerTest extends TestCase
     /** @var OutputCompiler */
     private $compiler;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->elements = new ElementRegistry();
         $this->compiler = new OutputCompiler($this->elements);

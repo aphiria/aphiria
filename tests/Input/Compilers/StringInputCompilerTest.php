@@ -21,7 +21,7 @@ class StringInputCompilerTest extends TestCase
     /** @var StringInputCompiler */
     private $compiler;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->compiler = new StringInputCompiler();
     }

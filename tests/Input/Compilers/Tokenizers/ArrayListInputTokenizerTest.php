@@ -22,7 +22,7 @@ class ArrayListInputTokenizerTest extends TestCase
     /** @var ArrayListInputTokenizer */
     private $tokenizer;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->tokenizer = new ArrayListInputTokenizer();
     }

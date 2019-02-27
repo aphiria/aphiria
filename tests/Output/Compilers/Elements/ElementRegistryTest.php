@@ -24,7 +24,7 @@ class ElementRegistryTest extends TestCase
     /** @var ElementRegistry */
     private $elements;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->elements = new ElementRegistry();
     }

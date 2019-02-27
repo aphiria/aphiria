@@ -24,7 +24,7 @@ class MultipleChoiceTest extends TestCase
     /** @var MultipleChoice */
     private $keyedChoiceQuestion;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->indexedChoiceQuestion = new MultipleChoice('Dummy question', ['foo', 'bar', 'baz']);
         $this->keyedChoiceQuestion = new MultipleChoice('Dummy question', ['a' => 'b', 'c' => 'd', 'e' => 'f']);

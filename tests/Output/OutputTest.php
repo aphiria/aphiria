@@ -21,7 +21,7 @@ class OutputTest extends TestCase
     /** @var Output */
     private $output;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->output = new Output();
     }

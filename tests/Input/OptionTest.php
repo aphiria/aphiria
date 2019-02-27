@@ -23,7 +23,7 @@ class OptionTest extends TestCase
     /** @var Option */
     private $option;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->option = new Option('foo', 'f', OptionTypes::OPTIONAL_VALUE, 'Foo option', 'bar');
     }

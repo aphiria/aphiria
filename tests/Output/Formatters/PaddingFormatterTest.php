@@ -21,7 +21,7 @@ class PaddingFormatterTest extends TestCase
     /** @var PaddingFormatter */
     private $formatter;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->formatter = new PaddingFormatter();
     }

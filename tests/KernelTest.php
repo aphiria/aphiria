@@ -39,7 +39,7 @@ class KernelTest extends TestCase
     /** @var Kernel */
     private $kernel;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->commands = new CommandRegistry();
         $this->inputCompiler = new StringInputCompiler();

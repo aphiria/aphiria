@@ -22,7 +22,7 @@ class ArrayListInputCompilerTest extends TestCase
     /** @var ArrayListInputCompiler */
     private $compiler;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->compiler = new ArrayListInputCompiler();
     }

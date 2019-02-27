@@ -21,7 +21,7 @@ class QuestionTest extends TestCase
     /** @var Question */
     private $question;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->question = new Question('Dummy question', 'foo');
     }

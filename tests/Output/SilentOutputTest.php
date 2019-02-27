@@ -21,7 +21,7 @@ class SilentOutputTest extends TestCase
     /** @var SilentOutput */
     private $output;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->output = new SilentOutput();
     }

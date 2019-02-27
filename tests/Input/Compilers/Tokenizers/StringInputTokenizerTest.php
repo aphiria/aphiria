@@ -22,7 +22,7 @@ class StringInputTokenizerTest extends TestCase
     /** @var StringInputTokenizer */
     private $tokenizer;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->tokenizer = new StringInputTokenizer();
     }

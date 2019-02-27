@@ -25,7 +25,7 @@ class CommandRegistryTest extends TestCase
     /** @var CommandRegistry */
     private $commands;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->commands = new CommandRegistry();
     }

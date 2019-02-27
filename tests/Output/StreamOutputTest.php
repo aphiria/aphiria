@@ -27,7 +27,7 @@ class StreamOutputTest extends TestCase
     /** @var OutputCompiler */
     private $compiler;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->inputStream = fopen('php://memory', 'wb');
         $this->compiler = new OutputCompiler();

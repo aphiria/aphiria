@@ -27,7 +27,7 @@ class OutputParserTest extends TestCase
     /** @var OutputParser */
     private $parser;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->parser = new OutputParser();
     }

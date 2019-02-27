@@ -24,7 +24,7 @@ class OutputLexerTest extends TestCase
     /** @var OutputLexer */
     private $lexer;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->lexer = new OutputLexer();
     }

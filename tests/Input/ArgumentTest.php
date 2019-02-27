@@ -23,7 +23,7 @@ class ArgumentTest extends TestCase
     /** @var Argument */
     private $argument;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->argument = new Argument('foo', ArgumentTypes::OPTIONAL, 'Foo argument', 'bar');
     }

@@ -21,7 +21,7 @@ class ConfirmationTest extends TestCase
     /** @var Confirmation */
     private $question;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->question = new Confirmation('Is Dave cool (yn)');
     }

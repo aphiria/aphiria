@@ -21,7 +21,7 @@ class ArgvInputTokenizerTest extends TestCase
     /** @var ArgvInputTokenizer */
     private $tokenizer;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->tokenizer = new ArgvInputTokenizer();
     }

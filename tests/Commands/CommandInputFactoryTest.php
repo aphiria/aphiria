@@ -28,7 +28,7 @@ class CommandInputFactoryTest extends TestCase
     /** @var CommandInputFactory */
     private $factory;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->factory = new CommandInputFactory();
     }

@@ -31,7 +31,7 @@ class PromptTest extends TestCase
     /** @var Prompt */
     private $prompt;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         /** @var IOutput|MockObject output */
         $this->output = $this->createMock(IOutput::class);

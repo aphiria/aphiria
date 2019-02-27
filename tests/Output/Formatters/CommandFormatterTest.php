@@ -26,7 +26,7 @@ class CommandFormatterTest extends TestCase
     /** @var CommandFormatter */
     private $formatter;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->formatter = new CommandFormatter();
     }

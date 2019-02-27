@@ -22,7 +22,7 @@ class ArgvInputCompilerTest extends TestCase
     /** @var ArgvInputCompiler */
     private $compiler;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->compiler = new ArgvInputCompiler();
     }

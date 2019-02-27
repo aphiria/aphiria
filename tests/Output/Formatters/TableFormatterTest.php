@@ -22,7 +22,7 @@ class TableFormatterTest extends TestCase
     /** @var TableFormatter */
     private $formatter;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->formatter = new TableFormatter(new PaddingFormatter());
     }
