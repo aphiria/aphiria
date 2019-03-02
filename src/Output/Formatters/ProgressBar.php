@@ -8,8 +8,9 @@
  * @license   https://github.com/aphiria/console/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Console\Output;
+namespace Aphiria\Console\Output\Formatters;
 
+use Aphiria\Console\Output\IOutput;
 use DateTimeImmutable;
 use Exception;
 use InvalidArgumentException;
