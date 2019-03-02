@@ -15,6 +15,7 @@ use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\ArgumentTypes;
+use Aphiria\Console\Input\Compilers\CommandNotFoundException;
 use Aphiria\Console\Input\Compilers\InputCompiler;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionTypes;
@@ -203,6 +204,12 @@ class InputCompilerTest extends TestCase
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
         $this->assertEquals([], $input->options);
+    }
+
+    public function testCompilingEmptyCommandNameThrowsException(): void
+    {
+        $this->expectException(CommandNotFoundException::class);
+        $this->compiler->compile('');
     }
 
     public function testCompilingLongOptionWithEqualsSign(): void
@@ -477,6 +484,12 @@ class InputCompilerTest extends TestCase
         );
         $input = $this->compiler->compile('foo');
         $this->assertEquals('foo', $input->commandName);
+    }
+
+    public function testCompilingUnregisteredCommandThrowsException(): void
+    {
+        $this->expectException(CommandNotFoundException::class);
+        $this->compiler->compile('foo');
     }
 
     public function testCompilingUsesDefaultValuesForOptionsThatAreNotSet(): void

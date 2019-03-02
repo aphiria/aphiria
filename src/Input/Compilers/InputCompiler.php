@@ -59,6 +59,11 @@ final class InputCompiler implements IInputCompiler
     public function compile($rawInput): Input
     {
         $tokens = $this->selectTokenizer($rawInput)->tokenize($rawInput);
+
+        if (count($tokens) === 0) {
+            throw new CommandNotFoundException('');
+        }
+
         $commandName = '';
         $argumentValues = [];
         $options = [];
@@ -66,7 +71,7 @@ final class InputCompiler implements IInputCompiler
 
         /** @var Command $command */
         if (!$this->commands->tryGetCommand($commandName, $command)) {
-            throw new InvalidArgumentException("No command with name \"$commandName\" is registered");
+            throw new CommandNotFoundException($commandName);
         }
 
         return new Input(
@@ -336,7 +341,6 @@ final class InputCompiler implements IInputCompiler
 
         // Trim the "-"
         $token = mb_substr($token, 1);
-
         $options = [];
 
         // Each character in a short option is an option

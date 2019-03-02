@@ -42,6 +42,14 @@ class KernelTest extends TestCase
         $this->output = new Output();
     }
 
+    public function testHandlingEmptyCommandReturnsOk(): void
+    {
+        ob_start();
+        $status = $this->kernel->handle('', $this->output);
+        ob_get_clean();
+        $this->assertEquals(StatusCodes::OK, $status);
+    }
+
     public function testHandlingException(): void
     {
         ob_start();
@@ -119,7 +127,7 @@ class KernelTest extends TestCase
         $this->assertEquals(StatusCodes::ERROR, $status);
     }
 
-    public function testHandlingMissingCommand(): void
+    public function testHandlingMissingCommandReturnsError(): void
     {
         ob_start();
         $status = $this->kernel->handle('fake', $this->output);

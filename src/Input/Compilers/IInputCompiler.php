@@ -24,6 +24,7 @@ interface IInputCompiler
      *
      * @param mixed $rawInput The raw input to compile
      * @return Input The compiled input
+     * @throws CommandNotFoundException Thrown if the input command was not found
      * @throws InvalidArgumentException Thrown if the input was not of the type the compiler was expecting
      * @throws RuntimeException Thrown if the input could not be compiled
      */
