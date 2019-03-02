@@ -27,6 +27,16 @@ class ArgvInputTokenizerTest extends TestCase
         $this->tokenizer = new ArgvInputTokenizer();
     }
 
+    public function testTokenizingDoesNotRemoveFirstElementFromInputIfItDoesNotMatchApplicationName(): void
+    {
+        $tokenizerWithDefaultApplicationName = new ArgvInputTokenizer();
+        $this->assertEquals(['foo', 'bar'], $tokenizerWithDefaultApplicationName->tokenize(['foo', 'bar']));
+        $this->assertEquals(['foo', 'bar'], $tokenizerWithDefaultApplicationName->tokenize(['aphiria', 'foo', 'bar']));
+        $tokenizerWithCustomApplicationName = new ArgvInputTokenizer('dave');
+        $this->assertEquals(['foo', 'bar'], $tokenizerWithCustomApplicationName->tokenize(['foo', 'bar']));
+        $this->assertEquals(['foo', 'bar'], $tokenizerWithCustomApplicationName->tokenize(['dave', 'foo', 'bar']));
+    }
+
     public function testTokenizingNonArrayThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -41,13 +51,13 @@ class ArgvInputTokenizerTest extends TestCase
 
     public function testTokenizingEscapedDoubleQuote(): void
     {
-        $tokens = $this->tokenizer->tokenize(['foo', 'Dave\"s']);
+        $tokens = $this->tokenizer->tokenize(['aphiria', 'Dave\"s']);
         $this->assertEquals(['Dave"s'], $tokens);
     }
 
     public function testTokenizingEscapedSingleQuote(): void
     {
-        $tokens = $this->tokenizer->tokenize(['foo', "Dave\'s"]);
+        $tokens = $this->tokenizer->tokenize(['aphiria', "Dave\'s"]);
         $this->assertEquals(["Dave's"], $tokens);
     }
 }
