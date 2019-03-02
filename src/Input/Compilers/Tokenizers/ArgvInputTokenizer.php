@@ -22,22 +22,24 @@ final class ArgvInputTokenizer implements IInputTokenizer
      */
     public function tokenize($input): array
     {
-        if ($input === null) {
-            $input = $_SERVER['argv'];
+        $tokens = $input;
+
+        if ($tokens === null) {
+            $tokens = $_SERVER['argv'];
         }
 
-        if (!is_array($input)) {
+        if (!is_array($tokens)) {
             throw new InvalidArgumentException(self::class . ' only accepts arrays as input');
         }
 
         // Remove the application name
-        array_shift($input);
+        array_shift($tokens);
 
-        foreach ($input as &$token) {
+        foreach ($tokens as &$token) {
             // We don't use stripslashes() because we want to backslashes when they're not escaping quotes
             $token = str_replace(["\\'", '\\"'], ["'", '"'], $token);
         }
 
-        return $input;
+        return $tokens;
     }
 }

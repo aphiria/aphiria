@@ -22,10 +22,9 @@ final class StringInputTokenizer implements IInputTokenizer
      */
     public function tokenize($input): array
     {
-        $input = trim($input);
         $inDoubleQuotes = false;
         $inSingleQuotes = false;
-        $charArray = preg_split('//u', $input, -1, PREG_SPLIT_NO_EMPTY);
+        $charArray = preg_split('//u', trim($input), -1, PREG_SPLIT_NO_EMPTY);
         $previousChar = '';
         $buffer = '';
         $tokens = [];

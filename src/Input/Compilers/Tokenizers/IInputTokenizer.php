@@ -10,6 +10,8 @@
 
 namespace Aphiria\Console\Input\Compilers\Tokenizers;
 
+use InvalidArgumentException;
+
 /**
  * Defines the interface for input tokenizers to implement
  */
@@ -18,8 +20,9 @@ interface IInputTokenizer
     /**
      * Tokenizes an input string
      *
-     * @param mixed $input The input to tokenize
+     * @param string|array $input The input to tokenize
      * @return array The list of tokens
+     * @throws InvalidArgumentException Thrown if the input was invalid
      */
     public function tokenize($input): array;
 }
