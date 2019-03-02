@@ -83,6 +83,8 @@ $input->arguments['argName']; // The value of 'argName'
 $input->options['optionName']; // The value of 'optionName'
 ```
 
+> **Note:** `$input->options` stores option values by their long names.  Do not try to access them by their short names.
+
 <h3 id="registering-commands">Registering Commands</h3>
 
 Before you can use the example command, you must register it so that the `Kernel` knows about it:
