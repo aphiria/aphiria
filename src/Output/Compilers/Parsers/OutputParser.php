@@ -41,7 +41,7 @@ final class OutputParser implements IOutputParser
 
                     break;
                 case OutputTokenTypes::T_TAG_CLOSE:
-                    if ($currNode->value != $token->value) {
+                    if ($currNode->value !== $token->value) {
                         throw new RuntimeException(
                             sprintf(
                                 'Improperly nested tag "%s" near character #%d',

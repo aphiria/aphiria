@@ -15,8 +15,6 @@ namespace Aphiria\Console\Output\Compilers\Parsers\Lexers;
  */
 final class OutputTokenTypes
 {
-    /** Defines an unknown token type */
-    public const T_UNKNOWN = 'T_UNKNOWN';
     /** Defines an end of file token type */
     public const T_EOF = 'T_EOF';
     /** Defines a word token type */

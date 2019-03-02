@@ -33,7 +33,7 @@ final class OutputLexer implements IOutputLexer
         foreach ($charArray as $charIter => $char) {
             switch ($char) {
                 case '<':
-                    if ($this->lookBehind($charArray, $charIter) === '\\') {
+                    if (self::lookBehind($charArray, $charIter) === '\\') {
                         // This tag was escaped
                         // Don't include the preceding slash
                         $wordBuffer = mb_substr($wordBuffer, 0, -1) . $char;
@@ -41,13 +41,13 @@ final class OutputLexer implements IOutputLexer
                         throw new RuntimeException(
                             sprintf(
                                 'Invalid tags near "%s", character #%d',
-                                $this->getSurroundingText($charArray, $charIter),
+                                self::getSurroundingText($charArray, $charIter),
                                 $charIter
                             )
                         );
                     } else {
                         // Check if this is a closing tag
-                        if ($this->peek($charArray, $charIter) === '/') {
+                        if (self::peek($charArray, $charIter) === '/') {
                             $inCloseTag = true;
                             $inOpenTag = false;
                         } else {
@@ -129,7 +129,7 @@ final class OutputLexer implements IOutputLexer
      * @param int $position The numerical position to grab text around
      * @return string The surrounding text
      */
-    private function getSurroundingText(array $charArray, int $position): string
+    private static function getSurroundingText(array $charArray, int $position): string
     {
         if (count($charArray) <= 3) {
             return implode('', $charArray);
@@ -149,7 +149,7 @@ final class OutputLexer implements IOutputLexer
      * @param int $currPosition The current position
      * @return string|null The previous character if there is one, otherwise null
      */
-    private function lookBehind(array $charArray, int $currPosition): ?string
+    private static function lookBehind(array $charArray, int $currPosition): ?string
     {
         if ($currPosition === 0 || count($charArray) === 0) {
             return null;
@@ -165,7 +165,7 @@ final class OutputLexer implements IOutputLexer
      * @param int $currPosition The current position
      * @return string|null The next character if there is one, otherwise null
      */
-    private function peek(array $charArray, int $currPosition): ?string
+    private static function peek(array $charArray, int $currPosition): ?string
     {
         $charArrayLength = count($charArray);
 
