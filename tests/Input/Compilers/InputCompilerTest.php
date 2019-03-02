@@ -16,10 +16,8 @@ use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\ArgumentTypes;
 use Aphiria\Console\Input\Compilers\InputCompiler;
-use Aphiria\Console\Input\Compilers\Tokenizers\IInputTokenizer;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionTypes;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -32,14 +30,11 @@ class InputCompilerTest extends TestCase
     private $compiler;
     /** @var CommandRegistry */
     private $commands;
-    /** @var IInputTokenizer|MockObject */
-    private $tokenizer;
 
     protected function setUp(): void
     {
         $this->commands = new CommandRegistry();
-        $this->tokenizer = $this->createMock(IInputTokenizer::class);
-        $this->compiler = new InputCompiler($this->commands, $this->tokenizer);
+        $this->compiler = new InputCompiler($this->commands);
     }
 
     public function testBackslashesAreRespected(): void
@@ -53,11 +48,18 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo bar\\baz')
-            ->willReturn(['foo', 'bar\\baz']);
         $input = $this->compiler->compile('foo bar\\baz');
         $this->assertEquals('bar\\baz', $input->arguments['arg']);
+    }
+
+    public function testCompilingArgvInputIsCompiledCorrectly(): void
+    {
+        $this->commands->registerCommand(
+            new Command('bar', [], [], ''),
+            $this->createMock(ICommandHandler::class)
+        );
+        $input = $this->compiler->compile(['foo', 'bar']);
+        $this->assertEquals('bar', $input->commandName);
     }
 
     public function testCompilingArgumentShortOptionLongOption(): void
@@ -74,9 +76,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo bar -r --opt1=dave')
-            ->willReturn(['foo', 'bar', '-r', '--opt1=dave']);
         $input = $this->compiler->compile('foo bar -r --opt1=dave');
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals('bar', $input->arguments['arg']);
@@ -99,9 +98,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo bar baz')
-            ->willReturn(['foo', 'bar', 'baz']);
         $input = $this->compiler->compile('foo bar baz');
         $this->assertEquals(['bar', 'baz'], $input->arguments['arg1']);
         $this->assertEquals('blah', $input->arguments['arg2']);
@@ -121,9 +117,6 @@ class InputCompilerTest extends TestCase
                 ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo bar baz')
-            ->willReturn(['foo', 'bar', 'baz']);
         $input = $this->compiler->compile('foo bar baz');
         $this->assertEquals(['bar', 'baz'], $input->arguments['arg']);
     }
@@ -144,10 +137,17 @@ class InputCompilerTest extends TestCase
                 ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo bar baz')
-            ->willReturn(['foo', 'bar', 'baz']);
         $this->compiler->compile('foo bar baz');
+    }
+
+    public function testCompilingArrayListInputIsCompiledCorrectly(): void
+    {
+        $this->commands->registerCommand(
+            new Command('foo', [], [], ''),
+            $this->createMock(ICommandHandler::class)
+        );
+        $input = $this->compiler->compile(['name' => 'foo']);
+        $this->assertEquals('foo', $input->commandName);
     }
 
     public function testCompilingArrayLongOptionWithEqualsSign(): void
@@ -163,9 +163,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo --opt=dave --opt=young')
-            ->willReturn(['foo', '--opt=dave', '--opt=young']);
         $input = $this->compiler->compile('foo --opt=dave --opt=young');
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
@@ -185,9 +182,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo --opt dave --opt young')
-            ->willReturn(['foo', '--opt', 'dave', '--opt', 'young']);
         $input = $this->compiler->compile('foo --opt dave --opt young');
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
@@ -205,9 +199,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo')
-            ->willReturn(['foo']);
         $input = $this->compiler->compile('foo');
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
@@ -225,9 +216,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo --opt=dave')
-            ->willReturn(['foo', '--opt=dave']);
         $input = $this->compiler->compile('foo --opt=dave');
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
@@ -245,9 +233,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo --opt dave')
-            ->willReturn(['foo', '--opt', 'dave']);
         $input = $this->compiler->compile('foo --opt dave');
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
@@ -265,9 +250,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo --opt dave bar')
-            ->willReturn(['foo', '--opt', 'dave', 'bar']);
         $input = $this->compiler->compile('foo --opt dave bar');
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals('bar', $input->arguments['arg']);
@@ -288,9 +270,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with("foo --opt1 'dave' --opt2=\"young\"")
-            ->willReturn(['foo', '--opt1', 'dave', '--opt2="young"']);
         $input = $this->compiler->compile("foo --opt1 'dave' --opt2=\"young\"");
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
@@ -314,9 +293,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo bar baz blah')
-            ->willReturn(['foo', 'bar', 'baz', 'blah']);
         $input = $this->compiler->compile('foo bar baz blah');
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals('bar', $input->arguments['arg1']);
@@ -340,9 +316,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo -r -f -d')
-            ->willReturn(['foo', '-r', '-f', '-d']);
         $input = $this->compiler->compile('foo -r -f -d');
         $this->assertEquals('foo', $input->commandName);
         $this->assertNull($input->options['opt1']);
@@ -366,9 +339,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo -rfd')
-            ->willReturn(['foo', '-rfd']);
         $input = $this->compiler->compile('foo -rfd');
         $this->assertEquals('foo', $input->commandName);
         $this->assertNull($input->options['opt1']);
@@ -390,9 +360,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo --opt=bar')
-            ->willReturn(['foo', '--opt=bar']);
         $this->compiler->compile('foo --opt=bar');
     }
 
@@ -408,9 +375,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo')
-            ->willReturn(['foo']);
         $input = $this->compiler->compile('foo');
         $this->assertEquals('bar', $input->arguments['arg']);
     }
@@ -431,9 +395,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo bar')
-            ->willReturn(['foo', 'bar']);
         $this->compiler->compile('foo bar');
     }
 
@@ -450,9 +411,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo --opt')
-            ->willReturn(['foo', '--opt']);
         $this->compiler->compile('foo --opt');
     }
 
@@ -467,9 +425,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo bar')
-            ->willReturn(['foo', 'bar']);
         $input = $this->compiler->compile('foo bar');
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals('bar', $input->arguments['arg']);
@@ -487,9 +442,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo -r')
-            ->willReturn(['foo', '-r']);
         $input = $this->compiler->compile('foo -r');
         $this->assertEquals('foo', $input->commandName);
         $this->assertNull($input->options['opt']);
@@ -510,14 +462,21 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo --opt1 --opt2')
-            ->willReturn(['foo', '--opt1', '--opt2']);
         $input = $this->compiler->compile('foo --opt1 --opt2');
         $this->assertEquals('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
         $this->assertEquals(null, $input->options['opt1']);
         $this->assertEquals(null, $input->options['opt2']);
+    }
+
+    public function testCompilingStringInputIsCompiledCorrectly(): void
+    {
+        $this->commands->registerCommand(
+            new Command('foo', [], [], ''),
+            $this->createMock(ICommandHandler::class)
+        );
+        $input = $this->compiler->compile('foo');
+        $this->assertEquals('foo', $input->commandName);
     }
 
     public function testCompilingUsesDefaultValuesForOptionsThatAreNotSet(): void
@@ -536,9 +495,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo')
-            ->willReturn(['foo']);
         $input = $this->compiler->compile('foo');
         $this->assertEquals('foo value', $input->options['foo']);
         $this->assertEquals('bar value', $input->options['bar']);
@@ -557,9 +513,6 @@ class InputCompilerTest extends TestCase
             ),
             $this->createMock(ICommandHandler::class)
         );
-        $this->tokenizer->method('tokenize')
-            ->with('foo bar baz')
-            ->willReturn(['foo', 'bar', 'baz']);
         $this->compiler->compile('foo bar baz');
     }
 }

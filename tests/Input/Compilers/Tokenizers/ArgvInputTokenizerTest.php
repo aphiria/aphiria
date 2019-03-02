@@ -27,16 +27,6 @@ class ArgvInputTokenizerTest extends TestCase
         $this->tokenizer = new ArgvInputTokenizer();
     }
 
-    public function testTokenizingDoesNotRemoveFirstElementFromInputIfItDoesNotMatchApplicationName(): void
-    {
-        $tokenizerWithDefaultApplicationName = new ArgvInputTokenizer();
-        $this->assertEquals(['foo', 'bar'], $tokenizerWithDefaultApplicationName->tokenize(['foo', 'bar']));
-        $this->assertEquals(['foo', 'bar'], $tokenizerWithDefaultApplicationName->tokenize(['aphiria', 'foo', 'bar']));
-        $tokenizerWithCustomApplicationName = new ArgvInputTokenizer('dave');
-        $this->assertEquals(['foo', 'bar'], $tokenizerWithCustomApplicationName->tokenize(['foo', 'bar']));
-        $this->assertEquals(['foo', 'bar'], $tokenizerWithCustomApplicationName->tokenize(['dave', 'foo', 'bar']));
-    }
-
     public function testTokenizingNonArrayThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

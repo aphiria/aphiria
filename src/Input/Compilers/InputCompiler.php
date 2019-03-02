@@ -13,7 +13,10 @@ namespace Aphiria\Console\Input\Compilers;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Input\Argument;
+use Aphiria\Console\Input\Compilers\Tokenizers\ArgvInputTokenizer;
+use Aphiria\Console\Input\Compilers\Tokenizers\ArrayListInputTokenizer;
 use Aphiria\Console\Input\Compilers\Tokenizers\IInputTokenizer;
+use Aphiria\Console\Input\Compilers\Tokenizers\StringInputTokenizer;
 use Aphiria\Console\Input\Input;
 use InvalidArgumentException;
 use RuntimeException;
@@ -25,17 +28,29 @@ final class InputCompiler implements IInputCompiler
 {
     /** @var CommandRegistry The commands that are registered */
     private $commands;
-    /** @var IInputTokenizer The input tokenizer */
-    private $tokenizer;
+    /** @var IInputTokenizer The argv input tokenizer */
+    private $argvTokenizer;
+    /** @var IInputTokenizer The string input tokenizer */
+    private $stringTokenizer;
+    /** @var IInputTokenizer The array list input tokenizer */
+    private $arrayListTokenizer;
 
     /**
      * @param CommandRegistry $commands The commands that are registered
-     * @param IInputTokenizer $tokenizer The input tokenizer
+     * @param IInputTokenizer|null $argvTokenizer The argv input tokenizer
+     * @param IInputTokenizer|null $stringTokenizer The string input tokenizer
+     * @param IInputTokenizer|null $arrayListTokenizer The array list input tokenizer
      */
-    public function __construct(CommandRegistry $commands, IInputTokenizer $tokenizer)
-    {
+    public function __construct(
+        CommandRegistry $commands,
+        IInputTokenizer $argvTokenizer = null,
+        IInputTokenizer $stringTokenizer = null,
+        IInputTokenizer $arrayListTokenizer = null
+    ) {
         $this->commands = $commands;
-        $this->tokenizer = $tokenizer;
+        $this->argvTokenizer = $argvTokenizer ?? new ArgvInputTokenizer();
+        $this->stringTokenizer = $stringTokenizer ?? new StringInputTokenizer();
+        $this->arrayListTokenizer = $arrayListTokenizer ?? new ArrayListInputTokenizer();
     }
 
     /**
@@ -43,7 +58,7 @@ final class InputCompiler implements IInputCompiler
      */
     public function compile($rawInput): Input
     {
-        $tokens = $this->tokenizer->tokenize($rawInput);
+        $tokens = $this->selectTokenizer($rawInput)->tokenize($rawInput);
         $commandName = '';
         $argumentValues = [];
         $options = [];
@@ -59,6 +74,30 @@ final class InputCompiler implements IInputCompiler
             self::compileArguments($command, $argumentValues),
             self::compileOptions($command, $options)
         );
+    }
+
+    /**
+     * Gets the correct tokenizer for the input
+     *
+     * @param string|array $rawInput The input to use when figuring out which input tokenizer to use
+     * @return IInputTokenizer The selected input tokenizer
+     * @throws InvalidArgumentException Thrown if the input was neither a string nor an array
+     */
+    private function selectTokenizer($rawInput): IInputTokenizer
+    {
+        if (is_string($rawInput)) {
+            return $this->stringTokenizer;
+        }
+
+        if (is_array($rawInput)) {
+            if (isset($rawInput['name'])) {
+                return $this->arrayListTokenizer;
+            }
+
+            return $this->argvTokenizer;
+        }
+
+        throw new InvalidArgumentException('Input must be either a string or an array');
     }
 
     /**

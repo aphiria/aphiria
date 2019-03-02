@@ -19,7 +19,6 @@ use Aphiria\Console\Commands\Defaults\HelpCommandHandler;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\Console\Input\Compilers\IInputCompiler;
 use Aphiria\Console\Input\Compilers\InputCompiler;
-use Aphiria\Console\Input\Compilers\Tokenizers\ArgvInputTokenizer;
 use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
 use Exception;
@@ -38,7 +37,7 @@ final class Kernel implements ICommandBus
 
     /**
      * @param CommandRegistry $commands The commands
-     * @param IInputCompiler|null $inputCompiler The input compiler to use
+     * @param IInputCompiler $inputCompiler The input compiler
      */
     public function __construct(CommandRegistry $commands, IInputCompiler $inputCompiler = null)
     {
@@ -48,7 +47,7 @@ final class Kernel implements ICommandBus
             new CommandBinding(new AboutCommand(), new AboutCommandHandler($commands))
         ]);
         $this->commands = $commands;
-        $this->inputCompiler = $inputCompiler ?? new InputCompiler($this->commands, new ArgvInputTokenizer());
+        $this->inputCompiler = $inputCompiler ?? new InputCompiler($this->commands);
     }
 
     /**
@@ -56,13 +55,8 @@ final class Kernel implements ICommandBus
      */
     public function handle($rawInput, IOutput $output = null): int
     {
-        if (!is_string($rawInput) && !is_array($rawInput)) {
-            throw new InvalidArgumentException('Input must be a string or an array');
-        }
-
-        $output = $output ?? new ConsoleOutput();
-
         try {
+            $output = $output ?? new ConsoleOutput();
             // Default to the 'about' command if no command name is given
             $compiledInput = $this->inputCompiler->compile($rawInput === '' || $rawInput === [] ? 'about' : $rawInput);
             $binding = null;
