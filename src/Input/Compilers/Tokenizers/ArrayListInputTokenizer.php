@@ -10,6 +10,7 @@
 
 namespace Aphiria\Console\Input\Compilers\Tokenizers;
 
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -22,6 +23,10 @@ final class ArrayListInputTokenizer implements IInputTokenizer
      */
     public function tokenize($input): array
     {
+        if (!is_array($input)) {
+            throw new InvalidArgumentException(self::class . ' only accepts arrays as input');
+        }
+
         if (!isset($input['name'])) {
             throw new RuntimeException('No command name given');
         }

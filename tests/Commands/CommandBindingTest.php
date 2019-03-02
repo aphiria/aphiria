@@ -13,8 +13,8 @@ namespace Aphiria\Console\Tests\Commands;
 use Aphiria\Console\Commands\ClosureCommandHandler;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandBinding;
-use Aphiria\Console\Commands\CommandInput;
 use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -27,7 +27,7 @@ class CommandBindingTest extends TestCase
 {
     public function testClosureIsWrappedInClosureCommandHandler(): void
     {
-        $closure = function (CommandInput $input, IOutput $output) {
+        $closure = function (Input $input, IOutput $output) {
             // Don't do anything
         };
         $expectedCommand = new Command('foo', [], [], '');

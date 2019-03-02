@@ -11,11 +11,11 @@
 namespace Aphiria\Console\Tests;
 
 use Aphiria\Console\Commands\Command;
-use Aphiria\Console\Commands\CommandInput;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\ArgumentTypes;
-use Aphiria\Console\Input\Compilers\StringInputCompiler;
+use Aphiria\Console\Input\Compilers\IInputCompiler;
+use Aphiria\Console\Input\Input;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionTypes;
 use Aphiria\Console\Kernel;
@@ -23,14 +23,16 @@ use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCodes;
 use Aphiria\Console\Tests\Output\Mocks\Output;
 use InvalidArgumentException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * Tests the console kernel
  */
 class KernelTest extends TestCase
 {
-    /** @var StringInputCompiler */
+    /** @var IInputCompiler|MockObject */
     private $inputCompiler;
     /** @var CommandRegistry */
     private $commands;
@@ -42,13 +44,16 @@ class KernelTest extends TestCase
     protected function setUp(): void
     {
         $this->commands = new CommandRegistry();
-        $this->inputCompiler = new StringInputCompiler();
+        $this->inputCompiler = $this->createMock(IInputCompiler::class);
         $this->kernel = new Kernel($this->commands, $this->inputCompiler);
         $this->output = new Output();
     }
 
     public function testHandlingException(): void
     {
+        $this->inputCompiler->method('compile')
+            ->with("unclosed quote '")
+            ->willThrowException(new RuntimeException());
         ob_start();
         $status = $this->kernel->handle("unclosed quote '", $this->output);
         ob_end_clean();
@@ -60,10 +65,18 @@ class KernelTest extends TestCase
         // Try with command name
         $this->commands->registerCommand(
             new Command('holiday', [], [], ''),
-            function (CommandInput $commandInput, IOutput $output) {
+            function (Input $input, IOutput $output) {
                 // Don't do anything
             }
         );
+        $this->inputCompiler->expects($this->at(0))
+            ->method('compile')
+            ->with('help holiday')
+            ->willReturn(new Input('help', ['command' => 'holiday'], []));
+        $this->inputCompiler->expects($this->at(1))
+            ->method('compile')
+            ->with('help')
+            ->willReturn(new Input('help', [], []));
         ob_start();
         $status = $this->kernel->handle('help holiday', $this->output);
         ob_get_clean();
@@ -78,6 +91,9 @@ class KernelTest extends TestCase
 
     public function testHandlingHelpCommandWithNonExistentCommand(): void
     {
+        $this->inputCompiler->method('compile')
+            ->with('help fake')
+            ->willReturn(new Input('help', ['command' => 'fake'], []));
         ob_start();
         $status = $this->kernel->handle('help fake', $this->output);
         ob_end_clean();
@@ -86,6 +102,14 @@ class KernelTest extends TestCase
 
     public function testHandlingHolidayCommand(): void
     {
+        $this->inputCompiler->expects($this->at(0))
+            ->method('compile')
+            ->with('holiday birthday -y')
+            ->willReturn(new Input('holiday', ['holiday' => 'birthday'], ['yell' => 'yes']));
+        $this->inputCompiler->expects($this->at(1))
+            ->method('compile')
+            ->with('holiday Easter --yell=no')
+            ->willReturn(new Input('holiday', ['holiday' => 'Easter'], ['yell' => 'no']));
         // Test with short option
         $this->commands->registerCommand(
             new Command(
@@ -94,10 +118,10 @@ class KernelTest extends TestCase
                 [new Option('yell', 'y', OptionTypes::OPTIONAL_VALUE, '', 'yes')],
                 ''
             ),
-            function (CommandInput $commandInput, IOutput $output) {
-                $message = 'Happy ' . $commandInput->arguments['holiday'];
+            function (Input $input, IOutput $output) {
+                $message = 'Happy ' . $input->arguments['holiday'];
 
-                if ($commandInput->options['yell'] === 'yes') {
+                if ($input->options['yell'] === 'yes') {
                     $message .= '!';
                 }
 
@@ -124,6 +148,9 @@ class KernelTest extends TestCase
 
     public function testHandlingMissingCommand(): void
     {
+        $this->inputCompiler->method('compile')
+            ->with('fake')
+            ->willThrowException(new InvalidArgumentException());
         ob_start();
         $status = $this->kernel->handle('fake', $this->output);
         ob_get_clean();
@@ -132,9 +159,12 @@ class KernelTest extends TestCase
 
     public function testHandlingSimpleCommand(): void
     {
+        $this->inputCompiler->method('compile')
+            ->with('foo')
+            ->willReturn(new Input('foo', [], []));
         $this->commands->registerCommand(
             new Command('foo', [], [], ''),
-            function (CommandInput $commandInput, IOutput $output) {
+            function (Input $input, IOutput $output) {
                 $output->write('foo');
             }
         );
@@ -146,8 +176,11 @@ class KernelTest extends TestCase
 
     public function testHandlingWithHandlerThatDoesNotReturnAnythingDefaultsToOk(): void
     {
+        $this->inputCompiler->method('compile')
+            ->with('foo')
+            ->willReturn(new Input('foo', [], []));
         $command = new Command('foo', [], [], '');
-        $commandHandler = function (CommandInput $commandInput, IOutput $output) {
+        $commandHandler = function (Input $input, IOutput $output) {
             $this->assertSame($this->output, $output);
         };
         $this->commands->registerCommand($command, $commandHandler);

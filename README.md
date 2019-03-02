@@ -103,8 +103,8 @@ Let's take a look at an example:
 ```php
 namespace App\Application\Console\Commands;
 
-use Aphiria\Console\Commands\{Command, CommandInput};
-use Aphiria\Console\Input\{Argument, ArgumentTypes, Option, OptionTypes};
+use Aphiria\Console\Commands\Command;
+use Aphiria\Console\Input\{Argument, ArgumentTypes, Input, Option, OptionTypes};
 use Aphiria\Console\Output\IOutput;
 
 $greetingCommand = new Command(
@@ -113,7 +113,7 @@ $greetingCommand = new Command(
     [new Option('yell', 'y', OptionTypes::OPTIONAL_VALUE, 'Yell the greeting?', 'yes')],
     'Greets a person'
 );
-$greetingCommandHandler = function (CommandInput $input, IOutput $output) {
+$greetingCommandHandler = function (Input $input, IOutput $output) {
     $greeting = 'Hello, ' . $input->arguments['name'];
 
     if ($input->options['yell'] === 'yes') {
@@ -124,9 +124,10 @@ $greetingCommandHandler = function (CommandInput $input, IOutput $output) {
 };
 ```
 
-Your command handler can either be a `Closure` that takes the input and output as parameters, or it can implement `ICommandHandler`, which has a single method `handle()` that accepts the same parameters.  If you pass in a `Closure`, it will be wrapped in a `ClosureCommandHandler`.  The following properties are available to you in `CommandInput`:
+Your command handler can either be a `Closure` that takes the input and output as parameters, or it can implement `ICommandHandler`, which has a single method `handle()` that accepts the same parameters.  If you pass in a `Closure`, it will be wrapped in a `ClosureCommandHandler`.  The following properties are available to you in `Input`:
 
 ```php
+$input->commandName; // The name of the command that was invoked
 $input->arguments['argName']; // The value of 'argName'
 $input->options['optionName']; // The value of 'optionName'
 ```
@@ -164,10 +165,10 @@ HELLO, DAVE
 It's possible to call a command from another command by using `Kernel`:
 
 ```php
-use Aphiria\Console\Commands\CommandInput;
+use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 
-$commandHandler = function (CommandInput $input, IOutput $output) use ($kernel) {
+$commandHandler = function (Input $input, IOutput $output) use ($kernel) {
     $kernel->handle('foo arg1 --option1=value', $output);
     
     // Do other stuff...
@@ -179,9 +180,9 @@ $commandHandler = function (CommandInput $input, IOutput $output) use ($kernel) 
 Alternatively, if your handler is a class, you could inject the kernel via the constructor:
 
 ```php
-use Aphiria\Console\Commands\CommandInput;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 
 class FooCommandHandler implements ICommandHandler
@@ -193,7 +194,7 @@ class FooCommandHandler implements ICommandHandler
         $this->kernel = $kernel;
     }
     
-    public function handle(CommandInput $input, IOutput $output)
+    public function handle(Input $input, IOutput $output)
     {
         $this->kernel->handle('foo arg1 --option1=value', $output);
     

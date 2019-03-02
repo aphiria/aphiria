@@ -11,6 +11,7 @@
 namespace Aphiria\Console\Tests\Input\Compilers\Tokenizers;
 
 use Aphiria\Console\Input\Compilers\Tokenizers\ArrayListInputTokenizer;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -43,5 +44,11 @@ class ArrayListInputTokenizerTest extends TestCase
             'options' => ['--name=dave', '-r']
         ]);
         $this->assertEquals(['foo', 'bar', '--name=dave', '-r'], $tokens);
+    }
+
+    public function testTokenizingNonArrayThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->tokenizer->tokenize('foo');
     }
 }

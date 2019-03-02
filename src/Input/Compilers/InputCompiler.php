@@ -10,51 +10,187 @@
 
 namespace Aphiria\Console\Input\Compilers;
 
+use Aphiria\Console\Commands\Command;
+use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Input\Argument;
+use Aphiria\Console\Input\Compilers\Tokenizers\IInputTokenizer;
 use Aphiria\Console\Input\Input;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Defines a base input compiler
+ * Defines the input compiler
  */
-abstract class InputCompiler implements IInputCompiler
+final class InputCompiler implements IInputCompiler
 {
+    /** @var CommandRegistry The commands that are registered */
+    private $commands;
+    /** @var IInputTokenizer The input tokenizer */
+    private $tokenizer;
+
     /**
-     * Compiles a list of tokens into an input
-     *
-     * @param array $tokens The tokens to compile
-     * @return Input The compiled input
-     * @throws RuntimeException Thrown if there is an invalid token
+     * @param CommandRegistry $commands The commands that are registered
+     * @param IInputTokenizer $tokenizer The input tokenizer
      */
-    protected function compileTokens(array $tokens): Input
+    public function __construct(CommandRegistry $commands, IInputTokenizer $tokenizer)
     {
-        $commandName = null;
+        $this->commands = $commands;
+        $this->tokenizer = $tokenizer;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function compile($rawInput): Input
+    {
+        $tokens = $this->tokenizer->tokenize($rawInput);
+        $commandName = '';
         $argumentValues = [];
         $options = [];
-        $hasParsedCommandName = false;
+        self::parseTokens($tokens, $commandName, $argumentValues, $options);
 
-        while ($token = array_shift($tokens)) {
-            if (mb_strpos($token, '--') === 0) {
-                $option = $this->parseLongOption($token, $tokens);
-                self::addOption($options, $option[0], $option[1]);
-            } elseif (mb_strpos($token, '-') === 0) {
-                foreach ($this->parseShortOption($token) as $option) {
-                    self::addOption($options, $option[0], $option[1]);
+        /** @var Command $command */
+        if (!$this->commands->tryGetCommand($commandName, $command)) {
+            throw new InvalidArgumentException("No command with name \"$commandName\" is registered");
+        }
+
+        return new Input(
+            $command->name,
+            self::compileArguments($command, $argumentValues),
+            self::compileOptions($command, $options)
+        );
+    }
+
+    /**
+     * Adds an option to the list of options
+     *
+     * @param array $options The list of options we're adding to
+     * @param string $name The name of the option to add
+     * @param mixed $value The value to add
+     */
+    private static function addOption(array &$options, string $name, $value): void
+    {
+        if (isset($options[$name])) {
+            // We now consider this option to have multiple values
+            if (!is_array($options[$name])) {
+                $options[$name] = [$options[$name]];
+            }
+
+            $options[$name][] = $value;
+        } else {
+            $options[$name] = $value;
+        }
+    }
+
+    /**
+     * Compiles arguments in a command
+     *
+     * @param Command $command The command to compile
+     * @param array $argumentValues The list of argument values
+     * @return array The mapping of argument names to values
+     * @throws RuntimeException Thrown if there are too many arguments
+     */
+    private static function compileArguments(Command $command, array $argumentValues): array
+    {
+        $arguments = [];
+
+        if (self::hasTooManyArguments($argumentValues, $command->arguments)) {
+            throw new RuntimeException('Too many arguments');
+        }
+
+        $hasSetArrayArgument = false;
+
+        foreach ($command->arguments as $argument) {
+            if (count($argumentValues) === 0) {
+                if (!$argument->isOptional()) {
+                    throw new RuntimeException("Argument \"{$argument->name}\" does not have default value");
                 }
-            } elseif (!$hasParsedCommandName) {
-                // We consider this to be the command name
-                $commandName = $token;
-                $hasParsedCommandName = true;
+
+                $arguments[$argument->name] = $argument->defaultValue;
             } else {
-                // We consider this to be an argument
-                $argumentValues[] = $this->parseArgument($token);
+                if ($hasSetArrayArgument) {
+                    throw new RuntimeException('Array argument must appear at end of list of arguments');
+                }
+
+                if ($argument->isArray()) {
+                    // Add the rest of the values in the input to this argument
+                    $restOfArgumentValues = [];
+
+                    while (count($argumentValues) > 0) {
+                        $restOfArgumentValues[] = array_shift($argumentValues);
+                    }
+
+                    $arguments[$argument->name] = $restOfArgumentValues;
+                    $hasSetArrayArgument = true;
+                } else {
+                    $arguments[$argument->name] = array_shift($argumentValues);
+                }
             }
         }
 
-        if ($commandName === null) {
-            throw new RuntimeException('No command name specified');
+        return $arguments;
+    }
+
+    /**
+     * Compiles options in a command
+     *
+     * @param Command $command The command to compile
+     * @param array $rawOptions The list of raw options
+     * @return array The mapping of option names to values
+     */
+    private static function compileOptions(Command $command, array $rawOptions): array
+    {
+        $options = [];
+
+        foreach ($command->options as $option) {
+            $shortNameIsSet = $option->shortName === null
+                ? false
+                : array_key_exists($option->shortName, $rawOptions);
+            $longNameIsSet = array_key_exists($option->name, $rawOptions);
+
+            // All options are optional (duh)
+            if ($shortNameIsSet || $longNameIsSet) {
+                $value = $longNameIsSet ? $rawOptions[$option->name] : $rawOptions[$option->shortName];
+
+                if ($value !== null && !$option->valueIsPermitted()) {
+                    throw new RuntimeException("Option \"{$option->name}\" does not permit a value");
+                }
+
+                if ($value === null && $option->valueIsRequired()) {
+                    throw new RuntimeException("Option \"{$option->name}\" requires a value");
+                }
+
+                if ($value === null && $option->valueIsOptional()) {
+                    $value = $option->defaultValue;
+                }
+
+                $options[$option->name] = $value;
+            } elseif ($option->valueIsPermitted()) {
+                // Set the value for the option to its default value, if values are permitted
+                $options[$option->name] = $option->defaultValue;
+            }
         }
 
-        return new Input($commandName, $argumentValues, $options);
+        return $options;
+    }
+
+    /**
+     * Gets whether or not there are too many argument values
+     *
+     * @param array $argumentValues The list of argument values
+     * @param Argument[] $commandArguments The list of command arguments
+     * @return bool True if there are too many arguments, otherwise false
+     */
+    private static function hasTooManyArguments(array $argumentValues, array $commandArguments): bool
+    {
+        if (count($argumentValues) > count($commandArguments)) {
+            // Only when the last argument is an array do we allow more input arguments than command arguments
+            if (count($commandArguments) === 0 || !end($commandArguments)->isArray()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -63,9 +199,9 @@ abstract class InputCompiler implements IInputCompiler
      * @param string $token The token to parse
      * @return string The parsed argument
      */
-    protected function parseArgument(string $token): string
+    private static function parseArgument(string $token): string
     {
-        return $this->trimQuotes($token);
+        return self::trimQuotes($token);
     }
 
     /**
@@ -76,7 +212,7 @@ abstract class InputCompiler implements IInputCompiler
      * @return array The name of the option mapped to its value
      * @throws RuntimeException Thrown if the option could not be parsed
      */
-    protected function parseLongOption(string $token, array &$remainingTokens): array
+    private static function parseLongOption(string $token, array &$remainingTokens): array
     {
         if (mb_strpos($token, '--') !== 0) {
             throw new RuntimeException("Invalid long option \"$token\"");
@@ -105,9 +241,45 @@ abstract class InputCompiler implements IInputCompiler
         }
 
         [$name, $value] = explode('=', $option);
-        $value = $this->trimQuotes($value);
+        $value = self::trimQuotes($value);
 
         return [$name, $value];
+    }
+
+    /**
+     * Parses the tokens for the command name, arguments, and options
+     *
+     * @param array $tokens The tokens to parse
+     * @param string $commandName The parsed command name
+     * @param array $argumentValues The parsed input arguments
+     * @param array $options The parsed input options
+     * @throws InvalidArgumentException Thrown if the tokens are empty
+     */
+    private static function parseTokens(
+        array $tokens,
+        string &$commandName,
+        array &$argumentValues,
+        array &$options
+    ): void {
+        if (count($tokens) === 0) {
+            throw new InvalidArgumentException('Tokens cannot be empty');
+        }
+
+        $commandName = array_shift($tokens);
+
+        while ($token = array_shift($tokens)) {
+            if (mb_strpos($token, '--') === 0) {
+                [$optionName, $optionValue] = self::parseLongOption($token, $tokens);
+                self::addOption($options, $optionName, $optionValue);
+            } elseif (mb_strpos($token, '-') === 0) {
+                foreach (self::parseShortOption($token) as [$optionName, $optionValue]) {
+                    self::addOption($options, $optionName, $optionValue);
+                }
+            } else {
+                // We consider this to be an argument
+                $argumentValues[] = self::parseArgument($token);
+            }
+        }
     }
 
     /**
@@ -117,7 +289,7 @@ abstract class InputCompiler implements IInputCompiler
      * @return array The name of the option mapped to its value
      * @throws RuntimeException Thrown if the option could not be parsed
      */
-    protected function parseShortOption(string $token): array
+    private static function parseShortOption(string $token): array
     {
         if (mb_strpos($token, '-') !== 0) {
             throw new RuntimeException("Invalid short option \"$token\"");
@@ -144,7 +316,7 @@ abstract class InputCompiler implements IInputCompiler
      * @param string $token Trims quotes off of a token
      * @return string The trimmed token
      */
-    protected function trimQuotes(string $token): string
+    private static function trimQuotes(string $token): string
     {
         // Trim any quotes
         if (($firstValueChar = mb_substr($token, 0, 1)) === mb_substr($token, -1)) {
@@ -156,26 +328,5 @@ abstract class InputCompiler implements IInputCompiler
         }
 
         return $token;
-    }
-
-    /**
-     * Adds an option to the list of options
-     *
-     * @param array $options The list of options we're adding to
-     * @param string $name The name of the option to add
-     * @param mixed $value The value to add
-     */
-    private static function addOption(array &$options, string $name, $value): void
-    {
-        if (isset($options[$name])) {
-            // We now consider this option to have multiple values
-            if (!is_array($options[$name])) {
-                $options[$name] = [$options[$name]];
-            }
-
-            $options[$name][] = $value;
-        } else {
-            $options[$name] = $value;
-        }
     }
 }

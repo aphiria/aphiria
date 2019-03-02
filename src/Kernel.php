@@ -11,15 +11,15 @@
 namespace Aphiria\Console;
 
 use Aphiria\Console\Commands\CommandBinding;
-use Aphiria\Console\Commands\CommandInputFactory;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\Defaults\AboutCommand;
 use Aphiria\Console\Commands\Defaults\AboutCommandHandler;
 use Aphiria\Console\Commands\Defaults\HelpCommand;
 use Aphiria\Console\Commands\Defaults\HelpCommandHandler;
 use Aphiria\Console\Commands\ICommandBus;
-use Aphiria\Console\Input\Compilers\ArgvInputCompiler;
 use Aphiria\Console\Input\Compilers\IInputCompiler;
+use Aphiria\Console\Input\Compilers\InputCompiler;
+use Aphiria\Console\Input\Compilers\Tokenizers\ArgvInputTokenizer;
 use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
 use Exception;
@@ -35,27 +35,20 @@ final class Kernel implements ICommandBus
     private $commands;
     /** @var IInputCompiler The input compiler to use */
     private $inputCompiler;
-    /** @var CommandInputFactory The factory to create command inputs with */
-    private $commandInputFactory;
 
     /**
      * @param CommandRegistry $commands The commands
      * @param IInputCompiler|null $inputCompiler The input compiler to use
-     * @param CommandInputFactory $commandInputFactory The factory that can create command inputs
      */
-    public function __construct(
-        CommandRegistry $commands,
-        IInputCompiler $inputCompiler = null,
-        CommandInputFactory $commandInputFactory = null
-    ) {
+    public function __construct(CommandRegistry $commands, IInputCompiler $inputCompiler = null)
+    {
         // Set up our default commands
         $commands->registerManyCommands([
             new CommandBinding(new HelpCommand(), new HelpCommandHandler($commands)),
             new CommandBinding(new AboutCommand(), new AboutCommandHandler($commands))
         ]);
         $this->commands = $commands;
-        $this->inputCompiler = $inputCompiler ?? new ArgvInputCompiler();
-        $this->commandInputFactory = $commandInputFactory ?? new CommandInputFactory();
+        $this->inputCompiler = $inputCompiler ?? new InputCompiler($this->commands, new ArgvInputTokenizer());
     }
 
     /**
@@ -78,8 +71,7 @@ final class Kernel implements ICommandBus
                 throw new InvalidArgumentException("Command \"{$compiledInput->commandName}\" is not registered");
             }
 
-            $commandInput = $this->commandInputFactory->createCommandInput($binding->command, $compiledInput);
-            $statusCode = $binding->commandHandler->handle($commandInput, $output);
+            $statusCode = $binding->commandHandler->handle($compiledInput, $output);
 
             return $statusCode ?? StatusCodes::OK;
         } catch (InvalidArgumentException $ex) {

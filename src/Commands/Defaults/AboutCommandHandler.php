@@ -11,9 +11,9 @@
 namespace Aphiria\Console\Commands\Defaults;
 
 use Aphiria\Console\Commands\Command;
-use Aphiria\Console\Commands\CommandInput;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\IOutput;
 
@@ -49,7 +49,7 @@ EOF;
     /**
      * @inheritDoc
      */
-    public function handle(CommandInput $commandInput, IOutput $output)
+    public function handle(Input $input, IOutput $output)
     {
         // Compile the template
         $compiledTemplate = self::$template;

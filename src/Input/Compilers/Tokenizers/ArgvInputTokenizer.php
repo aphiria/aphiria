@@ -10,6 +10,8 @@
 
 namespace Aphiria\Console\Input\Compilers\Tokenizers;
 
+use InvalidArgumentException;
+
 /**
  * Defines the argv input tokenizer
  */
@@ -20,6 +22,14 @@ final class ArgvInputTokenizer implements IInputTokenizer
      */
     public function tokenize($input): array
     {
+        if ($input === null) {
+            $input = $_SERVER['argv'];
+        }
+
+        if (!is_array($input)) {
+            throw new InvalidArgumentException(self::class . ' only accepts arrays as input');
+        }
+
         // Get rid of the application name
         array_shift($input);
 

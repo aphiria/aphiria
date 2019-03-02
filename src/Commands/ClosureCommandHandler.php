@@ -10,6 +10,7 @@
 
 namespace Aphiria\Console\Commands;
 
+use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 use Closure;
 
@@ -32,8 +33,8 @@ final class ClosureCommandHandler implements ICommandHandler
     /**
      * @inheritDoc
      */
-    public function handle(CommandInput $commandInput, IOutput $output)
+    public function handle(Input $input, IOutput $output)
     {
-        return ($this->closure)($commandInput, $output);
+        return ($this->closure)($input, $output);
     }
 }

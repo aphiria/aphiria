@@ -10,6 +10,7 @@
 
 namespace Aphiria\Console\Commands;
 
+use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 
 /**
@@ -20,9 +21,9 @@ interface ICommandHandler
     /**
      * Handles a command
      *
-     * @param CommandInput $commandInput The input to handle
+     * @param Input $input The input to handle
      * @param IOutput $output The output to write to
      * @return int|void The status code if there was one, or void, which assumes an status code of 0
      */
-    public function handle(CommandInput $commandInput, IOutput $output);
+    public function handle(Input $input, IOutput $output);
 }
