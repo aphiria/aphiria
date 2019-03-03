@@ -17,11 +17,11 @@
   "autoload": {
     "psr-4": {
       "Aphiria\\Configuration\\": "src"
-    },
-    "autoload-dev": {
-      "psr-4": {
-        "Aphiria\\Configuration\\Tests\\": "tests"
-      }
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Aphiria\\Configuration\\Tests\\": "tests"
     }
   },
   "require": {
