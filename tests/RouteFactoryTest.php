@@ -19,14 +19,12 @@ use PHPUnit\Framework\TestCase;
  */
 class RouteFactoryTest extends TestCase
 {
-    public function testCreatingRoutesRunsCallbackAndBuildsRegistry(): void
+    public function testCreatingRoutesBuildsRegistry(): void
     {
-        $callback = function (RouteBuilderRegistry $routes) {
-            $routes->map('GET', 'foo')
-                ->toMethod('Foo', 'bar');
-        };
-        $routeBuilderRegistry = new RouteBuilderRegistry();
-        $factory = new RouteFactory($callback, $routeBuilderRegistry);
+        $routeBuilders = new RouteBuilderRegistry();
+        $routeBuilders->map('GET', 'foo')
+            ->toMethod('Foo', 'bar');
+        $factory = new RouteFactory($routeBuilders);
         $routeCollection = $factory->createRoutes();
         $this->assertCount(1, $routeCollection->getAll());
         $this->assertEquals('Foo', $routeCollection->getAll()[0]->action->className);

@@ -11,27 +11,21 @@
 namespace Aphiria\Routing;
 
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
-use Closure;
 
 /**
  * Defines a route factory
  */
 final class RouteFactory
 {
-    /** @var Closure The callback that builds routes */
-    private $routeBuilderCallback;
     /** @var RouteBuilderRegistry The route builder registry to build routes with */
     private $routeBuilderRegistry;
 
     /**
-     * @param Closure $routeBuilderCallback The callback that builds the routes
-     *      This must accept an instance of RouteBuilderRegistry
-     * @param RouteBuilderRegistry|null $routeBuilderRegistry The route builder registry to build routes with
+     * @param RouteBuilderRegistry $routeBuilderRegistry The route builder registry to build routes with
      */
-    public function __construct(Closure $routeBuilderCallback, RouteBuilderRegistry $routeBuilderRegistry = null)
+    public function __construct(RouteBuilderRegistry $routeBuilderRegistry)
     {
-        $this->routeBuilderCallback = $routeBuilderCallback;
-        $this->routeBuilderRegistry = $routeBuilderRegistry ?? new RouteBuilderRegistry();
+        $this->routeBuilderRegistry = $routeBuilderRegistry;
     }
 
     /**
@@ -41,7 +35,6 @@ final class RouteFactory
      */
     public function createRoutes(): RouteCollection
     {
-        ($this->routeBuilderCallback)($this->routeBuilderRegistry);
         $routeCollection = new RouteCollection();
         $routeCollection->addMany($this->routeBuilderRegistry->buildAll());
 

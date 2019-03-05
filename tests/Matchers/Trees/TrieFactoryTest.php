@@ -35,11 +35,11 @@ class TrieFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->routeFactory = new RouteFactory(function (RouteBuilderRegistry $routes) {
-            // It doesn't really matter what this route is
-            $routes->map('GET', 'foo')
-                ->toMethod('Foo', 'bar');
-        });
+        // The tests expect one route registered
+        $routeBuilders = new RouteBuilderRegistry();
+        $routeBuilders->map('GET', 'foo')
+            ->toMethod('Bar', 'baz');
+        $this->routeFactory = new RouteFactory($routeBuilders);
         $this->trieCache = $this->createMock(ITrieCache::class);
         $this->trieCompiler = $this->createMock(ITrieCompiler::class);
         $this->trieFactory = new TrieFactory($this->routeFactory, $this->trieCache, $this->trieCompiler);

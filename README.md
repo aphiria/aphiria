@@ -71,15 +71,13 @@ use Aphiria\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
 use Aphiria\Routing\RouteFactory;
 
 // Register the routes
-$routeCallback = function (RouteBuilderRegistry $routes) {
-    // A leading '/' in the path is optional
-    $routes->map('GET', 'books/:bookId')
-        ->toMethod(BookController::class, 'getBooksById')
-        ->withMiddleware(AuthMiddleware::class);
-};
+$routes = new RouteBuilderRegistry();
+$routes->map('GET', '/books/:bookId')
+    ->toMethod(BookController::class, 'getBooksById')
+    ->withMiddleware(AuthMiddleware::class);
 
 // Set up the route matcher
-$routeFactory = new RouteFactory($routeCallback);
+$routeFactory = new RouteFactory($routes);
 $trieFactory = new TrieFactory($routeFactory, null);
 $routeMatcher = new TrieRouteMatcher($trieFactory->createTree());
 
@@ -175,17 +173,15 @@ Route builders give you a fluent syntax for mapping your routes to closures or c
 Aphiria supports mapping routes to both controller methods and to closures:
 
 ```php
-$routesCallback = function (RouteBuilderRegistry $routes) {
-    // Map to a controller method
-    $routes->map('GET', 'users/:userId')
-        ->toMethod(UserController::class, 'getUserById');
+// Map to a controller method
+$routes->map('GET', 'users/:userId')
+    ->toMethod(UserController::class, 'getUserById');
 
-    // Map to a closure
-    $routes->map('GET', 'users/:userId/name')
-        ->toClosure(function () {
-            // Handle the request...
-        });
-};
+// Map to a closure
+$routes->map('GET', 'users/:userId/name')
+    ->toClosure(function () {
+        // Handle the request...
+    });
 ```
 
 To determine the type of action (controller method or closure) the matched route uses, check `RouteAction::usesMethod()`.
@@ -250,19 +246,17 @@ Often times, a lot of your routes will share similar properties, such as hosts a
 ```php
 use Aphiria\Routing\Builders\RouteGroupOptions;
 
-$routesCallback = function (RouteBuilderRegistry $routes) {
-    $routes->group(
-        new RouteGroupOptions('courses/:courseId', 'example.com'),
-        function (RouteBuilderRegistry $routes) {
-            // This route's path will use the group's path
-            $routes->map('GET', '')
-                ->toMethod(CourseController::class, 'getCourseById');
+$routes->group(
+    new RouteGroupOptions('courses/:courseId', 'example.com'),
+    function (RouteBuilderRegistry $routes) {
+        // This route's path will use the group's path
+        $routes->map('GET', '')
+            ->toMethod(CourseController::class, 'getCourseById');
 
-            $routes->map('GET', '/professors')
-                ->toMethod(CourseController::class, 'getCourseProfessors');
-        }
-    );
-};
+        $routes->map('GET', '/professors')
+            ->toMethod(CourseController::class, 'getCourseProfessors');
+    }
+);
 ```
 
 This creates two routes with a host suffix of _example.com_ and a route prefix of _users/_ (`example.com/courses/:courseId` and `example.com/courses/:courseId/professors`).  `RouteGroupOptions::__construct()` accepts the following parameters:
@@ -293,19 +287,17 @@ Sometimes, you might find it useful to add some custom logic for matching routes
 Let's say your app sends an API version header, and you want to match an endpoint that supports that version.  You could do this by using a route "attribute" and a route constraint.  Let's create some routes that have the same path, but support different versions of the API:
 
 ```php
-$routesCallback = function (RouteBuilderRegistry $routes) {
-    // This route will require an API-VERSION value of 'v1.0'
-    $routes->map('GET', 'comments')
-        ->toMethod(CommentController::class, 'getAllComments1_0')
-        ->withAttribute('API-VERSION', 'v1.0')
-        ->withConstraint(new ApiVersionConstraint);
+// This route will require an API-VERSION value of 'v1.0'
+$routes->map('GET', 'comments')
+    ->toMethod(CommentController::class, 'getAllComments1_0')
+    ->withAttribute('API-VERSION', 'v1.0')
+    ->withConstraint(new ApiVersionConstraint);
 
-    // This route will require an API-VERSION value of 'v2.0'
-    $routes->map('GET', 'comments')
-        ->toMethod(CommentController::class, 'getAllComments2_0')
-        ->withAttribute('API-VERSION', 'v2.0')
-        ->withConstraint(new ApiVersionConstraint);
-};
+// This route will require an API-VERSION value of 'v2.0'
+$routes->map('GET', 'comments')
+    ->toMethod(CommentController::class, 'getAllComments2_0')
+    ->withAttribute('API-VERSION', 'v2.0')
+    ->withConstraint(new ApiVersionConstraint);
 ```
 
 > **Note:** If you plan on adding many attributes or constraints to your routes, use `RouteBuilder::withManyAttributes()` and `RouteBuilder::withManyConstraints()`, respectively.
@@ -421,12 +413,11 @@ use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
 use Aphiria\Routing\RouteFactory;
 
-$routeCallback = function (RouteBuilderRegistry $routes) {
-     $routes->map('parts/:serialNumber(minLength(6))')
-        ->toMethod(PartController::class, 'getPartBySerialNumber');
-};
+$routes = new RouteBuilderRegistry();
+$routes->map('parts/:serialNumber(minLength(6))')
+    ->toMethod(PartController::class, 'getPartBySerialNumber');
 
-$routeFactory = new RouteFactory($routeCallback);
+$routeFactory = new RouteFactory($routes);
 $trieCompiler = new TrieCompiler($ruleFactory);
 $trieFactory = new TrieFactory($routeFactory, null, $trieCompiler);
 $routeMatcher = new TrieRouteMatcher($trieFactory->createTree());
@@ -439,7 +430,7 @@ Our route will now enforce a serial number with minimum length 6.
 To speed up the compilation of your route trie, Aphiria supports caching (`FileTrieCache` is provided by default).  If you're actively developing and adding new routes, it's best not to enable caching, which can be done by passing `null` into the `TrieFactory`:
 
 ```php
-$routeFactory = new RouteFactory($routesCallback);
+$routeFactory = new RouteFactory($routes);
 $trieFactory = new TrieFactory($routeFactory, null);
 ```
 
@@ -447,7 +438,7 @@ If you want to enable caching for a particular environment, you could do so:
 
 ```php
 // Let's say that your environment name is stored in an environment var named 'ENV_NAME'
-$routeFactory = new RouteFactory($routesCallback);
+$routeFactory = new RouteFactory($routes);
 $trieCache = getenv('ENV_NAME') === 'production' ? new FileTrieCache('/tmp/trie.cache') : null;
 $trieFactory = new TrieFactory($routeFactory, $trieCache);
 ```
