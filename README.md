@@ -68,7 +68,6 @@ First, let's import the namespaces and define our routes:
 ```php
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
-use Aphiria\Routing\RouteFactory;
 
 // Register the routes
 $routes = new RouteBuilderRegistry();
@@ -77,8 +76,7 @@ $routes->map('GET', '/books/:bookId')
     ->withMiddleware(AuthMiddleware::class);
 
 // Set up the route matcher
-$routeFactory = new RouteFactory($routes);
-$trieFactory = new TrieFactory($routeFactory, null);
+$trieFactory = new TrieFactory($routes, null);
 $routeMatcher = new TrieRouteMatcher($trieFactory->createTree());
 
 // Finally, let's find a matching route
@@ -411,15 +409,13 @@ Finally, register this rule factory with the trie compiler:
 ```php
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
-use Aphiria\Routing\RouteFactory;
 
 $routes = new RouteBuilderRegistry();
 $routes->map('parts/:serialNumber(minLength(6))')
     ->toMethod(PartController::class, 'getPartBySerialNumber');
 
-$routeFactory = new RouteFactory($routes);
 $trieCompiler = new TrieCompiler($ruleFactory);
-$trieFactory = new TrieFactory($routeFactory, null, $trieCompiler);
+$trieFactory = new TrieFactory($routes, null, $trieCompiler);
 $routeMatcher = new TrieRouteMatcher($trieFactory->createTree());
 ```
 
@@ -430,17 +426,15 @@ Our route will now enforce a serial number with minimum length 6.
 To speed up the compilation of your route trie, Aphiria supports caching (`FileTrieCache` is provided by default).  If you're actively developing and adding new routes, it's best not to enable caching, which can be done by passing `null` into the `TrieFactory`:
 
 ```php
-$routeFactory = new RouteFactory($routes);
-$trieFactory = new TrieFactory($routeFactory, null);
+$trieFactory = new TrieFactory($routes, null);
 ```
 
 If you want to enable caching for a particular environment, you could do so:
 
 ```php
 // Let's say that your environment name is stored in an environment var named 'ENV_NAME'
-$routeFactory = new RouteFactory($routes);
 $trieCache = getenv('ENV_NAME') === 'production' ? new FileTrieCache('/tmp/trie.cache') : null;
-$trieFactory = new TrieFactory($routeFactory, $trieCache);
+$trieFactory = new TrieFactory($routes, $trieCache);
 ```
 
 <h1 id="matching-algorithm">Matching Algorithm</h1>

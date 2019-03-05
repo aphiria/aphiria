@@ -14,7 +14,6 @@ require __DIR__ . '/../vendor/autoload.php';
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\Matchers\Trees\TrieFactory;
 use Aphiria\Routing\Matchers\Trees\TrieRouteMatcher;
-use Aphiria\Routing\RouteFactory;
 use FastRoute\RouteCollector;
 use Symfony\Component\Routing\Matcher\Dumper\PhpMatcherDumper;
 use Symfony\Component\Routing\RequestContext;
@@ -62,7 +61,7 @@ for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
 
 $dumper = new PhpMatcherDumper($routes);
 eval('?'.'>'.$dumper->dump());
-$router = new \ProjectUrlMatcher(new RequestContext());
+$router = new ProjectUrlMatcher(new RequestContext());
 $startTime = microtime(true);
 
 for ($testIter = 0;$testIter < $numTests;$testIter++) {
@@ -78,14 +77,14 @@ echo formatResults('Symfony', memory_get_usage() - $startMemory, microtime(true)
  */
 
 $startMemory = memory_get_usage();
-$routeCallback = function (RouteBuilderRegistry $routes) use ($numRoutes) {
-    for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
-        $routes->map('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
-            ->toMethod('Foo', $routeIter);
-    }
-};
-$routeFactory = new RouteFactory($routeCallback);
-$trieFactory = new TrieFactory($routeFactory, null);
+$routes = new RouteBuilderRegistry();
+
+for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
+    $routes->map('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
+        ->toMethod('Foo', $routeIter);
+}
+
+$trieFactory = new TrieFactory($routes, null);
 $routeMatcher = new TrieRouteMatcher($trieFactory->createTrie());
 $startTime = microtime(true);
 
