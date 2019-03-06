@@ -8,17 +8,17 @@
  * @license   https://github.com/aphiria/configuration/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Configuration\Console;
+namespace Aphiria\Configuration;
 
 /**
  * Defines the interface implemented by classes that build whole modules of code
  */
-interface IConsoleModuleBuilder
+interface IModuleBuilder
 {
     /**
      * Builds the entire module into an application
      *
-     * @param IConsoleApplicationBuilder $appBuilder The app builder to use
+     * @param IApplicationBuilder $appBuilder The app builder to use
      */
-    public function build(IConsoleApplicationBuilder $appBuilder): void;
+    public function build(IApplicationBuilder $appBuilder): void;
 }

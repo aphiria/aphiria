@@ -8,32 +8,36 @@
  * @license   https://github.com/aphiria/configuration/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Configuration\Tests\Console;
+namespace Aphiria\Configuration\Tests;
 
-use Aphiria\Configuration\Console\ConsoleApplicationBuilder;
-use Aphiria\Configuration\Console\IConsoleModuleBuilder;
+use Aphiria\Configuration\ApplicationBuilder;
+use Aphiria\Configuration\IModuleBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Opulence\Ioc\Bootstrappers\IBootstrapperRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Defines the console application builder tests
+ * Tests the application builder
  */
-class ConsoleApplicationBuilderTest extends TestCase
+class ApplicationBuilderTest extends TestCase
 {
-    /** @var CommandRegistry */
-    private $commands;
     /** @var IBootstrapperRegistry|MockObject */
     private $bootstrappers;
-    /** @var ConsoleApplicationBuilder */
+    /** @var RouteBuilderRegistry */
+    private $routeBuilders;
+    /** @var CommandRegistry */
+    private $commands;
+    /** @var ApplicationBuilder */
     private $appBuilder;
 
     protected function setUp(): void
     {
-        $this->commands = new CommandRegistry();
         $this->bootstrappers = $this->createMock(IBootstrapperRegistry::class);
-        $this->appBuilder = new ConsoleApplicationBuilder($this->commands, $this->bootstrappers);
+        $this->routeBuilders = new RouteBuilderRegistry();
+        $this->commands = new CommandRegistry();
+        $this->appBuilder = new ApplicationBuilder($this->bootstrappers, $this->routeBuilders, $this->commands);
     }
 
     public function testBootstrapperDelegatesAreInvokedWithRegistryOnBuild(): void
@@ -52,6 +56,17 @@ class ConsoleApplicationBuilderTest extends TestCase
         $isInvoked = false;
         $this->appBuilder->withCommands(function (CommandRegistry $commands) use (&$isInvoked) {
             $this->assertSame($this->commands, $commands);
+            $isInvoked = true;
+        });
+        $this->appBuilder->build();
+        $this->assertTrue($isInvoked);
+    }
+
+    public function testRouteDelegatesAreInvokedWithRegistryOnBuild(): void
+    {
+        $isInvoked = false;
+        $this->appBuilder->withRoutes(function (RouteBuilderRegistry $routes) use (&$isInvoked) {
+            $this->assertSame($this->routeBuilders, $routes);
             $isInvoked = true;
         });
         $this->appBuilder->build();
@@ -80,11 +95,21 @@ class ConsoleApplicationBuilderTest extends TestCase
 
     public function testWithModuleBuildsTheModule(): void
     {
-        /** @var IConsoleModuleBuilder|MockObject $module */
-        $module = $this->createMock(IConsoleModuleBuilder::class);
+        /** @var IModuleBuilder|MockObject $module */
+        $module = $this->createMock(IModuleBuilder::class);
         $module->expects($this->once())
             ->method('build')
             ->with($this->appBuilder);
         $this->appBuilder->withModule($module);
+    }
+
+    public function testWithRoutesReturnsSelf(): void
+    {
+        $this->assertSame(
+            $this->appBuilder,
+            $this->appBuilder->withRoutes(function (RouteBuilderRegistry $routes) {
+                // Don't do anything
+            })
+        );
     }
 }
