@@ -8,9 +8,10 @@
  * @license   https://github.com/aphiria/configuration/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Configuration\Tests;
+namespace Aphiria\Configuration\Tests\Console;
 
-use Aphiria\Configuration\ConsoleApplicationBuilder;
+use Aphiria\Configuration\Console\ConsoleApplicationBuilder;
+use Aphiria\Configuration\Console\IConsoleModuleBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
 use Opulence\Ioc\Bootstrappers\IBootstrapperRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -75,5 +76,15 @@ class ConsoleApplicationBuilderTest extends TestCase
                 // Don't do anything
             })
         );
+    }
+
+    public function testWithModuleBuildsTheModule(): void
+    {
+        /** @var IConsoleModuleBuilder|MockObject $module */
+        $module = $this->createMock(IConsoleModuleBuilder::class);
+        $module->expects($this->once())
+            ->method('build')
+            ->with($this->appBuilder);
+        $this->appBuilder->withModule($module);
     }
 }

@@ -8,8 +8,9 @@
  * @license   https://github.com/aphiria/configuration/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Configuration;
+namespace Aphiria\Configuration\Http;
 
+use Aphiria\Configuration\IApplicationBuilder;
 use Closure;
 
 /**
@@ -21,6 +22,14 @@ interface IHttpApplicationBuilder extends IApplicationBuilder
      * Builds the application
      */
     public function build(): void;
+
+    /**
+     * Adds an entire module to the application
+     *
+     * @param IHttpModuleBuilder $moduleBuilder The module builder to include
+     * @return IHttpApplicationBuilder For chaining
+     */
+    public function withModule(IHttpModuleBuilder $moduleBuilder): self;
 
     /**
      * Adds routes to the application

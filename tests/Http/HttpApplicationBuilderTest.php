@@ -8,9 +8,10 @@
  * @license   https://github.com/aphiria/configuration/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Configuration\Tests;
+namespace Aphiria\Configuration\Tests\Http;
 
-use Aphiria\Configuration\HttpApplicationBuilder;
+use Aphiria\Configuration\Http\HttpApplicationBuilder;
+use Aphiria\Configuration\Http\IHttpModuleBuilder;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Opulence\Ioc\Bootstrappers\IBootstrapperRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -65,6 +66,16 @@ class HttpApplicationBuilderTest extends TestCase
                 // Don't do anything
             })
         );
+    }
+
+    public function testWithModuleBuildsTheModule(): void
+    {
+        /** @var IHttpModuleBuilder|MockObject $module */
+        $module = $this->createMock(IHttpModuleBuilder::class);
+        $module->expects($this->once())
+            ->method('build')
+            ->with($this->appBuilder);
+        $this->appBuilder->withModule($module);
     }
 
     public function testWithRoutesReturnsSelf(): void

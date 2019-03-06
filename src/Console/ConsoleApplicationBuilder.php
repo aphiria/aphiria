@@ -8,8 +8,9 @@
  * @license   https://github.com/aphiria/configuration/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Configuration;
+namespace Aphiria\Configuration\Console;
 
+use Aphiria\Configuration\ApplicationBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
 use Closure;
 use Opulence\Ioc\Bootstrappers\IBootstrapperRegistry;
@@ -53,6 +54,16 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder implements ICon
     public function withCommands(Closure $delegate): IConsoleApplicationBuilder
     {
         $this->delegates[] = $delegate;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function withModule(IConsoleModuleBuilder $moduleBuilder): IConsoleApplicationBuilder
+    {
+        $moduleBuilder->build($this);
 
         return $this;
     }

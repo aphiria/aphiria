@@ -8,8 +8,9 @@
  * @license   https://github.com/aphiria/configuration/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Configuration;
+namespace Aphiria\Configuration\Console;
 
+use Aphiria\Configuration\IApplicationBuilder;
 use Closure;
 
 /**
@@ -29,4 +30,12 @@ interface IConsoleApplicationBuilder extends IApplicationBuilder
      * @return IConsoleApplicationBuilder For chaining
      */
     public function withCommands(Closure $delegate): self;
+
+    /**
+     * Adds an entire module to the application
+     *
+     * @param IConsoleModuleBuilder $moduleBuilder The module builder to include
+     * @return IConsoleApplicationBuilder For chaining
+     */
+    public function withModule(IConsoleModuleBuilder $moduleBuilder): self;
 }

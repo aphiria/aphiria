@@ -8,8 +8,9 @@
  * @license   https://github.com/aphiria/configuration/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Configuration;
+namespace Aphiria\Configuration\Http;
 
+use Aphiria\Configuration\ApplicationBuilder;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Closure;
 use Opulence\Ioc\Bootstrappers\IBootstrapperRegistry;
@@ -42,6 +43,16 @@ final class HttpApplicationBuilder extends ApplicationBuilder implements IHttpAp
         foreach ($this->routeDelegates as $routeDelegate) {
             $routeDelegate($this->routeBuilders);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function withModule(IHttpModuleBuilder $moduleBuilder): IHttpApplicationBuilder
+    {
+        $moduleBuilder->build($this);
+
+        return $this;
     }
 
     /**
