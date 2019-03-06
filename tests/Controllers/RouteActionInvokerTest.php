@@ -117,6 +117,7 @@ class RouteActionInvokerTest extends TestCase
     public function testInvokingMethodThatThrowsExceptionThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Testing controller method that throws exception');
         $this->invoker->invokeRouteAction(
             [$this->controller, 'throwsException'],
             $this->createRequestWithoutBody('http://foo.com'),

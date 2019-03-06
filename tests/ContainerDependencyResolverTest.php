@@ -45,6 +45,7 @@ class ContainerDependencyResolverTest extends TestCase
     public function testIocExceptionsAreConverted(): void
     {
         $this->expectException(DependencyResolutionException::class);
+        $this->expectExceptionMessage('Could not resolve dependencies for foo');
         $this->container->expects($this->once())
             ->method('resolve')
             ->with('foo')

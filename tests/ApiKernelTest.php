@@ -17,6 +17,7 @@ use Aphiria\Api\IDependencyResolver;
 use Aphiria\Api\Tests\Controllers\Mocks\Controller as ControllerMock;
 use Aphiria\Api\Tests\Mocks\AttributeMiddleware;
 use Aphiria\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;
+use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\HttpException;
@@ -106,6 +107,7 @@ class ApiKernelTest extends TestCase
     public function testInvalidMiddlewareThrowsExceptionThatIsCaught(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Middleware %s does not implement %s', ApiKernelTest::class, IMiddleware::class));
         $middleware = $this;
         $middlewareBinding = new MiddlewareBinding(__CLASS__);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
@@ -255,6 +257,7 @@ class ApiKernelTest extends TestCase
     public function testRouteActionWithNonExistentControllerMethodThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Controller method %s::doesNotExist() does not exist', ControllerMock::class));
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $controller = new ControllerMock();
         $this->dependencyResolver->expects($this->once())
@@ -313,6 +316,7 @@ class ApiKernelTest extends TestCase
     public function testRouteActionWithInvalidControllerInstanceThrowsExceptionThatIsCaught(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Controller %s does not extend %s', ApiKernelTest::class, Controller::class));
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         // Purposely bind a non-controller class's method to the route action
         $matchingResult = new RouteMatchingResult(

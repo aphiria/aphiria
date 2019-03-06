@@ -98,6 +98,7 @@ class ControllerParameterResolverTest extends TestCase
     public function testResolvingObjectParameterAndNoRequestBodyThrowsException(): void
     {
         $this->expectException(MissingControllerParameterValueException::class);
+        $this->expectExceptionMessage('Body is null when resolving parameter user');
         $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'objectParameter'], 'user'),
             $this->createRequestWithoutBody('http://foo.com'),
@@ -131,6 +132,7 @@ class ControllerParameterResolverTest extends TestCase
     public function testResolvingScalarParameterAndNoMatchingVariableThrowsException(): void
     {
         $this->expectException(MissingControllerParameterValueException::class);
+        $this->expectExceptionMessage('No valid value for parameter foo');
         $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'stringParameter'], 'foo'),
             $this->createRequestWithoutBody('http://foo.com'),
