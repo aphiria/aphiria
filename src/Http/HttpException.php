@@ -1,17 +1,20 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
 use Exception;
 use InvalidArgumentException;
+use function is_int;
 
 /**
  * Defines an exception that is thrown by an HTTP component
@@ -34,7 +37,7 @@ class HttpException extends Exception
     ) {
         parent::__construct($message, $code, $previous);
 
-        if (\is_int($statusCodeOrResponse)) {
+        if (is_int($statusCodeOrResponse)) {
             $this->response = new Response($statusCodeOrResponse);
         } elseif ($statusCodeOrResponse instanceof IHttpResponseMessage) {
             $this->response = $statusCodeOrResponse;

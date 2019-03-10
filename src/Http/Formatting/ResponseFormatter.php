@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
@@ -15,6 +17,7 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
+use function is_string;
 use RuntimeException;
 
 /**
@@ -97,7 +100,7 @@ class ResponseFormatter
      */
     public function redirectToUri(IHttpResponseMessage $response, $uri, int $statusCode = 302): void
     {
-        if (\is_string($uri)) {
+        if (is_string($uri)) {
             $uriString = $uri;
         } elseif ($uri instanceof Uri) {
             $uriString = (string)$uri;

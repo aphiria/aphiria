@@ -1,14 +1,19 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
+
+use function in_array;
+use function strtolower;
 
 /**
  * Defines the base class for media type formatters to implement
@@ -40,8 +45,8 @@ abstract class MediaTypeFormatter implements IMediaTypeFormatter
     protected function encodingIsSupported(string $encoding): bool
     {
         $lowercaseSupportedEncodings = array_map('strtolower', $this->getSupportedEncodings());
-        $lowercaseEncoding = \strtolower($encoding);
+        $lowercaseEncoding = strtolower($encoding);
 
-        return \in_array($lowercaseEncoding, $lowercaseSupportedEncodings, true);
+        return in_array($lowercaseEncoding, $lowercaseSupportedEncodings, true);
     }
 }

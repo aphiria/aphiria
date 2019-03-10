@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
@@ -14,6 +16,8 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\IHttpRequestMessage;
+use function array_unique;
+use function count;
 use InvalidArgumentException;
 
 /**
@@ -53,7 +57,7 @@ final class ContentNegotiator implements IContentNegotiator
         LanguageMatcher $languageMatcher = null,
         RequestHeaderParser $headerParser = null
     ) {
-        if (\count($mediaTypeFormatters) === 0) {
+        if (count($mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
         }
 
@@ -81,7 +85,7 @@ final class ContentNegotiator implements IContentNegotiator
             }
         }
 
-        return \array_unique($acceptableMediaTypes);
+        return array_unique($acceptableMediaTypes);
     }
 
     /**

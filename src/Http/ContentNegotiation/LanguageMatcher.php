@@ -1,17 +1,20 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
 use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
 use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
+use function count;
 
 /**
  * Defines the language matcher
@@ -45,7 +48,7 @@ final class LanguageMatcher
                 }
 
                 array_pop($languageParts);
-            } while (\count($languageParts) > 0);
+            } while (count($languageParts) > 0);
         }
 
         return null;

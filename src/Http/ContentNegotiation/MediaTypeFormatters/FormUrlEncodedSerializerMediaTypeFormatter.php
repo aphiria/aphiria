@@ -1,17 +1,20 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
 use Aphiria\Serialization\FormUrlEncodedSerializer;
 use Aphiria\Serialization\TypeResolver;
+use function class_exists;
 
 /**
  * Defines the form URL-encoded media type formatter
@@ -36,7 +39,7 @@ final class FormUrlEncodedSerializerMediaTypeFormatter extends SerializerMediaTy
      */
     public function canReadType(string $type): bool
     {
-        return TypeResolver::typeIsArray($type) || \class_exists($type);
+        return TypeResolver::typeIsArray($type) || class_exists($type);
     }
 
     /**
@@ -44,7 +47,7 @@ final class FormUrlEncodedSerializerMediaTypeFormatter extends SerializerMediaTy
      */
     public function canWriteType(string $type): bool
     {
-        return TypeResolver::typeIsArray($type) || \class_exists($type);
+        return TypeResolver::typeIsArray($type) || class_exists($type);
     }
 
     /**

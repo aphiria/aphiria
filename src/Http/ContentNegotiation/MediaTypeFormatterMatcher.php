@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
@@ -15,6 +17,7 @@ use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
 use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
+use function count;
 
 /**
  * Defines the media type formatter matcher
@@ -79,7 +82,7 @@ final class MediaTypeFormatterMatcher
         string $ioType
     ): ?MediaTypeFormatterMatch {
         // Rank the media type headers if they are rankable
-        if (\count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof IHeaderValueWithQualityScore) {
+        if (count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof IHeaderValueWithQualityScore) {
             $mediaTypeHeaders = $this->rankAcceptMediaTypeHeaders($mediaTypeHeaders);
         }
 

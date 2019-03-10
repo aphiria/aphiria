@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
@@ -98,7 +100,7 @@ class ResponseHeaderFormatterTest extends TestCase
     {
         $this->formatter->deleteCookie($this->headers, 'foo');
         $this->formatter->deleteCookie($this->headers, 'bar');
-        $expectedExpiration = DateTime::createFromFormat('U', 0)->format('D, d M Y H:i:s \G\M\T');
+        $expectedExpiration = DateTime::createFromFormat('U', '0')->format('D, d M Y H:i:s \G\M\T');
         $expectedHeaders = [
             "foo=; Expires=$expectedExpiration; Max-Age=0; HttpOnly",
             "bar=; Expires=$expectedExpiration; Max-Age=0; HttpOnly"
@@ -109,7 +111,7 @@ class ResponseHeaderFormatterTest extends TestCase
     public function testDeletingCookieSetsExpirationAndMaxAgeToEpochAndZero(): void
     {
         $this->formatter->deleteCookie($this->headers, 'foo', null, null, false, false);
-        $expectedExpiration = DateTime::createFromFormat('U', 0)->format('D, d M Y H:i:s \G\M\T');
+        $expectedExpiration = DateTime::createFromFormat('U', '0')->format('D, d M Y H:i:s \G\M\T');
         $this->assertEquals("foo=; Expires=$expectedExpiration; Max-Age=0", $this->headers->getFirst('Set-Cookie'));
     }
 

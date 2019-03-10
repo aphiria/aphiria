@@ -1,15 +1,19 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Net\Http;
 
+use function header;
+use function headers_sent;
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
 
@@ -34,7 +38,7 @@ final class StreamResponseWriter implements IResponseWriter
      */
     public function headersAreSent(): bool
     {
-        return \headers_sent();
+        return headers_sent();
     }
 
     /**
@@ -52,10 +56,10 @@ final class StreamResponseWriter implements IResponseWriter
             $startLine .= " $reasonPhrase";
         }
 
-        \header($startLine);
+        header($startLine);
 
         foreach ($response->getHeaders() as $kvp) {
-            \header($kvp->getKey() . ': ' . implode(', ', $kvp->getValue()));
+            header($kvp->getKey() . ': ' . implode(', ', $kvp->getValue()));
         }
 
         if (($body = $response->getBody()) !== null) {

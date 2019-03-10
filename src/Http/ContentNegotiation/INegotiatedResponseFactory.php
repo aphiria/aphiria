@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Aphiria
+ *
+ * @link      https://www.aphiria.com
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
+ */
+
+declare(strict_types=1);
+
 /*
  * Aphiria
  *
@@ -27,7 +37,7 @@ interface INegotiatedResponseFactory
      * @param IHttpRequestMessage $request The current request
      * @param int $statusCode The status code to use
      * @param HttpHeaders|null $headers The headers to use
-     * @param \object|string|int|float|array|null $rawBody The raw body to use in the response
+     * @param object|string|int|float|array|null $rawBody The raw body to use in the response
      * @return IHttpResponseMessage The created response
      * @throws InvalidArgumentException Thrown if the body is not a supported type
      * @throws HttpException Thrown if the response content could not be negotiated

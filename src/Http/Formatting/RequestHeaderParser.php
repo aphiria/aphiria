@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
@@ -15,6 +17,7 @@ use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use Aphiria\Net\Http\HttpHeaders;
+use function count;
 use InvalidArgumentException;
 use Opulence\Collections\IImmutableDictionary;
 
@@ -39,7 +42,7 @@ class RequestHeaderParser extends HttpHeaderParser
         }
 
         $parsedHeaderValues = [];
-        $numHeaderValues = \count($headerValues);
+        $numHeaderValues = count($headerValues);
 
         for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept-Charset', $i);
@@ -67,7 +70,7 @@ class RequestHeaderParser extends HttpHeaderParser
         }
 
         $parsedHeaderValues = [];
-        $numHeaderValues = \count($headerValues);
+        $numHeaderValues = count($headerValues);
 
         for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept', $i);
@@ -95,7 +98,7 @@ class RequestHeaderParser extends HttpHeaderParser
         }
 
         $parsedHeaderValues = [];
-        $numHeaderValues = \count($headerValues);
+        $numHeaderValues = count($headerValues);
 
         for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept-Language', $i);

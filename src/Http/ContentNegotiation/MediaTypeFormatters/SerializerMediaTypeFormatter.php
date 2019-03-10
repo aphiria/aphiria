@@ -1,18 +1,21 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
 use Aphiria\Serialization\ISerializer;
 use Aphiria\Serialization\TypeResolver;
 use InvalidArgumentException;
+use function mb_convert_encoding;
 use Opulence\IO\Streams\IStream;
 
 /**
@@ -61,7 +64,7 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
         }
 
         $serializedObject = $this->serializer->serialize($value);
-        $encodedSerializedObject = \mb_convert_encoding($serializedObject, $encoding);
+        $encodedSerializedObject = mb_convert_encoding($serializedObject, $encoding);
         $stream->write($encodedSerializedObject);
     }
 }

@@ -1,15 +1,18 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Net\Http\Headers;
 
+use function count;
 use InvalidArgumentException;
 use Opulence\Collections\IImmutableDictionary;
 use Opulence\Collections\ImmutableHashTable;
@@ -41,7 +44,7 @@ class MediaTypeHeaderValue
         $this->parameters = $parameters ?? new ImmutableHashTable([]);
         $mediaTypeParts = explode('/', $mediaType);
 
-        if (\count($mediaTypeParts) !== 2 || empty($mediaTypeParts[0]) || empty($mediaTypeParts[1])) {
+        if (count($mediaTypeParts) !== 2 || empty($mediaTypeParts[0]) || empty($mediaTypeParts[1])) {
             throw new InvalidArgumentException("Media type must be in format {type}/{sub-type}, received $mediaType");
         }
 

@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
@@ -21,6 +23,8 @@ use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
 use Opulence\Collections\KeyValuePair;
 use RuntimeException;
+use function strlen;
+use function strpos;
 
 /**
  * Defines the HTTP body parser
@@ -140,10 +144,10 @@ class HttpBodyParser
         $parsedBodyParts = [];
 
         foreach ($rawBodyParts as $rawBodyPart) {
-            $headerStartIndex = \strlen("\r\n");
-            $headerEndIndex = \strpos($rawBodyPart, "\r\n\r\n");
-            $bodyStartIndex = $headerEndIndex + \strlen("\r\n\r\n");
-            $bodyEndIndex = \strlen($rawBodyPart) - \strlen("\r\n");
+            $headerStartIndex = strlen("\r\n");
+            $headerEndIndex = strpos($rawBodyPart, "\r\n\r\n");
+            $bodyStartIndex = $headerEndIndex + strlen("\r\n\r\n");
+            $bodyEndIndex = strlen($rawBodyPart) - strlen("\r\n");
             $rawHeaders = explode("\r\n", substr($rawBodyPart, $headerStartIndex, $headerEndIndex - $headerStartIndex));
             $parsedHeaders = new HttpHeaders();
 

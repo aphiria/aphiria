@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
@@ -21,7 +23,13 @@ use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Serialization\SerializationException;
 use Aphiria\Serialization\TypeResolver;
+use function gettype;
 use InvalidArgumentException;
+use function is_array;
+use function is_callable;
+use function is_object;
+use function is_scalar;
+use function json_encode;
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
 
@@ -87,7 +95,7 @@ final class NegotiatedResponseFactory implements INegotiatedResponseFactory
      * Creates a negotiated response body from a request
      *
      * @param IHttpRequestMessage $request The current request
-     * @param \object|string|int|float|array|null $rawBody The raw body to use in the response
+     * @param object|string|int|float|array|null $rawBody The raw body to use in the response
      * @param ContentNegotiationResult|null $contentNegotiationResult The response content negotiation result
      * @return IHttpBody|null The body if one was created, otherwise null
      * @throws InvalidArgumentException Thrown if the body is not a supported type
@@ -106,12 +114,12 @@ final class NegotiatedResponseFactory implements INegotiatedResponseFactory
             return new StreamBody($rawBody);
         }
 
-        if (\is_scalar($rawBody)) {
+        if (is_scalar($rawBody)) {
             return new StringBody((string)$rawBody);
         }
 
-        if ((!\is_object($rawBody) && !\is_array($rawBody)) || \is_callable($rawBody)) {
-            throw new InvalidArgumentException('Unsupported body type ' . \gettype($rawBody));
+        if ((!is_object($rawBody) && !is_array($rawBody)) || is_callable($rawBody)) {
+            throw new InvalidArgumentException('Unsupported body type ' . gettype($rawBody));
         }
 
         $type = TypeResolver::resolveType($rawBody);
@@ -152,7 +160,7 @@ final class NegotiatedResponseFactory implements INegotiatedResponseFactory
     {
         $headers = new HttpHeaders();
         $headers->add('Content-Type', 'application/json');
-        $body = new StringBody(\json_encode($this->contentNegotiator->getAcceptableResponseMediaTypes($type)));
+        $body = new StringBody(json_encode($this->contentNegotiator->getAcceptableResponseMediaTypes($type)));
         $response = new Response(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, $headers, $body);
 
         return new HttpException($response);

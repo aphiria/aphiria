@@ -1,17 +1,20 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
 use DateTime;
 use InvalidArgumentException;
+use function is_int;
 
 /**
  * Defines an HTTP cookie
@@ -68,8 +71,8 @@ final class Cookie
         if ($expiration === null) {
             $this->expiration = null;
             $this->maxAge = null;
-        } elseif (\is_int($expiration)) {
-            $this->expiration = DateTime::createFromFormat('U', $expiration);
+        } elseif (is_int($expiration)) {
+            $this->expiration = DateTime::createFromFormat('U', (string)$expiration);
             $this->maxAge = $expiration;
         } elseif ($expiration instanceof DateTime) {
             $this->expiration = $expiration;

@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
@@ -45,7 +47,7 @@ class ResponseHeaderFormatter extends HttpHeaderParser
         ?string $sameSite = null
     ): void {
         $headerValue = "$name=";
-        $expiration = DateTime::createFromFormat('U', 0);
+        $expiration = DateTime::createFromFormat('U', '0');
         $headerValue .= "; Expires={$expiration->format(self::EXPIRATION_DATE_FORMAT)}";
         $headerValue .= '; Max-Age=0';
 

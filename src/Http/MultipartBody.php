@@ -1,20 +1,29 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Net\Http;
 
+use function bin2hex;
+use function chr;
+use function count;
 use Exception;
 use InvalidArgumentException;
 use Opulence\IO\Streams\MultiStream;
 use Opulence\IO\Streams\Stream;
+use function ord;
+use function random_bytes;
 use RuntimeException;
+use function str_split;
+use function vsprintf;
 
 /**
  * Defines a multipart HTTP body
@@ -40,14 +49,14 @@ class MultipartBody extends StreamBody
 
         // Create the header boundary
         $stream->addStream($this->createStreamFromString("--{$this->boundary}"));
-        $numParts = \count($this->parts);
+        $numParts = count($this->parts);
 
         for ($i = 0;$i < $numParts;$i++) {
             if ($i > 0) {
                 $stream->addStream($this->createStreamFromString("\r\n--{$this->boundary}"));
             }
 
-            if (\count($this->parts[$i]->getHeaders()) > 0) {
+            if (count($this->parts[$i]->getHeaders()) > 0) {
                 $stream->addStream($this->createStreamFromString("\r\n{$this->parts[$i]->getHeaders()}"));
             }
 
@@ -94,11 +103,11 @@ class MultipartBody extends StreamBody
     {
         try {
             // The following creates a UUID v4
-            $string = \random_bytes(16);
-            $string[6] = \chr(\ord($string[6]) & 0x0f | 0x40);
-            $string[8] = \chr(\ord($string[8]) & 0x3f | 0x80);
+            $string = random_bytes(16);
+            $string[6] = chr(ord($string[6]) & 0x0f | 0x40);
+            $string[8] = chr(ord($string[8]) & 0x3f | 0x80);
 
-            return \vsprintf('%s%s-%s-%s-%s-%s%s%s', \str_split(\bin2hex($string), 4));
+            return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($string), 4));
         } catch (Exception $ex) {
             throw new RuntimeException('Failed to generate random bytes', 0, $ex);
         }

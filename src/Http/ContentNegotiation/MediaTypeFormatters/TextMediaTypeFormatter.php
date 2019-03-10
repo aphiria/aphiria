@@ -1,17 +1,21 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
 use Aphiria\Serialization\TypeResolver;
 use InvalidArgumentException;
+use function is_string;
+use function mb_convert_encoding;
 use Opulence\IO\Streams\IStream;
 
 /**
@@ -57,7 +61,7 @@ abstract class TextMediaTypeFormatter extends MediaTypeFormatter
             throw new InvalidArgumentException(static::class . ' can only write strings');
         }
 
-        if (!\is_string($value)) {
+        if (!is_string($value)) {
             throw new InvalidArgumentException(static::class . ' can only write strings');
         }
 
@@ -67,7 +71,7 @@ abstract class TextMediaTypeFormatter extends MediaTypeFormatter
             throw new InvalidArgumentException("$encoding is not supported for " . static::class);
         }
 
-        $encodedValue = \mb_convert_encoding($value, $encoding);
+        $encodedValue = mb_convert_encoding($value, $encoding);
         $stream->write($encodedValue);
     }
 }

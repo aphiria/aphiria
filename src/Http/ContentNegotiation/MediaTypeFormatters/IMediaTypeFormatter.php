@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
@@ -68,7 +70,7 @@ interface IMediaTypeFormatter
      *
      * @param IStream $stream The stream to read from
      * @param string $type The type to convert to (best to use TypeResolver::resolveType())
-     * @return int|double|float|bool|string|\object|array The converted content
+     * @return int|double|float|bool|string|object|array The converted content
      * @throws SerializationException Thrown if the content could not be read and converted to the input type
      */
     public function readFromStream(IStream $stream, string $type);
@@ -76,7 +78,7 @@ interface IMediaTypeFormatter
     /**
      * Writes the input object to the input stream
      *
-     * @param int|double|float|bool|string|\object|array $value The value to write
+     * @param int|double|float|bool|string|object|array $value The value to write
      * @param IStream $stream The stream to write to
      * @param string|null $encoding The character encoding to use, or null if using the default one
      * @throws SerializationException Thrown if the content could not be converted to the input type and written

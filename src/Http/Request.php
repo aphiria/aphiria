@@ -1,16 +1,19 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/net/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
 use Aphiria\Net\Uri;
+use function count;
 use InvalidArgumentException;
 use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
@@ -109,7 +112,7 @@ class Request implements IHttpRequestMessage
         $startLine = "{$this->method} {$this->getRequestTarget()} HTTP/{$this->protocolVersion}";
         $headers = '';
 
-        if (\count($this->headers) > 0) {
+        if (count($this->headers) > 0) {
             $headers .= "\r\n{$this->headers}";
         }
 
