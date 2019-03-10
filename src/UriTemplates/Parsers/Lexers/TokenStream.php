@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
@@ -8,8 +8,11 @@
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Routing\UriTemplates\Parsers\Lexers;
 
+use function count;
 use InvalidArgumentException;
 
 /**
@@ -30,7 +33,7 @@ final class TokenStream
     public function __construct(array $tokens)
     {
         $this->tokens = $tokens;
-        $this->length = \count($tokens);
+        $this->length = count($tokens);
     }
 
     /**
@@ -86,7 +89,7 @@ final class TokenStream
      */
     public function getCurrent(): ?Token
     {
-        return \count($this->tokens) > $this->cursor ? $this->tokens[$this->cursor] : null;
+        return count($this->tokens) > $this->cursor ? $this->tokens[$this->cursor] : null;
     }
 
     /**
@@ -96,7 +99,7 @@ final class TokenStream
      */
     public function next(): ?Token
     {
-        return \count($this->tokens) > ++$this->cursor ? $this->tokens[$this->cursor] : null;
+        return count($this->tokens) > ++$this->cursor ? $this->tokens[$this->cursor] : null;
     }
 
     /**
@@ -128,7 +131,7 @@ final class TokenStream
      */
     public function peek(int $lookahead = 1): ?Token
     {
-        if ($this->cursor + $lookahead >= \count($this->tokens)) {
+        if ($this->cursor + $lookahead >= count($this->tokens)) {
             return null;
         }
 

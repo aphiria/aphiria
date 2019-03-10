@@ -1,6 +1,16 @@
 <?php
 
 /**
+ * Aphiria
+ *
+ * @link      https://www.aphiria.com
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
+ */
+
+declare(strict_types=1);
+
+/**
  * This benchmark is testing how fast a realistic route may take to match.
  * Specifically, we're adding 400 routes with the structure "/abc123/123/:foo/123".
  * We're testing a mix of literal and variable path segments, and averaging

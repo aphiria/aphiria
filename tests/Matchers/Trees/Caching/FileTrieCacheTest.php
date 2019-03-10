@@ -5,6 +5,16 @@
  *
  * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
+ */
+
+declare(strict_types=1);
+
+/**
+ * Aphiria
+ *
+ * @link      https://www.aphiria.com
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/Aphiria/blob/master/LICENSE.md
  */
 

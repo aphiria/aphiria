@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\Matchers\Trees;
 
@@ -17,6 +19,7 @@ use Aphiria\Routing\Route;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Tests the literal trie node
@@ -49,7 +52,7 @@ class LiteralTrieNodeTest extends TestCase
      * Creates a mock node for use in tests
      *
      * @return MockObject|TrieNode The mock node
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function createMockNode(): MockObject
     {

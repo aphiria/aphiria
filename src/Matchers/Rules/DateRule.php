@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
@@ -8,8 +8,11 @@
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Routing\Matchers\Rules;
 
+use function count;
 use DateTime;
 use InvalidArgumentException;
 
@@ -28,7 +31,7 @@ final class DateRule
     {
         $formatArray = (array)$formats;
 
-        if (\count($formatArray) === 0) {
+        if (count($formatArray) === 0) {
             throw new InvalidArgumentException('No formats specified for ' . static::class);
         }
 

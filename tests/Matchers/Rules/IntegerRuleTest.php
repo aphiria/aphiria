@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\Matchers\Rules;
 
@@ -18,12 +20,12 @@ use PHPUnit\Framework\TestCase;
  */
 class IntegerRuleTest extends TestCase
 {
-    public function testCorrectSlugIsReturned() : void
+    public function testCorrectSlugIsReturned(): void
     {
         $this->assertEquals('int', IntegerRule::getSlug());
     }
 
-    public function testFailingValue() : void
+    public function testFailingValue(): void
     {
         $rule = new IntegerRule();
         $this->assertFalse($rule->passes(false));
@@ -32,7 +34,7 @@ class IntegerRuleTest extends TestCase
         $this->assertFalse($rule->passes('1.5'));
     }
 
-    public function testPassingValue() : void
+    public function testPassingValue(): void
     {
         $rule = new IntegerRule();
         $this->assertTrue($rule->passes(0));

@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Routing\UriTemplates\Parsers\Lexers;
 
@@ -25,5 +27,5 @@ interface IUriTemplateLexer
      * @return TokenStream The stream of lexed tokens
      * @throws InvalidArgumentException Thrown if the template was incorrectly formatted
      */
-    public function lex(string $uriTemplate) : TokenStream;
+    public function lex(string $uriTemplate): TokenStream;
 }

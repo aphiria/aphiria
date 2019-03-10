@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
@@ -8,9 +8,12 @@
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Routing\UriTemplates\Parsers\Lexers;
 
 use InvalidArgumentException;
+use function mb_strlen;
 
 /**
  * Defines the lexer for URI templates
@@ -34,7 +37,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
     public function lex(string $uriTemplate): TokenStream
     {
         $cursor = 0;
-        $templateLength = \mb_strlen($uriTemplate);
+        $templateLength = mb_strlen($uriTemplate);
         $tokens = [];
         $textBuffer = '';
 
@@ -99,7 +102,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
             $tokens[] = new Token(TokenTypes::T_NUMBER, $intVal);
         }
 
-        $cursor += \mb_strlen($number);
+        $cursor += mb_strlen($number);
     }
 
     /**
@@ -125,7 +128,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
     private static function lexQuotedString(string $quotedString, array &$tokens, int &$cursor): void
     {
         $tokens[] = new Token(TokenTypes::T_QUOTED_STRING, stripcslashes(substr(trim($quotedString), 1, -1)));
-        $cursor += \mb_strlen($quotedString);
+        $cursor += mb_strlen($quotedString);
     }
 
     /**
@@ -153,12 +156,12 @@ final class UriTemplateLexer implements IUriTemplateLexer
         // Remove the colon before the variable name
         $trimmedVariableName = substr($variableName, 1);
 
-        if (\mb_strlen($trimmedVariableName) > self::VARIABLE_NAME_MAX_LENGTH) {
+        if (mb_strlen($trimmedVariableName) > self::VARIABLE_NAME_MAX_LENGTH) {
             throw new InvalidArgumentException("Variable name \"$trimmedVariableName\" exceeds the max length limit");
         }
 
         $tokens[] = new Token(TokenTypes::T_VARIABLE, $trimmedVariableName);
         // We have to advance the cursor the length of the untrimmed variable name
-        $cursor += \mb_strlen($variableName);
+        $cursor += mb_strlen($variableName);
     }
 }

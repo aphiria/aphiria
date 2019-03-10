@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
@@ -8,10 +8,13 @@
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Routing\UriTemplates\Parsers;
 
 use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenStream;
 use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenTypes;
+use function count;
 use InvalidArgumentException;
 
 /**
@@ -126,7 +129,7 @@ final class UriTemplateParser implements IUriTemplateParser
                      */
                     $isValid = false;
 
-                    for ($i = \count($currNode->children) - 1;$i >= 0;$i--) {
+                    for ($i = count($currNode->children) - 1;$i >= 0;$i--) {
                         $childNode = $currNode->children[$i];
 
                         if ($childNode->type !== AstNodeTypes::OPTIONAL_ROUTE_PART) {

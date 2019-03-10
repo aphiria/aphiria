@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
@@ -8,7 +8,11 @@
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Routing\Matchers\Rules;
+
+use function in_array;
 
 /**
  * Defines the in-array rule
@@ -39,6 +43,6 @@ final class InRule implements IRule
      */
     public function passes($value): bool
     {
-        return \in_array($value, $this->acceptableValues, true);
+        return in_array($value, $this->acceptableValues, true);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
@@ -8,7 +8,11 @@
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Routing\UriTemplates\Parsers;
+
+use function count;
 
 /**
  * Defines an abstract syntax tree node
@@ -55,7 +59,7 @@ final class AstNode
      */
     public function hasChildren(): bool
     {
-        return \count($this->children) > 0;
+        return count($this->children) > 0;
     }
 
     /**

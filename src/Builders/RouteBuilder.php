@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Routing\Builders;
 
@@ -20,6 +22,7 @@ use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use Closure;
 use InvalidArgumentException;
+use function is_string;
 use LogicException;
 
 /**
@@ -165,7 +168,7 @@ class RouteBuilder
     public function withManyMiddleware(array $middlewareBindings): self
     {
         foreach ($middlewareBindings as $middlewareBinding) {
-            if (\is_string($middlewareBinding)) {
+            if (is_string($middlewareBinding)) {
                 $this->middlewareBindings[] = new MiddlewareBinding($middlewareBinding);
             } elseif ($middlewareBinding instanceof MiddlewareBinding) {
                 $this->middlewareBindings[] = $middlewareBinding;

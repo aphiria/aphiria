@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
@@ -8,10 +8,14 @@
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Routing\Matchers\Trees;
 
 use Aphiria\Routing\Route;
+use function count;
 use InvalidArgumentException;
+use function is_array;
 
 /**
  * Defines a trie node that contains a variable value
@@ -36,14 +40,14 @@ final class VariableTrieNode extends TrieNode
     {
         parent::__construct($children, $routes, $hostTrie);
 
-        $this->parts = \is_array($parts) ? $parts : [$parts];
+        $this->parts = is_array($parts) ? $parts : [$parts];
 
-        if (\count($this->parts) === 0) {
+        if (count($this->parts) === 0) {
             throw new InvalidArgumentException('Must have at least one variable part');
         }
 
         // If this segment is composed of only a single variable (which is the norm in REST APIs), optimize for it
-        if (\count($this->parts) === 1 && $this->parts[0] instanceof RouteVariable) {
+        if (count($this->parts) === 1 && $this->parts[0] instanceof RouteVariable) {
             $this->onlyContainsVariable = true;
         } else {
             // This must contain at least two  parts (variable or literal parts)

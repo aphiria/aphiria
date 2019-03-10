@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
@@ -8,12 +8,19 @@
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Routing\Matchers\Trees;
 
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\Matchers\IRouteMatcher;
 use Aphiria\Routing\Matchers\MatchedRouteCandidate;
 use Aphiria\Routing\Matchers\RouteMatchingResult;
+use function array_reverse;
+use function count;
+use function explode;
+use function strtolower;
+use function trim;
 
 /**
  * Defines the route matcher that uses a trie structure for matching
@@ -36,8 +43,8 @@ final class TrieRouteMatcher implements IRouteMatcher
      */
     public function matchRoute(string $httpMethod, string $host, string $path, array $headers = []): RouteMatchingResult
     {
-        $hostSegments = $host === [] ? '' : \array_reverse(\explode('.', $host));
-        $pathSegments = \explode('/', \trim($path, '/'));
+        $hostSegments = $host === [] ? '' : array_reverse(explode('.', $host));
+        $pathSegments = explode('/', trim($path, '/'));
         $routeVars = [];
         $allowedMethods = [];
 
@@ -81,7 +88,7 @@ final class TrieRouteMatcher implements IRouteMatcher
         array &$routeVars
     ): iterable {
         // Base case.  We iterate to 1 past the past segments there are n + 1 levels of nodes due to the root node.
-        if ($segmentIter === \count($segments)) {
+        if ($segmentIter === count($segments)) {
             if ($node->hostTrie === null) {
                 foreach ($node->routes as $route) {
                     yield new MatchedRouteCandidate($route, $routeVars);
@@ -98,7 +105,7 @@ final class TrieRouteMatcher implements IRouteMatcher
         $segment = $segments[$segmentIter];
 
         // Check for a literal segment match, and recursively check its descendants
-        if (($childNode = ($node->literalChildrenByValue[\strtolower($segment)] ?? null)) !== null) {
+        if (($childNode = ($node->literalChildrenByValue[strtolower($segment)] ?? null)) !== null) {
             $routeVarsCopy = $routeVars;
             yield from self::getMatchCandidates($childNode, $segments, $segmentIter + 1, $hostSegments, $routeVarsCopy);
         }

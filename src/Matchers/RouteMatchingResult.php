@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
@@ -8,9 +8,12 @@
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Routing\Matchers;
 
 use Aphiria\Routing\Route;
+use function count;
 
 /**
  * Defines the result of an attempt to match a route
@@ -46,7 +49,7 @@ final class RouteMatchingResult
 
         if ($this->matchFound) {
             $this->methodIsAllowed = true;
-        } elseif (\count($this->allowedMethods) === 0) {
+        } elseif (count($this->allowedMethods) === 0) {
             $this->methodIsAllowed = null;
         } else {
             $this->methodIsAllowed = false;

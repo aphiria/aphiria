@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
@@ -8,10 +8,15 @@
  * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Routing\Matchers\Trees;
 
 use Aphiria\Routing\Route;
+use function get_class;
 use InvalidArgumentException;
+use function is_array;
+use function strtolower;
 
 /**
  * Defines the base class for trie nodes to extend
@@ -35,7 +40,7 @@ abstract class TrieNode
      */
     protected function __construct(array $children, $routes, ?TrieNode $hostTrie)
     {
-        if (\is_array($routes)) {
+        if (is_array($routes)) {
             $this->routes = $routes;
         } elseif ($routes instanceof Route) {
             $this->routes = [$routes];
@@ -64,7 +69,7 @@ abstract class TrieNode
         } elseif ($childNode instanceof VariableTrieNode) {
             $this->addVariableChildNode($childNode);
         } else {
-            throw new InvalidArgumentException('Unexpected trie node type ' . \get_class($childNode));
+            throw new InvalidArgumentException('Unexpected trie node type ' . get_class($childNode));
         }
 
         return $this;
@@ -98,7 +103,7 @@ abstract class TrieNode
     private function addLiteralChildNode(LiteralTrieNode $childNode): void
     {
         // Stringify the value in case it's a number and we don't want PHP getting confused
-        $valueAsString = \strtolower((string)$childNode->value);
+        $valueAsString = strtolower((string)$childNode->value);
 
         if (isset($this->literalChildrenByValue[$valueAsString])) {
             // A literal child already exists with this value, so merge the routes and add all its children
