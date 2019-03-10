@@ -1,17 +1,21 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/serialization/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Serialization\Encoding;
 
 use Aphiria\Serialization\TypeResolver;
+use function class_exists;
 use OutOfBoundsException;
+use function strtolower;
 
 /**
  * Defines a registry of encoders
@@ -39,7 +43,7 @@ final class EncoderRegistry
             return $this->encodersByType[$normalizedType];
         }
 
-        if (\class_exists($type)) {
+        if (class_exists($type)) {
             if ($this->defaultObjectEncoder === null) {
                 throw new OutOfBoundsException('No default object encoder is registered');
             }
@@ -107,7 +111,7 @@ final class EncoderRegistry
      */
     private static function normalizeType(string $type): string
     {
-        switch (\strtolower($type)) {
+        switch (strtolower($type)) {
             case 'boolean':
             case 'bool':
                 return 'bool';

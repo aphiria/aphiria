@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/serialization/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Serialization\Encoding;
 
@@ -21,7 +23,7 @@ final class EncodingContext
     /**
      * Checks if the input object indicates that we've hit a circular reference
      *
-     * @param \object $object The object to check
+     * @param object $object The object to check
      * @return bool True if the input object indicates a circular reference, otherwise false
      */
     public function isCircularReference(object $object): bool

@@ -1,16 +1,19 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/serialization/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Serialization\Encoding;
 
 use InvalidArgumentException;
+use function is_scalar;
 
 /**
  * Defines a scalar encoder
@@ -44,7 +47,7 @@ final class ScalarEncoder implements IEncoder
      */
     public function encode($value, EncodingContext $context)
     {
-        if (!\is_scalar($value)) {
+        if (!is_scalar($value)) {
             throw new InvalidArgumentException('Value must be scalar');
         }
 

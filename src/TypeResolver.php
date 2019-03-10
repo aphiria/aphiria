@@ -1,14 +1,23 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/serialization/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Serialization;
+
+use function count;
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_object;
+use function strlen;
 
 /**
  * Defines a type resolver
@@ -23,7 +32,7 @@ final class TypeResolver
      */
     public static function getArrayType(string $type): ?string
     {
-        if (substr($type, -2) !== '[]' || \strlen($type) === 2) {
+        if (substr($type, -2) !== '[]' || strlen($type) === 2) {
             return null;
         }
 
@@ -39,15 +48,15 @@ final class TypeResolver
      */
     public static function resolveType($value): string
     {
-        if (\is_array($value)) {
-            if (\count($value) === 0) {
+        if (is_array($value)) {
+            if (count($value) === 0) {
                 return 'array';
             }
 
             return self::resolveType($value[0]) . '[]';
         }
 
-        return \is_object($value) ? \get_class($value) : \gettype($value);
+        return is_object($value) ? get_class($value) : gettype($value);
     }
 
     /**

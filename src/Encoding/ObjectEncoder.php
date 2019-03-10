@@ -1,16 +1,26 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/serialization/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Serialization\Encoding;
 
+use function class_exists;
+use function count;
+use function get_class;
+use function gettype;
 use InvalidArgumentException;
+use function is_array;
+use function is_object;
+use function is_scalar;
+use function is_string;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -49,7 +59,7 @@ final class ObjectEncoder implements IEncoder
      */
     public function addIgnoredProperty(string $type, $propertyNames): void
     {
-        if (!\is_string($propertyNames) && !\is_array($propertyNames)) {
+        if (!is_string($propertyNames) && !is_array($propertyNames)) {
             throw new InvalidArgumentException('Property name must be a string or array of strings');
         }
 
@@ -67,11 +77,11 @@ final class ObjectEncoder implements IEncoder
      */
     public function decode($objectHash, string $type, EncodingContext $context)
     {
-        if (!\class_exists($type)) {
+        if (!class_exists($type)) {
             throw new InvalidArgumentException("Type $type is not a valid class name");
         }
 
-        if (!\is_array($objectHash)) {
+        if (!is_array($objectHash)) {
             throw new InvalidArgumentException('Value must be an associative array');
         }
 
@@ -145,7 +155,7 @@ final class ObjectEncoder implements IEncoder
      */
     public function encode($object, EncodingContext $context)
     {
-        if (!\is_object($object)) {
+        if (!is_object($object)) {
             throw new InvalidArgumentException('Value must be an object');
         }
 
@@ -177,7 +187,7 @@ final class ObjectEncoder implements IEncoder
     }
 
     /**
-     * Decodes a variadic contructor parameter value
+     * Decodes a variadic constructor parameter value
      *
      * @param ReflectionParameter $constructorParam The constructor parameter to decode
      * @param mixed $constructorParamValue The encoded constructor parameter value
@@ -190,11 +200,11 @@ final class ObjectEncoder implements IEncoder
         $constructorParamValue,
         EncodingContext $context
     ) {
-        if (!\is_array($constructorParamValue)) {
+        if (!is_array($constructorParamValue)) {
             throw new EncodingException('Value must be an array');
         }
 
-        if (\count($constructorParamValue) === 0) {
+        if (count($constructorParamValue) === 0) {
             return [];
         }
 
@@ -205,14 +215,14 @@ final class ObjectEncoder implements IEncoder
                 ->decode($constructorParamValue, $type, $context);
         }
 
-        if (\is_object($constructorParamValue[0])) {
-            $type = \get_class($constructorParamValue[0]) . '[]';
+        if (is_object($constructorParamValue[0])) {
+            $type = get_class($constructorParamValue[0]) . '[]';
 
             return $this->encoders->getEncoderForType($type)
                 ->decode($constructorParamValue, $type, $context);
         }
 
-        $type = \gettype($constructorParamValue[0]) . '[]';
+        $type = gettype($constructorParamValue[0]) . '[]';
 
         return $this->encoders->getEncoderForType($type)
             ->decode($constructorParamValue, $type, $context);
@@ -237,8 +247,10 @@ final class ObjectEncoder implements IEncoder
         EncodingContext $context
     ) {
         if ($constructorParam->hasType() && !$constructorParam->isArray() && !$constructorParam->isVariadic()) {
-            return $this->encoders->getEncoderForType($constructorParam->getType())
-                ->decode($constructorParamValue, $constructorParam->getType(), $context);
+            $constructorParamType = (string)$constructorParam->getType();
+
+            return $this->encoders->getEncoderForType($constructorParamType)
+                ->decode($constructorParamValue, $constructorParamType, $context);
         }
 
         if ($constructorParam->isVariadic() || $constructorParam->isArray()) {
@@ -264,8 +276,8 @@ final class ObjectEncoder implements IEncoder
         }
 
         // At this point, let's just check if the value we're trying to decode is a scalar, and if so, just return it
-        if (\is_scalar($constructorParamValue)) {
-            $type = \gettype($constructorParamValue);
+        if (is_scalar($constructorParamValue)) {
+            $type = gettype($constructorParamValue);
 
             return $this->encoders->getEncoderForType($type)
                 ->decode($constructorParamValue, $type, $context);
@@ -361,8 +373,9 @@ final class ObjectEncoder implements IEncoder
             // This getter matches the property name we're looking for
             if ($encodedPropertyName === $normalizedPropertyName) {
                 try {
-                    $decodedValue = $this->encoders->getEncoderForType($reflectionMethod->getReturnType())
-                        ->decode($encodedValue, $reflectionMethod->getReturnType(), $context);
+                    $reflectionMethodReturnType = (string)$reflectionMethod->getReturnType();
+                    $decodedValue = $this->encoders->getEncoderForType($reflectionMethodReturnType)
+                        ->decode($encodedValue, $reflectionMethodReturnType, $context);
 
                     return true;
                 } catch (EncodingException $ex) {

@@ -1,16 +1,20 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/serialization/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Serialization\Encoding;
 
+use function count;
 use InvalidArgumentException;
+use function is_array;
 
 /**
  * Defines the array encoder
@@ -37,7 +41,7 @@ final class ArrayEncoder implements IEncoder
             throw new InvalidArgumentException('Type must end in "[]"');
         }
 
-        if (!\is_array($values)) {
+        if (!is_array($values)) {
             throw new InvalidArgumentException('Value must be an array');
         }
 
@@ -57,11 +61,11 @@ final class ArrayEncoder implements IEncoder
      */
     public function encode($values, EncodingContext $context)
     {
-        if (!\is_array($values)) {
+        if (!is_array($values)) {
             throw new InvalidArgumentException('Value must be an array');
         }
 
-        if (\count($values) === 0) {
+        if (count($values) === 0) {
             return [];
         }
 

@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/serialization/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Serialization\Tests\Encoding;
 
@@ -34,6 +36,7 @@ use Aphiria\Serialization\Tests\Encoding\Mocks\NoConstructor;
 use Aphiria\Serialization\Tests\Encoding\Mocks\User;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 
 /**
  * Tests the object encoder
@@ -328,7 +331,7 @@ class ObjectEncoderTest extends TestCase
 
     public function testEncodingFormatsPropertyNameFormatterIfOneIsSpecified(): void
     {
-        /** @var IPropertyNameFormatter|\PHPUnit_Framework_MockObject_MockObject $propertyNameFormatter */
+        /** @var IPropertyNameFormatter|PHPUnit_Framework_MockObject_MockObject $propertyNameFormatter */
         $propertyNameFormatter = $this->createMock(IPropertyNameFormatter::class);
         $objectEncoder = new ObjectEncoder($this->encoders, $propertyNameFormatter);
         $this->encoders->registerDefaultScalarEncoder(new ScalarEncoder());
