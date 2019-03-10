@@ -1,8 +1,23 @@
 <?php
+$copyrightYear = date('Y');
+$header = <<<EOT
+Aphiria
+
+@link      https://www.aphiria.com
+@copyright Copyright (C) {$copyrightYear} David Young
+@license   https://github.com/aphiria/middleware/blob/master/LICENSE.md
+EOT;
+
 return PhpCsFixer\Config::create()
     ->setRules([
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
+        'declare_strict_types' => true,
+        'header_comment' => [
+            'header' => $header,
+            'comment_type' => 'PHPDoc',
+            'location' => 'after_open'
+        ],
         'no_empty_comment' => true,
         'no_empty_statement' => true,
         'no_leading_import_slash' => true,
