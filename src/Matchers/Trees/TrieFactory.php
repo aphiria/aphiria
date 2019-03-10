@@ -14,7 +14,6 @@ use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\Matchers\Trees\Caching\ITrieCache;
 use Aphiria\Routing\Matchers\Trees\Compilers\ITrieCompiler;
 use Aphiria\Routing\Matchers\Trees\Compilers\TrieCompiler;
-use Aphiria\Routing\RouteCollection;
 
 /**
  * Defines a factory for tries
@@ -55,11 +54,9 @@ final class TrieFactory
         }
 
         // Need to generate the trie
-        $routeCollection = new RouteCollection();
-        $routeCollection->addMany($this->routeBuilders->buildAll());
         $trie = new RootTrieNode();
 
-        foreach ($routeCollection->getAll() as $route) {
+        foreach ($this->routeBuilders->buildAll() as $route) {
             foreach ($this->trieCompiler->compile($route)->getAllChildren() as $childNode) {
                 $trie->addChild($childNode);
             }
