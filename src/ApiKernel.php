@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Api;
 
@@ -29,7 +31,9 @@ use Aphiria\Routing\Matchers\RouteMatchingResult;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\RouteAction;
 use Closure;
+use function get_class;
 use InvalidArgumentException;
+use function is_callable;
 
 /**
  * Defines the API kernel
@@ -108,7 +112,7 @@ class ApiKernel implements IRequestHandler
             $controller = $this->dependencyResolver->resolve($routeAction->className);
             $routeActionDelegate = [$controller, $routeAction->methodName];
 
-            if (!\is_callable($routeActionDelegate)) {
+            if (!is_callable($routeActionDelegate)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Controller method %s::%s() does not exist',
@@ -124,7 +128,7 @@ class ApiKernel implements IRequestHandler
 
         if (!$controller instanceof Controller) {
             throw new InvalidArgumentException(
-                sprintf('Controller %s does not extend %s', \get_class($controller), Controller::class)
+                sprintf('Controller %s does not extend %s', get_class($controller), Controller::class)
             );
         }
     }
@@ -145,7 +149,7 @@ class ApiKernel implements IRequestHandler
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(
-                    sprintf('Middleware %s does not implement %s', \get_class($middleware), IMiddleware::class)
+                    sprintf('Middleware %s does not implement %s', get_class($middleware), IMiddleware::class)
                 );
             }
 

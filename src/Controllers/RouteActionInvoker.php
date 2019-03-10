@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
@@ -19,6 +21,9 @@ use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\Response;
 use Closure;
+use function get_class;
+use function is_array;
+use function is_string;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -56,7 +61,7 @@ final class RouteActionInvoker implements IRouteActionInvoker
         array $routeVariables
     ): IHttpResponseMessage {
         try {
-            if (\is_array($routeActionDelegate)) {
+            if (is_array($routeActionDelegate)) {
                 $reflectionFunction = new ReflectionMethod($routeActionDelegate[0], $routeActionDelegate[1]);
 
                 if (!$reflectionFunction->isPublic()) {
@@ -144,12 +149,12 @@ final class RouteActionInvoker implements IRouteActionInvoker
      */
     private static function getRouteActionDisplayName(callable $routeActionDelegate): string
     {
-        if (\is_array($routeActionDelegate)) {
-            if (\is_string($routeActionDelegate[0])) {
+        if (is_array($routeActionDelegate)) {
+            if (is_string($routeActionDelegate[0])) {
                 return $routeActionDelegate[0];
             }
 
-            return \get_class($routeActionDelegate[0]) . '::' . $routeActionDelegate[1];
+            return get_class($routeActionDelegate[0]) . '::' . $routeActionDelegate[1];
         }
 
         return Closure::class;

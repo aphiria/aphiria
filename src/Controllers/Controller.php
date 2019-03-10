@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
@@ -22,6 +24,7 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Uri;
 use Aphiria\Serialization\SerializationException;
 use InvalidArgumentException;
+use function is_string;
 use LogicException;
 
 /**
@@ -98,7 +101,7 @@ class Controller
     /**
      * Creates a bad request response
      *
-     * @param \object|string|int|float|array|null $body The raw response body
+     * @param object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -121,7 +124,7 @@ class Controller
     /**
      * Creates a conflict response
      *
-     * @param \object|string|int|float|array|null $body The raw response body
+     * @param object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -144,7 +147,7 @@ class Controller
     /**
      * Creates a created response
      *
-     * @param \object|string|int|float|array|null $body The raw response body
+     * @param object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -167,7 +170,7 @@ class Controller
     /**
      * Creates a forbidden response
      *
-     * @param \object|string|int|float|array|null $body The raw response body
+     * @param object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -191,7 +194,7 @@ class Controller
      * Creates a found redirect response
      *
      * @param string|Uri $uri The URI to redirect to
-     * @param \object|string|int|float|array|null $body The raw response body
+     * @param object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws InvalidArgumentException Thrown if the URI is not a string nor a URI
@@ -205,7 +208,7 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        if (\is_string($uri)) {
+        if (is_string($uri)) {
             $uriString = $uri;
         } elseif ($uri instanceof Uri) {
             $uriString = (string)$uri;
@@ -227,7 +230,7 @@ class Controller
     /**
      * Creates an internal server error response
      *
-     * @param \object|string|int|float|array|null $body The raw response body
+     * @param object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -251,7 +254,7 @@ class Controller
      * Creates a moved permanently redirect response
      *
      * @param string|Uri $uri The URI to redirect to
-     * @param \object|string|int|float|array|null $body The raw response body
+     * @param object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws InvalidArgumentException Thrown if the URI is not a string nor a URI
@@ -264,7 +267,7 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        if (\is_string($uri)) {
+        if (is_string($uri)) {
             $uriString = $uri;
         } elseif ($uri instanceof Uri) {
             $uriString = (string)$uri;
@@ -308,7 +311,7 @@ class Controller
     /**
      * Creates a not found response
      *
-     * @param \object|string|int|float|array|null $body The raw response body
+     * @param object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -331,7 +334,7 @@ class Controller
     /**
      * Creates an OK response
      *
-     * @param \object|string|int|float|array|null $body The raw response body
+     * @param object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
@@ -392,7 +395,7 @@ class Controller
     /**
      * Creates an unauthorized response
      *
-     * @param \object|string|int|float|array|null $body The raw response body
+     * @param object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response

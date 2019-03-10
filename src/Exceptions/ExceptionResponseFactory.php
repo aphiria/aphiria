@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Api\Exceptions;
 
@@ -18,6 +20,7 @@ use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\Response;
 use Exception;
+use function get_class;
 
 /**
  * Defines a factory for responses created from exceptions
@@ -52,7 +55,7 @@ class ExceptionResponseFactory implements IExceptionResponseFactory
             return $this->createDefaultInternalServerErrorResponse($ex, null);
         }
 
-        $exceptionType = \get_class($ex);
+        $exceptionType = get_class($ex);
 
         try {
             if (($responseFactory = $this->exceptionResponseFactories->getFactory($exceptionType)) === null) {

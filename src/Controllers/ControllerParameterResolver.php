@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
@@ -79,7 +81,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      *
      * @param ReflectionParameter $reflectionParameter The parameter to resolve
      * @param IHttpRequestMessage $request The current request
-     * @return \object|null The resolved parameter
+     * @return object|null The resolved parameter
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
      * @throws RequestBodyDeserializationException Thrown if the request body could not be deserialized
@@ -98,7 +100,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             return null;
         }
 
-        $type = $reflectionParameter->getType();
+        $type = (string)$reflectionParameter->getType();
         $requestContentNegotiationResult = $this->contentNegotiator->negotiateRequestContent(
             $type,
             $request

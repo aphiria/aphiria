@@ -1,23 +1,33 @@
 <?php
 
-/*
+/**
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (c) 2019 David Young
+ * @copyright Copyright (C) 2019 David Young
  * @license   https://github.com/aphiria/api/blob/master/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Api\Exceptions;
 
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IResponseWriter;
 use Aphiria\Net\Http\StreamResponseWriter;
+use function error_get_last;
+use function error_reporting;
 use ErrorException;
 use Exception;
+use function get_class;
+use function in_array;
+use function ini_set;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use function register_shutdown_function;
+use function set_error_handler;
+use function set_exception_handler;
 use Throwable;
 
 /**
@@ -108,9 +118,9 @@ class ExceptionHandler implements IExceptionHandler
      */
     public function handleShutdown(): void
     {
-        $error = \error_get_last();
+        $error = error_get_last();
 
-        if ($error !== null && \in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
             $this->handleException(
                 new FatalErrorException($error['message'], $error['type'], 0, $error['file'], $error['line'])
             );
@@ -122,11 +132,11 @@ class ExceptionHandler implements IExceptionHandler
      */
     public function registerWithPhp(): void
     {
-        \ini_set('display_errors', 'off');
-        \error_reporting(-1);
-        \set_error_handler([$this, 'handleError']);
-        \set_exception_handler([$this, 'handleException']);
-        \register_shutdown_function([$this, 'handleShutdown']);
+        ini_set('display_errors', 'off');
+        error_reporting(-1);
+        set_error_handler([$this, 'handleError']);
+        set_exception_handler([$this, 'handleException']);
+        register_shutdown_function([$this, 'handleShutdown']);
     }
 
     /**
@@ -156,7 +166,7 @@ class ExceptionHandler implements IExceptionHandler
      */
     protected function shouldLogException(Exception $ex): bool
     {
-        return !\in_array(\get_class($ex), $this->exceptionsNotLogged);
+        return !in_array(get_class($ex), $this->exceptionsNotLogged);
     }
 
     /**
