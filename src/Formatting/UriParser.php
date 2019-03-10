@@ -33,7 +33,9 @@ class UriParser
      */
     public function parseQueryString(Uri $uri): IImmutableDictionary
     {
-        $queryString = $uri->getQueryString();
+        if (($queryString = $uri->getQueryString()) === null) {
+            return new ImmutableHashTable([]);
+        }
 
         if (!isset($this->parsedQueryStringCache[$queryString])) {
             $parsedQueryString = [];

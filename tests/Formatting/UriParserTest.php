@@ -14,6 +14,7 @@ namespace Aphiria\Net\Tests\Formatting;
 
 use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Uri;
+use Opulence\Collections\ImmutableHashTable;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,6 +28,12 @@ class UriParserTest extends TestCase
     protected function setUp(): void
     {
         $this->parser = new UriParser();
+    }
+
+    public function testParsingEmptyQueryStringReturnsEmptyDictionary(): void
+    {
+        $uri = new Uri('http://host.com');
+        $this->assertEquals(new ImmutableHashTable([]), $this->parser->parseQueryString($uri));
     }
 
     public function testParsingQueryStringParamWithMultipleValuesReturnsArrayOfValues(): void
