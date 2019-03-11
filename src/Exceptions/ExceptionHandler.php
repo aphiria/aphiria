@@ -15,19 +15,11 @@ namespace Aphiria\Api\Exceptions;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IResponseWriter;
 use Aphiria\Net\Http\StreamResponseWriter;
-use function error_get_last;
-use function error_reporting;
 use ErrorException;
 use Exception;
-use function get_class;
-use function in_array;
-use function ini_set;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use function register_shutdown_function;
-use function set_error_handler;
-use function set_exception_handler;
 use Throwable;
 
 /**

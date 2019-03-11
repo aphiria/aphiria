@@ -24,7 +24,6 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Uri;
 use Aphiria\Serialization\SerializationException;
 use InvalidArgumentException;
-use function is_string;
 use LogicException;
 
 /**

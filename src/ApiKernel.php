@@ -31,9 +31,7 @@ use Aphiria\Routing\Matchers\RouteMatchingResult;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\RouteAction;
 use Closure;
-use function get_class;
 use InvalidArgumentException;
-use function is_callable;
 
 /**
  * Defines the API kernel

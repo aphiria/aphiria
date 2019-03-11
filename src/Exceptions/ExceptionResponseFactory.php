@@ -20,7 +20,6 @@ use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\Response;
 use Exception;
-use function get_class;
 
 /**
  * Defines a factory for responses created from exceptions
