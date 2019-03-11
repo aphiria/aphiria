@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
-use function mb_strlen;
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
 

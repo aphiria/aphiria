@@ -12,9 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
-use function in_array;
-use function strtolower;
-
 /**
  * Defines the base class for media type formatters to implement
  */

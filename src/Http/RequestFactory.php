@@ -13,8 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http;
 
 use Aphiria\Net\Uri;
-use function count;
-use function in_array;
 use InvalidArgumentException;
 use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;

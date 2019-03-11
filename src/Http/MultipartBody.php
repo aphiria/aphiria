@@ -12,18 +12,11 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
-use function bin2hex;
-use function chr;
-use function count;
 use Exception;
 use InvalidArgumentException;
 use Opulence\IO\Streams\MultiStream;
 use Opulence\IO\Streams\Stream;
-use function ord;
-use function random_bytes;
 use RuntimeException;
-use function str_split;
-use function vsprintf;
 
 /**
  * Defines a multipart HTTP body

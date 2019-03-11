@@ -17,7 +17,6 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
-use function is_string;
 use RuntimeException;
 
 /**

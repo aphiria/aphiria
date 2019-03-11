@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
-use function header;
-use function headers_sent;
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
 

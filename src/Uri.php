@@ -13,8 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Net;
 
 use InvalidArgumentException;
-use function strlen;
-use function strpos;
 
 /**
  * Defines a URI

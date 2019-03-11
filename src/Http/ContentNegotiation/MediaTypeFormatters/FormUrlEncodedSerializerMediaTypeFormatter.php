@@ -14,7 +14,6 @@ namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
 use Aphiria\Serialization\FormUrlEncodedSerializer;
 use Aphiria\Serialization\TypeResolver;
-use function class_exists;
 
 /**
  * Defines the form URL-encoded media type formatter

@@ -23,13 +23,7 @@ use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Serialization\SerializationException;
 use Aphiria\Serialization\TypeResolver;
-use function gettype;
 use InvalidArgumentException;
-use function is_array;
-use function is_callable;
-use function is_object;
-use function is_scalar;
-use function json_encode;
 use Opulence\IO\Streams\IStream;
 use Opulence\IO\Streams\Stream;
 

@@ -23,8 +23,6 @@ use Opulence\Collections\HashTable;
 use Opulence\Collections\IDictionary;
 use Opulence\Collections\KeyValuePair;
 use RuntimeException;
-use function strlen;
-use function strpos;
 
 /**
  * Defines the HTTP body parser

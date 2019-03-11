@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Headers;
 
-use function count;
 use InvalidArgumentException;
 use Opulence\Collections\IImmutableDictionary;
 use Opulence\Collections\ImmutableHashTable;

@@ -14,7 +14,6 @@ namespace Aphiria\Net\Http\ContentNegotiation;
 
 use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
 use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
-use function count;
 
 /**
  * Defines the language matcher

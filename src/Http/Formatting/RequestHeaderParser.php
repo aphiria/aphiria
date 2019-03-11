@@ -17,7 +17,6 @@ use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use Aphiria\Net\Http\HttpHeaders;
-use function count;
 use InvalidArgumentException;
 use Opulence\Collections\IImmutableDictionary;
 

@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
-use function count;
-
 /**
  * Defines an HTTP response message
  */

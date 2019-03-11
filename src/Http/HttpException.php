@@ -14,7 +14,6 @@ namespace Aphiria\Net\Http;
 
 use Exception;
 use InvalidArgumentException;
-use function is_int;
 
 /**
  * Defines an exception that is thrown by an HTTP component

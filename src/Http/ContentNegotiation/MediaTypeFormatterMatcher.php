@@ -17,7 +17,6 @@ use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
 use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
-use function count;
 
 /**
  * Defines the media type formatter matcher
@@ -63,7 +62,8 @@ final class MediaTypeFormatterMatcher
         array $formatters,
         array $acceptMediaTypeHeaders
     ): ?MediaTypeFormatterMatch {
-        return $this->getBestMediaTypeFormatterMatch($type, $formatters, $acceptMediaTypeHeaders, self::FORMATTER_TYPE_OUTPUT);
+        return $this->getBestMediaTypeFormatterMatch($type, $formatters, $acceptMediaTypeHeaders,
+            self::FORMATTER_TYPE_OUTPUT);
     }
 
     /**

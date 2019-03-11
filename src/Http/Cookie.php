@@ -14,7 +14,6 @@ namespace Aphiria\Net\Http;
 
 use DateTime;
 use InvalidArgumentException;
-use function is_int;
 
 /**
  * Defines an HTTP cookie

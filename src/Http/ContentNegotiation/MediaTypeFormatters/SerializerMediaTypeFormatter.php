@@ -15,7 +15,6 @@ namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 use Aphiria\Serialization\ISerializer;
 use Aphiria\Serialization\TypeResolver;
 use InvalidArgumentException;
-use function mb_convert_encoding;
 use Opulence\IO\Streams\IStream;
 
 /**

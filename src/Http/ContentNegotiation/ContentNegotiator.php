@@ -16,8 +16,6 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\IHttpRequestMessage;
-use function array_unique;
-use function count;
 use InvalidArgumentException;
 
 /**
