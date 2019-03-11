@@ -31,7 +31,7 @@ class ApplicationBuilder implements IApplicationBuilder
     private $commands;
     /** @var Closure[] The list of bootstrapper delegates */
     private $bootstrapperDelegates = [];
-    /** @var CLosure[] The list of route delegates */
+    /** @var Closure[] The list of route delegates */
     private $routeDelegates = [];
     /** @var Closure[] The list of command delegates */
     private $commandDelegates = [];
