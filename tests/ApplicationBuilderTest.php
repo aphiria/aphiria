@@ -16,6 +16,7 @@ use Aphiria\Configuration\ApplicationBuilder;
 use Aphiria\Configuration\IModuleBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\LazyRouteFactory;
 use Opulence\Ioc\Bootstrappers\IBootstrapperRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -27,8 +28,8 @@ class ApplicationBuilderTest extends TestCase
 {
     /** @var IBootstrapperRegistry|MockObject */
     private $bootstrappers;
-    /** @var RouteBuilderRegistry */
-    private $routeBuilders;
+    /** @var LazyRouteFactory */
+    private $routeFactory;
     /** @var CommandRegistry */
     private $commands;
     /** @var ApplicationBuilder */
@@ -37,9 +38,9 @@ class ApplicationBuilderTest extends TestCase
     protected function setUp(): void
     {
         $this->bootstrappers = $this->createMock(IBootstrapperRegistry::class);
-        $this->routeBuilders = new RouteBuilderRegistry();
+        $this->routeFactory = new LazyRouteFactory();
         $this->commands = new CommandRegistry();
-        $this->appBuilder = new ApplicationBuilder($this->bootstrappers, $this->routeBuilders, $this->commands);
+        $this->appBuilder = new ApplicationBuilder($this->bootstrappers, $this->routeFactory, $this->commands);
     }
 
     public function testBootstrapperDelegatesAreInvokedWithRegistryOnBuild(): void
@@ -68,11 +69,14 @@ class ApplicationBuilderTest extends TestCase
     {
         $isInvoked = false;
         $this->appBuilder->withRoutes(function (RouteBuilderRegistry $routes) use (&$isInvoked) {
-            $this->assertSame($this->routeBuilders, $routes);
             $isInvoked = true;
+            $routes->map('GET', 'foo')
+                ->toMethod('Foo', 'bar');
         });
         $this->appBuilder->build();
+        $routes = $this->routeFactory->createRoutes();
         $this->assertTrue($isInvoked);
+        $this->assertCount(1, $routes->getAll());
     }
 
     public function testWithBootstrappersReturnsSelf(): void

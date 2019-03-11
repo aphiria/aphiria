@@ -14,6 +14,7 @@ namespace Aphiria\Configuration;
 
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\LazyRouteFactory;
 use Closure;
 use Opulence\Ioc\Bootstrappers\IBootstrapperRegistry;
 
@@ -24,8 +25,8 @@ class ApplicationBuilder implements IApplicationBuilder
 {
     /** @var IBootstrapperRegistry The bootstrappers that will be passed to bootstrapper delegates */
     private $bootstrappers;
-    /** @var RouteBuilderRegistry The route builders to use in delegates */
-    private $routeBuilders;
+    /** @var LazyRouteFactory The factory that will create our routes */
+    private $routeFactory;
     /** @var CommandRegistry The command registry to use in delegates */
     private $commands;
     /** @var Closure[] The list of bootstrapper delegates */
@@ -37,16 +38,16 @@ class ApplicationBuilder implements IApplicationBuilder
 
     /**
      * @param IBootstrapperRegistry $bootstrappers The bootstrappers that will be passed to bootstrapper delegates
-     * @param RouteBuilderRegistry $routeBuilders The route builders to use in delegates
+     * @param LazyRouteFactory $routeFactory The factory that will create our routes
      * @param CommandRegistry $commands The command registry to use in delegates
      */
     public function __construct(
         IBootstrapperRegistry $bootstrappers,
-        RouteBuilderRegistry $routeBuilders,
+        LazyRouteFactory $routeFactory,
         CommandRegistry $commands
     ) {
         $this->bootstrappers = $bootstrappers;
-        $this->routeBuilders = $routeBuilders;
+        $this->routeFactory = $routeFactory;
         $this->commands = $commands;
     }
 
@@ -59,9 +60,15 @@ class ApplicationBuilder implements IApplicationBuilder
             $bootstrapperDelegate($this->bootstrappers);
         }
 
-        foreach ($this->routeDelegates as $routeDelegate) {
-            $routeDelegate($this->routeBuilders);
-        }
+        $this->routeFactory->addFactoryDelegate(function () {
+            $routeBuilders = new RouteBuilderRegistry();
+
+            foreach ($this->routeDelegates as $routeDelegate) {
+                $routeDelegate($routeBuilders);
+            }
+
+            return $routeBuilders->buildAll();
+        });
 
         foreach ($this->commandDelegates as $commandDelegate) {
             $commandDelegate($this->commands);
