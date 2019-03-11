@@ -110,8 +110,13 @@ final class TrieRouteMatcher implements IRouteMatcher
             $routeVarsCopy = $routeVars;
 
             if ($childNode->isMatch($segment, $routeVarsCopy)) {
-                yield from self::getMatchCandidates($childNode, $segments, $segmentIter + 1, $hostSegments,
-                    $routeVarsCopy);
+                yield from self::getMatchCandidates(
+                    $childNode,
+                    $segments,
+                    $segmentIter + 1,
+                    $hostSegments,
+                    $routeVarsCopy
+                );
             }
         }
     }
