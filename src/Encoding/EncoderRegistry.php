@@ -13,9 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Serialization\Encoding;
 
 use Aphiria\Serialization\TypeResolver;
-use function class_exists;
 use OutOfBoundsException;
-use function strtolower;
 
 /**
  * Defines a registry of encoders

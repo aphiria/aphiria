@@ -12,15 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Serialization\Encoding;
 
-use function class_exists;
-use function count;
-use function get_class;
-use function gettype;
 use InvalidArgumentException;
-use function is_array;
-use function is_object;
-use function is_scalar;
-use function is_string;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;

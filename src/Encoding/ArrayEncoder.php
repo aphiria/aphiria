@@ -12,9 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Serialization\Encoding;
 
-use function count;
 use InvalidArgumentException;
-use function is_array;
 
 /**
  * Defines the array encoder

@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Serialization\Encoding;
 
 use InvalidArgumentException;
-use function is_scalar;
 
 /**
  * Defines a scalar encoder

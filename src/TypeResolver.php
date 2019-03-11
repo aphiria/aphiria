@@ -12,13 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Serialization;
 
-use function count;
-use function get_class;
-use function gettype;
-use function is_array;
-use function is_object;
-use function strlen;
-
 /**
  * Defines a type resolver
  */
