@@ -62,8 +62,12 @@ final class MediaTypeFormatterMatcher
         array $formatters,
         array $acceptMediaTypeHeaders
     ): ?MediaTypeFormatterMatch {
-        return $this->getBestMediaTypeFormatterMatch($type, $formatters, $acceptMediaTypeHeaders,
-            self::FORMATTER_TYPE_OUTPUT);
+        return $this->getBestMediaTypeFormatterMatch(
+            $type,
+            $formatters,
+            $acceptMediaTypeHeaders,
+            self::FORMATTER_TYPE_OUTPUT
+        );
     }
 
     /**
