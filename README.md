@@ -67,17 +67,21 @@ First, let's import the namespaces and define our routes:
 
 ```php
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\LazyRouteFactory;
 use Aphiria\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
 
 // Register the routes
-$routes = new RouteBuilderRegistry();
-$routes->map('GET', '/books/:bookId')
-    ->toMethod(BookController::class, 'getBooksById')
-    ->withMiddleware(AuthMiddleware::class);
+$routeFactory = new LazyRouteFactory(function () {
+    $routes = new RouteBuilderRegistry();
+    $routes->map('GET', '/books/:bookId')
+        ->toMethod(BookController::class, 'getBooksById')
+        ->withMiddleware(AuthMiddleware::class);
+        
+    return $routes->buildAll();
+});
 
 // Set up the route matcher
-$trieFactory = new TrieFactory($routes, null);
-$routeMatcher = new TrieRouteMatcher($trieFactory->createTree());
+$routeMatcher = new TrieRouteMatcher((new TrieFactory($routeFactory))->createTree());
 
 // Finally, let's find a matching route
 $result = $routeMatcher->matchRoute(
@@ -408,14 +412,19 @@ Finally, register this rule factory with the trie compiler:
 
 ```php
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\LazyRouteFactory;
 use Aphiria\Routing\Matchers\Trees\{TrieFactory, TrieRouteMatcher};
 
-$routes = new RouteBuilderRegistry();
-$routes->map('parts/:serialNumber(minLength(6))')
-    ->toMethod(PartController::class, 'getPartBySerialNumber');
+$routeFactory = new LazyRouteFactory(function () {
+    $routes = new RouteBuilderRegistry();
+    $routes->map('parts/:serialNumber(minLength(6))')
+        ->toMethod(PartController::class, 'getPartBySerialNumber');
+        
+    return $routes->buildAll();
+});
 
 $trieCompiler = new TrieCompiler($ruleFactory);
-$trieFactory = new TrieFactory($routes, null, $trieCompiler);
+$trieFactory = new TrieFactory($routeFactory, null, $trieCompiler);
 $routeMatcher = new TrieRouteMatcher($trieFactory->createTree());
 ```
 
@@ -426,7 +435,7 @@ Our route will now enforce a serial number with minimum length 6.
 To speed up the compilation of your route trie, Aphiria supports caching (`FileTrieCache` is provided by default).  If you're actively developing and adding new routes, it's best not to enable caching, which can be done by passing `null` into the `TrieFactory`:
 
 ```php
-$trieFactory = new TrieFactory($routes, null);
+$trieFactory = new TrieFactory($routeFactory, null);
 ```
 
 If you want to enable caching for a particular environment, you could do so:
@@ -434,7 +443,7 @@ If you want to enable caching for a particular environment, you could do so:
 ```php
 // Let's say that your environment name is stored in an environment var named 'ENV_NAME'
 $trieCache = getenv('ENV_NAME') === 'production' ? new FileTrieCache('/tmp/trie.cache') : null;
-$trieFactory = new TrieFactory($routes, $trieCache);
+$trieFactory = new TrieFactory($routeFactory, $trieCache);
 ```
 
 <h1 id="matching-algorithm">Matching Algorithm</h1>

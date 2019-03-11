@@ -31,6 +31,15 @@ class RouteCollectionTest extends TestCase
         $this->collection = new RouteCollection();
     }
 
+    public function testCreatingWithRoutesAddsRoutesToCollection(): void
+    {
+        $expectedRoutes = [
+            new Route(new UriTemplate('abc'), new MethodRouteAction('Foo', 'bar'), [])
+        ];
+        $collection = new RouteCollection($expectedRoutes);
+        $this->assertEquals($expectedRoutes, $collection->getAll());
+    }
+
     public function testGettingAllRoutesReturnsAllRegisteredRoutes(): void
     {
         $expectedRoutes = [

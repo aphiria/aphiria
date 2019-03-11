@@ -23,6 +23,14 @@ final class RouteCollection
     private $namedRoutes = [];
 
     /**
+     * @param Route[] $routes The initial list of routes
+     */
+    public function __construct(array $routes = [])
+    {
+        $this->addMany($routes);
+    }
+
+    /**
      * Performs a deep clone of the routes
      */
     public function __clone()
