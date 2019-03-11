@@ -88,11 +88,15 @@ echo formatResults('Symfony', memory_get_usage() - $startMemory, microtime(true)
  */
 
 $startMemory = memory_get_usage();
-$routeFactory = new LazyRouteFactory(function (RouteBuilderRegistry $routes) use ($numRoutes) {
+$routeFactory = new LazyRouteFactory(function () use ($numRoutes) {
+    $routes = new RouteBuilderRegistry();
+
     for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
         $routes->map('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
             ->toMethod('Foo', (string)$routeIter);
     }
+
+    return $routes->buildAll();
 });
 $routeMatcher = new TrieRouteMatcher((new TrieFactory($routeFactory))->createTrie());
 $startTime = microtime(true);

@@ -11,6 +11,7 @@ before_script:
 script:
   - vendor/bin/phpunit --verbose
   - composer run-script lint-check
+  - php bin/benchmarks.php
 
 notifications:
   email:
