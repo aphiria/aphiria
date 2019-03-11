@@ -27,9 +27,6 @@ use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Parsers\Lexers\IUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Parsers\Lexers\UriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
-use function array_reverse;
-use function count;
-use function implode;
 use InvalidArgumentException;
 
 /**

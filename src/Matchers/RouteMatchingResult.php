@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Matchers;
 
 use Aphiria\Routing\Route;
-use function count;
 
 /**
  * Defines the result of an attempt to match a route

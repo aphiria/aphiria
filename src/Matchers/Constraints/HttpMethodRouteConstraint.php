@@ -13,11 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Matchers\Constraints;
 
 use Aphiria\Routing\Matchers\MatchedRouteCandidate;
-use function array_keys;
 use InvalidArgumentException;
-use function is_array;
-use function is_string;
-use function strtoupper;
 
 /**
  * Defines the HTTP method route constraint

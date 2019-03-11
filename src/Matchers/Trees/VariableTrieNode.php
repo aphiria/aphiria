@@ -13,16 +13,14 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Matchers\Trees;
 
 use Aphiria\Routing\Route;
-use function count;
 use InvalidArgumentException;
-use function is_array;
 
 /**
  * Defines a trie node that contains a variable value
  */
 final class VariableTrieNode extends TrieNode
 {
-    /** @var string[]|RouteVariable[] The parts that make up this node  */
+    /** @var string[]|RouteVariable[] The parts that make up this node */
     public $parts;
     /** @var bool Whether or not this node contains just a single variable part (for performance reasons) */
     private $onlyContainsVariable;

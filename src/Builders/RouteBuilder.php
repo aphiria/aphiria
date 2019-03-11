@@ -22,7 +22,6 @@ use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use Closure;
 use InvalidArgumentException;
-use function is_string;
 use LogicException;
 
 /**

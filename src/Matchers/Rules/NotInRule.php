@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Matchers\Rules;
 
-use function in_array;
-
 /**
  * Defines the not-in-array rule
  */

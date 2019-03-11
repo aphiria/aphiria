@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\UriTemplates\Parsers\Lexers;
 
-use function count;
 use InvalidArgumentException;
 
 /**

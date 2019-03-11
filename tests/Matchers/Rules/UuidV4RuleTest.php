@@ -13,13 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests\Matchers\Rules;
 
 use Aphiria\Routing\Matchers\Rules\UuidV4Rule;
-use function bin2hex;
-use function chr;
-use function ord;
 use PHPUnit\Framework\TestCase;
-use function random_bytes;
-use function str_split;
-use function vsprintf;
 
 /**
  * Tests the UUIDV4 rule

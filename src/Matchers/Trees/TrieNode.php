@@ -13,10 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Matchers\Trees;
 
 use Aphiria\Routing\Route;
-use function get_class;
 use InvalidArgumentException;
-use function is_array;
-use function strtolower;
 
 /**
  * Defines the base class for trie nodes to extend

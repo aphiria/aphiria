@@ -16,11 +16,6 @@ use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\Matchers\IRouteMatcher;
 use Aphiria\Routing\Matchers\MatchedRouteCandidate;
 use Aphiria\Routing\Matchers\RouteMatchingResult;
-use function array_reverse;
-use function count;
-use function explode;
-use function strtolower;
-use function trim;
 
 /**
  * Defines the route matcher that uses a trie structure for matching
@@ -115,7 +110,8 @@ final class TrieRouteMatcher implements IRouteMatcher
             $routeVarsCopy = $routeVars;
 
             if ($childNode->isMatch($segment, $routeVarsCopy)) {
-                yield from self::getMatchCandidates($childNode, $segments, $segmentIter + 1, $hostSegments, $routeVarsCopy);
+                yield from self::getMatchCandidates($childNode, $segments, $segmentIter + 1, $hostSegments,
+                    $routeVarsCopy);
             }
         }
     }

@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Routing\UriTemplates\Parsers\Lexers;
 
 use InvalidArgumentException;
-use function mb_strlen;
 
 /**
  * Defines the lexer for URI templates

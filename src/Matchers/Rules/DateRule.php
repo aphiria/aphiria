@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Matchers\Rules;
 
-use function count;
 use DateTime;
 use InvalidArgumentException;
 
