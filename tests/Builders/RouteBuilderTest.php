@@ -93,7 +93,7 @@ class RouteBuilderTest extends TestCase
     public function testInvalidManyMiddlewareThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Middleware binding must either be a string or an instance of %s', MiddlewareBinding::class));
+        $this->expectExceptionMessage(\sprintf('Middleware binding must either be a string or an instance of %s', MiddlewareBinding::class));
         $this->routeBuilder->withManyMiddleware([1]);
     }
 

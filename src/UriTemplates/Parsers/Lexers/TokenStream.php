@@ -32,7 +32,7 @@ final class TokenStream
     public function __construct(array $tokens)
     {
         $this->tokens = $tokens;
-        $this->length = count($tokens);
+        $this->length = \count($tokens);
     }
 
     /**
@@ -55,7 +55,7 @@ final class TokenStream
 
         if ($message === null) {
             // Let's create a default message
-            $formattedMessage = sprintf(
+            $formattedMessage = \sprintf(
                 'Expected token type %s%s',
                 $type,
                 $value === null ? '' : " with value \"$value\""
@@ -64,14 +64,14 @@ final class TokenStream
             if ($currentToken === null) {
                 $formattedMessage .= ', got end of stream';
             } else {
-                $formattedMessage .= sprintf(
+                $formattedMessage .= \sprintf(
                     ', got %s with value \"%s\"',
                     $currentToken->type,
                     $currentToken->value
                 );
             }
         } else {
-            $formattedMessage = sprintf(
+            $formattedMessage = \sprintf(
                 $message,
                 $currentToken === null ? 'T_EOF' : $currentToken->type,
                 $currentToken === null ? 'end of stream' : $currentToken->value
@@ -88,7 +88,7 @@ final class TokenStream
      */
     public function getCurrent(): ?Token
     {
-        return count($this->tokens) > $this->cursor ? $this->tokens[$this->cursor] : null;
+        return \count($this->tokens) > $this->cursor ? $this->tokens[$this->cursor] : null;
     }
 
     /**
@@ -98,7 +98,7 @@ final class TokenStream
      */
     public function next(): ?Token
     {
-        return count($this->tokens) > ++$this->cursor ? $this->tokens[$this->cursor] : null;
+        return \count($this->tokens) > ++$this->cursor ? $this->tokens[$this->cursor] : null;
     }
 
     /**
@@ -130,7 +130,7 @@ final class TokenStream
      */
     public function peek(int $lookahead = 1): ?Token
     {
-        if ($this->cursor + $lookahead >= count($this->tokens)) {
+        if ($this->cursor + $lookahead >= \count($this->tokens)) {
             return null;
         }
 

@@ -33,8 +33,8 @@ final class UriTemplate
      */
     public function __construct(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = true)
     {
-        $this->pathTemplate = '/' . ltrim($pathTemplate, '/');
-        $this->hostTemplate = $hostTemplate === null ? null : rtrim($hostTemplate, '/');
+        $this->pathTemplate = '/' . \ltrim($pathTemplate, '/');
+        $this->hostTemplate = $hostTemplate === null ? null : \rtrim($hostTemplate, '/');
         $this->isHttpsOnly = $isHttpsOnly;
         $this->isAbsoluteUri = $this->hostTemplate !== null;
     }

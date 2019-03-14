@@ -41,6 +41,6 @@ final class InRule implements IRule
      */
     public function passes($value): bool
     {
-        return in_array($value, $this->acceptableValues, true);
+        return \in_array($value, $this->acceptableValues, true);
     }
 }

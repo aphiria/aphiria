@@ -72,11 +72,11 @@ class RouteAction
         if ($this->closure === null) {
             $this->serializedClosure = '';
         } else {
-            $this->serializedClosure = serialize(new SerializableClosure($this->closure));
+            $this->serializedClosure = \serialize(new SerializableClosure($this->closure));
             $this->closure = null;
         }
 
-        return array_keys(get_object_vars($this));
+        return \array_keys(\get_object_vars($this));
     }
 
     /**
@@ -88,7 +88,7 @@ class RouteAction
             $this->closure = null;
         } else {
             /** @var SerializableClosure $serializedClosure */
-            $serializedClosure = unserialize(
+            $serializedClosure = \unserialize(
                 $this->serializedClosure,
                 ['allowed_classes' => [SerializableClosure::class]]
             );

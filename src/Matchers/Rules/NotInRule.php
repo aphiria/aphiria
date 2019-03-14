@@ -41,6 +41,6 @@ final class NotInRule implements IRule
      */
     public function passes($value): bool
     {
-        return !in_array($value, $this->unacceptableValues, true);
+        return !\in_array($value, $this->unacceptableValues, true);
     }
 }

@@ -29,11 +29,11 @@ final class HttpMethodRouteConstraint implements IRouteConstraint
      */
     public function __construct($allowedMethods)
     {
-        if (is_string($allowedMethods)) {
-            $this->allowedMethods[strtoupper($allowedMethods)] = true;
-        } elseif (is_array($allowedMethods)) {
+        if (\is_string($allowedMethods)) {
+            $this->allowedMethods[\strtoupper($allowedMethods)] = true;
+        } elseif (\is_array($allowedMethods)) {
             foreach ($allowedMethods as $allowedMethod) {
-                $this->allowedMethods[strtoupper($allowedMethod)] = true;
+                $this->allowedMethods[\strtoupper($allowedMethod)] = true;
             }
         } else {
             throw new InvalidArgumentException('Allowed methods must be a string or array of strings');
@@ -56,7 +56,7 @@ final class HttpMethodRouteConstraint implements IRouteConstraint
      */
     public function getAllowedMethods(): array
     {
-        return array_keys($this->allowedMethods);
+        return \array_keys($this->allowedMethods);
     }
 
     /**
@@ -69,6 +69,6 @@ final class HttpMethodRouteConstraint implements IRouteConstraint
         string $path,
         array $headers
     ): bool {
-        return isset($this->allowedMethods[strtoupper($httpMethod)]);
+        return isset($this->allowedMethods[\strtoupper($httpMethod)]);
     }
 }

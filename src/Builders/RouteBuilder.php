@@ -138,7 +138,7 @@ class RouteBuilder
      */
     public function withManyAttributes(array $attributes): self
     {
-        $this->attributes = array_merge($this->attributes, $attributes);
+        $this->attributes = \array_merge($this->attributes, $attributes);
 
         return $this;
     }
@@ -151,7 +151,7 @@ class RouteBuilder
      */
     public function withManyConstraints(array $constraints): self
     {
-        $this->constraints = array_merge($this->constraints, $constraints);
+        $this->constraints = \array_merge($this->constraints, $constraints);
 
         return $this;
     }
@@ -167,7 +167,7 @@ class RouteBuilder
     public function withManyMiddleware(array $middlewareBindings): self
     {
         foreach ($middlewareBindings as $middlewareBinding) {
-            if (is_string($middlewareBinding)) {
+            if (\is_string($middlewareBinding)) {
                 $this->middlewareBindings[] = new MiddlewareBinding($middlewareBinding);
             } elseif ($middlewareBinding instanceof MiddlewareBinding) {
                 $this->middlewareBindings[] = $middlewareBinding;

@@ -103,12 +103,12 @@ final class TrieCompiler implements ITrieCompiler
         ?TrieNode $hostTrie
     ): void {
         $astChildren = $ast->children;
-        $numAstChildren = count($astChildren);
+        $numAstChildren = \count($astChildren);
         $isEndpoint = false;
         $segmentContainsVariable = false;
         $segmentBuffer = [];
 
-        foreach ($isCompilingHostTrie ? array_reverse($astChildren) : $astChildren as $i => $childAstNode) {
+        foreach ($isCompilingHostTrie ? \array_reverse($astChildren) : $astChildren as $i => $childAstNode) {
             /**
              * This isn't an endpoint if we're compiling a path trie which has a host trie
              * This is an endpoint if it's the last node or the last non-optional node
@@ -126,7 +126,7 @@ final class TrieCompiler implements ITrieCompiler
             switch ($childAstNode->type) {
                 case AstNodeTypes::SEGMENT_DELIMITER:
                     // Checking if this is an endpoint handles the case of a route at the root path
-                    if ($isEndpoint || count($segmentBuffer) > 0) {
+                    if ($isEndpoint || \count($segmentBuffer) > 0) {
                         $newTrieNode = self::createTrieNode(
                             $segmentBuffer,
                             $segmentContainsVariable,
@@ -141,7 +141,7 @@ final class TrieCompiler implements ITrieCompiler
                     break;
                 case AstNodeTypes::OPTIONAL_ROUTE_PART:
                     // Handles flushing 'foo' in the case of 'foo[/bar]'
-                    if (count($segmentBuffer) > 0) {
+                    if (\count($segmentBuffer) > 0) {
                         $newTrieNode = self::createTrieNode(
                             $segmentBuffer,
                             $segmentContainsVariable,
@@ -168,7 +168,7 @@ final class TrieCompiler implements ITrieCompiler
         }
 
         // Check if we need to flush the buffer
-        if (count($segmentBuffer) > 0) {
+        if (\count($segmentBuffer) > 0) {
             $currTrieNode->addChild(
                 self::createTrieNode($segmentBuffer, $segmentContainsVariable, $isEndpoint, $route, $hostTrie)
             );
@@ -219,7 +219,7 @@ final class TrieCompiler implements ITrieCompiler
         if ($segmentContainsVariable) {
             $node = new VariableTrieNode($segmentBuffer, [], $routes, $hostTrie);
         } else {
-            $node = new LiteralTrieNode(implode('', $segmentBuffer), [], $routes, $hostTrie);
+            $node = new LiteralTrieNode(\implode('', $segmentBuffer), [], $routes, $hostTrie);
         }
 
         // Clear the buffer data

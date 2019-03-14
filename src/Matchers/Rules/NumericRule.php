@@ -30,6 +30,6 @@ final class NumericRule implements IRule
      */
     public function passes($value): bool
     {
-        return is_numeric($value);
+        return \is_numeric($value);
     }
 }

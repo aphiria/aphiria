@@ -48,7 +48,7 @@ final class RouteMatchingResult
 
         if ($this->matchFound) {
             $this->methodIsAllowed = true;
-        } elseif (count($this->allowedMethods) === 0) {
+        } elseif (\count($this->allowedMethods) === 0) {
             $this->methodIsAllowed = null;
         } else {
             $this->methodIsAllowed = false;

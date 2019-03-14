@@ -33,6 +33,6 @@ final class UuidV4Rule implements IRule
      */
     public function passes($value): bool
     {
-        return preg_match(self::UUIDV4_REGEX, $value) === 1;
+        return \preg_match(self::UUIDV4_REGEX, $value) === 1;
     }
 }

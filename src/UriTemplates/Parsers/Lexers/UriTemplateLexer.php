@@ -36,7 +36,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
     public function lex(string $uriTemplate): TokenStream
     {
         $cursor = 0;
-        $templateLength = mb_strlen($uriTemplate);
+        $templateLength = \mb_strlen($uriTemplate);
         $tokens = [];
         $textBuffer = '';
 
@@ -45,16 +45,16 @@ final class UriTemplateLexer implements IUriTemplateLexer
 
             if ($uriTemplate[$cursor] === ' ') {
                 $cursor++;
-            } elseif (strpos(self::PUNCTUATION, $uriTemplate[$cursor]) !== false) {
+            } elseif (\strpos(self::PUNCTUATION, $uriTemplate[$cursor]) !== false) {
                 self::flushTextBuffer($textBuffer, $tokens);
                 self::lexPunctuation($uriTemplate[$cursor], $tokens, $cursor);
-            } elseif (preg_match(self::VARIABLE_NAME_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
+            } elseif (\preg_match(self::VARIABLE_NAME_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
                 self::flushTextBuffer($textBuffer, $tokens);
                 self::lexVariableName($matches[0], $tokens, $cursor);
-            } elseif (preg_match(self::NUMBER_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
+            } elseif (\preg_match(self::NUMBER_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
                 self::flushTextBuffer($textBuffer, $tokens);
                 self::lexNumber($matches[0], $tokens, $cursor);
-            } elseif (preg_match(self::QUOTED_STRING_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
+            } elseif (\preg_match(self::QUOTED_STRING_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
                 self::flushTextBuffer($textBuffer, $tokens);
                 self::lexQuotedString($matches[0], $tokens, $cursor);
             } else {
@@ -101,7 +101,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
             $tokens[] = new Token(TokenTypes::T_NUMBER, $intVal);
         }
 
-        $cursor += mb_strlen($number);
+        $cursor += \mb_strlen($number);
     }
 
     /**
@@ -126,8 +126,8 @@ final class UriTemplateLexer implements IUriTemplateLexer
      */
     private static function lexQuotedString(string $quotedString, array &$tokens, int &$cursor): void
     {
-        $tokens[] = new Token(TokenTypes::T_QUOTED_STRING, stripcslashes(substr(trim($quotedString), 1, -1)));
-        $cursor += mb_strlen($quotedString);
+        $tokens[] = new Token(TokenTypes::T_QUOTED_STRING, \stripcslashes(\substr(\trim($quotedString), 1, -1)));
+        $cursor += \mb_strlen($quotedString);
     }
 
     /**
@@ -153,14 +153,14 @@ final class UriTemplateLexer implements IUriTemplateLexer
     private static function lexVariableName(string $variableName, array &$tokens, int &$cursor): void
     {
         // Remove the colon before the variable name
-        $trimmedVariableName = substr($variableName, 1);
+        $trimmedVariableName = \substr($variableName, 1);
 
-        if (mb_strlen($trimmedVariableName) > self::VARIABLE_NAME_MAX_LENGTH) {
+        if (\mb_strlen($trimmedVariableName) > self::VARIABLE_NAME_MAX_LENGTH) {
             throw new InvalidArgumentException("Variable name \"$trimmedVariableName\" exceeds the max length limit");
         }
 
         $tokens[] = new Token(TokenTypes::T_VARIABLE, $trimmedVariableName);
         // We have to advance the cursor the length of the untrimmed variable name
-        $cursor += mb_strlen($variableName);
+        $cursor += \mb_strlen($variableName);
     }
 }

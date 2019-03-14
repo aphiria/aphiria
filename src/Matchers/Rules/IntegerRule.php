@@ -30,6 +30,6 @@ final class IntegerRule implements IRule
      */
     public function passes($value): bool
     {
-        return filter_var($value, FILTER_VALIDATE_INT) !== false;
+        return \filter_var($value, FILTER_VALIDATE_INT) !== false;
     }
 }

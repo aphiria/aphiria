@@ -346,7 +346,7 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-        $invalidVariableName = str_repeat('a', 33);
+        $invalidVariableName = \str_repeat('a', 33);
         $this->lexer->lex(":$invalidVariableName");
     }
 }

@@ -34,11 +34,11 @@ final class BetweenRule implements IRule
      */
     public function __construct($min, $max, bool $isInclusive = true)
     {
-        if (!is_numeric($min)) {
+        if (!\is_numeric($min)) {
             throw new InvalidArgumentException('Min value must be numeric');
         }
 
-        if (!is_numeric($max)) {
+        if (!\is_numeric($max)) {
             throw new InvalidArgumentException('Max value must be numeric');
         }
 

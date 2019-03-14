@@ -46,13 +46,13 @@ function formatResults(string $library, float $memoryTakenBytes, float $timeTake
 {
     global $numTests, $numRoutes;
 
-    return sprintf(
+    return \sprintf(
         "%s: \n    Total Time: %sms\n    Avg Match: %sms\n    Matches/s: %s/s\n    Memory: %sMB\n",
         $library,
-        number_format(1000 * $timeTakenSeconds),
-        round(1000 * $timeTakenSeconds / ($numTests * $numRoutes), 4),
-        number_format(round(($numTests * $numRoutes) / $timeTakenSeconds)),
-        round($memoryTakenBytes / 1024 / 1024, 3)
+        \number_format(1000 * $timeTakenSeconds),
+        \round(1000 * $timeTakenSeconds / ($numTests * $numRoutes), 4),
+        \number_format(\round(($numTests * $numRoutes) / $timeTakenSeconds)),
+        \round($memoryTakenBytes / 1024 / 1024, 3)
     );
 }
 
@@ -63,7 +63,7 @@ echo "--------------------------------------------------\n";
  * Symfony benchmark
  */
 
-$startMemory = memory_get_usage();
+$startMemory = \memory_get_usage();
 $routes = new RouteCollection();
 
 for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
@@ -73,7 +73,7 @@ for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
 $dumper = new PhpMatcherDumper($routes);
 eval('?'.'>'.$dumper->dump());
 $router = new ProjectUrlMatcher(new RequestContext());
-$startTime = microtime(true);
+$startTime = \microtime(true);
 
 for ($testIter = 0;$testIter < $numTests;$testIter++) {
     for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
@@ -81,13 +81,13 @@ for ($testIter = 0;$testIter < $numTests;$testIter++) {
     }
 }
 
-echo formatResults('Symfony', memory_get_usage() - $startMemory, microtime(true) - $startTime);
+echo formatResults('Symfony', \memory_get_usage() - $startMemory, \microtime(true) - $startTime);
 
 /**
  * Aphiria benchmark
  */
 
-$startMemory = memory_get_usage();
+$startMemory = \memory_get_usage();
 $routeFactory = new LazyRouteFactory(function () use ($numRoutes) {
     $routes = new RouteBuilderRegistry();
 
@@ -99,7 +99,7 @@ $routeFactory = new LazyRouteFactory(function () use ($numRoutes) {
     return $routes->buildAll();
 });
 $routeMatcher = new TrieRouteMatcher((new TrieFactory($routeFactory))->createTrie());
-$startTime = microtime(true);
+$startTime = \microtime(true);
 
 for ($testIter = 0;$testIter < $numTests;$testIter++) {
     for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
@@ -107,19 +107,19 @@ for ($testIter = 0;$testIter < $numTests;$testIter++) {
     }
 }
 
-echo formatResults('Aphiria', memory_get_usage() - $startMemory, microtime(true) - $startTime);
+echo formatResults('Aphiria', \memory_get_usage() - $startMemory, \microtime(true) - $startTime);
 
 /**
  * FastRoute benchmark
  */
 
-$startMemory = memory_get_usage();
+$startMemory = \memory_get_usage();
 $dispatcher = FastRoute\simpleDispatcher(function (RouteCollector $routes) use ($numRoutes) {
     for ($routeIter = 0; $routeIter < $numRoutes; ++$routeIter) {
         $routes->addRoute('GET', "/abc$routeIter/$routeIter/{foo}/$routeIter", "f$routeIter");
     }
 });
-$startTime = microtime(true);
+$startTime = \microtime(true);
 
 for ($testIter = 0;$testIter < $numTests;$testIter++) {
     for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
@@ -127,4 +127,4 @@ for ($testIter = 0;$testIter < $numTests;$testIter++) {
     }
 }
 
-echo formatResults('FastRoute', memory_get_usage() - $startMemory, microtime(true) - $startTime);
+echo formatResults('FastRoute', \memory_get_usage() - $startMemory, \microtime(true) - $startTime);

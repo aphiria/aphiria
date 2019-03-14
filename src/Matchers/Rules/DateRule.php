@@ -30,7 +30,7 @@ final class DateRule
     {
         $formatArray = (array)$formats;
 
-        if (count($formatArray) === 0) {
+        if (\count($formatArray) === 0) {
             throw new InvalidArgumentException('No formats specified for ' . static::class);
         }
 

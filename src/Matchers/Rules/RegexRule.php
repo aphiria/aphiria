@@ -41,6 +41,6 @@ final class RegexRule implements IRule
      */
     public function passes($value): bool
     {
-        return preg_match($this->regex, $value) === 1;
+        return \preg_match($this->regex, $value) === 1;
     }
 }

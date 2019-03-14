@@ -47,14 +47,14 @@ class RequestHeaderParserTest extends TestCase
         $expectedHeaders = [];
 
         foreach (self::$serverArray as $key => $value) {
-            if (strpos(strtoupper($key), 'HTTP_') === 0) {
-                if (!is_array($value)) {
+            if (\strpos(\strtoupper($key), 'HTTP_') === 0) {
+                if (!\is_array($value)) {
                     $value = [$value];
                 }
 
                 $expectedHeaders[$this->normalizeName($key)] = $value;
-            } elseif (strpos(strtoupper($key), 'CONTENT_') === 0) {
-                if (!is_array($value)) {
+            } elseif (\strpos(\strtoupper($key), 'CONTENT_') === 0) {
+                if (!\is_array($value)) {
                     $value = [$value];
                 }
 
@@ -73,10 +73,10 @@ class RequestHeaderParserTest extends TestCase
      */
     private function normalizeName($name): string
     {
-        $dashedName = strtr($name, '_', '-');
+        $dashedName = \strtr($name, '_', '-');
 
-        if (strpos(strtoupper($dashedName), 'HTTP-') === 0) {
-            $dashedName = substr($dashedName, 5);
+        if (\strpos(\strtoupper($dashedName), 'HTTP-') === 0) {
+            $dashedName = \substr($dashedName, 5);
         }
 
         return $dashedName;

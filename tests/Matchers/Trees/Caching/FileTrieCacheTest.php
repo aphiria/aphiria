@@ -47,14 +47,14 @@ class FileTrieCacheTest extends TestCase
 
     protected function tearDown(): void
     {
-        if (file_exists(self::PATH)) {
-            @unlink(self::PATH);
+        if (\file_exists(self::PATH)) {
+            @\unlink(self::PATH);
         }
     }
 
     public function testFlushDeletesFile(): void
     {
-        file_put_contents(self::PATH, 'foo');
+        \file_put_contents(self::PATH, 'foo');
         $this->cache->flush();
         $this->assertFileNotExists(self::PATH);
     }
@@ -87,7 +87,7 @@ class FileTrieCacheTest extends TestCase
     public function testHasReturnsExistenceOfFile(): void
     {
         $this->assertFalse($this->cache->has());
-        file_put_contents(self::PATH, 'foo');
+        \file_put_contents(self::PATH, 'foo');
         $this->assertTrue($this->cache->has());
     }
 

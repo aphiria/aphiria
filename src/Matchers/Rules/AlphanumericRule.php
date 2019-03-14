@@ -30,6 +30,6 @@ final class AlphanumericRule implements IRule
      */
     public function passes($value): bool
     {
-        return ctype_alnum($value) && strpos($value, ' ') === false;
+        return \ctype_alnum($value) && \strpos($value, ' ') === false;
     }
 }

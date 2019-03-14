@@ -128,7 +128,7 @@ final class UriTemplateParser implements IUriTemplateParser
                      */
                     $isValid = false;
 
-                    for ($i = count($currNode->children) - 1;$i >= 0;$i--) {
+                    for ($i = \count($currNode->children) - 1;$i >= 0;$i--) {
                         $childNode = $currNode->children[$i];
 
                         if ($childNode->type !== AstNodeTypes::OPTIONAL_ROUTE_PART) {

@@ -37,7 +37,7 @@ abstract class TrieNode
      */
     protected function __construct(array $children, $routes, ?TrieNode $hostTrie)
     {
-        if (is_array($routes)) {
+        if (\is_array($routes)) {
             $this->routes = $routes;
         } elseif ($routes instanceof Route) {
             $this->routes = [$routes];
@@ -66,7 +66,7 @@ abstract class TrieNode
         } elseif ($childNode instanceof VariableTrieNode) {
             $this->addVariableChildNode($childNode);
         } else {
-            throw new InvalidArgumentException('Unexpected trie node type ' . get_class($childNode));
+            throw new InvalidArgumentException('Unexpected trie node type ' . \get_class($childNode));
         }
 
         return $this;
@@ -100,12 +100,12 @@ abstract class TrieNode
     private function addLiteralChildNode(LiteralTrieNode $childNode): void
     {
         // Stringify the value in case it's a number and we don't want PHP getting confused
-        $valueAsString = strtolower((string)$childNode->value);
+        $valueAsString = \strtolower((string)$childNode->value);
 
         if (isset($this->literalChildrenByValue[$valueAsString])) {
             // A literal child already exists with this value, so merge the routes and add all its children
             $matchingChildNode = $this->literalChildrenByValue[$valueAsString];
-            $matchingChildNode->routes = array_merge(
+            $matchingChildNode->routes = \array_merge(
                 $matchingChildNode->routes,
                 $childNode->routes
             );
@@ -133,7 +133,7 @@ abstract class TrieNode
             // Purposely doing a loose check here because we don't care about reference equality
             if ($variableChildNode->parts == $childNode->parts) {
                 $matchingChildNode = $variableChildNode;
-                $variableChildNode->routes = array_merge($variableChildNode->routes, $childNode->routes);
+                $variableChildNode->routes = \array_merge($variableChildNode->routes, $childNode->routes);
                 break;
             }
         }

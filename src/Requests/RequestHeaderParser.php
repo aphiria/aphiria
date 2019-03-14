@@ -39,9 +39,9 @@ final class RequestHeaderParser
         $headers = [];
 
         foreach ($server as $key => $value) {
-            $uppercasedKey = strtoupper($key);
+            $uppercasedKey = \strtoupper($key);
 
-            if (isset(self::$specialCaseHeaders[$uppercasedKey]) || strpos($uppercasedKey, 'HTTP_') === 0) {
+            if (isset(self::$specialCaseHeaders[$uppercasedKey]) || \strpos($uppercasedKey, 'HTTP_') === 0) {
                 $value = (array)$value;
                 $headers[self::normalizeName($key)] = $value;
             }
@@ -58,10 +58,10 @@ final class RequestHeaderParser
      */
     private static function normalizeName($name): string
     {
-        $dashedName = str_replace('_', '-', $name);
+        $dashedName = \str_replace('_', '-', $name);
 
-        if (stripos($dashedName, 'HTTP-') === 0) {
-            $dashedName = substr($dashedName, 5);
+        if (\stripos($dashedName, 'HTTP-') === 0) {
+            $dashedName = \substr($dashedName, 5);
         }
 
         return $dashedName;

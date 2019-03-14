@@ -38,14 +38,14 @@ final class VariableTrieNode extends TrieNode
     {
         parent::__construct($children, $routes, $hostTrie);
 
-        $this->parts = is_array($parts) ? $parts : [$parts];
+        $this->parts = \is_array($parts) ? $parts : [$parts];
 
-        if (count($this->parts) === 0) {
+        if (\count($this->parts) === 0) {
             throw new InvalidArgumentException('Must have at least one variable part');
         }
 
         // If this segment is composed of only a single variable (which is the norm in REST APIs), optimize for it
-        if (count($this->parts) === 1 && $this->parts[0] instanceof RouteVariable) {
+        if (\count($this->parts) === 1 && $this->parts[0] instanceof RouteVariable) {
             $this->onlyContainsVariable = true;
         } else {
             // This must contain at least two  parts (variable or literal parts)
@@ -56,7 +56,7 @@ final class VariableTrieNode extends TrieNode
                 if ($part instanceof RouteVariable) {
                     $this->regex .= '(?<' . $part->name . '>.*)';
                 } else {
-                    $this->regex .= preg_quote($part, '#');
+                    $this->regex .= \preg_quote($part, '#');
                 }
             }
 
@@ -87,7 +87,7 @@ final class VariableTrieNode extends TrieNode
 
         $matches = [];
 
-        if (preg_match($this->regex, $segmentValue, $matches, PREG_UNMATCHED_AS_NULL) !== 1) {
+        if (\preg_match($this->regex, $segmentValue, $matches, PREG_UNMATCHED_AS_NULL) !== 1) {
             return false;
         }
 

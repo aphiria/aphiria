@@ -52,7 +52,7 @@ final class RouteBuilderRegistry
     {
         $this->groupOptionsStack[] = $groupOptions;
         $callback($this);
-        array_pop($this->groupOptionsStack);
+        \array_pop($this->groupOptionsStack);
     }
 
     /**
@@ -93,7 +93,7 @@ final class RouteBuilderRegistry
         $groupAttributes = [];
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupAttributes = array_merge($groupAttributes, $groupOptions->attributes);
+            $groupAttributes = \array_merge($groupAttributes, $groupOptions->attributes);
         }
 
         $routeBuilder->withManyAttributes($groupAttributes);
@@ -109,7 +109,7 @@ final class RouteBuilderRegistry
         $groupConstraintBindings = [];
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupConstraintBindings = array_merge($groupConstraintBindings, $groupOptions->constraints);
+            $groupConstraintBindings = \array_merge($groupConstraintBindings, $groupOptions->constraints);
         }
 
         $routeBuilder->withManyConstraints($groupConstraintBindings);
@@ -125,7 +125,7 @@ final class RouteBuilderRegistry
         $groupMiddlewareBindings = [];
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupMiddlewareBindings = array_merge($groupMiddlewareBindings, $groupOptions->middlewareBindings);
+            $groupMiddlewareBindings = \array_merge($groupMiddlewareBindings, $groupOptions->middlewareBindings);
         }
 
         $routeBuilder->withManyMiddleware($groupMiddlewareBindings);
