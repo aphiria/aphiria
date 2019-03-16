@@ -22,18 +22,18 @@ interface IApplicationBuilder
     /**
      * Adds bootstrappers to the application
      *
-     * @param Closure $delegate The delegate that will add bootstrappers (must accept a bootstrapper registry)
+     * @param Closure $callback The callback that will add bootstrappers (must accept a bootstrapper registry)
      * @return IApplicationBuilder For chaining
      */
-    public function withBootstrappers(Closure $delegate): self;
+    public function withBootstrappers(Closure $callback): self;
 
     /**
      * Adds console commands to the application
      *
-     * @param Closure $delegate The delegate that will add console commands (must accept a command registry)
+     * @param Closure $callback The callback that will add console commands (must accept a command registry)
      * @return IApplicationBuilder For chaining
      */
-    public function withCommands(Closure $delegate): self;
+    public function withCommands(Closure $callback): self;
 
     /**
      * Adds an entire module to the application
@@ -46,8 +46,8 @@ interface IApplicationBuilder
     /**
      * Adds routes to the application
      *
-     * @param Closure $delegate The delegate that will add routes (must accept a route builder registry)
+     * @param Closure $callback The callback that will add routes (must accept a route builder registry)
      * @return IApplicationBuilder For chaining
      */
-    public function withRoutes(Closure $delegate): self;
+    public function withRoutes(Closure $callback): self;
 }

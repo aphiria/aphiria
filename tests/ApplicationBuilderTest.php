@@ -43,7 +43,7 @@ class ApplicationBuilderTest extends TestCase
         $this->appBuilder = new ApplicationBuilder($this->bootstrappers, $this->routeFactory, $this->commands);
     }
 
-    public function testBootstrapperDelegatesAreInvokedWithRegistryOnBuild(): void
+    public function testBootstrapperCallbacksAreInvokedWithRegistryOnBuild(): void
     {
         $isInvoked = false;
         $this->appBuilder->withBootstrappers(function (IBootstrapperRegistry $bootstrappers) use (&$isInvoked) {
@@ -54,7 +54,7 @@ class ApplicationBuilderTest extends TestCase
         $this->assertTrue($isInvoked);
     }
 
-    public function testCommandDelegatesAreInvokedWithRegistryOnBuild(): void
+    public function testCommandCallbacksAreInvokedWithRegistryOnBuild(): void
     {
         $isInvoked = false;
         $this->appBuilder->withCommands(function (CommandRegistry $commands) use (&$isInvoked) {
@@ -65,7 +65,7 @@ class ApplicationBuilderTest extends TestCase
         $this->assertTrue($isInvoked);
     }
 
-    public function testRouteDelegatesAreInvokedWithRegistryOnBuild(): void
+    public function testRouteCallbacksAreInvokedWithRegistryOnBuild(): void
     {
         $isInvoked = false;
         $this->appBuilder->withRoutes(function (RouteBuilderRegistry $routes) use (&$isInvoked) {

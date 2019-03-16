@@ -86,7 +86,9 @@ $appBuilder->withCommands(function (CommandRegistry $commands) {
     // You can also use $commands->registerManyCommands()
     $commands->registerCommand(
         new FooCommand(),
-        new FooCommandHandler()
+        function () {
+            return new FooCommandHandler();
+        }
     );
 });
 ```
@@ -118,7 +120,9 @@ final class UserModuleBuilder implements IModuleBuilder
         $appBuilder->withCommands(function (CommandRegistry $commands) {
             $commands->registerCommand(
                 new RunUserReportCommand(),
-                new RunUserReportCommandHandler()
+                function () {
+                    return new RunUserReportCommandHandler();
+                }
             );
         });
     }

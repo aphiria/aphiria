@@ -23,23 +23,23 @@ use Opulence\Ioc\Bootstrappers\IBootstrapperRegistry;
  */
 class ApplicationBuilder implements IApplicationBuilder
 {
-    /** @var IBootstrapperRegistry The bootstrappers that will be passed to bootstrapper delegates */
+    /** @var IBootstrapperRegistry The bootstrappers that will be passed to bootstrapper callbacks */
     private $bootstrappers;
     /** @var LazyRouteFactory The factory that will create our routes */
     private $routeFactory;
-    /** @var CommandRegistry The command registry to use in delegates */
+    /** @var CommandRegistry The command registry to use in callbacks */
     private $commands;
-    /** @var Closure[] The list of bootstrapper delegates */
-    private $bootstrapperDelegates = [];
-    /** @var Closure[] The list of route delegates */
-    private $routeDelegates = [];
-    /** @var Closure[] The list of command delegates */
-    private $commandDelegates = [];
+    /** @var Closure[] The list of bootstrapper callbacks */
+    private $bootstrapperCallbacks = [];
+    /** @var Closure[] The list of route callbacks */
+    private $routeCallbacks = [];
+    /** @var Closure[] The list of command callbacks */
+    private $commandCallbacks = [];
 
     /**
-     * @param IBootstrapperRegistry $bootstrappers The bootstrappers that will be passed to bootstrapper delegates
+     * @param IBootstrapperRegistry $bootstrappers The bootstrappers that will be passed to bootstrapper callbacks
      * @param LazyRouteFactory $routeFactory The factory that will create our routes
-     * @param CommandRegistry $commands The command registry to use in delegates
+     * @param CommandRegistry $commands The command registry to use in callbacks
      */
     public function __construct(
         IBootstrapperRegistry $bootstrappers,
@@ -56,31 +56,31 @@ class ApplicationBuilder implements IApplicationBuilder
      */
     public function build(): void
     {
-        foreach ($this->bootstrapperDelegates as $bootstrapperDelegate) {
-            $bootstrapperDelegate($this->bootstrappers);
+        foreach ($this->bootstrapperCallbacks as $bootstrapperCallback) {
+            $bootstrapperCallback($this->bootstrappers);
         }
 
-        $this->routeFactory->addFactoryDelegate(function () {
+        $this->routeFactory->addFactory(function () {
             $routeBuilders = new RouteBuilderRegistry();
 
-            foreach ($this->routeDelegates as $routeDelegate) {
-                $routeDelegate($routeBuilders);
+            foreach ($this->routeCallbacks as $routeCallback) {
+                $routeCallback($routeBuilders);
             }
 
             return $routeBuilders->buildAll();
         });
 
-        foreach ($this->commandDelegates as $commandDelegate) {
-            $commandDelegate($this->commands);
+        foreach ($this->commandCallbacks as $commandCallback) {
+            $commandCallback($this->commands);
         }
     }
 
     /**
      * @inheritdoc
      */
-    public function withBootstrappers(Closure $delegate): IApplicationBuilder
+    public function withBootstrappers(Closure $callback): IApplicationBuilder
     {
-        $this->bootstrapperDelegates[] = $delegate;
+        $this->bootstrapperCallbacks[] = $callback;
 
         return $this;
     }
@@ -88,9 +88,9 @@ class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function withCommands(Closure $delegate): IApplicationBuilder
+    public function withCommands(Closure $callback): IApplicationBuilder
     {
-        $this->commandDelegates[] = $delegate;
+        $this->commandCallbacks[] = $callback;
 
         return $this;
     }
@@ -108,9 +108,9 @@ class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function withRoutes(Closure $delegate): IApplicationBuilder
+    public function withRoutes(Closure $callback): IApplicationBuilder
     {
-        $this->routeDelegates[] = $delegate;
+        $this->routeCallbacks[] = $callback;
 
         return $this;
     }
