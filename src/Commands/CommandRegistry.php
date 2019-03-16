@@ -43,12 +43,13 @@ final class CommandRegistry
      * Registers a command
      *
      * @param Command $command The command to register
-     * @param Closure|ICommandHandler $commandHandler The handler for the input command
+     * @param Closure $commandHandlerFactory The factory that will create the command handler
+     *      Note: This must be parameterless
      * @throws InvalidArgumentException Thrown if the command handler is not a Closure nor a command handler
      */
-    public function registerCommand(Command $command, $commandHandler): void
+    public function registerCommand(Command $command, Closure $commandHandlerFactory): void
     {
-        $this->bindings[self::normalizeCommandName($command->name)] = new CommandBinding($command, $commandHandler);
+        $this->bindings[self::normalizeCommandName($command->name)] = new CommandBinding($command, $commandHandlerFactory);
     }
 
     /**
@@ -92,6 +93,7 @@ final class CommandRegistry
      */
     public function tryGetCommand(string $commandName, ?Command &$command): bool
     {
+        /** @var CommandBinding|null $binding */
         $binding = null;
 
         if (!$this->tryGetBinding($commandName, $binding)) {
@@ -121,13 +123,14 @@ final class CommandRegistry
             throw new InvalidArgumentException('Command must be either a string or an instance of ' . Command::class);
         }
 
+        /** @var CommandBinding|null $binding */
         $binding = null;
 
         if (!$this->tryGetBinding($commandName, $binding)) {
             return false;
         }
 
-        $commandHandler = $binding->commandHandler;
+        $commandHandler = $binding->resolveCommandHandler();
 
         return true;
     }

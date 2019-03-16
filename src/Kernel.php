@@ -49,8 +49,18 @@ final class Kernel implements ICommandBus
     {
         // Set up our default commands
         $commands->registerManyCommands([
-            new CommandBinding(new HelpCommand(), new HelpCommandHandler($commands)),
-            new CommandBinding(new AboutCommand(), new AboutCommandHandler($commands))
+            new CommandBinding(
+                new HelpCommand(),
+                function () use ($commands) {
+                    return new HelpCommandHandler($commands);
+                }
+            ),
+            new CommandBinding(
+                new AboutCommand(),
+                function () use ($commands) {
+                    return new AboutCommandHandler($commands);
+                }
+            )
         ]);
         $this->commands = $commands;
         $this->inputCompiler = $inputCompiler ?? new InputCompiler($this->commands);
@@ -65,13 +75,14 @@ final class Kernel implements ICommandBus
             $output = $output ?? new ConsoleOutput();
             // Default to the 'about' command if no command name is given
             $compiledInput = $this->inputCompiler->compile($rawInput);
+            /** @var CommandBinding|null $binding */
             $binding = null;
 
             if (!$this->commands->tryGetBinding($compiledInput->commandName, $binding)) {
                 throw new InvalidArgumentException("Command \"{$compiledInput->commandName}\" is not registered");
             }
 
-            $statusCode = $binding->commandHandler->handle($compiledInput, $output);
+            $statusCode = $binding->resolveCommandHandler()->handle($compiledInput, $output);
 
             return $statusCode ?? StatusCodes::OK;
         } catch (CommandNotFoundException $ex) {

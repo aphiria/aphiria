@@ -87,14 +87,19 @@ $input->options['optionName']; // The value of 'optionName'
 
 <h3 id="registering-commands">Registering Commands</h3>
 
-Before you can use the example command, you must register it so that the `Kernel` knows about it:
+Before you can use the example command, you must register it so that the `Kernel` knows about it.  Your command handler should be wrapped in a parameterless closure that will return the handler.  This allows us to defer resolving a handler until we actually need it.  This is especially useful when your handler is a class with expensive-to-instantiate dependencies, such as database connections.
 
 ```php
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Kernel;
 
 $commands = new CommandRegistry();
-$commands->registerCommand($greetingCommand, $greetingCommandHandler);
+$commands->registerCommand(
+    $greetingCommand, 
+    function () {
+        return $greetingCommandHandler;
+    }
+);
 
 // Actually run the kernel
 global $argv;

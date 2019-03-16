@@ -49,7 +49,9 @@ class InputCompilerTest extends TestCase
                 [],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo bar\\baz');
         $this->assertEquals('bar\\baz', $input->arguments['arg']);
@@ -59,7 +61,9 @@ class InputCompilerTest extends TestCase
     {
         $this->commands->registerCommand(
             new Command('bar', [], [], ''),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile(['foo', 'bar']);
         $this->assertEquals('bar', $input->commandName);
@@ -77,7 +81,9 @@ class InputCompilerTest extends TestCase
                 ],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo bar -r --opt1=dave');
         $this->assertEquals('foo', $input->commandName);
@@ -99,7 +105,9 @@ class InputCompilerTest extends TestCase
                 '',
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo bar baz');
         $this->assertEquals(['bar', 'baz'], $input->arguments['arg1']);
@@ -118,7 +126,9 @@ class InputCompilerTest extends TestCase
                 '',
                 '',
                 ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo bar baz');
         $this->assertEquals(['bar', 'baz'], $input->arguments['arg']);
@@ -138,7 +148,9 @@ class InputCompilerTest extends TestCase
                 '',
                 '',
                 ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $this->compiler->compile('foo bar baz');
     }
@@ -147,7 +159,9 @@ class InputCompilerTest extends TestCase
     {
         $this->commands->registerCommand(
             new Command('foo', [], [], ''),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile(['name' => 'foo']);
         $this->assertEquals('foo', $input->commandName);
@@ -164,7 +178,9 @@ class InputCompilerTest extends TestCase
                 ],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo --opt=dave --opt=young');
         $this->assertEquals('foo', $input->commandName);
@@ -183,7 +199,9 @@ class InputCompilerTest extends TestCase
                 ],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo --opt dave --opt young');
         $this->assertEquals('foo', $input->commandName);
@@ -200,7 +218,9 @@ class InputCompilerTest extends TestCase
                 [],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo');
         $this->assertEquals('foo', $input->commandName);
@@ -223,7 +243,9 @@ class InputCompilerTest extends TestCase
                 [new Option('opt', null, OptionTypes::REQUIRED_VALUE, '')],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo --opt=dave');
         $this->assertEquals('foo', $input->commandName);
@@ -240,7 +262,9 @@ class InputCompilerTest extends TestCase
                 [new Option('opt', null, OptionTypes::REQUIRED_VALUE, '')],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo --opt dave');
         $this->assertEquals('foo', $input->commandName);
@@ -257,7 +281,9 @@ class InputCompilerTest extends TestCase
                 [new Option('opt', null, OptionTypes::REQUIRED_VALUE, '')],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo --opt dave bar');
         $this->assertEquals('foo', $input->commandName);
@@ -277,7 +303,9 @@ class InputCompilerTest extends TestCase
                 ],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile("foo --opt1 'dave' --opt2=\"young\"");
         $this->assertEquals('foo', $input->commandName);
@@ -300,7 +328,9 @@ class InputCompilerTest extends TestCase
                 [],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo bar baz blah');
         $this->assertEquals('foo', $input->commandName);
@@ -323,7 +353,9 @@ class InputCompilerTest extends TestCase
                 ],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo -r -f -d');
         $this->assertEquals('foo', $input->commandName);
@@ -346,7 +378,9 @@ class InputCompilerTest extends TestCase
                 ],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo -rfd');
         $this->assertEquals('foo', $input->commandName);
@@ -367,7 +401,9 @@ class InputCompilerTest extends TestCase
                 '',
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $this->compiler->compile('foo --opt=bar');
     }
@@ -382,7 +418,9 @@ class InputCompilerTest extends TestCase
                 '',
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo');
         $this->assertEquals('bar', $input->arguments['arg']);
@@ -402,7 +440,9 @@ class InputCompilerTest extends TestCase
                 '',
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $this->compiler->compile('foo bar');
     }
@@ -418,7 +458,9 @@ class InputCompilerTest extends TestCase
                 '',
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $this->compiler->compile('foo --opt');
     }
@@ -432,7 +474,9 @@ class InputCompilerTest extends TestCase
                 [],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo bar');
         $this->assertEquals('foo', $input->commandName);
@@ -449,7 +493,9 @@ class InputCompilerTest extends TestCase
                 [new Option('opt', 'r', OptionTypes::NO_VALUE, '')],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo -r');
         $this->assertEquals('foo', $input->commandName);
@@ -469,7 +515,9 @@ class InputCompilerTest extends TestCase
                 ],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo --opt1 --opt2');
         $this->assertEquals('foo', $input->commandName);
@@ -482,7 +530,9 @@ class InputCompilerTest extends TestCase
     {
         $this->commands->registerCommand(
             new Command('foo', [], [], ''),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo');
         $this->assertEquals('foo', $input->commandName);
@@ -508,7 +558,9 @@ class InputCompilerTest extends TestCase
                 '',
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $input = $this->compiler->compile('foo');
         $this->assertEquals('foo value', $input->options['foo']);
@@ -526,7 +578,9 @@ class InputCompilerTest extends TestCase
                 [],
                 ''
             ),
-            $this->createMock(ICommandHandler::class)
+            function () {
+                return $this->createMock(ICommandHandler::class);
+            }
         );
         $this->compiler->compile('foo bar baz');
     }

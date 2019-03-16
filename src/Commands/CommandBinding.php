@@ -22,25 +22,40 @@ final class CommandBinding
 {
     /** @var Command The command */
     public $command;
-    /** @var ICommandHandler The command handler that will handle the command */
-    public $commandHandler;
+    /** @var Closure The factory that will create the command handler */
+    public $commandHandlerFactory;
 
     /**
      * @param Command $command The command handler
-     * @param ICommandHandler|Closure $commandHandler The command handler/closure that will handle the command
+     * @param Closure $commandHandlerFactory The factory that will create the command handler
+     *      It must be parameterless
      */
-    public function __construct(Command $command, $commandHandler)
+    public function __construct(Command $command, Closure $commandHandlerFactory)
     {
+        $this->command = $command;
+        $this->commandHandlerFactory = $commandHandlerFactory;
+    }
+
+    /**
+     * Resolves the command handler
+     *
+     * @return ICommandHandler The resolved command handler
+     * @throws InvalidArgumentException Thrown if the command handler wasn't valid
+     */
+    public function resolveCommandHandler(): ICommandHandler
+    {
+        $commandHandler = ($this->commandHandlerFactory)();
+
         if ($commandHandler instanceof ICommandHandler) {
-            $this->commandHandler = $commandHandler;
-        } elseif ($commandHandler instanceof Closure) {
-            $this->commandHandler = new ClosureCommandHandler($commandHandler);
-        } else {
-            throw new InvalidArgumentException(
-                'Command handler must be instance of ' . Closure::class . ' or ' . ICommandHandler::class
-            );
+            return $commandHandler;
         }
 
-        $this->command = $command;
+        if ($commandHandler instanceof Closure) {
+            return new ClosureCommandHandler($commandHandler);
+        }
+
+        throw new InvalidArgumentException(
+            'Command handler must implement ' . ICommandHandler::class . ' or be a closure'
+        );
     }
 }

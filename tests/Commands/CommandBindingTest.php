@@ -18,8 +18,6 @@ use Aphiria\Console\Commands\CommandBinding;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
-use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,30 +25,42 @@ use PHPUnit\Framework\TestCase;
  */
 class CommandBindingTest extends TestCase
 {
-    public function testClosureIsWrappedInClosureCommandHandler(): void
-    {
-        $closure = function (Input $input, IOutput $output) {
-            // Don't do anything
-        };
-        $expectedCommand = new Command('foo', [], [], '');
-        $binding = new CommandBinding($expectedCommand, $closure);
-        $this->assertInstanceOf(ClosureCommandHandler::class, $binding->commandHandler);
-        $this->assertSame($expectedCommand, $binding->command);
-    }
-
-    public function testExceptionThrownWhenNotUsingClosureNorCommandHandler(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new CommandBinding(new Command('name', [], [], '', ''), 'foo');
-    }
-
     public function testPropertiesAreSetInConstructorWhenUsingCommandHandlerInterface(): void
     {
         $expectedCommand = new Command('name', [], [], '', '');
-        /** @var ICommandHandler|MockObject $expectedCommandHandler */
-        $expectedCommandHandler = $this->createMock(ICommandHandler::class);
-        $binding = new CommandBinding($expectedCommand, $expectedCommandHandler);
+        $expectedCommandHandlerFactory = function () {
+            return $this->createMock(ICommandHandler::class);
+        };
+        $binding = new CommandBinding($expectedCommand, $expectedCommandHandlerFactory);
         $this->assertSame($expectedCommand, $binding->command);
-        $this->assertSame($expectedCommandHandler, $binding->commandHandler);
+        $this->assertSame($expectedCommandHandlerFactory, $binding->commandHandlerFactory);
+    }
+
+    public function testResolvingCommandHandlerThatIsClosureReturnsClosureCommandHandler(): void
+    {
+        $command = new Command('name', [], [], '', '');
+        $invoked = false;
+        $expectedCommandHandler = function (Input $input, IOutput $output) use (&$invoked) {
+            $invoked = true;
+        };
+        $commandHandlerFactory = function () use ($expectedCommandHandler) {
+            return $expectedCommandHandler;
+        };
+        $binding = new CommandBinding($command, $commandHandlerFactory);
+        $actualCommandHandler = $binding->resolveCommandHandler();
+        $this->assertInstanceOf(ClosureCommandHandler::class, $actualCommandHandler);
+        $actualCommandHandler->handle(new Input('name', [], []), $this->createMock(IOutput::class));
+        $this->assertTrue($invoked);
+    }
+
+    public function testResolvingCommandHandlerThatIsCommandHandlerReturnsTheCommandHandler(): void
+    {
+        $command = new Command('name', [], [], '', '');
+        $expectedCommandHandler = $this->createMock(ICommandHandler::class);
+        $commandHandlerFactory = function () use ($expectedCommandHandler) {
+            return $expectedCommandHandler;
+        };
+        $binding = new CommandBinding($command, $commandHandlerFactory);
+        $this->assertSame($expectedCommandHandler, $binding->resolveCommandHandler());
     }
 }
