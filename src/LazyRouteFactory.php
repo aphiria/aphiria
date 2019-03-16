@@ -19,29 +19,29 @@ use Closure;
  */
 final class LazyRouteFactory implements IRouteFactory
 {
-    /** @var Closure[] The list of delegates that will actually create the routes */
-    private $routeFactoryDelegates = [];
+    /** @var Closure[] The list of factories that will actually create the routes */
+    private $routeFactories = [];
 
     /**
-     * @param Closure|null $routeFactoryDelegate The initial delegate that will be used to create routes
+     * @param Closure|null $routeFactory The initial factory that will be used to create routes
      *      Note: Must be parameterless and return a list of Route objects
      */
-    public function __construct(Closure $routeFactoryDelegate = null)
+    public function __construct(Closure $routeFactory = null)
     {
-        if ($routeFactoryDelegate !== null) {
-            $this->routeFactoryDelegates[] = $routeFactoryDelegate;
+        if ($routeFactory !== null) {
+            $this->routeFactories[] = $routeFactory;
         }
     }
 
     /**
-     * Adds a factory delegate
+     * Adds a route factory
      *
-     * @param Closure $routeFactoryDelegate The delegate to add
+     * @param Closure $routeFactory The factory to add
      *      Note: Must be parameterless and return a list of Route objects
      */
-    public function addFactoryDelegate(Closure $routeFactoryDelegate): void
+    public function addFactory(Closure $routeFactory): void
     {
-        $this->routeFactoryDelegates[] = $routeFactoryDelegate;
+        $this->routeFactories[] = $routeFactory;
     }
 
     /**
@@ -51,8 +51,8 @@ final class LazyRouteFactory implements IRouteFactory
     {
         $routes = new RouteCollection();
 
-        foreach ($this->routeFactoryDelegates as $routeFactoryDelegate) {
-            $routes->addMany($routeFactoryDelegate());
+        foreach ($this->routeFactories as $routeFactory) {
+            $routes->addMany($routeFactory());
         }
 
         return $routes;

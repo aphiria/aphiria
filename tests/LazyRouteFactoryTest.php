@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
  */
 class LazyRouteFactoryTest extends TestCase
 {
-    public function testCreatingRoutesWillIncludeRoutesInInitialDelegate(): void
+    public function testCreatingRoutesWillIncludeRoutesInInitialFactory(): void
     {
         $factory = new LazyRouteFactory(function () {
             $routes = new RouteBuilderRegistry();
@@ -35,10 +35,10 @@ class LazyRouteFactoryTest extends TestCase
         $this->assertEquals('/foo', $routes[0]->uriTemplate->pathTemplate);
     }
 
-    public function testCreatingRoutesWillIncludeRoutesInAddedDelegate(): void
+    public function testCreatingRoutesWillIncludeRoutesInAddedFactory(): void
     {
         $factory = new LazyRouteFactory();
-        $factory->addFactoryDelegate(function () {
+        $factory->addFactory(function () {
             $routes = new RouteBuilderRegistry();
             $routes->map('GET', 'foo')
                 ->toMethod('Foo', 'bar');
@@ -50,7 +50,7 @@ class LazyRouteFactoryTest extends TestCase
         $this->assertEquals('/foo', $routes[0]->uriTemplate->pathTemplate);
     }
 
-    public function testCreatingRoutesWithNoDelegatesWillReturnEmptyCollection(): void
+    public function testCreatingRoutesWithNoFactoriesWillReturnEmptyCollection(): void
     {
         $factory = new LazyRouteFactory();
         $this->assertCount(0, $factory->createRoutes()->getAll());
