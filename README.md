@@ -31,18 +31,14 @@ This library requires PHP 7.3 and above.  It can be installed via <a href="https
 
 <h1 id="application-builder">Application Builder</h1>
 
-`ApplicationBuilder` provides all the functionality you'll need to configure your application logic.  It just needs a few dependencies:
+`ApplicationBuilder` provides all the functionality you'll need to configure your application logic:
 
 ```php
 use Aphiria\Configuration\ApplicationBuilder;
-use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\Routing\LazyRouteFactory;
-use Opulence\Ioc\Bootstrappers\BootstrapperRegistry;
+use Opulence\Ioc\IContainer;
 
-$bootstrappers = new BootstrapperRegistry();
-$routeFactory = new LazyRouteFactory();
-$commands = new CommandRegistry();
-$appBuilder = new ApplicationBuilder($bootstrappers, $routeFactory, $commands);
+$container = new Container();
+$appBuilder = new ApplicationBuilder($container);
 ```
 
 Once you're done configuring your [bootstrappers](#configuring-bootstrappers), [routes](#configuring-routes), and [console commands](#configuring-console-commands), you can go ahead and build your application:

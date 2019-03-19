@@ -16,19 +16,17 @@ use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
 use Closure;
-use Opulence\Ioc\Bootstrappers\IBootstrapperRegistry;
+use Opulence\Ioc\Bootstrappers\BootstrapperRegistry;
+use Opulence\Ioc\IContainer;
+use Opulence\Ioc\IocException;
 
 /**
  * Defines an application builder
  */
 class ApplicationBuilder implements IApplicationBuilder
 {
-    /** @var IBootstrapperRegistry The bootstrappers that will be passed to bootstrapper callbacks */
-    private $bootstrappers;
-    /** @var LazyRouteFactory The factory that will create our routes */
-    private $routeFactory;
-    /** @var CommandRegistry The command registry to use in callbacks */
-    private $commands;
+    /** @var IContainer The DI container that will be used to resolve dependencies */
+    private $container;
     /** @var Closure[] The list of bootstrapper callbacks */
     private $bootstrapperCallbacks = [];
     /** @var Closure[] The list of route callbacks */
@@ -37,18 +35,11 @@ class ApplicationBuilder implements IApplicationBuilder
     private $commandCallbacks = [];
 
     /**
-     * @param IBootstrapperRegistry $bootstrappers The bootstrappers that will be passed to bootstrapper callbacks
-     * @param LazyRouteFactory $routeFactory The factory that will create our routes
-     * @param CommandRegistry $commands The command registry to use in callbacks
+     * @param IContainer $container The DI container that will be used to resolve dependencies
      */
-    public function __construct(
-        IBootstrapperRegistry $bootstrappers,
-        LazyRouteFactory $routeFactory,
-        CommandRegistry $commands
-    ) {
-        $this->bootstrappers = $bootstrappers;
-        $this->routeFactory = $routeFactory;
-        $this->commands = $commands;
+    public function __construct(IContainer $container)
+    {
+        $this->container = $container;
     }
 
     /**
@@ -56,11 +47,19 @@ class ApplicationBuilder implements IApplicationBuilder
      */
     public function build(): void
     {
+        $bootstrappers = new BootstrapperRegistry();
+
         foreach ($this->bootstrapperCallbacks as $bootstrapperCallback) {
-            $bootstrapperCallback($this->bootstrappers);
+            $bootstrapperCallback($bootstrappers);
         }
 
-        $this->routeFactory->addFactory(function () {
+        try {
+            $routeFactory = $this->container->resolve(LazyRouteFactory::class);
+        } catch (IocException $ex) {
+            $this->container->bindInstance(LazyRouteFactory::class, $routeFactory = new LazyRouteFactory());
+        }
+
+        $routeFactory->addFactory(function () {
             $routeBuilders = new RouteBuilderRegistry();
 
             foreach ($this->routeCallbacks as $routeCallback) {
@@ -70,8 +69,14 @@ class ApplicationBuilder implements IApplicationBuilder
             return $routeBuilders->buildAll();
         });
 
+        try {
+            $commands = $this->container->resolve(CommandRegistry::class);
+        } catch (IocException $ex) {
+            $this->container->bindInstance(CommandRegistry::class, $commands = new CommandRegistry());
+        }
+
         foreach ($this->commandCallbacks as $commandCallback) {
-            $commandCallback($this->commands);
+            $commandCallback($commands);
         }
     }
 
