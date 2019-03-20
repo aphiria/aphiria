@@ -17,6 +17,8 @@ use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
 use Closure;
 use Opulence\Ioc\Bootstrappers\BootstrapperRegistry;
+use Opulence\Ioc\Bootstrappers\BootstrapperResolver;
+use Opulence\Ioc\Bootstrappers\Dispatchers\BootstrapperDispatcher;
 use Opulence\Ioc\IContainer;
 use Opulence\Ioc\IocException;
 
@@ -52,6 +54,14 @@ class ApplicationBuilder implements IApplicationBuilder
         foreach ($this->bootstrapperCallbacks as $bootstrapperCallback) {
             $bootstrapperCallback($bootstrappers);
         }
+
+        // Todo: Update once BootstrapperDispatcher takes in an array of instantiated bootstrappers
+        $bootstrapperDispatcher = new BootstrapperDispatcher(
+            $this->container,
+            $bootstrappers,
+            new BootstrapperResolver()
+        );
+        $bootstrapperDispatcher->dispatch(false);
 
         try {
             $routeFactory = $this->container->resolve(LazyRouteFactory::class);
