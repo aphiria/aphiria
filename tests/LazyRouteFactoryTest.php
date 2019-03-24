@@ -92,6 +92,30 @@ class LazyRouteFactoryTest extends TestCase
         $this->assertEquals('/foo', $routes[0]->uriTemplate->pathTemplate);
     }
 
+    public function testCreatingRoutesWithCacheWillSetThemInCacheOnCacheMiss(): void
+    {
+        /** @var IRouteCache|MockObject $routeCache */
+        $routeCache = $this->createMock(IRouteCache::class);
+        $factory = new LazyRouteFactory(null, $routeCache);
+        $factory->addFactory(function () {
+            $routes = new RouteBuilderRegistry();
+            $routes->map('GET', 'foo')
+                ->toMethod('Foo', 'bar');
+
+            return $routes->buildAll();
+        });
+        $routeCache->expects($this->once())
+            ->method('get')
+            ->willReturn(null);
+        $routeCache->expects($this->once())
+            ->method('set')
+            ->with($this->callback(function (RouteCollection $routes) {
+                return \count($routes->getAll()) === 1
+                    && $routes->getAll()[0]->uriTemplate->pathTemplate === '/foo';
+            }));
+        $factory->createRoutes()->getAll();
+    }
+
     public function testCreatingRoutesWithNoFactoriesWillReturnEmptyCollection(): void
     {
         $factory = new LazyRouteFactory();

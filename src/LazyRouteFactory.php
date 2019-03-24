@@ -65,6 +65,11 @@ final class LazyRouteFactory implements IRouteFactory
             $routes->addMany($routeFactory());
         }
 
+        // Save this to cache for next time
+        if ($this->routeCache !== null) {
+            $this->routeCache->set($routes);
+        }
+
         return $routes;
     }
 }
