@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing;
 
+use Aphiria\Routing\Caching\IRouteCache;
 use Closure;
 
 /**
@@ -21,16 +22,21 @@ final class LazyRouteFactory implements IRouteFactory
 {
     /** @var Closure[] The list of factories that will actually create the routes */
     private $routeFactories = [];
+    /** @var IRouteCache|null The optional route cache to store compiled routes in */
+    private $routeCache;
 
     /**
      * @param Closure|null $routeFactory The initial factory that will be used to create routes
      *      Note: Must be parameterless and return a list of Route objects
+     * @param IRouteCache|null $routeCache The route cache, if we're using a cache, otherwise null
      */
-    public function __construct(Closure $routeFactory = null)
+    public function __construct(Closure $routeFactory = null, IRouteCache $routeCache = null)
     {
         if ($routeFactory !== null) {
             $this->routeFactories[] = $routeFactory;
         }
+
+        $this->routeCache = $routeCache;
     }
 
     /**
@@ -49,6 +55,10 @@ final class LazyRouteFactory implements IRouteFactory
      */
     public function createRoutes(): RouteCollection
     {
+        if ($this->routeCache !== null && ($routes = $this->routeCache->get()) !== null) {
+            return $routes;
+        }
+
         $routes = new RouteCollection();
 
         foreach ($this->routeFactories as $routeFactory) {

@@ -13,7 +13,10 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests;
 
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\Caching\IRouteCache;
 use Aphiria\Routing\LazyRouteFactory;
+use Aphiria\Routing\RouteCollection;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -45,6 +48,45 @@ class LazyRouteFactoryTest extends TestCase
 
             return $routes->buildAll();
         });
+        $routes = $factory->createRoutes()->getAll();
+        $this->assertCount(1, $routes);
+        $this->assertEquals('/foo', $routes[0]->uriTemplate->pathTemplate);
+    }
+
+    public function testCreatingRoutesWithCacheThatHitsReturnsThoseRoutes(): void
+    {
+        /** @var IRouteCache|MockObject $routeCache */
+        $expectedRoutes = new RouteCollection();
+        $routeCache = $this->createMock(IRouteCache::class);
+        $routeCache->expects($this->once())
+            ->method('get')
+            ->willReturn($expectedRoutes);
+        $factory = new LazyRouteFactory(null, $routeCache);
+        $factory->addFactory(function () {
+            $routes = new RouteBuilderRegistry();
+            $routes->map('GET', 'foo')
+                ->toMethod('Foo', 'bar');
+
+            return $routes->buildAll();
+        });
+        $this->assertSame($expectedRoutes, $factory->createRoutes());
+    }
+
+    public function testCreatingRoutesWithCacheThatMissesStillRunsTheFactories(): void
+    {
+        /** @var IRouteCache|MockObject $routeCache */
+        $routeCache = $this->createMock(IRouteCache::class);
+        $factory = new LazyRouteFactory(null, $routeCache);
+        $factory->addFactory(function () {
+            $routes = new RouteBuilderRegistry();
+            $routes->map('GET', 'foo')
+                ->toMethod('Foo', 'bar');
+
+            return $routes->buildAll();
+        });
+        $routeCache->expects($this->once())
+            ->method('get')
+            ->willReturn(null);
         $routes = $factory->createRoutes()->getAll();
         $this->assertCount(1, $routes);
         $this->assertEquals('/foo', $routes[0]->uriTemplate->pathTemplate);

@@ -27,6 +27,8 @@
     1. [Built-In Rules](#built-in-rules)
     2. [Making Your Own Custom Rules](#making-your-own-custom-rules)
 8. [Caching](#caching)
+    1. [Route Caching](#route-caching)
+    2. [Trie Caching](#trie-caching)
 9. [Matching Algorithm](#matching-algorithm)
 
 <h1 id="introduction">Introduction</h1>
@@ -432,18 +434,50 @@ Our route will now enforce a serial number with minimum length 6.
 
 <h1 id="caching">Caching</h1>
 
-To speed up the compilation of your route trie, Aphiria supports caching (`FileTrieCache` is provided by default).  If you're actively developing and adding new routes, it's best not to enable caching, which can be done by passing `null` into the `TrieFactory`:
+The process of building your routes and compiling the trie is a relatively slow process, and isn't necessary in a production environment where route definitions aren't changing.  Aphiria provides both the ability to cache the results of your route builders and the compiled trie.
+
+<h2 id="route-caching">Route Caching</h2>
+
+To enable caching, pass in an `IRouteCache` (`FileRouteCache` is provided) to the second parameter of `LazyRouteFactory`:
 
 ```php
-$trieFactory = new TrieFactory($routeFactory, null);
+use Aphiria\Routing\Caching\FileRouteCache;
+use Aphiria\Routing\LazyRouteFactory;
+
+$routeFactory = new LazyRouteFactory(
+    function () {
+        // Register your routes...
+    },
+    new FileRouteCache('/tmp/routes.cache')
+);
+
+// Finish setting up your route matcher...
 ```
 
-If you want to enable caching for a particular environment, you could do so:
+To enable caching in a particular environment, you could do this:
 
 ```php
+$routeFactory = new LazyRouteFactory(
+    function () {
+        // Register your routes...
+    },
+    getenv('ENV_NAME') === 'production' ? new FileRouteCache('/tmp/trie.cache') : null;
+);
+```
+
+<h2 id="trie-caching">Trie Caching</h2>
+
+To enable caching, pass in an `ITrieCache` (`FileTrieCache` comes with Aphiria) to your trie factory (passing in `null` will disable caching).  If you want to enable caching for a particular environment, you could do so:
+
+```php
+use Aphiria\Routing\Matchers\Trees\Caching\FileTrieCache;
+use Aphiria\Routing\Matchers\Trees\TrieFactory;
+
 // Let's say that your environment name is stored in an environment var named 'ENV_NAME'
 $trieCache = getenv('ENV_NAME') === 'production' ? new FileTrieCache('/tmp/trie.cache') : null;
 $trieFactory = new TrieFactory($routeFactory, $trieCache);
+
+// Finish setting up your route matcher...
 ```
 
 <h1 id="matching-algorithm">Matching Algorithm</h1>
