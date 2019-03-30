@@ -39,8 +39,8 @@ class ExceptionHandler implements IExceptionHandler
     protected $logger;
     /** @var array The list of exception classes to not log */
     protected $customExceptionsToLogLevels;
-    /** @var array The minimum PSR-3 exception log level that will be logged */
-    protected $minExceptionLogLevels;
+    /** @var array The PSR-3 exception log level that will be logged */
+    protected $exceptionLogLevels;
     /** @var int The bitwise value of error levels that are to be logged */
     protected $errorLogLevels;
     /** @var int The bitwise value of error levels that are to be thrown as exceptions */
@@ -53,7 +53,7 @@ class ExceptionHandler implements IExceptionHandler
     /**
      * @param IExceptionResponseFactory $exceptionResponseFactory The exception response factory
      * @param LoggerInterface|null $logger The logger to use, or null if using the default error logger
-     * @param array|null $minExceptionLogLevels The minimum PSR-3 exception log levels that will be logged, or null if
+     * @param array|null $exceptionLogLevels The PSR-3 exception log levels that will be logged, or null if
      *      using the default levels
      * @param int|null $errorLogLevels The bitwise value of error levels that are to be logged
      * @param int|null $errorThrownLevels The bitwise value of error levels that are to be thrown as exceptions
@@ -64,7 +64,7 @@ class ExceptionHandler implements IExceptionHandler
         IExceptionResponseFactory $exceptionResponseFactory,
         LoggerInterface $logger = null,
         array $customExceptionsToLogLevels = [],
-        array $minExceptionLogLevels = null,
+        array $exceptionLogLevels = null,
         int $errorLogLevels = null,
         int $errorThrownLevels = null,
         IResponseWriter $responseWriter = null
@@ -72,7 +72,7 @@ class ExceptionHandler implements IExceptionHandler
         $this->exceptionResponseFactory = $exceptionResponseFactory;
         $this->logger = $logger ?? new Logger(self::DEFAULT_LOGGER_NAME, [new ErrorLogHandler()]);
         $this->customExceptionsToLogLevels = $customExceptionsToLogLevels;
-        $this->minExceptionLogLevels = $minExceptionLogLevels ?? [
+        $this->exceptionLogLevels = $exceptionLogLevels ?? [
             LogLevel::ERROR, LogLevel::CRITICAL, LogLevel::ALERT, LogLevel::EMERGENCY
             ];
         $this->errorLogLevels = $errorLogLevels ?? 0;
@@ -199,7 +199,7 @@ class ExceptionHandler implements IExceptionHandler
      */
     protected function shouldLogException(string $level): bool
     {
-        return in_array($level, $this->minExceptionLogLevels, true);
+        return in_array($level, $this->exceptionLogLevels, true);
     }
 
     /**
