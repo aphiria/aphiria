@@ -441,25 +441,73 @@ $exceptionResponseFactories->registerFactory(
 Unless you specify otherwise, a <a href="https://github.com/Seldaek/monolog" target="_blank">Monolog</a> logger to log all exceptions to the PHP error log.  However, you can override this with any PSR-3 logger:
 
 ```php
+use Aphiria\Api\Exceptions\ExceptionResponseFactory;
+use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
 
+// First, set up the factory that will create exception responses
+$exceptionResponseFactory = new ExceptionResponseFactory(
+    new NegotiatedResponseFactory(
+        new ContentNegotiator([
+            new JsonMediaTypeFormatter()
+        ])
+    )
+);
+
+// Next, set up our logger
 $logger = new Logger('app');
 $logger->pushHandler(new SyslogHandler());
-$exceptionHandler = new ExceptionHandler(null, $logger);
+
+// Now, set up our exception handler
+$exceptionHandler = new ExceptionHandler($exceptionResponseFactory, $logger);
 $exceptionHandler->registerWithPhp();
 ```
 
-If you don't want to log particular exceptions, you can specify them:
+It's possible to specify some rules around the <a href="https://www.php-fig.org/psr/psr-3/#5-psrlogloglevel" target="_blank">PSR-3 log level</a> that an exception returns.  This could be useful for things like logging 500s as critical, but everything else as warnings.  Let's look at an example:
 
 ```php
-$exceptionHandler = new ExceptionHandler(null, null, null, null, ['MyException']);
+$exceptionHandler = new ExceptionHandler(
+    $exceptionResponseFactory,
+    null, 
+    [
+        // Map exception types to their PSR-3 log levels
+        HttpException::class => function (HttpException $ex) {
+            if ($ex->getResponse()->getStatusCode() >= 500) {
+                return LogLevel::CRITICAL;
+            }
+            
+            return LogLevel::WARNING;
+        }
+    ]
+);
 $exceptionHandler->registerWithPhp();
 ```
+
+Passing in an array of PSR-3 log levels will cause only those levels to be logged:
+
+```php
+$exceptionHandler = new ExceptionHandler(
+    $exceptionResponseFactory,
+    null,
+    null,
+    [LogLevel::CRITICAL, LogLevel::EMERGENCY]
+);
+```
+
+By default, `LogLevel::ERROR`, `LogLevel::CRITICAL`, `LogLevel::ALERT`, and `LogLevel::EMERGENCY` will be logged if `null` is specified.
 
 You can also control the level of PHP errors that are logged by specifying a bitwise value similar to what's in your _php.ini_:
 
 ```php
-$exceptionHandler = new ExceptionHandler(null, null, E_ALL & ~E_NOTICE);
+$exceptionHandler = new ExceptionHandler(
+    $exceptionResponseFactory, 
+    null, 
+    null,
+    null,
+    E_ALL & ~E_NOTICE
+);
 $exceptionHandler->registerWithPhp();
 ```

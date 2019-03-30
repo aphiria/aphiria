@@ -15,11 +15,15 @@ namespace Aphiria\Api\Exceptions;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IResponseWriter;
 use Aphiria\Net\Http\StreamResponseWriter;
+use Closure;
 use ErrorException;
 use Exception;
+use function get_class;
+use function in_array;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Throwable;
 
 /**
@@ -29,42 +33,50 @@ class ExceptionHandler implements IExceptionHandler
 {
     /** @const The default name to use for the logger */
     private const DEFAULT_LOGGER_NAME = 'app';
-    /** @var LoggerInterface The logger */
-    protected $logger;
     /** @var IExceptionResponseFactory The exception response factory */
     protected $exceptionResponseFactory;
+    /** @var LoggerInterface The logger */
+    protected $logger;
+    /** @var array The list of exception classes to not log */
+    protected $customExceptionsToLogLevels;
+    /** @var array The minimum PSR-3 exception log level that will be logged */
+    protected $minExceptionLogLevels;
+    /** @var int The bitwise value of error levels that are to be logged */
+    protected $errorLogLevels;
+    /** @var int The bitwise value of error levels that are to be thrown as exceptions */
+    protected $errorThrownLevels;
     /** @var IResponseWriter What to use to write a response */
     protected $responseWriter;
-    /** @var int $loggedLevels The bitwise value of error levels that are to be logged */
-    protected $loggedLevels;
-    /** @var int $thrownLevels The bitwise value of error levels that are to be thrown as exceptions */
-    protected $thrownLevels;
-    /** @var array The list of exception classes to not log */
-    protected $exceptionsNotLogged;
     /** @var IHttpRequestMessage|null The current request, or null if there is none */
     protected $request;
 
     /**
      * @param IExceptionResponseFactory $exceptionResponseFactory The exception response factory
      * @param LoggerInterface|null $logger The logger to use, or null if using the default error logger
-     * @param int|null $loggedLevels The bitwise value of error levels that are to be logged
-     * @param int|null $thrownLevels The bitwise value of error levels that are to be thrown as exceptions
-     * @param array $exceptionsNotLogged The exception or list of exceptions to not log when thrown
+     * @param array|null $minExceptionLogLevels The minimum PSR-3 exception log levels that will be logged, or null if
+     *      using the default levels
+     * @param int|null $errorLogLevels The bitwise value of error levels that are to be logged
+     * @param int|null $errorThrownLevels The bitwise value of error levels that are to be thrown as exceptions
+     * @param Closure[] $customExceptionsToLogLevels The exception types to closures that return the PSR-3 log level
      * @param IResponseWriter $responseWriter What to use to write a response
      */
     public function __construct(
         IExceptionResponseFactory $exceptionResponseFactory,
         LoggerInterface $logger = null,
-        int $loggedLevels = null,
-        int $thrownLevels = null,
-        array $exceptionsNotLogged = [],
+        array $customExceptionsToLogLevels = [],
+        array $minExceptionLogLevels = null,
+        int $errorLogLevels = null,
+        int $errorThrownLevels = null,
         IResponseWriter $responseWriter = null
     ) {
         $this->exceptionResponseFactory = $exceptionResponseFactory;
         $this->logger = $logger ?? new Logger(self::DEFAULT_LOGGER_NAME, [new ErrorLogHandler()]);
-        $this->loggedLevels = $loggedLevels ?? 0;
-        $this->thrownLevels = $thrownLevels ?? (E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED));
-        $this->exceptionsNotLogged = $exceptionsNotLogged;
+        $this->customExceptionsToLogLevels = $customExceptionsToLogLevels;
+        $this->minExceptionLogLevels = $minExceptionLogLevels ?? [
+            LogLevel::ERROR, LogLevel::CRITICAL, LogLevel::ALERT, LogLevel::EMERGENCY
+            ];
+        $this->errorLogLevels = $errorLogLevels ?? 0;
+        $this->errorThrownLevels = $errorThrownLevels ?? (E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED));
         $this->responseWriter = $responseWriter ?? new StreamResponseWriter();
     }
 
@@ -97,8 +109,37 @@ class ExceptionHandler implements IExceptionHandler
             $ex = new FatalThrowableError($ex);
         }
 
-        if ($this->shouldLogException($ex)) {
-            $this->logger->error($ex);
+        $logLevel = isset($this->customExceptionsToLogLevels[get_class($ex)])
+            ? $this->customExceptionsToLogLevels[get_class($ex)]($ex)
+            : LogLevel::ERROR;
+
+        if ($this->shouldLogException($logLevel)) {
+            switch ($logLevel) {
+                case LogLevel::EMERGENCY:
+                    $this->logger->emergency($ex);
+                    break;
+                case LogLevel::ALERT:
+                    $this->logger->alert($ex);
+                    break;
+                case LogLevel::CRITICAL:
+                    $this->logger->critical($ex);
+                    break;
+                case LogLevel::ERROR:
+                    $this->logger->error($ex);
+                    break;
+                case LogLevel::WARNING:
+                    $this->logger->warning($ex);
+                    break;
+                case LogLevel::NOTICE:
+                    $this->logger->notice($ex);
+                    break;
+                case LogLevel::INFO:
+                    $this->logger->info($ex);
+                    break;
+                case LogLevel::DEBUG:
+                    $this->logger->debug($ex);
+                    break;
+            }
         }
 
         $response = $this->exceptionResponseFactory->createResponseFromException($ex, $this->request);
@@ -147,18 +188,18 @@ class ExceptionHandler implements IExceptionHandler
      */
     protected function shouldLogError(int $level): bool
     {
-        return ($this->loggedLevels & $level) !== 0;
+        return ($this->errorLogLevels & $level) !== 0;
     }
 
     /**
-     * Determines whether or not an exception should be logged
+     * Determines whether or not the exception level is loggable
      *
-     * @param Exception $ex The exception to check
-     * @return bool True if the exception should be logged, otherwise false
+     * @param string $level The PSR-3 log level
+     * @return bool True if the level is loggable, otherwise false
      */
-    protected function shouldLogException(Exception $ex): bool
+    protected function shouldLogException(string $level): bool
     {
-        return !in_array(get_class($ex), $this->exceptionsNotLogged);
+        return in_array($level, $this->minExceptionLogLevels, true);
     }
 
     /**
@@ -169,6 +210,6 @@ class ExceptionHandler implements IExceptionHandler
      */
     protected function shouldThrowError(int $level): bool
     {
-        return ($this->thrownLevels & $level) !== 0;
+        return ($this->errorThrownLevels & $level) !== 0;
     }
 }

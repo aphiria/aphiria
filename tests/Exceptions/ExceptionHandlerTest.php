@@ -17,12 +17,15 @@ use Aphiria\Api\Exceptions\IExceptionResponseFactory;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\IResponseWriter;
+use Closure;
 use Error;
 use ErrorException;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+use RuntimeException;
 
 /**
  * Tests the exception handler
@@ -48,10 +51,24 @@ class ExceptionHandlerTest extends TestCase
         restore_exception_handler();
     }
 
+    public function getLogLevels(): array
+    {
+        return [
+            [LogLevel::EMERGENCY],
+            [LogLevel::ALERT],
+            [LogLevel::CRITICAL],
+            [LogLevel::ERROR],
+            [LogLevel::WARNING],
+            [LogLevel::NOTICE],
+            [LogLevel::INFO],
+            [LogLevel::DEBUG]
+        ];
+    }
+
     public function testHandlingErrorThatShouldBeLoggedIsLogged(): void
     {
         // Purposely set the thrown level higher than the handled error level so we can just test logging
-        $handler = $this->createExceptionHandler(E_NOTICE, E_ERROR);
+        $handler = $this->createExceptionHandler([], null, E_NOTICE, E_ERROR);
         $expectedContext = ['foo' => 'bar'];
         $this->logger->expects($this->once())
             ->method('log')
@@ -62,7 +79,7 @@ class ExceptionHandlerTest extends TestCase
     public function testHandlingErrorThatShouldBeThrownIsThrown(): void
     {
         try {
-            $handler = $this->createExceptionHandler(E_NOTICE, E_ERROR);
+            $handler = $this->createExceptionHandler([], null, E_NOTICE, E_ERROR);
             $handler->handleError(E_ERROR, 'foo');
             $this->fail('Expected error to be thrown as exception');
         } catch (ErrorException $ex) {
@@ -74,7 +91,7 @@ class ExceptionHandlerTest extends TestCase
     public function testHandlingErrorThatShouldNotBeLoggedIsNotLogged(): void
     {
         // Purposely set the thrown level higher than the handled error level so we can just test logging
-        $handler = $this->createExceptionHandler(E_ERROR, E_ERROR);
+        $handler = $this->createExceptionHandler([], null, E_ERROR, E_ERROR);
         $this->logger->expects($this->never())
             ->method('log');
         // Handle an error level that's too low to be logged
@@ -83,7 +100,7 @@ class ExceptionHandlerTest extends TestCase
 
     public function testHandlingErrorThatNotShouldBeThrownIsNotThrown(): void
     {
-        $handler = $this->createExceptionHandler(E_NOTICE, E_ERROR);
+        $handler = $this->createExceptionHandler([], null, E_NOTICE, E_ERROR);
         $handler->handleError(E_NOTICE, 'foo');
         // Just by getting here, we've verified that the error was not thrown as an exception
         $this->assertTrue(true);
@@ -107,12 +124,50 @@ class ExceptionHandlerTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testHandlingExceptionThatShouldNotBeLoggedIsNotLogged(): void
+    public function testHandlingExceptionWithCustomLevelOnlyLogsItIfErrorLevelIncludesIt(): void
     {
-        $handler = $this->createExceptionHandler(null, null, [InvalidArgumentException::class]);
+        $exception = new InvalidArgumentException();
+        $emergencyHandler = $this->createExceptionHandler(
+            [
+                InvalidArgumentException::class => function (InvalidArgumentException $ex) {
+                    return LogLevel::EMERGENCY;
+                },
+                RuntimeException::class => function (RuntimeException $ex) {
+                    return LogLevel::ERROR;
+                }
+            ],
+            [LogLevel::EMERGENCY]
+        );
+        $this->logger->expects($this->at(0))
+            ->method('emergency')
+            ->with($exception);
         $this->logger->expects($this->never())
             ->method('error');
-        $handler->handleException(new InvalidArgumentException);
+        $emergencyHandler->handleException($exception);
+        $emergencyHandler->handleException(new RuntimeException());
+    }
+
+    /**
+     * @dataProvider getLogLevels
+     * @param string $logLevel The log level to use in the test
+     */
+    public function testHandlingExceptionThatLogsCustomLevelUsesAppropriateLogMethod(string $logLevel): void
+    {
+        // NOTE: The log levels happen to correspond to the logger methods, too
+        $expectedException = new InvalidArgumentException();
+        $this->logger->expects($this->once())
+            ->method($logLevel)
+            ->with($expectedException);
+        $handler = $this->createExceptionHandler(
+            [
+                InvalidArgumentException::class => function (InvalidArgumentException $ex) use ($logLevel) {
+                    return $logLevel;
+                }
+            ],
+            // Include the current log level so that it gets logged
+            [$logLevel]
+        );
+        $handler->handleException($expectedException);
     }
 
     public function testHandlingExceptionCreatesResponseFromResponseFactoryWithRequest(): void
@@ -138,22 +193,25 @@ class ExceptionHandlerTest extends TestCase
     /**
      * Creates an instance of an exception handler with certain properties
      *
-     * @param int|null $loggedLevels The bitwise value of error levels that are to be logged
-     * @param int|null $thrownLevels The bitwise value of error levels that are to be thrown as exceptions
-     * @param array $exceptionsNotLogged The exception or list of exceptions to not log when thrown
+     * @param Closure[] $customExceptionsToLogLevels The exception types to closures that return the PSR-3 log levels
+     * @param array|null $minExceptionLogLevels The minimum PSR-3 log levels that will be logged
+     * @param int|null $errorLogLevels The bitwise value of error levels that are to be logged
+     * @param int|null $errorThrownLevels The bitwise value of error levels that are to be thrown as exceptions
      * @return ExceptionHandler The exception handler
      */
     private function createExceptionHandler(
-        int $loggedLevels = null,
-        int $thrownLevels = null,
-        array $exceptionsNotLogged = []
+        array $customExceptionsToLogLevels = [],
+        array $minExceptionLogLevels = null,
+        int $errorLogLevels = null,
+        int $errorThrownLevels = null
     ): ExceptionHandler {
         $exceptionHandler = new ExceptionHandler(
             $this->exceptionResponseFactory,
             $this->logger,
-            $loggedLevels,
-            $thrownLevels,
-            $exceptionsNotLogged,
+            $customExceptionsToLogLevels,
+            $minExceptionLogLevels,
+            $errorLogLevels,
+            $errorThrownLevels,
             $this->responseWriter
         );
         $exceptionHandler->registerWithPhp();
