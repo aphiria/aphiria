@@ -15,7 +15,6 @@ namespace Aphiria\Api\Exceptions;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IResponseWriter;
 use Aphiria\Net\Http\StreamResponseWriter;
-use Closure;
 use ErrorException;
 use Exception;
 use function get_class;
@@ -37,8 +36,8 @@ class ExceptionHandler implements IExceptionHandler
     protected $exceptionResponseFactory;
     /** @var LoggerInterface The logger */
     protected $logger;
-    /** @var array The list of exception classes to not log */
-    protected $customExceptionsToLogLevels;
+    /** @var ExceptionLogLevelFactoryRegistry The registry of exception log level factories */
+    protected $exceptionLogLevelFactories;
     /** @var array The PSR-3 exception log level that will be logged */
     protected $exceptionLogLevels;
     /** @var int The bitwise value of error levels that are to be logged */
@@ -53,17 +52,17 @@ class ExceptionHandler implements IExceptionHandler
     /**
      * @param IExceptionResponseFactory $exceptionResponseFactory The exception response factory
      * @param LoggerInterface|null $logger The logger to use, or null if using the default error logger
+     * @param ExceptionLogLevelFactoryRegistry|null $exceptionLogLevelFactories The registry of exception log level factories
      * @param array|null $exceptionLogLevels The PSR-3 exception log levels that will be logged, or null if
      *      using the default levels
      * @param int|null $errorLogLevels The bitwise value of error levels that are to be logged
      * @param int|null $errorThrownLevels The bitwise value of error levels that are to be thrown as exceptions
-     * @param Closure[] $customExceptionsToLogLevels The exception types to closures that return the PSR-3 log level
      * @param IResponseWriter $responseWriter What to use to write a response
      */
     public function __construct(
         IExceptionResponseFactory $exceptionResponseFactory,
         LoggerInterface $logger = null,
-        array $customExceptionsToLogLevels = [],
+        ExceptionLogLevelFactoryRegistry $exceptionLogLevelFactories = null,
         array $exceptionLogLevels = null,
         int $errorLogLevels = null,
         int $errorThrownLevels = null,
@@ -71,7 +70,7 @@ class ExceptionHandler implements IExceptionHandler
     ) {
         $this->exceptionResponseFactory = $exceptionResponseFactory;
         $this->logger = $logger ?? new Logger(self::DEFAULT_LOGGER_NAME, [new ErrorLogHandler()]);
-        $this->customExceptionsToLogLevels = $customExceptionsToLogLevels;
+        $this->exceptionLogLevelFactories = $exceptionLogLevelFactories ?? new ExceptionLogLevelFactoryRegistry();
         $this->exceptionLogLevels = $exceptionLogLevels ?? [
             LogLevel::ERROR, LogLevel::CRITICAL, LogLevel::ALERT, LogLevel::EMERGENCY
             ];
@@ -109,9 +108,8 @@ class ExceptionHandler implements IExceptionHandler
             $ex = new FatalThrowableError($ex);
         }
 
-        $logLevel = isset($this->customExceptionsToLogLevels[get_class($ex)])
-            ? $this->customExceptionsToLogLevels[get_class($ex)]($ex)
-            : LogLevel::ERROR;
+        $logLevelFactory = $this->exceptionLogLevelFactories->getFactory(get_class($ex));
+        $logLevel = $logLevelFactory === null ? LogLevel::ERROR : $logLevelFactory($ex);
 
         if ($this->shouldLogException($logLevel)) {
             switch ($logLevel) {

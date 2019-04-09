@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Api\Tests\Exceptions;
 
 use Aphiria\Api\Exceptions\ExceptionHandler;
+use Aphiria\Api\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Api\Exceptions\IExceptionResponseFactory;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
@@ -205,10 +206,12 @@ class ExceptionHandlerTest extends TestCase
         int $errorLogLevels = null,
         int $errorThrownLevels = null
     ): ExceptionHandler {
+        $exceptionLogLevelFactories = new ExceptionLogLevelFactoryRegistry();
+        $exceptionLogLevelFactories->registerManyFactories($customExceptionsToLogLevels);
         $exceptionHandler = new ExceptionHandler(
             $this->exceptionResponseFactory,
             $this->logger,
-            $customExceptionsToLogLevels,
+            $exceptionLogLevelFactories,
             $minExceptionLogLevels,
             $errorLogLevels,
             $errorThrownLevels,

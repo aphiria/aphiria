@@ -12,23 +12,23 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Tests\Exceptions;
 
-use Aphiria\Api\Exceptions\ExceptionResponseFactoryRegistry;
+use Aphiria\Api\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\IHttpRequestMessage;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LogLevel;
 
 /**
- * Tests the exception response factory registry
+ * Tests the exception log level factory registry
  */
-class ExceptionResponseFactoryRegistryTest extends TestCase
+class ExceptionLogLevelFactoryRegistryTest extends TestCase
 {
-    /** @var ExceptionResponseFactoryRegistry */
+    /** @var ExceptionLogLevelFactoryRegistry */
     private $registry;
 
     protected function setUp(): void
     {
-        $this->registry = new ExceptionResponseFactoryRegistry();
+        $this->registry = new ExceptionLogLevelFactoryRegistry();
     }
 
     public function testGettingFactoryForExceptionTypeThatDoesNotHaveFactoryReturnsNull(): void
@@ -38,8 +38,8 @@ class ExceptionResponseFactoryRegistryTest extends TestCase
 
     public function testGettingFactoryForExceptionTypeThatHasFactoryReturnsTheFactory(): void
     {
-        $expectedFactory = function (HttpException $ex, ?IHttpRequestMessage $request) {
-            // Don't do anything
+        $expectedFactory = function (HttpException $ex) {
+            return LogLevel::ERROR;
         };
         $this->registry->registerFactory(InvalidArgumentException::class, $expectedFactory);
         $this->assertSame($expectedFactory, $this->registry->getFactory(InvalidArgumentException::class));
@@ -47,11 +47,11 @@ class ExceptionResponseFactoryRegistryTest extends TestCase
 
     public function testRegisteringMultipleFactoriesStoresFactoriesByExceptionType(): void
     {
-        $expectedFactory1 = function (InvalidArgumentException $ex, ?IHttpRequestMessage $request) {
-            // Don't do anything
+        $expectedFactory1 = function (InvalidArgumentException $ex) {
+            return LogLevel::ERROR;
         };
-        $expectedFactory2 = function (HttpException $ex, ?IHttpRequestMessage $request) {
-            // Don't do anything
+        $expectedFactory2 = function (HttpException $ex) {
+            return LogLevel::ERROR;
         };
         $this->registry->registerManyFactories([
             InvalidArgumentException::class => $expectedFactory1,

@@ -15,18 +15,18 @@ namespace Aphiria\Api\Exceptions;
 use Closure;
 
 /**
- * Defines the exception response factory registry
+ * Defines the registry of exception log level factories
  */
-final class ExceptionResponseFactoryRegistry
+final class ExceptionLogLevelFactoryRegistry
 {
-    /** @var Closure[] The mapping of exception types to response factories */
-    private $factories = [];
+    /** @var Closure[] The mapping of exception types to log level factories */
+    private $factories;
 
     /**
      * Gets the factory for a particular exception
      *
      * @param string $exceptionType The type of exception whose factory we want
-     * @return Closure|null The response factory if one was found, otherwise null
+     * @return Closure|null The exception log level factory if one was found, otherwise null
      */
     public function getFactory(string $exceptionType): ?Closure
     {
@@ -38,18 +38,18 @@ final class ExceptionResponseFactoryRegistry
     }
 
     /**
-     * Registers a response factory for an exception type
+     * Registers an exception log level factory
      *
-     * @param string $exceptionType The type the response factory applies to
-     * @param Closure $responseFactory The response factory that takes in an exception instance and nullable request
+     * @param string $exceptionType The exception whose factory we're registering
+     * @param Closure $factory The factory that takes in an exception of the input type and returns a PSR-3 log level
      */
-    public function registerFactory(string $exceptionType, Closure $responseFactory): void
+    public function registerFactory(string $exceptionType, Closure $factory): void
     {
-        $this->factories[$exceptionType] = $responseFactory;
+        $this->factories[$exceptionType] = $factory;
     }
 
     /**
-     * Registers a response factory for an exception type
+     * Registers an exception log level factory for an exception type
      *
      * @param Closure[] $exceptionTypesToFactories The exception types to factories
      */

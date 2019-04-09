@@ -384,7 +384,7 @@ $exceptionHandler->registerWithPhp();
 That's it.  Now, whenever an unhandled `EntityNotFound` exception is thrown, your application will return a 404 response.  You can also register multiple exception factories at once.  Just pass in an array, keyed by exception type:
 
 ```php
-$exceptionResponseFactories->registerFactories([
+$exceptionResponseFactories->registerManyFactories([
     EntityNotFound::class => function (EntityNotFound $ex, ?IHttpRequestMessage $request) {
         return new Response(404);
     },
@@ -469,22 +469,28 @@ $exceptionHandler->registerWithPhp();
 It's possible to specify some rules around the <a href="https://www.php-fig.org/psr/psr-3/#5-psrlogloglevel" target="_blank">PSR-3 log level</a> that an exception returns.  This could be useful for things like logging 500s as critical, but everything else as warnings.  Let's look at an example:
 
 ```php
+use Aphiria\Api\Exceptions\ExceptionLogLevelFactoryRegistry;
+
+$exceptionLogLevelFactories = new ExceptionLogLevelFactoryRegistry();
+$exceptionLogLevelFactories->registerFactory(
+    HttpException::class,
+    function (HttpException $ex) {
+        if ($ex->getResponse()->getStatusCode() >= 500) {
+            return LogLevel::CRITICAL;
+        }
+        
+        return LogLevel::WARNING;
+    }
+);
 $exceptionHandler = new ExceptionHandler(
     $exceptionResponseFactory,
     null, 
-    [
-        // Map exception types to their PSR-3 log levels
-        HttpException::class => function (HttpException $ex) {
-            if ($ex->getResponse()->getStatusCode() >= 500) {
-                return LogLevel::CRITICAL;
-            }
-            
-            return LogLevel::WARNING;
-        }
-    ]
+    $exceptionLogLevelFactories
 );
 $exceptionHandler->registerWithPhp();
 ```
+
+> **Note:** You can register many factories at once using `ExceptionLogLevelFactoryRegistry::registerManyFactories()`.
 
 Passing in an array of PSR-3 log levels will cause only those levels to be logged:
 
