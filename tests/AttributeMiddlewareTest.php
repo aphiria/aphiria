@@ -23,7 +23,7 @@ class AttributeMiddlewareTest extends TestCase
     /** @var AttributeMiddleware The middleware to use in tests */
     private $middleware;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->middleware = new AttributeMiddleware();
     }
