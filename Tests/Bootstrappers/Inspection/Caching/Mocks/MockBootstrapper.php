@@ -10,19 +10,16 @@
 
 declare(strict_types=1);
 
-namespace Opulence\Ioc\Tests\Bootstrappers\Mocks;
+namespace Opulence\Ioc\Tests\Bootstrappers\Inspection\Caching\Mocks;
 
-use Opulence\Ioc\Bootstrappers\Bootstrapper as BaseBootstrapper;
 use Opulence\Ioc\IContainer;
+use Opulence\Ioc\Tests\Bootstrappers\Mocks\Bootstrapper;
 
 /**
- * Defines a mocked bootstrapper
+ * Mocks a bootstrapper for use in testing
  */
-class Bootstrapper extends BaseBootstrapper
+final class MockBootstrapper extends Bootstrapper
 {
-    /**
-     * @inheritdoc
-     */
     public function registerBindings(IContainer $container): void
     {
         // Don't do anything

@@ -10,18 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Opulence\Ioc\Tests\Mocks;
+namespace Opulence\Ioc\Tests\Bootstrappers\Inspection\Mocks;
 
 /**
- * Mocks a class that implements a simple interface
+ * Defines an example interface
  */
-class Bar implements IFoo
+interface IFoo
 {
-    /**
-     * @inheritdoc
-     */
-    public function getClassName(): string
-    {
-        return __CLASS__;
-    }
+    // Don't do anything
 }

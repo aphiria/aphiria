@@ -10,15 +10,15 @@
 
 declare(strict_types=1);
 
-namespace Opulence\Ioc\Tests\Bootstrappers\Mocks;
+namespace Opulence\Ioc\Tests\Bootstrappers\Mocks\Finder;
 
-use Opulence\Ioc\Bootstrappers\Bootstrapper as BaseBootstrapper;
+use Opulence\Ioc\Bootstrappers\Bootstrapper;
 use Opulence\Ioc\IContainer;
 
 /**
- * Defines a mocked bootstrapper
+ * Defines a mock bootstrapper
  */
-class Bootstrapper extends BaseBootstrapper
+class BootstrapperB extends Bootstrapper
 {
     /**
      * @inheritdoc
