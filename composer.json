@@ -31,7 +31,7 @@
     "aphiria/serialization": "1.0.*@dev",
     "monolog/monolog": "1.23.*",
     "opulence/io": "1.1.*@dev",
-    "opulence/ioc": "1.1.*@dev",
+    "opulence/ioc": "dev-develop",
     "php": "^7.3",
     "psr/log": "~1.0"
   },
