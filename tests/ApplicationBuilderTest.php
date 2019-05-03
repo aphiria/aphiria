@@ -14,12 +14,13 @@ namespace Aphiria\Configuration\Tests;
 
 use Aphiria\Configuration\ApplicationBuilder;
 use Aphiria\Configuration\IModuleBuilder;
+use Aphiria\Configuration\Tests\Mocks\BootstrapperMock;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
-use Opulence\Ioc\Bootstrappers\IBootstrapperRegistry;
+use Opulence\Ioc\Bootstrappers\IBootstrapperDispatcher;
 use Opulence\Ioc\IContainer;
 use Opulence\Ioc\IocException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -32,16 +33,19 @@ class ApplicationBuilderTest extends TestCase
 {
     /** @var IContainer|MockObject */
     private $container;
+    /** @var IBootstrapperDispatcher|MockObject */
+    private $bootstrapperDispatcher;
     /** @var ApplicationBuilder */
     private $appBuilder;
 
     protected function setUp(): void
     {
         $this->container = $this->createMock(IContainer::class);
-        $this->appBuilder = new ApplicationBuilder($this->container);
+        $this->bootstrapperDispatcher = $this->createMock(IBootstrapperDispatcher::class);
+        $this->appBuilder = new ApplicationBuilder($this->container, $this->bootstrapperDispatcher);
     }
 
-    public function testBootstrapperCallbacksAreInvokedWithRegistryOnBuild(): void
+    public function testBootstrapperCallbacksAreInvokedAndBootstrappersAreDispatchedOnBuild(): void
     {
         $this->container->expects($this->at(0))
             ->method('resolve')
@@ -51,12 +55,15 @@ class ApplicationBuilderTest extends TestCase
             ->method('resolve')
             ->with(CommandRegistry::class)
             ->willReturn(new CommandRegistry());
-        $isInvoked = false;
-        $this->appBuilder->withBootstrappers(function (IBootstrapperRegistry $bootstrappers) use (&$isInvoked) {
-            $isInvoked = true;
+        $this->appBuilder->withBootstrappers(function () {
+            return [BootstrapperMock::class];
         });
+        $this->bootstrapperDispatcher->expects($this->once())
+            ->method('dispatch')
+            ->with($this->callback(function (array $bootstrappers) {
+                return \count($bootstrappers) === 1 && $bootstrappers[0] instanceof BootstrapperMock;
+            }));
         $this->appBuilder->build();
-        $this->assertTrue($isInvoked);
     }
 
     public function testCommandCallbacksAreInvokedWithRegistryOnBuild(): void
@@ -191,8 +198,8 @@ class ApplicationBuilderTest extends TestCase
     {
         $this->assertSame(
             $this->appBuilder,
-            $this->appBuilder->withBootstrappers(function (IBootstrapperRegistry $bootstrappers) {
-                // Don't do anything
+            $this->appBuilder->withBootstrappers(function () {
+                return [];
             })
         );
     }

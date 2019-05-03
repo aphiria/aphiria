@@ -16,9 +16,9 @@ use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
 use Closure;
-use Opulence\Ioc\Bootstrappers\BootstrapperRegistry;
-use Opulence\Ioc\Bootstrappers\BootstrapperResolver;
-use Opulence\Ioc\Bootstrappers\Dispatchers\BootstrapperDispatcher;
+use Opulence\Ioc\Bootstrappers\Bootstrapper;
+use Opulence\Ioc\Bootstrappers\EagerBootstrapperDispatcher;
+use Opulence\Ioc\Bootstrappers\IBootstrapperDispatcher;
 use Opulence\Ioc\IContainer;
 use Opulence\Ioc\IocException;
 
@@ -29,6 +29,8 @@ class ApplicationBuilder implements IApplicationBuilder
 {
     /** @var IContainer The DI container that will be used to resolve dependencies */
     private $container;
+    /** @var IBootstrapperDispatcher The dispatcher for bootstrappers */
+    private $bootstrapperDispatcher;
     /** @var Closure[] The list of bootstrapper callbacks */
     private $bootstrapperCallbacks = [];
     /** @var Closure[] The list of route callbacks */
@@ -38,10 +40,12 @@ class ApplicationBuilder implements IApplicationBuilder
 
     /**
      * @param IContainer $container The DI container that will be used to resolve dependencies
+     * @param IBootstrapperDispatcher|null $bootstrapperDispatcher The bootstrapper, or null if using the inspection dispatcher without a cache
      */
-    public function __construct(IContainer $container)
+    public function __construct(IContainer $container, IBootstrapperDispatcher $bootstrapperDispatcher = null)
     {
         $this->container = $container;
+        $this->bootstrapperDispatcher = $bootstrapperDispatcher ?? new EagerBootstrapperDispatcher($this->container);
     }
 
     /**
@@ -49,19 +53,16 @@ class ApplicationBuilder implements IApplicationBuilder
      */
     public function build(): void
     {
-        $bootstrappers = new BootstrapperRegistry();
+        /** @var Bootstrapper[] $bootstrappers */
+        $bootstrappers = [];
 
         foreach ($this->bootstrapperCallbacks as $bootstrapperCallback) {
-            $bootstrapperCallback($bootstrappers);
+            foreach ((array)$bootstrapperCallback() as $bootstrapperClass) {
+                $bootstrappers[] = new $bootstrapperClass();
+            }
         }
 
-        // Todo: Update once BootstrapperDispatcher takes in an array of instantiated bootstrappers
-        $bootstrapperDispatcher = new BootstrapperDispatcher(
-            $this->container,
-            $bootstrappers,
-            new BootstrapperResolver()
-        );
-        $bootstrapperDispatcher->dispatch(false);
+        $this->bootstrapperDispatcher->dispatch($bootstrappers);
 
         try {
             $routeFactory = $this->container->resolve(LazyRouteFactory::class);

@@ -35,7 +35,7 @@ This library requires PHP 7.3 and above.  It can be installed via <a href="https
 
 ```php
 use Aphiria\Configuration\ApplicationBuilder;
-use Opulence\Ioc\IContainer;
+use Opulence\Ioc\Container;
 
 $container = new Container();
 $appBuilder = new ApplicationBuilder($container);
@@ -54,11 +54,28 @@ Your application logic is now all set to go.
 Let's take a look at how to configure bootstrappers:
 
 ```php
-$appBuilder->withBootstrappers(function (IBootstrapperRegistry $boostrappers) {
-    // You can also use $bootstrappers->registerManyBootstrappers()
-    $bootstrappers->registerBootstrapper(new FooBootstrapper());
+$appBuilder->withBootstrappers(function () {
+    return [FooBootstrapper::class];
 });
 ```
+
+`ApplicationBuilder` lets you pass in any `IBootstrapperDispatcher` you'd like (`EagerBootstrapperDispatcher` is used by default).  Here's how to use `InsepctionBindingBootstrapperDispatcher` if you'd like a performance gain:
+
+```php
+use Aphiria\Configuration\ApplicationBuilder;
+use Opulence\Ioc\Bootstrappers\Inspections\Caching\FileInspectionBindingCache;
+use Opulence\Ioc\Bootstrappers\Inspections\InspectionBindingBootstrapperDispatcher;
+use Opulence\Ioc\Container;
+
+$container = new Container();
+$bootstrapperDispatcher = new InspectionBindingBootstrapperDispatcher(
+    $container,
+    new FileInspectionBindingCache(__DIR__ . '/tmp/bindings.cache')
+);
+$appBuilder = new ApplicationBuilder($container, $bootstrapperDispatcher);
+```
+
+Now, all your bootstrappers will be dispatched lazily.
 
 <h2 id="configuring-routes">Configuring Routes</h2>
 
@@ -101,8 +118,8 @@ final class UserModuleBuilder implements IModuleBuilder
 {
     public function build(IApplicationBuilder $appBuilder): void
     {
-        $appBuilder->withBootstrappers(function (IBootstrapperRegistry $bootstrappers) {
-            $bootstrappers->registerBootstrapper(new UserServiceBootstrapper());
+        $appBuilder->withBootstrappers(function () {
+            return [UserServiceBootstrapper::class];
         });
         
         $appBuilder->withRoutes(function (RouteBuilderRegistry $routes) {
