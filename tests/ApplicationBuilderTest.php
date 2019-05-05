@@ -22,7 +22,7 @@ use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
 use Opulence\Ioc\Bootstrappers\IBootstrapperDispatcher;
 use Opulence\Ioc\IContainer;
-use Opulence\Ioc\IocException;
+use Opulence\Ioc\ResolutionException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -73,14 +73,14 @@ class ApplicationBuilderTest extends TestCase
         $this->container->expects($this->at(0))
             ->method('resolve')
             ->with(LazyRouteFactory::class)
-            ->willThrowException(new IocException());
+            ->willThrowException(new ResolutionException(LazyRouteFactory::class, null));
         $this->container->expects($this->at(1))
             ->method('bindInstance')
             ->with(LazyRouteFactory::class, $this->isInstanceOf(LazyRouteFactory::class));
         $this->container->expects($this->at(2))
             ->method('resolve')
             ->with(CommandRegistry::class)
-            ->willThrowException(new IocException());
+            ->willThrowException(new ResolutionException(CommandRegistry::class, null));
         $this->container->expects($this->at(3))
             ->method('bindInstance')
             ->with(
@@ -113,7 +113,7 @@ class ApplicationBuilderTest extends TestCase
         $this->container->expects($this->at(0))
             ->method('resolve')
             ->with(LazyRouteFactory::class)
-            ->willThrowException(new IocException());
+            ->willThrowException(new ResolutionException(LazyRouteFactory::class, null));
         $this->container->expects($this->at(1))
             ->method('bindInstance')
             ->with(LazyRouteFactory::class, $this->isInstanceOf(LazyRouteFactory::class));
@@ -140,7 +140,7 @@ class ApplicationBuilderTest extends TestCase
         $this->container->expects($this->at(1))
             ->method('resolve')
             ->with(CommandRegistry::class)
-            ->willThrowException(new IocException());
+            ->willThrowException(new ResolutionException(CommandRegistry::class, null));
         $this->container->expects($this->at(2))
             ->method('bindInstance')
             ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));
@@ -163,7 +163,7 @@ class ApplicationBuilderTest extends TestCase
         $this->container->expects($this->at(0))
             ->method('resolve')
             ->with(LazyRouteFactory::class)
-            ->willThrowException(new IocException());
+            ->willThrowException(new ResolutionException(LazyRouteFactory::class, null));
         $this->container->expects($this->at(1))
             ->method('bindInstance')
             ->with(
@@ -178,7 +178,7 @@ class ApplicationBuilderTest extends TestCase
         $this->container->expects($this->at(2))
             ->method('resolve')
             ->with(CommandRegistry::class)
-            ->willThrowException(new IocException());
+            ->willThrowException(new ResolutionException(CommandRegistry::class, null));
         $this->container->expects($this->at(3))
             ->method('bindInstance')
             ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));

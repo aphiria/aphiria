@@ -20,7 +20,7 @@ use Opulence\Ioc\Bootstrappers\Bootstrapper;
 use Opulence\Ioc\Bootstrappers\EagerBootstrapperDispatcher;
 use Opulence\Ioc\Bootstrappers\IBootstrapperDispatcher;
 use Opulence\Ioc\IContainer;
-use Opulence\Ioc\IocException;
+use Opulence\Ioc\ResolutionException;
 
 /**
  * Defines an application builder
@@ -66,7 +66,7 @@ class ApplicationBuilder implements IApplicationBuilder
 
         try {
             $routeFactory = $this->container->resolve(LazyRouteFactory::class);
-        } catch (IocException $ex) {
+        } catch (ResolutionException $ex) {
             $this->container->bindInstance(LazyRouteFactory::class, $routeFactory = new LazyRouteFactory());
         }
 
@@ -82,7 +82,7 @@ class ApplicationBuilder implements IApplicationBuilder
 
         try {
             $commands = $this->container->resolve(CommandRegistry::class);
-        } catch (IocException $ex) {
+        } catch (ResolutionException $ex) {
             $this->container->bindInstance(CommandRegistry::class, $commands = new CommandRegistry());
         }
 
