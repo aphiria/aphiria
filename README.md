@@ -35,10 +35,12 @@ This library requires PHP 7.3 and above.  It can be installed via <a href="https
 
 ```php
 use Aphiria\Configuration\ApplicationBuilder;
+use Opulence\Ioc\Bootstrappers\Inspections\InspectionBindingBootstrapperDispatcher;
 use Opulence\Ioc\Container;
 
 $container = new Container();
-$appBuilder = new ApplicationBuilder($container);
+$bootstrapperDispatcher = new InspectionBindingBootstrapperDispatcher($container);
+$appBuilder = new ApplicationBuilder($container, $bootstrapperDispatcher);
 ```
 
 Once you're done configuring your [bootstrappers](#configuring-bootstrappers), [routes](#configuring-routes), and [console commands](#configuring-console-commands), you can go ahead and build your application:
@@ -58,24 +60,6 @@ $appBuilder->withBootstrappers(function () {
     return [FooBootstrapper::class];
 });
 ```
-
-`ApplicationBuilder` lets you pass in any `IBootstrapperDispatcher` you'd like (`EagerBootstrapperDispatcher` is used by default).  Here's how to use `InsepctionBindingBootstrapperDispatcher` if you'd like a performance gain:
-
-```php
-use Aphiria\Configuration\ApplicationBuilder;
-use Opulence\Ioc\Bootstrappers\Inspections\Caching\FileInspectionBindingCache;
-use Opulence\Ioc\Bootstrappers\Inspections\InspectionBindingBootstrapperDispatcher;
-use Opulence\Ioc\Container;
-
-$container = new Container();
-$bootstrapperDispatcher = new InspectionBindingBootstrapperDispatcher(
-    $container,
-    new FileInspectionBindingCache(__DIR__ . '/tmp/bindings.cache')
-);
-$appBuilder = new ApplicationBuilder($container, $bootstrapperDispatcher);
-```
-
-Now, all your bootstrappers will be dispatched lazily.
 
 <h2 id="configuring-routes">Configuring Routes</h2>
 
