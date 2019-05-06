@@ -17,7 +17,6 @@ use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
 use Closure;
 use Opulence\Ioc\Bootstrappers\Bootstrapper;
-use Opulence\Ioc\Bootstrappers\EagerBootstrapperDispatcher;
 use Opulence\Ioc\Bootstrappers\IBootstrapperDispatcher;
 use Opulence\Ioc\IContainer;
 use Opulence\Ioc\ResolutionException;
@@ -40,12 +39,12 @@ class ApplicationBuilder implements IApplicationBuilder
 
     /**
      * @param IContainer $container The DI container that will be used to resolve dependencies
-     * @param IBootstrapperDispatcher|null $bootstrapperDispatcher The bootstrapper, or null if using the inspection dispatcher without a cache
+     * @param IBootstrapperDispatcher $bootstrapperDispatcher The bootstrapper dispatcher
      */
-    public function __construct(IContainer $container, IBootstrapperDispatcher $bootstrapperDispatcher = null)
+    public function __construct(IContainer $container, IBootstrapperDispatcher $bootstrapperDispatcher)
     {
         $this->container = $container;
-        $this->bootstrapperDispatcher = $bootstrapperDispatcher ?? new EagerBootstrapperDispatcher($this->container);
+        $this->bootstrapperDispatcher = $bootstrapperDispatcher;
     }
 
     /**
