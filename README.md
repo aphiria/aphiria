@@ -35,11 +35,11 @@ This library requires PHP 7.3 and above.  It can be installed via <a href="https
 
 ```php
 use Aphiria\Configuration\ApplicationBuilder;
-use Opulence\Ioc\Bootstrappers\Inspections\InspectionBindingBootstrapperDispatcher;
+use Opulence\Ioc\Bootstrappers\Inspections\BindingInspectorBootstrapperDispatcher;
 use Opulence\Ioc\Container;
 
 $container = new Container();
-$bootstrapperDispatcher = new InspectionBindingBootstrapperDispatcher($container);
+$bootstrapperDispatcher = new BindingInspectorBootstrapperDispatcher($container);
 $appBuilder = new ApplicationBuilder($container, $bootstrapperDispatcher);
 ```
 
