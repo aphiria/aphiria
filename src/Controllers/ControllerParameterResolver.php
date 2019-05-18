@@ -56,11 +56,11 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         }
 
         if (isset($routeVariables[$reflectionParameter->getName()])) {
-            return $routeVariables[$reflectionParameter->getName()];
+            return $this->resolveScalarParameter($reflectionParameter, $routeVariables[$reflectionParameter->getName()]);
         }
 
         if (isset($queryStringVars[$reflectionParameter->getName()])) {
-            return $queryStringVars[$reflectionParameter->getName()];
+            return $this->resolveScalarParameter($reflectionParameter, $queryStringVars[$reflectionParameter->getName()]);
         }
 
         if ($reflectionParameter->isDefaultValueAvailable()) {
@@ -130,6 +130,35 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             }
 
             return null;
+        }
+    }
+
+    /**
+     * Resolves a scalar parameter to the correct scalar value
+     *
+     * @param ReflectionParameter $reflectionParameter The parameter to resolve
+     * @param mixed $rawValue The raw value to convert
+     * @return mixed The raw value converted to the appropriate scalar type
+     * @throws FailedScalarParameterConversionException Thrown if the scalar parameter could not be converted
+     */
+    private function resolveScalarParameter(ReflectionParameter $reflectionParameter, $rawValue)
+    {
+        switch ($reflectionParameter->getType()) {
+            case 'int':
+                return (int)$rawValue;
+            case 'float':
+                return (float)$rawValue;
+            case 'string':
+                return (string)$rawValue;
+            case 'bool':
+                return (bool)$rawValue;
+            case null:
+                // Do not attempt to convert it
+                return $rawValue;
+            case 'array':
+                throw new FailedScalarParameterConversionException('Cannot automatically resolve array types - you must either read the body or the query string inside the controller method');
+            default:
+                throw new FailedScalarParameterConversionException("Failed to convert value to {$reflectionParameter->getType()}");
         }
     }
 }

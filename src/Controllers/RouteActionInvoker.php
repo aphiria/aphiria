@@ -95,7 +95,7 @@ final class RouteActionInvoker implements IRouteActionInvoker
                     $routeVariables
                 );
             }
-        } catch (MissingControllerParameterValueException $ex) {
+        } catch (MissingControllerParameterValueException | FailedScalarParameterConversionException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_BAD_REQUEST,
                 'Failed to invoke ' . self::getRouteActionDisplayName($routeActionDelegate),

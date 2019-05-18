@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Api\Tests\Controllers;
 
 use Aphiria\Api\Controllers\ControllerParameterResolver;
+use Aphiria\Api\Controllers\FailedScalarParameterConversionException;
 use Aphiria\Api\Controllers\MissingControllerParameterValueException;
 use Aphiria\Api\Tests\Controllers\Mocks\Controller;
 use Aphiria\Api\Tests\Controllers\Mocks\User;
@@ -42,6 +43,36 @@ class ControllerParameterResolverTest extends TestCase
     {
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
         $this->resolver = new ControllerParameterResolver($this->contentNegotiator);
+    }
+
+    public function scalarParameterTestDataProvider(): array
+    {
+        return [
+            ['intParameter', 'foo', '123', 123],
+            ['boolParameter', 'foo', '1', true],
+            ['floatParameter', 'foo', '1.1', 1.1],
+            ['stringParameter', 'foo', 'bar', 'bar']
+        ];
+    }
+
+    public function testResolvingArrayParameterWithMatchingQueryStringVariableThrowsException(): void
+    {
+        $this->expectException(FailedScalarParameterConversionException::class);
+        $this->resolver->resolveParameter(
+            new ReflectionParameter([Controller::class, 'arrayParameter'], 'foo'),
+            $this->createRequestWithoutBody('http://foo.com/?foo=bar'),
+            []
+        );
+    }
+
+    public function testResolvingArrayParameterWithMatchingRouteVariableThrowsException(): void
+    {
+        $this->expectException(FailedScalarParameterConversionException::class);
+        $this->resolver->resolveParameter(
+            new ReflectionParameter([Controller::class, 'arrayParameter'], 'foo'),
+            $this->createRequestWithoutBody('http://foo.com'),
+            ['foo' => 'bar']
+        );
     }
 
     public function testResolvingParameterWithNoTypeHintUsesVariableFromRoute(): void
@@ -131,7 +162,41 @@ class ControllerParameterResolverTest extends TestCase
         $this->assertEquals($expectedUser, $resolvedParameter);
     }
 
-    public function testResolvingScalarParameterAndNoMatchingVariableThrowsException(): void
+    /**
+     * @dataProvider scalarParameterTestDataProvider
+     */
+    public function testResolvingScalarParameterUsesMatchingQueryStringVariable(
+        string $methodName,
+        string $parameterName,
+        string $rawValue,
+        $scalarValue
+    ): void {
+        $resolvedParameter = $this->resolver->resolveParameter(
+            new ReflectionParameter([Controller::class, $methodName], $parameterName),
+            $this->createRequestWithoutBody('http://foo.com/?' . $parameterName . '=' . $rawValue),
+            []
+        );
+        $this->assertSame($scalarValue, $resolvedParameter);
+    }
+
+    /**
+     * @dataProvider scalarParameterTestDataProvider
+     */
+    public function testResolvingScalarParameterUsesMatchingRouteVariableOverQueryStringVariable(
+        string $methodName,
+        string $parameterName,
+        string $rawValue,
+        $scalarValue
+    ): void {
+        $resolvedParameter = $this->resolver->resolveParameter(
+            new ReflectionParameter([Controller::class, $methodName], $parameterName),
+            $this->createRequestWithoutBody('http://foo.com/?' . $parameterName . '=' . $rawValue),
+            [$parameterName => $rawValue]
+        );
+        $this->assertSame($scalarValue, $resolvedParameter);
+    }
+
+    public function testResolvingStringParameterAndNoMatchingVariableThrowsException(): void
     {
         $this->expectException(MissingControllerParameterValueException::class);
         $this->expectExceptionMessage('No valid value for parameter foo');
@@ -142,7 +207,7 @@ class ControllerParameterResolverTest extends TestCase
         );
     }
 
-    public function testResolvingScalarParameterAndNoMatchingVariableUsesDefaultValueIfAvailable(): void
+    public function testResolvingStringParameterAndNoMatchingVariableUsesDefaultValueIfAvailable(): void
     {
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'defaultValueParameter'], 'foo'),
@@ -152,7 +217,7 @@ class ControllerParameterResolverTest extends TestCase
         $this->assertEquals('bar', $resolvedParameter);
     }
 
-    public function testResolvingScalarParameterUsesMatchingQueryStringVariable(): void
+    public function testResolvingStringParameterUsesMatchingQueryStringVariable(): void
     {
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'stringParameter'], 'foo'),
@@ -162,7 +227,7 @@ class ControllerParameterResolverTest extends TestCase
         $this->assertEquals('bar', $resolvedParameter);
     }
 
-    public function testResolvingScalarParameterUsesMatchingRouteVariableOverQueryStringVariable(): void
+    public function testResolvingStringParameterUsesMatchingRouteVariableOverQueryStringVariable(): void
     {
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([Controller::class, 'stringParameter'], 'foo'),

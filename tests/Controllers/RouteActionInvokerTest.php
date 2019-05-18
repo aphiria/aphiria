@@ -14,6 +14,7 @@ namespace Aphiria\Api\Tests\Controllers;
 
 use Aphiria\Api\Controllers\ControllerParameterResolver;
 use Aphiria\Api\Controllers\FailedRequestContentNegotiationException;
+use Aphiria\Api\Controllers\FailedScalarParameterConversionException;
 use Aphiria\Api\Controllers\IControllerParameterResolver;
 use Aphiria\Api\Controllers\MissingControllerParameterValueException;
 use Aphiria\Api\Controllers\RequestBodyDeserializationException;
@@ -77,6 +78,24 @@ class RouteActionInvokerTest extends TestCase
             $this->fail('Failed to assert that a 415 was thrown');
         } catch (HttpException $ex) {
             $this->assertEquals(HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE, $ex->getResponse()->getStatusCode());
+        }
+    }
+
+    public function testFailedScalarParameterConversionExceptionIsRethrownAsHttpException(): void
+    {
+        try {
+            $this->parameterResolver->expects($this->once())
+                ->method('resolveParameter')
+                ->with($this->anything(), $this->anything())
+                ->willThrowException(new FailedScalarParameterConversionException);
+            $this->invoker->invokeRouteAction(
+                [$this->controller, 'stringParameter'],
+                $this->createMock(IHttpRequestMessage::class),
+                []
+            );
+            $this->fail('Failed to assert that a 400 was thrown');
+        } catch (HttpException $ex) {
+            $this->assertEquals(HttpStatusCodes::HTTP_BAD_REQUEST, $ex->getResponse()->getStatusCode());
         }
     }
 

@@ -18,6 +18,7 @@ use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
+use function json_encode;
 use RuntimeException;
 
 /**
@@ -25,6 +26,28 @@ use RuntimeException;
  */
 class Controller extends BaseController
 {
+    /**
+     * Mocks a method with an array parameter
+     *
+     * @param array $foo The array
+     * @return IHttpResponseMessage The response
+     */
+    public function arrayParameter(array $foo): IHttpResponseMessage
+    {
+        return $this->createResponseWithBody(json_encode($foo));
+    }
+
+    /**
+     * Mocks a method with a bool parameter
+     *
+     * @param bool $foo The bool
+     * @return IHttpResponseMessage The response
+     */
+    public function boolParameter(bool $foo): IHttpResponseMessage
+    {
+        return $this->createResponseWithBody((string)$foo);
+    }
+
     /**
      * Mocks a method with a parameter with a default value
      *
@@ -34,6 +57,16 @@ class Controller extends BaseController
     public function defaultValueParameter(string $foo = 'bar'): IHttpResponseMessage
     {
         return $this->createResponseWithBody($foo);
+    }
+    /**
+     * Mocks a method with a float parameter
+     *
+     * @param float $foo The float
+     * @return IHttpResponseMessage The response
+     */
+    public function floatParameter(float $foo): IHttpResponseMessage
+    {
+        return $this->createResponseWithBody((string)$foo);
     }
 
     /**

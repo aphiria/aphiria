@@ -30,6 +30,7 @@ interface IControllerParameterResolver
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
      * @throws RequestBodyDeserializationException Thrown if the request body could not be deserialized
+     * @throws FailedScalarParameterConversionException Thrown if a scalar parameter could not be converted
      */
     public function resolveParameter(
         ReflectionParameter $reflectionParameter,
