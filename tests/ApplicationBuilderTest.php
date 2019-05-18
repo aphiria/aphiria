@@ -22,7 +22,6 @@ use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
 use Opulence\Ioc\Bootstrappers\IBootstrapperDispatcher;
 use Opulence\Ioc\IContainer;
-use Opulence\Ioc\ResolutionException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -48,10 +47,18 @@ class ApplicationBuilderTest extends TestCase
     public function testBootstrapperCallbacksAreInvokedAndBootstrappersAreDispatchedOnBuild(): void
     {
         $this->container->expects($this->at(0))
+            ->method('hasBinding')
+            ->with(LazyRouteFactory::class)
+            ->willReturn(true);
+        $this->container->expects($this->at(1))
             ->method('resolve')
             ->with(LazyRouteFactory::class)
             ->willReturn(new LazyRouteFactory());
-        $this->container->expects($this->at(1))
+        $this->container->expects($this->at(2))
+            ->method('hasBinding')
+            ->with(CommandRegistry::class)
+            ->willReturn(true);
+        $this->container->expects($this->at(3))
             ->method('resolve')
             ->with(CommandRegistry::class)
             ->willReturn(new CommandRegistry());
@@ -68,29 +75,32 @@ class ApplicationBuilderTest extends TestCase
 
     public function testCommandCallbacksAreInvokedWithRegistryOnBuild(): void
     {
+        /** @var LazyRouteFactory|null $expectedRouteFactory */
+        $expectedRouteFactory = null;
         /** @var CommandRegistry|null $expectedCommands */
         $expectedCommands = null;
         $this->container->expects($this->at(0))
-            ->method('resolve')
+            ->method('hasBinding')
             ->with(LazyRouteFactory::class)
-            ->willThrowException(new ResolutionException(LazyRouteFactory::class, null));
+            ->willReturn(false);
         $this->container->expects($this->at(1))
             ->method('bindInstance')
-            ->with(LazyRouteFactory::class, $this->isInstanceOf(LazyRouteFactory::class));
+            ->with(LazyRouteFactory::class, $this->callback(function (LazyRouteFactory $actualRouteFactory) use (&$expectedRouteFactory) {
+                $expectedRouteFactory = $actualRouteFactory;
+
+                return true;
+            }));
         $this->container->expects($this->at(2))
-            ->method('resolve')
+            ->method('hasBinding')
             ->with(CommandRegistry::class)
-            ->willThrowException(new ResolutionException(CommandRegistry::class, null));
+            ->willReturn(false);
         $this->container->expects($this->at(3))
             ->method('bindInstance')
-            ->with(
-                CommandRegistry::class,
-                $this->callback(function (CommandRegistry $actualCommands) use (&$expectedCommands) {
-                    $expectedCommands = $actualCommands;
+            ->with(CommandRegistry::class, $this->callback(function (CommandRegistry $actualCommands) use (&$expectedCommands) {
+                $expectedCommands = $actualCommands;
 
-                    return true;
-                })
-            );
+                return true;
+            }));
         $isInvoked = false;
         $this->appBuilder->withCommands(function (CommandRegistry $commands) use (&$isInvoked) {
             $isInvoked = true;
@@ -111,13 +121,17 @@ class ApplicationBuilderTest extends TestCase
     {
         $expectedCommands = new CommandRegistry();
         $this->container->expects($this->at(0))
-            ->method('resolve')
+            ->method('hasBinding')
             ->with(LazyRouteFactory::class)
-            ->willThrowException(new ResolutionException(LazyRouteFactory::class, null));
+            ->willReturn(false);
         $this->container->expects($this->at(1))
             ->method('bindInstance')
             ->with(LazyRouteFactory::class, $this->isInstanceOf(LazyRouteFactory::class));
         $this->container->expects($this->at(2))
+            ->method('hasBinding')
+            ->with(CommandRegistry::class)
+            ->willReturn(true);
+        $this->container->expects($this->at(3))
             ->method('resolve')
             ->with(CommandRegistry::class)
             ->willReturn($expectedCommands);
@@ -134,14 +148,18 @@ class ApplicationBuilderTest extends TestCase
     {
         $expectedFactory = new LazyRouteFactory();
         $this->container->expects($this->at(0))
+            ->method('hasBinding')
+            ->with(LazyRouteFactory::class)
+            ->willReturn(true);
+        $this->container->expects($this->at(1))
             ->method('resolve')
             ->with(LazyRouteFactory::class)
             ->willReturn($expectedFactory);
-        $this->container->expects($this->at(1))
-            ->method('resolve')
-            ->with(CommandRegistry::class)
-            ->willThrowException(new ResolutionException(CommandRegistry::class, null));
         $this->container->expects($this->at(2))
+            ->method('hasBinding')
+            ->with(CommandRegistry::class)
+            ->willReturn(false);
+        $this->container->expects($this->at(3))
             ->method('bindInstance')
             ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));
         $isInvoked = false;
@@ -161,9 +179,9 @@ class ApplicationBuilderTest extends TestCase
         /** @var LazyRouteFactory|null $expectedRouteFactory */
         $expectedRouteFactory = null;
         $this->container->expects($this->at(0))
-            ->method('resolve')
+            ->method('hasBinding')
             ->with(LazyRouteFactory::class)
-            ->willThrowException(new ResolutionException(LazyRouteFactory::class, null));
+            ->willReturn(false);
         $this->container->expects($this->at(1))
             ->method('bindInstance')
             ->with(
@@ -176,9 +194,9 @@ class ApplicationBuilderTest extends TestCase
                 })
             );
         $this->container->expects($this->at(2))
-            ->method('resolve')
+            ->method('hasBinding')
             ->with(CommandRegistry::class)
-            ->willThrowException(new ResolutionException(CommandRegistry::class, null));
+            ->willReturn(false);
         $this->container->expects($this->at(3))
             ->method('bindInstance')
             ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));

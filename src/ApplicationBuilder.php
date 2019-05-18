@@ -19,7 +19,6 @@ use Closure;
 use Opulence\Ioc\Bootstrappers\Bootstrapper;
 use Opulence\Ioc\Bootstrappers\IBootstrapperDispatcher;
 use Opulence\Ioc\IContainer;
-use Opulence\Ioc\ResolutionException;
 
 /**
  * Defines an application builder
@@ -63,9 +62,15 @@ class ApplicationBuilder implements IApplicationBuilder
 
         $this->bootstrapperDispatcher->dispatch($bootstrappers);
 
-        try {
+        // We specifically check for the binding because, if it can be auto-resolved due to a parameterless constructor,
+        // we want to make sure we're binding
+        /**
+         * We're specifically checking for a binding and, if it doesn't exist, adding a binding
+         * This will make sure that the instances we use here are the same used elsewhere when resolving the interfaces
+         */
+        if ($this->container->hasBinding(LazyRouteFactory::class)) {
             $routeFactory = $this->container->resolve(LazyRouteFactory::class);
-        } catch (ResolutionException $ex) {
+        } else {
             $this->container->bindInstance(LazyRouteFactory::class, $routeFactory = new LazyRouteFactory());
         }
 
@@ -79,9 +84,9 @@ class ApplicationBuilder implements IApplicationBuilder
             return $routeBuilders->buildAll();
         });
 
-        try {
+        if ($this->container->hasBinding(CommandRegistry::class)) {
             $commands = $this->container->resolve(CommandRegistry::class);
-        } catch (ResolutionException $ex) {
+        } else {
             $this->container->bindInstance(CommandRegistry::class, $commands = new CommandRegistry());
         }
 

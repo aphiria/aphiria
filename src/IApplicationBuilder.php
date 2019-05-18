@@ -20,6 +20,11 @@ use Closure;
 interface IApplicationBuilder
 {
     /**
+     * Builds the application
+     */
+    public function build(): void;
+
+    /**
      * Adds bootstrappers to the application
      *
      * @param Closure $callback The callback that will add bootstrappers (must accept a bootstrapper registry)
