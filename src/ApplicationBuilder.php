@@ -62,8 +62,6 @@ class ApplicationBuilder implements IApplicationBuilder
 
         $this->bootstrapperDispatcher->dispatch($bootstrappers);
 
-        // We specifically check for the binding because, if it can be auto-resolved due to a parameterless constructor,
-        // we want to make sure we're binding
         /**
          * We're specifically checking for a binding and, if it doesn't exist, adding a binding
          * This will make sure that the instances we use here are the same used elsewhere when resolving the interfaces
