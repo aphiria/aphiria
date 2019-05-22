@@ -27,7 +27,7 @@ interface IApplicationBuilder
     /**
      * Adds bootstrappers to the application
      *
-     * @param Closure $callback The callback that will add bootstrappers (must accept a bootstrapper registry)
+     * @param Closure $callback The callback that will return instantiated bootstrappers
      * @return IApplicationBuilder For chaining
      */
     public function withBootstrappers(Closure $callback): self;
