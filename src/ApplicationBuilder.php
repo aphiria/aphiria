@@ -55,8 +55,8 @@ class ApplicationBuilder implements IApplicationBuilder
         $bootstrappers = [];
 
         foreach ($this->bootstrapperCallbacks as $bootstrapperCallback) {
-            foreach ((array)$bootstrapperCallback() as $bootstrapperClass) {
-                $bootstrappers[] = new $bootstrapperClass();
+            foreach ((array)$bootstrapperCallback() as $bootstrapper) {
+                $bootstrappers[] = $bootstrapper;
             }
         }
 

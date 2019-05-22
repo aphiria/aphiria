@@ -63,7 +63,7 @@ class ApplicationBuilderTest extends TestCase
             ->with(CommandRegistry::class)
             ->willReturn(new CommandRegistry());
         $this->appBuilder->withBootstrappers(function () {
-            return [BootstrapperMock::class];
+            return [new BootstrapperMock];
         });
         $this->bootstrapperDispatcher->expects($this->once())
             ->method('dispatch')

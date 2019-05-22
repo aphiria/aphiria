@@ -57,7 +57,7 @@ Let's take a look at how to configure bootstrappers:
 
 ```php
 $appBuilder->withBootstrappers(function () {
-    return [FooBootstrapper::class];
+    return [new FooBootstrapper];
 });
 ```
 
@@ -103,7 +103,7 @@ final class UserModuleBuilder implements IModuleBuilder
     public function build(IApplicationBuilder $appBuilder): void
     {
         $appBuilder->withBootstrappers(function () {
-            return [UserServiceBootstrapper::class];
+            return [new UserServiceBootstrapper];
         });
         
         $appBuilder->withRoutes(function (RouteBuilderRegistry $routes) {
