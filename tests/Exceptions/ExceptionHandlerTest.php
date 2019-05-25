@@ -196,15 +196,15 @@ class ExceptionHandlerTest extends TestCase
      *
      * @param Closure[] $customExceptionsToLogLevels The exception types to closures that return the PSR-3 log levels
      * @param array|null $minExceptionLogLevels The minimum PSR-3 log levels that will be logged
-     * @param int|null $errorLogLevels The bitwise value of error levels that are to be logged
-     * @param int|null $errorThrownLevels The bitwise value of error levels that are to be thrown as exceptions
+     * @param int $errorLogLevels The bitwise value of error levels that are to be logged
+     * @param int $errorThrownLevels The bitwise value of error levels that are to be thrown as exceptions
      * @return ExceptionHandler The exception handler
      */
     private function createExceptionHandler(
         array $customExceptionsToLogLevels = [],
         array $minExceptionLogLevels = null,
-        int $errorLogLevels = null,
-        int $errorThrownLevels = null
+        int $errorLogLevels = 0,
+        int $errorThrownLevels = E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED)
     ): ExceptionHandler {
         $exceptionLogLevelFactories = new ExceptionLogLevelFactoryRegistry();
         $exceptionLogLevelFactories->registerManyFactories($customExceptionsToLogLevels);

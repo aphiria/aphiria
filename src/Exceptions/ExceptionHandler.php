@@ -55,8 +55,8 @@ class ExceptionHandler implements IExceptionHandler
      * @param ExceptionLogLevelFactoryRegistry|null $exceptionLogLevelFactories The registry of exception log level factories
      * @param array|null $exceptionLogLevels The PSR-3 exception log levels that will be logged, or null if
      *      using the default levels
-     * @param int|null $errorLogLevels The bitwise value of error levels that are to be logged
-     * @param int|null $errorThrownLevels The bitwise value of error levels that are to be thrown as exceptions
+     * @param int $errorLogLevels The bitwise value of error levels that are to be logged
+     * @param int $errorThrownLevels The bitwise value of error levels that are to be thrown as exceptions
      * @param IResponseWriter $responseWriter What to use to write a response
      */
     public function __construct(
@@ -64,8 +64,8 @@ class ExceptionHandler implements IExceptionHandler
         LoggerInterface $logger = null,
         ExceptionLogLevelFactoryRegistry $exceptionLogLevelFactories = null,
         array $exceptionLogLevels = null,
-        int $errorLogLevels = null,
-        int $errorThrownLevels = null,
+        int $errorLogLevels = 0,
+        int $errorThrownLevels = E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED),
         IResponseWriter $responseWriter = null
     ) {
         $this->exceptionResponseFactory = $exceptionResponseFactory;
@@ -74,8 +74,8 @@ class ExceptionHandler implements IExceptionHandler
         $this->exceptionLogLevels = $exceptionLogLevels ?? [
             LogLevel::ERROR, LogLevel::CRITICAL, LogLevel::ALERT, LogLevel::EMERGENCY
             ];
-        $this->errorLogLevels = $errorLogLevels ?? 0;
-        $this->errorThrownLevels = $errorThrownLevels ?? (E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED));
+        $this->errorLogLevels = $errorLogLevels;
+        $this->errorThrownLevels = $errorThrownLevels;
         $this->responseWriter = $responseWriter ?? new StreamResponseWriter();
     }
 
