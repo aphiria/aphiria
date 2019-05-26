@@ -38,7 +38,7 @@ $serializedUser = '{"id":123,"email":"foo@bar.com"}';
 $user = $serializer->deserialize($serializedUser, User::class);
 ```
 
-<h1 id="installation">Installation</h1>
+<h2 id="installation">Installation</h2>
 
 You can install this library by including the following package name in your _composer.json_:
 
