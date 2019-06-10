@@ -34,6 +34,7 @@ class ConfirmationTest extends TestCase
         $this->assertFalse($this->question->formatAnswer('N'));
         $this->assertFalse($this->question->formatAnswer('no'));
         $this->assertFalse($this->question->formatAnswer('NO'));
+        $this->assertFalse($this->question->formatAnswer(false));
     }
 
     public function testFormattingTrueValues(): void
@@ -42,5 +43,6 @@ class ConfirmationTest extends TestCase
         $this->assertTrue($this->question->formatAnswer('Y'));
         $this->assertTrue($this->question->formatAnswer('yes'));
         $this->assertTrue($this->question->formatAnswer('YES'));
+        $this->assertTrue($this->question->formatAnswer(true));
     }
 }
