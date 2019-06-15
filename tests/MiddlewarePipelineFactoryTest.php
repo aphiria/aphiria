@@ -25,8 +25,7 @@ use PHPUnit\Framework\TestCase;
  */
 class MiddlewarePipelineFactoryTest extends TestCase
 {
-    /** @var MiddlewarePipelineFactory */
-    private $pipelineFactory;
+    private MiddlewarePipelineFactory $pipelineFactory;
 
     public function setUp(): void
     {

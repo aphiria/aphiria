@@ -22,9 +22,9 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 final class MiddlewareRequestHandler implements IRequestHandler
 {
     /** @var IMiddleware The middleware that will handle the request */
-    private $middleware;
+    private IMiddleware $middleware;
     /** @var IRequestHandler The next request handler */
-    private $next;
+    private IRequestHandler $next;
 
     /**
      * @param IMiddleware $middleware The middleware that will handle the request

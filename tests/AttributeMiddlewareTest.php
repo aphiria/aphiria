@@ -20,8 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class AttributeMiddlewareTest extends TestCase
 {
-    /** @var AttributeMiddleware The middleware to use in tests */
-    private $middleware;
+    private AttributeMiddleware $middleware;
 
     public function setUp(): void
     {

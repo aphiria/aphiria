@@ -18,7 +18,7 @@ namespace Aphiria\Middleware;
 abstract class AttributeMiddleware implements IMiddleware
 {
     /** @var array The middleware attributes */
-    private $attributes = [];
+    private array $attributes = [];
 
     /**
      * Sets the attributes
