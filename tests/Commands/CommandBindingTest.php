@@ -18,7 +18,9 @@ use Aphiria\Console\Commands\CommandBinding;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * Tests the command binding
@@ -62,5 +64,18 @@ class CommandBindingTest extends TestCase
         };
         $binding = new CommandBinding($command, $commandHandlerFactory);
         $this->assertSame($expectedCommandHandler, $binding->resolveCommandHandler());
+    }
+
+    public function testResolvingCommandHandlerThatIsNotCommandHandlerThrowsInvalidArgumentException(): void
+    {
+        $command = new Command('name', [], [], '', '');
+        $invalidCommandHandler = new stdClass();
+        $commandHandlerFactory = function () use ($invalidCommandHandler) {
+            return $invalidCommandHandler;
+        };
+        $binding = new CommandBinding($command, $commandHandlerFactory);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Command handler must implement ' . ICommandHandler::class . ' or be a closure');
+        $binding->resolveCommandHandler();
     }
 }

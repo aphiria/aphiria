@@ -16,6 +16,7 @@ use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandBinding;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -131,6 +132,14 @@ class CommandRegistryTest extends TestCase
         $commandHandler = null;
         $this->assertFalse($this->commands->tryGetHandler('foo', $commandHandler));
         $this->assertNull($commandHandler);
+    }
+
+    public function testTryGettingHandlerOfInvalidTypeThrowsInvalidArgumentException(): void
+    {
+        $commandHandler = null;
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Command must be either a string or an instance of %s', Command::class));
+        $this->commands->tryGetHandler(100, $commandHandler);
     }
 
     public function testTryGettingHandlerReturnsTrueIfCommandWasFound(): void
