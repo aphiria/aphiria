@@ -22,7 +22,7 @@ class AttributeMiddlewareTest extends TestCase
 {
     private AttributeMiddleware $middleware;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->middleware = new AttributeMiddleware();
     }
