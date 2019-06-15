@@ -25,10 +25,8 @@ use PHPUnit\Framework\TestCase;
  */
 class FormUrlEncodedSerializerTest extends TestCase
 {
-    /** @var FormUrlEncodedSerializer The serializer to use in tests */
-    private $serializer;
-    /** @var EncoderRegistry The encoder registry to use in tests */
-    private $encoders;
+    private FormUrlEncodedSerializer $serializer;
+    private EncoderRegistry $encoders;
 
     protected function setUp(): void
     {

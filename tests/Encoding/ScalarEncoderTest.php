@@ -22,8 +22,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ScalarEncoderTest extends TestCase
 {
-    /** @var ScalarEncoder The encoder to use in tests */
-    private $scalarEncoder;
+    private ScalarEncoder $scalarEncoder;
 
     protected function setUp(): void
     {

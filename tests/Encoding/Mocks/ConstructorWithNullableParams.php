@@ -17,7 +17,7 @@ namespace Aphiria\Serialization\Tests\Encoding\Mocks;
  */
 class ConstructorWithNullableParams
 {
-    private $foo;
+    private ?string $foo;
 
     public function __construct(?string $foo)
     {

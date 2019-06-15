@@ -26,11 +26,11 @@ use ReflectionProperty;
 final class ObjectEncoder implements IEncoder
 {
     /** @var EncoderRegistry The encoder registry */
-    private $encoders;
+    private EncoderRegistry $encoders;
     /** @var IPropertyNameFormatter|null The property name formatter to use */
-    private $propertyNameFormatter;
+    private ?IPropertyNameFormatter $propertyNameFormatter;
     /** @var array The mapping of types to encoded property names to ignore */
-    private $ignoredEncodedPropertyNamesByType = [];
+    private array $ignoredEncodedPropertyNamesByType = [];
 
     /**
      * @param EncoderRegistry $encoders The encoder registry
@@ -124,7 +124,7 @@ final class ObjectEncoder implements IEncoder
 
         foreach ($reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC) as $publicProperty) {
             // We don't want to overwrite any already-set public properties
-            if ($publicProperty->getValue($object) !== null) {
+            if (isset($object->{$publicProperty->getName()}) && $object->{$publicProperty->getName()} !== null) {
                 continue;
             }
 

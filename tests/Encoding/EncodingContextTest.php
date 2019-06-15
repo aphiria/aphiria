@@ -21,8 +21,7 @@ use PHPUnit\Framework\TestCase;
  */
 class EncodingContextTest extends TestCase
 {
-    /** @var EncodingContext The context to test */
-    private $context;
+    private EncodingContext $context;
 
     protected function setUp(): void
     {

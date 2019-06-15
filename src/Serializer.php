@@ -25,7 +25,7 @@ use OutOfBoundsException;
 abstract class Serializer implements ISerializer
 {
     /** @var EncoderRegistry The encoder registry to use to encode/decode values */
-    protected $encoders;
+    protected EncoderRegistry $encoders;
 
     /**
      * @param EncoderRegistry|null $encoders The encoder registry to use to encode/decode values

@@ -24,10 +24,8 @@ use PHPUnit\Framework\TestCase;
  */
 class ArrayEncoderTest extends TestCase
 {
-    /** @var EncoderRegistry The encoder registry */
-    private $encoders;
-    /** @var ArrayEncoder The encoder to use in tests */
-    private $arrayEncoder;
+    private EncoderRegistry $encoders;
+    private ArrayEncoder $arrayEncoder;
 
     protected function setUp(): void
     {

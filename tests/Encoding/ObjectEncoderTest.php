@@ -28,7 +28,7 @@ use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedParams;
 use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedParamsAndNoGetters;
 use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedVariadicParams;
 use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedOptionalParams;
-use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedPararmsWithTypedGetters;
+use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedParamsWithTypedGetters;
 use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedScalars;
 use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedVariadicParams;
 use Aphiria\Serialization\Tests\Encoding\Mocks\DerivedClassWithProperties;
@@ -36,17 +36,14 @@ use Aphiria\Serialization\Tests\Encoding\Mocks\NoConstructor;
 use Aphiria\Serialization\Tests\Encoding\Mocks\User;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 
 /**
  * Tests the object encoder
  */
 class ObjectEncoderTest extends TestCase
 {
-    /** @var EncoderRegistry The encoder registry */
-    private $encoders;
-    /** @var ObjectEncoder The object encoder */
-    private $objectEncoder;
+    private EncoderRegistry $encoders;
+    private ObjectEncoder $objectEncoder;
 
     protected function setUp(): void
     {
@@ -192,10 +189,10 @@ class ObjectEncoderTest extends TestCase
         $this->encoders->registerEncoder('bool', $boolEncoder);
         $value = $this->objectEncoder->decode(
             $encodedValue,
-            ConstructorWithUntypedPararmsWithTypedGetters::class,
+            ConstructorWithUntypedParamsWithTypedGetters::class,
             $context
         );
-        $this->assertInstanceOf(ConstructorWithUntypedPararmsWithTypedGetters::class, $value);
+        $this->assertInstanceOf(ConstructorWithUntypedParamsWithTypedGetters::class, $value);
         $this->assertEquals($expectedUser, $value->getFoo());
         $this->assertTrue($value->isBar());
         $this->assertTrue($value->hasBaz());

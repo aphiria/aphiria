@@ -25,8 +25,7 @@ use PHPUnit\Framework\TestCase;
  */
 class DateTimeEncoderTest extends TestCase
 {
-    /** @var DateTimeEncoder The encoder to test */
-    private $dateTimeEncoder;
+    private DateTimeEncoder $dateTimeEncoder;
 
     protected function setUp(): void
     {

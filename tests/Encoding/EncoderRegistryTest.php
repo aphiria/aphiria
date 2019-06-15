@@ -24,8 +24,7 @@ use PHPUnit\Framework\TestCase;
  */
 class EncoderRegistryTest extends TestCase
 {
-    /** @var EncoderRegistry The encoder registry to test */
-    private $encoderRegistry;
+    private EncoderRegistry $encoderRegistry;
 
     protected function setUp(): void
     {

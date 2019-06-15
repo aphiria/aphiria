@@ -20,7 +20,7 @@ use InvalidArgumentException;
 final class ArrayEncoder implements IEncoder
 {
     /** @var EncoderRegistry The encoder registry */
-    private $encoders;
+    private EncoderRegistry $encoders;
 
     /**
      * @param EncoderRegistry $encoders The encoder registry

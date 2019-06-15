@@ -18,7 +18,7 @@ namespace Aphiria\Serialization\Encoding;
 final class SnakeCasePropertyNameFormatter implements IPropertyNameFormatter
 {
     /** @var string The delimiter to use */
-    private $delimiter;
+    private string $delimiter;
 
     /**
      * @param string $delimiter The delimiter to use

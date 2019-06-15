@@ -17,8 +17,8 @@ namespace Aphiria\Serialization\Tests\Encoding\Mocks;
  */
 class ConstructorWithTypedParamsAndNoGetters
 {
-    private $foo;
-    private $bar;
+    private string $foo;
+    private string $bar;
 
     public function __construct(string $foo, string $bar)
     {

@@ -15,7 +15,7 @@ namespace Aphiria\Serialization\Tests\Encoding\Mocks;
 /**
  * Mocks a class with untyped constructor params but with typed getters
  */
-class ConstructorWithUntypedPararmsWithTypedGetters
+class ConstructorWithUntypedParamsWithTypedGetters
 {
     private $foo;
     private $bar;

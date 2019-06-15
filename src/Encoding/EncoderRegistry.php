@@ -21,11 +21,11 @@ use OutOfBoundsException;
 final class EncoderRegistry
 {
     /** @var IEncoder[] The mapping of types to encoders */
-    private $encodersByType = [];
-    /** @var IEncoder The default object encoder */
-    private $defaultObjectEncoder;
-    /** @var IEncoder The default scalar encoder */
-    private $defaultScalarEncoder;
+    private array $encodersByType = [];
+    /** @var IEncoder|null The default object encoder */
+    private ?IEncoder $defaultObjectEncoder = null;
+    /** @var IEncoder|null The default scalar encoder */
+    private ?IEncoder $defaultScalarEncoder = null;
 
     /**
      * Gets the encoder for a type

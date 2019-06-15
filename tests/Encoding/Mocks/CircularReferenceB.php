@@ -17,7 +17,7 @@ namespace Aphiria\Serialization\Tests\Encoding\Mocks;
  */
 class CircularReferenceB
 {
-    private $foo;
+    private CircularReferenceA $foo;
 
     public function __construct(CircularReferenceA $foo)
     {

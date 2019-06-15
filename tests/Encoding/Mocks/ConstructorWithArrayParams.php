@@ -17,7 +17,7 @@ namespace Aphiria\Serialization\Tests\Encoding\Mocks;
  */
 class ConstructorWithArrayParams
 {
-    private $foo;
+    private array $foo;
 
     public function __construct(array $foo)
     {

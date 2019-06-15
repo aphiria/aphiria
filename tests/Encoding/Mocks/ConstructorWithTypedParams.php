@@ -17,7 +17,7 @@ namespace Aphiria\Serialization\Tests\Encoding\Mocks;
  */
 class ConstructorWithTypedParams
 {
-    private $user;
+    private User $user;
 
     public function __construct(User $user)
     {

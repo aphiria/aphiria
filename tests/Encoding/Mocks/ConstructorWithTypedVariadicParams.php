@@ -17,7 +17,7 @@ namespace Aphiria\Serialization\Tests\Encoding\Mocks;
  */
 class ConstructorWithTypedVariadicParams
 {
-    private $users;
+    private array $users;
 
     public function __construct(User ...$users)
     {

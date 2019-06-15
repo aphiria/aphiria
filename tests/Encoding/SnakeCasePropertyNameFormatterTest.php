@@ -20,8 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class SnakeCasePropertyNameFormatterTest extends TestCase
 {
-    /** @var SnakeCasePropertyNameFormatter The formatter to use in tests */
-    private $formatter;
+    private SnakeCasePropertyNameFormatter $formatter;
 
     protected function setUp(): void
     {

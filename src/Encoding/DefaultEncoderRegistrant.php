@@ -22,9 +22,9 @@ use DateTimeInterface;
 final class DefaultEncoderRegistrant
 {
     /** @var IPropertyNameFormatter|null The property name formatter to use */
-    private $propertyNameFormatter;
+    private ?IPropertyNameFormatter $propertyNameFormatter;
     /** @var string The DateTime format to use */
-    private $dateTimeFormat;
+    private string $dateTimeFormat;
 
     /**
      * @param IPropertyNameFormatter $propertyNameFormatter The property name formatter to use

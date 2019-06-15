@@ -25,10 +25,8 @@ use PHPUnit\Framework\TestCase;
  */
 class JsonSerializerTest extends TestCase
 {
-    /** @var JsonSerializer The serializer to use in tests */
-    private $serializer;
-    /** @var EncoderRegistry The encoder registry to use in tests */
-    private $encoders;
+    private JsonSerializer $serializer;
+    private EncoderRegistry $encoders;
 
     protected function setUp(): void
     {

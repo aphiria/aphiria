@@ -18,7 +18,7 @@ namespace Aphiria\Serialization\Encoding;
 final class EncodingContext
 {
     /** @var array A hash table of object hashes that have already been encoded */
-    private $circularReferenceHashTable = [];
+    private array $circularReferenceHashTable = [];
 
     /**
      * Checks if the input object indicates that we've hit a circular reference

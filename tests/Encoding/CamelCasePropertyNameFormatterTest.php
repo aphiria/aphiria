@@ -20,8 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CamelCasePropertyNameFormatterTest extends TestCase
 {
-    /** @var CamelCasePropertyNameFormatter The formatter to use in tests */
-    private $formatter;
+    private CamelCasePropertyNameFormatter $formatter;
 
     protected function setUp(): void
     {
