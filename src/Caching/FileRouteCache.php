@@ -20,7 +20,7 @@ use Aphiria\Routing\RouteCollection;
 final class FileRouteCache implements IRouteCache
 {
     /** @var string The path to the cache file */
-    private $path;
+    private string $path;
 
     /**
      * @param string $path The path to the cache file

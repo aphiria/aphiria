@@ -23,8 +23,7 @@ use PHPUnit\Framework\TestCase;
  */
 class RouteCollectionTest extends TestCase
 {
-    /** @var RouteCollection */
-    private $collection;
+    private RouteCollection $collection;
 
     protected function setUp(): void
     {

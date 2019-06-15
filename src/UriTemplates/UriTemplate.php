@@ -18,13 +18,13 @@ namespace Aphiria\Routing\UriTemplates;
 final class UriTemplate
 {
     /** @var string|null The host template */
-    public $hostTemplate;
+    public ?string $hostTemplate;
     /** @var string|null The path template */
-    public $pathTemplate;
+    public ?string $pathTemplate;
     /** @var bool Whether or not this URI template is https-only */
-    public $isHttpsOnly;
+    public bool $isHttpsOnly;
     /** @var bool Whether or not the URI is absolute */
-    public $isAbsoluteUri;
+    public bool $isAbsoluteUri;
 
     /**
      * @param string $pathTemplate The path template

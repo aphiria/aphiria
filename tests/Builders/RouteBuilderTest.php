@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 class RouteBuilderTest extends TestCase
 {
     /** @var RouteBuilder The route builder to use in tests */
-    private $routeBuilder;
+    private RouteBuilder $routeBuilder;
 
     protected function setUp(): void
     {
@@ -43,9 +43,7 @@ class RouteBuilderTest extends TestCase
 
     public function testChainingOnFluentMethodsReturnsCorrectInstance(): void
     {
-        $this->assertSame($this->routeBuilder, $this->routeBuilder->toClosure(function () {
-            // Don't do anything
-        }));
+        $this->assertSame($this->routeBuilder, $this->routeBuilder->toClosure(fn () => null));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->toMethod('Foo', 'bar'));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withAttribute('foo', 'bar'));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withManyAttributes(['foo' => 'bar']));
@@ -72,9 +70,7 @@ class RouteBuilderTest extends TestCase
 
     public function testClosureIsSetWhenUsingClosureAction(): void
     {
-        $closure = function () {
-            // Don't do anything
-        };
+        $closure = fn () => null;
         $this->routeBuilder->toClosure($closure);
         $route = $this->routeBuilder->build();
         $this->assertSame($closure, $route->action->closure);

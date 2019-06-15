@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 class RouteBuilderRegistryTest extends TestCase
 {
     /** @var RouteBuilderRegistry The registry to use in tests */
-    private $registry;
+    private RouteBuilderRegistry $registry;
 
     protected function setUp(): void
     {

@@ -35,11 +35,11 @@ use InvalidArgumentException;
 final class TrieCompiler implements ITrieCompiler
 {
     /** @var IRuleFactory The factory that will create rules */
-    private $ruleFactory;
+    private IRuleFactory $ruleFactory;
     /** @var IUriTemplateParser The URI template parser */
-    private $uriTemplateParser;
+    private IUriTemplateParser $uriTemplateParser;
     /** @var IUriTemplateLexer The URI template lexer */
-    private $uriTemplateLexer;
+    private IUriTemplateLexer $uriTemplateLexer;
 
     /**
      * @param IRuleFactory|null $ruleFactory The factory that will create rules
@@ -191,10 +191,10 @@ final class TrieCompiler implements ITrieCompiler
             }
 
             $ruleParams = $childAstNode->hasChildren() ? $childAstNode->children[0]->value : [];
-            $rules[] = $this->ruleFactory->createRule($childAstNode->value, $ruleParams);
+            $rules[] = $this->ruleFactory->createRule((string)$childAstNode->value, $ruleParams);
         }
 
-        return new RouteVariable($astNode->value, $rules);
+        return new RouteVariable((string)$astNode->value, $rules);
     }
 
     /**

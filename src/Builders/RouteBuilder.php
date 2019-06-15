@@ -29,18 +29,18 @@ use LogicException;
  */
 class RouteBuilder
 {
-    /** @var RouteAction The action the route takes */
-    private $action;
+    /** @var ?RouteAction The action the route takes */
+    private ?RouteAction $action = null;
     /** @var UriTemplate The URI template */
-    private $uriTemplate;
+    private UriTemplate $uriTemplate;
     /** @var array The mapping of custom route attribute names => values */
-    private $attributes = [];
+    private array $attributes = [];
     /** @var MiddlewareBinding[] The list of middleware bindings on this route */
-    private $middlewareBindings = [];
+    private array $middlewareBindings = [];
     /** @var string|null The name of this route */
-    private $name;
+    private ?string $name = null;
     /** @var IRouteConstraint[] The list of constraints */
-    private $constraints = [];
+    private array $constraints = [];
 
     /**
      * @param array $httpMethods The list of HTTP methods the route matches on

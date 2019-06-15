@@ -22,15 +22,13 @@ use PHPUnit\Framework\TestCase;
 class ClosureRouteActionTest extends TestCase
 {
     /** @var ClosureRouteAction An instance that uses a closure as the action */
-    private $closureAction;
+    private ClosureRouteAction $closureAction;
     /** @var Closure The closure used in the closure action */
-    private $closure;
+    private Closure $closure;
 
     protected function setUp(): void
     {
-        $this->closure = function () {
-            // Don't do anything
-        };
+        $this->closure = fn () => null;
         $this->closureAction = new ClosureRouteAction($this->closure);
     }
 

@@ -20,15 +20,15 @@ use Aphiria\Routing\Route;
 final class RouteMatchingResult
 {
     /** @var bool Whether or not a match was found */
-    public $matchFound;
+    public bool $matchFound;
     /** @var Route|null The matched route, if one was found, otherwise null */
-    public $route;
+    public ?Route $route;
     /** @var array The matched route variables */
-    public $routeVariables;
+    public array $routeVariables;
     /** @var bool|null Whether or not the request method was allowed, or null if no match was found */
-    public $methodIsAllowed;
+    public ?bool $methodIsAllowed;
     /** @var array The list of allowed routes if a match was found but did not support the input HTTP method */
-    public $allowedMethods;
+    public array $allowedMethods;
 
     /**
      * @param Route|null $route The matched route, if one was found, otherwise null

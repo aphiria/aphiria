@@ -24,18 +24,14 @@ use PHPUnit\Framework\TestCase;
  */
 class RouteTest extends TestCase
 {
-    /** @var Route */
-    private $route;
-    /** @var UriTemplate */
-    private $uriTemplate;
-    /** @var MethodRouteAction */
-    private $routeAction;
+    private Route $route;
+    private UriTemplate $uriTemplate;
+    private MethodRouteAction $routeAction;
     /** @var IRouteConstraint[] */
-    private $constraints;
+    private array $constraints;
     /** @var MiddlewareBinding[] */
-    private $middlewareBindings;
-    /** @var array */
-    private $attributes;
+    private array $middlewareBindings;
+    private array $attributes;
 
     protected function setUp(): void
     {

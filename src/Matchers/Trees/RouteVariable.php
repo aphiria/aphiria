@@ -20,9 +20,9 @@ use Aphiria\Routing\Matchers\Rules\IRule;
 final class RouteVariable
 {
     /** @var string The name of the variable */
-    public $name;
+    public string $name;
     /** @var IRule[] The list of rules that applies to this route variable */
-    public $rules;
+    public array $rules;
 
     /**
      * @param string $name The name of the variable

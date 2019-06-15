@@ -22,17 +22,17 @@ use Aphiria\Routing\UriTemplates\UriTemplate;
 final class Route
 {
     /** @var UriTemplate The raw URI template */
-    public $uriTemplate;
+    public UriTemplate $uriTemplate;
     /** @var RouteAction The action in the route */
-    public $action;
+    public RouteAction $action;
     /** @var IRouteConstraint[] The list of constraints on this route */
-    public $constraints;
+    public array $constraints;
     /** @var MiddlewareBinding[] The list of middleware bindings */
-    public $middlewareBindings;
+    public array $middlewareBindings;
     /** @var string|null The name of the route */
-    public $name;
+    public ?string $name;
     /** @var array The mapping of attribute names to values */
-    public $attributes;
+    public array $attributes;
 
     /**
      * @param UriTemplate $uriTemplate The raw URI template

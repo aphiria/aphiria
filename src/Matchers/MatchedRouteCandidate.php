@@ -20,9 +20,9 @@ use Aphiria\Routing\Route;
 final class MatchedRouteCandidate
 {
     /** @var Route The route that was matched */
-    public $route;
+    public Route $route;
     /** @var array The mapping of route variable names to values */
-    public $routeVariables;
+    public array $routeVariables;
 
     /**
      * @param Route $route The route that was matched

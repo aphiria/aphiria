@@ -18,9 +18,9 @@ namespace Aphiria\Routing\Middleware;
 final class MiddlewareBinding
 {
     /** @var string The name of the middleware class */
-    public $className;
+    public string $className;
     /** @var array The name => value mapping of attributes bound to the middleware */
-    public $attributes;
+    public array $attributes;
 
     /**
      * @param string $className The name of the middleware class

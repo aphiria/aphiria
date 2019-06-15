@@ -18,13 +18,13 @@ namespace Aphiria\Routing\UriTemplates\Parsers;
 final class AstNode
 {
     /** @var string The node type */
-    public $type;
+    public string $type;
     /** @var mixed|null The value of the node */
     public $value;
     /** @var AstNode|null The parent node */
-    public $parent;
+    public ?AstNode $parent = null;
     /** @var AstNode[] The child nodes */
-    public $children = [];
+    public array $children = [];
 
     /**
      * @param string $type The node type

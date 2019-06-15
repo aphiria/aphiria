@@ -21,7 +21,7 @@ use InvalidArgumentException;
 final class DateRule
 {
     /** @var array The list of acceptable date formats */
-    private $formats;
+    private array $formats;
 
     /**
      * @param array|string $formats The format or list of acceptable formats

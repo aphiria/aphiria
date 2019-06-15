@@ -24,7 +24,7 @@ use RuntimeException;
 class RuleFactoryTest extends TestCase
 {
     /** @var RuleFactory The rule factory to use in tests */
-    private $ruleFactory;
+    private RuleFactory $ruleFactory;
 
     protected function setUp(): void
     {
@@ -35,9 +35,7 @@ class RuleFactoryTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Factory for rule "foo" does not return an instance of IRule');
-        $factory = function () {
-            return [];
-        };
+        $factory = fn () => [];
         $this->ruleFactory->registerRuleFactory('foo', $factory);
         $this->ruleFactory->createRule('foo');
     }
@@ -52,9 +50,7 @@ class RuleFactoryTest extends TestCase
     public function testFactoryThatDoesNotTakeParametersReturnsRuleInstance(): void
     {
         $expectedRule = $this->createMock(IRule::class);
-        $factory = function () use ($expectedRule) {
-            return $expectedRule;
-        };
+        $factory = fn () => $expectedRule;
         $this->ruleFactory->registerRuleFactory('foo', $factory);
         $this->assertSame($expectedRule, $this->ruleFactory->createRule('foo'));
     }

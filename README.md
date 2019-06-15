@@ -49,13 +49,13 @@ There are so many routing libraries out there.  Why use this one?  Well, there a
     * With 400 routes, it takes ~0.0025ms to match any route (**~200% faster than FastRoute**)
     * The speed is due to the unique [trie-based matching algorithm](#matching-algorithm)
 * Its [fluent syntax](#route-builders) keeps you from having to memorize how to set up config arrays
-* It is built to support the latest PHP 7.3 features
+* It is built to support the latest PHP 7.4 features
 
 > **Note:** This is *not* a route dispatching library.  This library does not call controllers or closures on the matched route.  Why?  Usually, such actions are tightly coupled to an HTTP library or to a framework.  By not dispatching the matched route, you're free to use the library/framework of your choice, while still getting the benefits of performance and fluent syntax.
 
 <h2 id="installation">Installation</h2>
 
-This library requires PHP 7.3 and above.  It can be installed via <a href="https://getcomposer.org/" target="_blank">Composer</a> by including the following in your _composer.json_:
+This library requires PHP 7.4 and above.  It can be installed via <a href="https://getcomposer.org/" target="_blank">Composer</a> by including the following in your _composer.json_:
 
 ```bash
 "aphiria/router": "1.0.*@dev"

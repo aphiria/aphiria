@@ -23,13 +23,13 @@ class RouteAction
 {
     // Note - These are protected rather than private for serialization purposes
     /** @var string|null The name of the class the route routes to */
-    public $className;
+    public ?string $className;
     /** @var string|null The name of the method the route routes to */
-    public $methodName;
+    public ?string $methodName;
     /** @var Closure|null The closure the route routes to */
-    public $closure;
+    public ?Closure $closure;
     /** @var string The serialized closure */
-    protected $serializedClosure = '';
+    protected string $serializedClosure = '';
 
     /**
      * @param string|null $className The name of the class the route routes to

@@ -18,7 +18,7 @@ namespace Aphiria\Routing\Matchers\Rules;
 final class InRule implements IRule
 {
     /** @var array The list of acceptable values */
-    private $acceptableValues;
+    private array $acceptableValues;
 
     /**
      * @param array $acceptableValues The list of acceptable values

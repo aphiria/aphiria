@@ -22,9 +22,9 @@ use Closure;
 final class RouteBuilderRegistry
 {
     /** @var RouteBuilder[] The list of registered route builders */
-    private $routeBuilders = [];
+    private array $routeBuilders = [];
     /** @var RouteGroupOptions[] The stack of route group options */
-    private $groupOptionsStack = [];
+    private array $groupOptionsStack = [];
 
     /**
      * Builds all the route builders in the registry

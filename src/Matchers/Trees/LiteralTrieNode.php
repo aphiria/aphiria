@@ -20,7 +20,7 @@ use Aphiria\Routing\Route;
 final class LiteralTrieNode extends TrieNode
 {
     /** @var string The value of this node */
-    public $value;
+    public string $value;
 
     /**
      * @param string $value The value of this node

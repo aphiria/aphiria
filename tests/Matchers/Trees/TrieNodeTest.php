@@ -29,7 +29,7 @@ use ReflectionException;
 class TrieNodeTest extends TestCase
 {
     /** @var TrieNode|MockObject */
-    private $node;
+    private TrieNode $node;
 
     protected function setUp(): void
     {

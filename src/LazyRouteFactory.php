@@ -21,9 +21,9 @@ use Closure;
 final class LazyRouteFactory implements IRouteFactory
 {
     /** @var Closure[] The list of factories that will actually create the routes */
-    private $routeFactories = [];
+    private array $routeFactories = [];
     /** @var IRouteCache|null The optional route cache to store compiled routes in */
-    private $routeCache;
+    private ?IRouteCache $routeCache;
 
     /**
      * @param Closure|null $routeFactory The initial factory that will be used to create routes

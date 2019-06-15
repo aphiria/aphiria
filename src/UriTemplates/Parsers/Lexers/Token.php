@@ -18,7 +18,7 @@ namespace Aphiria\Routing\UriTemplates\Parsers\Lexers;
 final class Token
 {
     /** @var string The token type */
-    public $type;
+    public string $type;
     /** @var mixed The token value */
     public $value;
 

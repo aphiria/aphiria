@@ -21,13 +21,13 @@ use InvalidArgumentException;
 abstract class TrieNode
 {
     /** @var TrieNode|null The host trie, if there is one */
-    public $hostTrie;
+    public ?TrieNode $hostTrie;
     /** @var Route[] The list of routes for this node, if there are any */
-    public $routes;
+    public array $routes;
     /** @var VariableTrieNode[] The child variable nodes */
-    public $variableChildren = [];
+    public array $variableChildren = [];
     /** @var LiteralTrieNode[] The mapping of literal child node values to child nodes */
-    public $literalChildrenByValue = [];
+    public array $literalChildrenByValue = [];
 
     /**
      * @param TrieNode[] $children The list of children

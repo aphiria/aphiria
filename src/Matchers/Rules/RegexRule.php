@@ -18,7 +18,7 @@ namespace Aphiria\Routing\Matchers\Rules;
 final class RegexRule implements IRule
 {
     /** @var string The regex the input must match */
-    private $regex;
+    private string $regex;
 
     /**
      * @param string $regex The regex the input must match

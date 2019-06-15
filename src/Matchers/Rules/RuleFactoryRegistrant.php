@@ -25,36 +25,16 @@ final class RuleFactoryRegistrant
      */
     public function registerRuleFactories(IRuleFactory $ruleFactory): IRuleFactory
     {
-        $ruleFactory->registerRuleFactory(AlphaRule::getSlug(), function () {
-            return new AlphaRule();
-        });
-        $ruleFactory->registerRuleFactory(AlphanumericRule::getSlug(), function () {
-            return new AlphanumericRule();
-        });
-        $ruleFactory->registerRuleFactory(BetweenRule::getSlug(), function ($min, $max, bool $isInclusive = true) {
-            return new BetweenRule($min, $max, $isInclusive);
-        });
-        $ruleFactory->registerRuleFactory(DateRule::getSlug(), function ($formats) {
-            return new DateRule($formats);
-        });
-        $ruleFactory->registerRuleFactory(InRule::getSlug(), function (array $acceptableValues) {
-            return new InRule($acceptableValues);
-        });
-        $ruleFactory->registerRuleFactory(IntegerRule::getSlug(), function () {
-            return new IntegerRule();
-        });
-        $ruleFactory->registerRuleFactory(NotInRule::getSlug(), function (array $unacceptableValues) {
-            return new NotInRule($unacceptableValues);
-        });
-        $ruleFactory->registerRuleFactory(NumericRule::getSlug(), function () {
-            return new NumericRule();
-        });
-        $ruleFactory->registerRuleFactory(RegexRule::getSlug(), function (string $regex) {
-            return new RegexRule($regex);
-        });
-        $ruleFactory->registerRuleFactory(UuidV4Rule::getSlug(), function () {
-            return new UuidV4Rule();
-        });
+        $ruleFactory->registerRuleFactory(AlphaRule::getSlug(), fn () => new AlphaRule());
+        $ruleFactory->registerRuleFactory(AlphanumericRule::getSlug(), fn () => new AlphanumericRule());
+        $ruleFactory->registerRuleFactory(BetweenRule::getSlug(), fn ($min, $max, bool $isInclusive = true) => new BetweenRule($min, $max, $isInclusive));
+        $ruleFactory->registerRuleFactory(DateRule::getSlug(), fn ($formats) => new DateRule($formats));
+        $ruleFactory->registerRuleFactory(InRule::getSlug(), fn (array $acceptableValues) => new InRule($acceptableValues));
+        $ruleFactory->registerRuleFactory(IntegerRule::getSlug(), fn () => new IntegerRule());
+        $ruleFactory->registerRuleFactory(NotInRule::getSlug(), fn (array $unacceptableValues) => new NotInRule($unacceptableValues));
+        $ruleFactory->registerRuleFactory(NumericRule::getSlug(), fn () => new NumericRule());
+        $ruleFactory->registerRuleFactory(RegexRule::getSlug(), fn (string $regex) => new RegexRule($regex));
+        $ruleFactory->registerRuleFactory(UuidV4Rule::getSlug(), fn () => new UuidV4Rule());
 
         return $ruleFactory;
     }

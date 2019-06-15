@@ -23,11 +23,11 @@ use PHPUnit\Framework\TestCase;
 class RouteGroupOptionsTest extends TestCase
 {
     /** @var RouteGroupOptions The options to use in tests */
-    private $routeGroupOptions;
+    private RouteGroupOptions $routeGroupOptions;
     /** @var IRouteConstraint[] The list of constraints */
-    private $constraints;
+    private array $constraints;
     /** @var MiddlewareBinding[] The list of middleware bindings in the options */
-    private $middlewareBindings = [];
+    private array $middlewareBindings = [];
 
     protected function setUp(): void
     {

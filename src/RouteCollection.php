@@ -18,9 +18,9 @@ namespace Aphiria\Routing;
 final class RouteCollection
 {
     /** @var array The list of methods to their various routes */
-    private $routes = [];
+    private array $routes = [];
     /** @var Route[] The mapping of route names to routes */
-    private $namedRoutes = [];
+    private array $namedRoutes = [];
 
     /**
      * @param Route[] $routes The initial list of routes

@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 class UriTemplateLexerTest extends TestCase
 {
     /** @var UriTemplateLexer The lexer to use in tests */
-    private $lexer;
+    private UriTemplateLexer $lexer;
 
     protected function setUp(): void
     {

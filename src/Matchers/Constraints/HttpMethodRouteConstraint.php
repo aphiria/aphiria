@@ -21,7 +21,7 @@ use InvalidArgumentException;
 final class HttpMethodRouteConstraint implements IRouteConstraint
 {
     /** @var array The hash map of allowed methods */
-    private $allowedMethods = [];
+    private array $allowedMethods = [];
 
     /**
      * @param array|string $allowedMethods The list of allowed methods

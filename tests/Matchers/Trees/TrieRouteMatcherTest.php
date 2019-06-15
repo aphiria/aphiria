@@ -29,10 +29,8 @@ use PHPUnit\Framework\TestCase;
  */
 class TrieRouteMatcherTest extends TestCase
 {
-    /** @var TrieRouteMatcher */
-    private $matcher;
-    /** @var RootTrieNode */
-    private $rootNode;
+    private TrieRouteMatcher $matcher;
+    private RootTrieNode $rootNode;
 
     protected function setUp(): void
     {

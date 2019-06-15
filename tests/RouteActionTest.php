@@ -27,17 +27,15 @@ class RouteActionTest extends TestCase
     /** @const The name of the method used in our method action */
     private const METHOD_NAME = 'bar';
     /** @var RouteAction An instance that uses a closure as the action */
-    private $closureAction;
+    private RouteAction $closureAction;
     /** @var Closure The closure used in the closure action */
-    private $closure;
+    private Closure $closure;
     /** @var RouteAction An instance that uses a method as the action */
-    private $methodAction;
+    private RouteAction $methodAction;
 
     protected function setUp(): void
     {
-        $this->closure = function () {
-            // Don't do anything
-        };
+        $this->closure = fn () => null;
         $this->closureAction = new RouteAction(null, null, $this->closure);
         $this->methodAction = new RouteAction(self::CLASS_NAME, self::METHOD_NAME, null);
     }

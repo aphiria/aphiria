@@ -24,7 +24,7 @@ final class BetweenRule implements IRule
     /** @var int|float The max value */
     private $max;
     /** @var bool Whether or not the extremes are inclusive */
-    private $isInclusive;
+    private bool $isInclusive;
 
     /**
      * @param int|float $min The min value

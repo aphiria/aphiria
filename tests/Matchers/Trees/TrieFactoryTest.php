@@ -29,14 +29,13 @@ use PHPUnit\Framework\TestCase;
  */
 class TrieFactoryTest extends TestCase
 {
-    /** @var TrieFactory */
-    private $trieFactory;
+    private TrieFactory $trieFactory;
     /** @var IRouteFactory|MockObject */
-    private $routeFactory;
+    private IRouteFactory $routeFactory;
     /** @var ITrieCache|MockObject */
-    private $trieCache;
+    private ITrieCache $trieCache;
     /** @var ITrieCompiler|MockObject */
-    private $trieCompiler;
+    private ITrieCompiler $trieCompiler;
 
     protected function setUp(): void
     {

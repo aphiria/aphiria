@@ -29,11 +29,11 @@ final class TrieFactory
      *
      * @var IRouteFactory
      */
-    private $routeFactory;
+    private IRouteFactory $routeFactory;
     /** @var ITrieCache|null The cache for tries, or null if not using a cache */
-    private $trieCache;
+    private ?ITrieCache $trieCache;
     /** @var ITrieCompiler The trie compiler */
-    private $trieCompiler;
+    private ITrieCompiler $trieCompiler;
 
     /**
      * @param IRouteFactory $routeFactory The factory that will create the routes when not found in cache

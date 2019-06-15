@@ -20,11 +20,11 @@ use InvalidArgumentException;
 final class TokenStream
 {
     /** @var int The length of the stream */
-    public $length;
+    public int $length;
     /** @var Token[] The list of tokens */
-    private $tokens;
+    private array $tokens;
     /** @var int The current cursor */
-    private $cursor = 0;
+    private int $cursor = 0;
 
     /**
      * @param Token[] $tokens The list of tokens

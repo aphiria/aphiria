@@ -23,7 +23,7 @@ use Aphiria\Routing\Matchers\RouteMatchingResult;
 final class TrieRouteMatcher implements IRouteMatcher
 {
     /** @var TrieNode The root node */
-    private $rootNode;
+    private TrieNode $rootNode;
 
     /**
      * @param TrieNode $rootNode The root node

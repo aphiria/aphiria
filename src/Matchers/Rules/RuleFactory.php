@@ -21,8 +21,8 @@ use RuntimeException;
  */
 final class RuleFactory implements IRuleFactory
 {
-    /** @var Closure The mapping of rule slugs to factories */
-    private $factories = [];
+    /** @var Closure[] The mapping of rule slugs to factories */
+    private array $factories = [];
 
     /**
      * @inheritdoc

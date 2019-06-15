@@ -18,7 +18,7 @@ namespace Aphiria\Routing\Requests;
 final class RequestHeaderParser
 {
     /** @var array These headers do not have the HTTP_ prefix */
-    private static $specialCaseHeaders = [
+    private static array $specialCaseHeaders = [
         'AUTH_TYPE' => true,
         'CONTENT_LENGTH' => true,
         'CONTENT_TYPE' => true,

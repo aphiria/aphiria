@@ -28,7 +28,7 @@ use Aphiria\Routing\Matchers\Trees\TrieNode;
 final class FileTrieCache implements ITrieCache
 {
     /** @var string The path to the cache file */
-    private $path;
+    private string $path;
 
     /**
      * @param string $path The path to the cache file

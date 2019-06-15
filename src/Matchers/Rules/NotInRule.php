@@ -18,7 +18,7 @@ namespace Aphiria\Routing\Matchers\Rules;
 final class NotInRule implements IRule
 {
     /** @var array The list of unacceptable values */
-    private $unacceptableValues;
+    private array $unacceptableValues;
 
     /**
      * @param array $unacceptableValues The list of unacceptable values
