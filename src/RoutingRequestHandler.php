@@ -34,20 +34,20 @@ use Closure;
 use InvalidArgumentException;
 
 /**
- * Defines the API kernel
+ * Defines the routing request handler
  */
-class ApiKernel implements IRequestHandler
+class RoutingRequestHandler implements IRequestHandler
 {
     /** @var IRouteMatcher The route matcher */
-    private $routeMatcher;
+    private IRouteMatcher $routeMatcher;
     /** @var IDependencyResolver The dependency resolver */
-    private $dependencyResolver;
+    private IDependencyResolver $dependencyResolver;
     /** @var IContentNegotiator The content negotiator */
-    private $contentNegotiator;
+    private IContentNegotiator $contentNegotiator;
     /** @var MiddlewarePipelineFactory The middleware pipeline factory */
-    private $middlewarePipelineFactory;
+    private ?MiddlewarePipelineFactory $middlewarePipelineFactory;
     /** @var IRouteActionInvoker The route action invoker */
-    private $routeActionInvoker;
+    private IRouteActionInvoker $routeActionInvoker;
 
     /**
      * @param IRouteMatcher $routeMatcher The route matcher

@@ -33,12 +33,12 @@ use RuntimeException;
  */
 class ExceptionHandlerTest extends TestCase
 {
-    /** @var LoggerInterface|MockObject The mocked logger */
-    private $logger;
-    /** @var IExceptionResponseFactory|MockObject The exception response factory */
-    private $exceptionResponseFactory;
-    /** @var IResponseWriter|MockObject The response writer */
-    private $responseWriter;
+    /** @var LoggerInterface|MockObject */
+    private LoggerInterface $logger;
+    /** @var IExceptionResponseFactory|MockObject */
+    private IExceptionResponseFactory $exceptionResponseFactory;
+    /** @var IResponseWriter|MockObject */
+    private IResponseWriter $responseWriter;
 
     protected function setUp(): void
     {
@@ -130,12 +130,8 @@ class ExceptionHandlerTest extends TestCase
         $exception = new InvalidArgumentException();
         $emergencyHandler = $this->createExceptionHandler(
             [
-                InvalidArgumentException::class => function (InvalidArgumentException $ex) {
-                    return LogLevel::EMERGENCY;
-                },
-                RuntimeException::class => function (RuntimeException $ex) {
-                    return LogLevel::ERROR;
-                }
+                InvalidArgumentException::class => fn (InvalidArgumentException $ex) => LogLevel::EMERGENCY,
+                RuntimeException::class => fn (RuntimeException $ex) => LogLevel::ERROR
             ],
             [LogLevel::EMERGENCY]
         );
@@ -161,9 +157,7 @@ class ExceptionHandlerTest extends TestCase
             ->with($expectedException);
         $handler = $this->createExceptionHandler(
             [
-                InvalidArgumentException::class => function (InvalidArgumentException $ex) use ($logLevel) {
-                    return $logLevel;
-                }
+                InvalidArgumentException::class => fn (InvalidArgumentException $ex) => $logLevel
             ],
             // Include the current log level so that it gets logged
             [$logLevel]
@@ -185,9 +179,7 @@ class ExceptionHandlerTest extends TestCase
         $handler->setRequest($expectedRequest);
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
-            ->with($this->callback(function (IHttpResponseMessage $response) use ($expectedResponse) {
-                return $response === $expectedResponse;
-            }));
+            ->with($this->callback(fn (IHttpResponseMessage $response) => $response === $expectedResponse));
         $handler->handleException($expectedException);
     }
 

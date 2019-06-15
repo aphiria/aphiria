@@ -19,7 +19,7 @@
     5. [Controller Dependencies](#controller-dependencies)
 3. [Middleware](#middleware)
     1. [Configuring Middleware](#configuring-middleware)
-4. [API Kernel](#api-kernel)
+4. [App](#app)
 5. [Exception Handling](#exception-handling)
     1. [Customizing Exception Responses](#customizing-exception-responses)
     2. [Logging](#logging)
@@ -305,12 +305,13 @@ Now, the `Authenticate` middleware will be run before the `createArticle()` cont
 
 > **Note:** If middleware does not specifically call the `$next` request handler, none of the middleware after it in the pipeline will be run.
 
-<h1 id="api-kernel">API Kernel</h1>
+<h1 id="app">App</h1>
 
-`ApiKernel` is usually the top layer of your application logic.  It is capable of matching a route and sending the request and response through [middleware](#middleware) to the [controller](#controllers).
+`App` is usually the top layer of your application logic.  It is capable of sending requests through a [middleware](#middleware) pipeline to the [controller](#controllers).
 
 Configuring your API is easy - you just need to set up a few things:
 
+* A request handler to perform your routing (this is not coupled to any particular routing library), although `RoutingRequestHandler` is provided out of the box to support [Aphiria's routing library](routing).
 * <a href="https://github.com/aphiria/router#basic-usage" target="_blank">Routes</a>
 * <a href="https://github.com/aphiria/net#content-negotiation" target="_blank">Content negotiator</a>
 * [Dependency resolver](#controller-dependencies)
@@ -318,17 +319,20 @@ Configuring your API is easy - you just need to set up a few things:
 Handling a request from beginning to end is simple:
 
 ```php
-use Aphiria\Api\ApiKernel;
+use Aphiria\Api\App;
+use Aphiria\Api\RoutingRequestHandler;
 use Aphiria\Net\Http\{RequestFactory, ResponseWriter};
 
 // Assume your route matcher, dependency resolver, and content negotiator are already set
-$request = (new RequestFactory)->createRequestFromSuperglobals($_SERVER);
-$apiKernel = new ApiKernel(
+// Assume we're using Aphiria's router
+$kernel = new RoutingRequestHandler(
     $routeMatcher,
     $dependencyResolver,
     $contentNegotiator
 );
-$response = $apiKernel->handle($request);
+$app = new App($dependencyResolver, $kernel);
+$request = (new RequestFactory)->createRequestFromSuperglobals($_SERVER);
+$response = $app->handle($request);
 (new ResponseWriter)->writeResponse($response);
 ```
 

@@ -31,9 +31,9 @@ use ReflectionMethod;
 final class RouteActionInvoker implements IRouteActionInvoker
 {
     /** @var INegotiatedResponseFactory The negotiated response factory */
-    private $negotiatedResponseFactory;
+    private INegotiatedResponseFactory $negotiatedResponseFactory;
     /** @var IControllerParameterResolver The controller parameter resolver to use */
-    private $controllerParameterResolver;
+    private IControllerParameterResolver $controllerParameterResolver;
 
     /**
      * @param IContentNegotiator $contentNegotiator The content negotiator

@@ -27,9 +27,9 @@ use Exception;
 class ExceptionResponseFactory implements IExceptionResponseFactory
 {
     /** @var INegotiatedResponseFactory The negotiated response factory */
-    protected $negotiatedResponseFactory;
+    protected INegotiatedResponseFactory $negotiatedResponseFactory;
     /** @var ExceptionResponseFactoryRegistry The registry of exception response factories */
-    protected $exceptionResponseFactories;
+    protected ?ExceptionResponseFactoryRegistry $exceptionResponseFactories;
 
     /**
      * @param INegotiatedResponseFactory $negotiatedResponseFactory
@@ -83,9 +83,7 @@ class ExceptionResponseFactory implements IExceptionResponseFactory
         $responseFactories = new ExceptionResponseFactoryRegistry();
         $responseFactories->registerFactory(
             HttpException::class,
-            function (HttpException $ex, ?IHttpRequestMessage $request) {
-                return $ex->getResponse();
-            }
+            fn (HttpException $ex, ?IHttpRequestMessage $request) => $ex->getResponse()
         );
 
         return $responseFactories;

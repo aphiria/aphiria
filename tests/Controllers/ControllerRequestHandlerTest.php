@@ -28,11 +28,11 @@ use PHPUnit\Framework\TestCase;
 class ControllerRequestHandlerTest extends TestCase
 {
     /** @var IDependencyResolver|MockObject */
-    private $dependencyResolver;
+    private IDependencyResolver $dependencyResolver;
     /** @var IRouteActionInvoker|MockObject */
-    private $routeActionInvoker;
+    private IRouteActionInvoker $routeActionInvoker;
     /** @var IContentNegotiator|MockObject */
-    private $contentNegotiator;
+    private IContentNegotiator $contentNegotiator;
 
     protected function setUp(): void
     {

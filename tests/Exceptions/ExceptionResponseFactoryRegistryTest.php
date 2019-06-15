@@ -23,8 +23,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ExceptionResponseFactoryRegistryTest extends TestCase
 {
-    /** @var ExceptionResponseFactoryRegistry */
-    private $registry;
+    private ExceptionResponseFactoryRegistry $registry;
 
     protected function setUp(): void
     {
@@ -38,21 +37,15 @@ class ExceptionResponseFactoryRegistryTest extends TestCase
 
     public function testGettingFactoryForExceptionTypeThatHasFactoryReturnsTheFactory(): void
     {
-        $expectedFactory = function (HttpException $ex, ?IHttpRequestMessage $request) {
-            // Don't do anything
-        };
+        $expectedFactory = fn (HttpException $ex, ?IHttpRequestMessage $request) => null;
         $this->registry->registerFactory(InvalidArgumentException::class, $expectedFactory);
         $this->assertSame($expectedFactory, $this->registry->getFactory(InvalidArgumentException::class));
     }
 
     public function testRegisteringMultipleFactoriesStoresFactoriesByExceptionType(): void
     {
-        $expectedFactory1 = function (InvalidArgumentException $ex, ?IHttpRequestMessage $request) {
-            // Don't do anything
-        };
-        $expectedFactory2 = function (HttpException $ex, ?IHttpRequestMessage $request) {
-            // Don't do anything
-        };
+        $expectedFactory1 = fn (InvalidArgumentException $ex, ?IHttpRequestMessage $request) => null;
+        $expectedFactory2 = fn (HttpException $ex, ?IHttpRequestMessage $request) => null;
         $this->registry->registerManyFactories([
             InvalidArgumentException::class => $expectedFactory1,
             HttpException::class => $expectedFactory2

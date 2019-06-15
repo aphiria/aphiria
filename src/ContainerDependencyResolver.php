@@ -21,7 +21,7 @@ use Opulence\Ioc\IocException;
 final class ContainerDependencyResolver implements IDependencyResolver
 {
     /** @var IContainer The IoC container */
-    private $container;
+    private IContainer $container;
 
     /**
      * @param IContainer $container The IoC container

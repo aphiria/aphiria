@@ -34,10 +34,9 @@ use ReflectionParameter;
  */
 class ControllerParameterResolverTest extends TestCase
 {
-    /** @var ControllerParameterResolver The resolver to use in tests */
-    private $resolver;
+    private ControllerParameterResolver $resolver;
     /** @var IContentNegotiator|MockObject The content negotiator */
-    private $contentNegotiator;
+    private IContentNegotiator $contentNegotiator;
 
     protected function setUp(): void
     {

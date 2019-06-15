@@ -23,15 +23,15 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 final class ControllerRequestHandler implements IRequestHandler
 {
     /** @var Controller The controller */
-    private $controller;
+    private Controller $controller;
     /** @var callable The route action delegate */
     private $routeActionDelegate;
     /** @var array The route variables */
-    private $routeVariables;
+    private array $routeVariables;
     /** @var IContentNegotiator The content negotiator */
-    private $contentNegotiator;
+    private IContentNegotiator $contentNegotiator;
     /** @var IRouteActionInvoker The route action invoker */
-    private $routeActionInvoker;
+    private IRouteActionInvoker $routeActionInvoker;
 
     /**
      * @param Controller $controller The controller

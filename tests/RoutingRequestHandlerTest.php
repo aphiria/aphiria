@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Tests;
 
-use Aphiria\Api\ApiKernel;
+use Aphiria\Api\RoutingRequestHandler;
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\IDependencyResolver;
@@ -40,22 +40,20 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the API kernel
+ * Tests the routing request handler
  */
-class ApiKernelTest extends TestCase
+class RoutingRequestHandlerTest extends TestCase
 {
-    /** @var ApiKernel */
-    private $apiKernel;
+    private RoutingRequestHandler $routingRequestHandler;
     /** @var IRouteMatcher|MockObject */
-    private $routeMatcher;
+    private IRouteMatcher $routeMatcher;
     /** @var IDependencyResolver|MockObject */
-    private $dependencyResolver;
+    private IDependencyResolver $dependencyResolver;
     /** @var IContentNegotiator|MockObject */
-    private $contentNegotiator;
-    /** @var MiddlewarePipelineFactory */
-    private $middlewarePipelineFactory;
+    private IContentNegotiator $contentNegotiator;
+    private MiddlewarePipelineFactory $middlewarePipelineFactory;
     /** @var IRouteActionInvoker|MockObject */
-    private $routeActionInvoker;
+    private IRouteActionInvoker $routeActionInvoker;
 
     protected function setUp(): void
     {
@@ -64,7 +62,7 @@ class ApiKernelTest extends TestCase
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
         $this->middlewarePipelineFactory = new MiddlewarePipelineFactory();
         $this->routeActionInvoker = $this->createMock(IRouteActionInvoker::class);
-        $this->apiKernel = new ApiKernel(
+        $this->routingRequestHandler = new RoutingRequestHandler(
             $this->routeMatcher,
             $this->dependencyResolver,
             $this->contentNegotiator,
@@ -101,7 +99,7 @@ class ApiKernelTest extends TestCase
             ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
             ->willReturn($matchingResult);
-        $this->apiKernel->handle($request);
+        $this->routingRequestHandler->handle($request);
         // Test that the middleware actually set the headers
         $this->assertEquals('bar', $middleware->getAttribute('foo'));
     }
@@ -109,7 +107,7 @@ class ApiKernelTest extends TestCase
     public function testInvalidMiddlewareThrowsExceptionThatIsCaught(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Middleware %s does not implement %s', ApiKernelTest::class, IMiddleware::class));
+        $this->expectExceptionMessage(sprintf('Middleware %s does not implement %s', RoutingRequestHandlerTest::class, IMiddleware::class));
         $middleware = $this;
         $middlewareBinding = new MiddlewareBinding(__CLASS__);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
@@ -136,7 +134,7 @@ class ApiKernelTest extends TestCase
             ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
             ->willReturn($matchingResult);
-        $this->apiKernel->handle($request);
+        $this->routingRequestHandler->handle($request);
     }
 
     public function testMethodNotAllowedSetsAllowHeaderInExceptionResponse(): void
@@ -149,7 +147,7 @@ class ApiKernelTest extends TestCase
                 ->method('matchRoute')
                 ->with('GET', 'foo.com', '/bar')
                 ->willReturn(new RouteMatchingResult(null, [], ['GET']));
-            $this->apiKernel->handle($request);
+            $this->routingRequestHandler->handle($request);
         } catch (HttpException $ex) {
             $exceptionThrown = true;
             $this->assertEquals('GET', $ex->getResponse()->getHeaders()->getFirst('Allow'));
@@ -201,7 +199,7 @@ class ApiKernelTest extends TestCase
             ->method('invokeRouteAction')
             ->with([$controller, 'noParameters'])
             ->willReturn($expectedResponse);
-        $this->assertSame($expectedResponse, $this->apiKernel->handle($request));
+        $this->assertSame($expectedResponse, $this->routingRequestHandler->handle($request));
         // Test that the middleware actually set the headers
         $this->assertEquals([1, 2], $expectedHeaders->get('Foo'));
     }
@@ -214,7 +212,7 @@ class ApiKernelTest extends TestCase
                 ->method('matchRoute')
                 ->with('GET', 'foo.com', '/bar')
                 ->willReturn(new RouteMatchingResult(null, [], []));
-            $this->apiKernel->handle($request);
+            $this->routingRequestHandler->handle($request);
             $this->fail('Failed to throw exception');
         } catch (HttpException $ex) {
             $this->assertEquals(HttpStatusCodes::HTTP_NOT_FOUND, $ex->getResponse()->getStatusCode());
@@ -225,10 +223,8 @@ class ApiKernelTest extends TestCase
     {
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $expectedResponse = $this->createMock(IHttpResponseMessage::class);
-        $controllerClosure = function () {
-            // Purposely getting $this to verify that it's bound to an instance of Controller later on
-            return $this;
-        };
+        // Purposely getting $this to verify that it's bound to an instance of Controller later on
+        $controllerClosure = fn () => $this;
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
@@ -253,7 +249,7 @@ class ApiKernelTest extends TestCase
                 return $boundController instanceof Controller;
             }))
             ->willReturn($expectedResponse);
-        $this->assertSame($expectedResponse, $this->apiKernel->handle($request));
+        $this->assertSame($expectedResponse, $this->routingRequestHandler->handle($request));
     }
 
     public function testRouteActionWithNonExistentControllerMethodThrowsException(): void
@@ -280,7 +276,7 @@ class ApiKernelTest extends TestCase
             ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
             ->willReturn($matchingResult);
-        $this->apiKernel->handle($request);
+        $this->routingRequestHandler->handle($request);
     }
 
     public function testRouteActionWithControllerClassNameResolvesItAndInvokesIt(): void
@@ -310,7 +306,7 @@ class ApiKernelTest extends TestCase
             ->method('invokeRouteAction')
             ->with([$controller, 'noParameters'])
             ->willReturn($expectedResponse);
-        $this->assertSame($expectedResponse, $this->apiKernel->handle($request));
+        $this->assertSame($expectedResponse, $this->routingRequestHandler->handle($request));
         // Verify the request was set
         $this->assertSame($request, $controller->getRequest());
     }
@@ -318,7 +314,7 @@ class ApiKernelTest extends TestCase
     public function testRouteActionWithInvalidControllerInstanceThrowsExceptionThatIsCaught(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Controller %s does not extend %s', ApiKernelTest::class, Controller::class));
+        $this->expectExceptionMessage(sprintf('Controller %s does not extend %s', RoutingRequestHandlerTest::class, Controller::class));
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         // Purposely bind a non-controller class's method to the route action
         $matchingResult = new RouteMatchingResult(
@@ -339,7 +335,7 @@ class ApiKernelTest extends TestCase
             ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
             ->willReturn($matchingResult);
-        $this->apiKernel->handle($request);
+        $this->routingRequestHandler->handle($request);
     }
 
     /**

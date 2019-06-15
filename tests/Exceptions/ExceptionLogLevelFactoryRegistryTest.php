@@ -23,8 +23,7 @@ use Psr\Log\LogLevel;
  */
 class ExceptionLogLevelFactoryRegistryTest extends TestCase
 {
-    /** @var ExceptionLogLevelFactoryRegistry */
-    private $registry;
+    private ExceptionLogLevelFactoryRegistry $registry;
 
     protected function setUp(): void
     {
@@ -38,21 +37,15 @@ class ExceptionLogLevelFactoryRegistryTest extends TestCase
 
     public function testGettingFactoryForExceptionTypeThatHasFactoryReturnsTheFactory(): void
     {
-        $expectedFactory = function (HttpException $ex) {
-            return LogLevel::ERROR;
-        };
+        $expectedFactory = fn (HttpException $ex) => LogLevel::ERROR;
         $this->registry->registerFactory(InvalidArgumentException::class, $expectedFactory);
         $this->assertSame($expectedFactory, $this->registry->getFactory(InvalidArgumentException::class));
     }
 
     public function testRegisteringMultipleFactoriesStoresFactoriesByExceptionType(): void
     {
-        $expectedFactory1 = function (InvalidArgumentException $ex) {
-            return LogLevel::ERROR;
-        };
-        $expectedFactory2 = function (HttpException $ex) {
-            return LogLevel::ERROR;
-        };
+        $expectedFactory1 = fn (InvalidArgumentException $ex) => LogLevel::ERROR;
+        $expectedFactory2 = fn (HttpException $ex) => LogLevel::ERROR;
         $this->registry->registerManyFactories([
             InvalidArgumentException::class => $expectedFactory1,
             HttpException::class => $expectedFactory2

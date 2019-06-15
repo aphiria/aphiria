@@ -31,16 +31,16 @@ use LogicException;
  */
 class Controller
 {
-    /** @var IHttpRequestMessage The current request */
-    protected $request;
+    /** @var IHttpRequestMessage|null The current request */
+    protected ?IHttpRequestMessage $request = null;
     /** @var RequestParser The parser to use to get data from the current request */
-    protected $requestParser;
+    protected RequestParser $requestParser;
     /** @var ResponseFormatter The formatter to use to write data to the response */
-    protected $responseFormatter;
+    protected ResponseFormatter $responseFormatter;
     /** @var IContentNegotiator The content negotiator */
-    protected $contentNegotiator;
+    protected IContentNegotiator $contentNegotiator;
     /** @var INegotiatedResponseFactory The negotiated response factory */
-    protected $negotiatedResponseFactory;
+    protected INegotiatedResponseFactory $negotiatedResponseFactory;
 
     /**
      * Sets the content negotiator

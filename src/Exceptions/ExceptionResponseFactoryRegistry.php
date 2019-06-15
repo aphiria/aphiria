@@ -20,7 +20,7 @@ use Closure;
 final class ExceptionResponseFactoryRegistry
 {
     /** @var Closure[] The mapping of exception types to response factories */
-    private $factories = [];
+    private array $factories = [];
 
     /**
      * Gets the factory for a particular exception

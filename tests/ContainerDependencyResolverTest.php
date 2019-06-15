@@ -32,10 +32,9 @@ use PHPUnit\Framework\TestCase;
  */
 class ContainerDependencyResolverTest extends TestCase
 {
-    /** @var ContainerDependencyResolver The dependency resolver to use in tests */
-    private $dependencyResolver;
-    /** @var IContainer|MockObject The IoC container to use in tests */
-    private $container;
+    private ContainerDependencyResolver $dependencyResolver;
+    /** @var IContainer|MockObject */
+    private IContainer $container;
 
     protected function setUp(): void
     {

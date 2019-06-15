@@ -24,9 +24,9 @@ use ReflectionParameter;
 final class ControllerParameterResolver implements IControllerParameterResolver
 {
     /** @var IContentNegotiator The content negotiator */
-    private $contentNegotiator;
+    private IContentNegotiator $contentNegotiator;
     /** @var UriParser The URI parser to use */
-    private $uriParser;
+    private UriParser $uriParser;
 
     /**
      * @param IContentNegotiator $contentNegotiator The content negotiator

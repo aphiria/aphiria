@@ -15,7 +15,6 @@ namespace Aphiria\Api\Tests\Exceptions;
 use Aphiria\Api\Exceptions\ExceptionResponseFactory;
 use Aphiria\Api\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
-use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
@@ -30,12 +29,10 @@ use PHPUnit\Framework\TestCase;
  */
 class ExceptionResponseFactoryTest extends TestCase
 {
-    /** @var ExceptionResponseFactory The response factory to use in tests */
-    private $factory;
-    /** @var NegotiatedResponseFactory|MockObject The negotiated response factory to use */
-    private $negotiatedResponseFactory;
-    /** @var ExceptionResponseFactoryRegistry The registry to use in tests */
-    private $responseFactories;
+    private ExceptionResponseFactory $factory;
+    /** @var INegotiatedResponseFactory|MockObject */
+    private INegotiatedResponseFactory $negotiatedResponseFactory;
+    private ExceptionResponseFactoryRegistry $responseFactories;
 
     protected function setUp(): void
     {

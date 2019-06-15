@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Tests\Controllers;
 
-use Aphiria\Api\Controllers\ControllerParameterResolver;
 use Aphiria\Api\Controllers\FailedRequestContentNegotiationException;
 use Aphiria\Api\Controllers\FailedScalarParameterConversionException;
 use Aphiria\Api\Controllers\IControllerParameterResolver;
@@ -39,16 +38,14 @@ use RuntimeException;
  */
 class RouteActionInvokerTest extends TestCase
 {
-    /** @var RouteActionInvoker The invoker to use in tests */
-    private $invoker;
-    /** @var ControllerParameterResolver|MockObject The controller parameter resolver to use in tests */
-    private $parameterResolver;
-    /** @var IContentNegotiator|MockObject The content negotiator to use */
-    private $contentNegotiator;
-    /** @var INegotiatedResponseFactory|MockObject The negotiated response factory */
-    private $negotiatedResponseFactory;
-    /** @var Controller The controller to use in tests */
-    private $controller;
+    private RouteActionInvoker $invoker;
+    /** @var IControllerParameterResolver|MockObject */
+    private IControllerParameterResolver $parameterResolver;
+    /** @var IContentNegotiator|MockObject */
+    private IContentNegotiator $contentNegotiator;
+    /** @var INegotiatedResponseFactory|MockObject */
+    private INegotiatedResponseFactory $negotiatedResponseFactory;
+    private Controller $controller;
 
     protected function setUp(): void
     {
@@ -123,9 +120,7 @@ class RouteActionInvokerTest extends TestCase
         $request = $this->createMock(IHttpRequestMessage::class);
         $expectedResponse = $this->createMock(IHttpResponseMessage::class);
         $this->negotiatedResponseFactory->method('createResponse')
-            ->with($request, HttpStatusCodes::HTTP_OK, null, $this->callback(function ($actionResult) {
-                return $actionResult instanceof User;
-            }))
+            ->with($request, HttpStatusCodes::HTTP_OK, null, $this->callback(fn ($actionResult) => $actionResult instanceof User))
             ->willReturn($expectedResponse);
         $actualResponse = $this->invoker->invokeRouteAction(
             [$this->controller, 'popo'],

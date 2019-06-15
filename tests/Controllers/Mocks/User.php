@@ -18,9 +18,9 @@ namespace Aphiria\Api\Tests\Controllers\Mocks;
 class User
 {
     /** @var int The user's ID */
-    private $id;
+    private int $id;
     /** @var string The user's email */
-    private $email;
+    private string $email;
 
     public function __construct(int $id, string $email)
     {

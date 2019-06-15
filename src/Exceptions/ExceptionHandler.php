@@ -33,21 +33,21 @@ class ExceptionHandler implements IExceptionHandler
     /** @const The default name to use for the logger */
     private const DEFAULT_LOGGER_NAME = 'app';
     /** @var IExceptionResponseFactory The exception response factory */
-    protected $exceptionResponseFactory;
+    protected IExceptionResponseFactory $exceptionResponseFactory;
     /** @var LoggerInterface The logger */
-    protected $logger;
+    protected LoggerInterface $logger;
     /** @var ExceptionLogLevelFactoryRegistry The registry of exception log level factories */
-    protected $exceptionLogLevelFactories;
+    protected ?ExceptionLogLevelFactoryRegistry $exceptionLogLevelFactories;
     /** @var array The PSR-3 exception log level that will be logged */
-    protected $exceptionLogLevels;
+    protected ?array $exceptionLogLevels;
     /** @var int The bitwise value of error levels that are to be logged */
-    protected $errorLogLevels;
+    protected int $errorLogLevels;
     /** @var int The bitwise value of error levels that are to be thrown as exceptions */
-    protected $errorThrownLevels;
+    protected int $errorThrownLevels;
     /** @var IResponseWriter What to use to write a response */
-    protected $responseWriter;
+    protected IResponseWriter $responseWriter;
     /** @var IHttpRequestMessage|null The current request, or null if there is none */
-    protected $request;
+    protected ?IHttpRequestMessage $request = null;
 
     /**
      * @param IExceptionResponseFactory $exceptionResponseFactory The exception response factory
