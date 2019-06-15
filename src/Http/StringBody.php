@@ -21,9 +21,9 @@ use Opulence\IO\Streams\Stream;
 class StringBody implements IHttpBody
 {
     /** @var string The body content */
-    protected $content = '';
-    /** @var IStream The underlying stream */
-    private $stream;
+    protected string $content = '';
+    /** @var IStream|null The underlying stream */
+    private ?IStream $stream = null;
 
     /**
      * @param string $content The body content

@@ -24,10 +24,9 @@ use RuntimeException;
  */
 class HttpBodyParserTest extends TestCase
 {
-    /** @var HttpBodyParser The parser to use in tests */
-    private $parser;
+    private HttpBodyParser $parser;
     /** @var IHttpBody|MockObject The body to use in tests */
-    private $body;
+    private IHttpBody $body;
 
     protected function setUp(): void
     {

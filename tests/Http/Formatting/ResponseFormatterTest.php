@@ -26,12 +26,10 @@ use PHPUnit\Framework\TestCase;
  */
 class ResponseFormatterTest extends TestCase
 {
-    /** @var ResponseFormatter The formatter to use in tests */
-    private $formatter;
+    private ResponseFormatter $formatter;
     /** @var IHttpResponseMessage|MockObject The message to use in tests */
-    private $response;
-    /** @var HttpHeaders The HTTP headers to use in tests */
-    private $headers;
+    private IHttpResponseMessage $response;
+    private HttpHeaders $headers;
 
     protected function setUp(): void
     {

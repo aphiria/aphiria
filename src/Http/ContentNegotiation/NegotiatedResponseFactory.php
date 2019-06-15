@@ -33,7 +33,7 @@ use Opulence\IO\Streams\Stream;
 final class NegotiatedResponseFactory implements INegotiatedResponseFactory
 {
     /** @var IContentNegotiator The content negotiator to use */
-    private $contentNegotiator;
+    private IContentNegotiator $contentNegotiator;
 
     /**
      * @param IContentNegotiator $contentNegotiator The content negotiator to use

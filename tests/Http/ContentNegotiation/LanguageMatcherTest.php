@@ -23,8 +23,7 @@ use PHPUnit\Framework\TestCase;
  */
 class LanguageMatcherTest extends TestCase
 {
-    /** @var LanguageMatcher The language matcher to use in tests */
-    private $matcher;
+    private LanguageMatcher $matcher;
 
     protected function setUp(): void
     {

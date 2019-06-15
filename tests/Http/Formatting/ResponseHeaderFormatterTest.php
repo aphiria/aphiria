@@ -23,10 +23,8 @@ use PHPUnit\Framework\TestCase;
  */
 class ResponseHeaderFormatterTest extends TestCase
 {
-    /** @var ResponseHeaderFormatter The formatter to use in tests */
-    private $formatter;
-    /** @var HttpHeaders The HTTP headers to use in tests */
-    private $headers;
+    private ResponseHeaderFormatter $formatter;
+    private HttpHeaders $headers;
 
     protected function setUp(): void
     {

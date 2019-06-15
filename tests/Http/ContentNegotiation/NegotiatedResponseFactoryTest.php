@@ -39,10 +39,9 @@ use PHPUnit\Framework\TestCase;
  */
 class NegotiatedResponseFactoryTest extends TestCase
 {
-    /** @var NegotiatedResponseFactory The response factory to test */
-    private $factory;
+    private NegotiatedResponseFactory $factory;
     /** @var IContentNegotiator|MockObject The content negotiator */
-    private $contentNegotiator;
+    private IContentNegotiator $contentNegotiator;
 
     protected function setUp(): void
     {

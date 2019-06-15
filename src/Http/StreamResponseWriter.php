@@ -21,7 +21,7 @@ use Opulence\IO\Streams\Stream;
 final class StreamResponseWriter implements IResponseWriter
 {
     /** @var IStream The output stream to write the body to */
-    private $outputStream;
+    private IStream $outputStream;
 
     /**
      * @param IStream|null $outputStream The output stream to write the body to (null defaults to PHP's output stream)

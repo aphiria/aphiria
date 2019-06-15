@@ -23,12 +23,10 @@ use PHPUnit\Framework\TestCase;
  */
 class MultipartBodyPartTest extends TestCase
 {
-    /** @var MultipartBodyPart The body part to use in tests */
-    private $bodyPart;
-    /** @var HttpHeaders The headers to use in tests */
-    private $headers;
+    private MultipartBodyPart $bodyPart;
+    private HttpHeaders $headers;
     /** @var IHttpBody|MockObject The body to use in tests */
-    private $body;
+    private IHttpBody $body;
 
     protected function setUp(): void
     {

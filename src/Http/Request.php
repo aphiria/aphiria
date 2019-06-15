@@ -24,21 +24,21 @@ use RuntimeException;
 class Request implements IHttpRequestMessage
 {
     /** @var string The request method */
-    protected $method = '';
+    protected string $method = '';
     /** @var HttpHeaders The request headers */
-    protected $headers;
+    protected ?HttpHeaders $headers;
     /** @var IHttpBody|null The request body if there is one, otherwise null */
-    protected $body;
+    protected ?IHttpBody $body;
     /** @var Uri The request URI */
-    protected $uri;
+    protected Uri $uri;
     /** @var IDictionary The request properties */
-    protected $properties;
+    protected IDictionary $properties;
     /** @var string The HTTP protocol version */
-    protected $protocolVersion = '';
+    protected string $protocolVersion = '';
     /** @var string The type of request target URI this request uses */
-    protected $requestTargetType = RequestTargetTypes::ORIGIN_FORM;
+    protected string $requestTargetType = RequestTargetTypes::ORIGIN_FORM;
     /** @var array The list of valid HTTP methods */
-    private static $validMethods = [
+    private static array $validMethods = [
         'CONNECT' => true,
         'DELETE' => true,
         'GET' => true,
@@ -51,14 +51,14 @@ class Request implements IHttpRequestMessage
         'TRACE' => true
     ];
     /** @var array The list of request target types that require a Host header */
-    private static $validRequestTargetTypes = [
+    private static array $validRequestTargetTypes = [
         RequestTargetTypes::ORIGIN_FORM => true,
         RequestTargetTypes::ABSOLUTE_FORM => true,
         RequestTargetTypes::AUTHORITY_FORM => true,
         RequestTargetTypes::ASTERISK_FORM => true
     ];
     /** @var array The list of valid request target types */
-    private static $requestTargetTypesWithHostHeader = [
+    private static array $requestTargetTypesWithHostHeader = [
         RequestTargetTypes::ORIGIN_FORM => true,
         // Per https://tools.ietf.org/html/rfc7230#section-5.4, this is necessary for old HTTP/1.0 proxies
         RequestTargetTypes::ABSOLUTE_FORM => true,

@@ -25,23 +25,23 @@ final class Cookie
     /** @const The strict same-site value */
     public const SAME_SITE_STRICT = 'strict';
     /** @var string The name of the cookie */
-    private $name = '';
+    private string $name = '';
     /** @var mixed The value of the cookie */
     private $value;
     /** @var DateTime|null The expiration timestamp of the cookie if set, otherwise null */
-    private $expiration;
+    private ?DateTime $expiration;
     /** @var int|null The max age of the cookie if set, otherwise null */
-    private $maxAge;
+    private ?int $maxAge = null;
     /** @var string|null The path the cookie is valid on if set, otherwise null */
-    private $path;
+    private ?string $path;
     /** @var string|null The domain the cookie is valid on if set, otherwise null */
-    private $domain;
+    private ?string $domain;
     /** @var bool Whether or not this cookie is on HTTPS */
-    private $isSecure;
+    private bool $isSecure;
     /** @var bool Whether or not this cookie is HTTP only */
-    private $isHttpOnly;
+    private bool $isHttpOnly;
     /** @var string|null The same-site setting to use, or null if none is specified */
-    private $sameSite;
+    private ?string $sameSite;
 
     /**
      * @param string $name The name of the cookie

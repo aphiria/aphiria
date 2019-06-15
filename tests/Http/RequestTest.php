@@ -28,16 +28,12 @@ use PHPUnit\Framework\TestCase;
  */
 class RequestTest extends TestCase
 {
-    /** @var Request The request to use in tests */
-    private $request;
-    /** @var HttpHeaders The headers */
-    private $headers;
+    private Request $request;
+    private HttpHeaders $headers;
     /** @var IHttpBody|MockObject The mock body */
-    private $body;
-    /** @var Uri The request URI */
-    private $uri;
-    /** @var HashTable The request properties */
-    private $properties;
+    private IHttpBody $body;
+    private Uri $uri;
+    private HashTable $properties;
 
     protected function setUp(): void
     {

@@ -33,11 +33,11 @@ class RequestParser
     /** @const The name of the request property that stores the client IP address */
     private const CLIENT_IP_ADDRESS_PROPERTY = 'CLIENT_IP_ADDRESS';
     /** @var RequestHeaderParser The header parser to use */
-    private $headerParser;
+    private ?RequestHeaderParser $headerParser;
     /** @var HttpBodyParser The body parser to use */
-    private $bodyParser;
+    private ?HttpBodyParser $bodyParser;
     /** @var UriParser The URI parser to use */
-    private $uriParser;
+    private ?UriParser $uriParser;
 
     /**
      * @param RequestHeaderParser|null $headerParser The header parser to use, or null if using the default parser
@@ -237,7 +237,7 @@ class RequestParser
             );
         }
 
-        $boundary = null;
+        $boundary = '';
 
         if (!$this->headerParser->parseParameters($request->getHeaders(), 'Content-Type')->tryGet(
             'boundary',

@@ -28,8 +28,7 @@ use PHPUnit\Framework\TestCase;
  */
 class MediaTypeFormatterMatcherTest extends TestCase
 {
-    /** @var MediaTypeFormatterMatcher The matcher to use in tests */
-    private $matcher;
+    private MediaTypeFormatterMatcher $matcher;
 
     protected function setUp(): void
     {

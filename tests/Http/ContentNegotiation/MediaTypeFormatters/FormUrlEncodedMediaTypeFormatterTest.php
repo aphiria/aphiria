@@ -26,8 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class FormUrlEncodedMediaTypeFormatterTest extends TestCase
 {
-    /** @var FormUrlEncodedSerializerMediaTypeFormatter The formatter to use in tests */
-    private $formatter;
+    private FormUrlEncodedSerializerMediaTypeFormatter $formatter;
 
     protected function setUp(): void
     {

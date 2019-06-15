@@ -30,9 +30,9 @@ use RuntimeException;
 class HttpBodyParser
 {
     /** @var array The mapping of body hash IDs to their parsed form input */
-    private $parsedFormInputCache = [];
+    private array $parsedFormInputCache = [];
     /** @var array The mapping of body hash IDs to their parsed MIME types */
-    private $parsedMimeTypeCache = [];
+    private array $parsedMimeTypeCache = [];
 
     /**
      * Gets the MIME type of the body

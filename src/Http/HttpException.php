@@ -21,7 +21,7 @@ use InvalidArgumentException;
 class HttpException extends Exception
 {
     /** @var IHttpResponseMessage The response */
-    private $response;
+    private IHttpResponseMessage $response;
 
     /**
      * @inheritdoc

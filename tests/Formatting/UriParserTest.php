@@ -22,8 +22,7 @@ use PHPUnit\Framework\TestCase;
  */
 class UriParserTest extends TestCase
 {
-    /** @var UriParser The URI parser to use in tests */
-    private $parser;
+    private UriParser $parser;
 
     protected function setUp(): void
     {

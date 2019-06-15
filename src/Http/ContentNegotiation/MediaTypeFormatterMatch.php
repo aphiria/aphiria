@@ -21,11 +21,11 @@ use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
 final class MediaTypeFormatterMatch
 {
     /** @var IMediaTypeFormatter The matched media type formatter */
-    private $formatter;
+    private IMediaTypeFormatter $formatter;
     /** @var string The matched media type */
-    private $mediaType;
-    /** @var string The matched media type header */
-    private $mediaTypeHeaderValue;
+    private string $mediaType;
+    /** @var MediaTypeHeaderValue The matched media type header value */
+    private MediaTypeHeaderValue $mediaTypeHeaderValue;
 
     /**
      * @param IMediaTypeFormatter $formatter The matched media type formatter

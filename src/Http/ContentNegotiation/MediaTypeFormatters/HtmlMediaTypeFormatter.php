@@ -18,9 +18,9 @@ namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 final class HtmlMediaTypeFormatter extends TextMediaTypeFormatter
 {
     /** @var array The list of supported character encodings */
-    private static $supportedEncodings = ['utf-8', 'utf-16'];
+    private static array $supportedEncodings = ['utf-8', 'utf-16'];
     /** @var array The list of supported media types */
-    private static $supportedMediaTypes = ['text/html'];
+    private static array $supportedMediaTypes = ['text/html'];
 
     /**
      * @inheritdoc

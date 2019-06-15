@@ -20,9 +20,9 @@ use Aphiria\Serialization\JsonSerializer;
 final class JsonMediaTypeFormatter extends SerializerMediaTypeFormatter
 {
     /** @var array The list of supported character encodings */
-    private static $supportedEncodings = ['utf-8'];
+    private static array $supportedEncodings = ['utf-8'];
     /** @var array The list of supported media types */
-    private static $supportedMediaTypes = ['application/json', 'text/json'];
+    private static array $supportedMediaTypes = ['application/json', 'text/json'];
 
     /**
      * @param JsonSerializer|null $serializer The JSON serializer to use

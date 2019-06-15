@@ -18,15 +18,15 @@ namespace Aphiria\Net\Http;
 class Response implements IHttpResponseMessage
 {
     /** @var IHttpBody|null The body of the response if there is one, otherwise null */
-    protected $body;
+    protected ?IHttpBody $body;
     /** @var HttpHeaders The list of response headers */
-    protected $headers;
+    protected ?HttpHeaders $headers;
     /** @var string|null The response reason phrase if there is one, otherwise null */
-    protected $reasonPhrase;
+    protected ?string $reasonPhrase;
     /** @var int The response status code */
-    protected $statusCode = HttpStatusCodes::HTTP_OK;
+    protected int $statusCode = HttpStatusCodes::HTTP_OK;
     /** @var string The HTTP protocol version */
-    protected $protocolVersion = '';
+    protected string $protocolVersion = '';
 
     /**
      * @param int $statusCode The response status code

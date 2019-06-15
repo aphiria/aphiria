@@ -18,9 +18,9 @@ namespace Aphiria\Net\Tests\Http\Formatting\Mocks;
 class User
 {
     /** @var int The user's ID */
-    private $id;
+    private int $id;
     /** @var string The user's email address */
-    private $email;
+    private string $email;
 
     /**
      * @param int $id The user's ID

@@ -23,7 +23,7 @@ use Opulence\Collections\KeyValuePair;
 class UriParser
 {
     /** @var array The mapping of raw query strings to their parsed collections */
-    private $parsedQueryStringCache = [];
+    private array $parsedQueryStringCache = [];
 
     /**
      * Parses a URI's query string into a collection

@@ -25,8 +25,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PlainTextMediaTypeFormatterTest extends TestCase
 {
-    /** @var PlainTextMediaTypeFormatter The formatter to use in tests */
-    private $formatter;
+    private PlainTextMediaTypeFormatter $formatter;
 
     protected function setUp(): void
     {

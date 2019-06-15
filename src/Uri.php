@@ -20,21 +20,21 @@ use InvalidArgumentException;
 class Uri
 {
     /** @var string|null The URI scheme if set, otherwise null */
-    private $scheme;
+    private ?string $scheme;
     /** @var string|null The URI user if set, otherwise null */
-    private $user;
+    private ?string $user;
     /** @var string|null The URI password if set, otherwise null */
-    private $password;
+    private ?string $password;
     /** @var string|null The URI host if set, otherwise null */
-    private $host;
+    private ?string $host;
     /** @var int|null The URI port if set, otherwise null */
-    private $port;
+    private ?int $port;
     /** @var string|null The URI path if set, otherwise null */
-    private $path;
+    private ?string $path;
     /** @var string|null The URI query string (excludes '?') if set, otherwise null */
-    private $queryString;
+    private ?string $queryString;
     /** @var string|null The URI fragment (excludes '#') if set, otherwise null */
-    private $fragment;
+    private ?string $fragment;
 
     /**
      * @param string $uri The raw URI

@@ -23,8 +23,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HttpHeadersTest extends TestCase
 {
-    /** @var HttpHeaders The headers to use */
-    private $headers;
+    private HttpHeaders $headers;
 
     protected function setUp(): void
     {

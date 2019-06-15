@@ -24,9 +24,9 @@ use RuntimeException;
 class MultipartBody extends StreamBody
 {
     /** @var MultipartBody[] The list of body parts */
-    private $parts;
+    private array $parts;
     /** @var string The boundary string */
-    private $boundary;
+    private string $boundary;
 
     /**
      * @param MultipartBodyPart[] $parts The list of multipart body parts

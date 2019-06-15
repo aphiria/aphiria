@@ -22,15 +22,15 @@ use Opulence\Collections\ImmutableHashTable;
 class MediaTypeHeaderValue
 {
     /** @var string The value of the header */
-    protected $mediaType;
+    protected string $mediaType;
     /** @var IImmutableDictionary The dictionary of parameter names to values */
-    protected $parameters;
+    protected IImmutableDictionary $parameters;
     /** @var string The type, eg "text" in "text/html" */
-    private $type;
+    private string $type;
     /** @var string The sub-type, eg "html" in "text/html" */
-    private $subType;
+    private string $subType;
     /** @var string|null The charset if one was set, otherwise null */
-    private $charset;
+    private ?string $charset;
 
     /**
      * @param string $mediaType The media type

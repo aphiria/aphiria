@@ -22,8 +22,7 @@ use PHPUnit\Framework\TestCase;
  */
 class RequestFactoryTest extends TestCase
 {
-    /** @var RequestFactory The request factory to use in tests */
-    private $factory;
+    private RequestFactory $factory;
 
     protected function setUp(): void
     {

@@ -25,7 +25,7 @@ use RuntimeException;
 class ResponseFormatter
 {
     /** @var ResponseHeaderFormatter The response header formatter to use */
-    private $headerFormatter;
+    private ?ResponseHeaderFormatter $headerFormatter;
 
     /**
      * @param ResponseHeaderFormatter|null $headerFormatter The response header formatter to use, or null if using the default one

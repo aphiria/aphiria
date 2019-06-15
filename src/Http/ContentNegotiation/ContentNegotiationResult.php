@@ -20,13 +20,13 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 final class ContentNegotiationResult
 {
     /** @var IMediaTypeFormatter|null The matched media type formatter if there was one, otherwise null */
-    private $formatter;
+    private ?IMediaTypeFormatter $formatter;
     /** @var string|null The matched media type, or null if no media type was specified */
-    private $mediaType;
+    private ?string $mediaType;
     /** @var string|null The matched encoding, or null if no encoding was specified */
-    private $encoding;
+    private ?string $encoding;
     /** @var string|null The matched language, or null if no language was matched */
-    private $language;
+    private ?string $language;
 
     /**
      * @param IMediaTypeFormatter|null $formatter The matched media type formatter if there was one, otherwise null

@@ -21,7 +21,6 @@ use Opulence\IO\Streams\IStream;
  */
 abstract class TextMediaTypeFormatter extends MediaTypeFormatter
 {
-
     /**
      * @inheritdoc
      */

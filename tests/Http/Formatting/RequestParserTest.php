@@ -28,16 +28,13 @@ use PHPUnit\Framework\TestCase;
  */
 class RequestParserTest extends TestCase
 {
-    /** @var RequestParser The parser to use in tests */
-    private $parser;
+    private RequestParser $parser;
     /** @var IHttpRequestMessage|MockObject The request message to use in tests */
-    private $request;
-    /** @var HttpHeaders The headers to use in tests */
-    private $headers;
+    private IHttpRequestMessage $request;
+    private HttpHeaders $headers;
     /** @var IHttpBody|MockObject The body to use in tests */
-    private $body;
-    /** @var IDictionary|MockObject The request properties to use in tests */
-    private $properties;
+    private IHttpBody $body;
+    private IDictionary $properties;
 
     protected function setUp(): void
     {

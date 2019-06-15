@@ -18,9 +18,9 @@ namespace Aphiria\Net\Http;
 class MultipartBodyPart
 {
     /** @var HttpHeaders The headers of this body part */
-    private $headers;
+    private HttpHeaders $headers;
     /** @var IHttpBody|null The body of this body part if one is set, otherwise null */
-    private $body;
+    private ?IHttpBody $body;
 
     /**
      * @param HttpHeaders $headers The headers of this body part

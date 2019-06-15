@@ -27,7 +27,7 @@ class RequestFactory
     /** @const The name of the request property that stores the client IP address */
     private const CLIENT_IP_ADDRESS_PROPERTY_NAME = 'CLIENT_IP_ADDRESS';
     /** @var array The list of HTTP request headers that don't begin with "HTTP_" */
-    private static $specialCaseHeaders = [
+    private static array $specialCaseHeaders = [
         'AUTH_TYPE' => true,
         'CONTENT_LENGTH' => true,
         'CONTENT_TYPE' => true,
@@ -37,7 +37,7 @@ class RequestFactory
         'PHP_AUTH_USER' => true
     ];
     /** @var array The default mapping of header names to trusted proxy header names */
-    private static $defaultTrustedHeaderNames = [
+    private static array $defaultTrustedHeaderNames = [
         'HTTP_FORWARDED' => 'HTTP_FORWARDED',
         'HTTP_CLIENT_IP' => 'HTTP_X_FORWARDED_FOR',
         'HTTP_CLIENT_HOST' => 'HTTP_X_FORWARDED_HOST',
@@ -45,7 +45,7 @@ class RequestFactory
         'HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO'
     ];
     /** @var array The list of HTTP request headers that permit multiple values */
-    private static $headersThatPermitMultipleValues = [
+    private static array $headersThatPermitMultipleValues = [
         'HTTP_ACCEPT' => true,
         'HTTP_ACCEPT_CHARSET' => true,
         'HTTP_ACCEPT_ENCODING' => true,
@@ -73,11 +73,11 @@ class RequestFactory
         'HTTP_X_FORWARDED_FOR' => true
     ];
     /** @var array The list of header names whose values should be URL-decoded */
-    private static $headersToUrlDecode = ['HTTP_COOKIE' => true];
+    private static array $headersToUrlDecode = ['HTTP_COOKIE' => true];
     /** @var array The list of trusted proxy IP addresses */
-    protected $trustedProxyIPAddresses = [];
+    protected array $trustedProxyIPAddresses = [];
     /** @var array The mapping of header names to trusted header names */
-    protected $trustedHeaderNames = [];
+    protected array $trustedHeaderNames = [];
 
     /**
      * @param array $trustedProxyIPAddresses The list of trusted proxy IP addresses

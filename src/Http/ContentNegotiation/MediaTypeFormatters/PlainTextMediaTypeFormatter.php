@@ -18,9 +18,9 @@ namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 final class PlainTextMediaTypeFormatter extends TextMediaTypeFormatter
 {
     /** @var array The list of supported character encodings */
-    private static $supportedEncodings = ['utf-8'];
+    private static array $supportedEncodings = ['utf-8'];
     /** @var array The list of supported media types */
-    private static $supportedMediaTypes = ['text/plain'];
+    private static array $supportedMediaTypes = ['text/plain'];
 
     /**
      * @inheritdoc

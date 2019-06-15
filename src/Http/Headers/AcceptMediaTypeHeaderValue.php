@@ -21,7 +21,7 @@ use Opulence\Collections\IImmutableDictionary;
 final class AcceptMediaTypeHeaderValue extends MediaTypeHeaderValue implements IHeaderValueWithQualityScore
 {
     /** @var float The quality score of the media type */
-    private $quality;
+    private float $quality;
 
     /**
      * @inheritdoc

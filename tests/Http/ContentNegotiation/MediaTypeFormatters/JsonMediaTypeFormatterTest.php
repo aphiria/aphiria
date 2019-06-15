@@ -26,8 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class JsonMediaTypeFormatterTest extends TestCase
 {
-    /** @var JsonMediaTypeFormatter The formatter to use in tests */
-    private $formatter;
+    private JsonMediaTypeFormatter $formatter;
 
     protected function setUp(): void
     {

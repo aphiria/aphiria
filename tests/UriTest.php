@@ -21,8 +21,7 @@ use PHPUnit\Framework\TestCase;
  */
 class UriTest extends TestCase
 {
-    /** @var Uri The URI to use in tests */
-    private $uri;
+    private Uri $uri;
 
     protected function setUp(): void
     {

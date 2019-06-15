@@ -20,7 +20,7 @@ use Opulence\IO\Streams\IStream;
 class StreamBody implements IHttpBody
 {
     /** @var IStream The body content */
-    protected $stream;
+    protected IStream $stream;
 
     /**
      * @param IStream $stream The body content

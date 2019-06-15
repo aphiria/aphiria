@@ -27,9 +27,9 @@ use PHPUnit\Framework\TestCase;
 class ContentNegotiatorTest extends TestCase
 {
     /** @var IHttpRequestMessage|MockObject The request message to use in tests */
-    private $request;
+    private IHttpRequestMessage $request;
     /** @var HttpHeaders The headers to use in tests */
-    private $headers;
+    private HttpHeaders $headers;
 
     protected function setUp(): void
     {

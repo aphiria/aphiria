@@ -27,8 +27,7 @@ use PHPUnit\Framework\TestCase;
  */
 class EncodingMatcherTest extends TestCase
 {
-    /** @var EncodingMatcher The matcher to use in tests */
-    private $matcher;
+    private EncodingMatcher $matcher;
 
     protected function setUp(): void
     {

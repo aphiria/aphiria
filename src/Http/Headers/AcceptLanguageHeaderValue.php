@@ -22,11 +22,11 @@ use Opulence\Collections\ImmutableHashTable;
 final class AcceptLanguageHeaderValue implements IHeaderValueWithQualityScore
 {
     /** @var string The value of the header */
-    private $language;
+    private string $language;
     /** @var IImmutableDictionary The dictionary of parameter names to values */
-    private $parameters;
+    private IImmutableDictionary $parameters;
     /** @var float The quality score of the header */
-    private $quality;
+    private float $quality;
 
     /**
      * @param string $language The language value

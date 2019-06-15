@@ -25,8 +25,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HtmlMediaTypeFormatterTest extends TestCase
 {
-    /** @var HtmlMediaTypeFormatter The formatter to use in tests */
-    private $formatter;
+    private HtmlMediaTypeFormatter $formatter;
 
     protected function setUp(): void
     {

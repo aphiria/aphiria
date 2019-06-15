@@ -25,16 +25,13 @@ use PHPUnit\Framework\TestCase;
  */
 class StreamResponseWriterTest extends TestCase
 {
-    /** @var StreamResponseWriter The response writer to use in tests */
-    private $writer;
-    /** @var Stream The output stream to use in tests */
-    private $outputStream;
+    private StreamResponseWriter $writer;
+    private Stream $outputStream;
     /** @var IHttpResponseMessage|MockObject The response to use in tests */
-    private $response;
-    /** @var HttpHeaders The response headers to use in tests */
-    private $headers;
+    private IHttpResponseMessage $response;
+    private HttpHeaders $headers;
     /** @var IHttpBody|MockObject the response body to use in tests */
-    private $body;
+    private IHttpBody $body;
 
     protected function setUp(): void
     {

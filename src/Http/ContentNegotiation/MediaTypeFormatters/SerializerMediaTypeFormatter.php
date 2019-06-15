@@ -23,7 +23,7 @@ use Opulence\IO\Streams\IStream;
 abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
 {
     /** @var ISerializer The serializer this formatter uses */
-    private $serializer;
+    private ISerializer $serializer;
 
     /**
      * @param ISerializer $serializer The serializer this formatter uses

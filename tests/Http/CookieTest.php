@@ -22,8 +22,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CookieTest extends TestCase
 {
-    /** @var Cookie The cookie to use in tests */
-    private $cookie;
+    private Cookie $cookie;
 
     protected function setUp(): void
     {

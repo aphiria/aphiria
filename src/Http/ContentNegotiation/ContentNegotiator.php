@@ -26,17 +26,17 @@ final class ContentNegotiator implements IContentNegotiator
     /** @const The default media type if none is found (RFC 7231) */
     private const DEFAULT_REQUEST_MEDIA_TYPE = 'application/octet-stream';
     /** @var IMediaTypeFormatter[] The list of media type formatters */
-    private $mediaTypeFormatters;
+    private array $mediaTypeFormatters;
     /** @var array The list of supported languages */
-    private $supportedLanguages;
+    private array $supportedLanguages;
     /** @var MediaTypeFormatterMatcher The media type formatter matcher */
-    private $mediaTypeFormatterMatcher;
+    private ?MediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
     /** @var EncodingMatcher The encoding matcher */
-    private $encodingMatcher;
+    private ?EncodingMatcher $encodingMatcher;
     /** @var LanguageMatcher The language matcher */
-    private $languageMatcher;
+    private ?LanguageMatcher $languageMatcher;
     /** @var RequestHeaderParser The header parser */
-    private $headerParser;
+    private ?RequestHeaderParser $headerParser;
 
     /**
      * @param IMediaTypeFormatter[] $mediaTypeFormatters The list of media type formatters to use

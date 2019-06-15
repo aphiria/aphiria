@@ -22,8 +22,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HttpHeaderParserTest extends TestCase
 {
-    /** @var HttpHeaderParser The parser to use in tests */
-    private $parser;
+    private HttpHeaderParser $parser;
 
     protected function setUp(): void
     {

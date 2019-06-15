@@ -21,10 +21,8 @@ use PHPUnit\Framework\TestCase;
  */
 class RequestHeaderParserTest extends TestCase
 {
-    /** @var RequestHeaderParser The parser to use in tests */
-    private $parser;
-    /** @var HttpHeaders The headers to use in tests */
-    private $headers;
+    private RequestHeaderParser $parser;
+    private HttpHeaders $headers;
 
     protected function setUp(): void
     {

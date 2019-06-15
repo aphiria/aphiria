@@ -21,9 +21,9 @@ use Aphiria\Serialization\TypeResolver;
 final class FormUrlEncodedSerializerMediaTypeFormatter extends SerializerMediaTypeFormatter
 {
     /** @var array The list of supported character encodings */
-    private static $supportedEncodings = ['utf-8', 'ISO-8859-1'];
+    private static array $supportedEncodings = ['utf-8', 'ISO-8859-1'];
     /** @var array The list of supported media types */
-    private static $supportedMediaTypes = ['application/x-www-form-urlencoded'];
+    private static array $supportedMediaTypes = ['application/x-www-form-urlencoded'];
 
     /**
      * @param FormUrlEncodedSerializer|null $serializer The form URL-encoded serializer to use
