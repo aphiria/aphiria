@@ -22,8 +22,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ArgumentTest extends TestCase
 {
-    /** @var Argument */
-    private $argument;
+    private Argument $argument;
 
     protected function setUp(): void
     {

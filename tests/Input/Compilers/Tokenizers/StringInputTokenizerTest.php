@@ -21,8 +21,7 @@ use RuntimeException;
  */
 class StringInputTokenizerTest extends TestCase
 {
-    /** @var StringInputTokenizer */
-    private $tokenizer;
+    private StringInputTokenizer $tokenizer;
 
     protected function setUp(): void
     {

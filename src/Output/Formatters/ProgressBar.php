@@ -25,23 +25,23 @@ final class ProgressBar
     /** @const The width of the screen to fill */
     private const PROGRESS_BAR_WIDTH = 80;
     /** @var string The progress character */
-    public $progressChar = '=';
+    public string $progressChar = '=';
     /** @var string The remaining progress character */
-    public $remainingProgressChar = '-';
+    public string $remainingProgressChar = '-';
     /** @var IOutput The output to draw to */
-    private $output;
+    private IOutput $output;
     /** @var int The max number of steps */
-    private $maxSteps;
+    private int $maxSteps;
     /** @var int The progress made */
-    private $progress = 0;
+    private int $progress = 0;
     /** @var DateTimeImmutable The start time of the progress bar */
-    private $startTime;
+    private DateTimeImmutable $startTime;
     /** @var string The output string format */
-    private $outputFormat;
+    private ?string $outputFormat;
     /** @var int The frequency in seconds we redraw the progress bar */
-    private $redrawFrequency = 1;
+    private int $redrawFrequency = 1;
     /** @var bool Whether or not this is the first time we've output the progress bar */
-    private $isFirstOutput = true;
+    private bool $isFirstOutput = true;
 
     /**
      * @param IOutput $output The output to draw to

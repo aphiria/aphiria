@@ -26,8 +26,7 @@ use RuntimeException;
  */
 class OutputParserTest extends TestCase
 {
-    /** @var OutputParser */
-    private $parser;
+    private OutputParser $parser;
 
     protected function setUp(): void
     {

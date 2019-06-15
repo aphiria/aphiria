@@ -22,12 +22,10 @@ use PHPUnit\Framework\TestCase;
  */
 class StreamOutputTest extends TestCase
 {
-    /** @var StreamOutput */
-    private $output;
+    private StreamOutput $output;
     /** @var resource */
     private $inputStream;
-    /** @var OutputCompiler */
-    private $compiler;
+    private OutputCompiler $compiler;
 
     protected function setUp(): void
     {

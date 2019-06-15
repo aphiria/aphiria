@@ -22,8 +22,7 @@ use PHPUnit\Framework\TestCase;
  */
 class OptionTest extends TestCase
 {
-    /** @var Option */
-    private $option;
+    private Option $option;
 
     protected function setUp(): void
     {

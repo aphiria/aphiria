@@ -25,8 +25,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CommandFormatterTest extends TestCase
 {
-    /** @var CommandFormatter */
-    private $formatter;
+    private CommandFormatter $formatter;
 
     protected function setUp(): void
     {

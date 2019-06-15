@@ -17,12 +17,12 @@ namespace Aphiria\Console\Output\Compilers\Parsers\Lexers;
  */
 final class OutputToken
 {
-    /** @var int The token type */
-    public $type;
+    /** @var string The token type */
+    public string $type;
     /** @var mixed The value of the token */
     public $value;
     /** @var int The position of the token in the original text */
-    public $position;
+    public int $position;
 
     /**
      * @param string $type The token type

@@ -22,7 +22,7 @@ use RuntimeException;
 class Prompt
 {
     /** @var PaddingFormatter The space padding formatter to use */
-    private $paddingFormatter;
+    private ?PaddingFormatter $paddingFormatter;
 
     /***
      * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use

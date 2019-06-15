@@ -22,7 +22,7 @@ use Closure;
 final class ClosureCommandHandler implements ICommandHandler
 {
     /** @var Closure The closure that performs the actual logic of the command handler */
-    private $closure;
+    private Closure $closure;
 
     /**
      * @param Closure $closure The closure that performs the actual logic of the command handler

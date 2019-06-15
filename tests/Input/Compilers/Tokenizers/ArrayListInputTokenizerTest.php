@@ -22,8 +22,7 @@ use RuntimeException;
  */
 class ArrayListInputTokenizerTest extends TestCase
 {
-    /** @var ArrayListInputTokenizer */
-    private $tokenizer;
+    private ArrayListInputTokenizer $tokenizer;
 
     protected function setUp(): void
     {

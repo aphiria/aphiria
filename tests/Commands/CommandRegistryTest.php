@@ -23,8 +23,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CommandRegistryTest extends TestCase
 {
-    /** @var CommandRegistry */
-    private $commands;
+    private CommandRegistry $commands;
 
     protected function setUp(): void
     {

@@ -21,7 +21,8 @@ use Throwable;
 final class CommandNotFoundException extends InvalidArgumentException
 {
     /** @var string The name of the command that was entered */
-    private $commandName;
+    private string $commandName;
+
     /**
      * @param string $commandName The name of the command that was entered
      * @param int $code The exception code

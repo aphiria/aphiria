@@ -20,8 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ConfirmationTest extends TestCase
 {
-    /** @var Confirmation */
-    private $question;
+    private Confirmation $question;
 
     protected function setUp(): void
     {

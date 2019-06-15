@@ -20,7 +20,7 @@ use InvalidArgumentException;
 final class ElementRegistry
 {
     /** @var Element[] The list of elements registered to the compiler */
-    private $elements = [];
+    private array $elements = [];
 
     public function __construct()
     {

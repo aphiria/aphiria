@@ -25,16 +25,16 @@ use Aphiria\Console\Output\IOutput;
 final class AboutCommandHandler implements ICommandHandler
 {
     /** @var string The template for the output */
-    private static $template = <<<EOF
+    private static string $template = <<<EOF
 -----------------------------
 About <b>Aphiria</b>
 -----------------------------
 {{commands}}
 EOF;
     /** @var CommandRegistry The commands */
-    private $commands;
+    private CommandRegistry $commands;
     /** @var PaddingFormatter The space padding formatter to use */
-    private $paddingFormatter;
+    private ?PaddingFormatter $paddingFormatter;
 
     /**
      * @param CommandRegistry $commands The commands

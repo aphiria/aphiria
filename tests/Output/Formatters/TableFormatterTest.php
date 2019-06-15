@@ -21,8 +21,7 @@ use PHPUnit\Framework\TestCase;
  */
 class TableFormatterTest extends TestCase
 {
-    /** @var TableFormatter */
-    private $formatter;
+    private TableFormatter $formatter;
 
     protected function setUp(): void
     {

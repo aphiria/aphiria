@@ -20,13 +20,13 @@ use InvalidArgumentException;
 final class Option
 {
     /** @var string The name of the option */
-    public $name;
+    public string $name;
     /** @var string|null The short name of the option if it has one, otherwise null */
-    public $shortName;
+    public ?string $shortName;
     /** @var int The type of option this is */
-    public $type;
+    public int $type;
     /** @var string A brief description of the option */
-    public $description;
+    public string $description;
     /** @var mixed The default value for the option if it's optional */
     public $defaultValue;
 

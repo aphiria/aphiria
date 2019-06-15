@@ -23,8 +23,7 @@ use RuntimeException;
  */
 class OutputLexerTest extends TestCase
 {
-    /** @var OutputLexer */
-    private $lexer;
+    private OutputLexer $lexer;
 
     protected function setUp(): void
     {

@@ -20,7 +20,7 @@ use InvalidArgumentException;
 class Question
 {
     /** @var string The question text */
-    public $text;
+    public string $text;
     /** @var mixed The default answer to the question */
     public $defaultAnswer;
 

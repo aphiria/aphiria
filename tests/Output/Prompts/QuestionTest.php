@@ -20,8 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class QuestionTest extends TestCase
 {
-    /** @var Question */
-    private $question;
+    private Question $question;
 
     protected function setUp(): void
     {

@@ -23,8 +23,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ElementRegistryTest extends TestCase
 {
-    /** @var ElementRegistry */
-    private $elements;
+    private ElementRegistry $elements;
 
     protected function setUp(): void
     {

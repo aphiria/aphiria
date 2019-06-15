@@ -20,11 +20,11 @@ use InvalidArgumentException;
 final class Argument
 {
     /** @var string The name of the argument */
-    public $name;
+    public string $name;
     /** @var int The type of argument this is */
-    public $type;
+    public int $type;
     /** @var string A brief description of the argument */
-    public $description;
+    public string $description;
     /** @var mixed The default value for the argument if it's optional */
     public $defaultValue;
 

@@ -29,13 +29,13 @@ use RuntimeException;
 final class InputCompiler implements IInputCompiler
 {
     /** @var CommandRegistry The commands that are registered */
-    private $commands;
+    private CommandRegistry $commands;
     /** @var IInputTokenizer The argv input tokenizer */
-    private $argvTokenizer;
+    private IInputTokenizer $argvTokenizer;
     /** @var IInputTokenizer The string input tokenizer */
-    private $stringTokenizer;
+    private IInputTokenizer $stringTokenizer;
     /** @var IInputTokenizer The array list input tokenizer */
-    private $arrayListTokenizer;
+    private IInputTokenizer $arrayListTokenizer;
 
     /**
      * @param CommandRegistry $commands The commands that are registered

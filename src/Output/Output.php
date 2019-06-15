@@ -21,9 +21,9 @@ use Aphiria\Console\Output\Compilers\OutputCompiler;
 abstract class Output implements IOutput
 {
     /** @var IOutputCompiler The output compiler to use */
-    protected $outputCompiler;
+    protected IOutputCompiler $outputCompiler;
     /** @var bool Whether or not to include styling on output messages */
-    protected $includeStyles = true;
+    protected bool $includeStyles = true;
 
     /**
      * @param IOutputCompiler|null $outputCompiler The output compiler to use

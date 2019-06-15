@@ -20,8 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PaddingFormatterTest extends TestCase
 {
-    /** @var PaddingFormatter */
-    private $formatter;
+    private PaddingFormatter $formatter;
 
     protected function setUp(): void
     {

@@ -30,12 +30,9 @@ use PHPUnit\Framework\TestCase;
  */
 class KernelTest extends TestCase
 {
-    /** @var CommandRegistry */
-    private $commands;
-    /** @var Output */
-    private $output;
-    /** @var Kernel */
-    private $kernel;
+    private CommandRegistry $commands;
+    private Output $output;
+    private Kernel $kernel;
 
     protected function setUp(): void
     {

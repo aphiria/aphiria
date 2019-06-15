@@ -21,9 +21,9 @@ use InvalidArgumentException;
 final class CommandBinding
 {
     /** @var Command The command */
-    public $command;
+    public Command $command;
     /** @var Closure The factory that will create the command handler */
-    public $commandHandlerFactory;
+    public Closure $commandHandlerFactory;
 
     /**
      * @param Command $command The command handler

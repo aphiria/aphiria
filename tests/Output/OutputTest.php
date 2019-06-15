@@ -20,8 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class OutputTest extends TestCase
 {
-    /** @var Output */
-    private $output;
+    private Output $output;
 
     protected function setUp(): void
     {

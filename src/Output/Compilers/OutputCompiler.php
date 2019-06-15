@@ -27,11 +27,11 @@ use RuntimeException;
 final class OutputCompiler implements IOutputCompiler
 {
     /** @var ElementRegistry The registry of elements */
-    private $elements;
+    private ElementRegistry $elements;
     /** @var IOutputLexer The lexer to use */
-    private $lexer;
+    private IOutputLexer $lexer;
     /** @var IOutputParser The parser to use */
-    private $parser;
+    private IOutputParser $parser;
 
     /**
      * @param ElementRegistry $elements The registry of elements
@@ -83,14 +83,14 @@ final class OutputCompiler implements IOutputCompiler
                 return '';
             }
 
-            return $node->value ?: '';
+            return (string)$node->value ?: '';
         }
 
         $output = '';
 
         foreach ($node->children as $childNode) {
             if ($node->isTag()) {
-                $style = $this->elements->getElement($node->value)->style;
+                $style = $this->elements->getElement((string)$node->value)->style;
                 $output .= $style->format($this->compileNode($childNode));
             } else {
                 $output .= $this->compileNode($childNode);

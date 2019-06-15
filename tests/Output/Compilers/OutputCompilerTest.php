@@ -24,9 +24,7 @@ use RuntimeException;
  */
 class OutputCompilerTest extends TestCase
 {
-    /** @var ElementRegistry */
-    private $elements;
-    /** @var OutputCompiler */
+    private ElementRegistry $elements;
     private $compiler;
 
     protected function setUp(): void

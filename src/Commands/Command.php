@@ -22,15 +22,15 @@ use InvalidArgumentException;
 class Command
 {
     /** @var string The name of the command */
-    public $name;
+    public string $name;
     /** @var Argument[] The list of arguments */
-    public $arguments;
+    public array $arguments;
     /** @var Option[] The list of options */
-    public $options;
+    public array $options;
     /** @var string The description of the command */
-    public $description;
+    public string $description;
     /** @var string|null The extra descriptive help text */
-    public $helpText;
+    public ?string $helpText;
 
     /**
      * @param string $name The name of the command

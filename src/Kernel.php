@@ -37,9 +37,9 @@ use Throwable;
 final class Kernel implements ICommandBus
 {
     /** @var CommandRegistry The commands registered to the kernel */
-    private $commands;
+    private CommandRegistry $commands;
     /** @var IInputCompiler The input compiler to use */
-    private $inputCompiler;
+    private IInputCompiler $inputCompiler;
 
     /**
      * @param CommandRegistry $commands The commands

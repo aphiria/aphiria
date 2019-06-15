@@ -20,8 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class SilentOutputTest extends TestCase
 {
-    /** @var SilentOutput */
-    private $output;
+    private SilentOutput $output;
 
     protected function setUp(): void
     {

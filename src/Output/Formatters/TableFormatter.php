@@ -18,15 +18,15 @@ namespace Aphiria\Console\Output\Formatters;
 class TableFormatter
 {
     /** @var PaddingFormatter The padding formatter */
-    private $padding;
+    private PaddingFormatter $padding;
     /** @var string The padding string */
-    private $cellPaddingString = ' ';
+    private string $cellPaddingString = ' ';
     /** @var string The character to use for vertical borders */
-    private $verticalBorderChar = '|';
+    private string $verticalBorderChar = '|';
     /** @var string The character to use for horizontal borders */
-    private $horizontalBorderChar = '-';
+    private string $horizontalBorderChar = '-';
     /** @var string The character to use for row/column intersections */
-    private $intersectionChar = '+';
+    private string $intersectionChar = '+';
 
     /**
      * @param PaddingFormatter $padding The padding formatter

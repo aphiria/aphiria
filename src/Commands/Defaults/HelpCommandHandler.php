@@ -29,7 +29,7 @@ use InvalidArgumentException;
 final class HelpCommandHandler implements ICommandHandler
 {
     /** @var string The template for the output */
-    private static $template = <<<EOF
+    private static string $template = <<<EOF
 -----------------------------
 Command: <info>{{name}}</info>
 -----------------------------
@@ -43,11 +43,11 @@ Command: <info>{{name}}</info>
 {{options}}{{helpText}}
 EOF;
     /** @var CommandRegistry The commands */
-    private $commands;
+    private CommandRegistry $commands;
     /** @var CommandFormatter The command formatter to use */
-    private $commandFormatter;
+    private CommandFormatter $commandFormatter;
     /** @var PaddingFormatter The space padding formatter to use */
-    private $paddingFormatter;
+    private PaddingFormatter $paddingFormatter;
 
     /**
      * @param CommandRegistry $commands The commands
@@ -76,6 +76,7 @@ EOF;
                 return StatusCodes::OK;
             }
 
+            /** @var Command $command */
             $command = null;
 
             if (!$this->commands->tryGetCommand($input->arguments['command'], $command)) {

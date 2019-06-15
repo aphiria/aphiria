@@ -29,10 +29,8 @@ use RuntimeException;
  */
 class InputCompilerTest extends TestCase
 {
-    /** @var InputCompiler */
-    private $compiler;
-    /** @var CommandRegistry */
-    private $commands;
+    private InputCompiler $compiler;
+    private CommandRegistry $commands;
 
     protected function setUp(): void
     {

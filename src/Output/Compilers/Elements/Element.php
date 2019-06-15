@@ -18,9 +18,9 @@ namespace Aphiria\Console\Output\Compilers\Elements;
 final class Element
 {
     /** @var string The name of the element */
-    public $name;
+    public string $name;
     /** @var Style The style of the element */
-    public $style;
+    public Style $style;
 
     /**
      * @param string $name The name of the element

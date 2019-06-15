@@ -18,11 +18,11 @@ namespace Aphiria\Console\Output\Formatters;
 class PaddingFormatter
 {
     /** @var bool Whether or not to pad after the string */
-    private $padAfter = true;
+    private bool $padAfter = true;
     /** @var string The padding string */
-    private $paddingString = ' ';
+    private string $paddingString = ' ';
     /** @var string The end-of-line character */
-    private $eolChar = PHP_EOL;
+    private string $eolChar = PHP_EOL;
 
     /**
      * Formats rows of text so that each column is the same width

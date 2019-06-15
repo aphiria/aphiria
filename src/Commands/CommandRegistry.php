@@ -21,7 +21,7 @@ use InvalidArgumentException;
 final class CommandRegistry
 {
     /** @var CommandBinding[] The mapping o command names to their bindings */
-    private $bindings = [];
+    private array $bindings = [];
 
     /**
      * Gets a list of all commands

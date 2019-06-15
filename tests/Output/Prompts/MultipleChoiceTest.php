@@ -21,10 +21,8 @@ use PHPUnit\Framework\TestCase;
  */
 class MultipleChoiceTest extends TestCase
 {
-    /** @var MultipleChoice */
-    private $indexedChoiceQuestion;
-    /** @var MultipleChoice */
-    private $keyedChoiceQuestion;
+    private MultipleChoice $indexedChoiceQuestion;
+    private MultipleChoice $keyedChoiceQuestion;
 
     protected function setUp(): void
     {

@@ -27,11 +27,9 @@ use PHPUnit\Framework\TestCase;
 class PromptTest extends TestCase
 {
     /** @var IOutput|MockObject */
-    private $output;
-    /** @var PaddingFormatter */
-    private $paddingFormatter;
-    /** @var Prompt */
-    private $prompt;
+    private IOutput $output;
+    private PaddingFormatter $paddingFormatter;
+    private Prompt $prompt;
 
     protected function setUp(): void
     {

@@ -18,11 +18,11 @@ namespace Aphiria\Console\Input;
 final class Input
 {
     /** @var string The name of the command that was invoked */
-    public $commandName;
+    public string $commandName;
     /** @var array The mapping of argument names to values */
-    public $arguments;
+    public array $arguments;
     /** @var array The mapping of option names to values */
-    public $options;
+    public array $options;
 
     /**
      * @param string $commandName The name of the command that was invoked

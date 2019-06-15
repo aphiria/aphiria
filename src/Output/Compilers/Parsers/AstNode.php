@@ -20,9 +20,9 @@ abstract class AstNode
     /** @var mixed|null The value of the node */
     public $value;
     /** @var AstNode|null The parent node */
-    public $parent;
+    public ?AstNode $parent = null;
     /** @var AstNode[] The child nodes */
-    public $children = [];
+    public array $children = [];
 
     /**
      * @param mixed $value The value of the node
