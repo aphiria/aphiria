@@ -31,11 +31,10 @@ use PHPUnit\Framework\TestCase;
 class ApplicationBuilderTest extends TestCase
 {
     /** @var IContainer|MockObject */
-    private $container;
+    private IContainer $container;
     /** @var IBootstrapperDispatcher|MockObject */
-    private $bootstrapperDispatcher;
-    /** @var ApplicationBuilder */
-    private $appBuilder;
+    private IBootstrapperDispatcher $bootstrapperDispatcher;
+    private ApplicationBuilder $appBuilder;
 
     protected function setUp(): void
     {

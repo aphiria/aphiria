@@ -26,15 +26,15 @@ use Opulence\Ioc\IContainer;
 class ApplicationBuilder implements IApplicationBuilder
 {
     /** @var IContainer The DI container that will be used to resolve dependencies */
-    private $container;
+    private IContainer $container;
     /** @var IBootstrapperDispatcher The dispatcher for bootstrappers */
-    private $bootstrapperDispatcher;
+    private IBootstrapperDispatcher $bootstrapperDispatcher;
     /** @var Closure[] The list of bootstrapper callbacks */
-    private $bootstrapperCallbacks = [];
+    private array $bootstrapperCallbacks = [];
     /** @var Closure[] The list of route callbacks */
-    private $routeCallbacks = [];
+    private array $routeCallbacks = [];
     /** @var Closure[] The list of command callbacks */
-    private $commandCallbacks = [];
+    private array $commandCallbacks = [];
 
     /**
      * @param IContainer $container The DI container that will be used to resolve dependencies
