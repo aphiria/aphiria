@@ -16,7 +16,6 @@ use Aphiria\Console\Output\Compilers\OutputCompiler;
 use Aphiria\Console\Output\StreamOutput;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 /**
  * Tests the stream output
@@ -51,24 +50,6 @@ class StreamOutputTest extends TestCase
         fwrite($this->inputStream, 'foo');
         rewind($this->inputStream);
         $this->assertEquals('foo', $this->output->readLine());
-    }
-
-    public function testReadingLineWhenNotAtEndOfFileThrowsRuntimeException(): void
-    {
-        $filePath = sys_get_temp_dir() . '/output.txt';
-        file_put_contents($filePath, 'fake_data');
-
-        $inputStream = fopen($filePath, 'r');
-        $outputStream = fopen($filePath, 'r');
-        $output = new StreamOutput($outputStream, $inputStream, $this->compiler);
-        try {
-            $output->readLine();
-        } catch (RuntimeException $e) {
-            $this->assertSame('Failed to read line', $e->getMessage());
-        } finally {
-            fclose($inputStream);
-            fclose($outputStream);
-        }
     }
 
     public function testWriteOnArray(): void
