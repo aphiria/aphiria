@@ -24,6 +24,7 @@ use Aphiria\Api\ContainerDependencyResolver;
 use Aphiria\Api\DependencyResolutionException;
 use Opulence\Ioc\IContainer;
 use Opulence\Ioc\IocException;
+use Opulence\Ioc\ResolutionException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -51,14 +52,20 @@ class ContainerDependencyResolverTest extends TestCase
         $this->assertEquals($this, $this->dependencyResolver->resolve('foo'));
     }
 
-    public function testIocExceptionsAreConverted(): void
+    public function testResolutionExceptionsAreConverted(): void
     {
-        $this->expectException(DependencyResolutionException::class);
-        $this->expectExceptionMessage('Could not resolve dependencies for foo');
         $this->container->expects($this->once())
             ->method('resolve')
             ->with('foo')
-            ->willThrowException(new IocException('blah'));
-        $this->dependencyResolver->resolve('foo');
+            ->willThrowException(new ResolutionException('interface', 'target', 'blah'));
+
+        try {
+            $this->dependencyResolver->resolve('foo');
+            $this->fail('Failed to throw exception');
+        } catch (DependencyResolutionException $ex) {
+            $this->assertEquals('Could not resolve dependencies', $ex->getMessage());
+            $this->assertEquals('interface', $ex->getInterface());
+            $this->assertEquals('target', $ex->getTargetClass());
+        }
     }
 }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Api;
 
 use Opulence\Ioc\IContainer;
-use Opulence\Ioc\IocException;
+use Opulence\Ioc\ResolutionException;
 
 /**
  * Defines a dependency resolver that uses Opulence's DI container
@@ -38,8 +38,14 @@ final class ContainerDependencyResolver implements IDependencyResolver
     {
         try {
             return $this->container->resolve($className);
-        } catch (IocException $ex) {
-            throw new DependencyResolutionException("Could not resolve dependencies for $className", 0, $ex);
+        } catch (ResolutionException $ex) {
+            throw new DependencyResolutionException(
+                $ex->getInterface(),
+                $ex->getTargetClass(),
+                'Could not resolve dependencies',
+                0,
+                $ex
+            );
         }
     }
 }
