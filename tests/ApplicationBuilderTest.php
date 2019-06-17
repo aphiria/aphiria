@@ -12,18 +12,16 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration\Tests;
 
+use Aphiria\Api\App;
 use Aphiria\Configuration\ApplicationBuilder;
 use Aphiria\Configuration\IModuleBuilder;
-use Aphiria\Configuration\Tests\Mocks\BootstrapperMock;
-use Aphiria\Console\Commands\Command;
-use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\Console\Commands\ICommandHandler;
-use Aphiria\Routing\Builders\RouteBuilderRegistry;
-use Aphiria\Routing\LazyRouteFactory;
+use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Opulence\Ioc\Bootstrappers\Bootstrapper;
 use Opulence\Ioc\Bootstrappers\IBootstrapperDispatcher;
 use Opulence\Ioc\IContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * Tests the application builder
@@ -43,192 +41,117 @@ class ApplicationBuilderTest extends TestCase
         $this->appBuilder = new ApplicationBuilder($this->container, $this->bootstrapperDispatcher);
     }
 
-    public function testBootstrapperCallbacksAreInvokedAndBootstrappersAreDispatchedOnBuild(): void
+    public function testBuildingAppReturnsInstanceOfAppByDefault(): void
     {
-        $this->container->expects($this->at(0))
-            ->method('hasBinding')
-            ->with(LazyRouteFactory::class)
-            ->willReturn(true);
-        $this->container->expects($this->at(1))
-            ->method('resolve')
-            ->with(LazyRouteFactory::class)
-            ->willReturn(new LazyRouteFactory());
-        $this->container->expects($this->at(2))
-            ->method('hasBinding')
-            ->with(CommandRegistry::class)
-            ->willReturn(true);
-        $this->container->expects($this->at(3))
-            ->method('resolve')
-            ->with(CommandRegistry::class)
-            ->willReturn(new CommandRegistry());
-        $this->appBuilder->withBootstrappers(function () {
-            return [new BootstrapperMock];
+        $this->setRouter();
+        $this->assertInstanceOf(App::class, $this->appBuilder->build());
+    }
+
+    public function testComponentsAreCallableViaMagicMethods(): void
+    {
+        $this->appBuilder->registerComponentFactory('foo', function (array $callbacks){
+            foreach ($callbacks as $callback) {
+                $callback();
+            }
         });
+        $callbackWasRun = false;
+        // This has a lowercase name
+        $this->appBuilder->withFoo(function () use (&$callbackWasRun) {
+            $callbackWasRun = true;
+        });
+        $this->setRouter();
+        $this->appBuilder->build();
+        $this->assertTrue($callbackWasRun);
+    }
+
+    public function testComponentNamesAreNormalized(): void
+    {
+        $this->appBuilder->registerComponentFactory('Foo', function (array $callbacks){
+            foreach ($callbacks as $callback) {
+                $callback();
+            }
+        });
+        $callbackWasRun = false;
+        // This has a lowercase name
+        $this->appBuilder->withComponent('foo', function () use (&$callbackWasRun) {
+            $callbackWasRun = true;
+        });
+        $this->setRouter();
+        $this->appBuilder->build();
+        $this->assertTrue($callbackWasRun);
+    }
+
+    public function testNotRegisteringRouterThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Router callback not set');
+        $this->appBuilder->build();
+    }
+
+    public function testRegisteringComponentExecutesAllRegisteredCallbacks(): void
+    {
+        $this->appBuilder->registerComponentFactory('foo', function (array $callbacks){
+            foreach ($callbacks as $callback) {
+                $callback();
+            }
+        });
+        $callbackWasRun = false;
+        $this->appBuilder->withComponent('foo', function () use (&$callbackWasRun) {
+            $callbackWasRun = true;
+        });
+        $this->setRouter();
+        $this->appBuilder->build();
+        $this->assertTrue($callbackWasRun);
+    }
+
+    public function testRegisteringRouterThatIsNotRequestHandlerThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Router must implement ' . IRequestHandler::class);
+        $this->appBuilder->withRouter(fn () => $this);
+        $this->appBuilder->build();
+    }
+
+    public function testWithBootstrapperDispatchesAllRegisteredBootstrappers(): void
+    {
+        $bootstrapper = new class() extends Bootstrapper
+        {
+            public function registerBindings(IContainer $container): void
+            {
+                // Don't do anything
+            }
+        };
+        $this->appBuilder->withBootstrappers(fn () => [$bootstrapper]);
         $this->bootstrapperDispatcher->expects($this->once())
             ->method('dispatch')
-            ->with($this->callback(function (array $bootstrappers) {
-                return \count($bootstrappers) === 1 && $bootstrappers[0] instanceof BootstrapperMock;
-            }));
+            ->with($this->callback(fn (array $bootstrappers) => \count($bootstrappers) === 1 && $bootstrappers[0] === $bootstrapper));
+        $this->setRouter();
         $this->appBuilder->build();
     }
 
-    public function testCommandCallbacksAreInvokedWithRegistryOnBuild(): void
+    public function testWithComponentThrowsExceptionIfNoComponentFactoryIsRegistered(): void
     {
-        /** @var LazyRouteFactory|null $expectedRouteFactory */
-        $expectedRouteFactory = null;
-        /** @var CommandRegistry|null $expectedCommands */
-        $expectedCommands = null;
-        $this->container->expects($this->at(0))
-            ->method('hasBinding')
-            ->with(LazyRouteFactory::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(1))
-            ->method('bindInstance')
-            ->with(LazyRouteFactory::class, $this->callback(function (LazyRouteFactory $actualRouteFactory) use (&$expectedRouteFactory) {
-                $expectedRouteFactory = $actualRouteFactory;
-
-                return true;
-            }));
-        $this->container->expects($this->at(2))
-            ->method('hasBinding')
-            ->with(CommandRegistry::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(3))
-            ->method('bindInstance')
-            ->with(CommandRegistry::class, $this->callback(function (CommandRegistry $actualCommands) use (&$expectedCommands) {
-                $expectedCommands = $actualCommands;
-
-                return true;
-            }));
-        $isInvoked = false;
-        $this->appBuilder->withCommands(function (CommandRegistry $commands) use (&$isInvoked) {
-            $isInvoked = true;
-            // Register a dummy command se we can make sure that commands are really getting registered
-            $commands->registerCommand(
-                new Command('foo', [], [], ''),
-                function () {
-                    return $this->createMock(ICommandHandler::class);
-                }
-            );
-        });
-        $this->appBuilder->build();
-        $this->assertTrue($isInvoked);
-        $this->assertCount(1, $expectedCommands->getAllCommands());
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('foo does not have a factory registered');
+        $this->appBuilder->withComponent('foo', fn () => null);
     }
 
-    public function testCommandCallbacksAreInvokedWithSameRegistryBoundInContainerOnBuild(): void
+    public function testWithMethodsReturnsInstanceOfAppBuilder(): void
     {
-        $expectedCommands = new CommandRegistry();
-        $this->container->expects($this->at(0))
-            ->method('hasBinding')
-            ->with(LazyRouteFactory::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(1))
-            ->method('bindInstance')
-            ->with(LazyRouteFactory::class, $this->isInstanceOf(LazyRouteFactory::class));
-        $this->container->expects($this->at(2))
-            ->method('hasBinding')
-            ->with(CommandRegistry::class)
-            ->willReturn(true);
-        $this->container->expects($this->at(3))
-            ->method('resolve')
-            ->with(CommandRegistry::class)
-            ->willReturn($expectedCommands);
-        $isInvoked = false;
-        $this->appBuilder->withCommands(function (CommandRegistry $commands) use (&$isInvoked, $expectedCommands) {
-            $isInvoked = true;
-            $this->assertSame($expectedCommands, $commands);
-        });
-        $this->appBuilder->build();
-        $this->assertTrue($isInvoked);
-    }
-
-    public function testRouteCallbacksAreInvokedWithSameFactoryThatIsBoundInContainerOnBuild(): void
-    {
-        $expectedFactory = new LazyRouteFactory();
-        $this->container->expects($this->at(0))
-            ->method('hasBinding')
-            ->with(LazyRouteFactory::class)
-            ->willReturn(true);
-        $this->container->expects($this->at(1))
-            ->method('resolve')
-            ->with(LazyRouteFactory::class)
-            ->willReturn($expectedFactory);
-        $this->container->expects($this->at(2))
-            ->method('hasBinding')
-            ->with(CommandRegistry::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(3))
-            ->method('bindInstance')
-            ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));
-        $isInvoked = false;
-        $this->appBuilder->withRoutes(function (RouteBuilderRegistry $routes) use (&$isInvoked) {
-            $isInvoked = true;
-            $routes->map('GET', 'foo')
-                ->toMethod('Foo', 'bar');
-        });
-        $this->appBuilder->build();
-        // We specifically have to create the routes before a lazy route factory is executed
-        $this->assertCount(1, $expectedFactory->createRoutes()->getAll());
-        $this->assertTrue($isInvoked);
-    }
-
-    public function testRouteCallbacksAreInvokedWithRegistryOnBuild(): void
-    {
-        /** @var LazyRouteFactory|null $expectedRouteFactory */
-        $expectedRouteFactory = null;
-        $this->container->expects($this->at(0))
-            ->method('hasBinding')
-            ->with(LazyRouteFactory::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(1))
-            ->method('bindInstance')
-            ->with(
-                LazyRouteFactory::class,
-                $this->callback(function (LazyRouteFactory $actualRouteFactory) use (&$expectedRouteFactory) {
-                    // Hacky way of capturing the route factory we're using so we can later try to create its routes
-                    $expectedRouteFactory = $actualRouteFactory;
-
-                    return true;
-                })
-            );
-        $this->container->expects($this->at(2))
-            ->method('hasBinding')
-            ->with(CommandRegistry::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(3))
-            ->method('bindInstance')
-            ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));
-        $isInvoked = false;
-        $this->appBuilder->withRoutes(function (RouteBuilderRegistry $routes) use (&$isInvoked) {
-            $isInvoked = true;
-            $routes->map('GET', 'foo')
-                ->toMethod('Foo', 'bar');
-        });
-        $this->appBuilder->build();
-        // We specifically have to create the routes before a lazy route factory is executed
-        $this->assertCount(1, $expectedRouteFactory->createRoutes()->getAll());
-        $this->assertTrue($isInvoked);
-    }
-
-    public function testWithBootstrappersReturnsSelf(): void
-    {
-        $this->assertSame(
-            $this->appBuilder,
-            $this->appBuilder->withBootstrappers(function () {
-                return [];
-            })
-        );
-    }
-
-    public function testWithCommandsReturnsSelf(): void
-    {
-        $this->assertSame(
-            $this->appBuilder,
-            $this->appBuilder->withCommands(function (CommandRegistry $commands) {
+        // Need to set up a component factory so we can call withComponent
+        $this->appBuilder->registerComponentFactory('foo', fn (array $callbacks) => null);
+        $bootstrapper = new class() extends Bootstrapper
+        {
+            public function registerBindings(IContainer $container): void
+            {
                 // Don't do anything
-            })
-        );
+            }
+        };
+        $this->assertSame($this->appBuilder, $this->appBuilder->withBootstrappers(fn () => [$bootstrapper]));
+        $this->assertSame($this->appBuilder, $this->appBuilder->withComponent('foo', fn (IContainer $container, array $callbacks) => null));
+        $this->assertSame($this->appBuilder, $this->appBuilder->withMiddleware(fn () => []));
+        $this->assertSame($this->appBuilder, $this->appBuilder->withModule($this->createMock(IModuleBuilder::class)));
+        $this->assertSame($this->appBuilder, $this->appBuilder->withRouter(fn () => $this->createMock(IRequestHandler::class)));
     }
 
     public function testWithModuleBuildsTheModule(): void
@@ -241,13 +164,11 @@ class ApplicationBuilderTest extends TestCase
         $this->appBuilder->withModule($module);
     }
 
-    public function testWithRoutesReturnsSelf(): void
+    /**
+     * Sets a router for tests that need it
+     */
+    private function setRouter(): void
     {
-        $this->assertSame(
-            $this->appBuilder,
-            $this->appBuilder->withRoutes(function (RouteBuilderRegistry $routes) {
-                // Don't do anything
-            })
-        );
+        $this->appBuilder->withRouter(fn () => $this->createMock(IRequestHandler::class));
     }
 }
