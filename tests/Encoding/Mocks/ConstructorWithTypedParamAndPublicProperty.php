@@ -17,7 +17,7 @@ namespace Aphiria\Serialization\Tests\Encoding\Mocks;
  */
 class ConstructorWithTypedParamAndPublicProperty
 {
-    public string $foo;
+    public string $foo = '';
     private string $bar;
 
     public function __construct(string $bar)

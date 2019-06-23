@@ -43,14 +43,14 @@ final class EncoderRegistry
 
         if (class_exists($type)) {
             if ($this->defaultObjectEncoder === null) {
-                throw new OutOfBoundsException('No default object encoder is registered');
+                throw new OutOfBoundsException("No default object encoder is registered for type $type");
             }
 
             return $this->defaultObjectEncoder;
         }
 
         if ($this->defaultScalarEncoder === null) {
-            throw new OutOfBoundsException('No default scalar encoder is registered');
+            throw new OutOfBoundsException("No default scalar encoder is registered for type $type");
         }
 
         return $this->defaultScalarEncoder;

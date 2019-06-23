@@ -119,7 +119,7 @@ $encoderRegistrant->registerDefaultEncoders($encoders);
 
 <h2 id="object-encoder">Object Encoder</h2>
 
-`ObjectEncoder` uses reflection to get all the properties in a class, and creates an associative array of property names to encoded property values.  It even handles nested objects.  When decoding, `ObjectEncoder` scans the constructor parameters and decodes them using the type hints on the parameters, and then sets any public properties (only scalar properties are supported).  For best results, be sure to type your constructor parameters whenever possible.
+`ObjectEncoder` uses reflection to get all the properties in a class, and creates an associative array of property names to encoded property values.  It even handles nested objects.  When decoding, `ObjectEncoder` scans the constructor parameters and decodes them using the type hints on the parameters, and then sets any public properties (only scalar properties are supported).  For best results, be sure to type your constructor parameters and class properties whenever possible.
 
 > **Note:** Since PHP has no typed arrays, it's impossible for `ObjectEncoder` to know how to decode an array of objects by type hints alone.  If your constructor requires an array of objects, [register a custom encoder](#custom-encoders).
 

@@ -94,13 +94,18 @@ final class ObjectEncoder implements IEncoder
 
                 if (isset($normalizedPropertyNames[$encodedConstructorParamName])) {
                     $constructorParamValue = $objectHash[$normalizedPropertyNames[$encodedConstructorParamName]];
-                    $decodedConstructorParamValue = $this->decodeConstructorParamValue(
-                        $constructorParam,
-                        $constructorParamValue,
-                        $reflectionClass,
-                        $encodedConstructorParamName,
-                        $context
-                    );
+
+                    try {
+                        $decodedConstructorParamValue = $this->decodeConstructorParamValue(
+                            $constructorParam,
+                            $constructorParamValue,
+                            $reflectionClass,
+                            $encodedConstructorParamName,
+                            $context
+                        );
+                    } catch (ReflectionException $ex) {
+                        throw new EncodingException('Failed to decode constructor param ' . $constructorParam->getName(), 0, $ex);
+                    }
 
                     if ($constructorParam->isVariadic()) {
                         $constructorParams = array_merge($constructorParams, $decodedConstructorParamValue);
@@ -121,22 +126,34 @@ final class ObjectEncoder implements IEncoder
         }
 
         $object = $reflectionClass->newInstanceArgs($constructorParams);
+        $defaultPropertyValues = $reflectionClass->getDefaultProperties();
 
         foreach ($reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC) as $publicProperty) {
-            // We don't want to overwrite any already-set public properties
-            if (isset($object->{$publicProperty->getName()}) && $object->{$publicProperty->getName()} !== null) {
+            $publicPropertyName = $publicProperty->getName();
+
+            // If this property already has a non-default value set, don't reset it
+            if (
+                isset(
+                    $object->{$publicPropertyName},
+                    $defaultPropertyValues[$publicPropertyName]
+                ) && $object->{$publicPropertyName} !== $defaultPropertyValues[$publicPropertyName]
+            ) {
                 continue;
             }
 
-            $encodedPropertyName = $this->normalizePropertyName($publicProperty->getName());
+            $encodedPropertyName = $this->normalizePropertyName($publicPropertyName);
 
             if (isset($unusedNormalizedPropertyNames[$encodedPropertyName])) {
-                // Since public properties aren't typed, we cannot decode it automatically.  So, just use the raw value.
-                $propertyValue = $objectHash[$normalizedPropertyNames[$encodedPropertyName]];
-                $object->{$publicProperty->getName()} = $propertyValue;
+                $encodedPropertyValue = $objectHash[$normalizedPropertyNames[$encodedPropertyName]];
+                $object->{$publicPropertyName} = $this->decodePropertyValue(
+                    $publicProperty,
+                    $encodedPropertyValue,
+                    $reflectionClass,
+                    $encodedPropertyName,
+                    $context
+                );
+                unset($unusedNormalizedPropertyNames[$encodedPropertyName]);
             }
-
-            unset($unusedNormalizedPropertyNames[$encodedPropertyName]);
         }
 
         return $object;
@@ -179,45 +196,51 @@ final class ObjectEncoder implements IEncoder
     }
 
     /**
-     * Decodes a variadic constructor parameter value
+     * Decodes an array value
      *
-     * @param ReflectionParameter $constructorParam The constructor parameter to decode
-     * @param mixed $constructorParamValue The encoded constructor parameter value
+     * @param ReflectionParameter|ReflectionProperty $reflection The reflection of the property/param to decode
+     * @param mixed $encodedValue The encoded value
      * @param EncodingContext $context The encoding context
      * @return mixed The decoded value
+     * @throws InvalidArgumentException Thrown if the input reflection parameter is not the correct type
      * @throws EncodingException Thrown if the value was not an array
      */
-    protected function decodeArrayOrVariadicConstructorParamValue(
-        ReflectionParameter $constructorParam,
-        $constructorParamValue,
+    protected function decodeArrayValue(
+        $reflection,
+        $encodedValue,
         EncodingContext $context
     ) {
-        if (!is_array($constructorParamValue)) {
+        if (!$reflection instanceof ReflectionParameter && !$reflection instanceof  ReflectionProperty) {
+            throw new InvalidArgumentException('Must pass in an instance of ' . ReflectionParameter::class . ' or ' . ReflectionProperty::class);
+        }
+
+        if (!is_array($encodedValue)) {
             throw new EncodingException('Value must be an array');
         }
 
-        if (count($constructorParamValue) === 0) {
+        if (count($encodedValue) === 0) {
             return [];
         }
 
-        if ($constructorParam->isVariadic() && $constructorParam->hasType()) {
-            $type = $constructorParam->getType() . '[]';
+        // Parameters can be variadic, properties cannot
+        if ($reflection instanceof ReflectionParameter && $reflection->isVariadic() && $reflection->hasType()) {
+            $type = $reflection->getType()->getName() . '[]';
 
             return $this->encoders->getEncoderForType($type)
-                ->decode($constructorParamValue, $type, $context);
+                ->decode($encodedValue, $type, $context);
         }
 
-        if (is_object($constructorParamValue[0])) {
-            $type = get_class($constructorParamValue[0]) . '[]';
+        if (is_object($encodedValue[0])) {
+            $type = get_class($encodedValue[0]) . '[]';
 
             return $this->encoders->getEncoderForType($type)
-                ->decode($constructorParamValue, $type, $context);
+                ->decode($encodedValue, $type, $context);
         }
 
-        $type = gettype($constructorParamValue[0]) . '[]';
+        $type = gettype($encodedValue[0]) . '[]';
 
         return $this->encoders->getEncoderForType($type)
-            ->decode($constructorParamValue, $type, $context);
+            ->decode($encodedValue, $type, $context);
     }
 
     /**
@@ -230,6 +253,7 @@ final class ObjectEncoder implements IEncoder
      * @param EncodingContext $context The encoding context
      * @return mixed The decoded constructor parameter value
      * @throws EncodingException Thrown if the value could not be automatically decoded
+     * @throws ReflectionException Thrown if there was an error reflecting
      */
     private function decodeConstructorParamValue(
         ReflectionParameter $constructorParam,
@@ -239,30 +263,43 @@ final class ObjectEncoder implements IEncoder
         EncodingContext $context
     ) {
         if ($constructorParam->hasType() && !$constructorParam->isArray() && !$constructorParam->isVariadic()) {
-            $constructorParamType = (string)$constructorParam->getType();
+            $constructorParamType = $constructorParam->getType()->getName();
 
             return $this->encoders->getEncoderForType($constructorParamType)
                 ->decode($constructorParamValue, $constructorParamType, $context);
         }
 
         if ($constructorParam->isVariadic() || $constructorParam->isArray()) {
-            return $this->decodeArrayOrVariadicConstructorParamValue(
+            return $this->decodeArrayValue(
                 $constructorParam,
                 $constructorParamValue,
                 $context
             );
         }
 
+        // Check for a type from a matching property
+        if (
+            $reflectionClass->hasProperty($constructorParam->getName())
+            && ($property = $reflectionClass->getProperty($constructorParam->getName()))
+            && $property->hasType()
+        ) {
+            $propertyType = $property->getType()->getName();
+
+            return $this->encoders->getEncoderForType($propertyType)
+                ->decode($constructorParamValue, $propertyType, $context);
+        }
+
+        // Check for a type from a getter
         $decodedValue = null;
 
         if (
-        $this->tryDecodeValueFromGetterType(
-            $reflectionClass,
-            $normalizedHashPropertyName,
-            $constructorParamValue,
-            $context,
-            $decodedValue
-        )
+            $this->tryDecodeValueFromGetterType(
+                $reflectionClass,
+                $normalizedHashPropertyName,
+                $constructorParamValue,
+                $context,
+                $decodedValue
+            )
         ) {
             return $decodedValue;
         }
@@ -276,6 +313,64 @@ final class ObjectEncoder implements IEncoder
         }
 
         throw new EncodingException("Failed to decode constructor parameter {$constructorParam->getName()}");
+    }
+
+    /**
+     * Decodes a property value
+     *
+     * @param ReflectionProperty $property The property to decode
+     * @param mixed $encodedPropertyValue The encoded property value
+     * @param ReflectionClass $reflectionClass The reflection class we're trying to instantiate
+     * @param string $normalizedHashPropertyName The encoded property name from the hash
+     * @param EncodingContext $context The encoding context
+     * @return mixed The decoded property value
+     * @throws EncodingException Thrown if the value could not be automatically decoded
+     */
+    private function decodePropertyValue(
+        ReflectionProperty $property,
+        $encodedPropertyValue,
+        ReflectionClass $reflectionClass,
+        string $normalizedHashPropertyName,
+        EncodingContext $context
+    ) {
+        $propertyType = $property->hasType() ? $property->getType()->getName() : null;
+
+        if ($propertyType === 'array') {
+            return $this->decodeArrayValue(
+                $property,
+                $encodedPropertyValue,
+                $context
+            );
+        }
+
+        if ($propertyType !== null) {
+            return $this->encoders->getEncoderForType($propertyType)
+                ->decode($encodedPropertyValue, $propertyType, $context);
+        }
+
+        $decodedValue = null;
+
+        if (
+            $this->tryDecodeValueFromGetterType(
+                $reflectionClass,
+                $normalizedHashPropertyName,
+                $encodedPropertyValue,
+                $context,
+                $decodedValue
+            )
+        ) {
+            return $decodedValue;
+        }
+
+        // At this point, let's just check if the value we're trying to decode is a scalar, and if so, just return it
+        if (is_scalar($encodedPropertyValue)) {
+            $type = gettype($encodedPropertyValue);
+
+            return $this->encoders->getEncoderForType($type)
+                ->decode($encodedPropertyValue, $type, $context);
+        }
+
+        throw new EncodingException("Failed to decode property {$encodedPropertyValue->getName()}");
     }
 
     /**
@@ -338,11 +433,11 @@ final class ObjectEncoder implements IEncoder
         // Check if we can infer the type from any getters or setters
         foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             if (
-                !$reflectionMethod->hasReturnType() ||
-                $reflectionMethod->getReturnType() === 'array' ||
-                $reflectionMethod->isConstructor() ||
-                $reflectionMethod->isDestructor() ||
-                $reflectionMethod->getNumberOfRequiredParameters() > 0
+                !$reflectionMethod->hasReturnType()
+                || $reflectionMethod->getReturnType() === 'array'
+                || $reflectionMethod->isConstructor()
+                || $reflectionMethod->isDestructor()
+                || $reflectionMethod->getNumberOfRequiredParameters() > 0
             ) {
                 continue;
             }
@@ -365,7 +460,7 @@ final class ObjectEncoder implements IEncoder
             // This getter matches the property name we're looking for
             if ($encodedPropertyName === $normalizedPropertyName) {
                 try {
-                    $reflectionMethodReturnType = (string)$reflectionMethod->getReturnType();
+                    $reflectionMethodReturnType = $reflectionMethod->getReturnType()->getName();
                     $decodedValue = $this->encoders->getEncoderForType($reflectionMethodReturnType)
                         ->decode($encodedValue, $reflectionMethodReturnType, $context);
 
