@@ -96,7 +96,7 @@ final class ObjectEncoder implements IEncoder
                     $constructorParamValue = $objectHash[$normalizedPropertyNames[$encodedConstructorParamName]];
 
                     try {
-                        $decodedConstructorParamValue = $this->decodeConstructorParamValue(
+                        $decodedConstructorParamValue = $this->decodeConstructorParam(
                             $constructorParam,
                             $constructorParamValue,
                             $reflectionClass,
@@ -145,7 +145,7 @@ final class ObjectEncoder implements IEncoder
 
             if (isset($unusedNormalizedPropertyNames[$encodedPropertyName])) {
                 $encodedPropertyValue = $objectHash[$normalizedPropertyNames[$encodedPropertyName]];
-                $object->{$publicPropertyName} = $this->decodePropertyValue(
+                $object->{$publicPropertyName} = $this->decodeProperty(
                     $publicProperty,
                     $encodedPropertyValue,
                     $reflectionClass,
@@ -205,7 +205,7 @@ final class ObjectEncoder implements IEncoder
      * @throws InvalidArgumentException Thrown if the input reflection parameter is not the correct type
      * @throws EncodingException Thrown if the value was not an array
      */
-    protected function decodeArrayValue(
+    protected function decodeArray(
         $reflection,
         $encodedValue,
         EncodingContext $context
@@ -255,7 +255,7 @@ final class ObjectEncoder implements IEncoder
      * @throws EncodingException Thrown if the value could not be automatically decoded
      * @throws ReflectionException Thrown if there was an error reflecting
      */
-    private function decodeConstructorParamValue(
+    private function decodeConstructorParam(
         ReflectionParameter $constructorParam,
         $constructorParamValue,
         ReflectionClass $reflectionClass,
@@ -270,7 +270,7 @@ final class ObjectEncoder implements IEncoder
         }
 
         if ($constructorParam->isVariadic() || $constructorParam->isArray()) {
-            return $this->decodeArrayValue(
+            return $this->decodeArray(
                 $constructorParam,
                 $constructorParamValue,
                 $context
@@ -326,7 +326,7 @@ final class ObjectEncoder implements IEncoder
      * @return mixed The decoded property value
      * @throws EncodingException Thrown if the value could not be automatically decoded
      */
-    private function decodePropertyValue(
+    private function decodeProperty(
         ReflectionProperty $property,
         $encodedPropertyValue,
         ReflectionClass $reflectionClass,
@@ -336,7 +336,7 @@ final class ObjectEncoder implements IEncoder
         $propertyType = $property->hasType() ? $property->getType()->getName() : null;
 
         if ($propertyType === 'array') {
-            return $this->decodeArrayValue(
+            return $this->decodeArray(
                 $property,
                 $encodedPropertyValue,
                 $context
