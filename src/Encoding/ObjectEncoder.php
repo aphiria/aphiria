@@ -78,7 +78,7 @@ final class ObjectEncoder implements IEncoder
         }
 
         try {
-            $reflectionClass = new ReflectionClass($type);
+            $class = new ReflectionClass($type);
         } catch (ReflectionException $ex) {
             throw new EncodingException("Reflection failed on type $type", 0, $ex);
         }
@@ -86,7 +86,7 @@ final class ObjectEncoder implements IEncoder
         $normalizedPropertyNames = $this->normalizeHashProperties($objectHash);
         $unusedNormalizedPropertyNames = $normalizedPropertyNames;
         $constructorParams = [];
-        $constructor = $reflectionClass->getConstructor();
+        $constructor = $class->getConstructor();
 
         if ($constructor !== null) {
             foreach ($constructor->getParameters() as $constructorParam) {
@@ -99,7 +99,7 @@ final class ObjectEncoder implements IEncoder
                         $decodedConstructorParamValue = $this->decodeConstructorParam(
                             $constructorParam,
                             $constructorParamValue,
-                            $reflectionClass,
+                            $class,
                             $encodedConstructorParamName,
                             $context
                         );
@@ -125,10 +125,10 @@ final class ObjectEncoder implements IEncoder
             }
         }
 
-        $object = $reflectionClass->newInstanceArgs($constructorParams);
-        $defaultPropertyValues = $reflectionClass->getDefaultProperties();
+        $object = $class->newInstanceArgs($constructorParams);
+        $defaultPropertyValues = $class->getDefaultProperties();
 
-        foreach ($reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC) as $publicProperty) {
+        foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $publicProperty) {
             $publicPropertyName = $publicProperty->getName();
 
             // If this property already has a non-default value set, don't reset it
@@ -148,7 +148,7 @@ final class ObjectEncoder implements IEncoder
                 $object->{$publicPropertyName} = $this->decodeProperty(
                     $publicProperty,
                     $encodedPropertyValue,
-                    $reflectionClass,
+                    $class,
                     $encodedPropertyName,
                     $context
                 );
@@ -248,7 +248,7 @@ final class ObjectEncoder implements IEncoder
      *
      * @param ReflectionParameter $constructorParam The constructor parameter to decode
      * @param mixed $constructorParamValue The encoded constructor parameter value
-     * @param ReflectionClass $reflectionClass The reflection class we're trying to instantiate
+     * @param ReflectionClass $class The reflection class we're trying to instantiate
      * @param string $normalizedHashPropertyName The encoded property name from the hash
      * @param EncodingContext $context The encoding context
      * @return mixed The decoded constructor parameter value
@@ -258,7 +258,7 @@ final class ObjectEncoder implements IEncoder
     private function decodeConstructorParam(
         ReflectionParameter $constructorParam,
         $constructorParamValue,
-        ReflectionClass $reflectionClass,
+        ReflectionClass $class,
         string $normalizedHashPropertyName,
         EncodingContext $context
     ) {
@@ -279,8 +279,8 @@ final class ObjectEncoder implements IEncoder
 
         // Check for a type from a matching property
         if (
-            $reflectionClass->hasProperty($constructorParam->getName())
-            && ($property = $reflectionClass->getProperty($constructorParam->getName()))
+            $class->hasProperty($constructorParam->getName())
+            && ($property = $class->getProperty($constructorParam->getName()))
             && $property->hasType()
         ) {
             $propertyType = $property->getType()->getName();
@@ -294,7 +294,7 @@ final class ObjectEncoder implements IEncoder
 
         if (
             $this->tryDecodeValueFromGetterType(
-                $reflectionClass,
+                $class,
                 $normalizedHashPropertyName,
                 $constructorParamValue,
                 $context,
@@ -320,7 +320,7 @@ final class ObjectEncoder implements IEncoder
      *
      * @param ReflectionProperty $property The property to decode
      * @param mixed $encodedPropertyValue The encoded property value
-     * @param ReflectionClass $reflectionClass The reflection class we're trying to instantiate
+     * @param ReflectionClass $class The reflection class we're trying to instantiate
      * @param string $normalizedHashPropertyName The encoded property name from the hash
      * @param EncodingContext $context The encoding context
      * @return mixed The decoded property value
@@ -329,7 +329,7 @@ final class ObjectEncoder implements IEncoder
     private function decodeProperty(
         ReflectionProperty $property,
         $encodedPropertyValue,
-        ReflectionClass $reflectionClass,
+        ReflectionClass $class,
         string $normalizedHashPropertyName,
         EncodingContext $context
     ) {
@@ -352,7 +352,7 @@ final class ObjectEncoder implements IEncoder
 
         if (
             $this->tryDecodeValueFromGetterType(
-                $reflectionClass,
+                $class,
                 $normalizedHashPropertyName,
                 $encodedPropertyValue,
                 $context,
@@ -416,53 +416,53 @@ final class ObjectEncoder implements IEncoder
     /**
      * Decodes a value using the type info from get, is, or has methods
      *
-     * @param ReflectionClass $reflectionClass The reflection class
-     * @param string $normalizedPropertyName The normalized property name
+     * @param ReflectionClass $class The reflection class
+     * @param string $normalizedHashPropertyName The normalized property name
      * @param mixed $encodedValue The encoded value
      * @param EncodingContext $context The encoding context
      * @param mixed The decoded value
      * @return bool Returns true if the value was successfully decoded, otherwise false
      */
     private function tryDecodeValueFromGetterType(
-        ReflectionClass $reflectionClass,
-        string $normalizedPropertyName,
+        ReflectionClass $class,
+        string $normalizedHashPropertyName,
         $encodedValue,
         EncodingContext $context,
         &$decodedValue
     ): bool {
         // Check if we can infer the type from any getters or setters
-        foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+        foreach ($class->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             if (
-                !$reflectionMethod->hasReturnType()
-                || $reflectionMethod->getReturnType() === 'array'
-                || $reflectionMethod->isConstructor()
-                || $reflectionMethod->isDestructor()
-                || $reflectionMethod->getNumberOfRequiredParameters() > 0
+                !$method->hasReturnType()
+                || $method->getReturnType() === 'array'
+                || $method->isConstructor()
+                || $method->isDestructor()
+                || $method->getNumberOfRequiredParameters() > 0
             ) {
                 continue;
             }
 
-            $propertyName = null;
+            $objectPropertyName = null;
 
             // Try to extract the property name from the getter/has-er/is-er
-            if (strpos($reflectionMethod->name, 'get') === 0 || strpos($reflectionMethod->name, 'has') === 0) {
-                $propertyName = lcfirst(substr($reflectionMethod->name, 3));
-            } elseif (strpos($reflectionMethod->name, 'is') === 0) {
-                $propertyName = lcfirst(substr($reflectionMethod->name, 2));
+            if (strpos($method->name, 'get') === 0 || strpos($method->name, 'has') === 0) {
+                $objectPropertyName = lcfirst(substr($method->name, 3));
+            } elseif (strpos($method->name, 'is') === 0) {
+                $objectPropertyName = lcfirst(substr($method->name, 2));
             }
 
-            if ($propertyName === null) {
+            if ($objectPropertyName === null) {
                 continue;
             }
 
-            $encodedPropertyName = $this->normalizePropertyName($propertyName);
+            $normalizedObjectPropertyName = $this->normalizePropertyName($objectPropertyName);
 
             // This getter matches the property name we're looking for
-            if ($encodedPropertyName === $normalizedPropertyName) {
+            if ($normalizedObjectPropertyName === $normalizedHashPropertyName) {
                 try {
-                    $reflectionMethodReturnType = $reflectionMethod->getReturnType()->getName();
-                    $decodedValue = $this->encoders->getEncoderForType($reflectionMethodReturnType)
-                        ->decode($encodedValue, $reflectionMethodReturnType, $context);
+                    $methodReturnType = $method->getReturnType()->getName();
+                    $decodedValue = $this->encoders->getEncoderForType($methodReturnType)
+                        ->decode($encodedValue, $methodReturnType, $context);
 
                     return true;
                 } catch (EncodingException $ex) {
