@@ -108,7 +108,7 @@ final class ObjectEncoder implements IEncoder
                     }
 
                     if ($constructorParam->isVariadic()) {
-                        $constructorParams = array_merge($constructorParams, $decodedConstructorParamValue);
+                        $constructorParams = [...$constructorParams, ...$decodedConstructorParamValue];
                     } else {
                         $constructorParams[] = $decodedConstructorParamValue;
                     }
