@@ -56,7 +56,7 @@ final class HttpHeaders extends HashTable
         } else {
             $currentValues = [];
             $this->tryGet($normalizedName, $currentValues);
-            parent::add($normalizedName, array_merge($currentValues, (array)$values));
+            parent::add($normalizedName, [...$currentValues, ...(array)$values]);
         }
     }
 

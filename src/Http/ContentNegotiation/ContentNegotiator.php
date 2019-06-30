@@ -76,10 +76,10 @@ final class ContentNegotiator implements IContentNegotiator
 
         foreach ($this->mediaTypeFormatters as $mediaTypeFormatter) {
             if ($mediaTypeFormatter->canWriteType($type)) {
-                $acceptableMediaTypes = array_merge(
-                    $acceptableMediaTypes,
-                    $mediaTypeFormatter->getSupportedMediaTypes()
-                );
+                $acceptableMediaTypes = [
+                    ...$acceptableMediaTypes,
+                    ...$mediaTypeFormatter->getSupportedMediaTypes()
+                ];
             }
         }
 
