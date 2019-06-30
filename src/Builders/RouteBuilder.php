@@ -29,7 +29,7 @@ use LogicException;
  */
 class RouteBuilder
 {
-    /** @var ?RouteAction The action the route takes */
+    /** @var RouteAction|null ?RouteAction The action the route takes */
     private ?RouteAction $action = null;
     /** @var UriTemplate The URI template */
     private UriTemplate $uriTemplate;
@@ -151,7 +151,7 @@ class RouteBuilder
      */
     public function withManyConstraints(array $constraints): self
     {
-        $this->constraints = \array_merge($this->constraints, $constraints);
+        $this->constraints = [...$this->constraints, ...$constraints];
 
         return $this;
     }

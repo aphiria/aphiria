@@ -106,13 +106,13 @@ final class RouteBuilderRegistry
      */
     private function applyGroupConstraints(RouteBuilder $routeBuilder): void
     {
-        $groupConstraintBindings = [];
+        $groupConstraints = [];
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupConstraintBindings = \array_merge($groupConstraintBindings, $groupOptions->constraints);
+            $groupConstraints = [...$groupConstraints, ...$groupOptions->constraints];
         }
 
-        $routeBuilder->withManyConstraints($groupConstraintBindings);
+        $routeBuilder->withManyConstraints($groupConstraints);
     }
 
     /**
@@ -125,7 +125,7 @@ final class RouteBuilderRegistry
         $groupMiddlewareBindings = [];
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupMiddlewareBindings = \array_merge($groupMiddlewareBindings, $groupOptions->middlewareBindings);
+            $groupMiddlewareBindings = [...$groupMiddlewareBindings, ...$groupOptions->middlewareBindings];
         }
 
         $routeBuilder->withManyMiddleware($groupMiddlewareBindings);

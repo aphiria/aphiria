@@ -105,10 +105,7 @@ abstract class TrieNode
         if (isset($this->literalChildrenByValue[$valueAsString])) {
             // A literal child already exists with this value, so merge the routes and add all its children
             $matchingChildNode = $this->literalChildrenByValue[$valueAsString];
-            $matchingChildNode->routes = \array_merge(
-                $matchingChildNode->routes,
-                $childNode->routes
-            );
+            $matchingChildNode->routes = [...$matchingChildNode->routes, ...$childNode->routes];
 
             foreach ($childNode->getAllChildren() as $grandChildNode) {
                 $matchingChildNode->addChild($grandChildNode);
@@ -133,7 +130,7 @@ abstract class TrieNode
             // Purposely doing a loose check here because we don't care about reference equality
             if ($variableChildNode->parts == $childNode->parts) {
                 $matchingChildNode = $variableChildNode;
-                $variableChildNode->routes = \array_merge($variableChildNode->routes, $childNode->routes);
+                $variableChildNode->routes = [...$variableChildNode->routes, ...$childNode->routes];
                 break;
             }
         }
