@@ -43,7 +43,7 @@ final class AphiriaComponentBuilder
      */
     public function withCommandComponent(IApplicationBuilder $appBuilder): self
     {
-        $appBuilder->registerComponentFactory('commands', function (array $callbacks) {
+        $appBuilder->registerComponentBuilder('commands', function (array $callbacks) {
             $commands = new CommandRegistry();
 
             foreach ($callbacks as $callback) {
@@ -62,7 +62,7 @@ final class AphiriaComponentBuilder
      */
     public function withEncoderComponent(IApplicationBuilder $appBuilder): self
     {
-        $appBuilder->registerComponentFactory('encoders', function (array $callbacks) {
+        $appBuilder->registerComponentBuilder('encoders', function (array $callbacks) {
             $this->container->hasBinding(EncoderRegistry::class)
                 ? $encoders = $this->container->resolve(EncoderRegistry::class)
                 : $this->container->bindInstance(EncoderRegistry::class, $encoders = new EncoderRegistry());
@@ -86,7 +86,7 @@ final class AphiriaComponentBuilder
         // Set up the router request handler
         $appBuilder->withRouter(fn () => $this->container->resolve(RouterKernel::class));
         // Register the routing component
-        $appBuilder->registerComponentFactory('routes', function (array $callbacks) {
+        $appBuilder->registerComponentBuilder('routes', function (array $callbacks) {
             $this->container->hasBinding(LazyRouteFactory::class)
                 ? $routeFactory = $this->container->resolve(LazyRouteFactory::class)
                 : $this->container->bindInstance(LazyRouteFactory::class, $routeFactory = new LazyRouteFactory());

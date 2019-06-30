@@ -95,9 +95,9 @@ final class ApplicationBuilder implements IApplicationBuilder
             $this->bootstrapperDispatcher->dispatch($bootstrappers);
 
             foreach ($this->components as $normalizedComponentName => $componentConfig) {
-                /** @var Closure $factory */
-                $factory = $componentConfig['factory'];
-                $factory($componentConfig['callbacks']);
+                /** @var Closure $builder */
+                $builder = $componentConfig['builder'];
+                $builder($componentConfig['callbacks']);
             }
 
             return $this->createApp();
@@ -109,9 +109,9 @@ final class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function registerComponentFactory(string $componentName, Closure $factory): IApplicationBuilder
+    public function registerComponentBuilder(string $componentName, Closure $builder): IApplicationBuilder
     {
-        $this->components[self::normalizeComponentName($componentName)] = ['factory' => $factory, 'callbacks' => []];
+        $this->components[self::normalizeComponentName($componentName)] = ['builder' => $builder, 'callbacks' => []];
 
         return $this;
     }
@@ -134,7 +134,7 @@ final class ApplicationBuilder implements IApplicationBuilder
         $normalizedComponentName = self::normalizeComponentName($componentName);
 
         if (!isset($this->components[$normalizedComponentName])) {
-            throw new InvalidArgumentException("$componentName does not have a factory registered");
+            throw new InvalidArgumentException("$componentName does not have a builder registered");
         }
 
         $this->components[$normalizedComponentName]['callbacks'][] = $callback;

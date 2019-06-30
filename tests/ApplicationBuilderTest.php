@@ -50,7 +50,7 @@ class ApplicationBuilderTest extends TestCase
 
     public function testComponentsAreCallableViaMagicMethods(): void
     {
-        $this->appBuilder->registerComponentFactory('foo', function (array $callbacks){
+        $this->appBuilder->registerComponentBuilder('foo', function (array $callbacks){
             foreach ($callbacks as $callback) {
                 $callback();
             }
@@ -67,7 +67,7 @@ class ApplicationBuilderTest extends TestCase
 
     public function testComponentNamesAreNormalized(): void
     {
-        $this->appBuilder->registerComponentFactory('Foo', function (array $callbacks){
+        $this->appBuilder->registerComponentBuilder('Foo', function (array $callbacks){
             foreach ($callbacks as $callback) {
                 $callback();
             }
@@ -103,7 +103,7 @@ class ApplicationBuilderTest extends TestCase
 
     public function testRegisteringComponentExecutesAllRegisteredCallbacks(): void
     {
-        $this->appBuilder->registerComponentFactory('foo', function (array $callbacks){
+        $this->appBuilder->registerComponentBuilder('foo', function (array $callbacks){
             foreach ($callbacks as $callback) {
                 $callback();
             }
@@ -145,14 +145,14 @@ class ApplicationBuilderTest extends TestCase
     public function testWithComponentThrowsExceptionIfNoComponentFactoryIsRegistered(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('foo does not have a factory registered');
+        $this->expectExceptionMessage('foo does not have a builder registered');
         $this->appBuilder->withComponent('foo', fn () => null);
     }
 
     public function testWithMethodsReturnsInstanceOfAppBuilder(): void
     {
         // Need to set up a component factory so we can call withComponent
-        $this->appBuilder->registerComponentFactory('foo', fn (array $callbacks) => null);
+        $this->appBuilder->registerComponentBuilder('foo', fn (array $callbacks) => null);
         $bootstrapper = new class() extends Bootstrapper
         {
             public function registerBindings(IContainer $container): void

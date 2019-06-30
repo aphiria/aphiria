@@ -33,10 +33,10 @@ interface IApplicationBuilder
      * Registers a component to the app
      *
      * @param string $componentName The name of the component the callback belongs to
-     * @param Closure $factory The factory that will take in an IContainer and list of callbacks registered for this component ands builds it
+     * @param Closure $builder The factory that will take in an IContainer and list of callbacks registered for this component ands builds it
      * @return IApplicationBuilder For chaining
      */
-    public function registerComponentFactory(string $componentName, Closure $factory): self;
+    public function registerComponentBuilder(string $componentName, Closure $builder): self;
 
     /**
      * Adds bootstrappers to the application

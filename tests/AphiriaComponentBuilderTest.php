@@ -41,7 +41,7 @@ class AphiriaComponentBuilderTest extends TestCase
     public function testWithCommandComponentPassesCommandRegistryToRegisteredCallbacks(): void
     {
         $this->appBuilder->expects($this->once())
-            ->method('registerComponentFactory')
+            ->method('registerComponentBuilder')
             ->with('commands', $this->callback(function (\Closure $callback) {
                 $callbackWasCalled = false;
                 $callbacks = [
@@ -60,7 +60,7 @@ class AphiriaComponentBuilderTest extends TestCase
     public function testWithEncoderComponentPassesEncoderRegistryToRegisteredCallbacks(): void
     {
         $this->appBuilder->expects($this->once())
-            ->method('registerComponentFactory')
+            ->method('registerComponentBuilder')
             ->with('encoders', $this->callback(function (\Closure $callback) {
                 $callbackWasCalled = false;
                 $callbacks = [
