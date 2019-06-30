@@ -16,6 +16,7 @@ use Aphiria\Api\App;
 use Aphiria\Configuration\ApplicationBuilder;
 use Aphiria\Configuration\IModuleBuilder;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
+use BadMethodCallException;
 use Opulence\Ioc\Bootstrappers\Bootstrapper;
 use Opulence\Ioc\Bootstrappers\IBootstrapperDispatcher;
 use Opulence\Ioc\IContainer;
@@ -79,6 +80,18 @@ class ApplicationBuilderTest extends TestCase
         $this->setRouter();
         $this->appBuilder->build();
         $this->assertTrue($callbackWasRun);
+    }
+
+    public function testMagicMethodThatDoesNotStartWithWithThrowsException(): void
+    {
+        $this->expectException(BadMethodCallException::class);
+        $this->appBuilder->magic();
+    }
+
+    public function testMagicMethodThatOnlyContainsWithThrowsException(): void
+    {
+        $this->expectException(BadMethodCallException::class);
+        $this->appBuilder->with();
     }
 
     public function testNotRegisteringRouterThrowsException(): void

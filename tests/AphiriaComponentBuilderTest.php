@@ -15,6 +15,7 @@ namespace Aphiria\Configuration\Tests;
 use Aphiria\Configuration\AphiriaComponentBuilder;
 use Aphiria\Configuration\IApplicationBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Opulence\Ioc\IContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -54,6 +55,25 @@ class AphiriaComponentBuilderTest extends TestCase
                 return $callbackWasCalled;
             }));
         $this->componentBuilder->withCommandComponent($this->appBuilder);
+    }
+
+    public function testWithEncoderComponentPassesEncoderRegistryToRegisteredCallbacks(): void
+    {
+        $this->appBuilder->expects($this->once())
+            ->method('registerComponentFactory')
+            ->with('encoders', $this->callback(function (\Closure $callback) {
+                $callbackWasCalled = false;
+                $callbacks = [
+                    function (EncoderRegistry $encoders) use (&$callbackWasCalled) {
+                        $callbackWasCalled = true;
+                    }
+                ];
+                // Call the callback so we can verify it was setup correctly
+                $callback($callbacks);
+
+                return $callbackWasCalled;
+            }));
+        $this->componentBuilder->withEncoderComponent($this->appBuilder);
     }
 
     public function testWithRoutingComponentRegistersRouter(): void

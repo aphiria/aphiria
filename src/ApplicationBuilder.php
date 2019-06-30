@@ -18,6 +18,7 @@ use Aphiria\Api\DependencyResolutionException;
 use Aphiria\Api\IDependencyResolver;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
+use BadMethodCallException;
 use Closure;
 use InvalidArgumentException;
 use Opulence\Ioc\Bootstrappers\Bootstrapper;
@@ -60,10 +61,16 @@ final class ApplicationBuilder implements IApplicationBuilder
      * @param string $methodName The name of the method that was called
      * @param array $arguments The arguments that were passed in
      * @return IApplicationBuilder For chaining
+     * @throws BadMethodCallException Thrown if the method name does not start with "with"
      * @throws InvalidArgumentException Thrown if no component exists with the input name
      */
     public function __call(string $methodName, array $arguments): IApplicationBuilder
     {
+        // Method name must be "with{component}", and component must be at least one character
+        if (\strlen($methodName) < 5 || strpos($methodName, 'with') !== 0) {
+            throw new BadMethodCallException("Method $methodName is not supported");
+        }
+
         // Remove "with"
         $componentName = substr($methodName, 4);
 

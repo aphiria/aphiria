@@ -16,6 +16,7 @@ use Aphiria\Api\RouterKernel;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
+use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Opulence\Ioc\IContainer;
 
 /**
@@ -47,6 +48,27 @@ final class AphiriaComponentBuilder
 
             foreach ($callbacks as $callback) {
                 $callback($commands);
+            }
+        });
+
+        return $this;
+    }
+
+    /**
+     * Registers Aphiria encoders
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to register to
+     * @return AphiriaComponentBuilder For chaining
+     */
+    public function withEncoderComponent(IApplicationBuilder $appBuilder): self
+    {
+        $appBuilder->registerComponentFactory('encoders', function (array $callbacks) {
+            $this->container->hasBinding(EncoderRegistry::class)
+                ? $encoders = $this->container->resolve(EncoderRegistry::class)
+                : $this->container->bindInstance(EncoderRegistry::class, $encoders = new EncoderRegistry());
+
+            foreach ($callbacks as $callback) {
+                $callback($encoders);
             }
         });
 
