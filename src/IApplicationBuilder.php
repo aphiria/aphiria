@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration;
 
+use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Closure;
 use RuntimeException;
@@ -22,12 +23,20 @@ use RuntimeException;
 interface IApplicationBuilder
 {
     /**
-     * Builds the application
+     * Builds an API application
      *
      * @return IRequestHandler The top-level request handler
      * @throws RuntimeException Thrown if there was an error building the application
      */
-    public function build(): IRequestHandler;
+    public function buildApiApplication(): IRequestHandler;
+
+    /**
+     * Builds a console application
+     *
+     * @return ICommandBus The top-level command bus
+     * @throws RuntimeException Thrown if there was an error building the application
+     */
+    public function buildConsoleApplication(): ICommandBus;
 
     /**
      * Registers a component to the app

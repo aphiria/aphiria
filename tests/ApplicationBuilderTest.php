@@ -15,6 +15,7 @@ namespace Aphiria\Configuration\Tests;
 use Aphiria\Api\App;
 use Aphiria\Configuration\ApplicationBuilder;
 use Aphiria\Configuration\IModuleBuilder;
+use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use BadMethodCallException;
 use Opulence\Ioc\Bootstrappers\Bootstrapper;
@@ -42,10 +43,35 @@ class ApplicationBuilderTest extends TestCase
         $this->appBuilder = new ApplicationBuilder($this->container, $this->bootstrapperDispatcher);
     }
 
-    public function testBuildingAppReturnsInstanceOfAppByDefault(): void
+    public function testBuildingApiReturnsInstanceOfAppByDefault(): void
     {
         $this->setRouter();
-        $this->assertInstanceOf(App::class, $this->appBuilder->build());
+        $this->assertInstanceOf(App::class, $this->appBuilder->buildApiApplication());
+    }
+
+    public function testBuildingConsoleBindsNewCommandRegistryBoundToContainerIfNotAlreadyBound(): void
+    {
+        $this->container->expects($this->at(0))
+            ->method('hasBinding')
+            ->with(CommandRegistry::class)
+            ->willReturn(false);
+        $this->container->expects($this->at(1))
+            ->method('bindInstance')
+            ->with(CommandRegistry::class, new CommandRegistry());
+        $this->appBuilder->buildConsoleApplication();
+    }
+
+    public function testBuildingConsoleUsesCommandRegistryBoundToContainerIfAvailable(): void
+    {
+        $this->container->expects($this->at(0))
+            ->method('hasBinding')
+            ->with(CommandRegistry::class)
+            ->willReturn(true);
+        $this->container->expects($this->at(1))
+            ->method('resolve')
+            ->with(CommandRegistry::class)
+            ->willReturn(new CommandRegistry());
+        $this->appBuilder->buildConsoleApplication();
     }
 
     public function testComponentsAreCallableViaMagicMethods(): void
@@ -61,7 +87,7 @@ class ApplicationBuilderTest extends TestCase
             $callbackWasRun = true;
         });
         $this->setRouter();
-        $this->appBuilder->build();
+        $this->appBuilder->buildApiApplication();
         $this->assertTrue($callbackWasRun);
     }
 
@@ -78,7 +104,7 @@ class ApplicationBuilderTest extends TestCase
             $callbackWasRun = true;
         });
         $this->setRouter();
-        $this->appBuilder->build();
+        $this->appBuilder->buildApiApplication();
         $this->assertTrue($callbackWasRun);
     }
 
@@ -98,7 +124,7 @@ class ApplicationBuilderTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Router callback not set');
-        $this->appBuilder->build();
+        $this->appBuilder->buildApiApplication();
     }
 
     public function testRegisteringComponentExecutesAllRegisteredCallbacks(): void
@@ -113,7 +139,7 @@ class ApplicationBuilderTest extends TestCase
             $callbackWasRun = true;
         });
         $this->setRouter();
-        $this->appBuilder->build();
+        $this->appBuilder->buildApiApplication();
         $this->assertTrue($callbackWasRun);
     }
 
@@ -122,7 +148,7 @@ class ApplicationBuilderTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Router must implement ' . IRequestHandler::class);
         $this->appBuilder->withRouter(fn () => $this);
-        $this->appBuilder->build();
+        $this->appBuilder->buildApiApplication();
     }
 
     public function testWithBootstrapperDispatchesAllRegisteredBootstrappers(): void
@@ -139,7 +165,7 @@ class ApplicationBuilderTest extends TestCase
             ->method('dispatch')
             ->with($this->callback(fn (array $bootstrappers) => \count($bootstrappers) === 1 && $bootstrappers[0] === $bootstrapper));
         $this->setRouter();
-        $this->appBuilder->build();
+        $this->appBuilder->buildApiApplication();
     }
 
     public function testWithComponentThrowsExceptionIfNoComponentFactoryIsRegistered(): void

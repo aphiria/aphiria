@@ -16,6 +16,9 @@ use Aphiria\Api\App;
 use Aphiria\Api\ContainerDependencyResolver;
 use Aphiria\Api\DependencyResolutionException;
 use Aphiria\Api\IDependencyResolver;
+use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Commands\ICommandBus;
+use Aphiria\Console\Kernel;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use BadMethodCallException;
@@ -80,29 +83,33 @@ final class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function build(): IRequestHandler
+    public function buildApiApplication(): IRequestHandler
     {
         try {
-            /** @var Bootstrapper[] $bootstrappers */
-            $bootstrappers = [];
+            $this->dispatchBootstrappers();
+            $this->buildComponents();
 
-            foreach ($this->bootstrapperCallbacks as $bootstrapperCallback) {
-                foreach ((array)$bootstrapperCallback() as $bootstrapper) {
-                    $bootstrappers[] = $bootstrapper;
-                }
-            }
-
-            $this->bootstrapperDispatcher->dispatch($bootstrappers);
-
-            foreach ($this->components as $normalizedComponentName => $componentConfig) {
-                /** @var Closure $builder */
-                $builder = $componentConfig['builder'];
-                $builder($componentConfig['callbacks']);
-            }
-
-            return $this->createApp();
+            return $this->createRequestHandler();
         } catch (ResolutionException $ex) {
-            throw new RuntimeException('Failed to build app', 0, $ex);
+            throw new RuntimeException('Failed to build API app', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function buildConsoleApplication(): ICommandBus
+    {
+        try {
+            $this->dispatchBootstrappers();
+            $this->buildComponents();
+            $this->container->hasBinding(CommandRegistry::class)
+                ? $commands = $this->container->resolve(CommandRegistry::class)
+                : $this->container->bindInstance(CommandRegistry::class, $commands = new CommandRegistry());
+
+            return new Kernel($commands);
+        } catch (ResolutionException $ex) {
+            throw new RuntimeException('Failed to build console app', 0, $ex);
         }
     }
 
@@ -173,13 +180,25 @@ final class ApplicationBuilder implements IApplicationBuilder
     }
 
     /**
+     * Builds all the registered components
+     */
+    private function buildComponents(): void
+    {
+        foreach ($this->components as $normalizedComponentName => $componentConfig) {
+            /** @var Closure $builder */
+            $builder = $componentConfig['builder'];
+            $builder($componentConfig['callbacks']);
+        }
+    }
+
+    /**
      * Creates the app request handler
      *
      * @return IRequestHandler The application request handler
      * @throws RuntimeException Thrown if the kernel callback was not registered
      * @throws ResolutionException Thrown if there was an error creating any dependencies
      */
-    protected function createApp(): IRequestHandler
+    private function createRequestHandler(): IRequestHandler
     {
         if ($this->routerCallback === null) {
             throw new RuntimeException('Router callback not set');
@@ -192,15 +211,15 @@ final class ApplicationBuilder implements IApplicationBuilder
         $this->container->hasBinding(IDependencyResolver::class)
             ? $dependencyResolver = $this->container->resolve(IDependencyResolver::class)
             : $this->container->bindInstance(
-                IDependencyResolver::class,
-                $dependencyResolver = new ContainerDependencyResolver($this->container)
-            );
+            IDependencyResolver::class,
+            $dependencyResolver = new ContainerDependencyResolver($this->container)
+        );
         $this->container->hasBinding(MiddlewarePipelineFactory::class)
             ? $middlewarePipelineFactory = $this->container->resolve(MiddlewarePipelineFactory::class)
             : $this->container->bindInstance(
-                MiddlewarePipelineFactory::class,
-                $middlewarePipelineFactory = new MiddlewarePipelineFactory()
-            );
+            MiddlewarePipelineFactory::class,
+            $middlewarePipelineFactory = new MiddlewarePipelineFactory()
+        );
 
         $app = new App($dependencyResolver, $router, $middlewarePipelineFactory);
 
@@ -216,6 +235,23 @@ final class ApplicationBuilder implements IApplicationBuilder
         }
 
         return $app;
+    }
+
+    /**
+     * Dispatches all the registered bootstrappers
+     */
+    private function dispatchBootstrappers(): void
+    {
+        /** @var Bootstrapper[] $bootstrappers */
+        $bootstrappers = [];
+
+        foreach ($this->bootstrapperCallbacks as $bootstrapperCallback) {
+            foreach ((array)$bootstrapperCallback() as $bootstrapper) {
+                $bootstrappers[] = $bootstrapper;
+            }
+        }
+
+        $this->bootstrapperDispatcher->dispatch($bootstrappers);
     }
 
     /**
