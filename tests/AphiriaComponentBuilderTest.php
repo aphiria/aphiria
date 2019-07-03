@@ -38,8 +38,44 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->componentBuilder = new AphiriaComponentBuilder($this->container);
     }
 
-    public function testWithCommandComponentPassesCommandRegistryToRegisteredCallbacks(): void
+    public function testWithCommandComponentPassesBoundCommandRegistryToRegisteredCallbacksWhenOneIsBoundToContainer(): void
     {
+        $this->container->expects($this->at(0))
+            ->method('hasBinding')
+            ->with(CommandRegistry::class)
+            ->willReturn(true);
+        $expectedCommands = new CommandRegistry();
+        $this->container->expects($this->at(1))
+            ->method('resolve')
+            ->with(CommandRegistry::class)
+            ->willReturn($expectedCommands);
+        $this->appBuilder->expects($this->once())
+            ->method('registerComponentBuilder')
+            ->with('commands', $this->callback(function (\Closure $callback) use ($expectedCommands) {
+                $callbackWasCalled = false;
+                $callbacks = [
+                    function (CommandRegistry $actualCommands) use (&$callbackWasCalled, $expectedCommands) {
+                        $this->assertSame($expectedCommands, $actualCommands);
+                        $callbackWasCalled = true;
+                    }
+                ];
+                // Call the callback so we can verify it was setup correctly
+                $callback($callbacks);
+
+                return $callbackWasCalled;
+            }));
+        $this->componentBuilder->withCommandComponent($this->appBuilder);
+    }
+
+    public function testWithCommandComponentPassesNewCommandRegistryToRegisteredCallbacksWhenNonIsBoundToContainer(): void
+    {
+        $this->container->expects($this->at(0))
+            ->method('hasBinding')
+            ->with(CommandRegistry::class)
+            ->willReturn(false);
+        $this->container->expects($this->at(1))
+            ->method('bindInstance')
+            ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));
         $this->appBuilder->expects($this->once())
             ->method('registerComponentBuilder')
             ->with('commands', $this->callback(function (\Closure $callback) {

@@ -44,7 +44,9 @@ final class AphiriaComponentBuilder
     public function withCommandComponent(IApplicationBuilder $appBuilder): self
     {
         $appBuilder->registerComponentBuilder('commands', function (array $callbacks) {
-            $commands = new CommandRegistry();
+            $this->container->hasBinding(CommandRegistry::class)
+                ? $commands = $this->container->resolve(CommandRegistry::class)
+                : $this->container->bindInstance(CommandRegistry::class, $commands = new CommandRegistry());
 
             foreach ($callbacks as $callback) {
                 $callback($commands);
