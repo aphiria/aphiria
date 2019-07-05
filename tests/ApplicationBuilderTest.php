@@ -15,7 +15,9 @@ namespace Aphiria\Configuration\Tests;
 use Aphiria\Api\App;
 use Aphiria\Configuration\ApplicationBuilder;
 use Aphiria\Configuration\IModuleBuilder;
+use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use BadMethodCallException;
 use Opulence\Ioc\Bootstrappers\Bootstrapper;
@@ -173,6 +175,44 @@ class ApplicationBuilderTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('foo does not have a builder registered');
         $this->appBuilder->withComponent('foo', fn () => null);
+    }
+
+    public function testWithConsoleCommandPassesBoundCommandRegistryToRegisteredCallbacksWhenOneIsBoundToContainer(): void
+    {
+        $this->container->expects($this->at(0))
+            ->method('hasBinding')
+            ->with(CommandRegistry::class)
+            ->willReturn(true);
+        $expectedCommands = new CommandRegistry();
+        $this->container->expects($this->at(1))
+            ->method('resolve')
+            ->with(CommandRegistry::class)
+            ->willReturn($expectedCommands);
+        $this->appBuilder->withConsoleCommands(function (CommandRegistry $commands) {
+            $commands->registerCommand(
+                new Command('foo', [], [], ''),
+                fn () => $this->createMock(ICommandHandler::class)
+            );
+        });
+        $this->appBuilder->buildConsoleApplication();
+    }
+
+    public function testWithConsoleCommandPassesNewCommandRegistryToRegisteredCallbacksWhenNonIsBoundToContainer(): void
+    {
+        $this->container->expects($this->at(0))
+            ->method('hasBinding')
+            ->with(CommandRegistry::class)
+            ->willReturn(false);
+        $this->container->expects($this->at(1))
+            ->method('bindInstance')
+            ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));
+        $this->appBuilder->withConsoleCommands(function (CommandRegistry $commands) {
+            $commands->registerCommand(
+                new Command('foo', [], [], ''),
+                fn () => $this->createMock(ICommandHandler::class)
+            );
+        });
+        $this->appBuilder->buildConsoleApplication();
     }
 
     public function testWithMethodsReturnsInstanceOfAppBuilder(): void

@@ -43,6 +43,8 @@ final class ApplicationBuilder implements IApplicationBuilder
     private array $components = [];
     /** @var Closure[] The list of bootstrapper callbacks */
     private array $bootstrapperCallbacks = [];
+    /** @var Closure[] The list of console command callbacks */
+    private array $consoleCommandCallbacks = [];
     /** @var Closure|null The callback that will resolve the router request handler */
     private ?Closure $routerCallback = null;
     /** @var Closure[] The list of middleware callbacks */
@@ -102,6 +104,7 @@ final class ApplicationBuilder implements IApplicationBuilder
     {
         try {
             $this->dispatchBootstrappers();
+            $this->buildConsoleCommands();
             $this->buildComponents();
             $this->container->hasBinding(CommandRegistry::class)
                 ? $commands = $this->container->resolve(CommandRegistry::class)
@@ -152,6 +155,16 @@ final class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
+    public function withConsoleCommands(Closure $callback): IApplicationBuilder
+    {
+        $this->consoleCommandCallbacks[] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function withMiddleware(Closure $middlewareCallback): IApplicationBuilder
     {
         $this->middlewareCallbacks[] = $middlewareCallback;
@@ -188,6 +201,22 @@ final class ApplicationBuilder implements IApplicationBuilder
             /** @var Closure $builder */
             $builder = $componentConfig['builder'];
             $builder($componentConfig['callbacks']);
+        }
+    }
+
+    /**
+     * Builds the console commands that were registered
+     *
+     * @throws ResolutionException Thrown if any dependencies could not be resolved
+     */
+    private function buildConsoleCommands(): void
+    {
+        $this->container->hasBinding(CommandRegistry::class)
+            ? $commands = $this->container->resolve(CommandRegistry::class)
+            : $this->container->bindInstance(CommandRegistry::class, $commands = new CommandRegistry());
+
+        foreach ($this->consoleCommandCallbacks as $callback) {
+            $callback($commands);
         }
     }
 

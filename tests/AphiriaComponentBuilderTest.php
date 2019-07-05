@@ -14,7 +14,6 @@ namespace Aphiria\Configuration\Tests;
 
 use Aphiria\Configuration\AphiriaComponentBuilder;
 use Aphiria\Configuration\IApplicationBuilder;
-use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Opulence\Ioc\IContainer;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -36,61 +35,6 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->appBuilder = $this->createMock(IApplicationBuilder::class);
         $this->container = $this->createMock(IContainer::class);
         $this->componentBuilder = new AphiriaComponentBuilder($this->container);
-    }
-
-    public function testWithCommandComponentPassesBoundCommandRegistryToRegisteredCallbacksWhenOneIsBoundToContainer(): void
-    {
-        $this->container->expects($this->at(0))
-            ->method('hasBinding')
-            ->with(CommandRegistry::class)
-            ->willReturn(true);
-        $expectedCommands = new CommandRegistry();
-        $this->container->expects($this->at(1))
-            ->method('resolve')
-            ->with(CommandRegistry::class)
-            ->willReturn($expectedCommands);
-        $this->appBuilder->expects($this->once())
-            ->method('registerComponentBuilder')
-            ->with('commands', $this->callback(function (\Closure $callback) use ($expectedCommands) {
-                $callbackWasCalled = false;
-                $callbacks = [
-                    function (CommandRegistry $actualCommands) use (&$callbackWasCalled, $expectedCommands) {
-                        $this->assertSame($expectedCommands, $actualCommands);
-                        $callbackWasCalled = true;
-                    }
-                ];
-                // Call the callback so we can verify it was setup correctly
-                $callback($callbacks);
-
-                return $callbackWasCalled;
-            }));
-        $this->componentBuilder->withCommandComponent($this->appBuilder);
-    }
-
-    public function testWithCommandComponentPassesNewCommandRegistryToRegisteredCallbacksWhenNonIsBoundToContainer(): void
-    {
-        $this->container->expects($this->at(0))
-            ->method('hasBinding')
-            ->with(CommandRegistry::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(1))
-            ->method('bindInstance')
-            ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));
-        $this->appBuilder->expects($this->once())
-            ->method('registerComponentBuilder')
-            ->with('commands', $this->callback(function (\Closure $callback) {
-                $callbackWasCalled = false;
-                $callbacks = [
-                    function (CommandRegistry $commands) use (&$callbackWasCalled) {
-                        $callbackWasCalled = true;
-                    }
-                ];
-                // Call the callback so we can verify it was setup correctly
-                $callback($callbacks);
-
-                return $callbackWasCalled;
-            }));
-        $this->componentBuilder->withCommandComponent($this->appBuilder);
     }
 
     public function testWithEncoderComponentPassesEncoderRegistryToRegisteredCallbacks(): void

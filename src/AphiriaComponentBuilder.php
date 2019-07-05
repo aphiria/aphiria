@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Configuration;
 
 use Aphiria\Api\RouterKernel;
-use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
@@ -33,27 +32,6 @@ final class AphiriaComponentBuilder
     public function __construct(IContainer $container)
     {
         $this->container = $container;
-    }
-
-    /**
-     * Registers Aphiria console commands
-     *
-     * @param IApplicationBuilder $appBuilder The app builder to register to
-     * @return AphiriaComponentBuilder For chaining
-     */
-    public function withCommandComponent(IApplicationBuilder $appBuilder): self
-    {
-        $appBuilder->registerComponentBuilder('commands', function (array $callbacks) {
-            $this->container->hasBinding(CommandRegistry::class)
-                ? $commands = $this->container->resolve(CommandRegistry::class)
-                : $this->container->bindInstance(CommandRegistry::class, $commands = new CommandRegistry());
-
-            foreach ($callbacks as $callback) {
-                $callback($commands);
-            }
-        });
-
-        return $this;
     }
 
     /**

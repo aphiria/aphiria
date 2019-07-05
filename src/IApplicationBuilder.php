@@ -65,6 +65,14 @@ interface IApplicationBuilder
     public function withComponent(string $componentName, Closure $callback): self;
 
     /**
+     * Adds console commands to the application
+     *
+     * @param Closure $callback The callback that takes in a CommandRegistry ands registers commands to it
+     * @return IApplicationBuilder For chaining
+     */
+    public function withConsoleCommands(Closure $callback): self;
+
+    /**
      * Adds global middleware to the app
      *
      * @param Closure $middlewareCallback The callback that will return the list of middleware classes to use
