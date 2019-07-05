@@ -16,6 +16,7 @@ use Aphiria\Api\App;
 use Aphiria\Api\ContainerDependencyResolver;
 use Aphiria\Api\DependencyResolutionException;
 use Aphiria\Api\IDependencyResolver;
+use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\Console\Kernel;
@@ -106,11 +107,8 @@ final class ApplicationBuilder implements IApplicationBuilder
             $this->dispatchBootstrappers();
             $this->buildConsoleCommands();
             $this->buildComponents();
-            $this->container->hasBinding(CommandRegistry::class)
-                ? $commands = $this->container->resolve(CommandRegistry::class)
-                : $this->container->bindInstance(CommandRegistry::class, $commands = new CommandRegistry());
 
-            return new Kernel($commands);
+            return new Kernel($this->container->resolve(CommandRegistry::class));
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build console app', 0, $ex);
         }
@@ -165,7 +163,7 @@ final class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function withMiddleware(Closure $middlewareCallback): IApplicationBuilder
+    public function withGlobalMiddleware(Closure $middlewareCallback): IApplicationBuilder
     {
         $this->middlewareCallbacks[] = $middlewareCallback;
 
@@ -240,23 +238,27 @@ final class ApplicationBuilder implements IApplicationBuilder
         $this->container->hasBinding(IDependencyResolver::class)
             ? $dependencyResolver = $this->container->resolve(IDependencyResolver::class)
             : $this->container->bindInstance(
-            IDependencyResolver::class,
-            $dependencyResolver = new ContainerDependencyResolver($this->container)
-        );
+                IDependencyResolver::class,
+                $dependencyResolver = new ContainerDependencyResolver($this->container)
+            );
         $this->container->hasBinding(MiddlewarePipelineFactory::class)
             ? $middlewarePipelineFactory = $this->container->resolve(MiddlewarePipelineFactory::class)
             : $this->container->bindInstance(
-            MiddlewarePipelineFactory::class,
-            $middlewarePipelineFactory = new MiddlewarePipelineFactory()
-        );
+                MiddlewarePipelineFactory::class,
+                $middlewarePipelineFactory = new MiddlewarePipelineFactory()
+            );
 
         $app = new App($dependencyResolver, $router, $middlewarePipelineFactory);
 
         try {
             foreach ($this->middlewareCallbacks as $middlewareCallback) {
-                // Todo: How do I add attributes?
-                foreach ((array)$middlewareCallback() as $middlewareClass) {
-                    $app->addMiddleware($middlewareClass);
+                /** @var MiddlewareBinding $middlewareBinding */
+                foreach ((array)$middlewareCallback() as $middlewareBinding) {
+                    if (!$middlewareBinding instanceof MiddlewareBinding) {
+                        throw new RuntimeException('Middleware bindings must be an instance of ' . MiddlewareBinding::class);
+                    }
+
+                    $app->addMiddleware($middlewareBinding->className, $middlewareBinding->attributes);
                 }
             }
         } catch (DependencyResolutionException $ex) {
@@ -275,9 +277,7 @@ final class ApplicationBuilder implements IApplicationBuilder
         $bootstrappers = [];
 
         foreach ($this->bootstrapperCallbacks as $bootstrapperCallback) {
-            foreach ((array)$bootstrapperCallback() as $bootstrapper) {
-                $bootstrappers[] = $bootstrapper;
-            }
+            $bootstrappers = [...$bootstrappers, ...(array)$bootstrapperCallback()];
         }
 
         $this->bootstrapperDispatcher->dispatch($bootstrappers);

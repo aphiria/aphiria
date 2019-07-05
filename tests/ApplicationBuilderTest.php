@@ -15,6 +15,7 @@ namespace Aphiria\Configuration\Tests;
 use Aphiria\Api\App;
 use Aphiria\Configuration\ApplicationBuilder;
 use Aphiria\Configuration\IModuleBuilder;
+use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
@@ -59,7 +60,11 @@ class ApplicationBuilderTest extends TestCase
             ->willReturn(false);
         $this->container->expects($this->at(1))
             ->method('bindInstance')
-            ->with(CommandRegistry::class, new CommandRegistry());
+            ->with(CommandRegistry::class, $commands = new CommandRegistry());
+        $this->container->expects($this->at(2))
+            ->method('resolve')
+            ->with(CommandRegistry::class)
+            ->willReturn($commands);
         $this->appBuilder->buildConsoleApplication();
     }
 
@@ -72,7 +77,11 @@ class ApplicationBuilderTest extends TestCase
         $this->container->expects($this->at(1))
             ->method('resolve')
             ->with(CommandRegistry::class)
-            ->willReturn(new CommandRegistry());
+            ->willReturn($commands = new CommandRegistry());
+        $this->container->expects($this->at(2))
+            ->method('resolve')
+            ->with(CommandRegistry::class)
+            ->willReturn($commands);
         $this->appBuilder->buildConsoleApplication();
     }
 
@@ -188,6 +197,10 @@ class ApplicationBuilderTest extends TestCase
             ->method('resolve')
             ->with(CommandRegistry::class)
             ->willReturn($expectedCommands);
+        $this->container->expects($this->at(2))
+            ->method('resolve')
+            ->with(CommandRegistry::class)
+            ->willReturn($expectedCommands);
         $this->appBuilder->withConsoleCommands(function (CommandRegistry $commands) {
             $commands->registerCommand(
                 new Command('foo', [], [], ''),
@@ -206,6 +219,10 @@ class ApplicationBuilderTest extends TestCase
         $this->container->expects($this->at(1))
             ->method('bindInstance')
             ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));
+        $this->container->expects($this->at(2))
+            ->method('resolve')
+            ->with(CommandRegistry::class)
+            ->willReturn(new CommandRegistry());
         $this->appBuilder->withConsoleCommands(function (CommandRegistry $commands) {
             $commands->registerCommand(
                 new Command('foo', [], [], ''),
@@ -213,6 +230,15 @@ class ApplicationBuilderTest extends TestCase
             );
         });
         $this->appBuilder->buildConsoleApplication();
+    }
+
+    public function testWithGlobalMiddlewareThatIsNotMiddlewareBindingThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Middleware bindings must be an instance of '. MiddlewareBinding::class);
+        $this->setRouter();
+        $this->appBuilder->withGlobalMiddleware(fn () => [$this]);
+        $this->appBuilder->buildApiApplication();
     }
 
     public function testWithMethodsReturnsInstanceOfAppBuilder(): void
@@ -228,7 +254,7 @@ class ApplicationBuilderTest extends TestCase
         };
         $this->assertSame($this->appBuilder, $this->appBuilder->withBootstrappers(fn () => [$bootstrapper]));
         $this->assertSame($this->appBuilder, $this->appBuilder->withComponent('foo', fn (IContainer $container, array $callbacks) => null));
-        $this->assertSame($this->appBuilder, $this->appBuilder->withMiddleware(fn () => []));
+        $this->assertSame($this->appBuilder, $this->appBuilder->withGlobalMiddleware(fn () => []));
         $this->assertSame($this->appBuilder, $this->appBuilder->withModule($this->createMock(IModuleBuilder::class)));
         $this->assertSame($this->appBuilder, $this->appBuilder->withRouter(fn () => $this->createMock(IRequestHandler::class)));
     }

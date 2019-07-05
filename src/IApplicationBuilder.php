@@ -75,10 +75,10 @@ interface IApplicationBuilder
     /**
      * Adds global middleware to the app
      *
-     * @param Closure $middlewareCallback The callback that will return the list of middleware classes to use
+     * @param Closure $middlewareCallback The callback that will return the list of middleware bindings to use
      * @return IApplicationBuilder For chaining
      */
-    public function withMiddleware(Closure $middlewareCallback): self;
+    public function withGlobalMiddleware(Closure $middlewareCallback): self;
 
     /**
      * Adds an entire module to the application
