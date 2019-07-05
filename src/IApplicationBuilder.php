@@ -83,7 +83,7 @@ interface IApplicationBuilder
     /**
      * Adds the inner-most request handler that will act as the router
      *
-     * @param Closure $routerCallback The callback that takes in a container and returns an instance of a request handler
+     * @param Closure $routerCallback The callback that takes in no parameters and returns an instance of a request handler
      * @return IApplicationBuilder For chaining
      */
     public function withRouter(Closure $routerCallback): self;
