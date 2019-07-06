@@ -23,14 +23,14 @@ final class ProgressBarFormatter implements IProgressBarObserver
 {
     /** @const The default width of the progress bar (including delimiters) */
     private const DEFAULT_PROGRESS_BAR_WIDTH = 80;
-    /** @var int The progress bar width (including delimiters) */
-    private int $progressBarWidth;
     /** @var string The completed progress character */
     public string $completedProgressChar = '=';
     /** @var string The remaining progress character */
     public string $remainingProgressChar = '-';
     /** @var IOutput The output to draw to */
     private IOutput $output;
+    /** @var int The progress bar width (including delimiters) */
+    private int $progressBarWidth;
     /** @var DateTimeImmutable The start time of the progress bar */
     private DateTimeImmutable $startTime;
     /** @var string The output string format */
@@ -49,7 +49,7 @@ final class ProgressBarFormatter implements IProgressBarObserver
      * @throws InvalidArgumentException Thrown if the max steps are invalid
      */
     public function __construct(
-        IOutput$output,
+        IOutput $output,
         int $progressBarWidth = self::DEFAULT_PROGRESS_BAR_WIDTH,
         string $outputFormat = null,
         int $redrawFrequency = 1
