@@ -62,9 +62,7 @@ class KernelTest extends TestCase
         // Try with command name
         $this->commands->registerCommand(
             new Command('holiday', [], [], ''),
-            function (Input $input, IOutput $output) {
-                // Don't do anything
-            }
+            fn (Input $input, IOutput $output) => null
         );
         ob_start();
         $status = $this->kernel->handle('help holiday', $this->output);
@@ -96,16 +94,14 @@ class KernelTest extends TestCase
                 [new Option('yell', 'y', OptionTypes::OPTIONAL_VALUE, '', 'yes')],
                 ''
             ),
-            function () {
-                return function (Input $input, IOutput $output) {
-                    $message = 'Happy ' . $input->arguments['holiday'];
+            fn () => function (Input $input, IOutput $output) {
+                $message = 'Happy ' . $input->arguments['holiday'];
 
-                    if ($input->options['yell'] === 'yes') {
-                        $message .= '!';
-                    }
+                if ($input->options['yell'] === 'yes') {
+                    $message .= '!';
+                }
 
-                    $output->write($message);
-                };
+                $output->write($message);
             }
         );
         ob_start();

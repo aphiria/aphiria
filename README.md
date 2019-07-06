@@ -96,9 +96,7 @@ use Aphiria\Console\Kernel;
 $commands = new CommandRegistry();
 $commands->registerCommand(
     $greetingCommand, 
-    function () {
-        return $greetingCommandHandler;
-    }
+    fn () => $greetingCommandHandler
 );
 
 // Actually run the kernel
@@ -293,9 +291,10 @@ $rows = [
     ['Chris', 'Rock', 'good'],
     ['Jim', 'Gaffigan', 'pale']
 ];
-$paddingFormatter->format($rows, function ($row) {
-    return $row[0] . ' - ' . $row[1] . ' - ' . $row[2];
-});
+$paddingFormatter->format(
+    $rows,
+    fn ($row) => $row[0] . ' - ' . $row[1] . ' - ' . $row[2]
+);
 ```
 
 This will return:

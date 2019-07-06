@@ -59,16 +59,20 @@ class TableFormatter
         $headersAndRows = count($headers) === 0 ? $rows : [...[$headers], ...$rows];
         $maxLengths = $this->padding->normalizeColumns($headersAndRows);
         $eolChar = $this->padding->getEolChar();
-        $rowText = explode($eolChar, $this->padding->format($headersAndRows, function ($row) {
-            return sprintf(
-                '%s%s%s%s%s',
-                $this->verticalBorderChar,
-                $this->cellPaddingString,
-                implode($this->cellPaddingString . $this->verticalBorderChar . $this->cellPaddingString, $row),
-                $this->cellPaddingString,
-                $this->verticalBorderChar
-            );
-        }));
+        $rowText = explode(
+            $eolChar,
+            $this->padding->format(
+                $headersAndRows,
+                fn ($row) => sprintf(
+                    '%s%s%s%s%s',
+                    $this->verticalBorderChar,
+                    $this->cellPaddingString,
+                    implode($this->cellPaddingString . $this->verticalBorderChar . $this->cellPaddingString, $row),
+                    $this->cellPaddingString,
+                    $this->verticalBorderChar
+                )
+            )
+        );
 
         // Create the borders
         $borders = [];

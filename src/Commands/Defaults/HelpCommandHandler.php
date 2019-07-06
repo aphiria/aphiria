@@ -149,9 +149,10 @@ EOF;
             $argumentTexts[] = [$argument->name, $argument->description];
         }
 
-        return $this->paddingFormatter->format($argumentTexts, function ($row) {
-            return "  <info>{$row[0]}</info> - {$row[1]}";
-        });
+        return $this->paddingFormatter->format(
+            $argumentTexts,
+            fn ($row) => "  <info>{$row[0]}</info> - {$row[1]}"
+        );
     }
 
     /**
@@ -172,8 +173,9 @@ EOF;
             $optionTexts[] = [self::getOptionNames($option), $option->description];
         }
 
-        return $this->paddingFormatter->format($optionTexts, function ($row) {
-            return "  <info>{$row[0]}</info> - {$row[1]}";
-        });
+        return $this->paddingFormatter->format(
+            $optionTexts,
+            fn ($row) => "  <info>{$row[0]}</info> - {$row[1]}"
+        );
     }
 }
