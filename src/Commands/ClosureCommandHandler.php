@@ -33,7 +33,7 @@ final class ClosureCommandHandler implements ICommandHandler
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function handle(Input $input, IOutput $output)
     {

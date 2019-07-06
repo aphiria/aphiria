@@ -34,7 +34,7 @@ abstract class Output implements IOutput
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function includeStyles(bool $includeStyles): void
     {

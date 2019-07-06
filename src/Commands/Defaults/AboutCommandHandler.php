@@ -49,7 +49,7 @@ EOF;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function handle(Input $input, IOutput $output)
     {

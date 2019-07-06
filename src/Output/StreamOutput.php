@@ -61,7 +61,7 @@ class StreamOutput extends Output
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function readLine(): string
     {

@@ -51,15 +51,11 @@ final class Kernel implements ICommandBus
         $commands->registerManyCommands([
             new CommandBinding(
                 new HelpCommand(),
-                function () use ($commands) {
-                    return new HelpCommandHandler($commands);
-                }
+                fn () => new HelpCommandHandler($commands)
             ),
             new CommandBinding(
                 new AboutCommand(),
-                function () use ($commands) {
-                    return new AboutCommandHandler($commands);
-                }
+                fn () => new AboutCommandHandler($commands)
             )
         ]);
         $this->commands = $commands;
@@ -67,7 +63,7 @@ final class Kernel implements ICommandBus
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function handle($rawInput, IOutput $output = null): int
     {

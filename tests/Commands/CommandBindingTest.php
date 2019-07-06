@@ -30,9 +30,7 @@ class CommandBindingTest extends TestCase
     public function testPropertiesAreSetInConstructorWhenUsingCommandHandlerInterface(): void
     {
         $expectedCommand = new Command('name', [], [], '', '');
-        $expectedCommandHandlerFactory = function () {
-            return $this->createMock(ICommandHandler::class);
-        };
+        $expectedCommandHandlerFactory = fn () => $this->createMock(ICommandHandler::class);
         $binding = new CommandBinding($expectedCommand, $expectedCommandHandlerFactory);
         $this->assertSame($expectedCommand, $binding->command);
         $this->assertSame($expectedCommandHandlerFactory, $binding->commandHandlerFactory);
@@ -42,12 +40,11 @@ class CommandBindingTest extends TestCase
     {
         $command = new Command('name', [], [], '', '');
         $invoked = false;
+        // Note:  Can't use a short closure here because of $invoked using a reference
         $expectedCommandHandler = function (Input $input, IOutput $output) use (&$invoked) {
             $invoked = true;
         };
-        $commandHandlerFactory = function () use ($expectedCommandHandler) {
-            return $expectedCommandHandler;
-        };
+        $commandHandlerFactory = fn () => $expectedCommandHandler;
         $binding = new CommandBinding($command, $commandHandlerFactory);
         $actualCommandHandler = $binding->resolveCommandHandler();
         $this->assertInstanceOf(ClosureCommandHandler::class, $actualCommandHandler);
@@ -59,9 +56,7 @@ class CommandBindingTest extends TestCase
     {
         $command = new Command('name', [], [], '', '');
         $expectedCommandHandler = $this->createMock(ICommandHandler::class);
-        $commandHandlerFactory = function () use ($expectedCommandHandler) {
-            return $expectedCommandHandler;
-        };
+        $commandHandlerFactory = fn () => $expectedCommandHandler;
         $binding = new CommandBinding($command, $commandHandlerFactory);
         $this->assertSame($expectedCommandHandler, $binding->resolveCommandHandler());
     }
@@ -69,10 +64,7 @@ class CommandBindingTest extends TestCase
     public function testResolvingCommandHandlerThatIsNotCommandHandlerThrowsInvalidArgumentException(): void
     {
         $command = new Command('name', [], [], '', '');
-        $invalidCommandHandler = new stdClass();
-        $commandHandlerFactory = function () use ($invalidCommandHandler) {
-            return $invalidCommandHandler;
-        };
+        $commandHandlerFactory = fn () => new stdClass();
         $binding = new CommandBinding($command, $commandHandlerFactory);
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Command handler must implement ' . ICommandHandler::class . ' or be a closure');

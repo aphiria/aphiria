@@ -140,11 +140,7 @@ class KernelTest extends TestCase
     {
         $this->commands->registerCommand(
             new Command('foo', [], [], ''),
-            function () {
-                return function (Input $input, IOutput $output) {
-                    $output->write('foo');
-                };
-            }
+            fn () => fn (Input $input, IOutput $output) => $output->write('foo')
         );
         ob_start();
         $status = $this->kernel->handle('foo', $this->output);
@@ -155,11 +151,7 @@ class KernelTest extends TestCase
     public function testHandlingWithHandlerThatDoesNotReturnAnythingDefaultsToOk(): void
     {
         $command = new Command('foo', [], [], '');
-        $commandHandlerFactory = function () {
-            return function (Input $input, IOutput $output) {
-                $this->assertSame($this->output, $output);
-            };
-        };
+        $commandHandlerFactory = fn () => fn (Input $input, IOutput $output) => $this->assertSame($this->output, $output);
         $this->commands->registerCommand($command, $commandHandlerFactory);
         $statusCode = $this->kernel->handle('foo', $this->output);
         $this->assertEquals(StatusCodes::OK, $statusCode);

@@ -33,7 +33,7 @@ final class SilentOutput extends Output
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function readLine(): string
     {

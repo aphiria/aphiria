@@ -38,15 +38,11 @@ class CommandRegistryTest extends TestCase
         $this->commands->registerManyCommands([
             new CommandBinding(
                 $expectedCommand1,
-                function () {
-                    return $this->createMock(ICommandHandler::class);
-                }
+                fn () => $this->createMock(ICommandHandler::class)
             ),
             new CommandBinding(
                 $expectedCommand2,
-                function () {
-                    return $this->createMock(ICommandHandler::class);
-                }
+                fn () => $this->createMock(ICommandHandler::class)
             )
         ]);
         $actualCommands = $this->commands->getAllCommands();
@@ -59,9 +55,7 @@ class CommandRegistryTest extends TestCase
     {
         $command = new Command('foo', [], [], '');
         $expectedCommandHandler = $this->createMock(ICommandHandler::class);
-        $commandHandlerFactory = function () use ($expectedCommandHandler) {
-            return $expectedCommandHandler;
-        };
+        $commandHandlerFactory = fn () => $expectedCommandHandler;
         $this->commands->registerCommand($command, $commandHandlerFactory);
         $actualCommandHandler = null;
         $this->assertTrue($this->commands->tryGetHandler('FOO', $actualCommandHandler));
@@ -72,9 +66,7 @@ class CommandRegistryTest extends TestCase
     {
         $command = new Command('foo', [], [], '');
         $expectedCommandHandler = $this->createMock(ICommandHandler::class);
-        $commandHandlerFactory = function () use ($expectedCommandHandler) {
-            return $expectedCommandHandler;
-        };
+        $commandHandlerFactory = fn () => $expectedCommandHandler;
         $this->commands->registerManyCommands([
             new CommandBinding($command, $commandHandlerFactory)
         ]);
@@ -94,9 +86,7 @@ class CommandRegistryTest extends TestCase
     {
         $expectedCommand = new Command('foo', [], [], '');
         $expectedCommandHandler = $this->createMock(ICommandHandler::class);
-        $commandHandlerFactory = function () use ($expectedCommandHandler) {
-            return $expectedCommandHandler;
-        };
+        $commandHandlerFactory = fn () => $expectedCommandHandler;
         $this->commands->registerCommand($expectedCommand, $commandHandlerFactory);
         /** @var CommandBinding|null $actualBinding */
         $actualBinding = null;
@@ -118,9 +108,7 @@ class CommandRegistryTest extends TestCase
         $expectedCommand = new Command('foo', [], [], '');
         $this->commands->registerCommand(
             $expectedCommand,
-            function () {
-                return $this->createMock(ICommandHandler::class);
-            }
+            fn () => $this->createMock(ICommandHandler::class)
         );
         $actualCommand = null;
         $this->assertTrue($this->commands->tryGetCommand('foo', $actualCommand));
@@ -146,9 +134,7 @@ class CommandRegistryTest extends TestCase
     {
         $expectedCommand = new Command('foo', [], [], '');
         $expectedCommandHandler = $this->createMock(ICommandHandler::class);
-        $commandHandlerFactory = function () use ($expectedCommandHandler) {
-            return $expectedCommandHandler;
-        };
+        $commandHandlerFactory = fn () => $expectedCommandHandler;
         $this->commands->registerCommand($expectedCommand, $commandHandlerFactory);
         $actualCommandHandler = null;
         $this->assertTrue($this->commands->tryGetHandler('foo', $actualCommandHandler));
