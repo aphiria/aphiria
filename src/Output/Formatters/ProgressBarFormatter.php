@@ -19,7 +19,7 @@ use InvalidArgumentException;
 /**
  * Defines the formatter for progress bars
  */
-final class ProgressBarFormatter implements IProgressBarObserver
+class ProgressBarFormatter implements IProgressBarObserver
 {
     /** @const The default width of the progress bar (including delimiters) */
     private const DEFAULT_PROGRESS_BAR_WIDTH = 80;
@@ -92,7 +92,7 @@ final class ProgressBarFormatter implements IProgressBarObserver
      * @param int $maxSteps The max steps that can be taken
      * @return string The formatted output string
      */
-    private function formatOutput(int $progress, int $maxSteps): string
+    protected function formatOutput(int $progress, int $maxSteps): string
     {
         if ($progress === $maxSteps) {
             // Don't show the percentage anymore
@@ -144,7 +144,7 @@ final class ProgressBarFormatter implements IProgressBarObserver
      * @param int $maxSteps The max steps that can be taken
      * @return string The estimated time remaining
      */
-    private function getEstimatedTimeRemaining(int $progress, int $maxSteps): string
+    protected function getEstimatedTimeRemaining(int $progress, int $maxSteps): string
     {
         if ($progress === 0) {
             // We cannot estimate the time remaining if no progress has been made

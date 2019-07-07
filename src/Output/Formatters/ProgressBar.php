@@ -58,7 +58,7 @@ final class ProgressBar
      *
      * @throws Exception Thrown if there was an error writing the output
      */
-	public function finish(): void
+	public function complete(): void
     {
         $this->setProgress($this->maxSteps);
     }

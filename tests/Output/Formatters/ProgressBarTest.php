@@ -38,7 +38,7 @@ class ProgressBarTest extends TestCase
         $this->formatter->expects($this->once())
             ->method('onProgressChanged')
             ->with(0, 100, 100);
-        $this->progressBar->finish();
+        $this->progressBar->complete();
         $this->progressBar->advance();
     }
 
@@ -54,8 +54,8 @@ class ProgressBarTest extends TestCase
         $this->formatter->expects($this->once())
             ->method('onProgressChanged')
             ->with(0, 100, 100);
-        $this->progressBar->finish();
-        $this->progressBar->finish();
+        $this->progressBar->complete();
+        $this->progressBar->complete();
     }
 
     public function testIsCompleteOnlyReturnsTrueIfWeReachedMaxSteps(): void
@@ -63,7 +63,7 @@ class ProgressBarTest extends TestCase
         $this->assertFalse($this->progressBar->isComplete());
         $this->progressBar->advance();
         $this->assertFalse($this->progressBar->isComplete());
-        $this->progressBar->finish();
+        $this->progressBar->complete();
         $this->assertTrue($this->progressBar->isComplete());
     }
 
