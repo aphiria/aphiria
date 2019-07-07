@@ -64,8 +64,8 @@ class ProgressBarFormatterTest extends TestCase
         $this->output->expects($this->at(1))
             ->method('write')
             ->with($this->callback(fn ($value) => $this->progressBarMatchesExpectedValue("\033[2K\033[0G\033[1A\033[2K[20%-------] 2/10" . \PHP_EOL . 'Time remaining:', $value, true)));
-        $formatter->onProgress(0, 1, 10);
-        $formatter->onProgress(1, 2, 10);
+        $formatter->onProgressChanged(0, 1, 10);
+        $formatter->onProgressChanged(1, 2, 10);
     }
 
     public function testOnProgressThatReachesMaxStepsDrawsCompleteProgressBar(): void
@@ -77,7 +77,7 @@ class ProgressBarFormatterTest extends TestCase
         $this->output->expects($this->at(1))
             ->method('writeln')
             ->with('');
-        $formatter->onProgress(0, 10, 10);
+        $formatter->onProgressChanged(0, 10, 10);
     }
 
     public function testOnProgressWithZeroProgressIndicatesThatTheTimeRemainingIsStillBeingEstimated(): void
@@ -86,7 +86,7 @@ class ProgressBarFormatterTest extends TestCase
         $this->output->expects($this->at(0))
             ->method('write')
             ->with($this->callback(fn ($value) => $this->progressBarMatchesExpectedValue('[0%--------] 0/10' . \PHP_EOL . 'Time remaining: Estimating...', $value, false)));
-        $formatter->onProgress(null, 0, 10);
+        $formatter->onProgressChanged(null, 0, 10);
     }
 
     /**
@@ -101,7 +101,7 @@ class ProgressBarFormatterTest extends TestCase
         $this->output->expects($this->at(0))
             ->method('write')
             ->with($this->callback(fn ($value) => $this->progressBarMatchesExpectedValue($expectedString . " $percentComplete/100" . \PHP_EOL . 'Time remaining:', $value, true)));
-        $formatter->onProgress(0, $percentComplete, 100);
+        $formatter->onProgressChanged(0, $percentComplete, 100);
     }
 
     /**

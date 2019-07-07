@@ -87,7 +87,7 @@ final class ProgressBar
 
         // Don't call the observers if no progress was actually made
         if ($prevProgress !== $this->progress) {
-            $this->observer->onProgress($prevProgress, $this->progress, $this->maxSteps);
+            $this->observer->onProgressChanged($prevProgress, $this->progress, $this->maxSteps);
         }
     }
 }

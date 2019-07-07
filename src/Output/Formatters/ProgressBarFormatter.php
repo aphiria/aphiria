@@ -64,7 +64,7 @@ final class ProgressBarFormatter implements IProgressBarObserver
     /**
      * @inheritdoc
      */
-    public function onProgress(?int $prevProgress, int $currProgress, int $maxSteps): void
+    public function onProgressChanged(?int $prevProgress, int $currProgress, int $maxSteps): void
     {
         /**
          * Only redraw if we've completed the progress, we've made our first progress, or if it has been at least the

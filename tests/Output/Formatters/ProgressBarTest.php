@@ -36,7 +36,7 @@ class ProgressBarTest extends TestCase
     public function testAdvancingBeyondMaxStepsDoesNotCallFormatter(): void
     {
         $this->formatter->expects($this->once())
-            ->method('onProgress')
+            ->method('onProgressChanged')
             ->with(0, 100, 100);
         $this->progressBar->finish();
         $this->progressBar->advance();
@@ -52,7 +52,7 @@ class ProgressBarTest extends TestCase
     public function testFinishingTwiceOnlyCallsFormatterOnce(): void
     {
         $this->formatter->expects($this->once())
-            ->method('onProgress')
+            ->method('onProgressChanged')
             ->with(0, 100, 100);
         $this->progressBar->finish();
         $this->progressBar->finish();
@@ -70,10 +70,10 @@ class ProgressBarTest extends TestCase
     public function testSettingProgressToValueLessThanZeroBoundsItToZero(): void
     {
         $this->formatter->expects($this->at(0))
-            ->method('onProgress')
+            ->method('onProgressChanged')
             ->with(0, 1, 100);
         $this->formatter->expects($this->at(1))
-            ->method('onProgress')
+            ->method('onProgressChanged')
             ->with(1, 0, 100);
         // Note: We're advancing at least once so that the update is sent to the formatter
         $this->progressBar->advance();
@@ -83,7 +83,7 @@ class ProgressBarTest extends TestCase
     public function testSettingProgressToValueOverMaxStepsBoundsItToMaxSteps(): void
     {
         $this->formatter->expects($this->once())
-            ->method('onProgress')
+            ->method('onProgressChanged')
             ->with(0, 100, 100);
         $this->progressBar->setProgress(500);
     }
@@ -91,7 +91,7 @@ class ProgressBarTest extends TestCase
     public function testSettingProgressToZeroStillNotifiesObserversOfProgress(): void
     {
         $this->formatter->expects($this->at(0))
-            ->method('onProgress')
+            ->method('onProgressChanged')
             ->with(0, 0, 100);
         $this->progressBar->setProgress(0);
     }

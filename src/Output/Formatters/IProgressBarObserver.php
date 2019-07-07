@@ -22,5 +22,5 @@ interface IProgressBarObserver
      * @param int $currProgress The current progress
      * @param int $maxSteps The max number of steps that can be taken
      */
-    public function onProgress(?int $prevProgress, int $currProgress, int $maxSteps): void;
+    public function onProgressChanged(?int $prevProgress, int $currProgress, int $maxSteps): void;
 }
