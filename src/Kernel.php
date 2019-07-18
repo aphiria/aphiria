@@ -34,7 +34,7 @@ use Throwable;
 /**
  * Defines the console kernel
  */
-final class Kernel implements ICommandBus
+class Kernel implements ICommandBus
 {
     /** @var CommandRegistry The commands registered to the kernel */
     private CommandRegistry $commands;
@@ -47,18 +47,8 @@ final class Kernel implements ICommandBus
      */
     public function __construct(CommandRegistry $commands, IInputCompiler $inputCompiler = null)
     {
-        // Set up our default commands
-        $commands->registerManyCommands([
-            new CommandBinding(
-                new HelpCommand(),
-                fn () => new HelpCommandHandler($commands)
-            ),
-            new CommandBinding(
-                new AboutCommand(),
-                fn () => new AboutCommandHandler($commands)
-            )
-        ]);
         $this->commands = $commands;
+        $this->registerDefaultCommands();
         $this->inputCompiler = $inputCompiler ?? new InputCompiler($this->commands);
     }
 
@@ -109,5 +99,22 @@ final class Kernel implements ICommandBus
 
             return StatusCodes::FATAL;
         }
+    }
+
+    /**
+     * Registers any default commands to the kernel
+     */
+    protected function registerDefaultCommands(): void
+    {
+        $this->commands->registerManyCommands([
+            new CommandBinding(
+                new HelpCommand(),
+                fn () => new HelpCommandHandler($this->commands)
+            ),
+            new CommandBinding(
+                new AboutCommand(),
+                fn () => new AboutCommandHandler($this->commands)
+            )
+        ]);
     }
 }

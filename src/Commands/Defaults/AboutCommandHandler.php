@@ -54,8 +54,7 @@ EOF;
     public function handle(Input $input, IOutput $output)
     {
         // Compile the template
-        $compiledTemplate = self::$template;
-        $compiledTemplate = str_replace('{{commands}}', $this->getCommandText(), $compiledTemplate);
+        $compiledTemplate = str_replace('{{commands}}', $this->getCommandText(), self::$template);
 
         $output->writeln($compiledTemplate);
     }
@@ -107,19 +106,18 @@ EOF;
         $firstCommandNamesToCategories = [];
 
         foreach ($commands as $command) {
-            $commandName = $command->name;
-            $commandNameParts = explode(':', $commandName);
+            $commandNameParts = explode(':', $command->name);
 
             if (count($commandNameParts) > 1 && !in_array($commandNameParts[0], $firstCommandNamesToCategories, true)) {
-                $categorizedCommandNames[] = $commandName;
+                $categorizedCommandNames[] = $command->name;
 
                 // If this is the first command for this category
                 if (!in_array($commandNameParts[0], $firstCommandNamesToCategories, true)) {
-                    $firstCommandNamesToCategories[$commandName] = $commandNameParts[0];
+                    $firstCommandNamesToCategories[$command->name] = $commandNameParts[0];
                 }
             }
 
-            $commandTexts[] = [$commandName, $command->description];
+            $commandTexts[] = [$command->name, $command->description];
         }
 
         return $this->paddingFormatter->format(

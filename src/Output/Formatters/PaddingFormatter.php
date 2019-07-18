@@ -33,24 +33,24 @@ class PaddingFormatter
      */
     public function format(array $rows, callable $callback): string
     {
-        foreach ($rows as &$row) {
-            $row = (array)$row;
+        foreach ($rows as $rowIndex => $row) {
+            $rows[$rowIndex] = (array)$rows[$rowIndex];
         }
 
         $maxLengths = $this->normalizeColumns($rows);
         $paddingType = $this->padAfter ? STR_PAD_RIGHT : STR_PAD_LEFT;
 
         // Format the rows
-        foreach ($rows as &$row) {
-            foreach ($row as $index => &$item) {
-                $item = str_pad($item, $maxLengths[$index], $this->paddingString, $paddingType);
+        foreach ($rows as $rowIndex => $row) {
+            foreach ($rows[$rowIndex] as $itemIndex => $item) {
+                $rows[$rowIndex][$itemIndex] = str_pad($item, $maxLengths[$itemIndex], $this->paddingString, $paddingType);
             }
         }
 
         $formattedText = '';
 
-        foreach ($rows as &$row) {
-            $formattedText .= $callback($row) . $this->eolChar;
+        foreach ($rows as $rowIndex => $row) {
+            $formattedText .= $callback($rows[$rowIndex]) . $this->eolChar;
         }
 
         // Trim the excess separator
@@ -60,7 +60,9 @@ class PaddingFormatter
     }
 
     /**
-     * @return string
+     * Gets the EOL character
+     *
+     * @return string The end-of-line character
      */
     public function getEolChar(): string
     {
@@ -85,15 +87,15 @@ class PaddingFormatter
         $maxLengths = array_pad([], $maxNumColumns, 0);
 
         // Normalize the number of columns in each row
-        foreach ($rows as &$row) {
-            $row = array_pad($row, $maxNumColumns, '');
+        foreach ($rows as $rowIndex => $row) {
+            $rows[$rowIndex] = array_pad($rows[$rowIndex], $maxNumColumns, '');
         }
 
         // Get the length of the longest value in each column
-        foreach ($rows as &$row) {
-            foreach ($row as $column => &$value) {
-                $value = trim($value);
-                $maxLengths[$column] = max($maxLengths[$column], mb_strlen($value));
+        foreach ($rows as $rowIndex => $row) {
+            foreach ($rows[$rowIndex] as $columnIndex => $value) {
+                $rows[$rowIndex][$columnIndex] = trim($value);
+                $maxLengths[$columnIndex] = max($maxLengths[$columnIndex], mb_strlen($rows[$rowIndex][$columnIndex]));
             }
         }
 
@@ -101,7 +103,9 @@ class PaddingFormatter
     }
 
     /**
-     * @param string $eolChar
+     * Sets the EOL character
+     *
+     * @param string $eolChar The new end-of-line character
      */
     public function setEolChar(string $eolChar): void
     {
@@ -109,7 +113,9 @@ class PaddingFormatter
     }
 
     /**
-     * @param bool $padAfter
+     * Sets whether or not we pad after or before
+     *
+     * @param bool $padAfter True if we want to pad after, otherwise false and we'll pad before
      */
     public function setPadAfter(bool $padAfter): void
     {
@@ -117,7 +123,9 @@ class PaddingFormatter
     }
 
     /**
-     * @param string $paddingString
+     * Sets the padding string
+     *
+     * @param string $paddingString The string to use for padding
      */
     public function setPaddingString(string $paddingString): void
     {
