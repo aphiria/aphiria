@@ -59,7 +59,6 @@ class Kernel implements ICommandBus
     {
         try {
             $output = $output ?? new ConsoleOutput();
-            // Default to the 'about' command if no command name is given
             $compiledInput = $this->inputCompiler->compile($rawInput);
             /** @var CommandBinding|null $binding */
             $binding = null;

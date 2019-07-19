@@ -41,10 +41,6 @@ final class ArrayListInputTokenizer implements IInputTokenizer
             $input['options'] = [];
         }
 
-        $tokens = [$input['name']];
-        $tokens = [...$tokens, ...$input['arguments']];
-        $tokens = [...$tokens, ...$input['options']];
-
-        return $tokens;
+        return [$input['name'], ...$input['arguments'], ...$input['options']];
     }
 }
