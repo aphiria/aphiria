@@ -14,6 +14,7 @@ namespace Aphiria\Console\Output\Formatters;
 
 use Aphiria\Console\Output\IOutput;
 use DateTimeImmutable;
+use Exception;
 use InvalidArgumentException;
 
 /**
@@ -42,20 +43,21 @@ class ProgressBarFormatter implements IProgressBarObserver
 
     /**
      * @param IOutput $output The output to draw to
-     * @param int $progressBarWidth The width of the progress bar (including delimiters)
+     * @param int|null $progressBarWidth The width of the progress bar (including delimiters)
      * @param string|null $outputFormat The output format to use, or null if using the default
-     *      Acceptable placeholders are 'progress', 'maxSteps', 'bar', and 'timeRemaining'
+     *      Acceptable placeholders are 'progress', 'maxSteps', 'bar', 'percent', and 'timeRemaining'
      * @param int $redrawFrequency The frequency in seconds we redraw the progress bar
      * @throws InvalidArgumentException Thrown if the max steps are invalid
+     * @throws Exception Thrown if we could not create the start time
      */
     public function __construct(
         IOutput $output,
-        int $progressBarWidth = self::DEFAULT_PROGRESS_BAR_WIDTH,
+        ?int $progressBarWidth = self::DEFAULT_PROGRESS_BAR_WIDTH,
         string $outputFormat = null,
         int $redrawFrequency = 1
     ) {
         $this->output = $output;
-        $this->progressBarWidth = $progressBarWidth;
+        $this->progressBarWidth = $progressBarWidth ?? self::DEFAULT_PROGRESS_BAR_WIDTH;
         $this->outputFormat = $outputFormat ?? '%bar% %progress%/%maxSteps%' . PHP_EOL . 'Time remaining: %timeRemaining%';
         $this->redrawFrequency = $redrawFrequency;
         $this->startTime = new DateTimeImmutable();
@@ -76,7 +78,7 @@ class ProgressBarFormatter implements IProgressBarObserver
             || floor($currProgress / $this->redrawFrequency) !== floor(($prevProgress ?? 0) / $this->redrawFrequency);
 
         if ($shouldRedraw) {
-            $this->output->write($this->formatOutput($currProgress, $maxSteps));
+            $this->output->write($this->compileOutput($currProgress, $maxSteps));
         }
 
         // Give ourselves a new line if the progress bar is finished
@@ -86,21 +88,20 @@ class ProgressBarFormatter implements IProgressBarObserver
     }
 
     /**
-     * Formats the output for display
+     * Compiles the bar itself
      *
      * @param int $progress The current progress
      * @param int $maxSteps The max steps that can be taken
-     * @return string The formatted output string
+     * @return string The bar
      */
-    protected function formatOutput(int $progress, int $maxSteps): string
+    protected function compileBar(int $progress, int $maxSteps): string
     {
         if ($progress === $maxSteps) {
             // Don't show the percentage anymore
             $completedProgressString = str_repeat($this->completedProgressChar, $this->progressBarWidth - 2);
             $progressLeftString = '';
         } else {
-            $percentComplete = floor(100 * $progress / $maxSteps);
-            $percentCompleteString = "$percentComplete%";
+            $percentCompleteString = $this->compilePercent($progress, $maxSteps);
             $completedProgressString = str_repeat(
                     $this->completedProgressChar,
                     (int)max(0, floor($progress / $maxSteps * ($this->progressBarWidth - 2) - strlen($percentCompleteString)))
@@ -111,14 +112,27 @@ class ProgressBarFormatter implements IProgressBarObserver
             );
         }
 
+        return "[$completedProgressString$progressLeftString]";
+    }
+
+    /**
+     * Compiles the output for display
+     *
+     * @param int $progress The current progress
+     * @param int $maxSteps The max steps that can be taken
+     * @return string The formatted output string
+     */
+    protected function compileOutput(int $progress, int $maxSteps): string
+    {
         // Before sending the output through sprintf(), we have to encode literal '%' by replacing them with '%%'
         $compiledOutput = str_replace(
-            ['%progress%', '%maxSteps%', '%bar%', '%timeRemaining%', '%'],
+            ['%progress%', '%maxSteps%', '%bar%', '%timeRemaining%', '%percent%', '%'],
             [
                 $progress,
                 $maxSteps,
-                '[' . $completedProgressString . $progressLeftString . ']',
-                $this->getEstimatedTimeRemaining($progress, $maxSteps),
+                $this->compileBar($progress, $maxSteps),
+                $this->compileTimeRemaining($progress, $maxSteps),
+                $this->compilePercent($progress, $maxSteps),
                 '%%'
             ],
             $this->outputFormat
@@ -138,13 +152,25 @@ class ProgressBarFormatter implements IProgressBarObserver
     }
 
     /**
-     * Gets the estimated time remaining
+     * Compiles the current percent complete
+     *
+     * @param int $progress The current progress
+     * @param int $maxSteps The max steps that can be taken
+     * @return string The compiled percent
+     */
+    protected function compilePercent(int $progress, int $maxSteps): string
+    {
+        return floor(100 * $progress / $maxSteps) . '%';
+    }
+
+    /**
+     * Compiles the estimated time remaining
      *
      * @param int $progress The current progress
      * @param int $maxSteps The max steps that can be taken
      * @return string The estimated time remaining
      */
-    protected function getEstimatedTimeRemaining(int $progress, int $maxSteps): string
+    protected function compileTimeRemaining(int $progress, int $maxSteps): string
     {
         if ($progress === 0) {
             // We cannot estimate the time remaining if no progress has been made

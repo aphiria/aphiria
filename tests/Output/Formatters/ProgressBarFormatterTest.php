@@ -80,6 +80,15 @@ class ProgressBarFormatterTest extends TestCase
         $formatter->onProgressChanged(0, 10, 10);
     }
 
+    public function testOnProgressWithFormatThatIncludesPercentPopulatesPercent(): void
+    {
+        $formatter = new ProgressBarFormatter($this->output, null, '%percent%');
+        $this->output->expects($this->at(0))
+            ->method('write')
+            ->with('50%');
+        $formatter->onProgressChanged(0, 5, 10);
+    }
+
     public function testOnProgressWithZeroProgressIndicatesThatTheTimeRemainingIsStillBeingEstimated(): void
     {
         $formatter = new ProgressBarFormatter($this->output, 12);
