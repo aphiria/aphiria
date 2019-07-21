@@ -31,9 +31,6 @@
     "friendsofphp/php-cs-fixer": "^3.0",
     "phpunit/phpunit": "~8.0"
   },
-  "bin": [
-    "bin/aphiria"
-  ],
   "scripts": {
     "lint-check": "php-cs-fixer fix --config=.php_cs -v --diff --dry-run",
     "lint-fix": "php-cs-fixer fix --config=.php_cs -v --diff"
