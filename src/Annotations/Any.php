@@ -10,24 +10,24 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\RouteAnnotations;
+namespace Aphiria\RouteAnnotations\Annotations;
 
 use Doctrine\Annotations\Annotation\Target;
 
 /**
- * Defines the PATCH route annotation
+ * Defines the any-method route annotation
  * @Annotation
  * @Target({"METHOD"})
  */
-final class Patch extends Route
+final class Any extends Route
 {
     /**
-     * @param array $values The values passed into the annotation
+     * @param array $values The mapping of value names to values
      */
     public function __construct(array $values)
     {
+        // Explicitly unset any methods that might have been set to prevent odd behavior
+        unset($values['httpMethods']);
         parent::__construct($values);
-
-        $this->httpMethods = ['PATCH'];
     }
 }

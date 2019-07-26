@@ -10,24 +10,23 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\RouteAnnotations;
+namespace Aphiria\RouteAnnotations\Annotations;
 
 use Doctrine\Annotations\Annotation\Target;
 
 /**
- * Defines the any-method route annotation
+ * Defines the OPTIONS route annotation
  * @Annotation
  * @Target({"METHOD"})
  */
-final class Any extends Route
+final class Options extends Route
 {
     /**
-     * @param array $values The values passed into the annotation
+     * @param array $values The mapping of value names to values
      */
     public function __construct(array $values)
     {
+        $values['httpMethods'] = ['OPTIONS'];
         parent::__construct($values);
-
-        $this->httpMethods = [];
     }
 }

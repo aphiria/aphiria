@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\RouteAnnotations;
+namespace Aphiria\RouteAnnotations\Annotations;
 
 use Doctrine\Annotations\Annotation\Target;
 
@@ -22,12 +22,11 @@ use Doctrine\Annotations\Annotation\Target;
 final class Post extends Route
 {
     /**
-     * @param array $values The values passed into the annotation
+     * @param array $values The mapping of value names to values
      */
     public function __construct(array $values)
     {
+        $values['httpMethods'] = ['POST'];
         parent::__construct($values);
-
-        $this->httpMethods = ['POST'];
     }
 }

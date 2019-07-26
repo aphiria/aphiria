@@ -10,24 +10,23 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\RouteAnnotations;
+namespace Aphiria\RouteAnnotations\Annotations;
 
 use Doctrine\Annotations\Annotation\Target;
 
 /**
- * Defines the DELETE route annotation
+ * Defines the PATCH route annotation
  * @Annotation
  * @Target({"METHOD"})
  */
-final class Delete extends Route
+final class Patch extends Route
 {
     /**
-     * @param array $values The values passed into the annotation
+     * @param array $values The mapping of value names to values
      */
     public function __construct(array $values)
     {
+        $values['httpMethods'] = ['PATCH'];
         parent::__construct($values);
-
-        $this->httpMethods = ['DELETE'];
     }
 }

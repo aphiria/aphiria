@@ -10,24 +10,23 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\RouteAnnotations;
+namespace Aphiria\RouteAnnotations\Annotations;
 
 use Doctrine\Annotations\Annotation\Target;
 
 /**
- * Defines the HEAD route annotation
+ * Defines the PUT route annotation
  * @Annotation
  * @Target({"METHOD"})
  */
-final class Head extends Route
+final class Put extends Route
 {
     /**
-     * @param array $values The values passed into the annotation
+     * @param array $values The mapping of value names to values
      */
     public function __construct(array $values)
     {
+        $values['httpMethods'] = ['PUT'];
         parent::__construct($values);
-
-        $this->httpMethods = ['HEAD'];
     }
 }

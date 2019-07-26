@@ -10,24 +10,23 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\RouteAnnotations;
+namespace Aphiria\RouteAnnotations\Annotations;
 
 use Doctrine\Annotations\Annotation\Target;
 
 /**
- * Defines the PUT route annotation
+ * Defines the DELETE route annotation
  * @Annotation
  * @Target({"METHOD"})
  */
-final class Put extends Route
+final class Delete extends Route
 {
     /**
-     * @param array $values The values passed into the annotation
+     * @param array $values The mapping of value names to values
      */
     public function __construct(array $values)
     {
+        $values['httpMethods'] = ['DELETE'];
         parent::__construct($values);
-
-        $this->httpMethods = ['PUT'];
     }
 }

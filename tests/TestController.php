@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace Aphiria\RouteAnnotations\Tests;
 
-use Aphiria\RouteAnnotations\Get;
-use Aphiria\RouteAnnotations\Middleware;
+use Aphiria\RouteAnnotations\Annotations\Get;
+use Aphiria\RouteAnnotations\Annotations\Middleware;
 
 /**
- * @Middleware(className="Foo")
- * @Middleware("someMiddleware")
+ * @Middleware(className="Foo", attributes={"foo":"bar"})
+ * @Middleware("someMiddleware", attributes={"foo":"bar"})
  */
 final class TestController
 {
