@@ -22,7 +22,7 @@ use ReflectionClass;
 /**
  * Defines the class that finds controllers
  */
-final class FileControllerFinder
+final class FileControllerFinder implements IControllerFinder
 {
     /** @var Reader The annotation reader */
     private Reader $annotationReader;
@@ -36,11 +36,7 @@ final class FileControllerFinder
     }
 
     /**
-     * Recursively finds all controller classes in the paths
-     *
-     * @param string|array $paths The path or list of paths to search
-     * @return string[] The list of all controller class names
-     * @throws InvalidArgumentException Thrown if the paths are not a string or array
+     * @inheritdoc
      */
     public function findAll($paths): array
     {
@@ -97,7 +93,11 @@ final class FileControllerFinder
      */
     private function getClassNamesFromTokens(array $tokens): array
     {
-        for ($i = 0;$i < \count($tokens);$i++) {
+        $classNames = [];
+        $numTokens = count($tokens);
+        $namespace = '';
+
+        for ($i = 0;$i < $numTokens;$i++) {
             // Skip literals
             if (is_string($tokens[$i])) {
                 continue;
@@ -118,8 +118,6 @@ final class FileControllerFinder
 
                     break;
                 case T_CLASS:
-                    $isClassConstant = false;
-
                     // Scan previous tokens to see if they're double colons, which would mean this is a class constant
                     for ($j = $i - 1;$j >= 0;$j--) {
                         if (!isset($tokens[$j][1])) {
@@ -127,7 +125,6 @@ final class FileControllerFinder
                         }
 
                         if ($tokens[$j][0] === T_DOUBLE_COLON) {
-                            $isClassConstant = true;
                             break 2;
                         }
 

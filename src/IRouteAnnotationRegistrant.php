@@ -12,18 +12,17 @@ declare(strict_types=1);
 
 namespace Aphiria\RouteAnnotations;
 
-use ReflectionException;
+use Aphiria\Routing\Builders\RouteBuilderRegistry;
 
 /**
  * Defines the interface for route annotation registerers
  */
-interface IRouteAnnotationRegisterer
+interface IRouteAnnotationRegistrant
 {
     /**
-     * Registers any routes in a class
+     * Registers routes
      *
-     * @param string $className The name of the class to reflect on
-     * @throws ReflectionException Thrown if there was an error reflecting the class
+     * @param RouteBuilderRegistry $routes The registry to register routes to
      */
-    public function registerRoutes(string $className): void;
+    public function registerRoutes(RouteBuilderRegistry $routes): void;
 }

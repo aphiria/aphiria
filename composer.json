@@ -27,6 +27,7 @@
   },
   "require": {
     "aphiria/api": "1.0.*@dev",
+    "aphiria/configuration": "1.0.*@dev",
     "aphiria/router": "1.0.*@dev",
     "doctrine/annotations": "2.0.*@dev",
     "php": "^7.4"

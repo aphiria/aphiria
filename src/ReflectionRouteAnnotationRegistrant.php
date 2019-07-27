@@ -19,60 +19,69 @@ use Aphiria\RouteAnnotations\Annotations\RouteGroup;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\Builders\RouteGroupOptions;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
+use Doctrine\Annotations\AnnotationReader;
 use Doctrine\Annotations\Reader;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 
 /**
  * Defines the compiler that takes in annotations and compiles them to valid PHP route definitions
  */
-final class ReflectionRouteAnnotationRegisterer implements IRouteAnnotationRegisterer
+final class ReflectionRouteAnnotationRegistrant implements IRouteAnnotationRegistrant
 {
-    /** @var RouteBuilderRegistry The route builders to register routes to */
-    private RouteBuilderRegistry $routes;
+    /** @var string[] The paths to check for controllers */
+    private array $paths;
+    /** @var IControllerFinder The controller finder */
+    private IControllerFinder $controllerFinder;
     /** @var Reader The annotation reader */
     private Reader $annotationReader;
 
     /**
-     * @param RouteBuilderRegistry $routes The route builders to register routes to
-     * @param Reader $annotationReader The annotation reader
+     * @param string|string[] $paths The path or paths to check for controllers
+     * @param IControllerFinder|null $controllerFinder The controller finder
+     * @param Reader|null $annotationReader The annotation reader
      */
-    public function __construct(RouteBuilderRegistry $routes, Reader $annotationReader)
+    public function __construct($paths, IControllerFinder $controllerFinder = null, Reader $annotationReader = null)
     {
-        $this->routes = $routes;
-        $this->annotationReader = $annotationReader;
+        $this->paths = \is_array($paths) ? $paths : [$paths];
+        $this->annotationReader = $annotationReader ?? new AnnotationReader();
+        $this->controllerFinder = $controllerFinder ?? new FileControllerFinder($this->annotationReader);
     }
 
     /**
      * @inheritdoc
+     * @throws ReflectionException Thrown if a controller class could not be reflected
      */
-    public function registerRoutes(string $className): void
+    public function registerRoutes(RouteBuilderRegistry $routes): void
     {
-        $class = new ReflectionClass($className);
-        $routeGroupOptions = $this->createRouteGroupOptions($class);
+        foreach ($this->controllerFinder->findAll($this->paths) as $controllerClassName) {
+            $controller = new ReflectionClass($controllerClassName);
+            $routeGroupOptions = $this->createRouteGroupOptions($controller);
 
-        if ($routeGroupOptions === null) {
-            $this->registerRouteBuilders($class, $this->routes);
-        } else {
-            $this->routes->group($routeGroupOptions, function (RouteBuilderRegistry $routes) use ($class) {
-                $this->registerRouteBuilders($class, $routes);
-            });
+            if ($routeGroupOptions === null) {
+                $this->registerRouteBuilders($controller, $routes);
+            } else {
+                $routes->group($routeGroupOptions, function (RouteBuilderRegistry $routes) use ($controller) {
+                    $this->registerRouteBuilders($controller, $routes);
+                });
+            }
         }
     }
 
     /**
      * Creates route group options for a controller lass
      *
-     * @param ReflectionClass $class The class to create route group options from
+     * @param ReflectionClass $controller The controller class to create route group options from
      * @return RouteGroupOptions|null The route group options if there were any, otherwise null
      */
-    private function createRouteGroupOptions(ReflectionClass $class): ?RouteGroupOptions
+    private function createRouteGroupOptions(ReflectionClass $controller): ?RouteGroupOptions
     {
         $routeGroupOptions = null;
         $middlewareBindings = [];
         $routeConstraints = [];
 
-        foreach ($this->annotationReader->getClassAnnotations($class) as $classAnnotation) {
+        foreach ($this->annotationReader->getClassAnnotations($controller) as $classAnnotation) {
             if ($classAnnotation instanceof RouteGroup) {
                 if ($routeGroupOptions === null) {
                     $routeGroupOptions = new RouteGroupOptions(
@@ -114,12 +123,12 @@ final class ReflectionRouteAnnotationRegisterer implements IRouteAnnotationRegis
     /**
      * Registers route builders for a controller class
      *
-     * @param ReflectionClass $class The class to create route builders from
+     * @param ReflectionClass $controller The controller class to create route builders from
      * @param RouteBuilderRegistry $routes The registry to register route builders to
      */
-    private function registerRouteBuilders(ReflectionClass $class, RouteBuilderRegistry $routes): void
+    private function registerRouteBuilders(ReflectionClass $controller, RouteBuilderRegistry $routes): void
     {
-        foreach ($class->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+        foreach ($controller->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $routeBuilder = null;
             $middlewareBindings = [];
 
