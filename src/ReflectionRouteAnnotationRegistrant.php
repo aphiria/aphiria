@@ -140,6 +140,7 @@ final class ReflectionRouteAnnotationRegistrant implements IRouteAnnotationRegis
                         $methodAnnotation->host,
                         $methodAnnotation->isHttpsOnly
                     );
+                    $routeBuilder->toMethod($controller->getName(), $method->getName());
 
                     foreach ($methodAnnotation->constraints as $constraint) {
                         $constraintClassName = $constraint->className;
