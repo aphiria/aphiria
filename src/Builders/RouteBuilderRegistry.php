@@ -148,13 +148,24 @@ final class RouteBuilderRegistry
         $groupIsHttpsOnly = false;
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupPathTemplate .= $groupOptions->pathTemplate;
-            $groupHostTemplate = $groupOptions->hostTemplate . $groupHostTemplate;
+            $groupPathTemplate .= empty($groupOptions->pathTemplate)
+                ? ''
+                : '/' . ltrim($groupOptions->pathTemplate, '/');
+            $groupHostTemplate = empty($groupOptions->hostTemplate)
+                ? ''
+                : rtrim($groupOptions->hostTemplate, '.') . (empty($groupHostTemplate) ? '' : '.' . $groupHostTemplate);
             $groupIsHttpsOnly = $groupIsHttpsOnly || $groupOptions->isHttpsOnly;
         }
 
-        $pathTemplate = $groupPathTemplate . $pathTemplate;
-        $hostTemplate = ($hostTemplate ?? '') . $groupHostTemplate;
+        $pathTemplate = empty($groupPathTemplate)
+            ? $pathTemplate
+            : $groupPathTemplate . '/' . ltrim($pathTemplate, '/');
+        $hostTemplate = rtrim($hostTemplate ?? '', '.');
+
+        if (!empty($groupHostTemplate)) {
+            $hostTemplate .= '.' . $groupHostTemplate;
+        }
+
         $isHttpsOnly = $isHttpsOnly || $groupIsHttpsOnly;
     }
 }
