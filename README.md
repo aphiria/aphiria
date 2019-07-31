@@ -6,7 +6,7 @@
 [![License](https://poser.pugx.org/aphiria/configuration/license.svg)](https://packagist.org/packages/aphiria/configuration)
 
 > **Note:** This library is not stable yet.
->
+
 <h1>Documentation</h1>
 
 Full documentation is available <a href="https://github.com/aphiria/docs/blob/master/configuration.md" target="_blank">here</a>.
