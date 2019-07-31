@@ -100,7 +100,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             return null;
         }
 
-        $type = (string)$reflectionParameter->getType();
+        $type = $reflectionParameter->getType()->getName();
         $requestContentNegotiationResult = $this->contentNegotiator->negotiateRequestContent(
             $type,
             $request
@@ -143,7 +143,9 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      */
     private function resolveScalarParameter(ReflectionParameter $reflectionParameter, $rawValue)
     {
-        switch ($reflectionParameter->getType()) {
+        $type = $reflectionParameter->getType() === null ? null : $reflectionParameter->getType()->getName();
+
+        switch ($type) {
             case 'int':
                 return (int)$rawValue;
             case 'float':
@@ -158,7 +160,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             case 'array':
                 throw new FailedScalarParameterConversionException('Cannot automatically resolve array types - you must either read the body or the query string inside the controller method');
             default:
-                throw new FailedScalarParameterConversionException("Failed to convert value to {$reflectionParameter->getType()}");
+                throw new FailedScalarParameterConversionException("Failed to convert value to {$reflectionParameter->getType()->getName()}");
         }
     }
 }
