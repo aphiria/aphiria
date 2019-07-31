@@ -13,10 +13,12 @@ declare(strict_types=1);
 namespace Aphiria\Configuration;
 
 use Aphiria\Api\RouterKernel;
+use Aphiria\RouteAnnotations\IRouteAnnotationRegistrant;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Opulence\Ioc\IContainer;
+use RuntimeException;
 
 /**
  * Defines the component builder for Aphiria components
@@ -25,6 +27,8 @@ final class AphiriaComponentBuilder
 {
     /** @var IContainer The DI container to resolve dependencies with */
     private IContainer $container;
+    /** @var bool Whether or not the routing component was registered */
+    private bool $routingComponentRegistered = false;
 
     /**
      * @param IContainer $container The DI container to resolve dependencies with
@@ -56,6 +60,36 @@ final class AphiriaComponentBuilder
     }
 
     /**
+     * Registers Aphiria route annotations (requires the routing component to be registered)
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to register to
+     * @return AphiriaComponentBuilder For chaining
+     * @throws RuntimeException Thrown if the routing component was not registered already
+     */
+    public function withRouteAnnotations(IApplicationBuilder $appBuilder): self
+    {
+        if (!$this->routingComponentRegistered) {
+            throw new RuntimeException('Routing component must be enabled via withRoutingComponent() to use route annotations');
+        }
+
+        $appBuilder->registerComponentBuilder('routeAnnotations', function (array $callbacks) {
+            $this->container->hasBinding(LazyRouteFactory::class)
+                ? $routeFactory = $this->container->resolve(LazyRouteFactory::class)
+                : $this->container->bindInstance(LazyRouteFactory::class, $routeFactory = new LazyRouteFactory());
+            /** @var IRouteAnnotationRegistrant $routeAnnotationRegistrant */
+            $routeAnnotationRegistrant = $this->container->resolve(IRouteAnnotationRegistrant::class);
+            $routeFactory->addFactory(function () use ($routeAnnotationRegistrant) {
+                $routes = new RouteBuilderRegistry();
+                $routeAnnotationRegistrant->registerRoutes($routes);
+
+                return $routes->buildAll();
+            });
+        });
+
+        return $this;
+    }
+
+    /**
      * Registers the Aphiria router
      *
      * @param IApplicationBuilder $appBuilder The app builder to register to
@@ -63,6 +97,7 @@ final class AphiriaComponentBuilder
      */
     public function withRoutingComponent(IApplicationBuilder $appBuilder): self
     {
+        $this->routingComponentRegistered = true;
         // Set up the router request handler
         $appBuilder->withRouter(fn () => $this->container->resolve(RouterKernel::class));
         // Register the routing component

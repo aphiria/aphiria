@@ -56,10 +56,30 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->componentBuilder->withEncoderComponent($this->appBuilder);
     }
 
+    public function testWithRouteAnnotationsRegistersComponent(): void
+    {
+        // The first 2 invocations will be to register the routing component
+        $this->appBuilder->expects($this->at(2))
+            ->method('registerComponentBuilder')
+            ->with('routeAnnotations');
+        $this->componentBuilder->withRoutingComponent($this->appBuilder);
+        $this->componentBuilder->withRouteAnnotations($this->appBuilder);
+    }
+
+    public function testWithRouteAnnotationsWithoutRoutingComponentThrowsException(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Routing component must be enabled via withRoutingComponent() to use route annotations');
+        $this->componentBuilder->withRouteAnnotations($this->appBuilder);
+    }
+
     public function testWithRoutingComponentRegistersRouter(): void
     {
-        $this->appBuilder->expects($this->once())
+        $this->appBuilder->expects($this->at(0))
             ->method('withRouter');
+        $this->appBuilder->expects($this->at(1))
+            ->method('registerComponentBuilder')
+            ->with('routes');
         $this->componentBuilder->withRoutingComponent($this->appBuilder);
     }
 }
