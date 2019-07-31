@@ -36,7 +36,6 @@
     "psr/log": "~1.0"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "^3.0",
     "phpunit/phpunit": "~8.0"
   },
   "scripts": {
