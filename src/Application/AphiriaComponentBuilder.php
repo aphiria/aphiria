@@ -23,8 +23,6 @@ use RuntimeException;
 
 /**
  * Defines the component builder for Aphiria components
- *
- * Note:  This is just a temporary class for use when figuring out how we'll configure route annotations
  */
 final class AphiriaComponentBuilder
 {

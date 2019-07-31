@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\RouteAnnotations;
 
 use Aphiria\RouteAnnotations\Annotations\Route;
-use Aphiria\RouteAnnotations\Annotations\RouteConstraint;
 use Aphiria\RouteAnnotations\Annotations\Middleware;
 use Aphiria\RouteAnnotations\Annotations\RouteGroup;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
@@ -79,25 +78,28 @@ final class ReflectionRouteAnnotationRegistrant implements IRouteAnnotationRegis
     {
         $routeGroupOptions = null;
         $middlewareBindings = [];
-        $routeConstraints = [];
 
         foreach ($this->annotationReader->getClassAnnotations($controller) as $classAnnotation) {
             if ($classAnnotation instanceof RouteGroup) {
                 if ($routeGroupOptions === null) {
+                    $routeConstraints = [];
+
+                    foreach ($classAnnotation->constraints as $constraint) {
+                        $routeConstraintClassName = $constraint->className;
+                        $routeConstraints[] = new $routeConstraintClassName(...$constraint->constructorParams);
+                    }
+
                     $routeGroupOptions = new RouteGroupOptions(
                         $classAnnotation->path,
                         $classAnnotation->host,
                         $classAnnotation->isHttpsOnly,
-                        [],
+                        $routeConstraints,
                         [],
                         $classAnnotation->attributes
                     );
                 }
             } elseif ($classAnnotation instanceof Middleware) {
                 $middlewareBindings[] = new MiddlewareBinding($classAnnotation->className, $classAnnotation->attributes);
-            } elseif ($classAnnotation instanceof RouteConstraint) {
-                $routeConstraintClassName = $classAnnotation->className;
-                $routeConstraints[] = new $routeConstraintClassName(...$classAnnotation->constructorParams);
             }
         }
 
@@ -107,14 +109,6 @@ final class ReflectionRouteAnnotationRegistrant implements IRouteAnnotationRegis
             }
 
             $routeGroupOptions->middlewareBindings = [...$routeGroupOptions->middlewareBindings, ...$middlewareBindings];
-        }
-
-        if (!empty($routeConstraints)) {
-            if ($routeGroupOptions === null) {
-                $routeGroupOptions = new RouteGroupOptions('');
-            }
-
-            $routeGroupOptions->constraints = [...$routeGroupOptions->constraints, ...$routeConstraints];
         }
 
         return $routeGroupOptions;
