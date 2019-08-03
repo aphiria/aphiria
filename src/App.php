@@ -32,11 +32,11 @@ use RuntimeException;
 use Throwable;
 
 /**
- * Defines the console kernel
+ * Defines a console application
  */
-class Kernel implements ICommandBus
+class App implements ICommandBus
 {
-    /** @var CommandRegistry The commands registered to the kernel */
+    /** @var CommandRegistry The commands registered to the application */
     private CommandRegistry $commands;
     /** @var IInputCompiler The input compiler to use */
     private IInputCompiler $inputCompiler;
@@ -101,7 +101,7 @@ class Kernel implements ICommandBus
     }
 
     /**
-     * Registers any default commands to the kernel
+     * Registers any default commands to the application
      */
     protected function registerDefaultCommands(): void
     {

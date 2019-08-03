@@ -19,32 +19,32 @@ use Aphiria\Console\Input\ArgumentTypes;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionTypes;
-use Aphiria\Console\Kernel;
+use Aphiria\Console\App;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCodes;
 use Aphiria\Console\Tests\Output\Mocks\Output;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the console kernel
+ * Tests the console application
  */
-class KernelTest extends TestCase
+class AppTest extends TestCase
 {
     private CommandRegistry $commands;
     private Output $output;
-    private Kernel $kernel;
+    private App $app;
 
     protected function setUp(): void
     {
         $this->commands = new CommandRegistry();
-        $this->kernel = new Kernel($this->commands);
+        $this->app = new App($this->commands);
         $this->output = new Output();
     }
 
     public function testHandlingEmptyCommandReturnsOk(): void
     {
         ob_start();
-        $status = $this->kernel->handle('', $this->output);
+        $status = $this->app->handle('', $this->output);
         ob_get_clean();
         $this->assertEquals(StatusCodes::OK, $status);
     }
@@ -52,7 +52,7 @@ class KernelTest extends TestCase
     public function testHandlingException(): void
     {
         ob_start();
-        $status = $this->kernel->handle("unclosed quote '", $this->output);
+        $status = $this->app->handle("unclosed quote '", $this->output);
         ob_end_clean();
         $this->assertEquals(StatusCodes::FATAL, $status);
     }
@@ -65,13 +65,13 @@ class KernelTest extends TestCase
             fn (Input $input, IOutput $output) => null
         );
         ob_start();
-        $status = $this->kernel->handle('help holiday', $this->output);
+        $status = $this->app->handle('help holiday', $this->output);
         ob_get_clean();
         $this->assertEquals(StatusCodes::OK, $status);
 
         // Try with command name with no argument
         ob_start();
-        $status = $this->kernel->handle('help', $this->output);
+        $status = $this->app->handle('help', $this->output);
         ob_get_clean();
         $this->assertEquals(StatusCodes::OK, $status);
     }
@@ -79,7 +79,7 @@ class KernelTest extends TestCase
     public function testHandlingHelpCommandWithNonExistentCommand(): void
     {
         ob_start();
-        $status = $this->kernel->handle('help fake', $this->output);
+        $status = $this->app->handle('help fake', $this->output);
         ob_end_clean();
         $this->assertEquals(StatusCodes::ERROR, $status);
     }
@@ -105,13 +105,13 @@ class KernelTest extends TestCase
             }
         );
         ob_start();
-        $status = $this->kernel->handle('holiday birthday -y', $this->output);
+        $status = $this->app->handle('holiday birthday -y', $this->output);
         $this->assertEquals('Happy birthday!', ob_get_clean());
         $this->assertEquals(StatusCodes::OK, $status);
 
         // Test with long option
         ob_start();
-        $status = $this->kernel->handle('holiday Easter --yell=no', $this->output);
+        $status = $this->app->handle('holiday Easter --yell=no', $this->output);
         $this->assertEquals('Happy Easter', ob_get_clean());
         $this->assertEquals(StatusCodes::OK, $status);
     }
@@ -119,7 +119,7 @@ class KernelTest extends TestCase
     public function testHandlingInvalidInputReturnsError(): void
     {
         ob_start();
-        $status = $this->kernel->handle($this, $this->output);
+        $status = $this->app->handle($this, $this->output);
         ob_end_clean();
         $this->assertEquals(StatusCodes::ERROR, $status);
     }
@@ -127,7 +127,7 @@ class KernelTest extends TestCase
     public function testHandlingMissingCommandReturnsError(): void
     {
         ob_start();
-        $status = $this->kernel->handle('fake', $this->output);
+        $status = $this->app->handle('fake', $this->output);
         ob_get_clean();
         $this->assertEquals(StatusCodes::ERROR, $status);
     }
@@ -139,7 +139,7 @@ class KernelTest extends TestCase
             fn () => fn (Input $input, IOutput $output) => $output->write('foo')
         );
         ob_start();
-        $status = $this->kernel->handle('foo', $this->output);
+        $status = $this->app->handle('foo', $this->output);
         $this->assertEquals('foo', ob_get_clean());
         $this->assertEquals(StatusCodes::OK, $status);
     }
@@ -149,7 +149,7 @@ class KernelTest extends TestCase
         $command = new Command('foo', [], [], '');
         $commandHandlerFactory = fn () => fn (Input $input, IOutput $output) => $this->assertSame($this->output, $output);
         $this->commands->registerCommand($command, $commandHandlerFactory);
-        $statusCode = $this->kernel->handle('foo', $this->output);
+        $statusCode = $this->app->handle('foo', $this->output);
         $this->assertEquals(StatusCodes::OK, $statusCode);
     }
 }
