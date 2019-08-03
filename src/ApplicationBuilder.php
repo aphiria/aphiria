@@ -12,14 +12,14 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration;
 
-use Aphiria\Api\App;
+use Aphiria\Api\App as ApiApp;
 use Aphiria\Api\ContainerDependencyResolver;
 use Aphiria\Api\DependencyResolutionException;
 use Aphiria\Api\IDependencyResolver;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
+use Aphiria\Console\App as ConsoleApp;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
-use Aphiria\Console\Kernel;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use BadMethodCallException;
@@ -108,7 +108,7 @@ final class ApplicationBuilder implements IApplicationBuilder
             $this->buildConsoleCommands();
             $this->buildComponents();
 
-            return new Kernel($this->container->resolve(CommandRegistry::class));
+            return new ConsoleApp($this->container->resolve(CommandRegistry::class));
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build console app', 0, $ex);
         }
@@ -248,7 +248,7 @@ final class ApplicationBuilder implements IApplicationBuilder
                 $middlewarePipelineFactory = new MiddlewarePipelineFactory()
             );
 
-        $app = new App($dependencyResolver, $router, $middlewarePipelineFactory);
+        $app = new ApiApp($dependencyResolver, $router, $middlewarePipelineFactory);
 
         try {
             foreach ($this->middlewareCallbacks as $middlewareCallback) {
