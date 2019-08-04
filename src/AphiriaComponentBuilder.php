@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration;
 
-use Aphiria\Api\RouterKernel;
+use Aphiria\Api\Router;
 use Aphiria\RouteAnnotations\IRouteAnnotationRegistrant;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
@@ -99,7 +99,7 @@ final class AphiriaComponentBuilder
     {
         $this->routingComponentRegistered = true;
         // Set up the router request handler
-        $appBuilder->withRouter(fn () => $this->container->resolve(RouterKernel::class));
+        $appBuilder->withRouter(fn () => $this->container->resolve(Router::class));
         // Register the routing component
         $appBuilder->registerComponentBuilder('routes', function (array $callbacks) {
             $this->container->hasBinding(LazyRouteFactory::class)
