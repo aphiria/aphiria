@@ -34,9 +34,9 @@ use Closure;
 use InvalidArgumentException;
 
 /**
- * Defines the kernel request handler that performs routing
+ * Defines the request handler that performs routing
  */
-class RouterKernel implements IRequestHandler
+class Router implements IRequestHandler
 {
     /** @var IRouteMatcher The route matcher */
     private IRouteMatcher $routeMatcher;
