@@ -27,8 +27,8 @@ class App implements IRequestHandler
 {
     /** @var IDependencyResolver The dependency resolver */
     private IDependencyResolver $dependencyResolver;
-    /** @var IRequestHandler The request handler that will be the last to be executed in the middleware pipeline */
-    private IRequestHandler $kernel;
+    /** @var IRequestHandler The request handler that will be the last to be executed in the middleware pipeline and performs routing */
+    private IRequestHandler $router;
     /** @var MiddlewarePipelineFactory The middleware pipeline factory */
     private ?MiddlewarePipelineFactory $middlewarePipelineFactory;
     /** @var IMiddleware[] The list of middleware */
@@ -36,16 +36,16 @@ class App implements IRequestHandler
 
     /**
      * @param IDependencyResolver $dependencyResolver The dependency resolver
-     * @param IRequestHandler $kernel The request handler that will be the last to be executed in the middleware pipeline
+     * @param IRequestHandler $router The request handler that will be the last to be executed in the middleware pipeline and performs routing
      * @param MiddlewarePipelineFactory|null $middlewarePipelineFactory THe middleware pipeline factory
      */
     public function __construct(
         IDependencyResolver $dependencyResolver,
-        IRequestHandler $kernel,
+        IRequestHandler $router,
         MiddlewarePipelineFactory $middlewarePipelineFactory = null
     ) {
         $this->dependencyResolver = $dependencyResolver;
-        $this->kernel = $kernel;
+        $this->router = $router;
         $this->middlewarePipelineFactory = $middlewarePipelineFactory ?? new MiddlewarePipelineFactory();
     }
 
@@ -77,7 +77,7 @@ class App implements IRequestHandler
      */
     public function handle(IHttpRequestMessage $request): IHttpResponseMessage
     {
-        $middlewarePipeline = $this->middlewarePipelineFactory->createPipeline($this->middleware, $this->kernel);
+        $middlewarePipeline = $this->middlewarePipelineFactory->createPipeline($this->middleware, $this->router);
 
         return $middlewarePipeline->handle($request);
     }
