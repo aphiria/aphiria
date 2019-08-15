@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Api\Controllers;
 
 use Aphiria\Net\Formatting\UriParser;
+use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Serialization\SerializationException;
@@ -29,12 +30,12 @@ final class ControllerParameterResolver implements IControllerParameterResolver
     private UriParser $uriParser;
 
     /**
-     * @param IContentNegotiator $contentNegotiator The content negotiator
-     * @param UriParser $uriParser The URI parser to use
+     * @param IContentNegotiator|null $contentNegotiator The content negotiator, or null if using the default negotiator
+     * @param UriParser|null $uriParser The URI parser to use, or null if using the default parser
      */
-    public function __construct(IContentNegotiator $contentNegotiator, UriParser $uriParser = null)
+    public function __construct(IContentNegotiator $contentNegotiator = null, UriParser $uriParser = null)
     {
-        $this->contentNegotiator = $contentNegotiator;
+        $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
         $this->uriParser = $uriParser ?? new UriParser();
     }
 

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
+use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\Formatting\RequestParser;
@@ -37,20 +38,20 @@ final class ControllerRequestHandler implements IRequestHandler
      * @param Controller $controller The controller
      * @param callable $routeActionDelegate The route action delegate
      * @param array $routeVariables The route variables
-     * @param IContentNegotiator $contentNegotiator The content negotiator
+     * @param IContentNegotiator|null $contentNegotiator The content negotiator, or null if using the default negotiator
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker to use
      */
     public function __construct(
         Controller $controller,
         callable $routeActionDelegate,
         array $routeVariables,
-        IContentNegotiator $contentNegotiator,
+        IContentNegotiator $contentNegotiator = null,
         IRouteActionInvoker $routeActionInvoker = null
     ) {
         $this->controller = $controller;
         $this->routeActionDelegate = $routeActionDelegate;
         $this->routeVariables = $routeVariables;
-        $this->contentNegotiator = $contentNegotiator;
+        $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }
 

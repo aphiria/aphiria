@@ -19,6 +19,7 @@ use Aphiria\Api\Controllers\RouteActionInvoker;
 use Aphiria\Middleware\AttributeMiddleware;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
+use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\HttpException;
@@ -52,20 +53,20 @@ class Router implements IRequestHandler
     /**
      * @param IRouteMatcher $routeMatcher The route matcher
      * @param IDependencyResolver $dependencyResolver The dependency resolver
-     * @param IContentNegotiator $contentNegotiator The content negotiator
+     * @param IContentNegotiator|null $contentNegotiator The content negotiator, or null if using the default negotiator
      * @param MiddlewarePipelineFactory|null $middlewarePipelineFactory THe middleware pipeline factory
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
      */
     public function __construct(
         IRouteMatcher $routeMatcher,
         IDependencyResolver $dependencyResolver,
-        IContentNegotiator $contentNegotiator,
+        IContentNegotiator $contentNegotiator = null,
         MiddlewarePipelineFactory $middlewarePipelineFactory = null,
         IRouteActionInvoker $routeActionInvoker = null
     ) {
         $this->routeMatcher = $routeMatcher;
         $this->dependencyResolver = $dependencyResolver;
-        $this->contentNegotiator = $contentNegotiator;
+        $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
         $this->middlewarePipelineFactory = $middlewarePipelineFactory ?? new MiddlewarePipelineFactory();
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }

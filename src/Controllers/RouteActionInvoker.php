@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
+use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
@@ -36,15 +37,16 @@ final class RouteActionInvoker implements IRouteActionInvoker
     private IControllerParameterResolver $controllerParameterResolver;
 
     /**
-     * @param IContentNegotiator $contentNegotiator The content negotiator
+     * @param IContentNegotiator|null $contentNegotiator The content negotiator, or null if using the default negotiator
      * @param INegotiatedResponseFactory|null $negotiatedResponseFactory The negotiated response factory
      * @param IControllerParameterResolver|null $controllerParameterResolver The controller parameter resolver to use
      */
     public function __construct(
-        IContentNegotiator $contentNegotiator,
+        IContentNegotiator $contentNegotiator = null,
         INegotiatedResponseFactory $negotiatedResponseFactory = null,
         IControllerParameterResolver $controllerParameterResolver = null
     ) {
+        $contentNegotiator ??= new ContentNegotiator();
         $this->negotiatedResponseFactory = $negotiatedResponseFactory ?? new NegotiatedResponseFactory($contentNegotiator);
         $this->controllerParameterResolver = $controllerParameterResolver ?? new ControllerParameterResolver($contentNegotiator);
     }
