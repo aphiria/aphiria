@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Exceptions\Middleware;
 
 use Aphiria\Exceptions\ExceptionLogger;
+use Aphiria\Exceptions\ExceptionResponseFactory;
 use Aphiria\Exceptions\FatalThrowableError;
 use Aphiria\Exceptions\IExceptionLogger;
 use Aphiria\Exceptions\IExceptionResponseFactory;
@@ -34,12 +35,14 @@ final class ExceptionHandler implements IMiddleware
     private IExceptionLogger $logger;
 
     /**
-     * @param IExceptionResponseFactory $exceptionResponseFactory The factory that create exception responses
+     * @param IExceptionResponseFactory|null $exceptionResponseFactory The factory that create exception responses, or null if using the default factory
      * @param IExceptionLogger|null $logger The exception logger
      */
-    public function __construct(IExceptionResponseFactory $exceptionResponseFactory, IExceptionLogger $logger = null)
-    {
-        $this->exceptionResponseFactory = $exceptionResponseFactory;
+    public function __construct(
+        IExceptionResponseFactory $exceptionResponseFactory = null,
+        IExceptionLogger $logger = null
+    ) {
+        $this->exceptionResponseFactory = $exceptionResponseFactory ?? new ExceptionResponseFactory();
         $this->logger = $logger ?? new ExceptionLogger();
     }
 

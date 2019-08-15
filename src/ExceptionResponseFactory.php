@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Exceptions;
 
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\HttpStatusCodes;
@@ -32,14 +33,14 @@ final class ExceptionResponseFactory implements IExceptionResponseFactory
     protected ?ExceptionResponseFactoryRegistry $exceptionResponseFactories;
 
     /**
-     * @param INegotiatedResponseFactory $negotiatedResponseFactory
+     * @param INegotiatedResponseFactory|null $negotiatedResponseFactory The factory that creates negotiated responses, otherwise the default factory
      * @param ExceptionResponseFactoryRegistry|null $exceptionResponseFactories The exception response factory registry
      */
     public function __construct(
-        INegotiatedResponseFactory $negotiatedResponseFactory,
+        INegotiatedResponseFactory $negotiatedResponseFactory = null,
         ExceptionResponseFactoryRegistry $exceptionResponseFactories = null
     ) {
-        $this->negotiatedResponseFactory = $negotiatedResponseFactory;
+        $this->negotiatedResponseFactory = $negotiatedResponseFactory ?? new NegotiatedResponseFactory();
         $this->exceptionResponseFactories = $exceptionResponseFactories ?? $this->createDefaultExceptionResponseFactories();
     }
 

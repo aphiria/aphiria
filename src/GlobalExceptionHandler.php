@@ -33,18 +33,18 @@ class GlobalExceptionHandler
     protected IResponseWriter $responseWriter;
 
     /**
-     * @param IExceptionResponseFactory $exceptionResponseFactory The factory that create exception responses
+     * @param IExceptionResponseFactory|null $exceptionResponseFactory The factory that create exception responses, or null if using the default factory
      * @param IExceptionLogger|null $logger The exception logger
      * @param int $errorThrownLevels The bitwise value of error levels that are to be thrown as exceptions
      * @param IResponseWriter $responseWriter What to use to write a response
      */
     public function __construct(
-        IExceptionResponseFactory $exceptionResponseFactory,
+        IExceptionResponseFactory $exceptionResponseFactory = null,
         IExceptionLogger $logger = null,
         int $errorThrownLevels = E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED),
         IResponseWriter $responseWriter = null
     ) {
-        $this->exceptionResponseFactory = $exceptionResponseFactory;
+        $this->exceptionResponseFactory = $exceptionResponseFactory ?? new ExceptionResponseFactory();
         $this->logger = $logger ?? new ExceptionLogger();
         $this->errorThrownLevels = $errorThrownLevels;
         $this->responseWriter = $responseWriter ?? new StreamResponseWriter();
