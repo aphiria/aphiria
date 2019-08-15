@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedSerializerMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedMediaTypeFormatter;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use Aphiria\Serialization\FormUrlEncodedSerializer;
 use InvalidArgumentException;
@@ -26,12 +26,12 @@ use PHPUnit\Framework\TestCase;
  */
 class FormUrlEncodedMediaTypeFormatterTest extends TestCase
 {
-    private FormUrlEncodedSerializerMediaTypeFormatter $formatter;
+    private FormUrlEncodedMediaTypeFormatter $formatter;
 
     protected function setUp(): void
     {
         $serializer = new FormUrlEncodedSerializer();
-        $this->formatter = new FormUrlEncodedSerializerMediaTypeFormatter($serializer);
+        $this->formatter = new FormUrlEncodedMediaTypeFormatter($serializer);
     }
 
     public function testCanReadOnlyObjectsAndArrays(): void
@@ -83,7 +83,7 @@ class FormUrlEncodedMediaTypeFormatterTest extends TestCase
     public function testReadingTypeThatCannotBeReadThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('% s cannot read type string', FormUrlEncodedSerializerMediaTypeFormatter::class));
+        $this->expectExceptionMessage(sprintf('% s cannot read type string', FormUrlEncodedMediaTypeFormatter::class));
         $stream = $this->createMock(IStream::class);
         $this->formatter->readFromStream($stream, 'string');
     }
@@ -116,14 +116,14 @@ class FormUrlEncodedMediaTypeFormatterTest extends TestCase
     public function testWritingTypeThatCannotBeWrittenThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('%s cannot write type string', FormUrlEncodedSerializerMediaTypeFormatter::class));
+        $this->expectExceptionMessage(sprintf('%s cannot write type string', FormUrlEncodedMediaTypeFormatter::class));
         $this->formatter->writeToStream('foo', $this->createMock(IStream::class), null);
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('foo is not supported for %s', FormUrlEncodedSerializerMediaTypeFormatter::class));
+        $this->expectExceptionMessage(sprintf('foo is not supported for %s', FormUrlEncodedMediaTypeFormatter::class));
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
     }

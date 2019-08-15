@@ -12,7 +12,11 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\IHttpRequestMessage;
@@ -39,7 +43,7 @@ final class ContentNegotiator implements IContentNegotiator
     private ?RequestHeaderParser $headerParser;
 
     /**
-     * @param IMediaTypeFormatter[] $mediaTypeFormatters The list of media type formatters to use
+     * @param IMediaTypeFormatter[]|null $mediaTypeFormatters The list of media type formatters to use, or null if using the default formatters
      * @param array $supportedLanguages The list of supported languages
      * @param MediaTypeFormatterMatcher|null $mediaTypeFormatterMatcher The media type formatter matcher, or null if using the default one
      * @param EncodingMatcher|null $encodingMatcher The encoding matcher, or null if using the default one
@@ -48,13 +52,22 @@ final class ContentNegotiator implements IContentNegotiator
      * @throws InvalidArgumentException Thrown if the list of media type formatters is empty
      */
     public function __construct(
-        array $mediaTypeFormatters,
+        array $mediaTypeFormatters = null,
         array $supportedLanguages = [],
         MediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
         EncodingMatcher $encodingMatcher = null,
         LanguageMatcher $languageMatcher = null,
         RequestHeaderParser $headerParser = null
     ) {
+        if ($mediaTypeFormatters === null) {
+            $mediaTypeFormatters = [
+                new JsonMediaTypeFormatter(),
+                new FormUrlEncodedMediaTypeFormatter(),
+                new HtmlMediaTypeFormatter(),
+                new PlainTextMediaTypeFormatter()
+            ];
+        }
+
         if (count($mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
         }

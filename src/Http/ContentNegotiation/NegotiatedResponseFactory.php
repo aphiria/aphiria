@@ -36,11 +36,11 @@ final class NegotiatedResponseFactory implements INegotiatedResponseFactory
     private IContentNegotiator $contentNegotiator;
 
     /**
-     * @param IContentNegotiator $contentNegotiator The content negotiator to use
+     * @param IContentNegotiator|null $contentNegotiator The content negotiator to use, or null if using the default
      */
-    public function __construct(IContentNegotiator $contentNegotiator)
+    public function __construct(IContentNegotiator $contentNegotiator = null)
     {
-        $this->contentNegotiator = $contentNegotiator;
+        $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
     }
 
     /**
