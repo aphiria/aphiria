@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Tests\Exceptions;
 
-use Aphiria\Exceptions\ExceptionHandler;
 use Aphiria\Exceptions\IExceptionLogger;
 use Aphiria\Exceptions\IExceptionResponseFactory;
+use Aphiria\Exceptions\Middleware\ExceptionHandler;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;

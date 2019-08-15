@@ -10,8 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Exceptions;
+namespace Aphiria\Exceptions\Middleware;
 
+use Aphiria\Exceptions\ExceptionLogger;
+use Aphiria\Exceptions\FatalThrowableError;
+use Aphiria\Exceptions\IExceptionLogger;
+use Aphiria\Exceptions\IExceptionResponseFactory;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\IHttpRequestMessage;

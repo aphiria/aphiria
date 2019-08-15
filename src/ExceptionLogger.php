@@ -21,7 +21,7 @@ use Psr\Log\LogLevel;
 /**
  * Defines the logger for exceptions
  */
-final class ExceptionLogger implements IExceptionLogger
+class ExceptionLogger implements IExceptionLogger
 {
     /** @const The default name to use for the logger */
     private const DEFAULT_LOGGER_NAME = 'app';

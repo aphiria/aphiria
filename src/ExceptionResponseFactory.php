@@ -24,7 +24,7 @@ use Exception;
 /**
  * Defines a factory for responses created from exceptions
  */
-class ExceptionResponseFactory implements IExceptionResponseFactory
+final class ExceptionResponseFactory implements IExceptionResponseFactory
 {
     /** @var INegotiatedResponseFactory The negotiated response factory */
     protected INegotiatedResponseFactory $negotiatedResponseFactory;
