@@ -56,6 +56,15 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->componentBuilder->withEncoderComponent($this->appBuilder);
     }
 
+    public function testWithExceptionHandlingRegistersComponent(): void
+    {
+        // The first 2 invocations will be to register the routing component
+        $this->appBuilder->expects($this->once())
+            ->method('registerComponentBuilder')
+            ->with('exceptionHandlers');
+        $this->componentBuilder->withExceptionHandlers($this->appBuilder);
+    }
+
     public function testWithRouteAnnotationsRegistersComponent(): void
     {
         // The first 2 invocations will be to register the routing component

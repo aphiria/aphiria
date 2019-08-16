@@ -13,6 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Configuration;
 
 use Aphiria\Api\Router;
+use Aphiria\Configuration\Middleware\MiddlewareBinding;
+use Aphiria\Exceptions\GlobalExceptionHandler;
+use Aphiria\Exceptions\Middleware\ExceptionHandler;
 use Aphiria\RouteAnnotations\IRouteAnnotationRegistrant;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
@@ -54,6 +57,25 @@ final class AphiriaComponentBuilder
             foreach ($callbacks as $callback) {
                 $callback($encoders);
             }
+        });
+
+        return $this;
+    }
+
+    /**
+     * Registers the Aphiria exception handlers
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to register to
+     * @return AphiriaComponentBuilder For chaining
+     */
+    public function withExceptionHandlers(IApplicationBuilder $appBuilder): self
+    {
+        $appBuilder->registerComponentBuilder('exceptionHandlers', function (array $callbacks) use ($appBuilder) {
+            $this->container->hasBinding(GlobalExceptionHandler::class)
+                ? $globalExceptionHandler = $this->container->resolve(GlobalExceptionHandler::class)
+                : $this->container->bindInstance(GlobalExceptionHandler::class, $globalExceptionHandler = new GlobalExceptionHandler());
+            $globalExceptionHandler->registerWithPhp();
+            $appBuilder->withGlobalMiddleware(fn () => [new MiddlewareBinding(ExceptionHandler::class)]);
         });
 
         return $this;
