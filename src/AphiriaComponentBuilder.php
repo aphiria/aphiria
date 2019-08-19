@@ -14,6 +14,8 @@ namespace Aphiria\Configuration;
 
 use Aphiria\Api\Router;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
+use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
+use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\Middleware\ExceptionHandler;
 use Aphiria\RouteAnnotations\IRouteAnnotationRegistrant;
@@ -76,6 +78,48 @@ final class AphiriaComponentBuilder
                 : $this->container->bindInstance(GlobalExceptionHandler::class, $globalExceptionHandler = new GlobalExceptionHandler());
             $globalExceptionHandler->registerWithPhp();
             $appBuilder->withGlobalMiddleware(fn () => [new MiddlewareBinding(ExceptionHandler::class)]);
+        });
+
+        return $this;
+    }
+
+    /**
+     * Registers the Aphiria exception log level factory component
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to register to
+     * @return AphiriaComponentBuilder For chaining
+     */
+    public function withExceptionLogLevelFactories(IApplicationBuilder $appBuilder): self
+    {
+        $appBuilder->registerComponentBuilder('exceptionLogLevelFactories', function (array $callbacks) {
+            $this->container->hasBinding(ExceptionLogLevelFactoryRegistry::class)
+                ? $exceptionLogLevelFactories = $this->container->resolve(ExceptionLogLevelFactoryRegistry::class)
+                : $this->container->bindInstance(ExceptionLogLevelFactoryRegistry::class, $exceptionLogLevelFactories = new ExceptionLogLevelFactoryRegistry());
+
+            foreach ($callbacks as $callback) {
+                $callback($exceptionLogLevelFactories);
+            }
+        });
+
+        return $this;
+    }
+
+    /**
+     * Registers the Aphiria exception response factory component
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to register to
+     * @return AphiriaComponentBuilder For chaining
+     */
+    public function withExceptionResponseFactories(IApplicationBuilder $appBuilder): self
+    {
+        $appBuilder->registerComponentBuilder('exceptionResponseFactories', function (array $callbacks) {
+            $this->container->hasBinding(ExceptionResponseFactoryRegistry::class)
+                ? $exceptionResponseFactories = $this->container->resolve(ExceptionResponseFactoryRegistry::class)
+                : $this->container->bindInstance(ExceptionResponseFactoryRegistry::class, $exceptionResponseFactories = new ExceptionResponseFactoryRegistry());
+
+            foreach ($callbacks as $callback) {
+                $callback($exceptionResponseFactories);
+            }
         });
 
         return $this;

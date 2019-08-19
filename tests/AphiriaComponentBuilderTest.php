@@ -14,6 +14,8 @@ namespace Aphiria\Configuration\Tests;
 
 use Aphiria\Configuration\AphiriaComponentBuilder;
 use Aphiria\Configuration\IApplicationBuilder;
+use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
+use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Opulence\Ioc\IContainer;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -63,6 +65,44 @@ class AphiriaComponentBuilderTest extends TestCase
             ->method('registerComponentBuilder')
             ->with('exceptionHandlers');
         $this->componentBuilder->withExceptionHandlers($this->appBuilder);
+    }
+
+    public function testWithExceptionLogLevelFactoriesComponentPassesRegistryToRegisteredCallbacks(): void
+    {
+        $this->appBuilder->expects($this->once())
+            ->method('registerComponentBuilder')
+            ->with('exceptionLogLevelFactories', $this->callback(function (\Closure $callback) {
+                $callbackWasCalled = false;
+                $callbacks = [
+                    function (ExceptionLogLevelFactoryRegistry $factories) use (&$callbackWasCalled) {
+                        $callbackWasCalled = true;
+                    }
+                ];
+                // Call the callback so we can verify it was setup correctly
+                $callback($callbacks);
+
+                return $callbackWasCalled;
+            }));
+        $this->componentBuilder->withExceptionLogLevelFactories($this->appBuilder);
+    }
+
+    public function testWithExceptionResponseFactoriesComponentPassesRegistryToRegisteredCallbacks(): void
+    {
+        $this->appBuilder->expects($this->once())
+            ->method('registerComponentBuilder')
+            ->with('exceptionResponseFactories', $this->callback(function (\Closure $callback) {
+                $callbackWasCalled = false;
+                $callbacks = [
+                    function (ExceptionResponseFactoryRegistry $factories) use (&$callbackWasCalled) {
+                        $callbackWasCalled = true;
+                    }
+                ];
+                // Call the callback so we can verify it was setup correctly
+                $callback($callbacks);
+
+                return $callbackWasCalled;
+            }));
+        $this->componentBuilder->withExceptionResponseFactories($this->appBuilder);
     }
 
     public function testWithRouteAnnotationsRegistersComponent(): void
