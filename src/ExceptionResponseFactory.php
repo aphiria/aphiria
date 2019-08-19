@@ -67,7 +67,7 @@ final class ExceptionResponseFactory implements IExceptionResponseFactory
                 );
             }
 
-            return $responseFactory($ex, $request);
+            return $responseFactory($ex, $request, $this->negotiatedResponseFactory);
         } catch (Exception $ex) {
             // An exception occurred while making the response, eg content negotiation failed
             return $this->createDefaultInternalServerErrorResponse($ex, $request);

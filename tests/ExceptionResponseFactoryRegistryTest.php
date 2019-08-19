@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Api\Tests\Exceptions;
 
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
+use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use InvalidArgumentException;
@@ -37,15 +38,15 @@ class ExceptionResponseFactoryRegistryTest extends TestCase
 
     public function testGettingFactoryForExceptionTypeThatHasFactoryReturnsTheFactory(): void
     {
-        $expectedFactory = fn (HttpException $ex, ?IHttpRequestMessage $request) => null;
+        $expectedFactory = fn (HttpException $ex, ?IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory) => null;
         $this->registry->registerFactory(InvalidArgumentException::class, $expectedFactory);
         $this->assertSame($expectedFactory, $this->registry->getFactory(InvalidArgumentException::class));
     }
 
     public function testRegisteringMultipleFactoriesStoresFactoriesByExceptionType(): void
     {
-        $expectedFactory1 = fn (InvalidArgumentException $ex, ?IHttpRequestMessage $request) => null;
-        $expectedFactory2 = fn (HttpException $ex, ?IHttpRequestMessage $request) => null;
+        $expectedFactory1 = fn (InvalidArgumentException $ex, ?IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory) => null;
+        $expectedFactory2 = fn (HttpException $ex, ?IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory) => null;
         $this->registry->registerManyFactories([
             InvalidArgumentException::class => $expectedFactory1,
             HttpException::class => $expectedFactory2
