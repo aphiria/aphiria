@@ -49,8 +49,8 @@ final class NegotiatedResponseFactory implements INegotiatedResponseFactory
     public function createResponse(
         IHttpRequestMessage $request,
         int $statusCode,
-        ?HttpHeaders $headers,
-        $rawBody
+        HttpHeaders $headers = null,
+        $rawBody = null
     ): IHttpResponseMessage {
         $headers = $headers ?? new HttpHeaders;
 
