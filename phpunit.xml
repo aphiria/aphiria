@@ -1,0 +1,20 @@
+<phpunit
+    bootstrap="vendor/autoload.php"
+    colors="true">
+    <testsuite name="Aphiria">
+        <directory>src/Api/tests</directory>
+        <directory>src/Configuration/tests</directory>
+        <directory>src/Console/tests</directory>
+        <directory>src/Exceptions/tests</directory>
+        <directory>src/Middleware/tests</directory>
+        <directory>src/Net/tests</directory>
+        <directory>src/RouteAnnotations/tests</directory>
+        <directory>src/Router/tests</directory>
+        <directory>src/Serialization/tests</directory>
+    </testsuite>
+     <filter>
+        <whitelist>
+            <directory suffix=".php">src</directory>
+        </whitelist>
+    </filter>
+</phpunit>
