@@ -10,7 +10,6 @@
 
 namespace Aphiria\RouteAnnotations;
 
-
 use InvalidArgumentException;
 
 /**

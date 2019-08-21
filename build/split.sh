@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CURRENT_BRANCH="develop"
+CURRENT_BRANCH="master"
 REPOS=(Api Configuration Console Exceptions Middleware Net RouteAnnotations Router Serialization)
 
 function split()
