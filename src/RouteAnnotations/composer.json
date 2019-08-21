@@ -1,0 +1,47 @@
+{
+  "name": "aphiria/route-annotations",
+  "description": "The Aphiria route annotation library",
+  "keywords": [
+    "PHP",
+    "routes",
+    "routing",
+    "annotations"
+  ],
+  "authors": [
+    {
+      "name": "David Young",
+      "email": "dave@opulencephp.com",
+      "role": "Architect"
+    }
+  ],
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Aphiria\\RouteAnnotations\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Aphiria\\RouteAnnotations\\Tests\\": "tests"
+    }
+  },
+  "require": {
+    "aphiria/api": "1.0.*@dev",
+    "aphiria/router": "1.0.*@dev",
+    "doctrine/annotations": "2.0.*@dev",
+    "php": "^7.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~8.0"
+  },
+  "scripts": {
+    "lint-check": "php-cs-fixer fix --config=.php_cs -v --diff --dry-run",
+    "lint-fix": "php-cs-fixer fix --config=.php_cs -v --diff"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  },
+  "minimum-stability": "dev"
+}
