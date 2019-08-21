@@ -1,0 +1,50 @@
+{
+  "name": "aphiria/configuration",
+  "description": "The Aphiria application configuration library",
+  "keywords": [
+    "PHP",
+    "application",
+    "configuration"
+  ],
+  "authors": [
+    {
+      "name": "David Young",
+      "email": "dave@opulencephp.com",
+      "role": "Architect"
+    }
+  ],
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Aphiria\\Configuration\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Aphiria\\Configuration\\Tests\\": "tests"
+    }
+  },
+  "require": {
+    "aphiria/api": "1.0.*@dev",
+    "aphiria/console": "1.0.*@dev",
+    "aphiria/exceptions": "1.0.*@dev",
+    "aphiria/route-annotations": "1.0.*@dev",
+    "opulence/environments": "1.1.*@dev",
+    "opulence/ioc": "dev-develop",
+    "php": "^7.4",
+    "psr/log": "~1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~8.0"
+  },
+  "scripts": {
+    "lint-check": "php-cs-fixer fix --config=.php_cs -v --diff --dry-run",
+    "lint-fix": "php-cs-fixer fix --config=.php_cs -v --diff"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  },
+  "minimum-stability": "dev"
+}
