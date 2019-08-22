@@ -30,6 +30,8 @@ function split()
         exit 1
     fi
 
+    echo "$remote"
+
     # Push to the subtree's repo, and do not leak any sensitive info in the logs
     git push "$remote" "$sha:refs/heads/$GIT_BRANCH" -f >/dev/null 2>&1
 }
