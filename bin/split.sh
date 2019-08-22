@@ -6,12 +6,14 @@ GIT_ACCESS_TOKEN="$2"
 
 if [ -z "$GIT_USER" ]
 then
-    echo "No Git user specified" 1>&2
+    echo "No Git user specified"
+    exit 1
 fi
 
 if [ -z "$GIT_ACCESS_TOKEN" ]
 then
-    echo "No Git access token specified" 1>&2
+    echo "No Git access token specified"
+    exit 1
 fi
 
 CURRENT_BRANCH="temp"
@@ -25,7 +27,8 @@ function split()
 
     if [ -z "$sha" ]
     then
-        echo "Empty SHA" 1>&2
+        echo "Empty SHA"
+        exit 1
     fi
 
     git push "$remote" "$sha:refs/heads/$CURRENT_BRANCH" -f >/dev/null 2>&1
