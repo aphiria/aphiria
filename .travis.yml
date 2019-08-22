@@ -3,6 +3,10 @@ language: php
 php:
   - 7.4snapshot
 
+# Shallow clones can cause issues with subtree splits
+git:
+  depth: false
+
 before_script:
   - composer self-update
   - composer install

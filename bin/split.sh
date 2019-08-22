@@ -22,7 +22,7 @@ function split()
 {
     prefix=$1
     remote=$2
-    sha=`./bin/splitsh-lite --prefix=$prefix`
+    sha=`./bin/splitsh-lite --prefix="$prefix"`
 
     if [ -z "$sha" ]
     then
