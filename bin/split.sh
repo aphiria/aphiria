@@ -22,7 +22,7 @@ function split()
 {
     prefix=$1
     remote=$2
-    sha=`./splitsh-lite --prefix="$prefix"`
+    sha=`./bin/splitsh-lite --prefix=$prefix`
 
     if [ -z "$sha" ]
     then
@@ -33,6 +33,7 @@ function split()
     echo "SHA: "
     echo "$sha"
 
+    # Push to the subtree's repo, and do not leak any sensitive info in the logs
     git push "$remote" "$sha:refs/heads/$CURRENT_BRANCH" -f >/dev/null 2>&1
 }
 
@@ -50,6 +51,7 @@ split "src/Api" "temp"
 #
 #    if test $? = 1;
 #    then
+#        # Add the subtree remote, and do not leak any sensitive info in the logs
 #        git remote add "$lower_repo" https://$GIT_USER:$GIT_ACCESS_TOKEN@github.com:aphiria/$lower_repo.git >/dev/null 2>&1
 #    fi
 #
