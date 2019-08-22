@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-GIT_USER="$1"
-GIT_ACCESS_TOKEN="$2"
+GIT_BRANCH="$1"
+GIT_USER="$2"
+GIT_ACCESS_TOKEN="$3"
 
 if [ -z "$GIT_USER" ]
 then
@@ -15,14 +16,13 @@ then
     exit 1
 fi
 
-CURRENT_BRANCH="temp"
 REPOS=(Api Configuration Console Exceptions Middleware Net RouteAnnotations Router Serialization)
 
 function split()
 {
     prefix=$1
     remote=$2
-    sha=`./bin/splitsh-lite --prefix="$prefix"`
+    sha=$(./bin/splitsh-lite --prefix="$prefix")
 
     if [ -z "$sha" ]
     then
@@ -30,15 +30,9 @@ function split()
         exit 1
     fi
 
-    echo "SHA: "
-    echo "$sha"
-
     # Push to the subtree's repo, and do not leak any sensitive info in the logs
-    git push "$remote" "$sha:refs/heads/$CURRENT_BRANCH" -f >/dev/null 2>&1
+    git push "$remote" "$sha:refs/heads/$GIT_BRANCH" -f >/dev/null 2>&1
 }
-
-git checkout $CURRENT_BRANCH
-git pull origin $CURRENT_BRANCH
 
 # Testing devops scripts
 git remote add temp https://$GIT_USER:$GIT_ACCESS_TOKEN@github.com:aphiria/temp.git >/dev/null 2>&1

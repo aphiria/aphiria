@@ -19,7 +19,7 @@ script:
 deploy:
   # Push updates to the subtrees on commits to master
   - provider: script
-    script: bash bin/split.sh $GIT_USER $GIT_ACCESS_TOKEN
+    script: bash bin/split.sh $TRAVIS_BRANCH $GIT_USER $GIT_ACCESS_TOKEN
     on:
       branch: temp
 
