@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-echo "$1"
 GIT_USER="$1"
 GIT_ACCESS_TOKEN="$2"
 
@@ -23,7 +22,7 @@ function split()
 {
     prefix=$1
     remote=$2
-    sha=$(./bin/splitsh-lite --prefix="$prefix")
+    sha=`./bin/splitsh-lite --prefix="$prefix"`
 
     if [ -z "$sha" ]
     then
