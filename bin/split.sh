@@ -35,7 +35,7 @@ function split()
 }
 
 # Testing devops scripts
-git remote add temp https://$GIT_ACCESS_TOKEN:x-oauth-basic@github.com:aphiria/temp.git >/dev/null 2>&1
+git remote add temp https://$GIT_USER:$GIT_ACCESS_TOKEN@github.com:aphiria/temp.git #>/dev/null 2>&1
 split "src/Api" "temp"
 
 #for repo in ${REPOS[@]}
