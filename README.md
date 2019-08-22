@@ -5,7 +5,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/aphiria/aphiria/v/unstable.svg)](https://packagist.org/packages/aphiria/aphiria)
 [![License](https://poser.pugx.org/aphiria/aphiria/license.svg)](https://packagist.org/packages/aphiria/aphiria)
 
-> **Note:** This library is not stable yet.
+> **Note:** This framework is not stable yet.
 
 <h1>Documentation</h1>
 
