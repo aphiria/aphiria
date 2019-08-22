@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+echo "$1"
 GIT_USER="$1"
 GIT_ACCESS_TOKEN="$2"
 
