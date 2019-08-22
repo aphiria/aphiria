@@ -30,6 +30,9 @@ function split()
         exit 1
     fi
 
+    echo "SHA: "
+    echo "$sha"
+
     git push "$remote" "$sha:refs/heads/$CURRENT_BRANCH" -f >/dev/null 2>&1
 }
 
