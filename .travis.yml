@@ -21,7 +21,8 @@ deploy:
   - provider: script
     script: bash bin/split.sh $TRAVIS_BRANCH $GIT_USER $GIT_ACCESS_TOKEN
     on:
-      branch: temp
+      tags: true
+      all_branches: false
     skip_cleanup: true
 
 notifications:
