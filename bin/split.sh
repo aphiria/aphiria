@@ -22,16 +22,16 @@ then
     exit 1
 fi
 
-for repoPath in src/*/ ;
+for prefix in src/*/ ;
 do
-    repo=$(basename $repoPath)
+    repo=$(basename "$prefix")
     remote=$(echo "$repo" | awk '{print tolower($0)}')
 
     echo "Adding remote $remote"
     git remote add "$remote" https://$GIT_USER:$GIT_ACCESS_TOKEN@github.com/aphiria/$remote.git >/dev/null 2>&1
 
     echo "Splitting $repo"
-    sha=$(./bin/splitsh-lite --prefix="src/$repo")
+    sha=$(./bin/splitsh-lite --prefix="$prefix")
 
     if [ -z "$sha" ]
     then
