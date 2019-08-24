@@ -22,14 +22,16 @@ then
     exit 1
 fi
 
-REPOS=(Api Configuration Console Exceptions Middleware Net RouteAnnotations Router Serialization)
+for repoPath in src/*/ ;
+do
+    repo=$(basename $repoPath)
+    remote=$(echo "$repo" | awk '{print tolower($0)}')
 
-function split()
-{
-    prefix=$1
-    remote=$2
-    echo "Splitting $prefix"
-    sha=$(./bin/splitsh-lite --prefix="$prefix")
+    echo "Adding remote $remote"
+    git remote add "$remote" https://$GIT_USER:$GIT_ACCESS_TOKEN@github.com/aphiria/$remote.git >/dev/null 2>&1
+
+    echo "Splitting $repo"
+    sha=$(./bin/splitsh-lite --prefix="src/$repo")
 
     if [ -z "$sha" ]
     then
@@ -38,13 +40,6 @@ function split()
     fi
 
     # Push to the subtree's repo, and do not leak any sensitive info in the logs
-    echo "Pushing $prefix to $remote"
+    echo "Pushing $repo to $remote"
     git push "$remote" "$sha:refs/heads/$GIT_BRANCH" -f >/dev/null 2>&1
-}
-
-for repo in ${REPOS[@]}
-do
-    lower_repo=$(echo "$repo" | awk '{print tolower($0)}')
-    git remote add "$lower_repo" https://$GIT_USER:$GIT_ACCESS_TOKEN@github.com/aphiria/$lower_repo.git >/dev/null 2>&1
-    split "src/$repo" "$lower_repo"
 done
