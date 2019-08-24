@@ -28,6 +28,7 @@ function split()
 {
     prefix=$1
     remote=$2
+    echo "Splitting $prefix"
     sha=$(./bin/splitsh-lite --prefix="$prefix")
 
     if [ -z "$sha" ]
@@ -37,6 +38,7 @@ function split()
     fi
 
     # Push to the subtree's repo, and do not leak any sensitive info in the logs
+    echo "Pushing $prefix to $remote"
     git push "$remote" "$sha:refs/heads/$GIT_BRANCH" -f >/dev/null 2>&1
 }
 
