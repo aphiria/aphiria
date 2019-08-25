@@ -17,8 +17,8 @@ use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
-use Opulence\IO\Streams\IStream;
-use Opulence\IO\Streams\MultiStream;
+use Aphiria\IO\Streams\IStream;
+use Aphiria\IO\Streams\MultiStream;
 use PHPUnit\Framework\TestCase;
 
 /**

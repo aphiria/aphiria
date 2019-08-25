@@ -24,8 +24,8 @@ use Aphiria\Net\Http\StringBody;
 use Aphiria\Serialization\SerializationException;
 use Aphiria\Serialization\TypeResolver;
 use InvalidArgumentException;
-use Opulence\IO\Streams\IStream;
-use Opulence\IO\Streams\Stream;
+use Aphiria\IO\Streams\IStream;
+use Aphiria\IO\Streams\Stream;
 
 /**
  * Defines the factory that generates HTTP responses from negotiated content

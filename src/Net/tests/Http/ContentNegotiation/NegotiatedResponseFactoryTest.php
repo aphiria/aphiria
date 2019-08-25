@@ -29,8 +29,8 @@ use Aphiria\Net\Uri;
 use Aphiria\Serialization\SerializationException;
 use InvalidArgumentException;
 use function mb_strlen;
-use Opulence\IO\Streams\IStream;
-use Opulence\IO\Streams\Stream;
+use Aphiria\IO\Streams\IStream;
+use Aphiria\IO\Streams\Stream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

@@ -25,10 +25,10 @@ use Aphiria\Net\Http\Handlers\IRequestHandler;
 use BadMethodCallException;
 use Closure;
 use InvalidArgumentException;
-use Opulence\Ioc\Bootstrappers\Bootstrapper;
-use Opulence\Ioc\Bootstrappers\IBootstrapperDispatcher;
-use Opulence\Ioc\IContainer;
-use Opulence\Ioc\ResolutionException;
+use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
+use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
+use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ResolutionException;
 use RuntimeException;
 
 /**

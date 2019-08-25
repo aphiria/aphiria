@@ -18,8 +18,8 @@ use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\RequestTargetTypes;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
-use Opulence\Collections\HashTable;
-use Opulence\Collections\KeyValuePair;
+use Aphiria\Collections\HashTable;
+use Aphiria\Collections\KeyValuePair;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

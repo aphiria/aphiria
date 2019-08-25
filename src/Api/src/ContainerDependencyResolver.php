@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace Aphiria\Api;
 
-use Opulence\Ioc\IContainer;
-use Opulence\Ioc\ResolutionException;
+use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ResolutionException;
 
 /**
- * Defines a dependency resolver that uses Opulence's DI container
+ * Defines a dependency resolver that uses Aphiria's DI container
  */
 final class ContainerDependencyResolver implements IDependencyResolver
 {

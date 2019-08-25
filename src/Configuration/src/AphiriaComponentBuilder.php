@@ -22,7 +22,7 @@ use Aphiria\RouteAnnotations\IRouteAnnotationRegistrant;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
-use Opulence\Ioc\IContainer;
+use Aphiria\DependencyInjection\IContainer;
 use RuntimeException;
 
 /**

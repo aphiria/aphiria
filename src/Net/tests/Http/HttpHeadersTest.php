@@ -14,7 +14,7 @@ namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\Net\Http\HttpHeaders;
 use InvalidArgumentException;
-use Opulence\Collections\KeyValuePair;
+use Aphiria\Collections\KeyValuePair;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 

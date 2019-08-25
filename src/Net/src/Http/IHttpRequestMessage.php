@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http;
 
 use Aphiria\Net\Uri;
-use Opulence\Collections\IDictionary;
+use Aphiria\Collections\IDictionary;
 
 /**
  * Defines the interface for HTTP request messages to implement

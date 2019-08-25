@@ -14,8 +14,8 @@ namespace Aphiria\Net\Http;
 
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
-use Opulence\Collections\HashTable;
-use Opulence\Collections\IDictionary;
+use Aphiria\Collections\HashTable;
+use Aphiria\Collections\IDictionary;
 use RuntimeException;
 
 /**

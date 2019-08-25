@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
-use Opulence\IO\Streams\IStream;
-use Opulence\IO\Streams\Stream;
+use Aphiria\IO\Streams\IStream;
+use Aphiria\IO\Streams\Stream;
 
 /**
  * Defines the stream response writer

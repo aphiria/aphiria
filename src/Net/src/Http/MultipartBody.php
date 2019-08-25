@@ -14,8 +14,8 @@ namespace Aphiria\Net\Http;
 
 use Exception;
 use InvalidArgumentException;
-use Opulence\IO\Streams\MultiStream;
-use Opulence\IO\Streams\Stream;
+use Aphiria\IO\Streams\MultiStream;
+use Aphiria\IO\Streams\Stream;
 use RuntimeException;
 
 /**

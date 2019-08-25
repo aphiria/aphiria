@@ -16,7 +16,7 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFo
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use InvalidArgumentException;
 use function mb_convert_encoding;
-use Opulence\IO\Streams\IStream;
+use Aphiria\IO\Streams\IStream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

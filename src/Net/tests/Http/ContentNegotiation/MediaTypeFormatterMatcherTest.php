@@ -18,8 +18,8 @@ use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use InvalidArgumentException;
-use Opulence\Collections\ImmutableHashTable;
-use Opulence\Collections\KeyValuePair;
+use Aphiria\Collections\ImmutableHashTable;
+use Aphiria\Collections\KeyValuePair;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

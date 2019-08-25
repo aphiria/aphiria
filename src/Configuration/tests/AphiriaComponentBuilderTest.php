@@ -17,7 +17,8 @@ use Aphiria\Configuration\IApplicationBuilder;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
-use Opulence\Ioc\IContainer;
+use Aphiria\DependencyInjection\IContainer;
+use Closure;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -43,7 +44,7 @@ class AphiriaComponentBuilderTest extends TestCase
     {
         $this->appBuilder->expects($this->once())
             ->method('registerComponentBuilder')
-            ->with('encoders', $this->callback(function (\Closure $callback) {
+            ->with('encoders', $this->callback(function (Closure $callback) {
                 $callbackWasCalled = false;
                 $callbacks = [
                     function (EncoderRegistry $encoders) use (&$callbackWasCalled) {
@@ -71,7 +72,7 @@ class AphiriaComponentBuilderTest extends TestCase
     {
         $this->appBuilder->expects($this->once())
             ->method('registerComponentBuilder')
-            ->with('exceptionLogLevelFactories', $this->callback(function (\Closure $callback) {
+            ->with('exceptionLogLevelFactories', $this->callback(function (Closure $callback) {
                 $callbackWasCalled = false;
                 $callbacks = [
                     function (ExceptionLogLevelFactoryRegistry $factories) use (&$callbackWasCalled) {
@@ -90,7 +91,7 @@ class AphiriaComponentBuilderTest extends TestCase
     {
         $this->appBuilder->expects($this->once())
             ->method('registerComponentBuilder')
-            ->with('exceptionResponseFactories', $this->callback(function (\Closure $callback) {
+            ->with('exceptionResponseFactories', $this->callback(function (Closure $callback) {
                 $callbackWasCalled = false;
                 $callbacks = [
                     function (ExceptionResponseFactoryRegistry $factories) use (&$callbackWasCalled) {

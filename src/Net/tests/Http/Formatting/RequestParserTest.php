@@ -18,8 +18,8 @@ use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\MultipartBodyPart;
 use InvalidArgumentException;
-use Opulence\Collections\HashTable;
-use Opulence\Collections\IDictionary;
+use Aphiria\Collections\HashTable;
+use Aphiria\Collections\IDictionary;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

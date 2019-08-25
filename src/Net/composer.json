@@ -28,12 +28,12 @@
     }
   },
   "require": {
+    "aphiria/collections": "1.0.*@dev",
+    "aphiria/io": "1.0.*@dev",
     "aphiria/serialization": "1.0.*@dev",
     "ext-fileinfo": "*",
     "ext-json": "*",
     "ext-mbstring": "*",
-    "opulence/collections": "1.1.*@dev",
-    "opulence/io": "1.1.*@dev",
     "php": "^7.4"
   },
   "require-dev": {

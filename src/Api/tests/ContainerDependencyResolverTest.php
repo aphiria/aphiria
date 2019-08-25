@@ -22,9 +22,8 @@ namespace Aphiria\Api\Tests;
 
 use Aphiria\Api\ContainerDependencyResolver;
 use Aphiria\Api\DependencyResolutionException;
-use Opulence\Ioc\IContainer;
-use Opulence\Ioc\IocException;
-use Opulence\Ioc\ResolutionException;
+use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ResolutionException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

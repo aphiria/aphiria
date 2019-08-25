@@ -17,9 +17,12 @@
   "autoload": {
     "psr-4": {
       "Aphiria\\Api\\": "src/Api/src",
+      "Aphiria\\Collections\\": "src/Collections/src",
       "Aphiria\\Configuration\\": "src/Configuration/src",
+      "Aphiria\\DependencyInjection\\": "src/DependencyInjection/src",
       "Aphiria\\Console\\": "src/Console/src",
       "Aphiria\\Exceptions\\": "src/Exceptions/src",
+      "Aphiria\\IO\\": "src/IO/src",
       "Aphiria\\Middleware\\": "src/Middleware/src",
       "Aphiria\\Net\\": "src/Net/src",
       "Aphiria\\RouteAnnotations\\": "src/RouteAnnotations/src",
@@ -30,9 +33,12 @@
   "autoload-dev": {
     "psr-4": {
       "Aphiria\\Api\\Tests\\": "src/Api/tests",
+      "Aphiria\\Collections\\Tests\\": "src/Collections/TestsTemp",
       "Aphiria\\Configuration\\Tests\\": "src/Configuration/tests",
       "Aphiria\\Console\\Tests\\": "src/Console/tests",
+      "Aphiria\\DependencyInjection\\Tests\\": "src/DependencyInjection/TestsTemp",
       "Aphiria\\Exceptions\\Tests\\": "src/Exceptions/tests",
+      "Aphiria\\IO\\Tests\\": "src/IO/TestsTemp",
       "Aphiria\\Middleware\\Tests\\": "src/Middleware/tests",
       "Aphiria\\Net\\Tests\\": "src/Net/tests",
       "Aphiria\\RouteAnnotations\\Tests\\": "src/RouteAnnotations/tests",
@@ -48,10 +54,6 @@
     "ext-mbstring": "*",
     "monolog/monolog": "1.23.*",
     "opis/closure": "3.1.*",
-    "opulence/collections": "1.1.*@dev",
-    "opulence/environments": "1.1.*@dev",
-    "opulence/io": "1.1.*@dev",
-    "opulence/ioc": "dev-develop",
     "php": "^7.4",
     "psr/log": "~1.0"
   },

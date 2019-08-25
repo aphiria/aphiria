@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http\Headers;
 
 use InvalidArgumentException;
-use Opulence\Collections\IImmutableDictionary;
-use Opulence\Collections\ImmutableHashTable;
+use Aphiria\Collections\IImmutableDictionary;
+use Aphiria\Collections\ImmutableHashTable;
 
 /**
  * Defines the Accept-Charset header value
@@ -37,10 +37,10 @@ final class AcceptCharsetHeaderValue implements IHeaderValueWithQualityScore
     {
         $this->charset = $charset;
         $this->parameters = $parameters ?? new ImmutableHashTable([]);
-        $this->quality = 1.0;
-        $this->parameters->tryGet('q', $this->quality);
+        $quality = 1.0;
+        $this->parameters->tryGet('q', $quality);
         // Specifically cast to float for type safety
-        $this->quality = (float)$this->quality;
+        $this->quality = (float)$quality;
 
         if ($this->quality < 0 || $this->quality > 1) {
             throw new InvalidArgumentException('Quality score must be between 0 and 1, inclusive');

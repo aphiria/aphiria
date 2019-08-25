@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
-use Opulence\IO\Streams\IStream;
+use Aphiria\IO\Streams\IStream;
 
 /**
  * Defines the stream HTTP body

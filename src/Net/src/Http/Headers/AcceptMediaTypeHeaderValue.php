@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http\Headers;
 
 use InvalidArgumentException;
-use Opulence\Collections\IImmutableDictionary;
+use Aphiria\Collections\IImmutableDictionary;
 
 /**
  * Defines the Accept media type header value
@@ -30,10 +30,10 @@ final class AcceptMediaTypeHeaderValue extends MediaTypeHeaderValue implements I
     {
         parent::__construct($mediaType, $parameters);
 
-        $this->quality = 1.0;
-        $this->parameters->tryGet('q', $this->quality);
+        $quality = 1.0;
+        $this->parameters->tryGet('q', $quality);
         // Specifically cast to float for type safety
-        $this->quality = (float)$this->quality;
+        $this->quality = (float)$quality;
 
         if ($this->quality < 0 || $this->quality > 1) {
             throw new InvalidArgumentException('Quality score must be between 0 and 1, inclusive');

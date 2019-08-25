@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http;
 
 use InvalidArgumentException;
-use Opulence\Collections\HashTable;
-use Opulence\Collections\KeyValuePair;
+use Aphiria\Collections\HashTable;
+use Aphiria\Collections\KeyValuePair;
 use OutOfBoundsException;
 use RuntimeException;
 

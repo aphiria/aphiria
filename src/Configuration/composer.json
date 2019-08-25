@@ -9,7 +9,7 @@
   "authors": [
     {
       "name": "David Young",
-      "email": "dave@opulencephp.com",
+      "email": "dave@aphiria.com",
       "role": "Architect"
     }
   ],
@@ -27,10 +27,9 @@
   "require": {
     "aphiria/api": "1.0.*@dev",
     "aphiria/console": "1.0.*@dev",
+    "aphiria/dependency-injection": "1.0.*@dev",
     "aphiria/exceptions": "1.0.*@dev",
     "aphiria/route-annotations": "1.0.*@dev",
-    "opulence/environments": "1.1.*@dev",
-    "opulence/ioc": "dev-develop",
     "php": "^7.4",
     "psr/log": "~1.0"
   },

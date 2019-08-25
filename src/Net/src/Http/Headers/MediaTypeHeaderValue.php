@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http\Headers;
 
 use InvalidArgumentException;
-use Opulence\Collections\IImmutableDictionary;
-use Opulence\Collections\ImmutableHashTable;
+use Aphiria\Collections\IImmutableDictionary;
+use Aphiria\Collections\ImmutableHashTable;
 
 /**
  * Defines the base class for media type header values to extend

@@ -14,7 +14,7 @@ namespace Aphiria\Net\Tests\Formatting;
 
 use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Uri;
-use Opulence\Collections\ImmutableHashTable;
+use Aphiria\Collections\ImmutableHashTable;
 use PHPUnit\Framework\TestCase;
 
 /**

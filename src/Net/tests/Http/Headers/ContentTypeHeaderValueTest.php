@@ -14,9 +14,9 @@ namespace Aphiria\Net\Tests\Http\Headers;
 
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use InvalidArgumentException;
-use Opulence\Collections\IImmutableDictionary;
-use Opulence\Collections\ImmutableHashTable;
-use Opulence\Collections\KeyValuePair;
+use Aphiria\Collections\IImmutableDictionary;
+use Aphiria\Collections\ImmutableHashTable;
+use Aphiria\Collections\KeyValuePair;
 use PHPUnit\Framework\TestCase;
 
 /**

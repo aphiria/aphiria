@@ -14,8 +14,8 @@ namespace Aphiria\Net\Tests\Http\Formatting;
 
 use Aphiria\Net\Http\ContentNegotiation\LanguageMatcher;
 use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
-use Opulence\Collections\ImmutableHashTable;
-use Opulence\Collections\KeyValuePair;
+use Aphiria\Collections\ImmutableHashTable;
+use Aphiria\Collections\KeyValuePair;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * Aphiria
+ *
+ * @link      https://www.aphiria.com
+ * @copyright Copyright (C) 2019 David Young
+ * @license   https://github.com/aphiria/dependency-injection/blob/master/LICENSE.md
+ */
+
+declare(strict_types=1);
+
+namespace Aphiria\DependencyInjection\Tests;
+
+use Aphiria\DependencyInjection\InstanceContainerBinding;
+use PHPUnit\Framework\TestCase;
+use stdClass;
+
+/**
+ * Tests the instance container binding
+ */
+class InstanceContainerBindingTest extends TestCase
+{
+    public function testAlwaysResolvedAsSingleton(): void
+    {
+        $binding = new InstanceContainerBinding(new stdClass());
+        $this->assertTrue($binding->resolveAsSingleton());
+    }
+
+    public function testCorrectInstanceIsReturned(): void
+    {
+        $instance = new stdClass();
+        $binding = new InstanceContainerBinding($instance);
+        $this->assertSame($instance, $binding->getInstance());
+    }
+}

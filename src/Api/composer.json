@@ -25,13 +25,13 @@
     }
   },
   "require": {
+    "aphiria/dependency-injection": "1.0.*@dev",
+    "aphiria/io": "1.0.*@dev",
     "aphiria/middleware": "1.0.*@dev",
     "aphiria/net": "1.0.*@dev",
     "aphiria/router": "1.0.*@dev",
     "aphiria/serialization": "1.0.*@dev",
     "monolog/monolog": "1.23.*",
-    "opulence/io": "1.1.*@dev",
-    "opulence/ioc": "dev-develop",
     "php": "^7.4",
     "psr/log": "~1.0"
   },

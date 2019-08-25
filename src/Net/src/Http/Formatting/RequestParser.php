@@ -21,8 +21,8 @@ use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use InvalidArgumentException;
-use Opulence\Collections\IDictionary;
-use Opulence\Collections\IImmutableDictionary;
+use Aphiria\Collections\IDictionary;
+use Aphiria\Collections\IImmutableDictionary;
 use RuntimeException;
 
 /**

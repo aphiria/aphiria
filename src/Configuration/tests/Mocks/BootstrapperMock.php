@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration\Tests\Mocks;
 
-use Opulence\Ioc\Bootstrappers\Bootstrapper;
-use Opulence\Ioc\IContainer;
+use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
+use Aphiria\DependencyInjection\IContainer;
 
 /**
  * Defines a mock bootstrapper for use in testing

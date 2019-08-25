@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\Net\Http\StreamBody;
-use Opulence\IO\Streams\IStream;
+use Aphiria\IO\Streams\IStream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

@@ -14,7 +14,7 @@ namespace Aphiria\Net\Tests\Http\Formatting;
 
 use Aphiria\Net\Http\Formatting\HttpBodyParser;
 use Aphiria\Net\Http\IHttpBody;
-use Opulence\Collections\HashTable;
+use Aphiria\Collections\HashTable;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

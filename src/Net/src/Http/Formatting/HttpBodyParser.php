@@ -19,9 +19,9 @@ use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
 use finfo;
 use InvalidArgumentException;
-use Opulence\Collections\HashTable;
-use Opulence\Collections\IDictionary;
-use Opulence\Collections\KeyValuePair;
+use Aphiria\Collections\HashTable;
+use Aphiria\Collections\IDictionary;
+use Aphiria\Collections\KeyValuePair;
 use RuntimeException;
 
 /**

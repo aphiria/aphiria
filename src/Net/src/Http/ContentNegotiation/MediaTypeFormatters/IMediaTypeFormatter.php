@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
 use Aphiria\Serialization\SerializationException;
-use Opulence\IO\Streams\IStream;
+use Aphiria\IO\Streams\IStream;
 
 /**
  * Defines the interface for media type formatters to implement
