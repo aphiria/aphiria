@@ -5,7 +5,7 @@
  *
  * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/aphiria/router/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/aphiria/blob/master/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -15,7 +15,7 @@ declare(strict_types=1);
  *
  * @link      https://www.aphiria.com
  * @copyright Copyright (C) 2019 David Young
- * @license   https://github.com/aphiria/Aphiria/blob/master/LICENSE.md
+ * @license   https://github.com/aphiria/aphiria/blob/master/LICENSE.md
  */
 
 namespace Aphiria\Routing\Tests\Matchers\Trees\Caching;
