@@ -33,12 +33,12 @@
   "autoload-dev": {
     "psr-4": {
       "Aphiria\\Api\\Tests\\": "src/Api/tests",
-      "Aphiria\\Collections\\Tests\\": "src/Collections/TestsTemp",
+      "Aphiria\\Collections\\Tests\\": "src/Collections/tests",
       "Aphiria\\Configuration\\Tests\\": "src/Configuration/tests",
       "Aphiria\\Console\\Tests\\": "src/Console/tests",
-      "Aphiria\\DependencyInjection\\Tests\\": "src/DependencyInjection/TestsTemp",
+      "Aphiria\\DependencyInjection\\Tests\\": "src/DependencyInjection/tests",
       "Aphiria\\Exceptions\\Tests\\": "src/Exceptions/tests",
-      "Aphiria\\IO\\Tests\\": "src/IO/TestsTemp",
+      "Aphiria\\IO\\Tests\\": "src/IO/tests",
       "Aphiria\\Middleware\\Tests\\": "src/Middleware/tests",
       "Aphiria\\Net\\Tests\\": "src/Net/tests",
       "Aphiria\\RouteAnnotations\\Tests\\": "src/RouteAnnotations/tests",

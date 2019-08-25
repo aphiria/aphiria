@@ -3,12 +3,12 @@
     colors="true">
     <testsuite name="Aphiria">
         <directory>src/Api/tests</directory>
-        <directory>src/Collections/TestsTemp</directory>
+        <directory>src/Collections/tests</directory>
         <directory>src/Configuration/tests</directory>
         <directory>src/Console/tests</directory>
-        <directory>src/DependencyInjection/TestsTemp</directory>
+        <directory>src/DependencyInjection/tests</directory>
         <directory>src/Exceptions/tests</directory>
-        <directory>src/IO/TestsTemp</directory>
+        <directory>src/IO/tests</directory>
         <directory>src/Middleware/tests</directory>
         <directory>src/Net/tests</directory>
         <directory>src/RouteAnnotations/tests</directory>
