@@ -24,9 +24,9 @@ then
     exit 1
 fi
 
-dirs_to_repos=(["Api"]="api" ["Collections"]="collections" ["Configuration"]="configuration" ["DependencyInjection"]="dependency-injection" ["Exceptions"]="exceptions" ["IO"]="io" ["Middleware"]="middleware" ["Net"]="net" ["RouteAnnotations"]="route-annotations" ["Router"]="router" ["Serialization"]="serialization")
+declare -A dirs_to_repos=(["Api"]="api" ["Collections"]="collections" ["Configuration"]="configuration" ["DependencyInjection"]="dependency-injection" ["Exceptions"]="exceptions" ["IO"]="io" ["Middleware"]="middleware" ["Net"]="net" ["RouteAnnotations"]="route-annotations" ["Router"]="router" ["Serialization"]="serialization")
 
-for dir in ${!dirs_to_repos[@]}
+for dir in "${!dirs_to_repos[@]}"
 do
     remote=${dirs_to_repos[$dir]}
 
@@ -34,7 +34,7 @@ do
     git remote add "$remote" https://$GIT_USER:$GIT_ACCESS_TOKEN@github.com/aphiria/$remote.git >/dev/null 2>&1
 
     echo "Splitting $dir"
-    sha=$(./bin/splitsh-lite --prefix="src/$dir/")
+    sha=$(./bin/splitsh-lite --prefix="src/$dir")
 
     if [ -z "$sha" ]
     then
