@@ -26,11 +26,8 @@ class RouteActionTest extends TestCase
     private const CLASS_NAME = 'Foo';
     /** @const The name of the method used in our method action */
     private const METHOD_NAME = 'bar';
-    /** @var RouteAction An instance that uses a closure as the action */
     private RouteAction $closureAction;
-    /** @var Closure The closure used in the closure action */
     private Closure $closure;
-    /** @var RouteAction An instance that uses a method as the action */
     private RouteAction $methodAction;
 
     protected function setUp(): void

@@ -21,9 +21,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ClosureRouteActionTest extends TestCase
 {
-    /** @var ClosureRouteAction An instance that uses a closure as the action */
     private ClosureRouteAction $closureAction;
-    /** @var Closure The closure used in the closure action */
     private Closure $closure;
 
     protected function setUp(): void

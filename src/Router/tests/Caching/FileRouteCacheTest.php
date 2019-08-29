@@ -28,7 +28,6 @@ class FileRouteCacheTest extends TestCase
 {
     /** @var string The path to the route cache */
     private const PATH = __DIR__ . '/tmp/routes.cache';
-    /** @var FileRouteCache The cache to test */
     private FileRouteCache $cache;
 
     protected function setUp(): void

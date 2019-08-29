@@ -14,6 +14,7 @@ namespace Aphiria\Api\Controllers;
 
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
 use Aphiria\Net\Http\HttpException;
@@ -22,7 +23,6 @@ use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Uri;
-use Aphiria\Serialization\SerializationException;
 use InvalidArgumentException;
 use LogicException;
 
@@ -203,27 +203,7 @@ class Controller
      */
     protected function found($uri, $body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        if (!$this->request instanceof IHttpRequestMessage) {
-            throw new LogicException('Request is not set');
-        }
-
-        if (is_string($uri)) {
-            $uriString = $uri;
-        } elseif ($uri instanceof Uri) {
-            $uriString = (string)$uri;
-        } else {
-            throw new InvalidArgumentException('URI must be a string or instance of ' . Uri::class);
-        }
-
-        $response = $this->negotiatedResponseFactory->createResponse(
-            $this->request,
-            HttpStatusCodes::HTTP_FOUND,
-            $headers,
-            $body
-        );
-        $response->getHeaders()->add('Location', $uriString);
-
-        return $response;
+        return $this->redirect(HttpStatusCodes::HTTP_FOUND, $uri, $body, $headers);
     }
 
     /**
@@ -262,27 +242,7 @@ class Controller
      */
     protected function movedPermanently($uri, $body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
-        if (!$this->request instanceof IHttpRequestMessage) {
-            throw new LogicException('Request is not set');
-        }
-
-        if (is_string($uri)) {
-            $uriString = $uri;
-        } elseif ($uri instanceof Uri) {
-            $uriString = (string)$uri;
-        } else {
-            throw new InvalidArgumentException('URI must be a string or instance of ' . Uri::class);
-        }
-
-        $response = $this->negotiatedResponseFactory->createResponse(
-            $this->request,
-            HttpStatusCodes::HTTP_MOVED_PERMANENTLY,
-            $headers,
-            $body
-        );
-        $response->getHeaders()->add('Location', $uriString);
-
-        return $response;
+        return $this->redirect(HttpStatusCodes::HTTP_MOVED_PERMANENTLY, $uri, $body, $headers);
     }
 
     /**
@@ -412,5 +372,42 @@ class Controller
             $headers,
             $body
         );
+    }
+
+    /**
+     * Creates a redirect redirect response
+     *
+     * @param int $statusCode The redirect status code to use
+     * @param string|Uri $uri The URI to redirect to
+     * @param object|string|int|float|array|null $body The raw response body
+     * @param HttpHeaders|null $headers The headers to use
+     * @return IHttpResponseMessage The response
+     * @throws InvalidArgumentException Thrown if the URI is not a string nor a URI
+     * @throws HttpException Thrown if there was an error creating the response
+     * @throws LogicException Thrown if the request is not set
+     */
+    private function redirect(int $statusCode, $uri, $body = null, HttpHeaders $headers = null): IHttpResponseMessage
+    {
+        if (!$this->request instanceof IHttpRequestMessage) {
+            throw new LogicException('Request is not set');
+        }
+
+        if (is_string($uri)) {
+            $uriString = $uri;
+        } elseif ($uri instanceof Uri) {
+            $uriString = (string)$uri;
+        } else {
+            throw new InvalidArgumentException('URI must be a string or instance of ' . Uri::class);
+        }
+
+        $response = $this->negotiatedResponseFactory->createResponse(
+            $this->request,
+            $statusCode,
+            $headers,
+            $body
+        );
+        $response->getHeaders()->add('Location', $uriString);
+
+        return $response;
     }
 }

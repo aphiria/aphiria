@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
 use Aphiria\Serialization\ISerializer;
+use Aphiria\Serialization\SerializationException as SerializerSerializationException;
 use Aphiria\Serialization\TypeResolver;
 use InvalidArgumentException;
 use Aphiria\IO\Streams\IStream;
@@ -42,7 +43,11 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
             throw new InvalidArgumentException(static::class . " cannot read type $type");
         }
 
-        return $this->serializer->deserialize((string)$stream, $type);
+        try {
+            return $this->serializer->deserialize((string)$stream, $type);
+        } catch (SerializerSerializationException $ex) {
+            throw new SerializationException("Failed to read content from stream as type $type", 0, $ex);
+        }
     }
 
     /**
@@ -62,7 +67,12 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
             throw new InvalidArgumentException("$encoding is not supported for " . static::class);
         }
 
-        $serializedObject = $this->serializer->serialize($value);
+        try {
+            $serializedObject = $this->serializer->serialize($value);
+        } catch (SerializerSerializationException $ex) {
+            throw new SerializationException('Failed to write content to stream', 0, $ex);
+        }
+
         $encodedSerializedObject = mb_convert_encoding($serializedObject, $encoding);
         $stream->write($encodedSerializedObject);
     }

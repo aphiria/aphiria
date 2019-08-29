@@ -37,7 +37,6 @@ class FileTrieCacheTest extends TestCase
 {
     /** @var string The path to the trie cache */
     private const PATH = __DIR__ . '/tmp/routes.cache';
-    /** @var FileTrieCache The cache to test */
     private FileTrieCache $cache;
 
     protected function setUp(): void

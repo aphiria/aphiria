@@ -22,7 +22,6 @@ use PHPUnit\Framework\TestCase;
  */
 class RouteGroupOptionsTest extends TestCase
 {
-    /** @var RouteGroupOptions The options to use in tests */
     private RouteGroupOptions $routeGroupOptions;
     /** @var IRouteConstraint[] The list of constraints */
     private array $constraints;

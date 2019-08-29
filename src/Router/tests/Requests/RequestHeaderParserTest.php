@@ -34,7 +34,6 @@ class RequestHeaderParserTest extends TestCase
         'HTTP_REFERER' => 'referer',
         'HTTP_USER_AGENT' => 'user_agent'
     ];
-    /** @var RequestHeaderParser The header parse to use in tests */
     private RequestHeaderParser $headerParser;
 
     protected function setUp(): void

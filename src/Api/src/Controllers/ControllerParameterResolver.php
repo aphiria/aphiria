@@ -15,8 +15,8 @@ namespace Aphiria\Api\Controllers;
 use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Serialization\SerializationException;
 use ReflectionParameter;
 
 /**

@@ -26,7 +26,6 @@ use PHPUnit\Framework\TestCase;
  */
 class RouteBuilderTest extends TestCase
 {
-    /** @var RouteBuilder The route builder to use in tests */
     private RouteBuilder $routeBuilder;
 
     protected function setUp(): void

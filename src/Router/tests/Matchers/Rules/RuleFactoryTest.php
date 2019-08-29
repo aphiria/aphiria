@@ -23,7 +23,6 @@ use RuntimeException;
  */
 class RuleFactoryTest extends TestCase
 {
-    /** @var RuleFactory The rule factory to use in tests */
     private RuleFactory $ruleFactory;
 
     protected function setUp(): void

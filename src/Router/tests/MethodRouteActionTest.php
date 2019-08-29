@@ -24,7 +24,6 @@ class MethodRouteActionTest extends TestCase
     private const CLASS_NAME = 'Foo';
     /** @const The name of the method used in our method action */
     private const METHOD_NAME = 'bar';
-    /** @var MethodRouteAction An instance that uses a method as the action */
     private MethodRouteAction $methodAction;
 
     protected function setUp(): void

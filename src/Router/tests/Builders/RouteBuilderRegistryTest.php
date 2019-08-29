@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\Builders;
 
+use Aphiria\Routing\Builders\RouteBuilder;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\Builders\RouteGroupOptions;
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
@@ -24,7 +25,6 @@ use PHPUnit\Framework\TestCase;
  */
 class RouteBuilderRegistryTest extends TestCase
 {
-    /** @var RouteBuilderRegistry The registry to use in tests */
     private RouteBuilderRegistry $registry;
 
     protected function setUp(): void
@@ -189,6 +189,25 @@ class RouteBuilderRegistryTest extends TestCase
         $routes = $this->registry->buildAll();
         $this->assertCount(1, $routes);
         $this->assertEquals('/foo', $routes[0]->uriTemplate->pathTemplate);
+    }
+
+    public function testMapConvenienceMethodsCreateRoutesWithProperMethods(): void
+    {
+        foreach (['DELETE', 'GET', 'OPTIONS', 'PATCH', 'PUT'] as $httpMethod) {
+            /** @var RouteBuilder $routeBuilder */
+            $routeBuilder = $this->registry->{\strtolower($httpMethod)}('foo');
+            $routeBuilder->toMethod('Foo', 'bar');
+            $route = $routeBuilder->build();
+            $this->assertCount(1, $route->constraints);
+            /** @var HttpMethodRouteConstraint $methodConstraint */
+            $methodConstraint = $route->constraints[0];
+            $this->assertInstanceOf(HttpMethodRouteConstraint::class, $methodConstraint);
+            /**
+             * Specifically checking contains as opposed to equals because some constraints, eg GET, might contain
+             * additional methods, eg HEAD
+             */
+            $this->assertContains($httpMethod, $methodConstraint->getAllowedMethods());
+        }
     }
 
     public function testNestedGroupOptionsAreAddedCorrectlyToRoute(): void
