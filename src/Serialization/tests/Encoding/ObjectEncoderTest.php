@@ -428,6 +428,19 @@ class ObjectEncoderTest extends TestCase
         $this->objectEncoder->encode([], new EncodingContext());
     }
 
+    public function testEncodingNullablePropertyWithNullValueReturnsNull(): void
+    {
+        $object = new ConstructorWithNullableParams(null);
+        $this->assertEquals(['foo' => null], $this->objectEncoder->encode($object, new EncodingContext()));
+    }
+
+    public function testEncodingNullablePropertyWithStringValueReturnsString(): void
+    {
+        $object = new ConstructorWithNullableParams('bar');
+        $this->encoders->registerDefaultScalarEncoder(new ScalarEncoder());
+        $this->assertEquals(['foo' => 'bar'], $this->objectEncoder->encode($object, new EncodingContext()));
+    }
+
     public function testIgnoringPropertyNameThatIsNotStringOrArrayThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

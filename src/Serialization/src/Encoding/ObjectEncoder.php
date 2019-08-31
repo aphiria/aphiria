@@ -184,12 +184,14 @@ final class ObjectEncoder implements IEncoder
                 $property->setAccessible(true);
             }
 
-            $formattedPropertyName = $this->propertyNameFormatter === null ?
-                $property->getName() :
-                $this->propertyNameFormatter->formatPropertyName($property->getName());
+            $formattedPropertyName = $this->propertyNameFormatter === null
+                ? $property->getName()
+                : $this->propertyNameFormatter->formatPropertyName($property->getName());
             $propertyValue = $property->getValue($object);
-            $encodedObject[$formattedPropertyName] = $this->encoders->getEncoderForValue($propertyValue)
-                ->encode($propertyValue, $context);
+            $encodedObject[$formattedPropertyName] = $propertyValue === null
+                ? null
+                : $this->encoders->getEncoderForValue($propertyValue)
+                    ->encode($propertyValue, $context);
         }
 
         return $encodedObject;
