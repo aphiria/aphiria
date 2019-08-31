@@ -27,7 +27,7 @@
   "require": {
     "aphiria/middleware": "1.0.*@dev",
     "aphiria/net": "1.0.*@dev",
-    "monolog/monolog": "1.23.*",
+    "monolog/monolog": "~2.0",
     "php": "^7.4",
     "psr/log": "~1.0"
   },
