@@ -9,4 +9,4 @@
 
 <h1>Documentation</h1>
 
-Full documentation is available <a href="https://github.com/aphiria/docs/blob/master/io.md" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/master/io.html" target="_blank">here</a>.

@@ -11,6 +11,6 @@
 
 Read the full documentation for this library's components:
 
-* <a href="https://github.com/aphiria/docs/blob/master/controllers.md" target="_blank">Controllers</a>
-* <a href="https://github.com/aphiria/docs/blob/master/http-exception-handling.md" target="_blank">Exception Handling</a>
-* <a href="https://github.com/aphiria/docs/blob/master/content-negotiation.md" target="_blank">Content Negotiation</a>
+* <a href="https://www.aphiria.com/docs/master/controllers.html" target="_blank">Controllers</a>
+* <a href="https://www.aphiria.com/docs/master/http-exception-handling.html" target="_blank">Exception Handling</a>
+* <a href="https://www.aphiria.com/docs/master/content-negotiation.html" target="_blank">Content Negotiation</a>

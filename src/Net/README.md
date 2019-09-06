@@ -11,6 +11,6 @@
 
 Read the full documentation for this library's components:
 
-* <a href="https://github.com/aphiria/docs/blob/master/http-requests.md" target="_blank">HTTP Requests</a>
-* <a href="https://github.com/aphiria/docs/blob/master/http-responses.md" target="_blank">HTTP Responses</a>
-* <a href="https://github.com/aphiria/docs/blob/master/content-negotiation.md" target="_blank">Content Negotiation</a>
+* <a href="https://www.aphiria.com/docs/master/http-requests.html" target="_blank">HTTP Requests</a>
+* <a href="https://www.aphiria.com/docs/master/http-responses.html" target="_blank">HTTP Responses</a>
+* <a href="https://www.aphiria.com/docs/master/content-negotiation.html" target="_blank">Content Negotiation</a>
