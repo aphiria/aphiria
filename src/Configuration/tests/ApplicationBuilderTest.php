@@ -18,6 +18,7 @@ use Aphiria\Configuration\IModuleBuilder;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use BadMethodCallException;
@@ -46,10 +47,38 @@ class ApplicationBuilderTest extends TestCase
         $this->appBuilder = new ApplicationBuilder($this->container, $this->bootstrapperDispatcher);
     }
 
+    public function testBuildingApiBindsAppToContainer(): void
+    {
+        $this->setRouter();
+        $this->container->expects($this->at(4))
+            ->method('bindInstance')
+            ->with(IRequestHandler::class, $this->callback(fn ($app) => $app instanceof IRequestHandler));
+        $this->appBuilder->buildApiApplication();
+    }
+
     public function testBuildingApiReturnsInstanceOfAppByDefault(): void
     {
         $this->setRouter();
         $this->assertInstanceOf(App::class, $this->appBuilder->buildApiApplication());
+    }
+
+    public function testBuildingConsoleBindsAppToContainer(): void
+    {
+        $this->container->expects($this->at(0))
+            ->method('hasBinding')
+            ->with(CommandRegistry::class)
+            ->willReturn(false);
+        $this->container->expects($this->at(1))
+            ->method('bindInstance')
+            ->with(CommandRegistry::class, $commands = new CommandRegistry());
+        $this->container->expects($this->at(2))
+            ->method('resolve')
+            ->with(CommandRegistry::class)
+            ->willReturn($commands);
+        $this->container->expects($this->at(3))
+            ->method('bindInstance')
+            ->with(ICommandBus::class, $this->callback(fn ($app) => $app instanceof ICommandBus));
+        $this->appBuilder->buildConsoleApplication();
     }
 
     public function testBuildingConsoleBindsNewCommandRegistryBoundToContainerIfNotAlreadyBound(): void

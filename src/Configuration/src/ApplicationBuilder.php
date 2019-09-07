@@ -91,8 +91,10 @@ final class ApplicationBuilder implements IApplicationBuilder
         try {
             $this->dispatchBootstrappers();
             $this->buildComponents();
+            $apiApp = $this->createRequestHandler();
+            $this->container->bindInstance(IRequestHandler::class, $apiApp);
 
-            return $this->createRequestHandler();
+            return $apiApp;
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build API app', 0, $ex);
         }
@@ -107,8 +109,10 @@ final class ApplicationBuilder implements IApplicationBuilder
             $this->dispatchBootstrappers();
             $this->buildConsoleCommands();
             $this->buildComponents();
+            $consoleApp = new ConsoleApp($this->container->resolve(CommandRegistry::class));
+            $this->container->bindInstance(ICommandBus::class, $consoleApp);
 
-            return new ConsoleApp($this->container->resolve(CommandRegistry::class));
+            return $consoleApp;
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build console app', 0, $ex);
         }
