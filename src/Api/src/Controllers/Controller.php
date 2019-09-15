@@ -146,17 +146,26 @@ class Controller
     /**
      * Creates a created response
      *
+     * @param string|Uri $uri The location of the created entity
      * @param object|string|int|float|array|null $body The raw response body
      * @param HttpHeaders|null $headers The headers to use
      * @return IHttpResponseMessage The response
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
+     * @throws InvalidArgumentException Thrown if the URI was not the correct type
      */
-    protected function created($body = null, HttpHeaders $headers = null): IHttpResponseMessage
+    protected function created($uri, $body = null, HttpHeaders $headers = null): IHttpResponseMessage
     {
         if (!$this->request instanceof IHttpRequestMessage) {
             throw new LogicException('Request is not set');
         }
+
+        if (!\is_string($uri) && !$uri instanceof Uri) {
+            throw new InvalidArgumentException('URI must be a string or an instance of ' . Uri::class);
+        }
+
+        $headers = $headers ?? new HttpHeaders();
+        $headers->add('Location', (string)$uri);
 
         return $this->negotiatedResponseFactory->createResponse(
             $this->request,
