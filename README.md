@@ -1,4 +1,4 @@
-<p align="center"><a href="https://www.aphiria.com" target="_blank" title="Aphiria"><img src="https://www.aphiria.com/images/aphiria-logo.png"></a></p>
+<p align="center"><a href="https://www.aphiria.com" target="_blank" title="Aphiria"><img src="https://www.aphiria.com/images/aphiria-logo.svg"></a></p>
 
 <p align="center">
 <a href="https://travis-ci.com/aphiria/aphiria"><img src="https://travis-ci.com/aphiria/aphiria.svg"></a>
