@@ -11,4 +11,4 @@
 
 <h1>Documentation</h1>
 
-Full documentation is available <a href="https://github.com/aphiria/docs" target="_blank">here</a>.
+Full documentation is available at <a href="https://www.aphiria.com" target="_blank">the Aphiria website</a>.
