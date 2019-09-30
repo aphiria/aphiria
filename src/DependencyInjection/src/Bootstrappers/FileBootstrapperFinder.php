@@ -54,7 +54,7 @@ final class FileBootstrapperFinder
                 }
 
                 $tokens = token_get_all(file_get_contents($file->getRealPath()));
-                $allClassNames = array_merge($allClassNames, $this->getClassNamesFromTokens($tokens));
+                $allClassNames = [...$allClassNames, ...$this->getClassNamesFromTokens($tokens)];
             }
         }
 
