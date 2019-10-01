@@ -1,49 +1,49 @@
 {
-  "name": "aphiria/api",
-  "description": "The Aphiria API library",
-  "keywords": [
-    "PHP",
-    "API",
-    "controller"
-  ],
-  "authors": [
-    {
-      "name": "David Young",
-      "email": "dave@aphiria.com",
-      "role": "Architect"
-    }
-  ],
-  "license": "MIT",
-  "autoload": {
-    "psr-4": {
-      "Aphiria\\Api\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Aphiria\\Api\\Tests\\": "tests"
-    }
-  },
-  "require": {
-    "aphiria/dependency-injection": "1.0.*@dev",
-    "aphiria/middleware": "1.0.*@dev",
-    "aphiria/net": "1.0.*@dev",
-    "aphiria/router": "1.0.*@dev",
-    "monolog/monolog": "~2.0",
-    "php": "^7.4",
-    "psr/log": "~1.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "~8.0"
-  },
-  "scripts": {
-    "lint-check": "php-cs-fixer fix --config=.php_cs -v --diff --dry-run",
-    "lint-fix": "php-cs-fixer fix --config=.php_cs -v --diff"
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.x-dev"
-    }
-  },
-  "minimum-stability": "dev"
+    "name": "aphiria/api",
+    "description": "The Aphiria API library",
+    "keywords": [
+        "PHP",
+        "API",
+        "controller"
+    ],
+    "authors": [
+        {
+            "name": "David Young",
+            "email": "dave@aphiria.com",
+            "role": "Architect"
+        }
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Aphiria\\Api\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aphiria\\Api\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "aphiria/dependency-injection": "1.0.*@dev",
+        "aphiria/middleware": "1.0.*@dev",
+        "aphiria/net": "1.0.*@dev",
+        "aphiria/router": "1.0.*@dev",
+        "monolog/monolog": "~2.0",
+        "php": "^7.4",
+        "psr/log": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~8.0"
+    },
+    "scripts": {
+        "lint-check": "php-cs-fixer fix --config=.php_cs -v --diff --dry-run",
+        "lint-fix": "php-cs-fixer fix --config=.php_cs -v --diff"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "minimum-stability": "dev"
 }

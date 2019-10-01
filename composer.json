@@ -1,75 +1,75 @@
 {
-  "name": "aphiria/aphiria",
-  "description": "The Aphiria framework",
-  "keywords": [
-    "PHP",
-    "API",
-    "REST"
-  ],
-  "authors": [
-    {
-      "name": "David Young",
-      "email": "dave@aphiria.com",
-      "role": "Architect"
-    }
-  ],
-  "license": "MIT",
-  "autoload": {
-    "psr-4": {
-      "Aphiria\\Api\\": "src/Api/src",
-      "Aphiria\\Collections\\": "src/Collections/src",
-      "Aphiria\\Configuration\\": "src/Configuration/src",
-      "Aphiria\\DependencyInjection\\": "src/DependencyInjection/src",
-      "Aphiria\\Console\\": "src/Console/src",
-      "Aphiria\\Exceptions\\": "src/Exceptions/src",
-      "Aphiria\\IO\\": "src/IO/src",
-      "Aphiria\\Middleware\\": "src/Middleware/src",
-      "Aphiria\\Net\\": "src/Net/src",
-      "Aphiria\\RouteAnnotations\\": "src/RouteAnnotations/src",
-      "Aphiria\\Routing\\": "src/Router/src",
-      "Aphiria\\Serialization\\": "src/Serialization/src",
-      "Aphiria\\Sessions\\": "src/Sessions/src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Aphiria\\Api\\Tests\\": "src/Api/tests",
-      "Aphiria\\Collections\\Tests\\": "src/Collections/tests",
-      "Aphiria\\Configuration\\Tests\\": "src/Configuration/tests",
-      "Aphiria\\Console\\Tests\\": "src/Console/tests",
-      "Aphiria\\DependencyInjection\\Tests\\": "src/DependencyInjection/tests",
-      "Aphiria\\Exceptions\\Tests\\": "src/Exceptions/tests",
-      "Aphiria\\IO\\Tests\\": "src/IO/tests",
-      "Aphiria\\Middleware\\Tests\\": "src/Middleware/tests",
-      "Aphiria\\Net\\Tests\\": "src/Net/tests",
-      "Aphiria\\RouteAnnotations\\Tests\\": "src/RouteAnnotations/tests",
-      "Aphiria\\Routing\\Tests\\": "src/Router/tests",
-      "Aphiria\\Serialization\\Tests\\": "src/Serialization/tests",
-      "Aphiria\\Sessions\\Tests\\": "src/Sessions/tests"
-    }
-  },
-  "require": {
-    "doctrine/annotations": "2.0.*@dev",
-    "ext-ctype": "*",
-    "ext-fileinfo": "*",
-    "ext-json": "*",
-    "ext-mbstring": "*",
-    "monolog/monolog": "~2.0",
-    "opis/closure": "3.1.*",
-    "php": "^7.4",
-    "psr/log": "~1.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "~8.0"
-  },
-  "scripts": {
-    "lint-check": "php-cs-fixer fix --config=.php_cs -v --diff --dry-run",
-    "lint-fix": "php-cs-fixer fix --config=.php_cs -v --diff"
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.x-dev"
-    }
-  },
-  "minimum-stability": "dev"
+    "name": "aphiria/aphiria",
+    "description": "The Aphiria framework",
+    "keywords": [
+        "PHP",
+        "API",
+        "REST"
+    ],
+    "authors": [
+        {
+            "name": "David Young",
+            "email": "dave@aphiria.com",
+            "role": "Architect"
+        }
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Aphiria\\Api\\": "src/Api/src",
+            "Aphiria\\Collections\\": "src/Collections/src",
+            "Aphiria\\Configuration\\": "src/Configuration/src",
+            "Aphiria\\DependencyInjection\\": "src/DependencyInjection/src",
+            "Aphiria\\Console\\": "src/Console/src",
+            "Aphiria\\Exceptions\\": "src/Exceptions/src",
+            "Aphiria\\IO\\": "src/IO/src",
+            "Aphiria\\Middleware\\": "src/Middleware/src",
+            "Aphiria\\Net\\": "src/Net/src",
+            "Aphiria\\RouteAnnotations\\": "src/RouteAnnotations/src",
+            "Aphiria\\Routing\\": "src/Router/src",
+            "Aphiria\\Serialization\\": "src/Serialization/src",
+            "Aphiria\\Sessions\\": "src/Sessions/src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aphiria\\Api\\Tests\\": "src/Api/tests",
+            "Aphiria\\Collections\\Tests\\": "src/Collections/tests",
+            "Aphiria\\Configuration\\Tests\\": "src/Configuration/tests",
+            "Aphiria\\Console\\Tests\\": "src/Console/tests",
+            "Aphiria\\DependencyInjection\\Tests\\": "src/DependencyInjection/tests",
+            "Aphiria\\Exceptions\\Tests\\": "src/Exceptions/tests",
+            "Aphiria\\IO\\Tests\\": "src/IO/tests",
+            "Aphiria\\Middleware\\Tests\\": "src/Middleware/tests",
+            "Aphiria\\Net\\Tests\\": "src/Net/tests",
+            "Aphiria\\RouteAnnotations\\Tests\\": "src/RouteAnnotations/tests",
+            "Aphiria\\Routing\\Tests\\": "src/Router/tests",
+            "Aphiria\\Serialization\\Tests\\": "src/Serialization/tests",
+            "Aphiria\\Sessions\\Tests\\": "src/Sessions/tests"
+        }
+    },
+    "require": {
+        "doctrine/annotations": "2.0.*@dev",
+        "ext-ctype": "*",
+        "ext-fileinfo": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "monolog/monolog": "~2.0",
+        "opis/closure": "3.1.*",
+        "php": "^7.4",
+        "psr/log": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~8.0"
+    },
+    "scripts": {
+        "lint-check": "php-cs-fixer fix --config=.php_cs -v --diff --dry-run",
+        "lint-fix": "php-cs-fixer fix --config=.php_cs -v --diff"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "minimum-stability": "dev"
 }
