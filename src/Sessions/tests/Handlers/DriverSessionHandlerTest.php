@@ -14,7 +14,7 @@ namespace Aphiria\Sessions\Tests\Handlers;
 
 use Aphiria\Sessions\Handlers\ISessionDriver;
 use Aphiria\Sessions\Handlers\ISessionEncrypter;
-use Aphiria\Sessions\Handlers\SessionDriverHandler;
+use Aphiria\Sessions\Handlers\DriverSessionHandler;
 use Aphiria\Sessions\Handlers\SessionEncryptionException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -22,16 +22,16 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests the session handler powered by a driver
  */
-class SessionDriverHandlerTest extends TestCase
+class DriverSessionHandlerTest extends TestCase
 {
     /** @var ISessionDriver|MockObject */
     private ISessionDriver $driver;
-    private SessionDriverHandler $sessionHandler;
+    private DriverSessionHandler $sessionHandler;
 
     protected function setUp(): void
     {
         $this->driver = $this->createMock(ISessionDriver::class);
-        $this->sessionHandler = new SessionDriverHandler($this->driver);
+        $this->sessionHandler = new DriverSessionHandler($this->driver);
     }
 
     public function testCloseAlwaysReturnsTrue(): void
@@ -56,7 +56,7 @@ class SessionDriverHandlerTest extends TestCase
     {
         /** @var ISessionEncrypter|MockObject $encrypter */
         $encrypter = $this->createMock(ISessionEncrypter::class);
-        $sessionHandlerWithEncrypter = new SessionDriverHandler($this->driver, $encrypter);
+        $sessionHandlerWithEncrypter = new DriverSessionHandler($this->driver, $encrypter);
         $this->driver->expects($this->once())
             ->method('get')
             ->with('foo')
@@ -71,7 +71,7 @@ class SessionDriverHandlerTest extends TestCase
     {
         /** @var ISessionEncrypter|MockObject $encrypter */
         $encrypter = $this->createMock(ISessionEncrypter::class);
-        $sessionHandlerWithEncrypter = new SessionDriverHandler($this->driver, $encrypter);
+        $sessionHandlerWithEncrypter = new DriverSessionHandler($this->driver, $encrypter);
         $this->driver->expects($this->once())
             ->method('get')
             ->with('foo')
@@ -95,7 +95,7 @@ class SessionDriverHandlerTest extends TestCase
     {
         /** @var ISessionEncrypter|MockObject $encrypter */
         $encrypter = $this->createMock(ISessionEncrypter::class);
-        $sessionHandlerWithEncrypter = new SessionDriverHandler($this->driver, $encrypter);
+        $sessionHandlerWithEncrypter = new DriverSessionHandler($this->driver, $encrypter);
         $this->driver->expects($this->once())
             ->method('set')
             ->with('foo', 'baz');
@@ -109,7 +109,7 @@ class SessionDriverHandlerTest extends TestCase
     {
         /** @var ISessionEncrypter|MockObject $encrypter */
         $encrypter = $this->createMock(ISessionEncrypter::class);
-        $sessionHandlerWithEncrypter = new SessionDriverHandler($this->driver, $encrypter);
+        $sessionHandlerWithEncrypter = new DriverSessionHandler($this->driver, $encrypter);
         $this->driver->expects($this->never())
             ->method('set');
         $encrypter->method('encrypt')

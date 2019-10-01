@@ -15,7 +15,6 @@
         <directory>src/Router/tests</directory>
         <directory>src/Serialization/tests</directory>
         <directory>src/Sessions/tests</directory>
-        <exclude>src/RouteAnnotations/tests/ReflectionRouteAnnotationRegistrantTest.php</exclude>
     </testsuite>
      <filter>
         <whitelist>

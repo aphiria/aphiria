@@ -47,8 +47,8 @@ final class Cookie
      * @param string $name The name of the cookie
      * @param mixed $value The value of the cookie
      * @param DateTime|int|null $expiration The expiration of the cookie if set, otherwise null
-     * @param string $path The path the cookie applies to
-     * @param string $domain The domain the cookie applies to
+     * @param string|null $path The path the cookie applies to
+     * @param string|null $domain The domain the cookie applies to
      * @param bool $isSecure Whether or not this cookie is HTTPS-only
      * @param bool $isHttpOnly Whether or not this cookie can be read client-side
      * @param string|null $sameSite The same-site setting to use, or null if none is specified

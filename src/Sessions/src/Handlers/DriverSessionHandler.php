@@ -17,7 +17,7 @@ use SessionHandlerInterface;
 /**
  * Defines a session handler backed by a driver
  */
-final class SessionDriverHandler implements SessionHandlerInterface
+final class DriverSessionHandler implements SessionHandlerInterface
 {
     /** @var ISessionDriver The session driver to use */
     private ISessionDriver $driver;
