@@ -137,7 +137,7 @@ class ArrayList implements IList
      */
     public function offsetGet($index)
     {
-        return $this->get($index, null);
+        return $this->get($index);
     }
 
     /**
