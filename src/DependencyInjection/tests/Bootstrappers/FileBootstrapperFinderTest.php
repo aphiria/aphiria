@@ -26,16 +26,10 @@ class FileBootstrapperFinderTest extends TestCase
 {
     private const BOOTSTRAPPER_DIRECTORY = __DIR__ . '/Mocks/Finder';
     private FileBootstrapperFinder $bootstrapperFinder;
-    private string $topLevelBootstrapperNamespace = '';
 
     protected function setUp(): void
     {
         $this->bootstrapperFinder = new FileBootstrapperFinder();
-        $topLevelBootstrapperNamePieces = explode('\\', BootstrapperA::class);
-        $this->topLevelBootstrapperNamespace = implode(
-            '\\',
-            array_slice($topLevelBootstrapperNamePieces, 0, -1)
-        );
     }
 
     public function testBootstrappersAreFoundInChildlessDirectory(): void

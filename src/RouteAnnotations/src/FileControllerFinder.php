@@ -44,7 +44,7 @@ final class FileControllerFinder implements IControllerFinder
     public function findAll($paths): array
     {
         // Filter out any non-concrete controller classes
-        return array_filter($this->classFinder->findAllClasses($paths), function ($className) {
+        return array_filter($this->classFinder->findAllClasses($paths, true), function ($className) {
             $class = new ReflectionClass($className);
 
             // Allow either Aphiria controllers or classes with the controller annotation

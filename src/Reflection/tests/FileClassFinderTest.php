@@ -51,7 +51,7 @@ class FileClassFinderTest extends TestCase
         // We don't care so much about the ordering
         $this->assertEqualsCanonicalizing(
             $expectedClasses,
-            $this->finder->findAllClasses(self::DIRECTORY)
+            $this->finder->findAllClasses(self::DIRECTORY, true)
         );
     }
 

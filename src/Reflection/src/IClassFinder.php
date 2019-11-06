@@ -27,5 +27,5 @@ interface IClassFinder
      * @return string[] The list of all class names
      * @throws InvalidArgumentException Thrown if the paths are not a string or array of strings
      */
-    public function findAllClasses($directories, bool $recursive = true): array;
+    public function findAllClasses($directories, bool $recursive = false): array;
 }

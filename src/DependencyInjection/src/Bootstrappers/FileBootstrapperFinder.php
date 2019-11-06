@@ -43,7 +43,7 @@ final class FileBootstrapperFinder
     public function findAll($paths): array
     {
         // Filter out any non-concrete bootstrapper classes
-        return array_filter($this->classFinder->findAllClasses($paths), function ($className) {
+        return array_filter($this->classFinder->findAllClasses($paths, true), function ($className) {
             $reflectionClass = new ReflectionClass($className);
 
             return $reflectionClass->isSubclassOf(Bootstrapper::class) &&

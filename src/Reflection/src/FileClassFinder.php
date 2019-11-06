@@ -26,7 +26,7 @@ final class FileClassFinder implements IClassFinder
     /**
      * @inheritdoc
      */
-    public function findAllClasses($directories, bool $recursive = true): array
+    public function findAllClasses($directories, bool $recursive = false): array
     {
         if (is_string($directories)) {
             $directories = [$directories];
