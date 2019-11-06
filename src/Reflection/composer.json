@@ -1,12 +1,10 @@
 {
-    "name": "aphiria/dependency-injection",
-    "description": "The Aphiria dependency injection library",
+    "name": "aphiria/reflection",
+    "description": "The Aphiria reflection library",
     "keywords": [
         "PHP",
-        "dependency injection",
-        "ioc",
-        "container",
-        "bootstrappers"
+        "reflection",
+        "class finder"
     ],
     "authors": [
         {
@@ -18,19 +16,19 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Aphiria\\DependencyInjection\\": "src"
+            "Aphiria\\Reflection\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Aphiria\\DependencyInjection\\Tests\\": "tests"
+            "Aphiria\\Reflection\\Tests\\": "tests"
         }
     },
     "require": {
-        "aphiria/reflection": "1.0.*@dev",
         "php": "^7.4"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
         "phpunit/phpunit": "~8.0"
     },
     "scripts": {

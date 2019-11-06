@@ -32,17 +32,11 @@ class FileControllerFinderTest extends TestCase
     /** @var Reader|MockObject */
     private Reader $reader;
     private const CONTROLLER_DIRECTORY = __DIR__ . '/Mocks/Finder';
-    private string $topLevelControllerNamespace = '';
 
     protected function setup(): void
     {
         $this->reader = $this->createMock(Reader::class);
         $this->controllerFinder = new FileControllerFinder($this->reader);
-        $topLevelControllerNamePieces = explode('\\', ControllerA::class);
-        $this->topLevelControllerNamespace = implode(
-            '\\',
-            array_slice($topLevelControllerNamePieces, 0, -1)
-        );
     }
 
     public function testControllersAreFoundInChildlessDirectory(): void
@@ -68,8 +62,8 @@ class FileControllerFinderTest extends TestCase
         $expectedControllers = [
             ControllerA::class,
             ControllerB::class,
-            ControllerC::class,
             ControllerD::class,
+            ControllerC::class,
         ];
         // We don't care so much about the ordering
         $this->assertEqualsCanonicalizing(

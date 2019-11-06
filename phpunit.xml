@@ -11,6 +11,7 @@
         <directory>src/IO/tests</directory>
         <directory>src/Middleware/tests</directory>
         <directory>src/Net/tests</directory>
+        <directory>src/Reflection/tests</directory>
         <directory>src/RouteAnnotations/tests</directory>
         <directory>src/Router/tests</directory>
         <directory>src/Serialization/tests</directory>
