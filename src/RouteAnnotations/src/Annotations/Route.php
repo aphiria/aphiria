@@ -21,7 +21,7 @@ use Doctrine\Annotations\Annotation\Target;
  */
 class Route
 {
-    /** @var array<string> The list of HTTP methods this route handles */
+    /** @var string[] The list of HTTP methods this route handles */
     public array $httpMethods;
     /** @var string The path of the route (defaults to an empty path) */
     public string $path = '';
@@ -33,7 +33,7 @@ class Route
     public bool $isHttpsOnly;
     /** @var array The custom attributes for the route */
     public array $attributes;
-    /** @var array<RouteConstraint> The list of route constraints */
+    /** @var RouteConstraint[] The list of route constraints */
     public array $constraints;
 
     /**

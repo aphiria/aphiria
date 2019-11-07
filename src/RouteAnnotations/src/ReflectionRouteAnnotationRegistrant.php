@@ -18,6 +18,7 @@ use Aphiria\RouteAnnotations\Annotations\RouteGroup;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\Builders\RouteGroupOptions;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
+use Doctrine\Annotations\AnnotationException;
 use Doctrine\Annotations\AnnotationReader;
 use Doctrine\Annotations\Reader;
 use ReflectionClass;
@@ -40,6 +41,7 @@ final class ReflectionRouteAnnotationRegistrant implements IRouteAnnotationRegis
      * @param string|string[] $paths The path or paths to check for controllers
      * @param IControllerFinder|null $controllerFinder The controller finder
      * @param Reader|null $annotationReader The annotation reader
+     * @throws AnnotationException Thrown if there was an error creating the annotation reader
      */
     public function __construct($paths, IControllerFinder $controllerFinder = null, Reader $annotationReader = null)
     {

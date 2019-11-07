@@ -26,14 +26,14 @@ final class ResolutionException extends DependencyInjectionException
 
     /**
      * @inheritdoc
-     * @param string $interface The name of the interface that could not be resolved
+     * @param string $commandHandlerClassName The name of the interface that could not be resolved
      * @param string|null $targetClass The target class of the interface, or null if there is no target
      */
-    public function __construct(string $interface, ?string $targetClass, string $message = '', int $code = 0, Throwable $previous = null)
+    public function __construct(string $commandHandlerClassName, ?string $targetClass, string $message = '', int $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
 
-        $this->interface = $interface;
+        $this->interface = $commandHandlerClassName;
         $this->targetClass = $targetClass;
     }
 

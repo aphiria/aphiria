@@ -27,8 +27,8 @@ class Command
     public array $arguments;
     /** @var Option[] The list of options */
     public array $options;
-    /** @var string The description of the command */
-    public string $description;
+    /** @var string|null The description of the command */
+    public ?string $description;
     /** @var string|null The extra descriptive help text */
     public ?string $helpText;
 
@@ -36,14 +36,14 @@ class Command
      * @param string $name The name of the command
      * @param Argument[] $arguments The list of arguments
      * @param Option[] $options The list of options
-     * @param string $description The description of the command
-     * @param string $helpText the help text
+     * @param string|null $description The description of the command
+     * @param string|null $helpText the help text
      */
     public function __construct(
         string $name,
-        array $arguments,
-        array $options,
-        string $description,
+        array $arguments = [],
+        array $options = [],
+        string $description = null,
         string $helpText = null
     ) {
         if (empty($name)) {

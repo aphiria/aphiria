@@ -6,6 +6,7 @@
         <directory>src/Collections/tests</directory>
         <directory>src/Configuration/tests</directory>
         <directory>src/Console/tests</directory>
+        <directory>src/ConsoleCommandAnnotations/tests</directory>
         <directory>src/DependencyInjection/tests</directory>
         <directory>src/Exceptions/tests</directory>
         <directory>src/IO/tests</directory>
