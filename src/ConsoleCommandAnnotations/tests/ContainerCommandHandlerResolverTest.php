@@ -19,6 +19,7 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * Tests the container command handler resolver
@@ -59,5 +60,16 @@ class ContainerCommandHandlerResolverTest extends TestCase
             $this->assertEquals('Could not resolve command handler', $ex->getMessage());
             $this->assertEquals('foo', $ex->getCommandHandlerClassName());
         }
+    }
+
+    public function testResolvingNonCommandHandlerThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('foo does not implement ' . ICommandHandler::class);
+        $this->container->expects($this->once())
+            ->method('resolve')
+            ->with('foo')
+            ->willReturn($this);
+        $this->commandHandlerResolver->resolve('foo');
     }
 }

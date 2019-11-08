@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Reflection\Tests\Mocks;
 
 /**
- * Defines a mock class
+ * Mocks an abstract class
  */
-class ClassB extends ClassA
+abstract class AbstractClass
 {
-    // Don't do anything
+
 }

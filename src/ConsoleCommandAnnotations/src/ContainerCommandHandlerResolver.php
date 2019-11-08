@@ -15,6 +15,7 @@ namespace Aphiria\ConsoleCommandAnnotations;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
+use RuntimeException;
 
 /**
  * Defines the command handler resolver that uses the DI container
@@ -38,7 +39,13 @@ final class ContainerCommandHandlerResolver implements ICommandHandlerResolver
     public function resolve(string $commandHandlerClassName): ICommandHandler
     {
         try {
-            return $this->container->resolve($commandHandlerClassName);
+            $commandHandler = $this->container->resolve($commandHandlerClassName);
+
+            if (!$commandHandler instanceof ICommandHandler) {
+                throw new RuntimeException("$commandHandlerClassName does not implement " . ICommandHandler::class);
+            }
+
+            return $commandHandler;
         } catch (ResolutionException $ex) {
             throw new DependencyResolutionException(
                 $commandHandlerClassName,

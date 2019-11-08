@@ -13,11 +13,11 @@ declare(strict_types=1);
 namespace Aphiria\RouteAnnotations\Tests;
 
 use Aphiria\Api\Controllers\Controller;
+use Aphiria\Reflection\ITypeFinder;
 use Aphiria\RouteAnnotations\Annotations\Get;
 use Aphiria\RouteAnnotations\Annotations\Middleware;
 use Aphiria\RouteAnnotations\Annotations\RouteConstraint;
 use Aphiria\RouteAnnotations\Annotations\RouteGroup;
-use Aphiria\RouteAnnotations\IControllerFinder;
 use Aphiria\RouteAnnotations\ReflectionRouteAnnotationRegistrant;
 use Aphiria\RouteAnnotations\Tests\Mocks\DummyConstraint;
 use Aphiria\RouteAnnotations\Tests\Mocks\DummyMiddleware;
@@ -35,16 +35,16 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
 {
     private const PATH = __DIR__;
     private ReflectionRouteAnnotationRegistrant $registrant;
-    /** @var IControllerFinder|MockObject */
-    private IControllerFinder $controllerFinder;
     private Reader $reader;
+    /** @var ITypeFinder|MockObject */
+    private ITypeFinder $typeFinder;
     private RouteBuilderRegistry $routeBuilders;
 
     protected function setUp(): void
     {
-        $this->controllerFinder = $this->createMock(IControllerFinder::class);
         $this->reader = new AnnotationReader();
-        $this->registrant = new ReflectionRouteAnnotationRegistrant(self::PATH, $this->controllerFinder, $this->reader);
+        $this->typeFinder = $this->createMock(ITypeFinder::class);
+        $this->registrant = new ReflectionRouteAnnotationRegistrant(self::PATH, $this->reader, $this->typeFinder);
         $this->routeBuilders = new RouteBuilderRegistry();
     }
 
@@ -60,8 +60,8 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->controllerFinder->expects($this->once())
-            ->method('findAll')
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
         $this->registrant->registerRoutes($this->routeBuilders);
@@ -90,8 +90,8 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->controllerFinder->expects($this->once())
-            ->method('findAll')
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
         $this->registrant->registerRoutes($this->routeBuilders);
@@ -119,8 +119,8 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->controllerFinder->expects($this->once())
-            ->method('findAll')
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
         $this->registrant->registerRoutes($this->routeBuilders);
@@ -148,8 +148,8 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->controllerFinder->expects($this->once())
-            ->method('findAll')
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
         $this->registrant->registerRoutes($this->routeBuilders);
@@ -178,8 +178,8 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->controllerFinder->expects($this->once())
-            ->method('findAll')
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
         $this->registrant->registerRoutes($this->routeBuilders);
@@ -204,8 +204,8 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->controllerFinder->expects($this->once())
-            ->method('findAll')
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
         $this->registrant->registerRoutes($this->routeBuilders);
@@ -230,8 +230,8 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->controllerFinder->expects($this->once())
-            ->method('findAll')
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
         $this->registrant->registerRoutes($this->routeBuilders);
@@ -264,8 +264,8 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->controllerFinder->expects($this->once())
-            ->method('findAll')
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
         $this->registrant->registerRoutes($this->routeBuilders);
@@ -298,8 +298,8 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->controllerFinder->expects($this->once())
-            ->method('findAll')
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
         $this->registrant->registerRoutes($this->routeBuilders);
@@ -332,8 +332,8 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->controllerFinder->expects($this->once())
-            ->method('findAll')
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
         $this->registrant->registerRoutes($this->routeBuilders);

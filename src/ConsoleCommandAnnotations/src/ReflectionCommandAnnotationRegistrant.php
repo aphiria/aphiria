@@ -14,9 +14,12 @@ namespace Aphiria\ConsoleCommandAnnotations;
 
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\Option;
 use Aphiria\ConsoleCommandAnnotations\Annotations\Command as CommandAnnotation;
+use Aphiria\Reflection\ITypeFinder;
+use Aphiria\Reflection\TypeFinder;
 use Doctrine\Annotations\AnnotationException;
 use Doctrine\Annotations\AnnotationReader;
 use Doctrine\Annotations\Reader;
@@ -32,28 +35,28 @@ final class ReflectionCommandAnnotationRegistrant implements ICommandAnnotationR
     private array $paths;
     /** @var ICommandHandlerResolver The resolver for command handlers */
     private ICommandHandlerResolver $commandHandlerResolver;
-    /** @var ICommandFinder The command finder */
-    private ICommandFinder $commandFinder;
+    /** @var ITypeFinder The type finder */
+    private ITypeFinder $typeFinder;
     /** @var Reader The annotation reader */
     private Reader $annotationReader;
 
     /**
      * @param string|string[] $paths The path or paths to check for commands
      * @param ICommandHandlerResolver $commandHandlerResolver The resolver for command handlers
-     * @param ICommandFinder|null $commandFinder The commands finder
      * @param Reader|null $annotationReader The annotation reader
+     * @param ITypeFinder|null $typeFinder The type finder
      * @throws AnnotationException Thrown if there was an error creating the annotation reader
      */
     public function __construct(
         $paths,
         ICommandHandlerResolver $commandHandlerResolver,
-        ICommandFinder $commandFinder = null,
-        Reader $annotationReader = null
+        Reader $annotationReader = null,
+        ITypeFinder $typeFinder = null
     ) {
         $this->paths = \is_array($paths) ? $paths : [$paths];
         $this->commandHandlerResolver = $commandHandlerResolver;
         $this->annotationReader = $annotationReader ?? new AnnotationReader();
-        $this->commandFinder = $commandFinder ?? new FileCommandFinder($this->annotationReader);
+        $this->typeFinder = $typeFinder ?? new TypeFinder();
     }
 
     /**
@@ -62,18 +65,16 @@ final class ReflectionCommandAnnotationRegistrant implements ICommandAnnotationR
      */
     public function registerCommands(CommandRegistry $commands): void
     {
-        foreach ($this->commandFinder->findAll($this->paths) as $commandHandlerClassName) {
-            $commandHandlerReflectionClass = new ReflectionClass($commandHandlerClassName);
-
-            foreach ($this->annotationReader->getClassAnnotations($commandHandlerReflectionClass) as $classAnnotation) {
-                if (!$classAnnotation instanceof CommandAnnotation) {
+        foreach ($this->typeFinder->findAllSubtypesOfType(ICommandHandler::class, $this->paths) as $commandHandler) {
+            foreach ($this->annotationReader->getClassAnnotations(new ReflectionClass($commandHandler)) as $commandAnnotation) {
+                if (!$commandAnnotation instanceof CommandAnnotation) {
                     continue;
                 }
 
                 $arguments = [];
                 $options = [];
 
-                foreach ($classAnnotation->arguments as $argumentAnnotation) {
+                foreach ($commandAnnotation->arguments as $argumentAnnotation) {
                     $arguments[] = new Argument(
                         $argumentAnnotation->name,
                         $argumentAnnotation->type,
@@ -82,7 +83,7 @@ final class ReflectionCommandAnnotationRegistrant implements ICommandAnnotationR
                     );
                 }
 
-                foreach ($classAnnotation->options as $optionAnnotation) {
+                foreach ($commandAnnotation->options as $optionAnnotation) {
                     $options[] = new Option(
                         $optionAnnotation->name,
                         $optionAnnotation->shortName,
@@ -93,15 +94,15 @@ final class ReflectionCommandAnnotationRegistrant implements ICommandAnnotationR
                 }
 
                 $command = new Command(
-                    $classAnnotation->name,
+                    $commandAnnotation->name,
                     $arguments,
                     $options,
-                    $classAnnotation->description,
-                    $classAnnotation->helpText
+                    $commandAnnotation->description,
+                    $commandAnnotation->helpText
                 );
                 $commands->registerCommand(
                     $command,
-                    fn () => $this->commandHandlerResolver->resolve($commandHandlerClassName)
+                    fn () => $this->commandHandlerResolver->resolve($commandHandler)
                 );
             }
         }

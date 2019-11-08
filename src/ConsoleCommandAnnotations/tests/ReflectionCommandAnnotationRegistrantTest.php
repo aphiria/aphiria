@@ -22,9 +22,9 @@ use Aphiria\Console\Output\IOutput;
 use Aphiria\ConsoleCommandAnnotations\Annotations\Argument;
 use Aphiria\ConsoleCommandAnnotations\Annotations\Command;
 use Aphiria\ConsoleCommandAnnotations\Annotations\Option;
-use Aphiria\ConsoleCommandAnnotations\ICommandFinder;
 use Aphiria\ConsoleCommandAnnotations\ICommandHandlerResolver;
 use Aphiria\ConsoleCommandAnnotations\ReflectionCommandAnnotationRegistrant;
+use Aphiria\Reflection\ITypeFinder;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -34,20 +34,21 @@ class ReflectionCommandAnnotationRegistrantTest extends TestCase
 {
     private ReflectionCommandAnnotationRegistrant $registrant;
     private CommandRegistry $commands;
-    /** @var ICommandFinder|MockObject */
-    private ICommandFinder $commandFinder;
     /** @var ICommandHandlerResolver|MockObject */
     private ICommandHandlerResolver $commandHandlerResolver;
+    /** @var ITypeFinder|MockObject */
+    private ITypeFinder $typeFinder;
 
     protected function setUp(): void
     {
         $this->commands = new CommandRegistry();
         $this->commandHandlerResolver = $this->createMock(ICommandHandlerResolver::class);
-        $this->commandFinder = $this->createMock(ICommandFinder::class);
+        $this->typeFinder = $this->createMock(ITypeFinder::class);
         $this->registrant = new ReflectionCommandAnnotationRegistrant(
             __DIR__,
             $this->commandHandlerResolver,
-            $this->commandFinder
+            null,
+            $this->typeFinder
         );
     }
 
@@ -68,9 +69,9 @@ class ReflectionCommandAnnotationRegistrantTest extends TestCase
                 return;
             }
         };
-        $this->commandFinder->expects($this->once())
-            ->method('findAll')
-            ->with([__DIR__])
+        $this->typeFinder->expects($this->once())
+            ->method('findAllSubTypesOfType')
+            ->with(ICommandHandler::class, [__DIR__])
             ->willReturn([\get_class($commandHandler)]);
         $this->registrant->registerCommands($this->commands);
         $this->assertCount(1, $this->commands->getAllCommands());
