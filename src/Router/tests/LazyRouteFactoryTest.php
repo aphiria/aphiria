@@ -26,12 +26,11 @@ class LazyRouteFactoryTest extends TestCase
 {
     public function testCreatingRoutesWillIncludeRoutesInInitialFactory(): void
     {
-        $factory = new LazyRouteFactory(function () {
-            $routes = new RouteBuilderRegistry();
-            $routes->map('GET', 'foo')
+        $factory = new LazyRouteFactory(function (RouteCollection $routes) {
+            $routeBuilders = new RouteBuilderRegistry();
+            $routeBuilders->map('GET', 'foo')
                 ->toMethod('Foo', 'bar');
-
-            return $routes->buildAll();
+            $routes->addMany($routeBuilders->buildAll());
         });
         $routes = $factory->createRoutes()->getAll();
         $this->assertCount(1, $routes);
@@ -41,12 +40,11 @@ class LazyRouteFactoryTest extends TestCase
     public function testCreatingRoutesWillIncludeRoutesInAddedFactory(): void
     {
         $factory = new LazyRouteFactory();
-        $factory->addFactory(function () {
-            $routes = new RouteBuilderRegistry();
-            $routes->map('GET', 'foo')
+        $factory->addRouteRegistrant(function (RouteCollection $routes) {
+            $routeBuilders = new RouteBuilderRegistry();
+            $routeBuilders->map('GET', 'foo')
                 ->toMethod('Foo', 'bar');
-
-            return $routes->buildAll();
+            $routes->addMany($routeBuilders->buildAll());
         });
         $routes = $factory->createRoutes()->getAll();
         $this->assertCount(1, $routes);
@@ -62,12 +60,11 @@ class LazyRouteFactoryTest extends TestCase
             ->method('get')
             ->willReturn($expectedRoutes);
         $factory = new LazyRouteFactory(null, $routeCache);
-        $factory->addFactory(function () {
-            $routes = new RouteBuilderRegistry();
-            $routes->map('GET', 'foo')
+        $factory->addRouteRegistrant(function (RouteCollection $routes) {
+            $routeBuilders = new RouteBuilderRegistry();
+            $routeBuilders->map('GET', 'foo')
                 ->toMethod('Foo', 'bar');
-
-            return $routes->buildAll();
+            $routes->addMany($routeBuilders->buildAll());
         });
         $this->assertSame($expectedRoutes, $factory->createRoutes());
     }
@@ -77,12 +74,11 @@ class LazyRouteFactoryTest extends TestCase
         /** @var IRouteCache|MockObject $routeCache */
         $routeCache = $this->createMock(IRouteCache::class);
         $factory = new LazyRouteFactory(null, $routeCache);
-        $factory->addFactory(function () {
-            $routes = new RouteBuilderRegistry();
-            $routes->map('GET', 'foo')
+        $factory->addRouteRegistrant(function (RouteCollection $routes) {
+            $routeBuilders = new RouteBuilderRegistry();
+            $routeBuilders->map('GET', 'foo')
                 ->toMethod('Foo', 'bar');
-
-            return $routes->buildAll();
+            $routes->addMany($routeBuilders->buildAll());
         });
         $routeCache->expects($this->once())
             ->method('get')
@@ -97,12 +93,11 @@ class LazyRouteFactoryTest extends TestCase
         /** @var IRouteCache|MockObject $routeCache */
         $routeCache = $this->createMock(IRouteCache::class);
         $factory = new LazyRouteFactory(null, $routeCache);
-        $factory->addFactory(function () {
-            $routes = new RouteBuilderRegistry();
-            $routes->map('GET', 'foo')
+        $factory->addRouteRegistrant(function (RouteCollection $routes) {
+            $routeBuilders = new RouteBuilderRegistry();
+            $routeBuilders->map('GET', 'foo')
                 ->toMethod('Foo', 'bar');
-
-            return $routes->buildAll();
+            $routes->addMany($routeBuilders->buildAll());
         });
         $routeCache->expects($this->once())
             ->method('get')

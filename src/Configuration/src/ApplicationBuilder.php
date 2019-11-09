@@ -20,6 +20,7 @@ use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\App as ConsoleApp;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
+use Aphiria\Console\Commands\LazyCommandRegistryFactory;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use BadMethodCallException;
@@ -107,9 +108,14 @@ final class ApplicationBuilder implements IApplicationBuilder
     {
         try {
             $this->dispatchBootstrappers();
-            $this->buildConsoleCommands();
+            $this->container->hasBinding(LazyCommandRegistryFactory::class)
+                ? $commandFactory = $this->container->resolve(LazyCommandRegistryFactory::class)
+                : $this->container->bindInstance(LazyCommandRegistryFactory::class, $commandFactory = new LazyCommandRegistryFactory());
+            $this->registerConsoleCommands($commandFactory);
             $this->buildComponents();
-            $consoleApp = new ConsoleApp($this->container->resolve(CommandRegistry::class));
+            $commands = $commandFactory->createCommands();
+            $this->container->bindInstance(CommandRegistry::class, $commands);
+            $consoleApp = new ConsoleApp($commands);
             $this->container->bindInstance(ICommandBus::class, $consoleApp);
 
             return $consoleApp;
@@ -209,17 +215,15 @@ final class ApplicationBuilder implements IApplicationBuilder
     /**
      * Builds the console commands that were registered
      *
-     * @throws ResolutionException Thrown if any dependencies could not be resolved
+     * @param LazyCommandRegistryFactory $commandFactory The command factory to register commands to
      */
-    private function buildConsoleCommands(): void
+    private function registerConsoleCommands(LazyCommandRegistryFactory $commandFactory): void
     {
-        $this->container->hasBinding(CommandRegistry::class)
-            ? $commands = $this->container->resolve(CommandRegistry::class)
-            : $this->container->bindInstance(CommandRegistry::class, $commands = new CommandRegistry());
-
-        foreach ($this->consoleCommandCallbacks as $callback) {
-            $callback($commands);
-        }
+        $commandFactory->addCommandRegistrant(function (CommandRegistry $commands) {
+            foreach ($this->consoleCommandCallbacks as $callback) {
+                $callback($commands);
+            }
+        });
     }
 
     /**

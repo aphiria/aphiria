@@ -16,10 +16,9 @@ use Aphiria\Api\App;
 use Aphiria\Configuration\ApplicationBuilder;
 use Aphiria\Configuration\IModuleBuilder;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
-use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
-use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Commands\LazyCommandRegistryFactory;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use BadMethodCallException;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
@@ -62,55 +61,23 @@ class ApplicationBuilderTest extends TestCase
         $this->assertInstanceOf(App::class, $this->appBuilder->buildApiApplication());
     }
 
-    public function testBuildingConsoleBindsAppToContainer(): void
+    public function testBuildingConsoleBindsCommandRegistryAndAppToContainer(): void
     {
         $this->container->expects($this->at(0))
             ->method('hasBinding')
-            ->with(CommandRegistry::class)
+            ->with(LazyCommandRegistryFactory::class)
             ->willReturn(false);
         $this->container->expects($this->at(1))
             ->method('bindInstance')
-            ->with(CommandRegistry::class, $commands = new CommandRegistry());
+            ->with(LazyCommandRegistryFactory::class, $commandFactory = new LazyCommandRegistryFactory());
         $this->container->expects($this->at(2))
-            ->method('resolve')
-            ->with(CommandRegistry::class)
-            ->willReturn($commands);
+            ->method('bindInstance')
+            ->with(CommandRegistry::class, $this->callback(function ($commands) {
+                return $commands instanceof CommandRegistry;
+            }));
         $this->container->expects($this->at(3))
             ->method('bindInstance')
             ->with(ICommandBus::class, $this->callback(fn ($app) => $app instanceof ICommandBus));
-        $this->appBuilder->buildConsoleApplication();
-    }
-
-    public function testBuildingConsoleBindsNewCommandRegistryBoundToContainerIfNotAlreadyBound(): void
-    {
-        $this->container->expects($this->at(0))
-            ->method('hasBinding')
-            ->with(CommandRegistry::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(1))
-            ->method('bindInstance')
-            ->with(CommandRegistry::class, $commands = new CommandRegistry());
-        $this->container->expects($this->at(2))
-            ->method('resolve')
-            ->with(CommandRegistry::class)
-            ->willReturn($commands);
-        $this->appBuilder->buildConsoleApplication();
-    }
-
-    public function testBuildingConsoleUsesCommandRegistryBoundToContainerIfAvailable(): void
-    {
-        $this->container->expects($this->at(0))
-            ->method('hasBinding')
-            ->with(CommandRegistry::class)
-            ->willReturn(true);
-        $this->container->expects($this->at(1))
-            ->method('resolve')
-            ->with(CommandRegistry::class)
-            ->willReturn($commands = new CommandRegistry());
-        $this->container->expects($this->at(2))
-            ->method('resolve')
-            ->with(CommandRegistry::class)
-            ->willReturn($commands);
         $this->appBuilder->buildConsoleApplication();
     }
 
@@ -213,52 +180,6 @@ class ApplicationBuilderTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('foo does not have a builder registered');
         $this->appBuilder->withComponent('foo', fn () => null);
-    }
-
-    public function testWithConsoleCommandPassesBoundCommandRegistryToRegisteredCallbacksWhenOneIsBoundToContainer(): void
-    {
-        $this->container->expects($this->at(0))
-            ->method('hasBinding')
-            ->with(CommandRegistry::class)
-            ->willReturn(true);
-        $expectedCommands = new CommandRegistry();
-        $this->container->expects($this->at(1))
-            ->method('resolve')
-            ->with(CommandRegistry::class)
-            ->willReturn($expectedCommands);
-        $this->container->expects($this->at(2))
-            ->method('resolve')
-            ->with(CommandRegistry::class)
-            ->willReturn($expectedCommands);
-        $this->appBuilder->withConsoleCommands(function (CommandRegistry $commands) {
-            $commands->registerCommand(
-                new Command('foo', [], [], ''),
-                fn () => $this->createMock(ICommandHandler::class)
-            );
-        });
-        $this->appBuilder->buildConsoleApplication();
-    }
-
-    public function testWithConsoleCommandPassesNewCommandRegistryToRegisteredCallbacksWhenNonIsBoundToContainer(): void
-    {
-        $this->container->expects($this->at(0))
-            ->method('hasBinding')
-            ->with(CommandRegistry::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(1))
-            ->method('bindInstance')
-            ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));
-        $this->container->expects($this->at(2))
-            ->method('resolve')
-            ->with(CommandRegistry::class)
-            ->willReturn(new CommandRegistry());
-        $this->appBuilder->withConsoleCommands(function (CommandRegistry $commands) {
-            $commands->registerCommand(
-                new Command('foo', [], [], ''),
-                fn () => $this->createMock(ICommandHandler::class)
-            );
-        });
-        $this->appBuilder->buildConsoleApplication();
     }
 
     public function testWithGlobalMiddlewareThatIsNotMiddlewareBindingThrowsException(): void
