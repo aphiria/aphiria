@@ -29,7 +29,7 @@ final class RouteGroup
     public bool $isHttpsOnly;
     /** @var array The custom attributes for the route */
     public array $attributes;
-    /** @var array<RouteConstraint> The list of route constraints */
+    /** @var RouteConstraint[] The list of route constraints */
     public array $constraints;
 
     /**

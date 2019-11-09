@@ -96,7 +96,7 @@ EOF;
                 ['{{command}}', '{{description}}', '{{name}}', '{{arguments}}', '{{options}}', '{{helpText}}'],
                 [
                     $this->commandFormatter->format($command),
-                    $command->description === '' ? 'No description' : $command->description,
+                    empty($command->description) ? 'No description' : $command->description,
                     $command->name,
                     $this->getArgumentText($command),
                     $this->getOptionText($command),
@@ -151,7 +151,7 @@ EOF;
 
         return $this->paddingFormatter->format(
             $argumentTexts,
-            fn ($row) => "  <info>{$row[0]}</info> - {$row[1]}"
+            fn ($row) => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}")
         );
     }
 
@@ -175,7 +175,7 @@ EOF;
 
         return $this->paddingFormatter->format(
             $optionTexts,
-            fn ($row) => "  <info>{$row[0]}</info> - {$row[1]}"
+            fn ($row) => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}")
         );
     }
 }

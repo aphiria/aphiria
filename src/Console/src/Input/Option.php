@@ -25,8 +25,8 @@ final class Option
     public ?string $shortName;
     /** @var int The type of option this is */
     public int $type;
-    /** @var string A brief description of the option */
-    public string $description;
+    /** @var string|null A brief description of the option */
+    public ?string $description;
     /** @var mixed The default value for the option if it's optional */
     public $defaultValue;
 
@@ -34,11 +34,11 @@ final class Option
      * @param string $name The name of the option
      * @param string|null $shortName The short name of the option if it has one, otherwise null
      * @param int $type The type of option this is
-     * @param string $description A brief description of the option
+     * @param string|null $description A brief description of the option
      * @param mixed $defaultValue The default value for the option if it's optional
      * @throws InvalidArgumentException Thrown if the type is invalid
      */
-    public function __construct(string $name, ?string $shortName, int $type, string $description, $defaultValue = null)
+    public function __construct(string $name, ?string $shortName, int $type, string $description = null, $defaultValue = null)
     {
         if (($type & 3) === 3) {
             throw new InvalidArgumentException('Option type cannot be both optional and required');

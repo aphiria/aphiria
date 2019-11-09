@@ -28,7 +28,7 @@
     "require": {
         "ext-ctype": "*",
         "ext-mbstring": "*",
-        "opis/closure": "3.1.*",
+        "opis/closure": "3.4.*",
         "php": "^7.4"
     },
     "require-dev": {

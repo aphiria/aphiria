@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection\Bootstrappers;
 
-use Aphiria\Reflection\FileClassFinder;
-use Aphiria\Reflection\IClassFinder;
+use Aphiria\Reflection\TypeFinder;
+use Aphiria\Reflection\ITypeFinder;
 use InvalidArgumentException;
 use ReflectionClass;
 
@@ -22,15 +22,15 @@ use ReflectionClass;
  */
 final class FileBootstrapperFinder
 {
-    /** @var IClassFinder The class finder */
-    private IClassFinder $classFinder;
+    /** @var ITypeFinder The class finder */
+    private ITypeFinder $classFinder;
 
     /**
-     * @param IClassFinder|null $classFinder The class finder
+     * @param ITypeFinder|null $classFinder The class finder
      */
-    public function __construct(IClassFinder $classFinder = null)
+    public function __construct(ITypeFinder $classFinder = null)
     {
-        $this->classFinder = $classFinder ?? new FileClassFinder();
+        $this->classFinder = $classFinder ?? new TypeFinder();
     }
 
     /**
@@ -43,7 +43,7 @@ final class FileBootstrapperFinder
     public function findAll($paths): array
     {
         // Filter out any non-concrete bootstrapper classes
-        return array_filter($this->classFinder->findAllClasses($paths, true), function ($className) {
+        return array_filter($this->classFinder->findAllTypes($paths, true), function ($className) {
             $reflectionClass = new ReflectionClass($className);
 
             return $reflectionClass->isSubclassOf(Bootstrapper::class) &&

@@ -133,7 +133,14 @@ EOF;
                     $output .= "<comment>{$firstCommandNamesToCategories[trim($row[0])]}</comment>" . PHP_EOL;
                 }
 
-                return $output . "  <info>{$row[0]}</info> - {$row[1]}";
+                $output .= "  <info>{$row[0]}</info>";
+
+                // Only append the description if it's set
+                if (!empty($row[1])) {
+                    $output .= " - {$row[1]}";
+                }
+
+                return $output;
             }
         );
     }

@@ -12,12 +12,16 @@ declare(strict_types=1);
 
 namespace Aphiria\RouteAnnotations;
 
+use Aphiria\Api\Controllers\Controller;
+use Aphiria\Reflection\ITypeFinder;
+use Aphiria\Reflection\TypeFinder;
 use Aphiria\RouteAnnotations\Annotations\Route;
 use Aphiria\RouteAnnotations\Annotations\Middleware;
 use Aphiria\RouteAnnotations\Annotations\RouteGroup;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\Builders\RouteGroupOptions;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
+use Doctrine\Annotations\AnnotationException;
 use Doctrine\Annotations\AnnotationReader;
 use Doctrine\Annotations\Reader;
 use ReflectionClass;
@@ -31,21 +35,22 @@ final class ReflectionRouteAnnotationRegistrant implements IRouteAnnotationRegis
 {
     /** @var string[] The paths to check for controllers */
     private array $paths;
-    /** @var IControllerFinder The controller finder */
-    private IControllerFinder $controllerFinder;
     /** @var Reader The annotation reader */
     private Reader $annotationReader;
+    /** @var ITypeFinder The type finder */
+    private ITypeFinder $typeFinder;
 
     /**
      * @param string|string[] $paths The path or paths to check for controllers
-     * @param IControllerFinder|null $controllerFinder The controller finder
      * @param Reader|null $annotationReader The annotation reader
+     * @param ITypeFinder|null $typeFinder The type finder
+     * @throws AnnotationException Thrown if there was an error creating the annotation reader
      */
-    public function __construct($paths, IControllerFinder $controllerFinder = null, Reader $annotationReader = null)
+    public function __construct($paths, Reader $annotationReader = null, ITypeFinder $typeFinder = null)
     {
         $this->paths = \is_array($paths) ? $paths : [$paths];
         $this->annotationReader = $annotationReader ?? new AnnotationReader();
-        $this->controllerFinder = $controllerFinder ?? new FileControllerFinder($this->annotationReader);
+        $this->typeFinder = $typeFinder ?? new TypeFinder();
     }
 
     /**
@@ -54,15 +59,24 @@ final class ReflectionRouteAnnotationRegistrant implements IRouteAnnotationRegis
      */
     public function registerRoutes(RouteBuilderRegistry $routes): void
     {
-        foreach ($this->controllerFinder->findAll($this->paths) as $controllerClassName) {
-            $controller = new ReflectionClass($controllerClassName);
-            $routeGroupOptions = $this->createRouteGroupOptions($controller);
+        foreach ($this->typeFinder->findAllClasses($this->paths) as $controllerClass) {
+            $reflectionController = new ReflectionClass($controllerClass);
+
+            // Only allow either Aphiria controllers or classes with the controller annotation
+            if (
+                !$reflectionController->isSubclassOf(Controller::class)
+                && $this->annotationReader->getClassAnnotation($reflectionController, 'Controller') === null
+            ) {
+                continue;
+            }
+
+            $routeGroupOptions = $this->createRouteGroupOptions($reflectionController);
 
             if ($routeGroupOptions === null) {
-                $this->registerRouteBuilders($controller, $routes);
+                $this->registerRouteBuilders($reflectionController, $routes);
             } else {
-                $routes->group($routeGroupOptions, function (RouteBuilderRegistry $routes) use ($controller) {
-                    $this->registerRouteBuilders($controller, $routes);
+                $routes->group($routeGroupOptions, function (RouteBuilderRegistry $routes) use ($reflectionController) {
+                    $this->registerRouteBuilders($reflectionController, $routes);
                 });
             }
         }

@@ -43,9 +43,9 @@ class AboutCommandHandlerTest extends TestCase
         /** @var IOutput|MockObject $output */
         $output = $this->createMock(IOutput::class);
         $body = '<comment>ant</comment>' . \PHP_EOL
-            . '  <info>ant:bar</info> - ' . \PHP_EOL
+            . '  <info>ant:bar</info>' . \PHP_EOL
             . '<comment>cat</comment>' . \PHP_EOL
-            . '  <info>cat:foo</info> - ';
+            . '  <info>cat:foo</info>';
         $output->expects($this->once())
             ->method('writeln')
             ->with(self::compileOutput($body));
@@ -59,8 +59,8 @@ class AboutCommandHandlerTest extends TestCase
         /** @var IOutput|MockObject $output */
         $output = $this->createMock(IOutput::class);
         $body = '<comment>cat</comment>' . \PHP_EOL
-            . '  <info>cat:bar</info> - ' . \PHP_EOL
-            . '  <info>cat:foo</info> - ';
+            . '  <info>cat:bar</info>' . \PHP_EOL
+            . '  <info>cat:foo</info>';
         $output->expects($this->once())
             ->method('writeln')
             ->with(self::compileOutput($body));
@@ -73,9 +73,9 @@ class AboutCommandHandlerTest extends TestCase
         $this->commands->registerCommand(new Command('cat:bar', [], [], ''), $this->createCommandHandlerFactory());
         /** @var IOutput|MockObject $output */
         $output = $this->createMock(IOutput::class);
-        $body = '  <info>foo    </info> - ' . \PHP_EOL
+        $body = '  <info>foo    </info>' . \PHP_EOL
             . '<comment>cat</comment>' . \PHP_EOL
-            . '  <info>cat:bar</info> - ';
+            . '  <info>cat:bar</info>';
         $output->expects($this->once())
             ->method('writeln')
             ->with(self::compileOutput($body));

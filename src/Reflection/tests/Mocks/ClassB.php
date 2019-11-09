@@ -15,7 +15,7 @@ namespace Aphiria\Reflection\Tests\Mocks;
 /**
  * Defines a mock class
  */
-class ClassB
+class ClassB extends ClassA
 {
     // Don't do anything
 }

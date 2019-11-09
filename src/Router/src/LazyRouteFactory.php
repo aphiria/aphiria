@@ -21,33 +21,33 @@ use Closure;
 final class LazyRouteFactory implements IRouteFactory
 {
     /** @var Closure[] The list of factories that will actually create the routes */
-    private array $routeFactories = [];
+    private array $routeRegistrant = [];
     /** @var IRouteCache|null The optional route cache to store compiled routes in */
     private ?IRouteCache $routeCache;
 
     /**
-     * @param Closure|null $routeFactory The initial factory that will be used to create routes
-     *      Note: Must be parameterless and return a list of Route objects
+     * @param Closure|null $routeRegistrant The initial registrant that will be used to register routes
+     *      Note: Must take in a RouteCollection and be void
      * @param IRouteCache|null $routeCache The route cache, if we're using a cache, otherwise null
      */
-    public function __construct(Closure $routeFactory = null, IRouteCache $routeCache = null)
+    public function __construct(Closure $routeRegistrant = null, IRouteCache $routeCache = null)
     {
-        if ($routeFactory !== null) {
-            $this->routeFactories[] = $routeFactory;
+        if ($routeRegistrant !== null) {
+            $this->routeRegistrant[] = $routeRegistrant;
         }
 
         $this->routeCache = $routeCache;
     }
 
     /**
-     * Adds a route factory
+     * Adds a route registrant
      *
-     * @param Closure $routeFactory The factory to add
-     *      Note: Must be parameterless and return a list of Route objects
+     * @param Closure $routeRegistrant The registrant to add
+     *      Note: Must take in a RouteCollection and be void
      */
-    public function addFactory(Closure $routeFactory): void
+    public function addRouteRegistrant(Closure $routeRegistrant): void
     {
-        $this->routeFactories[] = $routeFactory;
+        $this->routeRegistrant[] = $routeRegistrant;
     }
 
     /**
@@ -61,8 +61,8 @@ final class LazyRouteFactory implements IRouteFactory
 
         $routes = new RouteCollection();
 
-        foreach ($this->routeFactories as $routeFactory) {
-            $routes->addMany($routeFactory());
+        foreach ($this->routeRegistrant as $routeFactory) {
+            $routeFactory($routes);
         }
 
         // Save this to cache for next time

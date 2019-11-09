@@ -30,7 +30,7 @@ final class Middleware
      * @Required
      */
     public string $className;
-    /** @var array<string> The mapping of attribute names to values */
+    /** @var string[] The mapping of attribute names to values */
     public array $attributes = [];
 
     /**

@@ -14,6 +14,9 @@ namespace Aphiria\Configuration;
 
 use Aphiria\Api\Router;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
+use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Commands\LazyCommandRegistryFactory;
+use Aphiria\ConsoleCommandAnnotations\ICommandAnnotationRegistrant;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Exceptions\GlobalExceptionHandler;
@@ -21,6 +24,7 @@ use Aphiria\Exceptions\Middleware\ExceptionHandler;
 use Aphiria\RouteAnnotations\IRouteAnnotationRegistrant;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
+use Aphiria\Routing\RouteCollection;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\DependencyInjection\IContainer;
 use RuntimeException;
@@ -41,6 +45,28 @@ final class AphiriaComponentBuilder
     public function __construct(IContainer $container)
     {
         $this->container = $container;
+    }
+
+    /**
+     * Registers Aphiria console command annotations
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to register to
+     * @return AphiriaComponentBuilder For chaining
+     */
+    public function withConsoleCommandAnnotations(IApplicationBuilder $appBuilder): self
+    {
+        $appBuilder->registerComponentBuilder('consoleCommandAnnotations', function (array $callbacks) {
+            $this->container->hasBinding(LazyCommandRegistryFactory::class)
+                ? $commandFactory = $this->container->resolve(LazyCommandRegistryFactory::class)
+                : $this->container->bindInstance(LazyCommandRegistryFactory::class, $commandFactory = new LazyCommandRegistryFactory());
+            /** @var ICommandAnnotationRegistrant $commandAnnotationRegistrant */
+            $commandAnnotationRegistrant = $this->container->resolve(ICommandAnnotationRegistrant::class);
+            $commandFactory->addCommandRegistrant(function (CommandRegistry $commands) use ($commandAnnotationRegistrant) {
+                $commandAnnotationRegistrant->registerCommands($commands);
+            });
+        });
+
+        return $this;
     }
 
     /**
@@ -144,11 +170,10 @@ final class AphiriaComponentBuilder
                 : $this->container->bindInstance(LazyRouteFactory::class, $routeFactory = new LazyRouteFactory());
             /** @var IRouteAnnotationRegistrant $routeAnnotationRegistrant */
             $routeAnnotationRegistrant = $this->container->resolve(IRouteAnnotationRegistrant::class);
-            $routeFactory->addFactory(function () use ($routeAnnotationRegistrant) {
-                $routes = new RouteBuilderRegistry();
-                $routeAnnotationRegistrant->registerRoutes($routes);
-
-                return $routes->buildAll();
+            $routeFactory->addRouteRegistrant(function (RouteCollection $routes) use ($routeAnnotationRegistrant) {
+                $routeBuilders = new RouteBuilderRegistry();
+                $routeAnnotationRegistrant->registerRoutes($routeBuilders);
+                $routes->addMany($routeBuilders->buildAll());
             });
         });
 
@@ -172,14 +197,14 @@ final class AphiriaComponentBuilder
                 ? $routeFactory = $this->container->resolve(LazyRouteFactory::class)
                 : $this->container->bindInstance(LazyRouteFactory::class, $routeFactory = new LazyRouteFactory());
 
-            $routeFactory->addFactory(function () use ($callbacks) {
+            $routeFactory->addRouteRegistrant(function (RouteCollection $routes) use ($callbacks) {
                 $routeBuilders = new RouteBuilderRegistry();
 
                 foreach ($callbacks as $callback) {
                     $callback($routeBuilders);
                 }
 
-                return $routeBuilders->buildAll();
+                $routes->addMany($routeBuilders->buildAll());
             });
         });
 
