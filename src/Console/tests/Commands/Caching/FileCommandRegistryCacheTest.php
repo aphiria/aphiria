@@ -48,7 +48,7 @@ class FileCommandRegistryCacheTest extends TestCase
 
     public function testGetOnHitReturnsCommands(): void
     {
-        $this->markTestSkipped('Must be fixed once PHP/Opis has fixed a bug on their end');
+        $this->markTestSkipped('Skipping until Opis closure supports short closures');
         // We are purposely testing setting every type of property inside the command to test that they're all unserializable
         $commands = new CommandRegistry();
         // We are explicitly using an actual class here because Opis has trouble serializing mocks/anonymous classes

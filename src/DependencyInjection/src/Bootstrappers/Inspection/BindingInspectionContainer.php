@@ -24,7 +24,7 @@ final class BindingInspectionContainer extends Container
     /** @var BootstrapperBinding[] The bootstrapper bindings that were found */
     private array $bootstrapperBindings = [];
     /** @var Bootstrapper|null The current bootstrapper class */
-    private ?Bootstrapper $currBootstrapper;
+    private ?Bootstrapper $currBootstrapper = null;
 
     /**
      * @inheritdoc

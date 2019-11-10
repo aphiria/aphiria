@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests\Caching;
 
 use Aphiria\Routing\Caching\FileRouteCache;
+use Aphiria\Routing\ClosureRouteAction;
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
@@ -49,7 +50,23 @@ class FileRouteCacheTest extends TestCase
         $this->assertFileNotExists(self::PATH);
     }
 
-    public function testGetOnHitReturnsRoutes(): void
+    public function testGetOnHitReturnsRoutesWithClosureAction(): void
+    {
+        $this->markTestSkipped('Skipping until Opis closure supports short closures');
+        // We are purposely testing setting every type of property inside the route to test that they're all unserializable
+        $routes = new RouteCollection([
+            new Route(
+                new UriTemplate('foo'),
+                new ClosureRouteAction(fn () => null),
+                [$this->createMock(IRouteConstraint::class)],
+                [new MiddlewareBinding('foo')]
+            )
+        ]);
+        $this->cache->set($routes);
+        $this->assertEquals($routes, $this->cache->get());
+    }
+
+    public function testGetOnHitReturnsRoutesWithMethodAction(): void
     {
         // We are purposely testing setting every type of property inside the route to test that they're all unserializable
         $routes = new RouteCollection([
