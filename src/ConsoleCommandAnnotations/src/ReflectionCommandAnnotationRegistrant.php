@@ -65,7 +65,7 @@ final class ReflectionCommandAnnotationRegistrant implements ICommandAnnotationR
      */
     public function registerCommands(CommandRegistry $commands): void
     {
-        foreach ($this->typeFinder->findAllSubtypesOfType(ICommandHandler::class, $this->paths) as $commandHandler) {
+        foreach ($this->typeFinder->findAllSubtypesOfType(ICommandHandler::class, $this->paths, true) as $commandHandler) {
             foreach ($this->annotationReader->getClassAnnotations(new ReflectionClass($commandHandler)) as $commandAnnotation) {
                 if (!$commandAnnotation instanceof CommandAnnotation) {
                     continue;
