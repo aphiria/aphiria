@@ -102,7 +102,10 @@ final class ReflectionCommandAnnotationRegistrant implements ICommandAnnotationR
                 );
                 $commands->registerCommand(
                     $command,
-                    fn () => $this->commandHandlerResolver->resolve($commandHandler)
+                    // Note: We are explicitly not using short closures because Opis cannot currently serialize them
+                    function () use ($commandHandler) {
+                        return $this->commandHandlerResolver->resolve($commandHandler);
+                    }
                 );
             }
         }

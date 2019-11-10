@@ -20,7 +20,7 @@ use Closure;
 final class ExceptionLogLevelFactoryRegistry
 {
     /** @var Closure[] The mapping of exception types to log level factories */
-    private array $factories;
+    private array $factories = [];
 
     /**
      * Gets the factory for a particular exception
