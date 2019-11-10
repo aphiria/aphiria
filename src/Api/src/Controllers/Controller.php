@@ -33,14 +33,14 @@ class Controller
 {
     /** @var IHttpRequestMessage|null The current request */
     protected ?IHttpRequestMessage $request = null;
-    /** @var RequestParser The parser to use to get data from the current request */
-    protected RequestParser $requestParser;
-    /** @var ResponseFormatter The formatter to use to write data to the response */
-    protected ResponseFormatter $responseFormatter;
-    /** @var IContentNegotiator The content negotiator */
-    protected IContentNegotiator $contentNegotiator;
-    /** @var INegotiatedResponseFactory The negotiated response factory */
-    protected INegotiatedResponseFactory $negotiatedResponseFactory;
+    /** @var RequestParser|null The parser to use to get data from the current request */
+    protected ?RequestParser $requestParser = null;
+    /** @var ResponseFormatter|null The formatter to use to write data to the response */
+    protected ?ResponseFormatter $responseFormatter = null;
+    /** @var IContentNegotiator|null The content negotiator */
+    protected ?IContentNegotiator $contentNegotiator = null;
+    /** @var INegotiatedResponseFactory|null The negotiated response factory */
+    protected ?INegotiatedResponseFactory $negotiatedResponseFactory = null;
 
     /**
      * Sets the content negotiator
