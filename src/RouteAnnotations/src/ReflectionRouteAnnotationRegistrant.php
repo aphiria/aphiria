@@ -59,7 +59,7 @@ final class ReflectionRouteAnnotationRegistrant implements IRouteAnnotationRegis
      */
     public function registerRoutes(RouteBuilderRegistry $routes): void
     {
-        foreach ($this->typeFinder->findAllClasses($this->paths) as $controllerClass) {
+        foreach ($this->typeFinder->findAllClasses($this->paths, true) as $controllerClass) {
             $reflectionController = new ReflectionClass($controllerClass);
 
             // Only allow either Aphiria controllers or classes with the controller annotation
