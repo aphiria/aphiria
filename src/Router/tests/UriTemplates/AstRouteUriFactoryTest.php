@@ -18,6 +18,7 @@ use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\AstRouteUriFactory;
 use Aphiria\Routing\UriTemplates\RouteUriCreationException;
 use Aphiria\Routing\UriTemplates\UriTemplate;
+use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -32,6 +33,13 @@ class AstRouteUriFactoryTest extends TestCase
     {
         $this->routes = new RouteCollection();
         $this->uriFactory = new AstRouteUriFactory($this->routes);
+    }
+
+    public function testCreatingUriForUnregisteredRouteThrowsException(): void
+    {
+        $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage('Route "bar" does not exist');
+        $this->uriFactory->createRouteUri('bar');
     }
 
     public function testCreatingUriWithHostAndEmptyPathStripsTrailingSlash(): void
