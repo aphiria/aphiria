@@ -31,8 +31,6 @@ final class AstNodeTypes
     public const TEXT = 'TEXT';
     /** @const The variable node type */
     public const VARIABLE = 'VARIABLE';
-    /** @const The variable default value node type */
-    public const VARIABLE_DEFAULT_VALUE = 'VARIABLE_DEFAULT_VALUE';
     /** @const The variable rule node type */
     public const VARIABLE_RULE = 'VARIABLE_RULE';
     /** @const The variable rule parameters node type */

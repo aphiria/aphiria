@@ -43,7 +43,6 @@ final class UriTemplateParser implements IUriTemplateParser
                 $pathNode = new AstNode(AstNodeTypes::PATH, null);
                 $this->parseTokens($tokens, $pathNode);
                 $ast->addChild($pathNode);
-
                 break;
             }
 
