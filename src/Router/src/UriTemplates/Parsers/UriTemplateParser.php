@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\UriTemplates\Parsers;
 
-use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenStream;
-use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenTypes;
+use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
+use Aphiria\Routing\UriTemplates\Lexers\TokenTypes;
 use InvalidArgumentException;
 
 /**
@@ -43,7 +43,6 @@ final class UriTemplateParser implements IUriTemplateParser
                 $pathNode = new AstNode(AstNodeTypes::PATH, null);
                 $this->parseTokens($tokens, $pathNode);
                 $ast->addChild($pathNode);
-
                 break;
             }
 

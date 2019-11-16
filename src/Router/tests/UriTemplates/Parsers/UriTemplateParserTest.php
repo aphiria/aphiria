@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\UriTemplates\Parsers;
 
+use Aphiria\Routing\UriTemplates\Lexers\Token;
+use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
+use Aphiria\Routing\UriTemplates\Lexers\TokenTypes;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
-use Aphiria\Routing\UriTemplates\Parsers\Lexers\Token;
-use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenStream;
-use Aphiria\Routing\UriTemplates\Parsers\Lexers\TokenTypes;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;

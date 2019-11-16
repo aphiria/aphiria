@@ -23,8 +23,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\LazyRouteFactory;
-use Aphiria\Routing\Matchers\Trees\TrieFactory;
-use Aphiria\Routing\Matchers\Trees\TrieRouteMatcher;
+use Aphiria\Routing\Matchers\TrieRouteMatcher;
+use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieFactory;
 use FastRoute\RouteCollector;
 use Symfony\Component\Routing\Matcher\Dumper\PhpMatcherDumper;
 use Symfony\Component\Routing\RequestContext;

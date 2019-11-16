@@ -15,11 +15,11 @@ namespace Aphiria\Console\Input\Compilers;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Input\Argument;
-use Aphiria\Console\Input\Compilers\Tokenizers\ArgvInputTokenizer;
-use Aphiria\Console\Input\Compilers\Tokenizers\ArrayListInputTokenizer;
-use Aphiria\Console\Input\Compilers\Tokenizers\IInputTokenizer;
-use Aphiria\Console\Input\Compilers\Tokenizers\StringInputTokenizer;
 use Aphiria\Console\Input\Input;
+use Aphiria\Console\Input\Tokenizers\ArgvInputTokenizer;
+use Aphiria\Console\Input\Tokenizers\ArrayListInputTokenizer;
+use Aphiria\Console\Input\Tokenizers\IInputTokenizer;
+use Aphiria\Console\Input\Tokenizers\StringInputTokenizer;
 use InvalidArgumentException;
 use RuntimeException;
 
