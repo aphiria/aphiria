@@ -14,6 +14,7 @@ namespace Aphiria\Configuration;
 
 use Aphiria\Api\Router;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
+use Aphiria\Console\Commands\AggregateCommandRegistrant;
 use Aphiria\ConsoleCommandAnnotations\AnnotationCommandRegistrant;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
@@ -53,9 +54,10 @@ final class AphiriaComponentBuilder
     public function withConsoleCommandAnnotations(IApplicationBuilder $appBuilder): self
     {
         $appBuilder->registerComponentBuilder('consoleCommandAnnotations', function (array $callbacks) {
-            $this->container->hasBinding(AggregateRouteRegistrant::class)
-                ? $commandRegistrant = $this->container->resolve(AggregateRouteRegistrant::class)
-                : $this->container->bindInstance(AggregateRouteRegistrant::class, $commandRegistrant = new AggregateRouteRegistrant());
+            /** @var AggregateCommandRegistrant $commandRegistrant */
+            $this->container->hasBinding(AggregateCommandRegistrant::class)
+                ? $commandRegistrant = $this->container->resolve(AggregateCommandRegistrant::class)
+                : $this->container->bindInstance(AggregateCommandRegistrant::class, $commandRegistrant = new AggregateCommandRegistrant());
 
             /** @var AnnotationCommandRegistrant $annotationCommandRegistrant */
             $annotationCommandRegistrant = $this->container->resolve(AnnotationCommandRegistrant::class);
@@ -74,6 +76,7 @@ final class AphiriaComponentBuilder
     public function withEncoderComponent(IApplicationBuilder $appBuilder): self
     {
         $appBuilder->registerComponentBuilder('encoders', function (array $callbacks) {
+            /** @var EncoderRegistry $encoders */
             $this->container->hasBinding(EncoderRegistry::class)
                 ? $encoders = $this->container->resolve(EncoderRegistry::class)
                 : $this->container->bindInstance(EncoderRegistry::class, $encoders = new EncoderRegistry());
@@ -95,6 +98,7 @@ final class AphiriaComponentBuilder
     public function withExceptionHandlers(IApplicationBuilder $appBuilder): self
     {
         $appBuilder->registerComponentBuilder('exceptionHandlers', function (array $callbacks) use ($appBuilder) {
+            /** @var GlobalExceptionHandler $globalExceptionHandler */
             $this->container->hasBinding(GlobalExceptionHandler::class)
                 ? $globalExceptionHandler = $this->container->resolve(GlobalExceptionHandler::class)
                 : $this->container->bindInstance(GlobalExceptionHandler::class, $globalExceptionHandler = new GlobalExceptionHandler());
@@ -115,6 +119,7 @@ final class AphiriaComponentBuilder
     public function withExceptionLogLevelFactories(IApplicationBuilder $appBuilder): self
     {
         $appBuilder->registerComponentBuilder('exceptionLogLevelFactories', function (array $callbacks) {
+            /** @var ExceptionLogLevelFactoryRegistry $exceptionLogLevelFactories */
             $this->container->hasBinding(ExceptionLogLevelFactoryRegistry::class)
                 ? $exceptionLogLevelFactories = $this->container->resolve(ExceptionLogLevelFactoryRegistry::class)
                 : $this->container->bindInstance(ExceptionLogLevelFactoryRegistry::class, $exceptionLogLevelFactories = new ExceptionLogLevelFactoryRegistry());
@@ -136,6 +141,7 @@ final class AphiriaComponentBuilder
     public function withExceptionResponseFactories(IApplicationBuilder $appBuilder): self
     {
         $appBuilder->registerComponentBuilder('exceptionResponseFactories', function (array $callbacks) {
+            /** @var ExceptionResponseFactoryRegistry $exceptionResponseFactories */
             $this->container->hasBinding(ExceptionResponseFactoryRegistry::class)
                 ? $exceptionResponseFactories = $this->container->resolve(ExceptionResponseFactoryRegistry::class)
                 : $this->container->bindInstance(ExceptionResponseFactoryRegistry::class, $exceptionResponseFactories = new ExceptionResponseFactoryRegistry());
@@ -162,6 +168,7 @@ final class AphiriaComponentBuilder
         }
 
         $appBuilder->registerComponentBuilder('routeAnnotations', function (array $callbacks) {
+            /** @var AggregateRouteRegistrant $aggregateRouteRegistrant */
             $this->container->hasBinding(AggregateRouteRegistrant::class)
                 ? $aggregateRouteRegistrant = $this->container->resolve(AggregateRouteRegistrant::class)
                 : $this->container->bindInstance(AggregateRouteRegistrant::class, $aggregateRouteRegistrant = new AggregateRouteRegistrant());
@@ -187,6 +194,7 @@ final class AphiriaComponentBuilder
         $appBuilder->withRouter(fn () => $this->container->resolve(Router::class));
         // Register the routing component
         $appBuilder->registerComponentBuilder('routes', function (array $callbacks) {
+            /** @var AggregateRouteRegistrant $aggregateRouteRegistrant */
             $this->container->hasBinding(AggregateRouteRegistrant::class)
                 ? $aggregateRouteRegistrant = $this->container->resolve(AggregateRouteRegistrant::class)
                 : $this->container->bindInstance(AggregateRouteRegistrant::class, $aggregateRouteRegistrant = new AggregateRouteRegistrant());
