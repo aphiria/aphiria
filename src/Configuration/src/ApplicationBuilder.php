@@ -112,11 +112,15 @@ final class ApplicationBuilder implements IApplicationBuilder
             $this->container->hasBinding(AggregateCommandRegistrant::class)
                 ? $commandRegistrant = $this->container->resolve(AggregateCommandRegistrant::class)
                 : $this->container->bindInstance(AggregateCommandRegistrant::class, $commandRegistrant = new AggregateCommandRegistrant());
+
             $this->registerConsoleCommands($commandRegistrant);
             $this->buildComponents();
-            $commands = new CommandRegistry();
+            /** @var CommandRegistry $commands */
+            $this->container->hasBinding(CommandRegistry::class)
+                ? $commands = $this->container->resolve(CommandRegistry::class)
+                : $this->container->bindInstance(CommandRegistry::class, $commands = new CommandRegistry());
+
             $commandRegistrant->registerCommands($commands);
-            $this->container->bindInstance(CommandRegistry::class, $commands);
             $consoleApp = new ConsoleApp($commands);
             $this->container->bindInstance(ICommandBus::class, $consoleApp);
 

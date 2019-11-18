@@ -19,11 +19,11 @@ use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\Commands\AggregateCommandRegistrant;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
-use Aphiria\Net\Http\Handlers\IRequestHandler;
-use BadMethodCallException;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\Net\Http\Handlers\IRequestHandler;
+use BadMethodCallException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -71,11 +71,15 @@ class ApplicationBuilderTest extends TestCase
             ->method('bindInstance')
             ->with(AggregateCommandRegistrant::class, $commandFactory = new AggregateCommandRegistrant());
         $this->container->expects($this->at(2))
+            ->method('hasBinding')
+            ->with(CommandRegistry::class)
+            ->willReturn(false);
+        $this->container->expects($this->at(3))
             ->method('bindInstance')
             ->with(CommandRegistry::class, $this->callback(function ($commands) {
                 return $commands instanceof CommandRegistry;
             }));
-        $this->container->expects($this->at(3))
+        $this->container->expects($this->at(4))
             ->method('bindInstance')
             ->with(ICommandBus::class, $this->callback(fn ($app) => $app instanceof ICommandBus));
         $this->appBuilder->buildConsoleApplication();
