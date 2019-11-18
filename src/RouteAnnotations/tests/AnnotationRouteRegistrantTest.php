@@ -18,34 +18,32 @@ use Aphiria\RouteAnnotations\Annotations\Get;
 use Aphiria\RouteAnnotations\Annotations\Middleware;
 use Aphiria\RouteAnnotations\Annotations\RouteConstraint;
 use Aphiria\RouteAnnotations\Annotations\RouteGroup;
-use Aphiria\RouteAnnotations\ReflectionRouteAnnotationRegistrant;
+use Aphiria\RouteAnnotations\AnnotationRouteRegistrant;
 use Aphiria\RouteAnnotations\Tests\Mocks\DummyConstraint;
 use Aphiria\RouteAnnotations\Tests\Mocks\DummyMiddleware;
-use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
+use Aphiria\Routing\RouteCollection;
 use Doctrine\Annotations\AnnotationReader;
 use Doctrine\Annotations\Reader;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the reflection route annotation registrant
+ * Tests the annotation route registrant
  */
-class ReflectionRouteAnnotationRegistrantTest extends TestCase
+class AnnotationRouteRegistrantTest extends TestCase
 {
     private const PATH = __DIR__;
-    private ReflectionRouteAnnotationRegistrant $registrant;
+    private AnnotationRouteRegistrant $registrant;
     private Reader $reader;
     /** @var ITypeFinder|MockObject */
     private ITypeFinder $typeFinder;
-    private RouteBuilderRegistry $routeBuilders;
 
     protected function setUp(): void
     {
         $this->reader = new AnnotationReader();
         $this->typeFinder = $this->createMock(ITypeFinder::class);
-        $this->registrant = new ReflectionRouteAnnotationRegistrant(self::PATH, $this->reader, $this->typeFinder);
-        $this->routeBuilders = new RouteBuilderRegistry();
+        $this->registrant = new AnnotationRouteRegistrant(self::PATH, $this->reader, $this->typeFinder);
     }
 
     public function testRegisteringRouteWithAllPropertiesSetCreatesRouteWithAllThosePropertiesSet(): void
@@ -64,10 +62,11 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
-        $this->registrant->registerRoutes($this->routeBuilders);
-        $routes = $this->routeBuilders->buildAll();
-        $this->assertCount(1, $routes);
-        $route = $routes[0];
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(1, $routeArr);
+        $route = $routeArr[0];
         $this->assertEquals('/foo', $route->uriTemplate->pathTemplate);
         $this->assertEquals('example.com', $route->uriTemplate->hostTemplate);
         $this->assertTrue($route->uriTemplate->isHttpsOnly);
@@ -94,10 +93,11 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
-        $this->registrant->registerRoutes($this->routeBuilders);
-        $routes = $this->routeBuilders->buildAll();
-        $this->assertCount(1, $routes);
-        $route = $routes[0];
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(1, $routeArr);
+        $route = $routeArr[0];
         $this->assertCount(1, $route->middlewareBindings);
         $this->assertEquals(DummyMiddleware::class, $route->middlewareBindings[0]->className);
         $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->attributes);
@@ -123,10 +123,11 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
-        $this->registrant->registerRoutes($this->routeBuilders);
-        $routes = $this->routeBuilders->buildAll();
-        $this->assertCount(1, $routes);
-        $route = $routes[0];
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(1, $routeArr);
+        $route = $routeArr[0];
         $this->assertCount(2, $route->middlewareBindings);
         $this->assertEquals(DummyMiddleware::class, $route->middlewareBindings[0]->className);
         $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->attributes);
@@ -152,10 +153,11 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
-        $this->registrant->registerRoutes($this->routeBuilders);
-        $routes = $this->routeBuilders->buildAll();
-        $this->assertCount(1, $routes);
-        $route = $routes[0];
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(1, $routeArr);
+        $route = $routeArr[0];
         $this->assertCount(2, $route->middlewareBindings);
         $this->assertEquals(DummyMiddleware::class, $route->middlewareBindings[0]->className);
         $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->attributes);
@@ -182,10 +184,11 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
-        $this->registrant->registerRoutes($this->routeBuilders);
-        $routes = $this->routeBuilders->buildAll();
-        $this->assertCount(1, $routes);
-        $route = $routes[0];
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(1, $routeArr);
+        $route = $routeArr[0];
         $this->assertEquals('/foo', $route->uriTemplate->pathTemplate);
     }
 
@@ -208,10 +211,11 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
-        $this->registrant->registerRoutes($this->routeBuilders);
-        $routes = $this->routeBuilders->buildAll();
-        $this->assertCount(1, $routes);
-        $route = $routes[0];
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(1, $routeArr);
+        $route = $routeArr[0];
         $this->assertEquals('/foo/bar', $route->uriTemplate->pathTemplate);
     }
 
@@ -234,10 +238,11 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
-        $this->registrant->registerRoutes($this->routeBuilders);
-        $routes = $this->routeBuilders->buildAll();
-        $this->assertCount(1, $routes);
-        $route = $routes[0];
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(1, $routeArr);
+        $route = $routeArr[0];
         $this->assertEquals('api.example.com', $route->uriTemplate->hostTemplate);
     }
 
@@ -268,11 +273,12 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
-        $this->registrant->registerRoutes($this->routeBuilders);
-        $routes = $this->routeBuilders->buildAll();
-        $this->assertCount(2, $routes);
-        $this->assertTrue($routes[0]->uriTemplate->isHttpsOnly);
-        $this->assertTrue($routes[1]->uriTemplate->isHttpsOnly);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(2, $routeArr);
+        $this->assertTrue($routeArr[0]->uriTemplate->isHttpsOnly);
+        $this->assertTrue($routeArr[1]->uriTemplate->isHttpsOnly);
     }
 
     public function testRegisteringRoutesWithRouteGroupWithAttributesAppliesAttributesToChildRoutes(): void
@@ -302,11 +308,12 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
-        $this->registrant->registerRoutes($this->routeBuilders);
-        $routes = $this->routeBuilders->buildAll();
-        $this->assertCount(2, $routes);
-        $this->assertEquals(['foo' => 'bar'], $routes[0]->attributes);
-        $this->assertEquals(['foo' => 'bar', 'baz' => 'blah'], $routes[1]->attributes);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(2, $routeArr);
+        $this->assertEquals(['foo' => 'bar'], $routeArr[0]->attributes);
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'blah'], $routeArr[1]->attributes);
     }
 
     public function testRegisteringRoutesWithRouteGroupWithConstraintsAppliesConstraintsToChildRoutes(): void
@@ -336,11 +343,12 @@ class ReflectionRouteAnnotationRegistrantTest extends TestCase
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([\get_class($controller)]);
-        $this->registrant->registerRoutes($this->routeBuilders);
-        $routes = $this->routeBuilders->buildAll();
-        $this->assertCount(2, $routes);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(2, $routeArr);
         // Note: The HTTP method constraint gets automatically added, too
-        $this->assertCount(2, $routes[0]->constraints);
-        $this->assertCount(3, $routes[1]->constraints);
+        $this->assertCount(2, $routeArr[0]->constraints);
+        $this->assertCount(3, $routeArr[1]->constraints);
     }
 }

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\UriTemplates\Compilers\Tries;
 
-use Aphiria\Routing\IRouteFactory;
+use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\ITrieCache;
 
 /**
@@ -20,30 +20,24 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\ITrieCache;
  */
 final class TrieFactory
 {
-    /**
-     * The factory that will create the routes
-     * The benefit of using a factory instead of the already-instantiated routes is that we can defer the potentially
-     * slow/costly overhead of creating those routes when there's a cache hit
-     *
-     * @var IRouteFactory
-     */
-    private IRouteFactory $routeFactory;
+    /** @var RouteCollection The routes that will be used to create the trie */
+    private RouteCollection $routes;
     /** @var ITrieCache|null The cache for tries, or null if not using a cache */
     private ?ITrieCache $trieCache;
     /** @var ITrieCompiler The trie compiler */
     private ITrieCompiler $trieCompiler;
 
     /**
-     * @param IRouteFactory $routeFactory The factory that will create the routes when not found in cache
+     * @param RouteCollection $routes The list of routes
      * @param ITrieCache|null $trieCache The cache for tries, or null if not using a cache
      * @param ITrieCompiler|null $trieCompiler The trie compiler
      */
     public function __construct(
-        IRouteFactory $routeFactory,
+        RouteCollection $routes,
         ITrieCache $trieCache = null,
         ITrieCompiler $trieCompiler = null
     ) {
-        $this->routeFactory = $routeFactory;
+        $this->routes = $routes;
         $this->trieCache = $trieCache;
         $this->trieCompiler = $trieCompiler ?? new TrieCompiler();
     }
@@ -62,7 +56,7 @@ final class TrieFactory
         // Need to generate the trie
         $trie = new RootTrieNode();
 
-        foreach ($this->routeFactory->createRoutes()->getAll() as $route) {
+        foreach ($this->routes->getAll() as $route) {
             foreach ($this->trieCompiler->compile($route)->getAllChildren() as $childNode) {
                 $trie->addChild($childNode);
             }

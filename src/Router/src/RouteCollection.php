@@ -17,7 +17,7 @@ namespace Aphiria\Routing;
  */
 final class RouteCollection
 {
-    /** @var array The list of methods to their various routes */
+    /** @var Route[] The list of methods to their various routes */
     private array $routes = [];
     /** @var Route[] The mapping of route names to routes */
     private array $namedRoutes = [];
@@ -65,8 +65,13 @@ final class RouteCollection
      */
     public function addMany(array $routes): void
     {
+        // Purposely not calling add() so that we save on method calls when adding a lot of routes (micro-optimization)
         foreach ($routes as $route) {
-            $this->add($route);
+            $this->routes[] = $route;
+
+            if ($route->name !== null) {
+                $this->namedRoutes[$route->name] =& $route;
+            }
         }
     }
 

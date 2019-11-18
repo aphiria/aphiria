@@ -13,14 +13,14 @@ declare(strict_types=1);
 namespace Aphiria\Routing;
 
 /**
- * Defines the interface for route factories to implement
+ * Defines the interface for route registrants to implement
  */
-interface IRouteFactory
+interface IRouteRegistrant
 {
     /**
-     * Creates a list of routes
+     * Registers routes to the route collection
      *
-     * @return RouteCollection The created routes
+     * @param RouteCollection $routes The route collection to add to
      */
-    public function createRoutes(): RouteCollection;
+    public function registerRoutes(RouteCollection $routes): void;
 }

@@ -21,10 +21,9 @@ use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\Middleware\ExceptionHandler;
-use Aphiria\RouteAnnotations\IRouteAnnotationRegistrant;
-use Aphiria\Routing\Builders\RouteBuilderRegistry;
-use Aphiria\Routing\LazyRouteFactory;
-use Aphiria\Routing\RouteCollection;
+use Aphiria\RouteAnnotations\AnnotationRouteRegistrant;
+use Aphiria\Routing\AggregateRouteRegistrant;
+use Aphiria\Routing\Builders\RouteBuilderRouteRegistrant;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\DependencyInjection\IContainer;
 use RuntimeException;
@@ -59,6 +58,7 @@ final class AphiriaComponentBuilder
             $this->container->hasBinding(LazyCommandRegistryFactory::class)
                 ? $commandFactory = $this->container->resolve(LazyCommandRegistryFactory::class)
                 : $this->container->bindInstance(LazyCommandRegistryFactory::class, $commandFactory = new LazyCommandRegistryFactory());
+
             /** @var ICommandAnnotationRegistrant $commandAnnotationRegistrant */
             $commandAnnotationRegistrant = $this->container->resolve(ICommandAnnotationRegistrant::class);
             $commandFactory->addCommandRegistrant(function (CommandRegistry $commands) use ($commandAnnotationRegistrant) {
@@ -102,6 +102,7 @@ final class AphiriaComponentBuilder
             $this->container->hasBinding(GlobalExceptionHandler::class)
                 ? $globalExceptionHandler = $this->container->resolve(GlobalExceptionHandler::class)
                 : $this->container->bindInstance(GlobalExceptionHandler::class, $globalExceptionHandler = new GlobalExceptionHandler());
+
             $globalExceptionHandler->registerWithPhp();
             $appBuilder->withGlobalMiddleware(fn () => [new MiddlewareBinding(ExceptionHandler::class)]);
         });
@@ -165,16 +166,13 @@ final class AphiriaComponentBuilder
         }
 
         $appBuilder->registerComponentBuilder('routeAnnotations', function (array $callbacks) {
-            $this->container->hasBinding(LazyRouteFactory::class)
-                ? $routeFactory = $this->container->resolve(LazyRouteFactory::class)
-                : $this->container->bindInstance(LazyRouteFactory::class, $routeFactory = new LazyRouteFactory());
-            /** @var IRouteAnnotationRegistrant $routeAnnotationRegistrant */
-            $routeAnnotationRegistrant = $this->container->resolve(IRouteAnnotationRegistrant::class);
-            $routeFactory->addRouteRegistrant(function (RouteCollection $routes) use ($routeAnnotationRegistrant) {
-                $routeBuilders = new RouteBuilderRegistry();
-                $routeAnnotationRegistrant->registerRoutes($routeBuilders);
-                $routes->addMany($routeBuilders->buildAll());
-            });
+            $this->container->hasBinding(AggregateRouteRegistrant::class)
+                ? $aggregateRouteRegistrant = $this->container->resolve(AggregateRouteRegistrant::class)
+                : $this->container->bindInstance(AggregateRouteRegistrant::class, $aggregateRouteRegistrant = new AggregateRouteRegistrant());
+
+            /** @var AnnotationRouteRegistrant $annotationRouteRegistrant */
+            $annotationRouteRegistrant = $this->container->resolve(AnnotationRouteRegistrant::class);
+            $aggregateRouteRegistrant->addRouteRegistrant($annotationRouteRegistrant);
         });
 
         return $this;
@@ -193,19 +191,11 @@ final class AphiriaComponentBuilder
         $appBuilder->withRouter(fn () => $this->container->resolve(Router::class));
         // Register the routing component
         $appBuilder->registerComponentBuilder('routes', function (array $callbacks) {
-            $this->container->hasBinding(LazyRouteFactory::class)
-                ? $routeFactory = $this->container->resolve(LazyRouteFactory::class)
-                : $this->container->bindInstance(LazyRouteFactory::class, $routeFactory = new LazyRouteFactory());
+            $this->container->hasBinding(AggregateRouteRegistrant::class)
+                ? $aggregateRouteRegistrant = $this->container->resolve(AggregateRouteRegistrant::class)
+                : $this->container->bindInstance(AggregateRouteRegistrant::class, $aggregateRouteRegistrant = new AggregateRouteRegistrant());
 
-            $routeFactory->addRouteRegistrant(function (RouteCollection $routes) use ($callbacks) {
-                $routeBuilders = new RouteBuilderRegistry();
-
-                foreach ($callbacks as $callback) {
-                    $callback($routeBuilders);
-                }
-
-                $routes->addMany($routeBuilders->buildAll());
-            });
+            $aggregateRouteRegistrant->addRouteRegistrant(new RouteBuilderRouteRegistrant($callbacks));
         });
 
         return $this;

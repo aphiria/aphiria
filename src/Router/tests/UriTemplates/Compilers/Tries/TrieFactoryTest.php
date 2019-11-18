@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries;
 
-use Aphiria\Routing\IRouteFactory;
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteCollection;
@@ -30,8 +29,7 @@ use PHPUnit\Framework\TestCase;
 class TrieFactoryTest extends TestCase
 {
     private TrieFactory $trieFactory;
-    /** @var IRouteFactory|MockObject */
-    private IRouteFactory $routeFactory;
+    private RouteCollection $routes;
     /** @var ITrieCache|MockObject */
     private ITrieCache $trieCache;
     /** @var ITrieCompiler|MockObject */
@@ -39,16 +37,14 @@ class TrieFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->routeFactory = $this->createMock(IRouteFactory::class);
+        $this->routes = new RouteCollection();
         $this->trieCache = $this->createMock(ITrieCache::class);
         $this->trieCompiler = $this->createMock(ITrieCompiler::class);
-        $this->trieFactory = new TrieFactory($this->routeFactory, $this->trieCache, $this->trieCompiler);
+        $this->trieFactory = new TrieFactory($this->routes, $this->trieCache, $this->trieCompiler);
     }
 
     public function testCreatingTrieWithCacheHitReturnsTrieFromCache(): void
     {
-        $this->routeFactory->expects($this->never())
-            ->method('createRoutes');
         $expectedTrie = new RootTrieNode();
         $this->trieCache->expects($this->once())
             ->method('get')
@@ -58,11 +54,7 @@ class TrieFactoryTest extends TestCase
 
     public function testCreatingTrieWithCacheMissSetsItInCache(): void
     {
-        $this->routeFactory->expects($this->once())
-            ->method('createRoutes')
-            ->willReturn(new RouteCollection([
-                new Route(new UriTemplate('foo'), new MethodRouteAction('Bar', 'baz'), [])
-            ]));
+        $this->routes->add(new Route(new UriTemplate('foo'), new MethodRouteAction('Bar', 'baz'), []));
         $expectedTrie = new RootTrieNode();
         $this->trieCache->expects($this->once())
             ->method('get')
@@ -79,12 +71,8 @@ class TrieFactoryTest extends TestCase
 
     public function testCreatingTrieWithNoCacheSetCreatesTrieFromCompiler(): void
     {
-        $this->routeFactory->expects($this->once())
-            ->method('createRoutes')
-            ->willReturn(new RouteCollection([
-                new Route(new UriTemplate('foo'), new MethodRouteAction('Bar', 'baz'), [])
-            ]));
-        $trieFactory = new TrieFactory($this->routeFactory, null, $this->trieCompiler);
+        $this->routes->add(new Route(new UriTemplate('foo'), new MethodRouteAction('Bar', 'baz'), []));
+        $trieFactory = new TrieFactory($this->routes, null, $this->trieCompiler);
         $expectedTrie = new RootTrieNode();
         $this->trieCompiler->expects($this->once())
             ->method('compile')

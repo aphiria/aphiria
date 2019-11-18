@@ -20,7 +20,9 @@ use Aphiria\RouteAnnotations\Annotations\Middleware;
 use Aphiria\RouteAnnotations\Annotations\RouteGroup;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Routing\Builders\RouteGroupOptions;
+use Aphiria\Routing\IRouteRegistrant;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
+use Aphiria\Routing\RouteCollection;
 use Doctrine\Annotations\AnnotationException;
 use Doctrine\Annotations\AnnotationReader;
 use Doctrine\Annotations\Reader;
@@ -29,9 +31,9 @@ use ReflectionException;
 use ReflectionMethod;
 
 /**
- * Defines the compiler that takes in annotations and compiles them to valid PHP route definitions
+ * Defines the route registrant that registers routes defined via annotations
  */
-final class ReflectionRouteAnnotationRegistrant implements IRouteAnnotationRegistrant
+final class AnnotationRouteRegistrant implements IRouteRegistrant
 {
     /** @var string[] The paths to check for controllers */
     private array $paths;
@@ -57,8 +59,10 @@ final class ReflectionRouteAnnotationRegistrant implements IRouteAnnotationRegis
      * @inheritdoc
      * @throws ReflectionException Thrown if a controller class could not be reflected
      */
-    public function registerRoutes(RouteBuilderRegistry $routes): void
+    public function registerRoutes(RouteCollection $routes): void
     {
+        $routeBuilders = new RouteBuilderRegistry();
+
         foreach ($this->typeFinder->findAllClasses($this->paths, true) as $controllerClass) {
             $reflectionController = new ReflectionClass($controllerClass);
 
@@ -73,13 +77,15 @@ final class ReflectionRouteAnnotationRegistrant implements IRouteAnnotationRegis
             $routeGroupOptions = $this->createRouteGroupOptions($reflectionController);
 
             if ($routeGroupOptions === null) {
-                $this->registerRouteBuilders($reflectionController, $routes);
+                $this->registerRouteBuilders($reflectionController, $routeBuilders);
             } else {
-                $routes->group($routeGroupOptions, function (RouteBuilderRegistry $routes) use ($reflectionController) {
-                    $this->registerRouteBuilders($reflectionController, $routes);
+                $routeBuilders->group($routeGroupOptions, function (RouteBuilderRegistry $routeBuilders) use ($reflectionController) {
+                    $this->registerRouteBuilders($reflectionController, $routeBuilders);
                 });
             }
         }
+
+        $routes->addMany($routeBuilders->buildAll());
     }
 
     /**
@@ -132,9 +138,9 @@ final class ReflectionRouteAnnotationRegistrant implements IRouteAnnotationRegis
      * Registers route builders for a controller class
      *
      * @param ReflectionClass $controller The controller class to create route builders from
-     * @param RouteBuilderRegistry $routes The registry to register route builders to
+     * @param RouteBuilderRegistry $routeBuilders The registry to register route builders to
      */
-    private function registerRouteBuilders(ReflectionClass $controller, RouteBuilderRegistry $routes): void
+    private function registerRouteBuilders(ReflectionClass $controller, RouteBuilderRegistry $routeBuilders): void
     {
         foreach ($controller->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $routeBuilder = null;
@@ -142,7 +148,7 @@ final class ReflectionRouteAnnotationRegistrant implements IRouteAnnotationRegis
 
             foreach ($this->annotationReader->getMethodAnnotations($method) as $methodAnnotation) {
                 if ($methodAnnotation instanceof Route) {
-                    $routeBuilder = $routes->map(
+                    $routeBuilder = $routeBuilders->map(
                         $methodAnnotation->httpMethods,
                         $methodAnnotation->path,
                         $methodAnnotation->host,

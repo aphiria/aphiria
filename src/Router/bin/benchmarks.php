@@ -22,14 +22,15 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
-use Aphiria\Routing\LazyRouteFactory;
+use Aphiria\Routing\CachedRouteRegistrant;
 use Aphiria\Routing\Matchers\TrieRouteMatcher;
+use Aphiria\Routing\RouteCollection as AphiriaRouteCollection;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieFactory;
 use FastRoute\RouteCollector;
 use Symfony\Component\Routing\Matcher\Dumper\PhpMatcherDumper;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route as SymfonyRoute;
-use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\RouteCollection as SymfonyRouteCollection;
 
 $numTests = 100;
 $numRoutes = 400;
@@ -64,7 +65,7 @@ echo "--------------------------------------------------\n";
  */
 
 $startMemory = \memory_get_usage();
-$routes = new RouteCollection();
+$routes = new SymfonyRouteCollection\();
 
 for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
     $routes->add("f$routeIter", new SymfonyRoute("/abc$routeIter/$routeIter/{foo}/$routeIter"));
@@ -88,17 +89,18 @@ echo formatResults('Symfony', \memory_get_usage() - $startMemory, \microtime(tru
  */
 
 $startMemory = \memory_get_usage();
-$routeFactory = new LazyRouteFactory(function () use ($numRoutes) {
-    $routes = new RouteBuilderRegistry();
+$routes = new AphiriaRouteCollection();
+$routeFactory = new CachedRouteRegistrant(function (AphiriaRouteCollection $routes) use ($numRoutes) {
+    $routeBuilders = new RouteBuilderRegistry();
 
     for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
-        $routes->map('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
+        $routeBuilders->map('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
             ->toMethod('Foo', (string)$routeIter);
     }
 
-    return $routes->buildAll();
+    $routes->addMany($routeBuilders->buildAll());
 });
-$routeMatcher = new TrieRouteMatcher((new TrieFactory($routeFactory))->createTrie());
+$routeMatcher = new TrieRouteMatcher((new TrieFactory($routes))->createTrie());
 $startTime = \microtime(true);
 
 for ($testIter = 0;$testIter < $numTests;$testIter++) {
