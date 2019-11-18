@@ -21,6 +21,16 @@ class AggregateRouteRegistrant implements IRouteRegistrant
     protected array $routeRegistrants = [];
 
     /**
+     * @param IRouteRegistrant|null $initialRouteRegistrant The initial registrant to register, or null if none
+     */
+    public function __construct(IRouteRegistrant $initialRouteRegistrant = null)
+    {
+        if ($initialRouteRegistrant !== null) {
+            $this->routeRegistrants[] = $initialRouteRegistrant;
+        }
+    }
+
+    /**
      * Adds a route registrant to the collection
      *
      * @param IRouteRegistrant $routeRegistrant The registrant to add

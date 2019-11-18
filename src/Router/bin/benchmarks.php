@@ -22,7 +22,7 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
-use Aphiria\Routing\CachedRouteRegistrant;
+use Aphiria\Routing\Caching\CachedRouteRegistrant;
 use Aphiria\Routing\Matchers\TrieRouteMatcher;
 use Aphiria\Routing\RouteCollection as AphiriaRouteCollection;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieFactory;

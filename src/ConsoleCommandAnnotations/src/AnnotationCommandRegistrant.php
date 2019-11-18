@@ -15,6 +15,7 @@ namespace Aphiria\ConsoleCommandAnnotations;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Commands\ICommandRegistrant;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\Option;
 use Aphiria\ConsoleCommandAnnotations\Annotations\Command as CommandAnnotation;
@@ -27,9 +28,9 @@ use ReflectionClass;
 use ReflectionException;
 
 /**
- * Defines the command annotation registrant that uses reflection to scan for annotations
+ * Defines the command registrant that registers commands via annotations
  */
-final class ReflectionCommandAnnotationRegistrant implements ICommandAnnotationRegistrant
+final class AnnotationCommandRegistrant implements ICommandRegistrant
 {
     /** @var string[] The paths to check for commands */
     private array $paths;

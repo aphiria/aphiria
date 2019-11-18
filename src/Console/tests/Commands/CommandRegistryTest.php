@@ -31,6 +31,19 @@ class CommandRegistryTest extends TestCase
         $this->commands = new CommandRegistry();
     }
 
+    public function testGettingAllCommandBindingsReturnsExpectedBindings(): void
+    {
+        $expectedBindings = [
+            new CommandBinding(new Command('foo'), fn () => $this->createMock(ICommandHandler::class)),
+            new CommandBinding(new Command('bar'), fn () => $this->createMock(ICommandHandler::class))
+        ];
+        $this->commands->registerManyCommands($expectedBindings);
+        $actualBindings = $this->commands->getAllCommandBindings();
+        $this->assertCount(2, $actualBindings);
+        $this->assertSame($expectedBindings[0], $actualBindings[0]);
+        $this->assertSame($expectedBindings[1], $actualBindings[1]);
+    }
+
     public function testGettingAllCommandsReturnsExpectedCommands(): void
     {
         $expectedCommand1 = new Command('command1', [], [], '');

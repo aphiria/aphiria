@@ -13,14 +13,14 @@ declare(strict_types=1);
 namespace Aphiria\Console\Commands;
 
 /**
- * Defines the interfaces for command registry factories to implement
+ * Defines the interfaces for command registrants to implement
  */
-interface ICommandRegistryFactory
+interface ICommandRegistrant
 {
     /**
-     * Creates the command registry
+     * Registers console commands to the registry
      *
-     * @return CommandRegistry The created commands
+     * @param CommandRegistry $commands The commands to register to
      */
-    public function createCommands(): CommandRegistry;
+    public function registerCommands(CommandRegistry $commands): void;
 }

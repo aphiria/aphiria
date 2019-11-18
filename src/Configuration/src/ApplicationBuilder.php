@@ -16,20 +16,21 @@ use Aphiria\Api\App as ApiApp;
 use Aphiria\Api\ContainerDependencyResolver;
 use Aphiria\Api\DependencyResolutionException;
 use Aphiria\Api\IDependencyResolver;
+use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
+use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
+use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\App as ConsoleApp;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
-use Aphiria\Console\Commands\LazyCommandRegistryFactory;
+use Aphiria\Console\Commands\AggregateCommandRegistrant;
+use Aphiria\Console\Commands\ICommandRegistrant;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use BadMethodCallException;
 use Closure;
 use InvalidArgumentException;
-use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
-use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
-use Aphiria\DependencyInjection\IContainer;
-use Aphiria\DependencyInjection\ResolutionException;
 use RuntimeException;
 
 /**
@@ -108,12 +109,13 @@ final class ApplicationBuilder implements IApplicationBuilder
     {
         try {
             $this->dispatchBootstrappers();
-            $this->container->hasBinding(LazyCommandRegistryFactory::class)
-                ? $commandFactory = $this->container->resolve(LazyCommandRegistryFactory::class)
-                : $this->container->bindInstance(LazyCommandRegistryFactory::class, $commandFactory = new LazyCommandRegistryFactory());
-            $this->registerConsoleCommands($commandFactory);
+            $this->container->hasBinding(AggregateCommandRegistrant::class)
+                ? $commandRegistrant = $this->container->resolve(AggregateCommandRegistrant::class)
+                : $this->container->bindInstance(AggregateCommandRegistrant::class, $commandRegistrant = new AggregateCommandRegistrant());
+            $this->registerConsoleCommands($commandRegistrant);
             $this->buildComponents();
-            $commands = $commandFactory->createCommands();
+            $commands = new CommandRegistry();
+            $commandRegistrant->registerCommands($commands);
             $this->container->bindInstance(CommandRegistry::class, $commands);
             $consoleApp = new ConsoleApp($commands);
             $this->container->bindInstance(ICommandBus::class, $consoleApp);
@@ -215,13 +217,29 @@ final class ApplicationBuilder implements IApplicationBuilder
     /**
      * Builds the console commands that were registered
      *
-     * @param LazyCommandRegistryFactory $commandFactory The command factory to register commands to
+     * @param AggregateCommandRegistrant $commandRegistrant The command regisrant to register commands to
      */
-    private function registerConsoleCommands(LazyCommandRegistryFactory $commandFactory): void
+    private function registerConsoleCommands(AggregateCommandRegistrant $commandRegistrant): void
     {
-        $commandFactory->addCommandRegistrant(function (CommandRegistry $commands) {
-            foreach ($this->consoleCommandCallbacks as $callback) {
-                $callback($commands);
+        $commandRegistrant->addCommandRegistrant(new class ($this->consoleCommandCallbacks) implements ICommandRegistrant {
+            private array $consoleCommandCallbacks;
+
+            /**
+             * @param Closure[] $consoleCommandCallbacks The callbacks to execute
+             */
+            public function __construct(array $consoleCommandCallbacks)
+            {
+                $this->consoleCommandCallbacks = $consoleCommandCallbacks;
+            }
+
+            /**
+             * @inheritdoc
+             */
+            public function registerCommands(CommandRegistry $commands): void
+            {
+                foreach ($this->consoleCommandCallbacks as $callback) {
+                    $callback($commands);
+                }
             }
         });
     }

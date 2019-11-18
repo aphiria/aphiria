@@ -23,16 +23,16 @@ use Aphiria\ConsoleCommandAnnotations\Annotations\Argument;
 use Aphiria\ConsoleCommandAnnotations\Annotations\Command;
 use Aphiria\ConsoleCommandAnnotations\Annotations\Option;
 use Aphiria\ConsoleCommandAnnotations\ICommandHandlerResolver;
-use Aphiria\ConsoleCommandAnnotations\ReflectionCommandAnnotationRegistrant;
+use Aphiria\ConsoleCommandAnnotations\AnnotationCommandRegistrant;
 use Aphiria\Reflection\ITypeFinder;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the reflection command annotation registrant
  */
-class ReflectionCommandAnnotationRegistrantTest extends TestCase
+class AnnotationCommandRegistrantTest extends TestCase
 {
-    private ReflectionCommandAnnotationRegistrant $registrant;
+    private AnnotationCommandRegistrant $registrant;
     private CommandRegistry $commands;
     /** @var ICommandHandlerResolver|MockObject */
     private ICommandHandlerResolver $commandHandlerResolver;
@@ -44,7 +44,7 @@ class ReflectionCommandAnnotationRegistrantTest extends TestCase
         $this->commands = new CommandRegistry();
         $this->commandHandlerResolver = $this->createMock(ICommandHandlerResolver::class);
         $this->typeFinder = $this->createMock(ITypeFinder::class);
-        $this->registrant = new ReflectionCommandAnnotationRegistrant(
+        $this->registrant = new AnnotationCommandRegistrant(
             __DIR__,
             $this->commandHandlerResolver,
             null,

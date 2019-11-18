@@ -24,6 +24,16 @@ final class CommandRegistry
     private array $bindings = [];
 
     /**
+     * Gets the list of all command bindings
+     *
+     * @return CommandBinding[] The list of command bindings
+     */
+    public function getAllCommandBindings(): array
+    {
+        return array_values($this->bindings);
+    }
+
+    /**
      * Gets a list of all commands
      *
      * @return Command[] The list of commands

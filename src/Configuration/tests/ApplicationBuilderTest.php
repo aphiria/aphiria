@@ -16,9 +16,9 @@ use Aphiria\Api\App;
 use Aphiria\Configuration\ApplicationBuilder;
 use Aphiria\Configuration\IModuleBuilder;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
+use Aphiria\Console\Commands\AggregateCommandRegistrant;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
-use Aphiria\Console\Commands\LazyCommandRegistryFactory;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use BadMethodCallException;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
@@ -65,11 +65,11 @@ class ApplicationBuilderTest extends TestCase
     {
         $this->container->expects($this->at(0))
             ->method('hasBinding')
-            ->with(LazyCommandRegistryFactory::class)
+            ->with(AggregateCommandRegistrant::class)
             ->willReturn(false);
         $this->container->expects($this->at(1))
             ->method('bindInstance')
-            ->with(LazyCommandRegistryFactory::class, $commandFactory = new LazyCommandRegistryFactory());
+            ->with(AggregateCommandRegistrant::class, $commandFactory = new AggregateCommandRegistrant());
         $this->container->expects($this->at(2))
             ->method('bindInstance')
             ->with(CommandRegistry::class, $this->callback(function ($commands) {

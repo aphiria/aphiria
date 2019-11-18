@@ -14,9 +14,7 @@ namespace Aphiria\Configuration;
 
 use Aphiria\Api\Router;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
-use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\Console\Commands\LazyCommandRegistryFactory;
-use Aphiria\ConsoleCommandAnnotations\ICommandAnnotationRegistrant;
+use Aphiria\ConsoleCommandAnnotations\AnnotationCommandRegistrant;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Exceptions\GlobalExceptionHandler;
@@ -55,15 +53,13 @@ final class AphiriaComponentBuilder
     public function withConsoleCommandAnnotations(IApplicationBuilder $appBuilder): self
     {
         $appBuilder->registerComponentBuilder('consoleCommandAnnotations', function (array $callbacks) {
-            $this->container->hasBinding(LazyCommandRegistryFactory::class)
-                ? $commandFactory = $this->container->resolve(LazyCommandRegistryFactory::class)
-                : $this->container->bindInstance(LazyCommandRegistryFactory::class, $commandFactory = new LazyCommandRegistryFactory());
+            $this->container->hasBinding(AggregateRouteRegistrant::class)
+                ? $commandRegistrant = $this->container->resolve(AggregateRouteRegistrant::class)
+                : $this->container->bindInstance(AggregateRouteRegistrant::class, $commandRegistrant = new AggregateRouteRegistrant());
 
-            /** @var ICommandAnnotationRegistrant $commandAnnotationRegistrant */
-            $commandAnnotationRegistrant = $this->container->resolve(ICommandAnnotationRegistrant::class);
-            $commandFactory->addCommandRegistrant(function (CommandRegistry $commands) use ($commandAnnotationRegistrant) {
-                $commandAnnotationRegistrant->registerCommands($commands);
-            });
+            /** @var AnnotationCommandRegistrant $annotationCommandRegistrant */
+            $annotationCommandRegistrant = $this->container->resolve(AnnotationCommandRegistrant::class);
+            $commandRegistrant->addCommandRegistrant($annotationCommandRegistrant);
         });
 
         return $this;

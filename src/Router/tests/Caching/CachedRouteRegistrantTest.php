@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Tests;
+namespace Aphiria\Routing\Tests\Caching;
 
 use Aphiria\Routing\Caching\IRouteCache;
-use Aphiria\Routing\CachedRouteRegistrant;
+use Aphiria\Routing\Caching\CachedRouteRegistrant;
 use Aphiria\Routing\IRouteRegistrant;
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
