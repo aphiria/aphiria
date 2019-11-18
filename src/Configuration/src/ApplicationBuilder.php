@@ -16,6 +16,7 @@ use Aphiria\Api\App as ApiApp;
 use Aphiria\Api\ContainerDependencyResolver;
 use Aphiria\Api\DependencyResolutionException;
 use Aphiria\Api\IDependencyResolver;
+use Aphiria\Console\Commands\ClosureCommandRegistrant;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
 use Aphiria\DependencyInjection\IContainer;
@@ -25,7 +26,6 @@ use Aphiria\Console\App as ConsoleApp;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\Console\Commands\AggregateCommandRegistrant;
-use Aphiria\Console\Commands\ICommandRegistrant;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use BadMethodCallException;
@@ -113,7 +113,7 @@ final class ApplicationBuilder implements IApplicationBuilder
                 ? $commandRegistrant = $this->container->resolve(AggregateCommandRegistrant::class)
                 : $this->container->bindInstance(AggregateCommandRegistrant::class, $commandRegistrant = new AggregateCommandRegistrant());
 
-            $this->registerConsoleCommands($commandRegistrant);
+            $commandRegistrant->addCommandRegistrant(new ClosureCommandRegistrant($this->consoleCommandCallbacks));
             $this->buildComponents();
             /** @var CommandRegistry $commands */
             $this->container->hasBinding(CommandRegistry::class)
@@ -216,36 +216,6 @@ final class ApplicationBuilder implements IApplicationBuilder
             $builder = $componentConfig['builder'];
             $builder($componentConfig['callbacks']);
         }
-    }
-
-    /**
-     * Builds the console commands that were registered
-     *
-     * @param AggregateCommandRegistrant $commandRegistrant The command regisrant to register commands to
-     */
-    private function registerConsoleCommands(AggregateCommandRegistrant $commandRegistrant): void
-    {
-        $commandRegistrant->addCommandRegistrant(new class ($this->consoleCommandCallbacks) implements ICommandRegistrant {
-            private array $consoleCommandCallbacks;
-
-            /**
-             * @param Closure[] $consoleCommandCallbacks The callbacks to execute
-             */
-            public function __construct(array $consoleCommandCallbacks)
-            {
-                $this->consoleCommandCallbacks = $consoleCommandCallbacks;
-            }
-
-            /**
-             * @inheritdoc
-             */
-            public function registerCommands(CommandRegistry $commands): void
-            {
-                foreach ($this->consoleCommandCallbacks as $callback) {
-                    $callback($commands);
-                }
-            }
-        });
     }
 
     /**
