@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\UriTemplates\Lexers;
 
+use Aphiria\Routing\UriTemplates\Lexers\LexingException;
 use Aphiria\Routing\UriTemplates\Lexers\Token;
 use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
 use Aphiria\Routing\UriTemplates\Lexers\TokenTypes;
 use Aphiria\Routing\UriTemplates\Lexers\UriTemplateLexer;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -343,7 +343,7 @@ class UriTemplateLexerTest extends TestCase
 
     public function testLexingTooLongVariableNameThrowsException(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(LexingException::class);
         $this->expectExceptionMessage('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
         $invalidVariableName = \str_repeat('a', 33);
         $this->lexer->lex(":$invalidVariableName");

@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\UriTemplates\Lexers;
 
-use InvalidArgumentException;
-
 /**
  * Defines the lexer for URI templates
  */
@@ -149,6 +147,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      * @param string $variableName The lexeme to add
      * @param Token[] $tokens The list of tokens to add to
      * @param int $cursor The current cursor
+     * @throws LexingException Thrown if the variable name exceeded the max length
      */
     private static function lexVariableName(string $variableName, array &$tokens, int &$cursor): void
     {
@@ -156,7 +155,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
         $trimmedVariableName = \substr($variableName, 1);
 
         if (\mb_strlen($trimmedVariableName) > self::VARIABLE_NAME_MAX_LENGTH) {
-            throw new InvalidArgumentException("Variable name \"$trimmedVariableName\" exceeds the max length limit");
+            throw new LexingException("Variable name \"$trimmedVariableName\" exceeds the max length limit");
         }
 
         $tokens[] = new Token(TokenTypes::T_VARIABLE, $trimmedVariableName);

@@ -14,7 +14,7 @@ namespace Aphiria\Routing\Tests\UriTemplates\Lexers;
 
 use Aphiria\Routing\UriTemplates\Lexers\Token;
 use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
-use InvalidArgumentException;
+use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -47,7 +47,7 @@ class TokenStreamTest extends TestCase
 
     public function testExpectThrowsExceptionOnMiss(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(UnexpectedTokenException::class);
         $this->expectExceptionMessage('Expected token type baz, got foo with value \"bar\"');
         $stream = new TokenStream([new Token('foo', 'bar')]);
         $stream->expect('baz');
@@ -55,7 +55,7 @@ class TokenStreamTest extends TestCase
 
     public function testExpectThrowsExceptionOnEndOfStream(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(UnexpectedTokenException::class);
         $this->expectExceptionMessage('Expected token type bar, got end of stream');
         $stream = new TokenStream([new Token('foo', 'bar')]);
         $stream->next();

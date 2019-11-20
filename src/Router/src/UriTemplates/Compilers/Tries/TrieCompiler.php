@@ -16,13 +16,14 @@ use Aphiria\Routing\Matchers\Rules\IRuleFactory;
 use Aphiria\Routing\Matchers\Rules\RuleFactory;
 use Aphiria\Routing\Matchers\Rules\RuleFactoryRegistrant;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
+use Aphiria\Routing\UriTemplates\Lexers\LexingException;
+use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
+use Aphiria\Routing\UriTemplates\Lexers\UriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
-use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
-use Aphiria\Routing\UriTemplates\Lexers\UriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
-use InvalidArgumentException;
 
 /**
  * Defines a compiler for a trie
@@ -62,23 +63,27 @@ final class TrieCompiler implements ITrieCompiler
      */
     public function compile(Route $route): TrieNode
     {
-        $ast = $this->uriTemplateParser->parse($this->uriTemplateLexer->lex((string)$route->uriTemplate));
-        $trie = new RootTrieNode();
-        $hostTrie = null;
+        try {
+            $ast = $this->uriTemplateParser->parse($this->uriTemplateLexer->lex((string)$route->uriTemplate));
+            $trie = new RootTrieNode();
+            $hostTrie = null;
 
-        foreach ($ast->children as $childAstNode) {
-            switch ($childAstNode->type) {
-                case AstNodeTypes::HOST:
-                    $hostTrie = new RootTrieNode();
-                    $this->compileNode(true, $hostTrie, $childAstNode, $route, null);
-                    break;
-                case AstNodeTypes::PATH:
-                    $this->compileNode(false, $trie, $childAstNode, $route, $hostTrie);
-                    break;
+            foreach ($ast->children as $childAstNode) {
+                switch ($childAstNode->type) {
+                    case AstNodeTypes::HOST:
+                        $hostTrie = new RootTrieNode();
+                        $this->compileNode(true, $hostTrie, $childAstNode, $route, null);
+                        break;
+                    case AstNodeTypes::PATH:
+                        $this->compileNode(false, $trie, $childAstNode, $route, $hostTrie);
+                        break;
+                }
             }
-        }
 
-        return $trie;
+            return $trie;
+        } catch (UnexpectedTokenException | LexingException $ex) {
+            throw new InvalidUriTemplateException('URI template could not be compiled', 0, $ex);
+        }
     }
 
     /**
@@ -89,6 +94,7 @@ final class TrieCompiler implements ITrieCompiler
      * @param AstNode $ast The current AST node
      * @param Route $route The current route
      * @param TrieNode|null $hostTrie The host trie if one should be included, otherwise null
+     * @throws InvalidUriTemplateException Thrown if there is an unexpected AST node
      */
     private function compileNode(
         bool $isCompilingHostTrie,
@@ -158,7 +164,7 @@ final class TrieCompiler implements ITrieCompiler
                     $segmentBuffer[] = $this->compileVariableNode($childAstNode);
                     break;
                 default:
-                    throw new InvalidArgumentException("Unexpected node type {$childAstNode->type}");
+                    throw new InvalidUriTemplateException("Unexpected node type {$childAstNode->type}");
             }
         }
 
@@ -175,6 +181,7 @@ final class TrieCompiler implements ITrieCompiler
      *
      * @param AstNode $astNode The variable node to compile
      * @return RouteVariable The created route variable
+     * @throws InvalidUriTemplateException Thrown if there is an unexpected AST node
      */
     private function compileVariableNode(AstNode $astNode): RouteVariable
     {
@@ -182,7 +189,7 @@ final class TrieCompiler implements ITrieCompiler
 
         foreach ($astNode->children as $childAstNode) {
             if ($childAstNode->type !== AstNodeTypes::VARIABLE_RULE) {
-                throw new InvalidArgumentException("Unexpected node type {$childAstNode->type}");
+                throw new InvalidUriTemplateException("Unexpected node type {$childAstNode->type}");
             }
 
             $ruleParams = $childAstNode->hasChildren() ? $childAstNode->children[0]->value : [];

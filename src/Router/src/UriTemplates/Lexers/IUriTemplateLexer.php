@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\UriTemplates\Lexers;
 
-use InvalidArgumentException;
-
 /**
  * Defines the interface for URI template lexers to implement
  */
@@ -25,7 +23,7 @@ interface IUriTemplateLexer
      *
      * @param string $uriTemplate The raw URI template to lex
      * @return TokenStream The stream of lexed tokens
-     * @throws InvalidArgumentException Thrown if the template was incorrectly formatted
+     * @throws LexingException Thrown if the template was incorrectly formatted
      */
     public function lex(string $uriTemplate): TokenStream;
 }

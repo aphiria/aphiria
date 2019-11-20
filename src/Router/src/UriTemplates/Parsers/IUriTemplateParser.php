@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\UriTemplates\Parsers;
 
 use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
-use InvalidArgumentException;
+use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
 
 /**
  * Defines the interface for URI template parsers to implement
@@ -25,7 +25,7 @@ interface IUriTemplateParser
      *
      * @param TokenStream $tokens The stream of tokens to parse
      * @return AstNode The parsed abstract syntax tree
-     * @throws InvalidArgumentException Thrown if the token stream is invalid
+     * @throws UnexpectedTokenException Thrown if the token stream is invalid
      */
     public function parse(TokenStream $tokens): AstNode;
 }

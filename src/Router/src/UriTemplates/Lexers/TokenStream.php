@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\UriTemplates\Lexers;
 
-use InvalidArgumentException;
-
 /**
  * Defines a token stream
  */
@@ -43,7 +41,7 @@ final class TokenStream
      * @param mixed $value The optional value to match against
      * @param string|null $message The exception message to use, otherwise a default one is generated
      *      Any '%s' in the message is first populated with the expected type, and then with the expected value
-     * @throws InvalidArgumentException Thrown if the current token didn't match the expected type and value
+     * @throws UnexpectedTokenException Thrown if the current token didn't match the expected type and value
      */
     public function expect(string $type, $value = null, string $message = null): void
     {
@@ -78,7 +76,7 @@ final class TokenStream
             );
         }
 
-        throw new InvalidArgumentException($formattedMessage);
+        throw new UnexpectedTokenException($formattedMessage);
     }
 
     /**

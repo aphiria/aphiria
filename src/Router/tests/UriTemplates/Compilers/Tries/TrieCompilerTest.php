@@ -16,6 +16,7 @@ use Aphiria\Routing\Matchers\Rules\IRule;
 use Aphiria\Routing\Matchers\Rules\IRuleFactory;
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\Compilers\Tries\InvalidUriTemplateException;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieCompiler;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\LiteralTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RootTrieNode;
@@ -27,7 +28,6 @@ use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\UriTemplate;
-use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -310,7 +310,7 @@ class TrieCompilerTest extends TestCase
 
     public function testCompilingPathVariableWithNonRuleChildThrowsException(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(InvalidUriTemplateException::class);
         $ruleNode = (new AstNode(AstNodeTypes::VARIABLE_RULE, 'foo'))
             ->addChild(new AstNode(AstNodeTypes::TEXT, 'bar'));
         $pathAst = (new AstNode(AstNodeTypes::PATH, null))

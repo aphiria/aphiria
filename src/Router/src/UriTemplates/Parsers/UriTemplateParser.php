@@ -14,7 +14,7 @@ namespace Aphiria\Routing\UriTemplates\Parsers;
 
 use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
 use Aphiria\Routing\UriTemplates\Lexers\TokenTypes;
-use InvalidArgumentException;
+use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
 
 /**
  * Defines the URI template parser
@@ -64,7 +64,7 @@ final class UriTemplateParser implements IUriTemplateParser
      * @param TokenStream $tokens The stream of tokens to parse
      * @param AstNode $currNode The abstract syntax tree to add nodes to
      * @param bool $parsingPath Whether or not we're parsing the path (otherwise we're parsing the host)
-     * @throws InvalidArgumentException Thrown if an unexpected punctuation token was found
+     * @throws UnexpectedTokenException Thrown if an unexpected punctuation token was found
      */
     private function parsePunctuation(TokenStream $tokens, AstNode &$currNode, bool $parsingPath): void
     {
@@ -75,7 +75,7 @@ final class UriTemplateParser implements IUriTemplateParser
         switch ($token->value) {
             case '/':
                 if (!$parsingPath) {
-                    throw new InvalidArgumentException("Unexpected {$token->type} \"{$token->value}\" in host");
+                    throw new UnexpectedTokenException("Unexpected {$token->type} \"{$token->value}\" in host");
                 }
 
                 $currNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, $token->value));
@@ -95,7 +95,7 @@ final class UriTemplateParser implements IUriTemplateParser
                     && $parentNodeType !== AstNodeTypes::PATH
                     && $parentNodeType !== AstNodeTypes::OPTIONAL_ROUTE_PART
                 ) {
-                    throw new InvalidArgumentException("Unexpected {$token->type} \"{$token->value}\"");
+                    throw new UnexpectedTokenException("Unexpected {$token->type} \"{$token->value}\"");
                 }
 
                 $optionalRoutePartNode = new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART, $token->value);
@@ -140,7 +140,7 @@ final class UriTemplateParser implements IUriTemplateParser
                     }
 
                     if (!$isValid) {
-                        throw new InvalidArgumentException('Expected optional host part to end with \'.\'');
+                        throw new UnexpectedTokenException('Expected optional host part to end with \'.\'');
                     }
                 }
 
@@ -177,6 +177,7 @@ final class UriTemplateParser implements IUriTemplateParser
      *
      * @param TokenStream $tokens The tokens to parse
      * @param AstNode $ast The abstract syntax tree to add to
+     * @throws UnexpectedTokenException Thrown if there was an unexpected token
      */
     private function parseTokens(TokenStream $tokens, AstNode $ast): void
     {
@@ -211,6 +212,7 @@ final class UriTemplateParser implements IUriTemplateParser
      *
      * @param TokenStream $tokens The stream of tokens to parse
      * @param AstNode $currNode The abstract syntax tree to add nodes to
+     * @throws UnexpectedTokenException Thrown if there was an unexpected token
      */
     private function parseVariable(TokenStream $tokens, AstNode &$currNode): void
     {
@@ -235,7 +237,7 @@ final class UriTemplateParser implements IUriTemplateParser
         }
 
         if ($tokens->test(TokenTypes::T_VARIABLE)) {
-            throw new InvalidArgumentException('Cannot have consecutive variables without a delimiter');
+            throw new UnexpectedTokenException('Cannot have consecutive variables without a delimiter');
         }
 
         $currNode = $currNode->parent;
@@ -246,6 +248,7 @@ final class UriTemplateParser implements IUriTemplateParser
      *
      * @param TokenStream $tokens The stream of tokens to parse
      * @param AstNode $currNode The variable node to add nodes to
+     * @throws UnexpectedTokenException Thrown if there was an unexpected token
      */
     private function parseVariableRule(TokenStream $tokens, AstNode $currNode): void
     {

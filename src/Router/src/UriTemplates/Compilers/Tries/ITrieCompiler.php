@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Routing\UriTemplates\Compilers\Tries;
 
 use Aphiria\Routing\Route;
-use InvalidArgumentException;
 
 /**
  * Defines the interface for trie compilers to implement
@@ -25,7 +24,7 @@ interface ITrieCompiler
      *
      * @param Route $route The route whose template we're compiling
      * @return TrieNode The compiled trie
-     * @throws InvalidArgumentException Thrown if the template is invalid
+     * @throws InvalidUriTemplateException Thrown if the template is invalid
      */
     public function compile(Route $route): TrieNode;
 }
