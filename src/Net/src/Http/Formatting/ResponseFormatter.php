@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
-use Aphiria\Net\Http\Cookie;
+use Aphiria\Net\Http\Headers\Cookie;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;

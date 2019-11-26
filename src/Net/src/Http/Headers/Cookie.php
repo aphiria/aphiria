@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Net\Http;
+namespace Aphiria\Net\Http\Headers;
 
 use DateTime;
 use InvalidArgumentException;
@@ -24,6 +24,8 @@ final class Cookie
     public const SAME_SITE_LAX = 'lax';
     /** @const The strict same-site value */
     public const SAME_SITE_STRICT = 'strict';
+    /** @const The none same-site value (different than a null value, which doesn't set the SameSite parameter at all) */
+    public const SAME_SITE_NONE = 'none';
     /** @var string The name of the cookie */
     private string $name = '';
     /** @var mixed The value of the cookie */
@@ -51,7 +53,7 @@ final class Cookie
      * @param string|null $domain The domain the cookie applies to
      * @param bool $isSecure Whether or not this cookie is HTTPS-only
      * @param bool $isHttpOnly Whether or not this cookie can be read client-side
-     * @param string|null $sameSite The same-site setting to use, or null if none is specified
+     * @param string|null $sameSite The same-site setting to use (defaults to lax), or null if none is specified
      * @throws InvalidArgumentException Thrown if the name or expiration is in the incorrect format
      */
     public function __construct(
@@ -62,7 +64,7 @@ final class Cookie
         ?string $domain = null,
         bool $isSecure = false,
         bool $isHttpOnly = true,
-        ?string $sameSite = null
+        ?string $sameSite = self::SAME_SITE_LAX
     ) {
         $this->setName($name);
         $this->value = $value;
@@ -83,6 +85,14 @@ final class Cookie
         $this->domain = $domain;
         $this->isSecure = $isSecure;
         $this->isHttpOnly = $isHttpOnly;
+
+        if (
+            $sameSite !== null
+            && !\in_array($sameSite, [self::SAME_SITE_LAX, self::SAME_SITE_STRICT, self::SAME_SITE_STRICT], true)
+        ) {
+            throw new InvalidArgumentException('Acceptable values for SameSite are "lax", "strict", "none", or null');
+        }
+
         $this->sameSite = $sameSite;
     }
 

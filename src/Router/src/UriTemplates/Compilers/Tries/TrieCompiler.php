@@ -16,6 +16,7 @@ use Aphiria\Routing\Matchers\Rules\IRuleFactory;
 use Aphiria\Routing\Matchers\Rules\RuleFactory;
 use Aphiria\Routing\Matchers\Rules\RuleFactoryRegistrant;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
 use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Lexers\LexingException;
 use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;

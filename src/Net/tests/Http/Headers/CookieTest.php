@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Net\Tests\Http;
+namespace Aphiria\Net\Tests\Http\Headers;
 
-use Aphiria\Net\Http\Cookie;
+use Aphiria\Net\Http\Headers\Cookie;
 use DateTime;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -38,6 +38,13 @@ class CookieTest extends TestCase
     public function testCheckingIfIsHttpOnly(): void
     {
         $this->assertTrue($this->cookie->isHttpOnly());
+    }
+
+    public function testInvalidSameSiteThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Acceptable values for SameSite are "lax", "strict", "none", or null');
+        new Cookie('foo', 'bar', null, null, null, false, false, 'foo');
     }
 
     public function testSetHttpOnly(): void

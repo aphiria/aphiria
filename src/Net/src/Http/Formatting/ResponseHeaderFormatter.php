@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
-use Aphiria\Net\Http\Cookie;
+use Aphiria\Net\Http\Headers\Cookie;
 use Aphiria\Net\Http\HttpHeaders;
 use DateTime;
 use RuntimeException;
@@ -44,7 +44,7 @@ class ResponseHeaderFormatter extends HttpHeaderParser
         ?string $domain = null,
         bool $isSecure = false,
         bool $isHttpOnly = true,
-        ?string $sameSite = null
+        ?string $sameSite = Cookie::SAME_SITE_LAX
     ): void {
         $headerValue = "$name=";
         $expiration = DateTime::createFromFormat('U', '0');

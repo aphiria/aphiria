@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\UriTemplates\Compilers\Tries;
 
 use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
 
 /**
  * Defines the interface for trie compilers to implement

@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\UriTemplates\Compilers\Tries;
+namespace Aphiria\Routing\UriTemplates;
 
 use Exception;
 
