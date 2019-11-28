@@ -54,13 +54,18 @@ final class AphiriaComponentBuilder
     public function withConsoleCommandAnnotations(IApplicationBuilder $appBuilder): self
     {
         $appBuilder->registerComponentBuilder('consoleCommandAnnotations', function (array $callbacks) {
+            /** @var AnnotationCommandRegistrant $annotationCommandRegistrant */
+            $annotationCommandRegistrant = null;
+
+            if (!$this->container->tryResolve(AnnotationCommandRegistrant::class, $annotationCommandRegistrant)) {
+                throw new RuntimeException('No ' . AnnotationCommandRegistrant::class . ' is bound to the container');
+            }
+
             /** @var AggregateCommandRegistrant $commandRegistrant */
             $this->container->hasBinding(AggregateCommandRegistrant::class)
                 ? $commandRegistrant = $this->container->resolve(AggregateCommandRegistrant::class)
                 : $this->container->bindInstance(AggregateCommandRegistrant::class, $commandRegistrant = new AggregateCommandRegistrant());
 
-            /** @var AnnotationCommandRegistrant $annotationCommandRegistrant */
-            $annotationCommandRegistrant = $this->container->resolve(AnnotationCommandRegistrant::class);
             $commandRegistrant->addCommandRegistrant($annotationCommandRegistrant);
         });
 
@@ -168,13 +173,18 @@ final class AphiriaComponentBuilder
         }
 
         $appBuilder->registerComponentBuilder('routeAnnotations', function (array $callbacks) {
+            /** @var AnnotationRouteRegistrant $annotationRouteRegistrant */
+            $annotationRouteRegistrant = null;
+
+            if (!$this->container->tryResolve(AggregateRouteRegistrant::class, $annotationRouteRegistrant)) {
+                throw new RuntimeException('No ' . AnnotationRouteRegistrant::class . ' is bound to the container');
+            }
+
             /** @var AggregateRouteRegistrant $aggregateRouteRegistrant */
             $this->container->hasBinding(AggregateRouteRegistrant::class)
                 ? $aggregateRouteRegistrant = $this->container->resolve(AggregateRouteRegistrant::class)
                 : $this->container->bindInstance(AggregateRouteRegistrant::class, $aggregateRouteRegistrant = new AggregateRouteRegistrant());
 
-            /** @var AnnotationRouteRegistrant $annotationRouteRegistrant */
-            $annotationRouteRegistrant = $this->container->resolve(AnnotationRouteRegistrant::class);
             $aggregateRouteRegistrant->addRouteRegistrant($annotationRouteRegistrant);
         });
 

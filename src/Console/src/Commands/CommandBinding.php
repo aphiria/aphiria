@@ -14,6 +14,7 @@ namespace Aphiria\Console\Commands;
 
 use Closure;
 use InvalidArgumentException;
+use Opis\Closure\SerializableClosure;
 
 /**
  * Defines the binding between a command and its handler
@@ -45,7 +46,7 @@ final class CommandBinding
      */
     public function __sleep(): array
     {
-        $this->serializedCommandHandlerFactory = \Opis\Closure\serialize($this->commandHandlerFactory);
+        $this->serializedCommandHandlerFactory = \serialize(new SerializableClosure($this->commandHandlerFactory));
         $this->commandHandlerFactory = null;
 
         return \array_keys(\get_object_vars($this));
@@ -56,7 +57,9 @@ final class CommandBinding
      */
     public function __wakeup()
     {
-        $this->commandHandlerFactory = \Opis\Closure\unserialize($this->serializedCommandHandlerFactory);
+        /** @var SerializableClosure $wrapper */
+        $wrapper = \unserialize($this->serializedCommandHandlerFactory);
+        $this->commandHandlerFactory = $wrapper->getClosure();
         $this->serializedCommandHandlerFactory = '';
     }
 

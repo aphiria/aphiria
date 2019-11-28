@@ -1,6 +1,7 @@
 language: php
 
 php:
+  - 7.4
   - 7.4snapshot
 
 # Shallow clones can cause issues with subtree splits

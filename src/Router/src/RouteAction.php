@@ -14,6 +14,7 @@ namespace Aphiria\Routing;
 
 use Closure;
 use InvalidArgumentException;
+use Opis\Closure\SerializableClosure;
 
 /**
  * Defines a route action
@@ -71,7 +72,7 @@ class RouteAction
         if ($this->closure === null) {
             $this->serializedClosure = '';
         } else {
-            $this->serializedClosure = \Opis\Closure\serialize($this->closure);
+            $this->serializedClosure = \serialize(new SerializableClosure($this->closure));
             $this->closure = null;
         }
 
@@ -86,7 +87,9 @@ class RouteAction
         if ($this->serializedClosure === '') {
             $this->closure = null;
         } else {
-            $this->closure = \Opis\Closure\unserialize($this->serializedClosure);
+            /** @var SerializableClosure $wrapper */
+            $wrapper = \unserialize($this->serializedClosure);
+            $this->closure = $wrapper->getClosure();
         }
 
         $this->serializedClosure = '';

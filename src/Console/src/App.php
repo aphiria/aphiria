@@ -105,14 +105,19 @@ class App implements ICommandBus
      */
     protected function registerDefaultCommands(): void
     {
+        // TODO:  This is intentionally using long closures because Opis does not support short closures yet
         $this->commands->registerManyCommands([
             new CommandBinding(
                 new HelpCommand(),
-                fn () => new HelpCommandHandler($this->commands)
+                function () {
+                    return new HelpCommandHandler($this->commands);
+                }
             ),
             new CommandBinding(
                 new AboutCommand(),
-                fn () => new AboutCommandHandler($this->commands)
+                function () {
+                    return new AboutCommandHandler($this->commands);
+                }
             )
         ]);
     }
