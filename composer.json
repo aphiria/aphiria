@@ -30,7 +30,8 @@
             "Aphiria\\RouteAnnotations\\": "src/RouteAnnotations/src",
             "Aphiria\\Routing\\": "src/Router/src",
             "Aphiria\\Serialization\\": "src/Serialization/src",
-            "Aphiria\\Sessions\\": "src/Sessions/src"
+            "Aphiria\\Sessions\\": "src/Sessions/src",
+            "Aphiria\\Validation\\": "src/Validation/src"
         }
     },
     "autoload-dev": {
@@ -49,7 +50,8 @@
             "Aphiria\\RouteAnnotations\\Tests\\": "src/RouteAnnotations/tests",
             "Aphiria\\Routing\\Tests\\": "src/Router/tests",
             "Aphiria\\Serialization\\Tests\\": "src/Serialization/tests",
-            "Aphiria\\Sessions\\Tests\\": "src/Sessions/tests"
+            "Aphiria\\Sessions\\Tests\\": "src/Sessions/tests",
+            "Aphiria\\Validation\\Tests\\": "src/Validation/tests"
         }
     },
     "require": {
