@@ -86,18 +86,29 @@ class App implements ICommandBus
                 return StatusCodes::OK;
             }
 
-            $output->writeln("<error>{$ex->getMessage()}</error>");
+            $output->writeln("<error>{$this->formatExceptionMessage($ex)}</error>");
 
             return StatusCodes::ERROR;
         } catch (InvalidArgumentException $ex) {
-            $output->writeln("<error>{$ex->getMessage()}</error>");
+            $output->writeln("<error>{$this->formatExceptionMessage($ex)}</error>");
 
             return StatusCodes::ERROR;
         } catch (Exception | Throwable $ex) {
-            $output->writeln("<fatal>{$ex->getMessage()}</fatal>");
+            $output->writeln("<fatal>{$this->formatExceptionMessage($ex)}</fatal>");
 
             return StatusCodes::FATAL;
         }
+    }
+
+    /**
+     * Formats an exception message to be more readable
+     *
+     * @param Exception|Throwable $ex The exception to format
+     * @return string The formatted exception message
+     */
+    protected function formatExceptionMessage($ex): string
+    {
+        return $ex->getMessage() . \PHP_EOL . $ex->getTraceAsString();
     }
 
     /**
