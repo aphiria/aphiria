@@ -52,7 +52,6 @@ class FileRouteCacheTest extends TestCase
 
     public function testGetOnHitReturnsRoutesWithClosureAction(): void
     {
-        $this->markTestSkipped('Skipping until Opis closure supports short closures');
         // We are purposely testing setting every type of property inside the route to test that they're all unserializable
         $routes = new RouteCollection([
             new Route(
@@ -62,8 +61,10 @@ class FileRouteCacheTest extends TestCase
                 [new MiddlewareBinding('foo')]
             )
         ]);
+        // We have to clone the routes because serializing them will technically alter closure/serialized closure property values
+        $expectedRoutes = clone $routes;
         $this->cache->set($routes);
-        $this->assertEquals($routes, $this->cache->get());
+        $this->assertEquals($expectedRoutes, $this->cache->get());
     }
 
     public function testGetOnHitReturnsRoutesWithMethodAction(): void

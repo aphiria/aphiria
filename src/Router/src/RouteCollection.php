@@ -31,7 +31,7 @@ final class RouteCollection
     }
 
     /**
-     * Performs a deep clone of the routes
+     * Performs a deep clone of the routes (used in some tests)
      */
     public function __clone()
     {

@@ -61,7 +61,7 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "monolog/monolog": "~2.0",
-        "opis/closure": "3.4.*",
+        "opis/closure": "3.5.*",
         "php": "^7.4",
         "psr/log": "~1.0"
     },
