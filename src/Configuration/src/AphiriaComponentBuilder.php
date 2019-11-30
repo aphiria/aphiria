@@ -176,7 +176,7 @@ final class AphiriaComponentBuilder
             /** @var AnnotationRouteRegistrant $annotationRouteRegistrant */
             $annotationRouteRegistrant = null;
 
-            if (!$this->container->tryResolve(AggregateRouteRegistrant::class, $annotationRouteRegistrant)) {
+            if (!$this->container->tryResolve(AnnotationRouteRegistrant::class, $annotationRouteRegistrant)) {
                 throw new RuntimeException('No ' . AnnotationRouteRegistrant::class . ' is bound to the container');
             }
 
