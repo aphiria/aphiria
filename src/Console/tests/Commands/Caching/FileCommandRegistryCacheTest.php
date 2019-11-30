@@ -48,13 +48,13 @@ class FileCommandRegistryCacheTest extends TestCase
 
     public function testGetOnHitReturnsCommands(): void
     {
-        $this->markTestSkipped('Skipping until Opis closure supports short closures');
-        // We are purposely testing setting every type of property inside the command to test that they're all unserializable
         $commands = new CommandRegistry();
         // We are explicitly using an actual class here because Opis has trouble serializing mocks/anonymous classes
         $commands->registerCommand(new Command('foo'), fn () => new MockCommandHandler());
+        // We have to clone the commands because serializing them will technically alter closure/serialized closure property values
+        $expectedCommands = clone $commands;
         $this->cache->set($commands);
-        $this->assertEquals($commands, $this->cache->get());
+        $this->assertEquals($expectedCommands, $this->cache->get());
     }
 
     public function testGetOnMissReturnsNull(): void

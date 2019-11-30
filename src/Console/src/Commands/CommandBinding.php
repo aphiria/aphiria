@@ -40,6 +40,18 @@ final class CommandBinding
     }
 
     /**
+     * Performs a deep clone of objects (used in some of our tests)
+     */
+    public function __clone()
+    {
+        $this->command = clone $this->command;
+
+        if ($this->commandHandlerFactory instanceof Closure) {
+            $this->commandHandlerFactory = clone $this->commandHandlerFactory;
+        }
+    }
+
+    /**
      * Serializes the binding
      *
      * @return array The list of properties to store

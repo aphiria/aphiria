@@ -103,10 +103,7 @@ final class AnnotationCommandRegistrant implements ICommandRegistrant
                 );
                 $commands->registerCommand(
                     $command,
-                    // Note: We are explicitly not using short closures because Opis cannot currently serialize them
-                    function () use ($commandHandler) {
-                        return $this->commandHandlerResolver->resolve($commandHandler);
-                    }
+                    fn () => $this->commandHandlerResolver->resolve($commandHandler)
                 );
             }
         }
