@@ -25,7 +25,7 @@ then
     exit 1
 fi
 
-declare -A dirs_to_repos=(["Api"]="api" ["Collections"]="collections" ["Configuration"]="configuration" ["Console"]="console" ["ConsoleCommandAnnotations"]="console-command-annotations" ["DependencyInjection"]="dependency-injection" ["Exceptions"]="exceptions" ["IO"]="io" ["Middleware"]="middleware" ["Net"]="net" ["Reflection"]="reflection" ["RouteAnnotations"]="route-annotations" ["Router"]="router" ["Serialization"]="serialization" ["Sessions"]="sessions")
+declare -A dirs_to_repos=(["Api"]="api" ["Collections"]="collections" ["Configuration"]="configuration" ["Console"]="console" ["ConsoleAnnotations"]="console-annotations" ["DependencyInjection"]="dependency-injection" ["Exceptions"]="exceptions" ["IO"]="io" ["Middleware"]="middleware" ["Net"]="net" ["Reflection"]="reflection" ["RouteAnnotations"]="route-annotations" ["Router"]="router" ["Serialization"]="serialization" ["Sessions"]="sessions")
 
 for dir in "${!dirs_to_repos[@]}"
 do

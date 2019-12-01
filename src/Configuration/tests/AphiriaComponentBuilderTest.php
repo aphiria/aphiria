@@ -40,12 +40,12 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->componentBuilder = new AphiriaComponentBuilder($this->container);
     }
 
-    public function testWithConsoleCommandAnnotationsRegistersComponent(): void
+    public function testWithConsoleAnnotationsRegistersComponent(): void
     {
         $this->appBuilder->expects($this->at(0))
             ->method('registerComponentBuilder')
-            ->with('consoleCommandAnnotations');
-        $this->componentBuilder->withConsoleCommandAnnotations($this->appBuilder);
+            ->with('consoleAnnotations');
+        $this->componentBuilder->withConsoleAnnotations($this->appBuilder);
     }
 
     public function testWithEncoderComponentPassesEncoderRegistryToRegisteredCallbacks(): void

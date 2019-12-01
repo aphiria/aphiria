@@ -8,7 +8,7 @@
  * @license   https://github.com/aphiria/aphiria/blob/master/LICENSE.md
  */
 
-namespace Aphiria\ConsoleCommandAnnotations;
+namespace Aphiria\ConsoleAnnotations;
 
 use Aphiria\Console\Commands\ICommandHandler;
 

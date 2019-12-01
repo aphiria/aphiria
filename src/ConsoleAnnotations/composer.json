@@ -1,6 +1,6 @@
 {
-    "name": "aphiria/console-command-annotations",
-    "description": "The Aphiria console command annotation library",
+    "name": "aphiria/console-annotations",
+    "description": "The Aphiria console annotation library",
     "keywords": [
         "PHP",
         "console",
@@ -17,12 +17,12 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Aphiria\\ConsoleCommandAnnotations\\": "src"
+            "Aphiria\\ConsoleAnnotations\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Aphiria\\ConsoleCommandAnnotations\\Tests\\": "tests"
+            "Aphiria\\ConsoleAnnotations\\Tests\\": "tests"
         }
     },
     "require": {

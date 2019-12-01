@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\ConsoleCommandAnnotations\Tests;
+namespace Aphiria\ConsoleAnnotations\Tests;
 
 use Aphiria\Console\Commands\ICommandHandler;
-use Aphiria\ConsoleCommandAnnotations\ContainerCommandHandlerResolver;
-use Aphiria\ConsoleCommandAnnotations\DependencyResolutionException;
+use Aphiria\ConsoleAnnotations\ContainerCommandHandlerResolver;
+use Aphiria\ConsoleAnnotations\DependencyResolutionException;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use PHPUnit\Framework\MockObject\MockObject;

@@ -15,7 +15,7 @@ namespace Aphiria\Configuration;
 use Aphiria\Api\Router;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\Commands\AggregateCommandRegistrant;
-use Aphiria\ConsoleCommandAnnotations\AnnotationCommandRegistrant;
+use Aphiria\ConsoleAnnotations\AnnotationCommandRegistrant;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Exceptions\GlobalExceptionHandler;
@@ -46,14 +46,14 @@ final class AphiriaComponentBuilder
     }
 
     /**
-     * Registers Aphiria console command annotations
+     * Registers Aphiria console annotations
      *
      * @param IApplicationBuilder $appBuilder The app builder to register to
      * @return AphiriaComponentBuilder For chaining
      */
-    public function withConsoleCommandAnnotations(IApplicationBuilder $appBuilder): self
+    public function withConsoleAnnotations(IApplicationBuilder $appBuilder): self
     {
-        $appBuilder->registerComponentBuilder('consoleCommandAnnotations', function (array $callbacks) {
+        $appBuilder->registerComponentBuilder('consoleAnnotations', function (array $callbacks) {
             /** @var AnnotationCommandRegistrant $annotationCommandRegistrant */
             $annotationCommandRegistrant = null;
 

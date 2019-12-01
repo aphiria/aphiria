@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\ConsoleCommandAnnotations\Tests;
+namespace Aphiria\ConsoleAnnotations\Tests;
 
 use Aphiria\Collections\Tests\Mocks\MockObject;
 use Aphiria\Console\Commands\CommandRegistry;
@@ -19,11 +19,11 @@ use Aphiria\Console\Input\ArgumentTypes;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Input\OptionTypes;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\ConsoleCommandAnnotations\Annotations\Argument;
-use Aphiria\ConsoleCommandAnnotations\Annotations\Command;
-use Aphiria\ConsoleCommandAnnotations\Annotations\Option;
-use Aphiria\ConsoleCommandAnnotations\ICommandHandlerResolver;
-use Aphiria\ConsoleCommandAnnotations\AnnotationCommandRegistrant;
+use Aphiria\ConsoleAnnotations\Annotations\Argument;
+use Aphiria\ConsoleAnnotations\Annotations\Command;
+use Aphiria\ConsoleAnnotations\Annotations\Option;
+use Aphiria\ConsoleAnnotations\ICommandHandlerResolver;
+use Aphiria\ConsoleAnnotations\AnnotationCommandRegistrant;
 use Aphiria\Reflection\ITypeFinder;
 use PHPUnit\Framework\TestCase;
 

@@ -10,13 +10,13 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\ConsoleCommandAnnotations\Tests\Annotations;
+namespace Aphiria\ConsoleAnnotations\Tests\Annotations;
 
 use Aphiria\Console\Input\ArgumentTypes;
 use Aphiria\Console\Input\OptionTypes;
-use Aphiria\ConsoleCommandAnnotations\Annotations\Argument;
-use Aphiria\ConsoleCommandAnnotations\Annotations\Command;
-use Aphiria\ConsoleCommandAnnotations\Annotations\Option;
+use Aphiria\ConsoleAnnotations\Annotations\Argument;
+use Aphiria\ConsoleAnnotations\Annotations\Command;
+use Aphiria\ConsoleAnnotations\Annotations\Option;
 use PHPUnit\Framework\TestCase;
 
 /**
