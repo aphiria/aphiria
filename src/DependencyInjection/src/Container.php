@@ -23,8 +23,17 @@ use ReflectionParameter;
  */
 class Container implements IContainer
 {
-    /** The value for an empty target */
-    private static $emptyTarget;
+    /**
+     * The global instance of the container to use, or null if not set.
+     * This is especially useful when deserializing a container - we cannot deserialize one directly.  But, you can
+     * use the global instance's bindings to set $this->bindings on __wakeup.  It's recommended that this be set
+     * to the instance of the container that you use throughout your application if you rely on serializing the container.
+     *
+     * @var Container|null
+     */
+    public static ?Container $globalInstance = null;
+    /** @var null The value of an empty target */
+    private const EMPTY_TARGET = null;
     /** @var string|null The current target */
     protected ?string $currentTarget = null;
     /** @var array The stack of targets */
@@ -37,9 +46,23 @@ class Container implements IContainer
     /**
      * Prepares the container for serialization
      */
-    public function __sleep()
+    public function __sleep(): array
     {
         return [];
+    }
+
+    /**
+     * Since a container's bindings cannot actually be serialized (too complicated/expensive), we can try to set the
+     * bindings from the global instance's bindings, instead.
+     */
+    public function __wakeup()
+    {
+        if (($globalInstance = self::$globalInstance) !== null) {
+            $this->currentTarget = $globalInstance->currentTarget;
+            $this->targetStack = $globalInstance->targetStack;
+            $this->bindings = $globalInstance->bindings;
+            $this->constructorReflectionCache = $globalInstance->constructorReflectionCache;
+        }
     }
 
     /**
@@ -91,10 +114,14 @@ class Container implements IContainer
      */
     public function callClosure(callable $closure, array $primitives = [])
     {
-        $unresolvedParameters = (new ReflectionFunction($closure))->getParameters();
-        $resolvedParameters = $this->resolveParameters(null, $unresolvedParameters, $primitives);
+        try {
+            $unresolvedParameters = (new ReflectionFunction($closure))->getParameters();
+            $resolvedParameters = $this->resolveParameters(null, $unresolvedParameters, $primitives);
 
-        return $closure(...$resolvedParameters);
+            return $closure(...$resolvedParameters);
+        } catch (ReflectionException | ResolutionException $ex) {
+            throw new CallException('Failed to call closure', 0, $ex);
+        }
     }
 
     /**
@@ -102,19 +129,24 @@ class Container implements IContainer
      */
     public function callMethod($instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false)
     {
+        $className = is_string($instance) ? $instance : get_class($instance);
+
         if (!method_exists($instance, $methodName)) {
             if (!$ignoreMissingMethod) {
-                throw new DependencyInjectionException('Cannot call method');
+                throw new CallException("Method $className::$methodName does not exist");
             }
 
             return null;
         }
 
-        $unresolvedParameters = (new ReflectionMethod($instance, $methodName))->getParameters();
-        $className = is_string($instance) ? $instance : get_class($instance);
-        $resolvedParameters = $this->resolveParameters($className, $unresolvedParameters, $primitives);
+        try {
+            $unresolvedParameters = (new ReflectionMethod($instance, $methodName))->getParameters();
+            $resolvedParameters = $this->resolveParameters($className, $unresolvedParameters, $primitives);
 
-        return ([$instance, $methodName])(...$resolvedParameters);
+            return ([$instance, $methodName])(...$resolvedParameters);
+        } catch (ReflectionException | ResolutionException $ex) {
+            throw new CallException("Failed to call method $className::$methodName", 0, $ex);
+        }
     }
 
     /**
@@ -128,7 +160,7 @@ class Container implements IContainer
         $result = $callback($this);
 
         array_pop($this->targetStack);
-        $this->currentTarget = end($this->targetStack) ?: self::$emptyTarget;
+        $this->currentTarget = end($this->targetStack) ?: self::EMPTY_TARGET;
 
         return $result;
     }
@@ -138,13 +170,13 @@ class Container implements IContainer
      */
     public function hasBinding(string $interface): bool
     {
-        if ($this->currentTarget !== self::$emptyTarget
+        if ($this->currentTarget !== self::EMPTY_TARGET
             && $this->hasTargetedBinding($interface, $this->currentTarget)
         ) {
             return true;
         }
 
-        return $this->hasTargetedBinding($interface, self::$emptyTarget);
+        return $this->hasTargetedBinding($interface, self::EMPTY_TARGET);
     }
 
     /**
@@ -176,7 +208,7 @@ class Container implements IContainer
                 $instance = $factory();
                 break;
             default:
-                throw new DependencyInjectionException('Invalid binding type "' . get_class($binding) . '"');
+                throw new ResolutionException($interface, $this->currentTarget, 'Invalid binding type "' . get_class($binding) . '"');
         }
 
         if ($binding->resolveAsSingleton()) {
@@ -235,16 +267,12 @@ class Container implements IContainer
     protected function getBinding(string $interface): ?IContainerBinding
     {
         // If there's a targeted binding, use it
-        if ($this->currentTarget !== self::$emptyTarget && isset($this->bindings[$this->currentTarget][$interface])) {
+        if ($this->currentTarget !== self::EMPTY_TARGET && isset($this->bindings[$this->currentTarget][$interface])) {
             return $this->bindings[$this->currentTarget][$interface];
         }
 
         // If there's a universal binding, use it
-        if (isset($this->bindings[self::$emptyTarget][$interface])) {
-            return $this->bindings[self::$emptyTarget][$interface];
-        }
-
-        return null;
+        return $this->bindings[self::EMPTY_TARGET][$interface] ?? null;
     }
 
     /**
@@ -265,7 +293,7 @@ class Container implements IContainer
      * @param string $class The class name to resolve
      * @param array $primitives The list of constructor primitives
      * @return object The resolved class
-     * @throws DependencyInjectionException Thrown if the class could not be resolved
+     * @throws ResolutionException Thrown if the class could not be resolved
      */
     protected function resolveClass(string $class, array $primitives = []): object
     {
@@ -300,7 +328,7 @@ class Container implements IContainer
             $constructorParameters = $this->resolveParameters($class, $parameters, $primitives);
 
             return new $class(...$constructorParameters);
-        } catch (ReflectionException | DependencyInjectionException $ex) {
+        } catch (ReflectionException $ex) {
             throw new ResolutionException($class, $this->currentTarget, "Failed to resolve class $class", 0, $ex);
         }
     }
@@ -312,7 +340,8 @@ class Container implements IContainer
      * @param ReflectionParameter[] $unresolvedParameters The list of unresolved parameters
      * @param array $primitives The list of primitive values
      * @return array The list of parameters with all the dependencies resolved
-     * @throws DependencyInjectionException Thrown if there was an error resolving the parameters
+     * @throws ResolutionException Thrown if there was an error resolving the parameters
+     * @throws ReflectionException Thrown if there was a reflection exception
      */
     protected function resolveParameters(
         $class,
@@ -369,7 +398,7 @@ class Container implements IContainer
      * @param ReflectionParameter $parameter The primitive parameter to resolve
      * @param array $primitives The list of primitive values
      * @return mixed The resolved primitive
-     * @throws DependencyInjectionException Thrown if there was a problem resolving the primitive
+     * @throws ReflectionException Thrown if there was a reflection exception
      */
     protected function resolvePrimitive(ReflectionParameter $parameter, array &$primitives)
     {
@@ -383,7 +412,7 @@ class Container implements IContainer
             return $parameter->getDefaultValue();
         }
 
-        throw new DependencyInjectionException(
+        throw new ReflectionException(
             sprintf(
                 'No default value available for %s in %s::%s()',
                 $parameter->getName(),

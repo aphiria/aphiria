@@ -58,7 +58,7 @@ interface IContainer
      * @param callable $closure The closure to resolve
      * @param array $primitives The list of primitives to inject (must be in same order they appear in closure)
      * @return mixed The result of the call
-     * @throws DependencyInjectionException Thrown if there was an error calling the method
+     * @throws CallException Thrown if there was an error calling the method
      */
     public function callClosure(callable $closure, array $primitives = []);
 
@@ -70,7 +70,7 @@ interface IContainer
      * @param array $primitives The list of primitives to inject (must be in same order they appear in closure)
      * @param bool $ignoreMissingMethod Whether or not we ignore if the method does not exist
      * @return mixed The result of the call
-     * @throws DependencyInjectionException Thrown if there was an error calling the method
+     * @throws CallException Thrown if there was an error calling the method
      */
     public function callMethod(
         $instance,
