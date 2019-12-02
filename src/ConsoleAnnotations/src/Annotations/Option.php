@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\ConsoleCommandAnnotations\Annotations;
+namespace Aphiria\ConsoleAnnotations\Annotations;
 
 use Doctrine\Annotations\Annotation\Target;
 use InvalidArgumentException;

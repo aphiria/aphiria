@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\ConsoleCommandAnnotations;
+namespace Aphiria\ConsoleAnnotations;
 
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\DependencyInjection\IContainer;

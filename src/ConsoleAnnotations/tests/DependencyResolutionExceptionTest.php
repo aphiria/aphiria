@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\ConsoleCommandAnnotations\Tests;
+namespace Aphiria\ConsoleAnnotations\Tests;
 
-use Aphiria\ConsoleCommandAnnotations\DependencyResolutionException;
+use Aphiria\ConsoleAnnotations\DependencyResolutionException;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\ConsoleCommandAnnotations;
+namespace Aphiria\ConsoleAnnotations;
 
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
@@ -18,7 +18,7 @@ use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Commands\ICommandRegistrant;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\Option;
-use Aphiria\ConsoleCommandAnnotations\Annotations\Command as CommandAnnotation;
+use Aphiria\ConsoleAnnotations\Annotations\Command as CommandAnnotation;
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
 use Doctrine\Annotations\AnnotationException;

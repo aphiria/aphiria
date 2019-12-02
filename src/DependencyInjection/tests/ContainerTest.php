@@ -14,7 +14,7 @@ namespace Aphiria\DependencyInjection\Tests;
 
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\DependencyInjection\DependencyInjectionException;
+use Aphiria\DependencyInjection\CallException;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\Tests\Mocks\Bar;
 use Aphiria\DependencyInjection\Tests\Mocks\BaseClass;
@@ -43,48 +43,24 @@ use PHPUnit\Framework\TestCase;
 class ContainerTest extends TestCase
 {
     private Container $container;
-    /** @var string The name of the simple interface to use in tests */
-    private string $fooInterface = IFoo::class;
-    /** @var string The name of the simple interface to use in tests */
-    private string $personInterface = IPerson::class;
-    /** @var string The name of a class that implements IPerson */
-    private string $concretePerson = Dave::class;
-    /** @var string The name of the base class to use in tests */
-    private string $baseClass = BaseClass::class;
-    /** @var string The name of the class that implements IFoo to use in tests */
-    private string $concreteFoo = Bar::class;
-    /** @var string The name of a second class that implements the IFoo to use in tests */
-    private string $secondConcreteIFoo = Blah::class;
-    /** @var string The name of a another class that implements the IFoo to use in tests */
-    private string $concreteFooWithIPersonDependency = Foo::class;
-    /** @var string The name of the class that accepts the IFoo in its constructor */
-    private string $constructorWithIFoo = ConstructorWithInterface::class;
-    /** @var string The name of the class that accepts the concrete class in its constructor */
-    private string $constructorWithConcreteClass = ConstructorWithConcreteClass::class;
-    /** @var string The name of the class that accepts a mix of interfaces and primitives in its constructor */
-    private string $constructorWithInterfacesAndPrimitives = ConstructorWithMixOfInterfacesAndPrimitives::class;
-    /** @var string The name of the class that accepts a mix of class names and primitives in its constructor */
-    private string $constructorWithConcreteClassesAndPrimitives = ConstructorWithMixOfConcreteClassesAndPrimitives::class;
-    /** @var string The name of the class that accepts the primitives in its constructor */
-    private string $constructorWithPrimitives = ConstructorWithPrimitives::class;
-    /** @var string The name of the class that accepts primitives with default values in its constructor */
-    private string $constructorWithDefaultValuePrimitives = ConstructorWithDefaultValuePrimitives::class;
 
     protected function setUp(): void
     {
         $this->container = new Container();
+        // Make sure the global instance gets wiped before each test
+        Container::$globalInstance = null;
     }
 
     public function testBindingTargetedFactory(): void
     {
         $this->container->for(
-            $this->constructorWithIFoo,
-            fn (IContainer $container) => $container->bindFactory($this->fooInterface, fn () => new $this->concreteFoo)
+            ConstructorWithInterface::class,
+            fn (IContainer $container) => $container->bindFactory(IFoo::class, fn () => new Bar)
         );
-        $instance1 = $this->container->resolve($this->constructorWithIFoo);
-        $instance2 = $this->container->resolve($this->constructorWithIFoo);
-        $this->assertInstanceOf($this->concreteFoo, $instance1->getFoo());
-        $this->assertInstanceOf($this->concreteFoo, $instance2->getFoo());
+        $instance1 = $this->container->resolve(ConstructorWithInterface::class);
+        $instance2 = $this->container->resolve(ConstructorWithInterface::class);
+        $this->assertInstanceOf(Bar::class, $instance1->getFoo());
+        $this->assertInstanceOf(Bar::class, $instance2->getFoo());
         $this->assertNotSame($instance1->getFoo(), $instance2->getFoo());
         $this->assertNotSame($instance1, $instance2);
     }
@@ -92,13 +68,13 @@ class ContainerTest extends TestCase
     public function testBindingTargetedSingletonFactory(): void
     {
         $this->container->for(
-            $this->constructorWithIFoo,
-            fn (IContainer $container) => $container->bindFactory($this->fooInterface, fn () => new $this->concreteFoo, true)
+            ConstructorWithInterface::class,
+            fn (IContainer $container) => $container->bindFactory(IFoo::class, fn () => new Bar, true)
         );
-        $instance1 = $this->container->resolve($this->constructorWithIFoo);
-        $instance2 = $this->container->resolve($this->constructorWithIFoo);
-        $this->assertInstanceOf($this->constructorWithIFoo, $instance1);
-        $this->assertInstanceOf($this->concreteFoo, $instance1->getFoo());
+        $instance1 = $this->container->resolve(ConstructorWithInterface::class);
+        $instance2 = $this->container->resolve(ConstructorWithInterface::class);
+        $this->assertInstanceOf(ConstructorWithInterface::class, $instance1);
+        $this->assertInstanceOf(Bar::class, $instance1->getFoo());
         $this->assertSame($instance1->getFoo(), $instance2->getFoo());
         $this->assertNotSame($instance1, $instance2);
         $this->assertNotSame($instance1, $instance2);
@@ -107,34 +83,34 @@ class ContainerTest extends TestCase
     public function testBindingToAbstractClass(): void
     {
         $prototypeContainer = new Container();
-        $prototypeContainer->bindPrototype($this->baseClass, $this->concreteFoo);
-        $prototypeInstance = $prototypeContainer->resolve($this->baseClass);
-        $this->assertInstanceOf($this->concreteFoo, $prototypeInstance);
-        $this->assertNotSame($prototypeInstance, $prototypeContainer->resolve($this->baseClass));
+        $prototypeContainer->bindPrototype(BaseClass::class, Bar::class);
+        $prototypeInstance = $prototypeContainer->resolve(BaseClass::class);
+        $this->assertInstanceOf(Bar::class, $prototypeInstance);
+        $this->assertNotSame($prototypeInstance, $prototypeContainer->resolve(BaseClass::class));
         $singletonContainer = new Container();
-        $singletonContainer->bindSingleton($this->baseClass, $this->concreteFoo);
-        $singletonInstance = $singletonContainer->resolve($this->baseClass);
-        $this->assertInstanceOf($this->concreteFoo, $singletonInstance);
-        $this->assertSame($singletonInstance, $singletonContainer->resolve($this->baseClass));
+        $singletonContainer->bindSingleton(BaseClass::class, Bar::class);
+        $singletonInstance = $singletonContainer->resolve(BaseClass::class);
+        $this->assertInstanceOf(Bar::class, $singletonInstance);
+        $this->assertSame($singletonInstance, $singletonContainer->resolve(BaseClass::class));
     }
 
     public function testBindingUniversalFactory(): void
     {
-        $this->container->bindFactory($this->fooInterface, fn () => new $this->concreteFoo);
-        $instance1 = $this->container->resolve($this->fooInterface);
-        $instance2 = $this->container->resolve($this->fooInterface);
-        $this->assertInstanceOf($this->concreteFoo, $instance1);
+        $this->container->bindFactory(IFoo::class, fn () => new Bar);
+        $instance1 = $this->container->resolve(IFoo::class);
+        $instance2 = $this->container->resolve(IFoo::class);
+        $this->assertInstanceOf(Bar::class, $instance1);
         $this->assertNotSame($instance1, $instance2);
     }
 
     public function testBindingUniversalSingletonFactory(): void
     {
-        $this->container->bindFactory($this->fooInterface, fn () => new $this->concreteFoo, true);
-        $instance1 = $this->container->resolve($this->constructorWithIFoo);
-        $instance2 = $this->container->resolve($this->constructorWithIFoo);
-        $this->assertInstanceOf($this->constructorWithIFoo, $instance1);
-        $this->assertInstanceOf($this->concreteFoo, $instance1->getFoo());
-        $this->assertInstanceOf($this->concreteFoo, $instance2->getFoo());
+        $this->container->bindFactory(IFoo::class, fn () => new Bar, true);
+        $instance1 = $this->container->resolve(ConstructorWithInterface::class);
+        $instance2 = $this->container->resolve(ConstructorWithInterface::class);
+        $this->assertInstanceOf(ConstructorWithInterface::class, $instance1);
+        $this->assertInstanceOf(Bar::class, $instance1->getFoo());
+        $this->assertInstanceOf(Bar::class, $instance2->getFoo());
         $this->assertSame($instance1->getFoo(), $instance2->getFoo());
         $this->assertNotSame($instance1, $instance2);
     }
@@ -150,38 +126,38 @@ class ContainerTest extends TestCase
 
     public function testCallingMethodWithPrimitiveTypesWithoutSpecifyingValue(): void
     {
-        $this->expectException(DependencyInjectionException::class);
+        $this->expectException(CallException::class);
         $instance = new ConstructorWithSetters();
         $this->container->callMethod($instance, 'setPrimitive');
     }
 
     public function testCallingMethodWithTypeHintedAndPrimitiveTypes(): void
     {
-        $this->container->bindSingleton($this->fooInterface, $this->concreteFoo);
+        $this->container->bindSingleton(IFoo::class, Bar::class);
         $instance = new ConstructorWithSetters();
         $this->container->callMethod($instance, 'setBoth', ['foo']);
-        $this->assertInstanceOf($this->concreteFoo, $instance->getInterface());
+        $this->assertInstanceOf(Bar::class, $instance->getInterface());
         $this->assertSame('foo', $instance->getPrimitive());
         $response = $this->container->callClosure(
             fn (IFoo $interface, $primitive) => \get_class($interface) . ':' . $primitive,
             ['foo']
         );
-        $this->assertEquals($this->concreteFoo . ':foo', $response);
+        $this->assertEquals(Bar::class . ':foo', $response);
     }
 
     public function testCallingMethodWithTypeHints(): void
     {
-        $this->container->bindSingleton($this->fooInterface, $this->concreteFoo);
+        $this->container->bindSingleton(IFoo::class, Bar::class);
         $instance = new ConstructorWithSetters();
         $this->container->callMethod($instance, 'setInterface');
-        $this->assertInstanceOf($this->concreteFoo, $instance->getInterface());
+        $this->assertInstanceOf(Bar::class, $instance->getInterface());
         $response = $this->container->callClosure(fn (IFoo $interface) => \get_class($interface));
-        $this->assertEquals($this->concreteFoo, $response);
+        $this->assertEquals(Bar::class, $response);
     }
 
     public function testCallingNonExistentMethod(): void
     {
-        $this->expectException(DependencyInjectionException::class);
+        $this->expectException(CallException::class);
         $instance = new ConstructorWithSetters();
         $this->container->callMethod($instance, 'foobar');
     }
@@ -200,164 +176,164 @@ class ContainerTest extends TestCase
 
     public function testCallingStaticMethod(): void
     {
-        $person = new $this->concretePerson;
-        $this->container->bindInstance($this->personInterface, $person);
+        $person = new Dave;
+        $this->container->bindInstance(IPerson::class, $person);
         $this->container->callMethod(StaticSetters::class, 'setStaticSetterDependency', [$person]);
         $this->assertSame($person, StaticSetters::$staticDependency);
     }
 
     public function testCheckingIfTargetBoundInterfaceIsBound(): void
     {
-        $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            $container->bindPrototype($this->fooInterface, $this->concreteFoo);
+        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            $container->bindPrototype(IFoo::class, Bar::class);
         });
-        $this->assertTrue($this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            return $container->hasBinding($this->fooInterface);
+        $this->assertTrue($this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            return $container->hasBinding(IFoo::class);
         }));
         // Reset for factory
-        $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            $container->unbind($this->fooInterface);
+        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            $container->unbind(IFoo::class);
         });
-        $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            $container->bindFactory($this->fooInterface, function () {
-                return new $this->concreteFoo;
+        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            $container->bindFactory(IFoo::class, function () {
+                return new Bar;
             });
         });
-        $this->assertTrue($this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            return $container->hasBinding($this->fooInterface);
+        $this->assertTrue($this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            return $container->hasBinding(IFoo::class);
         }));
         // Reset for instance
-        $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            $container->unbind($this->fooInterface);
+        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            $container->unbind(IFoo::class);
         });
-        $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            $container->bindInstance($this->fooInterface, new $this->concreteFoo);
+        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            $container->bindInstance(IFoo::class, new Bar);
         });
-        $this->assertTrue($this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            return $container->hasBinding($this->fooInterface);
+        $this->assertTrue($this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            return $container->hasBinding(IFoo::class);
         }));
         // Reset for singleton
-        $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            $container->unbind($this->fooInterface);
+        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            $container->unbind(IFoo::class);
         });
-        $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            $container->bindSingleton($this->fooInterface, $this->concreteFoo);
+        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            $container->bindSingleton(IFoo::class, Bar::class);
         });
-        $this->assertTrue($this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            return $container->hasBinding($this->fooInterface);
+        $this->assertTrue($this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            return $container->hasBinding(IFoo::class);
         }));
     }
 
     public function testCheckingIfUniversallyBoundInterfaceIsBound(): void
     {
-        $this->container->bindPrototype($this->fooInterface, $this->concreteFoo);
-        $this->assertTrue($this->container->hasBinding($this->fooInterface));
-        $this->container->unbind($this->fooInterface);
-        $this->container->bindFactory($this->fooInterface, function () {
-            return new $this->concreteFoo;
+        $this->container->bindPrototype(IFoo::class, Bar::class);
+        $this->assertTrue($this->container->hasBinding(IFoo::class));
+        $this->container->unbind(IFoo::class);
+        $this->container->bindFactory(IFoo::class, function () {
+            return new Bar;
         });
-        $this->assertTrue($this->container->hasBinding($this->fooInterface));
+        $this->assertTrue($this->container->hasBinding(IFoo::class));
     }
 
     public function testCheckingTargetHasBindingWhenItOnlyHasUniversalBinding(): void
     {
-        $this->container->bindPrototype($this->fooInterface, $this->concreteFoo);
-        $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            $this->assertTrue($container->hasBinding($this->fooInterface));
+        $this->container->bindPrototype(IFoo::class, Bar::class);
+        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            $this->assertTrue($container->hasBinding(IFoo::class));
         });
     }
 
     public function testCheckingUnboundTargetedBinding(): void
     {
         $this->assertFalse(
-            $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-                return $container->hasBinding($this->fooInterface);
+            $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+                return $container->hasBinding(IFoo::class);
             })
         );
     }
 
     public function testCheckingUnboundUniversalBinding(): void
     {
-        $this->assertFalse($this->container->hasBinding($this->fooInterface));
+        $this->assertFalse($this->container->hasBinding(IFoo::class));
     }
 
     public function testCheckingUniversalBinding(): void
     {
-        $this->container->bindSingleton($this->fooInterface, $this->concreteFoo);
-        $this->assertTrue($this->container->hasBinding($this->fooInterface));
+        $this->container->bindSingleton(IFoo::class, Bar::class);
+        $this->assertTrue($this->container->hasBinding(IFoo::class));
     }
 
     public function testCreatingInstanceWithUnsetConstructorPrimitive(): void
     {
         $this->expectException(ResolutionException::class);
-        $this->container->resolve($this->constructorWithPrimitives);
+        $this->container->resolve(ConstructorWithPrimitives::class);
     }
 
     public function testCreatingInterfaceWithoutBinding(): void
     {
         $this->expectException(ResolutionException::class);
-        $this->container->resolve($this->fooInterface);
+        $this->container->resolve(IFoo::class);
     }
 
     public function testCreatingPrototypeInstanceWithConcreteDependency(): void
     {
-        $newInstance = $this->container->resolve($this->constructorWithConcreteClass);
-        $this->assertInstanceOf($this->constructorWithConcreteClass, $newInstance);
+        $newInstance = $this->container->resolve(ConstructorWithConcreteClass::class);
+        $this->assertInstanceOf(ConstructorWithConcreteClass::class, $newInstance);
     }
 
     public function testCreatingPrototypeObjectWithConstructorPrimitive(): void
     {
-        $this->container->bindPrototype($this->constructorWithPrimitives, null, ['foo', 'bar']);
-        $instance = $this->container->resolve($this->constructorWithPrimitives);
-        $this->assertInstanceOf($this->constructorWithPrimitives, $instance);
+        $this->container->bindPrototype(ConstructorWithPrimitives::class, null, ['foo', 'bar']);
+        $instance = $this->container->resolve(ConstructorWithPrimitives::class);
+        $this->assertInstanceOf(ConstructorWithPrimitives::class, $instance);
         $this->assertNotSame(
             $instance,
-            $this->container->resolve($this->constructorWithPrimitives)
+            $this->container->resolve(ConstructorWithPrimitives::class)
         );
     }
 
     public function testCreatingPrototypeObjectWithUnsetConstructorPrimitive(): void
     {
         $this->expectException(ResolutionException::class);
-        $this->container->resolve($this->constructorWithPrimitives);
+        $this->container->resolve(ConstructorWithPrimitives::class);
     }
 
     public function testCreatingPrototypeObjectWithUnsetConstructorPrimitiveWithDefaultValue(): void
     {
-        $this->container->bindPrototype($this->constructorWithDefaultValuePrimitives, null, ['foo']);
-        $instance = $this->container->resolve($this->constructorWithDefaultValuePrimitives);
-        $this->assertInstanceOf($this->constructorWithDefaultValuePrimitives, $instance);
+        $this->container->bindPrototype(ConstructorWithDefaultValuePrimitives::class, null, ['foo']);
+        $instance = $this->container->resolve(ConstructorWithDefaultValuePrimitives::class);
+        $this->assertInstanceOf(ConstructorWithDefaultValuePrimitives::class, $instance);
         $this->assertNotSame(
             $instance,
-            $this->container->resolve($this->constructorWithDefaultValuePrimitives)
+            $this->container->resolve(ConstructorWithDefaultValuePrimitives::class)
         );
     }
 
     public function testCreatingSingletonInstanceWithConcreteDependency(): void
     {
-        $sharedInstance = $this->container->resolve($this->constructorWithConcreteClass);
-        $this->assertInstanceOf($this->constructorWithConcreteClass, $sharedInstance);
+        $sharedInstance = $this->container->resolve(ConstructorWithConcreteClass::class);
+        $this->assertInstanceOf(ConstructorWithConcreteClass::class, $sharedInstance);
     }
 
     public function testCreatingSingletonInstanceWithConstructorPrimitive(): void
     {
-        $this->container->bindSingleton($this->constructorWithPrimitives, null, ['foo', 'bar']);
-        $instance = $this->container->resolve($this->constructorWithPrimitives);
-        $this->assertInstanceOf($this->constructorWithPrimitives, $instance);
+        $this->container->bindSingleton(ConstructorWithPrimitives::class, null, ['foo', 'bar']);
+        $instance = $this->container->resolve(ConstructorWithPrimitives::class);
+        $this->assertInstanceOf(ConstructorWithPrimitives::class, $instance);
         $this->assertSame(
             $instance,
-            $this->container->resolve($this->constructorWithPrimitives)
+            $this->container->resolve(ConstructorWithPrimitives::class)
         );
     }
 
     public function testCreatingSingletonInstanceWithUnsetConstructorPrimitiveWithDefaultValue(): void
     {
-        $this->container->bindSingleton($this->constructorWithDefaultValuePrimitives, null, ['foo']);
-        $instance = $this->container->resolve($this->constructorWithDefaultValuePrimitives);
-        $this->assertInstanceOf($this->constructorWithDefaultValuePrimitives, $instance);
+        $this->container->bindSingleton(ConstructorWithDefaultValuePrimitives::class, null, ['foo']);
+        $instance = $this->container->resolve(ConstructorWithDefaultValuePrimitives::class);
+        $this->assertInstanceOf(ConstructorWithDefaultValuePrimitives::class, $instance);
         $this->assertSame(
             $instance,
-            $this->container->resolve($this->constructorWithDefaultValuePrimitives)
+            $this->container->resolve(ConstructorWithDefaultValuePrimitives::class)
         );
     }
 
@@ -365,19 +341,19 @@ class ContainerTest extends TestCase
     {
         $tests = function () {
             $this->assertInstanceOf(
-                $this->concreteFooWithIPersonDependency,
-                $this->container->resolve($this->fooInterface)
+                Foo::class,
+                $this->container->resolve(IFoo::class)
             );
         };
-        $this->container->bindPrototype($this->fooInterface, $this->concreteFooWithIPersonDependency);
-        $this->container->bindPrototype($this->personInterface, $this->concretePerson);
+        $this->container->bindPrototype(IFoo::class, Foo::class);
+        $this->container->bindPrototype(IPerson::class, Dave::class);
         $tests();
-        $this->container->unbind([$this->fooInterface, $this->personInterface]);
-        $this->container->bindFactory($this->fooInterface, function () {
-            return new $this->concreteFooWithIPersonDependency(new $this->concretePerson);
+        $this->container->unbind([IFoo::class, IPerson::class]);
+        $this->container->bindFactory(IFoo::class, function () {
+            return new Foo(new Dave);
         });
-        $this->container->bindFactory($this->personInterface, function () {
-            return new $this->concretePerson;
+        $this->container->bindFactory(IPerson::class, function () {
+            return new Dave;
         });
         $tests();
     }
@@ -385,41 +361,41 @@ class ContainerTest extends TestCase
     public function testDependencyThatHasDependencyWithoutBindingAllDependencies(): void
     {
         $this->expectException(ResolutionException::class);
-        $this->container->bindSingleton($this->fooInterface, $this->concreteFooWithIPersonDependency);
-        $this->container->resolve($this->fooInterface);
+        $this->container->bindSingleton(IFoo::class, Foo::class);
+        $this->container->resolve(IFoo::class);
     }
 
     public function testFactoryDependenciesInPrototypeAreNotSame(): void
     {
-        $this->container->bindPrototype($this->constructorWithInterfacesAndPrimitives, null, [23]);
-        $this->container->bindFactory($this->fooInterface, function () {
-            return new $this->concreteFoo;
+        $this->container->bindPrototype(ConstructorWithMixOfInterfacesAndPrimitives::class, null, [23]);
+        $this->container->bindFactory(IFoo::class, function () {
+            return new Bar;
         });
-        $this->container->bindFactory($this->personInterface, function () {
-            return new $this->concretePerson;
+        $this->container->bindFactory(IPerson::class, function () {
+            return new Dave;
         });
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance1 */
-        $instance1 = $this->container->resolve($this->constructorWithInterfacesAndPrimitives);
+        $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance2 */
-        $instance2 = $this->container->resolve($this->constructorWithInterfacesAndPrimitives);
+        $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         $this->assertNotSame($instance1->getFoo(), $instance2->getFoo());
         $this->assertNotSame($instance1->getPerson(), $instance2->getPerson());
     }
 
     public function testFactoryDependenciesInSingleton(): void
     {
-        $this->container->bindSingleton($this->constructorWithInterfacesAndPrimitives, null, [23]);
-        $this->container->bindFactory($this->fooInterface, function () {
-            return new $this->concreteFoo;
+        $this->container->bindSingleton(ConstructorWithMixOfInterfacesAndPrimitives::class, null, [23]);
+        $this->container->bindFactory(IFoo::class, function () {
+            return new Bar;
         });
-        $this->container->bindFactory($this->personInterface, function () {
-            return new $this->concretePerson;
+        $this->container->bindFactory(IPerson::class, function () {
+            return new Dave;
         });
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance1 */
-        $instance1 = $this->container->resolve($this->constructorWithInterfacesAndPrimitives);
+        $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance2 */
-        $instance2 = $this->container->resolve($this->constructorWithInterfacesAndPrimitives);
-        $this->assertInstanceOf($this->constructorWithInterfacesAndPrimitives, $instance1);
+        $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
+        $this->assertInstanceOf(ConstructorWithMixOfInterfacesAndPrimitives::class, $instance1);
         $this->assertSame($instance1, $instance2);
         $this->assertEquals(23, $instance1->getId());
         $this->assertEquals(23, $instance2->getId());
@@ -427,49 +403,49 @@ class ContainerTest extends TestCase
 
     public function testGettingTargetedBindingWhenOneDoesNotExistButUniversalBindingExists(): void
     {
-        $this->container->bindSingleton($this->fooInterface, $this->concreteFoo);
-        $instance = $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            return $container->resolve($this->fooInterface);
+        $this->container->bindSingleton(IFoo::class, Bar::class);
+        $instance = $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            return $container->resolve(IFoo::class);
         });
-        $this->assertInstanceOf($this->fooInterface, $instance);
+        $this->assertInstanceOf(IFoo::class, $instance);
     }
 
     public function testInstancesAreDifferentWhenUsingFactory(): void
     {
-        $this->container->bindFactory($this->baseClass, function () {
-            return new $this->concreteFoo;
+        $this->container->bindFactory(BaseClass::class, function () {
+            return new Bar;
         });
-        $instance1 = $this->container->resolve($this->baseClass);
-        $instance2 = $this->container->resolve($this->baseClass);
+        $instance1 = $this->container->resolve(BaseClass::class);
+        $instance2 = $this->container->resolve(BaseClass::class);
         $this->assertNotSame($instance1, $instance2);
     }
 
     public function testMixOfConcreteClassesAndPrimitivesInConstructorForPrototype(): void
     {
         /** @var ConstructorWithMixOfConcreteClassesAndPrimitives $sharedInstance */
-        $this->container->bindPrototype($this->constructorWithConcreteClassesAndPrimitives, null, [23]);
+        $this->container->bindPrototype(ConstructorWithMixOfConcreteClassesAndPrimitives::class, null, [23]);
         /** @var ConstructorWithMixOfConcreteClassesAndPrimitives $instance */
-        $instance = $this->container->resolve($this->constructorWithConcreteClassesAndPrimitives);
-        $this->assertInstanceOf($this->constructorWithConcreteClassesAndPrimitives, $instance);
+        $instance = $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class);
+        $this->assertInstanceOf(ConstructorWithMixOfConcreteClassesAndPrimitives::class, $instance);
         $this->assertEquals(23, $instance->getId());
-        $this->assertNotSame($instance, $this->container->resolve($this->constructorWithConcreteClassesAndPrimitives));
+        $this->assertNotSame($instance, $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class));
     }
 
     public function testMixOfConcreteClassesAndPrimitivesInConstructorForSingleton(): void
     {
         /** @var ConstructorWithMixOfConcreteClassesAndPrimitives $instance */
-        $this->container->bindSingleton($this->constructorWithConcreteClassesAndPrimitives, null, [23]);
-        $instance = $this->container->resolve($this->constructorWithConcreteClassesAndPrimitives);
+        $this->container->bindSingleton(ConstructorWithMixOfConcreteClassesAndPrimitives::class, null, [23]);
+        $instance = $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class);
         /** @var ConstructorWithMixOfConcreteClassesAndPrimitives $newInstance */
-        $this->assertInstanceOf($this->constructorWithConcreteClassesAndPrimitives, $instance);
+        $this->assertInstanceOf(ConstructorWithMixOfConcreteClassesAndPrimitives::class, $instance);
         $this->assertEquals(23, $instance->getId());
-        $this->assertSame($instance, $this->container->resolve($this->constructorWithConcreteClassesAndPrimitives));
+        $this->assertSame($instance, $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class));
     }
 
     public function testMultipleTargetedBindings(): void
     {
         $this->container->for('baz', function (IContainer $container) {
-            $container->bindSingleton(['foo', 'bar'], $this->concreteFoo);
+            $container->bindSingleton(['foo', 'bar'], Bar::class);
         });
         $this->assertTrue($this->container->for('baz', function (IContainer $container) {
             return $container->hasBinding('foo');
@@ -481,7 +457,7 @@ class ContainerTest extends TestCase
 
     public function testMultipleUniversalBindings(): void
     {
-        $this->container->bindSingleton(['foo', 'bar'], $this->concreteFoo);
+        $this->container->bindSingleton(['foo', 'bar'], Bar::class);
         $this->assertTrue($this->container->hasBinding('foo'));
         $this->assertTrue($this->container->hasBinding('bar'));
     }
@@ -502,30 +478,30 @@ class ContainerTest extends TestCase
 
     public function testResolvingInstanceBoundInTargetedCallback(): void
     {
-        $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            $container->bindFactory($this->fooInterface, function () {
-                return new $this->concreteFoo;
+        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            $container->bindFactory(IFoo::class, function () {
+                return new Bar;
             });
         });
-        $instance = $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            return $container->resolve($this->fooInterface);
+        $instance = $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            return $container->resolve(IFoo::class);
         });
-        $this->assertInstanceOf($this->concreteFoo, $instance);
+        $this->assertInstanceOf(Bar::class, $instance);
     }
 
     public function testResolvingPrototypeForTarget(): void
     {
-        $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            $container->bindPrototype($this->fooInterface, $this->concreteFoo);
+        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            $container->bindPrototype(IFoo::class, Bar::class);
         });
-        $instance1 = $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            return $container->resolve($this->fooInterface);
+        $instance1 = $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            return $container->resolve(IFoo::class);
         });
-        $instance2 = $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            return $container->resolve($this->fooInterface);
+        $instance2 = $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            return $container->resolve(IFoo::class);
         });
-        $this->assertInstanceOf($this->concreteFoo, $instance1);
-        $this->assertInstanceOf($this->concreteFoo, $instance2);
+        $this->assertInstanceOf(Bar::class, $instance1);
+        $this->assertInstanceOf(Bar::class, $instance2);
         $this->assertNotSame($instance1, $instance2);
     }
 
@@ -538,37 +514,37 @@ class ContainerTest extends TestCase
     public function testResolvingSingletonForTarget(): void
     {
         $this->container->for('foo', function (IContainer $container) {
-            $container->bindSingleton($this->fooInterface, $this->concreteFoo);
+            $container->bindSingleton(IFoo::class, Bar::class);
         });
         $instance1 = $this->container->for('foo', function (IContainer $container) {
-            return $container->resolve($this->fooInterface);
+            return $container->resolve(IFoo::class);
         });
         $instance2 = $this->container->for('foo', function (IContainer $container) {
-            return $container->resolve($this->fooInterface);
+            return $container->resolve(IFoo::class);
         });
-        $this->assertInstanceOf($this->concreteFoo, $instance1);
-        $this->assertInstanceOf($this->concreteFoo, $instance2);
+        $this->assertInstanceOf(Bar::class, $instance1);
+        $this->assertInstanceOf(Bar::class, $instance2);
         $this->assertSame($instance1, $instance2);
 
         // Make sure that the singleton is not bound universally
         try {
-            $this->container->resolve($this->constructorWithIFoo);
+            $this->container->resolve(ConstructorWithInterface::class);
             // The line above should throw an exception, so fail if we've gotten here
             $this->fail('Targeted singleton accidentally bound universally');
-        } catch (DependencyInjectionException $ex) {
+        } catch (ResolutionException $ex) {
             // Don't do anything
         }
     }
 
     public function testSingletonDependenciesInPrototype(): void
     {
-        $this->container->bindPrototype($this->constructorWithInterfacesAndPrimitives, null, [23]);
-        $this->container->bindSingleton($this->fooInterface, $this->concreteFoo);
-        $this->container->bindSingleton($this->personInterface, $this->concretePerson);
+        $this->container->bindPrototype(ConstructorWithMixOfInterfacesAndPrimitives::class, null, [23]);
+        $this->container->bindSingleton(IFoo::class, Bar::class);
+        $this->container->bindSingleton(IPerson::class, Dave::class);
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance1 */
-        $instance1 = $this->container->resolve($this->constructorWithInterfacesAndPrimitives);
+        $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance2 */
-        $instance2 = $this->container->resolve($this->constructorWithInterfacesAndPrimitives);
+        $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         $this->assertSame($instance1->getFoo(), $instance2->getFoo());
         $this->assertSame($instance1->getPerson(), $instance2->getPerson());
         $this->assertNotSame($instance1, $instance2);
@@ -576,14 +552,14 @@ class ContainerTest extends TestCase
 
     public function testSingletonDependenciesInSingleton(): void
     {
-        $this->container->bindSingleton($this->constructorWithInterfacesAndPrimitives, null, [23]);
-        $this->container->bindSingleton($this->fooInterface, $this->concreteFoo);
-        $this->container->bindSingleton($this->personInterface, $this->concretePerson);
+        $this->container->bindSingleton(ConstructorWithMixOfInterfacesAndPrimitives::class, null, [23]);
+        $this->container->bindSingleton(IFoo::class, Bar::class);
+        $this->container->bindSingleton(IPerson::class, Dave::class);
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance1 */
-        $instance1 = $this->container->resolve($this->constructorWithInterfacesAndPrimitives);
+        $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance2 */
-        $instance2 = $this->container->resolve($this->constructorWithInterfacesAndPrimitives);
-        $this->assertInstanceOf($this->constructorWithInterfacesAndPrimitives, $instance1);
+        $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
+        $this->assertInstanceOf(ConstructorWithMixOfInterfacesAndPrimitives::class, $instance1);
         $this->assertSame($instance1, $instance2);
         $this->assertEquals(23, $instance1->getId());
         $this->assertEquals(23, $instance2->getId());
@@ -592,26 +568,26 @@ class ContainerTest extends TestCase
 
     public function testTargetedBindingOfInstanceToInterface(): void
     {
-        $targetedInstance = new $this->concreteFoo();
-        $this->container->for($this->constructorWithIFoo, function (IContainer $container) use ($targetedInstance) {
-            $container->bindInstance($this->fooInterface, $targetedInstance);
+        $targetedInstance = new Bar();
+        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) use ($targetedInstance) {
+            $container->bindInstance(IFoo::class, $targetedInstance);
         });
         // This universal binding should NOT take precedence over the class binding
-        $this->container->bindPrototype($this->fooInterface, $this->secondConcreteIFoo);
-        $resolvedInstance = $this->container->resolve($this->constructorWithIFoo);
+        $this->container->bindPrototype(IFoo::class, Blah::class);
+        $resolvedInstance = $this->container->resolve(ConstructorWithInterface::class);
         $this->assertSame($targetedInstance, $resolvedInstance->getFoo());
     }
 
     public function testTargetedFactoryBindingsOnlyApplyToNextCall(): void
     {
         $this->container->for('foo', function (IContainer $container) {
-            $container->bindFactory($this->fooInterface, function () {
-                return new $this->concreteFoo();
+            $container->bindFactory(IFoo::class, function () {
+                return new Bar();
             });
         });
         $this->container->for('bar', function (IContainer $container) {
             $container->bindFactory('doesNotExist', function () {
-                return new $this->concreteFoo();
+                return new Bar();
             });
         });
         $this->assertFalse($this->container->for('foo', function (IContainer $container) {
@@ -624,10 +600,10 @@ class ContainerTest extends TestCase
 
     public function testTargetedInstanceBindingsOnlyApplyToNextCall(): void
     {
-        $instance1 = new $this->concreteFoo();
-        $instance2 = new $this->concreteFoo();
+        $instance1 = new Bar();
+        $instance2 = new Bar();
         $this->container->for('foo', function (IContainer $container) use ($instance1) {
-            $container->bindInstance($this->fooInterface, $instance1);
+            $container->bindInstance(IFoo::class, $instance1);
         });
         $this->container->for('bar', function (IContainer $container) use ($instance2) {
             $container->bindInstance('doesNotExist', $instance2);
@@ -643,7 +619,7 @@ class ContainerTest extends TestCase
     public function testTargetedPrototypeBindingsOnlyApplyToNextCall(): void
     {
         $this->container->for('foo', function (IContainer $container) {
-            $container->bindPrototype($this->fooInterface, 'bar');
+            $container->bindPrototype(IFoo::class, 'bar');
         });
         $this->container->for('baz', function (IContainer $container) {
             $container->bindPrototype('doesNotExist', 'bar');
@@ -659,7 +635,7 @@ class ContainerTest extends TestCase
     public function testTargetedSingletonBindingsOnlyApplyToNextCall(): void
     {
         $this->container->for('foo', function (IContainer $container) {
-            $container->bindSingleton($this->fooInterface, 'bar');
+            $container->bindSingleton(IFoo::class, 'bar');
         });
         $this->container->for('baz', function (IContainer $container) {
             $container->bindSingleton('doesNotExist', 'bar');
@@ -690,11 +666,11 @@ class ContainerTest extends TestCase
 
     public function testUnbindingFactory(): void
     {
-        $this->container->bindFactory($this->baseClass, function () {
-            return new $this->concreteFoo;
+        $this->container->bindFactory(BaseClass::class, function () {
+            return new Bar;
         });
-        $this->container->unbind($this->baseClass);
-        $this->assertFalse($this->container->hasBinding($this->baseClass));
+        $this->container->unbind(BaseClass::class);
+        $this->assertFalse($this->container->hasBinding(BaseClass::class));
     }
 
     public function testUnbindingMultipleInterfaces(): void
@@ -708,29 +684,52 @@ class ContainerTest extends TestCase
 
     public function testUnbindingTargetedBinding(): void
     {
-        $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            $container->bindPrototype($this->fooInterface, $this->concreteFoo);
+        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            $container->bindPrototype(IFoo::class, Bar::class);
         });
-        $this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            $container->unbind($this->fooInterface);
+        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            $container->unbind(IFoo::class);
         });
-        $this->assertFalse($this->container->for($this->constructorWithIFoo, function (IContainer $container) {
-            return $container->hasBinding($this->fooInterface);
+        $this->assertFalse($this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            return $container->hasBinding(IFoo::class);
         }));
     }
 
     public function testUnbindingUniversalBinding(): void
     {
-        $this->container->bindPrototype($this->fooInterface, $this->concreteFoo);
-        $this->container->unbind($this->fooInterface);
-        $this->assertFalse($this->container->hasBinding($this->fooInterface));
+        $this->container->bindPrototype(IFoo::class, Bar::class);
+        $this->container->unbind(IFoo::class);
+        $this->assertFalse($this->container->hasBinding(IFoo::class));
     }
 
     public function testUniversallyBindingInstanceToInterface(): void
     {
-        $instance = new $this->concreteFoo();
-        $this->container->bindInstance($this->fooInterface, $instance);
-        $this->assertSame($instance, $this->container->resolve($this->fooInterface));
-        $this->assertNotSame($instance, $this->container->resolve($this->concreteFoo));
+        $instance = new Bar();
+        $this->container->bindInstance(IFoo::class, $instance);
+        $this->assertSame($instance, $this->container->resolve(IFoo::class));
+        $this->assertNotSame($instance, $this->container->resolve(Bar::class));
+    }
+
+    public function testWakingUpContainerWhenGlobalInstanceIsSetUsesGlobalInstancesBindings(): void
+    {
+        $container = new Container();
+        Container::$globalInstance = $container;
+        $expectedFoo = new Bar();
+        $container->bindInstance(IFoo::class, $expectedFoo);
+        $this->assertTrue($container->hasBinding(IFoo::class));
+        /** @var Container $deserializedContainer */
+        $deserializedContainer = unserialize(serialize($container));
+        $this->assertTrue($deserializedContainer->hasBinding(IFoo::class));
+        $this->assertSame($expectedFoo, $deserializedContainer->resolve(IFoo::class));
+    }
+
+    public function testWakingUpContainerWhenNoGlobalInstanceIsSetResetsTheBindings(): void
+    {
+        $container = new Container();
+        $container->bindInstance(IFoo::class, new Bar());
+        $this->assertTrue($container->hasBinding(IFoo::class));
+        /** @var Container $deserializedContainer */
+        $deserializedContainer = unserialize(serialize($container));
+        $this->assertFalse($deserializedContainer->hasBinding(IFoo::class));
     }
 }

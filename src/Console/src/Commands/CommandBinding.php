@@ -23,8 +23,15 @@ final class CommandBinding
 {
     /** @var Command The command */
     public Command $command;
-    /** @var Closure The factory that will create the command handler */
-    public ?Closure $commandHandlerFactory;
+    /**
+     * The factory that will create the command handler
+     * Note:  This does not have an actual type because Opis temporarily sets any Closure properties to have an instance
+     * of SerializableClosure during serialization.  However, since that type does not extend Closure, PHP throws a type
+     * error.  This property should, from a developer's perspective, always be assumed to hold a nullable Closure.
+     *
+     * @var Closure|SerializableClosure|null
+     */
+    public $commandHandlerFactory;
     /** @var string The serialized command handler */
     protected string $serializedCommandHandlerFactory = '';
 

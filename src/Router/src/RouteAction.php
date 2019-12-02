@@ -26,8 +26,15 @@ class RouteAction
     public ?string $className;
     /** @var string|null The name of the method the route routes to */
     public ?string $methodName;
-    /** @var Closure|null The closure the route routes to */
-    public ?Closure $closure;
+    /**
+     * The closure that performs the action
+     * Note:  This does not have an actual type because Opis temporarily sets any Closure properties to have an instance
+     * of SerializableClosure during serialization.  However, since that type does not extend Closure, PHP throws a type
+     * error.  This property should, from a developer's perspective, always be assumed to hold a nullable Closure.
+     *
+     * @var Closure|SerializableClosure|null
+     */
+    public $closure;
     /** @var string The serialized closure */
     protected string $serializedClosure = '';
 

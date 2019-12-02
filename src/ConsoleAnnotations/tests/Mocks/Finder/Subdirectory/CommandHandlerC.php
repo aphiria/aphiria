@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\ConsoleCommandAnnotations\Tests\Mocks\Finder\Subdirectory;
+namespace Aphiria\ConsoleAnnotations\Tests\Mocks\Finder\Subdirectory;
 
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\ConsoleCommandAnnotations\Annotations\Command;
+use Aphiria\ConsoleAnnotations\Annotations\Command;
 
 /**
  * Defines a mock command handler

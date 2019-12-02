@@ -15,9 +15,9 @@ namespace Aphiria\DependencyInjection;
 use Exception;
 
 /**
- * Defines a dependency injection exception
+ * Defines the exception that's thrown when a method or closure could not be called by the container
  */
-class DependencyInjectionException extends Exception
+final class CallException extends Exception
 {
     // Don't do anything
 }

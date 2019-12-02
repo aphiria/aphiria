@@ -40,7 +40,7 @@ final class CachedCommandRegistrant extends AggregateCommandRegistrant
      */
     public function registerCommands(CommandRegistry $commands): void
     {
-        if ($this->commandCache !== null && ($cachedCommands = $this->commandCache->get()) !== null) {
+        if (($cachedCommands = $this->commandCache->get()) !== null) {
             $commands->registerManyCommands($cachedCommands->getAllCommandBindings());
 
             return;
@@ -49,8 +49,6 @@ final class CachedCommandRegistrant extends AggregateCommandRegistrant
         parent::registerCommands($commands);
 
         // Save this to cache for next time
-        if ($this->commandCache !== null) {
-            $this->commandCache->set($commands);
-        }
+        $this->commandCache->set($commands);
     }
 }

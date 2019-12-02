@@ -10,32 +10,30 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\ConsoleCommandAnnotations\Annotations;
+namespace Aphiria\ConsoleAnnotations\Annotations;
 
 use Doctrine\Annotations\Annotation\Target;
 use InvalidArgumentException;
 
 /**
- * Defines the command annotation
+ * Defines the annotation for command arguments
  * @Annotation
- * @Target({"CLASS"})
+ * @Target({"ANNOTATION"})
  */
-final class Command
+final class Argument
 {
-    /** @var string The name of the command */
+    /** @var string The name of the argument */
     public string $name;
-    /** @var Argument[] The list of arguments */
-    public array $arguments;
-    /** @var Option[] The list of options */
-    public array $options;
-    /** @var string|null The description of the command */
+    /** @var int The type of argument this is */
+    public int $type;
+    /** @var string|null A brief description of the argument */
     public ?string $description;
-    /** @var string|null The extra descriptive help text */
-    public ?string $helpText;
+    /** @var mixed The default value for the argument if it's optional */
+    public $defaultValue;
 
     /**
      * @param array $values The mapping of value names to values
-     * @throws InvalidArgumentException Thrown if required values are not set
+     * @throws InvalidArgumentException Thrown if required values were not set
      */
     public function __construct(array $values)
     {
@@ -49,12 +47,15 @@ final class Command
         }
 
         if (empty($this->name)) {
-            throw new InvalidArgumentException('Command name must be set');
+            throw new InvalidArgumentException('Argument name must be set');
         }
 
-        $this->arguments = $values['arguments'] ?? [];
-        $this->options = $values['options'] ?? [];
+        if (!isset($values['type'])) {
+            throw new InvalidArgumentException('Argument type must be set');
+        }
+
+        $this->type = $values['type'] ?? -1;
         $this->description = $values['description'] ?? null;
-        $this->helpText = $values['helpText'] ?? null;
+        $this->defaultValue = $values['defaultValue'] ?? null;
     }
 }
