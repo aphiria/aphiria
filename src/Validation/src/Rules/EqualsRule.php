@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 
 /**
@@ -33,7 +34,7 @@ final class EqualsRule implements IRuleWithArgs
     /**
      * @inheritdoc
      */
-    public function passes($value, array $allValues = []): bool
+    public function passes($value, ValidationContext $validationContext): bool
     {
         return $value === $this->value;
     }

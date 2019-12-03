@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use DateTime;
 use InvalidArgumentException;
 use Aphiria\Validation\Rules\DateRule;
@@ -24,13 +25,14 @@ class DateRuleTest extends TestCase
 {
     public function testEqualValuesPass(): void
     {
+        $context = new ValidationContext($this);
         $rule = new DateRule();
         $format1 = 'F j';
         $format2 = 's:i:H d-m-Y';
         $rule->setArgs([$format1]);
-        $this->assertTrue($rule->passes((new DateTime)->format($format1)));
+        $this->assertTrue($rule->passes((new DateTime)->format($format1), $context));
         $rule->setArgs([[$format1, $format2]]);
-        $this->assertTrue($rule->passes((new DateTime)->format($format2)));
+        $this->assertTrue($rule->passes((new DateTime)->format($format2), $context));
     }
 
     public function testGettingSlug(): void
@@ -55,12 +57,13 @@ class DateRuleTest extends TestCase
 
     public function testUnequalValuesFail(): void
     {
+        $context = new ValidationContext($this);
         $rule = new DateRule();
         $format1 = 'F j';
         $format2 = 's:i:H d-m-Y';
         $rule->setArgs([$format1]);
-        $this->assertFalse($rule->passes((new DateTime)->format('His')));
+        $this->assertFalse($rule->passes((new DateTime)->format('His'), $context));
         $rule->setArgs([[$format1, $format2]]);
-        $this->assertFalse($rule->passes((new DateTime)->format('Y')));
+        $this->assertFalse($rule->passes((new DateTime)->format('Y'), $context));
     }
 }

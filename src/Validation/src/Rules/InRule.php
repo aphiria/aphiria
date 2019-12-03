@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 use LogicException;
 
@@ -34,7 +35,7 @@ final class InRule implements IRuleWithArgs
     /**
      * @inheritdoc
      */
-    public function passes($value, array $allValues = []): bool
+    public function passes($value, ValidationContext $validationContext): bool
     {
         if ($this->array === null) {
             throw new LogicException('Array not set');

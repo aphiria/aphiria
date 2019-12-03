@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use LogicException;
 
 /**
@@ -30,9 +31,9 @@ interface IRule
      * Gets whether or not the rule passes
      *
      * @param mixed $value The value to validate
-     * @param array $allValues The list of all values
+     * @param ValidationContext $validationContext The context to perform validation in
      * @return bool True if the rule passes, otherwise false
      * @throws LogicException Thrown if the rule was not set up correctly
      */
-    public function passes($value, array $allValues = []): bool;
+    public function passes($value, ValidationContext $validationContext): bool;
 }

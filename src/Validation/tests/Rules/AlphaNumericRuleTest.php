@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Rules;
 
 use Aphiria\Validation\Rules\AlphaNumericRule;
+use Aphiria\Validation\ValidationContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,10 +23,11 @@ class AlphaNumericRuleTest extends TestCase
 {
     public function testFailingValue(): void
     {
+        $context = new ValidationContext($this);
         $rule = new AlphaNumericRule();
-        $this->assertFalse($rule->passes(''));
-        $this->assertFalse($rule->passes('.'));
-        $this->assertFalse($rule->passes('a1 b'));
+        $this->assertFalse($rule->passes('', $context));
+        $this->assertFalse($rule->passes('.', $context));
+        $this->assertFalse($rule->passes('a1 b', $context));
     }
 
     public function testGettingSlug(): void
@@ -36,10 +38,11 @@ class AlphaNumericRuleTest extends TestCase
 
     public function testPassingValue(): void
     {
+        $context = new ValidationContext($this);
         $rule = new AlphaNumericRule();
-        $this->assertTrue($rule->passes('1'));
-        $this->assertTrue($rule->passes('a'));
-        $this->assertTrue($rule->passes('a1'));
-        $this->assertTrue($rule->passes('1abc'));
+        $this->assertTrue($rule->passes('1', $context));
+        $this->assertTrue($rule->passes('a', $context));
+        $this->assertTrue($rule->passes('a1', $context));
+        $this->assertTrue($rule->passes('1abc', $context));
     }
 }

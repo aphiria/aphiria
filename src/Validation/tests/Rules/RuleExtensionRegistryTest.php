@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 use Aphiria\Validation\Rules\CallbackRule;
 use Aphiria\Validation\Rules\IRule;
@@ -33,13 +34,14 @@ class RuleExtensionRegistryTest extends TestCase
 
     public function testCallbackGetsConvertedToRule(): void
     {
+        $context = new ValidationContext($this);
         $rule = function () {
             return true;
         };
         /** @var IRule|MockObject $rule */
         $this->registry->registerRuleExtension($rule, 'foo');
         $this->assertInstanceOf(CallbackRule::class, $this->registry->getRule('foo'));
-        $this->assertTrue($this->registry->getRule('foo')->passes('bar'));
+        $this->assertTrue($this->registry->getRule('foo')->passes('bar', $context));
     }
 
     public function testCheckingIfRegistryHasRule(): void

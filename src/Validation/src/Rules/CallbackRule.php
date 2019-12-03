@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 use LogicException;
 
@@ -34,13 +35,13 @@ class CallbackRule implements IRuleWithArgs
     /**
      * @inheritdoc
      */
-    public function passes($value, array $allValues = []): bool
+    public function passes($value, ValidationContext $validationContext): bool
     {
         if ($this->callback === null) {
             throw new LogicException('Callback not set');
         }
 
-        return ($this->callback)($value, $allValues);
+        return ($this->callback)($value, $validationContext);
     }
 
     /**

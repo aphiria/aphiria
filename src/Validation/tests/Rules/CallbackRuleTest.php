@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 use LogicException;
 use Aphiria\Validation\Rules\CallbackRule;
@@ -24,20 +25,22 @@ class CallbackRuleTest extends TestCase
 {
     public function testCallbackIsExecuted(): void
     {
+        $expectedContext = new ValidationContext($this);
         $correctInputWasPassed = false;
-        $callback = function ($value, array $inputs = []) use (&$correctInputWasPassed) {
-            $correctInputWasPassed = $value === 'foo' && $inputs === ['bar' => 'baz'];
+        $callback = function ($value, ValidationContext $validationContext) use (&$correctInputWasPassed, $expectedContext) {
+            $correctInputWasPassed = $value === 'foo' && $validationContext === $expectedContext;
 
             return true;
         };
         $rule = new CallbackRule();
         $rule->setArgs([$callback]);
-        $rule->passes('foo', ['bar' => 'baz']);
+        $rule->passes('foo', $expectedContext);
         $this->assertTrue($correctInputWasPassed);
     }
 
     public function testCallbackReturnValueIsRespected(): void
     {
+        $context = new ValidationContext($this);
         $trueCallback = function () {
             return true;
         };
@@ -48,8 +51,8 @@ class CallbackRuleTest extends TestCase
         $failRule = new CallbackRule();
         $passRule->setArgs([$trueCallback]);
         $failRule->setArgs([$falseCallback]);
-        $this->assertTrue($passRule->passes('foo'));
-        $this->assertFalse($failRule->passes('bar'));
+        $this->assertTrue($passRule->passes('foo', $context));
+        $this->assertFalse($failRule->passes('bar', $context));
     }
 
     public function testGettingSlug(): void
@@ -60,9 +63,10 @@ class CallbackRuleTest extends TestCase
 
     public function testNotSettingArgBeforePasses(): void
     {
+        $context = new ValidationContext($this);
         $this->expectException(LogicException::class);
         $rule = new CallbackRule();
-        $rule->passes('foo');
+        $rule->passes('foo', $context);
     }
 
     public function testPassingEmptyArgArray(): void

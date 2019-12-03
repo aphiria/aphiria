@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Rules;
 
 use Aphiria\Validation\Rules\NumericRule;
+use Aphiria\Validation\ValidationContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,9 +23,10 @@ class NumericRuleTest extends TestCase
 {
     public function testFailingValue(): void
     {
+        $context = new ValidationContext($this);
         $rule = new NumericRule();
-        $this->assertFalse($rule->passes(false));
-        $this->assertFalse($rule->passes('foo'));
+        $this->assertFalse($rule->passes(false, $context));
+        $this->assertFalse($rule->passes('foo', $context));
     }
 
     public function testGettingSlug(): void
@@ -35,10 +37,11 @@ class NumericRuleTest extends TestCase
 
     public function testPassingValue(): void
     {
+        $context = new ValidationContext($this);
         $rule = new NumericRule();
-        $this->assertTrue($rule->passes(0));
-        $this->assertTrue($rule->passes(1));
-        $this->assertTrue($rule->passes(1.0));
-        $this->assertTrue($rule->passes('1.0'));
+        $this->assertTrue($rule->passes(0, $context));
+        $this->assertTrue($rule->passes(1, $context));
+        $this->assertTrue($rule->passes(1.0, $context));
+        $this->assertTrue($rule->passes('1.0', $context));
     }
 }

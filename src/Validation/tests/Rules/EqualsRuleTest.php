@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 use Aphiria\Validation\Rules\EqualsRule;
 use PHPUnit\Framework\TestCase;
@@ -23,9 +24,10 @@ class EqualsRuleTest extends TestCase
 {
     public function testEqualValuesPass(): void
     {
+        $context = new ValidationContext($this);
         $rule = new EqualsRule();
         $rule->setArgs(['foo']);
-        $this->assertTrue($rule->passes('foo'));
+        $this->assertTrue($rule->passes('foo', $context));
     }
 
     public function testGettingSlug(): void
@@ -43,8 +45,9 @@ class EqualsRuleTest extends TestCase
 
     public function testUnequalValuesFail(): void
     {
+        $context = new ValidationContext($this);
         $rule = new EqualsRule();
         $rule->setArgs(['foo']);
-        $this->assertFalse($rule->passes('bar'));
+        $this->assertFalse($rule->passes('bar', $context));
     }
 }

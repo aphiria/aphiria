@@ -13,68 +13,83 @@ declare(strict_types=1);
 namespace Aphiria\Validation;
 
 use Aphiria\Validation\Rules\Errors\ErrorCollection;
-use Aphiria\Validation\Rules\RulesFactory;
-use Aphiria\Validation\Rules\Rules;
 
 /**
  * Defines the validator
  */
 final class Validator implements IValidator
 {
-    /** @var RulesFactory The rules factory */
-    protected RulesFactory $rulesFactory;
-    /** @var Rules[] The list of rules by field name */
-    protected array $rulesByField = [];
-    /** @var ErrorCollection The error collection */
-    protected ErrorCollection $errors;
+    /** @var ObjectValidatorRegistry The registry of object validators */
+    private ObjectValidatorRegistry $objectValidators;
 
     /**
-     * @param RulesFactory|null $rulesFactory The rules factory
+     * @param ObjectValidatorRegistry $objectValidators The registry of object validators
      */
-    public function __construct(RulesFactory $rulesFactory = null)
+    public function __construct(ObjectValidatorRegistry $objectValidators)
     {
-        $this->errors = new ErrorCollection();
-        $this->rulesFactory = $rulesFactory ?? new RulesFactory();
+        $this->objectValidators = $objectValidators;
     }
 
     /**
      * @inheritdoc
      */
-    public function field(string $name): Rules
+    public function tryValidateField(
+        object $object,
+        string $fieldName,
+        ErrorCollection &$errors = null,
+        ValidationContext $validationContext = null
+    ): bool {
+        try {
+            $this->validateField($object, $fieldName, $validationContext);
+
+            return true;
+        } catch (ValidationException $ex) {
+            $errors = $ex->getErrors();
+
+            return false;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function tryValidateObject(
+        object $object,
+        ErrorCollection &$errors = null,
+        ValidationContext $validationContext = null
+    ): bool {
+        try {
+            $this->validateObject($object, $validationContext);
+
+            return true;
+        } catch (ValidationException $ex) {
+            $errors = $ex->getErrors();
+
+            return false;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validateField(object $object, string $fieldName, ValidationContext $validationContext = null): void
     {
-        if (!isset($this->rulesByField[$name])) {
-            $this->rulesByField[$name] = $this->rulesFactory->createRules();
+        if (($objectValidator = $this->objectValidators->getObjectValidator(\get_class($object))) === null) {
+            return;
         }
 
-        return $this->rulesByField[$name];
+        $objectValidator->validateField($object, $fieldName, $validationContext);
     }
 
     /**
      * @inheritdoc
      */
-    public function getErrors(): ErrorCollection
+    public function validateObject(object $object, ValidationContext $validationContext = null): void
     {
-        return $this->errors;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isValid(array $allValues, bool $haltFieldValidationOnFailure = false): bool
-    {
-        $this->errors = new ErrorCollection();
-        $passes = true;
-
-        foreach ($this->rulesByField as $name => $rules) {
-            $value = $allValues[$name] ?? null;
-            $fieldPasses = $rules->pass($value, $allValues, $haltFieldValidationOnFailure);
-            $passes = $passes && $fieldPasses;
-
-            if (!$fieldPasses) {
-                $this->errors[$name] = $rules->getErrors($name);
-            }
+        if (($objectValidator = $this->objectValidators->getObjectValidator(\get_class($object))) === null) {
+            return;
         }
 
-        return $passes;
+        $objectValidator->validateObject($object, $validationContext);
     }
 }

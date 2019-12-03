@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Rules;
 
 use Aphiria\Validation\Rules\EmailRule;
+use Aphiria\Validation\ValidationContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,13 +29,15 @@ class EmailRuleTest extends TestCase
 
     public function testInvalidEmailFails(): void
     {
+        $context = new ValidationContext($this);
         $rule = new EmailRule();
-        $this->assertFalse($rule->passes('foo'));
+        $this->assertFalse($rule->passes('foo', $context));
     }
 
     public function testValidEmailPasses(): void
     {
+        $context = new ValidationContext($this);
         $rule = new EmailRule();
-        $this->assertTrue($rule->passes('foo@bar.com'));
+        $this->assertTrue($rule->passes('foo@bar.com', $context));
     }
 }

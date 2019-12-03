@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use BadMethodCallException;
 use Countable;
 use DateTime;
@@ -51,28 +52,32 @@ class RulesTest extends TestCase
 
     public function testAlphaNumericRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->alphaNumeric());
-        $this->assertTrue($this->rules->pass('a1'));
-        $this->assertFalse($this->rules->pass('a 1'));
+        $this->assertTrue($this->rules->pass('a1', $context));
+        $this->assertFalse($this->rules->pass('a 1', $context));
     }
 
     public function testAlphaRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->alpha());
-        $this->assertTrue($this->rules->pass('a'));
-        $this->assertFalse($this->rules->pass('a1'));
+        $this->assertTrue($this->rules->pass('a', $context));
+        $this->assertFalse($this->rules->pass('a1', $context));
     }
 
     public function testBetweenRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->between(1, 2, false));
-        $this->assertFalse($this->rules->pass(1));
-        $this->assertFalse($this->rules->pass(2));
-        $this->assertTrue($this->rules->pass(1.5));
+        $this->assertFalse($this->rules->pass(1, $context));
+        $this->assertFalse($this->rules->pass(2, $context));
+        $this->assertTrue($this->rules->pass(1.5, $context));
     }
 
     public function testCallingExtension(): void
     {
+        $context = new ValidationContext($this);
         $this->ruleExtensionRegistry->expects($this->once())
             ->method('hasRule')
             ->with('foo')
@@ -86,11 +91,12 @@ class RulesTest extends TestCase
             ->with('bar')
             ->willReturn(true);
         $this->assertSame($this->rules, $this->rules->foo());
-        $this->assertTrue($this->rules->pass('bar'));
+        $this->assertTrue($this->rules->pass('bar', $context));
     }
 
     public function testCallingExtensionWithArgs(): void
     {
+        $context = new ValidationContext($this);
         $this->ruleExtensionRegistry->expects($this->once())
             ->method('hasRule')
             ->with('foo')
@@ -107,7 +113,7 @@ class RulesTest extends TestCase
             ->with('bar')
             ->willReturn(true);
         $this->assertSame($this->rules, $this->rules->foo('baz'));
-        $this->assertTrue($this->rules->pass('bar'));
+        $this->assertTrue($this->rules->pass('bar', $context));
     }
 
     public function testCallingNonExistentExtension(): void
@@ -122,6 +128,7 @@ class RulesTest extends TestCase
 
     public function testCheckingRulesTwiceDoesNotAppendErrors(): void
     {
+        $context = new ValidationContext($this);
         $this->errorTemplateRegistry->expects($this->exactly(2))
             ->method('getErrorTemplate')
             ->with('the-field', 'email')
@@ -131,184 +138,128 @@ class RulesTest extends TestCase
             ->with('the-field', '', [])
             ->willReturn('The error');
         $this->rules->email();
-        $this->rules->pass('foo');
+        $this->rules->pass('foo', $context);
         $this->assertEquals(['The error'], $this->rules->getErrors('the-field'));
-        $this->rules->pass('foo');
+        $this->rules->pass('foo', $context);
         $this->assertEquals(['The error'], $this->rules->getErrors('the-field'));
     }
 
     public function testDateRule(): void
     {
+        $context = new ValidationContext($this);
         $format1 = 'Y-m-d';
         $format2 = 'F j';
         $this->assertSame($this->rules, $this->rules->date([$format1, $format2]));
-        $this->assertTrue($this->rules->pass((new DateTime)->format($format1)));
-        $this->assertTrue($this->rules->pass((new DateTime)->format($format2)));
+        $this->assertTrue($this->rules->pass((new DateTime)->format($format1), $context));
+        $this->assertTrue($this->rules->pass((new DateTime)->format($format2), $context));
     }
 
     public function testEmailRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->email());
-        $this->assertTrue($this->rules->pass('foo@bar.com'));
-    }
-
-    public function testEqualsFieldRule(): void
-    {
-        $this->assertSame($this->rules, $this->rules->equalsField('bar'));
-        $this->assertTrue($this->rules->pass('baz', ['bar' => 'baz']));
+        $this->assertTrue($this->rules->pass('foo@bar.com', $context));
     }
 
     public function testEqualsRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->equals('bar'));
-        $this->assertTrue($this->rules->pass('bar'));
+        $this->assertTrue($this->rules->pass('bar', $context));
     }
 
     public function testGettingErrorsWhenThereAreNone(): void
     {
+        $context = new ValidationContext($this);
         $this->assertEquals([], $this->rules->getErrors('foo'));
         $this->rules->email();
-        $this->rules->pass('foo@bar.com');
+        $this->rules->pass('foo@bar.com', $context);
         $this->assertEquals([], $this->rules->getErrors('foo'));
-    }
-
-    public function testHaltingFieldValidationDoesNothingOnPassingRules(): void
-    {
-        /** @var IRule|MockObject $rule1 */
-        $rule1 = $this->createMock(IRule::class);
-        /** @var IRule|MockObject $rule2 */
-        $rule2 = $this->createMock(IRule::class);
-        $rule1->expects($this->once())
-            ->method('passes')
-            ->willReturn(true);
-        $rule2->expects($this->once())
-            ->method('passes')
-            ->willReturn(true);
-        $this->ruleExtensionRegistry->expects($this->at(0))
-            ->method('hasRule')
-            ->with('foo')
-            ->willReturn(true);
-        $this->ruleExtensionRegistry->expects($this->at(1))
-            ->method('getRule')
-            ->with('foo')
-            ->willReturn($rule1);
-        $this->ruleExtensionRegistry->expects($this->at(2))
-            ->method('hasRule')
-            ->with('bar')
-            ->willReturn(true);
-        $this->ruleExtensionRegistry->expects($this->at(3))
-            ->method('getRule')
-            ->with('bar')
-            ->willReturn($rule2);
-        $this->rules->foo();
-        $this->rules->bar();
-        $this->assertTrue($this->rules->pass('blah', [], true));
-    }
-
-    public function testHaltingFieldValidationOnFailure(): void
-    {
-        /** @var IRule|MockObject $rule1 */
-        $rule1 = $this->createMock(IRule::class);
-        /** @var IRule|MockObject $rule2 */
-        $rule2 = $this->createMock(IRule::class);
-        $rule1->expects($this->once())
-            ->method('passes')
-            ->willReturn(false);
-        $rule2->expects($this->never())
-            ->method('passes');
-        $this->ruleExtensionRegistry->expects($this->at(0))
-            ->method('hasRule')
-            ->with('foo')
-            ->willReturn(true);
-        $this->ruleExtensionRegistry->expects($this->at(1))
-            ->method('getRule')
-            ->with('foo')
-            ->willReturn($rule1);
-        $this->ruleExtensionRegistry->expects($this->at(2))
-            ->method('hasRule')
-            ->with('bar')
-            ->willReturn(true);
-        $this->ruleExtensionRegistry->expects($this->at(3))
-            ->method('getRule')
-            ->with('bar')
-            ->willReturn($rule2);
-        $this->rules->foo();
-        $this->rules->bar();
-        $this->assertFalse($this->rules->pass('blah', [], true));
     }
 
     public function testIPAddressRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->ipAddress());
-        $this->assertTrue($this->rules->pass('127.0.0.1'));
+        $this->assertTrue($this->rules->pass('127.0.0.1', $context));
     }
 
     public function testInRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->in(['foo', 'bar']));
-        $this->assertTrue($this->rules->pass('bar'));
+        $this->assertTrue($this->rules->pass('bar', $context));
     }
 
     public function testIntegerRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->integer());
-        $this->assertTrue($this->rules->pass(1));
+        $this->assertTrue($this->rules->pass(1, $context));
     }
 
     public function testMaxRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->max(2, false));
-        $this->assertFalse($this->rules->pass(2));
-        $this->assertTrue($this->rules->pass(1.9));
+        $this->assertFalse($this->rules->pass(2, $context));
+        $this->assertTrue($this->rules->pass(1.9, $context));
     }
 
     public function testMinRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->min(2, false));
-        $this->assertFalse($this->rules->pass(2));
-        $this->assertTrue($this->rules->pass(2.1));
+        $this->assertFalse($this->rules->pass(2, $context));
+        $this->assertTrue($this->rules->pass(2.1, $context));
     }
 
     public function testNonRequiredFieldPassesAllRulesWhenEmpty(): void
     {
+        $context = new ValidationContext($this);
         $this->rules
             ->email()
             ->date('Y-m-d');
-        $this->assertTrue($this->rules->pass(null));
-        $this->assertTrue($this->rules->pass([]));
+        $this->assertTrue($this->rules->pass(null, $context));
+        $this->assertTrue($this->rules->pass([], $context));
         $countable = $this->createMock(Countable::class);
         $countable->expects($this->exactly(2))
             ->method('count')
             ->willReturn(0);
-        $this->assertTrue($this->rules->pass($countable));
+        $this->assertTrue($this->rules->pass($countable, $context));
     }
 
     public function testNotInRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->notIn(['foo', 'bar']));
-        $this->assertTrue($this->rules->pass('baz'));
+        $this->assertTrue($this->rules->pass('baz', $context));
     }
 
     public function testNumericRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->numeric());
-        $this->assertTrue($this->rules->pass(1.5));
+        $this->assertTrue($this->rules->pass(1.5, $context));
     }
 
     public function testRegexRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->regex('/^[a-z]{3}$/'));
-        $this->assertTrue($this->rules->pass('baz'));
+        $this->assertTrue($this->rules->pass('baz', $context));
     }
 
     public function testRequiredRule(): void
     {
+        $context = new ValidationContext($this);
         $this->assertSame($this->rules, $this->rules->required());
-        $this->assertTrue($this->rules->pass('bar'));
+        $this->assertTrue($this->rules->pass('bar', $context));
     }
 
     public function testsPassesWithNoRules(): void
     {
-        $this->assertTrue($this->rules->pass('bar'));
+        $context = new ValidationContext($this);
+        $this->assertTrue($this->rules->pass('bar', $context));
     }
 }

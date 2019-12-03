@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 use LogicException;
 use Aphiria\Validation\Rules\RegexRule;
@@ -30,9 +31,10 @@ class RegexRuleTest extends TestCase
 
     public function testMatchingValuesPass(): void
     {
+        $context = new ValidationContext($this);
         $rule = new RegexRule();
         $rule->setArgs(['/^[a-z]{3}$/']);
-        $this->assertTrue($rule->passes('foo'));
+        $this->assertTrue($rule->passes('foo', $context));
     }
 
     /**
@@ -40,16 +42,18 @@ class RegexRuleTest extends TestCase
      */
     public function testNonMatchingValuesFail(): void
     {
+        $context = new ValidationContext($this);
         $rule = new RegexRule();
         $rule->setArgs(['/^[a-z]{3}$/']);
-        $this->assertFalse($rule->passes('a'));
+        $this->assertFalse($rule->passes('a', $context));
     }
 
     public function testNotSettingArgBeforePasses(): void
     {
+        $context = new ValidationContext($this);
         $this->expectException(LogicException::class);
         $rule = new RegexRule();
-        $rule->passes('foo');
+        $rule->passes('foo', $context);
     }
 
     public function testPassingEmptyArgArray(): void

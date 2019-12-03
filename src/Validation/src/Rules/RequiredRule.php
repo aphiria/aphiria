@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use Countable;
 
 /**
@@ -30,7 +31,7 @@ class RequiredRule implements IRule
     /**
      * @inheritdoc
      */
-    public function passes($value, array $allValues = []): bool
+    public function passes($value, ValidationContext $validationContext): bool
     {
         if ($value === null) {
             return false;

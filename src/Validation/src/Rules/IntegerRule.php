@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Rules;
 
+use Aphiria\Validation\ValidationContext;
+
 /**
  * Defines the integer rule
  */
@@ -28,7 +30,7 @@ final class IntegerRule implements IRule
     /**
      * @inheritdoc
      */
-    public function passes($value, array $allValues = []): bool
+    public function passes($value, ValidationContext $validationContext): bool
     {
         return filter_var($value, FILTER_VALIDATE_INT) !== false;
     }

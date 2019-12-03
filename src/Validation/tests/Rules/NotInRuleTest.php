@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 use LogicException;
 use Aphiria\Validation\Rules\NotInRule;
@@ -30,9 +31,10 @@ class NotInRuleTest extends TestCase
 
     public function testMatchingValuesPass(): void
     {
+        $context = new ValidationContext($this);
         $rule = new NotInRule();
         $rule->setArgs([['foo', 'bar']]);
-        $this->assertTrue($rule->passes('baz'));
+        $this->assertTrue($rule->passes('baz', $context));
     }
 
     /**
@@ -40,16 +42,18 @@ class NotInRuleTest extends TestCase
      */
     public function testNonMatchingValuesFail(): void
     {
+        $context = new ValidationContext($this);
         $rule = new NotInRule();
         $rule->setArgs([['foo', 'bar']]);
-        $this->assertFalse($rule->passes('foo'));
+        $this->assertFalse($rule->passes('foo', $context));
     }
 
     public function testNotSettingArgBeforePasses(): void
     {
+        $context = new ValidationContext($this);
         $this->expectException(LogicException::class);
         $rule = new NotInRule();
-        $rule->passes('foo');
+        $rule->passes('foo', $context);
     }
 
     public function testPassingEmptyArgArray(): void

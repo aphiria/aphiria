@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Rules;
 
 use Aphiria\Validation\Rules\Errors\Compilers\Compiler;
+use Aphiria\Validation\ValidationContext;
 use BadMethodCallException;
 use Countable;
 use InvalidArgumentException;
@@ -156,19 +157,6 @@ class Rules
     }
 
     /**
-     * Marks a field as having to equal another field
-     *
-     * @param string $name The other field to equal
-     * @return self For method chaining
-     */
-    public function equalsField(string $name): self
-    {
-        $this->createRule(EqualsFieldRule::class, [$name]);
-
-        return $this;
-    }
-
-    /**
      * Gets the error messages
      *
      * @param string $field The name of the field whose errors we're getting
@@ -283,12 +271,10 @@ class Rules
      * Gets whether or not all the rules pass
      *
      * @param mixed $value The value to validate
-     * @param array $allValues The list of all values
-     * @param bool $haltFieldValidationOnFailure True if we want to not check any other rules for a field
-     *      once one fails, otherwise false
+     * @param ValidationContext $validationContext The context to perform validation in
      * @return bool True if all the rules pass, otherwise false
      */
-    public function pass($value, array $allValues = [], bool $haltFieldValidationOnFailure = false): bool
+    public function pass($value, ValidationContext $validationContext): bool
     {
         $this->errorSlugsAndPlaceholders = [];
         $passes = true;
@@ -305,19 +291,13 @@ class Rules
                 }
             }
 
-            $thisRulePasses = $rule->passes($value, $allValues);
+            $thisRulePasses = $rule->passes($value, $validationContext);
 
             if (!$thisRulePasses) {
                 $this->addError($rule);
             }
 
-            if ($haltFieldValidationOnFailure) {
-                if (!$thisRulePasses) {
-                    return false;
-                }
-            } else {
-                $passes = $thisRulePasses && $passes;
-            }
+            $passes = $thisRulePasses && $passes;
         }
 
         return $passes;

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use DateTime;
 use InvalidArgumentException;
 
@@ -34,7 +35,7 @@ final class DateRule implements IRuleWithArgs
     /**
      * @inheritdoc
      */
-    public function passes($value, array $allValues = []): bool
+    public function passes($value, ValidationContext $validationContext): bool
     {
         foreach ($this->formats as $format) {
             $dateTime = DateTime::createFromFormat($format, $value);

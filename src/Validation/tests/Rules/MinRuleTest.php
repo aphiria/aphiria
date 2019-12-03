@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Rules;
 
+use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 use LogicException;
 use Aphiria\Validation\Rules\MinRule;
@@ -24,10 +25,11 @@ class MinRuleTest extends TestCase
 {
     public function testFailingRule(): void
     {
+        $context = new ValidationContext($this);
         $rule = new MinRule();
         $rule->setArgs([1.5]);
-        $this->assertFalse($rule->passes(1));
-        $this->assertFalse($rule->passes(1.4));
+        $this->assertFalse($rule->passes(1, $context));
+        $this->assertFalse($rule->passes(1.4, $context));
     }
 
     public function testGettingErrorPlaceholders(): void
@@ -45,9 +47,10 @@ class MinRuleTest extends TestCase
 
     public function testNotSettingArgBeforePasses(): void
     {
+        $context = new ValidationContext($this);
         $this->expectException(LogicException::class);
         $rule = new MinRule();
-        $rule->passes(2);
+        $rule->passes(2, $context);
     }
 
     public function testPassingEmptyArgArray(): void
@@ -69,18 +72,20 @@ class MinRuleTest extends TestCase
 
     public function testPassingValue(): void
     {
+        $context = new ValidationContext($this);
         $rule = new MinRule();
         $rule->setArgs([1]);
-        $this->assertTrue($rule->passes(1));
-        $this->assertTrue($rule->passes(1.5));
-        $this->assertTrue($rule->passes(2));
+        $this->assertTrue($rule->passes(1, $context));
+        $this->assertTrue($rule->passes(1.5, $context));
+        $this->assertTrue($rule->passes(2, $context));
     }
 
     public function testValueThatIsNotInclusive(): void
     {
+        $context = new ValidationContext($this);
         $rule = new MinRule();
         $rule->setArgs([1, false]);
-        $this->assertFalse($rule->passes(1));
-        $this->assertTrue($rule->passes(1.1));
+        $this->assertFalse($rule->passes(1, $context));
+        $this->assertTrue($rule->passes(1.1, $context));
     }
 }

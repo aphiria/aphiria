@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Rules;
 
 use Aphiria\Validation\Rules\IPAddressRule;
+use Aphiria\Validation\ValidationContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,9 +23,10 @@ class IPAddressRuleTest extends TestCase
 {
     public function testFailingValue(): void
     {
+        $context = new ValidationContext($this);
         $rule = new IPAddressRule();
-        $this->assertFalse($rule->passes(''));
-        $this->assertFalse($rule->passes('123'));
+        $this->assertFalse($rule->passes('', $context));
+        $this->assertFalse($rule->passes('123', $context));
     }
 
     public function testGettingSlug(): void
@@ -35,7 +37,8 @@ class IPAddressRuleTest extends TestCase
 
     public function testPassingValue(): void
     {
+        $context = new ValidationContext($this);
         $rule = new IPAddressRule();
-        $this->assertTrue($rule->passes('127.0.0.1'));
+        $this->assertTrue($rule->passes('127.0.0.1', $context));
     }
 }
