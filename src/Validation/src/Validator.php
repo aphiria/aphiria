@@ -33,14 +33,14 @@ final class Validator implements IValidator
     /**
      * @inheritdoc
      */
-    public function tryValidateField(
+    public function tryValidateMethod(
         object $object,
-        string $fieldName,
+        string $methodName,
         ErrorCollection &$errors = null,
         ValidationContext $validationContext = null
     ): bool {
         try {
-            $this->validateField($object, $fieldName, $validationContext);
+            $this->validateMethod($object, $methodName, $validationContext);
 
             return true;
         } catch (ValidationException $ex) {
@@ -72,13 +72,53 @@ final class Validator implements IValidator
     /**
      * @inheritdoc
      */
-    public function validateField(object $object, string $fieldName, ValidationContext $validationContext = null): void
+    public function tryValidateProperty(
+        object $object,
+        string $propertyName,
+        ErrorCollection &$errors = null,
+        ValidationContext $validationContext = null
+    ): bool {
+        try {
+            $this->validateProperty($object, $propertyName, $validationContext);
+
+            return true;
+        } catch (ValidationException $ex) {
+            $errors = $ex->getErrors();
+
+            return false;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function tryValidateValue(
+        $value,
+        array $rules,
+        ErrorCollection &$errors = null,
+        ValidationContext $validationContext = null
+    ): bool {
+        try {
+            $this->validateValue($value, $rules);
+
+            return true;
+        } catch (ValidationException $ex) {
+            $errors = $ex->getErrors();
+
+            return false;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validateMethod(object $object, string $methodName, ValidationContext $validationContext = null): void
     {
         if (($objectValidator = $this->objectValidators->getObjectValidator(\get_class($object))) === null) {
             return;
         }
 
-        $objectValidator->validateField($object, $fieldName, $validationContext);
+        $objectValidator->validateMethod($object, $methodName, $validationContext);
     }
 
     /**
@@ -91,5 +131,30 @@ final class Validator implements IValidator
         }
 
         $objectValidator->validateObject($object, $validationContext);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validateProperty(object $object, string $propertyName, ValidationContext $validationContext = null): void
+    {
+        if (($objectValidator = $this->objectValidators->getObjectValidator(\get_class($object))) === null) {
+            return;
+        }
+
+        $objectValidator->validateProperty($object, $propertyName, $validationContext);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validateValue($value, array $rules): void
+    {
+        // TODO: There is no object in this case.  What would my validation context be used for, then?  My rules depend on one.
+        $validationContext = new ValidationContext();
+
+        foreach ($rules as $rule) {
+            $rule->passes($value, $validationContext);
+        }
     }
 }

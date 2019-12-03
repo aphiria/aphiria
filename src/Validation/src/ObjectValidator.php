@@ -21,17 +21,21 @@ final class ObjectValidator
 {
     /** @var string The name of the class the validator is for */
     private string $class;
-    /** @var FieldValidator[] The list of field validators for this object */
-    private array $fieldValidators;
+    /** @var PropertyValidator[] The list of property validators for this object */
+    private array $propertyValidators;
+    /** @var MethodValidator[] The list of method validators for this object */
+    private array $methodValidators;
 
     /**
      * @param string $class The name of the class the validator is for
-     * @param FieldValidator[] $fieldValidators The list of field validators for this object
+     * @param PropertyValidator[] $propertyValidators The list of property validators for this object
+     * @param MethodValidator[] $methodValidators The list of method validators for this object
      */
-    public function __construct(string $class, array $fieldValidators)
+    public function __construct(string $class, array $propertyValidators = [], array $methodValidators = [])
     {
         $this->class = $class;
-        $this->fieldValidators = $fieldValidators;
+        $this->propertyValidators = $propertyValidators;
+        $this->methodValidators = $methodValidators;
     }
 
     /**
@@ -42,32 +46,6 @@ final class ObjectValidator
     public function getClass(): string
     {
         return $this->class;
-    }
-
-    /**
-     * Tries to validate a field in an object
-     *
-     * @param object $object The object whose field we're validating
-     * @param string $fieldName The name of the field to validate
-     * @param ErrorCollection|null $errors The errors that will be passed back on error
-     * @param ValidationContext|null $validationContext The context to perform validation in, or null if no context exists yet
-     * @return bool True if the field was valid, otherwise false
-     */
-    public function tryValidateField(
-        object $object,
-        string $fieldName,
-        ?ErrorCollection &$errors,
-        ValidationContext $validationContext = null
-    ): bool {
-        try {
-            $this->validateField($object, $fieldName, $validationContext);
-
-            return true;
-        } catch (ValidationException $ex) {
-            $errors = $ex->getErrors();
-
-            return false;
-        }
     }
 
     /**
@@ -95,21 +73,47 @@ final class ObjectValidator
     }
 
     /**
-     * Validates a field in an object
+     * Tries to validate a method in an object
      *
-     * @param object $object The object whose field we're validating
-     * @param string $fieldName The name of the field to validate
+     * @param object $object The object whose method we're validating
+     * @param string $methodName The name of the method to validate
+     * @param ErrorCollection|null $errors The errors that will be passed back on error
      * @param ValidationContext|null $validationContext The context to perform validation in, or null if no context exists yet
-     * @throws ValidationException Thrown if the field was invalid
+     * @return bool True if the method was valid, otherwise false
      */
-    public function validateField(
+    public function tryValidateMethod(
         object $object,
-        string $fieldName,
+        string $methodName,
+        ?ErrorCollection &$errors,
+        ValidationContext $validationContext = null
+    ): bool {
+        try {
+            $this->validateMethod($object, $methodName, $validationContext);
+
+            return true;
+        } catch (ValidationException $ex) {
+            $errors = $ex->getErrors();
+
+            return false;
+        }
+    }
+
+    /**
+     * Validates a method in an object
+     *
+     * @param object $object The object whose method we're validating
+     * @param string $methodName The name of the method to validate
+     * @param ValidationContext|null $validationContext The context to perform validation in, or null if no context exists yet
+     * @throws ValidationException Thrown if the method was invalid
+     */
+    public function validateMethod(
+        object $object,
+        string $methodName,
         ValidationContext $validationContext = null
     ): void {
-        foreach ($this->fieldValidators as $fieldValidator) {
-            if ($fieldValidator->getFieldName() === $fieldName) {
-                $fieldValidator->validateField($object, $validationContext ?? new ValidationContext($object));
+        foreach ($this->methodValidators as $methodValidator) {
+            if ($methodValidator->getMethodName() === $methodName) {
+                $methodValidator->validateMethod($object, $validationContext ?? new ValidationContext($object));
 
                 return;
             }
@@ -127,8 +131,34 @@ final class ObjectValidator
     {
         $validationContext ??= new ValidationContext($object);
 
-        foreach ($this->fieldValidators as $fieldValidator) {
-            $fieldValidator->validateField($object, $validationContext);
+        foreach ($this->propertyValidators as $propertyValidator) {
+            $propertyValidator->validateProperty($object, $validationContext);
+        }
+
+        foreach ($this->methodValidators as $methodValidator) {
+            $methodValidator->validateMethod($object, $validationContext);
+        }
+    }
+
+    /**
+     * Validates a property in an object
+     *
+     * @param object $object The object whose property we're validating
+     * @param string $propertyName The name of the property to validate
+     * @param ValidationContext|null $validationContext The context to perform validation in, or null if no context exists yet
+     * @throws ValidationException Thrown if the property was invalid
+     */
+    public function validateProperty(
+        object $object,
+        string $propertyName,
+        ValidationContext $validationContext = null
+    ): void {
+        foreach ($this->propertyValidators as $propertyValidator) {
+            if ($propertyValidator->getPropertyName() === $propertyName) {
+                $propertyValidator->validateProperty($object, $validationContext ?? new ValidationContext($object));
+
+                return;
+            }
         }
     }
 }
