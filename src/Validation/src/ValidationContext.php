@@ -12,29 +12,45 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation;
 
+use Aphiria\Validation\Rules\Errors\ErrorCollection;
+
 /**
  * Defines the context that validation occurs in
  */
 final class ValidationContext
 {
-    /** @var object The object being validated */
-    private object $object;
+    /** @var mixed The value being validated */
+    private $value;
+    /** @var ErrorCollection The errors that have occurred during validation */
+    private ErrorCollection $errors;
 
     /**
-     * @param object $object The object being validated
+     * @param mixed $value The value being validated
+     * @param ErrorCollection|null $errors The errors that have occurred during validation
      */
-    public function __construct(object $object)
+    public function __construct($value, ErrorCollection $errors = null)
     {
-        $this->object = $object;
+        $this->value = $value;
+        $this->errors = $errors ?? new ErrorCollection();
     }
 
     /**
-     * Gets the object being validated
+     * Gets the errors that have occurred during validation
      *
-     * @return object The object being validated
+     * @return ErrorCollection The errors that have occurred
      */
-    public function getObject(): object
+    public function getErrors(): ErrorCollection
     {
-        return $this->object;
+        return $this->errors;
+    }
+
+    /**
+     * Gets the value being validated
+     *
+     * @return mixed The value being validated
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 }
