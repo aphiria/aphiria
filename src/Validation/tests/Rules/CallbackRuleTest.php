@@ -13,8 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Rules;
 
 use Aphiria\Validation\ValidationContext;
-use InvalidArgumentException;
-use LogicException;
 use Aphiria\Validation\Rules\CallbackRule;
 use PHPUnit\Framework\TestCase;
 
@@ -32,8 +30,7 @@ class CallbackRuleTest extends TestCase
 
             return true;
         };
-        $rule = new CallbackRule();
-        $rule->setArgs([$callback]);
+        $rule = new CallbackRule($callback, 'foo');
         $rule->passes('foo', $expectedContext);
         $this->assertTrue($correctInputWasPassed);
     }
@@ -47,39 +44,15 @@ class CallbackRuleTest extends TestCase
         $falseCallback = function () {
             return false;
         };
-        $passRule = new CallbackRule();
-        $failRule = new CallbackRule();
-        $passRule->setArgs([$trueCallback]);
-        $failRule->setArgs([$falseCallback]);
+        $passRule = new CallbackRule($trueCallback, 'foo');
+        $failRule = new CallbackRule($falseCallback, 'foo');
         $this->assertTrue($passRule->passes('foo', $context));
         $this->assertFalse($failRule->passes('bar', $context));
     }
 
-    public function testGettingSlug(): void
+    public function testGettingErrorMessageId(): void
     {
-        $rule = new CallbackRule();
-        $this->assertEquals('callback', $rule->getSlug());
-    }
-
-    public function testNotSettingArgBeforePasses(): void
-    {
-        $context = new ValidationContext($this);
-        $this->expectException(LogicException::class);
-        $rule = new CallbackRule();
-        $rule->passes('foo', $context);
-    }
-
-    public function testPassingEmptyArgArray(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $rule = new CallbackRule();
-        $rule->setArgs([]);
-    }
-
-    public function testPassingInvalidArg(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $rule = new CallbackRule();
-        $rule->setArgs(['foo']);
+        $rule = new CallbackRule(fn () => true, 'foo');
+        $this->assertEquals('foo', $rule->getErrorMessageId());
     }
 }

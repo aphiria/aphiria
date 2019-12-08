@@ -14,22 +14,24 @@ namespace Aphiria\Validation\Rules;
 
 use Aphiria\Validation\ValidationContext;
 use DateTime;
-use InvalidArgumentException;
 
 /**
  * Defines the date rule
  */
-final class DateRule implements IRuleWithArgs
+final class DateRule extends Rule
 {
     /** @var array The expected date formats */
-    protected array $formats = [];
+    private array $formats;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
+     * @param string[] $formats The expected date formats
      */
-    public function getSlug(): string
+    public function __construct(array $formats, string $errorMessageId)
     {
-        return 'date';
+        parent::__construct($errorMessageId);
+
+        $this->formats = $formats;
     }
 
     /**
@@ -46,17 +48,5 @@ final class DateRule implements IRuleWithArgs
         }
 
         return false;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setArgs(array $args): void
-    {
-        if (count($args) !== 1 || (!is_string($args[0]) && !is_array($args[0]))) {
-            throw new InvalidArgumentException('Must pass an expected date format');
-        }
-
-        $this->formats = (array)$args[0];
     }
 }

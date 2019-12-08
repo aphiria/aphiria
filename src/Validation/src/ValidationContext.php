@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation;
 
-use Aphiria\Validation\Rules\Errors\ErrorCollection;
-
 /**
  * Defines the context that validation occurs in
  */
@@ -21,27 +19,38 @@ final class ValidationContext
 {
     /** @var mixed The value being validated */
     private $value;
-    /** @var ErrorCollection The errors that have occurred during validation */
-    private ErrorCollection $errors;
+    /** @var string|null The name of the property being validated, or null if it wasn't a property */
+    private ?string $propertyName;
+    /** @var string|null The name of the method being validated, or null if it wasn't a method */
+    private ?string $methodName;
+    /** @var ValidationContext|null The parent context, if there is one */
+    private ?ValidationContext $parentContext;
+    /** @var RuleViolation[] The list of rule violations that occurred in this context */
+    private array $ruleViolations = [];
     /** @var string[] The list of object hash IDs we'll use to detect circular dependencies */
     private array $objectHashIds = [];
 
     /**
      * @param mixed $value The value being validated
-     * @param ErrorCollection|null $errors The errors that have occurred during validation
+     * @param string|null $propertyName The name of the property being validated, or null if it wasn't a property
+     * @param string|null $methodName The name of the method being validated, or null if it wasn't a method
+     * @param ValidationContext|null $parentContext The parent context, if there is one
      * @throws CircularDependencyException Thrown if a circular dependency was detected
      */
-    public function __construct($value, ErrorCollection $errors = null)
-    {
+    public function __construct(
+        $value,
+        string $propertyName = null,
+        string $methodName = null,
+        ValidationContext $parentContext = null
+    ) {
         $this->value = $value;
-        $this->errors = $errors ?? new ErrorCollection();
-
-        // TODO: I think I need a concept of a parent context in the case of recursive validation.  If that's the case, I'll need to change the circular dependency logic to invoke a method recursively up the parent context chain.
+        $this->propertyName = $propertyName;
+        $this->methodName = $methodName;
+        $this->parentContext = $parentContext;
 
         if (\is_object($this->value)) {
-            $objectHashId = \spl_object_hash($this->value);
-
-            if (isset($this->objectHashIds[$objectHashId])) {
+            // Purposely check for a circular dependency first, then add the hash
+            if ($this->containsCircularDependency($this->value)) {
                 throw new CircularDependencyException('Circular dependency on ' . \get_class($value) . ' detected');
             }
 
@@ -50,13 +59,81 @@ final class ValidationContext
     }
 
     /**
-     * Gets the errors that have occurred during validation
+     * Adds many rule violations to the context
      *
-     * @return ErrorCollection The errors that have occurred
+     * @param RuleViolation[] $ruleViolations The violations to add
      */
-    public function getErrors(): ErrorCollection
+    public function addManyRuleViolations(array $ruleViolations): void
     {
-        return $this->errors;
+        $this->ruleViolations = [$this->ruleViolations, ...$ruleViolations];
+    }
+
+    /**
+     * Adds a rule violation to the context
+     *
+     * @param RuleViolation $ruleViolation The violation to add
+     */
+    public function addRuleViolation(RuleViolation $ruleViolation): void
+    {
+        $this->ruleViolations[] = $ruleViolation;
+    }
+
+    /**
+     * Checks if the context or any of its ancestors contains a circular dependency on the input object
+     *
+     * @param object $object The object to check for
+     * @return bool True if the context (or its ancestors) contain a circular dependency, otherwise false
+     */
+    public function containsCircularDependency(object $object): bool
+    {
+        return isset($this->objectHashIds[\spl_object_hash($object)])
+            || ($this->parentContext !== null && $this->parentContext->containsCircularDependency($object));
+    }
+
+    /**
+     * Gets the root value that was being validated
+     *
+     * @return mixed The root value
+     */
+    public function getRootValue()
+    {
+        return $this->parentContext === null ? $this->value : $this->parentContext->getRootValue();
+    }
+
+    /**
+     * Gets the name of the method being validated
+     *
+     * @return string|null The name of the method being validated, or null if not a method
+     */
+    public function getMethodName(): ?string
+    {
+        return $this->methodName;
+    }
+
+    /**
+     * Gets the name of the property being validated
+     *
+     * @return string|null The name of the property being validated, or null if not a property
+     */
+    public function getPropertyName(): ?string
+    {
+        return $this->propertyName;
+    }
+
+    /**
+     * Gets the list of rule violations
+     *
+     * @return RuleViolation[] The list of rule violations
+     */
+    public function getRuleViolations(): array
+    {
+        $allRuleViolations = $this->ruleViolations;
+
+        if ($this->parentContext !== null) {
+            $allRuleViolations = [...$this->parentContext->getRuleViolations(), $allRuleViolations];
+        }
+
+        return $allRuleViolations;
     }
 
     /**

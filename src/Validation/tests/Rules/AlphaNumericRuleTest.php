@@ -24,22 +24,22 @@ class AlphaNumericRuleTest extends TestCase
     public function testFailingValue(): void
     {
         $context = new ValidationContext($this);
-        $rule = new AlphaNumericRule();
+        $rule = new AlphaNumericRule('foo');
         $this->assertFalse($rule->passes('', $context));
         $this->assertFalse($rule->passes('.', $context));
         $this->assertFalse($rule->passes('a1 b', $context));
     }
 
-    public function testGettingSlug(): void
+    public function testGettingErrorMessageId(): void
     {
-        $rule = new AlphaNumericRule();
-        $this->assertEquals('alphaNumeric', $rule->getSlug());
+        $rule = new AlphaNumericRule('foo');
+        $this->assertEquals('foo', $rule->getErrorMessageId());
     }
 
     public function testPassingValue(): void
     {
         $context = new ValidationContext($this);
-        $rule = new AlphaNumericRule();
+        $rule = new AlphaNumericRule('foo');
         $this->assertTrue($rule->passes('1', $context));
         $this->assertTrue($rule->passes('a', $context));
         $this->assertTrue($rule->passes('a1', $context));

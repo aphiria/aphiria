@@ -24,21 +24,21 @@ class NumericRuleTest extends TestCase
     public function testFailingValue(): void
     {
         $context = new ValidationContext($this);
-        $rule = new NumericRule();
+        $rule = new NumericRule('foo');
         $this->assertFalse($rule->passes(false, $context));
         $this->assertFalse($rule->passes('foo', $context));
     }
 
-    public function testGettingSlug(): void
+    public function testGettingErrorMessageId(): void
     {
-        $rule = new NumericRule();
-        $this->assertEquals('numeric', $rule->getSlug());
+        $rule = new NumericRule('foo');
+        $this->assertEquals('foo', $rule->getErrorMessageId());
     }
 
     public function testPassingValue(): void
     {
         $context = new ValidationContext($this);
-        $rule = new NumericRule();
+        $rule = new NumericRule('foo');
         $this->assertTrue($rule->passes(0, $context));
         $this->assertTrue($rule->passes(1, $context));
         $this->assertTrue($rule->passes(1.0, $context));

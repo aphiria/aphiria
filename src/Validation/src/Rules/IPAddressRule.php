@@ -17,16 +17,8 @@ use Aphiria\Validation\ValidationContext;
 /**
  * Defines the IP address rule
  */
-class IPAddressRule implements IRule
+class IPAddressRule extends Rule
 {
-    /**
-     * @inheritdoc
-     */
-    public function getSlug(): string
-    {
-        return 'ipAddress';
-    }
-
     /**
      * @inheritdoc
      */

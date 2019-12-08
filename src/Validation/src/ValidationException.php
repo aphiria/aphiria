@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation;
 
-use Aphiria\Validation\Rules\Errors\ErrorCollection;
 use InvalidArgumentException;
 use Throwable;
 
@@ -21,27 +20,27 @@ use Throwable;
  */
 final class ValidationException extends InvalidArgumentException
 {
-    /** @var ErrorCollection The error collection from the exception */
-    private ErrorCollection $errors;
+    /** @var ValidationContext The context that the error occurred in */
+    private ValidationContext $validationContext;
 
     /**
      * @inheritdoc
-     * @param ErrorCollection $errors The errors from validation
+     * @param ValidationContext $validationContext The context that the error occurred in
      */
-    public function __construct(ErrorCollection $errors, $message = '', $code = 0, Throwable $previous = null)
+    public function __construct(ValidationContext $validationContext, $message = '', $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
 
-        $this->errors = $errors;
+        $this->validationContext = $validationContext;
     }
 
     /**
-     * Gets the errors from validation
+     * Gets the context that the error occurred in
      *
-     * @return ErrorCollection The errors from validation
+     * @return ValidationContext The context that the error occurred in
      */
-    public function getErrors(): ErrorCollection
+    public function getValidationContext(): ValidationContext
     {
-        return $this->errors;
+        return $this->validationContext;
     }
 }

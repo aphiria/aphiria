@@ -17,16 +17,8 @@ use Aphiria\Validation\ValidationContext;
 /**
  * Defines the integer rule
  */
-final class IntegerRule implements IRule
+final class IntegerRule extends Rule
 {
-    /**
-     * @inheritdoc
-     */
-    public function getSlug(): string
-    {
-        return 'integer';
-    }
-
     /**
      * @inheritdoc
      */

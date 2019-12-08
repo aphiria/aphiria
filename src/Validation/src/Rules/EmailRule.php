@@ -17,16 +17,8 @@ use Aphiria\Validation\ValidationContext;
 /**
  * Defines the email rule
  */
-final class EmailRule implements IRule
+final class EmailRule extends Rule
 {
-    /**
-     * @inheritdoc
-     */
-    public function getSlug(): string
-    {
-        return 'email';
-    }
-
     /**
      * @inheritdoc
      */

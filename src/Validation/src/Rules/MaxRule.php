@@ -14,22 +14,38 @@ namespace Aphiria\Validation\Rules;
 
 use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
-use LogicException;
 
 /**
  * Defines the maximum rule
  */
-class MaxRule implements IRuleWithArgs, IRuleWithErrorPlaceholders
+class MaxRule extends Rule
 {
     /** @var int|float The maximum */
-    protected $max;
+    private $max;
     /** @var bool Whether or not the maximum is inclusive */
-    protected bool $isInclusive = true;
+    private bool $isInclusive;
+
+    /**
+     * @inheritdoc
+     * @param int|float $max The maximum
+     * @param bool $isInclusive Whether or not the maximum is inclusive
+     */
+    public function __construct($max, bool $isInclusive, string $errorMessageId)
+    {
+        parent::__construct($errorMessageId);
+
+        if (!\is_numeric($max)) {
+            throw new InvalidArgumentException('Max must be numeric');
+        }
+
+        $this->max = $max;
+        $this->isInclusive = $isInclusive;
+    }
 
     /**
      * @inheritdoc
      */
-    public function getErrorPlaceholders(): array
+    public function getErrorMessagePlaceholders(): array
     {
         return ['max' => $this->max];
     }
@@ -37,40 +53,12 @@ class MaxRule implements IRuleWithArgs, IRuleWithErrorPlaceholders
     /**
      * @inheritdoc
      */
-    public function getSlug(): string
-    {
-        return 'max';
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function passes($value, ValidationContext $validationContext): bool
     {
-        if ($this->max === null) {
-            throw new LogicException('Maximum value not set');
-        }
-
         if ($this->isInclusive) {
             return $value <= $this->max;
         }
 
         return $value < $this->max;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setArgs(array $args): void
-    {
-        if (count($args) === 0 || !is_numeric($args[0])) {
-            throw new InvalidArgumentException('Must pass a maximum value to compare against');
-        }
-
-        $this->max = $args[0];
-
-        if (count($args) === 2 && is_bool($args[1])) {
-            $this->isInclusive = $args[1];
-        }
     }
 }

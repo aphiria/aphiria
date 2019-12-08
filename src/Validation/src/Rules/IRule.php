@@ -21,11 +21,12 @@ use LogicException;
 interface IRule
 {
     /**
-     * Gets the slug (short-name) for the rule
+     * Gets the ID of the error message associated with this rule
+     * Note: If not supporting localization, this could contains the error message itself
      *
-     * @return string The slug
+     * @return string The error message ID
      */
-    public function getSlug(): string;
+    public function getErrorMessageId(): string;
 
     /**
      * Gets whether or not the rule passes

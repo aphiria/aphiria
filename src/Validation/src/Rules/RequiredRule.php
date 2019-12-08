@@ -18,16 +18,8 @@ use Countable;
 /**
  * Defines the required rule
  */
-class RequiredRule implements IRule
+class RequiredRule extends Rule
 {
-    /**
-     * @inheritdoc
-     */
-    public function getSlug(): string
-    {
-        return 'required';
-    }
-
     /**
      * @inheritdoc
      */

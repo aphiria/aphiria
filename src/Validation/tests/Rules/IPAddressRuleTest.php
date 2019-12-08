@@ -24,21 +24,21 @@ class IPAddressRuleTest extends TestCase
     public function testFailingValue(): void
     {
         $context = new ValidationContext($this);
-        $rule = new IPAddressRule();
+        $rule = new IPAddressRule('foo');
         $this->assertFalse($rule->passes('', $context));
         $this->assertFalse($rule->passes('123', $context));
     }
 
-    public function testGettingSlug(): void
+    public function testGettingErrorMessageId(): void
     {
-        $rule = new IPAddressRule();
-        $this->assertEquals('ipAddress', $rule->getSlug());
+        $rule = new IPAddressRule('foo');
+        $this->assertEquals('foo', $rule->getErrorMessageId());
     }
 
     public function testPassingValue(): void
     {
         $context = new ValidationContext($this);
-        $rule = new IPAddressRule();
+        $rule = new IPAddressRule('foo');
         $this->assertTrue($rule->passes('127.0.0.1', $context));
     }
 }

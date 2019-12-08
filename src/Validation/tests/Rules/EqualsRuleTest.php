@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Rules;
 
 use Aphiria\Validation\ValidationContext;
-use InvalidArgumentException;
 use Aphiria\Validation\Rules\EqualsRule;
 use PHPUnit\Framework\TestCase;
 
@@ -25,29 +24,20 @@ class EqualsRuleTest extends TestCase
     public function testEqualValuesPass(): void
     {
         $context = new ValidationContext($this);
-        $rule = new EqualsRule();
-        $rule->setArgs(['foo']);
+        $rule = new EqualsRule('foo', 'bar');
         $this->assertTrue($rule->passes('foo', $context));
     }
 
-    public function testGettingSlug(): void
+    public function testGettingErrorMessageId(): void
     {
-        $rule = new EqualsRule();
-        $this->assertEquals('equals', $rule->getSlug());
-    }
-
-    public function testPassingEmptyArgArray(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $rule = new EqualsRule();
-        $rule->setArgs([]);
+        $rule = new EqualsRule('foo', 'bar');
+        $this->assertEquals('bar', $rule->getErrorMessageId());
     }
 
     public function testUnequalValuesFail(): void
     {
         $context = new ValidationContext($this);
-        $rule = new EqualsRule();
-        $rule->setArgs(['foo']);
-        $this->assertFalse($rule->passes('bar', $context));
+        $rule = new EqualsRule('foo', 'bar');
+        $this->assertFalse($rule->passes('baz', $context));
     }
 }

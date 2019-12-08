@@ -13,23 +13,24 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Rules;
 
 use Aphiria\Validation\ValidationContext;
-use InvalidArgumentException;
-use LogicException;
 
 /**
  * Defines the callback rule
  */
-class CallbackRule implements IRuleWithArgs
+class CallbackRule extends Rule
 {
     /** @var callable The callback to run */
-    protected $callback;
+    private $callback;
 
     /**
      * @inheritdoc
+     * @param callable $callback The callback to execute
      */
-    public function getSlug(): string
+    public function __construct(callable $callback, string $errorMessageId)
     {
-        return 'callback';
+        parent::__construct($errorMessageId);
+
+        $this->callback = $callback;
     }
 
     /**
@@ -37,22 +38,6 @@ class CallbackRule implements IRuleWithArgs
      */
     public function passes($value, ValidationContext $validationContext): bool
     {
-        if ($this->callback === null) {
-            throw new LogicException('Callback not set');
-        }
-
         return ($this->callback)($value, $validationContext);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setArgs(array $args): void
-    {
-        if (count($args) !== 1 || !is_callable($args[0])) {
-            throw new InvalidArgumentException('Must pass valid callback');
-        }
-
-        $this->callback = $args[0];
     }
 }

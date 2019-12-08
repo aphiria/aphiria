@@ -17,16 +17,8 @@ use Aphiria\Validation\ValidationContext;
 /**
  * Defines the alpha-numeric rule
  */
-final class AlphaNumericRule implements IRule
+final class AlphaNumericRule extends Rule
 {
-    /**
-     * @inheritdoc
-     */
-    public function getSlug(): string
-    {
-        return 'alphaNumeric';
-    }
-
     /**
      * @inheritdoc
      */

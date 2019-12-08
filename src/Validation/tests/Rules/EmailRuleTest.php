@@ -21,23 +21,23 @@ use PHPUnit\Framework\TestCase;
  */
 class EmailRuleTest extends TestCase
 {
-    public function testGettingSlug(): void
+    public function testGettingErrorMessageId(): void
     {
-        $rule = new EmailRule();
-        $this->assertEquals('email', $rule->getSlug());
+        $rule = new EmailRule('foo');
+        $this->assertEquals('foo', $rule->getErrorMessageId());
     }
 
     public function testInvalidEmailFails(): void
     {
         $context = new ValidationContext($this);
-        $rule = new EmailRule();
+        $rule = new EmailRule('foo');
         $this->assertFalse($rule->passes('foo', $context));
     }
 
     public function testValidEmailPasses(): void
     {
         $context = new ValidationContext($this);
-        $rule = new EmailRule();
+        $rule = new EmailRule('foo');
         $this->assertTrue($rule->passes('foo@bar.com', $context));
     }
 }

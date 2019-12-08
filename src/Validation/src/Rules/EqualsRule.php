@@ -13,22 +13,24 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Rules;
 
 use Aphiria\Validation\ValidationContext;
-use InvalidArgumentException;
 
 /**
  * Defines the equals rule
  */
-final class EqualsRule implements IRuleWithArgs
+final class EqualsRule extends Rule
 {
     /** @var mixed The value to compare against */
-    protected $value;
+    private $value;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
+     * @param mixed $value The value to compare against
      */
-    public function getSlug(): string
+    public function __construct($value, string $errorMessageId)
     {
-        return 'equals';
+        parent::__construct($errorMessageId);
+
+        $this->value = $value;
     }
 
     /**
@@ -37,17 +39,5 @@ final class EqualsRule implements IRuleWithArgs
     public function passes($value, ValidationContext $validationContext): bool
     {
         return $value === $this->value;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setArgs(array $args): void
-    {
-        if (count($args) !== 1) {
-            throw new InvalidArgumentException('Must pass a value to compare against');
-        }
-
-        $this->value = $args[0];
     }
 }

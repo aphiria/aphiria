@@ -25,7 +25,7 @@ class RequiredRuleTest extends TestCase
     public function testEmptyArrayFails(): void
     {
         $context = new ValidationContext($this);
-        $rule = new RequiredRule();
+        $rule = new RequiredRule('foo');
         $this->assertFalse($rule->passes([], $context));
         $countable = $this->createMock(Countable::class);
         $countable->expects($this->once())
@@ -34,16 +34,16 @@ class RequiredRuleTest extends TestCase
         $this->assertFalse($rule->passes($countable, $context));
     }
 
-    public function testGettingSlug(): void
+    public function testGettingErrorMessageId(): void
     {
-        $rule = new RequiredRule();
-        $this->assertEquals('required', $rule->getSlug());
+        $rule = new RequiredRule('foo');
+        $this->assertEquals('foo', $rule->getErrorMessageId());
     }
 
     public function testSetValuePasses(): void
     {
         $context = new ValidationContext($this);
-        $rule = new RequiredRule();
+        $rule = new RequiredRule('foo');
         $this->assertTrue($rule->passes(0, $context));
         $this->assertTrue($rule->passes(true, $context));
         $this->assertTrue($rule->passes(false, $context));
@@ -53,7 +53,7 @@ class RequiredRuleTest extends TestCase
     public function testUnsetValueFails(): void
     {
         $context = new ValidationContext($this);
-        $rule = new RequiredRule();
+        $rule = new RequiredRule('foo');
         $this->assertFalse($rule->passes(null, $context));
         $this->assertFalse($rule->passes('', $context));
     }

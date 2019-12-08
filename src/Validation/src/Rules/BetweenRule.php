@@ -14,24 +14,43 @@ namespace Aphiria\Validation\Rules;
 
 use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
-use LogicException;
 
 /**
  * Defines the between rule
  */
-final class BetweenRule implements IRuleWithArgs, IRuleWithErrorPlaceholders
+final class BetweenRule extends Rule
 {
     /** @var int|float The minimum */
-    protected $min;
+    private $min;
     /** @var int|float The maximum */
-    protected $max;
+    private $max;
     /** @var bool Whether or not the extremes are inclusive */
-    protected bool $isInclusive = true;
+    private bool $isInclusive = true;
+
+    /**
+     * @inheritdoc
+     * @param int|float $min The minimum
+     * @param int|float $max The maximum
+     * @param bool $isInclusive Whether or not the extremes are inclusive
+     * @throws InvalidArgumentException Thrown if the min or max are not numeric
+     */
+    public function __construct($min, $max, bool $isInclusive, string $errorMessageId)
+    {
+        parent::__construct($errorMessageId);
+
+        if (!\is_numeric($min) || !\is_numeric($max)) {
+            throw new InvalidArgumentException('Min and max values must be numeric');
+        }
+
+        $this->min = $min;
+        $this->max = $max;
+        $this->isInclusive = $isInclusive;
+    }
 
     /**
      * @inheritdoc
      */
-    public function getErrorPlaceholders(): array
+    public function getErrorMessagePlaceholders(): array
     {
         return ['min' => $this->min, 'max' => $this->max];
     }
@@ -39,45 +58,12 @@ final class BetweenRule implements IRuleWithArgs, IRuleWithErrorPlaceholders
     /**
      * @inheritdoc
      */
-    public function getSlug(): string
-    {
-        return 'between';
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function passes($value, ValidationContext $validationContext): bool
     {
-        if ($this->min === null) {
-            throw new LogicException('Minimum value not set');
-        }
-
-        if ($this->max === null) {
-            throw new LogicException('Maximum value not set');
-        }
-
         if ($this->isInclusive) {
             return $value >= $this->min && $value <= $this->max;
         }
 
         return $value > $this->min && $value < $this->max;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setArgs(array $args): void
-    {
-        if (count($args) < 2 || !is_numeric($args[0]) || !is_numeric($args[1])) {
-            throw new InvalidArgumentException('Must pass minimum and maximum values to compare against');
-        }
-
-        $this->min = $args[0];
-        $this->max = $args[1];
-
-        if (count($args) === 3 && is_bool($args[2])) {
-            $this->isInclusive = $args[2];
-        }
     }
 }

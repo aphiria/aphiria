@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests;
 
-use Aphiria\Validation\Rules\Errors\ErrorCollection;
+use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\ValidationException;
 use PHPUnit\Framework\TestCase;
 
@@ -23,8 +23,8 @@ class ValidationExceptionTest extends TestCase
 {
     public function testErrorsAreSameOnesPassedViaConstructor(): void
     {
-        $errors = new ErrorCollection();
-        $exception = new ValidationException($errors);
-        $this->assertSame($errors, $exception->getErrors());
+        $context = new ValidationContext($this);
+        $exception = new ValidationException($context);
+        $this->assertSame($context, $exception->getValidationContext());
     }
 }

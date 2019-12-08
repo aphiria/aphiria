@@ -35,20 +35,13 @@ final class Validator implements IValidator
     /**
      * @inheritdoc
      */
-    public function tryValidateMethod(
-        object $object,
-        string $methodName,
-        ValidationContext &$validationContext = null
-    ): bool {
-        $validationContext ??= new ValidationContext($object);
-
+    public function tryValidateMethod(object $object, string $methodName, ValidationContext $validationContext): bool
+    {
         try {
             $this->validateMethod($object, $methodName, $validationContext);
 
             return true;
         } catch (ValidationException $ex) {
-            self::setErrorsFromException($validationContext, $ex);
-
             return false;
         }
     }
@@ -56,19 +49,13 @@ final class Validator implements IValidator
     /**
      * @inheritdoc
      */
-    public function tryValidateObject(
-        object $object,
-        ValidationContext &$validationContext = null
-    ): bool {
-        $validationContext ??= new ValidationContext($object);
-
+    public function tryValidateObject(object $object, ValidationContext $validationContext): bool
+    {
         try {
             $this->validateObject($object, $validationContext);
 
             return true;
         } catch (ValidationException $ex) {
-            self::setErrorsFromException($validationContext, $ex);
-
             return false;
         }
     }
@@ -76,20 +63,13 @@ final class Validator implements IValidator
     /**
      * @inheritdoc
      */
-    public function tryValidateProperty(
-        object $object,
-        string $propertyName,
-        ValidationContext &$validationContext = null
-    ): bool {
-        $validationContext ??= new ValidationContext($object);
-
+    public function tryValidateProperty(object $object, string $propertyName, ValidationContext $validationContext): bool
+    {
         try {
             $this->validateProperty($object, $propertyName, $validationContext);
 
             return true;
         } catch (ValidationException $ex) {
-            self::setErrorsFromException($validationContext, $ex);
-
             return false;
         }
     }
@@ -97,20 +77,13 @@ final class Validator implements IValidator
     /**
      * @inheritdoc
      */
-    public function tryValidateValue(
-        $value,
-        array $rules,
-        ValidationContext &$validationContext = null
-    ): bool {
-        $validationContext ??= new ValidationContext($value);
-
+    public function tryValidateValue($value, array $rules, ValidationContext $validationContext): bool
+    {
         try {
             $this->validateValue($value, $rules, $validationContext);
 
             return true;
         } catch (ValidationException $ex) {
-            self::setErrorsFromException($validationContext, $ex);
-
             return false;
         }
     }
@@ -118,7 +91,7 @@ final class Validator implements IValidator
     /**
      * @inheritdoc
      */
-    public function validateMethod(object $object, string $methodName, ValidationContext &$validationContext = null): void
+    public function validateMethod(object $object, string $methodName, ValidationContext $validationContext): void
     {
         $class = \get_class($object);
 
@@ -126,7 +99,6 @@ final class Validator implements IValidator
             throw new InvalidArgumentException("$class::$methodName() does not exist");
         }
 
-        $validationContext ??= new ValidationContext($object);
         $reflectionMethod = new ReflectionMethod($class, $methodName);
         $reflectionMethod->setAccessible(true);
         $methodValue = $reflectionMethod->invoke($object);
@@ -134,8 +106,8 @@ final class Validator implements IValidator
 
         // Recursively validate the value if it's an object
         if (\is_object($methodValue)) {
-            // TODO: How can I use the context to keep track of this object + previous one so I can detect a circular dependency?  Do I need the concept of an object stack?  Where would I push objects onto the stack?
-            $allRulesPassed = $allRulesPassed && $this->tryValidateObject($methodValue, $validationContext);
+            $methodValidationContext = new ValidationContext($methodValue, null, $methodName, $validationContext);
+            $allRulesPassed = $allRulesPassed && $this->tryValidateObject($methodValue, $methodValidationContext);
         }
 
         foreach ($this->rules->getMethodRules($class, $methodName) as $rule) {
@@ -143,46 +115,54 @@ final class Validator implements IValidator
             $allRulesPassed = $allRulesPassed && $thisRulePassed;
 
             if (!$thisRulePassed) {
-                // TODO: How do I grab these error messages?
-                $validationContext->getErrors()->add('', '');
+                $validationContext->addRuleViolation(new RuleViolation(
+                    $rule,
+                    $methodValue,
+                    $validationContext->getRootValue(),
+                    null,
+                    $methodName
+                ));
             }
         }
 
         if (!$allRulesPassed) {
-            throw new ValidationException($validationContext->getErrors());
+            throw new ValidationException($validationContext);
         }
     }
 
     /**
      * @inheritdoc
      */
-    public function validateObject(object $object, ValidationContext &$validationContext = null): void
+    public function validateObject(object $object, ValidationContext $validationContext): void
     {
-        $validationContext ??= new ValidationContext($object);
         $allRulesPassed = true;
         $reflectionObject = new \ReflectionObject($object);
         $reflectionProperties = $reflectionObject->getProperties();
         $reflectionMethods = $reflectionObject->getMethods();
 
         foreach ($reflectionProperties as $reflectionProperty) {
+            $propertyName = $reflectionProperty->getName();
+            $propertyValidationContext = new ValidationContext($object, $propertyName, null, $validationContext);
             $allRulesPassed = $allRulesPassed
-                && $this->tryValidateProperty($object, $reflectionProperty->getName(), $validationContext);
+                && $this->tryValidateProperty($object, $propertyName, $propertyValidationContext);
         }
 
         foreach ($reflectionMethods as $reflectionMethod) {
+            $methodName = $reflectionMethod->getName();
+            $methodValidationContext = new ValidationContext($object, null, $methodName, $validationContext);
             $allRulesPassed = $allRulesPassed
-                && $this->tryValidateMethod($object, $reflectionMethod->getName(), $validationContext);
+                && $this->tryValidateMethod($object, $methodName, $methodValidationContext);
         }
 
         if (!$allRulesPassed) {
-            throw new ValidationException($validationContext->getErrors());
+            throw new ValidationException($validationContext);
         }
     }
 
     /**
      * @inheritdoc
      */
-    public function validateProperty(object $object, string $propertyName, ValidationContext &$validationContext = null): void
+    public function validateProperty(object $object, string $propertyName, ValidationContext $validationContext): void
     {
         $class = \get_class($object);
 
@@ -190,7 +170,6 @@ final class Validator implements IValidator
             throw new InvalidArgumentException("$class::$propertyName does not exist");
         }
 
-        $validationContext ??= new ValidationContext($object);
         $reflectionProperty = new ReflectionProperty($class, $propertyName);
         $reflectionProperty->setAccessible(true);
         $propertyValue = $reflectionProperty->getValue($object);
@@ -198,8 +177,8 @@ final class Validator implements IValidator
 
         // Recursively validate the value if it's an object
         if (\is_object($propertyValue)) {
-            // TODO: How can I use the context to keep track of this object + previous one so I can detect a circular dependency?  Do I need the concept of an object stack?  Where would I push objects onto the stack?
-            $allRulesPassed = $allRulesPassed && $this->tryValidateObject($propertyValue, $validationContext);
+            $propertyValidationContext = new ValidationContext($propertyValue, $propertyName, null, $validationContext);
+            $allRulesPassed = $allRulesPassed && $this->tryValidateObject($propertyValue, $propertyValidationContext);
         }
 
         foreach ($this->rules->getPropertyRules($class, $propertyName) as $rule) {
@@ -207,38 +186,27 @@ final class Validator implements IValidator
             $allRulesPassed = $allRulesPassed && $thisRulePassed;
 
             if (!$thisRulePassed) {
-                // TODO: How do I grab these error messages?
-                $validationContext->getErrors()->add('', '');
+                $validationContext->addRuleViolation(new RuleViolation(
+                    $rule,
+                    $propertyValue,
+                    $validationContext->getRootValue(),
+                    $propertyName
+                ));
             }
         }
 
         if (!$allRulesPassed) {
-            throw new ValidationException($validationContext->getErrors());
+            throw new ValidationException($validationContext);
         }
     }
 
     /**
      * @inheritdoc
      */
-    public function validateValue($value, array $rules, ValidationContext &$validationContext = null): void
+    public function validateValue($value, array $rules, ValidationContext $validationContext): void
     {
-        $validationContext ??= new ValidationContext($value);
-
         foreach ($rules as $rule) {
             $rule->passes($value, $validationContext);
-        }
-    }
-
-    /**
-     * Sets the error collection from an exception
-     *
-     * @param ValidationContext $validationContext The context that the validation was performed in
-     * @param ValidationException $ex The exception to set the errors from
-     */
-    private static function setErrorsFromException(ValidationContext $validationContext, ValidationException $ex): void
-    {
-        foreach ($ex->getErrors()->getAll() as $field => $error) {
-            $validationContext->getErrors()->add($field, $error);
         }
     }
 }

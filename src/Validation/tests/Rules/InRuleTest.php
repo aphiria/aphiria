@@ -13,8 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Rules;
 
 use Aphiria\Validation\ValidationContext;
-use InvalidArgumentException;
-use LogicException;
 use Aphiria\Validation\Rules\InRule;
 use PHPUnit\Framework\TestCase;
 
@@ -23,17 +21,16 @@ use PHPUnit\Framework\TestCase;
  */
 class InRuleTest extends TestCase
 {
-    public function testGettingSlug(): void
+    public function testGettingErrorMessageId(): void
     {
-        $rule = new InRule();
-        $this->assertEquals('in', $rule->getSlug());
+        $rule = new InRule([], 'foo');
+        $this->assertEquals('foo', $rule->getErrorMessageId());
     }
 
     public function testMatchingValuesPass(): void
     {
         $context = new ValidationContext($this);
-        $rule = new InRule();
-        $rule->setArgs([['foo', 'bar']]);
+        $rule = new InRule(['foo', 'bar'], 'foo');
         $this->assertTrue($rule->passes('foo', $context));
     }
 
@@ -43,30 +40,7 @@ class InRuleTest extends TestCase
     public function testNonMatchingValuesFail(): void
     {
         $context = new ValidationContext($this);
-        $rule = new InRule();
-        $rule->setArgs([['foo', 'bar']]);
+        $rule = new InRule(['foo', 'bar'], 'foo');
         $this->assertFalse($rule->passes('baz', $context));
-    }
-
-    public function testNotSettingArgBeforePasses(): void
-    {
-        $context = new ValidationContext($this);
-        $this->expectException(LogicException::class);
-        $rule = new InRule();
-        $rule->passes('foo', $context);
-    }
-
-    public function testPassingEmptyArgArray(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $rule = new InRule();
-        $rule->setArgs([]);
-    }
-
-    public function testPassingInvalidArgs(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $rule = new InRule();
-        $rule->setArgs([1]);
     }
 }

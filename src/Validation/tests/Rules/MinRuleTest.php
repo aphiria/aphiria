@@ -13,8 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Rules;
 
 use Aphiria\Validation\ValidationContext;
-use InvalidArgumentException;
-use LogicException;
 use Aphiria\Validation\Rules\MinRule;
 use PHPUnit\Framework\TestCase;
 
@@ -26,55 +24,27 @@ class MinRuleTest extends TestCase
     public function testFailingRule(): void
     {
         $context = new ValidationContext($this);
-        $rule = new MinRule();
-        $rule->setArgs([1.5]);
+        $rule = new MinRule(1.5, true, 'foo');
         $this->assertFalse($rule->passes(1, $context));
         $this->assertFalse($rule->passes(1.4, $context));
     }
 
+    public function testGettingErrorMessageId(): void
+    {
+        $rule = new MinRule(1, true, 'foo');
+        $this->assertEquals('foo', $rule->getErrorMessageId());
+    }
+
     public function testGettingErrorPlaceholders(): void
     {
-        $rule = new MinRule();
-        $rule->setArgs([2]);
-        $this->assertEquals(['min' => 2], $rule->getErrorPlaceholders());
-    }
-
-    public function testGettingSlug(): void
-    {
-        $rule = new MinRule();
-        $this->assertEquals('min', $rule->getSlug());
-    }
-
-    public function testNotSettingArgBeforePasses(): void
-    {
-        $context = new ValidationContext($this);
-        $this->expectException(LogicException::class);
-        $rule = new MinRule();
-        $rule->passes(2, $context);
-    }
-
-    public function testPassingEmptyArgArray(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $rule = new MinRule();
-        $rule->setArgs([]);
-    }
-
-    public function testPassingInvalidArg(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $rule = new MinRule();
-        $rule->setArgs([
-            function () {
-            }
-        ]);
+        $rule = new MinRule(2, true, 'foo');
+        $this->assertEquals(['min' => 2], $rule->getErrorMessagePlaceholders());
     }
 
     public function testPassingValue(): void
     {
         $context = new ValidationContext($this);
-        $rule = new MinRule();
-        $rule->setArgs([1]);
+        $rule = new MinRule(1, true, 'foo');
         $this->assertTrue($rule->passes(1, $context));
         $this->assertTrue($rule->passes(1.5, $context));
         $this->assertTrue($rule->passes(2, $context));
@@ -83,8 +53,7 @@ class MinRuleTest extends TestCase
     public function testValueThatIsNotInclusive(): void
     {
         $context = new ValidationContext($this);
-        $rule = new MinRule();
-        $rule->setArgs([1, false]);
+        $rule = new MinRule(1, false, 'foo');
         $this->assertFalse($rule->passes(1, $context));
         $this->assertTrue($rule->passes(1.1, $context));
     }
