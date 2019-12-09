@@ -48,7 +48,8 @@ final class ValidationContext
         $this->methodName = $methodName;
         $this->parentContext = $parentContext;
 
-        if (\is_object($this->value)) {
+        // Only add this object to the map if it is being validated - not any of its properties or methods
+        if (\is_object($this->value) && $this->propertyName === null && $this->methodName === null) {
             // Purposely check for a circular dependency first, then add the hash
             if ($this->containsCircularDependency($this->value)) {
                 throw new CircularDependencyException('Circular dependency on ' . \get_class($value) . ' detected');

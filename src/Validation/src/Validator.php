@@ -106,7 +106,8 @@ final class Validator implements IValidator
 
         // Recursively validate the value if it's an object
         if (\is_object($methodValue)) {
-            $methodValidationContext = new ValidationContext($methodValue, null, $methodName, $validationContext);
+            // Since we're validating a whole new object, null out the method name param
+            $methodValidationContext = new ValidationContext($methodValue, null, null, $validationContext);
             $allRulesPassed = $allRulesPassed && $this->tryValidateObject($methodValue, $methodValidationContext);
         }
 
@@ -177,7 +178,8 @@ final class Validator implements IValidator
 
         // Recursively validate the value if it's an object
         if (\is_object($propertyValue)) {
-            $propertyValidationContext = new ValidationContext($propertyValue, $propertyName, null, $validationContext);
+            // Since we're validating a whole new object, null out the property name param
+            $propertyValidationContext = new ValidationContext($propertyValue, null, null, $validationContext);
             $allRulesPassed = $allRulesPassed && $this->tryValidateObject($propertyValue, $propertyValidationContext);
         }
 
@@ -205,8 +207,23 @@ final class Validator implements IValidator
      */
     public function validateValue($value, array $rules, ValidationContext $validationContext): void
     {
+        $allRulesPass = true;
+
         foreach ($rules as $rule) {
-            $rule->passes($value, $validationContext);
+            $thisRulePassed = $rule->passes($value, $validationContext);
+            $allRulesPass = $allRulesPass && $thisRulePassed;
+
+            if (!$thisRulePassed) {
+                $validationContext->addRuleViolation(new RuleViolation(
+                    $rule,
+                    $value,
+                    $value
+                ));
+            }
+        }
+
+        if (!$allRulesPass) {
+            throw new ValidationException($validationContext);
         }
     }
 }
