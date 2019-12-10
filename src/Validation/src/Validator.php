@@ -21,6 +21,23 @@ use ReflectionProperty;
  */
 final class Validator implements IValidator
 {
+    /** @var string[] The list of magic methods to explicitly ignore */
+    private static array $magicMethods = [
+        '__call' => true,
+        '__callStatic' => true,
+        '__clone' => true,
+        '__construct' => true,
+        '__destruct' => true,
+        '__get' => true,
+        '__invoke' => true,
+        '__isset' => true,
+        '__set' => true,
+        '__set_state' => true,
+        '__sleep' => true,
+        '__toString' => true,
+        '__unset' => true,
+        '__wakeup' => true
+    ];
     /** @var RuleRegistry The registry of rules */
     private RuleRegistry $rules;
 
@@ -100,6 +117,15 @@ final class Validator implements IValidator
         }
 
         $reflectionMethod = new ReflectionMethod($class, $methodName);
+
+        // Don't bother with magic methods or methods that require parameters
+        if (
+            $reflectionMethod->getNumberOfRequiredParameters() > 0
+            || isset(self::$magicMethods[$reflectionMethod->getName()])
+        ) {
+            return;
+        }
+
         $reflectionMethod->setAccessible(true);
         $methodValue = $reflectionMethod->invoke($object);
         $allRulesPassed = true;

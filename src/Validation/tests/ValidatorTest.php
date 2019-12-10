@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests;
 
+use Aphiria\Validation\CircularDependencyException;
 use Aphiria\Validation\RuleRegistry;
 use Aphiria\Validation\Rules\IRule;
 use Aphiria\Validation\ValidationContext;
@@ -60,6 +61,102 @@ class ValidatorTest extends TestCase
         $this->assertTrue($this->validator->tryValidateMethod($object, 'method', $expectedContext));
     }
 
+    public function testTryValidateMethodWillRecursivelyValidateObjects(): void
+    {
+        $innerObject = new class() {
+            public int $prop = 1;
+        };
+        $outerObject = new class($innerObject) {
+            private object $innerObject;
+
+            public function __construct(object $innerObject)
+            {
+                $this->innerObject = $innerObject;
+            }
+
+            public function method(): object
+            {
+                return $this->innerObject;
+            }
+        };
+        $expectedOuterMethodContext = new ValidationContext($outerObject, null, 'method');
+        $expectedInnerObjectContext = new ValidationContext($innerObject, null, null, $expectedOuterMethodContext);
+        $expectedInnerObjectPropContext = new ValidationContext($innerObject, 'prop', null, $expectedInnerObjectContext);
+        $this->rules->registerPropertyRules(
+            \get_class($innerObject),
+            'prop',
+            $this->createMockRule(true, 1, $expectedInnerObjectPropContext)
+        );
+        $this->assertTrue($this->validator->tryValidateMethod($outerObject, 'method', $expectedOuterMethodContext));
+    }
+
+    public function testTryValidateMethodWithMagicMethodIsSkipped(): void
+    {
+        $object = new class {
+            public function __toString(): string
+            {
+                die('Should not get here');
+            }
+        };
+        $context = new ValidationContext($object, null, '__toString');
+        $this->assertTrue($this->validator->tryValidateMethod($object, '__toString', $context));
+    }
+
+    public function testTryValidateMethodWithRequiredParamsIsSkipped(): void
+    {
+        $object = new class {
+            public function foo(int $foo): string
+            {
+                die('Should not get here');
+            }
+        };
+        $context = new ValidationContext($object, null, 'foo');
+        $this->assertTrue($this->validator->tryValidateMethod($object, 'foo', $context));
+    }
+
+    public function testTryValidateMethodWithAPassedRuleAndAFailedRuleReturnsFalse(): void
+    {
+        $object = new class() {
+            public function method(): int
+            {
+                return 1;
+            }
+        };
+        $expectedContext = new ValidationContext($object, null, 'method');
+        $rules = [
+            $this->createMockRule(true, 1, $expectedContext),
+            $this->createMockRule(false, 1, $expectedContext)
+        ];
+        $this->rules->registerMethodRules(\get_class($object), 'method', $rules);
+        $this->assertFalse($this->validator->tryValidateMethod($object, 'method', $expectedContext));
+    }
+
+    public function testTryValidateMethodWithCircularDependencyThrowsException(): void
+    {
+        $object1 = new class {
+            public ?object $methodReturnValue = null;
+
+            public function method(): object
+            {
+                return $this->methodReturnValue;
+            }
+        };
+        $object2 = new class {
+            public ?object $methodReturnValue = null;
+
+            public function method(): object
+            {
+                return $this->methodReturnValue;
+            }
+        };
+        $object1->methodReturnValue = $object2;
+        $object2->methodReturnValue = $object1;
+        $this->expectException(CircularDependencyException::class);
+        $this->expectExceptionMessage('Circular dependency on ' . \get_class($object2) . ' detected');
+        $expectedMethodContext = new ValidationContext($object1, null, 'method');
+        $this->validator->tryValidateMethod($object1, 'method', $expectedMethodContext);
+    }
+
     public function testTryValidateMethodWithInvalidValuePopulatesRuleViolations(): void
     {
         $object = new class() {
@@ -76,6 +173,24 @@ class ValidatorTest extends TestCase
         $this->assertSame($rules[0], $expectedContext->getRuleViolations()[0]->getRule());
         $this->assertEquals($object, $expectedContext->getRuleViolations()[0]->getRootValue());
         $this->assertEquals(1, $expectedContext->getRuleViolations()[0]->getInvalidValue());
+    }
+
+    public function testTryValidateMethodWithInvalidValueSetsRuleViolations(): void
+    {
+        $object = new class {
+            public function method(): int
+            {
+                return 1;
+            }
+        };
+        $expectedMethodContext = new ValidationContext($object, 'method');
+        $rules = [$this->createMockRule(false, 1, $expectedMethodContext)];
+        $this->rules->registerMethodRules(\get_class($object), 'method', $rules);
+        $this->assertFalse($this->validator->tryValidateMethod($object, 'method', $expectedMethodContext));
+        $this->assertCount(1, $expectedMethodContext->getRuleViolations());
+        $this->assertSame($rules[0], $expectedMethodContext->getRuleViolations()[0]->getRule());
+        $this->assertEquals($object, $expectedMethodContext->getRuleViolations()[0]->getRootValue());
+        $this->assertEquals(1, $expectedMethodContext->getRuleViolations()[0]->getInvalidValue());
     }
 
     public function testTryValidateMethodWithValidValueHasNoRuleViolations(): void
@@ -117,6 +232,78 @@ class ValidatorTest extends TestCase
         $this->assertTrue($this->validator->tryValidateObject($object, $expectedObjectContext));
     }
 
+    public function testTryValidateObjectWillRecursivelyValidateObjects(): void
+    {
+        $innerObject = new class() {
+            public int $prop = 1;
+        };
+        $outerObject = new class($innerObject) {
+            public object $innerObject;
+
+            public function __construct(object $innerObject)
+            {
+                $this->innerObject = $innerObject;
+            }
+        };
+        $expectedOuterContext = new ValidationContext($outerObject);
+        $expectedOuterObjectPropContext = new ValidationContext($outerObject, 'innerObject', null, $expectedOuterContext);
+        $expectedInnerObjectContext = new ValidationContext($innerObject, null, null, $expectedOuterObjectPropContext);
+        $expectedInnerObjectPropContext = new ValidationContext($innerObject, 'prop', null, $expectedInnerObjectContext);
+        $this->rules->registerPropertyRules(
+            \get_class($innerObject),
+            'prop',
+            $this->createMockRule(true, 1, $expectedInnerObjectPropContext)
+        );
+        $this->assertTrue($this->validator->tryValidateObject($outerObject, $expectedOuterContext));
+    }
+
+    public function testTryValidateObjectWithAPassedRuleAndAFailedRuleReturnsFalse(): void
+    {
+        $object = new class() {
+            public int $prop = 1;
+        };
+        $expectedObjectContext = new ValidationContext($object);
+        $expectedPropContext = new ValidationContext($object, 'prop', null, $expectedObjectContext);
+        $rules = [
+            $this->createMockRule(true, 1, $expectedPropContext),
+            $this->createMockRule(false, 1, $expectedPropContext)
+        ];
+        $this->rules->registerPropertyRules(\get_class($object), 'prop', $rules);
+        $this->assertFalse($this->validator->tryValidateObject($object, $expectedObjectContext));
+    }
+
+    public function testTryValidateObjectWithCircularDependencyThrowsException(): void
+    {
+        $object1 = new class {
+            public ?object $prop = null;
+        };
+        $object2 = new class {
+            public ?object $prop = null;
+        };
+        $object1->prop = $object2;
+        $object2->prop = $object1;
+        $this->expectException(CircularDependencyException::class);
+        $this->expectExceptionMessage('Circular dependency on ' . \get_class($object2) . ' detected');
+        $expectedObjectContext = new ValidationContext($object1);
+        $this->validator->tryValidateObject($object1, $expectedObjectContext);
+    }
+
+    public function testTryValidateObjectWithInvalidValueSetsRuleViolations(): void
+    {
+        $object = new class {
+            public int $prop = 1;
+        };
+        $expectedObjectContext = new ValidationContext($object);
+        $expectedPropContext = new ValidationContext($object, 'prop', null, $expectedObjectContext);
+        $rules = [$this->createMockRule(false, 1, $expectedPropContext)];
+        $this->rules->registerPropertyRules(\get_class($object), 'prop', $rules);
+        $this->assertFalse($this->validator->tryValidateObject($object, $expectedObjectContext));
+        $this->assertCount(1, $expectedObjectContext->getRuleViolations());
+        $this->assertSame($rules[0], $expectedObjectContext->getRuleViolations()[0]->getRule());
+        $this->assertEquals($object, $expectedObjectContext->getRuleViolations()[0]->getRootValue());
+        $this->assertEquals(1, $expectedObjectContext->getRuleViolations()[0]->getInvalidValue());
+    }
+
     public function testTryValidatePropertyReturnsFalseForInvalidValue(): void
     {
         $object = new class() {
@@ -151,6 +338,75 @@ class ValidatorTest extends TestCase
         $expectedContext = new ValidationContext('foo');
         $rules = [$this->createMockRule(true, 'foo', $expectedContext)];
         $this->assertTrue($this->validator->tryValidateValue('foo', $rules, $expectedContext));
+    }
+
+    public function testTryValidatePropertyWillRecursivelyValidateObjects(): void
+    {
+        $innerObject = new class() {
+            public int $prop = 1;
+        };
+        $outerObject = new class($innerObject) {
+            public object $innerObject;
+
+            public function __construct(object $innerObject)
+            {
+                $this->innerObject = $innerObject;
+            }
+        };
+        $expectedOuterPropContext = new ValidationContext($outerObject, 'innerObject');
+        $expectedInnerObjectContext = new ValidationContext($innerObject, null, null, $expectedOuterPropContext);
+        $expectedInnerObjectPropContext = new ValidationContext($innerObject, 'prop', null, $expectedInnerObjectContext);
+        $this->rules->registerPropertyRules(
+            \get_class($innerObject),
+            'prop',
+            $this->createMockRule(true, 1, $expectedInnerObjectPropContext)
+        );
+        $this->assertTrue($this->validator->tryValidateProperty($outerObject, 'innerObject', $expectedOuterPropContext));
+    }
+
+    public function testTryValidatePropertyWithAPassedRuleAndAFailedRuleReturnsFalse(): void
+    {
+        $object = new class() {
+            public int $prop = 1;
+        };
+        $expectedPropContext = new ValidationContext($object, 'prop');
+        $rules = [
+            $this->createMockRule(true, 1, $expectedPropContext),
+            $this->createMockRule(false, 1, $expectedPropContext)
+        ];
+        $this->rules->registerPropertyRules(\get_class($object), 'prop', $rules);
+        $this->assertFalse($this->validator->tryValidateProperty($object, 'prop', $expectedPropContext));
+    }
+
+    public function testTryValidatePropertyWithCircularDependencyThrowsException(): void
+    {
+        $object1 = new class {
+            public ?object $prop = null;
+        };
+        $object2 = new class {
+            public ?object $prop = null;
+        };
+        $object1->prop = $object2;
+        $object2->prop = $object1;
+        $this->expectException(CircularDependencyException::class);
+        $this->expectExceptionMessage('Circular dependency on ' . \get_class($object2) . ' detected');
+        $expectedPropertyContext = new ValidationContext($object1, 'prop');
+        $this->validator->tryValidateProperty($object1, 'prop', $expectedPropertyContext);
+    }
+
+    public function testTryValidatePropertyWithInvalidValueSetsRuleViolations(): void
+    {
+        $object = new class {
+            public int $prop = 1;
+        };
+        $expectedPropContext = new ValidationContext($object, 'prop');
+        $rules = [$this->createMockRule(false, 1, $expectedPropContext)];
+        $this->rules->registerPropertyRules(\get_class($object), 'prop', $rules);
+        $this->assertFalse($this->validator->tryValidateProperty($object, 'prop', $expectedPropContext));
+        $this->assertCount(1, $expectedPropContext->getRuleViolations());
+        $this->assertSame($rules[0], $expectedPropContext->getRuleViolations()[0]->getRule());
+        $this->assertEquals($object, $expectedPropContext->getRuleViolations()[0]->getRootValue());
+        $this->assertEquals(1, $expectedPropContext->getRuleViolations()[0]->getInvalidValue());
     }
 
     public function testTryValidateValueWithInvalidValueSetsRuleViolations(): void

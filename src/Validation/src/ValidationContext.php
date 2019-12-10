@@ -66,7 +66,7 @@ final class ValidationContext
      */
     public function addManyRuleViolations(array $ruleViolations): void
     {
-        $this->ruleViolations = [$this->ruleViolations, ...$ruleViolations];
+        $this->ruleViolations = [...$this->ruleViolations, ...$ruleViolations];
     }
 
     /**
