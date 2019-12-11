@@ -27,6 +27,7 @@ interface IValidator
      * @param string $methodName The name of the method to validate
      * @param ValidationContext $validationContext The context to perform validation in
      * @return bool True if the method was valid, otherwise false
+     * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
     public function tryValidateMethod(object $object, string $methodName, ValidationContext $validationContext): bool;
 
@@ -36,6 +37,7 @@ interface IValidator
      * @param object $object The object to validate
      * @param ValidationContext $validationContext The context to perform validation in
      * @return bool True if the object was valid, otherwise false
+     * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
     public function tryValidateObject(object $object, ValidationContext $validationContext): bool;
 
@@ -46,6 +48,7 @@ interface IValidator
      * @param string $propertyName The name of the property to validate
      * @param ValidationContext $validationContext The context to perform validation in
      * @return bool True if the property was valid, otherwise false
+     * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
     public function tryValidateProperty(object $object, string $propertyName, ValidationContext $validationContext): bool;
 
@@ -56,6 +59,7 @@ interface IValidator
      * @param IRule[] $rules The list of rules to use
      * @param ValidationContext $validationContext The context to perform validation in
      * @return bool True if the value was valid, otherwise false
+     * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
     public function tryValidateValue($value, array $rules, ValidationContext $validationContext): bool;
 
@@ -66,6 +70,7 @@ interface IValidator
      * @param string $methodName The name of the method to validate
      * @param ValidationContext $validationContext The context to perform validation in
      * @throws ValidationException Thrown if the method was invalid
+     * @throws CircularDependencyException Thrown if a circular dependency is detected
      * @throws InvalidArgumentException Thrown if the method does not exist
      */
     public function validateMethod(object $object, string $methodName, ValidationContext $validationContext): void;
@@ -76,6 +81,7 @@ interface IValidator
      * @param object $object The object to validate
      * @param ValidationContext $validationContext The context to perform validation in
      * @throws ValidationException Thrown if the input object was invalid
+     * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
     public function validateObject(object $object, ValidationContext $validationContext): void;
 
@@ -86,6 +92,7 @@ interface IValidator
      * @param string $propertyName The name of the property to validate
      * @param ValidationContext $validationContext The context to perform validation in
      * @throws ValidationException Thrown if the property was invalid
+     * @throws CircularDependencyException Thrown if a circular dependency is detected
      * @throws InvalidArgumentException Thrown if the property does not exist
      */
     public function validateProperty(object $object, string $propertyName, ValidationContext $validationContext): void;
@@ -97,6 +104,7 @@ interface IValidator
      * @param IRule[] $rules The list of rules to use
      * @param ValidationContext $validationContext The context to perform validation in
      * @throws ValidationException Thrown if the value was invalid
+     * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
     public function validateValue($value, array $rules, ValidationContext $validationContext): void;
 }

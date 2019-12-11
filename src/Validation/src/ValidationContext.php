@@ -23,18 +23,18 @@ final class ValidationContext
     private ?string $propertyName;
     /** @var string|null The name of the method being validated, or null if it wasn't a method */
     private ?string $methodName;
+    /** @var ValidationContext|null The child context, if there is one */
+    private ?ValidationContext $childContext = null;
     /** @var ValidationContext|null The parent context, if there is one */
     private ?ValidationContext $parentContext;
     /** @var RuleViolation[] The list of rule violations that occurred in this context */
     private array $ruleViolations = [];
-    /** @var string[] The list of object hash IDs we'll use to detect circular dependencies */
-    private array $objectHashIds = [];
 
     /**
      * @param mixed $value The value being validated
      * @param string|null $propertyName The name of the property being validated, or null if it wasn't a property
      * @param string|null $methodName The name of the method being validated, or null if it wasn't a method
-     * @param ValidationContext|null $parentContext The parent context, if there is one
+     * @param ValidationContext|null $parentContext The parent context if there was one, otherwise null
      * @throws CircularDependencyException Thrown if a circular dependency was detected
      */
     public function __construct(
@@ -48,15 +48,11 @@ final class ValidationContext
         $this->methodName = $methodName;
         $this->parentContext = $parentContext;
 
-        // Only add this object to the map if it is being validated - not any of its properties or methods
-        if (\is_object($this->value) && $this->propertyName === null && $this->methodName === null) {
-            // Purposely check for a circular dependency first, then add the hash
-            if ($this->containsCircularDependency($this->value)) {
-                throw new CircularDependencyException('Circular dependency on ' . \get_class($value) . ' detected');
-            }
-
-            $this->objectHashIds[\spl_object_hash($this->value)] = true;
+        if ($this->parentContext !== null) {
+            $this->parentContext->setChildContext($this);
         }
+
+        $this->validateNoCircularDependencies();
     }
 
     /**
@@ -80,28 +76,6 @@ final class ValidationContext
     }
 
     /**
-     * Checks if the context or any of its ancestors contains a circular dependency on the input object
-     *
-     * @param object $object The object to check for
-     * @return bool True if the context (or its ancestors) contain a circular dependency, otherwise false
-     */
-    public function containsCircularDependency(object $object): bool
-    {
-        return isset($this->objectHashIds[\spl_object_hash($object)])
-            || ($this->parentContext !== null && $this->parentContext->containsCircularDependency($object));
-    }
-
-    /**
-     * Gets the root value that was being validated
-     *
-     * @return mixed The root value
-     */
-    public function getRootValue()
-    {
-        return $this->parentContext === null ? $this->value : $this->parentContext->getRootValue();
-    }
-
-    /**
      * Gets the name of the method being validated
      *
      * @return string|null The name of the method being validated, or null if not a method
@@ -122,6 +96,20 @@ final class ValidationContext
     }
 
     /**
+     * Gets the top-most value in the context chain that was being validated
+     *
+     * @return mixed The root value
+     */
+    public function getRootValue()
+    {
+        if ($this->parentContext === null) {
+            return $this->value;
+        }
+
+        return $this->parentContext->getRootValue();
+    }
+
+    /**
      * Gets the list of rule violations
      *
      * @return RuleViolation[] The list of rule violations
@@ -130,8 +118,8 @@ final class ValidationContext
     {
         $allRuleViolations = $this->ruleViolations;
 
-        if ($this->parentContext !== null) {
-            $allRuleViolations = [...$this->parentContext->getRuleViolations(), $allRuleViolations];
+        if ($this->childContext !== null) {
+            $allRuleViolations = [...$allRuleViolations, ...$this->childContext->getRuleViolations()];
         }
 
         return $allRuleViolations;
@@ -145,5 +133,57 @@ final class ValidationContext
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * Sets a child context for this context
+     *
+     * @param ValidationContext $childContext The child context
+     */
+    protected function setChildContext(ValidationContext $childContext): void
+    {
+        $this->childContext = $childContext;
+    }
+
+    /**
+     * Checks if the context validates a particular object
+     *
+     * @param object $object The object to check
+     * @return bool True if the context validates the input object, otherwise false
+     */
+    protected function validatesObject(object $object): bool
+    {
+        /**
+         * We only check for circular dependencies for contexts that are for the object itself, not a property nor method.
+         * It's expected that an object would show up multiple times in property/method contexts, but it should not
+         * show up as the value of a context chain more than once.
+         */
+        return $this->propertyName === null && $this->methodName === null && $this->value === $object;
+    }
+
+    /**
+     * Validates that there are no circular dependencies in the validation context chain
+     *
+     * @throws CircularDependencyException Thrown if a circular dependency is detected
+     */
+    private function validateNoCircularDependencies(): void
+    {
+        // We only check circular dependencies on contexts that are validating an object, not a property/method on an object
+        if (!\is_object($this->value) || !$this->validatesObject($this->value)) {
+            return;
+        }
+
+        // Check all ancestors to see if any of them validated this particular object
+        $parentContext = $this->parentContext;
+
+        while ($parentContext !== null) {
+            if ($parentContext->validatesObject($this->value)) {
+                throw new CircularDependencyException(
+                    'Circular dependency on ' . \get_class($this->value) . ' detected'
+                );
+            }
+
+            $parentContext = $parentContext->parentContext;
+        }
     }
 }

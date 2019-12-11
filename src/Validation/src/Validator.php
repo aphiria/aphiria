@@ -13,7 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Validation;
 
 use InvalidArgumentException;
+use ReflectionException;
 use ReflectionMethod;
+use ReflectionObject;
 use ReflectionProperty;
 
 /**
@@ -59,6 +61,7 @@ final class Validator implements IValidator
 
             return true;
         } catch (ValidationException $ex) {
+            // TODO: Should I let CircularDependencyExceptions bubble up from here?  If so, update thrown exceptions from IValidator.
             return false;
         }
     }
@@ -73,6 +76,7 @@ final class Validator implements IValidator
 
             return true;
         } catch (ValidationException $ex) {
+            // TODO: Should I let CircularDependencyExceptions bubble up from here?  If so, update thrown exceptions from IValidator.
             return false;
         }
     }
@@ -87,6 +91,7 @@ final class Validator implements IValidator
 
             return true;
         } catch (ValidationException $ex) {
+            // TODO: Should I let CircularDependencyExceptions bubble up from here?  If so, update thrown exceptions from IValidator.
             return false;
         }
     }
@@ -101,6 +106,7 @@ final class Validator implements IValidator
 
             return true;
         } catch (ValidationException $ex) {
+            // TODO: Should I let CircularDependencyExceptions bubble up from here?  If so, update thrown exceptions from IValidator.
             return false;
         }
     }
@@ -116,7 +122,11 @@ final class Validator implements IValidator
             throw new InvalidArgumentException("$class::$methodName() does not exist");
         }
 
-        $reflectionMethod = new ReflectionMethod($class, $methodName);
+        try {
+            $reflectionMethod = new ReflectionMethod($class, $methodName);
+        } catch (ReflectionException $ex) {
+            throw new ValidationException($validationContext, "Failed to reflect method $class::$methodName()", 0, $ex);
+        }
 
         // Don't bother with magic methods or methods that require parameters
         if (
@@ -133,8 +143,8 @@ final class Validator implements IValidator
         // Recursively validate the value if it's an object
         if (\is_object($methodValue)) {
             // Since we're validating a whole new object, null out the method name param
-            $methodValidationContext = new ValidationContext($methodValue, null, null, $validationContext);
-            $allRulesPassed = $allRulesPassed && $this->tryValidateObject($methodValue, $methodValidationContext);
+            $methodValueValidationContext = new ValidationContext($methodValue, null, null, $validationContext);
+            $allRulesPassed = $allRulesPassed && $this->tryValidateObject($methodValue, $methodValueValidationContext);
         }
 
         foreach ($this->rules->getMethodRules($class, $methodName) as $rule) {
@@ -145,7 +155,7 @@ final class Validator implements IValidator
                 $validationContext->addRuleViolation(new RuleViolation(
                     $rule,
                     $methodValue,
-                    $validationContext->getRootValue(),
+                    $validationContext->getValue(),
                     null,
                     $methodName
                 ));
@@ -153,7 +163,7 @@ final class Validator implements IValidator
         }
 
         if (!$allRulesPassed) {
-            throw new ValidationException($validationContext);
+            throw new ValidationException($validationContext, "Failed to validate $class::$methodName()");
         }
     }
 
@@ -163,7 +173,7 @@ final class Validator implements IValidator
     public function validateObject(object $object, ValidationContext $validationContext): void
     {
         $allRulesPassed = true;
-        $reflectionObject = new \ReflectionObject($object);
+        $reflectionObject = new ReflectionObject($object);
         $reflectionProperties = $reflectionObject->getProperties();
         $reflectionMethods = $reflectionObject->getMethods();
 
@@ -182,7 +192,7 @@ final class Validator implements IValidator
         }
 
         if (!$allRulesPassed) {
-            throw new ValidationException($validationContext);
+            throw new ValidationException($validationContext, 'Failed to validate ' . \get_class($object));
         }
     }
 
@@ -197,7 +207,12 @@ final class Validator implements IValidator
             throw new InvalidArgumentException("$class::$propertyName does not exist");
         }
 
-        $reflectionProperty = new ReflectionProperty($class, $propertyName);
+        try {
+            $reflectionProperty = new ReflectionProperty($class, $propertyName);
+        } catch (ReflectionException $ex) {
+            throw new ValidationException($validationContext, "Failed to reflect property $class::$propertyName", 0, $ex);
+        }
+
         $reflectionProperty->setAccessible(true);
         $propertyValue = $reflectionProperty->getValue($object);
         $allRulesPassed = true;
@@ -205,8 +220,8 @@ final class Validator implements IValidator
         // Recursively validate the value if it's an object
         if (\is_object($propertyValue)) {
             // Since we're validating a whole new object, null out the property name param
-            $propertyValidationContext = new ValidationContext($propertyValue, null, null, $validationContext);
-            $allRulesPassed = $allRulesPassed && $this->tryValidateObject($propertyValue, $propertyValidationContext);
+            $propertyValueValidationContext = new ValidationContext($propertyValue, null, null, $validationContext);
+            $allRulesPassed = $allRulesPassed && $this->tryValidateObject($propertyValue, $propertyValueValidationContext);
         }
 
         foreach ($this->rules->getPropertyRules($class, $propertyName) as $rule) {
@@ -217,14 +232,14 @@ final class Validator implements IValidator
                 $validationContext->addRuleViolation(new RuleViolation(
                     $rule,
                     $propertyValue,
-                    $validationContext->getRootValue(),
+                    $validationContext->getValue(),
                     $propertyName
                 ));
             }
         }
 
         if (!$allRulesPassed) {
-            throw new ValidationException($validationContext);
+            throw new ValidationException($validationContext, "Failed to validate $class::$propertyName");
         }
     }
 

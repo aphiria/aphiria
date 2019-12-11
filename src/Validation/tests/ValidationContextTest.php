@@ -82,7 +82,7 @@ class ValidationContextTest extends TestCase
         $this->assertSame($expectedRuleViolation, $context->getRuleViolations()[0]);
     }
 
-    public function testCircularDependencyDetectedIfObjectAppearsTwiceInContextChain(): void
+    public function testCircularDependencyDetectedIfObjectAppearsInChildContext(): void
     {
         $object = new class() {};
         $this->expectException(CircularDependencyException::class);
@@ -132,18 +132,39 @@ class ValidationContextTest extends TestCase
         $this->assertEquals('prop', $context->getPropertyName());
     }
 
-    public function testGettingRootValueReturnsContextValueIfItHasNoParentContext(): void
+    public function testGettingRootValueReturnsParentValueIfParentContextExists(): void
+    {
+        $parentContext = new ValidationContext($this);
+        $childContext = new ValidationContext(new class {}, null, null, $parentContext);
+        $this->assertSame($this, $childContext->getRootValue());
+        $this->assertSame($this, $parentContext->getRootValue());
+    }
+
+    public function testGettingRootValueReturnsValueIfNoParentContextExists(): void
     {
         $context = new ValidationContext($this);
         $this->assertSame($this, $context->getRootValue());
     }
 
-    public function testGettingRootValueReturnsParentContextValueIfItHasParentContext(): void
+    public function testGettingRuleViolationsIncludesOnesFromChildren(): void
     {
         $parentContext = new ValidationContext($this);
-        $childContext = new ValidationContext(new class () {}, null, null, $parentContext);
-        $this->assertSame($this, $parentContext->getRootValue());
-        $this->assertSame($this, $childContext->getRootValue());
+        $childContext = new ValidationContext($this, 'foo', null, $parentContext);
+        $parentRuleViolation = new RuleViolation(
+            $this->createMock(IRule::class),
+            $this,
+            $this
+        );
+        $parentContext->addRuleViolation($parentRuleViolation);
+        $childRuleViolation = new RuleViolation(
+            $this->createMock(IRule::class),
+            'bar',
+            $this
+        );
+        $childContext->addRuleViolation($childRuleViolation);
+        $this->assertCount(2, $parentContext->getRuleViolations());
+        $this->assertSame($parentRuleViolation, $parentContext->getRuleViolations()[0]);
+        $this->assertSame($childRuleViolation, $parentContext->getRuleViolations()[1]);
     }
 
     public function testGettingValueReturnsOneSetInConstructor(): void

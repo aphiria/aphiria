@@ -131,32 +131,6 @@ class ValidatorTest extends TestCase
         $this->assertFalse($this->validator->tryValidateMethod($object, 'method', $expectedContext));
     }
 
-    public function testTryValidateMethodWithCircularDependencyThrowsException(): void
-    {
-        $object1 = new class {
-            public ?object $methodReturnValue = null;
-
-            public function method(): object
-            {
-                return $this->methodReturnValue;
-            }
-        };
-        $object2 = new class {
-            public ?object $methodReturnValue = null;
-
-            public function method(): object
-            {
-                return $this->methodReturnValue;
-            }
-        };
-        $object1->methodReturnValue = $object2;
-        $object2->methodReturnValue = $object1;
-        $this->expectException(CircularDependencyException::class);
-        $this->expectExceptionMessage('Circular dependency on ' . \get_class($object2) . ' detected');
-        $expectedMethodContext = new ValidationContext($object1, null, 'method');
-        $this->validator->tryValidateMethod($object1, 'method', $expectedMethodContext);
-    }
-
     public function testTryValidateMethodWithInvalidValuePopulatesRuleViolations(): void
     {
         $object = new class() {
@@ -272,22 +246,6 @@ class ValidatorTest extends TestCase
         $this->assertFalse($this->validator->tryValidateObject($object, $expectedObjectContext));
     }
 
-    public function testTryValidateObjectWithCircularDependencyThrowsException(): void
-    {
-        $object1 = new class {
-            public ?object $prop = null;
-        };
-        $object2 = new class {
-            public ?object $prop = null;
-        };
-        $object1->prop = $object2;
-        $object2->prop = $object1;
-        $this->expectException(CircularDependencyException::class);
-        $this->expectExceptionMessage('Circular dependency on ' . \get_class($object2) . ' detected');
-        $expectedObjectContext = new ValidationContext($object1);
-        $this->validator->tryValidateObject($object1, $expectedObjectContext);
-    }
-
     public function testTryValidateObjectWithInvalidValueSetsRuleViolations(): void
     {
         $object = new class {
@@ -378,22 +336,6 @@ class ValidatorTest extends TestCase
         $this->assertFalse($this->validator->tryValidateProperty($object, 'prop', $expectedPropContext));
     }
 
-    public function testTryValidatePropertyWithCircularDependencyThrowsException(): void
-    {
-        $object1 = new class {
-            public ?object $prop = null;
-        };
-        $object2 = new class {
-            public ?object $prop = null;
-        };
-        $object1->prop = $object2;
-        $object2->prop = $object1;
-        $this->expectException(CircularDependencyException::class);
-        $this->expectExceptionMessage('Circular dependency on ' . \get_class($object2) . ' detected');
-        $expectedPropertyContext = new ValidationContext($object1, 'prop');
-        $this->validator->tryValidateProperty($object1, 'prop', $expectedPropertyContext);
-    }
-
     public function testTryValidatePropertyWithInvalidValueSetsRuleViolations(): void
     {
         $object = new class {
@@ -426,6 +368,65 @@ class ValidatorTest extends TestCase
         $rules = [$this->createMockRule(true, 'foo', $expectedContext)];
         $this->assertTrue($this->validator->tryValidateValue('foo', $rules, $expectedContext));
         $this->assertCount(0, $expectedContext->getRuleViolations());
+    }
+
+    public function testValidateMethodWithCircularDependencyThrowsException(): void
+    {
+        $object1 = new class {
+            public ?object $methodReturnValue = null;
+
+            public function method(): object
+            {
+                return $this->methodReturnValue;
+            }
+        };
+        $object2 = new class {
+            public ?object $methodReturnValue = null;
+
+            public function method(): object
+            {
+                return $this->methodReturnValue;
+            }
+        };
+        $object1->methodReturnValue = $object2;
+        $object2->methodReturnValue = $object1;
+        $this->expectException(CircularDependencyException::class);
+        $this->expectExceptionMessage('Circular dependency on ' . \get_class($object2) . ' detected');
+        $expectedMethodContext = new ValidationContext($object1, null, 'method');
+        $this->validator->validateMethod($object1, 'method', $expectedMethodContext);
+    }
+
+    public function testValidateObjectWithCircularDependencyThrowsException(): void
+    {
+        $object1 = new class {
+            public ?object $prop = null;
+        };
+        $object2 = new class {
+            public ?object $prop = null;
+        };
+        $object1->prop = $object2;
+        $object2->prop = $object1;
+        $this->expectException(CircularDependencyException::class);
+        // Due to the order that objects are recursively validated, object1 will show up as the circular dependency
+        $this->expectExceptionMessage('Circular dependency on ' . \get_class($object1) . ' detected');
+        $expectedObjectContext = new ValidationContext($object1);
+        $this->validator->validateObject($object1, $expectedObjectContext);
+    }
+
+    public function testValidatePropertyWithCircularDependencyThrowsException(): void
+    {
+        $object1 = new class {
+            public ?object $prop = null;
+        };
+        $object2 = new class {
+            public ?object $prop = null;
+        };
+        $object1->prop = $object2;
+        $object2->prop = $object1;
+        $this->expectException(CircularDependencyException::class);
+        $this->expectExceptionMessage('Circular dependency on ' . \get_class($object2) . ' detected');
+        $expectedPropertyContext = new ValidationContext($object1, 'prop');
+        $this->validator->validateProperty($object1, 'prop', $expectedPropertyContext);
     }
 
     /**
