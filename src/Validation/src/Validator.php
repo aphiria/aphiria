@@ -61,7 +61,6 @@ final class Validator implements IValidator
 
             return true;
         } catch (ValidationException $ex) {
-            // TODO: Should I let CircularDependencyExceptions bubble up from here?  If so, update thrown exceptions from IValidator.
             return false;
         }
     }
@@ -76,7 +75,6 @@ final class Validator implements IValidator
 
             return true;
         } catch (ValidationException $ex) {
-            // TODO: Should I let CircularDependencyExceptions bubble up from here?  If so, update thrown exceptions from IValidator.
             return false;
         }
     }
@@ -91,7 +89,6 @@ final class Validator implements IValidator
 
             return true;
         } catch (ValidationException $ex) {
-            // TODO: Should I let CircularDependencyExceptions bubble up from here?  If so, update thrown exceptions from IValidator.
             return false;
         }
     }
@@ -106,7 +103,6 @@ final class Validator implements IValidator
 
             return true;
         } catch (ValidationException $ex) {
-            // TODO: Should I let CircularDependencyExceptions bubble up from here?  If so, update thrown exceptions from IValidator.
             return false;
         }
     }
