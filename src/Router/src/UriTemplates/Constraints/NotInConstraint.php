@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\UriTemplates\Rules;
+namespace Aphiria\Routing\UriTemplates\Constraints;
 
 /**
- * Defines the not-in-array rule
+ * Defines the not-in-array constraint
  */
-final class NotInRule implements IRule
+final class NotInConstraint implements IRouteVariableConstraint
 {
     /** @var array The list of unacceptable values */
     private array $unacceptableValues;

@@ -10,19 +10,19 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\UriTemplates\Rules;
+namespace Aphiria\Routing\UriTemplates\Constraints;
 
 /**
- * Defines the integer rule
+ * Defines the alphanumeric constraint
  */
-final class IntegerRule implements IRule
+final class AlphanumericConstraint implements IRouteVariableConstraint
 {
     /**
      * @inheritdoc
      */
     public static function getSlug(): string
     {
-        return 'int';
+        return 'alphanumeric';
     }
 
     /**
@@ -30,6 +30,6 @@ final class IntegerRule implements IRule
      */
     public function passes($value): bool
     {
-        return \filter_var($value, FILTER_VALIDATE_INT) !== false;
+        return \ctype_alnum($value) && \strpos($value, ' ') === false;
     }
 }

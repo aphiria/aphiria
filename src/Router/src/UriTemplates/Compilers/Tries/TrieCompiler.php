@@ -22,37 +22,37 @@ use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
-use Aphiria\Routing\UriTemplates\Rules\IRuleFactory;
-use Aphiria\Routing\UriTemplates\Rules\RuleFactory;
-use Aphiria\Routing\UriTemplates\Rules\RuleFactoryRegistrant;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraintFactory;
+use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
+use Aphiria\Routing\UriTemplates\Constraints\ConstraintFactoryRegistrant;
 
 /**
  * Defines a compiler for a trie
  */
 final class TrieCompiler implements ITrieCompiler
 {
-    /** @var IRuleFactory The factory that will create rules */
-    private IRuleFactory $ruleFactory;
+    /** @var IRouteVariableConstraintFactory The factory that will create constraints */
+    private IRouteVariableConstraintFactory $constraintFactory;
     /** @var IUriTemplateParser The URI template parser */
     private IUriTemplateParser $uriTemplateParser;
     /** @var IUriTemplateLexer The URI template lexer */
     private IUriTemplateLexer $uriTemplateLexer;
 
     /**
-     * @param IRuleFactory|null $ruleFactory The factory that will create rules
+     * @param IRouteVariableConstraintFactory|null $constraintFactory The factory that will create constraints
      * @param IUriTemplateParser|null $uriTemplateParser The URI template parser
      * @param IUriTemplateLexer|null $uriTemplateLexer The URI template lexer
      */
     public function __construct(
-        IRuleFactory $ruleFactory = null,
+        IRouteVariableConstraintFactory $constraintFactory = null,
         IUriTemplateParser $uriTemplateParser = null,
         IUriTemplateLexer $uriTemplateLexer = null
     ) {
-        if ($ruleFactory === null) {
-            $this->ruleFactory = new RuleFactory();
-            (new RuleFactoryRegistrant)->registerRuleFactories($this->ruleFactory);
+        if ($constraintFactory === null) {
+            $this->constraintFactory = new RouteVariableConstraintFactory();
+            (new ConstraintFactoryRegistrant)->registerConstraintFactories($this->constraintFactory);
         } else {
-            $this->ruleFactory = $ruleFactory;
+            $this->constraintFactory = $constraintFactory;
         }
 
         $this->uriTemplateParser = $uriTemplateParser ?? new UriTemplateParser();
@@ -186,18 +186,18 @@ final class TrieCompiler implements ITrieCompiler
      */
     private function compileVariableNode(AstNode $astNode): RouteVariable
     {
-        $rules = [];
+        $constraints = [];
 
         foreach ($astNode->children as $childAstNode) {
-            if ($childAstNode->type !== AstNodeTypes::VARIABLE_RULE) {
+            if ($childAstNode->type !== AstNodeTypes::VARIABLE_CONSTRAINT) {
                 throw new InvalidUriTemplateException("Unexpected node type {$childAstNode->type}");
             }
 
-            $ruleParams = $childAstNode->hasChildren() ? $childAstNode->children[0]->value : [];
-            $rules[] = $this->ruleFactory->createRule((string)$childAstNode->value, $ruleParams);
+            $constraintParams = $childAstNode->hasChildren() ? $childAstNode->children[0]->value : [];
+            $constraints[] = $this->constraintFactory->createConstraint((string)$childAstNode->value, $constraintParams);
         }
 
-        return new RouteVariable((string)$astNode->value, $rules);
+        return new RouteVariable((string)$astNode->value, $constraints);
     }
 
     /**

@@ -18,7 +18,7 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\LiteralTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RouteVariable;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\VariableTrieNode;
-use Aphiria\Routing\UriTemplates\Rules\IRule;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -52,7 +52,7 @@ class VariableTrieNodeTest extends TestCase
         $this->assertSame($expectedRoute, $node->routes[0]);
     }
 
-    public function testIsMatchWithMultiplePartsReturnsTrueIfMatchesRegexAndSetsVariablesWithNoRules(): void
+    public function testIsMatchWithMultiplePartsReturnsTrueIfMatchesRegexAndSetsVariablesWithNoConstraints(): void
     {
         $node = new VariableTrieNode([new RouteVariable('foo'), 'baz'], []);
         $routeVariables = [];
@@ -68,43 +68,43 @@ class VariableTrieNodeTest extends TestCase
         $this->assertEquals(['foo' => 'bar'], $routeVariables);
     }
 
-    public function testIsMatchWithMultiplePartsReturnsFalseIfAnyRuleFails(): void
+    public function testIsMatchWithMultiplePartsReturnsFalseIfAnyConstraintFails(): void
     {
-        $rule1 = $this->createMock(IRule::class);
-        $rule1->expects($this->once())
+        $constraint1 = $this->createMock(IRouteVariableConstraint::class);
+        $constraint1->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(true);
-        $rule2 = $this->createMock(IRule::class);
-        $rule2->expects($this->once())
+        $constraint2 = $this->createMock(IRouteVariableConstraint::class);
+        $constraint2->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(false);
-        $node = new VariableTrieNode([new RouteVariable('foo', [$rule1, $rule2]), 'baz'], []);
+        $node = new VariableTrieNode([new RouteVariable('foo', [$constraint1, $constraint2]), 'baz'], []);
         $routeVariables = [];
         $this->assertFalse($node->isMatch('barbaz', $routeVariables));
         $this->assertEquals([], $routeVariables);
     }
 
-    public function testIsMatchWithMultiplePartsReturnsTrueIfMatchesRegexAndAllRulesPass(): void
+    public function testIsMatchWithMultiplePartsReturnsTrueIfMatchesRegexAndAllConstraintsPass(): void
     {
-        $rule1 = $this->createMock(IRule::class);
-        $rule1->expects($this->once())
+        $constraint1 = $this->createMock(IRouteVariableConstraint::class);
+        $constraint1->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(true);
-        $rule2 = $this->createMock(IRule::class);
-        $rule2->expects($this->once())
+        $constraint2 = $this->createMock(IRouteVariableConstraint::class);
+        $constraint2->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(true);
-        $node = new VariableTrieNode([new RouteVariable('foo', [$rule1, $rule2]), 'baz'], []);
+        $node = new VariableTrieNode([new RouteVariable('foo', [$constraint1, $constraint2]), 'baz'], []);
         $routeVariables = [];
         $this->assertTrue($node->isMatch('barbaz', $routeVariables));
         $this->assertEquals(['foo' => 'bar'], $routeVariables);
     }
 
-    public function testIsMatchWithSingleRouteVariableReturnsTrueAndSetsVariablesWithNoRules(): void
+    public function testIsMatchWithSingleRouteVariableReturnsTrueAndSetsVariablesWithNoConstraints(): void
     {
         $node = new VariableTrieNode(new RouteVariable('foo'), []);
         $routeVariables = [];
@@ -112,37 +112,37 @@ class VariableTrieNodeTest extends TestCase
         $this->assertEquals(['foo' => 'bar'], $routeVariables);
     }
 
-    public function testIsMatchWithSingleRouteVariableReturnsFalseIfAnyRuleFails(): void
+    public function testIsMatchWithSingleRouteVariableReturnsFalseIfAnyConstraintFails(): void
     {
-        $rule1 = $this->createMock(IRule::class);
-        $rule1->expects($this->once())
+        $constraint1 = $this->createMock(IRouteVariableConstraint::class);
+        $constraint1->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(true);
-        $rule2 = $this->createMock(IRule::class);
-        $rule2->expects($this->once())
+        $constraint2 = $this->createMock(IRouteVariableConstraint::class);
+        $constraint2->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(false);
-        $node = new VariableTrieNode(new RouteVariable('foo', [$rule1, $rule2]), []);
+        $node = new VariableTrieNode(new RouteVariable('foo', [$constraint1, $constraint2]), []);
         $routeVariables = [];
         $this->assertFalse($node->isMatch('bar', $routeVariables));
         $this->assertEquals([], $routeVariables);
     }
 
-    public function testIsMatchWithSingleRouteVariableReturnsTrueIfAllRulesPass(): void
+    public function testIsMatchWithSingleRouteVariableReturnsTrueIfAllConstraintsPass(): void
     {
-        $rule1 = $this->createMock(IRule::class);
-        $rule1->expects($this->once())
+        $constraint1 = $this->createMock(IRouteVariableConstraint::class);
+        $constraint1->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(true);
-        $rule2 = $this->createMock(IRule::class);
-        $rule2->expects($this->once())
+        $constraint2 = $this->createMock(IRouteVariableConstraint::class);
+        $constraint2->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(true);
-        $node = new VariableTrieNode(new RouteVariable('foo', [$rule1, $rule2]), []);
+        $node = new VariableTrieNode(new RouteVariable('foo', [$constraint1, $constraint2]), []);
         $routeVariables = [];
         $this->assertTrue($node->isMatch('bar', $routeVariables));
         $this->assertEquals(['foo' => 'bar'], $routeVariables);

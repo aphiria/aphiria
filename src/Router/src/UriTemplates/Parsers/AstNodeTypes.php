@@ -31,8 +31,8 @@ final class AstNodeTypes
     public const TEXT = 'TEXT';
     /** @const The variable node type */
     public const VARIABLE = 'VARIABLE';
-    /** @const The variable rule node type */
-    public const VARIABLE_RULE = 'VARIABLE_RULE';
-    /** @const The variable rule parameters node type */
-    public const VARIABLE_RULE_PARAMETERS = 'VARIABLE_RULE_PARAMETERS';
+    /** @const The variable constraint node type */
+    public const VARIABLE_CONSTRAINT = 'VARIABLE_CONSTRAINT';
+    /** @const The variable constraint parameters node type */
+    public const VARIABLE_CONSTRAINT_PARAMETERS = 'VARIABLE_CONSTRAINT_PARAMETERS';
 }

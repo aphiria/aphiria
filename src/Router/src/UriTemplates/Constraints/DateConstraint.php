@@ -10,15 +10,15 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\UriTemplates\Rules;
+namespace Aphiria\Routing\UriTemplates\Constraints;
 
 use DateTime;
 use InvalidArgumentException;
 
 /**
- * Defines the date rule
+ * Defines the date constraint
  */
-final class DateRule
+final class DateConstraint
 {
     /** @var array The list of acceptable date formats */
     private array $formats;

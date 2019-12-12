@@ -74,8 +74,8 @@ final class VariableTrieNode extends TrieNode
     public function isMatch(string $segmentValue, array &$routeVariables): bool
     {
         if ($this->onlyContainsVariable) {
-            foreach ($this->parts[0]->rules as $rule) {
-                if (!$rule->passes($segmentValue)) {
+            foreach ($this->parts[0]->constraints as $constraint) {
+                if (!$constraint->passes($segmentValue)) {
                     return false;
                 }
             }
@@ -91,13 +91,13 @@ final class VariableTrieNode extends TrieNode
             return false;
         }
 
-        // Don't change the actual array until we're sure all the rules pass
+        // Don't change the actual array until we're sure all the constraints pass
         $routeVariablesCopy = $routeVariables;
 
         foreach ($this->parts as $part) {
             if ($part instanceof RouteVariable) {
-                foreach ($part->rules as $rule) {
-                    if (!$rule->passes($matches[$part->name])) {
+                foreach ($part->constraints as $constraint) {
+                    if (!$constraint->passes($matches[$part->name])) {
                         return false;
                     }
                 }

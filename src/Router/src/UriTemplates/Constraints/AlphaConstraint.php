@@ -10,22 +10,19 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\UriTemplates\Rules;
+namespace Aphiria\Routing\UriTemplates\Constraints;
 
 /**
- * Defines the UUIDV4 rule
+ * Defines the alpha constraint
  */
-final class UuidV4Rule implements IRule
+final class AlphaConstraint implements IRouteVariableConstraint
 {
-    /** @var string The UUIDV4 regex */
-    private const UUIDV4_REGEX = '/^\{?[a-f\d]{8}-(?:[a-f\d]{4}-){3}[a-f\d]{12}\}?$/i';
-
     /**
      * @inheritdoc
      */
     public static function getSlug(): string
     {
-        return 'uuidv4';
+        return 'alpha';
     }
 
     /**
@@ -33,6 +30,6 @@ final class UuidV4Rule implements IRule
      */
     public function passes($value): bool
     {
-        return \preg_match(self::UUIDV4_REGEX, $value) === 1;
+        return \ctype_alpha($value) && \strpos($value, ' ') === false;
     }
 }

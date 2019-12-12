@@ -33,7 +33,7 @@ class UriTemplateParserTest extends TestCase
         $this->parser = new UriTemplateParser();
     }
 
-    public function testParsingInvalidBracketInMiddleOfRuleThrowsException(): void
+    public function testParsingInvalidBracketInMiddleOfConstraintThrowsException(): void
     {
         $this->expectException(UnexpectedTokenException::class);
         $this->expectExceptionMessage("Expected optional path part to start with '/', got T_VARIABLE");
@@ -267,10 +267,10 @@ class UriTemplateParserTest extends TestCase
         $this->parser->parse($tokens);
     }
 
-    public function testParsingUnclosedRuleParenthesisThrowsException(): void
+    public function testParsingUnclosedConstraintParenthesisThrowsException(): void
     {
         $this->expectException(UnexpectedTokenException::class);
-        $this->expectExceptionMessage('Expected closing parenthesis after rules, got T_EOF');
+        $this->expectExceptionMessage('Expected closing parenthesis after constraints, got T_EOF');
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '/'),
             new Token(TokenTypes::T_VARIABLE, 'foo'),
@@ -294,7 +294,7 @@ class UriTemplateParserTest extends TestCase
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
-    public function testParsingVariableInPathWithRuleWithMultipleParametersCreatesCorrectNodes(): void
+    public function testParsingVariableInPathWithConstraintWithMultipleParametersCreatesCorrectNodes(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '/'),
@@ -311,16 +311,16 @@ class UriTemplateParserTest extends TestCase
         $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
         $pathNode = new AstNode(AstNodeTypes::PATH, null);
         $expectedAst->addChild($pathNode);
-        $variableRuleNode = new AstNode(AstNodeTypes::VARIABLE_RULE, 'bar');
-        $variableRuleNode->addChild(new AstNode(AstNodeTypes::VARIABLE_RULE_PARAMETERS, ['baz', 'blah']));
+        $variableConstraintNode = new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, 'bar');
+        $variableConstraintNode->addChild(new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT_PARAMETERS, ['baz', 'blah']));
         $variableNode = new AstNode(AstNodeTypes::VARIABLE, 'foo');
-        $variableNode->addChild($variableRuleNode);
+        $variableNode->addChild($variableConstraintNode);
         $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
         $pathNode->addChild($variableNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
-    public function testParsingVariableInPathWithRuleWithNoParametersCreatesCorrectNodes(): void
+    public function testParsingVariableInPathWithConstraintWithNoParametersCreatesCorrectNodes(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '/'),
@@ -332,15 +332,15 @@ class UriTemplateParserTest extends TestCase
         $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
         $pathNode = new AstNode(AstNodeTypes::PATH, null);
         $expectedAst->addChild($pathNode);
-        $variableRuleNode = new AstNode(AstNodeTypes::VARIABLE_RULE, 'bar');
+        $variableConstraintNode = new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, 'bar');
         $variableNode = new AstNode(AstNodeTypes::VARIABLE, 'foo');
-        $variableNode->addChild($variableRuleNode);
+        $variableNode->addChild($variableConstraintNode);
         $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
         $pathNode->addChild($variableNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
-    public function testParsingVariableInPathWithRuleWithSingleParameterCreatesCorrectNodes(): void
+    public function testParsingVariableInPathWithConstraintWithSingleParameterCreatesCorrectNodes(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '/'),
@@ -355,19 +355,19 @@ class UriTemplateParserTest extends TestCase
         $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
         $pathNode = new AstNode(AstNodeTypes::PATH, null);
         $expectedAst->addChild($pathNode);
-        $variableRuleNode = new AstNode(AstNodeTypes::VARIABLE_RULE, 'bar');
-        $variableRuleNode->addChild(new AstNode(AstNodeTypes::VARIABLE_RULE_PARAMETERS, ['baz']));
+        $variableConstraintNode = new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, 'bar');
+        $variableConstraintNode->addChild(new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT_PARAMETERS, ['baz']));
         $variableNode = new AstNode(AstNodeTypes::VARIABLE, 'foo');
-        $variableNode->addChild($variableRuleNode);
+        $variableNode->addChild($variableConstraintNode);
         $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
         $pathNode->addChild($variableNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
-    public function testParsingVariableInPathWithRuleButWithNoSlugThrowsException(): void
+    public function testParsingVariableInPathWithConstraintButWithNoSlugThrowsException(): void
     {
         $this->expectException(UnexpectedTokenException::class);
-        $this->expectExceptionMessage('Expected rule name, got T_PUNCTUATION');
+        $this->expectExceptionMessage('Expected constraint name, got T_PUNCTUATION');
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '/'),
             new Token(TokenTypes::T_VARIABLE, 'foo'),
@@ -377,7 +377,7 @@ class UriTemplateParserTest extends TestCase
         $this->parser->parse($tokens);
     }
 
-    public function testParsingVariableInPathWithRuleWithTrailingCommaDoesNotThrowException(): void
+    public function testParsingVariableInPathWithConstraintWithTrailingCommaDoesNotThrowException(): void
     {
         $tokens = new TokenStream([
             new Token(TokenTypes::T_PUNCTUATION, '/'),
@@ -393,10 +393,10 @@ class UriTemplateParserTest extends TestCase
         $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
         $pathNode = new AstNode(AstNodeTypes::PATH, null);
         $expectedAst->addChild($pathNode);
-        $variableRuleNode = new AstNode(AstNodeTypes::VARIABLE_RULE, 'bar');
-        $variableRuleNode->addChild(new AstNode(AstNodeTypes::VARIABLE_RULE_PARAMETERS, ['baz']));
+        $variableConstraintNode = new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, 'bar');
+        $variableConstraintNode->addChild(new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT_PARAMETERS, ['baz']));
         $variableNode = new AstNode(AstNodeTypes::VARIABLE, 'foo');
-        $variableNode->addChild($variableRuleNode);
+        $variableNode->addChild($variableConstraintNode);
         $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
         $pathNode->addChild($variableNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));

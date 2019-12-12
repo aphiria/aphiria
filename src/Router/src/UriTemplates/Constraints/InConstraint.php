@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\UriTemplates\Rules;
+namespace Aphiria\Routing\UriTemplates\Constraints;
 
 /**
- * Defines the in-array rule
+ * Defines the in-array constraint
  */
-final class InRule implements IRule
+final class InConstraint implements IRouteVariableConstraint
 {
     /** @var array The list of acceptable values */
     private array $acceptableValues;

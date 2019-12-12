@@ -225,14 +225,14 @@ final class UriTemplateParser implements IUriTemplateParser
         $currNode = $variableNode;
         $tokens->next();
 
-        // Check for the beginning of a rule list
+        // Check for the beginning of a constraint list
         if ($tokens->nextIfType(TokenTypes::T_PUNCTUATION, '(')) {
-            // Parse all variable rules
+            // Parse all variable constraints
             do {
-                $this->parseVariableRule($tokens, $variableNode);
+                $this->parseVariableConstraint($tokens, $variableNode);
             } while ($tokens->nextIfType(TokenTypes::T_PUNCTUATION, ','));
 
-            $tokens->expect(TokenTypes::T_PUNCTUATION, ')', 'Expected closing parenthesis after rules, got %s');
+            $tokens->expect(TokenTypes::T_PUNCTUATION, ')', 'Expected closing parenthesis after constraints, got %s');
             $tokens->next();
         }
 
@@ -244,25 +244,25 @@ final class UriTemplateParser implements IUriTemplateParser
     }
 
     /**
-     * Parses a single variable rule
+     * Parses a single variable constraint
      *
      * @param TokenStream $tokens The stream of tokens to parse
      * @param AstNode $currNode The variable node to add nodes to
      * @throws UnexpectedTokenException Thrown if there was an unexpected token
      */
-    private function parseVariableRule(TokenStream $tokens, AstNode $currNode): void
+    private function parseVariableConstraint(TokenStream $tokens, AstNode $currNode): void
     {
-        // Expect a rule name
-        $tokens->expect(TokenTypes::T_TEXT, null, 'Expected rule name, got %s');
+        // Expect a constraint name
+        $tokens->expect(TokenTypes::T_TEXT, null, 'Expected constraint name, got %s');
 
         if (($token = $tokens->getCurrent()) === null) {
             return;
         }
 
-        $variableRuleNode = new AstNode(AstNodeTypes::VARIABLE_RULE, $token->value);
+        $variableConstraintNode = new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, $token->value);
         $tokens->next();
 
-        // Check for a parameter list for this rule
+        // Check for a parameter list for this constraint
         if ($tokens->nextIfType(TokenTypes::T_PUNCTUATION, '(')) {
             $parameters = [];
             $currentToken = $tokens->getCurrent();
@@ -275,15 +275,15 @@ final class UriTemplateParser implements IUriTemplateParser
                 $currentToken = $tokens->next();
             }
 
-            $variableRuleNode->addChild(new AstNode(AstNodeTypes::VARIABLE_RULE_PARAMETERS, $parameters));
+            $variableConstraintNode->addChild(new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT_PARAMETERS, $parameters));
             $tokens->expect(
                 TokenTypes::T_PUNCTUATION,
                 ')',
-                'Expected closing parenthesis after rule parameters, got %s'
+                'Expected closing parenthesis after constraint parameters, got %s'
             );
             $tokens->next();
         }
 
-        $currNode->addChild($variableRuleNode);
+        $currNode->addChild($variableConstraintNode);
     }
 }

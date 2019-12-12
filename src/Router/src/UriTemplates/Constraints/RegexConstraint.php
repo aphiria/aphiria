@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\UriTemplates\Rules;
+namespace Aphiria\Routing\UriTemplates\Constraints;
 
 /**
- * Defines the regex rule
+ * Defines the regex constraint
  */
-final class RegexRule implements IRule
+final class RegexConstraint implements IRouteVariableConstraint
 {
     /** @var string The regex the input must match */
     private string $regex;

@@ -25,8 +25,8 @@ use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
-use Aphiria\Routing\UriTemplates\Rules\IRule;
-use Aphiria\Routing\UriTemplates\Rules\IRuleFactory;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraintFactory;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -37,8 +37,8 @@ use PHPUnit\Framework\TestCase;
 class TrieCompilerTest extends TestCase
 {
     private TrieCompiler $compiler;
-    /** @var IRuleFactory|MockObject */
-    private IRuleFactory $ruleFactory;
+    /** @var IRouteVariableConstraintFactory|MockObject */
+    private IRouteVariableConstraintFactory $constraintFactory;
     /** @var IUriTemplateParser|MockObject */
     private IUriTemplateParser $parser;
     /** @var IUriTemplateLexer|MockObject */
@@ -48,13 +48,13 @@ class TrieCompilerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->ruleFactory = $this->createMock(IRuleFactory::class);
+        $this->constraintFactory = $this->createMock(IRouteVariableConstraintFactory::class);
         $this->parser = $this->createMock(IUriTemplateParser::class);
         $this->lexer = $this->createMock(IUriTemplateLexer::class);
         $this->ast = new AstNode(AstNodeTypes::ROOT, null);
         $this->parser->method('parse')
             ->willReturn($this->ast);
-        $this->compiler = new TrieCompiler($this->ruleFactory, $this->parser, $this->lexer);
+        $this->compiler = new TrieCompiler($this->constraintFactory, $this->parser, $this->lexer);
         $this->expectedTrie = new RootTrieNode();
     }
 
@@ -264,40 +264,40 @@ class TrieCompilerTest extends TestCase
         $this->assertEquals($this->expectedTrie, $this->compiler->compile($expectedRoute));
     }
 
-    public function testCompilingPathVariableWithMultipleRulesAndParamsCreatesVariableNodeWithRules(): void
+    public function testCompilingPathVariableWithMultipleConstraintsAndParamsCreatesVariableNodeWithConstraints(): void
     {
         // Set up AST
-        $rule1Node = (new AstNode(AstNodeTypes::VARIABLE_RULE, 'r1'))
-            ->addChild(new AstNode(AstNodeTypes::VARIABLE_RULE_PARAMETERS, ['p1', 'p2']));
-        $rule2Node = (new AstNode(AstNodeTypes::VARIABLE_RULE, 'r2'))
-            ->addChild(new AstNode(AstNodeTypes::VARIABLE_RULE_PARAMETERS, ['p3', 'p4']));
+        $constraint1Node = (new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, 'r1'))
+            ->addChild(new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT_PARAMETERS, ['p1', 'p2']));
+        $constraint2Node = (new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, 'r2'))
+            ->addChild(new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT_PARAMETERS, ['p3', 'p4']));
         $variableNode = (new AstNode(AstNodeTypes::VARIABLE, 'foo'))
-            ->addChild($rule1Node)
-            ->addChild($rule2Node);
+            ->addChild($constraint1Node)
+            ->addChild($constraint2Node);
         $pathAst = (new AstNode(AstNodeTypes::PATH, null))
             ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
             ->addChild($variableNode);
         $this->ast->addChild($pathAst);
 
-        // Set up rule factory
-        /** @var IRule|MockObject $rule1 */
-        $rule1 = $this->createMock(IRule::class);
-        /** @var IRule|MockObject $rule2 */
-        $rule2 = $this->createMock(IRule::class);
-        $this->ruleFactory->expects($this->at(0))
-            ->method('createRule')
+        // Set up constraint factory
+        /** @var IRouteVariableConstraint|MockObject $constraint1 */
+        $constraint1 = $this->createMock(IRouteVariableConstraint::class);
+        /** @var IRouteVariableConstraint|MockObject $constraint2 */
+        $constraint2 = $this->createMock(IRouteVariableConstraint::class);
+        $this->constraintFactory->expects($this->at(0))
+            ->method('createConstraint')
             ->with('r1', ['p1', 'p2'])
-            ->willReturn($rule1);
-        $this->ruleFactory->expects($this->at(1))
-            ->method('createRule')
+            ->willReturn($constraint1);
+        $this->constraintFactory->expects($this->at(1))
+            ->method('createConstraint')
             ->with('r2', ['p3', 'p4'])
-            ->willReturn($rule2);
+            ->willReturn($constraint2);
 
         // Test compiling
         $pathTemplate = '/:foo(r1(p1,p2),r2(p3,p4))';
         $expectedRoute = $this->createRoute($pathTemplate);
         $this->expectedTrie->addChild(new VariableTrieNode(
-            new RouteVariable('foo', [$rule1, $rule2]),
+            new RouteVariable('foo', [$constraint1, $constraint2]),
             [],
             $expectedRoute
         ));
@@ -308,14 +308,14 @@ class TrieCompilerTest extends TestCase
         $this->assertEquals($this->expectedTrie, $this->compiler->compile($expectedRoute));
     }
 
-    public function testCompilingPathVariableWithNonRuleChildThrowsException(): void
+    public function testCompilingPathVariableWithNonConstraintChildThrowsException(): void
     {
         $this->expectException(InvalidUriTemplateException::class);
-        $ruleNode = (new AstNode(AstNodeTypes::VARIABLE_RULE, 'foo'))
+        $constraintNode = (new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, 'foo'))
             ->addChild(new AstNode(AstNodeTypes::TEXT, 'bar'));
         $pathAst = (new AstNode(AstNodeTypes::PATH, null))
             ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
-            ->addChild($ruleNode);
+            ->addChild($constraintNode);
         $this->ast->addChild($pathAst);
         $pathTemplate = '/:foo';
         $this->lexer->expects($this->once())
@@ -325,29 +325,29 @@ class TrieCompilerTest extends TestCase
         $this->compiler->compile($this->createRoute($pathTemplate));
     }
 
-    public function testCompilingPathVariableWithRulesCreatesVariableNodeWithRules(): void
+    public function testCompilingPathVariableWithConstraintsCreatesVariableNodeWithConstraints(): void
     {
         // Set up AST
         $variableNode = (new AstNode(AstNodeTypes::VARIABLE, 'foo'))
-            ->addChild(new AstNode(AstNodeTypes::VARIABLE_RULE, 'r1'));
+            ->addChild(new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, 'r1'));
         $pathAst = (new AstNode(AstNodeTypes::PATH, null))
             ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
             ->addChild($variableNode);
         $this->ast->addChild($pathAst);
 
-        // Set up rule factory
-        /** @var IRule|MockObject $rule */
-        $rule = $this->createMock(IRule::class);
-        $this->ruleFactory->expects($this->at(0))
-            ->method('createRule')
+        // Set up constraint factory
+        /** @var IRouteVariableConstraint|MockObject $constraint */
+        $constraint = $this->createMock(IRouteVariableConstraint::class);
+        $this->constraintFactory->expects($this->at(0))
+            ->method('createConstraint')
             ->with('r1')
-            ->willReturn($rule);
+            ->willReturn($constraint);
 
         // Test compiling
         $pathTemplate = '/:foo(r1)';
         $expectedRoute = $this->createRoute($pathTemplate);
         $this->expectedTrie->addChild(new VariableTrieNode(
-            new RouteVariable('foo', [$rule]),
+            new RouteVariable('foo', [$constraint]),
             [],
             $expectedRoute
         ));
