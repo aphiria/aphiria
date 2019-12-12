@@ -27,8 +27,8 @@ final class ValidationContext
     private ?ValidationContext $childContext = null;
     /** @var ValidationContext|null The parent context, if there is one */
     private ?ValidationContext $parentContext;
-    /** @var RuleViolation[] The list of rule violations that occurred in this context */
-    private array $ruleViolations = [];
+    /** @var ConstraintViolation[] The list of constraint violations that occurred in this context */
+    private array $constraintViolations = [];
 
     /**
      * @param mixed $value The value being validated
@@ -56,23 +56,23 @@ final class ValidationContext
     }
 
     /**
-     * Adds many rule violations to the context
+     * Adds many constraint violations to the context
      *
-     * @param RuleViolation[] $ruleViolations The violations to add
+     * @param ConstraintViolation[] $constraintViolations The violations to add
      */
-    public function addManyRuleViolations(array $ruleViolations): void
+    public function addManyConstraintViolations(array $constraintViolations): void
     {
-        $this->ruleViolations = [...$this->ruleViolations, ...$ruleViolations];
+        $this->constraintViolations = [...$this->constraintViolations, ...$constraintViolations];
     }
 
     /**
-     * Adds a rule violation to the context
+     * Adds a constraint violation to the context
      *
-     * @param RuleViolation $ruleViolation The violation to add
+     * @param ConstraintViolation $constraintViolation The violation to add
      */
-    public function addRuleViolation(RuleViolation $ruleViolation): void
+    public function addConstraintViolation(ConstraintViolation $constraintViolation): void
     {
-        $this->ruleViolations[] = $ruleViolation;
+        $this->constraintViolations[] = $constraintViolation;
     }
 
     /**
@@ -110,19 +110,19 @@ final class ValidationContext
     }
 
     /**
-     * Gets the list of rule violations
+     * Gets the list of constraint violations
      *
-     * @return RuleViolation[] The list of rule violations
+     * @return ConstraintViolation[] The list of constraint violations
      */
-    public function getRuleViolations(): array
+    public function getConstraintViolations(): array
     {
-        $allRuleViolations = $this->ruleViolations;
+        $allConstraintViolations = $this->constraintViolations;
 
         if ($this->childContext !== null) {
-            $allRuleViolations = [...$allRuleViolations, ...$this->childContext->getRuleViolations()];
+            $allConstraintViolations = [...$allConstraintViolations, ...$this->childContext->getConstraintViolations()];
         }
 
-        return $allRuleViolations;
+        return $allConstraintViolations;
     }
 
     /**

@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests;
 
 use Aphiria\Validation\CircularDependencyException;
-use Aphiria\Validation\Rules\IRule;
-use Aphiria\Validation\RuleViolation;
+use Aphiria\Validation\Constraints\IValidationConstraint;
+use Aphiria\Validation\ConstraintViolation;
 use Aphiria\Validation\ValidationContext;
 use PHPUnit\Framework\TestCase;
 
@@ -23,63 +23,63 @@ use PHPUnit\Framework\TestCase;
  */
 class ValidationContextTest extends TestCase
 {
-    public function testAddingManyRuleViolations(): void
+    public function testAddingManyConstraintViolations(): void
     {
-        $expectedRuleViolation1 = new RuleViolation(
-            $this->createMock(IRule::class),
+        $expectedConstraintViolation1 = new ConstraintViolation(
+            $this->createMock(IValidationConstraint::class),
             'foo',
             'foo'
         );
-        $expectedRuleViolation2 = new RuleViolation(
-            $this->createMock(IRule::class),
+        $expectedConstraintViolation2 = new ConstraintViolation(
+            $this->createMock(IValidationConstraint::class),
             'bar',
             'bar'
         );
         $context = new ValidationContext('foo');
-        $context->addManyRuleViolations([$expectedRuleViolation1, $expectedRuleViolation2]);
-        $this->assertCount(2, $context->getRuleViolations());
-        $this->assertSame($expectedRuleViolation1, $context->getRuleViolations()[0]);
-        $this->assertSame($expectedRuleViolation2, $context->getRuleViolations()[1]);
+        $context->addManyConstraintViolations([$expectedConstraintViolation1, $expectedConstraintViolation2]);
+        $this->assertCount(2, $context->getConstraintViolations());
+        $this->assertSame($expectedConstraintViolation1, $context->getConstraintViolations()[0]);
+        $this->assertSame($expectedConstraintViolation2, $context->getConstraintViolations()[1]);
     }
 
-    public function testAddingMoreRuleViolationsAppendsThemToExistingViolations(): void
+    public function testAddingMoreConstraintViolationsAppendsThemToExistingViolations(): void
     {
-        $expectedRuleViolation1 = new RuleViolation(
-            $this->createMock(IRule::class),
+        $expectedConstraintViolation1 = new ConstraintViolation(
+            $this->createMock(IValidationConstraint::class),
             'foo',
             'foo'
         );
-        $expectedRuleViolation2 = new RuleViolation(
-            $this->createMock(IRule::class),
+        $expectedConstraintViolation2 = new ConstraintViolation(
+            $this->createMock(IValidationConstraint::class),
             'bar',
             'bar'
         );
-        $expectedRuleViolation3 = new RuleViolation(
-            $this->createMock(IRule::class),
+        $expectedConstraintViolation3 = new ConstraintViolation(
+            $this->createMock(IValidationConstraint::class),
             'baz',
             'baz'
         );
         $context = new ValidationContext('foo');
-        $context->addRuleViolation($expectedRuleViolation1);
-        $context->addRuleViolation($expectedRuleViolation2);
-        $context->addManyRuleViolations([$expectedRuleViolation3]);
-        $this->assertCount(3, $context->getRuleViolations());
-        $this->assertSame($expectedRuleViolation1, $context->getRuleViolations()[0]);
-        $this->assertSame($expectedRuleViolation2, $context->getRuleViolations()[1]);
-        $this->assertSame($expectedRuleViolation3, $context->getRuleViolations()[2]);
+        $context->addConstraintViolation($expectedConstraintViolation1);
+        $context->addConstraintViolation($expectedConstraintViolation2);
+        $context->addManyConstraintViolations([$expectedConstraintViolation3]);
+        $this->assertCount(3, $context->getConstraintViolations());
+        $this->assertSame($expectedConstraintViolation1, $context->getConstraintViolations()[0]);
+        $this->assertSame($expectedConstraintViolation2, $context->getConstraintViolations()[1]);
+        $this->assertSame($expectedConstraintViolation3, $context->getConstraintViolations()[2]);
     }
 
-    public function testAddingRuleViolation(): void
+    public function testAddingConstraintViolation(): void
     {
-        $expectedRuleViolation = new RuleViolation(
-            $this->createMock(IRule::class),
+        $expectedConstraintViolation = new ConstraintViolation(
+            $this->createMock(IValidationConstraint::class),
             'foo',
             'foo'
         );
         $context = new ValidationContext('foo');
-        $context->addRuleViolation($expectedRuleViolation);
-        $this->assertCount(1, $context->getRuleViolations());
-        $this->assertSame($expectedRuleViolation, $context->getRuleViolations()[0]);
+        $context->addConstraintViolation($expectedConstraintViolation);
+        $this->assertCount(1, $context->getConstraintViolations());
+        $this->assertSame($expectedConstraintViolation, $context->getConstraintViolations()[0]);
     }
 
     public function testCircularDependencyDetectedIfObjectAppearsInChildContext(): void
@@ -146,25 +146,25 @@ class ValidationContextTest extends TestCase
         $this->assertSame($this, $context->getRootValue());
     }
 
-    public function testGettingRuleViolationsIncludesOnesFromChildren(): void
+    public function testGettingConstraintViolationsIncludesOnesFromChildren(): void
     {
         $parentContext = new ValidationContext($this);
         $childContext = new ValidationContext($this, 'foo', null, $parentContext);
-        $parentRuleViolation = new RuleViolation(
-            $this->createMock(IRule::class),
+        $parentConstraintViolation = new ConstraintViolation(
+            $this->createMock(IValidationConstraint::class),
             $this,
             $this
         );
-        $parentContext->addRuleViolation($parentRuleViolation);
-        $childRuleViolation = new RuleViolation(
-            $this->createMock(IRule::class),
+        $parentContext->addConstraintViolation($parentConstraintViolation);
+        $childConstraintViolation = new ConstraintViolation(
+            $this->createMock(IValidationConstraint::class),
             'bar',
             $this
         );
-        $childContext->addRuleViolation($childRuleViolation);
-        $this->assertCount(2, $parentContext->getRuleViolations());
-        $this->assertSame($parentRuleViolation, $parentContext->getRuleViolations()[0]);
-        $this->assertSame($childRuleViolation, $parentContext->getRuleViolations()[1]);
+        $childContext->addConstraintViolation($childConstraintViolation);
+        $this->assertCount(2, $parentContext->getConstraintViolations());
+        $this->assertSame($parentConstraintViolation, $parentContext->getConstraintViolations()[0]);
+        $this->assertSame($childConstraintViolation, $parentContext->getConstraintViolations()[1]);
     }
 
     public function testGettingValueReturnsOneSetInConstructor(): void

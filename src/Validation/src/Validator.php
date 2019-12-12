@@ -40,15 +40,15 @@ final class Validator implements IValidator
         '__unset' => true,
         '__wakeup' => true
     ];
-    /** @var RuleRegistry The registry of rules */
-    private RuleRegistry $rules;
+    /** @var ConstraintRegistry The registry of constraints */
+    private ConstraintRegistry $constraints;
 
     /**
-     * @param RuleRegistry $rules The registry of rules
+     * @param ConstraintRegistry $constraints The registry of constraints
      */
-    public function __construct(RuleRegistry $rules)
+    public function __construct(ConstraintRegistry $constraints)
     {
-        $this->rules = $rules;
+        $this->constraints = $constraints;
     }
 
     /**
@@ -96,10 +96,10 @@ final class Validator implements IValidator
     /**
      * @inheritdoc
      */
-    public function tryValidateValue($value, array $rules, ValidationContext $validationContext): bool
+    public function tryValidateValue($value, array $constraints, ValidationContext $validationContext): bool
     {
         try {
-            $this->validateValue($value, $rules, $validationContext);
+            $this->validateValue($value, $constraints, $validationContext);
 
             return true;
         } catch (ValidationException $ex) {
@@ -134,22 +134,22 @@ final class Validator implements IValidator
 
         $reflectionMethod->setAccessible(true);
         $methodValue = $reflectionMethod->invoke($object);
-        $allRulesPassed = true;
+        $allConstraintsPassed = true;
 
         // Recursively validate the value if it's an object
         if (\is_object($methodValue)) {
             // Since we're validating a whole new object, null out the method name param
             $methodValueValidationContext = new ValidationContext($methodValue, null, null, $validationContext);
-            $allRulesPassed = $allRulesPassed && $this->tryValidateObject($methodValue, $methodValueValidationContext);
+            $allConstraintsPassed = $allConstraintsPassed && $this->tryValidateObject($methodValue, $methodValueValidationContext);
         }
 
-        foreach ($this->rules->getMethodRules($class, $methodName) as $rule) {
-            $thisRulePassed = $rule->passes($methodValue, $validationContext);
-            $allRulesPassed = $allRulesPassed && $thisRulePassed;
+        foreach ($this->constraints->getMethodConstraints($class, $methodName) as $constraint) {
+            $thisConstraintPassed = $constraint->passes($methodValue, $validationContext);
+            $allConstraintsPassed = $allConstraintsPassed && $thisConstraintPassed;
 
-            if (!$thisRulePassed) {
-                $validationContext->addRuleViolation(new RuleViolation(
-                    $rule,
+            if (!$thisConstraintPassed) {
+                $validationContext->addConstraintViolation(new ConstraintViolation(
+                    $constraint,
                     $methodValue,
                     $validationContext->getValue(),
                     null,
@@ -158,7 +158,7 @@ final class Validator implements IValidator
             }
         }
 
-        if (!$allRulesPassed) {
+        if (!$allConstraintsPassed) {
             throw new ValidationException($validationContext, "Failed to validate $class::$methodName()");
         }
     }
@@ -168,7 +168,7 @@ final class Validator implements IValidator
      */
     public function validateObject(object $object, ValidationContext $validationContext): void
     {
-        $allRulesPassed = true;
+        $allConstraintsPassed = true;
         $reflectionObject = new ReflectionObject($object);
         $reflectionProperties = $reflectionObject->getProperties();
         $reflectionMethods = $reflectionObject->getMethods();
@@ -176,18 +176,18 @@ final class Validator implements IValidator
         foreach ($reflectionProperties as $reflectionProperty) {
             $propertyName = $reflectionProperty->getName();
             $propertyValidationContext = new ValidationContext($object, $propertyName, null, $validationContext);
-            $allRulesPassed = $allRulesPassed
+            $allConstraintsPassed = $allConstraintsPassed
                 && $this->tryValidateProperty($object, $propertyName, $propertyValidationContext);
         }
 
         foreach ($reflectionMethods as $reflectionMethod) {
             $methodName = $reflectionMethod->getName();
             $methodValidationContext = new ValidationContext($object, null, $methodName, $validationContext);
-            $allRulesPassed = $allRulesPassed
+            $allConstraintsPassed = $allConstraintsPassed
                 && $this->tryValidateMethod($object, $methodName, $methodValidationContext);
         }
 
-        if (!$allRulesPassed) {
+        if (!$allConstraintsPassed) {
             throw new ValidationException($validationContext, 'Failed to validate ' . \get_class($object));
         }
     }
@@ -211,22 +211,22 @@ final class Validator implements IValidator
 
         $reflectionProperty->setAccessible(true);
         $propertyValue = $reflectionProperty->getValue($object);
-        $allRulesPassed = true;
+        $allConstraintsPassed = true;
 
         // Recursively validate the value if it's an object
         if (\is_object($propertyValue)) {
             // Since we're validating a whole new object, null out the property name param
             $propertyValueValidationContext = new ValidationContext($propertyValue, null, null, $validationContext);
-            $allRulesPassed = $allRulesPassed && $this->tryValidateObject($propertyValue, $propertyValueValidationContext);
+            $allConstraintsPassed = $allConstraintsPassed && $this->tryValidateObject($propertyValue, $propertyValueValidationContext);
         }
 
-        foreach ($this->rules->getPropertyRules($class, $propertyName) as $rule) {
-            $thisRulePassed = $rule->passes($propertyValue, $validationContext);
-            $allRulesPassed = $allRulesPassed && $thisRulePassed;
+        foreach ($this->constraints->getPropertyConstraints($class, $propertyName) as $constraint) {
+            $thisConstraintPassed = $constraint->passes($propertyValue, $validationContext);
+            $allConstraintsPassed = $allConstraintsPassed && $thisConstraintPassed;
 
-            if (!$thisRulePassed) {
-                $validationContext->addRuleViolation(new RuleViolation(
-                    $rule,
+            if (!$thisConstraintPassed) {
+                $validationContext->addConstraintViolation(new ConstraintViolation(
+                    $constraint,
                     $propertyValue,
                     $validationContext->getValue(),
                     $propertyName
@@ -234,7 +234,7 @@ final class Validator implements IValidator
             }
         }
 
-        if (!$allRulesPassed) {
+        if (!$allConstraintsPassed) {
             throw new ValidationException($validationContext, "Failed to validate $class::$propertyName");
         }
     }
@@ -242,24 +242,24 @@ final class Validator implements IValidator
     /**
      * @inheritdoc
      */
-    public function validateValue($value, array $rules, ValidationContext $validationContext): void
+    public function validateValue($value, array $constraints, ValidationContext $validationContext): void
     {
-        $allRulesPass = true;
+        $allConstraintsPass = true;
 
-        foreach ($rules as $rule) {
-            $thisRulePassed = $rule->passes($value, $validationContext);
-            $allRulesPass = $allRulesPass && $thisRulePassed;
+        foreach ($constraints as $constraint) {
+            $thisConstraintPassed = $constraint->passes($value, $validationContext);
+            $allConstraintsPass = $allConstraintsPass && $thisConstraintPassed;
 
-            if (!$thisRulePassed) {
-                $validationContext->addRuleViolation(new RuleViolation(
-                    $rule,
+            if (!$thisConstraintPassed) {
+                $validationContext->addConstraintViolation(new ConstraintViolation(
+                    $constraint,
                     $value,
                     $value
                 ));
             }
         }
 
-        if (!$allRulesPass) {
+        if (!$allConstraintsPass) {
             throw new ValidationException($validationContext);
         }
     }

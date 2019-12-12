@@ -9,7 +9,7 @@ Aphiria
 EOT;
 
 return PhpCsFixer\Config::create()
-    ->setRules([
+    ->setConstraints([
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
         'declare_strict_types' => true,

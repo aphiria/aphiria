@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation;
 
-use Aphiria\Validation\Rules\IRule;
+use Aphiria\Validation\Constraints\IValidationConstraint;
 use InvalidArgumentException;
 
 /**
@@ -56,12 +56,12 @@ interface IValidator
      * Tries to validate a single value
      *
      * @param mixed $value The value to validate
-     * @param IRule[] $rules The list of rules to use
+     * @param IValidationConstraint[] $constraints The list of constraints to use
      * @param ValidationContext $validationContext The context to perform validation in
      * @return bool True if the value was valid, otherwise false
      * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
-    public function tryValidateValue($value, array $rules, ValidationContext $validationContext): bool;
+    public function tryValidateValue($value, array $constraints, ValidationContext $validationContext): bool;
 
     /**
      * Validates a method in an object
@@ -98,13 +98,13 @@ interface IValidator
     public function validateProperty(object $object, string $propertyName, ValidationContext $validationContext): void;
 
     /**
-     * Validates a single value against a list of rules
+     * Validates a single value against a list of constraints
      *
      * @param mixed $value The value to validate
-     * @param IRule[] $rules The list of rules to use
+     * @param IValidationConstraint[] $constraints The list of constraints to use
      * @param ValidationContext $validationContext The context to perform validation in
      * @throws ValidationException Thrown if the value was invalid
      * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
-    public function validateValue($value, array $rules, ValidationContext $validationContext): void;
+    public function validateValue($value, array $constraints, ValidationContext $validationContext): void;
 }
