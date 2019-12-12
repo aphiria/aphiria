@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Constraints;
 
 use Aphiria\Validation\ValidationContext;
-use LogicException;
 
 /**
  * Defines the interface for constraints to implement
@@ -34,7 +33,6 @@ interface IValidationConstraint
      * @param mixed $value The value to validate
      * @param ValidationContext $validationContext The context to perform validation in
      * @return bool True if the constraint passes, otherwise false
-     * @throws LogicException Thrown if the constraint was not set up correctly
      */
     public function passes($value, ValidationContext $validationContext): bool;
 }
