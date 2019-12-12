@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Matchers\Rules;
+namespace Aphiria\Routing\UriTemplates\Rules;
 
 /**
  * Defines the rule factory registrant that registers all the built-in rules' factories

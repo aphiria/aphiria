@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Tests\Matchers\Rules;
+namespace Aphiria\Routing\Tests\UriTemplates\Rules;
 
-use Aphiria\Routing\Matchers\Rules\AlphaRule;
+use Aphiria\Routing\UriTemplates\Rules\AlphaRule;
 use PHPUnit\Framework\TestCase;
 
 /**

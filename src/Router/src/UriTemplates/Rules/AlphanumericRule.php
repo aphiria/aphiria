@@ -10,19 +10,19 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Matchers\Rules;
+namespace Aphiria\Routing\UriTemplates\Rules;
 
 /**
- * Defines the alpha rule
+ * Defines the alphanumeric rule
  */
-final class AlphaRule implements IRule
+final class AlphanumericRule implements IRule
 {
     /**
      * @inheritdoc
      */
     public static function getSlug(): string
     {
-        return 'alpha';
+        return 'alphanumeric';
     }
 
     /**
@@ -30,6 +30,6 @@ final class AlphaRule implements IRule
      */
     public function passes($value): bool
     {
-        return \ctype_alpha($value) && \strpos($value, ' ') === false;
+        return \ctype_alnum($value) && \strpos($value, ' ') === false;
     }
 }

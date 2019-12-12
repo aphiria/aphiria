@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Tests\Matchers\Rules;
+namespace Aphiria\Routing\Tests\UriTemplates\Rules;
 
-use Aphiria\Routing\Matchers\Rules\IRule;
-use Aphiria\Routing\Matchers\Rules\RuleFactory;
+use Aphiria\Routing\UriTemplates\Rules\IRule;
+use Aphiria\Routing\UriTemplates\Rules\RuleFactory;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

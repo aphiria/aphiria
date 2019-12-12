@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Tests\Matchers\Rules;
+namespace Aphiria\Routing\Tests\UriTemplates\Rules;
 
-use Aphiria\Routing\Matchers\Rules\DateRule;
+use Aphiria\Routing\UriTemplates\Rules\DateRule;
 use DateTime;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;

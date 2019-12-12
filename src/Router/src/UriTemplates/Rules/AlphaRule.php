@@ -10,19 +10,19 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Matchers\Rules;
+namespace Aphiria\Routing\UriTemplates\Rules;
 
 /**
- * Defines the integer rule
+ * Defines the alpha rule
  */
-final class IntegerRule implements IRule
+final class AlphaRule implements IRule
 {
     /**
      * @inheritdoc
      */
     public static function getSlug(): string
     {
-        return 'int';
+        return 'alpha';
     }
 
     /**
@@ -30,6 +30,6 @@ final class IntegerRule implements IRule
      */
     public function passes($value): bool
     {
-        return \filter_var($value, FILTER_VALIDATE_INT) !== false;
+        return \ctype_alpha($value) && \strpos($value, ' ') === false;
     }
 }

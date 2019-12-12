@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Matchers\Rules;
+namespace Aphiria\Routing\UriTemplates\Rules;
 
 use Closure;
 use InvalidArgumentException;
