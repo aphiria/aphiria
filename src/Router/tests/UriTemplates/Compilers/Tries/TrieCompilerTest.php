@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries\Compilers;
 
-use Aphiria\Routing\Matchers\Rules\IRule;
-use Aphiria\Routing\Matchers\Rules\IRuleFactory;
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
@@ -27,6 +25,8 @@ use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
+use Aphiria\Routing\UriTemplates\Rules\IRule;
+use Aphiria\Routing\UriTemplates\Rules\IRuleFactory;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

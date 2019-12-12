@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries;
 
-use Aphiria\Routing\Matchers\Rules\IRule;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RouteVariable;
+use Aphiria\Routing\UriTemplates\Rules\IRule;
 use PHPUnit\Framework\TestCase;
 
 /**

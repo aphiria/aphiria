@@ -12,18 +12,17 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries;
 
-use Aphiria\Routing\Matchers\Rules\IRule;
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\LiteralTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RouteVariable;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\VariableTrieNode;
+use Aphiria\Routing\UriTemplates\Rules\IRule;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use ReflectionException;
 
 /**
  * Tests the variable trie node
@@ -173,7 +172,6 @@ class VariableTrieNodeTest extends TestCase
      * Creates a mock node for use in tests
      *
      * @return MockObject|TrieNode The mock node
-     * @throws ReflectionException
      */
     private function createMockNode(): MockObject
     {

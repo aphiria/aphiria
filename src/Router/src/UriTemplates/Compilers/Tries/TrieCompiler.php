@@ -12,9 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\UriTemplates\Compilers\Tries;
 
-use Aphiria\Routing\Matchers\Rules\IRuleFactory;
-use Aphiria\Routing\Matchers\Rules\RuleFactory;
-use Aphiria\Routing\Matchers\Rules\RuleFactoryRegistrant;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
 use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
@@ -25,6 +22,9 @@ use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
+use Aphiria\Routing\UriTemplates\Rules\IRuleFactory;
+use Aphiria\Routing\UriTemplates\Rules\RuleFactory;
+use Aphiria\Routing\UriTemplates\Rules\RuleFactoryRegistrant;
 
 /**
  * Defines a compiler for a trie

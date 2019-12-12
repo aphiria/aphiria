@@ -10,19 +10,19 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Matchers\Rules;
+namespace Aphiria\Routing\UriTemplates\Rules;
 
 /**
- * Defines the alphanumeric rule
+ * Defines the numeric rule
  */
-final class AlphanumericRule implements IRule
+final class NumericRule implements IRule
 {
     /**
      * @inheritdoc
      */
     public static function getSlug(): string
     {
-        return 'alphanumeric';
+        return 'numeric';
     }
 
     /**
@@ -30,6 +30,6 @@ final class AlphanumericRule implements IRule
      */
     public function passes($value): bool
     {
-        return \ctype_alnum($value) && \strpos($value, ' ') === false;
+        return \is_numeric($value);
     }
 }

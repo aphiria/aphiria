@@ -14,6 +14,7 @@ namespace Aphiria\Routing\UriTemplates\Compilers\Tries;
 
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\ITrieCache;
+use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
 
 /**
  * Defines a factory for tries
@@ -46,6 +47,7 @@ final class TrieFactory
      * Creates a trie
      *
      * @return TrieNode The trie
+     * @throws InvalidUriTemplateException Thrown if the URI template is invalid
      */
     public function createTrie(): TrieNode
     {
