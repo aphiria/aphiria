@@ -104,7 +104,7 @@ class UriTemplateLexerTest extends TestCase
         );
     }
 
-    public function testLexingPathWithMultipleRule(): void
+    public function testLexingPathWithMultipleConstraint(): void
     {
         $this->assertEquals(
             new TokenStream([
@@ -122,7 +122,7 @@ class UriTemplateLexerTest extends TestCase
         );
     }
 
-    public function testLexingPathWithMultipleRulesWithSpacesInBetweenSlugsAndParameters(): void
+    public function testLexingPathWithMultipleConstraintsWithSpacesInBetweenSlugsAndParameters(): void
     {
         $this->assertEquals(
             new TokenStream([
@@ -175,7 +175,7 @@ class UriTemplateLexerTest extends TestCase
         );
     }
 
-    public function testLexingPathWithSingleRule(): void
+    public function testLexingPathWithSingleConstraint(): void
     {
         $this->assertEquals(
             new TokenStream([
@@ -191,7 +191,7 @@ class UriTemplateLexerTest extends TestCase
         );
     }
 
-    public function testLexingPathWithSingleRuleInTheMiddle(): void
+    public function testLexingPathWithSingleConstraintInTheMiddle(): void
     {
         $this->assertEquals(
             new TokenStream([
@@ -209,7 +209,7 @@ class UriTemplateLexerTest extends TestCase
         );
     }
 
-    public function testLexingPathWithSingleRuleWithMixOfStringAndNumberParameters(): void
+    public function testLexingPathWithSingleConstraintWithMixOfStringAndNumberParameters(): void
     {
         $this->assertEquals(
             new TokenStream([
@@ -230,7 +230,7 @@ class UriTemplateLexerTest extends TestCase
         );
     }
 
-    public function testLexingPathWithSingleRuleWithArrayParameter(): void
+    public function testLexingPathWithSingleConstraintWithArrayParameter(): void
     {
         $this->assertEquals(
             new TokenStream([
@@ -255,7 +255,7 @@ class UriTemplateLexerTest extends TestCase
         );
     }
 
-    public function testLexingPathWithSingleRuleWithMultipleParameters(): void
+    public function testLexingPathWithSingleConstraintWithMultipleParameters(): void
     {
         $this->assertEquals(
             new TokenStream([
@@ -278,7 +278,7 @@ class UriTemplateLexerTest extends TestCase
         );
     }
 
-    public function testLexingPathWithSingleRuleWithSingleParameter(): void
+    public function testLexingPathWithSingleConstraintWithSingleParameter(): void
     {
         $this->assertEquals(
             new TokenStream([

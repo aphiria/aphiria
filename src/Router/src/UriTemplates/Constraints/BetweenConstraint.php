@@ -10,14 +10,14 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\UriTemplates\Rules;
+namespace Aphiria\Routing\UriTemplates\Constraints;
 
 use InvalidArgumentException;
 
 /**
- * Defines the between rule
+ * Defines the between constraint
  */
-final class BetweenRule implements IRule
+final class BetweenConstraint implements IRouteVariableConstraint
 {
     /** @var int|float The min value */
     private $min;

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries;
 
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RouteVariable;
-use Aphiria\Routing\UriTemplates\Rules\IRule;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,9 +23,9 @@ class RouteVariableTest extends TestCase
 {
     public function testPropertiesAreSetFromConstructor(): void
     {
-        $expectedRules = [$this->createMock(IRule::class)];
-        $routeVariable = new RouteVariable('foo', $expectedRules);
+        $expectedConstraints = [$this->createMock(IRouteVariableConstraint::class)];
+        $routeVariable = new RouteVariable('foo', $expectedConstraints);
         $this->assertEquals('foo', $routeVariable->name);
-        $this->assertSame($expectedRules, $routeVariable->rules);
+        $this->assertSame($expectedConstraints, $routeVariable->constraints);
     }
 }

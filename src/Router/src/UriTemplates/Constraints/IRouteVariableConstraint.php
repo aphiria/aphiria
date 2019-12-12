@@ -10,18 +10,18 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\UriTemplates\Rules;
+namespace Aphiria\Routing\UriTemplates\Constraints;
 
 /**
- * Defines the interface for URI template rules to implement
+ * Defines the interface for URI template constraints to implement
  */
-interface IRule
+interface IRouteVariableConstraint
 {
     /**
-     * Gets whether or not the rule passes
+     * Gets whether or not the constraint passes
      *
      * @param mixed $value The value to validate
-     * @return bool True if the rule passes, otherwise false
+     * @return bool True if the constraint passes, otherwise false
      */
     public function passes($value): bool;
 }

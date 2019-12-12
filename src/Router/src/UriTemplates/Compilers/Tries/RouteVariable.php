@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\UriTemplates\Compilers\Tries;
 
-use Aphiria\Routing\UriTemplates\Rules\IRule;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
 
 /**
  * Defines a route variable
@@ -21,16 +21,16 @@ final class RouteVariable
 {
     /** @var string The name of the variable */
     public string $name;
-    /** @var IRule[] The list of rules that applies to this route variable */
-    public array $rules;
+    /** @var IRouteVariableConstraint[] The list of constraints that applies to this route variable */
+    public array $constraints;
 
     /**
      * @param string $name The name of the variable
-     * @param IRule[] $rules The list of rules that applies to this route variable
+     * @param IRouteVariableConstraint[] $constraints The list of constraints that applies to this route variable
      */
-    public function __construct(string $name, array $rules = [])
+    public function __construct(string $name, array $constraints = [])
     {
         $this->name = $name;
-        $this->rules = $rules;
+        $this->constraints = $constraints;
     }
 }

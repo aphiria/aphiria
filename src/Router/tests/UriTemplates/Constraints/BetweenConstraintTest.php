@@ -10,57 +10,57 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Tests\UriTemplates\Rules;
+namespace Aphiria\Routing\Tests\UriTemplates\Constraints;
 
-use Aphiria\Routing\UriTemplates\Rules\BetweenRule;
+use Aphiria\Routing\UriTemplates\Constraints\BetweenConstraint;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the between rule
+ * Tests the between constraint
  */
-class BetweenRuleTest extends TestCase
+class BetweenConstraintTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {
-        $this->assertEquals('between', BetweenRule::getSlug());
+        $this->assertEquals('between', BetweenConstraint::getSlug());
     }
 
     public function testFailingValueWithExclusiveRange(): void
     {
-        $rule = new BetweenRule(0, 2, false);
-        $this->assertFalse($rule->passes(3));
+        $constraint = new BetweenConstraint(0, 2, false);
+        $this->assertFalse($constraint->passes(3));
     }
 
     public function testFailingValueWithInclusiveRange(): void
     {
-        $rule = new BetweenRule(0, 2, true);
-        $this->assertFalse($rule->passes(3));
+        $constraint = new BetweenConstraint(0, 2, true);
+        $this->assertFalse($constraint->passes(3));
     }
 
     public function testPassingValueWithExclusiveRange(): void
     {
-        $rule = new BetweenRule(0, 2, false);
-        $this->assertTrue($rule->passes(1));
+        $constraint = new BetweenConstraint(0, 2, false);
+        $this->assertTrue($constraint->passes(1));
     }
 
     public function testPassingValueWithInclusiveRange(): void
     {
-        $rule = new BetweenRule(0, 2, true);
-        $this->assertTrue($rule->passes(2));
+        $constraint = new BetweenConstraint(0, 2, true);
+        $this->assertTrue($constraint->passes(2));
     }
 
     public function testInvalidMaxValueThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Max value must be numeric');
-        new BetweenRule(1, false);
+        new BetweenConstraint(1, false);
     }
 
     public function testInvalidMinValueThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Min value must be numeric');
-        new BetweenRule(false, 1);
+        new BetweenConstraint(false, 1);
     }
 }

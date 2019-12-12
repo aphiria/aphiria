@@ -10,19 +10,19 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\UriTemplates\Rules;
+namespace Aphiria\Routing\UriTemplates\Constraints;
 
 /**
- * Defines the numeric rule
+ * Defines the integer constraint
  */
-final class NumericRule implements IRule
+final class IntegerConstraint implements IRouteVariableConstraint
 {
     /**
      * @inheritdoc
      */
     public static function getSlug(): string
     {
-        return 'numeric';
+        return 'int';
     }
 
     /**
@@ -30,6 +30,6 @@ final class NumericRule implements IRule
      */
     public function passes($value): bool
     {
-        return \is_numeric($value);
+        return \filter_var($value, FILTER_VALIDATE_INT) !== false;
     }
 }
