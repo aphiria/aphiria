@@ -76,6 +76,22 @@ final class ValidationContext
     }
 
     /**
+     * Gets the list of constraint violations
+     *
+     * @return ConstraintViolation[] The list of constraint violations
+     */
+    public function getConstraintViolations(): array
+    {
+        $allConstraintViolations = $this->constraintViolations;
+
+        if ($this->childContext !== null) {
+            $allConstraintViolations = [...$allConstraintViolations, ...$this->childContext->getConstraintViolations()];
+        }
+
+        return $allConstraintViolations;
+    }
+
+    /**
      * Gets the name of the method being validated
      *
      * @return string|null The name of the method being validated, or null if not a method
@@ -107,22 +123,6 @@ final class ValidationContext
         }
 
         return $this->parentContext->getRootValue();
-    }
-
-    /**
-     * Gets the list of constraint violations
-     *
-     * @return ConstraintViolation[] The list of constraint violations
-     */
-    public function getConstraintViolations(): array
-    {
-        $allConstraintViolations = $this->constraintViolations;
-
-        if ($this->childContext !== null) {
-            $allConstraintViolations = [...$allConstraintViolations, ...$this->childContext->getConstraintViolations()];
-        }
-
-        return $allConstraintViolations;
     }
 
     /**

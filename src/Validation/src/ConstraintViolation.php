@@ -52,6 +52,16 @@ final class ConstraintViolation
     }
 
     /**
+     * Gets the constraint that was violated
+     *
+     * @return IValidationConstraint The constraint that was violated
+     */
+    public function getConstraint(): IValidationConstraint
+    {
+        return $this->constraint;
+    }
+
+    /**
      * Gets the invalid value
      *
      * @return mixed The invalid value
@@ -89,15 +99,5 @@ final class ConstraintViolation
     public function getRootValue()
     {
         return $this->rootValue;
-    }
-
-    /**
-     * Gets the constraint that was violated
-     *
-     * @return IValidationConstraint The constraint that was violated
-     */
-    public function getConstraint(): IValidationConstraint
-    {
-        return $this->constraint;
     }
 }
