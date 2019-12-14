@@ -22,7 +22,6 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
-use Aphiria\Routing\Caching\CachedRouteRegistrant;
 use Aphiria\Routing\Matchers\TrieRouteMatcher;
 use Aphiria\Routing\RouteCollection as AphiriaRouteCollection;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieFactory;
@@ -90,16 +89,14 @@ echo formatResults('Symfony', \memory_get_usage() - $startMemory, \microtime(tru
 
 $startMemory = \memory_get_usage();
 $routes = new AphiriaRouteCollection();
-$routeFactory = new CachedRouteRegistrant(function (AphiriaRouteCollection $routes) use ($numRoutes) {
-    $routeBuilders = new RouteBuilderRegistry();
+$routeBuilders = new RouteBuilderRegistry();
 
-    for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
-        $routeBuilders->map('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
-            ->toMethod('Foo', (string)$routeIter);
-    }
+for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
+    $routeBuilders->map('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
+        ->toMethod('Foo', (string)$routeIter);
+}
 
-    $routes->addMany($routeBuilders->buildAll());
-});
+$routes->addMany($routeBuilders->buildAll());
 $routeMatcher = new TrieRouteMatcher((new TrieFactory($routes))->createTrie());
 $startTime = \microtime(true);
 
