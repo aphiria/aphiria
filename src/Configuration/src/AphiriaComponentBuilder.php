@@ -25,6 +25,7 @@ use Aphiria\Routing\AggregateRouteRegistrant;
 use Aphiria\Routing\Builders\RouteBuilderRouteRegistrant;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\Validation\ConstraintRegistry;
 use RuntimeException;
 
 /**
@@ -210,6 +211,28 @@ final class AphiriaComponentBuilder
                 : $this->container->bindInstance(AggregateRouteRegistrant::class, $aggregateRouteRegistrant = new AggregateRouteRegistrant());
 
             $aggregateRouteRegistrant->addRouteRegistrant(new RouteBuilderRouteRegistrant($callbacks));
+        });
+
+        return $this;
+    }
+
+    /**
+     * Registers Aphiria validators
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to register to
+     * @return AphiriaComponentBuilder For chaining
+     */
+    public function withValidationComponent(IApplicationBuilder $appBuilder): self
+    {
+        $appBuilder->registerComponentBuilder('validators', function (array $callbacks) {
+            /** @var ConstraintRegistry $constraints */
+            $this->container->hasBinding(ConstraintRegistry::class)
+                ? $constraints = $this->container->resolve(ConstraintRegistry::class)
+                : $this->container->bindInstance(ConstraintRegistry::class, $constraints = new ConstraintRegistry());
+
+            foreach ($callbacks as $callback) {
+                $callback($constraints);
+            }
         });
 
         return $this;

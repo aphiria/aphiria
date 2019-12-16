@@ -17,6 +17,7 @@
         <directory>src/Router/tests</directory>
         <directory>src/Serialization/tests</directory>
         <directory>src/Sessions/tests</directory>
+        <directory>src/Validation/tests</directory>
     </testsuite>
      <filter>
         <whitelist>

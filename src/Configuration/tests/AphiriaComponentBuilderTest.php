@@ -18,6 +18,7 @@ use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\Validation\ConstraintRegistry;
 use Closure;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -139,5 +140,24 @@ class AphiriaComponentBuilderTest extends TestCase
             ->method('registerComponentBuilder')
             ->with('routes');
         $this->componentBuilder->withRoutingComponent($this->appBuilder);
+    }
+
+    public function testWithValidationComponentPassesConstraintRegistryToRegisteredCallbacks(): void
+    {
+        $this->appBuilder->expects($this->once())
+            ->method('registerComponentBuilder')
+            ->with('validators', $this->callback(function (Closure $callback) {
+                $callbackWasCalled = false;
+                $callbacks = [
+                    function (ConstraintRegistry $constraints) use (&$callbackWasCalled) {
+                        $callbackWasCalled = true;
+                    }
+                ];
+                // Call the callback so we can verify it was setup correctly
+                $callback($callbacks);
+
+                return $callbackWasCalled;
+            }));
+        $this->componentBuilder->withValidationComponent($this->appBuilder);
     }
 }
