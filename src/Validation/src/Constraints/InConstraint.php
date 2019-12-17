@@ -19,18 +19,18 @@ use Aphiria\Validation\ValidationContext;
  */
 final class InConstraint extends ValidationConstraint
 {
-    /** @var array The value to compare against */
-    private array $array;
+    /** @var array The values to check */
+    private array $values;
 
     /**
      * @inheritdoc
-     * @param array $array The value to compare against
+     * @param array $values The values to check
      */
-    public function __construct(array $array, string $errorMessageId)
+    public function __construct(array $values, string $errorMessageId)
     {
         parent::__construct($errorMessageId);
 
-        $this->array = $array;
+        $this->values = $values;
     }
 
     /**
@@ -38,6 +38,6 @@ final class InConstraint extends ValidationConstraint
      */
     public function passes($value, ValidationContext $validationContext): bool
     {
-        return in_array($value, $this->array);
+        return in_array($value, $this->values);
     }
 }

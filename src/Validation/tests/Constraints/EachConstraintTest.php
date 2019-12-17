@@ -12,16 +12,16 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Tests\Constraints;
 
-use Aphiria\Validation\Constraints\ForEachConstraint;
+use Aphiria\Validation\Constraints\EachConstraint;
 use Aphiria\Validation\Constraints\IValidationConstraint;
 use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the foreach constraint
+ * Tests the each constraint
  */
-class ForEachConstraintTest extends TestCase
+class EachConstraintTest extends TestCase
 {
     public function testMultipleConstraintsAreAccepted(): void
     {
@@ -36,16 +36,16 @@ class ForEachConstraintTest extends TestCase
             ->method('passes')
             ->with('foo', $expectedContext)
             ->willReturn(true);
-        $forEachConstraint = new ForEachConstraint([$constraint1, $constraint2], 'foo');
-        $this->assertTrue($forEachConstraint->passes(['foo'], new ValidationContext('foo')));
+        $eachConstraint = new EachConstraint([$constraint1, $constraint2], 'foo');
+        $this->assertTrue($eachConstraint->passes(['foo'], new ValidationContext('foo')));
     }
 
     public function testPassesOnNonIterableValueThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Value must be iterable');
-        $forEachConstraint = new ForEachConstraint($this->createMock(IValidationConstraint::class), 'foo');
-        $forEachConstraint->passes('foo', new ValidationContext('foo'));
+        $eachConstraint = new EachConstraint($this->createMock(IValidationConstraint::class), 'foo');
+        $eachConstraint->passes('foo', new ValidationContext('foo'));
     }
 
     public function testPassesOnEmptyValueReturnsTrue(): void
@@ -53,8 +53,8 @@ class ForEachConstraintTest extends TestCase
         $constraint = $this->createMock(IValidationConstraint::class);
         $constraint->expects($this->never())
             ->method('passes');
-        $forEachConstraint = new ForEachConstraint($constraint, 'foo');
-        $this->assertTrue($forEachConstraint->passes([], new ValidationContext('foo')));
+        $eachConstraint = new EachConstraint($constraint, 'foo');
+        $this->assertTrue($eachConstraint->passes([], new ValidationContext('foo')));
     }
 
     public function testPassesOnAllPassedConstraintsReturnsTrue(): void
@@ -70,8 +70,8 @@ class ForEachConstraintTest extends TestCase
             ->method('passes')
             ->with('foo', $expectedContext)
             ->willReturn(true);
-        $forEachConstraint = new ForEachConstraint([$constraint1, $constraint2], 'foo');
-        $this->assertTrue($forEachConstraint->passes(['foo'], new ValidationContext('foo')));
+        $eachConstraint = new EachConstraint([$constraint1, $constraint2], 'foo');
+        $this->assertTrue($eachConstraint->passes(['foo'], new ValidationContext('foo')));
     }
 
     public function testPassesOnFailedConstraintDoesNotCallSecondConstraint(): void
@@ -85,8 +85,8 @@ class ForEachConstraintTest extends TestCase
         $constraint2 = $this->createMock(IValidationConstraint::class);
         $constraint2->expects($this->never())
             ->method('passes');
-        $forEachConstraint = new ForEachConstraint([$constraint1, $constraint2], 'foo');
-        $this->assertFalse($forEachConstraint->passes(['foo'], new ValidationContext('foo')));
+        $eachConstraint = new EachConstraint([$constraint1, $constraint2], 'foo');
+        $this->assertFalse($eachConstraint->passes(['foo'], new ValidationContext('foo')));
     }
 
     public function testPassesOnPassedAndFailedConstraintsReturnsFalse(): void
@@ -102,8 +102,8 @@ class ForEachConstraintTest extends TestCase
             ->method('passes')
             ->with('foo', $expectedContext)
             ->willReturn(false);
-        $forEachConstraint = new ForEachConstraint([$constraint1, $constraint2], 'foo');
-        $this->assertFalse($forEachConstraint->passes(['foo'], new ValidationContext('foo')));
+        $eachConstraint = new EachConstraint([$constraint1, $constraint2], 'foo');
+        $this->assertFalse($eachConstraint->passes(['foo'], new ValidationContext('foo')));
     }
 
     public function testSingleConstraintIsAccepted(): void
@@ -114,7 +114,7 @@ class ForEachConstraintTest extends TestCase
             ->method('passes')
             ->with('foo', $expectedContext)
             ->willReturn(true);
-        $forEachConstraint = new ForEachConstraint($constraint, 'foo');
-        $this->assertTrue($forEachConstraint->passes(['foo'], new ValidationContext('foo')));
+        $eachConstraint = new EachConstraint($constraint, 'foo');
+        $this->assertTrue($eachConstraint->passes(['foo'], new ValidationContext('foo')));
     }
 }

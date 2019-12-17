@@ -31,7 +31,8 @@
             "Aphiria\\Routing\\": "src/Router/src",
             "Aphiria\\Serialization\\": "src/Serialization/src",
             "Aphiria\\Sessions\\": "src/Sessions/src",
-            "Aphiria\\Validation\\": "src/Validation/src"
+            "Aphiria\\Validation\\": "src/Validation/src",
+            "Aphiria\\ValidationAnnotations\\": "src/ValidationAnnotations/src"
         }
     },
     "autoload-dev": {
@@ -51,7 +52,8 @@
             "Aphiria\\Routing\\Tests\\": "src/Router/tests",
             "Aphiria\\Serialization\\Tests\\": "src/Serialization/tests",
             "Aphiria\\Sessions\\Tests\\": "src/Sessions/tests",
-            "Aphiria\\Validation\\Tests\\": "src/Validation/tests"
+            "Aphiria\\Validation\\Tests\\": "src/Validation/tests",
+            "Aphiria\\ValidationAnnotations\\Tests\\": "src/ValidationAnnotations/tests"
         }
     },
     "require": {

@@ -1,10 +1,10 @@
 {
-    "name": "aphiria/configuration",
-    "description": "The Aphiria application configuration library",
+    "name": "aphiria/validation-annotations",
+    "description": "The Aphiria validation annotation library",
     "keywords": [
         "PHP",
-        "application",
-        "configuration"
+        "validation",
+        "annotations"
     ],
     "authors": [
         {
@@ -16,25 +16,19 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Aphiria\\Configuration\\": "src"
+            "Aphiria\\ValidationAnnotations\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Aphiria\\Configuration\\Tests\\": "tests"
+            "Aphiria\\ValidationAnnotations\\Tests\\": "tests"
         }
     },
     "require": {
-        "aphiria/api": "1.0.*@dev",
-        "aphiria/console": "1.0.*@dev",
-        "aphiria/console-command-annotations": "1.0.*@dev",
-        "aphiria/dependency-injection": "1.0.*@dev",
-        "aphiria/exceptions": "1.0.*@dev",
-        "aphiria/route-annotations": "1.0.*@dev",
+        "aphiria/reflection": "1.0.*@dev",
         "aphiria/validation": "1.0.*@dev",
-        "aphiria/validation-annotations": "1.0.*@dev",
-        "php": "^7.4",
-        "psr/log": "~1.0"
+        "doctrine/annotations": "2.0.*@dev",
+        "php": "^7.4"
     },
     "require-dev": {
         "phpunit/phpunit": "~8.0"

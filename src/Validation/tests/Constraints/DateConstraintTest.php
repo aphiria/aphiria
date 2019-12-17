@@ -15,6 +15,7 @@ namespace Aphiria\Validation\Tests\Constraints;
 use Aphiria\Validation\ValidationContext;
 use DateTime;
 use Aphiria\Validation\Constraints\DateConstraint;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,6 +23,13 @@ use PHPUnit\Framework\TestCase;
  */
 class DateConstraintTest extends TestCase
 {
+    public function testEmptyAcceptableFormatsThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Must specify at least one acceptable format');
+        new DateConstraint([], 'foo');
+    }
+
     public function testEqualValuesPass(): void
     {
         $context = new ValidationContext($this);

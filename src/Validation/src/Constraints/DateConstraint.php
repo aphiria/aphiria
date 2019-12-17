@@ -14,24 +14,30 @@ namespace Aphiria\Validation\Constraints;
 
 use Aphiria\Validation\ValidationContext;
 use DateTime;
+use InvalidArgumentException;
 
 /**
  * Defines the date constraint
  */
 final class DateConstraint extends ValidationConstraint
 {
-    /** @var array The expected date formats */
-    private array $formats;
+    /** @var array The list of acceptable date formats */
+    private array $acceptableFormats;
 
     /**
      * @inheritDoc
-     * @param string[] $formats The expected date formats
+     * @param string[] $acceptableFormats The acceptable date formats
+     * @throws InvalidArgumentException Thrown if the formats were empty
      */
-    public function __construct(array $formats, string $errorMessageId)
+    public function __construct(array $acceptableFormats, string $errorMessageId)
     {
         parent::__construct($errorMessageId);
 
-        $this->formats = $formats;
+        if (count($acceptableFormats) === 0) {
+            throw new InvalidArgumentException('Must specify at least one acceptable format');
+        }
+
+        $this->acceptableFormats = $acceptableFormats;
     }
 
     /**
@@ -39,7 +45,7 @@ final class DateConstraint extends ValidationConstraint
      */
     public function passes($value, ValidationContext $validationContext): bool
     {
-        foreach ($this->formats as $format) {
+        foreach ($this->acceptableFormats as $format) {
             $dateTime = DateTime::createFromFormat($format, $value);
 
             if ($dateTime !== false && $value == $dateTime->format($format)) {
