@@ -20,6 +20,8 @@ use InvalidArgumentException;
  */
 final class BetweenConstraint extends ValidationConstraint
 {
+    /** @var string The default error message ID */
+    private const DEFAULT_ERROR_MESSAGE_ID = 'Field must be between {min} and {max}';
     /** @var int|float The minimum */
     private $min;
     /** @var int|float The maximum */
@@ -34,7 +36,7 @@ final class BetweenConstraint extends ValidationConstraint
      * @param bool $isInclusive Whether or not the extremes are inclusive
      * @throws InvalidArgumentException Thrown if the min or max are not numeric
      */
-    public function __construct($min, $max, bool $isInclusive, string $errorMessageId)
+    public function __construct($min, $max, bool $isInclusive, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
 

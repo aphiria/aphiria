@@ -29,6 +29,12 @@ class EqualsTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testCreatingConstraintHasDefaultErrorMessageId(): void
+    {
+        $annotation = new Equals(['value' => 'val']);
+        $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testNotSettingValueThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

@@ -28,6 +28,12 @@ class EmailTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testCreatingConstraintHasDefaultErrorMessageId(): void
+    {
+        $annotation = new Email([]);
+        $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testCreatingWithEmptyArrayCreatesInstance(): void
     {
         new Email([]);

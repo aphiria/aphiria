@@ -27,8 +27,8 @@ final class Min implements IValidationConstraintAnnotation
     public $min;
     /** @var bool Whether or not the minimum is inclusive */
     public bool $isInclusive;
-    /** @var string The error message ID */
-    public string $errorMessageId;
+    /** @var string|null The error message ID */
+    public ?string $errorMessageId;
 
     /**
      * @param array $values The mapping of value names to values
@@ -49,7 +49,7 @@ final class Min implements IValidationConstraintAnnotation
 
         $this->min = $min;
         $this->isInclusive = isset($values['isInclusive']) ? (bool)$values['isInclusive'] : true;
-        $this->errorMessageId = $values['errorMessageId'] ?? '';
+        $this->errorMessageId = $values['errorMessageId'] ?? null;
     }
 
     /**
@@ -57,6 +57,10 @@ final class Min implements IValidationConstraintAnnotation
      */
     public function createConstraintFromAnnotation(): MinConstraint
     {
-        return new MinConstraint($this->min, $this->isInclusive, $this->errorMessageId);
+        if (isset($this->errorMessageId)) {
+            return new MinConstraint($this->min, $this->isInclusive, $this->errorMessageId);
+        }
+
+        return new MinConstraint($this->min, $this->isInclusive);
     }
 }

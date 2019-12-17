@@ -22,16 +22,15 @@ use Doctrine\Annotations\Annotation\Target;
  */
 final class Alpha implements IValidationConstraintAnnotation
 {
-    /** @var string The error message ID */
-    public string $errorMessageId;
+    /** @var string|null The error message ID */
+    public ?string $errorMessageId;
 
     /**
      * @param array $values The mapping of value names to values
      */
     public function __construct(array $values)
     {
-        // TODO: For this and all other constraints, determine what to set the error message ID to
-        $this->errorMessageId = $values['errorMessageId'] ?? '';
+        $this->errorMessageId = $values['errorMessageId'] ?? null;
     }
 
     /**
@@ -39,6 +38,10 @@ final class Alpha implements IValidationConstraintAnnotation
      */
     public function createConstraintFromAnnotation(): AlphaConstraint
     {
-        return new AlphaConstraint($this->errorMessageId);
+        if (isset($this->errorMessageId)) {
+            return new AlphaConstraint($this->errorMessageId);
+        }
+
+        return new AlphaConstraint();
     }
 }

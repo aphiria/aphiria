@@ -23,7 +23,7 @@ abstract class ValidationConstraint implements IValidationConstraint
     /**
      * @param string $errorMessageId The ID of the error message associated with this constraint
      */
-    public function __construct(string $errorMessageId)
+    protected function __construct(string $errorMessageId)
     {
         $this->errorMessageId = $errorMessageId;
     }

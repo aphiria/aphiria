@@ -25,8 +25,8 @@ final class Equals implements IValidationConstraintAnnotation
 {
     /** @var mixed The value to compare against */
     public $value;
-    /** @var string The error message ID */
-    public string $errorMessageId;
+    /** @var string|null The error message ID */
+    public ?string $errorMessageId;
 
     /**
      * @param array $values The mapping of value names to values
@@ -39,7 +39,7 @@ final class Equals implements IValidationConstraintAnnotation
         }
 
         $this->value = $values['value'];
-        $this->errorMessageId = $values['errorMessageId'] ?? '';
+        $this->errorMessageId = $values['errorMessageId'] ?? null;
     }
 
     /**
@@ -47,6 +47,10 @@ final class Equals implements IValidationConstraintAnnotation
      */
     public function createConstraintFromAnnotation(): EqualsConstraint
     {
-        return new EqualsConstraint($this->value, $this->errorMessageId);
+        if (isset($this->errorMessageId)) {
+            return new EqualsConstraint($this->value, $this->errorMessageId);
+        }
+
+        return new EqualsConstraint($this->value);
     }
 }

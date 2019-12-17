@@ -25,8 +25,8 @@ final class NotIn implements IValidationConstraintAnnotation
 {
     /** @var array The values to check */
     public array $values;
-    /** @var string The error message ID */
-    public string $errorMessageId;
+    /** @var string|null The error message ID */
+    public ?string $errorMessageId;
 
     /**
      * @param array $values The mapping of value names to values
@@ -38,7 +38,7 @@ final class NotIn implements IValidationConstraintAnnotation
         }
 
         $this->values = $values['value'];
-        $this->errorMessageId = $values['errorMessageId'] ?? '';
+        $this->errorMessageId = $values['errorMessageId'] ?? null;
     }
 
     /**
@@ -46,6 +46,10 @@ final class NotIn implements IValidationConstraintAnnotation
      */
     public function createConstraintFromAnnotation(): NotInConstraint
     {
-        return new NotInConstraint($this->values, $this->errorMessageId);
+        if (isset($this->errorMessageId)) {
+            return new NotInConstraint($this->values, $this->errorMessageId);
+        }
+
+        return new NotInConstraint($this->values);
     }
 }

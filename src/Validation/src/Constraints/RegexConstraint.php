@@ -19,6 +19,8 @@ use Aphiria\Validation\ValidationContext;
  */
 class RegexConstraint extends ValidationConstraint
 {
+    /** @var string The default error message ID */
+    private const DEFAULT_ERROR_MESSAGE_ID = 'Field is invalid';
     /** @var string The regular expression to run */
     private string $regex;
 
@@ -26,7 +28,7 @@ class RegexConstraint extends ValidationConstraint
      * @inheritdoc
      * @param string $regex The regular expression to run
      */
-    public function __construct(string $regex, string $errorMessageId)
+    public function __construct(string $regex, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
 

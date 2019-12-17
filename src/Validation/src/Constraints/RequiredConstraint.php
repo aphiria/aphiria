@@ -20,6 +20,17 @@ use Countable;
  */
 class RequiredConstraint extends ValidationConstraint
 {
+    /** @var string The default error message ID */
+    private const DEFAULT_ERROR_MESSAGE_ID = 'Field is required';
+
+    /**
+     * @param string $errorMessageId The ID of the error message associated with this constraint
+     */
+    public function __construct(string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
+    {
+        parent::__construct($errorMessageId);
+    }
+
     /**
      * @inheritdoc
      */

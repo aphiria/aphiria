@@ -29,6 +29,12 @@ class MinTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testCreatingConstraintHasDefaultErrorMessageId(): void
+    {
+        $annotation = new Min(['value' => 1]);
+        $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testIsInclusiveCanBeSetViaConstructor(): void
     {
         $annotation = new Min(['value' => 2, 'isInclusive' => false]);

@@ -28,6 +28,12 @@ class RequiredTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testCreatingConstraintHasDefaultErrorMessageId(): void
+    {
+        $annotation = new Required([]);
+        $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testCreatingWithEmptyArrayCreatesInstance(): void
     {
         new Required([]);

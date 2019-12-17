@@ -25,8 +25,8 @@ final class Date implements IValidationConstraintAnnotation
 {
     /** @var string[] The list of acceptable date formats */
     public array $acceptableFormats;
-    /** @var string The error message ID */
-    public string $errorMessageId;
+    /** @var string|null The error message ID */
+    public ?string $errorMessageId;
 
     /**
      * @param array $values The mapping of value names to values
@@ -48,7 +48,7 @@ final class Date implements IValidationConstraintAnnotation
             $this->acceptableFormats = [$values['value']];
         }
 
-        $this->errorMessageId = $values['errorMessageId'] ?? '';
+        $this->errorMessageId = $values['errorMessageId'] ?? null;
     }
 
     /**
@@ -56,6 +56,10 @@ final class Date implements IValidationConstraintAnnotation
      */
     public function createConstraintFromAnnotation(): DateConstraint
     {
-        return new DateConstraint($this->acceptableFormats, $this->errorMessageId);
+        if (isset($this->errorMessageId)) {
+            return new DateConstraint($this->acceptableFormats, $this->errorMessageId);
+        }
+
+        return new DateConstraint($this->acceptableFormats);
     }
 }

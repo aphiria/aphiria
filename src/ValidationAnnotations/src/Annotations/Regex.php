@@ -24,8 +24,8 @@ final class Regex implements IValidationConstraintAnnotation
 {
     /** @var string The regex to apply */
     public string $regex;
-    /** @var string The error message ID */
-    public string $errorMessageId;
+    /** @var string|null The error message ID */
+    public ?string $errorMessageId;
 
     /**
      * @param array $values The mapping of value names to values
@@ -37,7 +37,7 @@ final class Regex implements IValidationConstraintAnnotation
         }
 
         $this->regex = $values['value'];
-        $this->errorMessageId = $values['errorMessageId'] ?? '';
+        $this->errorMessageId = $values['errorMessageId'] ?? null;
     }
 
     /**
@@ -45,6 +45,10 @@ final class Regex implements IValidationConstraintAnnotation
      */
     public function createConstraintFromAnnotation(): RegexConstraint
     {
-        return new RegexConstraint($this->regex, $this->errorMessageId);
+        if (isset($this->errorMessageId)) {
+            return new RegexConstraint($this->regex, $this->errorMessageId);
+        }
+
+        return new RegexConstraint($this->regex);
     }
 }

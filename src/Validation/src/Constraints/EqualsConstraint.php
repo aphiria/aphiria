@@ -19,6 +19,8 @@ use Aphiria\Validation\ValidationContext;
  */
 final class EqualsConstraint extends ValidationConstraint
 {
+    /** @var string The default error message ID */
+    private const DEFAULT_ERROR_MESSAGE_ID = 'Field does not match expected value';
     /** @var mixed The value to compare against */
     private $value;
 
@@ -26,7 +28,7 @@ final class EqualsConstraint extends ValidationConstraint
      * @inheritDoc
      * @param mixed $value The value to compare against
      */
-    public function __construct($value, string $errorMessageId)
+    public function __construct($value, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
 

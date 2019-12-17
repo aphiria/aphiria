@@ -25,8 +25,8 @@ final class Each implements IValidationConstraintAnnotation
 {
     /** @var IValidationConstraintAnnotation[] The list of constraint annotations to apply on each value */
     public array $constraints;
-    /** @var string The error message ID */
-    public string $errorMessageId;
+    /** @var string|null The error message ID */
+    public ?string $errorMessageId;
 
     /**
      * @param array $values The mapping of value names to values
@@ -48,7 +48,7 @@ final class Each implements IValidationConstraintAnnotation
             $this->constraints = [$values['value']];
         }
 
-        $this->errorMessageId = $values['errorMessageId'] ?? '';
+        $this->errorMessageId = $values['errorMessageId'] ?? null;
     }
 
     /**
@@ -62,6 +62,10 @@ final class Each implements IValidationConstraintAnnotation
             $constraints[] = $constraintAnnotations->createConstraintFromAnnotation();
         }
 
-        return new EachConstraint($constraints, $this->errorMessageId);
+        if (isset($this->errorMessageId)) {
+            return new EachConstraint($constraints, $this->errorMessageId);
+        }
+
+        return new EachConstraint($constraints);
     }
 }

@@ -31,6 +31,12 @@ class EachTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testCreatingConstraintHasDefaultErrorMessageId(): void
+    {
+        $annotation = new Each(['value' => $this->createMock(IValidationConstraintAnnotation::class)]);
+        $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testNotSettingArrayOfConstraintsThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

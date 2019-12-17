@@ -19,6 +19,8 @@ use Aphiria\Validation\ValidationContext;
  */
 final class InConstraint extends ValidationConstraint
 {
+    /** @var string The default error message ID */
+    private const DEFAULT_ERROR_MESSAGE_ID = 'Field is invalid';
     /** @var array The values to check */
     private array $values;
 
@@ -26,7 +28,7 @@ final class InConstraint extends ValidationConstraint
      * @inheritdoc
      * @param array $values The values to check
      */
-    public function __construct(array $values, string $errorMessageId)
+    public function __construct(array $values, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
 

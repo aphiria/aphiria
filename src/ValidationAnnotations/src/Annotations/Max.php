@@ -27,8 +27,8 @@ final class Max implements IValidationConstraintAnnotation
     public $max;
     /** @var bool Whether or not the maximum is inclusive */
     public bool $isInclusive;
-    /** @var string The error message ID */
-    public string $errorMessageId;
+    /** @var string|null The error message ID */
+    public ?string $errorMessageId;
 
     /**
      * @param array $values The mapping of value names to values
@@ -49,7 +49,7 @@ final class Max implements IValidationConstraintAnnotation
 
         $this->max = $max;
         $this->isInclusive = isset($values['isInclusive']) ? (bool)$values['isInclusive'] : true;
-        $this->errorMessageId = $values['errorMessageId'] ?? '';
+        $this->errorMessageId = $values['errorMessageId'] ?? null;
     }
 
     /**
@@ -57,6 +57,10 @@ final class Max implements IValidationConstraintAnnotation
      */
     public function createConstraintFromAnnotation(): MaxConstraint
     {
-        return new MaxConstraint($this->max, $this->isInclusive, $this->errorMessageId);
+        if (isset($this->errorMessageId)) {
+            return new MaxConstraint($this->max, $this->isInclusive, $this->errorMessageId);
+        }
+
+        return new MaxConstraint($this->max, $this->isInclusive);
     }
 }

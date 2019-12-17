@@ -20,6 +20,8 @@ use InvalidArgumentException;
  */
 class MaxConstraint extends ValidationConstraint
 {
+    /** @var string The default error message ID */
+    private const DEFAULT_ERROR_MESSAGE_ID = 'Field must be less than {max}';
     /** @var int|float The maximum */
     private $max;
     /** @var bool Whether or not the maximum is inclusive */
@@ -30,7 +32,7 @@ class MaxConstraint extends ValidationConstraint
      * @param int|float $max The maximum
      * @param bool $isInclusive Whether or not the maximum is inclusive
      */
-    public function __construct($max, bool $isInclusive, string $errorMessageId)
+    public function __construct($max, bool $isInclusive, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
 

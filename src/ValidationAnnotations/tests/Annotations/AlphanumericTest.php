@@ -28,6 +28,12 @@ class AlphanumericTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testCreatingConstraintHasDefaultErrorMessageId(): void
+    {
+        $annotation = new Alphanumeric([]);
+        $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testCreatingWithEmptyArrayCreatesInstance(): void
     {
         new Alphanumeric([]);

@@ -28,6 +28,12 @@ class AlphaTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testCreatingConstraintHasDefaultErrorMessageId(): void
+    {
+        $annotation = new Alpha([]);
+        $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testCreatingWithEmptyArrayCreatesInstance(): void
     {
         new Alpha([]);

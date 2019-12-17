@@ -21,6 +21,8 @@ use InvalidArgumentException;
  */
 final class DateConstraint extends ValidationConstraint
 {
+    /** @var string The default error message ID */
+    private const DEFAULT_ERROR_MESSAGE_ID = 'Field is not in the correct date format';
     /** @var array The list of acceptable date formats */
     private array $acceptableFormats;
 
@@ -29,7 +31,7 @@ final class DateConstraint extends ValidationConstraint
      * @param string[] $acceptableFormats The acceptable date formats
      * @throws InvalidArgumentException Thrown if the formats were empty
      */
-    public function __construct(array $acceptableFormats, string $errorMessageId)
+    public function __construct(array $acceptableFormats, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
 

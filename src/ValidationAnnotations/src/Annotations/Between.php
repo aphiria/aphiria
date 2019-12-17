@@ -29,8 +29,8 @@ final class Between implements IValidationConstraintAnnotation
     public $max;
     /** @var bool Whether or not the extremes are inclusive */
     public bool $isInclusive;
-    /** @var string The error message ID */
-    public string $errorMessageId;
+    /** @var string|null The error message ID */
+    public ?string $errorMessageId;
 
     /**
      * @param array $values The mapping of value names to values
@@ -48,7 +48,7 @@ final class Between implements IValidationConstraintAnnotation
         $this->min = $values['min'];
         $this->max = $values['max'];
         $this->isInclusive = isset($values['isInclusive']) ? (bool)$values['isInclusive'] : true;
-        $this->errorMessageId = $values['errorMessageId'] ?? '';
+        $this->errorMessageId = $values['errorMessageId'] ?? null;
     }
 
     /**
@@ -56,6 +56,10 @@ final class Between implements IValidationConstraintAnnotation
      */
     public function createConstraintFromAnnotation(): BetweenConstraint
     {
-        return new BetweenConstraint($this->min, $this->max, $this->isInclusive, $this->errorMessageId);
+        if (isset($this->errorMessageId)) {
+            return new BetweenConstraint($this->min, $this->max, $this->isInclusive, $this->errorMessageId);
+        }
+
+        return new BetweenConstraint($this->min, $this->max, $this->isInclusive);
     }
 }

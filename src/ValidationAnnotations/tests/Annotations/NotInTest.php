@@ -29,6 +29,12 @@ class NotInTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testCreatingConstraintHasDefaultErrorMessageId(): void
+    {
+        $annotation = new NotIn(['value' => ['val']]);
+        $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testNotSettingArrayValuesThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

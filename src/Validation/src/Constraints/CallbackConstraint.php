@@ -19,6 +19,8 @@ use Aphiria\Validation\ValidationContext;
  */
 class CallbackConstraint extends ValidationConstraint
 {
+    /** @var string The default error message ID */
+    private const DEFAULT_ERROR_MESSAGE_ID = 'Field must pass callback';
     /** @var callable The callback to run */
     private $callback;
 
@@ -26,7 +28,7 @@ class CallbackConstraint extends ValidationConstraint
      * @inheritdoc
      * @param callable $callback The callback to execute
      */
-    public function __construct(callable $callback, string $errorMessageId)
+    public function __construct(callable $callback, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
 

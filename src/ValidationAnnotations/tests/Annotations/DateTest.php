@@ -29,6 +29,12 @@ class DateTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testCreatingConstraintHasDefaultErrorMessageId(): void
+    {
+        $annotation = new Date(['value' => ['Ymd']]);
+        $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testNotSettingArrayOfAcceptableFormatsThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

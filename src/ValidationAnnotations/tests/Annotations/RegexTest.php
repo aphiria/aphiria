@@ -29,6 +29,12 @@ class RegexTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testCreatingConstraintHasDefaultErrorMessageId(): void
+    {
+        $annotation = new Regex(['value' => 'regex']);
+        $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testNotSettingValueThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

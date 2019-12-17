@@ -20,6 +20,8 @@ use InvalidArgumentException;
  */
 class MinConstraint extends ValidationConstraint
 {
+    /** @var string The default error message ID */
+    private const DEFAULT_ERROR_MESSAGE_ID = 'Field must be more than {min}';
     /** @var int|float The minimum */
     private $min;
     /** @var bool Whether or not the minimum is inclusive */
@@ -30,7 +32,7 @@ class MinConstraint extends ValidationConstraint
      * @param int|float $min The minimum
      * @param bool $isInclusive Whether or not the minimum is inclusive
      */
-    public function __construct($min, bool $isInclusive, string $errorMessageId)
+    public function __construct($min, bool $isInclusive, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
 

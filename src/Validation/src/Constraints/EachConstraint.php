@@ -20,6 +20,8 @@ use InvalidArgumentException;
  */
 final class EachConstraint extends ValidationConstraint
 {
+    /** @var string The default error message ID */
+    private const DEFAULT_ERROR_MESSAGE_ID = 'Field is invalid';
     /** @var IValidationConstraint[] The list of constraints to apply on each value */
     private array $constraints;
 
@@ -27,7 +29,7 @@ final class EachConstraint extends ValidationConstraint
      * @inheritdoc
      * @param IValidationConstraint[]|IValidationConstraint $constraints The constraint or list of constraints to apply on each value
      */
-    public function __construct($constraints, string $errorMessageId)
+    public function __construct($constraints, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
 
