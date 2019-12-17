@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\ValidationAnnotations\Annotations;
 
-use Aphiria\Validation\Constraints\AlphanumericConstraint;
+use Aphiria\Validation\Constraints\AlphanumericConstraintTemp;
 use Doctrine\Annotations\Annotation\Target;
 
 /**
@@ -20,7 +20,7 @@ use Doctrine\Annotations\Annotation\Target;
  * @Annotation
  * @Target({"METHOD","PROPERTY"})
  */
-final class AlphaNumeric implements IValidationConstraintAnnotation
+final class AlphanumericTemp implements IValidationConstraintAnnotation
 {
     /** @var string The error message ID */
     public string $errorMessageId;
@@ -36,8 +36,8 @@ final class AlphaNumeric implements IValidationConstraintAnnotation
     /**
      * @inheridoc
      */
-    public function createConstraintFromAnnotation(): AlphanumericConstraint
+    public function createConstraintFromAnnotation(): AlphanumericConstraintTemp
     {
-        return new AlphanumericConstraint($this->errorMessageId);
+        return new AlphanumericConstraintTemp($this->errorMessageId);
     }
 }

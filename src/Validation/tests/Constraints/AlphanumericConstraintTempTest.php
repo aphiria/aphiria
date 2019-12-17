@@ -12,19 +12,19 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints;
 
-use Aphiria\Validation\Constraints\AlphaNumericConstraint;
+use Aphiria\Validation\Constraints\AlphanumericConstraintTemp;
 use Aphiria\Validation\ValidationContext;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the alpha-numeric constraint
  */
-class AlphaNumericConstraintTest extends TestCase
+class AlphanumericConstraintTempTest extends TestCase
 {
     public function testFailingValue(): void
     {
         $context = new ValidationContext($this);
-        $constraint = new AlphaNumericConstraint('foo');
+        $constraint = new AlphanumericConstraintTemp('foo');
         $this->assertFalse($constraint->passes('', $context));
         $this->assertFalse($constraint->passes('.', $context));
         $this->assertFalse($constraint->passes('a1 b', $context));
@@ -32,14 +32,14 @@ class AlphaNumericConstraintTest extends TestCase
 
     public function testGettingErrorMessageId(): void
     {
-        $constraint = new AlphaNumericConstraint('foo');
+        $constraint = new AlphanumericConstraintTemp('foo');
         $this->assertEquals('foo', $constraint->getErrorMessageId());
     }
 
     public function testPassingValue(): void
     {
         $context = new ValidationContext($this);
-        $constraint = new AlphaNumericConstraint('foo');
+        $constraint = new AlphanumericConstraintTemp('foo');
         $this->assertTrue($constraint->passes('1', $context));
         $this->assertTrue($constraint->passes('a', $context));
         $this->assertTrue($constraint->passes('a1', $context));

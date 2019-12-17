@@ -12,17 +12,17 @@ declare(strict_types=1);
 
 namespace Aphiria\ValidationAnnotations\Tests\Annotations;
 
-use Aphiria\ValidationAnnotations\Annotations\AlphaNumeric;
+use Aphiria\ValidationAnnotations\Annotations\AlphanumericTemp;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the alphanumeric constraint annotation
  */
-class AlphaNumericTest extends TestCase
+class AlphanumericTempTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void
     {
-        $annotation = new AlphaNumeric([]);
+        $annotation = new AlphanumericTemp([]);
         $annotation->createConstraintFromAnnotation();
         // Dummy assertion to just make sure we can actually create the constraint
         $this->assertTrue(true);
@@ -30,7 +30,7 @@ class AlphaNumericTest extends TestCase
 
     public function testCreatingWithEmptyArrayCreatesInstance(): void
     {
-        new AlphaNumeric([]);
+        new AlphanumericTemp([]);
 
         // Dummy assertion
         $this->assertTrue(true);
@@ -38,7 +38,7 @@ class AlphaNumericTest extends TestCase
 
     public function testSettingErrorMessageId(): void
     {
-        $annotation = new AlphaNumeric(['errorMessageId' => 'foo']);
+        $annotation = new AlphanumericTemp(['errorMessageId' => 'foo']);
         $this->assertEquals('foo', $annotation->errorMessageId);
     }
 }
