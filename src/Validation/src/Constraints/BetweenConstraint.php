@@ -25,7 +25,7 @@ final class BetweenConstraint extends ValidationConstraint
     /** @var int|float The maximum */
     private $max;
     /** @var bool Whether or not the extremes are inclusive */
-    private bool $isInclusive = true;
+    private bool $isInclusive;
 
     /**
      * @inheritdoc

@@ -125,13 +125,6 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->componentBuilder->withRouteAnnotations($this->appBuilder);
     }
 
-    public function testWithRouteAnnotationsWithoutRoutingComponentThrowsException(): void
-    {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Routing component must be enabled via withRoutingComponent() to use route annotations');
-        $this->componentBuilder->withRouteAnnotations($this->appBuilder);
-    }
-
     public function testWithRoutingComponentRegistersRouter(): void
     {
         $this->appBuilder->expects($this->at(0))
@@ -140,6 +133,15 @@ class AphiriaComponentBuilderTest extends TestCase
             ->method('registerComponentBuilder')
             ->with('routes');
         $this->componentBuilder->withRoutingComponent($this->appBuilder);
+    }
+
+    public function testWithValidationAnnotationsRegistersComponent(): void
+    {
+        $this->appBuilder->expects($this->at(2))
+            ->method('registerComponentBuilder')
+            ->with('validationAnnotations');
+        $this->componentBuilder->withValidationComponent($this->appBuilder);
+        $this->componentBuilder->withValidationAnnotations($this->appBuilder);
     }
 
     public function testWithValidationComponentPassesConstraintRegistryToRegisteredCallbacks(): void

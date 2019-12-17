@@ -18,7 +18,7 @@ use InvalidArgumentException;
 /**
  * Defines a constraint that can be applied to all values of an iterable value
  */
-final class ForEachConstraint extends ValidationConstraint
+final class EachConstraint extends ValidationConstraint
 {
     /** @var IValidationConstraint[] The list of constraints to apply on each value */
     private array $constraints;

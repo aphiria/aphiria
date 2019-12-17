@@ -26,6 +26,7 @@ use Aphiria\Routing\Builders\RouteBuilderRouteRegistrant;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Validation\ConstraintRegistry;
+use Aphiria\ValidationAnnotations\AnnotationConstraintRegistrant;
 use RuntimeException;
 
 /**
@@ -37,6 +38,8 @@ final class AphiriaComponentBuilder
     private IContainer $container;
     /** @var bool Whether or not the routing component was registered */
     private bool $routingComponentRegistered = false;
+    /** @var bool Whether or not the validation component was registered */
+    private bool $validationComponentRegistered = false;
 
     /**
      * @param IContainer $container The DI container to resolve dependencies with
@@ -165,12 +168,11 @@ final class AphiriaComponentBuilder
      *
      * @param IApplicationBuilder $appBuilder The app builder to register to
      * @return AphiriaComponentBuilder For chaining
-     * @throws RuntimeException Thrown if the routing component was not registered already
      */
     public function withRouteAnnotations(IApplicationBuilder $appBuilder): self
     {
         if (!$this->routingComponentRegistered) {
-            throw new RuntimeException('Routing component must be enabled via withRoutingComponent() to use route annotations');
+            $this->withRoutingComponent($appBuilder);
         }
 
         $appBuilder->registerComponentBuilder('routeAnnotations', function (array $callbacks) {
@@ -200,6 +202,11 @@ final class AphiriaComponentBuilder
      */
     public function withRoutingComponent(IApplicationBuilder $appBuilder): self
     {
+        if ($this->routingComponentRegistered) {
+            // Don't double-register this
+            return $this;
+        }
+
         $this->routingComponentRegistered = true;
         // Set up the router request handler
         $appBuilder->withRouter(fn () => $this->container->resolve(Router::class));
@@ -217,6 +224,37 @@ final class AphiriaComponentBuilder
     }
 
     /**
+     * Registers Aphiria validation annotations
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to register to
+     * @return AphiriaComponentBuilder For chaining
+     */
+    public function withValidationAnnotations(IApplicationBuilder $appBuilder): self
+    {
+        if (!$this->validationComponentRegistered) {
+            $this->withValidationComponent($appBuilder);
+        }
+
+        $appBuilder->registerComponentBuilder('validationAnnotations', function (array $callbacks) {
+            /** @var AnnotationConstraintRegistrant $annotationConstraintRegistrant */
+            $annotationConstraintRegistrant = null;
+
+            if (!$this->container->tryResolve(AnnotationConstraintRegistrant::class, $annotationConstraintRegistrant)) {
+                throw new RuntimeException('No ' . AnnotationConstraintRegistrant::class . ' is bound to the container');
+            }
+
+            /** @var ConstraintRegistry $constraints */
+            $this->container->hasBinding(ConstraintRegistry::class)
+                ? $constraints = $this->container->resolve(ConstraintRegistry::class)
+                : $this->container->bindInstance(ConstraintRegistry::class, $constraints = new ConstraintRegistry());
+
+            $annotationConstraintRegistrant->registerConstraints($constraints);
+        });
+
+        return $this;
+    }
+
+    /**
      * Registers Aphiria validators
      *
      * @param IApplicationBuilder $appBuilder The app builder to register to
@@ -224,6 +262,11 @@ final class AphiriaComponentBuilder
      */
     public function withValidationComponent(IApplicationBuilder $appBuilder): self
     {
+        if ($this->validationComponentRegistered) {
+            // Don't double-register this component
+            return $this;
+        }
+
         $appBuilder->registerComponentBuilder('validators', function (array $callbacks) {
             /** @var ConstraintRegistry $constraints */
             $this->container->hasBinding(ConstraintRegistry::class)

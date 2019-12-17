@@ -41,7 +41,7 @@ abstract class ValidationConstraint implements IValidationConstraint
      */
     public function getErrorMessagePlaceholders(): array
     {
-        // Let overriding implementations overconstraint this if there is something to return
+        // Let overriding implementations overrule this if there is something to return
         return [];
     }
 }
