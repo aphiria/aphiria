@@ -17,7 +17,7 @@ use Aphiria\Validation\ValidationContext;
 /**
  * Defines the alpha-numeric constraint
  */
-final class AlphanumericConstraintTemp extends ValidationConstraint
+final class AlphanumericConstraint extends ValidationConstraint
 {
     /**
      * @inheritdoc
