@@ -28,6 +28,16 @@ class ConstraintRegistryTest extends TestCase
         $this->constraints = new ConstraintRegistry();
     }
 
+    public function testCopyEffectivelyDuplicatesAnotherRegistry(): void
+    {
+        $registry1 = new ConstraintRegistry();
+        $registry2 = new ConstraintRegistry();
+        $expectedConstraint = $this->createMock(IValidationConstraint::class);
+        $registry1->registerPropertyConstraints('foo', 'prop', $expectedConstraint);
+        $registry2->copy($registry1);
+        $this->assertSame([$expectedConstraint], $registry2->getPropertyConstraints('foo', 'prop'));
+    }
+
     public function testGettingAllMethodConstraintsForClassWithNoConstraintsReturnsEmptyArray(): void
     {
         $this->assertCount(0, $this->constraints->getAllMethodConstraints(\get_class($this)));

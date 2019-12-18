@@ -34,6 +34,16 @@ final class CommandRegistry
     }
 
     /**
+     * Copies a command registry into this one
+     *
+     * @param CommandRegistry $commands The commands to copy
+     */
+    public function copy(CommandRegistry $commands): void
+    {
+        $this->bindings = $commands->bindings;
+    }
+
+    /**
      * Gets the list of all command bindings
      *
      * @return CommandBinding[] The list of command bindings

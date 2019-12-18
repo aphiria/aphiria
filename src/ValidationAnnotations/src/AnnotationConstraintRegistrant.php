@@ -15,17 +15,17 @@ namespace Aphiria\ValidationAnnotations;
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
 use Aphiria\Validation\ConstraintRegistry;
+use Aphiria\Validation\IConstraintRegistrant;
 use Aphiria\ValidationAnnotations\Annotations\IValidationConstraintAnnotation;
 use Doctrine\Annotations\AnnotationException;
 use Doctrine\Annotations\AnnotationReader;
 use Doctrine\Annotations\Reader;
 use ReflectionClass;
-use ReflectionException;
 
 /**
  * Defines the constraint registrant for annotations
  */
-final class AnnotationConstraintRegistrant
+final class AnnotationConstraintRegistrant implements IConstraintRegistrant
 {
     /** @var string[] The paths to check for constraints */
     private array $paths;
@@ -48,10 +48,7 @@ final class AnnotationConstraintRegistrant
     }
 
     /**
-     * Registers constraints from any annotations
-     *
-     * @param ConstraintRegistry $constraints The constraint registry to register to
-     * @throws ReflectionException Thrown if a class could not be reflected
+     * @inheritdoc
      */
     public function registerConstraints(ConstraintRegistry $constraints): void
     {

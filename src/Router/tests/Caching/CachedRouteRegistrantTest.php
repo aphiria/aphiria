@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CachedRouteRegistrantTest extends TestCase
 {
-    public function testCreatingRoutesWillIncludeRoutesInInitialRegistrant(): void
+    public function testRegisteringRoutesWillIncludeRoutesInInitialRegistrant(): void
     {
         $routeCache = $this->createMock(IRouteCache::class);
         $routeCache->expects($this->once())
@@ -51,7 +51,7 @@ class CachedRouteRegistrantTest extends TestCase
         $this->assertEquals('/foo', $routeArr[0]->uriTemplate->pathTemplate);
     }
 
-    public function testCreatingRoutesWillIncludeRoutesInAddedRegistrant(): void
+    public function testRegisteringRoutesWillIncludeRoutesInAddedRegistrant(): void
     {
         $routeCache = $this->createMock(IRouteCache::class);
         $routeCache->expects($this->once())
@@ -76,7 +76,7 @@ class CachedRouteRegistrantTest extends TestCase
         $this->assertEquals('/foo', $routeArr[0]->uriTemplate->pathTemplate);
     }
 
-    public function testCreatingRoutesWithCacheThatHitsReturnsThoseRoutes(): void
+    public function testRegisteringRoutesWithCacheThatHitsReturnsThoseRoutes(): void
     {
         /** @var IRouteCache|MockObject $routeCache */
         $expectedRoutes = new RouteCollection();
@@ -104,7 +104,7 @@ class CachedRouteRegistrantTest extends TestCase
         $this->assertSame($expectedRoutes->getAll()[0], $actualRouteArr[0]);
     }
 
-    public function testCreatingRoutesWithCacheThatMissesStillCallsTheRegistrants(): void
+    public function testRegisteringRoutesWithCacheThatMissesStillCallsTheRegistrants(): void
     {
         /** @var IRouteCache|MockObject $routeCache */
         $routeCache = $this->createMock(IRouteCache::class);
@@ -130,7 +130,7 @@ class CachedRouteRegistrantTest extends TestCase
         $this->assertEquals('/foo', $routeArr[0]->uriTemplate->pathTemplate);
     }
 
-    public function testCreatingRoutesWithCacheWillSetThemInCacheOnCacheMiss(): void
+    public function testRegisteringRoutesWithCacheWillSetThemInCacheOnCacheMiss(): void
     {
         /** @var IRouteCache|MockObject $routeCache */
         $routeCache = $this->createMock(IRouteCache::class);
@@ -160,7 +160,7 @@ class CachedRouteRegistrantTest extends TestCase
         $routes->getAll();
     }
 
-    public function testCreatingRoutesWithNoRegistrantsWillReturnEmptyCollection(): void
+    public function testRegisteringRoutesWithNoRegistrantsWillReturnEmptyCollection(): void
     {
         $routeCache = $this->createMock(IRouteCache::class);
         $routeCache->expects($this->once())

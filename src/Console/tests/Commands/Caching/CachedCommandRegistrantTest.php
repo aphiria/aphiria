@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CachedCommandRegistrantTest extends TestCase
 {
-    public function testCreatingCommandsWillIncludeCommandsInInitialRegistrant(): void
+    public function testRegisteringCommandsWillIncludeCommandsInInitialRegistrant(): void
     {
         $expectedCommand = new Command('foo');
         $expectedCommandHandlerFactory = fn () => $this->createMock(ICommandHandler::class);
@@ -65,7 +65,7 @@ class CachedCommandRegistrantTest extends TestCase
         $this->assertSame($expectedCommandHandlerFactory, $actualCommandBinding->commandHandlerFactory);
     }
 
-    public function testCreatingCommandsWillIncludeCommandsInAddedRegistrant(): void
+    public function testRegisteringCommandsWillIncludeCommandsInAddedRegistrant(): void
     {
         $commandCache = $this->createMock(ICommandRegistryCache::class);
         $commandCache->expects($this->once())
@@ -103,7 +103,7 @@ class CachedCommandRegistrantTest extends TestCase
         $this->assertSame($expectedCommandHandlerFactory, $actualCommandBinding->commandHandlerFactory);
     }
 
-    public function testCreatingCommandsWithCacheThatHitsReturnsThoseCommands(): void
+    public function testRegisteringCommandsWithCacheThatHitsReturnsThoseCommands(): void
     {
         /** @var ICommandRegistryCache|MockObject $commandCache */
         $expectedCommands = new CommandRegistry();
@@ -118,7 +118,7 @@ class CachedCommandRegistrantTest extends TestCase
         $this->assertCount(1, $commands->getAllCommands());
     }
 
-    public function testCreatingCommandsWithCacheThatMissesStillRunsTheRegistrants(): void
+    public function testRegisteringCommandsWithCacheThatMissesStillRunsTheRegistrants(): void
     {
         /** @var ICommandRegistryCache|MockObject $commandCache */
         $commandCache = $this->createMock(ICommandRegistryCache::class);
@@ -157,7 +157,7 @@ class CachedCommandRegistrantTest extends TestCase
         $this->assertSame($expectedCommandHandlerFactory, $actualCommandBinding->commandHandlerFactory);
     }
 
-    public function testCreatingCommandsWithCacheWillSetThemInCacheOnCacheMiss(): void
+    public function testRegisteringCommandsWithCacheWillSetThemInCacheOnCacheMiss(): void
     {
         /** @var ICommandRegistryCache|MockObject $commandCache */
         $commandCache = $this->createMock(ICommandRegistryCache::class);
@@ -201,7 +201,7 @@ class CachedCommandRegistrantTest extends TestCase
         $cachedRegistrant->registerCommands($commands);
     }
 
-    public function testCreatingCommandsWithNoRegistrantsWillReturnEmptyRegistry(): void
+    public function testRegisteringCommandsWithNoRegistrantsWillReturnEmptyRegistry(): void
     {
         $commandCache = $this->createMock(ICommandRegistryCache::class);
         $commandCache->expects($this->once())

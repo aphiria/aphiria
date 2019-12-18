@@ -25,6 +25,17 @@ final class ConstraintRegistry
     private array $classesToMethodConstraints = [];
 
     /**
+     * Copies a registry into this one
+     *
+     * @param ConstraintRegistry $constraints The constraints to copy
+     */
+    public function copy(ConstraintRegistry $constraints): void
+    {
+        $this->classesToPropertyConstraints = $constraints->classesToPropertyConstraints;
+        $this->classesToMethodConstraints = $constraints->classesToMethodConstraints;
+    }
+
+    /**
      * Gets the constraints associated with a particular method
      *
      * @param string $className The name of the class that contains the method

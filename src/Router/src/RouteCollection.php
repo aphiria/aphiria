@@ -76,6 +76,17 @@ final class RouteCollection
     }
 
     /**
+     * Copies a route collection into this one
+     *
+     * @param RouteCollection $routes The routes to copy
+     */
+    public function copy(RouteCollection $routes): void
+    {
+        $this->routes = $routes->routes;
+        $this->namedRoutes = $routes->namedRoutes;
+    }
+
+    /**
      * Gets all the routes
      *
      * @return Route[][] The list of routes

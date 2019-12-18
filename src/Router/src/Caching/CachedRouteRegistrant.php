@@ -41,7 +41,7 @@ final class CachedRouteRegistrant extends AggregateRouteRegistrant
     public function registerRoutes(RouteCollection $routes): void
     {
         if (($cachedRoutes = $this->routeCache->get()) !== null) {
-            $routes->addMany($cachedRoutes->getAll());
+            $routes->copy($cachedRoutes);
 
             return;
         }

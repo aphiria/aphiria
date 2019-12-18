@@ -31,6 +31,16 @@ class CommandRegistryTest extends TestCase
         $this->commands = new CommandRegistry();
     }
 
+    public function testCopyEffectivelyDuplicatesAnotherRegistry(): void
+    {
+        $registry1 = new CommandRegistry();
+        $registry2 = new CommandRegistry();
+        $expectedBinding = new CommandBinding(new Command('foo'), fn () => $this->createMock(ICommandHandler::class));
+        $registry1->registerManyCommands([$expectedBinding]);
+        $registry2->copy($registry1);
+        $this->assertSame([$expectedBinding], $registry2->getAllCommandBindings());
+    }
+
     public function testGettingAllCommandBindingsReturnsExpectedBindings(): void
     {
         $expectedBindings = [

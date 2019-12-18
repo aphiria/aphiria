@@ -30,6 +30,17 @@ class RouteCollectionTest extends TestCase
         $this->collection = new RouteCollection();
     }
 
+    public function testCopyEffectivelyDuplicatesAnotherCollection(): void
+    {
+        $routes1 = new RouteCollection();
+        $routes2 = new RouteCollection();
+        $expectedRoute = new Route(new UriTemplate('foo'), new MethodRouteAction('Foo', 'bar'), [], [], 'name');
+        $routes1->add($expectedRoute);
+        $routes2->copy($routes1);
+        $this->assertSame([$expectedRoute], $routes2->getAll());
+        $this->assertSame($expectedRoute, $routes2->getNamedRoute('name'));
+    }
+
     public function testCreatingWithRoutesAddsRoutesToCollection(): void
     {
         $expectedRoutes = [

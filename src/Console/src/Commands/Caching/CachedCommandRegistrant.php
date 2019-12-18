@@ -41,7 +41,7 @@ final class CachedCommandRegistrant extends AggregateCommandRegistrant
     public function registerCommands(CommandRegistry $commands): void
     {
         if (($cachedCommands = $this->commandCache->get()) !== null) {
-            $commands->registerManyCommands($cachedCommands->getAllCommandBindings());
+            $commands->copy($cachedCommands);
 
             return;
         }
