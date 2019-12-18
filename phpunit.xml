@@ -6,19 +6,16 @@
         <directory>src/Collections/tests</directory>
         <directory>src/Configuration/tests</directory>
         <directory>src/Console/tests</directory>
-        <directory>src/ConsoleAnnotations/tests</directory>
         <directory>src/DependencyInjection/tests</directory>
         <directory>src/Exceptions/tests</directory>
         <directory>src/IO/tests</directory>
         <directory>src/Middleware/tests</directory>
         <directory>src/Net/tests</directory>
         <directory>src/Reflection/tests</directory>
-        <directory>src/RouteAnnotations/tests</directory>
         <directory>src/Router/tests</directory>
         <directory>src/Serialization/tests</directory>
         <directory>src/Sessions/tests</directory>
         <directory>src/Validation/tests</directory>
-        <directory>src/ValidationAnnotations/tests</directory>
     </testsuite>
      <filter>
         <whitelist>

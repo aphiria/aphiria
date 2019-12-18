@@ -15,12 +15,12 @@ namespace Aphiria\Configuration;
 use Aphiria\Api\Router;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\Commands\AggregateCommandRegistrant;
-use Aphiria\ConsoleAnnotations\AnnotationCommandRegistrant;
+use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\Middleware\ExceptionHandler;
-use Aphiria\RouteAnnotations\AnnotationRouteRegistrant;
+use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
 use Aphiria\Routing\AggregateRouteRegistrant;
 use Aphiria\Routing\Builders\RouteBuilderRouteRegistrant;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
@@ -28,7 +28,7 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Validation\AggregateConstraintRegistrant;
 use Aphiria\Validation\ClosureConstraintRegistrant;
 use Aphiria\Validation\ConstraintRegistry;
-use Aphiria\ValidationAnnotations\AnnotationConstraintRegistrant;
+use Aphiria\Validation\Constraints\Annotations\AnnotationConstraintRegistrant;
 use RuntimeException;
 
 /**
