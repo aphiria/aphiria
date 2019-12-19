@@ -28,6 +28,7 @@
     "require": {
         "aphiria/reflection": "1.0.*@dev",
         "doctrine/annotations": "2.0.*@dev",
+        "ext-intl": "*",
         "php": "^7.4"
     },
     "require-dev": {

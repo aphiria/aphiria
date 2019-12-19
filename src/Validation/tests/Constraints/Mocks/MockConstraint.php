@@ -29,7 +29,15 @@ final class MockConstraint implements IConstraint
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
+     */
+    public function getErrorMessagePlaceholders(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
      */
     public function passes($value, ValidationContext $validationContext): bool
     {

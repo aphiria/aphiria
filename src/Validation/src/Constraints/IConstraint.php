@@ -28,6 +28,13 @@ interface IConstraint
     public function getErrorMessageId(): string;
 
     /**
+     * Gets the values that can be used to compile error messages
+     *
+     * @return array The mapping of placeholder names to values
+     */
+    public function getErrorMessagePlaceholders(): array;
+
+    /**
      * Gets whether or not the constraint passes
      *
      * @param mixed $value The value to validate
