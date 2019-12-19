@@ -15,17 +15,17 @@ namespace Aphiria\Routing\UriTemplates\Constraints;
 /**
  * Defines the constraint factory registrant that registers all the built-in constraint' factories
  */
-final class ConstraintFactoryRegistrant
+final class RouteVariableConstraintFactoryRegistrant
 {
     /**
      * Registers the built-in constraint factories
      *
-     * @param IRouteVariableConstraintFactory The constraint factory to register new factories to
-     * @return IRouteVariableConstraintFactory The constraint factory with all the registered factories (for chaining)
+     * @param RouteVariableConstraintFactory The constraint factory to register new factories to
+     * @return RouteVariableConstraintFactory The constraint factory with all the registered factories (for chaining)
      */
     public function registerConstraintFactories(
-        IRouteVariableConstraintFactory $constraintFactory
-    ): IRouteVariableConstraintFactory {
+        RouteVariableConstraintFactory $constraintFactory
+    ): RouteVariableConstraintFactory {
         $constraintFactory->registerConstraintFactory(
             AlphaConstraint::getSlug(),
             fn () => new AlphaConstraint()

@@ -22,35 +22,34 @@ use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
-use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraintFactory;
 use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
-use Aphiria\Routing\UriTemplates\Constraints\ConstraintFactoryRegistrant;
+use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactoryRegistrant;
 
 /**
  * Defines a compiler for a trie
  */
 final class TrieCompiler implements ITrieCompiler
 {
-    /** @var IRouteVariableConstraintFactory The factory that will create constraints */
-    private IRouteVariableConstraintFactory $constraintFactory;
+    /** @var RouteVariableConstraintFactory The factory that will create constraints */
+    private RouteVariableConstraintFactory $constraintFactory;
     /** @var IUriTemplateParser The URI template parser */
     private IUriTemplateParser $uriTemplateParser;
     /** @var IUriTemplateLexer The URI template lexer */
     private IUriTemplateLexer $uriTemplateLexer;
 
     /**
-     * @param IRouteVariableConstraintFactory|null $constraintFactory The factory that will create constraints
+     * @param RouteVariableConstraintFactory|null $constraintFactory The factory that will create constraints
      * @param IUriTemplateParser|null $uriTemplateParser The URI template parser
      * @param IUriTemplateLexer|null $uriTemplateLexer The URI template lexer
      */
     public function __construct(
-        IRouteVariableConstraintFactory $constraintFactory = null,
+        RouteVariableConstraintFactory $constraintFactory = null,
         IUriTemplateParser $uriTemplateParser = null,
         IUriTemplateLexer $uriTemplateLexer = null
     ) {
         if ($constraintFactory === null) {
             $this->constraintFactory = new RouteVariableConstraintFactory();
-            (new ConstraintFactoryRegistrant)->registerConstraintFactories($this->constraintFactory);
+            (new RouteVariableConstraintFactoryRegistrant)->registerConstraintFactories($this->constraintFactory);
         } else {
             $this->constraintFactory = $constraintFactory;
         }

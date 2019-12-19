@@ -14,6 +14,7 @@ namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries\Compilers;
 
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
 use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieCompiler;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\LiteralTrieNode;
@@ -26,7 +27,6 @@ use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
-use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraintFactory;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -37,8 +37,7 @@ use PHPUnit\Framework\TestCase;
 class TrieCompilerTest extends TestCase
 {
     private TrieCompiler $compiler;
-    /** @var IRouteVariableConstraintFactory|MockObject */
-    private IRouteVariableConstraintFactory $constraintFactory;
+    private RouteVariableConstraintFactory $constraintFactory;
     /** @var IUriTemplateParser|MockObject */
     private IUriTemplateParser $parser;
     /** @var IUriTemplateLexer|MockObject */
@@ -48,7 +47,7 @@ class TrieCompilerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->constraintFactory = $this->createMock(IRouteVariableConstraintFactory::class);
+        $this->constraintFactory = new RouteVariableConstraintFactory();
         $this->parser = $this->createMock(IUriTemplateParser::class);
         $this->lexer = $this->createMock(IUriTemplateLexer::class);
         $this->ast = new AstNode(AstNodeTypes::ROOT, null);
@@ -284,14 +283,8 @@ class TrieCompilerTest extends TestCase
         $constraint1 = $this->createMock(IRouteVariableConstraint::class);
         /** @var IRouteVariableConstraint|MockObject $constraint2 */
         $constraint2 = $this->createMock(IRouteVariableConstraint::class);
-        $this->constraintFactory->expects($this->at(0))
-            ->method('createConstraint')
-            ->with('r1', ['p1', 'p2'])
-            ->willReturn($constraint1);
-        $this->constraintFactory->expects($this->at(1))
-            ->method('createConstraint')
-            ->with('r2', ['p3', 'p4'])
-            ->willReturn($constraint2);
+        $this->constraintFactory->registerConstraintFactory('r1', fn ($p1, $p2) => $constraint1);
+        $this->constraintFactory->registerConstraintFactory('r2', fn ($p1, $p2) => $constraint1);
 
         // Test compiling
         $pathTemplate = '/:foo(r1(p1,p2),r2(p3,p4))';
@@ -338,10 +331,7 @@ class TrieCompilerTest extends TestCase
         // Set up constraint factory
         /** @var IRouteVariableConstraint|MockObject $constraint */
         $constraint = $this->createMock(IRouteVariableConstraint::class);
-        $this->constraintFactory->expects($this->at(0))
-            ->method('createConstraint')
-            ->with('r1')
-            ->willReturn($constraint);
+        $this->constraintFactory->registerConstraintFactory('r1', fn () => $constraint);
 
         // Test compiling
         $pathTemplate = '/:foo(r1)';

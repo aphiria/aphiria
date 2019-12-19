@@ -17,15 +17,21 @@ use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Defines the constraint factory
+ * Defines the route variable constraint factory
  */
-final class RouteVariableConstraintFactory implements IRouteVariableConstraintFactory
+final class RouteVariableConstraintFactory
 {
     /** @var Closure[] The mapping of constraint slugs to factories */
     private array $factories = [];
 
     /**
-     * @inheritdoc
+     * Creates a constraint for the given slug
+     *
+     * @param string $slug The slug for the constraint to create
+     * @param array $params The list of params to pass into the factory
+     * @return IRouteVariableConstraint An instance of the constraint
+     * @throws InvalidArgumentException Thrown if there's no factory registered for the slug
+     * @throws RuntimeException Thrown if the factory does not return an instance of a constraint
      */
     public function createConstraint(string $slug, array $params = []): IRouteVariableConstraint
     {
@@ -44,6 +50,12 @@ final class RouteVariableConstraintFactory implements IRouteVariableConstraintFa
         return $constraint;
     }
 
+    /**
+     * Registers a factory for a constraint
+     *
+     * @param string $slug The slug to register a factory for
+     * @param Closure $factory The factory that accepts an optional list of parameters and returns a constraint instance
+     */
     public function registerConstraintFactory(string $slug, Closure $factory): void
     {
         $this->factories[$slug] = $factory;
