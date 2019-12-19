@@ -18,7 +18,7 @@ namespace Aphiria\Validation\Constraints;
 final class ObjectConstraintRegistry
 {
     /** @var ObjectConstraints[] The mapping of class names to object constraints */
-    private array $objectConstraints;
+    private array $objectConstraints = [];
 
     /**
      * Copies a registry into this one
