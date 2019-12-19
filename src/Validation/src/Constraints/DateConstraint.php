@@ -19,7 +19,7 @@ use InvalidArgumentException;
 /**
  * Defines the date constraint
  */
-final class DateConstraint extends ValidationConstraint
+final class DateConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field is not in the correct date format';

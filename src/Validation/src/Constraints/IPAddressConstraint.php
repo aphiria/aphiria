@@ -17,7 +17,7 @@ use Aphiria\Validation\ValidationContext;
 /**
  * Defines the IP address constraint
  */
-class IPAddressConstraint extends ValidationConstraint
+class IPAddressConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field is not a valid IP address';

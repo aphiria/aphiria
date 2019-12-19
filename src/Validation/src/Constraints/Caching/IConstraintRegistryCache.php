@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Validation\Caching;
+namespace Aphiria\Validation\Constraints\Caching;
 
-use Aphiria\Validation\ConstraintRegistry;
+use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 
 /**
  * Defines the interface for constraint registry caches to implement
@@ -27,9 +27,9 @@ interface IConstraintRegistryCache
     /**
      * Gets the constraints from cache
      *
-     * @return ConstraintRegistry|null The constraints if they existed in cache, otherwise null
+     * @return ObjectConstraintRegistry|null The constraints if they existed in cache, otherwise null
      */
-    public function get(): ?ConstraintRegistry;
+    public function get(): ?ObjectConstraintRegistry;
 
     /**
      * Gets whether or not the constraints are cached
@@ -41,7 +41,7 @@ interface IConstraintRegistryCache
     /**
      * Sets the constraints in cache
      *
-     * @param ConstraintRegistry $constraints The constraints to cache
+     * @param ObjectConstraintRegistry $objectConstraints The constraints to cache
      */
-    public function set(ConstraintRegistry $constraints): void;
+    public function set(ObjectConstraintRegistry $objectConstraints): void;
 }

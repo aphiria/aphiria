@@ -12,15 +12,15 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation;
 
-use Aphiria\Validation\Constraints\IValidationConstraint;
+use Aphiria\Validation\Constraints\IConstraint;
 
 /**
  * Defines a constraint violation
  */
 final class ConstraintViolation
 {
-    /** @var IValidationConstraint The constraint that was violated */
-    private IValidationConstraint $constraint;
+    /** @var IConstraint The constraint that was violated */
+    private IConstraint $constraint;
     /** @var mixed The invalid value */
     private $invalidValue;
     /** @var mixed|object The root value that was being validated */
@@ -31,14 +31,14 @@ final class ConstraintViolation
     private ?string $methodName;
 
     /**
-     * @param IValidationConstraint $constraint The constraint that was violated
+     * @param IConstraint $constraint The constraint that was violated
      * @param mixed $invalidValue The invalid value
      * @param mixed|object $rootValue The root value that was being validated
      * @param string|null $propertyName The name of the property that was being validated
      * @param string|null $methodName The name of the method that was being validated
      */
     public function __construct(
-        IValidationConstraint $constraint,
+        IConstraint $constraint,
         $invalidValue,
         $rootValue,
         string $propertyName = null,
@@ -54,9 +54,9 @@ final class ConstraintViolation
     /**
      * Gets the constraint that was violated
      *
-     * @return IValidationConstraint The constraint that was violated
+     * @return IConstraint The constraint that was violated
      */
-    public function getConstraint(): IValidationConstraint
+    public function getConstraint(): IConstraint
     {
         return $this->constraint;
     }

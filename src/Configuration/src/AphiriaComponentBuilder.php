@@ -25,10 +25,10 @@ use Aphiria\Routing\AggregateRouteRegistrant;
 use Aphiria\Routing\Builders\RouteBuilderRouteRegistrant;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Validation\AggregateConstraintRegistrant;
-use Aphiria\Validation\ClosureConstraintRegistrant;
-use Aphiria\Validation\ConstraintRegistry;
-use Aphiria\Validation\Constraints\Annotations\AnnotationConstraintRegistrant;
+use Aphiria\Validation\Constraints\AggregateObjectConstraintRegistrant;
+use Aphiria\Validation\Constraints\ClosureObjectConstraintRegistrant;
+use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintRegistrant;
+use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 use RuntimeException;
 
 /**
@@ -238,17 +238,17 @@ final class AphiriaComponentBuilder
         }
 
         $appBuilder->registerComponentBuilder('validationAnnotations', function (array $callbacks) {
-            /** @var AnnotationConstraintRegistrant $annotationConstraintRegistrant */
+            /** @var AnnotationObjectConstraintRegistrant $annotationConstraintRegistrant */
             $annotationConstraintRegistrant = null;
 
-            if (!$this->container->tryResolve(AnnotationConstraintRegistrant::class, $annotationConstraintRegistrant)) {
-                throw new RuntimeException('No ' . AnnotationConstraintRegistrant::class . ' is bound to the container');
+            if (!$this->container->tryResolve(AnnotationObjectConstraintRegistrant::class, $annotationConstraintRegistrant)) {
+                throw new RuntimeException('No ' . AnnotationObjectConstraintRegistrant::class . ' is bound to the container');
             }
 
-            /** @var AggregateConstraintRegistrant $aggregateConstraintRegistrant */
-            $this->container->hasBinding(AggregateConstraintRegistrant::class)
-                ? $aggregateConstraintRegistrant = $this->container->resolve(AggregateConstraintRegistrant::class)
-                : $this->container->bindInstance(AggregateConstraintRegistrant::class, $aggregateConstraintRegistrant = new AggregateConstraintRegistrant());
+            /** @var AggregateObjectConstraintRegistrant $aggregateConstraintRegistrant */
+            $this->container->hasBinding(AggregateObjectConstraintRegistrant::class)
+                ? $aggregateConstraintRegistrant = $this->container->resolve(AggregateObjectConstraintRegistrant::class)
+                : $this->container->bindInstance(AggregateObjectConstraintRegistrant::class, $aggregateConstraintRegistrant = new AggregateObjectConstraintRegistrant());
 
             $aggregateConstraintRegistrant->addConstraintRegistrant($annotationConstraintRegistrant);
         });
@@ -270,19 +270,19 @@ final class AphiriaComponentBuilder
         }
 
         $appBuilder->registerComponentBuilder('validators', function (array $callbacks) {
-            /** @var AggregateConstraintRegistrant $aggregateConstraintRegistrant */
-            $this->container->hasBinding(AggregateConstraintRegistrant::class)
-                ? $aggregateConstraintRegistrant = $this->container->resolve(AggregateConstraintRegistrant::class)
-                : $this->container->bindInstance(AggregateConstraintRegistrant::class, $aggregateConstraintRegistrant = new AggregateConstraintRegistrant());
+            /** @var AggregateObjectConstraintRegistrant $aggregateConstraintRegistrant */
+            $this->container->hasBinding(AggregateObjectConstraintRegistrant::class)
+                ? $aggregateConstraintRegistrant = $this->container->resolve(AggregateObjectConstraintRegistrant::class)
+                : $this->container->bindInstance(AggregateObjectConstraintRegistrant::class, $aggregateConstraintRegistrant = new AggregateObjectConstraintRegistrant());
 
-            $aggregateConstraintRegistrant->addConstraintRegistrant(new ClosureConstraintRegistrant($callbacks));
+            $aggregateConstraintRegistrant->addConstraintRegistrant(new ClosureObjectConstraintRegistrant($callbacks));
 
-            /** @var ConstraintRegistry $constraints */
-            $this->container->hasBinding(ConstraintRegistry::class)
-                ? $constraints = $this->container->resolve(ConstraintRegistry::class)
-                : $this->container->bindInstance(ConstraintRegistry::class, $constraints = new ConstraintRegistry());
+            /** @var ObjectConstraintRegistry $objectConstraints */
+            $this->container->hasBinding(ObjectConstraintRegistry::class)
+                ? $objectConstraints = $this->container->resolve(ObjectConstraintRegistry::class)
+                : $this->container->bindInstance(ObjectConstraintRegistry::class, $objectConstraints = new ObjectConstraintRegistry());
 
-            $aggregateConstraintRegistrant->registerConstraints($constraints);
+            $aggregateConstraintRegistrant->registerConstraints($objectConstraints);
         });
 
         return $this;

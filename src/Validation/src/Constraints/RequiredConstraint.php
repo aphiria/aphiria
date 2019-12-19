@@ -18,7 +18,7 @@ use Countable;
 /**
  * Defines the required constraint
  */
-class RequiredConstraint extends ValidationConstraint
+class RequiredConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field is required';

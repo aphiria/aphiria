@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests;
 
 use Aphiria\Validation\CircularDependencyException;
-use Aphiria\Validation\Constraints\IValidationConstraint;
+use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\ConstraintViolation;
 use Aphiria\Validation\ValidationContext;
 use PHPUnit\Framework\TestCase;
@@ -26,12 +26,12 @@ class ValidationContextTest extends TestCase
     public function testAddingManyConstraintViolations(): void
     {
         $expectedConstraintViolation1 = new ConstraintViolation(
-            $this->createMock(IValidationConstraint::class),
+            $this->createMock(IConstraint::class),
             'foo',
             'foo'
         );
         $expectedConstraintViolation2 = new ConstraintViolation(
-            $this->createMock(IValidationConstraint::class),
+            $this->createMock(IConstraint::class),
             'bar',
             'bar'
         );
@@ -45,17 +45,17 @@ class ValidationContextTest extends TestCase
     public function testAddingMoreConstraintViolationsAppendsThemToExistingViolations(): void
     {
         $expectedConstraintViolation1 = new ConstraintViolation(
-            $this->createMock(IValidationConstraint::class),
+            $this->createMock(IConstraint::class),
             'foo',
             'foo'
         );
         $expectedConstraintViolation2 = new ConstraintViolation(
-            $this->createMock(IValidationConstraint::class),
+            $this->createMock(IConstraint::class),
             'bar',
             'bar'
         );
         $expectedConstraintViolation3 = new ConstraintViolation(
-            $this->createMock(IValidationConstraint::class),
+            $this->createMock(IConstraint::class),
             'baz',
             'baz'
         );
@@ -72,7 +72,7 @@ class ValidationContextTest extends TestCase
     public function testAddingConstraintViolation(): void
     {
         $expectedConstraintViolation = new ConstraintViolation(
-            $this->createMock(IValidationConstraint::class),
+            $this->createMock(IConstraint::class),
             'foo',
             'foo'
         );
@@ -151,13 +151,13 @@ class ValidationContextTest extends TestCase
         $parentContext = new ValidationContext($this);
         $childContext = new ValidationContext($this, 'foo', null, $parentContext);
         $parentConstraintViolation = new ConstraintViolation(
-            $this->createMock(IValidationConstraint::class),
+            $this->createMock(IConstraint::class),
             $this,
             $this
         );
         $parentContext->addConstraintViolation($parentConstraintViolation);
         $childConstraintViolation = new ConstraintViolation(
-            $this->createMock(IValidationConstraint::class),
+            $this->createMock(IConstraint::class),
             'bar',
             $this
         );

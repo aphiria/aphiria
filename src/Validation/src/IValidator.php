@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation;
 
-use Aphiria\Validation\Constraints\IValidationConstraint;
+use Aphiria\Validation\Constraints\IConstraint;
 use InvalidArgumentException;
 
 /**
@@ -56,7 +56,7 @@ interface IValidator
      * Tries to validate a single value
      *
      * @param mixed $value The value to validate
-     * @param IValidationConstraint[] $constraints The list of constraints to use
+     * @param IConstraint[] $constraints The list of constraints to use
      * @param ValidationContext $validationContext The context to perform validation in
      * @return bool True if the value was valid, otherwise false
      * @throws CircularDependencyException Thrown if a circular dependency is detected
@@ -101,7 +101,7 @@ interface IValidator
      * Validates a single value against a list of constraints
      *
      * @param mixed $value The value to validate
-     * @param IValidationConstraint[] $constraints The list of constraints to use
+     * @param IConstraint[] $constraints The list of constraints to use
      * @param ValidationContext $validationContext The context to perform validation in
      * @throws ValidationException Thrown if the value was invalid
      * @throws CircularDependencyException Thrown if a circular dependency is detected

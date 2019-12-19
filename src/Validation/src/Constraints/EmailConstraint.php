@@ -17,7 +17,7 @@ use Aphiria\Validation\ValidationContext;
 /**
  * Defines the email constraint
  */
-final class EmailConstraint extends ValidationConstraint
+final class EmailConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field is not a valid email address';

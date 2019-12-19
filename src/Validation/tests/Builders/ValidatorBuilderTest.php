@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Builders;
 
 use Aphiria\Validation\Builders\ValidatorBuilder;
-use Aphiria\Validation\ConstraintRegistry;
-use Aphiria\Validation\Constraints\IValidationConstraint;
+use Aphiria\Validation\Constraints\IConstraint;
+use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 use Aphiria\Validation\Validator;
 use PHPUnit\Framework\TestCase;
 
@@ -23,22 +23,26 @@ use PHPUnit\Framework\TestCase;
  */
 class ValidatorBuilderTest extends TestCase
 {
-    private ConstraintRegistry $constraints;
+    private ObjectConstraintRegistry $objectConstraints;
     private ValidatorBuilder $validatorBuilder;
 
     protected function setUp(): void
     {
-        $this->constraints = new ConstraintRegistry();
-        $this->validatorBuilder = new ValidatorBuilder($this->constraints);
+        $this->objectConstraints = new ObjectConstraintRegistry();
+        $this->validatorBuilder = new ValidatorBuilder($this->objectConstraints);
     }
 
-    public function testAddingConstraintsToClassAddsThemToConstraintRegistry(): void
+    public function testBuildAlsoBuildsObjectConstraintBuilders(): void
     {
-        $expectedConstraint = $this->createMock(IValidationConstraint::class);
+        $expectedConstraint = $this->createMock(IConstraint::class);
         $this->validatorBuilder->class('foo')
             ->hasProperty('prop')
             ->withConstraint($expectedConstraint);
-        $this->assertSame([$expectedConstraint], $this->constraints->getPropertyConstraints('foo', 'prop'));
+        $this->validatorBuilder->build();
+        $this->assertSame(
+            [$expectedConstraint],
+            $this->objectConstraints->getConstraintsForClass('foo')->getPropertyConstraints('prop')
+        );
     }
 
     public function testBuildCreatesInstanceOfValidator(): void

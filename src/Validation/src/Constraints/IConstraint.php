@@ -17,7 +17,7 @@ use Aphiria\Validation\ValidationContext;
 /**
  * Defines the interface for constraints to implement
  */
-interface IValidationConstraint
+interface IConstraint
 {
     /**
      * Gets the ID of the error message associated with this constraint

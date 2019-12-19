@@ -10,10 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Validation\Tests\Caching;
+namespace Aphiria\Validation\Tests\Constraints\Caching;
 
-use Aphiria\Validation\Caching\FileConstraintRegistryCache;
-use Aphiria\Validation\ConstraintRegistry;
+use Aphiria\Validation\Constraints\Caching\FileConstraintRegistryCache;
+use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
+use Aphiria\Validation\Constraints\ObjectConstraints;
 use Aphiria\Validation\Tests\Constraints\Mocks\MockConstraint;
 use PHPUnit\Framework\TestCase;
 
@@ -47,12 +48,12 @@ class FileConstraintRegistryCacheTest extends TestCase
 
     public function testGetOnHitReturnsConstraints(): void
     {
-        $constraints = new ConstraintRegistry();
+        $objectConstraints = new ObjectConstraintRegistry();
         // We are explicitly using an actual class here because Opis has trouble serializing mocks/anonymous classes
-        $constraints->registerPropertyConstraints('foo', 'prop', new MockConstraint());
-        // We have to clone the constraints because serializing them will technically alter closure/serialized closure property values
-        $expectedConstraints = clone $constraints;
-        $this->cache->set($constraints);
+        $objectConstraints->registerObjectConstraints(new ObjectConstraints('foo', ['prop' => new MockConstraint()], []));
+        // We have to clone the objectConstraints because serializing them will technically alter closure/serialized closure property values
+        $expectedConstraints = clone $objectConstraints;
+        $this->cache->set($objectConstraints);
         $this->assertEquals($expectedConstraints, $this->cache->get());
     }
 
@@ -70,7 +71,7 @@ class FileConstraintRegistryCacheTest extends TestCase
 
     public function testSetCreatesTheFile(): void
     {
-        $this->cache->set(new ConstraintRegistry());
+        $this->cache->set(new ObjectConstraintRegistry());
         $this->assertFileExists(self::PATH);
     }
 }

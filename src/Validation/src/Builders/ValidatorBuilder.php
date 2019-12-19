@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Builders;
 
-use Aphiria\Validation\ConstraintRegistry;
+use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\Validator;
 
@@ -21,15 +21,17 @@ use Aphiria\Validation\Validator;
  */
 final class ValidatorBuilder
 {
-    /** @var ConstraintRegistry The registry of constraints to register constraints to */
-    private ConstraintRegistry $constraints;
+    /** @var ObjectConstraintRegistry The registry of object constraints to register constraints to */
+    private ObjectConstraintRegistry $objectConstraints;
+    /** @var ObjectConstraintBuilder[] The list of object constraint builders created by this object */
+    private array $objectConstraintBuilders = [];
 
     /**
-     * @param ConstraintRegistry|null $constraints The constraints to register to, or null if creating a new registry
+     * @param ObjectConstraintRegistry|null $objectConstraints The constraints to register to, or null if creating a new registry
      */
-    public function __construct(ConstraintRegistry $constraints = null)
+    public function __construct(ObjectConstraintRegistry $objectConstraints = null)
     {
-        $this->constraints = $constraints ?? new ConstraintRegistry();
+        $this->objectConstraints = $objectConstraints ?? new ObjectConstraintRegistry();
     }
 
     /**
@@ -39,7 +41,11 @@ final class ValidatorBuilder
      */
     public function build(): IValidator
     {
-        return new Validator($this->constraints);
+        foreach ($this->objectConstraintBuilders as $objectConstraintBuilder) {
+            $this->objectConstraints->registerObjectConstraints($objectConstraintBuilder->build());
+        }
+
+        return new Validator($this->objectConstraints);
     }
 
     /**
@@ -50,6 +56,9 @@ final class ValidatorBuilder
      */
     public function class(string $className): ObjectConstraintBuilder
     {
-        return new ObjectConstraintBuilder($className, $this->constraints);
+        $objectConstraintBuilder = new ObjectConstraintBuilder($className);
+        $this->objectConstraintBuilders[] = $objectConstraintBuilder;
+
+        return $objectConstraintBuilder;
     }
 }

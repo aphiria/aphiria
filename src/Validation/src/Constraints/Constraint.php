@@ -15,7 +15,7 @@ namespace Aphiria\Validation\Constraints;
 /**
  * Defines a base constraint
  */
-abstract class ValidationConstraint implements IValidationConstraint
+abstract class Constraint implements IConstraint
 {
     /** @var string The ID of the error message associated with this constraint */
     protected string $errorMessageId;

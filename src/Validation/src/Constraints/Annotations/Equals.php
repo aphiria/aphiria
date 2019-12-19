@@ -21,7 +21,7 @@ use InvalidArgumentException;
  * @Annotation
  * @Target({"METHOD","PROPERTY"})
  */
-final class Equals implements IValidationConstraintAnnotation
+final class Equals implements IConstraintAnnotation
 {
     /** @var mixed The value to compare against */
     public $value;

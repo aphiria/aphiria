@@ -20,7 +20,7 @@ use Doctrine\Annotations\Annotation\Target;
  * @Annotation
  * @Target({"METHOD","PROPERTY"})
  */
-final class Regex implements IValidationConstraintAnnotation
+final class Regex implements IConstraintAnnotation
 {
     /** @var string The regex to apply */
     public string $regex;

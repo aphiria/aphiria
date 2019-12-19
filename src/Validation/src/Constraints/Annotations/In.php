@@ -21,7 +21,7 @@ use InvalidArgumentException;
  * @Annotation
  * @Target({"METHOD","PROPERTY"})
  */
-final class In implements IValidationConstraintAnnotation
+final class In implements IConstraintAnnotation
 {
     /** @var array The values to check */
     public array $values;

@@ -10,14 +10,14 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Validation;
+namespace Aphiria\Validation\Constraints;
 
 use Closure;
 
 /**
  * Defines the constraint registrant that takes in a list of closures that perform the registration
  */
-final class ClosureConstraintRegistrant implements IConstraintRegistrant
+final class ClosureObjectConstraintRegistrant implements IObjectConstraintRegistrant
 {
     /** @var Closure[] The list of closures to execute */
     private array $closures;
@@ -33,10 +33,10 @@ final class ClosureConstraintRegistrant implements IConstraintRegistrant
     /**
      * @inheritdoc
      */
-    public function registerConstraints(ConstraintRegistry $constraints): void
+    public function registerConstraints(ObjectConstraintRegistry $objectConstraints): void
     {
         foreach ($this->closures as $closure) {
-            $closure($constraints);
+            $closure($objectConstraints);
         }
     }
 }

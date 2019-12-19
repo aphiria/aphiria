@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Builders;
 
-use Aphiria\Validation\ConstraintRegistry;
-use Aphiria\Validation\Constraints\IValidationConstraint;
+use Aphiria\Validation\Constraints\IConstraint;
+use Aphiria\Validation\Constraints\ObjectConstraints;
 use LogicException;
 
 /**
@@ -23,21 +23,31 @@ final class ObjectConstraintBuilder
 {
     /** @var string The name of the class this builder is for */
     private string $className;
-    /** @var ConstraintRegistry The constraint registry to register constraints to */
-    private ConstraintRegistry $constraints;
     /** @var string|null The current field (property/method) that we're adding constraints to */
-    private ?string $currField = null;
+    private ?string $currFieldName = null;
     /** @var string|null The current field type ('property' or 'method') that we're adding constraints to */
     private ?string $currFieldType = null;
+    /** @var IConstraint[] The mapping of property names to constraints */
+    private array $propertyConstraints = [];
+    /** @var IConstraint[] The mapping of method names to constraints */
+    private array $methodConstraints = [];
 
     /**
      * @param string $className The name of the class this builder is for
-     * @param ConstraintRegistry $constraints The constraint registry to register constraints to
      */
-    public function __construct(string $className, ConstraintRegistry $constraints)
+    public function __construct(string $className)
     {
         $this->className = $className;
-        $this->constraints = $constraints;
+    }
+
+    /**
+     * Builds the object constraints
+     *
+     * @return ObjectConstraints The built object constraints
+     */
+    public function build(): ObjectConstraints
+    {
+        return new ObjectConstraints($this->className, $this->propertyConstraints, $this->methodConstraints);
     }
 
     /**
@@ -48,7 +58,7 @@ final class ObjectConstraintBuilder
      */
     public function hasMethod(string $methodName): self
     {
-        $this->currField = $methodName;
+        $this->currFieldName = $methodName;
         $this->currFieldType = 'method';
 
         return $this;
@@ -62,7 +72,7 @@ final class ObjectConstraintBuilder
      */
     public function hasProperty(string $propertyName): self
     {
-        $this->currField = $propertyName;
+        $this->currFieldName = $propertyName;
         $this->currFieldType = 'property';
 
         return $this;
@@ -71,11 +81,11 @@ final class ObjectConstraintBuilder
     /**
      * Adds a constraint to the current field
      *
-     * @param IValidationConstraint $constraint The constraint to add
+     * @param IConstraint $constraint The constraint to add
      * @return $this For chaining
      * @throws LogicException Thrown if the current field is not set
      */
-    public function withConstraint(IValidationConstraint $constraint): self
+    public function withConstraint(IConstraint $constraint): self
     {
         return $this->withConstraints([$constraint]);
     }
@@ -83,20 +93,28 @@ final class ObjectConstraintBuilder
     /**
      * Adds constraints to the current field
      *
-     * @param IValidationConstraint[] $constraints The constraints to add
+     * @param IConstraint[] $constraints The constraints to add
      * @return $this For chaining
      * @throws LogicException Thrown if the current field is not set
      */
     public function withConstraints(array $constraints): self
     {
-        if ($this->currField === null) {
+        if ($this->currFieldName === null) {
             throw new LogicException('Must call hasMethod() or hasProperty() before adding constraints');
         }
 
         if ($this->currFieldType === 'property') {
-            $this->constraints->registerPropertyConstraints($this->className, $this->currField, $constraints);
+            if (!isset($this->propertyConstraints[$this->currFieldName])) {
+                $this->propertyConstraints[$this->currFieldName] = [];
+            }
+
+            $this->propertyConstraints[$this->currFieldName] = [...$this->propertyConstraints[$this->currFieldName], ...$constraints];
         } elseif ($this->currFieldType === 'method') {
-            $this->constraints->registerMethodConstraints($this->className, $this->currField, $constraints);
+            if (!isset($this->methodConstraints[$this->currFieldName])) {
+                $this->methodConstraints[$this->currFieldName] = [];
+            }
+
+            $this->methodConstraints[$this->currFieldName] = [...$this->methodConstraints[$this->currFieldName], ...$constraints];
         }
 
         return $this;

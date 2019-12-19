@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Constraints\Annotations;
 
 use Aphiria\Validation\Constraints\Annotations\Each;
-use Aphiria\Validation\Constraints\Annotations\IValidationConstraintAnnotation;
+use Aphiria\Validation\Constraints\Annotations\IConstraintAnnotation;
 use Aphiria\Validation\Constraints\Annotations\Required;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +25,7 @@ class EachTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void
     {
-        $annotation = new Each(['value' => $this->createMock(IValidationConstraintAnnotation::class)]);
+        $annotation = new Each(['value' => $this->createMock(IConstraintAnnotation::class)]);
         $annotation->createConstraintFromAnnotation();
         // Dummy assertion to just make sure we can actually create the constraint
         $this->assertTrue(true);
@@ -33,7 +33,7 @@ class EachTest extends TestCase
 
     public function testCreatingConstraintHasDefaultErrorMessageId(): void
     {
-        $annotation = new Each(['value' => $this->createMock(IValidationConstraintAnnotation::class)]);
+        $annotation = new Each(['value' => $this->createMock(IConstraintAnnotation::class)]);
         $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
     }
 
@@ -54,7 +54,7 @@ class EachTest extends TestCase
     public function testSettingErrorMessageId(): void
     {
         $annotation = new Each([
-            'value' => [$this->createMock(IValidationConstraintAnnotation::class)],
+            'value' => [$this->createMock(IConstraintAnnotation::class)],
             'errorMessageId' => 'foo'
         ]);
         $this->assertEquals('foo', $annotation->errorMessageId);

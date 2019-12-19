@@ -14,8 +14,9 @@ namespace Aphiria\Validation\Constraints\Annotations;
 
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
-use Aphiria\Validation\ConstraintRegistry;
-use Aphiria\Validation\IConstraintRegistrant;
+use Aphiria\Validation\Constraints\IObjectConstraintRegistrant;
+use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
+use Aphiria\Validation\Constraints\ObjectConstraints;
 use Doctrine\Annotations\AnnotationException;
 use Doctrine\Annotations\AnnotationReader;
 use Doctrine\Annotations\Reader;
@@ -24,7 +25,7 @@ use ReflectionClass;
 /**
  * Defines the constraint registrant for annotations
  */
-final class AnnotationConstraintRegistrant implements IConstraintRegistrant
+final class AnnotationObjectConstraintRegistrant implements IObjectConstraintRegistrant
 {
     /** @var string[] The paths to check for constraints */
     private array $paths;
@@ -49,38 +50,55 @@ final class AnnotationConstraintRegistrant implements IConstraintRegistrant
     /**
      * @inheritdoc
      */
-    public function registerConstraints(ConstraintRegistry $constraints): void
+    public function registerConstraints(ObjectConstraintRegistry $objectConstraints): void
     {
         foreach ($this->typeFinder->findAllClasses($this->paths, true) as $class) {
             $reflectionClass = new ReflectionClass($class);
+            $propertyConstraints = $methodConstraints = [];
 
             foreach ($reflectionClass->getProperties() as $reflectionProperty) {
                 foreach ($this->annotationReader->getPropertyAnnotations($reflectionProperty) as $annotation) {
-                    if (!$annotation instanceof IValidationConstraintAnnotation) {
+                    if (!$annotation instanceof IConstraintAnnotation) {
                         continue;
                     }
 
-                    $constraints->registerPropertyConstraints(
-                        $class,
-                        $reflectionProperty->getName(),
+                    $propertyName = $reflectionProperty->getName();
+
+                    if (!isset($propertyConstraints[$propertyName])) {
+                        $propertyConstraints[$propertyName] = [];
+                    }
+
+                    $propertyConstraints[$propertyName] = [
+                        ...$propertyConstraints[$propertyName],
                         $annotation->createConstraintFromAnnotation()
-                    );
+                    ];
                 }
             }
 
             foreach ($reflectionClass->getMethods() as $reflectionMethod) {
                 foreach ($this->annotationReader->getMethodAnnotations($reflectionMethod) as $annotation) {
-                    if (!$annotation instanceof IValidationConstraintAnnotation) {
+                    if (!$annotation instanceof IConstraintAnnotation) {
                         continue;
                     }
 
-                    $constraints->registerMethodConstraints(
-                        $class,
-                        $reflectionMethod->getName(),
+                    $methodName = $reflectionMethod->getName();
+
+                    if (!isset($methodConstraints[$methodName])) {
+                        $methodConstraints[$methodName] = [];
+                    }
+
+                    $methodConstraints[$methodName] = [
+                        ...$methodConstraints[$methodName],
                         $annotation->createConstraintFromAnnotation()
-                    );
+                    ];
                 }
             }
+
+            $objectConstraints->registerObjectConstraints(new ObjectConstraints(
+                $class,
+                $propertyConstraints,
+                $methodConstraints
+            ));
         }
     }
 }

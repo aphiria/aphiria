@@ -21,7 +21,7 @@ use InvalidArgumentException;
  * @Annotation
  * @Target({"METHOD","PROPERTY"})
  */
-final class Max implements IValidationConstraintAnnotation
+final class Max implements IConstraintAnnotation
 {
     /** @var int|float The maximum */
     public $max;

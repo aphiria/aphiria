@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Validation\Caching;
+namespace Aphiria\Validation\Constraints\Caching;
 
-use Aphiria\Validation\ConstraintRegistry;
+use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 
 /**
  * Defines the constraint registry cache backed by file storage
@@ -43,7 +43,7 @@ final class FileConstraintRegistryCache implements IConstraintRegistryCache
     /**
      * @inheritoc
      */
-    public function get(): ?ConstraintRegistry
+    public function get(): ?ObjectConstraintRegistry
     {
         if (!\file_exists($this->path)) {
             return null;
@@ -63,12 +63,12 @@ final class FileConstraintRegistryCache implements IConstraintRegistryCache
     /**
      * @inheritdoc
      */
-    public function set(ConstraintRegistry $constraints): void
+    public function set(ObjectConstraintRegistry $objectConstraints): void
     {
         /**
          * Under the hood, Opis will actually mutate the properties of the constraints so that closures can be serialized
          * properly.  To make sure we're not changing the properties in the input constraints, we clone it before serialization.
          */
-        \file_put_contents($this->path, \serialize(clone $constraints));
+        \file_put_contents($this->path, \serialize(clone $objectConstraints));
     }
 }

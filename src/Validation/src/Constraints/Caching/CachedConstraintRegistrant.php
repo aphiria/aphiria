@@ -10,16 +10,16 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Validation\Caching;
+namespace Aphiria\Validation\Constraints\Caching;
 
-use Aphiria\Validation\AggregateConstraintRegistrant;
-use Aphiria\Validation\ConstraintRegistry;
-use Aphiria\Validation\IConstraintRegistrant;
+use Aphiria\Validation\Constraints\AggregateObjectConstraintRegistrant;
+use Aphiria\Validation\Constraints\IObjectConstraintRegistrant;
+use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 
 /**
  * Defines the cached constraint registrant
  */
-final class CachedConstraintRegistrant extends AggregateConstraintRegistrant
+final class CachedConstraintRegistrant extends AggregateObjectConstraintRegistrant
 {
     /** @var IConstraintRegistryCache The constraint cache to store constraints in */
     private IConstraintRegistryCache $constraintCache;
@@ -28,7 +28,7 @@ final class CachedConstraintRegistrant extends AggregateConstraintRegistrant
      * @inheritdoc
      * @param IConstraintRegistryCache $constraintCache The constraint cache
      */
-    public function __construct(IConstraintRegistryCache $constraintCache, IConstraintRegistrant $initialConstraintRegistrant = null)
+    public function __construct(IConstraintRegistryCache $constraintCache, IObjectConstraintRegistrant $initialConstraintRegistrant = null)
     {
         parent::__construct($initialConstraintRegistrant);
 
@@ -38,17 +38,17 @@ final class CachedConstraintRegistrant extends AggregateConstraintRegistrant
     /**
      * @inheritdoc
      */
-    public function registerConstraints(ConstraintRegistry $constraints): void
+    public function registerConstraints(ObjectConstraintRegistry $objectConstraints): void
     {
         if (($cachedConstraints = $this->constraintCache->get()) !== null) {
-            $constraints->copy($cachedConstraints);
+            $objectConstraints->copy($cachedConstraints);
 
             return;
         }
 
-        parent::registerConstraints($constraints);
+        parent::registerConstraints($objectConstraints);
 
         // Save this to cache for next time
-        $this->constraintCache->set($constraints);
+        $this->constraintCache->set($objectConstraints);
     }
 }

@@ -10,36 +10,36 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Validation\Tests;
+namespace Aphiria\Validation\Tests\Constraints;
 
-use Aphiria\Validation\AggregateConstraintRegistrant;
-use Aphiria\Validation\ConstraintRegistry;
-use Aphiria\Validation\IConstraintRegistrant;
+use Aphiria\Validation\Constraints\AggregateObjectConstraintRegistrant;
+use Aphiria\Validation\Constraints\IObjectConstraintRegistrant;
+use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the aggregate constraint registrant
  */
-class AggregateConstraintRegistrantTest extends TestCase
+class AggregateObjectConstraintRegistrantTest extends TestCase
 {
     public function testAddingRegistrantCausesItToBeInvokedWhenRegisteringRoutes(): void
     {
-        $aggregateRegistrant = new AggregateConstraintRegistrant();
-        $singleRegistrant = new class() implements IConstraintRegistrant
+        $aggregateRegistrant = new AggregateObjectConstraintRegistrant();
+        $singleRegistrant = new class() implements IObjectConstraintRegistrant
         {
             public bool $wasInvoked = false;
 
             /**
              * @inheritdoc
              */
-            public function registerConstraints(ConstraintRegistry $constraints): void
+            public function registerConstraints(ObjectConstraintRegistry $objectConstraints): void
             {
                 $this->wasInvoked = true;
             }
         };
         $aggregateRegistrant->addConstraintRegistrant($singleRegistrant);
-        $constraints = new ConstraintRegistry();
-        $aggregateRegistrant->registerConstraints($constraints);
+        $objectConstraints = new ObjectConstraintRegistry();
+        $aggregateRegistrant->registerConstraints($objectConstraints);
         $this->assertTrue($singleRegistrant->wasInvoked);
     }
 }

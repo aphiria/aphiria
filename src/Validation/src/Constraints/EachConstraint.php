@@ -18,16 +18,16 @@ use InvalidArgumentException;
 /**
  * Defines a constraint that can be applied to all values of an iterable value
  */
-final class EachConstraint extends ValidationConstraint
+final class EachConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field is invalid';
-    /** @var IValidationConstraint[] The list of constraints to apply on each value */
+    /** @var IConstraint[] The list of constraints to apply on each value */
     private array $constraints;
 
     /**
      * @inheritdoc
-     * @param IValidationConstraint[]|IValidationConstraint $constraints The constraint or list of constraints to apply on each value
+     * @param IConstraint[]|IConstraint $constraints The constraint or list of constraints to apply on each value
      */
     public function __construct($constraints, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {

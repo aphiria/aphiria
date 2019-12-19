@@ -18,7 +18,7 @@ use InvalidArgumentException;
 /**
  * Defines the minimum constraint
  */
-class MinConstraint extends ValidationConstraint
+class MinConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field must be more than {min}';

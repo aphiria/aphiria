@@ -21,7 +21,7 @@ use InvalidArgumentException;
  * @Annotation
  * @Target({"METHOD","PROPERTY"})
  */
-final class Min implements IValidationConstraintAnnotation
+final class Min implements IConstraintAnnotation
 {
     /** @var int|float The minimum */
     public $min;

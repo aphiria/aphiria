@@ -20,7 +20,7 @@ use Doctrine\Annotations\Annotation\Target;
  * @Annotation
  * @Target({"METHOD","PROPERTY"})
  */
-final class Email implements IValidationConstraintAnnotation
+final class Email implements IConstraintAnnotation
 {
     /** @var string|null The error message ID */
     public ?string $errorMessageId;

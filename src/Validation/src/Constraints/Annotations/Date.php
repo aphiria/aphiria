@@ -21,7 +21,7 @@ use InvalidArgumentException;
  * @Annotation
  * @Target({"METHOD","PROPERTY"})
  */
-final class Date implements IValidationConstraintAnnotation
+final class Date implements IConstraintAnnotation
 {
     /** @var string[] The list of acceptable date formats */
     public array $acceptableFormats;

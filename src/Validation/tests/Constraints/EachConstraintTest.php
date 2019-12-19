@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Api\Tests\Constraints;
 
 use Aphiria\Validation\Constraints\EachConstraint;
-use Aphiria\Validation\Constraints\IValidationConstraint;
+use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -26,12 +26,12 @@ class EachConstraintTest extends TestCase
     public function testMultipleConstraintsAreAccepted(): void
     {
         $expectedContext = new ValidationContext('foo');
-        $constraint1 = $this->createMock(IValidationConstraint::class);
+        $constraint1 = $this->createMock(IConstraint::class);
         $constraint1->expects($this->once())
             ->method('passes')
             ->with('foo', $expectedContext)
             ->willReturn(true);
-        $constraint2 = $this->createMock(IValidationConstraint::class);
+        $constraint2 = $this->createMock(IConstraint::class);
         $constraint2->expects($this->once())
             ->method('passes')
             ->with('foo', $expectedContext)
@@ -44,13 +44,13 @@ class EachConstraintTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Value must be iterable');
-        $eachConstraint = new EachConstraint($this->createMock(IValidationConstraint::class), 'foo');
+        $eachConstraint = new EachConstraint($this->createMock(IConstraint::class), 'foo');
         $eachConstraint->passes('foo', new ValidationContext('foo'));
     }
 
     public function testPassesOnEmptyValueReturnsTrue(): void
     {
-        $constraint = $this->createMock(IValidationConstraint::class);
+        $constraint = $this->createMock(IConstraint::class);
         $constraint->expects($this->never())
             ->method('passes');
         $eachConstraint = new EachConstraint($constraint, 'foo');
@@ -60,12 +60,12 @@ class EachConstraintTest extends TestCase
     public function testPassesOnAllPassedConstraintsReturnsTrue(): void
     {
         $expectedContext = new ValidationContext('foo');
-        $constraint1 = $this->createMock(IValidationConstraint::class);
+        $constraint1 = $this->createMock(IConstraint::class);
         $constraint1->expects($this->once())
             ->method('passes')
             ->with('foo', $expectedContext)
             ->willReturn(true);
-        $constraint2 = $this->createMock(IValidationConstraint::class);
+        $constraint2 = $this->createMock(IConstraint::class);
         $constraint2->expects($this->once())
             ->method('passes')
             ->with('foo', $expectedContext)
@@ -77,12 +77,12 @@ class EachConstraintTest extends TestCase
     public function testPassesOnFailedConstraintDoesNotCallSecondConstraint(): void
     {
         $expectedContext = new ValidationContext('foo');
-        $constraint1 = $this->createMock(IValidationConstraint::class);
+        $constraint1 = $this->createMock(IConstraint::class);
         $constraint1->expects($this->once())
             ->method('passes')
             ->with('foo', $expectedContext)
             ->willReturn(false);
-        $constraint2 = $this->createMock(IValidationConstraint::class);
+        $constraint2 = $this->createMock(IConstraint::class);
         $constraint2->expects($this->never())
             ->method('passes');
         $eachConstraint = new EachConstraint([$constraint1, $constraint2], 'foo');
@@ -92,12 +92,12 @@ class EachConstraintTest extends TestCase
     public function testPassesOnPassedAndFailedConstraintsReturnsFalse(): void
     {
         $expectedContext = new ValidationContext('foo');
-        $constraint1 = $this->createMock(IValidationConstraint::class);
+        $constraint1 = $this->createMock(IConstraint::class);
         $constraint1->expects($this->once())
             ->method('passes')
             ->with('foo', $expectedContext)
             ->willReturn(true);
-        $constraint2 = $this->createMock(IValidationConstraint::class);
+        $constraint2 = $this->createMock(IConstraint::class);
         $constraint2->expects($this->once())
             ->method('passes')
             ->with('foo', $expectedContext)
@@ -109,7 +109,7 @@ class EachConstraintTest extends TestCase
     public function testSingleConstraintIsAccepted(): void
     {
         $expectedContext = new ValidationContext('foo');
-        $constraint = $this->createMock(IValidationConstraint::class);
+        $constraint = $this->createMock(IConstraint::class);
         $constraint->expects($this->once())
             ->method('passes')
             ->with('foo', $expectedContext)

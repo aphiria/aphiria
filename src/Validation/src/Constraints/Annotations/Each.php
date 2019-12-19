@@ -21,9 +21,9 @@ use InvalidArgumentException;
  * @Annotation
  * @Target({"METHOD","PROPERTY"})
  */
-final class Each implements IValidationConstraintAnnotation
+final class Each implements IConstraintAnnotation
 {
-    /** @var IValidationConstraintAnnotation[] The list of constraint annotations to apply on each value */
+    /** @var IConstraintAnnotation[] The list of constraint annotations to apply on each value */
     public array $constraints;
     /** @var string|null The error message ID */
     public ?string $errorMessageId;

@@ -18,7 +18,7 @@ use InvalidArgumentException;
 /**
  * Defines the between constraint
  */
-final class BetweenConstraint extends ValidationConstraint
+final class BetweenConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field must be between {min} and {max}';

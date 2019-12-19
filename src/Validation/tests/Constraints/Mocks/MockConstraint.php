@@ -12,13 +12,13 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints\Mocks;
 
-use Aphiria\Validation\Constraints\IValidationConstraint;
+use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\ValidationContext;
 
 /**
  * Defines a mock constraint for use in tests
  */
-final class MockConstraint implements IValidationConstraint
+final class MockConstraint implements IConstraint
 {
     /**
      * @inheritdoc

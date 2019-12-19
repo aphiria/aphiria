@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests;
 
-use Aphiria\Validation\Constraints\IValidationConstraint;
+use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\ConstraintViolation;
 use PHPUnit\Framework\TestCase;
 
@@ -24,7 +24,7 @@ class ConstraintViolationTest extends TestCase
     public function testGetInvalidValueReturnsOneSetInConstructor(): void
     {
         $violation = new ConstraintViolation(
-            $this->createMock(IValidationConstraint::class),
+            $this->createMock(IConstraint::class),
             'foo',
             'bar'
         );
@@ -34,7 +34,7 @@ class ConstraintViolationTest extends TestCase
     public function testGetMethodNameReturnsOneSetInConstructor(): void
     {
         $violation = new ConstraintViolation(
-            $this->createMock(IValidationConstraint::class),
+            $this->createMock(IConstraint::class),
             'foo',
             'bar',
             null,
@@ -46,7 +46,7 @@ class ConstraintViolationTest extends TestCase
     public function testGetPropertyNameReturnsOneSetInConstructor(): void
     {
         $violation = new ConstraintViolation(
-            $this->createMock(IValidationConstraint::class),
+            $this->createMock(IConstraint::class),
             'foo',
             'bar',
             'prop'
@@ -57,7 +57,7 @@ class ConstraintViolationTest extends TestCase
     public function testGetRootValueReturnsOneSetInConstructor(): void
     {
         $violation = new ConstraintViolation(
-            $this->createMock(IValidationConstraint::class),
+            $this->createMock(IConstraint::class),
             'foo',
             'bar'
         );
@@ -66,7 +66,7 @@ class ConstraintViolationTest extends TestCase
 
     public function testGetConstraintReturnsOneSetInConstructor(): void
     {
-        $expectedConstraint = $this->createMock(IValidationConstraint::class);
+        $expectedConstraint = $this->createMock(IConstraint::class);
         $violation = new ConstraintViolation(
             $expectedConstraint,
             'foo',

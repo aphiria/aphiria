@@ -17,7 +17,7 @@ use Aphiria\Validation\ValidationContext;
 /**
  * Defines the equals constraint
  */
-final class EqualsConstraint extends ValidationConstraint
+final class EqualsConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field does not match expected value';

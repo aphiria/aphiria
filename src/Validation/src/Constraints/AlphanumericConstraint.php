@@ -17,7 +17,7 @@ use Aphiria\Validation\ValidationContext;
 /**
  * Defines the alpha-numeric constraint
  */
-final class AlphanumericConstraint extends ValidationConstraint
+final class AlphanumericConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field must only contain alphanumeric characters';

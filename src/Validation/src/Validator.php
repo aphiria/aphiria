@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation;
 
+use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 use InvalidArgumentException;
 use ReflectionException;
 use ReflectionMethod;
@@ -40,15 +41,15 @@ final class Validator implements IValidator
         '__unset' => true,
         '__wakeup' => true
     ];
-    /** @var ConstraintRegistry The registry of constraints */
-    private ConstraintRegistry $constraints;
+    /** @var ObjectConstraintRegistry The registry of object constraints */
+    private ObjectConstraintRegistry $objectConstraints;
 
     /**
-     * @param ConstraintRegistry $constraints The registry of constraints
+     * @param ObjectConstraintRegistry $objectConstraints The registry of object constraints
      */
-    public function __construct(ConstraintRegistry $constraints)
+    public function __construct(ObjectConstraintRegistry $objectConstraints)
     {
-        $this->constraints = $constraints;
+        $this->objectConstraints = $objectConstraints;
     }
 
     /**
@@ -143,18 +144,20 @@ final class Validator implements IValidator
             $allConstraintsPassed = $allConstraintsPassed && $this->tryValidateObject($methodValue, $methodValueValidationContext);
         }
 
-        foreach ($this->constraints->getMethodConstraints($class, $methodName) as $constraint) {
-            $thisConstraintPassed = $constraint->passes($methodValue, $validationContext);
-            $allConstraintsPassed = $allConstraintsPassed && $thisConstraintPassed;
+        if (($objectConstraints = $this->objectConstraints->getConstraintsForClass($class)) !== null) {
+            foreach ($objectConstraints->getMethodConstraints($methodName) as $constraint) {
+                $thisConstraintPassed = $constraint->passes($methodValue, $validationContext);
+                $allConstraintsPassed = $allConstraintsPassed && $thisConstraintPassed;
 
-            if (!$thisConstraintPassed) {
-                $validationContext->addConstraintViolation(new ConstraintViolation(
-                    $constraint,
-                    $methodValue,
-                    $validationContext->getValue(),
-                    null,
-                    $methodName
-                ));
+                if (!$thisConstraintPassed) {
+                    $validationContext->addConstraintViolation(new ConstraintViolation(
+                        $constraint,
+                        $methodValue,
+                        $validationContext->getValue(),
+                        null,
+                        $methodName
+                    ));
+                }
             }
         }
 
@@ -220,17 +223,19 @@ final class Validator implements IValidator
             $allConstraintsPassed = $allConstraintsPassed && $this->tryValidateObject($propertyValue, $propertyValueValidationContext);
         }
 
-        foreach ($this->constraints->getPropertyConstraints($class, $propertyName) as $constraint) {
-            $thisConstraintPassed = $constraint->passes($propertyValue, $validationContext);
-            $allConstraintsPassed = $allConstraintsPassed && $thisConstraintPassed;
+        if (($objectConstraints = $this->objectConstraints->getConstraintsForClass($class)) !== null) {
+            foreach ($objectConstraints->getPropertyConstraints($propertyName) as $constraint) {
+                $thisConstraintPassed = $constraint->passes($propertyValue, $validationContext);
+                $allConstraintsPassed = $allConstraintsPassed && $thisConstraintPassed;
 
-            if (!$thisConstraintPassed) {
-                $validationContext->addConstraintViolation(new ConstraintViolation(
-                    $constraint,
-                    $propertyValue,
-                    $validationContext->getValue(),
-                    $propertyName
-                ));
+                if (!$thisConstraintPassed) {
+                    $validationContext->addConstraintViolation(new ConstraintViolation(
+                        $constraint,
+                        $propertyValue,
+                        $validationContext->getValue(),
+                        $propertyName
+                    ));
+                }
             }
         }
 
