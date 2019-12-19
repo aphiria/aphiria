@@ -140,25 +140,9 @@ final class ValidationContext
      *
      * @param ValidationContext $childContext The child context
      */
-    protected function setChildContext(ValidationContext $childContext): void
+    private function setChildContext(ValidationContext $childContext): void
     {
         $this->childContext = $childContext;
-    }
-
-    /**
-     * Checks if the context validates a particular object
-     *
-     * @param object $object The object to check
-     * @return bool True if the context validates the input object, otherwise false
-     */
-    protected function validatesObject(object $object): bool
-    {
-        /**
-         * We only check for circular dependencies for contexts that are for the object itself, not a property nor method.
-         * It's expected that an object would show up multiple times in property/method contexts, but it should not
-         * show up as the value of a context chain more than once.
-         */
-        return $this->propertyName === null && $this->methodName === null && $this->value === $object;
     }
 
     /**
@@ -185,5 +169,21 @@ final class ValidationContext
 
             $parentContext = $parentContext->parentContext;
         }
+    }
+
+    /**
+     * Checks if the context validates a particular object
+     *
+     * @param object $object The object to check
+     * @return bool True if the context validates the input object, otherwise false
+     */
+    private function validatesObject(object $object): bool
+    {
+        /**
+         * We only check for circular dependencies for contexts that are for the object itself, not a property nor method.
+         * It's expected that an object would show up multiple times in property/method contexts, but it should not
+         * show up as the value of a context chain more than once.
+         */
+        return $this->propertyName === null && $this->methodName === null && $this->value === $object;
     }
 }
