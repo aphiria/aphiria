@@ -19,16 +19,16 @@ use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 /**
  * Defines the cached constraint registrant
  */
-final class CachedConstraintRegistrant extends AggregateObjectConstraintRegistrant
+final class CachedObjectConstraintRegistrant extends AggregateObjectConstraintRegistrant
 {
-    /** @var IConstraintRegistryCache The constraint cache to store constraints in */
-    private IConstraintRegistryCache $constraintCache;
+    /** @var IObjectConstraintRegistryCache The constraint cache to store constraints in */
+    private IObjectConstraintRegistryCache $constraintCache;
 
     /**
      * @inheritdoc
-     * @param IConstraintRegistryCache $constraintCache The constraint cache
+     * @param IObjectConstraintRegistryCache $constraintCache The constraint cache
      */
-    public function __construct(IConstraintRegistryCache $constraintCache, IObjectConstraintRegistrant $initialConstraintRegistrant = null)
+    public function __construct(IObjectConstraintRegistryCache $constraintCache, IObjectConstraintRegistrant $initialConstraintRegistrant = null)
     {
         parent::__construct($initialConstraintRegistrant);
 

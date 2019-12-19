@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints\Caching;
 
-use Aphiria\Validation\Constraints\Caching\FileConstraintRegistryCache;
+use Aphiria\Validation\Constraints\Caching\FileObjectConstraintRegistryCache;
 use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 use Aphiria\Validation\Constraints\ObjectConstraints;
 use Aphiria\Validation\Tests\Constraints\Mocks\MockConstraint;
@@ -21,15 +21,15 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests the file constraint registry cache
  */
-class FileConstraintRegistryCacheTest extends TestCase
+class FileObjectConstraintRegistryCacheTest extends TestCase
 {
     /** @var string The path to the constraint cache */
     private const PATH = __DIR__ . '/tmp/constraint.cache';
-    private FileConstraintRegistryCache $cache;
+    private FileObjectConstraintRegistryCache $cache;
 
     protected function setUp(): void
     {
-        $this->cache = new FileConstraintRegistryCache(self::PATH);
+        $this->cache = new FileObjectConstraintRegistryCache(self::PATH);
     }
 
     protected function tearDown(): void

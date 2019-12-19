@@ -17,7 +17,7 @@ use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 /**
  * Defines the interface for constraint registry caches to implement
  */
-interface IConstraintRegistryCache
+interface IObjectConstraintRegistryCache
 {
     /**
      * Flushes the cache
