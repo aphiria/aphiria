@@ -122,7 +122,7 @@ class AphiriaComponentBuilderTest extends TestCase
             ->method('registerComponentBuilder')
             ->with('routeAnnotations');
         $this->componentBuilder->withRoutingComponent($this->appBuilder);
-        $this->componentBuilder->withRouteAnnotations($this->appBuilder);
+        $this->componentBuilder->withRoutingAnnotations($this->appBuilder);
     }
 
     public function testWithRoutingComponentRegistersRouter(): void

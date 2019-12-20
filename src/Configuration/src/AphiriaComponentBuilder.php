@@ -166,12 +166,12 @@ final class AphiriaComponentBuilder
     }
 
     /**
-     * Registers Aphiria route annotations (requires the routing component to be registered)
+     * Registers Aphiria routing annotations (requires the routing component to be registered)
      *
      * @param IApplicationBuilder $appBuilder The app builder to register to
      * @return AphiriaComponentBuilder For chaining
      */
-    public function withRouteAnnotations(IApplicationBuilder $appBuilder): self
+    public function withRoutingAnnotations(IApplicationBuilder $appBuilder): self
     {
         if (!$this->routingComponentRegistered) {
             $this->withRoutingComponent($appBuilder);
