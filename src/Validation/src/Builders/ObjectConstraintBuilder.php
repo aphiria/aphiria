@@ -87,7 +87,7 @@ final class ObjectConstraintBuilder
      */
     public function withConstraint(IConstraint $constraint): self
     {
-        return $this->withConstraints([$constraint]);
+        return $this->withManyConstraints([$constraint]);
     }
 
     /**
@@ -97,7 +97,7 @@ final class ObjectConstraintBuilder
      * @return $this For chaining
      * @throws LogicException Thrown if the current field is not set
      */
-    public function withConstraints(array $constraints): self
+    public function withManyConstraints(array $constraints): self
     {
         if ($this->currFieldName === null) {
             throw new LogicException('Must call hasMethod() or hasProperty() before adding constraints');

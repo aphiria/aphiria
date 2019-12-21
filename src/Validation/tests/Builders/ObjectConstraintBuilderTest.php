@@ -100,41 +100,41 @@ class ObjectConstraintBuilderTest extends TestCase
         $this->assertEquals([$expectedConstraint], $objectConstraints->getPropertyConstraints('prop'));
     }
 
-    public function testWithConstraintsForMethodAddsConstraintsToMethod(): void
+    public function testWithConstraintWithoutSettingFieldThrowsException(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Must call hasMethod() or hasProperty() before adding constraints');
+        $this->constraintBuilder->withManyConstraints([$this->createMock(IConstraint::class)]);
+    }
+
+    public function testWithManyConstraintsForMethodAddsConstraintsToMethod(): void
     {
         $expectedConstraints = [
             $this->createMock(IConstraint::class),
             $this->createMock(IConstraint::class)
         ];
         $this->constraintBuilder->hasMethod('method')
-            ->withConstraints($expectedConstraints);
+            ->withManyConstraints($expectedConstraints);
         $objectConstraints = $this->constraintBuilder->build();
         $this->assertEquals($expectedConstraints, $objectConstraints->getMethodConstraints('method'));
     }
 
-    public function testWithConstraintsForPropertyAddsConstraintsToProperty(): void
+    public function testWithManyConstraintsForPropertyAddsConstraintsToProperty(): void
     {
         $expectedConstraints = [
             $this->createMock(IConstraint::class),
             $this->createMock(IConstraint::class)
         ];
         $this->constraintBuilder->hasProperty('prop')
-            ->withConstraints($expectedConstraints);
+            ->withManyConstraints($expectedConstraints);
         $objectConstraints = $this->constraintBuilder->build();
         $this->assertEquals($expectedConstraints, $objectConstraints->getPropertyConstraints('prop'));
     }
 
-    public function testWithConstraintsWithoutSettingFieldThrowsException(): void
+    public function testWithManyConstraintsWithoutSettingFieldThrowsException(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Must call hasMethod() or hasProperty() before adding constraints');
         $this->constraintBuilder->withConstraint($this->createMock(IConstraint::class));
-    }
-
-    public function testWithConstraintWithoutSettingFieldThrowsException(): void
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Must call hasMethod() or hasProperty() before adding constraints');
-        $this->constraintBuilder->withConstraints([$this->createMock(IConstraint::class)]);
     }
 }
