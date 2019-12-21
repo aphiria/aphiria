@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Routing\UriTemplates\Compilers\Tries;
 
 use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
+use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactoryRegistrant;
 use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
 use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Lexers\LexingException;
@@ -22,8 +24,6 @@ use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
-use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
-use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactoryRegistrant;
 
 /**
  * Defines a compiler for a trie
@@ -193,7 +193,8 @@ final class TrieCompiler implements ITrieCompiler
             }
 
             $constraintParams = $childAstNode->hasChildren() ? $childAstNode->children[0]->value : [];
-            $constraints[] = $this->constraintFactory->createConstraint((string)$childAstNode->value, $constraintParams);
+            $constraints[] = $this->constraintFactory->createConstraint((string)$childAstNode->value,
+                $constraintParams);
         }
 
         return new RouteVariable((string)$astNode->value, $constraints);

@@ -29,7 +29,9 @@ final class NotInConstraint implements IRouteVariableConstraint
     }
 
     /**
-     * @inheritdoc
+     * Gets the slug that will be used to actually add a constraint in a URI template
+     *
+     * @return string The slug used in the URI template
      */
     public static function getSlug(): string
     {

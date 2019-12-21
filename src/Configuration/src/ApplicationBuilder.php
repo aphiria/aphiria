@@ -16,16 +16,16 @@ use Aphiria\Api\App as ApiApp;
 use Aphiria\Api\ContainerDependencyResolver;
 use Aphiria\Api\DependencyResolutionException;
 use Aphiria\Api\IDependencyResolver;
+use Aphiria\Configuration\Middleware\MiddlewareBinding;
+use Aphiria\Console\App as ConsoleApp;
+use Aphiria\Console\Commands\AggregateCommandRegistrant;
 use Aphiria\Console\Commands\ClosureCommandRegistrant;
+use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
-use Aphiria\Configuration\Middleware\MiddlewareBinding;
-use Aphiria\Console\App as ConsoleApp;
-use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\Console\Commands\ICommandBus;
-use Aphiria\Console\Commands\AggregateCommandRegistrant;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use BadMethodCallException;
@@ -111,7 +111,8 @@ final class ApplicationBuilder implements IApplicationBuilder
             $this->dispatchBootstrappers();
             $this->container->hasBinding(AggregateCommandRegistrant::class)
                 ? $commandRegistrant = $this->container->resolve(AggregateCommandRegistrant::class)
-                : $this->container->bindInstance(AggregateCommandRegistrant::class, $commandRegistrant = new AggregateCommandRegistrant());
+                : $this->container->bindInstance(AggregateCommandRegistrant::class,
+                $commandRegistrant = new AggregateCommandRegistrant());
 
             $commandRegistrant->addCommandRegistrant(new ClosureCommandRegistrant($this->consoleCommandCallbacks));
             $this->buildComponents();
@@ -238,15 +239,15 @@ final class ApplicationBuilder implements IApplicationBuilder
         $this->container->hasBinding(IDependencyResolver::class)
             ? $dependencyResolver = $this->container->resolve(IDependencyResolver::class)
             : $this->container->bindInstance(
-                IDependencyResolver::class,
-                $dependencyResolver = new ContainerDependencyResolver($this->container)
-            );
+            IDependencyResolver::class,
+            $dependencyResolver = new ContainerDependencyResolver($this->container)
+        );
         $this->container->hasBinding(MiddlewarePipelineFactory::class)
             ? $middlewarePipelineFactory = $this->container->resolve(MiddlewarePipelineFactory::class)
             : $this->container->bindInstance(
-                MiddlewarePipelineFactory::class,
-                $middlewarePipelineFactory = new MiddlewarePipelineFactory()
-            );
+            MiddlewarePipelineFactory::class,
+            $middlewarePipelineFactory = new MiddlewarePipelineFactory()
+        );
 
         $app = new ApiApp($dependencyResolver, $router, $middlewarePipelineFactory);
 
@@ -262,7 +263,8 @@ final class ApplicationBuilder implements IApplicationBuilder
                 }
             }
         } catch (DependencyResolutionException $ex) {
-            throw new ResolutionException($ex->getInterface(), $ex->getTargetClass(), 'Failed to resolve middleware', 0, $ex);
+            throw new ResolutionException($ex->getInterface(), $ex->getTargetClass(), 'Failed to resolve middleware', 0,
+                $ex);
         }
 
         return $app;

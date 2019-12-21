@@ -21,7 +21,9 @@ final class UuidV4Constraint implements IRouteVariableConstraint
     private const UUIDV4_REGEX = '/^\{?[a-f\d]{8}-(?:[a-f\d]{4}-){3}[a-f\d]{12}\}?$/i';
 
     /**
-     * @inheritdoc
+     * Gets the slug that will be used to actually add a constraint in a URI template
+     *
+     * @return string The slug used in the URI template
      */
     public static function getSlug(): string
     {

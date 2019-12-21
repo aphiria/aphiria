@@ -14,19 +14,19 @@ namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries\Compilers;
 
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
 use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
-use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
-use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieCompiler;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\LiteralTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RootTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RouteVariable;
+use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieCompiler;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\VariableTrieNode;
+use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
 use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
-use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -90,8 +90,8 @@ class TrieCompilerTest extends TestCase
             ->addChild(new AstNode(AstNodeTypes::TEXT, 'foo'))
             ->addChild(
                 (new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART, '['))
-                ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
-                ->addChild(new AstNode(AstNodeTypes::TEXT, 'bar'))
+                    ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
+                    ->addChild(new AstNode(AstNodeTypes::TEXT, 'bar'))
             );
         $this->ast->addChild($pathAst);
         $hostTemplate = 'example.com';
@@ -129,8 +129,8 @@ class TrieCompilerTest extends TestCase
         $hostAst = (new AstNode(AstNodeTypes::HOST, null))
             ->addChild(
                 (new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART, '['))
-                ->addChild(new AstNode(AstNodeTypes::TEXT, 'api'))
-                ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '.'))
+                    ->addChild(new AstNode(AstNodeTypes::TEXT, 'api'))
+                    ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '.'))
             )
             ->addChild(new AstNode(AstNodeTypes::TEXT, 'example'))
             ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '.'))
@@ -283,8 +283,8 @@ class TrieCompilerTest extends TestCase
         $constraint1 = $this->createMock(IRouteVariableConstraint::class);
         /** @var IRouteVariableConstraint|MockObject $constraint2 */
         $constraint2 = $this->createMock(IRouteVariableConstraint::class);
-        $this->constraintFactory->registerConstraintFactory('r1', fn ($p1, $p2) => $constraint1);
-        $this->constraintFactory->registerConstraintFactory('r2', fn ($p1, $p2) => $constraint1);
+        $this->constraintFactory->registerConstraintFactory('r1', fn($p1, $p2) => $constraint1);
+        $this->constraintFactory->registerConstraintFactory('r2', fn($p1, $p2) => $constraint1);
 
         // Test compiling
         $pathTemplate = '/:foo(r1(p1,p2),r2(p3,p4))';
@@ -331,7 +331,7 @@ class TrieCompilerTest extends TestCase
         // Set up constraint factory
         /** @var IRouteVariableConstraint|MockObject $constraint */
         $constraint = $this->createMock(IRouteVariableConstraint::class);
-        $this->constraintFactory->registerConstraintFactory('r1', fn () => $constraint);
+        $this->constraintFactory->registerConstraintFactory('r1', fn() => $constraint);
 
         // Test compiling
         $pathTemplate = '/:foo(r1)';
