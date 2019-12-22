@@ -26,28 +26,35 @@ class BetweenConstraintTest extends TestCase
         $this->assertEquals('between', BetweenConstraint::getSlug());
     }
 
-    public function testFailingValueWithExclusiveRange(): void
+    public function testInclusiveFlagsAreRespected(): void
     {
-        $constraint = new BetweenConstraint(0, 2, false);
-        $this->assertFalse($constraint->passes(3));
+        $minInclusiveConstraint = new BetweenConstraint(1, 3, true, false);
+        $this->assertTrue($minInclusiveConstraint->passes(1));
+        $this->assertTrue($minInclusiveConstraint->passes(2));
+        $this->assertFalse($minInclusiveConstraint->passes(0));
+
+        $maxInclusiveConstraint = new BetweenConstraint(1, 3, false, true);
+        $this->assertTrue($maxInclusiveConstraint->passes(3));
+        $this->assertTrue($maxInclusiveConstraint->passes(2));
+        $this->assertFalse($maxInclusiveConstraint->passes(4));
+
+        $neitherInclusiveConstraint = new BetweenConstraint(1, 3, false, false);
+        $this->assertFalse($neitherInclusiveConstraint->passes(1));
+        $this->assertFalse($neitherInclusiveConstraint->passes(3));
+        $this->assertTrue($neitherInclusiveConstraint->passes(2));
+
+        $bothInclusiveConstraint = new BetweenConstraint(1, 3, true, true);
+        $this->assertTrue($bothInclusiveConstraint->passes(1));
+        $this->assertTrue($bothInclusiveConstraint->passes(3));
+        $this->assertTrue($bothInclusiveConstraint->passes(2));
     }
 
-    public function testFailingValueWithInclusiveRange(): void
+    public function testNonNumericValueThrowsException(): void
     {
-        $constraint = new BetweenConstraint(0, 2, true);
-        $this->assertFalse($constraint->passes(3));
-    }
-
-    public function testPassingValueWithExclusiveRange(): void
-    {
-        $constraint = new BetweenConstraint(0, 2, false);
-        $this->assertTrue($constraint->passes(1));
-    }
-
-    public function testPassingValueWithInclusiveRange(): void
-    {
-        $constraint = new BetweenConstraint(0, 2, true);
-        $this->assertTrue($constraint->passes(2));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value must be numeric');
+        $constraint = new BetweenConstraint(0, 2);
+        $constraint->passes('foo');
     }
 
     public function testInvalidMaxValueThrowsException(): void

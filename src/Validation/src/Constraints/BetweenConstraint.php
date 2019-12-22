@@ -26,18 +26,26 @@ final class BetweenConstraint extends Constraint
     private $min;
     /** @var int|float The maximum */
     private $max;
-    /** @var bool Whether or not the extremes are inclusive */
-    private bool $isInclusive;
+    /** @var bool Whether or not the min is inclusive */
+    private bool $minIsInclusive;
+    /** @var bool Whether or not the max is inclusive */
+    private bool $maxIsInclusive;
 
     /**
      * @inheritdoc
      * @param int|float $min The minimum
      * @param int|float $max The maximum
-     * @param bool $isInclusive Whether or not the extremes are inclusive
+     * @param bool $minIsInclusive Whether or not the min is inclusive
+     * @param bool $maxIsInclusive Whether or not the max is inclusive
      * @throws InvalidArgumentException Thrown if the min or max are not numeric
      */
-    public function __construct($min, $max, bool $isInclusive, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
-    {
+    public function __construct(
+        $min,
+        $max,
+        bool $minIsInclusive,
+        bool $maxIsInclusive,
+        string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID
+    ) {
         parent::__construct($errorMessageId);
 
         if (!\is_numeric($min) || !\is_numeric($max)) {
@@ -46,7 +54,8 @@ final class BetweenConstraint extends Constraint
 
         $this->min = $min;
         $this->max = $max;
-        $this->isInclusive = $isInclusive;
+        $this->minIsInclusive = $minIsInclusive;
+        $this->maxIsInclusive = $maxIsInclusive;
     }
 
     /**
@@ -62,10 +71,13 @@ final class BetweenConstraint extends Constraint
      */
     public function passes($value, ValidationContext $validationContext): bool
     {
-        if ($this->isInclusive) {
-            return $value >= $this->min && $value <= $this->max;
+        if (!\is_numeric($value)) {
+            throw new InvalidArgumentException('Value must be numeric');
         }
 
-        return $value > $this->min && $value < $this->max;
+        $passesMin = $this->minIsInclusive ? $value >= $this->min : $value > $this->min;
+        $passesMax = $this->maxIsInclusive ? $value <= $this->max : $value < $this->max;
+
+        return $passesMin && $passesMax;
     }
 }

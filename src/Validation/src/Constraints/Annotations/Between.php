@@ -27,8 +27,10 @@ final class Between implements IConstraintAnnotation
     public $min;
     /** @var int|float The maximum */
     public $max;
-    /** @var bool Whether or not the extremes are inclusive */
-    public bool $isInclusive;
+    /** @var bool Whether or not the min is inclusive */
+    public bool $minIsInclusive;
+    /** @var bool Whether or not the max is inclusive */
+    public bool $maxIsInclusive;
     /** @var string|null The error message ID */
     public ?string $errorMessageId;
 
@@ -47,7 +49,8 @@ final class Between implements IConstraintAnnotation
 
         $this->min = $values['min'];
         $this->max = $values['max'];
-        $this->isInclusive = isset($values['isInclusive']) ? (bool)$values['isInclusive'] : true;
+        $this->minIsInclusive = isset($values['minIsInclusive']) ? (bool)$values['minIsInclusive'] : true;
+        $this->maxIsInclusive = isset($values['maxIsInclusive']) ? (bool)$values['maxIsInclusive'] : true;
         $this->errorMessageId = $values['errorMessageId'] ?? null;
     }
 
@@ -57,9 +60,15 @@ final class Between implements IConstraintAnnotation
     public function createConstraintFromAnnotation(): BetweenConstraint
     {
         if (isset($this->errorMessageId)) {
-            return new BetweenConstraint($this->min, $this->max, $this->isInclusive, $this->errorMessageId);
+            return new BetweenConstraint(
+                $this->min,
+                $this->max,
+                $this->minIsInclusive,
+                $this->maxIsInclusive,
+                $this->errorMessageId
+            );
         }
 
-        return new BetweenConstraint($this->min, $this->max, $this->isInclusive);
+        return new BetweenConstraint($this->min, $this->max, $this->minIsInclusive, $this->maxIsInclusive);
     }
 }

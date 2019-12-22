@@ -35,22 +35,34 @@ class BetweenTest extends TestCase
         $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
     }
 
-    public function testIsInclusiveCanBeSetViaConstructor(): void
+    public function testMaxIsInclusiveCanBeSetViaConstructor(): void
     {
-        $annotation = new Between(['min' => 1, 'max' => 2, 'isInclusive' => false]);
-        $this->assertFalse($annotation->isInclusive);
+        $annotation = new Between(['min' => 1, 'max' => 2, 'maxIsInclusive' => false]);
+        $this->assertFalse($annotation->maxIsInclusive);
     }
 
-    public function testIsInclusiveDefaultsToTrue(): void
+    public function testMaxIsInclusiveDefaultsToTrue(): void
     {
         $annotation = new Between(['min' => 1, 'max' => 2]);
-        $this->assertTrue($annotation->isInclusive);
+        $this->assertTrue($annotation->maxIsInclusive);
     }
 
     public function testMaxIsSetViaConstructor(): void
     {
         $annotation = new Between(['min' => 1, 'max' => 2]);
         $this->assertEquals(2, $annotation->max);
+    }
+
+    public function testMinIsInclusiveCanBeSetViaConstructor(): void
+    {
+        $annotation = new Between(['min' => 1, 'max' => 2, 'minIsInclusive' => false]);
+        $this->assertFalse($annotation->minIsInclusive);
+    }
+
+    public function testMinIsInclusiveDefaultsToTrue(): void
+    {
+        $annotation = new Between(['min' => 1, 'max' => 2]);
+        $this->assertTrue($annotation->minIsInclusive);
     }
 
     public function testMinIsSetViaConstructor(): void

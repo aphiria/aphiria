@@ -23,16 +23,19 @@ final class BetweenConstraint implements IRouteVariableConstraint
     private $min;
     /** @var int|float The max value */
     private $max;
-    /** @var bool Whether or not the extremes are inclusive */
-    private bool $isInclusive;
+    /** @var bool Whether or not the min is inclusive */
+    private bool $minIsInclusive;
+    /** @var bool Whether or not the max is inclusive */
+    private bool $maxIsInclusive;
 
     /**
      * @param int|float $min The min value
      * @param int|float $max The max value
-     * @param bool $isInclusive Whether or not the extremes are inclusive
+     * @param bool $minIsInclusive Whether or not the min is inclusive
+     * @param bool $maxIsInclusive Whether or not the min is inclusive
      * @throws InvalidArgumentException Thrown if the min or max values are invalid
      */
-    public function __construct($min, $max, bool $isInclusive = true)
+    public function __construct($min, $max, bool $minIsInclusive = true, bool $maxIsInclusive = true)
     {
         if (!\is_numeric($min)) {
             throw new InvalidArgumentException('Min value must be numeric');
@@ -44,7 +47,8 @@ final class BetweenConstraint implements IRouteVariableConstraint
 
         $this->min = $min;
         $this->max = $max;
-        $this->isInclusive = $isInclusive;
+        $this->minIsInclusive = $minIsInclusive;
+        $this->maxIsInclusive = $maxIsInclusive;
     }
 
     /**
@@ -62,10 +66,13 @@ final class BetweenConstraint implements IRouteVariableConstraint
      */
     public function passes($value): bool
     {
-        if ($this->isInclusive) {
-            return $value >= $this->min && $value <= $this->max;
+        if (!\is_numeric($value)) {
+            throw new InvalidArgumentException('Value must be numeric');
         }
 
-        return $value > $this->min && $value < $this->max;
+        $passesMin = $this->minIsInclusive ? $value >= $this->min : $value > $this->min;
+        $passesMax = $this->maxIsInclusive ? $value <= $this->max : $value < $this->max;
+
+        return $passesMin && $passesMax;
     }
 }
