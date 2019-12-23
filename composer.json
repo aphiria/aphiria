@@ -74,5 +74,6 @@
             "dev-master": "1.0.x-dev"
         }
     },
+    "prefer-stable": true,
     "minimum-stability": "dev"
 }
