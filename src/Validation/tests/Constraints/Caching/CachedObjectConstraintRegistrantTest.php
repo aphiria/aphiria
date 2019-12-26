@@ -17,7 +17,6 @@ use Aphiria\Validation\Constraints\Caching\IObjectConstraintRegistryCache;
 use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\IObjectConstraintRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
-use Aphiria\Validation\Constraints\ObjectConstraints;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -53,11 +52,11 @@ class CachedObjectConstraintRegistrantTest extends TestCase
              */
             public function registerConstraints(ObjectConstraintRegistry $objectConstraints): void
             {
-                $objectConstraints->registerObjectConstraints(new ObjectConstraints(
+                $objectConstraints->registerObjectConstraints(
                     $this->className,
                     [$this->propName => [$this->propConstraint]],
                     []
-                ));
+                );
             }
         };
         $cachedRegistrant = new CachedObjectConstraintRegistrant($constraintRegistryCache, $initialConstraintRegistrant);
@@ -65,7 +64,7 @@ class CachedObjectConstraintRegistrantTest extends TestCase
         $cachedRegistrant->registerConstraints($objectConstraints);
         $this->assertSame(
             [$propConstraint],
-            $objectConstraints->getConstraintsForClass($className)->getPropertyConstraints($propName)
+            $objectConstraints->getPropertyConstraints($className, $propName)
         );
     }
 
@@ -96,11 +95,11 @@ class CachedObjectConstraintRegistrantTest extends TestCase
              */
             public function registerConstraints(ObjectConstraintRegistry $objectConstraints): void
             {
-                $objectConstraints->registerObjectConstraints(new ObjectConstraints(
+                $objectConstraints->registerObjectConstraints(
                     $this->className,
                     [$this->propName => [$this->propConstraint]],
                     []
-                ));
+                );
             }
         };
         $cachedRegistrant = new CachedObjectConstraintRegistrant($constraintRegistryCache);
@@ -109,7 +108,7 @@ class CachedObjectConstraintRegistrantTest extends TestCase
         $cachedRegistrant->registerConstraints($objectConstraints);
         $this->assertSame(
             [$propConstraint],
-            $objectConstraints->getConstraintsForClass($className)->getPropertyConstraints($propName)
+            $objectConstraints->getPropertyConstraints($className, $propName)
         );
     }
 
@@ -117,11 +116,11 @@ class CachedObjectConstraintRegistrantTest extends TestCase
     {
         /** @var IObjectConstraintRegistryCache|MockObject $constraintRegistryCache */
         $expectedObjectConstraints = new ObjectConstraintRegistry();
-        $expectedObjectConstraints->registerObjectConstraints(new ObjectConstraints(
+        $expectedObjectConstraints->registerObjectConstraints(
             'foo',
             ['prop' => $this->createMock(IConstraint::class)],
             []
-        ));
+        );
         $constraintRegistryCache = $this->createMock(IObjectConstraintRegistryCache::class);
         $constraintRegistryCache->expects($this->once())
             ->method('get')
@@ -129,7 +128,7 @@ class CachedObjectConstraintRegistrantTest extends TestCase
         $objectConstraints = new ObjectConstraintRegistry();
         $cachedRegistrant = new CachedObjectConstraintRegistrant($constraintRegistryCache);
         $cachedRegistrant->registerConstraints($objectConstraints);
-        $this->assertCount(1, $objectConstraints->getConstraintsForClass('foo')->getPropertyConstraints('prop'));
+        $this->assertCount(1, $objectConstraints->getPropertyConstraints('foo', 'prop'));
     }
 
     public function testRegisteringConstraintsWithCacheThatMissesStillRunsTheRegistrants(): void
@@ -159,11 +158,11 @@ class CachedObjectConstraintRegistrantTest extends TestCase
              */
             public function registerConstraints(ObjectConstraintRegistry $objectConstraints): void
             {
-                $objectConstraints->registerObjectConstraints(new ObjectConstraints(
+                $objectConstraints->registerObjectConstraints(
                     $this->className,
                     [$this->propName => [$this->propConstraint]],
                     []
-                ));
+                );
             }
         };
         $cachedRegistrant = new CachedObjectConstraintRegistrant($constraintRegistryCache);
@@ -172,7 +171,7 @@ class CachedObjectConstraintRegistrantTest extends TestCase
         $cachedRegistrant->registerConstraints($objectConstraints);
         $this->assertSame(
             [$propConstraint],
-            $objectConstraints->getConstraintsForClass($className)->getPropertyConstraints($propName)
+            $objectConstraints->getPropertyConstraints($className, $propName)
         );
     }
 
@@ -203,17 +202,17 @@ class CachedObjectConstraintRegistrantTest extends TestCase
              */
             public function registerConstraints(ObjectConstraintRegistry $objectConstraints): void
             {
-                $objectConstraints->registerObjectConstraints(new ObjectConstraints(
+                $objectConstraints->registerObjectConstraints(
                     $this->className,
                     [$this->propName => [$this->propConstraint]],
                     []
-                ));
+                );
             }
         };
         $constraintRegistryCache->expects($this->once())
             ->method('set')
             ->with($this->callback(function (ObjectConstraintRegistry $objectConstraints) use ($className, $propName, $propConstraint) {
-                $actualConstraints = $objectConstraints->getConstraintsForClass($className)->getPropertyConstraints($propName);
+                $actualConstraints = $objectConstraints->getPropertyConstraints($className, $propName);
 
                 return count($actualConstraints) === 1 && $actualConstraints[0] === $propConstraint;
             }));

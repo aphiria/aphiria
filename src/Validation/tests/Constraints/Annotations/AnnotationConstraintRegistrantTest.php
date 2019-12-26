@@ -57,13 +57,10 @@ class AnnotationConstraintRegistrantTest extends TestCase
             ->willReturn([\get_class($object)]);
         $objectConstraints = new ObjectConstraintRegistry();
         $this->registrant->registerConstraints($objectConstraints);
-        $this->assertCount(
-            1,
-            $objectConstraints->getConstraintsForClass(\get_class($object))->getMethodConstraints('method')
-        );
+        $this->assertCount(1, $objectConstraints->getMethodConstraints(\get_class($object), 'method'));
         $this->assertInstanceOf(
             RequiredConstraint::class,
-            $objectConstraints->getConstraintsForClass(\get_class($object))->getMethodConstraints('method')[0]
+            $objectConstraints->getMethodConstraints(\get_class($object), 'method')[0]
         );
     }
 
@@ -84,10 +81,7 @@ class AnnotationConstraintRegistrantTest extends TestCase
             ->willReturn([\get_class($object)]);
         $objectConstraints = new ObjectConstraintRegistry();
         $this->registrant->registerConstraints($objectConstraints);
-        $this->assertCount(
-            0,
-            $objectConstraints->getConstraintsForClass(\get_class($object))->getMethodConstraints('method')
-        );
+        $this->assertCount(0, $objectConstraints->getMethodConstraints(\get_class($object), 'method'));
     }
 
     public function testPropertiesWithConstraintsAreRegistered(): void
@@ -104,13 +98,10 @@ class AnnotationConstraintRegistrantTest extends TestCase
             ->willReturn([\get_class($object)]);
         $objectConstraints = new ObjectConstraintRegistry();
         $this->registrant->registerConstraints($objectConstraints);
-        $this->assertCount(
-            1,
-            $objectConstraints->getConstraintsForClass(\get_class($object))->getPropertyConstraints('prop')
-        );
+        $this->assertCount(1, $objectConstraints->getPropertyConstraints(\get_class($object), 'prop'));
         $this->assertInstanceOf(
             RequiredConstraint::class,
-            $objectConstraints->getConstraintsForClass(\get_class($object))->getPropertyConstraints('prop')[0]
+            $objectConstraints->getPropertyConstraints(\get_class($object), 'prop')[0]
         );
     }
 
@@ -128,9 +119,6 @@ class AnnotationConstraintRegistrantTest extends TestCase
             ->willReturn([\get_class($object)]);
         $objectConstraints = new ObjectConstraintRegistry();
         $this->registrant->registerConstraints($objectConstraints);
-        $this->assertCount(
-            0,
-            $objectConstraints->getConstraintsForClass(\get_class($object))->getPropertyConstraints('prop')
-        );
+        $this->assertCount(0, $objectConstraints->getPropertyConstraints(\get_class($object), 'prop'));
     }
 }

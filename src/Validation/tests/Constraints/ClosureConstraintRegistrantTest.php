@@ -15,7 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints;
 use Aphiria\Validation\Constraints\ClosureObjectConstraintRegistrant;
 use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
-use Aphiria\Validation\Constraints\ObjectConstraints;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,15 +26,15 @@ class ClosureConstraintRegistrantTest extends TestCase
     {
         $expectedConstraint = $this->createMock(IConstraint::class);
         $closures = [function (ObjectConstraintRegistry $objectConstraints) use ($expectedConstraint) {
-            $objectConstraints->registerObjectConstraints(new ObjectConstraints('foo', ['prop' => $expectedConstraint], []));
+            $objectConstraints->registerObjectConstraints('foo', ['prop' => $expectedConstraint], []);
         }];
         $closureConstraintRegistrant = new ClosureObjectConstraintRegistrant($closures);
         $objectConstraints = new ObjectConstraintRegistry();
         $closureConstraintRegistrant->registerConstraints($objectConstraints);
-        $this->assertCount(1, $objectConstraints->getConstraintsForClass('foo')->getPropertyConstraints('prop'));
+        $this->assertCount(1, $objectConstraints->getPropertyConstraints('foo', 'prop'));
         $this->assertSame(
             $expectedConstraint,
-            $objectConstraints->getConstraintsForClass('foo')->getPropertyConstraints('prop')[0]
+            $objectConstraints->getPropertyConstraints('foo', 'prop')[0]
         );
     }
 }

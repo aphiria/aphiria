@@ -16,7 +16,6 @@ use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
 use Aphiria\Validation\Constraints\IObjectConstraintRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
-use Aphiria\Validation\Constraints\ObjectConstraints;
 use Doctrine\Annotations\AnnotationException;
 use Doctrine\Annotations\AnnotationReader;
 use Doctrine\Annotations\Reader;
@@ -94,11 +93,7 @@ final class AnnotationObjectConstraintRegistrant implements IObjectConstraintReg
                 }
             }
 
-            $objectConstraints->registerObjectConstraints(new ObjectConstraints(
-                $class,
-                $propertyConstraints,
-                $methodConstraints
-            ));
+            $objectConstraints->registerObjectConstraints($class, $propertyConstraints, $methodConstraints);
         }
     }
 }
