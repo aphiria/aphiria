@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
+use Aphiria\IO\Streams\IStream;
+use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\HttpStatusCodes;
@@ -24,8 +26,6 @@ use Aphiria\Net\Http\StringBody;
 use Aphiria\Serialization\SerializationException;
 use Aphiria\Serialization\TypeResolver;
 use InvalidArgumentException;
-use Aphiria\IO\Streams\IStream;
-use Aphiria\IO\Streams\Stream;
 
 /**
  * Defines the factory that generates HTTP responses from negotiated content
