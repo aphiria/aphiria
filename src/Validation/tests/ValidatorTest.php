@@ -14,7 +14,8 @@ namespace Aphiria\Validation\Tests;
 
 use Aphiria\Validation\CircularDependencyException;
 use Aphiria\Validation\Constraints\IConstraint;
-use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
+use Aphiria\Validation\Constraints\ObjectConstraints;
+use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\Validator;
 use PHPUnit\Framework\TestCase;
@@ -25,11 +26,11 @@ use PHPUnit\Framework\TestCase;
 class ValidatorTest extends TestCase
 {
     private Validator $validator;
-    private ObjectConstraintRegistry $objectConstraints;
+    private ObjectConstraintsRegistry $objectConstraints;
 
     protected function setUp(): void
     {
-        $this->objectConstraints = new ObjectConstraintRegistry();
+        $this->objectConstraints = new ObjectConstraintsRegistry();
         $this->validator = new Validator($this->objectConstraints);
     }
 
@@ -43,7 +44,11 @@ class ValidatorTest extends TestCase
         };
         $expectedContext = new ValidationContext($object, null, 'method');
         $constraints = [$this->createMockConstraint(false, 1, $expectedContext)];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), [], ['method' => $constraints]);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            [],
+            ['method' => $constraints]
+        ));
         $this->assertFalse($this->validator->tryValidateMethod($object, 'method', $expectedContext));
     }
 
@@ -57,7 +62,11 @@ class ValidatorTest extends TestCase
         };
         $expectedContext = new ValidationContext($object, null, 'method');
         $constraints = [$this->createMockConstraint(true, 1, $expectedContext)];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), [], ['method' => $constraints]);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            [],
+            ['method' => $constraints]
+        ));
         $this->assertTrue($this->validator->tryValidateMethod($object, 'method', $expectedContext));
     }
 
@@ -82,11 +91,11 @@ class ValidatorTest extends TestCase
         $expectedOuterMethodContext = new ValidationContext($outerObject, null, 'method');
         $expectedInnerObjectContext = new ValidationContext($innerObject, null, null, $expectedOuterMethodContext);
         $expectedInnerObjectPropContext = new ValidationContext($innerObject, 'prop', null, $expectedInnerObjectContext);
-        $this->objectConstraints->registerObjectConstraints(
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             \get_class($innerObject),
             ['prop' => $this->createMockConstraint(true, 1, $expectedInnerObjectPropContext)],
             []
-        );
+        ));
         $this->assertTrue($this->validator->tryValidateMethod($outerObject, 'method', $expectedOuterMethodContext));
     }
 
@@ -127,7 +136,11 @@ class ValidatorTest extends TestCase
             $this->createMockConstraint(true, 1, $expectedContext),
             $this->createMockConstraint(false, 1, $expectedContext)
         ];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), [], ['method' => $constraints]);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            [],
+            ['method' => $constraints]
+        ));
         $this->assertFalse($this->validator->tryValidateMethod($object, 'method', $expectedContext));
     }
 
@@ -141,7 +154,11 @@ class ValidatorTest extends TestCase
         };
         $expectedContext = new ValidationContext($object, null, 'method');
         $constraints = [$this->createMockConstraint(false, 1, $expectedContext)];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), [], ['method' => $constraints]);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            [],
+            ['method' => $constraints]
+        ));
         $this->assertFalse($this->validator->tryValidateMethod($object, 'method', $expectedContext));
         $this->assertCount(1, $expectedContext->getConstraintViolations());
         $this->assertSame($constraints[0], $expectedContext->getConstraintViolations()[0]->getConstraint());
@@ -159,7 +176,11 @@ class ValidatorTest extends TestCase
         };
         $expectedMethodContext = new ValidationContext($object, 'method');
         $constraints = [$this->createMockConstraint(false, 1, $expectedMethodContext)];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), [], ['method' => $constraints]);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            [],
+            ['method' => $constraints]
+        ));
         $this->assertFalse($this->validator->tryValidateMethod($object, 'method', $expectedMethodContext));
         $this->assertCount(1, $expectedMethodContext->getConstraintViolations());
         $this->assertSame($constraints[0], $expectedMethodContext->getConstraintViolations()[0]->getConstraint());
@@ -177,7 +198,11 @@ class ValidatorTest extends TestCase
         };
         $expectedContext = new ValidationContext($object, null, 'method');
         $constraints = [$this->createMockConstraint(true, 1, $expectedContext)];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), [], ['method' => $constraints]);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            [],
+            ['method' => $constraints]
+        ));
         $this->assertTrue($this->validator->tryValidateMethod($object, 'method', $expectedContext));
         $this->assertCount(0, $expectedContext->getConstraintViolations());
     }
@@ -190,7 +215,11 @@ class ValidatorTest extends TestCase
         $expectedObjectContext = new ValidationContext($object);
         $expectedPropContext = new ValidationContext($object, 'prop', null, $expectedObjectContext);
         $constraints = [$this->createMockConstraint(false, 1, $expectedPropContext)];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), ['prop' => $constraints], []);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            ['prop' => $constraints],
+            []
+        ));
         $this->assertFalse($this->validator->tryValidateObject($object, $expectedObjectContext));
     }
 
@@ -202,7 +231,10 @@ class ValidatorTest extends TestCase
         $expectedObjectContext = new ValidationContext($object);
         $expectedPropContext = new ValidationContext($object, 'prop', null, $expectedObjectContext);
         $constraints = [$this->createMockConstraint(true, 1, $expectedPropContext)];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), ['prop' => $constraints], []);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            ['prop' => $constraints], []
+        ));
         $this->assertTrue($this->validator->tryValidateObject($object, $expectedObjectContext));
     }
 
@@ -223,11 +255,11 @@ class ValidatorTest extends TestCase
         $expectedOuterObjectPropContext = new ValidationContext($outerObject, 'innerObject', null, $expectedOuterContext);
         $expectedInnerObjectContext = new ValidationContext($innerObject, null, null, $expectedOuterObjectPropContext);
         $expectedInnerObjectPropContext = new ValidationContext($innerObject, 'prop', null, $expectedInnerObjectContext);
-        $this->objectConstraints->registerObjectConstraints(
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             \get_class($innerObject),
             ['prop' => $this->createMockConstraint(true, 1, $expectedInnerObjectPropContext)],
             []
-        );
+        ));
         $this->assertTrue($this->validator->tryValidateObject($outerObject, $expectedOuterContext));
     }
 
@@ -242,7 +274,11 @@ class ValidatorTest extends TestCase
             $this->createMockConstraint(true, 1, $expectedPropContext),
             $this->createMockConstraint(false, 1, $expectedPropContext)
         ];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), ['prop' => $constraints], []);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            ['prop' => $constraints],
+            []
+        ));
         $this->assertFalse($this->validator->tryValidateObject($object, $expectedObjectContext));
     }
 
@@ -254,7 +290,11 @@ class ValidatorTest extends TestCase
         $expectedObjectContext = new ValidationContext($object);
         $expectedPropContext = new ValidationContext($object, 'prop', null, $expectedObjectContext);
         $constraints = [$this->createMockConstraint(false, 1, $expectedPropContext)];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), ['prop' => $constraints], []);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            ['prop' => $constraints],
+            []
+        ));
         $this->assertFalse($this->validator->tryValidateObject($object, $expectedObjectContext));
         $this->assertCount(1, $expectedObjectContext->getConstraintViolations());
         $this->assertSame($constraints[0], $expectedObjectContext->getConstraintViolations()[0]->getConstraint());
@@ -269,7 +309,11 @@ class ValidatorTest extends TestCase
         };
         $expectedContext = new ValidationContext($object, 'prop');
         $constraints = [$this->createMockConstraint(false, 1, $expectedContext)];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), ['prop' => $constraints], []);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            ['prop' => $constraints],
+            []
+        ));
         $this->assertFalse($this->validator->tryValidateProperty($object, 'prop', $expectedContext));
     }
 
@@ -280,7 +324,11 @@ class ValidatorTest extends TestCase
         };
         $expectedContext = new ValidationContext($object, 'prop');
         $constraints = [$this->createMockConstraint(true, 1, $expectedContext)];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), ['prop' => $constraints], []);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            ['prop' => $constraints],
+            []
+        ));
         $this->assertTrue($this->validator->tryValidateProperty($object, 'prop', $expectedContext));
     }
 
@@ -314,11 +362,11 @@ class ValidatorTest extends TestCase
         $expectedOuterPropContext = new ValidationContext($outerObject, 'innerObject');
         $expectedInnerObjectContext = new ValidationContext($innerObject, null, null, $expectedOuterPropContext);
         $expectedInnerObjectPropContext = new ValidationContext($innerObject, 'prop', null, $expectedInnerObjectContext);
-        $this->objectConstraints->registerObjectConstraints(
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             \get_class($innerObject),
             ['prop' => $this->createMockConstraint(true, 1, $expectedInnerObjectPropContext)],
             []
-        );
+        ));
         $this->assertTrue($this->validator->tryValidateProperty($outerObject, 'innerObject', $expectedOuterPropContext));
     }
 
@@ -332,7 +380,11 @@ class ValidatorTest extends TestCase
             $this->createMockConstraint(true, 1, $expectedPropContext),
             $this->createMockConstraint(false, 1, $expectedPropContext)
         ];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), ['prop' => $constraints], []);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            ['prop' => $constraints],
+            []
+        ));
         $this->assertFalse($this->validator->tryValidateProperty($object, 'prop', $expectedPropContext));
     }
 
@@ -343,7 +395,11 @@ class ValidatorTest extends TestCase
         };
         $expectedPropContext = new ValidationContext($object, 'prop');
         $constraints = [$this->createMockConstraint(false, 1, $expectedPropContext)];
-        $this->objectConstraints->registerObjectConstraints(\get_class($object), ['prop' => $constraints], []);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($object),
+            ['prop' => $constraints],
+            []
+        ));
         $this->assertFalse($this->validator->tryValidateProperty($object, 'prop', $expectedPropContext));
         $this->assertCount(1, $expectedPropContext->getConstraintViolations());
         $this->assertSame($constraints[0], $expectedPropContext->getConstraintViolations()[0]->getConstraint());

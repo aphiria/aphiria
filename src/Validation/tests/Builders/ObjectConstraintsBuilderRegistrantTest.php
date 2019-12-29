@@ -13,28 +13,28 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Builders;
 
 use Aphiria\Validation\Builders\ObjectConstraintsBuilderRegistrant;
+use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
 use Aphiria\Validation\Constraints\IConstraint;
-use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
+use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the closure constraint registrant
  */
-class ClosureConstraintRegistrantTest extends TestCase
+class ObjectConstraintsBuilderRegistrantTest extends TestCase
 {
     public function testRegisteringConstraintsRegistersConstraintsFromClosures(): void
     {
         $expectedConstraint = $this->createMock(IConstraint::class);
-        $closures = [function (ObjectConstraintRegistry $objectConstraints) use ($expectedConstraint) {
-            $objectConstraints->registerObjectConstraints('foo', ['prop' => $expectedConstraint], []);
+        $closures = [function (ObjectConstraintsRegistryBuilder $objectConstraintsRegistryBuilder) use ($expectedConstraint) {
+            $objectConstraintsRegistryBuilder->class('foo')
+                ->hasPropertyConstraints('prop', $expectedConstraint);
         }];
         $closureConstraintRegistrant = new ObjectConstraintsBuilderRegistrant($closures);
-        $objectConstraints = new ObjectConstraintRegistry();
+        $objectConstraints = new ObjectConstraintsRegistry();
         $closureConstraintRegistrant->registerConstraints($objectConstraints);
-        $this->assertCount(1, $objectConstraints->getPropertyConstraints('foo', 'prop'));
-        $this->assertSame(
-            $expectedConstraint,
-            $objectConstraints->getPropertyConstraints('foo', 'prop')[0]
-        );
+        $propertyConstraints = $objectConstraints->getConstraintsForClass('foo')->getPropertyConstraints('prop');
+        $this->assertCount(1, $propertyConstraints);
+        $this->assertSame($expectedConstraint, $propertyConstraints[0]);
     }
 }

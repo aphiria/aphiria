@@ -15,12 +15,12 @@ namespace Aphiria\Validation\Constraints;
 /**
  * Defines the interface for object constraint registrants to implement
  */
-interface IObjectConstraintRegistrant
+interface IObjectConstraintsRegistrant
 {
     /**
      * Registers constraints from any annotations
      *
-     * @param ObjectConstraintRegistry $objectConstraints The constraint registry to register to
+     * @param ObjectConstraintsRegistry $objectConstraints The constraint registry to register to
      */
-    public function registerConstraints(ObjectConstraintRegistry $objectConstraints): void;
+    public function registerConstraints(ObjectConstraintsRegistry $objectConstraints): void;
 }

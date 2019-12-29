@@ -12,20 +12,20 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Builders;
 
-use Aphiria\Validation\Constraints\IObjectConstraintRegistrant;
-use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
+use Aphiria\Validation\Constraints\IObjectConstraintsRegistrant;
+use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Closure;
 
 /**
  * Defines the constraint registrant that populates the object constraints using builders
  */
-final class ObjectConstraintsBuilderRegistrant implements IObjectConstraintRegistrant
+final class ObjectConstraintsBuilderRegistrant implements IObjectConstraintsRegistrant
 {
-    /** @var Closure[] The list of closures to execute (must take in an ObjectConstraintsBuilder parameter) */
+    /** @var Closure[] The list of closures to execute (must take in an ObjectConstraintsRegistryBuilder parameter) */
     private array $closures;
 
     /**
-     * @param Closure[] $closures The list of closures to execute (must take in an ObjectConstraintsBuilder parameter)
+     * @param Closure[] $closures The list of closures to execute (must take in an ObjectConstraintsRegistryBuilder parameter)
      */
     public function __construct(array $closures)
     {
@@ -35,14 +35,14 @@ final class ObjectConstraintsBuilderRegistrant implements IObjectConstraintRegis
     /**
      * @inheritdoc
      */
-    public function registerConstraints(ObjectConstraintRegistry $objectConstraints): void
+    public function registerConstraints(ObjectConstraintsRegistry $objectConstraints): void
     {
-        $objectConstraintsBuilder = new ObjectConstraintsBuilder($objectConstraints);
+        $objectConstraintsRegistryBuilder = new ObjectConstraintsRegistryBuilder($objectConstraints);
 
         foreach ($this->closures as $closure) {
-            $closure($objectConstraintsBuilder);
+            $closure($objectConstraintsRegistryBuilder);
         }
 
-        $objectConstraintsBuilder->build();
+        $objectConstraintsRegistryBuilder->build();
     }
 }

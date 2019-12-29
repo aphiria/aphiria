@@ -18,7 +18,7 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
-use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
+use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
 use Closure;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -151,7 +151,7 @@ class AphiriaComponentBuilderTest extends TestCase
             ->with('validators', $this->callback(function (Closure $callback) {
                 $callbackWasCalled = false;
                 $callbacks = [
-                    function (ObjectConstraintRegistry $objectConstraints) use (&$callbackWasCalled) {
+                    function (ObjectConstraintsRegistryBuilder $objectConstraintsRegistryBuilder) use (&$callbackWasCalled) {
                         $callbackWasCalled = true;
                     }
                 ];
