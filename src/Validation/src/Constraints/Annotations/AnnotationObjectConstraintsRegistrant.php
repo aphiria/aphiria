@@ -14,9 +14,9 @@ namespace Aphiria\Validation\Constraints\Annotations;
 
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
-use Aphiria\Validation\Constraints\IObjectConstraintRegistrant;
-use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
+use Aphiria\Validation\Constraints\IObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraints;
+use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Doctrine\Annotations\AnnotationException;
 use Doctrine\Annotations\AnnotationReader;
 use Doctrine\Annotations\Reader;
@@ -25,7 +25,7 @@ use ReflectionClass;
 /**
  * Defines the constraint registrant for annotations
  */
-final class AnnotationObjectConstraintRegistrant implements IObjectConstraintRegistrant
+final class AnnotationObjectConstraintsRegistrant implements IObjectConstraintsRegistrant
 {
     /** @var string[] The paths to check for constraints */
     private array $paths;
@@ -50,7 +50,7 @@ final class AnnotationObjectConstraintRegistrant implements IObjectConstraintReg
     /**
      * @inheritdoc
      */
-    public function registerConstraints(ObjectConstraintRegistry $objectConstraints): void
+    public function registerConstraints(ObjectConstraintsRegistry $objectConstraints): void
     {
         foreach ($this->typeFinder->findAllClasses($this->paths, true) as $class) {
             $reflectionClass = new ReflectionClass($class);

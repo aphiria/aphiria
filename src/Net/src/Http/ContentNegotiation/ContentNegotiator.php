@@ -34,13 +34,13 @@ final class ContentNegotiator implements IContentNegotiator
     /** @var array The list of supported languages */
     private array $supportedLanguages;
     /** @var MediaTypeFormatterMatcher The media type formatter matcher */
-    private ?MediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
+    private MediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
     /** @var EncodingMatcher The encoding matcher */
-    private ?EncodingMatcher $encodingMatcher;
+    private EncodingMatcher $encodingMatcher;
     /** @var LanguageMatcher The language matcher */
-    private ?LanguageMatcher $languageMatcher;
+    private LanguageMatcher $languageMatcher;
     /** @var RequestHeaderParser The header parser */
-    private ?RequestHeaderParser $headerParser;
+    private RequestHeaderParser $headerParser;
 
     /**
      * @param IMediaTypeFormatter[]|null $mediaTypeFormatters The list of media type formatters to use, or null if using the default formatters

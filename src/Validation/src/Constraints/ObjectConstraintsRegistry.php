@@ -15,7 +15,7 @@ namespace Aphiria\Validation\Constraints;
 /**
  * Defines a registry of object constraints
  */
-final class ObjectConstraintRegistry
+final class ObjectConstraintsRegistry
 {
     /** @var ObjectConstraints[] The mapping of class names to object constraints */
     private array $objectConstraints = [];
@@ -23,9 +23,9 @@ final class ObjectConstraintRegistry
     /**
      * Copies a registry into this one
      *
-     * @param ObjectConstraintRegistry $objectConstraints The constraints to copy
+     * @param ObjectConstraintsRegistry $objectConstraints The constraints to copy
      */
-    public function copy(ObjectConstraintRegistry $objectConstraints): void
+    public function copy(ObjectConstraintsRegistry $objectConstraints): void
     {
         $this->objectConstraints = $objectConstraints->objectConstraints;
     }

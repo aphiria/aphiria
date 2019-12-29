@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Constraints;
 
 /**
- * Defines the constraints for an object
+ * Defines a mapping of object properties/methods to constraints that must be passed to be considered a valid object
  */
 final class ObjectConstraints
 {
@@ -29,17 +29,39 @@ final class ObjectConstraints
      * @param IConstraint[] $propertyConstraints The mapping of property names to constraints
      * @param IConstraint[] $methodConstraints The mapping of method names to constraints
      */
-    public function __construct(string $className, array $propertyConstraints, array $methodConstraints)
+    public function __construct(string $className, array $propertyConstraints = [], array $methodConstraints = [])
     {
         $this->className = $className;
 
         foreach ($propertyConstraints as $propertyName => $propertyConstraint) {
-            $this->propertyConstraints[$propertyName] = \is_array($propertyConstraint) ? $propertyConstraint : [$propertyConstraint];
+            $this->addPropertyConstraint($propertyName, $propertyConstraint);
         }
 
         foreach ($methodConstraints as $methodName => $methodConstraint) {
-            $this->methodConstraints[$methodName] = \is_array($methodConstraint) ? $methodConstraint : [$methodConstraint];
+            $this->addMethodConstraint($methodName, $methodConstraint);
         }
+    }
+
+    /**
+     * Adds a constraint to a method
+     *
+     * @param string $methodName The name of the method to add constraints to
+     * @param IConstraint[]|IConstraint $constraint The constraint or list of constraints to add
+     */
+    public function addMethodConstraint(string $methodName, $constraint): void
+    {
+        $this->methodConstraints[$methodName] = \is_array($constraint) ? $constraint : [$constraint];
+    }
+
+    /**
+     * Adds a constraint to a property
+     *
+     * @param string $propertyName The name of the property to add constraints to
+     * @param IConstraint[]|IConstraint $constraint The constraint or list of constraints to add
+     */
+    public function addPropertyConstraint(string $propertyName, $constraint): void
+    {
+        $this->propertyConstraints[$propertyName] = \is_array($constraint) ? $constraint : [$constraint];
     }
 
     /**

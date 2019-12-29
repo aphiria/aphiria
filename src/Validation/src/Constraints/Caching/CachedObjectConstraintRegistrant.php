@@ -12,14 +12,14 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Constraints\Caching;
 
-use Aphiria\Validation\Constraints\AggregateObjectConstraintRegistrant;
-use Aphiria\Validation\Constraints\IObjectConstraintRegistrant;
-use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
+use Aphiria\Validation\Constraints\AggregateObjectConstraintsRegistrant;
+use Aphiria\Validation\Constraints\IObjectConstraintsRegistrant;
+use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 
 /**
  * Defines the cached constraint registrant
  */
-final class CachedObjectConstraintRegistrant extends AggregateObjectConstraintRegistrant
+final class CachedObjectConstraintRegistrant extends AggregateObjectConstraintsRegistrant
 {
     /** @var IObjectConstraintRegistryCache The constraint cache to store constraints in */
     private IObjectConstraintRegistryCache $constraintCache;
@@ -28,7 +28,7 @@ final class CachedObjectConstraintRegistrant extends AggregateObjectConstraintRe
      * @inheritdoc
      * @param IObjectConstraintRegistryCache $constraintCache The constraint cache
      */
-    public function __construct(IObjectConstraintRegistryCache $constraintCache, IObjectConstraintRegistrant $initialConstraintRegistrant = null)
+    public function __construct(IObjectConstraintRegistryCache $constraintCache, IObjectConstraintsRegistrant $initialConstraintRegistrant = null)
     {
         parent::__construct($initialConstraintRegistrant);
 
@@ -38,7 +38,7 @@ final class CachedObjectConstraintRegistrant extends AggregateObjectConstraintRe
     /**
      * @inheritdoc
      */
-    public function registerConstraints(ObjectConstraintRegistry $objectConstraints): void
+    public function registerConstraints(ObjectConstraintsRegistry $objectConstraints): void
     {
         if (($cachedConstraints = $this->constraintCache->get()) !== null) {
             $objectConstraints->copy($cachedConstraints);

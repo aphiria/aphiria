@@ -15,15 +15,15 @@ namespace Aphiria\Validation\Constraints;
 /**
  * Defines a constraint registrant that aggregates multiple sub-registrants
  */
-class AggregateObjectConstraintRegistrant implements IObjectConstraintRegistrant
+class AggregateObjectConstraintsRegistrant implements IObjectConstraintsRegistrant
 {
-    /** @var IObjectConstraintRegistrant[] The list of registrants that will actually register the constraints */
+    /** @var IObjectConstraintsRegistrant[] The list of registrants that will actually register the constraints */
     protected array $constraintRegistrants = [];
 
     /**
-     * @param IObjectConstraintRegistrant|null $initialConstraintRegistrant The initial registrant to register, or null
+     * @param IObjectConstraintsRegistrant|null $initialConstraintRegistrant The initial registrant to register, or null
      */
-    public function __construct(IObjectConstraintRegistrant $initialConstraintRegistrant = null)
+    public function __construct(IObjectConstraintsRegistrant $initialConstraintRegistrant = null)
     {
         if ($initialConstraintRegistrant !== null) {
             $this->constraintRegistrants[] = $initialConstraintRegistrant;
@@ -33,9 +33,9 @@ class AggregateObjectConstraintRegistrant implements IObjectConstraintRegistrant
     /**
      * Adds a constraint registrant
      *
-     * @param IObjectConstraintRegistrant $constraintRegistrant The registrant to add
+     * @param IObjectConstraintsRegistrant $constraintRegistrant The registrant to add
      */
-    public function addConstraintRegistrant(IObjectConstraintRegistrant $constraintRegistrant): void
+    public function addConstraintRegistrant(IObjectConstraintsRegistrant $constraintRegistrant): void
     {
         $this->constraintRegistrants[] = $constraintRegistrant;
     }
@@ -43,7 +43,7 @@ class AggregateObjectConstraintRegistrant implements IObjectConstraintRegistrant
     /**
      * @inheritdoc
      */
-    public function registerConstraints(ObjectConstraintRegistry $objectConstraints): void
+    public function registerConstraints(ObjectConstraintsRegistry $objectConstraints): void
     {
         foreach ($this->constraintRegistrants as $constraintRegistrant) {
             $constraintRegistrant->registerConstraints($objectConstraints);

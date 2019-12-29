@@ -12,26 +12,26 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints;
 
-use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
+use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\Constraints\ObjectConstraints;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the object constraint registry
  */
-class ObjectConstraintRegistryTest extends TestCase
+class ObjectConstraintsRegistryTest extends TestCase
 {
-    private ObjectConstraintRegistry $objectConstraints;
+    private ObjectConstraintsRegistry $objectConstraints;
 
     protected function setUp(): void
     {
-        $this->objectConstraints = new ObjectConstraintRegistry();
+        $this->objectConstraints = new ObjectConstraintsRegistry();
     }
 
     public function testCopyEffectivelyDuplicatesAnotherRegistry(): void
     {
-        $registry1 = new ObjectConstraintRegistry();
-        $registry2 = new ObjectConstraintRegistry();
+        $registry1 = new ObjectConstraintsRegistry();
+        $registry2 = new ObjectConstraintsRegistry();
         $expectedObjectConstraints = new ObjectConstraints('foo', [], []);
         $registry1->registerObjectConstraints($expectedObjectConstraints);
         $registry2->copy($registry1);

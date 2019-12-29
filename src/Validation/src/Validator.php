@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation;
 
-use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
+use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use InvalidArgumentException;
 use ReflectionException;
 use ReflectionMethod;
@@ -41,13 +41,13 @@ final class Validator implements IValidator
         '__unset' => true,
         '__wakeup' => true
     ];
-    /** @var ObjectConstraintRegistry The registry of object constraints */
-    private ObjectConstraintRegistry $objectConstraints;
+    /** @var ObjectConstraintsRegistry The registry of object constraints */
+    private ObjectConstraintsRegistry $objectConstraints;
 
     /**
-     * @param ObjectConstraintRegistry $objectConstraints The registry of object constraints
+     * @param ObjectConstraintsRegistry $objectConstraints The registry of object constraints
      */
-    public function __construct(ObjectConstraintRegistry $objectConstraints)
+    public function __construct(ObjectConstraintsRegistry $objectConstraints)
     {
         $this->objectConstraints = $objectConstraints;
     }
