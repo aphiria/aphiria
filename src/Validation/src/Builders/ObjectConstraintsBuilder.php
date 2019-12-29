@@ -26,9 +26,14 @@ final class ObjectConstraintsBuilder
     /** @var string|null The current class name */
     private ?string $currClassName = null;
 
-    public function __construct()
+    /**
+     * @param ObjectConstraintRegistry|null $objectConstraints The constraints to add to, or null if building a new registry
+     */
+    public function __construct(ObjectConstraintRegistry $objectConstraints = null)
     {
-        $this->objectConstraints = new ObjectConstraintRegistry();
+        // TODO: This somewhat feels like a registrant class because build() does nothing.  Am I doing this right?
+        // TODO: Add test to make sure same instance is returned in build()
+        $this->objectConstraints = $objectConstraints ?? new ObjectConstraintRegistry();
     }
 
     /**

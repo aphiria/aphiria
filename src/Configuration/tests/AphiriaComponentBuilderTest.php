@@ -14,10 +14,10 @@ namespace Aphiria\Configuration\Tests;
 
 use Aphiria\Configuration\AphiriaComponentBuilder;
 use Aphiria\Configuration\IApplicationBuilder;
+use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
-use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 use Closure;
 use PHPUnit\Framework\MockObject\MockObject;

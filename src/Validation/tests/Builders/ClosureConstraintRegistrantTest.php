@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Validation\Tests\Constraints;
+namespace Aphiria\Validation\Tests\Builders;
 
-use Aphiria\Validation\Constraints\ClosureObjectConstraintRegistrant;
+use Aphiria\Validation\Builders\ObjectConstraintsBuilderRegistrant;
 use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 use PHPUnit\Framework\TestCase;
@@ -28,7 +28,7 @@ class ClosureConstraintRegistrantTest extends TestCase
         $closures = [function (ObjectConstraintRegistry $objectConstraints) use ($expectedConstraint) {
             $objectConstraints->registerObjectConstraints('foo', ['prop' => $expectedConstraint], []);
         }];
-        $closureConstraintRegistrant = new ClosureObjectConstraintRegistrant($closures);
+        $closureConstraintRegistrant = new ObjectConstraintsBuilderRegistrant($closures);
         $objectConstraints = new ObjectConstraintRegistry();
         $closureConstraintRegistrant->registerConstraints($objectConstraints);
         $this->assertCount(1, $objectConstraints->getPropertyConstraints('foo', 'prop'));

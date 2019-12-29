@@ -25,9 +25,9 @@ use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
 use Aphiria\Routing\Builders\RouteBuilderRouteRegistrant;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\Validation\Builders\ObjectConstraintsBuilderRegistrant;
 use Aphiria\Validation\Constraints\AggregateObjectConstraintRegistrant;
 use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintRegistrant;
-use Aphiria\Validation\Constraints\ClosureObjectConstraintRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintRegistry;
 use RuntimeException;
 
@@ -284,7 +284,7 @@ final class AphiriaComponentBuilder
                 : $this->container->bindInstance(AggregateObjectConstraintRegistrant::class,
                 $aggregateConstraintRegistrant = new AggregateObjectConstraintRegistrant());
 
-            $aggregateConstraintRegistrant->addConstraintRegistrant(new ClosureObjectConstraintRegistrant($callbacks));
+            $aggregateConstraintRegistrant->addConstraintRegistrant(new ObjectConstraintsBuilderRegistrant($callbacks));
 
             /** @var ObjectConstraintRegistry $objectConstraints */
             $this->container->hasBinding(ObjectConstraintRegistry::class)
