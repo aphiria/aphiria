@@ -12,19 +12,19 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints;
 
-use Aphiria\Validation\Constraints\AggregateObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\IObjectConstraintsRegistrant;
+use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the aggregate constraint registrant
+ * Tests the object constraints registrant collection
  */
-class AggregateObjectConstraintsRegistrantTest extends TestCase
+class ObjectConstraintsRegistrantCollectionTest extends TestCase
 {
     public function testAddingRegistrantCausesItToBeInvokedWhenRegisteringRoutes(): void
     {
-        $aggregateRegistrant = new AggregateObjectConstraintsRegistrant();
+        $aggregateRegistrant = new ObjectConstraintsRegistrantCollection();
         $singleRegistrant = new class() implements IObjectConstraintsRegistrant
         {
             public bool $wasInvoked = false;
@@ -37,7 +37,7 @@ class AggregateObjectConstraintsRegistrantTest extends TestCase
                 $this->wasInvoked = true;
             }
         };
-        $aggregateRegistrant->addConstraintRegistrant($singleRegistrant);
+        $aggregateRegistrant->add($singleRegistrant);
         $objectConstraints = new ObjectConstraintsRegistry();
         $aggregateRegistrant->registerConstraints($objectConstraints);
         $this->assertTrue($singleRegistrant->wasInvoked);
