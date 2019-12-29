@@ -25,7 +25,7 @@ final class EqualsConstraint extends Constraint
     private $value;
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      * @param mixed $value The value to compare against
      */
     public function __construct($value, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)

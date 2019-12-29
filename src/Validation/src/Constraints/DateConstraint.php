@@ -27,7 +27,7 @@ final class DateConstraint extends Constraint
     private array $acceptableFormats;
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      * @param string[] $acceptableFormats The acceptable date formats
      * @throws InvalidArgumentException Thrown if the formats were empty
      */

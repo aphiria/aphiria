@@ -28,8 +28,10 @@ final class CachedObjectConstraintsRegistrant extends AggregateObjectConstraints
      * @inheritdoc
      * @param IObjectConstraintsRegistryCache $constraintCache The constraint cache
      */
-    public function __construct(IObjectConstraintsRegistryCache $constraintCache, IObjectConstraintsRegistrant $initialConstraintRegistrant = null)
-    {
+    public function __construct(
+        IObjectConstraintsRegistryCache $constraintCache,
+        IObjectConstraintsRegistrant $initialConstraintRegistrant = null
+    ) {
         parent::__construct($initialConstraintRegistrant);
 
         $this->constraintCache = $constraintCache;

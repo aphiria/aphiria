@@ -28,7 +28,7 @@ class Output extends BaseOutput
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function readLine(): string
     {

@@ -51,7 +51,7 @@ final class ArraySessionDriver implements ISessionDriver
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function set($sessionId, string $sessionData): void
     {

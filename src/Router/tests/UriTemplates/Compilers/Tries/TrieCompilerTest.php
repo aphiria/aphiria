@@ -283,8 +283,8 @@ class TrieCompilerTest extends TestCase
         $constraint1 = $this->createMock(IRouteVariableConstraint::class);
         /** @var IRouteVariableConstraint|MockObject $constraint2 */
         $constraint2 = $this->createMock(IRouteVariableConstraint::class);
-        $this->constraintFactory->registerConstraintFactory('r1', fn($p1, $p2) => $constraint1);
-        $this->constraintFactory->registerConstraintFactory('r2', fn($p1, $p2) => $constraint1);
+        $this->constraintFactory->registerConstraintFactory('r1', fn ($p1, $p2) => $constraint1);
+        $this->constraintFactory->registerConstraintFactory('r2', fn ($p1, $p2) => $constraint1);
 
         // Test compiling
         $pathTemplate = '/:foo(r1(p1,p2),r2(p3,p4))';
@@ -331,7 +331,7 @@ class TrieCompilerTest extends TestCase
         // Set up constraint factory
         /** @var IRouteVariableConstraint|MockObject $constraint */
         $constraint = $this->createMock(IRouteVariableConstraint::class);
-        $this->constraintFactory->registerConstraintFactory('r1', fn() => $constraint);
+        $this->constraintFactory->registerConstraintFactory('r1', fn () => $constraint);
 
         // Test compiling
         $pathTemplate = '/:foo(r1)';
