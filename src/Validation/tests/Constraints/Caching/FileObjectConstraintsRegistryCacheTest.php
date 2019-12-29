@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints\Caching;
 
-use Aphiria\Validation\Constraints\Caching\FileObjectConstraintRegistryCache;
+use Aphiria\Validation\Constraints\Caching\FileObjectConstraintsRegistryCache;
 use Aphiria\Validation\Constraints\ObjectConstraints;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\Tests\Constraints\Mocks\MockConstraint;
@@ -25,11 +25,11 @@ class FileObjectConstraintsRegistryCacheTest extends TestCase
 {
     /** @var string The path to the constraint cache */
     private const PATH = __DIR__ . '/tmp/constraint.cache';
-    private FileObjectConstraintRegistryCache $cache;
+    private FileObjectConstraintsRegistryCache $cache;
 
     protected function setUp(): void
     {
-        $this->cache = new FileObjectConstraintRegistryCache(self::PATH);
+        $this->cache = new FileObjectConstraintsRegistryCache(self::PATH);
     }
 
     protected function tearDown(): void

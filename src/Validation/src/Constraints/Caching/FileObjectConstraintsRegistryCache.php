@@ -17,7 +17,7 @@ use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 /**
  * Defines the constraint registry cache backed by file storage
  */
-final class FileObjectConstraintRegistryCache implements IObjectConstraintRegistryCache
+final class FileObjectConstraintsRegistryCache implements IObjectConstraintsRegistryCache
 {
     /** @var string The path to the cache file */
     private string $path;

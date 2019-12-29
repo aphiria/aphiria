@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Constraints\Caching;
 
 use Aphiria\Validation\Constraints\Caching\CachedObjectConstraintRegistrant;
-use Aphiria\Validation\Constraints\Caching\IObjectConstraintRegistryCache;
+use Aphiria\Validation\Constraints\Caching\IObjectConstraintsRegistryCache;
 use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\IObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraints;
@@ -31,7 +31,7 @@ class CachedObjectConstraintsRegistrantTest extends TestCase
         $className = 'foo';
         $propName = 'prop';
         $propConstraint = $this->createMock(IConstraint::class);
-        $constraintRegistryCache = $this->createMock(IObjectConstraintRegistryCache::class);
+        $constraintRegistryCache = $this->createMock(IObjectConstraintsRegistryCache::class);
         $constraintRegistryCache->expects($this->once())
             ->method('get')
             ->willReturn(null);
@@ -71,7 +71,7 @@ class CachedObjectConstraintsRegistrantTest extends TestCase
 
     public function testRegisteringConstraintsWillIncludeConstraintsInAddedRegistrant(): void
     {
-        $constraintRegistryCache = $this->createMock(IObjectConstraintRegistryCache::class);
+        $constraintRegistryCache = $this->createMock(IObjectConstraintsRegistryCache::class);
         $constraintRegistryCache->expects($this->once())
             ->method('get')
             ->willReturn(null);
@@ -115,14 +115,14 @@ class CachedObjectConstraintsRegistrantTest extends TestCase
 
     public function testRegisteringConstraintsWithCacheThatHitsReturnsThoseConstraints(): void
     {
-        /** @var IObjectConstraintRegistryCache|MockObject $constraintRegistryCache */
+        /** @var IObjectConstraintsRegistryCache|MockObject $constraintRegistryCache */
         $expectedObjectConstraints = new ObjectConstraintsRegistry();
         $expectedObjectConstraints->registerObjectConstraints(new ObjectConstraints(
             'foo',
             ['prop' => $this->createMock(IConstraint::class)],
             []
         ));
-        $constraintRegistryCache = $this->createMock(IObjectConstraintRegistryCache::class);
+        $constraintRegistryCache = $this->createMock(IObjectConstraintsRegistryCache::class);
         $constraintRegistryCache->expects($this->once())
             ->method('get')
             ->willReturn($expectedObjectConstraints);
@@ -134,7 +134,7 @@ class CachedObjectConstraintsRegistrantTest extends TestCase
 
     public function testRegisteringConstraintsWithCacheThatMissesStillRunsTheRegistrants(): void
     {
-        $constraintRegistryCache = $this->createMock(IObjectConstraintRegistryCache::class);
+        $constraintRegistryCache = $this->createMock(IObjectConstraintsRegistryCache::class);
         $constraintRegistryCache->expects($this->once())
             ->method('get')
             ->willReturn(null);
@@ -178,7 +178,7 @@ class CachedObjectConstraintsRegistrantTest extends TestCase
 
     public function testRegisteringConstraintsWithCacheWillSetThemInCacheOnCacheMiss(): void
     {
-        $constraintRegistryCache = $this->createMock(IObjectConstraintRegistryCache::class);
+        $constraintRegistryCache = $this->createMock(IObjectConstraintsRegistryCache::class);
         $constraintRegistryCache->expects($this->once())
             ->method('get')
             ->willReturn(null);
