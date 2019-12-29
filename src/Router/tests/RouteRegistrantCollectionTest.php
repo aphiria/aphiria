@@ -12,19 +12,19 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests;
 
-use Aphiria\Routing\AggregateRouteRegistrant;
+use Aphiria\Routing\RouteRegistrantCollection;
 use Aphiria\Routing\IRouteRegistrant;
 use Aphiria\Routing\RouteCollection;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the aggregate route registrant
+ * Tests the route registrant collection
  */
-class AggregateRouteRegistrantTest extends TestCase
+class RouteRegistrantCollectionTest extends TestCase
 {
     public function testAddingRegistrantCausesItToBeInvokedWhenRegisteringRoutes(): void
     {
-        $aggregateRegistrant = new AggregateRouteRegistrant();
+        $registrants = new RouteRegistrantCollection();
         $singleRegistrant = new class() implements IRouteRegistrant
         {
             public bool $wasInvoked = false;
@@ -37,9 +37,9 @@ class AggregateRouteRegistrantTest extends TestCase
                 $this->wasInvoked = true;
             }
         };
-        $aggregateRegistrant->addRouteRegistrant($singleRegistrant);
+        $registrants->add($singleRegistrant);
         $routes = new RouteCollection();
-        $aggregateRegistrant->registerRoutes($routes);
+        $registrants->registerRoutes($routes);
         $this->assertTrue($singleRegistrant->wasInvoked);
     }
 }

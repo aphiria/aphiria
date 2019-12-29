@@ -24,7 +24,7 @@ class ObjectConstraintsRegistrantCollectionTest extends TestCase
 {
     public function testAddingRegistrantCausesItToBeInvokedWhenRegisteringRoutes(): void
     {
-        $aggregateRegistrant = new ObjectConstraintsRegistrantCollection();
+        $constraintsRegistrants = new ObjectConstraintsRegistrantCollection();
         $singleRegistrant = new class() implements IObjectConstraintsRegistrant
         {
             public bool $wasInvoked = false;
@@ -37,9 +37,9 @@ class ObjectConstraintsRegistrantCollectionTest extends TestCase
                 $this->wasInvoked = true;
             }
         };
-        $aggregateRegistrant->add($singleRegistrant);
+        $constraintsRegistrants->add($singleRegistrant);
         $objectConstraints = new ObjectConstraintsRegistry();
-        $aggregateRegistrant->registerConstraints($objectConstraints);
+        $constraintsRegistrants->registerConstraints($objectConstraints);
         $this->assertTrue($singleRegistrant->wasInvoked);
     }
 }

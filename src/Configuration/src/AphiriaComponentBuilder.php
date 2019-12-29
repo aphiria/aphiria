@@ -14,19 +14,20 @@ namespace Aphiria\Configuration;
 
 use Aphiria\Api\Router;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
-use Aphiria\Console\Commands\AggregateCommandRegistrant;
 use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
+use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\Middleware\ExceptionHandler;
-use Aphiria\Routing\AggregateRouteRegistrant;
 use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
 use Aphiria\Routing\Builders\RouteBuilderRouteRegistrant;
+use Aphiria\Routing\RouteRegistrantCollection;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\Validation\Builders\ObjectConstraintsBuilderRegistrant;
 use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
+use Aphiria\Validation\Constraints\Caching\CachedObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use RuntimeException;
@@ -67,13 +68,13 @@ final class AphiriaComponentBuilder
                 throw new RuntimeException('No ' . AnnotationCommandRegistrant::class . ' is bound to the container');
             }
 
-            /** @var AggregateCommandRegistrant $commandRegistrant */
-            $this->container->hasBinding(AggregateCommandRegistrant::class)
-                ? $commandRegistrant = $this->container->resolve(AggregateCommandRegistrant::class)
-                : $this->container->bindInstance(AggregateCommandRegistrant::class,
-                $commandRegistrant = new AggregateCommandRegistrant());
+            /** @var CommandRegistrantCollection $commandRegistrants */
+            $this->container->hasBinding(CommandRegistrantCollection::class)
+                ? $commandRegistrants = $this->container->resolve(CommandRegistrantCollection::class)
+                : $this->container->bindInstance(CommandRegistrantCollection::class,
+                $commandRegistrants = new CommandRegistrantCollection());
 
-            $commandRegistrant->addCommandRegistrant($annotationCommandRegistrant);
+            $commandRegistrants->add($annotationCommandRegistrant);
         });
 
         return $this;
@@ -192,14 +193,14 @@ final class AphiriaComponentBuilder
                 throw new RuntimeException('No ' . AnnotationRouteRegistrant::class . ' is bound to the container');
             }
 
-            /** @var AggregateRouteRegistrant $aggregateRouteRegistrant */
-            $this->container->hasBinding(AggregateRouteRegistrant::class)
-                ? $aggregateRouteRegistrant = $this->container->resolve(AggregateRouteRegistrant::class)
+            /** @var RouteRegistrantCollection $routeRegistrants */
+            $this->container->hasBinding(RouteRegistrantCollection::class)
+                ? $routeRegistrants = $this->container->resolve(RouteRegistrantCollection::class)
                 : $this->container->bindInstance(
-                    AggregateRouteRegistrant::class,
-                    $aggregateRouteRegistrant = new AggregateRouteRegistrant());
+                    RouteRegistrantCollection::class,
+                    $routeRegistrants = new RouteRegistrantCollection());
 
-            $aggregateRouteRegistrant->addRouteRegistrant($annotationRouteRegistrant);
+            $routeRegistrants->add($annotationRouteRegistrant);
         });
 
         return $this;
@@ -223,14 +224,14 @@ final class AphiriaComponentBuilder
         $appBuilder->withRouter(fn () => $this->container->resolve(Router::class));
         // Register the routing component
         $appBuilder->registerComponentBuilder('routes', function (array $callbacks) {
-            /** @var AggregateRouteRegistrant $aggregateRouteRegistrant */
-            $this->container->hasBinding(AggregateRouteRegistrant::class)
-                ? $aggregateRouteRegistrant = $this->container->resolve(AggregateRouteRegistrant::class)
+            /** @var RouteRegistrantCollection $routeRegistrants */
+            $this->container->hasBinding(RouteRegistrantCollection::class)
+                ? $routeRegistrants = $this->container->resolve(RouteRegistrantCollection::class)
                 : $this->container->bindInstance(
-                    AggregateRouteRegistrant::class,
-                    $aggregateRouteRegistrant = new AggregateRouteRegistrant());
+                    RouteRegistrantCollection::class,
+                    $routeRegistrants = new RouteRegistrantCollection());
 
-            $aggregateRouteRegistrant->addRouteRegistrant(new RouteBuilderRouteRegistrant($callbacks));
+            $routeRegistrants->add(new RouteBuilderRouteRegistrant($callbacks));
         });
 
         return $this;
@@ -300,7 +301,14 @@ final class AphiriaComponentBuilder
                     ObjectConstraintsRegistry::class,
                     $objectConstraints = new ObjectConstraintsRegistry());
 
-            $constraintsRegistrants->registerConstraints($objectConstraints);
+            // Always defer to using cached constraints registrants if they exist
+            if ($this->container->hasBinding(CachedObjectConstraintsRegistrant::class)) {
+                /** @var CachedObjectConstraintsRegistrant $cachedConstraintsRegistrant */
+                $cachedConstraintsRegistrant = $this->container->resolve(CachedObjectConstraintsRegistrant::class);
+                $cachedConstraintsRegistrant->registerConstraints($objectConstraints);
+            } else {
+                $constraintsRegistrants->registerConstraints($objectConstraints);
+            }
         });
 
         return $this;

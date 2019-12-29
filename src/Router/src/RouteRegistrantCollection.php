@@ -13,29 +13,19 @@ declare(strict_types=1);
 namespace Aphiria\Routing;
 
 /**
- * Defines a route registrant that aggregates several other route registrants
+ * Defines a collection of route registrants that can be run in serial
  */
-class AggregateRouteRegistrant implements IRouteRegistrant
+class RouteRegistrantCollection implements IRouteRegistrant
 {
     /** @var IRouteRegistrant[] The list of route registrants */
-    protected array $routeRegistrants = [];
-
-    /**
-     * @param IRouteRegistrant|null $initialRouteRegistrant The initial registrant to register, or null if none
-     */
-    public function __construct(IRouteRegistrant $initialRouteRegistrant = null)
-    {
-        if ($initialRouteRegistrant !== null) {
-            $this->routeRegistrants[] = $initialRouteRegistrant;
-        }
-    }
+    private array $routeRegistrants = [];
 
     /**
      * Adds a route registrant to the collection
      *
      * @param IRouteRegistrant $routeRegistrant The registrant to add
      */
-    public function addRouteRegistrant(IRouteRegistrant $routeRegistrant): void
+    public function add(IRouteRegistrant $routeRegistrant): void
     {
         $this->routeRegistrants[] = $routeRegistrant;
     }

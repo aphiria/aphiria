@@ -12,19 +12,19 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests\Commands;
 
-use Aphiria\Console\Commands\AggregateCommandRegistrant;
+use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\ICommandRegistrant;
 use Aphiria\Console\Commands\CommandRegistry;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the aggregate command registrant
+ * Tests the command registrant collection
  */
-class AggregateCommandRegistrantTest extends TestCase
+class CommandRegistrantCollectionTest extends TestCase
 {
     public function testAddingRegistrantCausesItToBeInvokedWhenRegisteringRoutes(): void
     {
-        $aggregateRegistrant = new AggregateCommandRegistrant();
+        $commandRegistrants = new CommandRegistrantCollection();
         $singleRegistrant = new class() implements ICommandRegistrant
         {
             public bool $wasInvoked = false;
@@ -37,9 +37,9 @@ class AggregateCommandRegistrantTest extends TestCase
                 $this->wasInvoked = true;
             }
         };
-        $aggregateRegistrant->addCommandRegistrant($singleRegistrant);
+        $commandRegistrants->add($singleRegistrant);
         $commands = new CommandRegistry();
-        $aggregateRegistrant->registerCommands($commands);
+        $commandRegistrants->registerCommands($commands);
         $this->assertTrue($singleRegistrant->wasInvoked);
     }
 }

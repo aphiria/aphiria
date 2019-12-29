@@ -12,27 +12,28 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Caching;
 
-use Aphiria\Routing\AggregateRouteRegistrant;
 use Aphiria\Routing\IRouteRegistrant;
 use Aphiria\Routing\RouteCollection;
+use Aphiria\Routing\RouteRegistrantCollection;
 
 /**
  * Defines a route registrant that is backed by a cache
  */
-final class CachedRouteRegistrant extends AggregateRouteRegistrant
+final class CachedRouteRegistrant implements IRouteRegistrant
 {
-    /** @var IRouteCache The optional route cache to store compiled routes in */
+    /** @var IRouteCache The route cache to store compiled routes in */
     private IRouteCache $routeCache;
+    /** @var RouteRegistrantCollection The list of registrants to run on cache miss */
+    private RouteRegistrantCollection $routeRegistrants;
 
     /**
-     * @inheritdoc
      * @param IRouteCache $routeCache The route cache to use
+     * @param RouteRegistrantCollection $routeRegistrants The list of registrants to run on cache miss
      */
-    public function __construct(IRouteCache $routeCache, IRouteRegistrant $initialRouteRegistrant = null)
+    public function __construct(IRouteCache $routeCache, RouteRegistrantCollection $routeRegistrants)
     {
-        parent::__construct($initialRouteRegistrant);
-
         $this->routeCache = $routeCache;
+        $this->routeRegistrants = $routeRegistrants;
     }
 
     /**
@@ -46,7 +47,7 @@ final class CachedRouteRegistrant extends AggregateRouteRegistrant
             return;
         }
 
-        parent::registerRoutes($routes);
+        $this->routeRegistrants->registerRoutes($routes);
 
         // Save this to cache for next time
         $this->routeCache->set($routes);

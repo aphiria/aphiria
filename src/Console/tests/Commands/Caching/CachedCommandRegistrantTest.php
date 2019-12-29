@@ -15,6 +15,7 @@ namespace Aphiria\Console\Tests\Commands\Caching;
 use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandBinding;
+use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Commands\Caching\CachedCommandRegistrant;
@@ -28,81 +29,6 @@ use PHPUnit\Framework\TestCase;
  */
 class CachedCommandRegistrantTest extends TestCase
 {
-    public function testRegisteringCommandsWillIncludeCommandsInInitialRegistrant(): void
-    {
-        $expectedCommand = new Command('foo');
-        $expectedCommandHandlerFactory = fn () => $this->createMock(ICommandHandler::class);
-        $commandCache = $this->createMock(ICommandRegistryCache::class);
-        $commandCache->expects($this->once())
-            ->method('get')
-            ->willReturn(null);
-        $initialCommandRegistrant = new class ($expectedCommand, $expectedCommandHandlerFactory) implements ICommandRegistrant
-        {
-            private Command $expectedCommand;
-            private Closure $expectedCommandHandlerFactory;
-
-            public function __construct(Command $expectedCommand, \Closure $expectedCommandHandlerFactory)
-            {
-                $this->expectedCommand = $expectedCommand;
-                $this->expectedCommandHandlerFactory = $expectedCommandHandlerFactory;
-            }
-
-            /**
-             * @inheritdoc
-             */
-            public function registerCommands(CommandRegistry $commands): void
-            {
-                $commands->registerCommand($this->expectedCommand, $this->expectedCommandHandlerFactory);
-            }
-        };
-        $cachedRegistrant = new CachedCommandRegistrant($commandCache, $initialCommandRegistrant);
-        $commands = new CommandRegistry();
-        $cachedRegistrant->registerCommands($commands);
-        /** @var CommandBinding $actualCommandBinding */
-        $actualCommandBinding = null;
-        $this->assertTrue($commands->tryGetBinding('foo', $actualCommandBinding));
-        $this->assertSame($expectedCommand, $actualCommandBinding->command);
-        $this->assertSame($expectedCommandHandlerFactory, $actualCommandBinding->commandHandlerFactory);
-    }
-
-    public function testRegisteringCommandsWillIncludeCommandsInAddedRegistrant(): void
-    {
-        $commandCache = $this->createMock(ICommandRegistryCache::class);
-        $commandCache->expects($this->once())
-            ->method('get')
-            ->willReturn(null);
-        $expectedCommand = new Command('foo');
-        $expectedCommandHandlerFactory = fn () => $this->createMock(ICommandHandler::class);
-        $addedCommandRegistrant = new class ($expectedCommand, $expectedCommandHandlerFactory) implements ICommandRegistrant
-        {
-            private Command $expectedCommand;
-            private Closure $expectedCommandHandlerFactory;
-
-            public function __construct(Command $expectedCommand, \Closure $expectedCommandHandlerFactory)
-            {
-                $this->expectedCommand = $expectedCommand;
-                $this->expectedCommandHandlerFactory = $expectedCommandHandlerFactory;
-            }
-
-            /**
-             * @inheritdoc
-             */
-            public function registerCommands(CommandRegistry $commands): void
-            {
-                $commands->registerCommand($this->expectedCommand, $this->expectedCommandHandlerFactory);
-            }
-        };
-        $cachedRegistrant = new CachedCommandRegistrant($commandCache);
-        $cachedRegistrant->addCommandRegistrant($addedCommandRegistrant);
-        $commands = new CommandRegistry();
-        $cachedRegistrant->registerCommands($commands);
-        /** @var CommandBinding $actualCommandBinding */
-        $actualCommandBinding = null;
-        $this->assertTrue($commands->tryGetBinding('foo', $actualCommandBinding));
-        $this->assertSame($expectedCommand, $actualCommandBinding->command);
-        $this->assertSame($expectedCommandHandlerFactory, $actualCommandBinding->commandHandlerFactory);
-    }
-
     public function testRegisteringCommandsWithCacheThatHitsReturnsThoseCommands(): void
     {
         /** @var ICommandRegistryCache|MockObject $commandCache */
@@ -113,7 +39,8 @@ class CachedCommandRegistrantTest extends TestCase
             ->method('get')
             ->willReturn($expectedCommands);
         $commands = new CommandRegistry();
-        $cachedRegistrant = new CachedCommandRegistrant($commandCache);
+        $commandRegistrants = new CommandRegistrantCollection();
+        $cachedRegistrant = new CachedCommandRegistrant($commandCache, $commandRegistrants);
         $cachedRegistrant->registerCommands($commands);
         $this->assertCount(1, $commands->getAllCommands());
     }
@@ -122,7 +49,6 @@ class CachedCommandRegistrantTest extends TestCase
     {
         /** @var ICommandRegistryCache|MockObject $commandCache */
         $commandCache = $this->createMock(ICommandRegistryCache::class);
-        $cachedRegistrant = new CachedCommandRegistrant($commandCache);
         $expectedCommand = new Command('foo');
         $expectedCommandHandlerFactory = fn () => $this->createMock(ICommandHandler::class);
         $addedCommandRegistrant = new class ($expectedCommand, $expectedCommandHandlerFactory) implements ICommandRegistrant
@@ -130,7 +56,7 @@ class CachedCommandRegistrantTest extends TestCase
             private Command $expectedCommand;
             private Closure $expectedCommandHandlerFactory;
 
-            public function __construct(Command $expectedCommand, \Closure $expectedCommandHandlerFactory)
+            public function __construct(Command $expectedCommand, Closure $expectedCommandHandlerFactory)
             {
                 $this->expectedCommand = $expectedCommand;
                 $this->expectedCommandHandlerFactory = $expectedCommandHandlerFactory;
@@ -144,11 +70,13 @@ class CachedCommandRegistrantTest extends TestCase
                 $commands->registerCommand($this->expectedCommand, $this->expectedCommandHandlerFactory);
             }
         };
-        $cachedRegistrant->addCommandRegistrant($addedCommandRegistrant);
         $commandCache->expects($this->once())
             ->method('get')
             ->willReturn(null);
+        $commandRegistrants = new CommandRegistrantCollection();
+        $commandRegistrants->add($addedCommandRegistrant);
         $commands = new CommandRegistry();
+        $cachedRegistrant = new CachedCommandRegistrant($commandCache, $commandRegistrants);
         $cachedRegistrant->registerCommands($commands);
         /** @var CommandBinding $actualCommandBinding */
         $actualCommandBinding = null;
@@ -161,7 +89,6 @@ class CachedCommandRegistrantTest extends TestCase
     {
         /** @var ICommandRegistryCache|MockObject $commandCache */
         $commandCache = $this->createMock(ICommandRegistryCache::class);
-        $cachedRegistrant = new CachedCommandRegistrant($commandCache);
         $expectedCommand = new Command('foo');
         $expectedCommandHandlerFactory = fn () => $this->createMock(ICommandHandler::class);
         $addedCommandRegistrant = new class ($expectedCommand, $expectedCommandHandlerFactory) implements ICommandRegistrant
@@ -169,7 +96,7 @@ class CachedCommandRegistrantTest extends TestCase
             private Command $expectedCommand;
             private Closure $expectedCommandHandlerFactory;
 
-            public function __construct(Command $expectedCommand, \Closure $expectedCommandHandlerFactory)
+            public function __construct(Command $expectedCommand, Closure $expectedCommandHandlerFactory)
             {
                 $this->expectedCommand = $expectedCommand;
                 $this->expectedCommandHandlerFactory = $expectedCommandHandlerFactory;
@@ -183,7 +110,6 @@ class CachedCommandRegistrantTest extends TestCase
                 $commands->registerCommand($this->expectedCommand, $this->expectedCommandHandlerFactory);
             }
         };
-        $cachedRegistrant->addCommandRegistrant($addedCommandRegistrant);
         $commandCache->expects($this->once())
             ->method('get')
             ->willReturn(null);
@@ -197,7 +123,10 @@ class CachedCommandRegistrantTest extends TestCase
                     && $actualCommandBinding->command === $expectedCommand
                     && $actualCommandBinding->commandHandlerFactory === $expectedCommandHandlerFactory;
             }));
+        $commandRegistrants = new CommandRegistrantCollection();
+        $commandRegistrants->add($addedCommandRegistrant);
         $commands = new CommandRegistry();
+        $cachedRegistrant = new CachedCommandRegistrant($commandCache, $commandRegistrants);
         $cachedRegistrant->registerCommands($commands);
     }
 
@@ -207,7 +136,7 @@ class CachedCommandRegistrantTest extends TestCase
         $commandCache->expects($this->once())
             ->method('get')
             ->willReturn(null);
-        $cachedRegistrant = new CachedCommandRegistrant($commandCache);
+        $cachedRegistrant = new CachedCommandRegistrant($commandCache, new CommandRegistrantCollection());
         $commands = new CommandRegistry();
         $cachedRegistrant->registerCommands($commands);
         $this->assertCount(0, $commands->getAllCommands());

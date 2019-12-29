@@ -13,29 +13,19 @@ declare(strict_types=1);
 namespace Aphiria\Console\Commands;
 
 /**
- * Defines the command registrant that aggregates other command registrants
+ * Defines the collection of command registrants that can be run in serial
  */
-class AggregateCommandRegistrant implements ICommandRegistrant
+class CommandRegistrantCollection implements ICommandRegistrant
 {
     /** @var ICommandRegistrant[] The list of registrants that will actually register the commands */
     protected array $commandRegistrants = [];
-
-    /**
-     * @param ICommandRegistrant|null $initialCommandRegistrant The initial registrant to register, or null
-     */
-    public function __construct(ICommandRegistrant $initialCommandRegistrant = null)
-    {
-        if ($initialCommandRegistrant !== null) {
-            $this->commandRegistrants[] = $initialCommandRegistrant;
-        }
-    }
 
     /**
      * Adds a command registrant
      *
      * @param ICommandRegistrant $commandRegistrant The registrant to add
      */
-    public function addCommandRegistrant(ICommandRegistrant $commandRegistrant): void
+    public function add(ICommandRegistrant $commandRegistrant): void
     {
         $this->commandRegistrants[] = $commandRegistrant;
     }

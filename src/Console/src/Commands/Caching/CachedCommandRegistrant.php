@@ -12,27 +12,28 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Commands\Caching;
 
-use Aphiria\Console\Commands\AggregateCommandRegistrant;
+use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandRegistrant;
 
 /**
  * Defines the command registry that initializes commands lazily
  */
-final class CachedCommandRegistrant extends AggregateCommandRegistrant
+final class CachedCommandRegistrant implements ICommandRegistrant
 {
     /** @var ICommandRegistryCache The commands cache to store compiled commands in */
     private ICommandRegistryCache $commandCache;
+    /** @var CommandRegistrantCollection The list of command registrants to run on cache miss */
+    private CommandRegistrantCollection $commandRegistrants;
 
     /**
-     * @inheritdoc
      * @param ICommandRegistryCache $commandCache The command cache
+     * @param CommandRegistrantCollection $commandRegistrants The list of command registrants to run on cache miss
      */
-    public function __construct(ICommandRegistryCache $commandCache, ICommandRegistrant $initialCommandRegistrant = null)
+    public function __construct(ICommandRegistryCache $commandCache, CommandRegistrantCollection $commandRegistrants)
     {
-        parent::__construct($initialCommandRegistrant);
-
         $this->commandCache = $commandCache;
+        $this->commandRegistrants = $commandRegistrants;
     }
 
     /**
@@ -46,7 +47,7 @@ final class CachedCommandRegistrant extends AggregateCommandRegistrant
             return;
         }
 
-        parent::registerCommands($commands);
+        $this->commandRegistrants->registerCommands($commands);
 
         // Save this to cache for next time
         $this->commandCache->set($commands);
