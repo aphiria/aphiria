@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http\ResponseFactories;
 
+use Aphiria\IO\Streams\IStream;
+use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
@@ -29,8 +31,6 @@ use Aphiria\Net\Tests\Http\ContentNegotiation\Mocks\User;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use function mb_strlen;
-use Aphiria\IO\Streams\IStream;
-use Aphiria\IO\Streams\Stream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -131,6 +131,19 @@ class NegotiatedResponseFactoryTest extends TestCase
         $headers->add('Content-Length', 123);
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, $headers, $rawBody);
         $this->assertEquals(123, $response->getHeaders()->getFirst('Content-Length'));
+    }
+
+    public function testCreatingResponseIncludesContentLanguageHeaderIfItIsPresentInContentNegotiationResult(): void
+    {
+        $rawBody = new User(123, 'foo@bar.com');
+        $request = $this->createRequest('http://foo.com');
+        $this->setUpContentNegotiationMock(
+            User::class,
+            $request,
+            new ContentNegotiationResult($this->createMock(IMediaTypeFormatter::class), null, 'utf-8', 'en-US')
+        );
+        $response = $this->factory->createResponse($request, 200, null, $rawBody);
+        $this->assertEquals('en-US', $response->getHeaders()->getFirst('Content-Language'));
     }
 
     public function testCreatingResponseUsesStatusCode(): void
