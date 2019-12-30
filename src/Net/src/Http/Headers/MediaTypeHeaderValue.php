@@ -29,6 +29,12 @@ class MediaTypeHeaderValue
     private string $type;
     /** @var string The sub-type, eg "html" in "text/html" */
     private string $subType;
+    /**
+     * The media type suffix, eg "json" in "application/foo+json
+     * @link https://tools.ietf.org/html/rfc6839
+     * @var string|null
+     */
+    private ?string $suffix = null;
     /** @var string|null The charset if one was set, otherwise null */
     private ?string $charset;
 
@@ -49,6 +55,11 @@ class MediaTypeHeaderValue
 
         $this->type = $mediaTypeParts[0];
         $this->subType = $mediaTypeParts[1];
+
+        if (\strpos($this->mediaType, '+') !== false) {
+            $this->suffix = \substr($this->mediaType, \strpos($this->mediaType, '+') + 1);
+        }
+
         $this->parameters->tryGet('charset', $this->charset);
     }
 
@@ -90,6 +101,30 @@ class MediaTypeHeaderValue
     public function getSubType(): string
     {
         return $this->subType;
+    }
+
+    /**
+     * Gets the media sub-type without the suffix
+     *
+     * @return string The sub-type without the suffix
+     */
+    public function getSubTypeWithoutSuffix(): string
+    {
+        if ($this->suffix === null) {
+            return $this->subType;
+        }
+
+        return \str_replace("+{$this->suffix}", '', $this->subType);
+    }
+
+    /**
+     * Gets the media type suffix
+     *
+     * @return string|null The media type suffix if it existed, otherwise null
+     */
+    public function getSuffix(): ?string
+    {
+        return $this->suffix;
     }
 
     /**

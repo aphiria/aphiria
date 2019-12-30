@@ -54,4 +54,13 @@ class AcceptMediaTypeHeaderValueTest extends TestCase
         $value = new AcceptMediaTypeHeaderValue('foo/bar', null);
         $this->assertEquals(1, $value->getQuality());
     }
+
+    public function testTypeWithSuffixSetsTypeSubTypeAndSuffixesCorrectly(): void
+    {
+        $value = new AcceptMediaTypeHeaderValue('application/foo+json', null);
+        $this->assertEquals('application', $value->getType());
+        $this->assertEquals('foo+json', $value->getSubType());
+        $this->assertEquals('foo', $value->getSubTypeWithoutSuffix());
+        $this->assertEquals('json', $value->getSuffix());
+    }
 }

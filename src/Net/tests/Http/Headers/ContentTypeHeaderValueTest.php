@@ -50,6 +50,15 @@ class ContentTypeHeaderValueTest extends TestCase
         $this->assertEquals('foo', $value->getType());
     }
 
+    public function testTypeWithSuffixSetsTypeSubTypeAndSuffixesCorrectly(): void
+    {
+        $value = new ContentTypeHeaderValue('application/foo+json', $this->createMock(IImmutableDictionary::class));
+        $this->assertEquals('application', $value->getType());
+        $this->assertEquals('foo+json', $value->getSubType());
+        $this->assertEquals('foo', $value->getSubTypeWithoutSuffix());
+        $this->assertEquals('json', $value->getSuffix());
+    }
+
     public function incorrectlyFormattedMediaTypeProvider(): array
     {
         return [

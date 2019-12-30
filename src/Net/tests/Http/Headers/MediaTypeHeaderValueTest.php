@@ -38,7 +38,7 @@ class MediaTypeHeaderValueTest extends TestCase
         $this->assertEquals('foo/bar', $value->getMediaType());
     }
 
-    public function testGettingSubTypeReturnsCorrectSubtType(): void
+    public function testGettingSubTypeReturnsCorrectSubType(): void
     {
         $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
         $this->assertEquals('bar', $value->getSubType());
@@ -48,6 +48,15 @@ class MediaTypeHeaderValueTest extends TestCase
     {
         $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
         $this->assertEquals('foo', $value->getType());
+    }
+
+    public function testTypeWithSuffixSetsTypeSubTypeAndSuffixesCorrectly(): void
+    {
+        $value = new MediaTypeHeaderValue('application/foo+json', $this->createMock(IImmutableDictionary::class));
+        $this->assertEquals('application', $value->getType());
+        $this->assertEquals('foo+json', $value->getSubType());
+        $this->assertEquals('foo', $value->getSubTypeWithoutSuffix());
+        $this->assertEquals('json', $value->getSuffix());
     }
 
     public function incorrectlyFormattedMediaTypeProvider(): array
