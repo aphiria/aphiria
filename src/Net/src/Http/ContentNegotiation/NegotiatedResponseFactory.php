@@ -14,6 +14,7 @@ namespace Aphiria\Net\Http\ContentNegotiation;
 
 use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\HttpStatusCodes;
@@ -23,7 +24,6 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Http\StringBody;
-use Aphiria\Serialization\SerializationException;
 use Aphiria\Serialization\TypeResolver;
 use InvalidArgumentException;
 
