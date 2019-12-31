@@ -224,6 +224,13 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $this->assertEquals('text/html', $match->getMediaType());
     }
 
+    public function testExceptionIsThrownIfNoMediaTypeFormattersAreSpecified(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('List of formatters cannot be empty');
+        new MediaTypeFormatterMatcher([]);
+    }
+
     /**
      * Creates a mock media type formatter with a list of supported media types
      *

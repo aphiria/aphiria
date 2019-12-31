@@ -18,6 +18,7 @@ use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
 use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
 use Aphiria\Net\Http\HttpHeaders;
+use InvalidArgumentException;
 
 /**
  * Defines the media type formatter matcher
@@ -36,9 +37,14 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
     /**
      * @param IMediaTypeFormatter[] $mediaTypeFormatters The list of supported media type formatters
      * @param RequestHeaderParser|null $headerParser The header parser to use to get request header values
+     * @throws InvalidArgumentException Thrown if there are no media type formatters specified
      */
     public function __construct(array $mediaTypeFormatters, RequestHeaderParser $headerParser = null)
     {
+        if (count($mediaTypeFormatters) === 0) {
+            throw new InvalidArgumentException('List of formatters cannot be empty');
+        }
+
         $this->mediaTypeFormatters = $mediaTypeFormatters;
         $this->headerParser = $headerParser ?? new RequestHeaderParser();
     }

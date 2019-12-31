@@ -29,7 +29,6 @@ class ContentNegotiatorTest extends TestCase
 {
     /** @var IHttpRequestMessage|MockObject The request message to use in tests */
     private IHttpRequestMessage $request;
-    /** @var HttpHeaders The headers to use in tests */
     private HttpHeaders $headers;
 
     protected function setUp(): void
@@ -40,14 +39,7 @@ class ContentNegotiatorTest extends TestCase
             ->willReturn($this->headers);
     }
 
-    public function testEmptyListOfFormattersThrowsExceptionWhenNegotiatingRequest(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('List of formatters cannot be empty');
-        new ContentNegotiator([]);
-    }
-
-    public function testEmptyListOfFormattersThrowsExceptionWhenNegotiatingResponse(): void
+    public function testEmptyListOfFormattersThrowsExceptionWhen(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('List of formatters cannot be empty');
