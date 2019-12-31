@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Api\Validation;
 
 use Aphiria\Api\Errors\ProblemDetails;
+use Aphiria\Net\Http\HttpStatusCodes;
 
 /**
  * Defines the problem details for validation errors
@@ -28,10 +29,10 @@ final class ValidationProblemDetails extends ProblemDetails
      */
     public function __construct(
         array $errors,
-        string $type = null,
-        string $title = null,
+        string $type = 'https://tools.ietf.org/html/rfc7231#section-6.5.1',
+        string $title = 'One or more validation errors occurred',
         string $detail = null,
-        int $status = null,
+        int $status = HttpStatusCodes::HTTP_BAD_REQUEST,
         string $instance = null
     ) {
         parent::__construct($type, $title, $detail, $status, $instance);
