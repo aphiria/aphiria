@@ -12,35 +12,52 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
+use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
 use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
+use Aphiria\Net\Http\HttpHeaders;
 
 /**
- * Defines the language matcher
+ * Defines the language matcher that looks at the accept language header
  */
-final class LanguageMatcher
+final class AcceptLanguageMatcher implements ILanguageMatcher
 {
-    /**
-     * Gets the best language match between a list of supported languages and Accept-Language headers
-     * This uses "lookup" matching per RFC-4647 section 3.4
-     *
-     * @param array $supportedLanguages The list of supported languages
-     * @param AcceptLanguageHeaderValue[] $languageHeaders The list of language headers to rank
-     * @return string|null The best language match if one existed, otherwise null
-     * @link https://tools.ietf.org/html/rfc4647#section-3.4
-     */
-    public function getBestLanguageMatch(array $supportedLanguages, array $languageHeaders): ?string
-    {
-        usort($languageHeaders, [$this, 'compareAcceptLanguageHeaders']);
-        $rankedLanguageHeaders = array_filter($languageHeaders, [$this, 'filterZeroScores']);
-        $rankedLanguageHeaderValues = $this->getLanguageValuesFromHeaders($rankedLanguageHeaders);
+    /** @var string[] The list of supported languages */
+    private array $supportedLanguages;
+    /** @var RequestHeaderParser The header parser to use to get language headers */
+    private RequestHeaderParser $headerParser;
 
-        foreach ($rankedLanguageHeaderValues as $language) {
+    /**
+     * @param string[] $supportedLanguages The list of supported languages
+     * @param RequestHeaderParser|null $headerParser The header parser to use to get language headers
+     */
+    public function __construct(array $supportedLanguages, RequestHeaderParser $headerParser = null)
+    {
+        $this->supportedLanguages = $supportedLanguages;
+        $this->headerParser = $headerParser ?? new RequestHeaderParser();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBestLanguageMatch(HttpHeaders $requestHeaders): ?string
+    {
+        $acceptLanguageHeaders = $this->headerParser->parseAcceptLanguageHeader($requestHeaders);
+
+        if (count($acceptLanguageHeaders) === 0) {
+            return null;
+        }
+
+        usort($acceptLanguageHeaders, [$this, 'compareAcceptLanguageHeaders']);
+        $rankedAcceptLanguageHeaders = array_filter($acceptLanguageHeaders, [$this, 'filterZeroScores']);
+        $rankedAcceptLanguageHeaderValues = $this->getLanguageValuesFromHeaders($rankedAcceptLanguageHeaders);
+
+        foreach ($rankedAcceptLanguageHeaderValues as $language) {
             $languageParts = explode('-', $language);
 
             // Progressively truncate this language tag and try to match a supported language
             do {
-                foreach ($supportedLanguages as $supportedLanguage) {
+                foreach ($this->supportedLanguages as $supportedLanguage) {
                     if ($language === '*' || implode('-', $languageParts) === $supportedLanguage) {
                         return $supportedLanguage;
                     }

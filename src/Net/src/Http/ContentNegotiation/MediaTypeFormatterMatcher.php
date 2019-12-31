@@ -13,59 +13,66 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http\ContentNegotiation;
 
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
-use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
 use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
+use Aphiria\Net\Http\HttpHeaders;
+use InvalidArgumentException;
 
 /**
  * Defines the media type formatter matcher
  */
-final class MediaTypeFormatterMatcher
+final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
 {
     /** @const The type of formatter to match on for requests */
     private const FORMATTER_TYPE_INPUT = 'input';
     /** @const The type of formatter to match on for responses */
     private const FORMATTER_TYPE_OUTPUT = 'output';
+    /** @var IMediaTypeFormatter[] The list of supported media type formatters */
+    private array $mediaTypeFormatters;
+    /** @var RequestHeaderParser The header parser to use to get request header values */
+    private RequestHeaderParser $headerParser;
 
     /**
-     * Gets the best media type formatter match for requests
-     *
-     * @param string $type The type that will be read by the formatter
-     * @param IMediaTypeFormatter[] $formatters The list of formatters to match against
-     * @param ContentTypeHeaderValue $contentTypeHeaderValue The Content-Type header to match against
-     * @return MediaTypeFormatterMatch|null The media type formatter match if there was one, otherwise null
+     * @param IMediaTypeFormatter[] $mediaTypeFormatters The list of supported media type formatters
+     * @param RequestHeaderParser|null $headerParser The header parser to use to get request header values
+     * @throws InvalidArgumentException Thrown if there are no media type formatters specified
+     */
+    public function __construct(array $mediaTypeFormatters, RequestHeaderParser $headerParser = null)
+    {
+        if (count($mediaTypeFormatters) === 0) {
+            throw new InvalidArgumentException('List of formatters cannot be empty');
+        }
+
+        $this->mediaTypeFormatters = $mediaTypeFormatters;
+        $this->headerParser = $headerParser ?? new RequestHeaderParser();
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getBestRequestMediaTypeFormatterMatch(
         string $type,
-        array $formatters,
-        ContentTypeHeaderValue $contentTypeHeaderValue
+        HttpHeaders $requestHeaders
     ): ?MediaTypeFormatterMatch {
         return $this->getBestMediaTypeFormatterMatch(
             $type,
-            $formatters,
-            [$contentTypeHeaderValue],
+            [$this->headerParser->parseContentTypeHeader($requestHeaders)],
             self::FORMATTER_TYPE_INPUT
         );
     }
 
     /**
-     * Gets the best media type formatter match for requests
-     *
-     * @param string $type The type that will be written by the formatter
-     * @param IMediaTypeFormatter[] $formatters The list of formatters to match against
-     * @param AcceptMediaTypeHeaderValue[] $acceptMediaTypeHeaders The Accept type headers to match against
-     * @return MediaTypeFormatterMatch|null The media type formatter match if there was one, otherwise null
+     * @inheritdoc
      */
     public function getBestResponseMediaTypeFormatterMatch(
         string $type,
-        array $formatters,
-        array $acceptMediaTypeHeaders
+        HttpHeaders $requestHeaders
     ): ?MediaTypeFormatterMatch {
         return $this->getBestMediaTypeFormatterMatch(
             $type,
-            $formatters,
-            $acceptMediaTypeHeaders,
+            $this->headerParser->parseAcceptHeader($requestHeaders),
             self::FORMATTER_TYPE_OUTPUT
         );
     }
@@ -74,14 +81,12 @@ final class MediaTypeFormatterMatcher
      * Gets the best media type formatter match
      *
      * @param string $type The type that will be read/written by the formatter
-     * @param IMediaTypeFormatter[] $formatters The list of formatters to match against
      * @param MediaTypeHeaderValue[] $mediaTypeHeaders The media type headers to match against
      * @param string $ioType Whether this is an input or an output media type formatter
      * @return MediaTypeFormatterMatch|null The media type formatter match if there was one, otherwise null
      */
     private function getBestMediaTypeFormatterMatch(
         string $type,
-        array $formatters,
         array $mediaTypeHeaders,
         string $ioType
     ): ?MediaTypeFormatterMatch {
@@ -93,13 +98,13 @@ final class MediaTypeFormatterMatcher
         foreach ($mediaTypeHeaders as $mediaTypeHeader) {
             [$mediaType, $mediaSubType] = explode('/', $mediaTypeHeader->getMediaType());
 
-            foreach ($formatters as $formatter) {
-                foreach ($formatter->getSupportedMediaTypes() as $supportedMediaType) {
-                    if ($ioType === self::FORMATTER_TYPE_INPUT && !$formatter->canReadType($type)) {
+            foreach ($this->mediaTypeFormatters as $mediaTypeFormatter) {
+                foreach ($mediaTypeFormatter->getSupportedMediaTypes() as $supportedMediaType) {
+                    if ($ioType === self::FORMATTER_TYPE_INPUT && !$mediaTypeFormatter->canReadType($type)) {
                         continue;
                     }
 
-                    if ($ioType === self::FORMATTER_TYPE_OUTPUT && !$formatter->canWriteType($type)) {
+                    if ($ioType === self::FORMATTER_TYPE_OUTPUT && !$mediaTypeFormatter->canWriteType($type)) {
                         continue;
                     }
 
@@ -111,7 +116,7 @@ final class MediaTypeFormatterMatcher
                         ($mediaSubType === '*' && $mediaType === $supportedType) ||
                         ($mediaType === $supportedType && $mediaSubType === $supportedSubType)
                     ) {
-                        return new MediaTypeFormatterMatch($formatter, $supportedMediaType, $mediaTypeHeader);
+                        return new MediaTypeFormatterMatch($mediaTypeFormatter, $supportedMediaType, $mediaTypeHeader);
                     }
                 }
             }

@@ -12,33 +12,41 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
 use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
+use Aphiria\Net\Http\HttpHeaders;
 
 /**
- * Defines the character encoding matcher
+ * Defines the Accept-Charset encoding matcher
  */
-final class EncodingMatcher
+final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
 {
+    /** @var RequestHeaderParser The header parser to use to get charset headers */
+    private RequestHeaderParser $headerParser;
+
     /**
-     * Gets the best character encoding match for the input media type formatter
-     *
-     * @param IMediaTypeFormatter $formatter The media type formatter to match against
-     * @param AcceptCharsetHeaderValue[] $acceptCharsetHeaders The list of charset header values to match against
-     * @param MediaTypeHeaderValue|null $mediaTypeHeader The matched media type header value if one was set, otherwise null
-     * @return string|null The best charset if one was found, otherwise null
+     * @param RequestHeaderParser|null $headerParser The header parser to use to get charset headers
+     */
+    public function __construct(RequestHeaderParser $headerParser = null)
+    {
+        $this->headerParser = $headerParser ?? new RequestHeaderParser();
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getBestEncodingMatch(
-        IMediaTypeFormatter $formatter,
-        array $acceptCharsetHeaders,
-        ?MediaTypeHeaderValue $mediaTypeHeader
+        array $supportedEncodings,
+        HttpHeaders $requestHeaders,
+        MediaTypeHeaderValue $matchedMediaTypeHeaderValue = null
     ): ?string {
+        $acceptCharsetHeaders = $this->headerParser->parseAcceptCharsetHeader($requestHeaders);
         $rankedAcceptCharsetHeaders = $this->rankAcceptCharsetHeaders($acceptCharsetHeaders);
 
         foreach ($rankedAcceptCharsetHeaders as $acceptCharsetHeader) {
-            foreach ($formatter->getSupportedEncodings() as $supportedEncoding) {
+            foreach ($supportedEncodings as $supportedEncoding) {
                 $charset = $acceptCharsetHeader->getCharset();
 
                 if ($charset === '*' || strcasecmp($charset, $supportedEncoding) === 0) {
@@ -47,13 +55,13 @@ final class EncodingMatcher
             }
         }
 
-        if ($mediaTypeHeader === null || $mediaTypeHeader->getCharset() === null) {
+        if ($matchedMediaTypeHeaderValue === null || $matchedMediaTypeHeaderValue->getCharset() === null) {
             return null;
         }
 
         // Fall back to the charset in the media type header
-        foreach ($formatter->getSupportedEncodings() as $supportedEncoding) {
-            $charset = $mediaTypeHeader->getCharset();
+        foreach ($supportedEncodings as $supportedEncoding) {
+            $charset = $matchedMediaTypeHeaderValue->getCharset();
 
             if ($charset === '*' || strcasecmp($charset, $supportedEncoding) === 0) {
                 return $supportedEncoding;
