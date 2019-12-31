@@ -29,8 +29,8 @@ final class MediaTypeFormatterMatch
 
     /**
      * @param IMediaTypeFormatter $formatter The matched media type formatter
-     * @param string $mediaType The matched media type
-     * @param MediaTypeHeaderValue $mediaTypeHeaderValue The matched media type header value
+     * @param string $mediaType The matched media type, eg 'application/json'
+     * @param MediaTypeHeaderValue $mediaTypeHeaderValue The matched media type header value, eg 'Accept: application/json'
      */
     public function __construct(IMediaTypeFormatter $formatter, string $mediaType, MediaTypeHeaderValue $mediaTypeHeaderValue)
     {

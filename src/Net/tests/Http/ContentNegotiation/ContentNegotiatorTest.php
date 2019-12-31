@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http\Formatting;
 
 use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
+use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpRequestMessage;
@@ -43,14 +44,14 @@ class ContentNegotiatorTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('List of formatters cannot be empty');
-        new ContentNegotiator([], []);
+        new ContentNegotiator([]);
     }
 
     public function testEmptyListOfFormattersThrowsExceptionWhenNegotiatingResponse(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('List of formatters cannot be empty');
-        new ContentNegotiator([], []);
+        new ContentNegotiator([]);
     }
 
     public function testGettingAcceptableResponseMediaTypesDoesNotReturnDuplicates(): void
@@ -256,12 +257,11 @@ class ContentNegotiatorTest extends TestCase
             ->willReturn('application/json');
         $this->headers->add('Accept-Charset', 'utf-16');
         $this->headers->add('Accept-Language', 'en-US');
-        $negotiator = new ContentNegotiator([$formatter], ['en-US']);
+        $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
         $this->assertSame($formatter, $result->getFormatter());
         $this->assertEquals('application/json', $result->getMediaType());
         $this->assertEquals('utf-16', $result->getEncoding());
-        $this->assertEquals('en-US', $result->getLanguage());
     }
 
     public function testResponseLanguageIsNullWhenNoMatchingSupportedLanguage(): void
@@ -274,15 +274,19 @@ class ContentNegotiatorTest extends TestCase
             ->method('canWriteType')
             ->with(User::class)
             ->willReturn(true);
+        $languageMatcher = $this->createMock(ILanguageMatcher::class);
+        $languageMatcher->expects($this->once())
+            ->method('getBestLanguageMatch')
+            ->with($this->headers)
+            ->willReturn(null);
         $this->headers->add('Accept-Charset', 'utf-8');
-        $this->headers->add('Accept-Language', 'en-US');
-        $negotiator = new ContentNegotiator([$formatter], ['en-GB']);
+        $negotiator = new ContentNegotiator([$formatter], null, null, $languageMatcher);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
         $this->assertSame($formatter, $result->getFormatter());
         $this->assertNull($result->getLanguage());
     }
 
-    public function testResponseLanguageIsSetFromAcceptLanguageHeader(): void
+    public function testResponseLanguageIsSetFromLanguageMatcherResults(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $formatter->expects($this->once())
@@ -295,9 +299,14 @@ class ContentNegotiatorTest extends TestCase
             ->method('canWriteType')
             ->with(User::class)
             ->willReturn(true);
+        $languageMatcher = $this->createMock(ILanguageMatcher::class);
+        $languageMatcher->expects($this->once())
+            ->method('getBestLanguageMatch')
+            ->with($this->headers)
+            ->willReturn('en-US');
         $this->headers->add('Accept-Charset', 'utf-8');
         $this->headers->add('Accept-Language', 'en-US');
-        $negotiator = new ContentNegotiator([$formatter], ['en-US']);
+        $negotiator = new ContentNegotiator([$formatter], null, null, $languageMatcher);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
         $this->assertSame($formatter, $result->getFormatter());
         $this->assertEquals('application/json', $result->getMediaType());
