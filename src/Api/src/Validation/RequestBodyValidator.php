@@ -30,8 +30,13 @@ final class RequestBodyValidator implements IRequestBodyValidator
     /**
      * @inheritdoc
      */
-    public function validate(object $body): void
+    public function validate($body): void
     {
+        // There isn't any way to validate a scalar value without a list of constraints.  So, just say it's valid.
+        if (!\is_object($body)) {
+            return;
+        }
+
         try {
             $this->validator->validateObject($body, new ValidationContext($body));
         } catch (ValidationException $ex) {
@@ -39,7 +44,7 @@ final class RequestBodyValidator implements IRequestBodyValidator
 
             foreach ($ex->getValidationContext()->getConstraintViolations() as $violation) {
                 $failedConstraint = $violation->getConstraint();
-                // TODO: How do I get the accepted locale from content negotiation?
+                // TODO: How do I get the accepted locale from content negotiation?  If I perform content negotiation here, what type do I specify?  Technically, this class is throwing an exception, not creating a response.  So, knowing the type of the body is poor encapsulation.
                 $compiledErrorMessages[] = $this->errorMessageCompiler->compile(
                     $failedConstraint->getErrorMessageId(),
                     $failedConstraint->getErrorMessagePlaceholders()

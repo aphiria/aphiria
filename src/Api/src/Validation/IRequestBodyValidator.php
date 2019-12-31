@@ -20,8 +20,8 @@ interface IRequestBodyValidator
     /**
      * Validates the negotiated request body
      *
-     * @param object $body The deserialized body to validate
+     * @param mixed $body The deserialized body to validate
      * @throws InvalidRequestBodyException Thrown if the body is not valid
      */
-    public function validate(object $body): void;
+    public function validate($body): void;
 }
