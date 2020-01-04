@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Validation\ErrorMessages;
 
 /**
- * Defines the error message compiler that compiles ICU message formats
+ * Defines the error message formatter that formats ICU message formats
  */
-final class IcuFormatErrorMessageCompiler implements IErrorMessageCompiler
+final class IcuFormatErrorMessageFormatter implements IErrorMessageFormatter
 {
     /** @var string The fallback locale, if none is specified */
     private string $fallbackLocale;
@@ -31,18 +31,18 @@ final class IcuFormatErrorMessageCompiler implements IErrorMessageCompiler
     /**
      * @inheritdoc
      */
-    public function compile(string $errorMessageId, array $errorMessagePlaceholders = [], string $locale = null): string
+    public function format(string $errorMessageId, array $errorMessagePlaceholders = [], string $locale = null): string
     {
-        $compiledErrorMessage = \MessageFormatter::formatMessage(
+        $formattedErrorMessage = \MessageFormatter::formatMessage(
             $locale ?? $this->fallbackLocale,
             $errorMessageId,
             $errorMessagePlaceholders
         );
 
-        if ($compiledErrorMessage === false) {
-            throw new ErrorMessageCompilationException("Could not compile error message ID $errorMessageId");
+        if ($formattedErrorMessage === false) {
+            throw new ErrorMessageFormattingException("Could not format error message ID $errorMessageId");
         }
 
-        return $compiledErrorMessage;
+        return $formattedErrorMessage;
     }
 }

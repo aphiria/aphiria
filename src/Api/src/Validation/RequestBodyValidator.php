@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Validation;
 
-use Aphiria\Validation\ErrorMessages\IErrorMessageCompiler;
+use Aphiria\Validation\ErrorMessages\IErrorMessageFormatter;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\ValidationException;
@@ -24,8 +24,8 @@ final class RequestBodyValidator implements IRequestBodyValidator
 {
     /** @var IValidator The validator that will actually perform the validation */
     private IValidator $validator;
-    /** @var IErrorMessageCompiler The compiler of error messages */
-    private IErrorMessageCompiler $errorMessageCompiler;
+    /** @var IErrorMessageFormatter The compiler of error messages */
+    private IErrorMessageFormatter $errorMessageCompiler;
 
     /**
      * @inheritdoc
@@ -45,7 +45,7 @@ final class RequestBodyValidator implements IRequestBodyValidator
             foreach ($ex->getValidationContext()->getConstraintViolations() as $violation) {
                 $failedConstraint = $violation->getConstraint();
                 // TODO: How do I get the accepted locale from content negotiation?  If I perform content negotiation here, what type do I specify?  Technically, this class is throwing an exception, not creating a response.  So, knowing the type of the body is poor encapsulation.
-                $compiledErrorMessages[] = $this->errorMessageCompiler->compile(
+                $compiledErrorMessages[] = $this->errorMessageCompiler->format(
                     $failedConstraint->getErrorMessageId(),
                     $failedConstraint->getErrorMessagePlaceholders()
                 );

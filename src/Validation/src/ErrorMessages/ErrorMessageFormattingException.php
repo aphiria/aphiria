@@ -15,9 +15,9 @@ namespace Aphiria\Validation\ErrorMessages;
 use Exception;
 
 /**
- * Defines an exception that occurs if an error message could not be compiled
+ * Defines an exception that occurs if an error message could not be formatted
  */
-final class ErrorMessageCompilationException extends Exception
+final class ErrorMessageFormattingException extends Exception
 {
     // Don't do anything
 }
