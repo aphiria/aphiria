@@ -17,7 +17,7 @@ use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
 use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
-use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\IHttpRequestMessage;
 use InvalidArgumentException;
 
 /**
@@ -54,11 +54,11 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     public function getBestRequestMediaTypeFormatterMatch(
         string $type,
-        HttpHeaders $requestHeaders
+        IHttpRequestMessage $request
     ): ?MediaTypeFormatterMatch {
         return $this->getBestMediaTypeFormatterMatch(
             $type,
-            [$this->headerParser->parseContentTypeHeader($requestHeaders)],
+            [$this->headerParser->parseContentTypeHeader($request->getHeaders())],
             self::FORMATTER_TYPE_INPUT
         );
     }
@@ -68,11 +68,11 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     public function getBestResponseMediaTypeFormatterMatch(
         string $type,
-        HttpHeaders $requestHeaders
+        IHttpRequestMessage $request
     ): ?MediaTypeFormatterMatch {
         return $this->getBestMediaTypeFormatterMatch(
             $type,
-            $this->headerParser->parseAcceptHeader($requestHeaders),
+            $this->headerParser->parseAcceptHeader($request->getHeaders()),
             self::FORMATTER_TYPE_OUTPUT
         );
     }
