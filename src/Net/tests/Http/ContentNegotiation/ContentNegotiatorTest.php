@@ -269,7 +269,7 @@ class ContentNegotiatorTest extends TestCase
         $languageMatcher = $this->createMock(ILanguageMatcher::class);
         $languageMatcher->expects($this->once())
             ->method('getBestLanguageMatch')
-            ->with($this->headers)
+            ->with($this->request)
             ->willReturn(null);
         $this->headers->add('Accept-Charset', 'utf-8');
         $negotiator = new ContentNegotiator([$formatter], null, null, $languageMatcher);
@@ -294,7 +294,7 @@ class ContentNegotiatorTest extends TestCase
         $languageMatcher = $this->createMock(ILanguageMatcher::class);
         $languageMatcher->expects($this->once())
             ->method('getBestLanguageMatch')
-            ->with($this->headers)
+            ->with($this->request)
             ->willReturn('en-US');
         $this->headers->add('Accept-Charset', 'utf-8');
         $this->headers->add('Accept-Language', 'en-US');

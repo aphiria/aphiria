@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
-use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\IHttpRequestMessage;
 
 /**
  * Defines the interface for language matchers to implement
@@ -20,11 +20,10 @@ use Aphiria\Net\Http\HttpHeaders;
 interface ILanguageMatcher
 {
     /**
-     * Gets the best language match between a list of supported languages and Accept-Language headers
-     *
-     * @param HttpHeaders $requestHeaders The request headers
+     * Gets the best language match between a list of supported languages and Accept-Lang
+     * @param IHttpRequestMessage $request The current request
      * @return string|null The best language match if one existed, otherwise null
      * @link https://tools.ietf.org/html/rfc4647#section-3.4
      */
-    public function getBestLanguageMatch(HttpHeaders $requestHeaders): ?string;
+    public function getBestLanguageMatch(IHttpRequestMessage $request): ?string;
 }

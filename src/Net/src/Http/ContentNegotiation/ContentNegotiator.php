@@ -18,7 +18,6 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
-use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use InvalidArgumentException;
 
@@ -111,7 +110,7 @@ final class ContentNegotiator implements IContentNegotiator
 
         $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestRequestMediaTypeFormatterMatch(
             $type,
-            $requestHeaders
+            $request
         );
 
         if ($mediaTypeFormatterMatch === null) {
@@ -120,7 +119,7 @@ final class ContentNegotiator implements IContentNegotiator
 
         $encoding = $this->encodingMatcher->getBestEncodingMatch(
             $mediaTypeFormatterMatch->getFormatter()->getSupportedEncodings(),
-            $requestHeaders,
+            $request,
             $mediaTypeFormatterMatch->getMediaTypeHeaderValue()
         );
 
@@ -137,16 +136,15 @@ final class ContentNegotiator implements IContentNegotiator
      */
     public function negotiateResponseContent(string $type, IHttpRequestMessage $request): ContentNegotiationResult
     {
-        $requestHeaders = $request->getHeaders();
-        $language = $this->languageMatcher->getBestLanguageMatch($requestHeaders);
+        $language = $this->languageMatcher->getBestLanguageMatch($request);
 
-        if (!$requestHeaders->containsKey('Accept')) {
-            return $this->createDefaultResponseContentNegotiationResult($type, $language, $requestHeaders);
+        if (!$request->getHeaders()->containsKey('Accept')) {
+            return $this->createDefaultResponseContentNegotiationResult($type, $language, $request);
         }
 
         $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestResponseMediaTypeFormatterMatch(
             $type,
-            $requestHeaders
+            $request
         );
 
         if ($mediaTypeFormatterMatch === null) {
@@ -155,7 +153,7 @@ final class ContentNegotiator implements IContentNegotiator
 
         $encoding = $this->encodingMatcher->getBestEncodingMatch(
             $mediaTypeFormatterMatch->getFormatter()->getSupportedEncodings(),
-            $requestHeaders,
+            $request,
             $mediaTypeFormatterMatch->getMediaTypeHeaderValue()
         );
 
@@ -172,13 +170,13 @@ final class ContentNegotiator implements IContentNegotiator
      *
      * @param string $type The type to negotiate
      * @param string|null $language The selected language
-     * @param HttpHeaders $requestHeaders The request headers
+     * @param IHttpRequestMessage $request The current request
      * @return ContentNegotiationResult The content negotiation result
      */
     private function createDefaultResponseContentNegotiationResult(
         string $type,
         ?string $language,
-        HttpHeaders $requestHeaders
+        IHttpRequestMessage $request
     ): ContentNegotiationResult {
         // Default to the first registered media type formatter that can write the input type
         $selectedMediaTypeFormatter = null;
@@ -196,7 +194,7 @@ final class ContentNegotiator implements IContentNegotiator
 
         $encoding = $this->encodingMatcher->getBestEncodingMatch(
             $selectedMediaTypeFormatter->getSupportedEncodings(),
-            $requestHeaders
+            $request
         );
 
         return new ContentNegotiationResult(

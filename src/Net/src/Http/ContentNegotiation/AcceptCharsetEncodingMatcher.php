@@ -16,7 +16,7 @@ use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
 use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
-use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\IHttpRequestMessage;
 
 /**
  * Defines the Accept-Charset encoding matcher
@@ -39,10 +39,10 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
      */
     public function getBestEncodingMatch(
         array $supportedEncodings,
-        HttpHeaders $requestHeaders,
+        IHttpRequestMessage $request,
         MediaTypeHeaderValue $matchedMediaTypeHeaderValue = null
     ): ?string {
-        $acceptCharsetHeaders = $this->headerParser->parseAcceptCharsetHeader($requestHeaders);
+        $acceptCharsetHeaders = $this->headerParser->parseAcceptCharsetHeader($request->getHeaders());
         $rankedAcceptCharsetHeaders = $this->rankAcceptCharsetHeaders($acceptCharsetHeaders);
 
         foreach ($rankedAcceptCharsetHeaders as $acceptCharsetHeader) {
