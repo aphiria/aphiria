@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Validation;
 
-use Aphiria\Validation\ErrorMessages\IErrorMessageFormatter;
+use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolater;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\ValidationException;
@@ -24,34 +26,63 @@ final class RequestBodyValidator implements IRequestBodyValidator
 {
     /** @var IValidator The validator that will actually perform the validation */
     private IValidator $validator;
-    /** @var IErrorMessageFormatter The compiler of error messages */
-    private IErrorMessageFormatter $errorMessageCompiler;
+    /** @var IErrorMessageInterpolater|null The interpolater of error messages, or null if not using one */
+    private ?IErrorMessageInterpolater $errorMessageInterpolater;
+    /** @var ILanguageMatcher|null The language matcher to use, or null if not using one */
+    private ?ILanguageMatcher $languageMatcher;
+    /** @var string[] The memoized matched languages */
+    private array $memoizedMatchedLanguagesByRequest = [];
+
+    /**
+     * @param IValidator $validator The validator that will actually perform the validation
+     * @param IErrorMessageInterpolater|null $errorMessageInterpolater The interpolater of error messages, or null if not using one
+     * @param ILanguageMatcher|null $languageMatcher The language matcher to use, or null if not using one
+     */
+    public function __construct(
+        IValidator $validator,
+        IErrorMessageInterpolater $errorMessageInterpolater = null,
+        ILanguageMatcher $languageMatcher = null
+    ) {
+        $this->validator = $validator;
+        $this->errorMessageInterpolater = $errorMessageInterpolater;
+        $this->languageMatcher = $languageMatcher;
+    }
 
     /**
      * @inheritdoc
      */
-    public function validate($body): void
+    public function validate(IHttpRequestMessage $request, $body): void
     {
-        // There isn't any way to validate a scalar value without a list of constraints.  So, just say it's valid.
-        if (!\is_object($body)) {
-            return;
+        // Set up the locale for the error messages, if possible
+        if ($this->languageMatcher !== null) {
+            $memoizationKey = \spl_object_hash($request);
+
+            if (!array_key_exists($memoizationKey, $this->memoizedMatchedLanguagesByRequest)) {
+                $language = $this->languageMatcher->getBestLanguageMatch($request);
+                $this->memoizedMatchedLanguagesByRequest[$memoizationKey] = $language;
+
+                if ($language !== null) {
+                    $this->errorMessageInterpolater->setDefaultLocale($language);
+                }
+            }
         }
 
         try {
-            $this->validator->validateObject($body, new ValidationContext($body));
+            if (\is_array($body)) {
+                foreach ($body as $bodyPart) {
+                    $this->validator->validateObject($bodyPart, new ValidationContext($bodyPart));
+                }
+            } elseif (\is_object($body)) {
+                $this->validator->validateObject($body, new ValidationContext($body));
+            }
         } catch (ValidationException $ex) {
-            $compiledErrorMessages = [];
+            $errors = [];
 
             foreach ($ex->getValidationContext()->getConstraintViolations() as $violation) {
-                $failedConstraint = $violation->getConstraint();
-                // TODO: How do I get the accepted locale from content negotiation?  If I perform content negotiation here, what type do I specify?  Technically, this class is throwing an exception, not creating a response.  So, knowing the type of the body is poor encapsulation.
-                $compiledErrorMessages[] = $this->errorMessageCompiler->format(
-                    $failedConstraint->getErrorMessageId(),
-                    $failedConstraint->getErrorMessagePlaceholders()
-                );
+                $errors[] = $violation->getErrorMessage();
             }
 
-            throw new InvalidRequestBodyException($compiledErrorMessages, 'Invalid request body', 0, $ex);
+            throw new InvalidRequestBodyException($errors, 'Invalid request body', 0, $ex);
         }
     }
 }

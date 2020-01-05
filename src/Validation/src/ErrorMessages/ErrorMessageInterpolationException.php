@@ -15,9 +15,9 @@ namespace Aphiria\Validation\ErrorMessages;
 use Exception;
 
 /**
- * Defines an exception that occurs if an error message could not be formatted
+ * Defines an exception that occurs if an error message could not be interpolated
  */
-final class ErrorMessageFormattingException extends Exception
+final class ErrorMessageInterpolationException extends Exception
 {
     // Don't do anything
 }
