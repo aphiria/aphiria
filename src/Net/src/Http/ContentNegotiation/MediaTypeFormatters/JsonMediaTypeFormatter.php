@@ -22,7 +22,7 @@ final class JsonMediaTypeFormatter extends SerializerMediaTypeFormatter
     /** @var array The list of supported character encodings */
     private static array $supportedEncodings = ['utf-8'];
     /** @var array The list of supported media types */
-    private static array $supportedMediaTypes = ['application/json', 'text/json'];
+    private static array $supportedMediaTypes = ['application/json', 'text/json', 'application/problem+json'];
 
     /**
      * @param JsonSerializer|null $serializer The JSON serializer to use

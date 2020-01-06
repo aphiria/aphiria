@@ -53,7 +53,10 @@ class JsonMediaTypeFormatterTest extends TestCase
 
     public function testCorrectSupportedMediaTypesAreReturned(): void
     {
-        $this->assertEquals(['application/json', 'text/json'], $this->formatter->getSupportedMediaTypes());
+        $this->assertEquals(
+            ['application/json', 'text/json', 'application/problem+json'],
+            $this->formatter->getSupportedMediaTypes()
+        );
     }
 
     public function testDefaultEncodingReturnsFirstSupportedEncoding(): void
