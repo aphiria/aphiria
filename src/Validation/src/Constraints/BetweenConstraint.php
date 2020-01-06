@@ -61,9 +61,9 @@ final class BetweenConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function getErrorMessagePlaceholders(): array
+    public function getErrorMessagePlaceholders($value): array
     {
-        return ['min' => $this->min, 'max' => $this->max];
+        return \array_merge(parent::getErrorMessagePlaceholders($value), ['min' => $this->min, 'max' => $this->max]);
     }
 
     /**

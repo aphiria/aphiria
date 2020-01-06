@@ -29,6 +29,7 @@
         "aphiria/middleware": "1.0.*@dev",
         "aphiria/net": "1.0.*@dev",
         "aphiria/router": "1.0.*@dev",
+        "aphiria/validation": "1.0.*@dev",
         "monolog/monolog": "~2.0",
         "php": "^7.4",
         "psr/log": "~1.0"

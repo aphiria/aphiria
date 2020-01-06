@@ -70,7 +70,7 @@ final class ContentNegotiator implements IContentNegotiator
         $this->mediaTypeFormatters = $mediaTypeFormatters;
         $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher($this->mediaTypeFormatters);
         $this->encodingMatcher = $encodingMatcher ?? new AcceptCharsetEncodingMatcher();
-        $this->languageMatcher = $languageMatcher ?? new AcceptLanguageMatcher([]);
+        $this->languageMatcher = $languageMatcher ?? new AcceptLanguageMatcher(['en']);
         $this->headerParser = $headerParser ?? new RequestHeaderParser();
     }
 

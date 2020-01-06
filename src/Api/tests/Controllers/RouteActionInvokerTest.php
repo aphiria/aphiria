@@ -20,6 +20,8 @@ use Aphiria\Api\Controllers\RequestBodyDeserializationException;
 use Aphiria\Api\Controllers\RouteActionInvoker;
 use Aphiria\Api\Tests\Controllers\Mocks\Controller;
 use Aphiria\Api\Tests\Controllers\Mocks\User;
+use Aphiria\Api\Validation\InvalidRequestBodyException;
+use Aphiria\Api\Validation\IRequestBodyValidator;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
@@ -38,6 +40,8 @@ use RuntimeException;
  */
 class RouteActionInvokerTest extends TestCase
 {
+    /** @var IRequestBodyValidator|MockObject */
+    private IRequestBodyValidator $requestBodyValidator;
     private RouteActionInvoker $invoker;
     /** @var IControllerParameterResolver|MockObject */
     private IControllerParameterResolver $parameterResolver;
@@ -49,11 +53,13 @@ class RouteActionInvokerTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->requestBodyValidator = $this->createMock(IRequestBodyValidator::class);
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
         $this->negotiatedResponseFactory = $this->createMock(INegotiatedResponseFactory::class);
         $this->parameterResolver = $this->createMock(IControllerParameterResolver::class);
         $this->invoker = new RouteActionInvoker(
             $this->contentNegotiator,
+            $this->requestBodyValidator,
             $this->negotiatedResponseFactory,
             $this->parameterResolver
         );
@@ -141,6 +147,26 @@ class RouteActionInvokerTest extends TestCase
         );
     }
 
+    public function testInvokingMethodWithInvalidRequestBodyThrowsException(): void
+    {
+        $this->expectException(InvalidRequestBodyException::class);
+        $request = $this->createRequestWithoutBody('http://foo.com');
+        $expectedUser = new User(123, 'foo@bar.com');
+        $this->parameterResolver->expects($this->once())
+            ->method('resolveParameter')
+            ->with($this->anything(), $this->anything())
+            ->willReturn($expectedUser);
+        $this->requestBodyValidator->expects($this->once())
+            ->method('validate')
+            ->with($request, $expectedUser)
+            ->willThrowException(new InvalidRequestBodyException(['error']));
+        $this->invoker->invokeRouteAction(
+            [$this->controller, 'objectParameter'],
+            $request,
+            []
+        );
+    }
+
     public function testInvokingMethodWithNoParametersIsSuccessful(): void
     {
         $response = $this->invoker->invokeRouteAction(
@@ -150,6 +176,26 @@ class RouteActionInvokerTest extends TestCase
         );
         $this->assertNotNull($response->getBody());
         $this->assertEquals('noParameters', $response->getBody()->readAsString());
+    }
+
+    public function testInvokingMethodWithValidObjectParameterDoesNotThrowException(): void
+    {
+        $request = $this->createRequestWithoutBody('http://foo.com');
+        $expectedUser = new User(123, 'foo@bar.com');
+        $this->parameterResolver->expects($this->once())
+            ->method('resolveParameter')
+            ->with($this->anything(), $this->anything())
+            ->willReturn($expectedUser);
+        $this->requestBodyValidator->expects($this->once())
+            ->method('validate')
+            ->with($request, $expectedUser);
+        $this->invoker->invokeRouteAction(
+            [$this->controller, 'objectParameter'],
+            $request,
+            []
+        );
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testInvokingMethodWithVoidReturnTypeReturnsNoContentResponse(): void

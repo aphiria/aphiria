@@ -26,11 +26,13 @@ class ValidationContextTest extends TestCase
     public function testAddingManyConstraintViolations(): void
     {
         $expectedConstraintViolation1 = new ConstraintViolation(
+            'error',
             $this->createMock(IConstraint::class),
             'foo',
             'foo'
         );
         $expectedConstraintViolation2 = new ConstraintViolation(
+            'error',
             $this->createMock(IConstraint::class),
             'bar',
             'bar'
@@ -45,16 +47,19 @@ class ValidationContextTest extends TestCase
     public function testAddingMoreConstraintViolationsAppendsThemToExistingViolations(): void
     {
         $expectedConstraintViolation1 = new ConstraintViolation(
+            'error',
             $this->createMock(IConstraint::class),
             'foo',
             'foo'
         );
         $expectedConstraintViolation2 = new ConstraintViolation(
+            'error',
             $this->createMock(IConstraint::class),
             'bar',
             'bar'
         );
         $expectedConstraintViolation3 = new ConstraintViolation(
+            'error',
             $this->createMock(IConstraint::class),
             'baz',
             'baz'
@@ -72,6 +77,7 @@ class ValidationContextTest extends TestCase
     public function testAddingConstraintViolation(): void
     {
         $expectedConstraintViolation = new ConstraintViolation(
+            'error',
             $this->createMock(IConstraint::class),
             'foo',
             'foo'
@@ -151,12 +157,14 @@ class ValidationContextTest extends TestCase
         $parentContext = new ValidationContext($this);
         $childContext = new ValidationContext($this, 'foo', null, $parentContext);
         $parentConstraintViolation = new ConstraintViolation(
+            'error',
             $this->createMock(IConstraint::class),
             $this,
             $this
         );
         $parentContext->addConstraintViolation($parentConstraintViolation);
         $childConstraintViolation = new ConstraintViolation(
+            'error',
             $this->createMock(IConstraint::class),
             'bar',
             $this

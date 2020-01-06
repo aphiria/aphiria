@@ -38,7 +38,7 @@ class MaxConstraintTest extends TestCase
     public function testGettingErrorPlaceholders(): void
     {
         $constraint = new MaxConstraint(2, true, 'foo');
-        $this->assertEquals(['max' => 2], $constraint->getErrorMessagePlaceholders());
+        $this->assertEquals(['value' => 'val', 'max' => 2], $constraint->getErrorMessagePlaceholders('val'));
     }
 
     public function testPassingValue(): void

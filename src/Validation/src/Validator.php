@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Validation;
 
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
+use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolater;
+use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolater;
 use InvalidArgumentException;
 use ReflectionException;
 use ReflectionMethod;
@@ -43,13 +45,19 @@ final class Validator implements IValidator
     ];
     /** @var ObjectConstraintsRegistry The registry of object constraints */
     private ObjectConstraintsRegistry $objectConstraints;
+    /** @var IErrorMessageInterpolater The interpolater for error messages */
+    private IErrorMessageInterpolater $errorMessageInterpolator;
 
     /**
      * @param ObjectConstraintsRegistry $objectConstraints The registry of object constraints
+     * @param IErrorMessageInterpolater|null $errorMessageInterpolater The error message interpolater to use
      */
-    public function __construct(ObjectConstraintsRegistry $objectConstraints)
-    {
+    public function __construct(
+        ObjectConstraintsRegistry $objectConstraints,
+        IErrorMessageInterpolater $errorMessageInterpolater = null
+    ) {
         $this->objectConstraints = $objectConstraints;
+        $this->errorMessageInterpolator = $errorMessageInterpolater ?? new StringReplaceErrorMessageInterpolater();
     }
 
     /**
@@ -151,6 +159,10 @@ final class Validator implements IValidator
 
                 if (!$thisConstraintPassed) {
                     $validationContext->addConstraintViolation(new ConstraintViolation(
+                        $this->errorMessageInterpolator->interpolate(
+                            $constraint->getErrorMessageId(),
+                            $constraint->getErrorMessagePlaceholders($methodValue)
+                        ),
                         $constraint,
                         $methodValue,
                         $validationContext->getValue(),
@@ -230,6 +242,10 @@ final class Validator implements IValidator
 
                 if (!$thisConstraintPassed) {
                     $validationContext->addConstraintViolation(new ConstraintViolation(
+                        $this->errorMessageInterpolator->interpolate(
+                            $constraint->getErrorMessageId(),
+                            $constraint->getErrorMessagePlaceholders($propertyValue)
+                        ),
                         $constraint,
                         $propertyValue,
                         $validationContext->getValue(),
@@ -257,6 +273,10 @@ final class Validator implements IValidator
 
             if (!$thisConstraintPassed) {
                 $validationContext->addConstraintViolation(new ConstraintViolation(
+                    $this->errorMessageInterpolator->interpolate(
+                        $constraint->getErrorMessageId(),
+                        $constraint->getErrorMessagePlaceholders($value)
+                    ),
                     $constraint,
                     $value,
                     $value

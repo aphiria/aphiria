@@ -67,11 +67,14 @@ final class NegotiatedResponseFactory implements INegotiatedResponseFactory
             );
         }
 
-        if (
-            $contentNegotiationResult !== null
-            && ($mediaType = $contentNegotiationResult->getMediaType()) !== null
-        ) {
-            $headers->add('Content-Type', $mediaType);
+        if ($contentNegotiationResult !== null) {
+            if (($mediaType = $contentNegotiationResult->getMediaType()) !== null) {
+                $headers->add('Content-Type', $mediaType);
+            }
+
+            if (($language = $contentNegotiationResult->getLanguage()) !== null) {
+                $headers->add('Content-Language', $language);
+            }
         }
 
         if (

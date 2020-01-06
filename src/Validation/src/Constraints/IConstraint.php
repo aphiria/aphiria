@@ -30,9 +30,10 @@ interface IConstraint
     /**
      * Gets the values that can be used to compile error messages
      *
+     * @param mixed $value The value that was being validated
      * @return array The mapping of placeholder names to values
      */
-    public function getErrorMessagePlaceholders(): array;
+    public function getErrorMessagePlaceholders($value): array;
 
     /**
      * Gets whether or not the constraint passes

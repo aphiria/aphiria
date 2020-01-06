@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
+use Aphiria\Api\Validation\IRequestBodyValidator;
 use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
@@ -31,6 +32,8 @@ use ReflectionMethod;
  */
 final class RouteActionInvoker implements IRouteActionInvoker
 {
+    /** @var IRequestBodyValidator The validator for request bodies, or null if we aren't validating them */
+    private ?IRequestBodyValidator $requestBodyValidator;
     /** @var INegotiatedResponseFactory The negotiated response factory */
     private INegotiatedResponseFactory $negotiatedResponseFactory;
     /** @var IControllerParameterResolver The controller parameter resolver to use */
@@ -38,14 +41,17 @@ final class RouteActionInvoker implements IRouteActionInvoker
 
     /**
      * @param IContentNegotiator|null $contentNegotiator The content negotiator, or null if using the default negotiator
+     * @param IRequestBodyValidator|null $requestBodyValidator The validator for request bodies, or null if we aren't validating them
      * @param INegotiatedResponseFactory|null $negotiatedResponseFactory The negotiated response factory
      * @param IControllerParameterResolver|null $controllerParameterResolver The controller parameter resolver to use
      */
     public function __construct(
         IContentNegotiator $contentNegotiator = null,
+        IRequestBodyValidator $requestBodyValidator = null,
         INegotiatedResponseFactory $negotiatedResponseFactory = null,
         IControllerParameterResolver $controllerParameterResolver = null
     ) {
+        $this->requestBodyValidator = $requestBodyValidator;
         $contentNegotiator ??= new ContentNegotiator();
         $this->negotiatedResponseFactory = $negotiatedResponseFactory ?? new NegotiatedResponseFactory($contentNegotiator);
         $this->controllerParameterResolver = $controllerParameterResolver ?? new ControllerParameterResolver($contentNegotiator);
@@ -91,11 +97,17 @@ final class RouteActionInvoker implements IRouteActionInvoker
 
         try {
             foreach ($reflectionFunction->getParameters() as $reflectionParameter) {
-                $resolvedParameters[] = $this->controllerParameterResolver->resolveParameter(
+                $resolvedParameter = $this->controllerParameterResolver->resolveParameter(
                     $reflectionParameter,
                     $request,
                     $routeVariables
                 );
+
+                if ($this->requestBodyValidator !== null) {
+                    $this->requestBodyValidator->validate($request, $resolvedParameter);
+                }
+
+                $resolvedParameters[] = $resolvedParameter;
             }
         } catch (MissingControllerParameterValueException | FailedScalarParameterConversionException $ex) {
             throw new HttpException(

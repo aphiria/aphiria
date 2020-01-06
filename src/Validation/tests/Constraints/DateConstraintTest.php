@@ -46,6 +46,11 @@ class DateConstraintTest extends TestCase
         $this->assertEquals('foo', $constraint->getErrorMessageId());
     }
 
+    public function testGettingErrorMessagePlaceholdersIncludesValue(): void
+    {
+        $this->assertEquals(['value' => 'val'], (new DateConstraint(['Ymd']))->getErrorMessagePlaceholders('val'));
+    }
+
     public function testUnequalValuesFail(): void
     {
         $context = new ValidationContext($this);
