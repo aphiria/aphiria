@@ -97,11 +97,17 @@ final class RouteActionInvoker implements IRouteActionInvoker
 
         try {
             foreach ($reflectionFunction->getParameters() as $reflectionParameter) {
-                $resolvedParameters[] = $this->controllerParameterResolver->resolveParameter(
+                $resolvedParameter = $this->controllerParameterResolver->resolveParameter(
                     $reflectionParameter,
                     $request,
                     $routeVariables
                 );
+
+                if ($this->requestBodyValidator !== null) {
+                    $this->requestBodyValidator->validate($request, $resolvedParameter);
+                }
+
+                $resolvedParameters[] = $resolvedParameter;
             }
         } catch (MissingControllerParameterValueException | FailedScalarParameterConversionException $ex) {
             throw new HttpException(
@@ -124,12 +130,6 @@ final class RouteActionInvoker implements IRouteActionInvoker
                 0,
                 $ex
             );
-        }
-
-        if ($this->requestBodyValidator !== null) {
-            foreach ($resolvedParameters as $resolvedParameter) {
-                $this->requestBodyValidator->validate($request, $resolvedParameter);
-            }
         }
 
         $actionResult = $routeActionDelegate(...$resolvedParameters);

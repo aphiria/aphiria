@@ -39,9 +39,20 @@ abstract class Constraint implements IConstraint
     /**
      * @inheritdoc
      */
-    public function getErrorMessagePlaceholders(): array
+    public function getErrorMessagePlaceholders($value): array
     {
-        // Let overriding implementations overrule this if there is something to return
-        return [];
+        if (\is_scalar($value)) {
+            $serializedValue = $value;
+        } elseif (\is_object($value)) {
+            if (\method_exists($value, '__toString')) {
+                $serializedValue = (string)$value;
+            } else {
+                $serializedValue = \get_class($value) . ' object';
+            }
+        } else {
+            $serializedValue = 'value';
+        }
+
+        return ['value' => $serializedValue];
     }
 }

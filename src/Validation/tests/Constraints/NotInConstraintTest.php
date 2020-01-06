@@ -27,6 +27,11 @@ class NotInConstraintTest extends TestCase
         $this->assertEquals('foo', $constraint->getErrorMessageId());
     }
 
+    public function testGettingErrorMessagePlaceholdersIncludesValue(): void
+    {
+        $this->assertEquals(['value' => 'val'], (new NotInConstraint(['foo']))->getErrorMessagePlaceholders('val'));
+    }
+
     public function testMatchingValuesPass(): void
     {
         $context = new ValidationContext($this);

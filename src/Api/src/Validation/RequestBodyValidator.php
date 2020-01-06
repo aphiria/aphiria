@@ -30,7 +30,7 @@ final class RequestBodyValidator implements IRequestBodyValidator
     private ?IErrorMessageInterpolater $errorMessageInterpolater;
     /** @var ILanguageMatcher|null The language matcher to use, or null if not using one */
     private ?ILanguageMatcher $languageMatcher;
-    /** @var string[] The memoized matched languages */
+    /** @var string[] The memoized matched languages per request */
     private array $memoizedMatchedLanguagesByRequest = [];
 
     /**

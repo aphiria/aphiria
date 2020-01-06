@@ -50,7 +50,7 @@ final class DateConstraint extends Constraint
         foreach ($this->acceptableFormats as $format) {
             $dateTime = DateTime::createFromFormat($format, $value);
 
-            if ($dateTime !== false && $value == $dateTime->format($format)) {
+            if ($dateTime !== false && $value === $dateTime->format($format)) {
                 return true;
             }
         }

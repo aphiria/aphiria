@@ -23,6 +23,14 @@ use PHPUnit\Framework\TestCase;
  */
 class EachConstraintTest extends TestCase
 {
+    public function testGettingErrorMessagePlaceholdersIncludesValue(): void
+    {
+        $this->assertEquals(
+            ['value' => 'val'],
+            (new EachConstraint([$this->createMock(IConstraint::class)]))->getErrorMessagePlaceholders('val')
+        );
+    }
+
     public function testMultipleConstraintsAreAccepted(): void
     {
         $expectedContext = new ValidationContext('foo');

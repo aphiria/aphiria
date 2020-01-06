@@ -27,6 +27,11 @@ class EmailConstraintTest extends TestCase
         $this->assertEquals('foo', $constraint->getErrorMessageId());
     }
 
+    public function testGettingErrorMessagePlaceholdersIncludesValue(): void
+    {
+        $this->assertEquals(['value' => 'val'], (new EmailConstraint)->getErrorMessagePlaceholders('val'));
+    }
+
     public function testInvalidEmailFails(): void
     {
         $context = new ValidationContext($this);

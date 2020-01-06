@@ -23,7 +23,7 @@ final class IcuFormatErrorMessageInterpolater implements IErrorMessageInterpolat
     /**
      * @param string $defaultLocale The default locale
      */
-    public function __construct(string $defaultLocale = 'en-US')
+    public function __construct(string $defaultLocale = 'en')
     {
         $this->setDefaultLocale($defaultLocale);
     }

@@ -161,7 +161,7 @@ final class Validator implements IValidator
                     $validationContext->addConstraintViolation(new ConstraintViolation(
                         $this->errorMessageInterpolator->interpolate(
                             $constraint->getErrorMessageId(),
-                            $constraint->getErrorMessagePlaceholders()
+                            $constraint->getErrorMessagePlaceholders($methodValue)
                         ),
                         $constraint,
                         $methodValue,
@@ -244,7 +244,7 @@ final class Validator implements IValidator
                     $validationContext->addConstraintViolation(new ConstraintViolation(
                         $this->errorMessageInterpolator->interpolate(
                             $constraint->getErrorMessageId(),
-                            $constraint->getErrorMessagePlaceholders()
+                            $constraint->getErrorMessagePlaceholders($propertyValue)
                         ),
                         $constraint,
                         $propertyValue,
@@ -275,7 +275,7 @@ final class Validator implements IValidator
                 $validationContext->addConstraintViolation(new ConstraintViolation(
                     $this->errorMessageInterpolator->interpolate(
                         $constraint->getErrorMessageId(),
-                        $constraint->getErrorMessagePlaceholders()
+                        $constraint->getErrorMessagePlaceholders($value)
                     ),
                     $constraint,
                     $value,

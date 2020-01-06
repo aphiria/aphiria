@@ -167,7 +167,7 @@ class ValidatorTest extends TestCase
         ));
         $this->errorMessageInterpolater->expects($this->once())
             ->method('interpolate')
-            ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders())
+            ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
         $this->assertFalse($this->validator->tryValidateMethod($object, 'method', $expectedContext));
         $this->assertCount(1, $expectedContext->getConstraintViolations());
@@ -287,7 +287,7 @@ class ValidatorTest extends TestCase
         ));
         $this->errorMessageInterpolater->expects($this->once())
             ->method('interpolate')
-            ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders())
+            ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
         $this->assertFalse($this->validator->tryValidateObject($object, $expectedObjectContext));
         $this->assertCount(1, $expectedObjectContext->getConstraintViolations());
@@ -398,7 +398,7 @@ class ValidatorTest extends TestCase
         ));
         $this->errorMessageInterpolater->expects($this->once())
             ->method('interpolate')
-            ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders())
+            ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
         $this->assertFalse($this->validator->tryValidateProperty($object, 'prop', $expectedPropContext));
         $this->assertCount(1, $expectedPropContext->getConstraintViolations());

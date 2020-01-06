@@ -47,9 +47,9 @@ class MaxConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function getErrorMessagePlaceholders(): array
+    public function getErrorMessagePlaceholders($value): array
     {
-        return ['max' => $this->max];
+        return \array_merge(parent::getErrorMessagePlaceholders($value), ['max' => $this->max]);
     }
 
     /**

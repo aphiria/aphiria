@@ -31,7 +31,7 @@ final class MockConstraint implements IConstraint
     /**
      * @inheritdoc
      */
-    public function getErrorMessagePlaceholders(): array
+    public function getErrorMessagePlaceholders($value): array
     {
         return [];
     }

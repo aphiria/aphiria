@@ -38,7 +38,7 @@ class MinConstraintTest extends TestCase
     public function testGettingErrorPlaceholders(): void
     {
         $constraint = new MinConstraint(2, true, 'foo');
-        $this->assertEquals(['min' => 2], $constraint->getErrorMessagePlaceholders());
+        $this->assertEquals(['value' => 'val', 'min' => 2], $constraint->getErrorMessagePlaceholders('val'));
     }
 
     public function testPassingValue(): void

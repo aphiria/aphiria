@@ -47,9 +47,9 @@ class MinConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function getErrorMessagePlaceholders(): array
+    public function getErrorMessagePlaceholders($value): array
     {
-        return ['min' => $this->min];
+        return \array_merge(parent::getErrorMessagePlaceholders($value), ['min' => $this->min]);
     }
 
     /**

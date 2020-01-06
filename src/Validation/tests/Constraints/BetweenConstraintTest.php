@@ -39,7 +39,7 @@ class BetweenConstraintTest extends TestCase
     public function testGettingErrorPlaceholders(): void
     {
         $constraint = new BetweenConstraint(1, 2, true, true);
-        $this->assertEquals(['min' => 1, 'max' => 2], $constraint->getErrorMessagePlaceholders());
+        $this->assertEquals(['value' => 'val', 'min' => 1, 'max' => 2], $constraint->getErrorMessagePlaceholders('val'));
     }
 
     public function testInclusiveFlagsAreRespected(): void
