@@ -253,8 +253,12 @@ final class AphiriaComponentBuilder
             /** @var AnnotationObjectConstraintsRegistrant $annotationConstraintsRegistrant */
             $annotationConstraintsRegistrant = null;
 
-            if (!$this->container->tryResolve(AnnotationObjectConstraintsRegistrant::class,
-                $annotationConstraintsRegistrant)) {
+            if (
+                !$this->container->tryResolve(
+                    AnnotationObjectConstraintsRegistrant::class,
+                    $annotationConstraintsRegistrant
+                )
+            ) {
                 throw new RuntimeException('No ' . AnnotationObjectConstraintsRegistrant::class . ' is bound to the container');
             }
 
@@ -262,7 +266,7 @@ final class AphiriaComponentBuilder
             $this->container->hasBinding(ObjectConstraintsRegistrantCollection::class)
                 ? $constraintsRegistrants = $this->container->resolve(ObjectConstraintsRegistrantCollection::class)
                 : $this->container->bindInstance(
-                ObjectConstraintsRegistrantCollection::class,
+                    ObjectConstraintsRegistrantCollection::class,
                     $constraintsRegistrants = new ObjectConstraintsRegistrantCollection());
 
             $constraintsRegistrants->add($annotationConstraintsRegistrant);
@@ -289,7 +293,7 @@ final class AphiriaComponentBuilder
             $this->container->hasBinding(ObjectConstraintsRegistrantCollection::class)
                 ? $constraintsRegistrants = $this->container->resolve(ObjectConstraintsRegistrantCollection::class)
                 : $this->container->bindInstance(
-                ObjectConstraintsRegistrantCollection::class,
+                    ObjectConstraintsRegistrantCollection::class,
                     $constraintsRegistrants = new ObjectConstraintsRegistrantCollection());
 
             $constraintsRegistrants->add(new ObjectConstraintsBuilderRegistrant($callbacks));
