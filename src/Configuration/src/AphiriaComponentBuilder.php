@@ -17,6 +17,7 @@ use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Exceptions\GlobalExceptionHandler;
@@ -39,10 +40,6 @@ final class AphiriaComponentBuilder
 {
     /** @var IContainer The DI container to resolve dependencies with */
     private IContainer $container;
-    /** @var bool Whether or not the routing component was registered */
-    private bool $routingComponentRegistered = false;
-    /** @var bool Whether or not the validation component was registered */
-    private bool $validationComponentRegistered = false;
 
     /**
      * @param IContainer $container The DI container to resolve dependencies with
@@ -60,6 +57,11 @@ final class AphiriaComponentBuilder
      */
     public function withConsoleAnnotations(IApplicationBuilder $appBuilder): self
     {
+        if ($appBuilder->hasComponentBuilder('consoleAnnotations')) {
+            // Don't double-register this
+            return $this;
+        }
+
         $appBuilder->registerComponentBuilder('consoleAnnotations', function (array $callbacks) {
             /** @var AnnotationCommandRegistrant $annotationCommandRegistrant */
             $annotationCommandRegistrant = null;
@@ -88,6 +90,11 @@ final class AphiriaComponentBuilder
      */
     public function withEncoderComponent(IApplicationBuilder $appBuilder): self
     {
+        if ($appBuilder->hasComponentBuilder('encoders')) {
+            // Don't double-register this
+            return $this;
+        }
+
         $appBuilder->registerComponentBuilder('encoders', function (array $callbacks) {
             /** @var EncoderRegistry $encoders */
             $this->container->hasBinding(EncoderRegistry::class)
@@ -110,6 +117,11 @@ final class AphiriaComponentBuilder
      */
     public function withExceptionHandlers(IApplicationBuilder $appBuilder): self
     {
+        if ($appBuilder->hasComponentBuilder('exceptionHandlers')) {
+            // Don't double-register this
+            return $this;
+        }
+
         $appBuilder->registerComponentBuilder('exceptionHandlers', function (array $callbacks) use ($appBuilder) {
             /** @var GlobalExceptionHandler $globalExceptionHandler */
             $this->container->hasBinding(GlobalExceptionHandler::class)
@@ -133,6 +145,11 @@ final class AphiriaComponentBuilder
      */
     public function withExceptionLogLevelFactories(IApplicationBuilder $appBuilder): self
     {
+        if ($appBuilder->hasComponentBuilder('exceptionLogLevelFactories')) {
+            // Don't double-register this
+            return $this;
+        }
+
         $appBuilder->registerComponentBuilder('exceptionLogLevelFactories', function (array $callbacks) {
             /** @var ExceptionLogLevelFactoryRegistry $exceptionLogLevelFactories */
             $this->container->hasBinding(ExceptionLogLevelFactoryRegistry::class)
@@ -157,6 +174,11 @@ final class AphiriaComponentBuilder
      */
     public function withExceptionResponseFactories(IApplicationBuilder $appBuilder): self
     {
+        if ($appBuilder->hasComponentBuilder('exceptionResponseFactories')) {
+            // Don't double-register this
+            return $this;
+        }
+
         $appBuilder->registerComponentBuilder('exceptionResponseFactories', function (array $callbacks) {
             /** @var ExceptionResponseFactoryRegistry $exceptionResponseFactories */
             $this->container->hasBinding(ExceptionResponseFactoryRegistry::class)
@@ -181,7 +203,12 @@ final class AphiriaComponentBuilder
      */
     public function withRoutingAnnotations(IApplicationBuilder $appBuilder): self
     {
-        if (!$this->routingComponentRegistered) {
+        if ($appBuilder->hasComponentBuilder('routeAnnotations')) {
+            // Don't double-register this
+            return $this;
+        }
+
+        if (!$appBuilder->hasComponentBuilder('routes')) {
             $this->withRoutingComponent($appBuilder);
         }
 
@@ -214,12 +241,11 @@ final class AphiriaComponentBuilder
      */
     public function withRoutingComponent(IApplicationBuilder $appBuilder): self
     {
-        if ($this->routingComponentRegistered) {
+        if ($appBuilder->hasComponentBuilder('routes')) {
             // Don't double-register this
             return $this;
         }
 
-        $this->routingComponentRegistered = true;
         // Set up the router request handler
         $appBuilder->withRouter(fn () => $this->container->resolve(Router::class));
         // Register the routing component
@@ -245,7 +271,12 @@ final class AphiriaComponentBuilder
      */
     public function withValidationAnnotations(IApplicationBuilder $appBuilder): self
     {
-        if (!$this->validationComponentRegistered) {
+        if ($appBuilder->hasComponentBuilder('validationAnnotations')) {
+            // Don't double-register this
+            return $this;
+        }
+
+        if (!$appBuilder->hasComponentBuilder('validators')) {
             $this->withValidationComponent($appBuilder);
         }
 
@@ -270,6 +301,9 @@ final class AphiriaComponentBuilder
                     $constraintsRegistrants = new ObjectConstraintsRegistrantCollection());
 
             $constraintsRegistrants->add($annotationConstraintsRegistrant);
+
+            // We're now ready to register all the object constraints from annotations + ones registered manually
+            $this->registerObjectConstraints($constraintsRegistrants);
         });
 
         return $this;
@@ -283,12 +317,12 @@ final class AphiriaComponentBuilder
      */
     public function withValidationComponent(IApplicationBuilder $appBuilder): self
     {
-        if ($this->validationComponentRegistered) {
-            // Don't double-register this component
+        if ($appBuilder->hasComponentBuilder('validators')) {
+            // Don't double-register this
             return $this;
         }
 
-        $appBuilder->registerComponentBuilder('validators', function (array $callbacks) {
+        $appBuilder->registerComponentBuilder('validators', function (array $callbacks) use ($appBuilder) {
             /** @var ObjectConstraintsRegistrantCollection $constraintsRegistrants */
             $this->container->hasBinding(ObjectConstraintsRegistrantCollection::class)
                 ? $constraintsRegistrants = $this->container->resolve(ObjectConstraintsRegistrantCollection::class)
@@ -298,23 +332,43 @@ final class AphiriaComponentBuilder
 
             $constraintsRegistrants->add(new ObjectConstraintsBuilderRegistrant($callbacks));
 
-            /** @var ObjectConstraintsRegistry $objectConstraints */
-            $this->container->hasBinding(ObjectConstraintsRegistry::class)
-                ? $objectConstraints = $this->container->resolve(ObjectConstraintsRegistry::class)
-                : $this->container->bindInstance(
-                    ObjectConstraintsRegistry::class,
-                    $objectConstraints = new ObjectConstraintsRegistry());
-
-            // Always defer to using cached constraints registrants if they exist
-            if ($this->container->hasBinding(CachedObjectConstraintsRegistrant::class)) {
-                /** @var CachedObjectConstraintsRegistrant $cachedConstraintsRegistrant */
-                $cachedConstraintsRegistrant = $this->container->resolve(CachedObjectConstraintsRegistrant::class);
-                $cachedConstraintsRegistrant->registerConstraints($objectConstraints);
-            } else {
-                $constraintsRegistrants->registerConstraints($objectConstraints);
+            /**
+             * If we're not using annotations, then we're all set to actually register the constraints now.
+             * Otherwise, we'll register them in the annotation component
+             */
+            if (!$appBuilder->hasComponentBuilder('validationAnnotations')) {
+                $this->registerObjectConstraints($constraintsRegistrants);
             }
         });
 
         return $this;
+    }
+
+    /**
+     * Registers the object constraints
+     * This is separated out because if we are using the validation component but not annotations, we want to run this
+     * immediately after the validation component is built.  Otherwise, if we are using annotations, we want it to run
+     * after the annotation component is built.  This way, constraints found in annotations also get registered.
+     *
+     * @param ObjectConstraintsRegistrantCollection $constraintsRegistrants The constraints registrants
+     * @throws ResolutionException Thrown if the cached constraints registrant couldn't be resolved
+     */
+    private function registerObjectConstraints(ObjectConstraintsRegistrantCollection $constraintsRegistrants): void
+    {
+        /** @var ObjectConstraintsRegistry $objectConstraints */
+        $this->container->hasBinding(ObjectConstraintsRegistry::class)
+            ? $objectConstraints = $this->container->resolve(ObjectConstraintsRegistry::class)
+            : $this->container->bindInstance(
+            ObjectConstraintsRegistry::class,
+            $objectConstraints = new ObjectConstraintsRegistry());
+
+        // Always defer to using cached constraints registrants if they exist
+        if ($this->container->hasBinding(CachedObjectConstraintsRegistrant::class)) {
+            /** @var CachedObjectConstraintsRegistrant $cachedConstraintsRegistrant */
+            $cachedConstraintsRegistrant = $this->container->resolve(CachedObjectConstraintsRegistrant::class);
+            $cachedConstraintsRegistrant->registerConstraints($objectConstraints);
+        } else {
+            $constraintsRegistrants->registerConstraints($objectConstraints);
+        }
     }
 }

@@ -39,6 +39,14 @@ interface IApplicationBuilder
     public function buildConsoleApplication(): ICommandBus;
 
     /**
+     * Gets whether or not a particular component is registered
+     *
+     * @param string $componentName The name of the component to check for
+     * @return bool Whether or not the input component name is registered
+     */
+    public function hasComponentBuilder(string $componentName): bool;
+
+    /**
      * Registers a component to the app
      *
      * @param string $componentName The name of the component the callback belongs to

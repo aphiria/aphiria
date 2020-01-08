@@ -44,6 +44,10 @@ class AphiriaComponentBuilderTest extends TestCase
     public function testWithConsoleAnnotationsRegistersComponent(): void
     {
         $this->appBuilder->expects($this->at(0))
+            ->method('hasComponentBuilder')
+            ->with('consoleAnnotations')
+            ->willReturn(false);
+        $this->appBuilder->expects($this->at(1))
             ->method('registerComponentBuilder')
             ->with('consoleAnnotations');
         $this->componentBuilder->withConsoleAnnotations($this->appBuilder);
@@ -117,19 +121,29 @@ class AphiriaComponentBuilderTest extends TestCase
 
     public function testWithRouteAnnotationsRegistersComponent(): void
     {
-        // The first 2 invocations will be to register the routing component
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponentBuilder')
+            ->with('routeAnnotations')
+            ->willReturn(false);
+        $this->appBuilder->expects($this->at(1))
+            ->method('hasComponentBuilder')
+            ->with('routes')
+            ->willReturn(true);
         $this->appBuilder->expects($this->at(2))
             ->method('registerComponentBuilder')
             ->with('routeAnnotations');
-        $this->componentBuilder->withRoutingComponent($this->appBuilder);
         $this->componentBuilder->withRoutingAnnotations($this->appBuilder);
     }
 
     public function testWithRoutingComponentRegistersRouter(): void
     {
         $this->appBuilder->expects($this->at(0))
-            ->method('withRouter');
+            ->method('hasComponentBuilder')
+            ->with('routes')
+            ->willReturn(false);
         $this->appBuilder->expects($this->at(1))
+            ->method('withRouter');
+        $this->appBuilder->expects($this->at(2))
             ->method('registerComponentBuilder')
             ->with('routes');
         $this->componentBuilder->withRoutingComponent($this->appBuilder);
@@ -137,10 +151,17 @@ class AphiriaComponentBuilderTest extends TestCase
 
     public function testWithValidationAnnotationsRegistersComponent(): void
     {
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponentBuilder')
+            ->with('validationAnnotations')
+            ->willReturn(false);
+        $this->appBuilder->expects($this->at(1))
+            ->method('hasComponentBuilder')
+            ->with('validators')
+            ->willReturn(true);
         $this->appBuilder->expects($this->at(2))
             ->method('registerComponentBuilder')
             ->with('validationAnnotations');
-        $this->componentBuilder->withValidationComponent($this->appBuilder);
         $this->componentBuilder->withValidationAnnotations($this->appBuilder);
     }
 

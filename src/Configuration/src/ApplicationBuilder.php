@@ -143,6 +143,14 @@ final class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
+    public function hasComponentBuilder(string $componentName): bool
+    {
+        return isset($this->components[self::normalizeComponentName($componentName)]);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function registerComponentBuilder(string $componentName, Closure $builder): IApplicationBuilder
     {
         $this->components[self::normalizeComponentName($componentName)] = ['builder' => $builder, 'callbacks' => []];

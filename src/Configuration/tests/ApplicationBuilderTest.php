@@ -160,6 +160,19 @@ class ApplicationBuilderTest extends TestCase
         $this->assertTrue($callbackWasRun);
     }
 
+    public function testHasComponentBuilderNormalizesComponentNames(): void
+    {
+        $this->appBuilder->registerComponentBuilder('Foo', fn (array $callbacks) => null);
+        $this->assertTrue($this->appBuilder->hasComponentBuilder('foo'));
+    }
+
+    public function testHasComponentBuilderReturnsWhetherOrNotBuilderIsRegistered(): void
+    {
+        $this->assertFalse($this->appBuilder->hasComponentBuilder('foo'));
+        $this->appBuilder->registerComponentBuilder('foo', fn (array $callbacks) => null);
+        $this->assertTrue($this->appBuilder->hasComponentBuilder('foo'));
+    }
+
     public function testMagicMethodThatDoesNotStartWithWithThrowsException(): void
     {
         $this->expectException(BadMethodCallException::class);
