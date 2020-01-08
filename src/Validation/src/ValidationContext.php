@@ -23,8 +23,8 @@ final class ValidationContext
     private ?string $propertyName;
     /** @var string|null The name of the method being validated, or null if it wasn't a method */
     private ?string $methodName;
-    /** @var ValidationContext|null The child context, if there is one */
-    private ?ValidationContext $childContext = null;
+    /** @var ValidationContext[] The list of child contexts, if there are any */
+    private array $childContexts = [];
     /** @var ValidationContext|null The parent context, if there is one */
     private ?ValidationContext $parentContext;
     /** @var ConstraintViolation[] The list of constraint violations that occurred in this context */
@@ -49,7 +49,7 @@ final class ValidationContext
         $this->parentContext = $parentContext;
 
         if ($this->parentContext !== null) {
-            $this->parentContext->setChildContext($this);
+            $this->parentContext->addChildContext($this);
         }
 
         $this->validateNoCircularDependencies();
@@ -84,8 +84,8 @@ final class ValidationContext
     {
         $allConstraintViolations = $this->constraintViolations;
 
-        if ($this->childContext !== null) {
-            $allConstraintViolations = [...$allConstraintViolations, ...$this->childContext->getConstraintViolations()];
+        foreach ($this->childContexts as $childContext) {
+            $allConstraintViolations = [...$allConstraintViolations, ...$childContext->getConstraintViolations()];
         }
 
         return $allConstraintViolations;
@@ -136,13 +136,13 @@ final class ValidationContext
     }
 
     /**
-     * Sets a child context for this context
+     * Adds a child context to this context
      *
      * @param ValidationContext $childContext The child context
      */
-    private function setChildContext(ValidationContext $childContext): void
+    private function addChildContext(ValidationContext $childContext): void
     {
-        $this->childContext = $childContext;
+        $this->childContexts[] = $childContext;
     }
 
     /**

@@ -155,7 +155,8 @@ class ValidationContextTest extends TestCase
     public function testGettingConstraintViolationsIncludesOnesFromChildren(): void
     {
         $parentContext = new ValidationContext($this);
-        $childContext = new ValidationContext($this, 'foo', null, $parentContext);
+        $childContext1 = new ValidationContext($this, 'foo', null, $parentContext);
+        $childContext2 = new ValidationContext($this, 'bar', null, $parentContext);
         $parentConstraintViolation = new ConstraintViolation(
             'error',
             $this->createMock(IConstraint::class),
@@ -163,16 +164,24 @@ class ValidationContextTest extends TestCase
             $this
         );
         $parentContext->addConstraintViolation($parentConstraintViolation);
-        $childConstraintViolation = new ConstraintViolation(
+        $childConstraintViolation1 = new ConstraintViolation(
             'error',
             $this->createMock(IConstraint::class),
             'bar',
             $this
         );
-        $childContext->addConstraintViolation($childConstraintViolation);
-        $this->assertCount(2, $parentContext->getConstraintViolations());
+        $childConstraintViolation2 = new ConstraintViolation(
+            'error',
+            $this->createMock(IConstraint::class),
+            'baz',
+            $this
+        );
+        $childContext1->addConstraintViolation($childConstraintViolation1);
+        $childContext2->addConstraintViolation($childConstraintViolation2);
+        $this->assertCount(3, $parentContext->getConstraintViolations());
         $this->assertSame($parentConstraintViolation, $parentContext->getConstraintViolations()[0]);
-        $this->assertSame($childConstraintViolation, $parentContext->getConstraintViolations()[1]);
+        $this->assertSame($childConstraintViolation1, $parentContext->getConstraintViolations()[1]);
+        $this->assertSame($childConstraintViolation2, $parentContext->getConstraintViolations()[2]);
     }
 
     public function testGettingValueReturnsOneSetInConstructor(): void
