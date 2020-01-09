@@ -92,6 +92,22 @@ final class ValidationContext
     }
 
     /**
+     * Gets the error messages for all constraint violations
+     *
+     * @return string[] The list of error messages
+     */
+    public function getErrorMessages(): array
+    {
+        $errors = [];
+
+        foreach ($this->getConstraintViolations() as $violation) {
+            $errors[] = $violation->getErrorMessage();
+        }
+
+        return $errors;
+    }
+
+    /**
      * Gets the name of the method being validated
      *
      * @return string|null The name of the method being validated, or null if not a method

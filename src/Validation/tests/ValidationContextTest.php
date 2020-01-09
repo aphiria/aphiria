@@ -184,6 +184,25 @@ class ValidationContextTest extends TestCase
         $this->assertSame($childConstraintViolation2, $parentContext->getConstraintViolations()[2]);
     }
 
+    public function testGettingErrorMessagesGetsMessagesFromConstraintViolations(): void
+    {
+        $constraintViolation1 = new ConstraintViolation('error1', $this->createMock(IConstraint::class), 'foo', $this);
+        $constraintViolation2 = new ConstraintViolation('error2', $this->createMock(IConstraint::class), 'bar', $this);
+        $context = new ValidationContext($this);
+        $context->addManyConstraintViolations([$constraintViolation1, $constraintViolation2]);
+        $this->assertEquals(['error1', 'error2'], $context->getErrorMessages());
+    }
+
+    public function testGettingErrorMessagesIncludesMessagesFromChildViolations(): void
+    {
+        $constraintViolation1 = new ConstraintViolation('error1', $this->createMock(IConstraint::class), 'foo', $this);
+        $constraintViolation2 = new ConstraintViolation('error2', $this->createMock(IConstraint::class), 'bar', $this);
+        $parentContext = new ValidationContext($this);
+        $childContext = new ValidationContext($this, 'prop', null, $parentContext);
+        $childContext->addManyConstraintViolations([$constraintViolation1, $constraintViolation2]);
+        $this->assertEquals(['error1', 'error2'], $parentContext->getErrorMessages());
+    }
+
     public function testGettingValueReturnsOneSetInConstructor(): void
     {
         $context = new ValidationContext(1);
