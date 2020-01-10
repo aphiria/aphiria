@@ -12,7 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests\Commands;
 
+use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
+use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
+use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Commands\ICommandRegistrant;
 use Aphiria\Console\Commands\CommandRegistry;
 use PHPUnit\Framework\TestCase;
@@ -41,5 +44,33 @@ class CommandRegistrantCollectionTest extends TestCase
         $commands = new CommandRegistry();
         $commandRegistrants->registerCommands($commands);
         $this->assertTrue($singleRegistrant->wasInvoked);
+    }
+
+    public function testCacheHitCopiesCachedConstraintsIntoParameterConstraints(): void
+    {
+        $cachedCommands = new CommandRegistry();
+        $cachedCommands->registerCommand(new Command('foo'), fn () => $this->createMock(ICommandHandler::class));
+        $cache = $this->createMock(ICommandRegistryCache::class);
+        $cache->expects($this->at(0))
+            ->method('get')
+            ->willReturn($cachedCommands);
+        $collection = new CommandRegistrantCollection($cache);
+        $paramCommands = new CommandRegistry();
+        $collection->registerCommands($paramCommands);
+        $this->assertEquals($cachedCommands, $paramCommands);
+    }
+
+    public function testCacheMissPopulatesCache(): void
+    {
+        $expectedCommands = new CommandRegistry();
+        $cache = $this->createMock(ICommandRegistryCache::class);
+        $cache->expects($this->at(0))
+            ->method('get')
+            ->willReturn(null);
+        $cache->expects($this->at(1))
+            ->method('set')
+            ->with($expectedCommands);
+        $collection = new CommandRegistrantCollection($cache);
+        $collection->registerCommands($expectedCommands);
     }
 }

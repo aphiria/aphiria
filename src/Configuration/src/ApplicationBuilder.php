@@ -18,7 +18,6 @@ use Aphiria\Api\DependencyResolutionException;
 use Aphiria\Api\IDependencyResolver;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\App as ConsoleApp;
-use Aphiria\Console\Commands\Caching\CachedCommandRegistrant;
 use Aphiria\Console\Commands\ClosureCommandRegistrant;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
@@ -114,23 +113,13 @@ final class ApplicationBuilder implements IApplicationBuilder
                 ? $commandRegistrants = $this->container->resolve(CommandRegistrantCollection::class)
                 : $this->container->bindInstance(CommandRegistrantCollection::class,
                 $commandRegistrants = new CommandRegistrantCollection());
-
             $commandRegistrants->add(new ClosureCommandRegistrant($this->consoleCommandCallbacks));
             $this->buildComponents();
             /** @var CommandRegistry $commands */
             $this->container->hasBinding(CommandRegistry::class)
                 ? $commands = $this->container->resolve(CommandRegistry::class)
                 : $this->container->bindInstance(CommandRegistry::class, $commands = new CommandRegistry());
-
-            // Always defer to using cached command registrants if they exist
-            if ($this->container->hasBinding(CachedCommandRegistrant::class)) {
-                /** @var CachedCommandRegistrant $cachedCommandRegistrants */
-                $cachedCommandRegistrants = $this->container->resolve(CachedCommandRegistrant::class);
-                $cachedCommandRegistrants->registerCommands($commands);
-            } else {
-                $commandRegistrants->registerCommands($commands);
-            }
-
+            $commandRegistrants->registerCommands($commands);
             $consoleApp = new ConsoleApp($commands);
             $this->container->bindInstance(ICommandBus::class, $consoleApp);
 

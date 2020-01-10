@@ -16,8 +16,6 @@ use Aphiria\Api\App;
 use Aphiria\Configuration\ApplicationBuilder;
 use Aphiria\Configuration\IModuleBuilder;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
-use Aphiria\Console\Commands\Caching\CachedCommandRegistrant;
-use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
@@ -82,45 +80,6 @@ class ApplicationBuilderTest extends TestCase
                 return $commands instanceof CommandRegistry;
             }));
         $this->container->expects($this->at(4))
-            ->method('hasBinding')
-            ->with(CachedCommandRegistrant::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(5))
-            ->method('bindInstance')
-            ->with(ICommandBus::class, $this->callback(fn ($app) => $app instanceof ICommandBus));
-        $this->appBuilder->buildConsoleApplication();
-    }
-
-    public function testBuildingConsoleUsesCachedCommandCollectionIfItExists(): void
-    {
-        $this->container->expects($this->at(0))
-            ->method('hasBinding')
-            ->with(CommandRegistrantCollection::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(1))
-            ->method('bindInstance')
-            ->with(CommandRegistrantCollection::class, $commandFactory = new CommandRegistrantCollection());
-        $this->container->expects($this->at(2))
-            ->method('hasBinding')
-            ->with(CommandRegistry::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(3))
-            ->method('bindInstance')
-            ->with(CommandRegistry::class, $this->callback(function ($commands) {
-                return $commands instanceof CommandRegistry;
-            }));
-        $this->container->expects($this->at(4))
-            ->method('hasBinding')
-            ->with(CachedCommandRegistrant::class)
-            ->willReturn(true);
-        $this->container->expects($this->at(5))
-            ->method('resolve')
-            ->with(CachedCommandRegistrant::class)
-            ->willReturn(new CachedCommandRegistrant(
-                $this->createMock(ICommandRegistryCache::class),
-                new CommandRegistrantCollection()
-            ));
-        $this->container->expects($this->at(6))
             ->method('bindInstance')
             ->with(ICommandBus::class, $this->callback(fn ($app) => $app instanceof ICommandBus));
         $this->appBuilder->buildConsoleApplication();

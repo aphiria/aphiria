@@ -28,7 +28,6 @@ use Aphiria\Routing\RouteRegistrantCollection;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\Validation\Builders\ObjectConstraintsBuilderRegistrant;
 use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
-use Aphiria\Validation\Constraints\Caching\CachedObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use RuntimeException;
@@ -362,13 +361,6 @@ final class AphiriaComponentBuilder
             ObjectConstraintsRegistry::class,
             $objectConstraints = new ObjectConstraintsRegistry());
 
-        // Always defer to using cached constraints registrants if they exist
-        if ($this->container->hasBinding(CachedObjectConstraintsRegistrant::class)) {
-            /** @var CachedObjectConstraintsRegistrant $cachedConstraintsRegistrant */
-            $cachedConstraintsRegistrant = $this->container->resolve(CachedObjectConstraintsRegistrant::class);
-            $cachedConstraintsRegistrant->registerConstraints($objectConstraints);
-        } else {
-            $constraintsRegistrants->registerConstraints($objectConstraints);
-        }
+        $constraintsRegistrants->registerConstraints($objectConstraints);
     }
 }
