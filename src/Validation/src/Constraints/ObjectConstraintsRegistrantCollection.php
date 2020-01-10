@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Constraints;
 
+use Aphiria\Validation\Constraints\Caching\IObjectConstraintsRegistryCache;
+
 /**
  * Defines a collection of registrants that can be called in serial
  */
@@ -19,6 +21,16 @@ final class ObjectConstraintsRegistrantCollection implements IObjectConstraintsR
 {
     /** @var IObjectConstraintsRegistrant[] The collection of registrants */
     private array $registrants = [];
+    /** @var IObjectConstraintsRegistryCache|null The optional cache of constraints */
+    private ?IObjectConstraintsRegistryCache $objectConstraintsCache;
+
+    /**
+     * @param IObjectConstraintsRegistryCache|null $objectConstraintsCache The optional cache of constraints
+     */
+    public function __construct(IObjectConstraintsRegistryCache $objectConstraintsCache = null)
+    {
+        $this->objectConstraintsCache = $objectConstraintsCache;
+    }
 
     /**
      * Adds a registrant to the collection
@@ -35,8 +47,18 @@ final class ObjectConstraintsRegistrantCollection implements IObjectConstraintsR
      */
     public function registerConstraints(ObjectConstraintsRegistry $objectConstraints): void
     {
+        if ($this->objectConstraintsCache !== null && ($cachedObjectConstraints = $this->objectConstraintsCache->get()) !== null) {
+            $objectConstraints->copy($cachedObjectConstraints);
+
+            return;
+        }
+
         foreach ($this->registrants as $registrant) {
             $registrant->registerConstraints($objectConstraints);
+        }
+
+        if ($this->objectConstraintsCache !== null) {
+            $this->objectConstraintsCache->set($objectConstraints);
         }
     }
 }
