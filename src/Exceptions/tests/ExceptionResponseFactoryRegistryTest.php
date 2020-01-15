@@ -16,6 +16,8 @@ use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
+use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -29,6 +31,19 @@ class ExceptionResponseFactoryRegistryTest extends TestCase
     protected function setUp(): void
     {
         $this->registry = new ExceptionResponseFactoryRegistry();
+    }
+
+    public function testGettingDefaultFactoryReturnsOneThatWasRegistered(): void
+    {
+        $expectedFactory = function (
+            Exception $ex,
+            ?IHttpRequestMessage $request,
+            INegotiatedResponseFactory $negotiatedResponseFactory
+        ) {
+            return $this->createMock(IHttpResponseMessage::class);
+        };
+        $this->registry->registerDefaultFactory($expectedFactory);
+        $this->assertSame($expectedFactory, $this->registry->getDefaultFactory());
     }
 
     public function testGettingFactoryForExceptionTypeThatDoesNotHaveFactoryReturnsNull(): void
