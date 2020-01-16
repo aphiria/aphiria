@@ -82,16 +82,39 @@ class ExceptionResponseFactoryTest extends TestCase
         $this->assertSame($expectedResponse, $response);
     }
 
+    public function testCreatingResponseForExceptionWithRequestAndResponseFactoryThatThrowsCreatesNegotiatedResponse(
+    ): void {
+        /** @var IHttpRequestMessage|MockObject $expectedRequest */
+        $expectedRequest = $this->createMock(IHttpRequestMessage::class);
+        $this->responseFactories->registerFactory(
+            InvalidArgumentException::class,
+            function (InvalidArgumentException $ex, IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory) {
+                throw new Exception();
+            }
+        );
+        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
+        $this->negotiatedResponseFactory->expects($this->once())
+            ->method('createResponse')
+            ->with($expectedRequest, HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR)
+            ->willReturn($expectedResponse);
+        $actualResponse = $this->factory->createResponseFromException(new InvalidArgumentException, $expectedRequest);
+        $this->assertSame($expectedResponse, $actualResponse);
+    }
+
     public function testCreatingResponseForExceptionWithRequestAndResponseFactoryThatThrowsCreatesDefaultResponse(
     ): void {
         /** @var IHttpRequestMessage|MockObject $expectedRequest */
         $expectedRequest = $this->createMock(IHttpRequestMessage::class);
         $this->responseFactories->registerFactory(
             InvalidArgumentException::class,
-            function (InvalidArgumentException $ex, IHttpRequestMessage $request) {
+            function (InvalidArgumentException $ex, IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory) {
                 throw new Exception();
             }
         );
+        $this->negotiatedResponseFactory->expects($this->once())
+            ->method('createResponse')
+            ->with($expectedRequest, HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR)
+            ->willThrowException(new Exception);
         $response = $this->factory->createResponseFromException(new InvalidArgumentException, $expectedRequest);
         $this->assertEquals(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaders()->getFirst('Content-Type'));

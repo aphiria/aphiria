@@ -15,12 +15,10 @@ namespace Aphiria\Exceptions;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
-use Aphiria\Net\Http\Response;
 use Exception;
+use Throwable;
 
 /**
  * Defines a factory for responses created from exceptions
@@ -51,26 +49,17 @@ final class ExceptionResponseFactory implements IExceptionResponseFactory
         Exception $ex,
         ?IHttpRequestMessage $request
     ): IHttpResponseMessage {
-        if ($request === null) {
-            return $this->createDefaultInternalServerErrorResponse($ex, null);
-        }
-
         $exceptionType = get_class($ex);
 
-        try {
-            if (($responseFactory = $this->exceptionResponseFactories->getFactory($exceptionType)) === null) {
-                return $this->negotiatedResponseFactory->createResponse(
-                    $request,
-                    HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
-                    null,
-                    null
-                );
-            }
+        if ($request === null || ($responseFactory = $this->exceptionResponseFactories->getFactory($exceptionType)) === null) {
+            return $this->invokeDefaultFactory($ex, $request);
+        }
 
+        try {
             return $responseFactory($ex, $request, $this->negotiatedResponseFactory);
-        } catch (Exception $ex) {
+        } catch (Exception | Throwable $ex) {
             // An exception occurred while making the response, eg content negotiation failed
-            return $this->createDefaultInternalServerErrorResponse($ex, $request);
+            return $this->invokeDefaultFactory($ex, $request);
         }
     }
 
@@ -79,7 +68,7 @@ final class ExceptionResponseFactory implements IExceptionResponseFactory
      *
      * @return ExceptionResponseFactoryRegistry The default response factory registry
      */
-    protected function createDefaultExceptionResponseFactories(): ExceptionResponseFactoryRegistry
+    private function createDefaultExceptionResponseFactories(): ExceptionResponseFactoryRegistry
     {
         $responseFactories = new ExceptionResponseFactoryRegistry();
         $responseFactories->registerFactory(
@@ -91,20 +80,14 @@ final class ExceptionResponseFactory implements IExceptionResponseFactory
     }
 
     /**
-     * Creates the default internal server error response in the case that content negotiation failed
+     * Invokes the default factory
      *
      * @param Exception $ex The exception that was thrown
-     * @param IHttpRequestMessage|null $request The current request if there is one, otherwise null
-     * @return IHttpResponseMessage The default response
+     * @param IHttpRequestMessage|null $request The optional request
+     * @return IHttpResponseMessage The response
      */
-    protected function createDefaultInternalServerErrorResponse(
-        Exception $ex,
-        ?IHttpRequestMessage $request
-    ): IHttpResponseMessage {
-        // We purposely aren't using the parameters - they're more for derived classes that might override this method
-        $headers = new HttpHeaders();
-        $headers->add('Content-Type', 'application/json');
-
-        return new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $headers);
+    private function invokeDefaultFactory(Exception $ex, ?IHttpRequestMessage $request): IHttpResponseMessage
+    {
+        return ($this->exceptionResponseFactories->getDefaultFactory())($ex, $request, $this->negotiatedResponseFactory);
     }
 }
