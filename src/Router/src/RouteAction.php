@@ -21,7 +21,6 @@ use Opis\Closure\SerializableClosure;
  */
 class RouteAction
 {
-    // Note - These are protected rather than private for serialization purposes
     /** @var string|null The name of the class the route routes to */
     public ?string $className;
     /** @var string|null The name of the method the route routes to */
