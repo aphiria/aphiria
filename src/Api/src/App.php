@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Api;
 
+use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Middleware\AttributeMiddleware;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
@@ -52,7 +54,7 @@ class App implements IRequestHandler
     /**
      * @param string $middlewareClass The name of the middleware class to add
      * @param array $attributes The optional list of attributes to set on the middleware
-     * @throws DependencyResolutionException Thrown if the middleware could not be created
+     * @throws ResolutionException Thrown if the middleware could not be created
      * @throws InvalidArgumentException Thrown if the middleware class does not implement IMiddleware
      */
     public function addMiddleware(string $middlewareClass, array $attributes = []): void

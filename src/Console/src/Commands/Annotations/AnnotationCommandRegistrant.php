@@ -12,14 +12,14 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Commands\Annotations;
 
+use Aphiria\Console\Commands\Annotations\Command as CommandAnnotation;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Commands\ICommandRegistrant;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\Option;
-use Aphiria\Console\Commands\Annotations\Command as CommandAnnotation;
-use Aphiria\Console\Commands\ICommandHandlerResolver;
+use Aphiria\DependencyInjection\IDependencyResolver;
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
 use Doctrine\Annotations\AnnotationException;
@@ -35,8 +35,8 @@ final class AnnotationCommandRegistrant implements ICommandRegistrant
 {
     /** @var string[] The paths to check for commands */
     private array $paths;
-    /** @var ICommandHandlerResolver The resolver for command handlers */
-    private ICommandHandlerResolver $commandHandlerResolver;
+    /** @var IDependencyResolver The resolver for command handlers */
+    private IDependencyResolver $commandHandlerResolver;
     /** @var ITypeFinder The type finder */
     private ITypeFinder $typeFinder;
     /** @var Reader The annotation reader */
@@ -44,14 +44,14 @@ final class AnnotationCommandRegistrant implements ICommandRegistrant
 
     /**
      * @param string|string[] $paths The path or paths to check for commands
-     * @param ICommandHandlerResolver $commandHandlerResolver The resolver for command handlers
+     * @param IDependencyResolver $commandHandlerResolver The resolver for command handlers
      * @param Reader|null $annotationReader The annotation reader
      * @param ITypeFinder|null $typeFinder The type finder
      * @throws AnnotationException Thrown if there was an error creating the annotation reader
      */
     public function __construct(
         $paths,
-        ICommandHandlerResolver $commandHandlerResolver,
+        IDependencyResolver $commandHandlerResolver,
         Reader $annotationReader = null,
         ITypeFinder $typeFinder = null
     ) {

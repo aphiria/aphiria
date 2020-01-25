@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Api\Tests;
 
 use Aphiria\Api\App;
-use Aphiria\Api\IDependencyResolver;
 use Aphiria\Api\Tests\Mocks\AttributeMiddleware;
+use Aphiria\DependencyInjection\IDependencyResolver;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\IHttpRequestMessage;
@@ -22,7 +22,6 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use function get_class;
 
 /**
  * Tests the app
@@ -52,9 +51,9 @@ class AppTest extends TestCase
         };
         $this->dependencyResolver->expects($this->once())
             ->method('resolve')
-            ->with(get_class($middleware))
+            ->with(\get_class($middleware))
             ->willReturn($middleware);
-        $this->app->addMiddleware(get_class($middleware), ['foo' => 'bar']);
+        $this->app->addMiddleware(\get_class($middleware), ['foo' => 'bar']);
         $this->assertEquals('bar', $middleware->getAttribute('foo'));
     }
 
@@ -90,9 +89,9 @@ class AppTest extends TestCase
         };
         $this->dependencyResolver->expects($this->once())
             ->method('resolve')
-            ->with(get_class($middleware))
+            ->with(\get_class($middleware))
             ->willReturn($middleware);
-        $this->app->addMiddleware(get_class($middleware));
+        $this->app->addMiddleware(\get_class($middleware));
         $this->assertSame($response, $this->app->handle($request));
         $this->assertTrue($middleware->wasCalled);
     }

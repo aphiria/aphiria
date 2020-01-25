@@ -13,9 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Configuration;
 
 use Aphiria\Api\App as ApiApp;
-use Aphiria\Api\ContainerDependencyResolver;
-use Aphiria\Api\DependencyResolutionException;
-use Aphiria\Api\IDependencyResolver;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\App as ConsoleApp;
 use Aphiria\Console\Commands\ClosureCommandRegistrant;
@@ -242,12 +239,6 @@ final class ApplicationBuilder implements IApplicationBuilder
             throw new RuntimeException('Router must implement ' . IRequestHandler::class);
         }
 
-        $this->container->hasBinding(IDependencyResolver::class)
-            ? $dependencyResolver = $this->container->resolve(IDependencyResolver::class)
-            : $this->container->bindInstance(
-            IDependencyResolver::class,
-            $dependencyResolver = new ContainerDependencyResolver($this->container)
-        );
         $this->container->hasBinding(MiddlewarePipelineFactory::class)
             ? $middlewarePipelineFactory = $this->container->resolve(MiddlewarePipelineFactory::class)
             : $this->container->bindInstance(
@@ -255,22 +246,17 @@ final class ApplicationBuilder implements IApplicationBuilder
             $middlewarePipelineFactory = new MiddlewarePipelineFactory()
         );
 
-        $app = new ApiApp($dependencyResolver, $router, $middlewarePipelineFactory);
+        $app = new ApiApp($this->container, $router, $middlewarePipelineFactory);
 
-        try {
-            foreach ($this->middlewareCallbacks as $middlewareCallback) {
-                /** @var MiddlewareBinding $middlewareBinding */
-                foreach ((array)$middlewareCallback() as $middlewareBinding) {
-                    if (!$middlewareBinding instanceof MiddlewareBinding) {
-                        throw new RuntimeException('Middleware bindings must be an instance of ' . MiddlewareBinding::class);
-                    }
-
-                    $app->addMiddleware($middlewareBinding->className, $middlewareBinding->attributes);
+        foreach ($this->middlewareCallbacks as $middlewareCallback) {
+            /** @var MiddlewareBinding $middlewareBinding */
+            foreach ((array)$middlewareCallback() as $middlewareBinding) {
+                if (!$middlewareBinding instanceof MiddlewareBinding) {
+                    throw new RuntimeException('Middleware bindings must be an instance of ' . MiddlewareBinding::class);
                 }
+
+                $app->addMiddleware($middlewareBinding->className, $middlewareBinding->attributes);
             }
-        } catch (DependencyResolutionException $ex) {
-            throw new ResolutionException($ex->getInterface(), $ex->getTargetClass(), 'Failed to resolve middleware', 0,
-                $ex);
         }
 
         return $app;

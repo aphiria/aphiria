@@ -25,7 +25,6 @@ use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCodes;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use function str_replace;
 
 /**
  * Tests the help command handler
@@ -239,7 +238,7 @@ Command: <info>{{name}}</info>
 {{options}}{{helpText}}
 EOF;
 
-        return str_replace(
+        return \str_replace(
             ['{{name}}', '{{command}}', '{{description}}', '{{arguments}}', '{{options}}', '{{helpText}}'],
             [$commandName, $parsedCommand, $description, $arguments, $options, self::compileHelpText($helpText)],
             $template

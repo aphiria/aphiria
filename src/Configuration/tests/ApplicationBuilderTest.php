@@ -49,7 +49,7 @@ class ApplicationBuilderTest extends TestCase
     public function testBuildingApiBindsAppToContainer(): void
     {
         $this->setRouter();
-        $this->container->expects($this->at(4))
+        $this->container->expects($this->at(2))
             ->method('bindInstance')
             ->with(IRequestHandler::class, $this->callback(fn ($app) => $app instanceof IRequestHandler));
         $this->appBuilder->buildApiApplication();

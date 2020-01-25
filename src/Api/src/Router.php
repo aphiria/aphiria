@@ -16,6 +16,8 @@ use Aphiria\Api\Controllers\Controller;
 use Aphiria\Api\Controllers\ControllerRequestHandler;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Controllers\RouteActionInvoker;
+use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Middleware\AttributeMiddleware;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
@@ -100,7 +102,7 @@ class Router implements IRequestHandler
      * @param RouteAction $routeAction The route action to create the controller from
      * @param Controller $controller The "out" parameter that will contain the controller
      * @param callable $routeActionDelegate The "out" parameter that will contain the route action delegate
-     * @throws DependencyResolutionException Thrown if the controller could not be resolved
+     * @throws ResolutionException Thrown if the controller could not be resolved
      */
     private function createController(
         RouteAction $routeAction,
@@ -137,7 +139,7 @@ class Router implements IRequestHandler
      *
      * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings to create instances from
      * @return IMiddleware[] The middleware instances
-     * @throws DependencyResolutionException Thrown if the middleware could not be resolved
+     * @throws ResolutionException Thrown if the middleware could not be resolved
      */
     private function createMiddlewareFromBindings(array $middlewareBindings): array
     {

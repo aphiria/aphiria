@@ -30,7 +30,6 @@ use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Tests\Http\ContentNegotiation\Mocks\User;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
-use function mb_strlen;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -121,7 +120,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $rawBody = 'foo';
         $request = $this->createRequest('http://foo.com');
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
-        $this->assertEquals(mb_strlen($rawBody), $response->getHeaders()->getFirst('Content-Length'));
+        $this->assertEquals(\mb_strlen($rawBody), $response->getHeaders()->getFirst('Content-Length'));
     }
 
     public function testCreatingResponseFromStringWithAlreadySetContentLengthHeaderDoesNotOverwriteContentLength(): void

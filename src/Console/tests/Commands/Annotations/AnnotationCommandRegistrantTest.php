@@ -22,8 +22,8 @@ use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\Commands\Annotations\Argument;
 use Aphiria\Console\Commands\Annotations\Command;
 use Aphiria\Console\Commands\Annotations\Option;
-use Aphiria\Console\Commands\ICommandHandlerResolver;
 use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
+use Aphiria\DependencyInjection\IDependencyResolver;
 use Aphiria\Reflection\ITypeFinder;
 use PHPUnit\Framework\TestCase;
 
@@ -34,15 +34,15 @@ class AnnotationCommandRegistrantTest extends TestCase
 {
     private AnnotationCommandRegistrant $registrant;
     private CommandRegistry $commands;
-    /** @var ICommandHandlerResolver|MockObject */
-    private ICommandHandlerResolver $commandHandlerResolver;
+    /** @var IDependencyResolver|MockObject */
+    private IDependencyResolver $commandHandlerResolver;
     /** @var ITypeFinder|MockObject */
     private ITypeFinder $typeFinder;
 
     protected function setUp(): void
     {
         $this->commands = new CommandRegistry();
-        $this->commandHandlerResolver = $this->createMock(ICommandHandlerResolver::class);
+        $this->commandHandlerResolver = $this->createMock(IDependencyResolver::class);
         $this->typeFinder = $this->createMock(ITypeFinder::class);
         $this->registrant = new AnnotationCommandRegistrant(
             __DIR__,

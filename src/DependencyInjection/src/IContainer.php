@@ -15,7 +15,7 @@ namespace Aphiria\DependencyInjection;
 /**
  * Defines the interface for dependency injection containers to implement
  */
-interface IContainer
+interface IContainer extends IDependencyResolver
 {
     /**
      * Binds a factory that will return a concrete instance of the interface
@@ -94,15 +94,6 @@ interface IContainer
      * @return bool True if the interface has a binding, otherwise false
      */
     public function hasBinding(string $interface): bool;
-
-    /**
-     * Resolve an instance of the interface
-     *
-     * @param string $interface The interface to resolve
-     * @return object The resolved instance
-     * @throws ResolutionException Thrown if there was an error resolving the interface
-     */
-    public function resolve(string $interface): object;
 
     /**
      * Tries to resolve an instance of the interface

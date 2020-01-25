@@ -16,7 +16,6 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedMediaT
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use Aphiria\Serialization\FormUrlEncodedSerializer;
 use InvalidArgumentException;
-use function mb_convert_encoding;
 use Aphiria\IO\Streams\IStream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -106,7 +105,7 @@ class FormUrlEncodedMediaTypeFormatterTest extends TestCase
     {
         $stream = $this->createMock(IStream::class);
         $user = new User(123, 'foo@bar.com');
-        $expectedEncodedValue = mb_convert_encoding('id=123&email=foo%40bar.com', 'ISO-8859-1');
+        $expectedEncodedValue = \mb_convert_encoding('id=123&email=foo%40bar.com', 'ISO-8859-1');
         $stream->expects($this->once())
             ->method('write')
             ->with($expectedEncodedValue);

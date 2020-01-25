@@ -18,7 +18,6 @@ use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
-use function json_encode;
 use RuntimeException;
 
 /**
@@ -34,7 +33,7 @@ class Controller extends BaseController
      */
     public function arrayParameter(array $foo): IHttpResponseMessage
     {
-        return $this->createResponseWithBody(json_encode($foo));
+        return $this->createResponseWithBody(\json_encode($foo));
     }
 
     /**
