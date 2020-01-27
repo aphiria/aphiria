@@ -34,7 +34,7 @@ final class CommandBootstrapper extends Bootstrapper
         $container->bindInstance(CommandRegistry::class, $commands);
 
         if (getenv('APP_ENV') === 'production') {
-            $commandCache = new FileCommandRegistryCache(Configuration::getString('console.commandCache'));
+            $commandCache = new FileCommandRegistryCache(Configuration::getString('console.commandCachePath'));
         } else {
             $commandCache = null;
         }

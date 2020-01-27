@@ -40,8 +40,8 @@ final class RoutingBootstrapper extends Bootstrapper
         $container->bindInstance(RouteCollection::class, $routes);
 
         if (getenv('APP_ENV') === 'production') {
-            $trieCache = new FileTrieCache(Configuration::getString('routing.trieCache'));
-            $routeCache = new FileRouteCache(Configuration::getString('routing.routeCache'));
+            $trieCache = new FileTrieCache(Configuration::getString('routing.trieCachePath'));
+            $routeCache = new FileRouteCache(Configuration::getString('routing.routeCachePath'));
         } else {
             $trieCache = $routeCache = null;
         }

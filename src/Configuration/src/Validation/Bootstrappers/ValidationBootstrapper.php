@@ -40,7 +40,7 @@ final class ValidationBootstrapper extends Bootstrapper
         $container->bindInstance([IValidator::class, Validator::class], $validator);
 
         if (getenv('APP_ENV') === 'production') {
-            $constraintCache = new FileObjectConstraintsRegistryCache(Configuration::getString('validation.constraintsCache'));
+            $constraintCache = new FileObjectConstraintsRegistryCache(Configuration::getString('validation.constraintsCachePath'));
         } else {
             $constraintCache = null;
         }
