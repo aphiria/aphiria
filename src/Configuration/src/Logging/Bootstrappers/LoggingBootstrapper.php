@@ -40,8 +40,8 @@ final class LoggingBootstrapper extends Bootstrapper
          */
         $logger = new Logger(Configuration::getString('logging.name'));
 
-        foreach (Configuration::getArray('logging.handlers') as $handlerType => $handlerConfiguration) {
-            switch ($handlerType) {
+        foreach (Configuration::getArray('logging.handlers') as $handlerConfiguration) {
+            switch ($handlerConfiguration['type']) {
                 case StreamHandler::class:
                     $logger->pushHandler(new StreamHandler($handlerConfiguration['path']));
                     break;

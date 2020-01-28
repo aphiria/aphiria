@@ -19,6 +19,7 @@ use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegist
 use Aphiria\Validation\Constraints\Caching\FileObjectConstraintsRegistryCache;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
+use Aphiria\Validation\ErrorMessages\IcuFormatErrorMessageInterpolater;
 use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolater;
 use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolater;
 use Aphiria\Validation\IValidator;
@@ -47,7 +48,24 @@ final class ValidationBootstrapper extends Bootstrapper
 
         $constraintsRegistrants = new ObjectConstraintsRegistrantCollection($constraintCache);
         $container->bindInstance(ObjectConstraintsRegistrantCollection::class, $constraintsRegistrants);
-        $container->bindInstance(IErrorMessageInterpolater::class, new StringReplaceErrorMessageInterpolater());
+
+        $errorMessageInterpolaterConfiguration = Configuration::getArray('validation.errorMessageInterpolater');
+        
+        switch ($errorMessageInterpolaterConfiguration['type']) {
+            case StringReplaceErrorMessageInterpolater::class:
+                $errorMessageInterpolater = new StringReplaceErrorMessageInterpolater();
+                break;
+            case IcuFormatErrorMessageInterpolater::class:
+                $errorMessageInterpolater = new IcuFormatErrorMessageInterpolater(
+                    $errorMessageInterpolaterConfiguration['defaultLocale'] ?? 'en'
+                );
+                break;
+            default:
+                // TODO: Have better exception types for invalid configurations
+                throw new \Exception("Invalid error message interpolater type {$errorMessageInterpolaterConfiguration['type']}");
+        }
+
+        $container->bindInstance(IErrorMessageInterpolater::class, $errorMessageInterpolater);
 
         // Register some constraint annotation dependencies
         $constraintAnnotationRegistrant = new AnnotationObjectConstraintsRegistrant(

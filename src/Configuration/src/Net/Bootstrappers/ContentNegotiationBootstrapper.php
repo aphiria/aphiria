@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\ContentNegotiation\Bootstrappers;
+namespace Aphiria\Configuration\Net\Bootstrappers;
 
 use Aphiria\Configuration\Configuration;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
