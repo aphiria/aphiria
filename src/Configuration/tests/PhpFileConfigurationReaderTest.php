@@ -14,17 +14,17 @@ namespace Aphiria\Configuration\Tests;
 
 use Aphiria\Configuration\Configuration;
 use Aphiria\Configuration\ConfigurationException;
-use Aphiria\Configuration\PhpConfigurationReader;
+use Aphiria\Configuration\PhpFileConfigurationReader;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the PHP configuration reader
+ * Tests the PHP file configuration reader
  */
-class PhpConfigurationReaderTest extends TestCase
+class PhpFileConfigurationReaderTest extends TestCase
 {
     public function testReadingConfigurationCreatesConfigurationFromContentsOfPhpFile(): void
     {
-        $configReader = new PhpConfigurationReader(__DIR__ . '/Mocks/configuration.php');
+        $configReader = new PhpFileConfigurationReader(__DIR__ . '/Mocks/configuration.php');
         $configReader->readConfiguration();
         $this->assertEquals('bar', Configuration::getString('foo'));
     }
@@ -33,7 +33,7 @@ class PhpConfigurationReaderTest extends TestCase
     {
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('/doesnotexist does not exist');
-        $configReader = new PhpConfigurationReader('/doesnotexist');
+        $configReader = new PhpFileConfigurationReader('/doesnotexist');
         $configReader->readConfiguration();
     }
 }

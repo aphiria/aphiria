@@ -15,7 +15,7 @@ namespace Aphiria\Configuration;
 /**
  * Defines the configuration reader that reads a PHP files
  */
-final class PhpConfigurationReader implements IConfigurationReader
+final class PhpFileConfigurationReader implements IConfigurationReader
 {
     /** @var string The path to the PHP file */
     private string $path;
