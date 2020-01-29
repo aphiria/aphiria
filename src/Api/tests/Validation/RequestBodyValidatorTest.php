@@ -67,7 +67,7 @@ class RequestBodyValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testValidatingDoesNotSetLocaleOnErrorMessageInterpolaterIfNoLanguageMatcherFound(): void
+    public function testValidatingDoesNotSetLocaleOnErrorMessageInterpolatorIfNoLanguageMatcherFound(): void
     {
         $this->languageMatcher->expects($this->once())
             ->method('getBestLanguageMatch')
@@ -112,7 +112,7 @@ class RequestBodyValidatorTest extends TestCase
         }
     }
 
-    public function testValidatingSetsLocaleOnErrorMessageInterpolaterOnlyOnce(): void
+    public function testValidatingSetsLocaleOnErrorMessageInterpolatorOnlyOnce(): void
     {
         $this->languageMatcher->expects($this->once())
             ->method('getBestLanguageMatch')
@@ -128,7 +128,7 @@ class RequestBodyValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testValidatingSetsLocaleOnErrorMessageInterpolaterIfLanguageMatcherFoundOne(): void
+    public function testValidatingSetsLocaleOnErrorMessageInterpolatorIfLanguageMatcherFoundOne(): void
     {
         $this->languageMatcher->expects($this->once())
             ->method('getBestLanguageMatch')

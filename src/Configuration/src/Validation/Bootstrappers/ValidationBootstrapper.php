@@ -53,22 +53,22 @@ final class ValidationBootstrapper extends Bootstrapper
         $constraintsRegistrants = new ObjectConstraintsRegistrantCollection($constraintCache);
         $container->bindInstance(ObjectConstraintsRegistrantCollection::class, $constraintsRegistrants);
 
-        $errorMessageInterpolaterConfiguration = Configuration::getArray('validation.errorMessageInterpolater');
+        $errorMessageInterpolatorConfiguration = Configuration::getArray('validation.errorMessageInterpolator');
 
-        switch ($errorMessageInterpolaterConfiguration['type']) {
+        switch ($errorMessageInterpolatorConfiguration['type']) {
             case StringReplaceErrorMessageInterpolator::class:
-                $errorMessageInterpolater = new StringReplaceErrorMessageInterpolator();
+                $errorMessageInterpolator = new StringReplaceErrorMessageInterpolator();
                 break;
             case IcuFormatErrorMessageInterpolator::class:
-                $errorMessageInterpolater = new IcuFormatErrorMessageInterpolator(
-                    $errorMessageInterpolaterConfiguration['defaultLocale'] ?? 'en'
+                $errorMessageInterpolator = new IcuFormatErrorMessageInterpolator(
+                    $errorMessageInterpolatorConfiguration['defaultLocale'] ?? 'en'
                 );
                 break;
             default:
-                throw new ConfigurationException("Unsupported error message interpolater type {$errorMessageInterpolaterConfiguration['type']}");
+                throw new ConfigurationException("Unsupported error message interpolator type {$errorMessageInterpolatorConfiguration['type']}");
         }
 
-        $container->bindInstance(IErrorMessageInterpolator::class, $errorMessageInterpolater);
+        $container->bindInstance(IErrorMessageInterpolator::class, $errorMessageInterpolator);
 
         // Register some constraint annotation dependencies
         $constraintAnnotationRegistrant = new AnnotationObjectConstraintsRegistrant(

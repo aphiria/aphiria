@@ -30,13 +30,13 @@ class ValidatorTest extends TestCase
     private Validator $validator;
     private ObjectConstraintsRegistry $objectConstraints;
     /** @var IErrorMessageInterpolator|MockObject */
-    private IErrorMessageInterpolator $errorMessageInterpolater;
+    private IErrorMessageInterpolator $errorMessageInterpolator;
 
     protected function setUp(): void
     {
         $this->objectConstraints = new ObjectConstraintsRegistry();
-        $this->errorMessageInterpolater = $this->createMock(IErrorMessageInterpolator::class);
-        $this->validator = new Validator($this->objectConstraints, $this->errorMessageInterpolater);
+        $this->errorMessageInterpolator = $this->createMock(IErrorMessageInterpolator::class);
+        $this->validator = new Validator($this->objectConstraints, $this->errorMessageInterpolator);
     }
 
     public function testTryValidateMethodReturnsFalseForInvalidValue(): void
@@ -165,7 +165,7 @@ class ValidatorTest extends TestCase
             [],
             ['method' => $constraints]
         ));
-        $this->errorMessageInterpolater->expects($this->once())
+        $this->errorMessageInterpolator->expects($this->once())
             ->method('interpolate')
             ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
@@ -285,7 +285,7 @@ class ValidatorTest extends TestCase
             ['prop' => $constraints],
             []
         ));
-        $this->errorMessageInterpolater->expects($this->once())
+        $this->errorMessageInterpolator->expects($this->once())
             ->method('interpolate')
             ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
@@ -396,7 +396,7 @@ class ValidatorTest extends TestCase
             ['prop' => $constraints],
             []
         ));
-        $this->errorMessageInterpolater->expects($this->once())
+        $this->errorMessageInterpolator->expects($this->once())
             ->method('interpolate')
             ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
