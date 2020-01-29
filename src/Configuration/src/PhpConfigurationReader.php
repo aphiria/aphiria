@@ -34,7 +34,7 @@ final class PhpConfigurationReader implements IConfigurationReader
     public function readConfiguration(): Configuration
     {
         if (!\file_exists($this->path)) {
-            throw new ConfigurationReadException("{$this->path} does not exist");
+            throw new ConfigurationException("{$this->path} does not exist");
         }
 
         $rawConfig = require $this->path;

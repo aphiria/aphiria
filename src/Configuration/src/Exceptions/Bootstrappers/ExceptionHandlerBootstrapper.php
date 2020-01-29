@@ -17,6 +17,7 @@ use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
 use Aphiria\Api\Validation\InvalidRequestBodyException;
 use Aphiria\Api\Validation\ValidationProblemDetails;
 use Aphiria\Configuration\Configuration;
+use Aphiria\Configuration\ConfigurationException;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\ExceptionLogger;
@@ -37,6 +38,7 @@ use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Http\StreamResponseWriter;
 use Closure;
 use Exception;
+use Psr\Log\LoggerInterface;
 
 /**
  * Defines the exception handler bootstrapper
@@ -45,6 +47,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
 {
     /**
      * @inheritdoc
+     * @throws ConfigurationException Thrown if the the config is missing values
      */
     public function registerBindings(IContainer $container): void
     {
@@ -142,6 +145,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
      *
      * @param IContainer $container The DI container
      * @return Closure The exception response factory
+     * @throws ConfigurationException Thrown if the config is missing values
      */
     private function getDefaultExceptionResponseFactory(IContainer $container): Closure
     {
@@ -186,6 +190,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
      * Gets the response factory for invalid request body exceptions
      *
      * @return Closure The response factory
+     * @throws ConfigurationException Thrown if the config is missing values
      */
     private function getInvalidRequestBodyResponseFactory(): Closure
     {

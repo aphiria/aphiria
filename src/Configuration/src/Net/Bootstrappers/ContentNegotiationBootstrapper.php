@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Configuration\Net\Bootstrappers;
 
 use Aphiria\Configuration\Configuration;
+use Aphiria\Configuration\ConfigurationException;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Net\Http\ContentNegotiation\AcceptCharsetEncodingMatcher;
@@ -33,6 +34,7 @@ final class ContentNegotiationBootstrapper extends Bootstrapper
 {
     /**
      * @inheritdoc
+     * @throws ConfigurationException Thrown if the config is missing values
      */
     public function registerBindings(IContainer $container): void
     {

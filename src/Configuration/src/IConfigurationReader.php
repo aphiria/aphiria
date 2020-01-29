@@ -21,7 +21,7 @@ interface IConfigurationReader
      * Reads the configuration from storage
      *
      * @return Configuration The configuration that was read
-     * @throws ConfigurationReadException Thrown if the configuration could not be read
+     * @throws ConfigurationException Thrown if the configuration could not be read
      */
     public function readConfiguration(): Configuration;
 }

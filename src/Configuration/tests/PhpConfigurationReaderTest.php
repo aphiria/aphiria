@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Configuration\Tests;
 
 use Aphiria\Configuration\Configuration;
-use Aphiria\Configuration\ConfigurationReadException;
+use Aphiria\Configuration\ConfigurationException;
 use Aphiria\Configuration\PhpConfigurationReader;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +31,7 @@ class PhpConfigurationReaderTest extends TestCase
 
     public function testReadingNonExistentPathThrowsException(): void
     {
-        $this->expectException(ConfigurationReadException::class);
+        $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('/doesnotexist does not exist');
         $configReader = new PhpConfigurationReader('/doesnotexist');
         $configReader->readConfiguration();

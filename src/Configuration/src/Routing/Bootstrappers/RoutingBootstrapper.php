@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Configuration\Routing\Bootstrappers;
 
 use Aphiria\Configuration\Configuration;
+use Aphiria\Configuration\ConfigurationException;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
@@ -25,6 +26,7 @@ use Aphiria\Routing\UriTemplates\AstRouteUriFactory;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\FileTrieCache;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieFactory;
 use Aphiria\Routing\UriTemplates\IRouteUriFactory;
+use Doctrine\Annotations\AnnotationException;
 
 /**
  * Defines the routing bootstrapper
@@ -33,6 +35,8 @@ final class RoutingBootstrapper extends Bootstrapper
 {
     /**
      * @inheritdoc
+     * @throws ConfigurationException Thrown if the config is missing values
+     * @throws AnnotationException Thrown if PHP is not configured to handle scanning for annotations
      */
     public function registerBindings(IContainer $container): void
     {

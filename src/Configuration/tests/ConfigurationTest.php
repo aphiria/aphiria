@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Configuration\Tests;
 
 use Aphiria\Configuration\Configuration;
-use OutOfBoundsException;
+use Aphiria\Configuration\ConfigurationException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -78,7 +78,7 @@ class ConfigurationTest extends TestCase
 
     public function testGetForNonExistentNestedPathThrowsException(): void
     {
-        $this->expectException(OutOfBoundsException::class);
+        $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('No configuration value at foo.blah');
         new Configuration(['foo' => ['bar' => 'baz']]);
         Configuration::get('foo.blah');
@@ -86,7 +86,7 @@ class ConfigurationTest extends TestCase
 
     public function testGetForNonExistentTopLevelPathThrowsException(): void
     {
-        $this->expectException(OutOfBoundsException::class);
+        $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('No configuration value at baz');
         new Configuration(['foo' => 'bar']);
         Configuration::get('baz');

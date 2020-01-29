@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Configuration\Serialization\Bootstrappers;
 
 use Aphiria\Configuration\Configuration;
+use Aphiria\Configuration\ConfigurationException;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Serialization\Encoding\CamelCasePropertyNameFormatter;
@@ -29,6 +30,7 @@ final class SerializationBootstrapper extends Bootstrapper
 {
     /**
      * @inheritdoc
+     * @throws ConfigurationException Thrown if the config is missing values
      */
     public function registerBindings(IContainer $container): void
     {

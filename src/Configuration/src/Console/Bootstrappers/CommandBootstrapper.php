@@ -13,12 +13,14 @@ declare(strict_types=1);
 namespace Aphiria\Configuration\Console\Bootstrappers;
 
 use Aphiria\Configuration\Configuration;
+use Aphiria\Configuration\ConfigurationException;
 use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
 use Aphiria\Console\Commands\Caching\FileCommandRegistryCache;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
+use Doctrine\Annotations\AnnotationException;
 
 /**
  * Defines the console command bootstrapper
@@ -27,6 +29,8 @@ final class CommandBootstrapper extends Bootstrapper
 {
     /**
      * @inheritdoc
+     * @throws ConfigurationException Thrown if the the config is missing values
+     * @throws AnnotationException Thrown if PHP is not configured to handle scanning for annotations
      */
     public function registerBindings(IContainer $container): void
     {

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Configuration\Validation\Bootstrappers;
 
 use Aphiria\Configuration\Configuration;
+use Aphiria\Configuration\ConfigurationException;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
@@ -24,6 +25,7 @@ use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolater;
 use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolater;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\Validator;
+use Doctrine\Annotations\AnnotationException;
 
 /**
  * Defines the validation bootstrapper
@@ -32,6 +34,8 @@ final class ValidationBootstrapper extends Bootstrapper
 {
     /**
      * @inheritdoc
+     * @throws ConfigurationException Thrown if the config is missing values
+     * @throws AnnotationException Thrown if PHP is not configured to handle scanning for annotations
      */
     public function registerBindings(IContainer $container): void
     {
@@ -50,7 +54,7 @@ final class ValidationBootstrapper extends Bootstrapper
         $container->bindInstance(ObjectConstraintsRegistrantCollection::class, $constraintsRegistrants);
 
         $errorMessageInterpolaterConfiguration = Configuration::getArray('validation.errorMessageInterpolater');
-        
+
         switch ($errorMessageInterpolaterConfiguration['type']) {
             case StringReplaceErrorMessageInterpolater::class:
                 $errorMessageInterpolater = new StringReplaceErrorMessageInterpolater();
@@ -61,8 +65,7 @@ final class ValidationBootstrapper extends Bootstrapper
                 );
                 break;
             default:
-                // TODO: Have better exception types for invalid configurations
-                throw new \Exception("Invalid error message interpolater type {$errorMessageInterpolaterConfiguration['type']}");
+                throw new ConfigurationException("Unsupported error message interpolater type {$errorMessageInterpolaterConfiguration['type']}");
         }
 
         $container->bindInstance(IErrorMessageInterpolater::class, $errorMessageInterpolater);

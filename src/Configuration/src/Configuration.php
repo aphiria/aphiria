@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration;
 
-use OutOfBoundsException;
 use RuntimeException;
 
 /**
@@ -40,7 +39,7 @@ class Configuration
      * @param string $path The period-delimited path to the value in the config to get
      * @return mixed The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws OutOfBoundsException Thrown if there was no value at the input path
+     * @throws ConfigurationException Thrown if there was no value at the input path
      */
     public static function get(string $path)
     {
@@ -55,7 +54,7 @@ class Configuration
             if (!isset($value[$pathPart])) {
                 $fullPathToThisPart = implode('.', \array_slice($explodedPath, 0, $i + 1));
 
-                throw new OutOfBoundsException("No configuration value at $fullPathToThisPart");
+                throw new ConfigurationException("No configuration value at $fullPathToThisPart");
             }
 
             $value = $value[$pathPart];
@@ -70,7 +69,7 @@ class Configuration
      * @param string $path The period-delimited path to the value in the config to get
      * @return array The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws OutOfBoundsException Thrown if there was no value at the input path
+     * @throws ConfigurationException Thrown if there was no value at the input path
      */
     public static function getArray(string $path): array
     {
@@ -83,7 +82,7 @@ class Configuration
      * @param string $path The period-delimited path to the value in the config to get
      * @return bool The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws OutOfBoundsException Thrown if there was no value at the input path
+     * @throws ConfigurationException Thrown if there was no value at the input path
      */
     public static function getBool(string $path): bool
     {
@@ -96,7 +95,7 @@ class Configuration
      * @param string $path The period-delimited path to the value in the config to get
      * @return float The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws OutOfBoundsException Thrown if there was no value at the input path
+     * @throws ConfigurationException Thrown if there was no value at the input path
      */
     public static function getFloat(string $path): float
     {
@@ -109,7 +108,7 @@ class Configuration
      * @param string $path The period-delimited path to the value in the config to get
      * @return int The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws OutOfBoundsException Thrown if there was no value at the input path
+     * @throws ConfigurationException Thrown if there was no value at the input path
      */
     public static function getInt(string $path): int
     {
@@ -122,7 +121,7 @@ class Configuration
      * @param string $path The period-delimited path to the value in the config to get
      * @return string The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws OutOfBoundsException Thrown if there was no value at the input path
+     * @throws ConfigurationException Thrown if there was no value at the input path
      */
     public static function getString(string $path): string
     {

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Configuration\Logging\Bootstrappers;
 
 use Aphiria\Configuration\Configuration;
+use Aphiria\Configuration\ConfigurationException;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Monolog\Handler\StreamHandler;
@@ -27,17 +28,10 @@ final class LoggingBootstrapper extends Bootstrapper
 {
     /**
      * @inheritdoc
+     * @throws ConfigurationException Thrown if the config is missing values
      */
     public function registerBindings(IContainer $container): void
     {
-        /**
-         * ----------------------------------------------------------
-         * Create a PSR-3 logger
-         * ----------------------------------------------------------
-         *
-         * Note: You may use any PSR-3 logger you'd like
-         * For convenience, the Monolog library is included here
-         */
         $logger = new Logger(Configuration::getString('logging.name'));
 
         foreach (Configuration::getArray('logging.handlers') as $handlerConfiguration) {
@@ -48,6 +42,8 @@ final class LoggingBootstrapper extends Bootstrapper
                 case SyslogHandler::class:
                     $logger->pushHandler(new SyslogHandler($handlerConfiguration['ident'] ?? 'app'));
                     break;
+                default:
+                    throw new ConfigurationException("Unsupported logging handler type {$handlerConfiguration['type']}");
             }
         }
 
