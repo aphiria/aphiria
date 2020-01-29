@@ -28,9 +28,9 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
 use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 
 /**
- * Defines the content negotiation bootstrapper
+ * Defines the content negotiator bootstrapper
  */
-final class ContentNegotiationBootstrapper extends Bootstrapper
+final class ContentNegotiatorBootstrapper extends Bootstrapper
 {
     /**
      * @inheritdoc

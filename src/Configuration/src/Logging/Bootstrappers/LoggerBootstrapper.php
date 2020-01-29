@@ -22,9 +22,9 @@ use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
 /**
- * Defines the logging bootstrapper
+ * Defines the logger bootstrapper
  */
-final class LoggingBootstrapper extends Bootstrapper
+final class LoggerBootstrapper extends Bootstrapper
 {
     /**
      * @inheritdoc

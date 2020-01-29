@@ -24,9 +24,9 @@ use Aphiria\Serialization\JsonSerializer;
 use OutOfBoundsException;
 
 /**
- * Defines the serialization bootstrapper
+ * Defines the serializer bootstrapper
  */
-final class SerializationBootstrapper extends Bootstrapper
+final class SerializerBootstrapper extends Bootstrapper
 {
     /**
      * @inheritdoc
