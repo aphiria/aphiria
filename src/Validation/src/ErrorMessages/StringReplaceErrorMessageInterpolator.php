@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Validation\ErrorMessages;
 
 /**
- * Defines the error message interpolater that does a simple string replacement to interpolate error messages
+ * Defines the error message interpolator that does a simple string replacement to interpolate error messages
  */
-final class StringReplaceErrorMessageInterpolater implements IErrorMessageInterpolater
+final class StringReplaceErrorMessageInterpolator implements IErrorMessageInterpolator
 {
     /** @var string|null The default locale */
     private ?string $defaultLocale = null;

@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Validation\ErrorMessages;
 
 /**
- * Defines the error message interpolater that interpolates ICU message formats
+ * Defines the error message interpolator that interpolates ICU message formats
  */
-final class IcuFormatErrorMessageInterpolater implements IErrorMessageInterpolater
+final class IcuFormatErrorMessageInterpolator implements IErrorMessageInterpolator
 {
     /** @var string The default locale, if none is specified */
     private string $defaultLocale;

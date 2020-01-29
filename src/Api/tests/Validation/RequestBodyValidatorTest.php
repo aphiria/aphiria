@@ -18,7 +18,7 @@ use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\ConstraintViolation;
-use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolater;
+use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\ValidationException;
@@ -34,7 +34,7 @@ class RequestBodyValidatorTest extends TestCase
     private IHttpRequestMessage $request;
     /** @var IValidator|MockObject */
     private IValidator $validator;
-    /** @var IErrorMessageInterpolater|MockObject */
+    /** @var IErrorMessageInterpolator|MockObject */
     private $errorMessageInterpolator;
     /** @var ILanguageMatcher|MockObject */
     private ILanguageMatcher $languageMatcher;
@@ -44,7 +44,7 @@ class RequestBodyValidatorTest extends TestCase
     {
         $this->request = $this->createMock(IHttpRequestMessage::class);
         $this->validator = $this->createMock(IValidator::class);
-        $this->errorMessageInterpolator = $this->createMock(IErrorMessageInterpolater::class);
+        $this->errorMessageInterpolator = $this->createMock(IErrorMessageInterpolator::class);
         $this->languageMatcher = $this->createMock(ILanguageMatcher::class);
         $this->requestBodyValidator = new RequestBodyValidator(
             $this->validator,

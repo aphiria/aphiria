@@ -17,7 +17,7 @@ use Aphiria\Validation\CircularDependencyException;
 use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\ObjectConstraints;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
-use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolater;
+use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\Validator;
 use PHPUnit\Framework\TestCase;
@@ -29,13 +29,13 @@ class ValidatorTest extends TestCase
 {
     private Validator $validator;
     private ObjectConstraintsRegistry $objectConstraints;
-    /** @var IErrorMessageInterpolater|MockObject */
-    private IErrorMessageInterpolater $errorMessageInterpolater;
+    /** @var IErrorMessageInterpolator|MockObject */
+    private IErrorMessageInterpolator $errorMessageInterpolater;
 
     protected function setUp(): void
     {
         $this->objectConstraints = new ObjectConstraintsRegistry();
-        $this->errorMessageInterpolater = $this->createMock(IErrorMessageInterpolater::class);
+        $this->errorMessageInterpolater = $this->createMock(IErrorMessageInterpolator::class);
         $this->validator = new Validator($this->objectConstraints, $this->errorMessageInterpolater);
     }
 

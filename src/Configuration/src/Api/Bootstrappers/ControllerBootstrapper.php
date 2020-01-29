@@ -20,7 +20,7 @@ use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
-use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolater;
+use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
 
 /**
@@ -35,7 +35,7 @@ final class ControllerBootstrapper extends Bootstrapper
     {
         $requestBodyValidator = new RequestBodyValidator(
             $container->resolve(IValidator::class),
-            $container->resolve(IErrorMessageInterpolater::class)
+            $container->resolve(IErrorMessageInterpolator::class)
         );
         $controllerParameterResolver = new ControllerParameterResolver($container->resolve(IContentNegotiator::class));
         $routeActionInvoker = new RouteActionInvoker(

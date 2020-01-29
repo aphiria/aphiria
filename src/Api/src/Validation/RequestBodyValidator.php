@@ -14,7 +14,7 @@ namespace Aphiria\Api\Validation;
 
 use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
 use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolater;
+use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\ValidationException;
@@ -26,8 +26,8 @@ final class RequestBodyValidator implements IRequestBodyValidator
 {
     /** @var IValidator The validator that will actually perform the validation */
     private IValidator $validator;
-    /** @var IErrorMessageInterpolater|null The interpolater of error messages, or null if not using one */
-    private ?IErrorMessageInterpolater $errorMessageInterpolater;
+    /** @var IErrorMessageInterpolator|null The interpolator of error messages, or null if not using one */
+    private ?IErrorMessageInterpolator $errorMessageInterpolator;
     /** @var ILanguageMatcher|null The language matcher to use, or null if not using one */
     private ?ILanguageMatcher $languageMatcher;
     /** @var string[] The memoized matched languages per request */
@@ -35,16 +35,16 @@ final class RequestBodyValidator implements IRequestBodyValidator
 
     /**
      * @param IValidator $validator The validator that will actually perform the validation
-     * @param IErrorMessageInterpolater|null $errorMessageInterpolater The interpolater of error messages, or null if not using one
+     * @param IErrorMessageInterpolator|null $errorMessageInterpolator The interpolator of error messages, or null if not using one
      * @param ILanguageMatcher|null $languageMatcher The language matcher to use, or null if not using one
      */
     public function __construct(
         IValidator $validator,
-        IErrorMessageInterpolater $errorMessageInterpolater = null,
+        IErrorMessageInterpolator $errorMessageInterpolator = null,
         ILanguageMatcher $languageMatcher = null
     ) {
         $this->validator = $validator;
-        $this->errorMessageInterpolater = $errorMessageInterpolater;
+        $this->errorMessageInterpolator = $errorMessageInterpolator;
         $this->languageMatcher = $languageMatcher;
     }
 
@@ -62,7 +62,7 @@ final class RequestBodyValidator implements IRequestBodyValidator
                 $this->memoizedMatchedLanguagesByRequest[$memoizationKey] = $language;
 
                 if ($language !== null) {
-                    $this->errorMessageInterpolater->setDefaultLocale($language);
+                    $this->errorMessageInterpolator->setDefaultLocale($language);
                 }
             }
         }

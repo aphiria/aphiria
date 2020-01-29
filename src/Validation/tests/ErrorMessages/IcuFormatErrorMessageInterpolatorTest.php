@@ -13,47 +13,47 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\ErrorMessages;
 
 use Aphiria\Validation\ErrorMessages\ErrorMessageInterpolationException;
-use Aphiria\Validation\ErrorMessages\IcuFormatErrorMessageInterpolater;
+use Aphiria\Validation\ErrorMessages\IcuFormatErrorMessageInterpolator;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the ICU format error message interpolater
+ * Tests the ICU format error message interpolator
  */
-class IcuFormatErrorMessageInterpolaterTest extends TestCase
+class IcuFormatErrorMessageInterpolatorTest extends TestCase
 {
     public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithNoPlaceholders(): void
     {
-        $interpolater = new IcuFormatErrorMessageInterpolater();
+        $interpolator = new IcuFormatErrorMessageInterpolator();
         $this->assertEquals(
             'foo bar',
-            $interpolater->interpolate('foo bar')
+            $interpolator->interpolate('foo bar')
         );
     }
 
     public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithFallbackLocale(): void
     {
-        $interpolater = new IcuFormatErrorMessageInterpolater('de');
+        $interpolator = new IcuFormatErrorMessageInterpolator('de');
         $this->assertEquals(
             'Dave has $1,23',
-            $interpolater->interpolate('Dave has ${amount, number}', ['amount' => 1.23])
+            $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23])
         );
     }
 
     public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithInputLocale(): void
     {
-        $interpolater = new IcuFormatErrorMessageInterpolater();
+        $interpolator = new IcuFormatErrorMessageInterpolator();
         $this->assertEquals(
             'Dave has $1,23',
-            $interpolater->interpolate('Dave has ${amount, number}', ['amount' => 1.23], 'de')
+            $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23], 'de')
         );
     }
 
     public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithPlaceholders(): void
     {
-        $interpolater = new IcuFormatErrorMessageInterpolater();
+        $interpolator = new IcuFormatErrorMessageInterpolator();
         $this->assertEquals(
             'Dave has $1.23',
-            $interpolater->interpolate('Dave has ${amount, number}', ['amount' => 1.23])
+            $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23])
         );
     }
 
@@ -61,17 +61,17 @@ class IcuFormatErrorMessageInterpolaterTest extends TestCase
     {
         $this->expectException(ErrorMessageInterpolationException::class);
         $this->expectExceptionMessage('Could not interpolate error message ID {');
-        $interpolater = new IcuFormatErrorMessageInterpolater();
-        $interpolater->interpolate('{', [], 'en-US');
+        $interpolator = new IcuFormatErrorMessageInterpolator();
+        $interpolator->interpolate('{', [], 'en-US');
     }
 
     public function testSettingDefaultLocaleCausesInterpolationToUseItAsFallbackLocale(): void
     {
-        $interpolater = new IcuFormatErrorMessageInterpolater();
-        $interpolater->setDefaultLocale('de');
+        $interpolator = new IcuFormatErrorMessageInterpolator();
+        $interpolator->setDefaultLocale('de');
         $this->assertEquals(
             'Dave has $1,23',
-            $interpolater->interpolate('Dave has ${amount, number}', ['amount' => 1.23])
+            $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23])
         );
     }
 }

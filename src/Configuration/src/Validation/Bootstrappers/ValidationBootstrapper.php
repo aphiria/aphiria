@@ -20,9 +20,9 @@ use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegist
 use Aphiria\Validation\Constraints\Caching\FileObjectConstraintsRegistryCache;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
-use Aphiria\Validation\ErrorMessages\IcuFormatErrorMessageInterpolater;
-use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolater;
-use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolater;
+use Aphiria\Validation\ErrorMessages\IcuFormatErrorMessageInterpolator;
+use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
+use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\Validator;
 use Doctrine\Annotations\AnnotationException;
@@ -56,11 +56,11 @@ final class ValidationBootstrapper extends Bootstrapper
         $errorMessageInterpolaterConfiguration = Configuration::getArray('validation.errorMessageInterpolater');
 
         switch ($errorMessageInterpolaterConfiguration['type']) {
-            case StringReplaceErrorMessageInterpolater::class:
-                $errorMessageInterpolater = new StringReplaceErrorMessageInterpolater();
+            case StringReplaceErrorMessageInterpolator::class:
+                $errorMessageInterpolater = new StringReplaceErrorMessageInterpolator();
                 break;
-            case IcuFormatErrorMessageInterpolater::class:
-                $errorMessageInterpolater = new IcuFormatErrorMessageInterpolater(
+            case IcuFormatErrorMessageInterpolator::class:
+                $errorMessageInterpolater = new IcuFormatErrorMessageInterpolator(
                     $errorMessageInterpolaterConfiguration['defaultLocale'] ?? 'en'
                 );
                 break;
@@ -68,7 +68,7 @@ final class ValidationBootstrapper extends Bootstrapper
                 throw new ConfigurationException("Unsupported error message interpolater type {$errorMessageInterpolaterConfiguration['type']}");
         }
 
-        $container->bindInstance(IErrorMessageInterpolater::class, $errorMessageInterpolater);
+        $container->bindInstance(IErrorMessageInterpolator::class, $errorMessageInterpolater);
 
         // Register some constraint annotation dependencies
         $constraintAnnotationRegistrant = new AnnotationObjectConstraintsRegistrant(
