@@ -33,6 +33,7 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatt
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Http\StreamResponseWriter;
@@ -150,12 +151,12 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
     private function getDefaultExceptionResponseFactory(IContainer $container): Closure
     {
         if (!Configuration::getBool('exceptions.useProblemDetails')) {
-            return function (Exception $ex, ?IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory) {
+            return function (Exception $ex, ?IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory): IHttpResponseMessage {
                 return new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
             };
         }
 
-        return function (Exception $ex, ?IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory) use ($container) {
+        return function (Exception $ex, ?IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory) use ($container): IHttpResponseMessage {
             $problemDetails = new ProblemDetails(
                 'https://tools.ietf.org/html/rfc7231#section-6.6.1',
                 'An error occurred',
@@ -195,12 +196,12 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
     private function getInvalidRequestBodyResponseFactory(): Closure
     {
         if (!Configuration::getBool('exceptions.useProblemDetails')) {
-            return function (InvalidRequestBodyException $ex, IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory) {
-                new Response(HttpStatusCodes::HTTP_BAD_REQUEST);
+            return function (InvalidRequestBodyException $ex, IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory): IHttpResponseMessage {
+                return new Response(HttpStatusCodes::HTTP_BAD_REQUEST);
             };
         }
 
-        return function (InvalidRequestBodyException $ex, IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory) {
+        return function (InvalidRequestBodyException $ex, IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory): IHttpResponseMessage {
             $body = new ValidationProblemDetails($ex->getErrors());
             $response = $responseFactory->createResponse($request, HttpStatusCodes::HTTP_BAD_REQUEST, null, $body);
 
