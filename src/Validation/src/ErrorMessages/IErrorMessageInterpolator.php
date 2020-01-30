@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Validation\ErrorMessages;
 
 /**
- * Defines the interface for error message interpolaters to implement
+ * Defines the interface for error message interpolators to implement
  */
-interface IErrorMessageInterpolater
+interface IErrorMessageInterpolator
 {
     /**
      * Interpolates an error message ID along with placeholders into human-readable error messages

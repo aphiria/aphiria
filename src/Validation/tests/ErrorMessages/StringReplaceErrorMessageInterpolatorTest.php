@@ -12,36 +12,36 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\ErrorMessages;
 
-use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolater;
+use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolator;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the string replacement error message interpolater
+ * Tests the string replacement error message interpolator
  */
-class StringReplaceErrorMessageInterpolaterTest extends TestCase
+class StringReplaceErrorMessageInterpolatorTest extends TestCase
 {
-    private StringReplaceErrorMessageInterpolater $interpolater;
+    private StringReplaceErrorMessageInterpolator $interpolator;
 
     protected function setUp(): void
     {
-        $this->interpolater = new StringReplaceErrorMessageInterpolater();
+        $this->interpolator = new StringReplaceErrorMessageInterpolator();
     }
 
     public function testErrorMessageIdWithNoPlaceholdersIsReturnedIntact(): void
     {
-        $this->assertEquals('foo bar', $this->interpolater->interpolate('foo bar'));
+        $this->assertEquals('foo bar', $this->interpolator->interpolate('foo bar'));
     }
 
     public function testLeftoverUnusedPlaceholdersAreRemovedFromInterpolatedErrorMessage(): void
     {
-        $this->assertEquals('foo ', $this->interpolater->interpolate('foo {bar}'));
+        $this->assertEquals('foo ', $this->interpolator->interpolate('foo {bar}'));
     }
 
     public function testPlaceholdersArePopulated(): void
     {
         $this->assertEquals(
             'foo dave young',
-            $this->interpolater->interpolate('foo {bar} {baz}', ['bar' => 'dave', 'baz' => 'young'])
+            $this->interpolator->interpolate('foo {bar} {baz}', ['bar' => 'dave', 'baz' => 'young'])
         );
     }
 }

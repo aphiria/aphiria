@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Validation;
 
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
-use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolater;
-use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolater;
+use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
+use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolator;
 use InvalidArgumentException;
 use ReflectionException;
 use ReflectionMethod;
@@ -45,19 +45,19 @@ final class Validator implements IValidator
     ];
     /** @var ObjectConstraintsRegistry The registry of object constraints */
     private ObjectConstraintsRegistry $objectConstraints;
-    /** @var IErrorMessageInterpolater The interpolater for error messages */
-    private IErrorMessageInterpolater $errorMessageInterpolator;
+    /** @var IErrorMessageInterpolator The interpolator for error messages */
+    private IErrorMessageInterpolator $errorMessageInterpolator;
 
     /**
      * @param ObjectConstraintsRegistry $objectConstraints The registry of object constraints
-     * @param IErrorMessageInterpolater|null $errorMessageInterpolater The error message interpolater to use
+     * @param IErrorMessageInterpolator|null $errorMessageInterpolator The error message interpolator to use
      */
     public function __construct(
         ObjectConstraintsRegistry $objectConstraints,
-        IErrorMessageInterpolater $errorMessageInterpolater = null
+        IErrorMessageInterpolator $errorMessageInterpolator = null
     ) {
         $this->objectConstraints = $objectConstraints;
-        $this->errorMessageInterpolator = $errorMessageInterpolater ?? new StringReplaceErrorMessageInterpolater();
+        $this->errorMessageInterpolator = $errorMessageInterpolator ?? new StringReplaceErrorMessageInterpolator();
     }
 
     /**
