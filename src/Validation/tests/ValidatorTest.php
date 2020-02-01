@@ -160,7 +160,7 @@ class ValidatorTest extends TestCase
             ->method('interpolate')
             ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
-        $violations = null;
+        $violations = [];
         $this->assertFalse($this->validator->tryValidateMethod($object, 'method', $violations));
         $this->assertCount(1, $violations);
         $this->assertEquals('error', $violations[0]->getErrorMessage());
@@ -183,7 +183,7 @@ class ValidatorTest extends TestCase
             [],
             ['method' => $constraints]
         ));
-        $violations = null;
+        $violations = [];
         $this->assertTrue($this->validator->tryValidateMethod($object, 'method', $violations));
         $this->assertCount(0, $violations);
     }
@@ -270,7 +270,7 @@ class ValidatorTest extends TestCase
             ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
         /** @var ConstraintViolation[] $violations */
-        $violations = null;
+        $violations = [];
         $this->assertFalse($this->validator->tryValidateObject($object, $violations));
         $this->assertCount(1, $violations);
         $this->assertEquals('error', $violations[0]->getErrorMessage());
@@ -374,7 +374,7 @@ class ValidatorTest extends TestCase
             ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
         /** @var ConstraintViolation[] $violations */
-        $violations = null;
+        $violations = [];
         $this->assertFalse($this->validator->tryValidateProperty($object, 'prop', $violations));
         $this->assertCount(1, $violations);
         $this->assertEquals('error', $violations[0]->getErrorMessage());
@@ -387,7 +387,7 @@ class ValidatorTest extends TestCase
     {
         $constraints = [$this->createMockConstraint(false, 'foo')];
         /** @var ConstraintViolation[] $violations */
-        $violations = null;
+        $violations = [];
         $this->assertFalse($this->validator->tryValidateValue('foo', $constraints, $violations));
         $this->assertCount(1, $violations);
         $this->assertSame($constraints[0], $violations[0]->getConstraint());
@@ -398,7 +398,7 @@ class ValidatorTest extends TestCase
     public function testTryValidateValueWithValidValueHasNoConstraintViolations(): void
     {
         $constraints = [$this->createMockConstraint(true, 'foo')];
-        $violations = null;
+        $violations = [];
         $this->assertTrue($this->validator->tryValidateValue('foo', $constraints, $violations));
         $this->assertCount(0, $violations);
     }
@@ -471,7 +471,7 @@ class ValidatorTest extends TestCase
         $constraint = $this->createMock(IConstraint::class);
         $constraint->expects($this->once())
             ->method('passes')
-            ->with($value, $this->anything())
+            ->with($value)
             ->willReturn($shouldPass);
 
         return $constraint;

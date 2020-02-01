@@ -29,7 +29,7 @@ interface IValidator
      * @return bool True if the method was valid, otherwise false
      * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
-    public function tryValidateMethod(object $object, string $methodName, array &$violations = null): bool;
+    public function tryValidateMethod(object $object, string $methodName, array &$violations = []): bool;
 
     /**
      * Tries to validate an object
@@ -39,7 +39,7 @@ interface IValidator
      * @return bool True if the object was valid, otherwise false
      * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
-    public function tryValidateObject(object $object, array &$violations = null): bool;
+    public function tryValidateObject(object $object, array &$violations = []): bool;
 
     /**
      * Tries to validate a property in an object
@@ -50,7 +50,7 @@ interface IValidator
      * @return bool True if the property was valid, otherwise false
      * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
-    public function tryValidateProperty(object $object, string $propertyName, array &$violations = null): bool;
+    public function tryValidateProperty(object $object, string $propertyName, array &$violations = []): bool;
 
     /**
      * Tries to validate a single value
@@ -61,7 +61,7 @@ interface IValidator
      * @return bool True if the value was valid, otherwise false
      * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
-    public function tryValidateValue($value, array $constraints, array &$violations = null): bool;
+    public function tryValidateValue($value, array $constraints, array &$violations = []): bool;
 
     /**
      * Validates a method in an object

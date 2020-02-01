@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Constraints;
 
-use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 
 /**
@@ -55,7 +54,7 @@ class MaxConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value, ValidationContext $validationContext): bool
+    public function passes($value): bool
     {
         if ($this->isInclusive) {
             return $value <= $this->max;

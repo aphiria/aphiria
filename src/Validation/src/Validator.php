@@ -66,7 +66,7 @@ final class Validator implements IValidator
      * @inheritdoc
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message
      */
-    public function tryValidateMethod(object $object, string $methodName, array &$violations = null): bool
+    public function tryValidateMethod(object $object, string $methodName, array &$violations = []): bool
     {
         $context = new ValidationContext($object, null, $methodName);
         $successful = $this->tryValidateMethodWithContext($object, $methodName, $context);
@@ -79,7 +79,7 @@ final class Validator implements IValidator
      * @inheritdoc
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message
      */
-    public function tryValidateObject(object $object, array &$violations = null): bool
+    public function tryValidateObject(object $object, array &$violations = []): bool
     {
         $context = new ValidationContext($object);
         $successful = $this->tryValidateObjectWithContext($object, $context);
@@ -92,7 +92,7 @@ final class Validator implements IValidator
      * @inheritdoc
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message
      */
-    public function tryValidateProperty(object $object, string $propertyName, array &$violations = null): bool
+    public function tryValidateProperty(object $object, string $propertyName, array &$violations = []): bool
     {
         $context = new ValidationContext($object, $propertyName);
         $successful = $this->tryValidatePropertyWithContext($object, $propertyName, $context);
@@ -105,7 +105,7 @@ final class Validator implements IValidator
      * @inheritdoc
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message
      */
-    public function tryValidateValue($value, array $constraints, array &$violations = null): bool
+    public function tryValidateValue($value, array $constraints, array &$violations = []): bool
     {
         $context = new ValidationContext($value);
         $successful = $this->tryValidateValueWithContext($value, $constraints, $context);
@@ -254,7 +254,7 @@ final class Validator implements IValidator
         try {
             $reflectionMethod = new ReflectionMethod($class, $methodName);
         } catch (ReflectionException $ex) {
-            throw new ValidationException($validationContext, "Failed to reflect method $class::$methodName()", 0, $ex);
+            throw new ValidationException($validationContext->getConstraintViolations(), "Failed to reflect method $class::$methodName()", 0, $ex);
         }
 
         // Don't bother with magic methods or methods that require parameters
@@ -278,7 +278,7 @@ final class Validator implements IValidator
 
         if (($objectConstraints = $this->objectConstraints->getConstraintsForClass($class)) !== null) {
             foreach ($objectConstraints->getMethodConstraints($methodName) as $constraint) {
-                $thisConstraintPassed = $constraint->passes($methodValue, $validationContext);
+                $thisConstraintPassed = $constraint->passes($methodValue);
                 $allConstraintsPassed = $allConstraintsPassed && $thisConstraintPassed;
 
                 if (!$thisConstraintPassed) {
@@ -298,7 +298,7 @@ final class Validator implements IValidator
         }
 
         if (!$allConstraintsPassed) {
-            throw new ValidationException($validationContext, "Failed to validate $class::$methodName()");
+            throw new ValidationException($validationContext->getConstraintViolations(), "Failed to validate $class::$methodName()");
         }
     }
 
@@ -333,7 +333,7 @@ final class Validator implements IValidator
         }
 
         if (!$allConstraintsPassed) {
-            throw new ValidationException($validationContext, 'Failed to validate ' . \get_class($object));
+            throw new ValidationException($validationContext->getConstraintViolations(), 'Failed to validate ' . \get_class($object));
         }
     }
 
@@ -359,7 +359,7 @@ final class Validator implements IValidator
         try {
             $reflectionProperty = new ReflectionProperty($class, $propertyName);
         } catch (ReflectionException $ex) {
-            throw new ValidationException($validationContext, "Failed to reflect property $class::$propertyName", 0, $ex);
+            throw new ValidationException($validationContext->getConstraintViolations(), "Failed to reflect property $class::$propertyName", 0, $ex);
         }
 
         $reflectionProperty->setAccessible(true);
@@ -375,7 +375,7 @@ final class Validator implements IValidator
 
         if (($objectConstraints = $this->objectConstraints->getConstraintsForClass($class)) !== null) {
             foreach ($objectConstraints->getPropertyConstraints($propertyName) as $constraint) {
-                $thisConstraintPassed = $constraint->passes($propertyValue, $validationContext);
+                $thisConstraintPassed = $constraint->passes($propertyValue);
                 $allConstraintsPassed = $allConstraintsPassed && $thisConstraintPassed;
 
                 if (!$thisConstraintPassed) {
@@ -394,7 +394,7 @@ final class Validator implements IValidator
         }
 
         if (!$allConstraintsPassed) {
-            throw new ValidationException($validationContext, "Failed to validate $class::$propertyName");
+            throw new ValidationException($validationContext->getConstraintViolations(), "Failed to validate $class::$propertyName");
         }
     }
 
@@ -412,7 +412,7 @@ final class Validator implements IValidator
         $allConstraintsPass = true;
 
         foreach ($constraints as $constraint) {
-            $thisConstraintPassed = $constraint->passes($value, $validationContext);
+            $thisConstraintPassed = $constraint->passes($value);
             $allConstraintsPass = $allConstraintsPass && $thisConstraintPassed;
 
             if (!$thisConstraintPassed) {
@@ -429,7 +429,7 @@ final class Validator implements IValidator
         }
 
         if (!$allConstraintsPass) {
-            throw new ValidationException($validationContext);
+            throw new ValidationException($validationContext->getConstraintViolations());
         }
     }
 }

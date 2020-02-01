@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Constraints;
 
-use Aphiria\Validation\ValidationContext;
-
 /**
  * Defines a regular expression constraint
  */
@@ -38,7 +36,7 @@ class RegexConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value, ValidationContext $validationContext): bool
+    public function passes($value): bool
     {
         return preg_match($this->regex, $value) === 1;
     }

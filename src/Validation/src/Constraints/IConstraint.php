@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Constraints;
 
-use Aphiria\Validation\ValidationContext;
-
 /**
  * Defines the interface for constraints to implement
  */
@@ -39,8 +37,7 @@ interface IConstraint
      * Gets whether or not the constraint passes
      *
      * @param mixed $value The value to validate
-     * @param ValidationContext $validationContext The context to perform validation in
      * @return bool True if the constraint passes, otherwise false
      */
-    public function passes($value, ValidationContext $validationContext): bool;
+    public function passes($value): bool;
 }

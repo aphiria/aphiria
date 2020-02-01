@@ -75,12 +75,13 @@ final class RequestBodyValidator implements IRequestBodyValidator
                 $this->validator->validateObject($body);
             }
         } catch (ValidationException $ex) {
-            throw new InvalidRequestBodyException(
-                $ex->getValidationContext()->getErrorMessages(),
-                'Invalid request body',
-                0,
-                $ex
-            );
+            $errors = [];
+
+            foreach ($ex->getViolations() as $violation) {
+                $errors[] = $violation->getErrorMessage();
+            }
+
+            throw new InvalidRequestBodyException($errors, 'Invalid request body', 0, $ex);
         }
     }
 }

@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Constraints;
 
-use Aphiria\Validation\ValidationContext;
-
 /**
  * Defines the callback constraint
  */
@@ -38,8 +36,8 @@ class CallbackConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value, ValidationContext $validationContext): bool
+    public function passes($value): bool
     {
-        return ($this->callback)($value, $validationContext);
+        return ($this->callback)($value);
     }
 }

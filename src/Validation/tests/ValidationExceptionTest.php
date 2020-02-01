@@ -12,7 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests;
 
-use Aphiria\Validation\ValidationContext;
+use Aphiria\Validation\Constraints\IConstraint;
+use Aphiria\Validation\ConstraintViolation;
 use Aphiria\Validation\ValidationException;
 use PHPUnit\Framework\TestCase;
 
@@ -21,10 +22,10 @@ use PHPUnit\Framework\TestCase;
  */
 class ValidationExceptionTest extends TestCase
 {
-    public function testErrorsAreSameOnesPassedViaConstructor(): void
+    public function testViolationsAreSameOnesPassedViaConstructor(): void
     {
-        $context = new ValidationContext($this);
-        $exception = new ValidationException($context);
-        $this->assertSame($context, $exception->getValidationContext());
+        $violations = [new ConstraintViolation('foo', $this->createMock(IConstraint::class), 'bar', 'baz')];
+        $exception = new ValidationException($violations);
+        $this->assertSame($violations, $exception->getViolations());
     }
 }

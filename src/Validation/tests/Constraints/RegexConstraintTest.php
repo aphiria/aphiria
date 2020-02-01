@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints;
 
-use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\Constraints\RegexConstraint;
 use PHPUnit\Framework\TestCase;
 
@@ -34,9 +33,8 @@ class RegexConstraintTest extends TestCase
 
     public function testMatchingValuesPass(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new RegexConstraint('/^[a-z]{3}$/', 'foo');
-        $this->assertTrue($constraint->passes('foo', $context));
+        $this->assertTrue($constraint->passes('foo'));
     }
 
     /**
@@ -44,8 +42,7 @@ class RegexConstraintTest extends TestCase
      */
     public function testNonMatchingValuesFail(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new RegexConstraint('/^[a-z]{3}$/', 'foo');
-        $this->assertFalse($constraint->passes('a', $context));
+        $this->assertFalse($constraint->passes('a'));
     }
 }

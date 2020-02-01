@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Constraints;
 
 use Aphiria\Validation\Constraints\EmailConstraint;
-use Aphiria\Validation\ValidationContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -34,15 +33,13 @@ class EmailConstraintTest extends TestCase
 
     public function testInvalidEmailFails(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new EmailConstraint('foo');
-        $this->assertFalse($constraint->passes('foo', $context));
+        $this->assertFalse($constraint->passes('foo'));
     }
 
     public function testValidEmailPasses(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new EmailConstraint('foo');
-        $this->assertTrue($constraint->passes('foo@bar.com', $context));
+        $this->assertTrue($constraint->passes('foo@bar.com'));
     }
 }

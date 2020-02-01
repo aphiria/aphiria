@@ -20,27 +20,27 @@ use Throwable;
  */
 final class ValidationException extends InvalidArgumentException
 {
-    /** @var ValidationContext The context that the error occurred in */
-    private ValidationContext $validationContext;
+    /** @var ConstraintViolation[] The violations that occurred */
+    private array $violations;
 
     /**
      * @inheritdoc
-     * @param ValidationContext $validationContext The context that the error occurred in
+     * @param ConstraintViolation[] $violations The violations that occurred
      */
-    public function __construct(ValidationContext $validationContext, $message = '', $code = 0, Throwable $previous = null)
+    public function __construct(array $violations, $message = '', $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
 
-        $this->validationContext = $validationContext;
+        $this->violations = $violations;
     }
 
     /**
-     * Gets the context that the error occurred in
+     * Gets the violations that occurred
      *
-     * @return ValidationContext The context that the error occurred in
+     * @return ConstraintViolation[] The list of violations
      */
-    public function getValidationContext(): ValidationContext
+    public function getViolations(): array
     {
-        return $this->validationContext;
+        return $this->violations;
     }
 }

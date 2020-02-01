@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints;
 
-use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\Constraints\NotInConstraint;
 use PHPUnit\Framework\TestCase;
 
@@ -34,9 +33,8 @@ class NotInConstraintTest extends TestCase
 
     public function testMatchingValuesPass(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new NotInConstraint(['foo', 'bar'], 'foo');
-        $this->assertTrue($constraint->passes('baz', $context));
+        $this->assertTrue($constraint->passes('baz'));
     }
 
     /**
@@ -44,8 +42,7 @@ class NotInConstraintTest extends TestCase
      */
     public function testNonMatchingValuesFail(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new NotInConstraint(['foo', 'bar'], 'foo');
-        $this->assertFalse($constraint->passes('foo', $context));
+        $this->assertFalse($constraint->passes('foo'));
     }
 }
