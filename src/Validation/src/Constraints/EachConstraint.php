@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Constraints;
 
-use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 
 /**
@@ -40,7 +39,7 @@ final class EachConstraint extends Constraint
      * @inheritdoc
      * @throws InvalidArgumentException Thrown if the value is not an
      */
-    public function passes($values, ValidationContext $validationContext): bool
+    public function passes($values): bool
     {
         if (!\is_iterable($values)) {
             throw new InvalidArgumentException('Value must be iterable');
@@ -48,8 +47,7 @@ final class EachConstraint extends Constraint
 
         foreach ($values as $key => $value) {
             foreach ($this->constraints as $constraint) {
-                // We don't pass in a new validation context because the context is in terms of the entire array, not individual values
-                if (!$constraint->passes($value, $validationContext)) {
+                if (!$constraint->passes($value)) {
                     return false;
                 }
             }

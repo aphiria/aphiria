@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Constraints;
 
-use Aphiria\Validation\ValidationContext;
 use DateTime;
 use InvalidArgumentException;
 
@@ -45,7 +44,7 @@ final class DateConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value, ValidationContext $validationContext): bool
+    public function passes($value): bool
     {
         foreach ($this->acceptableFormats as $format) {
             $dateTime = DateTime::createFromFormat($format, $value);

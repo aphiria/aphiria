@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints;
 
-use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\Constraints\BetweenConstraint;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -24,10 +23,9 @@ class BetweenConstraintTest extends TestCase
 {
     public function testFailingConstraint(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new BetweenConstraint(1, 2, true, true, 'foo');
-        $this->assertFalse($constraint->passes(.9, $context));
-        $this->assertFalse($constraint->passes(2.1, $context));
+        $this->assertFalse($constraint->passes(.9,));
+        $this->assertFalse($constraint->passes(2.1));
     }
 
     public function testGettingErrorMessageId(): void
@@ -44,26 +42,25 @@ class BetweenConstraintTest extends TestCase
 
     public function testInclusiveFlagsAreRespected(): void
     {
-        $context = new ValidationContext($this);
         $minInclusiveConstraint = new BetweenConstraint(1, 3, true, false);
-        $this->assertTrue($minInclusiveConstraint->passes(1, $context));
-        $this->assertTrue($minInclusiveConstraint->passes(2, $context));
-        $this->assertFalse($minInclusiveConstraint->passes(0, $context));
+        $this->assertTrue($minInclusiveConstraint->passes(1));
+        $this->assertTrue($minInclusiveConstraint->passes(2));
+        $this->assertFalse($minInclusiveConstraint->passes(0));
 
         $maxInclusiveConstraint = new BetweenConstraint(1, 3, false, true);
-        $this->assertTrue($maxInclusiveConstraint->passes(3, $context));
-        $this->assertTrue($maxInclusiveConstraint->passes(2, $context));
-        $this->assertFalse($maxInclusiveConstraint->passes(4, $context));
+        $this->assertTrue($maxInclusiveConstraint->passes(3));
+        $this->assertTrue($maxInclusiveConstraint->passes(2));
+        $this->assertFalse($maxInclusiveConstraint->passes(4));
 
         $neitherInclusiveConstraint = new BetweenConstraint(1, 3, false, false);
-        $this->assertFalse($neitherInclusiveConstraint->passes(1, $context));
-        $this->assertFalse($neitherInclusiveConstraint->passes(3, $context));
-        $this->assertTrue($neitherInclusiveConstraint->passes(2, $context));
+        $this->assertFalse($neitherInclusiveConstraint->passes(1));
+        $this->assertFalse($neitherInclusiveConstraint->passes(3));
+        $this->assertTrue($neitherInclusiveConstraint->passes(2));
 
         $bothInclusiveConstraint = new BetweenConstraint(1, 3, true, true);
-        $this->assertTrue($bothInclusiveConstraint->passes(1, $context));
-        $this->assertTrue($bothInclusiveConstraint->passes(3, $context));
-        $this->assertTrue($bothInclusiveConstraint->passes(2, $context));
+        $this->assertTrue($bothInclusiveConstraint->passes(1));
+        $this->assertTrue($bothInclusiveConstraint->passes(3));
+        $this->assertTrue($bothInclusiveConstraint->passes(2));
     }
 
     public function testNonNumericValueThrowsException(): void
@@ -71,15 +68,14 @@ class BetweenConstraintTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Value must be numeric');
         $constraint = new BetweenConstraint(1, 2, true, true);
-        $constraint->passes('foo', new ValidationContext('foo'));
+        $constraint->passes('foo');
     }
 
     public function testPassingValue(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new BetweenConstraint(1, 2, true, true);
-        $this->assertTrue($constraint->passes(1, $context));
-        $this->assertTrue($constraint->passes(1.5, $context));
-        $this->assertTrue($constraint->passes(2, $context));
+        $this->assertTrue($constraint->passes(1));
+        $this->assertTrue($constraint->passes(1.5));
+        $this->assertTrue($constraint->passes(2));
     }
 }

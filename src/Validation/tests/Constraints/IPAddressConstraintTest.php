@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Constraints;
 
 use Aphiria\Validation\Constraints\IPAddressConstraint;
-use Aphiria\Validation\ValidationContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,10 +22,9 @@ class IPAddressConstraintTest extends TestCase
 {
     public function testFailingValue(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new IPAddressConstraint('foo');
-        $this->assertFalse($constraint->passes('', $context));
-        $this->assertFalse($constraint->passes('123', $context));
+        $this->assertFalse($constraint->passes(''));
+        $this->assertFalse($constraint->passes('123'));
     }
 
     public function testGettingErrorMessageId(): void
@@ -42,8 +40,7 @@ class IPAddressConstraintTest extends TestCase
 
     public function testPassingValue(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new IPAddressConstraint('foo');
-        $this->assertTrue($constraint->passes('127.0.0.1', $context));
+        $this->assertTrue($constraint->passes('127.0.0.1'));
     }
 }

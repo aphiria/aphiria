@@ -16,7 +16,6 @@ use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
-use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\ValidationException;
 
 /**
@@ -70,18 +69,19 @@ final class RequestBodyValidator implements IRequestBodyValidator
         try {
             if (\is_array($body)) {
                 foreach ($body as $bodyPart) {
-                    $this->validator->validateObject($bodyPart, new ValidationContext($bodyPart));
+                    $this->validator->validateObject($bodyPart);
                 }
             } elseif (\is_object($body)) {
-                $this->validator->validateObject($body, new ValidationContext($body));
+                $this->validator->validateObject($body);
             }
         } catch (ValidationException $ex) {
-            throw new InvalidRequestBodyException(
-                $ex->getValidationContext()->getErrorMessages(),
-                'Invalid request body',
-                0,
-                $ex
-            );
+            $errors = [];
+
+            foreach ($ex->getViolations() as $violation) {
+                $errors[] = $violation->getErrorMessage();
+            }
+
+            throw new InvalidRequestBodyException($errors, 'Invalid request body', 0, $ex);
         }
     }
 }

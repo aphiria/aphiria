@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints;
 
-use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\Constraints\EqualsConstraint;
 use PHPUnit\Framework\TestCase;
 
@@ -23,9 +22,8 @@ class EqualsConstraintTest extends TestCase
 {
     public function testEqualValuesPass(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new EqualsConstraint('foo', 'bar');
-        $this->assertTrue($constraint->passes('foo', $context));
+        $this->assertTrue($constraint->passes('foo'));
     }
 
     public function testGettingErrorMessageId(): void
@@ -41,8 +39,7 @@ class EqualsConstraintTest extends TestCase
 
     public function testUnequalValuesFail(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new EqualsConstraint('foo', 'bar');
-        $this->assertFalse($constraint->passes('baz', $context));
+        $this->assertFalse($constraint->passes('baz'));
     }
 }

@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints;
 
-use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\Constraints\CallbackConstraint;
 use PHPUnit\Framework\TestCase;
 
@@ -23,21 +22,19 @@ class CallbackConstraintTest extends TestCase
 {
     public function testCallbackIsExecuted(): void
     {
-        $expectedContext = new ValidationContext($this);
         $correctInputWasPassed = false;
-        $callback = function ($value, ValidationContext $validationContext) use (&$correctInputWasPassed, $expectedContext) {
-            $correctInputWasPassed = $value === 'foo' && $validationContext === $expectedContext;
+        $callback = function ($value) use (&$correctInputWasPassed) {
+            $correctInputWasPassed = $value === 'foo';
 
             return true;
         };
         $constraint = new CallbackConstraint($callback, 'foo');
-        $constraint->passes('foo', $expectedContext);
+        $constraint->passes('foo');
         $this->assertTrue($correctInputWasPassed);
     }
 
     public function testCallbackReturnValueIsRespected(): void
     {
-        $context = new ValidationContext($this);
         $trueCallback = function () {
             return true;
         };
@@ -46,8 +43,8 @@ class CallbackConstraintTest extends TestCase
         };
         $passConstraint = new CallbackConstraint($trueCallback, 'foo');
         $failConstraint = new CallbackConstraint($falseCallback, 'foo');
-        $this->assertTrue($passConstraint->passes('foo', $context));
-        $this->assertFalse($failConstraint->passes('bar', $context));
+        $this->assertTrue($passConstraint->passes('foo'));
+        $this->assertFalse($failConstraint->passes('bar'));
     }
 
     public function testGettingErrorMessageId(): void

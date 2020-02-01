@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Constraints;
 
 use Aphiria\Validation\Constraints\NumericConstraint;
-use Aphiria\Validation\ValidationContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,10 +22,9 @@ class NumericConstraintTest extends TestCase
 {
     public function testFailingValue(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new NumericConstraint('foo');
-        $this->assertFalse($constraint->passes(false, $context));
-        $this->assertFalse($constraint->passes('foo', $context));
+        $this->assertFalse($constraint->passes(false));
+        $this->assertFalse($constraint->passes('foo'));
     }
 
     public function testGettingErrorMessageId(): void
@@ -42,11 +40,10 @@ class NumericConstraintTest extends TestCase
 
     public function testPassingValue(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new NumericConstraint('foo');
-        $this->assertTrue($constraint->passes(0, $context));
-        $this->assertTrue($constraint->passes(1, $context));
-        $this->assertTrue($constraint->passes(1.0, $context));
-        $this->assertTrue($constraint->passes('1.0', $context));
+        $this->assertTrue($constraint->passes(0));
+        $this->assertTrue($constraint->passes(1));
+        $this->assertTrue($constraint->passes(1.0));
+        $this->assertTrue($constraint->passes('1.0'));
     }
 }

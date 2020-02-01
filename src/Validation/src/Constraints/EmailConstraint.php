@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Constraints;
 
-use Aphiria\Validation\ValidationContext;
-
 /**
  * Defines the email constraint
  */
@@ -33,7 +31,7 @@ final class EmailConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value, ValidationContext $validationContext): bool
+    public function passes($value): bool
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
     }

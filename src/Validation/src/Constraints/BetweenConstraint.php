@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Constraints;
 
-use Aphiria\Validation\ValidationContext;
 use InvalidArgumentException;
 
 /**
@@ -69,7 +68,7 @@ final class BetweenConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value, ValidationContext $validationContext): bool
+    public function passes($value): bool
     {
         if (!\is_numeric($value)) {
             throw new InvalidArgumentException('Value must be numeric');

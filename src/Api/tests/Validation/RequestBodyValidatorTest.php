@@ -20,7 +20,6 @@ use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\ConstraintViolation;
 use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
-use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\ValidationException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -82,23 +81,24 @@ class RequestBodyValidatorTest extends TestCase
 
     public function testValidatingInvalidBodyPopulatesExceptionErrorsWithErrorsFromViolations(): void
     {
-        $expectedContext = new ValidationContext($this);
-        $expectedContext->addConstraintViolation(new ConstraintViolation(
-            'error1',
-            $this->createMock(IConstraint::class),
-            $this,
-            $this
-        ));
-        $expectedContext->addConstraintViolation(new ConstraintViolation(
-            'error2',
-            $this->createMock(IConstraint::class),
-            $this,
-            $this
-        ));
-        $expectedException = new ValidationException($expectedContext);
+        $violations = [
+            new ConstraintViolation(
+                'error1',
+                $this->createMock(IConstraint::class),
+                $this,
+                $this
+            ),
+            new ConstraintViolation(
+                'error2',
+                $this->createMock(IConstraint::class),
+                $this,
+                $this
+            )
+        ];
+        $expectedException = new ValidationException($violations);
         $this->validator->expects($this->once())
             ->method('validateObject')
-            ->with($this, $this->callback(fn () => true))
+            ->with($this)
             ->willThrowException($expectedException);
 
         try {
@@ -153,7 +153,7 @@ class RequestBodyValidatorTest extends TestCase
     {
         $this->validator->expects($this->once())
             ->method('validateObject')
-            ->with($this, $this->callback(fn () => true));
+            ->with($this);
         $this->requestBodyValidator->validate($this->request, $this);
         // Dummy assertion
         $this->assertTrue(true);

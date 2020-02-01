@@ -9,4 +9,4 @@
 
 <h1>Documentation</h1>
 
-Full documentation is available <a href="https://www.aphiria.com/docs/master/configuration.html" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/master/application-builders.html" target="_blank">here</a>.

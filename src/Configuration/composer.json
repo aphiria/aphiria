@@ -29,6 +29,9 @@
         "aphiria/console": "1.0.*@dev",
         "aphiria/dependency-injection": "1.0.*@dev",
         "aphiria/exceptions": "1.0.*@dev",
+        "aphiria/net": "1.0.*@dev",
+        "aphiria/router": "1.0.*@dev",
+        "aphiria/serialization": "1.0.*@dev",
         "aphiria/validation": "1.0.*@dev",
         "php": "^7.4",
         "psr/log": "~1.0"

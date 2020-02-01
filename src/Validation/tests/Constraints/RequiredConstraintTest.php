@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Constraints;
 
 use Aphiria\Validation\Constraints\RequiredConstraint;
-use Aphiria\Validation\ValidationContext;
 use Countable;
 use PHPUnit\Framework\TestCase;
 
@@ -24,14 +23,13 @@ class RequiredConstraintTest extends TestCase
 {
     public function testEmptyArrayFails(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new RequiredConstraint('foo');
-        $this->assertFalse($constraint->passes([], $context));
+        $this->assertFalse($constraint->passes([]));
         $countable = $this->createMock(Countable::class);
         $countable->expects($this->once())
             ->method('count')
             ->willReturn(0);
-        $this->assertFalse($constraint->passes($countable, $context));
+        $this->assertFalse($constraint->passes($countable));
     }
 
     public function testGettingErrorMessageId(): void
@@ -47,19 +45,17 @@ class RequiredConstraintTest extends TestCase
 
     public function testSetValuePasses(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new RequiredConstraint('foo');
-        $this->assertTrue($constraint->passes(0, $context));
-        $this->assertTrue($constraint->passes(true, $context));
-        $this->assertTrue($constraint->passes(false, $context));
-        $this->assertTrue($constraint->passes('foo', $context));
+        $this->assertTrue($constraint->passes(0));
+        $this->assertTrue($constraint->passes(true));
+        $this->assertTrue($constraint->passes(false));
+        $this->assertTrue($constraint->passes('foo'));
     }
 
     public function testUnsetValueFails(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new RequiredConstraint('foo');
-        $this->assertFalse($constraint->passes(null, $context));
-        $this->assertFalse($constraint->passes('', $context));
+        $this->assertFalse($constraint->passes(null));
+        $this->assertFalse($constraint->passes(''));
     }
 }

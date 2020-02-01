@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Constraints\Mocks;
 
 use Aphiria\Validation\Constraints\IConstraint;
-use Aphiria\Validation\ValidationContext;
 
 /**
  * Defines a mock constraint for use in tests
@@ -39,7 +38,7 @@ final class MockConstraint implements IConstraint
     /**
      * @inheritdoc
      */
-    public function passes($value, ValidationContext $validationContext): bool
+    public function passes($value): bool
     {
         return true;
     }

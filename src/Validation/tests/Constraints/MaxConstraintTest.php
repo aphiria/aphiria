@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints;
 
-use Aphiria\Validation\ValidationContext;
 use Aphiria\Validation\Constraints\MaxConstraint;
 use PHPUnit\Framework\TestCase;
 
@@ -23,10 +22,9 @@ class MaxConstraintTest extends TestCase
 {
     public function testFailingConstraint(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new MaxConstraint(1.5, true, 'foo');
-        $this->assertFalse($constraint->passes(2, $context));
-        $this->assertFalse($constraint->passes(1.6, $context));
+        $this->assertFalse($constraint->passes(2));
+        $this->assertFalse($constraint->passes(1.6));
     }
 
     public function testGettingErrorMessageId(): void
@@ -43,18 +41,16 @@ class MaxConstraintTest extends TestCase
 
     public function testPassingValue(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new MaxConstraint(2, true, 'foo');
-        $this->assertTrue($constraint->passes(2, $context));
-        $this->assertTrue($constraint->passes(1, $context));
-        $this->assertTrue($constraint->passes(1.5, $context));
+        $this->assertTrue($constraint->passes(2));
+        $this->assertTrue($constraint->passes(1));
+        $this->assertTrue($constraint->passes(1.5));
     }
 
     public function testValueThatIsNotInclusive(): void
     {
-        $context = new ValidationContext($this);
         $constraint = new MaxConstraint(2, false, 'foo');
-        $this->assertFalse($constraint->passes(2, $context));
-        $this->assertTrue($constraint->passes(1.9, $context));
+        $this->assertFalse($constraint->passes(2));
+        $this->assertTrue($constraint->passes(1.9));
     }
 }
