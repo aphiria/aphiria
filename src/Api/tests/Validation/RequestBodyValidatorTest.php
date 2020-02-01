@@ -98,7 +98,7 @@ class RequestBodyValidatorTest extends TestCase
         $expectedException = new ValidationException($expectedContext);
         $this->validator->expects($this->once())
             ->method('validateObject')
-            ->with($this, $this->callback(fn () => true))
+            ->with($this)
             ->willThrowException($expectedException);
 
         try {
@@ -153,7 +153,7 @@ class RequestBodyValidatorTest extends TestCase
     {
         $this->validator->expects($this->once())
             ->method('validateObject')
-            ->with($this, $this->callback(fn () => true));
+            ->with($this);
         $this->requestBodyValidator->validate($this->request, $this);
         // Dummy assertion
         $this->assertTrue(true);
