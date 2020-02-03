@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\ErrorMessages;
 
+use Aphiria\Validation\ErrorMessages\IErrorMessageTemplateRegistry;
 use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolator;
 use PHPUnit\Framework\TestCase;
 
@@ -20,28 +21,35 @@ use PHPUnit\Framework\TestCase;
  */
 class StringReplaceErrorMessageInterpolatorTest extends TestCase
 {
-    private StringReplaceErrorMessageInterpolator $interpolator;
-
-    protected function setUp(): void
-    {
-        $this->interpolator = new StringReplaceErrorMessageInterpolator();
-    }
-
     public function testErrorMessageIdWithNoPlaceholdersIsReturnedIntact(): void
     {
-        $this->assertEquals('foo bar', $this->interpolator->interpolate('foo bar'));
+        $interpolator = new StringReplaceErrorMessageInterpolator();
+        $this->assertEquals('foo bar', $interpolator->interpolate('foo bar'));
+    }
+
+    public function testInterpolatingGetsErrorMessageTemplateFromRegistry(): void
+    {
+        $errorMessageTemplates = $this->createMock(IErrorMessageTemplateRegistry::class);
+        $errorMessageTemplates->expects($this->once())
+            ->method('getErrorMessageTemplate')
+            ->with('foo', 'en-US')
+            ->willReturn('bar');
+        $interpolator = new StringReplaceErrorMessageInterpolator($errorMessageTemplates);
+        $this->assertEquals('bar', $interpolator->interpolate('foo', [], 'en-US'));
     }
 
     public function testLeftoverUnusedPlaceholdersAreRemovedFromInterpolatedErrorMessage(): void
     {
-        $this->assertEquals('foo ', $this->interpolator->interpolate('foo {bar}'));
+        $interpolator = new StringReplaceErrorMessageInterpolator();
+        $this->assertEquals('foo ', $interpolator->interpolate('foo {bar}'));
     }
 
     public function testPlaceholdersArePopulated(): void
     {
+        $interpolator = new StringReplaceErrorMessageInterpolator();
         $this->assertEquals(
             'foo dave young',
-            $this->interpolator->interpolate('foo {bar} {baz}', ['bar' => 'dave', 'baz' => 'young'])
+            $interpolator->interpolate('foo {bar} {baz}', ['bar' => 'dave', 'baz' => 'young'])
         );
     }
 }
