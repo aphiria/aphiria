@@ -20,6 +20,7 @@ use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegist
 use Aphiria\Validation\Constraints\Caching\FileObjectConstraintsRegistryCache;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
+use Aphiria\Validation\ErrorMessages\DefaultErrorMessageTemplateRegistry;
 use Aphiria\Validation\ErrorMessages\IcuFormatErrorMessageInterpolator;
 use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolator;
@@ -53,14 +54,30 @@ final class ValidationBootstrapper extends Bootstrapper
         $constraintsRegistrants = new ObjectConstraintsRegistrantCollection($constraintCache);
         $container->bindInstance(ObjectConstraintsRegistrantCollection::class, $constraintsRegistrants);
 
+        $errorMessageTemplateConfiguration = null;
+
+        if (Configuration::tryGetArray('validation.errorMessageTemplates', $errorMessageTemplateConfiguration)) {
+            switch ($errorMessageTemplateConfiguration['type']) {
+                case DefaultErrorMessageTemplateRegistry::class;
+                    $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry();
+                    break;
+                default:
+                    $errorMessageTemplates = $container->resolve($errorMessageTemplateConfiguration['type']);
+                    break;
+            }
+        } else {
+            $errorMessageTemplates = null;
+        }
+
         $errorMessageInterpolatorConfiguration = Configuration::getArray('validation.errorMessageInterpolator');
 
         switch ($errorMessageInterpolatorConfiguration['type']) {
             case StringReplaceErrorMessageInterpolator::class:
-                $errorMessageInterpolator = new StringReplaceErrorMessageInterpolator();
+                $errorMessageInterpolator = new StringReplaceErrorMessageInterpolator($errorMessageTemplates);
                 break;
             case IcuFormatErrorMessageInterpolator::class:
                 $errorMessageInterpolator = new IcuFormatErrorMessageInterpolator(
+                    $errorMessageTemplates,
                     $errorMessageInterpolatorConfiguration['defaultLocale'] ?? 'en'
                 );
                 break;

@@ -21,7 +21,6 @@ use Aphiria\Serialization\Encoding\DefaultEncoderRegistrant;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\Serialization\FormUrlEncodedSerializer;
 use Aphiria\Serialization\JsonSerializer;
-use OutOfBoundsException;
 
 /**
  * Defines the serializer bootstrapper
@@ -36,11 +35,8 @@ final class SerializerBootstrapper extends Bootstrapper
     {
         $encoders = new EncoderRegistry();
 
-        try {
-            $propertyNameFormatterName = Configuration::getString('serialization.propertyNameFormatter');
-        } catch (OutOfBoundsException $ex) {
-            $propertyNameFormatterName = null;
-        }
+        $propertyNameFormatterName = null;
+        Configuration::tryGetString('serialization.propertyNameFormatter', $propertyNameFormatterName);
 
         if ($propertyNameFormatterName === CamelCasePropertyNameFormatter::class) {
             $propertyNameFormatter = new CamelCasePropertyNameFormatter();
