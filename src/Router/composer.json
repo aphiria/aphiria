@@ -36,7 +36,7 @@
     "require-dev": {
         "aphiria/api": "1.0.*@dev",
         "nikic/fast-route": "1.2",
-        "phpunit/phpunit": "~8.0",
+        "phpunit/phpunit": "~9.0",
         "symfony/routing": "4.2.*"
     },
     "scripts": {
