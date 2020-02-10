@@ -32,9 +32,9 @@ final class LoggerBootstrapper extends Bootstrapper
      */
     public function registerBindings(IContainer $container): void
     {
-        $logger = new Logger(Configuration::getString('logging.name'));
+        $logger = new Logger(Configuration::getString('aphiria.logging.name'));
 
-        foreach (Configuration::getArray('logging.handlers') as $handlerConfiguration) {
+        foreach (Configuration::getArray('aphiria.logging.handlers') as $handlerConfiguration) {
             switch ($handlerConfiguration['type']) {
                 case StreamHandler::class:
                     $logger->pushHandler(new StreamHandler($handlerConfiguration['path']));

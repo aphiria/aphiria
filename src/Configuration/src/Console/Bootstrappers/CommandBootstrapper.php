@@ -38,7 +38,7 @@ final class CommandBootstrapper extends Bootstrapper
         $container->bindInstance(CommandRegistry::class, $commands);
 
         if (getenv('APP_ENV') === 'production') {
-            $commandCache = new FileCommandRegistryCache(Configuration::getString('console.commandCachePath'));
+            $commandCache = new FileCommandRegistryCache(Configuration::getString('aphiria.console.commandCachePath'));
         } else {
             $commandCache = null;
         }
@@ -48,7 +48,7 @@ final class CommandBootstrapper extends Bootstrapper
 
         // Register some command annotation dependencies
         $commandAnnotationRegistrant = new AnnotationCommandRegistrant(
-            Configuration::getArray('console.annotationPaths'),
+            Configuration::getArray('aphiria.console.annotationPaths'),
             $container
         );
         $container->bindInstance(AnnotationCommandRegistrant::class, $commandAnnotationRegistrant);

@@ -48,12 +48,12 @@ final class SerializerBootstrapper extends Bootstrapper
 
         (new DefaultEncoderRegistrant(
             $propertyNameFormatter,
-            Configuration::getString('serialization.dateFormat')
+            Configuration::getString('aphiria.serialization.dateFormat')
         ))->registerDefaultEncoders($encoders);
 
         $container->bindInstance(EncoderRegistry::class, $encoders);
 
-        foreach (Configuration::getArray('serialization.serializers') as $serializerName) {
+        foreach (Configuration::getArray('aphiria.serialization.serializers') as $serializerName) {
             switch ($serializerName) {
                 case JsonSerializer::class:
                     $container->bindInstance(JsonSerializer::class, new JsonSerializer($encoders));

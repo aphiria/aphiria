@@ -94,7 +94,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
          *
          * Specify the PSR-3 exception levels to log
          */
-        $exceptionLogLevels = Configuration::getArray('exceptions.exceptionLogLevels');
+        $exceptionLogLevels = Configuration::getArray('aphiria.exceptions.exceptionLogLevels');
 
         /**
          * ----------------------------------------------------------
@@ -103,7 +103,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
          *
          * Specify the bitwise value of error levels to log
          */
-        $errorLogLevels = Configuration::getInt('exceptions.errorLogLevels');
+        $errorLogLevels = Configuration::getInt('aphiria.exceptions.errorLogLevels');
 
         /**
          * ----------------------------------------------------------
@@ -112,7 +112,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
          *
          * Specify the error levels to rethrow as exceptions
          */
-        $errorThrownLevels = Configuration::getInt('exceptions.errorThrownLevels');
+        $errorThrownLevels = Configuration::getInt('aphiria.exceptions.errorThrownLevels');
 
         /**
          * ----------------------------------------------------------
@@ -150,7 +150,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
      */
     private function getDefaultExceptionResponseFactory(IContainer $container): Closure
     {
-        if (!Configuration::getBool('exceptions.useProblemDetails')) {
+        if (!Configuration::getBool('aphiria.exceptions.useProblemDetails')) {
             return function (Exception $ex, ?IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory): IHttpResponseMessage {
                 return new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
             };
@@ -195,7 +195,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
      */
     private function getInvalidRequestBodyResponseFactory(): Closure
     {
-        if (!Configuration::getBool('exceptions.useProblemDetails')) {
+        if (!Configuration::getBool('aphiria.exceptions.useProblemDetails')) {
             return function (InvalidRequestBodyException $ex, IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory): IHttpResponseMessage {
                 return new Response(HttpStatusCodes::HTTP_BAD_REQUEST);
             };

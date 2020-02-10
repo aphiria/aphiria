@@ -44,8 +44,8 @@ final class RoutingBootstrapper extends Bootstrapper
         $container->bindInstance(RouteCollection::class, $routes);
 
         if (getenv('APP_ENV') === 'production') {
-            $trieCache = new FileTrieCache(Configuration::getString('routing.trieCachePath'));
-            $routeCache = new FileRouteCache(Configuration::getString('routing.routeCachePath'));
+            $trieCache = new FileTrieCache(Configuration::getString('aphiria.routing.trieCachePath'));
+            $routeCache = new FileRouteCache(Configuration::getString('aphiria.routing.routeCachePath'));
         } else {
             $trieCache = $routeCache = null;
         }
@@ -67,7 +67,7 @@ final class RoutingBootstrapper extends Bootstrapper
         $container->bindInstance(IRouteUriFactory::class, new AstRouteUriFactory($routes));
 
         // Register some route annotation dependencies
-        $routeAnnotationRegistrant = new AnnotationRouteRegistrant(Configuration::getArray('routing.annotationPaths'));
+        $routeAnnotationRegistrant = new AnnotationRouteRegistrant(Configuration::getArray('aphiria.routing.annotationPaths'));
         $container->bindInstance(AnnotationRouteRegistrant::class, $routeAnnotationRegistrant);
     }
 }
