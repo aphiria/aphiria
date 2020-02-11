@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration;
+namespace Aphiria\Configuration\Builders;
 
 /**
  * Defines the interface implemented by classes that build whole modules of code

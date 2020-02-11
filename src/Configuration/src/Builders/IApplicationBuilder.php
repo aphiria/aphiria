@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration;
+namespace Aphiria\Configuration\Builders;
 
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\Net\Http\Handlers\IRequestHandler;

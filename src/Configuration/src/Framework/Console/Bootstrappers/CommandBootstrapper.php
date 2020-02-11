@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\Console\Bootstrappers;
+namespace Aphiria\Configuration\Framework\Console\Bootstrappers;
 
 use Aphiria\Configuration\Configuration;
 use Aphiria\Configuration\ConfigurationException;

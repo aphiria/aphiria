@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\Net\Bootstrappers;
+namespace Aphiria\Configuration\Framework\Net\Bootstrappers;
 
 use Aphiria\Configuration\Configuration;
 use Aphiria\Configuration\ConfigurationException;

@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\Tests;
+namespace Aphiria\Configuration\Tests\Builders;
 
-use Aphiria\Configuration\AphiriaComponentBuilder;
-use Aphiria\Configuration\IApplicationBuilder;
+use Aphiria\Configuration\Builders\AphiriaComponentBuilder;
+use Aphiria\Configuration\Builders\IApplicationBuilder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;

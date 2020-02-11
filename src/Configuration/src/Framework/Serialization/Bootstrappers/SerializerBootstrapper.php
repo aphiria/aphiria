@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\Serialization\Bootstrappers;
+namespace Aphiria\Configuration\Framework\Serialization\Bootstrappers;
 
 use Aphiria\Configuration\Configuration;
 use Aphiria\Configuration\ConfigurationException;

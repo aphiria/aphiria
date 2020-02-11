@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\Validation\Bootstrappers;
+namespace Aphiria\Configuration\Framework\Validation\Bootstrappers;
 
 use Aphiria\Configuration\Configuration;
 use Aphiria\Configuration\ConfigurationException;

@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\Exceptions\Bootstrappers;
+namespace Aphiria\Configuration\Framework\Exceptions\Bootstrappers;
 
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Api\Errors\ProblemDetailsResponseMutator;

@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\Tests;
+namespace Aphiria\Configuration\Tests\Builders;
 
 use Aphiria\Api\App;
-use Aphiria\Configuration\ApplicationBuilder;
-use Aphiria\Configuration\IModuleBuilder;
+use Aphiria\Configuration\Builders\ApplicationBuilder;
+use Aphiria\Configuration\Builders\IModuleBuilder;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;

@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\Api\Bootstrappers;
+namespace Aphiria\Configuration\Framework\Api\Bootstrappers;
 
 use Aphiria\Api\Controllers\ControllerParameterResolver;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
