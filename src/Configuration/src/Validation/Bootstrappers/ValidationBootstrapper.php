@@ -56,7 +56,7 @@ final class ValidationBootstrapper extends Bootstrapper
 
         $errorMessageTemplateConfiguration = null;
 
-        if (Configuration::tryGetArray('validation.errorMessageTemplates', $errorMessageTemplateConfiguration)) {
+        if (Configuration::tryGetArray('aphiria.validation.errorMessageTemplates', $errorMessageTemplateConfiguration)) {
             switch ($errorMessageTemplateConfiguration['type']) {
                 case DefaultErrorMessageTemplateRegistry::class;
                     $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry();

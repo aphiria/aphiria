@@ -36,7 +36,7 @@ final class SerializerBootstrapper extends Bootstrapper
         $encoders = new EncoderRegistry();
 
         $propertyNameFormatterName = null;
-        Configuration::tryGetString('serialization.propertyNameFormatter', $propertyNameFormatterName);
+        Configuration::tryGetString('aphiria.serialization.propertyNameFormatter', $propertyNameFormatterName);
 
         if ($propertyNameFormatterName === CamelCasePropertyNameFormatter::class) {
             $propertyNameFormatter = new CamelCasePropertyNameFormatter();
