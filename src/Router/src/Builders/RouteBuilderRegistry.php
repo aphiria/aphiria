@@ -136,6 +136,19 @@ final class RouteBuilderRegistry
     }
 
     /**
+     * Creates a route builder with the POST HTTP method
+     *
+     * @param string $pathTemplate The path template
+     * @param string|null $hostTemplate The host template
+     * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
+     * @return RouteBuilder The configured route builder
+     */
+    public function post(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
+    {
+        return $this->map('POST', $pathTemplate, $hostTemplate, $isHttpsOnly);
+    }
+
+    /**
      * Creates a route builder with the PUT HTTP method
      *
      * @param string $pathTemplate The path template
