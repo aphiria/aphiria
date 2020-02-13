@@ -17,7 +17,6 @@ use Aphiria\Reflection\TypeFinder;
 use Aphiria\Validation\Constraints\IObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraints;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
-use Doctrine\Annotations\AnnotationException;
 use Doctrine\Annotations\AnnotationReader;
 use Doctrine\Annotations\Reader;
 use ReflectionClass;
@@ -38,7 +37,6 @@ final class AnnotationObjectConstraintsRegistrant implements IObjectConstraintsR
      * @param string|string[] $paths The path or paths to check for constraints
      * @param Reader|null $annotationReader The annotation reader
      * @param ITypeFinder|null $typeFinder The type finder
-     * @throws AnnotationException Thrown if there was an error creating the annotation reader
      */
     public function __construct($paths, Reader $annotationReader = null, ITypeFinder $typeFinder = null)
     {

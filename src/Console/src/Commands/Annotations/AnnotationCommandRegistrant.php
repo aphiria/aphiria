@@ -22,7 +22,6 @@ use Aphiria\Console\Input\Option;
 use Aphiria\DependencyInjection\IDependencyResolver;
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
-use Doctrine\Annotations\AnnotationException;
 use Doctrine\Annotations\AnnotationReader;
 use Doctrine\Annotations\Reader;
 use ReflectionClass;
@@ -47,7 +46,6 @@ final class AnnotationCommandRegistrant implements ICommandRegistrant
      * @param IDependencyResolver $commandHandlerResolver The resolver for command handlers
      * @param Reader|null $annotationReader The annotation reader
      * @param ITypeFinder|null $typeFinder The type finder
-     * @throws AnnotationException Thrown if there was an error creating the annotation reader
      */
     public function __construct(
         $paths,

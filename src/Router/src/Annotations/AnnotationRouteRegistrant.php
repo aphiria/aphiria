@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Annotations;
 
+use Aphiria\Api\Controllers\Controller;
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
@@ -19,7 +20,6 @@ use Aphiria\Routing\Builders\RouteGroupOptions;
 use Aphiria\Routing\IRouteRegistrant;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\RouteCollection;
-use Doctrine\Annotations\AnnotationException;
 use Doctrine\Annotations\AnnotationReader;
 use Doctrine\Annotations\Reader;
 use ReflectionClass;
@@ -42,7 +42,6 @@ final class AnnotationRouteRegistrant implements IRouteRegistrant
      * @param string|string[] $paths The path or paths to check for controllers
      * @param Reader|null $annotationReader The annotation reader
      * @param ITypeFinder|null $typeFinder The type finder
-     * @throws AnnotationException Thrown if there was an error creating the annotation reader
      */
     public function __construct($paths, Reader $annotationReader = null, ITypeFinder $typeFinder = null)
     {
@@ -64,7 +63,7 @@ final class AnnotationRouteRegistrant implements IRouteRegistrant
 
             // Only allow either Aphiria controllers or classes with the controller annotation
             if (
-                !$reflectionController->isSubclassOf('\Aphiria\Api\Controllers\Controller')
+                !$reflectionController->isSubclassOf(Controller::class)
                 && $this->annotationReader->getClassAnnotation($reflectionController, 'Controller') === null
             ) {
                 continue;
