@@ -29,11 +29,11 @@ class TableFormatter
     private string $intersectionChar = '+';
 
     /**
-     * @param PaddingFormatter $padding The padding formatter
+     * @param PaddingFormatter|null $padding The padding formatter
      */
-    public function __construct(PaddingFormatter $padding)
+    public function __construct(PaddingFormatter $padding = null)
     {
-        $this->padding = $padding;
+        $this->padding = $padding ?? new PaddingFormatter();
     }
 
     /**
