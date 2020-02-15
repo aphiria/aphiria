@@ -14,6 +14,8 @@ namespace Aphiria\Routing\UriTemplates;
 
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
+use Aphiria\Routing\UriTemplates\Lexers\LexingException;
+use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
 use Aphiria\Routing\UriTemplates\Lexers\UriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
@@ -57,7 +59,14 @@ final class AstRouteUriFactory implements IRouteUriFactory
             throw new OutOfBoundsException("Route \"$routeName\" does not exist");
         }
 
-        $ast = $this->uriTemplateParser->parse($this->uriTemplateLexer->lex((string)$route->uriTemplate));
+        try {
+            $ast = $this->uriTemplateParser->parse($this->uriTemplateLexer->lex((string)$route->uriTemplate));
+        } catch (LexingException $ex) {
+            throw new RouteUriCreationException('Failed to lex URI template', 0, $ex);
+        } catch (UnexpectedTokenException $ex) {
+            throw new RouteUriCreationException('Failed to parse URI template', 0, $ex);
+        }
+
         $host = $path = null;
 
         foreach ($ast->children as $childAstNode) {

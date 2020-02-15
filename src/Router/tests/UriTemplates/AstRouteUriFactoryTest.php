@@ -16,6 +16,14 @@ use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\AstRouteUriFactory;
+use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
+use Aphiria\Routing\UriTemplates\Lexers\LexingException;
+use Aphiria\Routing\UriTemplates\Lexers\Token;
+use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
+use Aphiria\Routing\UriTemplates\Lexers\TokenTypes;
+use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
+use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
+use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
 use Aphiria\Routing\UriTemplates\RouteUriCreationException;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use OutOfBoundsException;
@@ -40,6 +48,34 @@ class AstRouteUriFactoryTest extends TestCase
         $this->expectException(OutOfBoundsException::class);
         $this->expectExceptionMessage('Route "bar" does not exist');
         $this->uriFactory->createRouteUri('bar');
+    }
+
+    public function testCreatingUriThatThrowsLexingExceptionRethrowsException(): void
+    {
+        $this->expectException(RouteUriCreationException::class);
+        $this->expectExceptionMessage('Failed to lex URI template');
+        $lexer = $this->createMock(IUriTemplateLexer::class);
+        $lexer->expects($this->once())
+            ->method('lex')
+            ->with('example.com/')
+            ->willThrowException(new LexingException());
+        $this->addRouteWithUriTemplate('foo', 'example.com', '');
+        $uriFactory = new AstRouteUriFactory($this->routes, null, $lexer);
+        $uriFactory->createRouteUri('foo');
+    }
+
+    public function testCreatingUriThatThrowsParsingExceptionRethrowsException(): void
+    {
+        $this->expectException(RouteUriCreationException::class);
+        $this->expectExceptionMessage('Failed to parse URI template');
+        $parser = $this->createMock(IUriTemplateParser::class);
+        $parser->expects($this->once())
+            ->method('parse')
+            ->with($this->anything())
+            ->willThrowException(new UnexpectedTokenException());
+        $this->addRouteWithUriTemplate('foo', 'example.com', '');
+        $uriFactory = new AstRouteUriFactory($this->routes, $parser);
+        $uriFactory->createRouteUri('foo');
     }
 
     public function testCreatingUriWithHostAndEmptyPathStripsTrailingSlash(): void

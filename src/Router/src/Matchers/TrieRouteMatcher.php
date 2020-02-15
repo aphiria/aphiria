@@ -80,7 +80,7 @@ final class TrieRouteMatcher implements IRouteMatcher
         array $hostSegments,
         array &$routeVars
     ): iterable {
-        // Base case.  We iterate to 1 past the past segments there are n + 1 levels of nodes due to the root node.
+        // Base case.  We iterate to 1 past the past segments because there are n + 1 levels of nodes due to the root node.
         if ($segmentIter === \count($segments)) {
             if ($node->hostTrie === null) {
                 foreach ($node->routes as $route) {

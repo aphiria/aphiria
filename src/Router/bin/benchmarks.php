@@ -64,7 +64,7 @@ echo "--------------------------------------------------\n";
  */
 
 $startMemory = \memory_get_usage();
-$routes = new SymfonyRouteCollection\();
+$routes = new SymfonyRouteCollection();
 
 for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
     $routes->add("f$routeIter", new SymfonyRoute("/abc$routeIter/$routeIter/{foo}/$routeIter"));
