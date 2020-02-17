@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Configuration\Builders;
 
 use Aphiria\Console\Commands\ICommandBus;
+use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Closure;
 use RuntimeException;
@@ -39,38 +40,37 @@ interface IApplicationBuilder
     public function buildConsoleApplication(): ICommandBus;
 
     /**
-     * Gets whether or not a particular component is registered
+     * Enqueues a call to a component builder
      *
-     * @param string $componentName The name of the component to check for
-     * @return bool Whether or not the input component name is registered
+     * @param string $class The name of the component builder to call
+     * @param Closure $callback The callback that will take an instance of the class param
      */
-    public function hasComponentBuilder(string $componentName): bool;
+    public function enqueueComponentBuilderCall(string $class, Closure $callback): void;
 
     /**
-     * Registers a component to the app
+     * Adds a bootstrapper to the application
      *
-     * @param string $componentName The name of the component the callback belongs to
-     * @param Closure $builder The factory that will take in an IContainer and list of callbacks registered for this component ands builds it
+     * @param Bootstrapper $bootstrapper The bootstrapper to add
      * @return IApplicationBuilder For chaining
      */
-    public function registerComponentBuilder(string $componentName, Closure $builder): self;
+    public function withBootstrapper(Bootstrapper $bootstrapper): IApplicationBuilder;
 
     /**
      * Adds bootstrappers to the application
      *
-     * @param Closure $callback The callback that will return instantiated bootstrappers
+     * @param Bootstrapper[] $bootstrappers The bootstrappers to add
      * @return IApplicationBuilder For chaining
      */
-    public function withBootstrappers(Closure $callback): self;
+    public function withBootstrappers(array $bootstrappers): self;
 
     /**
-     * Adds a component to the app
+     * Adds a component builder to the application
      *
-     * @param string $componentName The name of the component the callback belongs to
-     * @param Closure $callback The callback that must take in an IContainer and the list of callbacks registered for this component
+     * @param string $class The name of the component builder class
+     * @param Closure $factory The factory that will create the component builder
      * @return IApplicationBuilder For chaining
      */
-    public function withComponent(string $componentName, Closure $callback): self;
+    public function withComponentBuilder(string $class, Closure $factory): self;
 
     /**
      * Adds console commands to the application
@@ -89,12 +89,12 @@ interface IApplicationBuilder
     public function withGlobalMiddleware(Closure $middlewareCallback): self;
 
     /**
-     * Adds an entire module to the application
+     * Adds an entire module builder to the application
      *
      * @param IModuleBuilder $moduleBuilder The module builder to include
      * @return IApplicationBuilder For chaining
      */
-    public function withModule(IModuleBuilder $moduleBuilder): self;
+    public function withModuleBuilder(IModuleBuilder $moduleBuilder): self;
 
     /**
      * Adds the inner-most request handler that will act as the router

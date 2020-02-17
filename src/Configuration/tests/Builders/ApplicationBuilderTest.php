@@ -222,7 +222,7 @@ class ApplicationBuilderTest extends TestCase
         $this->assertSame($this->appBuilder, $this->appBuilder->withBootstrappers(fn () => [$bootstrapper]));
         $this->assertSame($this->appBuilder, $this->appBuilder->withComponent('foo', fn (IContainer $container, array $callbacks) => null));
         $this->assertSame($this->appBuilder, $this->appBuilder->withGlobalMiddleware(fn () => []));
-        $this->assertSame($this->appBuilder, $this->appBuilder->withModule($this->createMock(IModuleBuilder::class)));
+        $this->assertSame($this->appBuilder, $this->appBuilder->withModuleBuilder($this->createMock(IModuleBuilder::class)));
         $this->assertSame($this->appBuilder, $this->appBuilder->withRouter(fn () => $this->createMock(IRequestHandler::class)));
     }
 
@@ -233,7 +233,7 @@ class ApplicationBuilderTest extends TestCase
         $module->expects($this->once())
             ->method('build')
             ->with($this->appBuilder);
-        $this->appBuilder->withModule($module);
+        $this->appBuilder->withModuleBuilder($module);
     }
 
     /**

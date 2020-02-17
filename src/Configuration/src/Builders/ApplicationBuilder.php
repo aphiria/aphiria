@@ -13,11 +13,10 @@ declare(strict_types=1);
 namespace Aphiria\Configuration\Builders;
 
 use Aphiria\Api\App as ApiApp;
+use Aphiria\Configuration\Framework\Console\Builders\CommandBuilder;
+use Aphiria\Configuration\Framework\DependencyInjection\Builders\BootstrapperBuilder;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\App as ConsoleApp;
-use Aphiria\Console\Commands\ClosureCommandRegistrant;
-use Aphiria\Console\Commands\CommandRegistrantCollection;
-use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
@@ -25,9 +24,7 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use BadMethodCallException;
 use Closure;
-use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -37,14 +34,10 @@ final class ApplicationBuilder implements IApplicationBuilder
 {
     /** @var IContainer The DI container to resolve dependencies with */
     private IContainer $container;
-    /** @var IBootstrapperDispatcher The bootstrapper dispatcher */
-    private IBootstrapperDispatcher $bootstrapperDispatcher;
-    /** @var Closure[] The mapping of builder names to callbacks */
-    private array $components = [];
-    /** @var Closure[] The list of bootstrapper callbacks */
-    private array $bootstrapperCallbacks = [];
-    /** @var Closure[] The list of console command callbacks */
-    private array $consoleCommandCallbacks = [];
+    /** @var IComponentBuilder[] The mapping of component builder names to builders */
+    private array $componentBuilderFactories = [];
+    /** @var Closure[] The mapping of component builder names to the enqueued list of component builder calls */
+    private array $componentBuilderCalls = [];
     /** @var Closure|null The callback that will resolve the router request handler */
     private ?Closure $routerCallback = null;
     /** @var Closure[] The list of middleware callbacks */
@@ -57,29 +50,8 @@ final class ApplicationBuilder implements IApplicationBuilder
     public function __construct(IContainer $container, IBootstrapperDispatcher $bootstrapperDispatcher)
     {
         $this->container = $container;
-        $this->bootstrapperDispatcher = $bootstrapperDispatcher;
-    }
-
-    /**
-     * Allows us to add components using a more fluent syntax
-     *
-     * @param string $methodName The name of the method that was called
-     * @param array $arguments The arguments that were passed in
-     * @return IApplicationBuilder For chaining
-     * @throws BadMethodCallException Thrown if the method name does not start with "with"
-     * @throws InvalidArgumentException Thrown if no component exists with the input name
-     */
-    public function __call(string $methodName, array $arguments): IApplicationBuilder
-    {
-        // Method name must be "with{component}", and component must be at least one character
-        if (\strlen($methodName) < 5 || strpos($methodName, 'with') !== 0) {
-            throw new BadMethodCallException("Method $methodName is not supported");
-        }
-
-        // Remove "with"
-        $componentName = substr($methodName, 4);
-
-        return $this->withComponent($componentName, ...$arguments);
+        // It's important for the bootstrapper component builder is registered first so that all the dependencies are bound
+        $this->withComponentBuilder(BootstrapperBuilder::class, fn () => new BootstrapperBuilder($bootstrapperDispatcher));
     }
 
     /**
@@ -88,7 +60,6 @@ final class ApplicationBuilder implements IApplicationBuilder
     public function buildApiApplication(): IRequestHandler
     {
         try {
-            $this->dispatchBootstrappers();
             $this->buildComponents();
             $apiApp = $this->createRequestHandler();
             $this->container->bindInstance(IRequestHandler::class, $apiApp);
@@ -105,18 +76,13 @@ final class ApplicationBuilder implements IApplicationBuilder
     public function buildConsoleApplication(): ICommandBus
     {
         try {
-            $this->dispatchBootstrappers();
-            $this->container->hasBinding(CommandRegistrantCollection::class)
-                ? $commandRegistrants = $this->container->resolve(CommandRegistrantCollection::class)
-                : $this->container->bindInstance(CommandRegistrantCollection::class,
-                $commandRegistrants = new CommandRegistrantCollection());
-            $commandRegistrants->add(new ClosureCommandRegistrant($this->consoleCommandCallbacks));
+            // TODO: Do I need to move this to the constructor so that the component builder is available to modules prior to this method being called?
+            $this->withComponentBuilder(
+                CommandBuilder::class,
+                fn () => $this->container->resolve(CommandBuilder::class)
+            );
             $this->buildComponents();
-            /** @var CommandRegistry $commands */
-            $this->container->hasBinding(CommandRegistry::class)
-                ? $commands = $this->container->resolve(CommandRegistry::class)
-                : $this->container->bindInstance(CommandRegistry::class, $commands = new CommandRegistry());
-            $commandRegistrants->registerCommands($commands);
+            // TODO: Do I need to explicitly resolve CommandRegistry and make sure the same instance is passed into CommandBuilder and ConsoleApp?
             $consoleApp = new ConsoleApp($commands);
             $this->container->bindInstance(ICommandBus::class, $consoleApp);
 
@@ -129,43 +95,52 @@ final class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function hasComponentBuilder(string $componentName): bool
+    public function enqueueComponentBuilderCall(string $class, Closure $callback): void
     {
-        return isset($this->components[self::normalizeComponentName($componentName)]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function registerComponentBuilder(string $componentName, Closure $builder): IApplicationBuilder
-    {
-        $this->components[self::normalizeComponentName($componentName)] = ['builder' => $builder, 'callbacks' => []];
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function withBootstrappers(Closure $callback): IApplicationBuilder
-    {
-        $this->bootstrapperCallbacks[] = $callback;
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function withComponent(string $componentName, Closure $callback): IApplicationBuilder
-    {
-        $normalizedComponentName = self::normalizeComponentName($componentName);
-
-        if (!isset($this->components[$normalizedComponentName])) {
-            throw new InvalidArgumentException("$componentName does not have a builder registered");
+        if (!isset($this->componentBuilderFactories[$class])) {
+            // TODO: What type of exception should I throw?
+            throw new \Exception('TODO');
         }
 
-        $this->components[$normalizedComponentName]['callbacks'][] = $callback;
+        if (!isset($this->componentBuilderCalls[$class])) {
+            $this->componentBuilderCalls[$class] = [];
+        }
+
+        $this->componentBuilderCalls[$class][] = $callback;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function withBootstrapper(Bootstrapper $bootstrapper): IApplicationBuilder
+    {
+        $this->enqueueComponentBuilderCall(
+            BootstrapperBuilder::class,
+            fn (BootstrapperBuilder $bootstrapperBuilder) => $bootstrapperBuilder->withBootstrapper($bootstrapper)
+        );
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function withBootstrappers(array $bootstrappers): IApplicationBuilder
+    {
+        $this->enqueueComponentBuilderCall(
+            BootstrapperBuilder::class,
+            fn (BootstrapperBuilder $bootstrapperBuilder) => $bootstrapperBuilder->withBootstrappers($bootstrappers)
+        );
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function withComponentBuilder(string $class, Closure $factory): IApplicationBuilder
+    {
+        $this->componentBuilderFactories[$class] = $factory;
 
         return $this;
     }
@@ -175,7 +150,10 @@ final class ApplicationBuilder implements IApplicationBuilder
      */
     public function withConsoleCommands(Closure $callback): IApplicationBuilder
     {
-        $this->consoleCommandCallbacks[] = $callback;
+        $this->enqueueComponentBuilderCall(
+            CommandBuilder::class,
+            fn (CommandBuilder $commandBuilder) => $commandBuilder->withCommands($callback)
+        );
 
         return $this;
     }
@@ -193,7 +171,7 @@ final class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function withModule(IModuleBuilder $moduleBuilder): IApplicationBuilder
+    public function withModuleBuilder(IModuleBuilder $moduleBuilder): IApplicationBuilder
     {
         $moduleBuilder->build($this);
 
@@ -211,14 +189,18 @@ final class ApplicationBuilder implements IApplicationBuilder
     }
 
     /**
-     * Builds all the registered components
+     * Builds all the registered component builders
      */
     private function buildComponents(): void
     {
-        foreach ($this->components as $normalizedComponentName => $componentConfig) {
-            /** @var Closure $builder */
-            $builder = $componentConfig['builder'];
-            $builder($componentConfig['callbacks']);
+        foreach ($this->componentBuilderFactories as $componentBuilderName => $componentBuilder) {
+            $componentBuilder->build($this);
+
+            if (isset($this->componentBuilderCalls[$componentBuilderName])) {
+                foreach ($this->componentBuilderCalls[$componentBuilderName] as $componentBuilderCall) {
+                    $componentBuilderCall($componentBuilder);
+                }
+            }
         }
     }
 
@@ -248,6 +230,8 @@ final class ApplicationBuilder implements IApplicationBuilder
 
         $app = new ApiApp($this->container, $router, $middlewarePipelineFactory);
 
+        // TODO: Not sure how I can refactor middleware to be a component.  That requires resolving ApiApp and passing it into the builder (which needs to be instantiated in this class' constructor).  However, at that point I haven't bound a router or middleware pipeline factory.
+        // TODO: One way around this would be to keep track of middleware in a registry which is injected into ApiApp and the middleware component builder.
         foreach ($this->middlewareCallbacks as $middlewareCallback) {
             /** @var MiddlewareBinding $middlewareBinding */
             foreach ((array)$middlewareCallback() as $middlewareBinding) {
@@ -260,31 +244,5 @@ final class ApplicationBuilder implements IApplicationBuilder
         }
 
         return $app;
-    }
-
-    /**
-     * Dispatches all the registered bootstrappers
-     */
-    private function dispatchBootstrappers(): void
-    {
-        /** @var Bootstrapper[] $bootstrappers */
-        $bootstrappers = [];
-
-        foreach ($this->bootstrapperCallbacks as $bootstrapperCallback) {
-            $bootstrappers = [...$bootstrappers, ...(array)$bootstrapperCallback()];
-        }
-
-        $this->bootstrapperDispatcher->dispatch($bootstrappers);
-    }
-
-    /**
-     * Normalizes a component name so that it can be called with a magic method
-     *
-     * @param string $componentName The name of the component to normalize
-     * @return string The normalized component name
-     */
-    private static function normalizeComponentName(string $componentName): string
-    {
-        return \lcfirst(\preg_replace('/[^a-z0-9_]/i', '', $componentName));
     }
 }
