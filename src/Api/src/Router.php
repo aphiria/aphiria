@@ -47,8 +47,6 @@ class Router implements IRequestHandler
     private IDependencyResolver $dependencyResolver;
     /** @var IContentNegotiator The content negotiator */
     private IContentNegotiator $contentNegotiator;
-    /** @var MiddlewarePipelineFactory The middleware pipeline factory */
-    private ?MiddlewarePipelineFactory $middlewarePipelineFactory;
     /** @var IRouteActionInvoker The route action invoker */
     private IRouteActionInvoker $routeActionInvoker;
 
@@ -56,20 +54,17 @@ class Router implements IRequestHandler
      * @param IRouteMatcher $routeMatcher The route matcher
      * @param IDependencyResolver $dependencyResolver The dependency resolver
      * @param IContentNegotiator|null $contentNegotiator The content negotiator, or null if using the default negotiator
-     * @param MiddlewarePipelineFactory|null $middlewarePipelineFactory THe middleware pipeline factory
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
      */
     public function __construct(
         IRouteMatcher $routeMatcher,
         IDependencyResolver $dependencyResolver,
         IContentNegotiator $contentNegotiator = null,
-        MiddlewarePipelineFactory $middlewarePipelineFactory = null,
         IRouteActionInvoker $routeActionInvoker = null
     ) {
         $this->routeMatcher = $routeMatcher;
         $this->dependencyResolver = $dependencyResolver;
         $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
-        $this->middlewarePipelineFactory = $middlewarePipelineFactory ?? new MiddlewarePipelineFactory();
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }
 
@@ -88,7 +83,7 @@ class Router implements IRequestHandler
             $this->contentNegotiator,
             $this->routeActionInvoker
         );
-        $middlewarePipeline = $this->middlewarePipelineFactory->createPipeline(
+        $middlewarePipeline = (new MiddlewarePipelineFactory)->createPipeline(
             $this->createMiddlewareFromBindings($matchingResult->route->middlewareBindings),
             $controllerRequestHandler
         );

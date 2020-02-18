@@ -12,18 +12,15 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration\Tests\Builders;
 
-use Aphiria\Api\App;
 use Aphiria\Configuration\Builders\ApplicationBuilder;
 use Aphiria\Configuration\Builders\IModuleBuilder;
-use Aphiria\Configuration\Middleware\MiddlewareBinding;
-use Aphiria\Console\Commands\CommandRegistrantCollection;
-use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
+use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use BadMethodCallException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -33,138 +30,29 @@ use RuntimeException;
  */
 class ApplicationBuilderTest extends TestCase
 {
-    /** @var IContainer|MockObject */
-    private IContainer $container;
+    private Container $container;
     /** @var IBootstrapperDispatcher|MockObject */
     private IBootstrapperDispatcher $bootstrapperDispatcher;
     private ApplicationBuilder $appBuilder;
 
     protected function setUp(): void
     {
-        $this->container = $this->createMock(IContainer::class);
+        // To simplify our tests, let's use a real container rather than a mocked interface
+        $this->container = new Container();
+        $this->container->bindInstance(MiddlewareCollection::class, new MiddlewareCollection());
+        $this->container->bindInstance(IDependencyResolver::class, $this->container);
+
         $this->bootstrapperDispatcher = $this->createMock(IBootstrapperDispatcher::class);
         $this->appBuilder = new ApplicationBuilder($this->container, $this->bootstrapperDispatcher);
     }
 
-    public function testBuildingApiBindsAppToContainer(): void
-    {
-        $this->setRouter();
-        $this->container->expects($this->at(2))
-            ->method('bindInstance')
-            ->with(IRequestHandler::class, $this->callback(fn ($app) => $app instanceof IRequestHandler));
-        $this->appBuilder->buildApiApplication();
-    }
-
-    public function testBuildingApiReturnsInstanceOfAppByDefault(): void
-    {
-        $this->setRouter();
-        $this->assertInstanceOf(App::class, $this->appBuilder->buildApiApplication());
-    }
-
-    public function testBuildingConsoleBindsCommandRegistryAndAppToContainer(): void
-    {
-        $this->container->expects($this->at(0))
-            ->method('hasBinding')
-            ->with(CommandRegistrantCollection::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(1))
-            ->method('bindInstance')
-            ->with(CommandRegistrantCollection::class, $commandFactory = new CommandRegistrantCollection());
-        $this->container->expects($this->at(2))
-            ->method('hasBinding')
-            ->with(CommandRegistry::class)
-            ->willReturn(false);
-        $this->container->expects($this->at(3))
-            ->method('bindInstance')
-            ->with(CommandRegistry::class, $this->callback(function ($commands) {
-                return $commands instanceof CommandRegistry;
-            }));
-        $this->container->expects($this->at(4))
-            ->method('bindInstance')
-            ->with(ICommandBus::class, $this->callback(fn ($app) => $app instanceof ICommandBus));
-        $this->appBuilder->buildConsoleApplication();
-    }
-
-    public function testComponentsAreCallableViaMagicMethods(): void
-    {
-        $this->appBuilder->registerComponentBuilder('foo', function (array $callbacks){
-            foreach ($callbacks as $callback) {
-                $callback();
-            }
-        });
-        $callbackWasRun = false;
-        // This has a lowercase name
-        $this->appBuilder->withFoo(function () use (&$callbackWasRun) {
-            $callbackWasRun = true;
-        });
-        $this->setRouter();
-        $this->appBuilder->buildApiApplication();
-        $this->assertTrue($callbackWasRun);
-    }
-
-    public function testComponentNamesAreNormalized(): void
-    {
-        $this->appBuilder->registerComponentBuilder('Foo', function (array $callbacks){
-            foreach ($callbacks as $callback) {
-                $callback();
-            }
-        });
-        $callbackWasRun = false;
-        // This has a lowercase name
-        $this->appBuilder->withComponent('foo', function () use (&$callbackWasRun) {
-            $callbackWasRun = true;
-        });
-        $this->setRouter();
-        $this->appBuilder->buildApiApplication();
-        $this->assertTrue($callbackWasRun);
-    }
-
-    public function testHasComponentBuilderNormalizesComponentNames(): void
-    {
-        $this->appBuilder->registerComponentBuilder('Foo', fn (array $callbacks) => null);
-        $this->assertTrue($this->appBuilder->hasComponentBuilder('foo'));
-    }
-
-    public function testHasComponentBuilderReturnsWhetherOrNotBuilderIsRegistered(): void
-    {
-        $this->assertFalse($this->appBuilder->hasComponentBuilder('foo'));
-        $this->appBuilder->registerComponentBuilder('foo', fn (array $callbacks) => null);
-        $this->assertTrue($this->appBuilder->hasComponentBuilder('foo'));
-    }
-
-    public function testMagicMethodThatDoesNotStartWithWithThrowsException(): void
-    {
-        $this->expectException(BadMethodCallException::class);
-        $this->appBuilder->magic();
-    }
-
-    public function testMagicMethodThatOnlyContainsWithThrowsException(): void
-    {
-        $this->expectException(BadMethodCallException::class);
-        $this->appBuilder->with();
-    }
+    // TODO: Needs tests
 
     public function testNotRegisteringRouterThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Router callback not set');
         $this->appBuilder->buildApiApplication();
-    }
-
-    public function testRegisteringComponentExecutesAllRegisteredCallbacks(): void
-    {
-        $this->appBuilder->registerComponentBuilder('foo', function (array $callbacks){
-            foreach ($callbacks as $callback) {
-                $callback();
-            }
-        });
-        $callbackWasRun = false;
-        $this->appBuilder->withComponent('foo', function () use (&$callbackWasRun) {
-            $callbackWasRun = true;
-        });
-        $this->setRouter();
-        $this->appBuilder->buildApiApplication();
-        $this->assertTrue($callbackWasRun);
     }
 
     public function testRegisteringRouterThatIsNotRequestHandlerThrowsException(): void
@@ -184,46 +72,12 @@ class ApplicationBuilderTest extends TestCase
                 // Don't do anything
             }
         };
-        $this->appBuilder->withBootstrappers(fn () => [$bootstrapper]);
+        $this->appBuilder->withBootstrapper($bootstrapper);
         $this->bootstrapperDispatcher->expects($this->once())
             ->method('dispatch')
-            ->with($this->callback(fn (array $bootstrappers) => \count($bootstrappers) === 1 && $bootstrappers[0] === $bootstrapper));
+            ->with([$bootstrapper]);
         $this->setRouter();
         $this->appBuilder->buildApiApplication();
-    }
-
-    public function testWithComponentThrowsExceptionIfNoComponentFactoryIsRegistered(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('foo does not have a builder registered');
-        $this->appBuilder->withComponent('foo', fn () => null);
-    }
-
-    public function testWithGlobalMiddlewareThatIsNotMiddlewareBindingThrowsException(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Middleware bindings must be an instance of '. MiddlewareBinding::class);
-        $this->setRouter();
-        $this->appBuilder->withGlobalMiddleware(fn () => [$this]);
-        $this->appBuilder->buildApiApplication();
-    }
-
-    public function testWithMethodsReturnsInstanceOfAppBuilder(): void
-    {
-        // Need to set up a component factory so we can call withComponent
-        $this->appBuilder->registerComponentBuilder('foo', fn (array $callbacks) => null);
-        $bootstrapper = new class() extends Bootstrapper
-        {
-            public function registerBindings(IContainer $container): void
-            {
-                // Don't do anything
-            }
-        };
-        $this->assertSame($this->appBuilder, $this->appBuilder->withBootstrappers(fn () => [$bootstrapper]));
-        $this->assertSame($this->appBuilder, $this->appBuilder->withComponent('foo', fn (IContainer $container, array $callbacks) => null));
-        $this->assertSame($this->appBuilder, $this->appBuilder->withGlobalMiddleware(fn () => []));
-        $this->assertSame($this->appBuilder, $this->appBuilder->withModuleBuilder($this->createMock(IModuleBuilder::class)));
-        $this->assertSame($this->appBuilder, $this->appBuilder->withRouter(fn () => $this->createMock(IRequestHandler::class)));
     }
 
     public function testWithModuleBuildsTheModule(): void

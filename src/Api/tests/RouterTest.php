@@ -20,7 +20,6 @@ use Aphiria\Api\Tests\Mocks\AttributeMiddleware;
 use Aphiria\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;
 use Aphiria\DependencyInjection\IDependencyResolver;
 use Aphiria\Middleware\IMiddleware;
-use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpHeaders;
@@ -51,7 +50,6 @@ class RouterTest extends TestCase
     private IDependencyResolver $dependencyResolver;
     /** @var IContentNegotiator|MockObject */
     private IContentNegotiator $contentNegotiator;
-    private MiddlewarePipelineFactory $middlewarePipelineFactory;
     /** @var IRouteActionInvoker|MockObject */
     private IRouteActionInvoker $routeActionInvoker;
 
@@ -60,13 +58,11 @@ class RouterTest extends TestCase
         $this->routeMatcher = $this->createMock(IRouteMatcher::class);
         $this->dependencyResolver = $this->createMock(IDependencyResolver::class);
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
-        $this->middlewarePipelineFactory = new MiddlewarePipelineFactory();
         $this->routeActionInvoker = $this->createMock(IRouteActionInvoker::class);
         $this->router = new Router(
             $this->routeMatcher,
             $this->dependencyResolver,
             $this->contentNegotiator,
-            $this->middlewarePipelineFactory,
             $this->routeActionInvoker
         );
     }

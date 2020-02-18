@@ -15,14 +15,15 @@ namespace Aphiria\Configuration\Builders;
 use Aphiria\Api\App as ApiApp;
 use Aphiria\Configuration\Framework\Console\Builders\CommandBuilder;
 use Aphiria\Configuration\Framework\DependencyInjection\Builders\BootstrapperBuilder;
+use Aphiria\Configuration\Framework\Middleware\Builders\MiddlewareBuilder;
 use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\App as ConsoleApp;
+use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\DependencyInjection\ResolutionException;
-use Aphiria\Middleware\MiddlewarePipelineFactory;
+use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Closure;
 use RuntimeException;
@@ -40,8 +41,10 @@ final class ApplicationBuilder implements IApplicationBuilder
     private array $componentBuilderCalls = [];
     /** @var Closure|null The callback that will resolve the router request handler */
     private ?Closure $routerCallback = null;
-    /** @var Closure[] The list of middleware callbacks */
-    private array $middlewareCallbacks = [];
+    /** @var MiddlewareCollection The list of global middleware */
+    private MiddlewareCollection $middlewareCollection;
+    /** @var CommandRegistry The console commands */
+    private CommandRegistry $commands;
 
     /**
      * @param IContainer $container The DI container to resolve dependencies with
@@ -50,8 +53,18 @@ final class ApplicationBuilder implements IApplicationBuilder
     public function __construct(IContainer $container, IBootstrapperDispatcher $bootstrapperDispatcher)
     {
         $this->container = $container;
+
         // It's important for the bootstrapper component builder is registered first so that all the dependencies are bound
         $this->withComponentBuilder(BootstrapperBuilder::class, fn () => new BootstrapperBuilder($bootstrapperDispatcher));
+
+        // We'll need the middleware collection bound bound early on so that we can add to it from modules and before bootstrappers are run
+        $this->container->bindInstance(MiddlewareCollection::class, $this->middlewareCollection = new MiddlewareCollection());
+        $this->container->bindInstance(MiddlewareCollection::class, $middlewareCollection = new MiddlewareCollection());
+        $this->withComponentBuilder(MiddlewareBuilder::class, fn () => new MiddlewareBuilder($this->middlewareCollection, $this->container));
+
+        // We'll need the commands bound bound early on so that we can add to them from modules and before bootstrappers are run
+        $this->container->bindInstance(CommandRegistry::class, $this->commands = new CommandRegistry());
+        $this->withComponentBuilder(CommandBuilder::class, fn () => $this->container->resolve(CommandBuilder::class));
     }
 
     /**
@@ -59,15 +72,20 @@ final class ApplicationBuilder implements IApplicationBuilder
      */
     public function buildApiApplication(): IRequestHandler
     {
-        try {
-            $this->buildComponents();
-            $apiApp = $this->createRequestHandler();
-            $this->container->bindInstance(IRequestHandler::class, $apiApp);
+        $this->buildComponents();
 
-            return $apiApp;
-        } catch (ResolutionException $ex) {
-            throw new RuntimeException('Failed to build API app', 0, $ex);
+        if ($this->routerCallback === null) {
+            throw new RuntimeException('Router callback not set');
         }
+
+        if (!($router = ($this->routerCallback)()) instanceof IRequestHandler) {
+            throw new RuntimeException('Router must implement ' . IRequestHandler::class);
+        }
+
+        $apiApp = new ApiApp($router, $this->middlewareCollection);
+        $this->container->bindInstance(IRequestHandler::class, $apiApp);
+
+        return $apiApp;
     }
 
     /**
@@ -75,21 +93,11 @@ final class ApplicationBuilder implements IApplicationBuilder
      */
     public function buildConsoleApplication(): ICommandBus
     {
-        try {
-            // TODO: Do I need to move this to the constructor so that the component builder is available to modules prior to this method being called?
-            $this->withComponentBuilder(
-                CommandBuilder::class,
-                fn () => $this->container->resolve(CommandBuilder::class)
-            );
-            $this->buildComponents();
-            // TODO: Do I need to explicitly resolve CommandRegistry and make sure the same instance is passed into CommandBuilder and ConsoleApp?
-            $consoleApp = new ConsoleApp($commands);
-            $this->container->bindInstance(ICommandBus::class, $consoleApp);
+        $this->buildComponents();
+        $consoleApp = new ConsoleApp($this->commands);
+        $this->container->bindInstance(ICommandBus::class, $consoleApp);
 
-            return $consoleApp;
-        } catch (ResolutionException $ex) {
-            throw new RuntimeException('Failed to build console app', 0, $ex);
-        }
+        return $consoleApp;
     }
 
     /**
@@ -125,19 +133,6 @@ final class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function withBootstrappers(array $bootstrappers): IApplicationBuilder
-    {
-        $this->enqueueComponentBuilderCall(
-            BootstrapperBuilder::class,
-            fn (BootstrapperBuilder $bootstrapperBuilder) => $bootstrapperBuilder->withBootstrappers($bootstrappers)
-        );
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function withComponentBuilder(string $class, Closure $factory): IApplicationBuilder
     {
         $this->componentBuilderFactories[$class] = $factory;
@@ -161,9 +156,38 @@ final class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function withGlobalMiddleware(Closure $middlewareCallback): IApplicationBuilder
+    public function withGlobalMiddleware(MiddlewareBinding $middlewareBinding): IApplicationBuilder
     {
-        $this->middlewareCallbacks[] = $middlewareCallback;
+        $this->enqueueComponentBuilderCall(
+            MiddlewareBuilder::class,
+            fn (MiddlewareBuilder $middlewareBuilder) => $middlewareBuilder->withMiddlewareBinding($middlewareBinding)
+        );
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function withManyBootstrappers(array $bootstrappers): IApplicationBuilder
+    {
+        $this->enqueueComponentBuilderCall(
+            BootstrapperBuilder::class,
+            fn (BootstrapperBuilder $bootstrapperBuilder) => $bootstrapperBuilder->withManyBootstrappers($bootstrappers)
+        );
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function withManyGlobalMiddleware(array $middlewareBindings): IApplicationBuilder
+    {
+        $this->enqueueComponentBuilderCall(
+            MiddlewareBuilder::class,
+            fn (MiddlewareBuilder $middlewareBuilder) => $middlewareBuilder->withManyMiddlewareBindings($middlewareBindings)
+        );
 
         return $this;
     }
@@ -193,56 +217,18 @@ final class ApplicationBuilder implements IApplicationBuilder
      */
     private function buildComponents(): void
     {
-        foreach ($this->componentBuilderFactories as $componentBuilderName => $componentBuilder) {
-            $componentBuilder->build($this);
+        foreach ($this->componentBuilderFactories as $componentBuilderName => $componentBuilderFactory) {
+            /** @var IComponentBuilder $componentBuilder */
+            $componentBuilder = $componentBuilderFactory();
 
+            // Calls to component builders should happen before it's built
             if (isset($this->componentBuilderCalls[$componentBuilderName])) {
-                foreach ($this->componentBuilderCalls[$componentBuilderName] as $componentBuilderCall) {
-                    $componentBuilderCall($componentBuilder);
+                foreach ($this->componentBuilderCalls[$componentBuilderName] as $componentBuilderCallback) {
+                    $componentBuilderCallback($componentBuilder);
                 }
             }
+
+            $componentBuilder->build($this);
         }
-    }
-
-    /**
-     * Creates the app request handler
-     *
-     * @return IRequestHandler The application request handler
-     * @throws RuntimeException Thrown if the kernel callback was not registered
-     * @throws ResolutionException Thrown if there was an error creating any dependencies
-     */
-    private function createRequestHandler(): IRequestHandler
-    {
-        if ($this->routerCallback === null) {
-            throw new RuntimeException('Router callback not set');
-        }
-
-        if (!($router = ($this->routerCallback)()) instanceof IRequestHandler) {
-            throw new RuntimeException('Router must implement ' . IRequestHandler::class);
-        }
-
-        $this->container->hasBinding(MiddlewarePipelineFactory::class)
-            ? $middlewarePipelineFactory = $this->container->resolve(MiddlewarePipelineFactory::class)
-            : $this->container->bindInstance(
-            MiddlewarePipelineFactory::class,
-            $middlewarePipelineFactory = new MiddlewarePipelineFactory()
-        );
-
-        $app = new ApiApp($this->container, $router, $middlewarePipelineFactory);
-
-        // TODO: Not sure how I can refactor middleware to be a component.  That requires resolving ApiApp and passing it into the builder (which needs to be instantiated in this class' constructor).  However, at that point I haven't bound a router or middleware pipeline factory.
-        // TODO: One way around this would be to keep track of middleware in a registry which is injected into ApiApp and the middleware component builder.
-        foreach ($this->middlewareCallbacks as $middlewareCallback) {
-            /** @var MiddlewareBinding $middlewareBinding */
-            foreach ((array)$middlewareCallback() as $middlewareBinding) {
-                if (!$middlewareBinding instanceof MiddlewareBinding) {
-                    throw new RuntimeException('Middleware bindings must be an instance of ' . MiddlewareBinding::class);
-                }
-
-                $app->addMiddleware($middlewareBinding->className, $middlewareBinding->attributes);
-            }
-        }
-
-        return $app;
     }
 }

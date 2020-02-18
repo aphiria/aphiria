@@ -36,7 +36,7 @@ final class AphiriaComponentBuilder
     }
 
     /**
-     * Registers Aphiria console annotations
+     * Enables console command annotations
      *
      * @param IApplicationBuilder $appBuilder The app builder to register to
      * @return AphiriaComponentBuilder For chaining
@@ -52,7 +52,7 @@ final class AphiriaComponentBuilder
     }
 
     /**
-     * Registers Aphiria encoders
+     * Registers Aphiria encoder component
      *
      * @param IApplicationBuilder $appBuilder The app builder to register to
      * @return AphiriaComponentBuilder For chaining
@@ -68,7 +68,7 @@ final class AphiriaComponentBuilder
     }
 
     /**
-     * Registers the Aphiria exception handlers
+     * Registers the Aphiria exception handler component
      *
      * @param IApplicationBuilder $appBuilder The app builder to register to
      * @return AphiriaComponentBuilder For chaining
@@ -84,7 +84,7 @@ final class AphiriaComponentBuilder
     }
 
     /**
-     * Registers Aphiria routing annotations (requires the routing component to be registered)
+     * Enables routing annotations
      *
      * @param IApplicationBuilder $appBuilder The app builder to register to
      * @return AphiriaComponentBuilder For chaining
@@ -100,7 +100,7 @@ final class AphiriaComponentBuilder
     }
 
     /**
-     * Registers the Aphiria router
+     * Registers the Aphiria routing component
      *
      * @param IApplicationBuilder $appBuilder The app builder to register to
      * @return AphiriaComponentBuilder For chaining
@@ -116,7 +116,7 @@ final class AphiriaComponentBuilder
     }
 
     /**
-     * Registers Aphiria validation annotations
+     * Enables Aphiria validation annotations
      *
      * @param IApplicationBuilder $appBuilder The app builder to register to
      * @return AphiriaComponentBuilder For chaining
@@ -132,7 +132,7 @@ final class AphiriaComponentBuilder
     }
 
     /**
-     * Registers Aphiria validators
+     * Registers the Aphiria validation component
      *
      * @param IApplicationBuilder $appBuilder The app builder to register to
      * @return AphiriaComponentBuilder For chaining

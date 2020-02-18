@@ -51,7 +51,7 @@ final class BootstrapperBuilder implements IComponentBuilder
      */
     public function withBootstrapper(Bootstrapper $bootstrapper): BootstrapperBuilder
     {
-        $this->withBootstrappers([$bootstrapper]);
+        $this->bootstrappers[] = $bootstrapper;
 
         return $this;
     }
@@ -62,7 +62,7 @@ final class BootstrapperBuilder implements IComponentBuilder
      * @param Bootstrapper[] $bootstrappers The bootstrappers to add
      * @return BootstrapperBuilder For chaining
      */
-    public function withBootstrappers(array $bootstrappers): BootstrapperBuilder
+    public function withManyBootstrappers(array $bootstrappers): BootstrapperBuilder
     {
         $this->bootstrappers = [...$this->bootstrappers, ...$bootstrappers];
 

@@ -12,8 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration\Framework\Routing\Builders;
 
+use Aphiria\Api\Router;
 use Aphiria\Configuration\Builders\IApplicationBuilder;
 use Aphiria\Configuration\Builders\IComponentBuilder;
+use Aphiria\DependencyInjection\IDependencyResolver;
 use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
 use Aphiria\Routing\Builders\RouteBuilderRouteRegistrant;
 use Aphiria\Routing\RouteCollection;
@@ -30,6 +32,8 @@ final class RouterBuilder implements IComponentBuilder
     private RouteCollection $routes;
     /** @var RouteRegistrantCollection The list of route registrants */
     private RouteRegistrantCollection $routeRegistrants;
+    /** @var IDependencyResolver The dependency resolver */
+    private IDependencyResolver $dependencyResolver;
     /** @var AnnotationRouteRegistrant|null The optional annotation route registrant */
     private ?AnnotationRouteRegistrant $annotationRouteRegistrant;
     /** @var Closure[] The list of callbacks that can register route builders */
@@ -38,15 +42,18 @@ final class RouterBuilder implements IComponentBuilder
     /**
      * @param RouteCollection $routes The list of routes to add to
      * @param RouteRegistrantCollection $routeRegistrants The list of route registrants
+     * @param IDependencyResolver $dependencyResolver The dependency resolver
      * @param AnnotationRouteRegistrant|null $annotationRouteRegistrant The optional annotation route registrant
      */
     public function __construct(
         RouteCollection $routes,
         RouteRegistrantCollection $routeRegistrants,
+        IDependencyResolver $dependencyResolver,
         AnnotationRouteRegistrant $annotationRouteRegistrant = null
     ) {
         $this->routes = $routes;
         $this->routeRegistrants = $routeRegistrants;
+        $this->dependencyResolver = $dependencyResolver;
         $this->annotationRouteRegistrant = $annotationRouteRegistrant;
     }
 
@@ -57,6 +64,7 @@ final class RouterBuilder implements IComponentBuilder
     {
         $this->routeRegistrants->add(new RouteBuilderRouteRegistrant($this->callbacks));
         $this->routeRegistrants->registerRoutes($this->routes);
+        $appBuilder->withRouter(fn () => $this->dependencyResolver->resolve(Router::class));
     }
 
     /**

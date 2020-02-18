@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration\Builders;
 
+use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
@@ -56,14 +57,6 @@ interface IApplicationBuilder
     public function withBootstrapper(Bootstrapper $bootstrapper): IApplicationBuilder;
 
     /**
-     * Adds bootstrappers to the application
-     *
-     * @param Bootstrapper[] $bootstrappers The bootstrappers to add
-     * @return IApplicationBuilder For chaining
-     */
-    public function withBootstrappers(array $bootstrappers): self;
-
-    /**
      * Adds a component builder to the application
      *
      * @param string $class The name of the component builder class
@@ -81,12 +74,28 @@ interface IApplicationBuilder
     public function withConsoleCommands(Closure $callback): self;
 
     /**
-     * Adds global middleware to the app
+     * Adds a global middleware to the app
      *
-     * @param Closure $middlewareCallback The callback that will return the list of middleware bindings to use
+     * @param MiddlewareBinding $middlewareBinding The middleware binding to add
      * @return IApplicationBuilder For chaining
      */
-    public function withGlobalMiddleware(Closure $middlewareCallback): self;
+    public function withGlobalMiddleware(MiddlewareBinding $middlewareBinding): self;
+
+    /**
+     * Adds bootstrappers to the application
+     *
+     * @param Bootstrapper[] $bootstrappers The bootstrappers to add
+     * @return IApplicationBuilder For chaining
+     */
+    public function withManyBootstrappers(array $bootstrappers): self;
+
+    /**
+     * Adds many global middleware to the app
+     *
+     * @param MiddlewareBinding[] $middlewareBindings The middleware bindings to add
+     * @return IApplicationBuilder For chaining
+     */
+    public function withManyGlobalMiddleware(array $middlewareBindings): self;
 
     /**
      * Adds an entire module builder to the application
