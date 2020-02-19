@@ -41,12 +41,12 @@ interface IApplicationBuilder
     public function buildConsoleApplication(): ICommandBus;
 
     /**
-     * Enqueues a call to a component builder
+     * Configures a component builder by registering a callback that will manipulate it
      *
      * @param string $class The name of the component builder to call
      * @param Closure $callback The callback that will take an instance of the class param
      */
-    public function enqueueComponentBuilderCall(string $class, Closure $callback): void;
+    public function configureComponentBuilder(string $class, Closure $callback): void;
 
     /**
      * Adds a bootstrapper to the application

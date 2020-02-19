@@ -54,6 +54,8 @@ final class ApplicationBuilder implements IApplicationBuilder
     {
         $this->container = $container;
 
+        // TODO: I might need to remove the bootstrapper and middleware components if they're going to stick in AphiriaComponentBuilder
+
         // It's important for the bootstrapper component builder is registered first so that all the dependencies are bound
         $this->withComponentBuilder(BootstrapperBuilder::class, fn () => new BootstrapperBuilder($bootstrapperDispatcher));
 
@@ -82,6 +84,7 @@ final class ApplicationBuilder implements IApplicationBuilder
             throw new RuntimeException('Router must implement ' . IRequestHandler::class);
         }
 
+        // TODO: If I move configuring middleware to AphiriaComponentBuilder, I need to use the DI container to resolve the middleware collection
         $apiApp = new ApiApp($router, $this->middlewareCollection);
         $this->container->bindInstance(IRequestHandler::class, $apiApp);
 
@@ -103,7 +106,7 @@ final class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function enqueueComponentBuilderCall(string $class, Closure $callback): void
+    public function configureComponentBuilder(string $class, Closure $callback): void
     {
         if (!isset($this->componentBuilderFactories[$class])) {
             // TODO: What type of exception should I throw?
@@ -122,7 +125,7 @@ final class ApplicationBuilder implements IApplicationBuilder
      */
     public function withBootstrapper(Bootstrapper $bootstrapper): IApplicationBuilder
     {
-        $this->enqueueComponentBuilderCall(
+        $this->configureComponentBuilder(
             BootstrapperBuilder::class,
             fn (BootstrapperBuilder $bootstrapperBuilder) => $bootstrapperBuilder->withBootstrapper($bootstrapper)
         );
@@ -145,7 +148,7 @@ final class ApplicationBuilder implements IApplicationBuilder
      */
     public function withConsoleCommands(Closure $callback): IApplicationBuilder
     {
-        $this->enqueueComponentBuilderCall(
+        $this->configureComponentBuilder(
             CommandBuilder::class,
             fn (CommandBuilder $commandBuilder) => $commandBuilder->withCommands($callback)
         );
@@ -158,7 +161,7 @@ final class ApplicationBuilder implements IApplicationBuilder
      */
     public function withGlobalMiddleware(MiddlewareBinding $middlewareBinding): IApplicationBuilder
     {
-        $this->enqueueComponentBuilderCall(
+        $this->configureComponentBuilder(
             MiddlewareBuilder::class,
             fn (MiddlewareBuilder $middlewareBuilder) => $middlewareBuilder->withMiddlewareBinding($middlewareBinding)
         );
@@ -171,7 +174,7 @@ final class ApplicationBuilder implements IApplicationBuilder
      */
     public function withManyBootstrappers(array $bootstrappers): IApplicationBuilder
     {
-        $this->enqueueComponentBuilderCall(
+        $this->configureComponentBuilder(
             BootstrapperBuilder::class,
             fn (BootstrapperBuilder $bootstrapperBuilder) => $bootstrapperBuilder->withManyBootstrappers($bootstrappers)
         );
@@ -184,7 +187,7 @@ final class ApplicationBuilder implements IApplicationBuilder
      */
     public function withManyGlobalMiddleware(array $middlewareBindings): IApplicationBuilder
     {
-        $this->enqueueComponentBuilderCall(
+        $this->configureComponentBuilder(
             MiddlewareBuilder::class,
             fn (MiddlewareBuilder $middlewareBuilder) => $middlewareBuilder->withManyMiddlewareBindings($middlewareBindings)
         );
@@ -221,7 +224,7 @@ final class ApplicationBuilder implements IApplicationBuilder
             /** @var IComponentBuilder $componentBuilder */
             $componentBuilder = $componentBuilderFactory();
 
-            // Calls to component builders should happen before it's built
+            // Calls to component builders should happen before they're built
             if (isset($this->componentBuilderCalls[$componentBuilderName])) {
                 foreach ($this->componentBuilderCalls[$componentBuilderName] as $componentBuilderCallback) {
                     $componentBuilderCallback($componentBuilder);
