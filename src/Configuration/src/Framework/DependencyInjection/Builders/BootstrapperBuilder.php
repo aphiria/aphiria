@@ -44,27 +44,18 @@ final class BootstrapperBuilder implements IComponentBuilder
     }
 
     /**
-     * Adds a bootstrapper to dispatch
-     *
-     * @param Bootstrapper $bootstrapper The bootstrapper to add
-     * @return BootstrapperBuilder For chaining
-     */
-    public function withBootstrapper(Bootstrapper $bootstrapper): BootstrapperBuilder
-    {
-        $this->bootstrappers[] = $bootstrapper;
-
-        return $this;
-    }
-
-    /**
      * Adds bootstrappers to dispatch
      *
-     * @param Bootstrapper[] $bootstrappers The bootstrappers to add
+     * @param Bootstrapper|Bootstrapper[] $bootstrappers The bootstrappers to add
      * @return BootstrapperBuilder For chaining
      */
-    public function withManyBootstrappers(array $bootstrappers): BootstrapperBuilder
+    public function withBootstrappers($bootstrappers): BootstrapperBuilder
     {
-        $this->bootstrappers = [...$this->bootstrappers, ...$bootstrappers];
+        if ($bootstrappers instanceof Bootstrapper) {
+            $this->bootstrappers[] = $bootstrappers;
+        } elseif (\is_array($bootstrappers)) {
+            $this->bootstrappers = [...$this->bootstrappers, ...$bootstrappers];
+        }
 
         return $this;
     }

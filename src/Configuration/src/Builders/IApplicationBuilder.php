@@ -16,11 +16,22 @@ use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Serialization\Encoding\IEncoder;
 use Closure;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
  * Defines the interface for applications builders to implement
+ *
+ * @method IApplicationBuilder withBootstrappers(Bootstrapper|Bootstrapper[] $bootstrapper)
+ * @method IApplicationBuilder withCommands(Closure $callback)
+ * @method IApplicationBuilder withEncoder(string $class, IEncoder $encoder)
+ * @method IApplicationBuilder withExceptionResponseFactory(string $exceptionType, Closure $responseFactory)
+ * @method IApplicationBuilder withGlobalMiddleware(MiddlewareBinding|MiddlewareBinding[] $middlewareBindings)
+ * @method IApplicationBuilder withLogLevelFactory(string $exceptionType, Closure $logLevelFactory)
+ * @method IApplicationBuilder withObjectConstraints(Closure $callback)
+ * @method IApplicationBuilder withRoutes(Closure $callback)
  */
 interface IApplicationBuilder
 {
@@ -45,57 +56,20 @@ interface IApplicationBuilder
      *
      * @param string $class The name of the component builder to call
      * @param Closure $callback The callback that will take an instance of the class param
+     * @throws InvalidArgumentException Thrown if the component builder was not registered yet
      */
     public function configureComponentBuilder(string $class, Closure $callback): void;
-
-    /**
-     * Adds a bootstrapper to the application
-     *
-     * @param Bootstrapper $bootstrapper The bootstrapper to add
-     * @return IApplicationBuilder For chaining
-     */
-    public function withBootstrapper(Bootstrapper $bootstrapper): IApplicationBuilder;
 
     /**
      * Adds a component builder to the application
      *
      * @param string $class The name of the component builder class
      * @param Closure $factory The factory that will create the component builder
+     * @param array $magicMethods The mapping of magic method names to callbacks
      * @return IApplicationBuilder For chaining
+     * @throws InvalidArgumentException Thrown if the magic method was already registered
      */
-    public function withComponentBuilder(string $class, Closure $factory): self;
-
-    /**
-     * Adds console commands to the application
-     *
-     * @param Closure $callback The callback that takes in a CommandRegistry ands registers commands to it
-     * @return IApplicationBuilder For chaining
-     */
-    public function withConsoleCommands(Closure $callback): self;
-
-    /**
-     * Adds a global middleware to the app
-     *
-     * @param MiddlewareBinding $middlewareBinding The middleware binding to add
-     * @return IApplicationBuilder For chaining
-     */
-    public function withGlobalMiddleware(MiddlewareBinding $middlewareBinding): self;
-
-    /**
-     * Adds bootstrappers to the application
-     *
-     * @param Bootstrapper[] $bootstrappers The bootstrappers to add
-     * @return IApplicationBuilder For chaining
-     */
-    public function withManyBootstrappers(array $bootstrappers): self;
-
-    /**
-     * Adds many global middleware to the app
-     *
-     * @param MiddlewareBinding[] $middlewareBindings The middleware bindings to add
-     * @return IApplicationBuilder For chaining
-     */
-    public function withManyGlobalMiddleware(array $middlewareBindings): self;
+    public function withComponentBuilder(string $class, Closure $factory, array $magicMethods = []): self;
 
     /**
      * Adds an entire module builder to the application
@@ -104,12 +78,4 @@ interface IApplicationBuilder
      * @return IApplicationBuilder For chaining
      */
     public function withModuleBuilder(IModuleBuilder $moduleBuilder): self;
-
-    /**
-     * Adds the inner-most request handler that will act as the router
-     *
-     * @param Closure $routerCallback The callback that takes in no parameters and returns an instance of a request handler
-     * @return IApplicationBuilder For chaining
-     */
-    public function withRouter(Closure $routerCallback): self;
 }

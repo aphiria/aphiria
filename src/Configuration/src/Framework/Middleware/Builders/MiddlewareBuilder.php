@@ -27,19 +27,19 @@ use InvalidArgumentException;
 final class MiddlewareBuilder implements IComponentBuilder
 {
     /** @var MiddlewareCollection The list of middleware */
-    private MiddlewareCollection $middleware;
+    private MiddlewareCollection $middlewareCollection;
     /** @var IDependencyResolver The dependency resolver */
     private IDependencyResolver $dependencyResolver;
     /** @var MiddlewareBinding[] The list of middleware bindings */
     private array $middlewareBindings = [];
 
     /**
-     * @param MiddlewareCollection $middleware The list of middleware
+     * @param MiddlewareCollection $middlewareCollection The list of middleware
      * @param IDependencyResolver $dependencyResolver The dependency resolver
      */
-    public function __construct(MiddlewareCollection $middleware, IDependencyResolver $dependencyResolver)
+    public function __construct(MiddlewareCollection $middlewareCollection, IDependencyResolver $dependencyResolver)
     {
-        $this->middleware = $middleware;
+        $this->middlewareCollection = $middlewareCollection;
         $this->dependencyResolver = $dependencyResolver;
     }
 
@@ -61,32 +61,23 @@ final class MiddlewareBuilder implements IComponentBuilder
                 $middleware->setAttributes($middlewareBinding->attributes);
             }
 
-            $this->middleware->add($middleware);
+            $this->middlewareCollection->add($middleware);
         }
     }
 
     /**
-     * Adds a middleware to the collection
+     * Adds global middleware to the collection
      *
-     * @param MiddlewareBinding[] $middlewareBinding The middleware bindings to add
+     * @param MiddlewareBinding|MiddlewareBinding[] $middlewareBindings The middleware binding to add
      * @return MiddlewareBuilder For chaining
      */
-    public function withManyMiddlewareBindings(array $middlewareBinding): self
+    public function withGlobalMiddleware(MiddlewareBinding $middlewareBindings): self
     {
-        $this->middlewareBindings = [...$this->middlewareBindings, ...$middlewareBinding];
-
-        return $this;
-    }
-
-    /**
-     * Adds a middleware to the collection
-     *
-     * @param MiddlewareBinding $middlewareBinding The middleware binding to add
-     * @return MiddlewareBuilder For chaining
-     */
-    public function withMiddlewareBinding(MiddlewareBinding $middlewareBinding): self
-    {
-        $this->middlewareBindings[] = $middlewareBinding;
+        if ($middlewareBindings instanceof MiddlewareBinding) {
+            $this->middlewareBindings[] = $middlewareBindings;
+        } elseif (\is_array($middlewareBindings)) {
+            $this->middlewareBindings = [...$this->middlewareBindings, ...$middlewareBindings];
+        }
 
         return $this;
     }

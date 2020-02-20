@@ -54,7 +54,7 @@ final class ExceptionHandlerBuilder implements IComponentBuilder
     public function build(IApplicationBuilder $appBuilder): void
     {
         $this->globalExceptionHandler->registerWithPhp();
-        $appBuilder->withGlobalMiddleware(fn () => [new MiddlewareBinding(ExceptionHandler::class)]);
+        $appBuilder->withGlobalMiddleware(new MiddlewareBinding(ExceptionHandler::class));
     }
 
     /**

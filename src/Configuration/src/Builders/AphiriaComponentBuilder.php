@@ -19,9 +19,12 @@ use Aphiria\Configuration\Framework\Middleware\Builders\MiddlewareBuilder;
 use Aphiria\Configuration\Framework\Routing\Builders\RouterBuilder;
 use Aphiria\Configuration\Framework\Serialization\Builders\EncoderBuilder;
 use Aphiria\Configuration\Framework\Validation\Builders\ObjectConstraintsBuilder;
+use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Middleware\MiddlewareCollection;
+use Aphiria\Serialization\Encoding\IEncoder;
+use Closure;
 
 /**
  * Defines the component builder for Aphiria components
@@ -51,11 +54,10 @@ final class AphiriaComponentBuilder
      */
     public function withBootstrapperComponent(IApplicationBuilder $appBuilder): self
     {
-        $appBuilder->configureComponentBuilder('',fn (BootstrapperBuilder $bootstrapperBuilder) => $bootstrapperBuilder->withManyBootstrappers([]));
-
         $appBuilder->withComponentBuilder(
             BootstrapperBuilder::class,
-            fn () => new BootstrapperBuilder($this->bootstrapperDispatcher)
+            fn () => new BootstrapperBuilder($this->bootstrapperDispatcher),
+            ['withBootstrappers' => fn ($bootstrappers) => $appBuilder->configureComponentBuilder(BootstrapperBuilder::class, fn (BootstrapperBuilder $bootstrapperBuilder) => $bootstrapperBuilder->withBootstrappers($bootstrappers))]
         );
 
         return $this;
@@ -78,6 +80,25 @@ final class AphiriaComponentBuilder
     }
 
     /**
+     * Registers the console component
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to register to
+     * @return AphiriaComponentBuilder For chaining
+     */
+    public function withConsoleComponent(IApplicationBuilder $appBuilder): self
+    {
+        // Bind the command registry here so that it can be injected into the component builder
+        $this->container->bindInstance(CommandRegistry::class, new CommandRegistry());
+        $appBuilder->withComponentBuilder(
+            CommandBuilder::class,
+            fn () => $this->container->resolve(CommandBuilder::class),
+            ['withCommands' => fn (Closure $callback) => $appBuilder->configureComponentBuilder(CommandBuilder::class, fn (CommandBuilder $commandBuilder) => $commandBuilder->withCommands($callback))]
+        );
+
+        return $this;
+    }
+
+    /**
      * Registers Aphiria encoder component
      *
      * @param IApplicationBuilder $appBuilder The app builder to register to
@@ -87,7 +108,8 @@ final class AphiriaComponentBuilder
     {
         $appBuilder->withComponentBuilder(
             EncoderBuilder::class,
-            fn () => $this->container->resolve(EncoderBuilder::class)
+            fn () => $this->container->resolve(EncoderBuilder::class),
+            ['withEncoder' => fn (string $class, IEncoder $encoder) => $appBuilder->configureComponentBuilder(EncoderBuilder::class, fn (EncoderBuilder $encoderBuilder) => $encoderBuilder->withEncoder($class, $encoder))]
         );
 
         return $this;
@@ -103,7 +125,11 @@ final class AphiriaComponentBuilder
     {
         $appBuilder->withComponentBuilder(
             ExceptionHandlerBuilder::class,
-            fn () => $this->container->resolve(ExceptionHandlerBuilder::class)
+            fn () => $this->container->resolve(ExceptionHandlerBuilder::class),
+            [
+                'withExceptionResponseFactory' => fn (ExceptionHandlerBuilder $exceptionHandlerBuilder, string $exceptionType, Closure $responseFactory) => $appBuilder->configureComponentBuilder(ExceptionHandlerBuilder::class, fn (ExceptionHandlerBuilder $exceptionHandlerBuilder) => $exceptionHandlerBuilder->withResponseFactory($exceptionType, $responseFactory)),
+                'withLogLevelFactory' => fn (string $exceptionType, Closure $logLevelFactory) => $appBuilder->configureComponentBuilder(ExceptionHandlerBuilder::class, fn (ExceptionHandlerBuilder $exceptionHandlerBuilder) => $exceptionHandlerBuilder->withLogLevelFactory($exceptionType, $logLevelFactory))
+            ]
         );
 
         return $this;
@@ -117,10 +143,15 @@ final class AphiriaComponentBuilder
      */
     public function withMiddlewareComponent(IApplicationBuilder $appBuilder): self
     {
-        $this->container->bindInstance(MiddlewareCollection::class, $middlewareCollection = new MiddlewareCollection());
+        // Bind the middleware collection here so that it can be injected into the component builder
+        $this->container->hasBinding(MiddlewareCollection::class)
+            ? $middlewareCollection= $this->container->resolve(MiddlewareCollection::class)
+            : $this->container->bindInstance(MiddlewareCollection::class, $middlewareCollection = new MiddlewareCollection());
+
         $appBuilder->withComponentBuilder(
             MiddlewareBuilder::class,
-            fn () => new MiddlewareBuilder($middlewareCollection, $this->container)
+            fn () => new MiddlewareBuilder($middlewareCollection, $this->container),
+            ['withGlobalMiddleware' => fn ($middlewareBindings) => $appBuilder->configureComponentBuilder(MiddlewareBuilder::class, fn (MiddlewareBuilder $middlewareBuilder) => $middlewareBuilder->withGlobalMiddleware($middlewareBindings))]
         );
 
         return $this;
@@ -152,7 +183,8 @@ final class AphiriaComponentBuilder
     {
         $appBuilder->withComponentBuilder(
             RouterBuilder::class,
-            fn () => $this->container->resolve(RouterBuilder::class)
+            fn () => $this->container->resolve(RouterBuilder::class),
+            ['withRoutes' => fn (Closure $callback) => $appBuilder->configureComponentBuilder(RouterBuilder::class, fn (RouterBuilder $routerBuilder) => $routerBuilder->withRoutes($callback))]
         );
 
         return $this;
@@ -184,7 +216,8 @@ final class AphiriaComponentBuilder
     {
         $appBuilder->withComponentBuilder(
             ObjectConstraintsBuilder::class,
-            fn () => $this->container->resolve(ObjectConstraintsBuilder::class)
+            fn () => $this->container->resolve(ObjectConstraintsBuilder::class),
+            ['withObjectConstraints' => fn (Closure $callback) => $appBuilder->configureComponentBuilder(ObjectConstraintsBuilder::class, fn (ObjectConstraintsBuilder $objectConstraintsBuilder) => $objectConstraintsBuilder->withObjectConstraints($callback))]
         );
 
         return $this;
