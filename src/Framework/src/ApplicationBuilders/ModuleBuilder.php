@@ -14,7 +14,6 @@ namespace Aphiria\Framework\ApplicationBuilders;
 
 use Aphiria\ApplicationBuilders\IApplicationBuilder;
 use Aphiria\ApplicationBuilders\IModuleBuilder;
-use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
@@ -32,6 +31,7 @@ use Aphiria\Framework\Serialization\Builders\SerializerBuilder;
 use Aphiria\Framework\Serialization\Builders\SerializerBuilderProxy;
 use Aphiria\Framework\Serialization\Builders\ValidatorBuilderProxy;
 use Aphiria\Framework\Validation\Builders\ValidatorBuilder;
+use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Serialization\Encoding\IEncoder;
 use Closure;

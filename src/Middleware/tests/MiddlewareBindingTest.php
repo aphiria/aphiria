@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\Tests\Middleware;
+namespace Aphiria\Middleware\Tests;
 
-use Aphiria\Configuration\Middleware\MiddlewareBinding;
+use Aphiria\Middleware\MiddlewareBinding;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Middleware\Builders;
 
 use Aphiria\ApplicationBuilders\IApplicationBuilder;
 use Aphiria\ApplicationBuilders\IComponentBuilderProxy;
-use Aphiria\Configuration\Middleware\MiddlewareBinding;
+use Aphiria\Middleware\MiddlewareBinding;
 use Closure;
 
 /**

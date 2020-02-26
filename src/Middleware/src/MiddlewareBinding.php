@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\Middleware;
+namespace Aphiria\Middleware;
 
 /**
- * Defines a middleware binding
+ * Defines a middleware binding, which is a wrapper around the name of the middleware + any attributes
  */
 final class MiddlewareBinding
 {

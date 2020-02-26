@@ -14,12 +14,12 @@ namespace Aphiria\Framework\Exceptions\Builders;
 
 use Aphiria\ApplicationBuilders\IApplicationBuilder;
 use Aphiria\ApplicationBuilders\IComponentBuilder;
-use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\Middleware\ExceptionHandler;
 use Aphiria\Framework\Middleware\Builders\MiddlewareBuilder;
+use Aphiria\Middleware\MiddlewareBinding;
 use Closure;
 
 /**

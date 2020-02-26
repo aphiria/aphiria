@@ -14,10 +14,10 @@ namespace Aphiria\Framework\Middleware\Builders;
 
 use Aphiria\ApplicationBuilders\IApplicationBuilder;
 use Aphiria\ApplicationBuilders\IComponentBuilder;
-use Aphiria\Configuration\Middleware\MiddlewareBinding;
 use Aphiria\DependencyInjection\IDependencyResolver;
 use Aphiria\Middleware\AttributeMiddleware;
 use Aphiria\Middleware\IMiddleware;
+use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
 use InvalidArgumentException;
 
