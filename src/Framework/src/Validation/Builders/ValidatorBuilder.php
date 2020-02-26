@@ -24,7 +24,7 @@ use RuntimeException;
 /**
  * Defines the validator component builder
  */
-final class ValidatorBuilder implements IComponentBuilder
+class ValidatorBuilder implements IComponentBuilder
 {
     /** @var ObjectConstraintsRegistry The object constraints to register to */
     private ObjectConstraintsRegistry $objectConstraints;

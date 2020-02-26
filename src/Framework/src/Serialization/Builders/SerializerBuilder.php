@@ -20,7 +20,7 @@ use Aphiria\Serialization\Encoding\IEncoder;
 /**
  * Defines the serialization component builder
  */
-final class SerializerBuilder implements IComponentBuilder
+class SerializerBuilder implements IComponentBuilder
 {
     /** @var EncoderRegistry The encoder registry */
     private EncoderRegistry $encoders;

@@ -24,7 +24,7 @@ use RuntimeException;
 /**
  * Defines the console command component builder
  */
-final class CommandBuilder implements IComponentBuilder
+class CommandBuilder implements IComponentBuilder
 {
     /** @var CommandRegistry The registry of commands */
     private CommandRegistry $commands;
@@ -49,7 +49,6 @@ final class CommandBuilder implements IComponentBuilder
         $this->commandRegistrants = $commandRegistrants;
         $this->annotationCommandRegistrant = $annotationCommandRegistrant;
     }
-
 
     /**
      * @inheritdoc

@@ -20,7 +20,7 @@ use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
 /**
  * Defines the bootstrapper component builder
  */
-final class BootstrapperBuilder implements IComponentBuilder
+class BootstrapperBuilder implements IComponentBuilder
 {
     /** @var IBootstrapperDispatcher The dispatcher to use */
     private IBootstrapperDispatcher $bootstrapperDispatcher;
@@ -47,9 +47,9 @@ final class BootstrapperBuilder implements IComponentBuilder
      * Adds bootstrappers to dispatch
      *
      * @param Bootstrapper|Bootstrapper[] $bootstrappers The bootstrappers to add
-     * @return BootstrapperBuilder For chaining
+     * @return self For chaining
      */
-    public function withBootstrappers($bootstrappers): BootstrapperBuilder
+    public function withBootstrappers($bootstrappers): self
     {
         if ($bootstrappers instanceof Bootstrapper) {
             $this->bootstrappers[] = $bootstrappers;

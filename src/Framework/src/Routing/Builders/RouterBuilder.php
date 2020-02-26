@@ -27,7 +27,7 @@ use RuntimeException;
 /**
  * Defines the router builder
  */
-final class RouterBuilder implements IComponentBuilder
+class RouterBuilder implements IComponentBuilder
 {
     /** @var RouteCollection The list of routes to add to */
     private RouteCollection $routes;

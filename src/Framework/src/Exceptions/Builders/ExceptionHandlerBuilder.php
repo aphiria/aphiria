@@ -19,12 +19,13 @@ use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\Middleware\ExceptionHandler;
+use Aphiria\Framework\Middleware\Builders\MiddlewareBuilder;
 use Closure;
 
 /**
  * Defines the exception handler component builder
  */
-final class ExceptionHandlerBuilder implements IComponentBuilder
+class ExceptionHandlerBuilder implements IComponentBuilder
 {
     /** @var GlobalExceptionHandler The global exception handler */
     private GlobalExceptionHandler $globalExceptionHandler;
@@ -54,8 +55,8 @@ final class ExceptionHandlerBuilder implements IComponentBuilder
     public function build(IApplicationBuilder $appBuilder): void
     {
         $this->globalExceptionHandler->registerWithPhp();
-        // TODO: How do I use Aphiria app builders?
-        ComponentBuilder::withGlobalMiddleware($appBuilder, new MiddlewareBinding(ExceptionHandler::class));
+        $appBuilder->getComponentBuilder(MiddlewareBuilder::class)
+            ->withGlobalMiddleware(new MiddlewareBinding(ExceptionHandler::class));
     }
 
     /**

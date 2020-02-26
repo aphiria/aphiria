@@ -12,46 +12,48 @@ declare(strict_types=1);
 
 namespace Aphiria\ApplicationBuilders;
 
-use Closure;
-use InvalidArgumentException;
+use OutOfBoundsException;
 
 /**
  * Defines an application builder
  */
 abstract class ApplicationBuilder implements IApplicationBuilder
 {
+    /** @var IModuleBuilder[] The list of module builders */
+    protected array $moduleBuilders = [];
     /** @var IComponentBuilder[] The mapping of component builder names to builders */
-    protected array $componentBuilderFactories = [];
-    /** @var Closure[] The mapping of component builder names to the enqueued list of component builder calls */
-    protected array $componentBuilderCalls = [];
+    protected array $componentBuilders = [];
 
     /**
      * @inheritdoc
      */
-    public function configureComponentBuilder(string $class, Closure $callback): void
+    public function getComponentBuilder(string $type): IComponentBuilder
     {
-        if (!isset($this->componentBuilderFactories[$class])) {
-            throw new InvalidArgumentException("No component builder of type $class is registered");
+        if (!$this->hasComponentBuilder($type)) {
+            throw new OutOfBoundsException("No component builder of type $type found");
         }
 
-        if (!isset($this->componentBuilderCalls[$class])) {
-            $this->componentBuilderCalls[$class] = [];
-        }
-
-        $this->componentBuilderCalls[$class][] = $callback;
+        return $this->componentBuilders[$type];
     }
 
     /**
      * @inheritdoc
      */
-    public function withComponentBuilder(string $class, Closure $factory, array $magicMethods = []): IApplicationBuilder
+    public function hasComponentBuilder(string $type): bool
     {
-        $this->componentBuilderFactories[$class] = $factory;
+        return isset($this->componentBuilders[$type]);
+    }
 
-        foreach ($magicMethods as $magicMethodName => $callback) {
-            if (isset($this->componentMagicMethodsToCallbacks[$magicMethodName])) {
-                throw new InvalidArgumentException("Magic method $magicMethodName is already registered");
-            }
+    /**
+     * @inheritdoc
+     */
+    public function withComponentBuilder(IComponentBuilder $componentBuilder): IApplicationBuilder
+    {
+        if ($componentBuilder instanceof IComponentBuilderProxy) {
+            $this->componentBuilders[$componentBuilder->getProxiedType()] = $componentBuilder;
+        } else {
+            $this->componentBuilders[\get_class($componentBuilder)] = $componentBuilder;
+
         }
 
         return $this;
@@ -62,7 +64,7 @@ abstract class ApplicationBuilder implements IApplicationBuilder
      */
     public function withModuleBuilder(IModuleBuilder $moduleBuilder): IApplicationBuilder
     {
-        $moduleBuilder->build($this);
+        $this->moduleBuilders[] = $moduleBuilder;
 
         return $this;
     }
@@ -72,18 +74,18 @@ abstract class ApplicationBuilder implements IApplicationBuilder
      */
     protected function buildComponents(): void
     {
-        foreach ($this->componentBuilderFactories as $componentBuilderName => $componentBuilderFactory) {
-            /** @var IComponentBuilder $componentBuilder */
-            $componentBuilder = $componentBuilderFactory();
-
-            // Calls to component builders should happen before they're built
-            if (isset($this->componentBuilderCalls[$componentBuilderName])) {
-                foreach ($this->componentBuilderCalls[$componentBuilderName] as $componentBuilderCallback) {
-                    $componentBuilderCallback($componentBuilder);
-                }
-            }
-
+        foreach ($this->componentBuilders as $componentBuilderName => $componentBuilder) {
             $componentBuilder->build($this);
+        }
+    }
+
+    /**
+     * Builds all the registered module builders
+     */
+    protected function buildModules(): void
+    {
+        foreach ($this->moduleBuilders as $moduleBuilder) {
+            $moduleBuilder->build($this);
         }
     }
 }

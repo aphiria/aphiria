@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\ApplicationBuilders;
 
 use Aphiria\Api\App as ApiApp;
+use Aphiria\ApplicationBuilders\ApplicationBuilder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Middleware\MiddlewareCollection;
@@ -20,22 +21,34 @@ use Aphiria\Net\Http\Handlers\IRequestHandler;
 use RuntimeException;
 
 /**
- * Defines the application builder for REST API applications
+ * Defines the application builder for API applications
  */
-final class ApiApplicationBuilder extends AphiriaApplicationBuilder
+final class ApiApplicationBuilder extends ApplicationBuilder
 {
+    /** @var IContainer The DI container */
+    private IContainer $container;
+
+    /**
+     * @param IContainer $container The DI container
+     */
+    public function __construct(IContainer $container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @inheritdoc
      */
     public function build(): IRequestHandler
     {
+        $this->buildModules();
         $this->buildComponents();
 
         /** @var IRequestHandler $router */
         $router = null;
         $this->container->for(ApiApp::class, static function (IContainer $container) use (&$router) {
             if (!$container->tryResolve(IRequestHandler::class, $router)) {
-                throw new RuntimeException('No ' . IRequestHandler::class . ' router bound to container');
+                throw new RuntimeException('No ' . IRequestHandler::class . ' router bound to the container');
             }
         });
 

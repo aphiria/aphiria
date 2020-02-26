@@ -12,22 +12,36 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\ApplicationBuilders;
 
+use Aphiria\ApplicationBuilders\ApplicationBuilder;
 use Aphiria\Console\App as ConsoleApp;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
+use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use RuntimeException;
 
 /**
  * Defines the application builder for console applications
  */
-final class ConsoleApplicationBuilder extends AphiriaApplicationBuilder
+final class ConsoleApplicationBuilder extends ApplicationBuilder
 {
+    /** @var IContainer The DI container */
+    private IContainer $container;
+
+    /**
+     * @param IContainer $container The DI container
+     */
+    public function __construct(IContainer $container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @inheritdoc
      */
     public function build(): ICommandBus
     {
+        $this->buildModules();
         $this->buildComponents();
 
         try {

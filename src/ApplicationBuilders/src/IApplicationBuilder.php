@@ -12,8 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\ApplicationBuilders;
 
-use Closure;
-use InvalidArgumentException;
+use OutOfBoundsException;
 use RuntimeException;
 
 /**
@@ -30,30 +29,35 @@ interface IApplicationBuilder
     public function build(): object;
 
     /**
-     * Configures a component builder by registering a callback that will manipulate it
+     * Gets a component builder by its type (if it's a lazy component builder, then we use ILazyComponentBuilder::getType())
      *
-     * @param string $class The name of the component builder to call
-     * @param Closure $callback The callback that will take an instance of the class param
-     * @throws InvalidArgumentException Thrown if the component builder was not registered yet
+     * @param string $type The type of component builder to get
+     * @return IComponentBuilder The component builder, if one was found
+     * @throws OutOfBoundsException Thrown if there was no component builder with that type
      */
-    public function configureComponentBuilder(string $class, Closure $callback): void;
+    public function getComponentBuilder(string $type): IComponentBuilder;
+
+    /**
+     * Gets whether or not the application builder has a registered instance of the input component builder type
+     *
+     * @param string $type The type of component builder to check for
+     * @return bool True if the application builder already has the component builder, otherwise false
+     */
+    public function hasComponentBuilder(string $type): bool;
 
     /**
      * Adds a component builder to the application
      *
-     * @param string $class The name of the component builder class
-     * @param Closure $factory The factory that will create the component builder
-     * @param array $magicMethods The mapping of magic method names to callbacks
-     * @return IApplicationBuilder For chaining
-     * @throws InvalidArgumentException Thrown if the magic method was already registered
+     * @param IComponentBuilder $componentBuilder The component builder to register
+     * @return self For chaining
      */
-    public function withComponentBuilder(string $class, Closure $factory, array $magicMethods = []): self;
+    public function withComponentBuilder(IComponentBuilder $componentBuilder): self;
 
     /**
      * Adds an entire module builder to the application
      *
-     * @param IModuleBuilder $moduleBuilder The module builder to include
-     * @return IApplicationBuilder For chaining
+     * @param IModuleBuilder $moduleBuilder The module builder to register
+     * @return self For chaining
      */
     public function withModuleBuilder(IModuleBuilder $moduleBuilder): self;
 }

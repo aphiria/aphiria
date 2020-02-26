@@ -24,7 +24,7 @@ use InvalidArgumentException;
 /**
  * Defines the middleware component builder
  */
-final class MiddlewareBuilder implements IComponentBuilder
+class MiddlewareBuilder implements IComponentBuilder
 {
     /** @var MiddlewareCollection The list of middleware */
     private MiddlewareCollection $middlewareCollection;
