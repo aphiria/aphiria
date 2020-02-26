@@ -240,7 +240,7 @@ abstract class ModuleBuilder implements IModuleBuilder
             return $appBuilder;
         }
 
-        $appBuilder->withComponentBuilder(new BootstrapperBuilderProxy(fn () => $this->container->resolve(BootstrapperBuilder::class)));
+        $appBuilder->withComponentBuilder(new BootstrapperBuilderProxy(fn () => $this->container->resolve(BootstrapperBuilder::class)), 0);
 
         return $appBuilder;
     }

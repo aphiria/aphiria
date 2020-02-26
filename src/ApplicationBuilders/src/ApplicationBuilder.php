@@ -20,20 +20,22 @@ use OutOfBoundsException;
 abstract class ApplicationBuilder implements IApplicationBuilder
 {
     /** @var IModuleBuilder[] The list of module builders */
-    protected array $moduleBuilders = [];
-    /** @var IComponentBuilder[] The mapping of component builder names to builders */
-    protected array $componentBuilders = [];
+    private array $moduleBuilders = [];
+    /** @var IComponentBuilder[] The mapping of prioritized component builder names to builders */
+    private array $componentBuildersByType = [];
+    /** @var array The list of structs that contain component builder types and priorities */
+    private array $componentBuilderTypesAndPriorities = [];
 
     /**
      * @inheritdoc
      */
     public function getComponentBuilder(string $type): IComponentBuilder
     {
-        if (!$this->hasComponentBuilder($type)) {
+        if (!isset($this->componentBuildersByType[$type])) {
             throw new OutOfBoundsException("No component builder of type $type found");
         }
 
-        return $this->componentBuilders[$type];
+        return $this->componentBuildersByType[$type];
     }
 
     /**
@@ -41,20 +43,17 @@ abstract class ApplicationBuilder implements IApplicationBuilder
      */
     public function hasComponentBuilder(string $type): bool
     {
-        return isset($this->componentBuilders[$type]);
+        return isset($this->componentBuildersByType[$type]);
     }
 
     /**
      * @inheritdoc
      */
-    public function withComponentBuilder(IComponentBuilder $componentBuilder): IApplicationBuilder
+    public function withComponentBuilder(IComponentBuilder $componentBuilder, int $priority = null): IApplicationBuilder
     {
-        if ($componentBuilder instanceof IComponentBuilderProxy) {
-            $this->componentBuilders[$componentBuilder->getProxiedType()] = $componentBuilder;
-        } else {
-            $this->componentBuilders[\get_class($componentBuilder)] = $componentBuilder;
-
-        }
+        $type = $componentBuilder instanceof IComponentBuilderProxy ? $componentBuilder->getProxiedType() : \get_class($componentBuilder);
+        $this->componentBuilderTypesAndPriorities[] = ['type' => $type, 'priority' => $priority ?? \PHP_INT_MAX];
+        $this->componentBuildersByType[$type] = $componentBuilder;
 
         return $this;
     }
@@ -74,8 +73,11 @@ abstract class ApplicationBuilder implements IApplicationBuilder
      */
     protected function buildComponents(): void
     {
-        foreach ($this->componentBuilders as $componentBuilderName => $componentBuilder) {
-            $componentBuilder->build($this);
+        // TODO: Need to verify this orders in things properly
+        \usort($this->componentBuilderTypesAndPriorities, fn ($a, $b) => $a['priority'] <=> $b['priority']);
+
+        foreach ($this->componentBuilderTypesAndPriorities as $typeAndPriority) {
+            $this->componentBuildersByType[$typeAndPriority['type']]->build($this);
         }
     }
 

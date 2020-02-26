@@ -49,9 +49,10 @@ interface IApplicationBuilder
      * Adds a component builder to the application
      *
      * @param IComponentBuilder $componentBuilder The component builder to register
+     * @param int|null $priority The optional priority of this component builder (lower number => higher priority)
      * @return self For chaining
      */
-    public function withComponentBuilder(IComponentBuilder $componentBuilder): self;
+    public function withComponentBuilder(IComponentBuilder $componentBuilder, int $priority = null): self;
 
     /**
      * Adds an entire module builder to the application
