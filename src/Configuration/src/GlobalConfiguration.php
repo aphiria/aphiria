@@ -15,20 +15,12 @@ namespace Aphiria\Configuration;
 use RuntimeException;
 
 /**
- * Defines a wrapper around an application's raw configuration
+ * Defines the global configuration
  */
-class Configuration
+final class GlobalConfiguration
 {
-    /** @var array The raw config */
-    private array $rawConfig;
-
-    /**
-     * @param array $rawConfig The raw config
-     */
-    public function __construct(array $rawConfig)
-    {
-        $this->rawConfig = $rawConfig;
-    }
+    /** @var Configuration|null The underlying static instance of this class */
+    private static ?Configuration $instance = null;
 
     /**
      * Gets the array value at the path
@@ -38,9 +30,11 @@ class Configuration
      * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws ConfigurationException Thrown if there was no value at the input path
      */
-    public function getArray(string $path): array
+    public static function getArray(string $path): array
     {
-        return (array)$this->getValue($path);
+        self::validateInstanceSet();
+
+        return self::$instance->getArray($path);
     }
 
     /**
@@ -51,9 +45,11 @@ class Configuration
      * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws ConfigurationException Thrown if there was no value at the input path
      */
-    public function getBool(string $path): bool
+    public static function getBool(string $path): bool
     {
-        return (bool)$this->getValue($path);
+        self::validateInstanceSet();
+
+        return self::$instance->getBool($path);
     }
 
     /**
@@ -64,9 +60,11 @@ class Configuration
      * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws ConfigurationException Thrown if there was no value at the input path
      */
-    public function getFloat(string $path): float
+    public static function getFloat(string $path): float
     {
-        return (float)$this->getValue($path);
+        self::validateInstanceSet();
+
+        return self::$instance->getFloat($path);
     }
 
     /**
@@ -77,9 +75,11 @@ class Configuration
      * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws ConfigurationException Thrown if there was no value at the input path
      */
-    public function getInt(string $path): int
+    public static function getInt(string $path): int
     {
-        return (int)$this->getValue($path);
+        self::validateInstanceSet();
+
+        return self::$instance->getInt($path);
     }
 
     /**
@@ -90,9 +90,11 @@ class Configuration
      * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws ConfigurationException Thrown if there was no value at the input path
      */
-    public function getString(string $path): string
+    public static function getString(string $path): string
     {
-        return (string)$this->getValue($path);
+        self::validateInstanceSet();
+
+        return self::$instance->getString($path);
     }
 
     /**
@@ -100,24 +102,24 @@ class Configuration
      *
      * @param string $path The period-delimited path to the value in the config to get
      * @return mixed The value at the path
+     * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws ConfigurationException Thrown if there was no value at the input path
      */
-    public function getValue(string $path)
+    public static function getValue(string $path)
     {
-        $explodedPath = \explode('.', $path);
-        $value = $this->rawConfig;
+        self::validateInstanceSet();
 
-        foreach ($explodedPath as $i => $pathPart) {
-            if (!isset($value[$pathPart])) {
-                $fullPathToThisPart = implode('.', \array_slice($explodedPath, 0, $i + 1));
+        return self::$instance->getValue($path);
+    }
 
-                throw new ConfigurationException("No configuration value at $fullPathToThisPart");
-            }
-
-            $value = $value[$pathPart];
-        }
-
-        return $value;
+    /**
+     * Sets the global configuration instance
+     *
+     * @param Configuration $configuration The configuration to use as the global configuration
+     */
+    public static function setInstance(Configuration $configuration): void
+    {
+        self::$instance = $configuration;
     }
 
     /**
@@ -127,17 +129,11 @@ class Configuration
      * @param array|null $value The value if one was found, otherwise null
      * @return bool True if the value existed, otherwise false
      */
-    public function tryGetArray(string $path, ?array &$value): bool
+    public static function tryGetArray(string $path, ?array &$value): bool
     {
-        try {
-            $value = $this->getArray($path);
+        self::validateInstanceSet();
 
-            return true;
-        } catch (ConfigurationException $ex) {
-            $value = null;
-
-            return false;
-        }
+        return self::$instance->tryGetArray($path, $value);
     }
 
     /**
@@ -147,17 +143,11 @@ class Configuration
      * @param bool|null $value The value if one was found, otherwise null
      * @return bool True if the value existed, otherwise false
      */
-    public function tryGetBool(string $path, ?bool &$value): bool
+    public static function tryGetBool(string $path, ?bool &$value): bool
     {
-        try {
-            $value = $this->getBool($path);
+        self::validateInstanceSet();
 
-            return true;
-        } catch (ConfigurationException $ex) {
-            $value = null;
-
-            return false;
-        }
+        return self::$instance->tryGetBool($path, $value);
     }
 
     /**
@@ -167,17 +157,11 @@ class Configuration
      * @param float|null $value The value if one was found, otherwise null
      * @return bool True if the value existed, otherwise false
      */
-    public function tryGetFloat(string $path, ?float &$value): bool
+    public static function tryGetFloat(string $path, ?float &$value): bool
     {
-        try {
-            $value = $this->getFloat($path);
+        self::validateInstanceSet();
 
-            return true;
-        } catch (ConfigurationException $ex) {
-            $value = null;
-
-            return false;
-        }
+        return self::$instance->tryGetFloat($path, $value);
     }
 
     /**
@@ -187,17 +171,11 @@ class Configuration
      * @param int|null $value The value if one was found, otherwise null
      * @return bool True if the value existed, otherwise false
      */
-    public function tryGetInt(string $path, ?int &$value): bool
+    public static function tryGetInt(string $path, ?int &$value): bool
     {
-        try {
-            $value = $this->getInt($path);
+        self::validateInstanceSet();
 
-            return true;
-        } catch (ConfigurationException $ex) {
-            $value = null;
-
-            return false;
-        }
+        return self::$instance->tryGetInt($path, $value);
     }
 
     /**
@@ -207,17 +185,11 @@ class Configuration
      * @param string|null $value The value if one was found, otherwise null
      * @return bool True if the value existed, otherwise false
      */
-    public function tryGetString(string $path, ?string &$value): bool
+    public static function tryGetString(string $path, ?string &$value): bool
     {
-        try {
-            $value = $this->getString($path);
+        self::validateInstanceSet();
 
-            return true;
-        } catch (ConfigurationException $ex) {
-            $value = null;
-
-            return false;
-        }
+        return self::$instance->tryGetString($path, $value);
     }
 
     /**
@@ -227,16 +199,22 @@ class Configuration
      * @param mixed|null $value The value if one was found, otherwise null
      * @return bool True if the value existed, otherwise false
      */
-    public function tryGetValue(string $path, &$value): bool
+    public static function tryGetValue(string $path, &$value): bool
     {
-        try {
-            $value = $this->getValue($path);
+        self::validateInstanceSet();
 
-            return true;
-        } catch (ConfigurationException $ex) {
-            $value = null;
+        return self::$instance->tryGetValue($path, $value);
+    }
 
-            return false;
+    /**
+     * Validates that an instance is set
+     *
+     * @throws RuntimeException Thrown if no instance was set
+     */
+    private static function validateInstanceSet(): void
+    {
+        if (self::$instance === null) {
+            throw new RuntimeException('Must call ' . self::class . '::setInstance() before calling getValue()');
         }
     }
 }

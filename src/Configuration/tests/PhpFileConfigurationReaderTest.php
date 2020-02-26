@@ -25,8 +25,8 @@ class PhpFileConfigurationReaderTest extends TestCase
     public function testReadingConfigurationCreatesConfigurationFromContentsOfPhpFile(): void
     {
         $configReader = new PhpFileConfigurationReader(__DIR__ . '/Mocks/configuration.php');
-        $configReader->readConfiguration();
-        $this->assertEquals('bar', Configuration::getString('foo'));
+        $configuration = $configReader->readConfiguration();
+        $this->assertEquals('bar', $configuration->getString('foo'));
     }
 
     public function testReadingNonExistentPathThrowsException(): void
