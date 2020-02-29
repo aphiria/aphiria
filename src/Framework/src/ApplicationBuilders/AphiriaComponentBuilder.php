@@ -39,7 +39,7 @@ use Closure;
 /**
  * Defines a Aphiria component builder that gives a fluent syntax for enabling/configuring Aphiria components
  */
-class AphiriaComponentBuilder
+final class AphiriaComponentBuilder
 {
     /** @var IContainer The DI container */
     private IContainer $container;

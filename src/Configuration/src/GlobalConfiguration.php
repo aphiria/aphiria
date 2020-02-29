@@ -17,7 +17,7 @@ use RuntimeException;
 /**
  * Defines the global configuration
  */
-final class GlobalConfiguration
+class GlobalConfiguration
 {
     /** @var Configuration|null The underlying static instance of this class */
     private static ?Configuration $instance = null;
