@@ -17,6 +17,8 @@ use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\ApplicationBuilders\AphiriaComponentBuilder;
+use Aphiria\Framework\Console\Builders\CommandBuilder;
+use Aphiria\Framework\Console\Builders\CommandBuilderProxy;
 use Aphiria\Framework\DependencyInjection\Builders\BootstrapperBuilder;
 use Aphiria\Framework\DependencyInjection\Builders\BootstrapperBuilderProxy;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -81,6 +83,43 @@ class AphiriaComponentBuilderTest extends TestCase
             ->method('withComponentBuilder')
             ->with($this->isInstanceOf(BootstrapperBuilderProxy::class), 0)
             ->willReturn($this->appBuilder);
+        $this->appBuilder->expects($this->at(2))
+            ->method('getComponentBuilder')
+            ->with(BootstrapperBuilder::class)
+            ->willReturn($this->createMock(BootstrapperBuilder::class));
         $this->componentBuilder->withBootstrappers($this->appBuilder, $bootstrapper);
+    }
+
+    public function testWithCommandAnnotationsConfiguresCommandBuilderToHaveAnnotations(): void
+    {
+        $expectedCommandBuilder = $this->createMock(CommandBuilder::class);
+        $expectedCommandBuilder->expects($this->once())
+            ->method('withAnnotations');
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponentBuilder')
+            ->with(CommandBuilder::class)
+            ->willReturn(true);
+        $this->appBuilder->expects($this->at(1))
+            ->method('getComponentBuilder')
+            ->with(CommandBuilder::class)
+            ->willReturn($expectedCommandBuilder);
+        $this->componentBuilder->withCommandAnnotations($this->appBuilder);
+    }
+
+    public function testWithCommandAnnotationsRegistersCorrectComponentBuilder(): void
+    {
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponentBuilder')
+            ->with(CommandBuilder::class)
+            ->willReturn(false);
+        $this->appBuilder->expects($this->at(1))
+            ->method('withComponentBuilder')
+            ->with($this->isInstanceOf(CommandBuilderProxy::class))
+            ->willReturn($this->appBuilder);
+        $this->appBuilder->expects($this->at(2))
+            ->method('getComponentBuilder')
+            ->with(CommandBuilder::class)
+            ->willReturn($this->createMock(CommandBuilder::class));
+        $this->componentBuilder->withCommandAnnotations($this->appBuilder);
     }
 }
