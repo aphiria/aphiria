@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Serialization\Bootstrappers;
 
-use Aphiria\Configuration\Configuration;
 use Aphiria\Configuration\ConfigurationException;
+use Aphiria\Configuration\GlobalConfiguration;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Serialization\Encoding\CamelCasePropertyNameFormatter;
@@ -36,7 +36,7 @@ final class SerializerBootstrapper extends Bootstrapper
         $encoders = new EncoderRegistry();
 
         $propertyNameFormatterName = null;
-        Configuration::tryGetString('aphiria.serialization.propertyNameFormatter', $propertyNameFormatterName);
+        GlobalConfiguration::tryGetString('aphiria.serialization.propertyNameFormatter', $propertyNameFormatterName);
 
         if ($propertyNameFormatterName === CamelCasePropertyNameFormatter::class) {
             $propertyNameFormatter = new CamelCasePropertyNameFormatter();
@@ -48,12 +48,12 @@ final class SerializerBootstrapper extends Bootstrapper
 
         (new DefaultEncoderRegistrant(
             $propertyNameFormatter,
-            Configuration::getString('aphiria.serialization.dateFormat')
+            GlobalConfiguration::getString('aphiria.serialization.dateFormat')
         ))->registerDefaultEncoders($encoders);
 
         $container->bindInstance(EncoderRegistry::class, $encoders);
 
-        foreach (Configuration::getArray('aphiria.serialization.serializers') as $serializerName) {
+        foreach (GlobalConfiguration::getArray('aphiria.serialization.serializers') as $serializerName) {
             switch ($serializerName) {
                 case JsonSerializer::class:
                     $container->bindInstance(JsonSerializer::class, new JsonSerializer($encoders));

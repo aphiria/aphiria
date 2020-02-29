@@ -10,11 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\DependencyInjection\Builders;
+namespace Aphiria\Framework\Exceptions\Builders;
 
 use Aphiria\ApplicationBuilders\IApplicationBuilder;
 use Aphiria\ApplicationBuilders\IComponentBuilderProxy;
-use Aphiria\Framework\Exceptions\Builders\ExceptionHandlerBuilder;
 use Closure;
 
 /**
@@ -40,11 +39,14 @@ final class ExceptionHandlerBuilderProxy extends ExceptionHandlerBuilder impleme
      */
     public function build(IApplicationBuilder $appBuilder): void
     {
+        /** @var ExceptionHandlerBuilder $instance */
         $instance = ($this->instanceFactory)();
 
         foreach ($this->proxiedCalls as $proxiedCall) {
             $proxiedCall($instance);
         }
+
+        $instance->build($appBuilder);
     }
 
     /**

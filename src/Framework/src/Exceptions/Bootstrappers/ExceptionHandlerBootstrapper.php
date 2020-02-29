@@ -16,8 +16,8 @@ use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
 use Aphiria\Api\Validation\InvalidRequestBodyException;
 use Aphiria\Api\Validation\ValidationProblemDetails;
-use Aphiria\Configuration\Configuration;
 use Aphiria\Configuration\ConfigurationException;
+use Aphiria\Configuration\GlobalConfiguration;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\ExceptionLogger;
@@ -94,7 +94,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
          *
          * Specify the PSR-3 exception levels to log
          */
-        $exceptionLogLevels = Configuration::getArray('aphiria.exceptions.exceptionLogLevels');
+        $exceptionLogLevels = GlobalConfiguration::getArray('aphiria.exceptions.exceptionLogLevels');
 
         /**
          * ----------------------------------------------------------
@@ -103,7 +103,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
          *
          * Specify the bitwise value of error levels to log
          */
-        $errorLogLevels = Configuration::getInt('aphiria.exceptions.errorLogLevels');
+        $errorLogLevels = GlobalConfiguration::getInt('aphiria.exceptions.errorLogLevels');
 
         /**
          * ----------------------------------------------------------
@@ -112,7 +112,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
          *
          * Specify the error levels to rethrow as exceptions
          */
-        $errorThrownLevels = Configuration::getInt('aphiria.exceptions.errorThrownLevels');
+        $errorThrownLevels = GlobalConfiguration::getInt('aphiria.exceptions.errorThrownLevels');
 
         /**
          * ----------------------------------------------------------
@@ -150,7 +150,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
      */
     private function getDefaultExceptionResponseFactory(IContainer $container): Closure
     {
-        if (!Configuration::getBool('aphiria.exceptions.useProblemDetails')) {
+        if (!GlobalConfiguration::getBool('aphiria.exceptions.useProblemDetails')) {
             return function (Exception $ex, ?IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory): IHttpResponseMessage {
                 return new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
             };
@@ -195,7 +195,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
      */
     private function getInvalidRequestBodyResponseFactory(): Closure
     {
-        if (!Configuration::getBool('aphiria.exceptions.useProblemDetails')) {
+        if (!GlobalConfiguration::getBool('aphiria.exceptions.useProblemDetails')) {
             return function (InvalidRequestBodyException $ex, IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory): IHttpResponseMessage {
                 return new Response(HttpStatusCodes::HTTP_BAD_REQUEST);
             };

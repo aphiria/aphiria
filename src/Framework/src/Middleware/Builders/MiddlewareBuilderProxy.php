@@ -14,7 +14,6 @@ namespace Aphiria\Framework\Middleware\Builders;
 
 use Aphiria\ApplicationBuilders\IApplicationBuilder;
 use Aphiria\ApplicationBuilders\IComponentBuilderProxy;
-use Aphiria\Middleware\MiddlewareBinding;
 use Closure;
 
 /**
@@ -40,11 +39,14 @@ final class MiddlewareBuilderProxy extends MiddlewareBuilder implements ICompone
      */
     public function build(IApplicationBuilder $appBuilder): void
     {
+        /** @var MiddlewareBuilder $instance */
         $instance = ($this->instanceFactory)();
 
         foreach ($this->proxiedCalls as $proxiedCall) {
             $proxiedCall($instance);
         }
+
+        $instance->build($appBuilder);
     }
 
     /**
@@ -58,7 +60,7 @@ final class MiddlewareBuilderProxy extends MiddlewareBuilder implements ICompone
     /**
      * @inheritdoc
      */
-    public function withGlobalMiddleware(MiddlewareBinding $middlewareBindings): self
+    public function withGlobalMiddleware($middlewareBindings): self
     {
         $this->proxiedCalls[] = fn (MiddlewareBuilder $middlewareBuilder) => $middlewareBuilder->withGlobalMiddleware($middlewareBindings);
 

@@ -239,9 +239,7 @@ class AphiriaComponentBuilder
             return $appBuilder;
         }
 
-        $appBuilder->withComponentBuilder(new BootstrapperBuilderProxy(fn () => $this->container->resolve(BootstrapperBuilder::class)), 0);
-
-        return $appBuilder;
+        return $appBuilder->withComponentBuilder(new BootstrapperBuilderProxy(fn () => $this->container->resolve(BootstrapperBuilder::class)), 0);
     }
 
     /**
@@ -258,9 +256,8 @@ class AphiriaComponentBuilder
 
         // Bind the command registry here so that it can be injected into the component builder
         $this->container->bindInstance(CommandRegistry::class, new CommandRegistry());
-        $appBuilder->withComponentBuilder(new CommandBuilderProxy(fn () => $this->container->resolve(CommandBuilder::class)));
 
-        return $appBuilder;
+        return $appBuilder->withComponentBuilder(new CommandBuilderProxy(fn () => $this->container->resolve(CommandBuilder::class)));
     }
 
     /**
@@ -275,9 +272,7 @@ class AphiriaComponentBuilder
             return $appBuilder;
         }
 
-        $appBuilder->withComponentBuilder(new ExceptionHandlerBuilderProxy(fn () => $this->container->resolve(ExceptionHandlerBuilder::class)));
-
-        return $appBuilder;
+        return $appBuilder->withComponentBuilder(new ExceptionHandlerBuilderProxy(fn () => $this->container->resolve(ExceptionHandlerBuilder::class)));
     }
 
     /**
@@ -297,9 +292,7 @@ class AphiriaComponentBuilder
             ? $middlewareCollection= $this->container->resolve(MiddlewareCollection::class)
             : $this->container->bindInstance(MiddlewareCollection::class, $middlewareCollection = new MiddlewareCollection());
 
-        $appBuilder->withComponentBuilder(new MiddlewareBuilderProxy(fn () => new MiddlewareBuilder($middlewareCollection, $this->container)));
-
-        return $appBuilder;
+        return $appBuilder->withComponentBuilder(new MiddlewareBuilderProxy(fn () => new MiddlewareBuilder($middlewareCollection, $this->container)));
     }
 
     /**
@@ -314,9 +307,7 @@ class AphiriaComponentBuilder
             return $appBuilder;
         }
 
-        $appBuilder->withComponentBuilder(new RouterBuilderProxy(fn () => $this->container->resolve(RouterBuilder::class)));
-
-        return $appBuilder;
+        return $appBuilder->withComponentBuilder(new RouterBuilderProxy(fn () => $this->container->resolve(RouterBuilder::class)));
     }
 
     /**
@@ -331,9 +322,7 @@ class AphiriaComponentBuilder
             return $appBuilder;
         }
 
-        $appBuilder->withComponentBuilder(new SerializerBuilderProxy(fn () => $this->container->resolve(SerializerBuilder::class)));
-
-        return $appBuilder;
+        return $appBuilder->withComponentBuilder(new SerializerBuilderProxy(fn () => $this->container->resolve(SerializerBuilder::class)));
     }
 
     /**
@@ -348,8 +337,6 @@ class AphiriaComponentBuilder
             return $appBuilder;
         }
 
-        $appBuilder->withComponentBuilder(new ValidatorBuilderProxy(fn () => $this->container->resolve(ValidatorBuilder::class)));
-
-        return $appBuilder;
+        return $appBuilder->withComponentBuilder(new ValidatorBuilderProxy(fn () => $this->container->resolve(ValidatorBuilder::class)));
     }
 }

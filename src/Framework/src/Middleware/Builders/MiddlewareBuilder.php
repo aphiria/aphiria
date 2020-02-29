@@ -53,7 +53,7 @@ class MiddlewareBuilder implements IComponentBuilder
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(
-                    sprintf('Middleware %s does not implement %s', get_class($middleware), IMiddleware::class)
+                    sprintf('%s does not implement %s', get_class($middleware), IMiddleware::class)
                 );
             }
 
@@ -71,7 +71,7 @@ class MiddlewareBuilder implements IComponentBuilder
      * @param MiddlewareBinding|MiddlewareBinding[] $middlewareBindings The middleware binding to add
      * @return MiddlewareBuilder For chaining
      */
-    public function withGlobalMiddleware(MiddlewareBinding $middlewareBindings): self
+    public function withGlobalMiddleware($middlewareBindings): self
     {
         if ($middlewareBindings instanceof MiddlewareBinding) {
             $this->middlewareBindings[] = $middlewareBindings;

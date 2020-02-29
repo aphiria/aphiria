@@ -39,11 +39,14 @@ final class BootstrapperBuilderProxy extends BootstrapperBuilder implements ICom
      */
     public function build(IApplicationBuilder $appBuilder): void
     {
+        /** @var BootstrapperBuilder $instance */
         $instance = ($this->instanceFactory)();
 
         foreach ($this->proxiedCalls as $proxiedCall) {
             $proxiedCall($instance);
         }
+
+        $instance->build($appBuilder);
     }
 
     /**

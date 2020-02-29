@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Logging\Bootstrappers;
 
-use Aphiria\Configuration\Configuration;
 use Aphiria\Configuration\ConfigurationException;
+use Aphiria\Configuration\GlobalConfiguration;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Monolog\Handler\StreamHandler;
@@ -32,9 +32,9 @@ final class LoggerBootstrapper extends Bootstrapper
      */
     public function registerBindings(IContainer $container): void
     {
-        $logger = new Logger(Configuration::getString('aphiria.logging.name'));
+        $logger = new Logger(GlobalConfiguration::getString('aphiria.logging.name'));
 
-        foreach (Configuration::getArray('aphiria.logging.handlers') as $handlerConfiguration) {
+        foreach (GlobalConfiguration::getArray('aphiria.logging.handlers') as $handlerConfiguration) {
             switch ($handlerConfiguration['type']) {
                 case StreamHandler::class:
                     $logger->pushHandler(new StreamHandler($handlerConfiguration['path']));

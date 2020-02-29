@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Net\Bootstrappers;
 
-use Aphiria\Configuration\Configuration;
 use Aphiria\Configuration\ConfigurationException;
+use Aphiria\Configuration\GlobalConfiguration;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Net\Http\ContentNegotiation\AcceptCharsetEncodingMatcher;
@@ -48,7 +48,7 @@ final class ContentNegotiatorBootstrapper extends Bootstrapper
          */
         $mediaTypeFormatters = array_map(
             fn (string $class) => $container->resolve($class),
-            Configuration::getArray('aphiria.contentNegotiation.mediaTypeFormatters')
+            GlobalConfiguration::getArray('aphiria.contentNegotiation.mediaTypeFormatters')
         );
         $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher($mediaTypeFormatters);
         $container->bindInstance(IMediaTypeFormatterMatcher::class, $mediaTypeFormatterMatcher);
@@ -62,7 +62,7 @@ final class ContentNegotiatorBootstrapper extends Bootstrapper
          * Default: Use the Accept-Charset header
          * @link https://tools.ietf.org/html/rfc5646
          */
-        $encodingMatcherName = Configuration::getString('aphiria.contentNegotiation.encodingMatcher');
+        $encodingMatcherName = GlobalConfiguration::getString('aphiria.contentNegotiation.encodingMatcher');
 
         if ($encodingMatcherName === AcceptCharsetEncodingMatcher::class) {
             $encodingMatcher = new AcceptCharsetEncodingMatcher();
@@ -81,10 +81,10 @@ final class ContentNegotiatorBootstrapper extends Bootstrapper
          * Default: Use the Accept-Language header
          * @link https://tools.ietf.org/html/rfc5646
          */
-        $languageMatcherName = Configuration::getString('aphiria.contentNegotiation.languageMatcher');
+        $languageMatcherName = GlobalConfiguration::getString('aphiria.contentNegotiation.languageMatcher');
 
         if ($languageMatcherName === AcceptLanguageMatcher::class) {
-            $languageMatcher = new AcceptLanguageMatcher(Configuration::getArray('aphiria.contentNegotiation.supportedLanguages'));
+            $languageMatcher = new AcceptLanguageMatcher(GlobalConfiguration::getArray('aphiria.contentNegotiation.supportedLanguages'));
         } else {
             $languageMatcher = $container->resolve($languageMatcherName);
         }

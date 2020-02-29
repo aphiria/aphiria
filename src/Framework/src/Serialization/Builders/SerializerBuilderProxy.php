@@ -40,11 +40,14 @@ final class SerializerBuilderProxy extends SerializerBuilder implements ICompone
      */
     public function build(IApplicationBuilder $appBuilder): void
     {
+        /** @var SerializerBuilder $instance */
         $instance = ($this->instanceFactory)();
 
         foreach ($this->proxiedCalls as $proxiedCall) {
             $proxiedCall($instance);
         }
+
+        $instance->build($appBuilder);
     }
 
     /**

@@ -39,11 +39,14 @@ final class RouterBuilderProxy extends RouterBuilder implements IComponentBuilde
      */
     public function build(IApplicationBuilder $appBuilder): void
     {
+        /** @var RouterBuilder $instance */
         $instance = ($this->instanceFactory)();
 
         foreach ($this->proxiedCalls as $proxiedCall) {
             $proxiedCall($instance);
         }
+
+        $instance->build($appBuilder);
     }
 
     /**

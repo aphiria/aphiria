@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Validation\Bootstrappers;
 
-use Aphiria\Configuration\Configuration;
 use Aphiria\Configuration\ConfigurationException;
+use Aphiria\Configuration\GlobalConfiguration;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
@@ -46,7 +46,7 @@ final class ValidationBootstrapper extends Bootstrapper
         $container->bindInstance([IValidator::class, Validator::class], $validator);
 
         if (getenv('APP_ENV') === 'production') {
-            $constraintCache = new FileObjectConstraintsRegistryCache(Configuration::getString('aphiria.validation.constraintsCachePath'));
+            $constraintCache = new FileObjectConstraintsRegistryCache(GlobalConfiguration::getString('aphiria.validation.constraintsCachePath'));
         } else {
             $constraintCache = null;
         }
@@ -56,7 +56,7 @@ final class ValidationBootstrapper extends Bootstrapper
 
         $errorMessageTemplateConfiguration = null;
 
-        if (Configuration::tryGetArray('aphiria.validation.errorMessageTemplates', $errorMessageTemplateConfiguration)) {
+        if (GlobalConfiguration::tryGetArray('aphiria.validation.errorMessageTemplates', $errorMessageTemplateConfiguration)) {
             switch ($errorMessageTemplateConfiguration['type']) {
                 case DefaultErrorMessageTemplateRegistry::class;
                     $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry();
@@ -69,7 +69,7 @@ final class ValidationBootstrapper extends Bootstrapper
             $errorMessageTemplates = null;
         }
 
-        $errorMessageInterpolatorConfiguration = Configuration::getArray('aphiria.validation.errorMessageInterpolator');
+        $errorMessageInterpolatorConfiguration = GlobalConfiguration::getArray('aphiria.validation.errorMessageInterpolator');
 
         switch ($errorMessageInterpolatorConfiguration['type']) {
             case StringReplaceErrorMessageInterpolator::class:
@@ -89,7 +89,7 @@ final class ValidationBootstrapper extends Bootstrapper
 
         // Register some constraint annotation dependencies
         $constraintAnnotationRegistrant = new AnnotationObjectConstraintsRegistrant(
-            Configuration::getArray('aphiria.validation.annotationPaths')
+            GlobalConfiguration::getArray('aphiria.validation.annotationPaths')
         );
         $container->bindInstance(AnnotationObjectConstraintsRegistrant::class, $constraintAnnotationRegistrant);
     }

@@ -10,11 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Serialization\Builders;
+namespace Aphiria\Framework\Validation\Builders;
 
 use Aphiria\ApplicationBuilders\IApplicationBuilder;
 use Aphiria\ApplicationBuilders\IComponentBuilderProxy;
-use Aphiria\Framework\Validation\Builders\ValidatorBuilder;
 use Closure;
 
 /**
@@ -40,11 +39,14 @@ final class ValidatorBuilderProxy extends ValidatorBuilder implements IComponent
      */
     public function build(IApplicationBuilder $appBuilder): void
     {
+        /** @var ValidatorBuilder $instance */
         $instance = ($this->instanceFactory)();
 
         foreach ($this->proxiedCalls as $proxiedCall) {
             $proxiedCall($instance);
         }
+
+        $instance->build($appBuilder);
     }
 
     /**

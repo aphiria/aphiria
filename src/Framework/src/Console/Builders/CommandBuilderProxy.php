@@ -39,11 +39,14 @@ final class CommandBuilderProxy extends CommandBuilder implements IComponentBuil
      */
     public function build(IApplicationBuilder $appBuilder): void
     {
+        /** @var CommandBuilder $instance */
         $instance = ($this->instanceFactory)();
 
         foreach ($this->proxiedCalls as $proxiedCall) {
             $proxiedCall($instance);
         }
+
+        $instance->build($appBuilder);
     }
 
     /**
