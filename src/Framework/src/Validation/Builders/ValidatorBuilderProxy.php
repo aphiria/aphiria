@@ -54,7 +54,7 @@ final class ValidatorBuilderProxy extends ValidatorBuilder implements IComponent
      */
     public function getProxiedType(): string
     {
-        return SerializerBuilder::class;
+        return ValidatorBuilder::class;
     }
 
     /**
