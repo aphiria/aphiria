@@ -15,7 +15,6 @@ namespace Aphiria\Framework\Tests\ApplicationBuilders;
 use Aphiria\ApplicationBuilders\IApplicationBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
-use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\ApplicationBuilders\AphiriaComponentBuilder;
 use Aphiria\Framework\Console\Builders\CommandBuilder;
@@ -33,6 +32,7 @@ use Aphiria\Framework\Serialization\Builders\SerializerBuilderProxy;
 use Aphiria\Framework\Validation\Builders\ValidatorBuilder;
 use Aphiria\Framework\Validation\Builders\ValidatorBuilderProxy;
 use Aphiria\Middleware\MiddlewareBinding;
+use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
 use Aphiria\Serialization\Encoding\IEncoder;
@@ -47,6 +47,7 @@ use Psr\Log\LogLevel;
  */
 class AphiriaComponentBuilderTest extends TestCase
 {
+    /** @var IContainer|MockObject */
     private IContainer $container;
     /** @var IApplicationBuilder|MockObject */
     private IApplicationBuilder $appBuilder;
@@ -54,8 +55,7 @@ class AphiriaComponentBuilderTest extends TestCase
 
     protected function setUp(): void
     {
-        // Using a real instance to simplify testing
-        $this->container = new Container();
+        $this->container = $this->createMock(IContainer::class);
         $this->componentBuilder = new AphiriaComponentBuilder($this->container);
         $this->appBuilder = $this->createMock(IApplicationBuilder::class);
     }
@@ -138,6 +138,13 @@ class AphiriaComponentBuilderTest extends TestCase
             ->method('getComponentBuilder')
             ->with(CommandBuilder::class)
             ->willReturn($this->createMock(CommandBuilder::class));
+        $this->container->expects($this->at(0))
+            ->method('hasBinding')
+            ->with(CommandRegistry::class)
+            ->willReturn(false);
+        $this->container->expects($this->at(1))
+            ->method('bindInstance')
+            ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));
         $this->componentBuilder->withCommandAnnotations($this->appBuilder);
     }
 
@@ -173,6 +180,13 @@ class AphiriaComponentBuilderTest extends TestCase
             ->method('getComponentBuilder')
             ->with(CommandBuilder::class)
             ->willReturn($this->createMock(CommandBuilder::class));
+        $this->container->expects($this->at(0))
+            ->method('hasBinding')
+            ->with(CommandRegistry::class)
+            ->willReturn(false);
+        $this->container->expects($this->at(1))
+            ->method('bindInstance')
+            ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));
         $this->componentBuilder->withCommands($this->appBuilder, fn (CommandRegistry $commands) => null);
     }
 
@@ -278,6 +292,13 @@ class AphiriaComponentBuilderTest extends TestCase
             ->method('getComponentBuilder')
             ->with(MiddlewareBuilder::class)
             ->willReturn($this->createMock(MiddlewareBuilder::class));
+        $this->container->expects($this->at(0))
+            ->method('hasBinding')
+            ->with(MiddlewareCollection::class)
+            ->willReturn(false);
+        $this->container->expects($this->at(1))
+            ->method('bindInstance')
+            ->with(MiddlewareCollection::class, $this->isInstanceOf(MiddlewareCollection::class));
         $this->componentBuilder->withGlobalMiddleware($this->appBuilder, new MiddlewareBinding('foo'));
     }
 

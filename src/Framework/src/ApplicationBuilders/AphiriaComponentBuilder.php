@@ -16,6 +16,7 @@ use Aphiria\ApplicationBuilders\IApplicationBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Framework\Console\Builders\CommandBuilder;
 use Aphiria\Framework\Console\Builders\CommandBuilderProxy;
 use Aphiria\Framework\DependencyInjection\Builders\BootstrapperBuilder;
@@ -255,7 +256,9 @@ class AphiriaComponentBuilder
         }
 
         // Bind the command registry here so that it can be injected into the component builder
-        $this->container->bindInstance(CommandRegistry::class, new CommandRegistry());
+        if (!$this->container->hasBinding(CommandRegistry::class)) {
+            $this->container->bindInstance(CommandRegistry::class, new CommandRegistry());
+        }
 
         return $appBuilder->withComponentBuilder(new CommandBuilderProxy(fn () => $this->container->resolve(CommandBuilder::class)));
     }
@@ -280,6 +283,7 @@ class AphiriaComponentBuilder
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @return IApplicationBuilder For chaining
+     * @throws ResolutionException Thrown if the middleware collection could not be resolved
      */
     private function withMiddlewareComponent(IApplicationBuilder $appBuilder): IApplicationBuilder
     {

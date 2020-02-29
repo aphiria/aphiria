@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\ApplicationBuilders;
 
-use Aphiria\Api\App as ApiApp;
+use Aphiria\Api\App;
 use Aphiria\ApplicationBuilders\ApplicationBuilder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
@@ -46,14 +46,14 @@ final class ApiApplicationBuilder extends ApplicationBuilder
 
         /** @var IRequestHandler $router */
         $router = null;
-        $this->container->for(ApiApp::class, static function (IContainer $container) use (&$router) {
+        $this->container->for(App::class, static function (IContainer $container) use (&$router) {
             if (!$container->tryResolve(IRequestHandler::class, $router)) {
                 throw new RuntimeException('No ' . IRequestHandler::class . ' router bound to the container');
             }
         });
 
         try {
-            $apiApp = new ApiApp($router, $this->container->resolve(MiddlewareCollection::class));
+            $apiApp = new App($router, $this->container->resolve(MiddlewareCollection::class));
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build the API application', 0, $ex);
         }

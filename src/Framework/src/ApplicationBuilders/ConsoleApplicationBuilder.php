@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\ApplicationBuilders;
 
 use Aphiria\ApplicationBuilders\ApplicationBuilder;
-use Aphiria\Console\App as ConsoleApp;
+use Aphiria\Console\App;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\DependencyInjection\IContainer;
@@ -45,7 +45,7 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
         $this->buildComponents();
 
         try {
-            $consoleApp = new ConsoleApp($this->container->resolve(CommandRegistry::class));
+            $consoleApp = new App($this->container->resolve(CommandRegistry::class));
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build the console application', 0, $ex);
         }
