@@ -153,7 +153,7 @@ class AphiriaComponentBuilder
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param string $exceptionType The exception type whose factory we're registering
-     * @param Closure $logLevelFactory The factory that takes in an instance of ExceptionLogLevelFactoryRegistry to registry factories to
+     * @param Closure $logLevelFactory The factory that takes in an instance of the exception and returns the PSR-3 log level
      * @return self For chaining
      */
     public function withLogLevelFactory(IApplicationBuilder $appBuilder, string $exceptionType, Closure $logLevelFactory): self
