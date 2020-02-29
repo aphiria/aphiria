@@ -29,7 +29,7 @@ class ValidatorBuilder implements IComponentBuilder
     /** @var ObjectConstraintsRegistry The object constraints to register to */
     private ObjectConstraintsRegistry $objectConstraints;
     /** @var ObjectConstraintsRegistrantCollection The list of object constraints registrants to add to */
-    private ObjectConstraintsRegistrantCollection $constraintsRegistrants;
+    private ObjectConstraintsRegistrantCollection $objectConstraintsRegistrants;
     /** @var AnnotationObjectConstraintsRegistrant|null The annotation object constraints registrant, if there is one */
     private ?AnnotationObjectConstraintsRegistrant $annotationConstraintsRegistrants;
     /** @var Closure[] The list of callbacks that can register object constraints */
@@ -46,7 +46,7 @@ class ValidatorBuilder implements IComponentBuilder
         AnnotationObjectConstraintsRegistrant $annotationConstraintsRegistrants = null
     ) {
         $this->objectConstraints = $objectConstraints;
-        $this->constraintsRegistrants = $constraintsRegistrants;
+        $this->objectConstraintsRegistrants = $constraintsRegistrants;
         $this->annotationConstraintsRegistrants = $annotationConstraintsRegistrants;
     }
 
@@ -55,8 +55,8 @@ class ValidatorBuilder implements IComponentBuilder
      */
     public function build(IApplicationBuilder $appBuilder): void
     {
-        $this->constraintsRegistrants->add(new ObjectConstraintsBuilderRegistrant($this->callbacks));
-        $this->constraintsRegistrants->registerConstraints($this->objectConstraints);
+        $this->objectConstraintsRegistrants->add(new ObjectConstraintsBuilderRegistrant($this->callbacks));
+        $this->objectConstraintsRegistrants->registerConstraints($this->objectConstraints);
     }
 
     /**
@@ -71,7 +71,7 @@ class ValidatorBuilder implements IComponentBuilder
             throw new RuntimeException(AnnotationObjectConstraintsRegistrant::class . ' cannot be null if using annotations');
         }
 
-        $this->constraintsRegistrants->add($this->annotationConstraintsRegistrants);
+        $this->objectConstraintsRegistrants->add($this->annotationConstraintsRegistrants);
 
         return $this;
     }

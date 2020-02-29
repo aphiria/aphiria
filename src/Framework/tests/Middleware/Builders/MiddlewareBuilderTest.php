@@ -1,0 +1,131 @@
+<?php
+
+/**
+ * Aphiria
+ *
+ * @link      https://www.aphiria.com
+ * @copyright Copyright (C) 2020 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/master/LICENSE.md
+ */
+
+declare(strict_types=1);
+
+namespace Aphiria\Framework\Tests\Middleware\Builders;
+
+use Aphiria\ApplicationBuilders\IApplicationBuilder;
+use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\Framework\Middleware\Builders\MiddlewareBuilder;
+use Aphiria\Middleware\AttributeMiddleware;
+use Aphiria\Middleware\IMiddleware;
+use Aphiria\Middleware\MiddlewareBinding;
+use Aphiria\Middleware\MiddlewareCollection;
+use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IHttpResponseMessage;
+use InvalidArgumentException;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * Tests the middleware builder
+ */
+class MiddlewareBuilderTest extends TestCase
+{
+    private MiddlewareBuilder $middlewareBuilder;
+    private MiddlewareCollection $middlewareCollection;
+    /** @var IDependencyResolver|MockObject */
+    private IDependencyResolver $dependencyResolver;
+
+    protected function setUp(): void
+    {
+        $this->middlewareCollection = new MiddlewareCollection();
+        $this->dependencyResolver = $this->createMock(IDependencyResolver::class);
+        $this->middlewareBuilder = new MiddlewareBuilder($this->middlewareCollection, $this->dependencyResolver);
+    }
+
+    public function testBuildWithAttributeMiddlewareSetsAttributes(): void
+    {
+        $expectedMiddleware = new class($this->createMock(IHttpResponseMessage::class)) extends AttributeMiddleware
+        {
+            private IHttpResponseMessage $expectedResponse;
+
+            public function __construct(IHttpResponseMessage $expectedResponse)
+            {
+                $this->expectedResponse = $expectedResponse;
+            }
+
+            public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
+            {
+                return $this->expectedResponse;
+            }
+        };
+        $expectedMiddleware->setAttributes(['bar' => 'baz']);
+        $this->dependencyResolver->expects($this->once())
+            ->method('resolve')
+            ->with('foo')
+            ->willReturn($expectedMiddleware);
+        $this->middlewareBuilder->withGlobalMiddleware(new MiddlewareBinding('foo', ['bar' => 'baz']));
+        $this->middlewareBuilder->build($this->createMock(IApplicationBuilder::class));
+        $this->assertEquals([$expectedMiddleware], $this->middlewareCollection->getAll());
+    }
+
+    public function testBuildWithMiddlewareThatIsNotCorrectInterfaceThrowsException(): void
+    {
+        $invalidMiddleware = $this;
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(\get_class($invalidMiddleware) . ' does not implement ' . IMiddleware::class);
+        $this->dependencyResolver->expects($this->once())
+            ->method('resolve')
+            ->with('foo')
+            ->willReturn($invalidMiddleware);
+        $this->middlewareBuilder->withGlobalMiddleware(new MiddlewareBinding('foo'));
+        $this->middlewareBuilder->build($this->createMock(IApplicationBuilder::class));
+    }
+
+    public function testWithGlobalMiddlewareAppendsItToCollectionToBeResolved(): void
+    {
+        $expectedMiddleware1 = $this->createMock(IMiddleware::class);
+        $expectedMiddleware2 = $this->createMock(IMiddleware::class);
+        $this->dependencyResolver->expects($this->at(0))
+            ->method('resolve')
+            ->with('foo')
+            ->willReturn($expectedMiddleware1);
+        $this->dependencyResolver->expects($this->at(1))
+            ->method('resolve')
+            ->with('bar')
+            ->willReturn($expectedMiddleware2);
+        $this->middlewareBuilder->withGlobalMiddleware(new MiddlewareBinding('foo'));
+        $this->middlewareBuilder->withGlobalMiddleware(new MiddlewareBinding('bar'));
+        $this->middlewareBuilder->build($this->createMock(IApplicationBuilder::class));
+        $this->assertEquals([$expectedMiddleware1, $expectedMiddleware2], $this->middlewareCollection->getAll());
+    }
+
+    public function testWithMultipleGlobalMiddlewareAddsThemToCollectionToBeResolved(): void
+    {
+        $expectedMiddleware1 = $this->createMock(IMiddleware::class);
+        $expectedMiddleware2 = $this->createMock(IMiddleware::class);
+        $this->dependencyResolver->expects($this->at(0))
+            ->method('resolve')
+            ->with('foo')
+            ->willReturn($expectedMiddleware1);
+        $this->dependencyResolver->expects($this->at(1))
+            ->method('resolve')
+            ->with('bar')
+            ->willReturn($expectedMiddleware2);
+        $this->middlewareBuilder->withGlobalMiddleware([new MiddlewareBinding('foo'), new MiddlewareBinding('bar')]);
+        $this->middlewareBuilder->build($this->createMock(IApplicationBuilder::class));
+        $this->assertEquals([$expectedMiddleware1, $expectedMiddleware2], $this->middlewareCollection->getAll());
+    }
+
+    public function testWithSingleGlobalMiddlewareAddsItToCollectionToBeResolved(): void
+    {
+        $expectedMiddleware = $this->createMock(IMiddleware::class);
+        $this->dependencyResolver->expects($this->once())
+            ->method('resolve')
+            ->with('foo')
+            ->willReturn($expectedMiddleware);
+        $this->middlewareBuilder->withGlobalMiddleware(new MiddlewareBinding('foo'));
+        $this->middlewareBuilder->build($this->createMock(IApplicationBuilder::class));
+        $this->assertEquals([$expectedMiddleware], $this->middlewareCollection->getAll());
+    }
+}

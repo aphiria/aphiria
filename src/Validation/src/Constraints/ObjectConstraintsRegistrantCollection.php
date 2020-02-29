@@ -17,10 +17,10 @@ use Aphiria\Validation\Constraints\Caching\IObjectConstraintsRegistryCache;
 /**
  * Defines a collection of registrants that can be called in serial
  */
-final class ObjectConstraintsRegistrantCollection implements IObjectConstraintsRegistrant
+class ObjectConstraintsRegistrantCollection implements IObjectConstraintsRegistrant
 {
     /** @var IObjectConstraintsRegistrant[] The collection of registrants */
-    private array $registrants = [];
+    protected array $registrants = [];
     /** @var IObjectConstraintsRegistryCache|null The optional cache of constraints */
     private ?IObjectConstraintsRegistryCache $objectConstraintsCache;
 
