@@ -33,6 +33,8 @@ class ExceptionHandlerBuilder implements IComponentBuilder
     private ExceptionResponseFactoryRegistry $exceptionResponseFactories;
     /** @var ExceptionLogLevelFactoryRegistry The exception log level factories */
     private ExceptionLogLevelFactoryRegistry $logLevelFactories;
+    /** @var bool Whether or not the global exception handler has been registered with PHP */
+    private bool $globalExceptionHandlerIsRegisteredWithPhp = false;
 
     /**
      * @param GlobalExceptionHandler $globalExceptionHandler The global exception handler
@@ -54,7 +56,6 @@ class ExceptionHandlerBuilder implements IComponentBuilder
      */
     public function build(IApplicationBuilder $appBuilder): void
     {
-        $this->globalExceptionHandler->registerWithPhp();
         $appBuilder->getComponentBuilder(MiddlewareBuilder::class)
             ->withGlobalMiddleware(new MiddlewareBinding(ExceptionHandler::class));
     }
@@ -64,7 +65,7 @@ class ExceptionHandlerBuilder implements IComponentBuilder
      *
      * @param string $exceptionType The type of exception that's thrown
      * @param Closure $logLevelFactory The factory that takes in an instance of the exception type and returns a PSR-3 log level
-     * @return ExceptionHandlerBuilder For chaining
+     * @return self For chaining
      */
     public function withLogLevelFactory(string $exceptionType, Closure $logLevelFactory): self
     {
@@ -78,11 +79,27 @@ class ExceptionHandlerBuilder implements IComponentBuilder
      *
      * @param string $exceptionType The type of exception that's thrown
      * @param Closure $responseFactory The factory that takes in an instance of the exception type and returns an HTTP response
-     * @return ExceptionHandlerBuilder For chaining
+     * @return self For chaining
      */
     public function withResponseFactory(string $exceptionType, Closure $responseFactory): self
     {
         $this->exceptionResponseFactories->registerFactory($exceptionType, $responseFactory);
+
+        return $this;
+    }
+
+    /**
+     * Registers the global exception handler with PHP
+     *
+     * @return self For chaining
+     */
+    public function withGlobalExceptionHandler(): self
+    {
+        if (!$this->globalExceptionHandlerIsRegisteredWithPhp) {
+            $this->globalExceptionHandler->registerWithPhp();
+
+            $this->globalExceptionHandlerIsRegisteredWithPhp = true;
+        }
 
         return $this;
     }

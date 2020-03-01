@@ -134,6 +134,21 @@ final class AphiriaComponentBuilder
     }
 
     /**
+     * Registers the global exception handler with PHP
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @return self For chaining
+     */
+    public function withGlobalExceptionHandler(IApplicationBuilder $appBuilder): self
+    {
+        $this->withExceptionHandlerComponent($appBuilder)
+            ->getComponentBuilder(ExceptionHandlerBuilder::class)
+            ->withGlobalExceptionHandler();
+
+        return $this;
+    }
+
+    /**
      * Adds global middleware bindings to the middleware component builder
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate

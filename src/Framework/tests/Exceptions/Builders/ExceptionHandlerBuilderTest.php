@@ -60,6 +60,19 @@ class ExceptionHandlerBuilderTest extends TestCase
         );
     }
 
+    public function testBuildRegistersGlobalExceptionHandler(): void
+    {
+        $appBuilder = $this->createMock(IApplicationBuilder::class);
+        $appBuilder->expects($this->once())
+            ->method('getComponentBuilder')
+            ->with(MiddlewareBuilder::class)
+            ->willReturn($this->createMock(MiddlewareBuilder::class));
+        $this->assertFalse($this->globalExceptionHandler->wasRegisterWithPhpCalled());
+        $this->exceptionHandlerBuilder->withGlobalExceptionHandler();
+        $this->exceptionHandlerBuilder->build($appBuilder);
+        $this->assertTrue($this->globalExceptionHandler->wasRegisterWithPhpCalled());
+    }
+
     public function testBuildRegistersGlobalExceptionHandlerMiddleware(): void
     {
         $middlewareBuilder = new class() extends MiddlewareBuilder
@@ -90,18 +103,6 @@ class ExceptionHandlerBuilderTest extends TestCase
             ->willReturn($middlewareBuilder);
         $this->exceptionHandlerBuilder->build($appBuilder);
         $this->assertEquals([new MiddlewareBinding(ExceptionHandler::class)], $middlewareBuilder->getMiddleware());
-    }
-
-    public function testBuildRegistersGlobalExceptionHandlerWithPhp(): void
-    {
-        $appBuilder = $this->createMock(IApplicationBuilder::class);
-        $appBuilder->expects($this->once())
-            ->method('getComponentBuilder')
-            ->with(MiddlewareBuilder::class)
-            ->willReturn($this->createMock(MiddlewareBuilder::class));
-        $this->assertFalse($this->globalExceptionHandler->wasRegisterWithPhpCalled());
-        $this->exceptionHandlerBuilder->build($appBuilder);
-        $this->assertTrue($this->globalExceptionHandler->wasRegisterWithPhpCalled());
     }
 
     public function testWithLogLevelFactoryRegistersFactory(): void

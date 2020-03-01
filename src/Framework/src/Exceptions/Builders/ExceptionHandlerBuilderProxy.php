@@ -76,4 +76,14 @@ final class ExceptionHandlerBuilderProxy extends ExceptionHandlerBuilder impleme
 
         return $this;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function withGlobalExceptionHandler(): self
+    {
+        $this->proxiedCalls[] = fn (ExceptionHandlerBuilder $exceptionHandlerBuilder) => $exceptionHandlerBuilder->withGlobalExceptionHandler();
+
+        return $this;
+    }
 }
