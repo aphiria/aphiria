@@ -17,17 +17,18 @@ namespace Aphiria\Middleware;
  */
 final class MiddlewareCollection
 {
-    /** @var IMiddleware[] The list of middleware */
-    private array $middleware = [];
+    /** @var array The list of structs that contain middleware and priorities */
+    private array $middlewareWithPriorities = [];
 
     /**
      * Adds middleware to the collection
      *
      * @param IMiddleware $middleware The middleware to add
+     * @param int|null $priority The optional priority of the middleware (lower number => higher priority)
      */
-    public function add(IMiddleware $middleware): void
+    public function add(IMiddleware $middleware, int $priority = null): void
     {
-        $this->middleware[] = $middleware;
+        $this->middlewareWithPriorities[] = ['middleware' => $middleware, 'priority' => $priority ?? \PHP_INT_MAX];
     }
 
     /**
@@ -37,6 +38,13 @@ final class MiddlewareCollection
      */
     public function getAll(): array
     {
-        return $this->middleware;
+        \usort($this->middlewareWithPriorities, fn ($a, $b) => $a['priority'] <=> $b['priority']);
+        $prioritizedMiddleware = [];
+
+        foreach ($this->middlewareWithPriorities as $middlewareWithPriority) {
+            $prioritizedMiddleware[] = $middlewareWithPriority['middleware'];
+        }
+
+        return $prioritizedMiddleware;
     }
 }
