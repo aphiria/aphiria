@@ -52,19 +52,8 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
      */
     public function registerBindings(IContainer $container): void
     {
-        /**
-         * ----------------------------------------------------------
-         * Create the exception response factory
-         * ----------------------------------------------------------
-         *
-         * Register exception response factories for common exceptions
-         */
         $exceptionResponseFactoryRegistry = new ExceptionResponseFactoryRegistry();
-
-        // This is the default response factory for exceptions that do not have custom responses
         $exceptionResponseFactoryRegistry->registerDefaultFactory($this->getDefaultExceptionResponseFactory($container));
-
-        // These are the response factories for exceptions that have custom responses
         $exceptionResponseFactoryRegistry->registerManyFactories([
             HttpException::class => fn (HttpException $ex, IHttpRequestMessage $request) => $ex->getResponse(),
             InvalidRequestBodyException::class => $this->getInvalidRequestBodyResponseFactory()
@@ -73,69 +62,24 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
             $container->resolve(INegotiatedResponseFactory::class),
             $exceptionResponseFactoryRegistry
         );
-
         $container->bindInstance(ExceptionResponseFactoryRegistry::class, $exceptionResponseFactoryRegistry);
         $container->bindInstance(IExceptionResponseFactory::class, $exceptionResponseFactory);
 
-        /**
-         * ----------------------------------------------------------
-         * Custom log levels
-         * ----------------------------------------------------------
-         *
-         * Specify the exception types to log levels for any common exceptions
-         */
         $exceptionLogLevelFactories = new ExceptionLogLevelFactoryRegistry();
         $container->bindInstance(ExceptionLogLevelFactoryRegistry::class, $exceptionLogLevelFactories);
 
-        /**
-         * ----------------------------------------------------------
-         * Logged exception levels
-         * ----------------------------------------------------------
-         *
-         * Specify the PSR-3 exception levels to log
-         */
-        $exceptionLogLevels = GlobalConfiguration::getArray('aphiria.exceptions.exceptionLogLevels');
-
-        /**
-         * ----------------------------------------------------------
-         * Logged error levels
-         * ----------------------------------------------------------
-         *
-         * Specify the bitwise value of error levels to log
-         */
-        $errorLogLevels = GlobalConfiguration::getInt('aphiria.exceptions.errorLogLevels');
-
-        /**
-         * ----------------------------------------------------------
-         * Thrown error levels
-         * ----------------------------------------------------------
-         *
-         * Specify the error levels to rethrow as exceptions
-         */
-        $errorThrownLevels = GlobalConfiguration::getInt('aphiria.exceptions.errorThrownLevels');
-
-        /**
-         * ----------------------------------------------------------
-         * Create the exception logger
-         * ----------------------------------------------------------
-         */
         $exceptionLogger = new ExceptionLogger(
             $container->resolve(LoggerInterface::class),
             $exceptionLogLevelFactories,
-            $exceptionLogLevels,
-            $errorLogLevels
+            GlobalConfiguration::getArray('aphiria.exceptions.exceptionLogLevels'),
+            GlobalConfiguration::getInt('aphiria.exceptions.errorLogLevels')
         );
         $container->bindInstance(IExceptionLogger::class, $exceptionLogger);
 
-        /**
-         * ----------------------------------------------------------
-         * Create the global exception handler
-         * ----------------------------------------------------------
-         */
         $globalExceptionHandler = new GlobalExceptionHandler(
             $exceptionResponseFactory,
             $exceptionLogger,
-            $errorThrownLevels,
+            GlobalConfiguration::getInt('aphiria.exceptions.errorThrownLevels'),
             new StreamResponseWriter()
         );
         $container->bindInstance(GlobalExceptionHandler::class, $globalExceptionHandler);
