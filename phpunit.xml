@@ -3,7 +3,7 @@
     colors="true">
     <testsuite name="Aphiria">
         <directory>src/Api/tests</directory>
-        <directory>src/ApplicationBuilders/tests</directory>
+        <directory>src/Application/tests</directory>
         <directory>src/Collections/tests</directory>
         <directory>src/Configuration/tests</directory>
         <directory>src/Console/tests</directory>

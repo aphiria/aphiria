@@ -10,15 +10,15 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\ApplicationBuilders;
+namespace Aphiria\Framework\Tests\Application\Builders;
 
 use Aphiria\Api\App;
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
-use Aphiria\ApplicationBuilders\IComponentBuilder;
-use Aphiria\ApplicationBuilders\IModuleBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
+use Aphiria\Application\Builders\IComponentBuilder;
+use Aphiria\Application\Builders\IModuleBuilder;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Framework\ApplicationBuilders\ApiApplicationBuilder;
+use Aphiria\Framework\Application\Builders\ApiApplicationBuilder;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

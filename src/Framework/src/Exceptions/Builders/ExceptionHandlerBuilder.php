@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Exceptions\Builders;
 
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
-use Aphiria\ApplicationBuilders\IComponentBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
+use Aphiria\Application\Builders\IComponentBuilder;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Exceptions\GlobalExceptionHandler;

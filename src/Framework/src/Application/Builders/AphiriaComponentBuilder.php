@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\ApplicationBuilders;
+namespace Aphiria\Framework\Application\Builders;
 
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;

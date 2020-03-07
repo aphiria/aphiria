@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Exceptions\Builders;
 
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Framework\Exceptions\Builders\ExceptionHandlerBuilder;
 use Aphiria\Framework\Exceptions\Builders\ExceptionHandlerBuilderProxy;
 use Aphiria\Net\Http\IHttpResponseMessage;

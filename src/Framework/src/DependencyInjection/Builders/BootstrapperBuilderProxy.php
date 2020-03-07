@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\DependencyInjection\Builders;
 
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
-use Aphiria\ApplicationBuilders\IComponentBuilderProxy;
+use Aphiria\Application\Builders\IApplicationBuilder;
+use Aphiria\Application\Builders\IComponentBuilderProxy;
 use Closure;
 
 /**

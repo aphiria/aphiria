@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Routing\Builders;
 
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\Framework\Routing\Builders\RouterBuilder;
 use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;

@@ -10,14 +10,14 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\ApplicationBuilders;
+namespace Aphiria\Framework\Tests\Application\Builders;
 
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
-use Aphiria\ApplicationBuilders\IComponentBuilder;
-use Aphiria\ApplicationBuilders\IModuleBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
+use Aphiria\Application\Builders\IComponentBuilder;
+use Aphiria\Application\Builders\IModuleBuilder;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\DependencyInjection\Container;
-use Aphiria\Framework\ApplicationBuilders\ConsoleApplicationBuilder;
+use Aphiria\Framework\Application\Builders\ConsoleApplicationBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**

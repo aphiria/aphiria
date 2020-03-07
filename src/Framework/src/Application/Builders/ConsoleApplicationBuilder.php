@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\ApplicationBuilders;
+namespace Aphiria\Framework\Application\Builders;
 
-use Aphiria\ApplicationBuilders\ApplicationBuilder;
+use Aphiria\Application\Builders\ApplicationBuilder;
 use Aphiria\Console\App;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;

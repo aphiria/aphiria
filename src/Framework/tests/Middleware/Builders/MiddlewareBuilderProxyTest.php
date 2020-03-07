@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Middleware\Builders;
 
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Framework\Middleware\Builders\MiddlewareBuilder;
 use Aphiria\Framework\Middleware\Builders\MiddlewareBuilderProxy;
 use Aphiria\Middleware\MiddlewareBinding;

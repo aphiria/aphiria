@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\ApplicationBuilders;
+namespace Aphiria\Application\Builders;
 
 /**
  * Defines the interface for lazy component builders, ie ones that are not instantiated and built until later in the application lifetime

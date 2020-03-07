@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\DependencyInjection\Builders;
 
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\DependencyInjection\Builders\BootstrapperBuilder;

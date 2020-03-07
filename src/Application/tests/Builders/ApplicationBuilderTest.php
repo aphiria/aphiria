@@ -10,13 +10,13 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\ApplicationBuilders\Tests;
+namespace Aphiria\Application\Tests\Builders;
 
-use Aphiria\ApplicationBuilders\ApplicationBuilder;
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
-use Aphiria\ApplicationBuilders\IComponentBuilder;
-use Aphiria\ApplicationBuilders\IComponentBuilderProxy;
-use Aphiria\ApplicationBuilders\IModuleBuilder;
+use Aphiria\Application\Builders\ApplicationBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
+use Aphiria\Application\Builders\IComponentBuilder;
+use Aphiria\Application\Builders\IComponentBuilderProxy;
+use Aphiria\Application\Builders\IModuleBuilder;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 

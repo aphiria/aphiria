@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\ApplicationBuilders;
+namespace Aphiria\Application\Builders;
 
 use OutOfBoundsException;
 use RuntimeException;

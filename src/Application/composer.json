@@ -1,6 +1,6 @@
 {
-    "name": "aphiria/application-builders",
-    "description": "The Aphiria library for building applications",
+    "name": "aphiria/application",
+    "description": "The Aphiria library for building and running applications",
     "keywords": [
         "PHP",
         "application",
@@ -16,12 +16,12 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Aphiria\\ApplicationBuilders\\": "src"
+            "Aphiria\\Application\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Aphiria\\ApplicationBuilders\\Tests\\": "tests"
+            "Aphiria\\Application\\Tests\\": "tests"
         }
     },
     "require": {

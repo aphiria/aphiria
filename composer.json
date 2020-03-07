@@ -17,7 +17,7 @@
     "autoload": {
         "psr-4": {
             "Aphiria\\Api\\": "src/Api/src",
-            "Aphiria\\ApplicationBuilders\\": "src/ApplicationBuilders/src",
+            "Aphiria\\Application\\": "src/Application/src",
             "Aphiria\\Collections\\": "src/Collections/src",
             "Aphiria\\Configuration\\": "src/Configuration/src",
             "Aphiria\\Console\\": "src/Console/src",
@@ -37,7 +37,7 @@
     "autoload-dev": {
         "psr-4": {
             "Aphiria\\Api\\Tests\\": "src/Api/tests",
-            "Aphiria\\ApplicationBuilders\\Tests\\": "src/ApplicationBuilders/tests",
+            "Aphiria\\Application\\Tests\\": "src/Application/tests",
             "Aphiria\\Collections\\Tests\\": "src/Collections/tests",
             "Aphiria\\Configuration\\Tests\\": "src/Configuration/tests",
             "Aphiria\\Console\\Tests\\": "src/Console/tests",

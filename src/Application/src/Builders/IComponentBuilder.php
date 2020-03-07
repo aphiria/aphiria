@@ -10,15 +10,15 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\ApplicationBuilders;
+namespace Aphiria\Application\Builders;
 
 /**
- * Defines the interface implemented by classes that build whole modules of code
+ * Defines the interface for component builders to implement
  */
-interface IModuleBuilder
+interface IComponentBuilder
 {
     /**
-     * Builds an entire module
+     * Builds a component
      *
      * @param IApplicationBuilder $appBuilder The app builder to use
      */

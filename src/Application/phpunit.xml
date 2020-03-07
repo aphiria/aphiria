@@ -1,7 +1,7 @@
 <phpunit
     bootstrap="vendor/autoload.php"
     colors="true">
-    <testsuite name="ApplicationBuilders">
+    <testsuite name="Application">
         <directory>tests</directory>
     </testsuite>
      <filter>

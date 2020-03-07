@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Validation\Builders;
 
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Framework\Validation\Builders\ValidatorBuilder;
 use Aphiria\Framework\Validation\Builders\ValidatorBuilderProxy;
 use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;

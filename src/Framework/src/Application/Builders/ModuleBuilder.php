@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\ApplicationBuilders;
+namespace Aphiria\Framework\Application\Builders;
 
-use Aphiria\ApplicationBuilders\IModuleBuilder;
+use Aphiria\Application\Builders\IModuleBuilder;
 
 /**
  * Defines a base module builder that can build Aphiria components

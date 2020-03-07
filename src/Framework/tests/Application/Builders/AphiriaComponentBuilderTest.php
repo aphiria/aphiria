@@ -10,13 +10,13 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\ApplicationBuilders;
+namespace Aphiria\Framework\Tests\Application\Builders;
 
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Framework\ApplicationBuilders\AphiriaComponentBuilder;
+use Aphiria\Framework\Application\Builders\AphiriaComponentBuilder;
 use Aphiria\Framework\Console\Builders\CommandBuilder;
 use Aphiria\Framework\Console\Builders\CommandBuilderProxy;
 use Aphiria\Framework\DependencyInjection\Builders\BootstrapperBuilder;

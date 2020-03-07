@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\ApplicationBuilders;
+namespace Aphiria\Framework\Application\Builders;
 
 use Aphiria\Api\App;
-use Aphiria\ApplicationBuilders\ApplicationBuilder;
+use Aphiria\Application\Builders\ApplicationBuilder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Middleware\MiddlewareCollection;

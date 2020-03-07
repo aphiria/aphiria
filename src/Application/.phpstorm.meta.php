@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace PHPSTORM_META;
 
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
 
 // Make the application builder return the same type as the input parameter
 override(IApplicationBuilder::getComponentBuilder(), type(0));

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Serialization\Builders;
 
-use Aphiria\ApplicationBuilders\IApplicationBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Framework\Serialization\Builders\SerializerBuilder;
 use Aphiria\Framework\Serialization\Builders\SerializerBuilderProxy;
 use Aphiria\Serialization\Encoding\IEncoder;
