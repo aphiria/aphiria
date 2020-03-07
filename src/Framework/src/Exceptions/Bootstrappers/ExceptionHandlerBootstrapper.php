@@ -36,7 +36,6 @@ use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StreamBody;
-use Aphiria\Net\Http\StreamResponseWriter;
 use Closure;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -79,8 +78,7 @@ final class ExceptionHandlerBootstrapper extends Bootstrapper
         $globalExceptionHandler = new GlobalExceptionHandler(
             $exceptionResponseFactory,
             $exceptionLogger,
-            GlobalConfiguration::getInt('aphiria.exceptions.errorThrownLevels'),
-            new StreamResponseWriter()
+            GlobalConfiguration::getInt('aphiria.exceptions.errorThrownLevels')
         );
         $container->bindInstance(GlobalExceptionHandler::class, $globalExceptionHandler);
     }
