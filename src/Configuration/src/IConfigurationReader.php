@@ -20,8 +20,8 @@ interface IConfigurationReader
     /**
      * Reads the configuration from storage
      *
-     * @return Configuration The configuration that was read
+     * @return ArrayConfiguration The configuration that was read
      * @throws ConfigurationException Thrown if the configuration could not be read
      */
-    public function readConfiguration(): Configuration;
+    public function readConfiguration(): ArrayConfiguration;
 }

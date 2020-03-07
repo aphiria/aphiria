@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration\Tests;
 
-use Aphiria\Configuration\Configuration;
 use Aphiria\Configuration\ConfigurationException;
 use Aphiria\Configuration\PhpFileConfigurationReader;
 use PHPUnit\Framework\TestCase;

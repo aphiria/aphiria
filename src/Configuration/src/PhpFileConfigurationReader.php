@@ -31,7 +31,7 @@ final class PhpFileConfigurationReader implements IConfigurationReader
     /**
      * @inheritdoc
      */
-    public function readConfiguration(): Configuration
+    public function readConfiguration(): ArrayConfiguration
     {
         if (!\file_exists($this->path)) {
             throw new ConfigurationException("{$this->path} does not exist");
@@ -39,6 +39,6 @@ final class PhpFileConfigurationReader implements IConfigurationReader
 
         $rawConfig = require $this->path;
 
-        return new Configuration($rawConfig);
+        return new ArrayConfiguration($rawConfig);
     }
 }

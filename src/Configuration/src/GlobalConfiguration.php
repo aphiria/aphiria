@@ -19,8 +19,8 @@ use RuntimeException;
  */
 class GlobalConfiguration
 {
-    /** @var Configuration|null The underlying static instance of this class */
-    private static ?Configuration $instance = null;
+    /** @var IConfiguration|null The underlying static instance of this class */
+    private static ?IConfiguration $instance = null;
 
     /**
      * Gets the array value at the path
@@ -115,9 +115,9 @@ class GlobalConfiguration
     /**
      * Sets the global configuration instance
      *
-     * @param Configuration $configuration The configuration to use as the global configuration
+     * @param IConfiguration $configuration The configuration to use as the global configuration
      */
-    public static function setInstance(Configuration $configuration): void
+    public static function setInstance(IConfiguration $configuration): void
     {
         self::$instance = $configuration;
     }
