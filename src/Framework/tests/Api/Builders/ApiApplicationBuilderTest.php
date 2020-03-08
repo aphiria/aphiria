@@ -36,7 +36,6 @@ class ApiApplicationBuilderTest extends TestCase
     {
         // To simplify testing, we'll use a real container
         $this->container = new Container();
-        // TODO: Need to test bootstrappers
         $this->appBuilder = new ApiApplicationBuilder($this->container, []);
     }
 

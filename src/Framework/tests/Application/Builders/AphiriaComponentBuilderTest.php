@@ -14,12 +14,12 @@ namespace Aphiria\Framework\Tests\Application\Builders;
 
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
-use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
+use Aphiria\DependencyInjection\Binders\Binder;
+use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Application\Builders\AphiriaComponentBuilder;
 use Aphiria\Framework\Console\Components\CommandComponent;
-use Aphiria\Framework\DependencyInjection\Components\BootstrapperComponent;
+use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
 use Aphiria\Framework\Routing\Components\RouterComponent;
@@ -48,34 +48,34 @@ class AphiriaComponentBuilderTest extends TestCase
     {
         $container = $this->createMock(IContainer::class);
         $container->method('resolve')
-            ->with(IBootstrapperDispatcher::class)
-            ->willReturn($this->createMock(IBootstrapperDispatcher::class));
+            ->with(IBinderDispatcher::class)
+            ->willReturn($this->createMock(IBinderDispatcher::class));
         $this->componentBuilder = new AphiriaComponentBuilder($container);
         $this->appBuilder = $this->createMock(IApplicationBuilder::class);
     }
 
-    public function testWithBootstrappersRegistersBootstrappersToComponent(): void
+    public function testWithBindersRegistersBindersToComponent(): void
     {
-        $bootstrapper = new class() extends Bootstrapper
+        $binder = new class() extends Binder
         {
-            public function registerBindings(IContainer $container): void
+            public function bind(IContainer $container): void
             {
                 // Don't do anything
             }
         };
-        $expectedComponent = $this->createMock(BootstrapperComponent::class);
+        $expectedComponent = $this->createMock(BinderComponent::class);
         $expectedComponent->expects($this->once())
-            ->method('withBootstrappers')
-            ->with($bootstrapper);
+            ->method('withBinders')
+            ->with($binder);
         $this->appBuilder->expects($this->at(0))
             ->method('hasComponent')
-            ->with(BootstrapperComponent::class)
+            ->with(BinderComponent::class)
             ->willReturn(true);
         $this->appBuilder->expects($this->at(1))
             ->method('getComponent')
-            ->with(BootstrapperComponent::class)
+            ->with(BinderComponent::class)
             ->willReturn($expectedComponent);
-        $this->componentBuilder->withBootstrappers($this->appBuilder, $bootstrapper);
+        $this->componentBuilder->withBinders($this->appBuilder, $binder);
     }
 
     public function testWithCommandAnnotationsConfiguresComponentToHaveAnnotations(): void

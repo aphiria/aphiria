@@ -14,12 +14,12 @@ namespace Aphiria\Framework\Application\Builders;
 
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
-use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
+use Aphiria\DependencyInjection\Binders\Binder;
+use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Framework\Console\Components\CommandComponent;
-use Aphiria\Framework\DependencyInjection\Components\BootstrapperComponent;
+use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
 use Aphiria\Framework\Routing\Components\RouterComponent;
@@ -47,16 +47,16 @@ final class AphiriaComponentBuilder
     }
 
     /**
-     * Adds bootstrappers to the bootstrapper component builder
+     * Adds binders to the binder component builder
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param Bootstrapper|Bootstrapper[] $bootstrappers The bootstrapper or list of bootstrappers to add
+     * @param Binder|Binder[] $binders The binder or list of binders to add
      * @return self For chaining
      */
-    public function withBootstrappers(IApplicationBuilder $appBuilder, $bootstrappers): self
+    public function withBinders(IApplicationBuilder $appBuilder, $binders): self
     {
-        $this->withBootstrapperComponent($appBuilder)
-            ->withBootstrappers($bootstrappers);
+        $this->withBinderComponent($appBuilder)
+            ->withBinders($binders);
 
         return $this;
     }
@@ -227,21 +227,21 @@ final class AphiriaComponentBuilder
     }
 
     /**
-     * Registers the bootstrapper component
+     * Registers the binder component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @return BootstrapperComponent The bootstrapper component
+     * @return BinderComponent The binder component
      */
-    private function withBootstrapperComponent(IApplicationBuilder $appBuilder): BootstrapperComponent
+    private function withBinderComponent(IApplicationBuilder $appBuilder): BinderComponent
     {
-        if (!$appBuilder->hasComponent(BootstrapperComponent::class)) {
+        if (!$appBuilder->hasComponent(BinderComponent::class)) {
             $appBuilder->withComponent(
-                new BootstrapperComponent($this->container->resolve(IBootstrapperDispatcher::class)),
+                new BinderComponent($this->container->resolve(IBinderDispatcher::class)),
                 0
             );
         }
 
-        return $appBuilder->getComponent(BootstrapperComponent::class);
+        return $appBuilder->getComponent(BinderComponent::class);
     }
 
     /**
