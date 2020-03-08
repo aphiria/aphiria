@@ -32,7 +32,8 @@ class ConsoleApplicationBuilderTest extends TestCase
     {
         // To simplify testing, we'll use a real container
         $this->container = new Container();
-        $this->appBuilder = new ConsoleApplicationBuilder($this->container);
+        // TODO: Need to test bootstrappers
+        $this->appBuilder = new ConsoleApplicationBuilder($this->container, []);
     }
 
     public function testBuildBindsConsoleApplicationToContainer(): void

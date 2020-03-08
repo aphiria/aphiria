@@ -14,6 +14,7 @@ namespace Aphiria\Framework\Application\Builders;
 
 use Aphiria\Api\App;
 use Aphiria\Application\Builders\ApplicationBuilder;
+use Aphiria\Application\IBootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Middleware\MiddlewareCollection;
@@ -30,10 +31,16 @@ final class ApiApplicationBuilder extends ApplicationBuilder
 
     /**
      * @param IContainer $container The DI container
+     * @param IBootstrapper[] $bootstrappers The list of bootstrappers to run to bootstrap the application
      */
-    public function __construct(IContainer $container)
+    public function __construct(IContainer $container, array $bootstrappers)
     {
+        parent::__construct($bootstrappers);
+
         $this->container = $container;
+        // TODO: Need unit tests
+        // TODO: Should bootstrap happen here, or outside?  I don't want to confuse devs with bootstrap() and build() methods in the same class.
+        $this->bootstrap();
     }
 
     /**

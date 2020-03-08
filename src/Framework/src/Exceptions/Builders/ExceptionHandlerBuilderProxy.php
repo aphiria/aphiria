@@ -62,7 +62,7 @@ final class ExceptionHandlerBuilderProxy extends ExceptionHandlerBuilder impleme
      */
     public function withLogLevelFactory(string $exceptionType, Closure $logLevelFactory): self
     {
-        $this->proxiedCalls[] = fn (ExceptionHandlerBuilder $exceptionHandlerBuilder) => $exceptionHandlerBuilder->withLogLevelFactory($exceptionType, $logLevelFactory);
+        $this->proxiedCalls[] = fn(ExceptionHandlerBuilder $exceptionHandlerBuilder) => $exceptionHandlerBuilder->withLogLevelFactory($exceptionType, $logLevelFactory);
 
         return $this;
     }
@@ -72,17 +72,7 @@ final class ExceptionHandlerBuilderProxy extends ExceptionHandlerBuilder impleme
      */
     public function withResponseFactory(string $exceptionType, Closure $responseFactory): self
     {
-        $this->proxiedCalls[] = fn (ExceptionHandlerBuilder $exceptionHandlerBuilder) => $exceptionHandlerBuilder->withResponseFactory($exceptionType, $responseFactory);
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function withGlobalExceptionHandler(): self
-    {
-        $this->proxiedCalls[] = fn (ExceptionHandlerBuilder $exceptionHandlerBuilder) => $exceptionHandlerBuilder->withGlobalExceptionHandler();
+        $this->proxiedCalls[] = fn(ExceptionHandlerBuilder $exceptionHandlerBuilder) => $exceptionHandlerBuilder->withResponseFactory($exceptionType, $responseFactory);
 
         return $this;
     }

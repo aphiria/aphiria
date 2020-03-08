@@ -15,7 +15,6 @@ namespace Aphiria\Framework\Tests\Exceptions\Builders;
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
-use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\Middleware\ExceptionHandler;
 use Aphiria\Framework\Exceptions\Builders\ExceptionHandlerBuilder;
 use Aphiria\Framework\Middleware\Builders\MiddlewareBuilder;
@@ -31,46 +30,17 @@ use Psr\Log\LogLevel;
 class ExceptionHandlerBuilderTest extends TestCase
 {
     private ExceptionHandlerBuilder $exceptionHandlerBuilder;
-    private GlobalExceptionHandler $globalExceptionHandler;
     private ExceptionResponseFactoryRegistry $exceptionResponseFactories;
     private ExceptionLogLevelFactoryRegistry $exceptionLogLevelFactories;
 
     protected function setUp(): void
     {
-        $this->globalExceptionHandler = new class() extends GlobalExceptionHandler
-        {
-            private bool $registerWithPhpCalled = false;
-
-            public function registerWithPhp(): void
-            {
-                $this->registerWithPhpCalled = true;
-            }
-
-            public function wasRegisterWithPhpCalled(): bool
-            {
-                return $this->registerWithPhpCalled;
-            }
-        };
         $this->exceptionResponseFactories = new ExceptionResponseFactoryRegistry();
         $this->exceptionLogLevelFactories = new ExceptionLogLevelFactoryRegistry();
         $this->exceptionHandlerBuilder = new ExceptionHandlerBuilder(
-            $this->globalExceptionHandler,
             $this->exceptionResponseFactories,
             $this->exceptionLogLevelFactories
         );
-    }
-
-    public function testBuildRegistersGlobalExceptionHandler(): void
-    {
-        $appBuilder = $this->createMock(IApplicationBuilder::class);
-        $appBuilder->expects($this->once())
-            ->method('getComponentBuilder')
-            ->with(MiddlewareBuilder::class)
-            ->willReturn($this->createMock(MiddlewareBuilder::class));
-        $this->assertFalse($this->globalExceptionHandler->wasRegisterWithPhpCalled());
-        $this->exceptionHandlerBuilder->withGlobalExceptionHandler();
-        $this->exceptionHandlerBuilder->build($appBuilder);
-        $this->assertTrue($this->globalExceptionHandler->wasRegisterWithPhpCalled());
     }
 
     public function testBuildRegistersGlobalExceptionHandlerMiddleware(): void

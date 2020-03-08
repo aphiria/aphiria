@@ -38,18 +38,6 @@ class ExceptionHandlerBuilderProxyTest extends TestCase
         );
     }
 
-    public function testBuildRegistersGlobalExceptionHandlerToProxiedComponentBuilder(): void
-    {
-        $expectedAppBuilder = $this->createMock(IApplicationBuilder::class);
-        $this->exceptionHandlerBuilder->expects($this->at(0))
-            ->method('withGlobalExceptionHandler');
-        $this->exceptionHandlerBuilder->expects($this->at(1))
-            ->method('build')
-            ->with($expectedAppBuilder);
-        $this->exceptionHandlerBuilderProxy->withGlobalExceptionHandler();
-        $this->exceptionHandlerBuilderProxy->build($expectedAppBuilder);
-    }
-
     public function testBuildRegistersLogLevelFactoryToProxiedComponentBuilder(): void
     {
         $expectedAppBuilder = $this->createMock(IApplicationBuilder::class);

@@ -17,5 +17,8 @@ namespace Aphiria\Application;
  */
 interface IBootstrapper
 {
+    /**
+     * Bootstraps part of the application so that it can run (happens at the very beginning of application startup)
+     */
     public function bootstrap(): void;
 }
