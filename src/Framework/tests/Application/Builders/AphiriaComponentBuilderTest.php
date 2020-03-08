@@ -63,8 +63,8 @@ class AphiriaComponentBuilderTest extends TestCase
                 // Don't do anything
             }
         };
-        $expectedBootstrapperComponent = $this->createMock(BootstrapperComponent::class);
-        $expectedBootstrapperComponent->expects($this->once())
+        $expectedComponent = $this->createMock(BootstrapperComponent::class);
+        $expectedComponent->expects($this->once())
             ->method('withBootstrappers')
             ->with($bootstrapper);
         $this->appBuilder->expects($this->at(0))
@@ -74,14 +74,14 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->appBuilder->expects($this->at(1))
             ->method('getComponent')
             ->with(BootstrapperComponent::class)
-            ->willReturn($expectedBootstrapperComponent);
+            ->willReturn($expectedComponent);
         $this->componentBuilder->withBootstrappers($this->appBuilder, $bootstrapper);
     }
 
-    public function testWithCommandAnnotationsConfiguresCommandBuilderToHaveAnnotations(): void
+    public function testWithCommandAnnotationsConfiguresComponentToHaveAnnotations(): void
     {
-        $expectedCommandBuilder = $this->createMock(CommandComponent::class);
-        $expectedCommandBuilder->expects($this->once())
+        $expectedComponent = $this->createMock(CommandComponent::class);
+        $expectedComponent->expects($this->once())
             ->method('withAnnotations');
         $this->appBuilder->expects($this->at(0))
             ->method('hasComponent')
@@ -90,15 +90,15 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->appBuilder->expects($this->at(1))
             ->method('getComponent')
             ->with(CommandComponent::class)
-            ->willReturn($expectedCommandBuilder);
+            ->willReturn($expectedComponent);
         $this->componentBuilder->withCommandAnnotations($this->appBuilder);
     }
 
-    public function testWithCommandsConfiguresCommandBuilderToHaveCommands(): void
+    public function testWithCommandsConfiguresComponentToHaveCommands(): void
     {
         $callback = fn (CommandRegistry $commands) => null;
-        $expectedCommandBuilder = $this->createMock(CommandComponent::class);
-        $expectedCommandBuilder->expects($this->once())
+        $expectedComponent = $this->createMock(CommandComponent::class);
+        $expectedComponent->expects($this->once())
             ->method('withCommands')
             ->with($callback);
         $this->appBuilder->expects($this->at(0))
@@ -108,15 +108,15 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->appBuilder->expects($this->at(1))
             ->method('getComponent')
             ->with(CommandComponent::class)
-            ->willReturn($expectedCommandBuilder);
+            ->willReturn($expectedComponent);
         $this->componentBuilder->withCommands($this->appBuilder, $callback);
     }
 
-    public function testWithEncodersConfiguresSerializerBuilderToHaveEncoders(): void
+    public function testWithEncodersConfiguresComponentToHaveEncoders(): void
     {
         $encoder = $this->createMock(IEncoder::class);
-        $expectedSerializerBuilder = $this->createMock(SerializerComponent::class);
-        $expectedSerializerBuilder->expects($this->once())
+        $expectedComponent = $this->createMock(SerializerComponent::class);
+        $expectedComponent->expects($this->once())
             ->method('withEncoder')
             ->with('foo', $encoder);
         $this->appBuilder->expects($this->at(0))
@@ -126,15 +126,31 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->appBuilder->expects($this->at(1))
             ->method('getComponent')
             ->with(SerializerComponent::class)
-            ->willReturn($expectedSerializerBuilder);
+            ->willReturn($expectedComponent);
         $this->componentBuilder->withEncoder($this->appBuilder, 'foo', $encoder);
     }
 
-    public function testWithExceptionResponseFactoryConfiguresExceptionHandlerBuilderToHaveFactory(): void
+    public function testWithExceptionHandlerMiddlewareConfiguresComponentToUseMiddleware(): void
+    {
+        $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
+        $expectedComponent->expects($this->once())
+            ->method('withExceptionHandlerMiddleware');
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponent')
+            ->with(ExceptionHandlerComponent::class)
+            ->willReturn(true);
+        $this->appBuilder->expects($this->at(1))
+            ->method('getComponent')
+            ->with(ExceptionHandlerComponent::class)
+            ->willReturn($expectedComponent);
+        $this->componentBuilder->withExceptionHandlerMiddleware($this->appBuilder);
+    }
+
+    public function testWithExceptionResponseFactoryConfiguresComponentToHaveFactory(): void
     {
         $responseFactory = fn (Exception $ex) => $this->createMock(IHttpResponseMessage::class);
-        $expectedExceptionHandlerBuilder = $this->createMock(ExceptionHandlerComponent::class);
-        $expectedExceptionHandlerBuilder->expects($this->once())
+        $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
+        $expectedComponent->expects($this->once())
             ->method('withResponseFactory')
             ->with(Exception::class, $responseFactory);
         $this->appBuilder->expects($this->at(0))
@@ -144,15 +160,15 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->appBuilder->expects($this->at(1))
             ->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
-            ->willReturn($expectedExceptionHandlerBuilder);
+            ->willReturn($expectedComponent);
         $this->componentBuilder->withExceptionResponseFactory($this->appBuilder, Exception::class, $responseFactory);
     }
 
-    public function testWithGlobalMiddlewareConfiguresMiddlewareBuilderToHaveMiddleware(): void
+    public function testWithGlobalMiddlewareConfiguresComponentToHaveMiddleware(): void
     {
         $middlewareBinding = new MiddlewareBinding('foo');
-        $expectedMiddlewareBuilder = $this->createMock(MiddlewareComponent::class);
-        $expectedMiddlewareBuilder->expects($this->once())
+        $expectedComponent = $this->createMock(MiddlewareComponent::class);
+        $expectedComponent->expects($this->once())
             ->method('withGlobalMiddleware')
             ->with($middlewareBinding);
         $this->appBuilder->expects($this->at(0))
@@ -162,15 +178,15 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->appBuilder->expects($this->at(1))
             ->method('getComponent')
             ->with(MiddlewareComponent::class)
-            ->willReturn($expectedMiddlewareBuilder);
+            ->willReturn($expectedComponent);
         $this->componentBuilder->withGlobalMiddleware($this->appBuilder, $middlewareBinding);
     }
 
-    public function testWithLogLevelFactoryConfiguresExceptionHandlerBuilderToHaveFactory(): void
+    public function testWithLogLevelFactoryConfiguresComponentToHaveFactory(): void
     {
         $logLevelFactory = fn (Exception $ex) => LogLevel::ALERT;
-        $expectedExceptionHandlerBuilder = $this->createMock(ExceptionHandlerComponent::class);
-        $expectedExceptionHandlerBuilder->expects($this->once())
+        $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
+        $expectedComponent->expects($this->once())
             ->method('withLogLevelFactory')
             ->with(Exception::class, $logLevelFactory);
         $this->appBuilder->expects($this->at(0))
@@ -180,15 +196,15 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->appBuilder->expects($this->at(1))
             ->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
-            ->willReturn($expectedExceptionHandlerBuilder);
+            ->willReturn($expectedComponent);
         $this->componentBuilder->withLogLevelFactory($this->appBuilder, Exception::class, $logLevelFactory);
     }
 
-    public function testWithObjectConstraintsConfiguresValidatorBuilderToHaveObjectConstraints(): void
+    public function testWithObjectConstraintsConfiguresComponentToHaveObjectConstraints(): void
     {
         $callback = fn (ObjectConstraintsRegistry $objectConstraints) => null;
-        $expectedValidatorBuilder = $this->createMock(ValidationComponent::class);
-        $expectedValidatorBuilder->expects($this->once())
+        $expectedComponent = $this->createMock(ValidationComponent::class);
+        $expectedComponent->expects($this->once())
             ->method('withObjectConstraints')
             ->with($callback);
         $this->appBuilder->expects($this->at(0))
@@ -198,14 +214,14 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->appBuilder->expects($this->at(1))
             ->method('getComponent')
             ->with(ValidationComponent::class)
-            ->willReturn($expectedValidatorBuilder);
+            ->willReturn($expectedComponent);
         $this->componentBuilder->withObjectConstraints($this->appBuilder, $callback);
     }
 
-    public function testWithRouteAnnotationsConfiguresRouterBuilderToHaveAnnotations(): void
+    public function testWithRouteAnnotationsConfiguresComponentToHaveAnnotations(): void
     {
-        $expectedRouterBuilder = $this->createMock(RouterComponent::class);
-        $expectedRouterBuilder->expects($this->once())
+        $expectedComponent = $this->createMock(RouterComponent::class);
+        $expectedComponent->expects($this->once())
             ->method('withAnnotations');
         $this->appBuilder->expects($this->at(0))
             ->method('hasComponent')
@@ -214,15 +230,15 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->appBuilder->expects($this->at(1))
             ->method('getComponent')
             ->with(RouterComponent::class)
-            ->willReturn($expectedRouterBuilder);
+            ->willReturn($expectedComponent);
         $this->componentBuilder->withRouteAnnotations($this->appBuilder);
     }
 
-    public function testWithRoutesConfiguresRouterBuilderToHaveRoutes(): void
+    public function testWithRoutesConfiguresComponentToHaveRoutes(): void
     {
         $callback = fn (RouteBuilderRegistry $routeBuilders) => null;
-        $expectedRouterBuilder = $this->createMock(RouterComponent::class);
-        $expectedRouterBuilder->expects($this->once())
+        $expectedComponent = $this->createMock(RouterComponent::class);
+        $expectedComponent->expects($this->once())
             ->method('withRoutes')
             ->with($callback);
         $this->appBuilder->expects($this->at(0))
@@ -232,14 +248,14 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->appBuilder->expects($this->at(1))
             ->method('getComponent')
             ->with(RouterComponent::class)
-            ->willReturn($expectedRouterBuilder);
+            ->willReturn($expectedComponent);
         $this->componentBuilder->withRoutes($this->appBuilder, $callback);
     }
 
-    public function testWithValidatorAnnotationsConfiguresValidatorBuilderToHaveAnnotations(): void
+    public function testWithValidatorAnnotationsConfiguresComponentToHaveAnnotations(): void
     {
-        $expectedValidatorBuilder = $this->createMock(ValidationComponent::class);
-        $expectedValidatorBuilder->expects($this->once())
+        $expectedComponent = $this->createMock(ValidationComponent::class);
+        $expectedComponent->expects($this->once())
             ->method('withAnnotations');
         $this->appBuilder->expects($this->at(0))
             ->method('hasComponent')
@@ -248,24 +264,7 @@ class AphiriaComponentBuilderTest extends TestCase
         $this->appBuilder->expects($this->at(1))
             ->method('getComponent')
             ->with(ValidationComponent::class)
-            ->willReturn($expectedValidatorBuilder);
-        $this->componentBuilder->withValidatorAnnotations($this->appBuilder);
-    }
-
-    public function testWithValidatorAnnotationsRegistersCorrectComponent(): void
-    {
-        $this->appBuilder->expects($this->at(0))
-            ->method('hasComponent')
-            ->with(ValidationComponent::class)
-            ->willReturn(false);
-        $this->appBuilder->expects($this->at(1))
-            ->method('withComponent')
-            ->with($this->isInstanceOf(ValidationComponent::class))
-            ->willReturn($this->appBuilder);
-        $this->appBuilder->expects($this->at(2))
-            ->method('getComponent')
-            ->with(ValidationComponent::class)
-            ->willReturn($this->createMock(ValidationComponent::class));
+            ->willReturn($expectedComponent);
         $this->componentBuilder->withValidatorAnnotations($this->appBuilder);
     }
 }
