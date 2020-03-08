@@ -10,58 +10,45 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\Application\Builders;
+namespace Aphiria\Framework\Tests\Console\Builders;
 
-use Aphiria\Api\App;
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\Builders\IModuleBuilder;
 use Aphiria\Application\IBootstrapper;
 use Aphiria\Application\IComponent;
+use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\DependencyInjection\Container;
-use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Framework\Application\Builders\ApiApplicationBuilder;
-use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Framework\Console\Builders\ConsoleApplicationBuilder;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 /**
- * Tests the API application builder
+ * Tests the console application builder
  */
-class ApiApplicationBuilderTest extends TestCase
+class ConsoleApplicationBuilderTest extends TestCase
 {
     private Container $container;
-    private ApiApplicationBuilder $appBuilder;
+    private ConsoleApplicationBuilder $appBuilder;
 
     protected function setUp(): void
     {
         // To simplify testing, we'll use a real container
         $this->container = new Container();
         // TODO: Need to test bootstrappers
-        $this->appBuilder = new ApiApplicationBuilder($this->container, []);
+        $this->appBuilder = new ConsoleApplicationBuilder($this->container, []);
     }
 
-    public function testBuildBindsApiApplicationToContainer(): void
+    public function testBuildBindsConsoleApplicationToContainer(): void
     {
-        // Bind the router to the container
-        $router = $this->createMock(IRequestHandler::class);
-        $this->container->for(App::class, function (IContainer $container) use ($router) {
-            $container->bindInstance(IRequestHandler::class, $router);
-        });
-        $this->appBuilder->build();
-        $this->assertNotSame($router, $this->container->resolve(IRequestHandler::class));
+        $app = $this->appBuilder->build();
+        $this->assertSame($app, $this->container->resolve(ICommandBus::class));
     }
 
     public function testBuildBootstrapsBootstrappers(): void
     {
-        // Bind the router to the container
-        $router = $this->createMock(IRequestHandler::class);
-        $this->container->for(App::class, function (IContainer $container) use ($router) {
-            $container->bindInstance(IRequestHandler::class, $router);
-        });
         $bootstrapper = $this->createMock(IBootstrapper::class);
         $bootstrapper->expects($this->once())
             ->method('bootstrap');
-        $appBuilder = new ApiApplicationBuilder($this->container, [$bootstrapper]);
+        $appBuilder = new ConsoleApplicationBuilder($this->container, [$bootstrapper]);
         $appBuilder->build();
     }
 
@@ -99,17 +86,7 @@ class ApiApplicationBuilderTest extends TestCase
         // Purposely registering out of order to ensure that order does not matter
         $this->appBuilder->withComponent($component);
         $this->appBuilder->withModuleBuilder($moduleBuilder);
-        $this->container->for(App::class, function (IContainer $container) {
-            $container->bindInstance(IRequestHandler::class, $this->createMock(IRequestHandler::class));
-        });
         $this->appBuilder->build();
         $this->assertEquals([\get_class($moduleBuilder), \get_class($component)], $builtParts);
-    }
-
-    public function testBuildWithoutHavingRouterBoundToContainerThrowsException(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('No ' . IRequestHandler::class . ' router bound to the container');
-        $this->appBuilder->build();
     }
 }

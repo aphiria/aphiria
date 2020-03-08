@@ -141,12 +141,13 @@ final class AphiriaComponentBuilder
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param MiddlewareBinding|MiddlewareBinding[] $middlewareBindings The middleware binding or list of bindings to add
+     * @param int|null $priority The optional priority to apply to the middleware (lower number => higher priority)
      * @return self For chaining
      */
-    public function withGlobalMiddleware(IApplicationBuilder $appBuilder, $middlewareBindings): self
+    public function withGlobalMiddleware(IApplicationBuilder $appBuilder, $middlewareBindings, int $priority = null): self
     {
         $this->withMiddlewareComponent($appBuilder)
-            ->withGlobalMiddleware($middlewareBindings);
+            ->withGlobalMiddleware($middlewareBindings, $priority);
 
         return $this;
     }

@@ -170,7 +170,7 @@ class AphiriaComponentBuilderTest extends TestCase
         $expectedComponent = $this->createMock(MiddlewareComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withGlobalMiddleware')
-            ->with($middlewareBinding);
+            ->with($middlewareBinding, 1);
         $this->appBuilder->expects($this->at(0))
             ->method('hasComponent')
             ->with(MiddlewareComponent::class)
@@ -179,7 +179,7 @@ class AphiriaComponentBuilderTest extends TestCase
             ->method('getComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn($expectedComponent);
-        $this->componentBuilder->withGlobalMiddleware($this->appBuilder, $middlewareBinding);
+        $this->componentBuilder->withGlobalMiddleware($this->appBuilder, $middlewareBinding, 1);
     }
 
     public function testWithLogLevelFactoryConfiguresComponentToHaveFactory(): void

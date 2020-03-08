@@ -10,21 +10,21 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Application\Builders;
+namespace Aphiria\Framework\Api\Builders;
 
+use Aphiria\Api\App;
 use Aphiria\Application\Builders\ApplicationBuilder;
 use Aphiria\Application\IBootstrapper;
-use Aphiria\Console\App;
-use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
+use Aphiria\Middleware\MiddlewareCollection;
+use Aphiria\Net\Http\Handlers\IRequestHandler;
 use RuntimeException;
 
 /**
- * Defines the application builder for console applications
+ * Defines the application builder for API applications
  */
-final class ConsoleApplicationBuilder extends ApplicationBuilder
+final class ApiApplicationBuilder extends ApplicationBuilder
 {
     /** @var IContainer The DI container */
     private IContainer $container;
@@ -45,19 +45,27 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function build(): ICommandBus
+    public function build(): IRequestHandler
     {
         $this->buildModules();
         $this->initializeComponents();
 
+        /** @var IRequestHandler $router */
+        $router = null;
+        $this->container->for(App::class, static function (IContainer $container) use (&$router) {
+            if (!$container->tryResolve(IRequestHandler::class, $router)) {
+                throw new RuntimeException('No ' . IRequestHandler::class . ' router bound to the container');
+            }
+        });
+
         try {
-            $consoleApp = new App($this->container->resolve(CommandRegistry::class));
+            $apiApp = new App($router, $this->container->resolve(MiddlewareCollection::class));
         } catch (ResolutionException $ex) {
-            throw new RuntimeException('Failed to build the console application', 0, $ex);
+            throw new RuntimeException('Failed to build the API application', 0, $ex);
         }
 
-        $this->container->bindInstance(ICommandBus::class, $consoleApp);
+        $this->container->bindInstance(IRequestHandler::class, $apiApp);
 
-        return $consoleApp;
+        return $apiApp;
     }
 }
