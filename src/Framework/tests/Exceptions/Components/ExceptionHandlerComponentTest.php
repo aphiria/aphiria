@@ -64,15 +64,16 @@ class ExceptionHandlerComponentTest extends TestCase
                 return $this;
             }
         };
+        $this->exceptionHandlerComponent = new ExceptionHandlerComponent($container, $this->appBuilder);
+    }
+
+    public function testInitializeWithExceptionHandlerMiddlewareRegistersTheMiddleware(): void
+    {
         $this->appBuilder->expects($this->once())
             ->method('getComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn($this->middlewareComponent);
-        $this->exceptionHandlerComponent = new ExceptionHandlerComponent($container, $this->appBuilder);
-    }
-
-    public function testGlobalExceptionHandlerMiddlewareIsRegistered(): void
-    {
+        $this->exceptionHandlerComponent->withExceptionHandlerMiddleware();
         $this->exceptionHandlerComponent->initialize();
         $this->assertEquals([new MiddlewareBinding(ExceptionHandler::class)], $this->middlewareComponent->getMiddleware());
     }

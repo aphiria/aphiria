@@ -29,6 +29,10 @@ class ExceptionHandlerComponent implements IComponent
 {
     /** @var IDependencyResolver The dependency resolver */
     private IDependencyResolver $dependencyResolver;
+    /** @var IApplicationBuilder The application builder */
+    private IApplicationBuilder $appBuilder;
+    /** @var bool Whether or not to use the exception handler middleware */
+    private bool $exceptionHandlerMiddlewareEnabled = false;
     /** @var Closure[] The mapping of exception types to response factories */
     private array $exceptionResponseFactories = [];
     /** @var Closure[] The mapping of exception types to log level factories */
@@ -41,8 +45,7 @@ class ExceptionHandlerComponent implements IComponent
     public function __construct(IDependencyResolver $dependencyResolver, IApplicationBuilder $appBuilder)
     {
         $this->dependencyResolver = $dependencyResolver;
-        $appBuilder->getComponent(MiddlewareComponent::class)
-            ->withGlobalMiddleware(new MiddlewareBinding(ExceptionHandler::class), 0);
+        $this->appBuilder = $appBuilder;
     }
 
     /**
@@ -50,11 +53,28 @@ class ExceptionHandlerComponent implements IComponent
      */
     public function initialize(): void
     {
+        if ($this->exceptionHandlerMiddlewareEnabled) {
+            $this->appBuilder->getComponent(MiddlewareComponent::class)
+                ->withGlobalMiddleware(new MiddlewareBinding(ExceptionHandler::class), 0);
+        }
+
         $exceptionResponseFactories = $this->dependencyResolver->resolve(ExceptionResponseFactoryRegistry::class);
         $logLevelFactories = $this->dependencyResolver->resolve(ExceptionLogLevelFactoryRegistry::class);
 
         $exceptionResponseFactories->registerManyFactories($this->exceptionResponseFactories);
         $logLevelFactories->registerManyFactories($this->logLevelFactories);
+    }
+
+    /**
+     * Enables the exception handler middleware
+     *
+     * @return self For chaining
+     */
+    public function withExceptionHandlerMiddleware(): self
+    {
+        $this->exceptionHandlerMiddlewareEnabled = true;
+
+        return $this;
     }
 
     /**
