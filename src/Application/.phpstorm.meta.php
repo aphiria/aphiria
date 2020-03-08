@@ -15,4 +15,4 @@ namespace PHPSTORM_META;
 use Aphiria\Application\Builders\IApplicationBuilder;
 
 // Make the application builder return the same type as the input parameter
-override(IApplicationBuilder::getComponentBuilder(), type(0));
+override(IApplicationBuilder::getComponent(), type(0));

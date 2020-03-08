@@ -15,22 +15,16 @@ namespace Aphiria\Framework\Application\Builders;
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\Bootstrappers\Bootstrapper;
+use Aphiria\DependencyInjection\Bootstrappers\IBootstrapperDispatcher;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
-use Aphiria\Framework\Console\Builders\CommandBuilder;
-use Aphiria\Framework\Console\Builders\CommandBuilderProxy;
-use Aphiria\Framework\DependencyInjection\Builders\BootstrapperBuilder;
-use Aphiria\Framework\DependencyInjection\Builders\BootstrapperBuilderProxy;
-use Aphiria\Framework\Exceptions\Builders\ExceptionHandlerBuilder;
-use Aphiria\Framework\Exceptions\Builders\ExceptionHandlerBuilderProxy;
-use Aphiria\Framework\Middleware\Builders\MiddlewareBuilder;
-use Aphiria\Framework\Middleware\Builders\MiddlewareBuilderProxy;
-use Aphiria\Framework\Routing\Builders\RouterBuilder;
-use Aphiria\Framework\Routing\Builders\RouterBuilderProxy;
-use Aphiria\Framework\Serialization\Builders\SerializerBuilder;
-use Aphiria\Framework\Serialization\Builders\SerializerBuilderProxy;
-use Aphiria\Framework\Validation\Builders\ValidatorBuilder;
-use Aphiria\Framework\Validation\Builders\ValidatorBuilderProxy;
+use Aphiria\Framework\Console\Components\CommandComponent;
+use Aphiria\Framework\DependencyInjection\Components\BootstrapperComponent;
+use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
+use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
+use Aphiria\Framework\Routing\Components\RouterComponent;
+use Aphiria\Framework\Serialization\Components\SerializerComponent;
+use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Serialization\Encoding\IEncoder;
@@ -62,7 +56,7 @@ final class AphiriaComponentBuilder
     public function withBootstrappers(IApplicationBuilder $appBuilder, $bootstrappers): self
     {
         $this->withBootstrapperComponent($appBuilder)
-            ->getComponentBuilder(BootstrapperBuilder::class)
+            ->getComponent(BootstrapperComponent::class)
             ->withBootstrappers($bootstrappers);
 
         return $this;
@@ -77,7 +71,7 @@ final class AphiriaComponentBuilder
     public function withCommandAnnotations(IApplicationBuilder $appBuilder): self
     {
         $this->withConsoleComponent($appBuilder)
-            ->getComponentBuilder(CommandBuilder::class)
+            ->getComponent(CommandComponent::class)
             ->withAnnotations();
 
         return $this;
@@ -93,7 +87,7 @@ final class AphiriaComponentBuilder
     public function withCommands(IApplicationBuilder $appBuilder, Closure $callback): self
     {
         $this->withConsoleComponent($appBuilder)
-            ->getComponentBuilder(CommandBuilder::class)
+            ->getComponent(CommandComponent::class)
             ->withCommands($callback);
 
         return $this;
@@ -110,7 +104,7 @@ final class AphiriaComponentBuilder
     public function withEncoder(IApplicationBuilder $appBuilder, string $class, IEncoder $encoder): self
     {
         $this->withSerializerComponent($appBuilder)
-            ->getComponentBuilder(SerializerBuilder::class)
+            ->getComponent(SerializerComponent::class)
             ->withEncoder($class, $encoder);
 
         return $this;
@@ -127,23 +121,8 @@ final class AphiriaComponentBuilder
     public function withExceptionResponseFactory(IApplicationBuilder $appBuilder, string $exceptionType, Closure $responseFactory): self
     {
         $this->withExceptionHandlerComponent($appBuilder)
-            ->getComponentBuilder(ExceptionHandlerBuilder::class)
+            ->getComponent(ExceptionHandlerComponent::class)
             ->withResponseFactory($exceptionType, $responseFactory);
-
-        return $this;
-    }
-
-    /**
-     * Registers the global exception handler with PHP
-     *
-     * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @return self For chaining
-     */
-    public function withGlobalExceptionHandler(IApplicationBuilder $appBuilder): self
-    {
-        $this->withExceptionHandlerComponent($appBuilder)
-            ->getComponentBuilder(ExceptionHandlerBuilder::class)
-            ->withGlobalExceptionHandler();
 
         return $this;
     }
@@ -158,7 +137,7 @@ final class AphiriaComponentBuilder
     public function withGlobalMiddleware(IApplicationBuilder $appBuilder, $middlewareBindings): self
     {
         $this->withMiddlewareComponent($appBuilder)
-            ->getComponentBuilder(MiddlewareBuilder::class)
+            ->getComponent(MiddlewareComponent::class)
             ->withGlobalMiddleware($middlewareBindings);
 
         return $this;
@@ -175,7 +154,7 @@ final class AphiriaComponentBuilder
     public function withLogLevelFactory(IApplicationBuilder $appBuilder, string $exceptionType, Closure $logLevelFactory): self
     {
         $this->withExceptionHandlerComponent($appBuilder)
-            ->getComponentBuilder(ExceptionHandlerBuilder::class)
+            ->getComponent(ExceptionHandlerComponent::class)
             ->withLogLevelFactory($exceptionType, $logLevelFactory);
 
         return $this;
@@ -191,7 +170,7 @@ final class AphiriaComponentBuilder
     public function withObjectConstraints(IApplicationBuilder $appBuilder, Closure $callback): self
     {
         $this->withValidatorComponent($appBuilder)
-            ->getComponentBuilder(ValidatorBuilder::class)
+            ->getComponent(ValidationComponent::class)
             ->withObjectConstraints($callback);
 
         return $this;
@@ -206,7 +185,7 @@ final class AphiriaComponentBuilder
     public function withRouteAnnotations(IApplicationBuilder $appBuilder): self
     {
         $this->withRouterComponent($appBuilder)
-            ->getComponentBuilder(RouterBuilder::class)
+            ->getComponent(RouterComponent::class)
             ->withAnnotations();
 
         return $this;
@@ -222,7 +201,7 @@ final class AphiriaComponentBuilder
     public function withRoutes(IApplicationBuilder $appBuilder, Closure $callback): self
     {
         $this->withRouterComponent($appBuilder)
-            ->getComponentBuilder(RouterBuilder::class)
+            ->getComponent(RouterComponent::class)
             ->withRoutes($callback);
 
         return $this;
@@ -237,7 +216,7 @@ final class AphiriaComponentBuilder
     public function withValidatorAnnotations(IApplicationBuilder $appBuilder): self
     {
         $this->withValidatorComponent($appBuilder)
-            ->getComponentBuilder(ValidatorBuilder::class)
+            ->getComponent(ValidationComponent::class)
             ->withAnnotations();
 
         return $this;
@@ -251,11 +230,14 @@ final class AphiriaComponentBuilder
      */
     private function withBootstrapperComponent(IApplicationBuilder $appBuilder): IApplicationBuilder
     {
-        if ($appBuilder->hasComponentBuilder(BootstrapperBuilder::class)) {
+        if ($appBuilder->hasComponent(BootstrapperComponent::class)) {
             return $appBuilder;
         }
 
-        return $appBuilder->withComponentBuilder(new BootstrapperBuilderProxy(fn () => $this->container->resolve(BootstrapperBuilder::class)), 0);
+        return $appBuilder->withComponent(
+            new BootstrapperComponent($this->container->resolve(IBootstrapperDispatcher::class)),
+            0
+        );
     }
 
     /**
@@ -266,7 +248,7 @@ final class AphiriaComponentBuilder
      */
     private function withConsoleComponent(IApplicationBuilder $appBuilder): IApplicationBuilder
     {
-        if ($appBuilder->hasComponentBuilder(CommandBuilder::class)) {
+        if ($appBuilder->hasComponent(CommandComponent::class)) {
             return $appBuilder;
         }
 
@@ -275,7 +257,7 @@ final class AphiriaComponentBuilder
             $this->container->bindInstance(CommandRegistry::class, new CommandRegistry());
         }
 
-        return $appBuilder->withComponentBuilder(new CommandBuilderProxy(fn () => $this->container->resolve(CommandBuilder::class)));
+        return $appBuilder->withComponent(new CommandComponent($this->container));
     }
 
     /**
@@ -286,11 +268,11 @@ final class AphiriaComponentBuilder
      */
     private function withExceptionHandlerComponent(IApplicationBuilder $appBuilder): IApplicationBuilder
     {
-        if ($appBuilder->hasComponentBuilder(ExceptionHandlerBuilder::class)) {
+        if ($appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
             return $appBuilder;
         }
 
-        return $appBuilder->withComponentBuilder(new ExceptionHandlerBuilderProxy(fn () => $this->container->resolve(ExceptionHandlerBuilder::class)));
+        return $appBuilder->withComponent(new ExceptionHandlerComponent($this->container, $appBuilder));
     }
 
     /**
@@ -302,7 +284,7 @@ final class AphiriaComponentBuilder
      */
     private function withMiddlewareComponent(IApplicationBuilder $appBuilder): IApplicationBuilder
     {
-        if ($appBuilder->hasComponentBuilder(MiddlewareBuilder::class)) {
+        if ($appBuilder->hasComponent(MiddlewareComponent::class)) {
             return $appBuilder;
         }
 
@@ -311,7 +293,7 @@ final class AphiriaComponentBuilder
             ? $middlewareCollection= $this->container->resolve(MiddlewareCollection::class)
             : $this->container->bindInstance(MiddlewareCollection::class, $middlewareCollection = new MiddlewareCollection());
 
-        return $appBuilder->withComponentBuilder(new MiddlewareBuilderProxy(fn () => new MiddlewareBuilder($middlewareCollection, $this->container)));
+        return $appBuilder->withComponent(new MiddlewareComponent($this->container));
     }
 
     /**
@@ -322,11 +304,11 @@ final class AphiriaComponentBuilder
      */
     private function withRouterComponent(IApplicationBuilder $appBuilder): IApplicationBuilder
     {
-        if ($appBuilder->hasComponentBuilder(RouterBuilder::class)) {
+        if ($appBuilder->hasComponent(RouterComponent::class)) {
             return $appBuilder;
         }
 
-        return $appBuilder->withComponentBuilder(new RouterBuilderProxy(fn () => $this->container->resolve(RouterBuilder::class)));
+        return $appBuilder->withComponent(new RouterComponent($this->container));
     }
 
     /**
@@ -337,11 +319,11 @@ final class AphiriaComponentBuilder
      */
     private function withSerializerComponent(IApplicationBuilder $appBuilder): IApplicationBuilder
     {
-        if ($appBuilder->hasComponentBuilder(SerializerBuilder::class)) {
+        if ($appBuilder->hasComponent(SerializerComponent::class)) {
             return $appBuilder;
         }
 
-        return $appBuilder->withComponentBuilder(new SerializerBuilderProxy(fn () => $this->container->resolve(SerializerBuilder::class)));
+        return $appBuilder->withComponent(new SerializerComponent($this->container));
     }
 
     /**
@@ -352,10 +334,10 @@ final class AphiriaComponentBuilder
      */
     private function withValidatorComponent(IApplicationBuilder $appBuilder): IApplicationBuilder
     {
-        if ($appBuilder->hasComponentBuilder(ValidatorBuilder::class)) {
+        if ($appBuilder->hasComponent(ValidationComponent::class)) {
             return $appBuilder;
         }
 
-        return $appBuilder->withComponentBuilder(new ValidatorBuilderProxy(fn () => $this->container->resolve(ValidatorBuilder::class)));
+        return $appBuilder->withComponent(new ValidationComponent($this->container));
     }
 }

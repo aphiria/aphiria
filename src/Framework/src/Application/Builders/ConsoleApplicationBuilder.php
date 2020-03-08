@@ -38,7 +38,6 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
         parent::__construct($bootstrappers);
 
         $this->container = $container;
-        // TODO: Need unit tests
         // TODO: Should bootstrap happen here, or outside?  I don't want to confuse devs with bootstrap() and build() methods in the same class.
         $this->bootstrap();
     }
@@ -49,7 +48,7 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
     public function build(): ICommandBus
     {
         $this->buildModules();
-        $this->buildComponents();
+        $this->initializeComponents();
 
         try {
             $consoleApp = new App($this->container->resolve(CommandRegistry::class));

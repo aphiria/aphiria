@@ -38,7 +38,6 @@ final class ApiApplicationBuilder extends ApplicationBuilder
         parent::__construct($bootstrappers);
 
         $this->container = $container;
-        // TODO: Need unit tests
         // TODO: Should bootstrap happen here, or outside?  I don't want to confuse devs with bootstrap() and build() methods in the same class.
         $this->bootstrap();
     }
@@ -49,7 +48,7 @@ final class ApiApplicationBuilder extends ApplicationBuilder
     public function build(): IRequestHandler
     {
         $this->buildModules();
-        $this->buildComponents();
+        $this->initializeComponents();
 
         /** @var IRequestHandler $router */
         $router = null;

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Application\Builders;
 
+use Aphiria\Application\IComponent;
 use OutOfBoundsException;
 use RuntimeException;
 
@@ -29,30 +30,30 @@ interface IApplicationBuilder
     public function build(): object;
 
     /**
-     * Gets a component builder by its type (if it's a lazy component builder, then we use ILazyComponentBuilder::getType())
+     * Gets a component builder by its type
      *
-     * @param string $type The type of component builder to get
-     * @return IComponentBuilder The component builder, if one was found
-     * @throws OutOfBoundsException Thrown if there was no component builder with that type
+     * @param string $type The type of component to get
+     * @return IComponent The component, if one was found
+     * @throws OutOfBoundsException Thrown if there was no component with that type
      */
-    public function getComponentBuilder(string $type): IComponentBuilder;
+    public function getComponent(string $type): IComponent;
 
     /**
-     * Gets whether or not the application builder has a registered instance of the input component builder type
+     * Gets whether or not the application builder has a registered instance of the input component type
      *
-     * @param string $type The type of component builder to check for
-     * @return bool True if the application builder already has the component builder, otherwise false
+     * @param string $type The type of component to check for
+     * @return bool True if the application builder already has the component, otherwise false
      */
-    public function hasComponentBuilder(string $type): bool;
+    public function hasComponent(string $type): bool;
 
     /**
-     * Adds a component builder to the application
+     * Adds a component to the application
      *
-     * @param IComponentBuilder $componentBuilder The component builder to register
-     * @param int|null $priority The optional priority of this component builder (lower number => higher priority)
+     * @param IComponent $component The component to register
+     * @param int|null $priority The optional priority of this component (lower number => higher priority)
      * @return self For chaining
      */
-    public function withComponentBuilder(IComponentBuilder $componentBuilder, int $priority = null): self;
+    public function withComponent(IComponent $component, int $priority = null): self;
 
     /**
      * Adds an entire module builder to the application

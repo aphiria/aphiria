@@ -25,4 +25,13 @@ interface IDependencyResolver
      * @throws ResolutionException Thrown if there was an error resolving the interface
      */
     public function resolve(string $interface): object;
+
+    /**
+     * Tries to resolve an instance of the interface
+     *
+     * @param string $interface The interface to resolve
+     * @param object|null $instance The resolved instance if successful
+     * @return bool True if the binding was successful, otherwise false
+     */
+    public function tryResolve(string $interface, &$instance): bool;
 }
