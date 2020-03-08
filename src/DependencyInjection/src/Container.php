@@ -222,13 +222,15 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function tryResolve(string $interface, &$instance): bool
+    public function tryResolve(string $interface, ?object &$instance): bool
     {
         try {
             $instance = $this->resolve($interface);
 
             return true;
         } catch (ResolutionException $ex) {
+            $instance = null;
+
             return false;
         }
     }

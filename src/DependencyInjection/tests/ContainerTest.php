@@ -664,6 +664,13 @@ class ContainerTest extends TestCase
         $this->assertSame($expectedInstance, $instance);
     }
 
+    public function testTryResolvingSetsInstanceToNullOnFailure(): void
+    {
+        $instance = $this;
+        $this->assertFalse($this->container->tryResolve(IFoo::class, $instance));
+        $this->assertNull($instance);
+    }
+
     public function testUnbindingFactory(): void
     {
         $this->container->bindFactory(BaseClass::class, function () {
