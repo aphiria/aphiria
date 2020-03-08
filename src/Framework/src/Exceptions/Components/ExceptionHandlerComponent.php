@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Exceptions\Components;
 
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IComponent;
-use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Exceptions\Middleware\ExceptionHandler;
@@ -27,8 +27,8 @@ use Closure;
  */
 class ExceptionHandlerComponent implements IComponent
 {
-    /** @var IDependencyResolver The dependency resolver */
-    private IDependencyResolver $dependencyResolver;
+    /** @var IServiceResolver The service resolver */
+    private IServiceResolver $serviceResolver;
     /** @var IApplicationBuilder The application builder */
     private IApplicationBuilder $appBuilder;
     /** @var bool Whether or not to use the exception handler middleware */
@@ -39,12 +39,12 @@ class ExceptionHandlerComponent implements IComponent
     private array $logLevelFactories = [];
 
     /**
-     * @param IDependencyResolver $dependencyResolver The dependency resolver
+     * @param IServiceResolver $serviceResolver The service resolver
      * @param IApplicationBuilder $appBuilder The application builder
      */
-    public function __construct(IDependencyResolver $dependencyResolver, IApplicationBuilder $appBuilder)
+    public function __construct(IServiceResolver $serviceResolver, IApplicationBuilder $appBuilder)
     {
-        $this->dependencyResolver = $dependencyResolver;
+        $this->serviceResolver = $serviceResolver;
         $this->appBuilder = $appBuilder;
     }
 
@@ -58,8 +58,8 @@ class ExceptionHandlerComponent implements IComponent
                 ->withGlobalMiddleware(new MiddlewareBinding(ExceptionHandler::class), 0);
         }
 
-        $exceptionResponseFactories = $this->dependencyResolver->resolve(ExceptionResponseFactoryRegistry::class);
-        $logLevelFactories = $this->dependencyResolver->resolve(ExceptionLogLevelFactoryRegistry::class);
+        $exceptionResponseFactories = $this->serviceResolver->resolve(ExceptionResponseFactoryRegistry::class);
+        $logLevelFactories = $this->serviceResolver->resolve(ExceptionLogLevelFactoryRegistry::class);
 
         $exceptionResponseFactories->registerManyFactories($this->exceptionResponseFactories);
         $logLevelFactories->registerManyFactories($this->logLevelFactories);

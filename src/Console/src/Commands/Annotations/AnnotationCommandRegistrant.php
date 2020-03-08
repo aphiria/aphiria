@@ -19,7 +19,7 @@ use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Commands\ICommandRegistrant;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\Option;
-use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
 use Doctrine\Annotations\AnnotationReader;
@@ -34,8 +34,8 @@ final class AnnotationCommandRegistrant implements ICommandRegistrant
 {
     /** @var string[] The paths to check for commands */
     private array $paths;
-    /** @var IDependencyResolver The resolver for command handlers */
-    private IDependencyResolver $commandHandlerResolver;
+    /** @var IServiceResolver The resolver for command handlers */
+    private IServiceResolver $commandHandlerResolver;
     /** @var ITypeFinder The type finder */
     private ITypeFinder $typeFinder;
     /** @var Reader The annotation reader */
@@ -43,13 +43,13 @@ final class AnnotationCommandRegistrant implements ICommandRegistrant
 
     /**
      * @param string|string[] $paths The path or paths to check for commands
-     * @param IDependencyResolver $commandHandlerResolver The resolver for command handlers
+     * @param IServiceResolver $commandHandlerResolver The resolver for command handlers
      * @param Reader|null $annotationReader The annotation reader
      * @param ITypeFinder|null $typeFinder The type finder
      */
     public function __construct(
         $paths,
-        IDependencyResolver $commandHandlerResolver,
+        IServiceResolver $commandHandlerResolver,
         Reader $annotationReader = null,
         ITypeFinder $typeFinder = null
     ) {

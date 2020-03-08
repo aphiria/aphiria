@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Middleware\Components;
 
-use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
 use Aphiria\Middleware\AttributeMiddleware;
 use Aphiria\Middleware\IMiddleware;
@@ -30,13 +30,13 @@ use PHPUnit\Framework\TestCase;
 class MiddlewareComponentTest extends TestCase
 {
     private MiddlewareComponent $middlewareComponent;
-    /** @var IDependencyResolver|MockObject  */
-    private IDependencyResolver $dependencyResolver;
+    /** @var IServiceResolver|MockObject  */
+    private IServiceResolver $dependencyResolver;
 
     protected function setUp(): void
     {
         // Using a real container to simplify testing
-        $this->dependencyResolver = $this->createMock(IDependencyResolver::class);
+        $this->dependencyResolver = $this->createMock(IServiceResolver::class);
         $this->middlewareComponent = new MiddlewareComponent($this->dependencyResolver);
     }
 

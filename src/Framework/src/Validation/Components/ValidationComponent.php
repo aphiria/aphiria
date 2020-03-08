@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Validation\Components;
 
 use Aphiria\Application\IComponent;
-use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Validation\Builders\ObjectConstraintsBuilderRegistrant;
 use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
@@ -26,17 +26,17 @@ use RuntimeException;
  */
 class ValidationComponent implements IComponent
 {
-    /** @var IDependencyResolver The dependency resolver */
-    private IDependencyResolver $dependencyResolver;
+    /** @var IServiceResolver The dependency resolver */
+    private IServiceResolver $dependencyResolver;
     /** @var bool Whether or not annotations are enabled */
     private bool $annotationsEnabled = false;
     /** @var Closure[] The list of callbacks that can register object constraints */
     private array $callbacks = [];
 
     /**
-     * @param IDependencyResolver $dependencyResolver The dependency resolver
+     * @param IServiceResolver $dependencyResolver The dependency resolver
      */
-    public function __construct(IDependencyResolver $dependencyResolver)
+    public function __construct(IServiceResolver $dependencyResolver)
     {
         $this->dependencyResolver = $dependencyResolver;
     }

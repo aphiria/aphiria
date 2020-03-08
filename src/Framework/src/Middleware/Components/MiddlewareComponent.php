@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Middleware\Components;
 
 use Aphiria\Application\IComponent;
-use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Middleware\AttributeMiddleware;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareBinding;
@@ -25,15 +25,15 @@ use InvalidArgumentException;
  */
 class MiddlewareComponent implements IComponent
 {
-    /** @var IDependencyResolver The dependency resolver */
-    private IDependencyResolver $dependencyResolver;
+    /** @var IServiceResolver The dependency resolver */
+    private IServiceResolver $dependencyResolver;
     /** @var MiddlewareBinding[] The list of middleware bindings */
     private array $middleware = [];
 
     /**
-     * @param IDependencyResolver $dependencyResolver The dependency resolver
+     * @param IServiceResolver $dependencyResolver The dependency resolver
      */
-    public function __construct(IDependencyResolver $dependencyResolver)
+    public function __construct(IServiceResolver $dependencyResolver)
     {
         $this->dependencyResolver = $dependencyResolver;
     }

@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\DependencyInjection;
 
 /**
- * Defines the interface for dependency resolvers to implement
+ * Defines the interface for service resolvers to implement
  */
-interface IDependencyResolver
+interface IServiceResolver
 {
     /**
      * Resolve an instance of the interface

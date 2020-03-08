@@ -18,7 +18,7 @@ use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\DependencyInjection\Container;
-use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Framework\Console\Components\CommandComponent;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -62,7 +62,7 @@ class CommandComponentTest extends TestCase
 
     public function testInitializeWithAnnotationsAddsAnnotationRegistrant(): void
     {
-        $annotationCommandRegistrant = new AnnotationCommandRegistrant(__DIR__, $this->createMock(IDependencyResolver::class));
+        $annotationCommandRegistrant = new AnnotationCommandRegistrant(__DIR__, $this->createMock(IServiceResolver::class));
         $this->container->bindInstance(AnnotationCommandRegistrant::class, $annotationCommandRegistrant);
         $this->commandComponent->withAnnotations();
         $this->commandComponent->initialize();

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Serialization\Components;
 
 use Aphiria\Application\IComponent;
-use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\Serialization\Encoding\IEncoder;
 
@@ -22,15 +22,15 @@ use Aphiria\Serialization\Encoding\IEncoder;
  */
 class SerializerComponent implements IComponent
 {
-    /** @var IDependencyResolver The dependency resolver */
-    private IDependencyResolver $dependencyResolver;
+    /** @var IServiceResolver The dependency resolver */
+    private IServiceResolver $dependencyResolver;
     /** @var IEncoder[] The mapping of class names to their encoders */
     private array $encoders = [];
 
     /**
-     * @param IDependencyResolver $dependencyResolver The dependency resolver
+     * @param IServiceResolver $dependencyResolver The dependency resolver
      */
-    public function __construct(IDependencyResolver $dependencyResolver)
+    public function __construct(IServiceResolver $dependencyResolver)
     {
         $this->dependencyResolver = $dependencyResolver;
     }

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Serialization\Components;
 
-use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Framework\Serialization\Components\SerializerComponent;
 use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\Serialization\Encoding\IEncoder;
@@ -28,7 +28,7 @@ class SerializerComponentTest extends TestCase
     protected function setUp(): void
     {
         $this->encoders = new EncoderRegistry();
-        $dependencyResolver = $this->createMock(IDependencyResolver::class);
+        $dependencyResolver = $this->createMock(IServiceResolver::class);
         $dependencyResolver->expects($this->once())
             ->method('resolve')
             ->with(EncoderRegistry::class)

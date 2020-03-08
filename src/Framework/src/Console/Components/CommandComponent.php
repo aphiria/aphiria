@@ -17,7 +17,7 @@ use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
 use Aphiria\Console\Commands\ClosureCommandRegistrant;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\IServiceResolver;
 use Closure;
 use RuntimeException;
 
@@ -26,17 +26,17 @@ use RuntimeException;
  */
 class CommandComponent implements IComponent
 {
-    /** @var IDependencyResolver The dependency resolver */
-    private IDependencyResolver $dependencyResolver;
+    /** @var IServiceResolver The dependency resolver */
+    private IServiceResolver $dependencyResolver;
     /** @var Closure[] The list of callbacks that can register commands */
     private array $callbacks = [];
     /** @var bool Whether or not annotations are enabled */
     private bool $annotationsEnabled = false;
 
     /**
-     * @param IDependencyResolver $dependencyResolver The dependency resolver
+     * @param IServiceResolver $dependencyResolver The dependency resolver
      */
-    public function __construct(IDependencyResolver $dependencyResolver)
+    public function __construct(IServiceResolver $dependencyResolver)
     {
         $this->dependencyResolver = $dependencyResolver;
     }

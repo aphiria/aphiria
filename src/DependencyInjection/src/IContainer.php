@@ -15,7 +15,7 @@ namespace Aphiria\DependencyInjection;
 /**
  * Defines the interface for dependency injection containers to implement
  */
-interface IContainer extends IDependencyResolver
+interface IContainer extends IServiceResolver
 {
     /**
      * Binds a factory that will return a concrete instance of the interface

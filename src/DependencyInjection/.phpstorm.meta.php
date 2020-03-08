@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace PHPSTORM_META;
 
-use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\IServiceResolver;
 
 // Make the dependency resolver return the same type as the input parameter
-override(IDependencyResolver::resolve(), type(0));
+override(IServiceResolver::resolve(), type(0));
