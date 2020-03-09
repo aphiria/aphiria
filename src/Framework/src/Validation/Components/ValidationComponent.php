@@ -44,7 +44,7 @@ class ValidationComponent implements IComponent
     /**
      * @inheritdoc
      */
-    public function initialize(): void
+    public function build(): void
     {
         $objectConstraintsRegistrants = $this->dependencyResolver->resolve(ObjectConstraintsRegistrantCollection::class);
 

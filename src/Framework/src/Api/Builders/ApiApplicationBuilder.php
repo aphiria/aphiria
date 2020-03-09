@@ -48,7 +48,7 @@ final class ApiApplicationBuilder extends ApplicationBuilder
     public function build(): IRequestHandler
     {
         $this->buildModules();
-        $this->initializeComponents();
+        $this->buildComponents();
 
         /** @var IRequestHandler $router */
         $router = null;

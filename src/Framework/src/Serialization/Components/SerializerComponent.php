@@ -38,7 +38,7 @@ class SerializerComponent implements IComponent
     /**
      * @inheritdoc
      */
-    public function initialize(): void
+    public function build(): void
     {
         $encoders = $this->dependencyResolver->resolve(EncoderRegistry::class);
 

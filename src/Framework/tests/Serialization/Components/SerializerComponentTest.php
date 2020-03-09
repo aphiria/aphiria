@@ -36,11 +36,11 @@ class SerializerComponentTest extends TestCase
         $this->serializerComponent = new SerializerComponent($dependencyResolver);
     }
 
-    public function testInitializeWithEncoderRegistersEncoder(): void
+    public function testBuildWithEncoderRegistersEncoder(): void
     {
         $expectedEncoder = $this->createMock(IEncoder::class);
         $this->serializerComponent->withEncoder('foo', $expectedEncoder);
-        $this->serializerComponent->initialize();
+        $this->serializerComponent->build();
         $this->assertEquals($expectedEncoder, $this->encoders->getEncoderForType('foo'));
     }
 }

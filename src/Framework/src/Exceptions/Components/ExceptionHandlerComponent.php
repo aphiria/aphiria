@@ -51,7 +51,7 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * @inheritdoc
      */
-    public function initialize(): void
+    public function build(): void
     {
         if ($this->exceptionHandlerMiddlewareEnabled) {
             $this->appBuilder->getComponent(MiddlewareComponent::class)

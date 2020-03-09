@@ -48,7 +48,7 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
     public function build(): ICommandBus
     {
         $this->buildModules();
-        $this->initializeComponents();
+        $this->buildComponents();
 
         try {
             $consoleApp = new App($this->container->resolve(CommandRegistry::class));

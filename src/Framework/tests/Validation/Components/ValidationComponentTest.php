@@ -46,32 +46,32 @@ class ValidationComponentTest extends TestCase
         $this->validationComponent = new ValidationComponent($this->container);
     }
 
-    public function testInitializeRegistersObjectConstraintsRegisteredInCallbacks(): void
+    public function testBuildRegistersObjectConstraintsRegisteredInCallbacks(): void
     {
         $this->validationComponent->withObjectConstraints(
             fn (ObjectConstraintsRegistryBuilder $objectConstraintsBuilders) => $objectConstraintsBuilders->class('foo')->hasMethodConstraints('bar', new RequiredConstraint())
         );
-        $this->validationComponent->initialize();
+        $this->validationComponent->build();
         $this->assertInstanceOf(RequiredConstraint::class, $this->objectConstraints->getConstraintsForClass('foo')->getMethodConstraints('bar')[0]);
     }
 
-    public function testInitializeWithAnnotationsAddsAnnotationRegistrant(): void
+    public function testBuildWithAnnotationsAddsAnnotationRegistrant(): void
     {
         $annotationObjectConstraintsRegistrant = new AnnotationObjectConstraintsRegistrant(__DIR__);
         $this->container->bindInstance(AnnotationObjectConstraintsRegistrant::class, $annotationObjectConstraintsRegistrant);
         $this->validationComponent->withAnnotations();
-        $this->validationComponent->initialize();
+        $this->validationComponent->build();
         // The first should be the annotation registrant, and the second the manually-registered constraint registrant
         $this->assertCount(2, $this->objectConstraintsRegistrants->getAll());
         // Make sure the annotation registrant is first
         $this->assertEquals($annotationObjectConstraintsRegistrant, $this->objectConstraintsRegistrants->getAll()[0]);
     }
 
-    public function testInitializeWithAnnotationsWithoutAnnotationRegistrantThrowsException(): void
+    public function testBuildWithAnnotationsWithoutAnnotationRegistrantThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(AnnotationObjectConstraintsRegistrant::class . ' cannot be null if using annotations');
         $this->validationComponent->withAnnotations();
-        $this->validationComponent->initialize();
+        $this->validationComponent->build();
     }
 }

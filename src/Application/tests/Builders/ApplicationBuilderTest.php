@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Application\Tests\Builders;
 
 use Aphiria\Application\Builders\ApplicationBuilder;
-use Aphiria\Application\Builders\IModuleBuilder;
+use Aphiria\Application\IModule;
 use Aphiria\Application\IComponent;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
@@ -37,7 +37,7 @@ class ApplicationBuilderTest extends TestCase
             public function build(): object
             {
                 $this->buildModules();
-                $this->initializeComponents();
+                $this->buildComponents();
 
                 return $this;
             }
@@ -60,7 +60,7 @@ class ApplicationBuilderTest extends TestCase
                 $this->builtComponentsBuilders = &$builtComponentBuilders;
             }
 
-            public function initialize(): void
+            public function build(): void
             {
                 $this->builtComponentsBuilders[] = $this;
             }
@@ -74,7 +74,7 @@ class ApplicationBuilderTest extends TestCase
                 $this->builtComponentsBuilders = &$builtComponentBuilders;
             }
 
-            public function initialize(): void
+            public function build(): void
             {
                 $this->builtComponentsBuilders[] = $this;
             }
@@ -89,18 +89,18 @@ class ApplicationBuilderTest extends TestCase
     {
         $component = $this->createMock(IComponent::class);
         $component->expects($this->once())
-            ->method('initialize');
+            ->method('build');
         $this->appBuilder->withComponent($component);
         $this->appBuilder->build();
     }
 
     public function testModulesAreBuiltOnBuild(): void
     {
-        $moduleBuilder = $this->createMock(IModuleBuilder::class);
-        $moduleBuilder->expects($this->once())
+        $module = $this->createMock(IModule::class);
+        $module->expects($this->once())
             ->method('build')
             ->with($this->appBuilder);
-        $this->appBuilder->withModuleBuilder($moduleBuilder);
+        $this->appBuilder->withModule($module);
         $this->appBuilder->build();
     }
 

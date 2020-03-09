@@ -41,7 +41,7 @@ class MiddlewareComponent implements IComponent
     /**
      * @inheritdoc
      */
-    public function initialize(): void
+    public function build(): void
     {
         $middlewareCollection = $this->dependencyResolver->resolve(MiddlewareCollection::class);
 

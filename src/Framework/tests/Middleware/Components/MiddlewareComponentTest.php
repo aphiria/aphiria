@@ -67,7 +67,7 @@ class MiddlewareComponentTest extends TestCase
             ->with('foo')
             ->willReturn($expectedMiddleware);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('foo', ['bar' => 'baz']));
-        $this->middlewareComponent->initialize();
+        $this->middlewareComponent->build();
         $this->assertEquals([$expectedMiddleware], $middlewareCollection->getAll());
     }
 
@@ -81,7 +81,7 @@ class MiddlewareComponentTest extends TestCase
             ->with('foo')
             ->willReturn($invalidMiddleware);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('foo'));
-        $this->middlewareComponent->initialize();
+        $this->middlewareComponent->build();
     }
 
     public function testWithGlobalMiddlewareAppendsItToCollectionToBeResolved(): void
@@ -103,7 +103,7 @@ class MiddlewareComponentTest extends TestCase
             ->willReturn($expectedMiddleware2);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('foo'));
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('bar'));
-        $this->middlewareComponent->initialize();
+        $this->middlewareComponent->build();
         $this->assertEquals([$expectedMiddleware1, $expectedMiddleware2], $middlewareCollection->getAll());
     }
 
@@ -125,7 +125,7 @@ class MiddlewareComponentTest extends TestCase
             ->with('bar')
             ->willReturn($expectedMiddleware2);
         $this->middlewareComponent->withGlobalMiddleware([new MiddlewareBinding('foo'), new MiddlewareBinding('bar')]);
-        $this->middlewareComponent->initialize();
+        $this->middlewareComponent->build();
         $this->assertEquals([$expectedMiddleware1, $expectedMiddleware2], $middlewareCollection->getAll());
     }
 
@@ -142,7 +142,7 @@ class MiddlewareComponentTest extends TestCase
             ->with('foo')
             ->willReturn($expectedMiddleware);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('foo'));
-        $this->middlewareComponent->initialize();
+        $this->middlewareComponent->build();
         $this->assertEquals([$expectedMiddleware], $middlewareCollection->getAll());
     }
 }

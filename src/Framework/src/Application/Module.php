@@ -10,14 +10,15 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Application\Builders;
+namespace Aphiria\Framework\Application;
 
-use Aphiria\Application\Builders\IModuleBuilder;
+use Aphiria\Application\IModule;
+use Aphiria\Framework\Application\Builders\AphiriaComponentBuilder;
 
 /**
- * Defines a base module builder that can build Aphiria components
+ * Defines a base module that can build Aphiria components
  */
-abstract class ModuleBuilder implements IModuleBuilder
+abstract class Module implements IModule
 {
     /** @var AphiriaComponentBuilder The Aphiria component builder */
     protected AphiriaComponentBuilder $aphiriaComponentBuilder;

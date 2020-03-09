@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Application\Builders;
 
 use Aphiria\Application\IComponent;
+use Aphiria\Application\IModule;
 use OutOfBoundsException;
 use RuntimeException;
 
@@ -56,10 +57,10 @@ interface IApplicationBuilder
     public function withComponent(IComponent $component, int $priority = null): self;
 
     /**
-     * Adds an entire module builder to the application
+     * Adds an entire module to the application
      *
-     * @param IModuleBuilder $moduleBuilder The module builder to register
+     * @param IModule $module The module to register
      * @return self For chaining
      */
-    public function withModuleBuilder(IModuleBuilder $moduleBuilder): self;
+    public function withModule(IModule $module): self;
 }

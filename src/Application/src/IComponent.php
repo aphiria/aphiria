@@ -18,10 +18,9 @@ namespace Aphiria\Application;
 interface IComponent
 {
     /**
-     * Defines the hook for initializing the component
+     * Actually builds the component
      *
      * Note: This will occur once services are resolvable
-     * @internal
      */
-    public function initialize(): void;
+    public function build(): void;
 }

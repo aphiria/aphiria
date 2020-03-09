@@ -14,6 +14,7 @@ namespace Aphiria\Application\Builders;
 
 use Aphiria\Application\IBootstrapper;
 use Aphiria\Application\IComponent;
+use Aphiria\Application\IModule;
 use OutOfBoundsException;
 
 /**
@@ -23,9 +24,9 @@ abstract class ApplicationBuilder implements IApplicationBuilder
 {
     /** @var IBootstrapper[] The list of bootstrappers to run to bootstrap the application */
     private array $bootstrappers;
-    /** @var IModuleBuilder[] The list of module builders */
-    private array $moduleBuilders = [];
-    /** @var IComponent[] The mapping of prioritized component names to builders */
+    /** @var IModule[] The list of modules */
+    private array $modules = [];
+    /** @var IComponent[] The mapping of prioritized component names to components */
     private array $componentsByType = [];
     /** @var array The list of structs that contain component types and priorities */
     private array $componentTypesAndPriorities = [];
@@ -73,9 +74,9 @@ abstract class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function withModuleBuilder(IModuleBuilder $moduleBuilder): IApplicationBuilder
+    public function withModule(IModule $module): IApplicationBuilder
     {
-        $this->moduleBuilders[] = $moduleBuilder;
+        $this->modules[] = $module;
 
         return $this;
     }
@@ -95,20 +96,20 @@ abstract class ApplicationBuilder implements IApplicationBuilder
      */
     protected function buildModules(): void
     {
-        foreach ($this->moduleBuilders as $moduleBuilder) {
+        foreach ($this->modules as $moduleBuilder) {
             $moduleBuilder->build($this);
         }
     }
 
     /**
-     * Initializes all the registered components
+     * Builds all the registered components
      */
-    protected function initializeComponents(): void
+    protected function buildComponents(): void
     {
         \usort($this->componentTypesAndPriorities, fn ($a, $b) => $a['priority'] <=> $b['priority']);
 
         foreach ($this->componentTypesAndPriorities as $typeAndPriority) {
-            $this->componentsByType[$typeAndPriority['type']]->initialize();
+            $this->componentsByType[$typeAndPriority['type']]->build();
         }
     }
 }

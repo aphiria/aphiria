@@ -33,7 +33,7 @@ class BinderComponentTest extends TestCase
         $this->binderComponent = new BinderComponent($this->binderDispatcher);
     }
 
-    public function testInitializeWithBindersAppendsToListOfBindersToBeDispatched(): void
+    public function testBuildWithBindersAppendsToListOfBindersToBeDispatched(): void
     {
         $binder1 = new class() extends Binder
         {
@@ -54,10 +54,10 @@ class BinderComponentTest extends TestCase
             ->with([$binder1, $binder2]);
         $this->binderComponent->withBinders($binder1);
         $this->binderComponent->withBinders($binder2);
-        $this->binderComponent->initialize();
+        $this->binderComponent->build();
     }
 
-    public function testInitializeWithBindersWithMultipleBinderAddsThemToBindersToBeDispatched(): void
+    public function testBuildWithBindersWithMultipleBinderAddsThemToBindersToBeDispatched(): void
     {
         $binder1 = new class() extends Binder
         {
@@ -77,10 +77,10 @@ class BinderComponentTest extends TestCase
             ->method('dispatch')
             ->with([$binder1, $binder2]);
         $this->binderComponent->withBinders([$binder1, $binder2]);
-        $this->binderComponent->initialize();
+        $this->binderComponent->build();
     }
 
-    public function testInitializeWithBindersWithSingleBinderAddsItToBindersToBeDispatched(): void
+    public function testBuildWithBindersWithSingleBinderAddsItToBindersToBeDispatched(): void
     {
         $binder = new class() extends Binder
         {
@@ -93,6 +93,6 @@ class BinderComponentTest extends TestCase
             ->method('dispatch')
             ->with([$binder]);
         $this->binderComponent->withBinders($binder);
-        $this->binderComponent->initialize();
+        $this->binderComponent->build();
     }
 }

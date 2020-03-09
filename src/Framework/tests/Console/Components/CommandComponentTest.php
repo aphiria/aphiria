@@ -49,34 +49,34 @@ class CommandComponentTest extends TestCase
         });
     }
 
-    public function testInitializeRegistersCommandsRegisteredInCallbacks(): void
+    public function testBuildRegistersCommandsRegisteredInCallbacks(): void
     {
         $expectedCommand = new Command('foo');
         $expectedCommandHandlerFactory = fn () => $this->createMock(ICommandHandler::class);
         $this->commandComponent->withCommands(fn (CommandRegistry $commands) => $commands->registerCommand($expectedCommand, $expectedCommandHandlerFactory));
-        $this->commandComponent->initialize();
+        $this->commandComponent->build();
         $this->assertCount(1, $this->commands->getAllCommandBindings());
         $this->assertSame($expectedCommand, $this->commands->getAllCommandBindings()[0]->command);
         $this->assertSame($expectedCommandHandlerFactory, $this->commands->getAllCommandBindings()[0]->commandHandlerFactory);
     }
 
-    public function testInitializeWithAnnotationsAddsAnnotationRegistrant(): void
+    public function testBuildWithAnnotationsAddsAnnotationRegistrant(): void
     {
         $annotationCommandRegistrant = new AnnotationCommandRegistrant(__DIR__, $this->createMock(IServiceResolver::class));
         $this->container->bindInstance(AnnotationCommandRegistrant::class, $annotationCommandRegistrant);
         $this->commandComponent->withAnnotations();
-        $this->commandComponent->initialize();
+        $this->commandComponent->build();
         // We should have two - one for annotations and another for manually-registered commands
         $this->assertCount(2, $this->commandRegistrants->getAll());
         // Make sure that annotations are registered first
         $this->assertEquals($annotationCommandRegistrant, $this->commandRegistrants->getAll()[0]);
     }
 
-    public function testInitializeWithAnnotationsWithoutAnnotationRegistrantThrowsException(): void
+    public function testBuildWithAnnotationsWithoutAnnotationRegistrantThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(AnnotationCommandRegistrant::class . ' cannot be null if using annotations');
         $this->commandComponent->withAnnotations();
-        $this->commandComponent->initialize();
+        $this->commandComponent->build();
     }
 }

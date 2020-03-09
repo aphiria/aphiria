@@ -74,7 +74,7 @@ class ExceptionHandlerComponentTest extends TestCase
             ->with(MiddlewareComponent::class)
             ->willReturn($this->middlewareComponent);
         $this->exceptionHandlerComponent->withExceptionHandlerMiddleware();
-        $this->exceptionHandlerComponent->initialize();
+        $this->exceptionHandlerComponent->build();
         $this->assertEquals([new MiddlewareBinding(ExceptionHandler::class)], $this->middlewareComponent->getMiddleware());
     }
 
@@ -82,7 +82,7 @@ class ExceptionHandlerComponentTest extends TestCase
     {
         $factory = fn (Exception $ex) => LogLevel::ALERT;
         $this->exceptionHandlerComponent->withLogLevelFactory(Exception::class, $factory);
-        $this->exceptionHandlerComponent->initialize();
+        $this->exceptionHandlerComponent->build();
         $this->assertSame($factory, $this->exceptionLogLevelFactories->getFactory(Exception::class));
     }
 
@@ -90,7 +90,7 @@ class ExceptionHandlerComponentTest extends TestCase
     {
         $factory = fn (Exception $ex) => $this->createMock(IHttpResponseMessage::class);
         $this->exceptionHandlerComponent->withResponseFactory(Exception::class, $factory);
-        $this->exceptionHandlerComponent->initialize();
+        $this->exceptionHandlerComponent->build();
         $this->assertSame($factory, $this->exceptionResponseFactories->getFactory(Exception::class));
     }
 }

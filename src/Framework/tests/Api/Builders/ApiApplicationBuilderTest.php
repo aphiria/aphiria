@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Tests\Api\Builders;
 
 use Aphiria\Api\App;
 use Aphiria\Application\Builders\IApplicationBuilder;
-use Aphiria\Application\Builders\IModuleBuilder;
+use Aphiria\Application\IModule;
 use Aphiria\Application\IBootstrapper;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\Container;
@@ -67,7 +67,7 @@ class ApiApplicationBuilderTest extends TestCase
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void
     {
         $builtParts = [];
-        $moduleBuilder = new class($builtParts) implements IModuleBuilder
+        $moduleBuilder = new class($builtParts) implements IModule
         {
             private array $builtParts;
 
@@ -90,14 +90,14 @@ class ApiApplicationBuilderTest extends TestCase
                 $this->builtParts = &$builtParts;
             }
 
-            public function initialize(): void
+            public function build(): void
             {
                 $this->builtParts[] = \get_class($this);
             }
         };
         // Purposely registering out of order to ensure that order does not matter
         $this->appBuilder->withComponent($component);
-        $this->appBuilder->withModuleBuilder($moduleBuilder);
+        $this->appBuilder->withModule($moduleBuilder);
         $this->container->for(App::class, function (IContainer $container) {
             $container->bindInstance(IRequestHandler::class, $this->createMock(IRequestHandler::class));
         });

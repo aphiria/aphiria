@@ -46,31 +46,31 @@ class RouterComponentTest extends TestCase
         $this->container->bindInstance(RouteRegistrantCollection::class, $this->routeRegistrants);
     }
 
-    public function testInitializeRegistersRoutesRegisteredInCallbacks(): void
+    public function testBuildRegistersRoutesRegisteredInCallbacks(): void
     {
         $this->routerComponent->withRoutes(fn (RouteBuilderRegistry $routeBuilders) => $routeBuilders->get('/foo')->toMethod('Foo', 'bar'));
-        $this->routerComponent->initialize();
+        $this->routerComponent->build();
         $this->assertCount(1, $this->routes->getAll());
         $this->assertEquals('/foo', $this->routes->getAll()[0]->uriTemplate->pathTemplate);
     }
 
-    public function testInitializeWithAnnotationsAddsAnnotationRegistrant(): void
+    public function testBuildWithAnnotationsAddsAnnotationRegistrant(): void
     {
         $annotationRouteRegistrant = new AnnotationRouteRegistrant(__DIR__);
         $this->container->bindInstance(AnnotationRouteRegistrant::class, $annotationRouteRegistrant);
         $this->routerComponent->withAnnotations();
-        $this->routerComponent->initialize();
+        $this->routerComponent->build();
         // The first should be the annotation registrant, and the second the manually-registered route registrant
         $this->assertCount(2, $this->routeRegistrants->getAll());
         // Make sure that the annotation registrant is registered first
         $this->assertEquals($annotationRouteRegistrant, $this->routeRegistrants->getAll()[0]);
     }
 
-    public function testInitializeWithAnnotationsWithoutAnnotationRegistrantThrowsException(): void
+    public function testBuildWithAnnotationsWithoutAnnotationRegistrantThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(AnnotationRouteRegistrant::class . ' cannot be null if using annotations');
         $this->routerComponent->withAnnotations();
-        $this->routerComponent->initialize();
+        $this->routerComponent->build();
     }
 }

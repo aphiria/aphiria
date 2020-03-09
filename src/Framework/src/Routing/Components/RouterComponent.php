@@ -46,7 +46,7 @@ class RouterComponent implements IComponent
     /**
      * @inheritdoc
      */
-    public function initialize(): void
+    public function build(): void
     {
         $routeRegistrants = $this->container->resolve(RouteRegistrantCollection::class);
 

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Console\Builders;
 
 use Aphiria\Application\Builders\IApplicationBuilder;
-use Aphiria\Application\Builders\IModuleBuilder;
+use Aphiria\Application\IModule;
 use Aphiria\Application\IBootstrapper;
 use Aphiria\Application\IComponent;
 use Aphiria\Console\Commands\ICommandBus;
@@ -54,7 +54,7 @@ class ConsoleApplicationBuilderTest extends TestCase
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void
     {
         $builtParts = [];
-        $moduleBuilder = new class($builtParts) implements IModuleBuilder
+        $moduleBuilder = new class($builtParts) implements IModule
         {
             private array $builtParts;
 
@@ -77,14 +77,14 @@ class ConsoleApplicationBuilderTest extends TestCase
                 $this->builtParts = &$builtParts;
             }
 
-            public function initialize(): void
+            public function build(): void
             {
                 $this->builtParts[] = \get_class($this);
             }
         };
         // Purposely registering out of order to ensure that order does not matter
         $this->appBuilder->withComponent($component);
-        $this->appBuilder->withModuleBuilder($moduleBuilder);
+        $this->appBuilder->withModule($moduleBuilder);
         $this->appBuilder->build();
         $this->assertEquals([\get_class($moduleBuilder), \get_class($component)], $builtParts);
     }

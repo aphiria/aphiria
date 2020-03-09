@@ -44,7 +44,7 @@ class CommandComponent implements IComponent
     /**
      * @inheritdoc
      */
-    public function initialize(): void
+    public function build(): void
     {
         $commands = $this->dependencyResolver->resolve(CommandRegistry::class);
         $commandRegistrants = $this->dependencyResolver->resolve(CommandRegistrantCollection::class);

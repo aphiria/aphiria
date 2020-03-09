@@ -37,7 +37,7 @@ class BinderComponent implements IComponent
     /**
      * @inheritdoc
      */
-    public function initialize(): void
+    public function build(): void
     {
         $this->binderDispatcher->dispatch($this->binders);
     }
