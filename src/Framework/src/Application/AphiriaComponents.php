@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Application\Builders;
+namespace Aphiria\Framework\Application;
 
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
@@ -31,9 +31,9 @@ use Aphiria\Serialization\Encoding\IEncoder;
 use Closure;
 
 /**
- * Defines a Aphiria component builder that gives a fluent syntax for enabling/configuring Aphiria components
+ * Defines the trait that simplifies interacting with Aphiria components
  */
-final class AphiriaComponentBuilder
+trait AphiriaComponents
 {
     /** @var IContainer The DI container */
     private IContainer $container;

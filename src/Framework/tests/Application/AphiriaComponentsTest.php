@@ -10,14 +10,14 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\Application\Builders;
+namespace Aphiria\Framework\Tests\Application;
 
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Framework\Application\Builders\AphiriaComponentBuilder;
+use Aphiria\Framework\Application\AphiriaComponents;
 use Aphiria\Framework\Console\Components\CommandComponent;
 use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
@@ -36,13 +36,13 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
 /**
- * Tests the Aphiria component builder
+ * Tests the Aphiria component trait
  */
-class AphiriaComponentBuilderTest extends TestCase
+class AphiriaComponentsTest extends TestCase
 {
     /** @var IApplicationBuilder|MockObject */
     private IApplicationBuilder $appBuilder;
-    private AphiriaComponentBuilder $componentBuilder;
+    private object $componentBuilder;
 
     protected function setUp(): void
     {
@@ -50,7 +50,10 @@ class AphiriaComponentBuilderTest extends TestCase
         $container->method('resolve')
             ->with(IBinderDispatcher::class)
             ->willReturn($this->createMock(IBinderDispatcher::class));
-        $this->componentBuilder = new AphiriaComponentBuilder($container);
+        $this->componentBuilder = new class($container)
+        {
+            use AphiriaComponents;
+        };
         $this->appBuilder = $this->createMock(IApplicationBuilder::class);
     }
 
