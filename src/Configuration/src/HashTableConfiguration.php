@@ -19,13 +19,17 @@ class HashTableConfiguration implements IConfiguration
 {
     /** @var array The hash table that backs the configuration */
     private array $hashTable;
+    /** @var string The delimiter to use for nested path segments */
+    private string $pathDelimiter;
 
     /**
      * @param array $hashTable The hash table that backs the configuration
+     * @param string $pathDelimiter The delimiter to use for nested path segments
      */
-    public function __construct(array $hashTable)
+    public function __construct(array $hashTable, string $pathDelimiter = '.')
     {
         $this->hashTable = $hashTable;
+        $this->pathDelimiter = $pathDelimiter;
     }
 
     /**
@@ -73,12 +77,12 @@ class HashTableConfiguration implements IConfiguration
      */
     public function getValue(string $path)
     {
-        $explodedPath = \explode('.', $path);
+        $explodedPath = \explode($this->pathDelimiter, $path);
         $value = $this->hashTable;
 
         foreach ($explodedPath as $i => $pathPart) {
             if (!isset($value[$pathPart])) {
-                $fullPathToThisPart = implode('.', \array_slice($explodedPath, 0, $i + 1));
+                $fullPathToThisPart = implode($this->pathDelimiter, \array_slice($explodedPath, 0, $i + 1));
 
                 throw new ConfigurationException("No configuration value at $fullPathToThisPart");
             }

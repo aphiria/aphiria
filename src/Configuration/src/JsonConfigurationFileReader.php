@@ -20,7 +20,7 @@ final class JsonConfigurationFileReader implements IConfigurationFileReader
     /**
      * @inheritdoc
      */
-    public function readConfiguration($path): HashTableConfiguration
+    public function readConfiguration($path, string $pathDelimiter = '.'): HashTableConfiguration
     {
         if (!\file_exists($path)) {
             throw new ConfigurationException("$path does not exist");
@@ -32,6 +32,6 @@ final class JsonConfigurationFileReader implements IConfigurationFileReader
             throw new ConfigurationException("Invalid JSON in $path", 0, $ex);
         }
 
-        return new HashTableConfiguration($decodedJson);
+        return new HashTableConfiguration($decodedJson, $pathDelimiter);
     }
 }

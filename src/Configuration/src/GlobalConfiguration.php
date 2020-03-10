@@ -42,7 +42,7 @@ class GlobalConfiguration
      */
     public static function getArray(string $path): array
     {
-        self::validateInstanceSet();
+        self::validateConfigurationSources();
 
         $value = null;
 
@@ -65,7 +65,7 @@ class GlobalConfiguration
      */
     public static function getBool(string $path): bool
     {
-        self::validateInstanceSet();
+        self::validateConfigurationSources();
 
         $value = null;
 
@@ -88,7 +88,7 @@ class GlobalConfiguration
      */
     public static function getFloat(string $path): float
     {
-        self::validateInstanceSet();
+        self::validateConfigurationSources();
 
         $value = null;
 
@@ -111,7 +111,7 @@ class GlobalConfiguration
      */
     public static function getInt(string $path): int
     {
-        self::validateInstanceSet();
+        self::validateConfigurationSources();
 
         $value = null;
 
@@ -134,7 +134,7 @@ class GlobalConfiguration
      */
     public static function getString(string $path): string
     {
-        self::validateInstanceSet();
+        self::validateConfigurationSources();
 
         $value = null;
 
@@ -157,7 +157,7 @@ class GlobalConfiguration
      */
     public static function getValue(string $path)
     {
-        self::validateInstanceSet();
+        self::validateConfigurationSources();
 
         $value = null;
 
@@ -189,7 +189,7 @@ class GlobalConfiguration
      */
     public static function tryGetArray(string $path, ?array &$value): bool
     {
-        self::validateInstanceSet();
+        self::validateConfigurationSources();
 
         try {
             $value = self::getArray($path);
@@ -211,7 +211,7 @@ class GlobalConfiguration
      */
     public static function tryGetBool(string $path, ?bool &$value): bool
     {
-        self::validateInstanceSet();
+        self::validateConfigurationSources();
 
         try {
             $value = self::getBool($path);
@@ -233,7 +233,7 @@ class GlobalConfiguration
      */
     public static function tryGetFloat(string $path, ?float &$value): bool
     {
-        self::validateInstanceSet();
+        self::validateConfigurationSources();
 
         try {
             $value = self::getFloat($path);
@@ -255,7 +255,7 @@ class GlobalConfiguration
      */
     public static function tryGetInt(string $path, ?int &$value): bool
     {
-        self::validateInstanceSet();
+        self::validateConfigurationSources();
 
         try {
             $value = self::getInt($path);
@@ -277,7 +277,7 @@ class GlobalConfiguration
      */
     public static function tryGetString(string $path, ?string &$value): bool
     {
-        self::validateInstanceSet();
+        self::validateConfigurationSources();
 
         try {
             $value = self::getString($path);
@@ -299,7 +299,7 @@ class GlobalConfiguration
      */
     public static function tryGetValue(string $path, &$value): bool
     {
-        self::validateInstanceSet();
+        self::validateConfigurationSources();
 
         try {
             $value = self::getValue($path);
@@ -324,11 +324,11 @@ class GlobalConfiguration
     }
 
     /**
-     * Validates that an instance is set
+     * Validates that the configuration sources are set
      *
-     * @throws RuntimeException Thrown if no instance was set
+     * @throws RuntimeException Thrown if no configuration sources were set
      */
-    private static function validateInstanceSet(): void
+    private static function validateConfigurationSources(): void
     {
         if (count(self::$configurationSources) === 0) {
             throw new RuntimeException('No source configurations set');

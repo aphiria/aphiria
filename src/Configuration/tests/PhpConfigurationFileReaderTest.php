@@ -34,6 +34,12 @@ class PhpConfigurationFileReaderTest extends TestCase
         $this->assertEquals('bar', $configuration->getString('foo'));
     }
 
+    public function testReadingConfigurationWithCustomDelimiterAllowsAccessWithThatDelimiter(): void
+    {
+        $configuration = $this->reader->readConfiguration(__DIR__ . '/Mocks/configuration-delimiter.php', ':');
+        $this->assertEquals('baz', $configuration->getString('foo:bar'));
+    }
+
     public function testReadingInvalidPhpThrowsException(): void
     {
         $path = __DIR__ . '/Mocks/invalid-configuration.json';

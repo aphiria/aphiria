@@ -28,6 +28,14 @@ class GlobalConfigurationTest extends TestCase
         GlobalConfiguration::resetConfigurationSources();
     }
 
+    public function testAddingMultipleConfigurationSourcesMakesAllValuesReadable(): void
+    {
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['baz' => 'blah']));
+        $this->assertEquals('bar', GlobalConfiguration::getValue('foo'));
+        $this->assertEquals('blah', GlobalConfiguration::getValue('baz'));
+    }
+
     public function testGetArrayForNestedValueReturnsArray(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => ['bar' => [1, 2]]]));
@@ -86,6 +94,13 @@ class GlobalConfigurationTest extends TestCase
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
         $this->assertEquals('bar', GlobalConfiguration::getString('foo'));
+    }
+
+    public function testGetValueFallsBackToAnotherSourceIfTheFirstOneDoesNotHaveIt(): void
+    {
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['baz' => 'blah']));
+        $this->assertEquals('blah', GlobalConfiguration::getValue('baz'));
     }
 
     public function testGetValueForNestedPathReturnsValue(): void

@@ -82,6 +82,15 @@ class GlobalConfigurationBuilderTest extends TestCase
         $this->builder->withJsonFileConfigurationSource('/doesnotexist');
     }
 
+    public function testWithJsonFileWithCustomDelimiterIsRespected(): void
+    {
+        $this->assertSame($this->builder,
+            $this->builder->withJsonFileConfigurationSource(__DIR__ . '/Mocks/configuration-delimiter.json', ':')
+        );
+        $this->builder->build();
+        $this->assertEquals('baz', GlobalConfiguration::getString('foo:bar'));
+    }
+
     public function testWithPhpFileAddsConfigurationSourceFromContentsOfPhpFile(): void
     {
         $this->assertSame(
@@ -105,5 +114,14 @@ class GlobalConfigurationBuilderTest extends TestCase
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('/doesnotexist does not exist');
         $this->builder->withPhpFileConfigurationSource('/doesnotexist');
+    }
+
+    public function testWithPhpFileWithCustomDelimiterIsRespected(): void
+    {
+        $this->assertSame($this->builder,
+            $this->builder->withPhpFileConfigurationSource(__DIR__ . '/Mocks/configuration-delimiter.php', ':')
+        );
+        $this->builder->build();
+        $this->assertEquals('baz', GlobalConfiguration::getString('foo:bar'));
     }
 }

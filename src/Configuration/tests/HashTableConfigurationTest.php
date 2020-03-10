@@ -17,9 +17,9 @@ use Aphiria\Configuration\ConfigurationException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the array configuration
+ * Tests the hash table configuration
  */
-class ArrayConfigurationTest extends TestCase
+class HashTableConfigurationTest extends TestCase
 {
     public function testGetArrayForNestedValueReturnsArray(): void
     {
@@ -101,6 +101,13 @@ class ArrayConfigurationTest extends TestCase
         $this->expectExceptionMessage('No configuration value at baz');
         $configuration = new HashTableConfiguration(['foo' => 'bar']);
         $configuration->getValue('baz');
+    }
+
+    public function testGetValueRespectsCustomPathDelimitersForNestedPathSegments(): void
+    {
+        // We're specifically testing multiple levels deep to test the top level of keys and further down levels
+        $configuration = new HashTableConfiguration(['foo' => ['bar' => ['baz' => 'blah']]], ':');
+        $this->assertEquals('blah', $configuration->getValue('foo:bar:baz'));
     }
 
     public function testTryGetArrayForExistentValueSetsItAndReturnsTrue(): void

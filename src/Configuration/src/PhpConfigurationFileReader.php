@@ -20,18 +20,18 @@ final class PhpConfigurationFileReader implements IConfigurationFileReader
     /**
      * @inheritdoc
      */
-    public function readConfiguration(string $path): HashTableConfiguration
+    public function readConfiguration(string $path, string $pathDelimiter = '.'): HashTableConfiguration
     {
         if (!\file_exists($path)) {
             throw new ConfigurationException("$path does not exist");
         }
 
-        $rawConfig = require $path;
+        $hashTable = require $path;
 
-        if (!\is_array($rawConfig)) {
+        if (!\is_array($hashTable)) {
             throw new ConfigurationException("Configuration in $path must be an array");
         }
 
-        return new HashTableConfiguration($rawConfig);
+        return new HashTableConfiguration($hashTable, $pathDelimiter);
     }
 }
