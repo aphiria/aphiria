@@ -11,11 +11,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Configuration\Bootstrappers;
 
+use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\Configuration\GlobalConfiguration;
-use Aphiria\Configuration\IConfiguration;
-use Aphiria\Configuration\IConfigurationReader;
+use Aphiria\Configuration\GlobalConfigurationBuilder;
 use Aphiria\Framework\Configuration\Bootstrappers\ConfigurationBootstrapper;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,26 +22,20 @@ use PHPUnit\Framework\TestCase;
  */
 class ConfigurationBootstrapperTest extends TestCase
 {
-    /** @var IConfigurationReader|MockObject */
-    private IConfigurationReader $configurationReader;
+    private GlobalConfigurationBuilder $globalConfigurationBuilder;
     private ConfigurationBootstrapper $configurationBootstrapper;
 
     protected function setUp(): void
     {
-        $this->configurationReader = $this->createMock(IConfigurationReader::class);
-        $this->configurationBootstrapper = new ConfigurationBootstrapper($this->configurationReader);
+        $this->globalConfigurationBuilder = new GlobalConfigurationBuilder();
+        $this->configurationBootstrapper = new ConfigurationBootstrapper($this->globalConfigurationBuilder);
+        GlobalConfiguration::resetConfigurationSources();
     }
 
-    public function testBootstrapSetsGlobalInstanceFromReadConfiguration(): void
+    public function testBootstrapAddsSourcesToGlobalConfiguration(): void
     {
-        $expectedConfiguration = $this->createMock(IConfiguration::class);
-        $expectedConfiguration->expects($this->once())
-            ->method('getString')
-            ->with('foo')
-            ->willReturn('bar');
-        $this->configurationReader->expects($this->once())
-            ->method('readConfiguration')
-            ->willReturn($expectedConfiguration);
+        $expectedConfiguration = new HashTableConfiguration(['foo' => 'bar']);
+        $this->globalConfigurationBuilder->withConfigurationSource($expectedConfiguration);
         $this->configurationBootstrapper->bootstrap();
         $this->assertEquals('bar', GlobalConfiguration::getString('foo'));
     }

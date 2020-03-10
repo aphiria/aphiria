@@ -13,19 +13,19 @@ declare(strict_types=1);
 namespace Aphiria\Configuration;
 
 /**
- * Defines a wrapper around an application's raw configuration
+ * Defines a wrapper around a hash table array
  */
-class ArrayConfiguration implements IConfiguration
+class HashTableConfiguration implements IConfiguration
 {
-    /** @var array The raw config */
-    private array $rawConfig;
+    /** @var array The hash table that backs the configuration */
+    private array $hashTable;
 
     /**
-     * @param array $rawConfig The raw config
+     * @param array $hashTable The hash table that backs the configuration
      */
-    public function __construct(array $rawConfig)
+    public function __construct(array $hashTable)
     {
-        $this->rawConfig = $rawConfig;
+        $this->hashTable = $hashTable;
     }
 
     /**
@@ -74,7 +74,7 @@ class ArrayConfiguration implements IConfiguration
     public function getValue(string $path)
     {
         $explodedPath = \explode('.', $path);
-        $value = $this->rawConfig;
+        $value = $this->hashTable;
 
         foreach ($explodedPath as $i => $pathPart) {
             if (!isset($value[$pathPart])) {

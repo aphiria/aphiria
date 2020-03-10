@@ -19,8 +19,18 @@ use RuntimeException;
  */
 class GlobalConfiguration
 {
-    /** @var IConfiguration|null The underlying static instance of this class */
-    private static ?IConfiguration $instance = null;
+    /** @var IConfiguration[] The underlying static configuration sources */
+    private static array $configurationSources = [];
+
+    /**
+     * Sets the global configuration instance
+     *
+     * @param IConfiguration $configuration The configuration to use as the global configuration
+     */
+    public static function addConfigurationSource(IConfiguration $configuration): void
+    {
+        self::$configurationSources[] = $configuration;
+    }
 
     /**
      * Gets the array value at the path
@@ -34,7 +44,15 @@ class GlobalConfiguration
     {
         self::validateInstanceSet();
 
-        return self::$instance->getArray($path);
+        $value = null;
+
+        foreach (self::$configurationSources as $configurationSource) {
+            if ($configurationSource->tryGetArray($path, $value)) {
+                return $value;
+            }
+        }
+
+        throw self::createMissingValueException($path);
     }
 
     /**
@@ -49,7 +67,15 @@ class GlobalConfiguration
     {
         self::validateInstanceSet();
 
-        return self::$instance->getBool($path);
+        $value = null;
+
+        foreach (self::$configurationSources as $configurationSource) {
+            if ($configurationSource->tryGetBool($path, $value)) {
+                return $value;
+            }
+        }
+
+        throw self::createMissingValueException($path);
     }
 
     /**
@@ -64,7 +90,15 @@ class GlobalConfiguration
     {
         self::validateInstanceSet();
 
-        return self::$instance->getFloat($path);
+        $value = null;
+
+        foreach (self::$configurationSources as $configurationSource) {
+            if ($configurationSource->tryGetFloat($path, $value)) {
+                return $value;
+            }
+        }
+
+        throw self::createMissingValueException($path);
     }
 
     /**
@@ -79,7 +113,15 @@ class GlobalConfiguration
     {
         self::validateInstanceSet();
 
-        return self::$instance->getInt($path);
+        $value = null;
+
+        foreach (self::$configurationSources as $configurationSource) {
+            if ($configurationSource->tryGetInt($path, $value)) {
+                return $value;
+            }
+        }
+
+        throw self::createMissingValueException($path);
     }
 
     /**
@@ -94,7 +136,15 @@ class GlobalConfiguration
     {
         self::validateInstanceSet();
 
-        return self::$instance->getString($path);
+        $value = null;
+
+        foreach (self::$configurationSources as $configurationSource) {
+            if ($configurationSource->tryGetString($path, $value)) {
+                return $value;
+            }
+        }
+
+        throw self::createMissingValueException($path);
     }
 
     /**
@@ -109,17 +159,25 @@ class GlobalConfiguration
     {
         self::validateInstanceSet();
 
-        return self::$instance->getValue($path);
+        $value = null;
+
+        foreach (self::$configurationSources as $configurationSource) {
+            if ($configurationSource->tryGetValue($path, $value)) {
+                return $value;
+            }
+        }
+
+        throw self::createMissingValueException($path);
     }
 
     /**
-     * Sets the global configuration instance
+     * Removes all configuration sources (useful for testing)
      *
-     * @param IConfiguration $configuration The configuration to use as the global configuration
+     * @internal
      */
-    public static function setInstance(IConfiguration $configuration): void
+    public static function resetConfigurationSources(): void
     {
-        self::$instance = $configuration;
+        self::$configurationSources = [];
     }
 
     /**
@@ -133,7 +191,15 @@ class GlobalConfiguration
     {
         self::validateInstanceSet();
 
-        return self::$instance->tryGetArray($path, $value);
+        try {
+            $value = self::getArray($path);
+
+            return true;
+        } catch (ConfigurationException $ex) {
+            $value = null;
+
+            return false;
+        }
     }
 
     /**
@@ -147,7 +213,15 @@ class GlobalConfiguration
     {
         self::validateInstanceSet();
 
-        return self::$instance->tryGetBool($path, $value);
+        try {
+            $value = self::getBool($path);
+
+            return true;
+        } catch (ConfigurationException $ex) {
+            $value = null;
+
+            return false;
+        }
     }
 
     /**
@@ -161,7 +235,15 @@ class GlobalConfiguration
     {
         self::validateInstanceSet();
 
-        return self::$instance->tryGetFloat($path, $value);
+        try {
+            $value = self::getFloat($path);
+
+            return true;
+        } catch (ConfigurationException $ex) {
+            $value = null;
+
+            return false;
+        }
     }
 
     /**
@@ -175,7 +257,15 @@ class GlobalConfiguration
     {
         self::validateInstanceSet();
 
-        return self::$instance->tryGetInt($path, $value);
+        try {
+            $value = self::getInt($path);
+
+            return true;
+        } catch (ConfigurationException $ex) {
+            $value = null;
+
+            return false;
+        }
     }
 
     /**
@@ -189,7 +279,15 @@ class GlobalConfiguration
     {
         self::validateInstanceSet();
 
-        return self::$instance->tryGetString($path, $value);
+        try {
+            $value = self::getString($path);
+
+            return true;
+        } catch (ConfigurationException $ex) {
+            $value = null;
+
+            return false;
+        }
     }
 
     /**
@@ -203,7 +301,26 @@ class GlobalConfiguration
     {
         self::validateInstanceSet();
 
-        return self::$instance->tryGetValue($path, $value);
+        try {
+            $value = self::getValue($path);
+
+            return true;
+        } catch (ConfigurationException $ex) {
+            $value = null;
+
+            return false;
+        }
+    }
+
+    /**
+     * Creates an exception when a value was missing from the configuration
+     *
+     * @param string $path The path that was being looked up
+     * @return ConfigurationException The created exception
+     */
+    private static function createMissingValueException(string $path): ConfigurationException
+    {
+        return new ConfigurationException("No configuration value at $path");
     }
 
     /**
@@ -213,8 +330,8 @@ class GlobalConfiguration
      */
     private static function validateInstanceSet(): void
     {
-        if (self::$instance === null) {
-            throw new RuntimeException('Must call ' . self::class . '::setInstance() before calling getValue()');
+        if (count(self::$configurationSources) === 0) {
+            throw new RuntimeException('No source configurations set');
         }
     }
 }

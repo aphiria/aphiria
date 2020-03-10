@@ -15,13 +15,14 @@ namespace Aphiria\Configuration;
 /**
  * Defines the interface for configuration readers to implement
  */
-interface IConfigurationReader
+interface IConfigurationFileReader
 {
     /**
      * Reads the configuration from storage
      *
+     * @param string $path The path to the file to read
      * @return IConfiguration The configuration that was read
      * @throws ConfigurationException Thrown if the configuration could not be read
      */
-    public function readConfiguration(): IConfiguration;
+    public function readConfiguration(string $path): IConfiguration;
 }

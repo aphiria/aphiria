@@ -13,22 +13,22 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Configuration\Bootstrappers;
 
 use Aphiria\Application\IBootstrapper;
-use Aphiria\Configuration\GlobalConfiguration;
-use Aphiria\Configuration\IConfigurationReader;
+use Aphiria\Configuration\GlobalConfigurationBuilder;
 
 /**
  * Defines the configuration bootstrapper
  */
 final class ConfigurationBootstrapper implements IBootstrapper
 {
-    private IConfigurationReader $configurationReader;
+    /** @var GlobalConfigurationBuilder The global configuration builder */
+    private GlobalConfigurationBuilder $configurationBuilder;
 
     /**
-     * @param IConfigurationReader $configurationReader The configuration reader
+     * @param GlobalConfigurationBuilder $configurationBuilder The global configuration builder
      */
-    public function __construct(IConfigurationReader $configurationReader)
+    public function __construct(GlobalConfigurationBuilder $configurationBuilder)
     {
-        $this->configurationReader = $configurationReader;
+        $this->configurationBuilder = $configurationBuilder;
     }
 
     /**
@@ -36,6 +36,6 @@ final class ConfigurationBootstrapper implements IBootstrapper
      */
     public function bootstrap(): void
     {
-        GlobalConfiguration::setInstance($this->configurationReader->readConfiguration());
+        $this->configurationBuilder->build();
     }
 }
