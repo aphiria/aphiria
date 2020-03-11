@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Application\Builders;
 
-use Aphiria\Application\IBootstrapper;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use OutOfBoundsException;
@@ -22,22 +21,12 @@ use OutOfBoundsException;
  */
 abstract class ApplicationBuilder implements IApplicationBuilder
 {
-    /** @var IBootstrapper[] The list of bootstrappers to run to bootstrap the application */
-    private array $bootstrappers;
     /** @var IModule[] The list of modules */
     private array $modules = [];
     /** @var IComponent[] The mapping of prioritized component names to components */
     private array $componentsByType = [];
     /** @var array The list of structs that contain component types and priorities */
     private array $componentTypesAndPriorities = [];
-
-    /**
-     * @param IBootstrapper[] $bootstrappers The list of bootstrappers to run to bootstrap the application
-     */
-    protected function __construct(array $bootstrappers)
-    {
-        $this->bootstrappers = $bootstrappers;
-    }
 
     /**
      * @inheritdoc
@@ -79,16 +68,6 @@ abstract class ApplicationBuilder implements IApplicationBuilder
         $this->modules[] = $module;
 
         return $this;
-    }
-
-    /**
-     * Bootstraps the application
-     */
-    protected function bootstrap(): void
-    {
-        foreach ($this->bootstrappers as $bootstrapper) {
-            $bootstrapper->bootstrap();
-        }
     }
 
     /**

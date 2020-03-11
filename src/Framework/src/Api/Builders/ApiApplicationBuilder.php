@@ -14,7 +14,6 @@ namespace Aphiria\Framework\Api\Builders;
 
 use Aphiria\Api\App;
 use Aphiria\Application\Builders\ApplicationBuilder;
-use Aphiria\Application\IBootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Middleware\MiddlewareCollection;
@@ -31,14 +30,10 @@ final class ApiApplicationBuilder extends ApplicationBuilder
 
     /**
      * @param IContainer $container The DI container
-     * @param IBootstrapper[] $bootstrappers The list of bootstrappers to run to bootstrap the application
      */
-    public function __construct(IContainer $container, array $bootstrappers)
+    public function __construct(IContainer $container)
     {
-        parent::__construct($bootstrappers);
-
         $this->container = $container;
-        $this->bootstrap();
     }
 
     /**

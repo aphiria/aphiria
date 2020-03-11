@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Console\Builders;
 
 use Aphiria\Application\Builders\ApplicationBuilder;
-use Aphiria\Application\IBootstrapper;
 use Aphiria\Console\App;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
@@ -31,14 +30,10 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
 
     /**
      * @param IContainer $container The DI container
-     * @param IBootstrapper[] $bootstrappers The list of bootstrappers to run to bootstrap the application
      */
-    public function __construct(IContainer $container, array $bootstrappers)
+    public function __construct(IContainer $container)
     {
-        parent::__construct($bootstrappers);
-
         $this->container = $container;
-        $this->bootstrap();
     }
 
     /**

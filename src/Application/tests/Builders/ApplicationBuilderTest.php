@@ -29,11 +29,6 @@ class ApplicationBuilderTest extends TestCase
     {
         $this->appBuilder = new class() extends ApplicationBuilder
         {
-            public function __construct()
-            {
-                parent::__construct([]);
-            }
-
             public function build(): object
             {
                 $this->buildModules();

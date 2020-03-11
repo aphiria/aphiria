@@ -15,7 +15,6 @@ namespace Aphiria\Framework\Tests\Api\Builders;
 use Aphiria\Api\App;
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IModule;
-use Aphiria\Application\IBootstrapper;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
@@ -36,7 +35,7 @@ class ApiApplicationBuilderTest extends TestCase
     {
         // To simplify testing, we'll use a real container
         $this->container = new Container();
-        $this->appBuilder = new ApiApplicationBuilder($this->container, []);
+        $this->appBuilder = new ApiApplicationBuilder($this->container);
     }
 
     public function testBuildBindsApiApplicationToContainer(): void
@@ -48,20 +47,6 @@ class ApiApplicationBuilderTest extends TestCase
         });
         $this->appBuilder->build();
         $this->assertNotSame($router, $this->container->resolve(IRequestHandler::class));
-    }
-
-    public function testBuildBootstrapsBootstrappers(): void
-    {
-        // Bind the router to the container
-        $router = $this->createMock(IRequestHandler::class);
-        $this->container->for(App::class, function (IContainer $container) use ($router) {
-            $container->bindInstance(IRequestHandler::class, $router);
-        });
-        $bootstrapper = $this->createMock(IBootstrapper::class);
-        $bootstrapper->expects($this->once())
-            ->method('bootstrap');
-        $appBuilder = new ApiApplicationBuilder($this->container, [$bootstrapper]);
-        $appBuilder->build();
     }
 
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void

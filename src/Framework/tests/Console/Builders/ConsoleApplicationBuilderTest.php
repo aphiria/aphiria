@@ -14,7 +14,6 @@ namespace Aphiria\Framework\Tests\Console\Builders;
 
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IModule;
-use Aphiria\Application\IBootstrapper;
 use Aphiria\Application\IComponent;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\DependencyInjection\Container;
@@ -33,22 +32,13 @@ class ConsoleApplicationBuilderTest extends TestCase
     {
         // To simplify testing, we'll use a real container
         $this->container = new Container();
-        $this->appBuilder = new ConsoleApplicationBuilder($this->container, []);
+        $this->appBuilder = new ConsoleApplicationBuilder($this->container);
     }
 
     public function testBuildBindsConsoleApplicationToContainer(): void
     {
         $app = $this->appBuilder->build();
         $this->assertSame($app, $this->container->resolve(ICommandBus::class));
-    }
-
-    public function testBuildBootstrapsBootstrappers(): void
-    {
-        $bootstrapper = $this->createMock(IBootstrapper::class);
-        $bootstrapper->expects($this->once())
-            ->method('bootstrap');
-        $appBuilder = new ConsoleApplicationBuilder($this->container, [$bootstrapper]);
-        $appBuilder->build();
     }
 
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void
