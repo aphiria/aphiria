@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Configuration;
 
 /**
- * Defines a wrapper around a hash table array
+ * Defines a wrapper around a hash table configuration
  */
 class HashTableConfiguration implements IConfiguration
 {

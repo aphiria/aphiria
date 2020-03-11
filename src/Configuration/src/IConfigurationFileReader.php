@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Configuration;
 
 /**
- * Defines the interface for configuration readers to implement
+ * Defines the interface for configuration file readers to implement
  */
 interface IConfigurationFileReader
 {

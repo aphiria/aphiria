@@ -16,7 +16,7 @@ use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 
 /**
- * Defines a mock bootstrapper
+ * Defines a mock binder
  */
 class BinderA extends Binder
 {

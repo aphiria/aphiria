@@ -30,19 +30,19 @@ class PhpConfigurationFileReaderTest extends TestCase
 
     public function testReadingConfigurationCreatesConfigurationFromContentsOfPhpFile(): void
     {
-        $configuration = $this->reader->readConfiguration(__DIR__ . '/Mocks/configuration.php');
+        $configuration = $this->reader->readConfiguration(__DIR__ . '/files/configuration.php');
         $this->assertEquals('bar', $configuration->getString('foo'));
     }
 
     public function testReadingConfigurationWithCustomDelimiterAllowsAccessWithThatDelimiter(): void
     {
-        $configuration = $this->reader->readConfiguration(__DIR__ . '/Mocks/configuration-delimiter.php', ':');
+        $configuration = $this->reader->readConfiguration(__DIR__ . '/files/configuration-delimiter.php', ':');
         $this->assertEquals('baz', $configuration->getString('foo:bar'));
     }
 
     public function testReadingInvalidPhpThrowsException(): void
     {
-        $path = __DIR__ . '/Mocks/invalid-configuration.json';
+        $path = __DIR__ . '/files/invalid-configuration.php';
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage("Configuration in $path must be an array");
         $this->reader->readConfiguration($path);

@@ -10,7 +10,6 @@
 
 namespace Aphiria\Configuration;
 
-
 use RuntimeException;
 
 /**

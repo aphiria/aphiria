@@ -15,12 +15,12 @@ namespace Aphiria\Configuration;
 /**
  * Defines the configuration reader that reads a PHP files
  */
-final class PhpConfigurationFileReader implements IConfigurationFileReader
+class PhpConfigurationFileReader implements IConfigurationFileReader
 {
     /**
      * @inheritdoc
      */
-    public function readConfiguration(string $path, string $pathDelimiter = '.'): HashTableConfiguration
+    public function readConfiguration(string $path, string $pathDelimiter = '.'): IConfiguration
     {
         if (!\file_exists($path)) {
             throw new ConfigurationException("$path does not exist");

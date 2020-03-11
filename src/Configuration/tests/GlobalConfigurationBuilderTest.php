@@ -33,10 +33,13 @@ class GlobalConfigurationBuilderTest extends TestCase
 
     public function testBuildIncludesAllSources(): void
     {
-        $configurationSource = new HashTableConfiguration(['foo' => 'bar']);
-        $this->builder->withConfigurationSource($configurationSource)
+        $configurationSource1 = new HashTableConfiguration(['foo' => 'bar']);
+        $configurationSource2 = new HashTableConfiguration(['baz' => 'blah']);
+        $this->builder->withConfigurationSource($configurationSource1)
+            ->withConfigurationSource($configurationSource2)
             ->build();
         $this->assertEquals('bar', GlobalConfiguration::getString('foo'));
+        $this->assertEquals('blah', GlobalConfiguration::getString('baz'));
     }
 
     public function testBuildRemovesExistingSources(): void
@@ -60,8 +63,9 @@ class GlobalConfigurationBuilderTest extends TestCase
 
     public function testWithJsonFileAddsConfigurationSourceFromContentsOfJsonFile(): void
     {
-        $this->assertSame($this->builder,
-            $this->builder->withJsonFileConfigurationSource(__DIR__ . '/Mocks/configuration.json')
+        $this->assertSame(
+            $this->builder,
+            $this->builder->withJsonFileConfigurationSource(__DIR__ . '/files/configuration.json')
         );
         $this->builder->build();
         $this->assertEquals('bar', GlobalConfiguration::getString('foo'));
@@ -69,7 +73,7 @@ class GlobalConfigurationBuilderTest extends TestCase
 
     public function testWithJsonFileThatContainsInvalidJsonThrowsException(): void
     {
-        $path = __DIR__ . '/Mocks/invalid-configuration.json';
+        $path = __DIR__ . '/files/invalid-configuration.json';
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage("Invalid JSON in $path");
         $this->builder->withJsonFileConfigurationSource($path);
@@ -84,8 +88,9 @@ class GlobalConfigurationBuilderTest extends TestCase
 
     public function testWithJsonFileWithCustomDelimiterIsRespected(): void
     {
-        $this->assertSame($this->builder,
-            $this->builder->withJsonFileConfigurationSource(__DIR__ . '/Mocks/configuration-delimiter.json', ':')
+        $this->assertSame(
+            $this->builder,
+            $this->builder->withJsonFileConfigurationSource(__DIR__ . '/files/configuration-delimiter.json', ':')
         );
         $this->builder->build();
         $this->assertEquals('baz', GlobalConfiguration::getString('foo:bar'));
@@ -95,7 +100,7 @@ class GlobalConfigurationBuilderTest extends TestCase
     {
         $this->assertSame(
             $this->builder,
-            $this->builder->withPhpFileConfigurationSource(__DIR__ . '/Mocks/configuration.php')
+            $this->builder->withPhpFileConfigurationSource(__DIR__ . '/files/configuration.php')
         );
         $this->builder->build();
         $this->assertEquals('bar', GlobalConfiguration::getString('foo'));
@@ -103,7 +108,7 @@ class GlobalConfigurationBuilderTest extends TestCase
 
     public function testWithPhpFileThatContainsInvalidPhpThrowsException(): void
     {
-        $path = __DIR__ . '/Mocks/invalid-configuration.json';
+        $path = __DIR__ . '/files/invalid-configuration.php';
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage("Configuration in $path must be an array");
         $this->builder->withPhpFileConfigurationSource($path);
@@ -118,8 +123,9 @@ class GlobalConfigurationBuilderTest extends TestCase
 
     public function testWithPhpFileWithCustomDelimiterIsRespected(): void
     {
-        $this->assertSame($this->builder,
-            $this->builder->withPhpFileConfigurationSource(__DIR__ . '/Mocks/configuration-delimiter.php', ':')
+        $this->assertSame(
+            $this->builder,
+            $this->builder->withPhpFileConfigurationSource(__DIR__ . '/files/configuration-delimiter.php', ':')
         );
         $this->builder->build();
         $this->assertEquals('baz', GlobalConfiguration::getString('foo:bar'));

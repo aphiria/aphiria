@@ -14,5 +14,5 @@ namespace PHPSTORM_META;
 
 use Aphiria\DependencyInjection\IServiceResolver;
 
-// Make the dependency resolver return the same type as the input parameter
+// Make the service resolver return the same type as the input parameter
 override(IServiceResolver::resolve(), type(0));

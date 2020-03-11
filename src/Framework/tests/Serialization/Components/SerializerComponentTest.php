@@ -28,12 +28,12 @@ class SerializerComponentTest extends TestCase
     protected function setUp(): void
     {
         $this->encoders = new EncoderRegistry();
-        $dependencyResolver = $this->createMock(IServiceResolver::class);
-        $dependencyResolver->expects($this->once())
+        $serviceResolver = $this->createMock(IServiceResolver::class);
+        $serviceResolver->expects($this->once())
             ->method('resolve')
             ->with(EncoderRegistry::class)
             ->willReturn($this->encoders);
-        $this->serializerComponent = new SerializerComponent($dependencyResolver);
+        $this->serializerComponent = new SerializerComponent($serviceResolver);
     }
 
     public function testBuildWithEncoderRegistersEncoder(): void

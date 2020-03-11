@@ -25,17 +25,17 @@ use InvalidArgumentException;
  */
 class MiddlewareComponent implements IComponent
 {
-    /** @var IServiceResolver The dependency resolver */
-    private IServiceResolver $dependencyResolver;
+    /** @var IServiceResolver The service resolver */
+    private IServiceResolver $serviceResolver;
     /** @var MiddlewareBinding[] The list of middleware bindings */
     private array $middleware = [];
 
     /**
-     * @param IServiceResolver $dependencyResolver The dependency resolver
+     * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(IServiceResolver $dependencyResolver)
+    public function __construct(IServiceResolver $serviceResolver)
     {
-        $this->dependencyResolver = $dependencyResolver;
+        $this->serviceResolver = $serviceResolver;
     }
 
     /**
@@ -43,11 +43,11 @@ class MiddlewareComponent implements IComponent
      */
     public function build(): void
     {
-        $middlewareCollection = $this->dependencyResolver->resolve(MiddlewareCollection::class);
+        $middlewareCollection = $this->serviceResolver->resolve(MiddlewareCollection::class);
 
         foreach ($this->middleware as $middlewareConfig) {
             $middlewareBinding = $middlewareConfig['middlewareBinding'];
-            $middleware = $this->dependencyResolver->resolve($middlewareBinding->className);
+            $middleware = $this->serviceResolver->resolve($middlewareBinding->className);
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(

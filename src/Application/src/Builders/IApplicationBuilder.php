@@ -31,7 +31,7 @@ interface IApplicationBuilder
     public function build(): object;
 
     /**
-     * Gets a component builder by its type
+     * Gets a component by its type
      *
      * @param string $type The type of component to get
      * @return IComponent The component, if one was found

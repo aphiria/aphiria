@@ -67,7 +67,7 @@ class ApiApplicationBuilderTest extends TestCase
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void
     {
         $builtParts = [];
-        $moduleBuilder = new class($builtParts) implements IModule
+        $module = new class($builtParts) implements IModule
         {
             private array $builtParts;
 
@@ -97,18 +97,18 @@ class ApiApplicationBuilderTest extends TestCase
         };
         // Purposely registering out of order to ensure that order does not matter
         $this->appBuilder->withComponent($component);
-        $this->appBuilder->withModule($moduleBuilder);
+        $this->appBuilder->withModule($module);
         $this->container->for(App::class, function (IContainer $container) {
             $container->bindInstance(IRequestHandler::class, $this->createMock(IRequestHandler::class));
         });
         $this->appBuilder->build();
-        $this->assertEquals([\get_class($moduleBuilder), \get_class($component)], $builtParts);
+        $this->assertEquals([\get_class($module), \get_class($component)], $builtParts);
     }
 
     public function testBuildWithoutHavingRouterBoundToContainerThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('No ' . IRequestHandler::class . ' router bound to the container');
+        $this->expectExceptionMessage('Failed to build the API application');
         $this->appBuilder->build();
     }
 }

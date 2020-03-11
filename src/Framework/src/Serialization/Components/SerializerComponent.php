@@ -22,17 +22,17 @@ use Aphiria\Serialization\Encoding\IEncoder;
  */
 class SerializerComponent implements IComponent
 {
-    /** @var IServiceResolver The dependency resolver */
-    private IServiceResolver $dependencyResolver;
+    /** @var IServiceResolver The service resolver */
+    private IServiceResolver $serviceResolver;
     /** @var IEncoder[] The mapping of class names to their encoders */
     private array $encoders = [];
 
     /**
-     * @param IServiceResolver $dependencyResolver The dependency resolver
+     * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(IServiceResolver $dependencyResolver)
+    public function __construct(IServiceResolver $serviceResolver)
     {
-        $this->dependencyResolver = $dependencyResolver;
+        $this->serviceResolver = $serviceResolver;
     }
 
     /**
@@ -40,7 +40,7 @@ class SerializerComponent implements IComponent
      */
     public function build(): void
     {
-        $encoders = $this->dependencyResolver->resolve(EncoderRegistry::class);
+        $encoders = $this->serviceResolver->resolve(EncoderRegistry::class);
 
         foreach ($this->encoders as $class => $encoder) {
             $encoders->registerEncoder($class, $encoder);

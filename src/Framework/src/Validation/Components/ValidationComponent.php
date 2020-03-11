@@ -26,19 +26,19 @@ use RuntimeException;
  */
 class ValidationComponent implements IComponent
 {
-    /** @var IServiceResolver The dependency resolver */
-    private IServiceResolver $dependencyResolver;
+    /** @var IServiceResolver The service resolver */
+    private IServiceResolver $serviceResolver;
     /** @var bool Whether or not annotations are enabled */
     private bool $annotationsEnabled = false;
     /** @var Closure[] The list of callbacks that can register object constraints */
     private array $callbacks = [];
 
     /**
-     * @param IServiceResolver $dependencyResolver The dependency resolver
+     * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(IServiceResolver $dependencyResolver)
+    public function __construct(IServiceResolver $serviceResolver)
     {
-        $this->dependencyResolver = $dependencyResolver;
+        $this->serviceResolver = $serviceResolver;
     }
 
     /**
@@ -46,12 +46,12 @@ class ValidationComponent implements IComponent
      */
     public function build(): void
     {
-        $objectConstraintsRegistrants = $this->dependencyResolver->resolve(ObjectConstraintsRegistrantCollection::class);
+        $objectConstraintsRegistrants = $this->serviceResolver->resolve(ObjectConstraintsRegistrantCollection::class);
 
         if ($this->annotationsEnabled) {
             $annotationConstraintsRegistrants = null;
 
-            if (!$this->dependencyResolver->tryResolve(AnnotationObjectConstraintsRegistrant::class, $annotationConstraintsRegistrants)) {
+            if (!$this->serviceResolver->tryResolve(AnnotationObjectConstraintsRegistrant::class, $annotationConstraintsRegistrants)) {
                 throw new RuntimeException(AnnotationObjectConstraintsRegistrant::class . ' cannot be null if using annotations');
             }
 
@@ -59,7 +59,7 @@ class ValidationComponent implements IComponent
         }
 
         $objectConstraintsRegistrants->add(new ObjectConstraintsBuilderRegistrant($this->callbacks));
-        $objectConstraintsRegistrants->registerConstraints($this->dependencyResolver->resolve(ObjectConstraintsRegistry::class));
+        $objectConstraintsRegistrants->registerConstraints($this->serviceResolver->resolve(ObjectConstraintsRegistry::class));
     }
 
     /**

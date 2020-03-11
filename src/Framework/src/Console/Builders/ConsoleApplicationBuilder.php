@@ -38,7 +38,6 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
         parent::__construct($bootstrappers);
 
         $this->container = $container;
-        // TODO: Should bootstrap happen here, or outside?  I don't want to confuse devs with bootstrap() and build() methods in the same class.
         $this->bootstrap();
     }
 

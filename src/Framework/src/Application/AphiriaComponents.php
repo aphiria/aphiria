@@ -47,7 +47,7 @@ trait AphiriaComponents
     }
 
     /**
-     * Adds binders to the binder component builder
+     * Adds binders to the binder component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param Binder|Binder[] $binders The binder or list of binders to add
@@ -76,7 +76,7 @@ trait AphiriaComponents
     }
 
     /**
-     * Adds console commands to the command component builder
+     * Adds console commands to the command component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param Closure $callback The callback that takes in an instance of CommandRegistry to register commands to
@@ -91,7 +91,7 @@ trait AphiriaComponents
     }
 
     /**
-     * Adds an encoder to the encoder component builder
+     * Adds an encoder to the encoder component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param string $class The class whose encoder we're registering
@@ -121,7 +121,7 @@ trait AphiriaComponents
     }
 
     /**
-     * Adds an exception response factory to the exception handler component builder
+     * Adds an exception response factory to the exception handler component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param string $exceptionType The type of exception whose response factory we're registering
@@ -137,7 +137,7 @@ trait AphiriaComponents
     }
 
     /**
-     * Adds global middleware bindings to the middleware component builder
+     * Adds global middleware bindings to the middleware component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param MiddlewareBinding|MiddlewareBinding[] $middlewareBindings The middleware binding or list of bindings to add
@@ -153,7 +153,7 @@ trait AphiriaComponents
     }
 
     /**
-     * Adds a log level factory to the exception handler component builder
+     * Adds a log level factory to the exception handler component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param string $exceptionType The exception type whose factory we're registering
@@ -169,7 +169,7 @@ trait AphiriaComponents
     }
 
     /**
-     * Adds object constraints to the object constraints component builder
+     * Adds object constraints to the object constraints component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param Closure $callback The callback that takes in an instance of ObjectConstraintsRegistry to register object constraints to
@@ -198,7 +198,7 @@ trait AphiriaComponents
     }
 
     /**
-     * Adds routes to the router component builder
+     * Adds routes to the router component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param Closure $callback The callback that takes in an instance of RouteBuilderRegistry to register route builders to

@@ -54,7 +54,7 @@ class ConsoleApplicationBuilderTest extends TestCase
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void
     {
         $builtParts = [];
-        $moduleBuilder = new class($builtParts) implements IModule
+        $module = new class($builtParts) implements IModule
         {
             private array $builtParts;
 
@@ -84,8 +84,8 @@ class ConsoleApplicationBuilderTest extends TestCase
         };
         // Purposely registering out of order to ensure that order does not matter
         $this->appBuilder->withComponent($component);
-        $this->appBuilder->withModule($moduleBuilder);
+        $this->appBuilder->withModule($module);
         $this->appBuilder->build();
-        $this->assertEquals([\get_class($moduleBuilder), \get_class($component)], $builtParts);
+        $this->assertEquals([\get_class($module), \get_class($component)], $builtParts);
     }
 }

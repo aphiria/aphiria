@@ -15,7 +15,7 @@ namespace Aphiria\Configuration;
 /**
  * Defines the global configuration builder
  */
-final class GlobalConfigurationBuilder
+class GlobalConfigurationBuilder
 {
     /** @var IConfiguration[] The list of configuration sources */
     private array $configurationSources = [];

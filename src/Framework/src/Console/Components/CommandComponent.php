@@ -26,19 +26,19 @@ use RuntimeException;
  */
 class CommandComponent implements IComponent
 {
-    /** @var IServiceResolver The dependency resolver */
-    private IServiceResolver $dependencyResolver;
+    /** @var IServiceResolver The service resolver */
+    private IServiceResolver $serviceResolver;
     /** @var Closure[] The list of callbacks that can register commands */
     private array $callbacks = [];
     /** @var bool Whether or not annotations are enabled */
     private bool $annotationsEnabled = false;
 
     /**
-     * @param IServiceResolver $dependencyResolver The dependency resolver
+     * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(IServiceResolver $dependencyResolver)
+    public function __construct(IServiceResolver $serviceResolver)
     {
-        $this->dependencyResolver = $dependencyResolver;
+        $this->serviceResolver = $serviceResolver;
     }
 
     /**
@@ -46,13 +46,13 @@ class CommandComponent implements IComponent
      */
     public function build(): void
     {
-        $commands = $this->dependencyResolver->resolve(CommandRegistry::class);
-        $commandRegistrants = $this->dependencyResolver->resolve(CommandRegistrantCollection::class);
+        $commands = $this->serviceResolver->resolve(CommandRegistry::class);
+        $commandRegistrants = $this->serviceResolver->resolve(CommandRegistrantCollection::class);
 
         if ($this->annotationsEnabled) {
             $annotationCommandRegistrant = null;
 
-            if (!$this->dependencyResolver->tryResolve(AnnotationCommandRegistrant::class, $annotationCommandRegistrant)) {
+            if (!$this->serviceResolver->tryResolve(AnnotationCommandRegistrant::class, $annotationCommandRegistrant)) {
                 throw new RuntimeException(AnnotationCommandRegistrant::class . ' cannot be null if using annotations');
             }
 

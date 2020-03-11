@@ -92,16 +92,6 @@ abstract class ApplicationBuilder implements IApplicationBuilder
     }
 
     /**
-     * Builds all the registered module builders
-     */
-    protected function buildModules(): void
-    {
-        foreach ($this->modules as $moduleBuilder) {
-            $moduleBuilder->build($this);
-        }
-    }
-
-    /**
      * Builds all the registered components
      */
     protected function buildComponents(): void
@@ -110,6 +100,16 @@ abstract class ApplicationBuilder implements IApplicationBuilder
 
         foreach ($this->componentTypesAndPriorities as $typeAndPriority) {
             $this->componentsByType[$typeAndPriority['type']]->build();
+        }
+    }
+
+    /**
+     * Builds all the registered modules
+     */
+    protected function buildModules(): void
+    {
+        foreach ($this->modules as $module) {
+            $module->build($this);
         }
     }
 }

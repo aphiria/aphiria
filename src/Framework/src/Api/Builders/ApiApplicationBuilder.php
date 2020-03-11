@@ -38,7 +38,6 @@ final class ApiApplicationBuilder extends ApplicationBuilder
         parent::__construct($bootstrappers);
 
         $this->container = $container;
-        // TODO: Should bootstrap happen here, or outside?  I don't want to confuse devs with bootstrap() and build() methods in the same class.
         $this->bootstrap();
     }
 
@@ -50,16 +49,11 @@ final class ApiApplicationBuilder extends ApplicationBuilder
         $this->buildModules();
         $this->buildComponents();
 
-        /** @var IRequestHandler $router */
-        $router = null;
-        $this->container->for(App::class, static function (IContainer $container) use (&$router) {
-            if (!$container->tryResolve(IRequestHandler::class, $router)) {
-                throw new RuntimeException('No ' . IRequestHandler::class . ' router bound to the container');
-            }
-        });
-
         try {
-            $apiApp = new App($router, $this->container->resolve(MiddlewareCollection::class));
+            $apiApp = new App(
+                $this->container->for(App::class, fn (IContainer $container) => $container->resolve(IRequestHandler::class)),
+                $this->container->for(App::class, fn (IContainer $container) => $container->resolve(MiddlewareCollection::class))
+            );
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build the API application', 0, $ex);
         }

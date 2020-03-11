@@ -12,15 +12,17 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration;
 
+use JsonException;
+
 /**
  * Defines the configuration reader that reads JSON files
  */
-final class JsonConfigurationFileReader implements IConfigurationFileReader
+class JsonConfigurationFileReader implements IConfigurationFileReader
 {
     /**
      * @inheritdoc
      */
-    public function readConfiguration($path, string $pathDelimiter = '.'): HashTableConfiguration
+    public function readConfiguration($path, string $pathDelimiter = '.'): IConfiguration
     {
         if (!\file_exists($path)) {
             throw new ConfigurationException("$path does not exist");
@@ -28,7 +30,7 @@ final class JsonConfigurationFileReader implements IConfigurationFileReader
 
         try {
             $decodedJson = \json_decode(\file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $ex) {
+        } catch (JsonException $ex) {
             throw new ConfigurationException("Invalid JSON in $path", 0, $ex);
         }
 

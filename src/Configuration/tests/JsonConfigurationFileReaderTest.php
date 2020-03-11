@@ -30,19 +30,19 @@ class JsonConfigurationFileReaderTest extends TestCase
 
     public function testReadingConfigurationCreatesConfigurationFromContentsOfJsonFile(): void
     {
-        $configuration = $this->reader->readConfiguration(__DIR__ . '/Mocks/configuration.json');
+        $configuration = $this->reader->readConfiguration(__DIR__ . '/files/configuration.json');
         $this->assertEquals('bar', $configuration->getString('foo'));
     }
 
     public function testReadingConfigurationWithCustomDelimiterAllowsAccessWithThatDelimiter(): void
     {
-        $configuration = $this->reader->readConfiguration(__DIR__ . '/Mocks/configuration-delimiter.json', ':');
+        $configuration = $this->reader->readConfiguration(__DIR__ . '/files/configuration-delimiter.json', ':');
         $this->assertEquals('baz', $configuration->getString('foo:bar'));
     }
 
     public function testReadingInvalidJsonThrowsException(): void
     {
-        $path = __DIR__ . '/Mocks/invalid-configuration.json';
+        $path = __DIR__ . '/files/invalid-configuration.json';
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage("Invalid JSON in $path");
         $this->reader->readConfiguration($path);
