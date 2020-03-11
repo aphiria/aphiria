@@ -17,8 +17,8 @@ namespace Aphiria\Configuration;
  */
 class GlobalConfigurationBuilder
 {
-    /** @var IConfiguration[] The list of configuration sources */
-    private array $configurationSources = [];
+    /** @var array The list of structs that store data about the configuration sources */
+    private array $configurationSourceStructs = [];
     /** @var IConfigurationFileReader The PHP configuration file reader */
     private IConfigurationFileReader $phpConfigurationFileReader;
     /** @var IConfigurationFileReader The JSON configuration file reader */
@@ -43,8 +43,15 @@ class GlobalConfigurationBuilder
     {
         GlobalConfiguration::resetConfigurationSources();
 
-        foreach ($this->configurationSources as $configurationSource) {
-            GlobalConfiguration::addConfigurationSource($configurationSource);
+        foreach ($this->configurationSourceStructs as $configurationSourceStruct) {
+            switch ($configurationSourceStruct['type']) {
+                case 'instance':
+                    GlobalConfiguration::addConfigurationSource($configurationSourceStruct['value']);
+                    break;
+                case 'factory':
+                    GlobalConfiguration::addConfigurationSource($configurationSourceStruct['value']());
+                    break;
+            }
         }
     }
 
@@ -56,7 +63,7 @@ class GlobalConfigurationBuilder
      */
     public function withConfigurationSource(IConfiguration $configurationSource): self
     {
-        $this->configurationSources[] = $configurationSource;
+        $this->configurationSourceStructs[] = ['type' => 'instance', 'value' => $configurationSource];
 
         return $this;
     }
@@ -68,7 +75,11 @@ class GlobalConfigurationBuilder
      */
     public function withEnvironmentVariables(): self
     {
-        $this->withConfigurationSource(new HashTableConfiguration($_ENV));
+        /**
+         * We delay grabbing the environment variables until we're building the configuration.  This allows us to
+         * populate the environment variables (eg in a bootstrapper) prior to adding a configuration with those values.
+         */
+        $this->configurationSourceStructs[] = ['type' => 'factory', 'value' => fn () => new HashTableConfiguration($_ENV)];
 
         return $this;
     }

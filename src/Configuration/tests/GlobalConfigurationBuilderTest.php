@@ -55,10 +55,22 @@ class GlobalConfigurationBuilderTest extends TestCase
 
     public function testWithEnvironmentVariablesAddsConfigurationSourceWithEnvironmentVariables(): void
     {
-        $_ENV['__aphiria_test'] = 'foo';
+        $varName = '__aphiria_test_' . __METHOD__;
+        // Need to ensure a unique var name so that environment variables don't persist between tests
+        $_ENV[$varName] = 'foo';
         $this->builder->withEnvironmentVariables()
             ->build();
-        $this->assertEquals('foo', GlobalConfiguration::getString('__aphiria_test'));
+        $this->assertEquals('foo', GlobalConfiguration::getString($varName));
+    }
+
+    public function testWithEnvironmentVariablesIncludesVariablesSetAfterSourceIsAdded(): void
+    {
+        $this->builder->withEnvironmentVariables();
+        // Need to ensure a unique var name so that environment variables don't persist between tests
+        $varName = '__aphiria_test_' . __METHOD__;
+        $_ENV[$varName] = 'foo';
+        $this->builder->build();
+        $this->assertEquals('foo', GlobalConfiguration::getString($varName));
     }
 
     public function testWithJsonFileAddsConfigurationSourceFromContentsOfJsonFile(): void
