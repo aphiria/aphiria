@@ -39,7 +39,7 @@ class RouteBuilderRouteRegistrantTest extends TestCase
     public function testConstructingWithInvalidCallbackThrowsException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Callbacks must be an instance of ' . Closure::class . ' or an array of Closures');
+        $this->expectExceptionMessage('Closures must be an instance of ' . Closure::class . ' or an array of Closures');
         new RouteBuilderRouteRegistrant(123);
     }
 }

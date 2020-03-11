@@ -18,9 +18,8 @@ use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Tests\Controllers\Mocks\Controller as ControllerMock;
 use Aphiria\Api\Tests\Mocks\AttributeMiddleware;
 use Aphiria\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;
-use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Middleware\IMiddleware;
-use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpHeaders;
@@ -47,26 +46,23 @@ class RouterTest extends TestCase
     private Router $router;
     /** @var IRouteMatcher|MockObject */
     private IRouteMatcher $routeMatcher;
-    /** @var IDependencyResolver|MockObject */
-    private IDependencyResolver $dependencyResolver;
+    /** @var IServiceResolver|MockObject */
+    private IServiceResolver $serviceResolver;
     /** @var IContentNegotiator|MockObject */
     private IContentNegotiator $contentNegotiator;
-    private MiddlewarePipelineFactory $middlewarePipelineFactory;
     /** @var IRouteActionInvoker|MockObject */
     private IRouteActionInvoker $routeActionInvoker;
 
     protected function setUp(): void
     {
         $this->routeMatcher = $this->createMock(IRouteMatcher::class);
-        $this->dependencyResolver = $this->createMock(IDependencyResolver::class);
+        $this->serviceResolver = $this->createMock(IServiceResolver::class);
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
-        $this->middlewarePipelineFactory = new MiddlewarePipelineFactory();
         $this->routeActionInvoker = $this->createMock(IRouteActionInvoker::class);
         $this->router = new Router(
             $this->routeMatcher,
-            $this->dependencyResolver,
+            $this->serviceResolver,
             $this->contentNegotiator,
-            $this->middlewarePipelineFactory,
             $this->routeActionInvoker
         );
     }
@@ -77,11 +73,11 @@ class RouterTest extends TestCase
         $middlewareBinding = new MiddlewareBinding(AttributeMiddleware::class, ['foo' => 'bar']);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $controller = new ControllerMock();
-        $this->dependencyResolver->expects($this->at(0))
+        $this->serviceResolver->expects($this->at(0))
             ->method('resolve')
             ->with(ControllerMock::class)
             ->willReturn($controller);
-        $this->dependencyResolver->expects($this->at(1))
+        $this->serviceResolver->expects($this->at(1))
             ->method('resolve')
             ->with(AttributeMiddleware::class)
             ->willReturn($middleware);
@@ -112,11 +108,11 @@ class RouterTest extends TestCase
         $middlewareBinding = new MiddlewareBinding(__CLASS__);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $controller = new ControllerMock();
-        $this->dependencyResolver->expects($this->at(0))
+        $this->serviceResolver->expects($this->at(0))
             ->method('resolve')
             ->with(ControllerMock::class)
             ->willReturn($controller);
-        $this->dependencyResolver->expects($this->at(1))
+        $this->serviceResolver->expects($this->at(1))
             ->method('resolve')
             ->with(__CLASS__)
             ->willReturn($middleware);
@@ -166,15 +162,15 @@ class RouterTest extends TestCase
         $middleware1 = new MiddlewareThatIncrementsHeader();
         $middleware2 = new MiddlewareThatIncrementsHeader();
         $controller = new ControllerMock();
-        $this->dependencyResolver->expects($this->at(0))
+        $this->serviceResolver->expects($this->at(0))
             ->method('resolve')
             ->with(ControllerMock::class)
             ->willReturn($controller);
-        $this->dependencyResolver->expects($this->at(1))
+        $this->serviceResolver->expects($this->at(1))
             ->method('resolve')
             ->with(MiddlewareThatIncrementsHeader::class)
             ->willReturn($middleware1);
-        $this->dependencyResolver->expects($this->at(2))
+        $this->serviceResolver->expects($this->at(2))
             ->method('resolve')
             ->with(MiddlewareThatIncrementsHeader::class)
             ->willReturn($middleware2);
@@ -258,7 +254,7 @@ class RouterTest extends TestCase
         $this->expectExceptionMessage(sprintf('Controller method %s::doesNotExist() does not exist', ControllerMock::class));
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $controller = new ControllerMock();
-        $this->dependencyResolver->expects($this->once())
+        $this->serviceResolver->expects($this->once())
             ->method('resolve')
             ->with(ControllerMock::class)
             ->willReturn($controller);
@@ -284,7 +280,7 @@ class RouterTest extends TestCase
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $expectedResponse = $this->createMock(IHttpResponseMessage::class);
         $controller = new ControllerMock();
-        $this->dependencyResolver->expects($this->once())
+        $this->serviceResolver->expects($this->once())
             ->method('resolve')
             ->with(ControllerMock::class)
             ->willReturn($controller);
@@ -327,7 +323,7 @@ class RouterTest extends TestCase
             [],
             []
         );
-        $this->dependencyResolver->expects($this->once())
+        $this->serviceResolver->expects($this->once())
             ->method('resolve')
             ->with(__CLASS__)
             ->willReturn($this);

@@ -22,21 +22,21 @@ use InvalidArgumentException;
  */
 final class RouteBuilderRouteRegistrant implements IRouteRegistrant
 {
-    /** @var Closure[] The list of callbacks that take in a RouteBuilder instance and register routes */
-    private array $routeBuilderCallbacks;
+    /** @var Closure[] The list of closures that take in a RouteBuilder instance and register routes */
+    private array $routeBuilderClosures;
 
     /**
-     * @param Closure[]|Closure $routeBuilderCallbacks The list of callbacks that take in a RouteBuilder instance and register routes
-     * @throws InvalidArgumentException Thrown if the callbacks were not the a Closure nor list of Closures
+     * @param Closure[]|Closure $routeBuilderClosures The list of closures that take in a RouteBuilder instance and register routes
+     * @throws InvalidArgumentException Thrown if the parameter was not a Closure nor list of Closures
      */
-    public function __construct($routeBuilderCallbacks)
+    public function __construct($routeBuilderClosures)
     {
-        if (is_array($routeBuilderCallbacks)) {
-            $this->routeBuilderCallbacks = $routeBuilderCallbacks;
-        } elseif ($routeBuilderCallbacks instanceof Closure) {
-            $this->routeBuilderCallbacks = [$routeBuilderCallbacks];
+        if (is_array($routeBuilderClosures)) {
+            $this->routeBuilderClosures = $routeBuilderClosures;
+        } elseif ($routeBuilderClosures instanceof Closure) {
+            $this->routeBuilderClosures = [$routeBuilderClosures];
         } else {
-            throw new InvalidArgumentException('Callbacks must be an instance of ' . Closure::class . ' or an array of Closures');
+            throw new InvalidArgumentException('Closures must be an instance of ' . Closure::class . ' or an array of Closures');
         }
     }
 
@@ -47,8 +47,8 @@ final class RouteBuilderRouteRegistrant implements IRouteRegistrant
     {
         $routeBuilders = new RouteBuilderRegistry();
 
-        foreach ($this->routeBuilderCallbacks as $callback) {
-            $callback($routeBuilders);
+        foreach ($this->routeBuilderClosures as $closure) {
+            $closure($routeBuilders);
         }
 
         $routes->addMany($routeBuilders->buildAll());

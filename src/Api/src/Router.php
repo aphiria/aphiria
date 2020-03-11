@@ -16,7 +16,7 @@ use Aphiria\Api\Controllers\Controller;
 use Aphiria\Api\Controllers\ControllerRequestHandler;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Controllers\RouteActionInvoker;
-use Aphiria\DependencyInjection\IDependencyResolver;
+use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Middleware\AttributeMiddleware;
 use Aphiria\Middleware\IMiddleware;
@@ -43,33 +43,28 @@ class Router implements IRequestHandler
 {
     /** @var IRouteMatcher The route matcher */
     private IRouteMatcher $routeMatcher;
-    /** @var IDependencyResolver The dependency resolver */
-    private IDependencyResolver $dependencyResolver;
+    /** @var IServiceResolver The service resolver */
+    private IServiceResolver $serviceResolver;
     /** @var IContentNegotiator The content negotiator */
     private IContentNegotiator $contentNegotiator;
-    /** @var MiddlewarePipelineFactory The middleware pipeline factory */
-    private ?MiddlewarePipelineFactory $middlewarePipelineFactory;
     /** @var IRouteActionInvoker The route action invoker */
     private IRouteActionInvoker $routeActionInvoker;
 
     /**
      * @param IRouteMatcher $routeMatcher The route matcher
-     * @param IDependencyResolver $dependencyResolver The dependency resolver
+     * @param IServiceResolver $serviceResolver The service resolver
      * @param IContentNegotiator|null $contentNegotiator The content negotiator, or null if using the default negotiator
-     * @param MiddlewarePipelineFactory|null $middlewarePipelineFactory THe middleware pipeline factory
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
      */
     public function __construct(
         IRouteMatcher $routeMatcher,
-        IDependencyResolver $dependencyResolver,
+        IServiceResolver $serviceResolver,
         IContentNegotiator $contentNegotiator = null,
-        MiddlewarePipelineFactory $middlewarePipelineFactory = null,
         IRouteActionInvoker $routeActionInvoker = null
     ) {
         $this->routeMatcher = $routeMatcher;
-        $this->dependencyResolver = $dependencyResolver;
+        $this->serviceResolver = $serviceResolver;
         $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
-        $this->middlewarePipelineFactory = $middlewarePipelineFactory ?? new MiddlewarePipelineFactory();
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }
 
@@ -88,7 +83,7 @@ class Router implements IRequestHandler
             $this->contentNegotiator,
             $this->routeActionInvoker
         );
-        $middlewarePipeline = $this->middlewarePipelineFactory->createPipeline(
+        $middlewarePipeline = (new MiddlewarePipelineFactory)->createPipeline(
             $this->createMiddlewareFromBindings($matchingResult->route->middlewareBindings),
             $controllerRequestHandler
         );
@@ -110,7 +105,7 @@ class Router implements IRequestHandler
         ?callable &$routeActionDelegate
     ): void {
         if ($routeAction->usesMethod()) {
-            $controller = $this->dependencyResolver->resolve($routeAction->className);
+            $controller = $this->serviceResolver->resolve($routeAction->className);
             $routeActionDelegate = [$controller, $routeAction->methodName];
 
             if (!is_callable($routeActionDelegate)) {
@@ -146,7 +141,7 @@ class Router implements IRequestHandler
         $middlewareList = [];
 
         foreach ($middlewareBindings as $middlewareBinding) {
-            $middleware = $this->dependencyResolver->resolve($middlewareBinding->className);
+            $middleware = $this->serviceResolver->resolve($middlewareBinding->className);
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(
