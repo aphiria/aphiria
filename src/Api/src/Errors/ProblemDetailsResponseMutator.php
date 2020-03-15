@@ -17,7 +17,7 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 /**
  * Defines the mutator that can convert a response to a problem details response
  */
-final class ProblemDetailsResponseMutator
+class ProblemDetailsResponseMutator
 {
     /**
      * Mutates a response so that it properly represents a problem details response

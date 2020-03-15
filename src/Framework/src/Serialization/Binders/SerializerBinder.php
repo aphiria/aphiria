@@ -34,6 +34,7 @@ final class SerializerBinder extends Binder
     public function bind(IContainer $container): void
     {
         $encoders = new EncoderRegistry();
+        $container->bindInstance(EncoderRegistry::class, $encoders);
 
         $propertyNameFormatterName = null;
         GlobalConfiguration::tryGetString('aphiria.serialization.propertyNameFormatter', $propertyNameFormatterName);
@@ -50,8 +51,6 @@ final class SerializerBinder extends Binder
             $propertyNameFormatter,
             GlobalConfiguration::getString('aphiria.serialization.dateFormat')
         ))->registerDefaultEncoders($encoders);
-
-        $container->bindInstance(EncoderRegistry::class, $encoders);
 
         foreach (GlobalConfiguration::getArray('aphiria.serialization.serializers') as $serializerName) {
             switch ($serializerName) {
