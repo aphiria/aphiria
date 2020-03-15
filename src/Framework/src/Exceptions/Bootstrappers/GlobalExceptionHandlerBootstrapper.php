@@ -29,8 +29,17 @@ use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\IExceptionLogger;
 use Aphiria\Exceptions\IExceptionResponseFactory;
 use Aphiria\IO\Streams\Stream;
+use Aphiria\Net\Http\ContentNegotiation\AcceptCharsetEncodingMatcher;
+use Aphiria\Net\Http\ContentNegotiation\AcceptLanguageMatcher;
+use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
+use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
+use Aphiria\Net\Http\ContentNegotiation\IEncodingMatcher;
+use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
+use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
@@ -50,7 +59,7 @@ use Psr\Log\LoggerInterface;
 final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
 {
     /** @var IContainer The DI container */
-    private IContainer $container;
+    protected IContainer $container;
 
     /**
      * @param IContainer $container The DI container
@@ -67,32 +76,8 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
      */
     public function bootstrap(): void
     {
-        $exceptionResponseFactoryRegistry = new ExceptionResponseFactoryRegistry();
-        $exceptionResponseFactoryRegistry->registerDefaultFactory($this->getDefaultExceptionResponseFactory($this->container));
-        $exceptionResponseFactoryRegistry->registerManyFactories([
-            HttpException::class => fn(HttpException $ex, IHttpRequestMessage $request) => $ex->getResponse(),
-            InvalidRequestBodyException::class => $this->getInvalidRequestBodyResponseFactory()
-        ]);
-        $exceptionResponseFactory = new ExceptionResponseFactory(
-            $this->container->resolve(INegotiatedResponseFactory::class),
-            $exceptionResponseFactoryRegistry
-        );
-        $this->container->bindInstance(ExceptionResponseFactoryRegistry::class, $exceptionResponseFactoryRegistry);
-        $this->container->bindInstance(IExceptionResponseFactory::class, $exceptionResponseFactory);
-
-        $exceptionLogLevelFactories = new ExceptionLogLevelFactoryRegistry();
-        $this->container->bindInstance(ExceptionLogLevelFactoryRegistry::class, $exceptionLogLevelFactories);
-
-        $psr3Logger = $this->getPsr3Logger();
-        $exceptionLogger = new ExceptionLogger(
-            $psr3Logger,
-            $exceptionLogLevelFactories,
-            GlobalConfiguration::getArray('aphiria.exceptions.exceptionLogLevels'),
-            GlobalConfiguration::getInt('aphiria.exceptions.errorLogLevels')
-        );
-        $this->container->bindInstance(LoggerInterface::class, $psr3Logger);
-        $this->container->bindInstance(IExceptionLogger::class, $exceptionLogger);
-
+        $exceptionResponseFactory = $this->createAndBindExceptionResponseFactory();
+        $exceptionLogger = $this->createAndBindExceptionLogger();
         $globalExceptionHandler = new GlobalExceptionHandler(
             $exceptionResponseFactory,
             $exceptionLogger,
@@ -103,13 +88,146 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     }
 
     /**
+     * Creates and binds an exception logger
+     *
+     * @return IExceptionLogger The created exception logger
+     * @throws ConfigurationException Thrown if the configuration values were invalid or missing
+     */
+    protected function createAndBindExceptionLogger(): IExceptionLogger
+    {
+        $exceptionLogger = new ExceptionLogger(
+            $this->createAndBindPsr3Logger(),
+            $this->createAndBindExceptionLogLevelFactories(),
+            GlobalConfiguration::getArray('aphiria.exceptions.exceptionLogLevels'),
+            GlobalConfiguration::getInt('aphiria.exceptions.errorLogLevels')
+        );
+        $this->container->bindInstance(IExceptionLogger::class, $exceptionLogger);
+
+        return $exceptionLogger;
+    }
+
+    /**
+     * Creates and binds an exception log level factory registry
+     *
+     * @return ExceptionLogLevelFactoryRegistry The created exception log level factories
+     */
+    protected function createAndBindExceptionLogLevelFactories(): ExceptionLogLevelFactoryRegistry
+    {
+        $exceptionLogLevelFactories = new ExceptionLogLevelFactoryRegistry();
+        $this->container->bindInstance(ExceptionLogLevelFactoryRegistry::class, $exceptionLogLevelFactories);
+
+        return $exceptionLogLevelFactories;
+    }
+
+    /**
+     * Creates and binds an exception factory
+     *
+     * @return IExceptionResponseFactory The created exception response factory
+     * @throws ConfigurationException Thrown if configuration values were invalid or missing
+     * @throws ResolutionException Thrown if could not be resolved
+     */
+    protected function createAndBindExceptionResponseFactory(): IExceptionResponseFactory
+    {
+        $exceptionResponseFactoryRegistry = new ExceptionResponseFactoryRegistry();
+        $exceptionResponseFactoryRegistry->registerDefaultFactory($this->getDefaultExceptionResponseFactory());
+        $exceptionResponseFactoryRegistry->registerManyFactories([
+            HttpException::class => fn(HttpException $ex, IHttpRequestMessage $request) => $ex->getResponse(),
+            InvalidRequestBodyException::class => $this->getInvalidRequestBodyResponseFactory()
+        ]);
+        $exceptionResponseFactory = new ExceptionResponseFactory(
+            $this->createAndBindNegotiatedResponseFactory(),
+            $exceptionResponseFactoryRegistry
+        );
+        $this->container->bindInstance(ExceptionResponseFactoryRegistry::class, $exceptionResponseFactoryRegistry);
+        $this->container->bindInstance(IExceptionResponseFactory::class, $exceptionResponseFactory);
+
+        return $exceptionResponseFactory;
+    }
+
+    /**
+     * Creates and binds a negotiated response factory
+     *
+     * @return INegotiatedResponseFactory The created negotiated response factory
+     * @throws ConfigurationException Thrown if configuration values were invalid or missing
+     * @throws ResolutionException Thrown if dependencies could not be resolved
+     */
+    protected function createAndBindNegotiatedResponseFactory(): INegotiatedResponseFactory
+    {
+        $mediaTypeFormatters = array_map(
+            fn (string $class) => $this->container->resolve($class),
+            GlobalConfiguration::getArray('aphiria.contentNegotiation.mediaTypeFormatters')
+        );
+        $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher($mediaTypeFormatters);
+        $this->container->bindInstance(IMediaTypeFormatterMatcher::class, $mediaTypeFormatterMatcher);
+
+        $encodingMatcherName = GlobalConfiguration::getString('aphiria.contentNegotiation.encodingMatcher');
+
+        if ($encodingMatcherName === AcceptCharsetEncodingMatcher::class) {
+            $encodingMatcher = new AcceptCharsetEncodingMatcher();
+        } else {
+            $encodingMatcher = $this->container->resolve($encodingMatcherName);
+        }
+
+        $this->container->bindInstance(IEncodingMatcher::class, $encodingMatcher);
+
+        $languageMatcherName = GlobalConfiguration::getString('aphiria.contentNegotiation.languageMatcher');
+
+        if ($languageMatcherName === AcceptLanguageMatcher::class) {
+            $languageMatcher = new AcceptLanguageMatcher(GlobalConfiguration::getArray('aphiria.contentNegotiation.supportedLanguages'));
+        } else {
+            $languageMatcher = $this->container->resolve($languageMatcherName);
+        }
+
+        $this->container->bindInstance(ILanguageMatcher::class, $languageMatcher);
+
+        $contentNegotiator = new ContentNegotiator(
+            $mediaTypeFormatters,
+            $mediaTypeFormatterMatcher,
+            $encodingMatcher,
+            $languageMatcher
+        );
+        $negotiatedResponseFactory = new NegotiatedResponseFactory($contentNegotiator);
+        $this->container->bindInstance(IContentNegotiator::class, $contentNegotiator);
+        $this->container->bindInstance(INegotiatedResponseFactory::class, $negotiatedResponseFactory);
+
+        return $negotiatedResponseFactory;
+    }
+
+    /**
+     * Creates and binds a PSR-3 logger instance to use in the exception handler
+     *
+     * @return LoggerInterface The PSR-3 logger to use
+     * @throws ConfigurationException Thrown if the configuration was invalid
+     */
+    protected function createAndBindPsr3Logger(): LoggerInterface
+    {
+        $logger = new Logger(GlobalConfiguration::getString('aphiria.logging.name'));
+
+        foreach (GlobalConfiguration::getArray('aphiria.logging.handlers') as $handlerConfiguration) {
+            switch ($handlerConfiguration['type']) {
+                case StreamHandler::class:
+                    $logger->pushHandler(new StreamHandler($handlerConfiguration['path']));
+                    break;
+                case SyslogHandler::class:
+                    $logger->pushHandler(new SyslogHandler($handlerConfiguration['ident'] ?? 'app'));
+                    break;
+                default:
+                    throw new ConfigurationException("Unsupported logging handler type {$handlerConfiguration['type']}");
+            }
+        }
+
+        $this->container->bindInstance(LoggerInterface::class, $logger);
+
+        return $logger;
+    }
+
+    /**
      * Gets the default exception response factory to use
      *
-     * @param IContainer $container The DI container
      * @return Closure The exception response factory
      * @throws ConfigurationException Thrown if the config is missing values
      */
-    private function getDefaultExceptionResponseFactory(IContainer $container): Closure
+    protected function getDefaultExceptionResponseFactory(): Closure
     {
         if (!GlobalConfiguration::getBool('aphiria.exceptions.useProblemDetails')) {
             return static function (
@@ -121,12 +239,10 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
             };
         }
 
-        return static function (
+        return function (
             Exception $ex,
             ?IHttpRequestMessage $request,
             INegotiatedResponseFactory $responseFactory
-        ) use (
-            $container
         ): IHttpResponseMessage {
             $problemDetails = new ProblemDetails(
                 'https://tools.ietf.org/html/rfc7231#section-6.6.1',
@@ -144,7 +260,7 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                 $response->getHeaders()->add('Content-Type', 'application/problem+json');
                 $bodyStream = new Stream(fopen('php://temp', 'r+b'));
                 /** @var JsonMediaTypeFormatter $mediaTypeFormatter */
-                $mediaTypeFormatter = $container->resolve(JsonMediaTypeFormatter::class);
+                $mediaTypeFormatter = $this->container->resolve(JsonMediaTypeFormatter::class);
                 $mediaTypeFormatter->writeToStream($problemDetails, $bodyStream, null);
                 $response->setBody(new StreamBody($bodyStream));
 
@@ -165,7 +281,7 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
      * @return Closure The response factory
      * @throws ConfigurationException Thrown if the config is missing values
      */
-    private function getInvalidRequestBodyResponseFactory(): Closure
+    protected function getInvalidRequestBodyResponseFactory(): Closure
     {
         if (!GlobalConfiguration::getBool('aphiria.exceptions.useProblemDetails')) {
             return static function (
@@ -187,31 +303,5 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
 
             return (new ProblemDetailsResponseMutator)->mutateResponse($response);
         };
-    }
-
-    /**
-     * Gets the PSR-3 logger instance to use in the exception handler
-     *
-     * @return LoggerInterface The PSR-3 logger to use
-     * @throws ConfigurationException Thrown if the configuration was invalid
-     */
-    private function getPsr3Logger(): LoggerInterface
-    {
-        $logger = new Logger(GlobalConfiguration::getString('aphiria.logging.name'));
-
-        foreach (GlobalConfiguration::getArray('aphiria.logging.handlers') as $handlerConfiguration) {
-            switch ($handlerConfiguration['type']) {
-                case StreamHandler::class:
-                    $logger->pushHandler(new StreamHandler($handlerConfiguration['path']));
-                    break;
-                case SyslogHandler::class:
-                    $logger->pushHandler(new SyslogHandler($handlerConfiguration['ident'] ?? 'app'));
-                    break;
-                default:
-                    throw new ConfigurationException("Unsupported logging handler type {$handlerConfiguration['type']}");
-            }
-        }
-
-        return $logger;
     }
 }

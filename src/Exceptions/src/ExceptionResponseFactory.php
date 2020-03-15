@@ -23,7 +23,7 @@ use Throwable;
 /**
  * Defines a factory for responses created from exceptions
  */
-final class ExceptionResponseFactory implements IExceptionResponseFactory
+class ExceptionResponseFactory implements IExceptionResponseFactory
 {
     /** @var INegotiatedResponseFactory The negotiated response factory */
     protected INegotiatedResponseFactory $negotiatedResponseFactory;
@@ -68,7 +68,7 @@ final class ExceptionResponseFactory implements IExceptionResponseFactory
      *
      * @return ExceptionResponseFactoryRegistry The default response factory registry
      */
-    private function createDefaultExceptionResponseFactories(): ExceptionResponseFactoryRegistry
+    protected function createDefaultExceptionResponseFactories(): ExceptionResponseFactoryRegistry
     {
         $responseFactories = new ExceptionResponseFactoryRegistry();
         $responseFactories->registerFactory(
