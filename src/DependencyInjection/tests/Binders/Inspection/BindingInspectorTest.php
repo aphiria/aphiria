@@ -17,6 +17,7 @@ use Aphiria\DependencyInjection\Binders\Inspection\BindingInspectionContainer;
 use Aphiria\DependencyInjection\Binders\Inspection\BindingInspector;
 use Aphiria\DependencyInjection\Binders\Inspection\ImpossibleBindingException;
 use Aphiria\DependencyInjection\Binders\Inspection\TargetedBinderBinding;
+use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\Tests\Binders\Inspection\Mocks\Bar;
 use Aphiria\DependencyInjection\Tests\Binders\Inspection\Mocks\Foo;
@@ -34,7 +35,7 @@ class BindingInspectorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->container = new BindingInspectionContainer();
+        $this->container = new BindingInspectionContainer(new Container());
         $this->inspector = new BindingInspector($this->container);
     }
 

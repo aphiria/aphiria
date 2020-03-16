@@ -15,6 +15,7 @@ namespace Aphiria\DependencyInjection\Tests\Binders\Inspection;
 use Aphiria\DependencyInjection\Binders\Inspection\BindingInspectionContainer;
 use Aphiria\DependencyInjection\Binders\Inspection\TargetedBinderBinding;
 use Aphiria\DependencyInjection\Binders\Inspection\UniversalBinderBinding;
+use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\Tests\Binders\Inspection\Mocks\Foo;
 use Aphiria\DependencyInjection\Tests\Binders\Inspection\Mocks\IFoo;
@@ -26,11 +27,14 @@ use PHPUnit\Framework\TestCase;
  */
 class BindingInspectionContainerTest extends TestCase
 {
-    private BindingInspectionContainer $container;
+    private BindingInspectionContainer $bindingInspectionContainer;
+    private IContainer $container;
 
     protected function setUp(): void
     {
-        $this->container = new BindingInspectionContainer();
+        // Use a real container to simplify testing
+        $this->container = new Container();
+        $this->bindingInspectionContainer = new BindingInspectionContainer($this->container);
     }
 
     public function testBindingMethodsCreatesTargetedBindings(): void
@@ -48,9 +52,9 @@ class BindingInspectionContainerTest extends TestCase
                 });
             }
         };
-        $this->container->setBinder($expectedBinder);
-        $expectedBinder->bind($this->container);
-        $actualBindings = $this->container->getBindings();
+        $this->bindingInspectionContainer->setBinder($expectedBinder);
+        $expectedBinder->bind($this->bindingInspectionContainer);
+        $actualBindings = $this->bindingInspectionContainer->getBindings();
 
         /** @var TargetedBinderBinding $actualBinding */
         foreach ($actualBindings as $actualBinding) {
@@ -74,9 +78,9 @@ class BindingInspectionContainerTest extends TestCase
                 $container->bindSingleton(IFoo::class, Foo::class);
             }
         };
-        $this->container->setBinder($expectedBinder);
-        $expectedBinder->bind($this->container);
-        $actualBindings = $this->container->getBindings();
+        $this->bindingInspectionContainer->setBinder($expectedBinder);
+        $expectedBinder->bind($this->bindingInspectionContainer);
+        $actualBindings = $this->bindingInspectionContainer->getBindings();
 
         foreach ($actualBindings as $actualBinding) {
             $this->assertInstanceOf(UniversalBinderBinding::class, $actualBinding);
@@ -95,12 +99,12 @@ class BindingInspectionContainerTest extends TestCase
                 });
             }
         };
-        $this->container->setBinder($binder);
-        $binder->bind($this->container);
+        $this->bindingInspectionContainer->setBinder($binder);
+        $binder->bind($this->bindingInspectionContainer);
         // Re-register bindings
-        $binder->bind($this->container);
+        $binder->bind($this->bindingInspectionContainer);
         /** @var TargetedBinderBinding[] $actualBindings */
-        $actualBindings = $this->container->getBindings();
+        $actualBindings = $this->bindingInspectionContainer->getBindings();
         $this->assertCount(1, $actualBindings);
         $this->assertEquals('foo', $actualBindings[0]->getTargetClass());
         $this->assertEquals(IFoo::class, $actualBindings[0]->getInterface());
@@ -115,11 +119,11 @@ class BindingInspectionContainerTest extends TestCase
                 $container->bindSingleton(IFoo::class, Foo::class);
             }
         };
-        $this->container->setBinder($binder);
-        $binder->bind($this->container);
+        $this->bindingInspectionContainer->setBinder($binder);
+        $binder->bind($this->bindingInspectionContainer);
         // Re-register bindings
-        $binder->bind($this->container);
-        $actualBindings = $this->container->getBindings();
+        $binder->bind($this->bindingInspectionContainer);
+        $actualBindings = $this->bindingInspectionContainer->getBindings();
         $this->assertCount(1, $actualBindings);
         $this->assertEquals(IFoo::class, $actualBindings[0]->getInterface());
         $this->assertSame($binder, $actualBindings[0]->getBinder());

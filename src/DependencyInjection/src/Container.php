@@ -154,6 +154,7 @@ class Container implements IContainer
      */
     public function for(string $targetClass, callable $callback)
     {
+        // We're duplicating the tracking of targets here so that we can know if any bindings are targeted or universal
         $this->currentTarget = $targetClass;
         $this->targetStack[] = $targetClass;
 

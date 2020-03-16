@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\DependencyInjection\Binders\Inspection;
 
 use Aphiria\DependencyInjection\Binders\Binder;
+use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\ResolutionException;
 
 /**
@@ -28,7 +29,7 @@ final class BindingInspector
      */
     public function __construct(BindingInspectionContainer $inspectionContainer = null)
     {
-        $this->container = $inspectionContainer ?? new BindingInspectionContainer();
+        $this->container = $inspectionContainer ?? new BindingInspectionContainer(new Container());
     }
 
     /**

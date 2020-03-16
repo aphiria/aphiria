@@ -13,18 +13,34 @@ declare(strict_types=1);
 namespace Aphiria\DependencyInjection\Binders\Inspection;
 
 use Aphiria\DependencyInjection\Binders\Binder;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\IContainer;
 
 /**
  * Defines a container that can be used to inspect the bindings set in a binder
  * @internal
  */
-final class BindingInspectionContainer extends Container
+final class BindingInspectionContainer implements IContainer
 {
+    /** @var null The value of an empty target */
+    private const EMPTY_TARGET = null;
+    /** @var IContainer The underlying container that can resolve and bind instances */
+    private IContainer $container;
+    /** @var string|null The current target */
+    private ?string $currentTarget = null;
+    /** @var array The stack of targets */
+    private array $targetStack = [];
     /** @var BinderBinding[] The binder bindings that were found */
     private array $binderBindings = [];
     /** @var Binder|null The current binder class */
     private ?Binder $currBinder = null;
+
+    /**
+     * @param IContainer $container The underlying container to use to resolve and bind instances
+     */
+    public function __construct(IContainer $container)
+    {
+        $this->container = $container;
+    }
 
     /**
      * @inheritdoc
@@ -32,7 +48,12 @@ final class BindingInspectionContainer extends Container
     public function bindFactory($interfaces, callable $factory, bool $resolveAsSingleton = false): void
     {
         $this->addBinderBinding($interfaces);
-        parent::bindFactory($interfaces, $factory, $resolveAsSingleton);
+
+        if ($this->currentTarget === null) {
+            $this->container->bindFactory($interfaces, $factory, $resolveAsSingleton);
+        } else {
+            $this->container->for($this->currentTarget, fn (IContainer $container) => $container->bindFactory($interfaces, $factory, $resolveAsSingleton));
+        }
     }
 
     /**
@@ -41,7 +62,12 @@ final class BindingInspectionContainer extends Container
     public function bindInstance($interfaces, object $instance): void
     {
         $this->addBinderBinding($interfaces);
-        parent::bindInstance($interfaces, $instance);
+
+        if ($this->currentTarget === null) {
+            $this->container->bindInstance($interfaces, $instance);
+        } else {
+            $this->container->for($this->currentTarget, fn (IContainer $container) => $container->bindInstance($interfaces, $instance));
+        }
     }
 
     /**
@@ -50,7 +76,12 @@ final class BindingInspectionContainer extends Container
     public function bindPrototype($interfaces, string $concreteClass = null, array $primitives = []): void
     {
         $this->addBinderBinding($interfaces);
-        parent::bindPrototype($interfaces, $concreteClass, $primitives);
+
+        if ($this->currentTarget === null) {
+            $this->container->bindPrototype($interfaces, $concreteClass, $primitives);
+        } else {
+            $this->container->for($this->currentTarget, fn (IContainer $container) => $container->bindPrototype($interfaces, $concreteClass, $primitives));
+        }
     }
 
     /**
@@ -59,7 +90,44 @@ final class BindingInspectionContainer extends Container
     public function bindSingleton($interfaces, string $concreteClass = null, array $primitives = []): void
     {
         $this->addBinderBinding($interfaces);
-        parent::bindSingleton($interfaces, $concreteClass, $primitives);
+
+        if ($this->currentTarget === null) {
+            $this->container->bindSingleton($interfaces, $concreteClass, $primitives);
+        } else {
+            $this->container->for($this->currentTarget, fn (IContainer $container) => $container->bindSingleton($interfaces, $concreteClass, $primitives));
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function callClosure(callable $closure, array $primitives = [])
+    {
+        return $this->container->callClosure($closure, $primitives);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function callMethod($instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false)
+    {
+        return $this->container->callMethod($instance, $methodName, $primitives, $ignoreMissingMethod);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function for(string $targetClass, callable $callback)
+    {
+        $this->currentTarget = $targetClass;
+        $this->targetStack[] = $targetClass;
+
+        $result = $callback($this);
+
+        array_pop($this->targetStack);
+        $this->currentTarget = end($this->targetStack) ?: self::EMPTY_TARGET;
+
+        return $result;
     }
 
     /**
@@ -73,15 +141,68 @@ final class BindingInspectionContainer extends Container
         $binderBindings = [];
 
         foreach ($this->binderBindings as $interface => $bindings) {
-            $binderBindings = \array_merge($binderBindings, $bindings);
+            $binderBindings = [...$binderBindings, ...$bindings];
         }
 
         return $binderBindings;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function hasBinding(string $interface): bool
+    {
+        if ($this->currentTarget === null) {
+            return $this->container->hasBinding($interface);
+        }
+
+        return $this->container->for($this->currentTarget, fn (IContainer $container) => $container->hasBinding($interface));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function resolve(string $interface): object
+    {
+        if ($this->currentTarget === null) {
+            return $this->container->resolve($interface);
+        }
+
+        return $this->container->for($this->currentTarget, fn (IContainer $container) => $container->resolve($interface));
+    }
+
+    /**
+     * Sets the current binding
+     *
+     * @param Binder $binder The current binding
+     */
     public function setBinder(Binder $binder): void
     {
         $this->currBinder = $binder;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function tryResolve(string $interface, ?object &$instance): bool
+    {
+        if ($this->currentTarget === null) {
+            return $this->container->tryResolve($interface, $instance);
+        }
+
+        return $this->container->for($this->currentTarget, fn (IContainer $container) => $container->tryResolve($interface, $instance));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function unbind($interfaces): void
+    {
+        if ($this->currentTarget === null) {
+            $this->container->unbind($interfaces);
+        }
+
+        $this->container->for($this->currentTarget, fn (IContainer $container) => $container->unbind($interfaces));
     }
 
     /**
