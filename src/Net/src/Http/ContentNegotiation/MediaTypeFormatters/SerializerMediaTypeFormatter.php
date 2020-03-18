@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
+use Aphiria\IO\Streams\IStream;
 use Aphiria\Serialization\ISerializer;
 use Aphiria\Serialization\SerializationException as SerializerSerializationException;
 use Aphiria\Serialization\TypeResolver;
 use InvalidArgumentException;
-use Aphiria\IO\Streams\IStream;
 
 /**
  * Defines the base class for media type formatters that use serializers to extend

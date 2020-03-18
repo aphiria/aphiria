@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
+use Aphiria\IO\Streams\IStream;
 use Aphiria\Serialization\TypeResolver;
 use InvalidArgumentException;
-use Aphiria\IO\Streams\IStream;
 
 /**
  * Defines the base class for text-based media type formatters

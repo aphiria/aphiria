@@ -18,7 +18,7 @@ use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
 use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
 use Aphiria\Exceptions\Middleware\ExceptionHandler;
-use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
+use Aphiria\Framework\Application\AphiriaComponents;
 use Aphiria\Middleware\MiddlewareBinding;
 use Closure;
 
@@ -27,6 +27,8 @@ use Closure;
  */
 class ExceptionHandlerComponent implements IComponent
 {
+    use AphiriaComponents;
+
     /** @var IServiceResolver The service resolver */
     private IServiceResolver $serviceResolver;
     /** @var IApplicationBuilder The application builder */
@@ -54,8 +56,7 @@ class ExceptionHandlerComponent implements IComponent
     public function build(): void
     {
         if ($this->exceptionHandlerMiddlewareEnabled) {
-            $this->appBuilder->getComponent(MiddlewareComponent::class)
-                ->withGlobalMiddleware(new MiddlewareBinding(ExceptionHandler::class), 0);
+            $this->withGlobalMiddleware($this->appBuilder, new MiddlewareBinding(ExceptionHandler::class), 0);
         }
 
         $exceptionResponseFactories = $this->serviceResolver->resolve(ExceptionResponseFactoryRegistry::class);

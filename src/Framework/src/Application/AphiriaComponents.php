@@ -43,7 +43,7 @@ trait AphiriaComponents
      * @return self For chaining
      * @throws ResolutionException Thrown if there was a problem resolving dependencies
      */
-    private function withBinders(IApplicationBuilder $appBuilder, $binders): self
+    protected function withBinders(IApplicationBuilder $appBuilder, $binders): self
     {
         if (!$appBuilder->hasComponent(BinderComponent::class)) {
             $appBuilder->withComponent(
@@ -64,7 +64,7 @@ trait AphiriaComponents
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @return self For chaining
      */
-    private function withCommandAnnotations(IApplicationBuilder $appBuilder): self
+    protected function withCommandAnnotations(IApplicationBuilder $appBuilder): self
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(CommandComponent::class)) {
@@ -89,7 +89,7 @@ trait AphiriaComponents
      * @param Closure $callback The callback that takes in an instance of CommandRegistry to register commands to
      * @return self For chaining
      */
-    private function withCommands(IApplicationBuilder $appBuilder, Closure $callback): self
+    protected function withCommands(IApplicationBuilder $appBuilder, Closure $callback): self
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(CommandComponent::class)) {
@@ -115,7 +115,7 @@ trait AphiriaComponents
      * @param IEncoder $encoder The encoder to register
      * @return self For chaining
      */
-    private function withEncoder(IApplicationBuilder $appBuilder, string $class, IEncoder $encoder): self
+    protected function withEncoder(IApplicationBuilder $appBuilder, string $class, IEncoder $encoder): self
     {
         if (!$appBuilder->hasComponent(SerializerComponent::class)) {
             $appBuilder->withComponent(new SerializerComponent(Container::$globalInstance));
@@ -133,7 +133,7 @@ trait AphiriaComponents
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @return self For chaining
      */
-    private function withExceptionHandlerMiddleware(IApplicationBuilder $appBuilder): self
+    protected function withExceptionHandlerMiddleware(IApplicationBuilder $appBuilder): self
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
@@ -154,7 +154,7 @@ trait AphiriaComponents
      * @param Closure $responseFactory The factory that takes in an instance of the exception, ?IHttpRequestMessage, and INegotiatedResponseFactory and creates a response
      * @return self For chaining
      */
-    private function withExceptionResponseFactory(IApplicationBuilder $appBuilder, string $exceptionType, Closure $responseFactory): self
+    protected function withExceptionResponseFactory(IApplicationBuilder $appBuilder, string $exceptionType, Closure $responseFactory): self
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
@@ -176,7 +176,7 @@ trait AphiriaComponents
      * @return self For chaining
      * @throws ResolutionException Thrown if there was a problem resolving dependencies
      */
-    private function withGlobalMiddleware(IApplicationBuilder $appBuilder, $middlewareBindings, int $priority = null): self
+    protected function withGlobalMiddleware(IApplicationBuilder $appBuilder, $middlewareBindings, int $priority = null): self
     {
         if (!$appBuilder->hasComponent(MiddlewareComponent::class)) {
             // Bind the middleware collection here so that it can be used in the component
@@ -200,7 +200,7 @@ trait AphiriaComponents
      * @param Closure $logLevelFactory The factory that takes in an instance of the exception and returns the PSR-3 log level
      * @return self For chaining
      */
-    private function withLogLevelFactory(IApplicationBuilder $appBuilder, string $exceptionType, Closure $logLevelFactory): self
+    protected function withLogLevelFactory(IApplicationBuilder $appBuilder, string $exceptionType, Closure $logLevelFactory): self
     {
         //Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
@@ -220,7 +220,7 @@ trait AphiriaComponents
      * @param Closure $callback The callback that takes in an instance of ObjectConstraintsRegistry to register object constraints to
      * @return self For chaining
      */
-    private function withObjectConstraints(IApplicationBuilder $appBuilder, Closure $callback): self
+    protected function withObjectConstraints(IApplicationBuilder $appBuilder, Closure $callback): self
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ValidationComponent::class)) {
@@ -239,7 +239,7 @@ trait AphiriaComponents
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @return self For chaining
      */
-    private function withRouteAnnotations(IApplicationBuilder $appBuilder): self
+    protected function withRouteAnnotations(IApplicationBuilder $appBuilder): self
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(RouterComponent::class)) {
@@ -259,7 +259,7 @@ trait AphiriaComponents
      * @param Closure $callback The callback that takes in an instance of RouteBuilderRegistry to register route builders to
      * @return self For chaining
      */
-    private function withRoutes(IApplicationBuilder $appBuilder, Closure $callback): self
+    protected function withRoutes(IApplicationBuilder $appBuilder, Closure $callback): self
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(RouterComponent::class)) {
@@ -278,7 +278,7 @@ trait AphiriaComponents
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @return self For chaining
      */
-    private function withValidatorAnnotations(IApplicationBuilder $appBuilder): self
+    protected function withValidatorAnnotations(IApplicationBuilder $appBuilder): self
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ValidationComponent::class)) {

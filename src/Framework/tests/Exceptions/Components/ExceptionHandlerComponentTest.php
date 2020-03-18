@@ -67,8 +67,16 @@ class ExceptionHandlerComponentTest extends TestCase
         $this->exceptionHandlerComponent = new ExceptionHandlerComponent($container, $this->appBuilder);
     }
 
+    protected function tearDown(): void
+    {
+        // Remove the global instance so it doesn't impact other tests
+        Container::$globalInstance = null;
+    }
+
     public function testInitializeWithExceptionHandlerMiddlewareRegistersTheMiddleware(): void
     {
+        // The Aphiria components use the global instance of the container, so make sure it's set
+        Container::$globalInstance = new Container();
         $this->appBuilder->expects($this->once())
             ->method('getComponent')
             ->with(MiddlewareComponent::class)
