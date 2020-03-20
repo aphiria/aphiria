@@ -162,7 +162,7 @@ trait AphiriaComponents
         }
 
         $appBuilder->getComponent(ExceptionHandlerComponent::class)
-            ->withResponseFactory($exceptionType, $responseFactory);
+            ->withNegotiatedResponseFactory($exceptionType, $responseFactory);
 
         return $this;
     }

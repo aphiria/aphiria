@@ -10,15 +10,15 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Exceptions\Tests;
+namespace Aphiria\Exceptions\Tests\Http;
 
-use Aphiria\Exceptions\GlobalExceptionHandler;
+use Aphiria\Exceptions\Http\HttpExceptionHandler;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the global exception handler
+ * Tests the HTTP exception handler
  */
-class GlobalExceptionHandlerTest extends TestCase
+class HttpExceptionHandlerTest extends TestCase
 {
-     // TODO
+    // TODO
 }

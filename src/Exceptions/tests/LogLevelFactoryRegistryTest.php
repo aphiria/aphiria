@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Api\Tests\Exceptions;
+namespace Aphiria\Exceptions\Tests;
 
-use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
+use Aphiria\Exceptions\LogLevelFactoryRegistry;
 use Aphiria\Net\Http\HttpException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -21,13 +21,13 @@ use Psr\Log\LogLevel;
 /**
  * Tests the exception log level factory registry
  */
-class ExceptionLogLevelFactoryRegistryTest extends TestCase
+class LogLevelFactoryRegistryTest extends TestCase
 {
-    private ExceptionLogLevelFactoryRegistry $registry;
+    private LogLevelFactoryRegistry $registry;
 
     protected function setUp(): void
     {
-        $this->registry = new ExceptionLogLevelFactoryRegistry();
+        $this->registry = new LogLevelFactoryRegistry();
     }
 
     public function testGettingFactoryForExceptionTypeThatDoesNotHaveFactoryReturnsNull(): void

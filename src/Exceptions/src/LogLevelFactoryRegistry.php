@@ -17,7 +17,7 @@ use Closure;
 /**
  * Defines the registry of exception log level factories
  */
-final class ExceptionLogLevelFactoryRegistry
+final class LogLevelFactoryRegistry
 {
     /** @var Closure[] The mapping of exception types to log level factories */
     private array $factories = [];

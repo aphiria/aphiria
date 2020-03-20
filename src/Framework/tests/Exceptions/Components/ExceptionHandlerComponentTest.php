@@ -13,9 +13,9 @@ namespace Aphiria\Framework\Tests\Exceptions\Components;
 
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\DependencyInjection\Container;
-use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
-use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
-use Aphiria\Exceptions\Middleware\ExceptionHandler;
+use Aphiria\Exceptions\LogLevelFactoryRegistry;
+use Aphiria\Exceptions\Http\ResponseFactoryRegistry;
+use Aphiria\Exceptions\Http\Middleware\ExceptionHandler;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
 use Aphiria\Middleware\MiddlewareBinding;
@@ -33,15 +33,15 @@ class ExceptionHandlerComponentTest extends TestCase
     private ExceptionHandlerComponent $exceptionHandlerComponent;
     /** @var IApplicationBuilder|MockObject */
     private IApplicationBuilder $appBuilder;
-    private ExceptionResponseFactoryRegistry $exceptionResponseFactories;
-    private ExceptionLogLevelFactoryRegistry $exceptionLogLevelFactories;
+    private ResponseFactoryRegistry $exceptionResponseFactories;
+    private LogLevelFactoryRegistry $exceptionLogLevelFactories;
     private MiddlewareComponent $middlewareComponent;
 
     protected function setUp(): void
     {
         $container = new Container();
-        $container->bindInstance(ExceptionResponseFactoryRegistry::class, $this->exceptionResponseFactories = new ExceptionResponseFactoryRegistry());
-        $container->bindInstance(ExceptionLogLevelFactoryRegistry::class, $this->exceptionLogLevelFactories = new ExceptionLogLevelFactoryRegistry());
+        $container->bindInstance(ResponseFactoryRegistry::class, $this->exceptionResponseFactories = new ResponseFactoryRegistry());
+        $container->bindInstance(LogLevelFactoryRegistry::class, $this->exceptionLogLevelFactories = new LogLevelFactoryRegistry());
         $this->appBuilder = $this->createMock(IApplicationBuilder::class);
         $this->middlewareComponent = new class() extends MiddlewareComponent
         {
@@ -97,7 +97,7 @@ class ExceptionHandlerComponentTest extends TestCase
     public function testInitializeWithResponseFactoryRegistersFactory(): void
     {
         $factory = fn (Exception $ex) => $this->createMock(IHttpResponseMessage::class);
-        $this->exceptionHandlerComponent->withResponseFactory(Exception::class, $factory);
+        $this->exceptionHandlerComponent->withNegotiatedResponseFactory(Exception::class, $factory);
         $this->exceptionHandlerComponent->build();
         $this->assertSame($factory, $this->exceptionResponseFactories->getFactory(Exception::class));
     }
