@@ -89,6 +89,7 @@ class GlobalConfigurationBuilderTest extends TestCase
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage("Invalid JSON in $path");
         $this->builder->withJsonFileConfigurationSource($path);
+        $this->builder->build();
     }
 
     public function testWithJsonFileForNonExistentPathThrowsException(): void
@@ -96,6 +97,7 @@ class GlobalConfigurationBuilderTest extends TestCase
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('/doesnotexist does not exist');
         $this->builder->withJsonFileConfigurationSource('/doesnotexist');
+        $this->builder->build();
     }
 
     public function testWithJsonFileWithCustomDelimiterIsRespected(): void
@@ -118,12 +120,26 @@ class GlobalConfigurationBuilderTest extends TestCase
         $this->assertEquals('bar', GlobalConfiguration::getString('foo'));
     }
 
+    public function testWithPhpFileDefersReadingOfFilesUntilBuild(): void
+    {
+        /**
+         * A simple way of testing this is that we read a config that references environment variable, but that is
+         * undefined until just before build() is called.
+         */
+        \putenv('__APHIRIA_TEST=notset');
+        $this->builder->withPhpFileConfigurationSource(__DIR__ . '/files/configuration-env-var.php');
+        \putenv('__APHIRIA_TEST=bar');
+        $this->builder->build();
+        $this->assertEquals('bar', GlobalConfiguration::getString('foo'));
+    }
+
     public function testWithPhpFileThatContainsInvalidPhpThrowsException(): void
     {
         $path = __DIR__ . '/files/invalid-configuration.php';
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage("Configuration in $path must be an array");
         $this->builder->withPhpFileConfigurationSource($path);
+        $this->builder->build();
     }
 
     public function testWithPhpFileForNonExistentPathThrowsException(): void
@@ -131,6 +147,7 @@ class GlobalConfigurationBuilderTest extends TestCase
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('/doesnotexist does not exist');
         $this->builder->withPhpFileConfigurationSource('/doesnotexist');
+        $this->builder->build();
     }
 
     public function testWithPhpFileWithCustomDelimiterIsRespected(): void

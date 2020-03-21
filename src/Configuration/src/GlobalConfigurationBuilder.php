@@ -90,11 +90,13 @@ class GlobalConfigurationBuilder
      * @param string $path The path to the PHP file
      * @param string $pathDelimiter The delimiter between nested path segments
      * @return self For chaining
-     * @throws ConfigurationException Thrown if the JSON file was non-existent or did not contain valid JSON
      */
     public function withJsonFileConfigurationSource(string $path, string $pathDelimiter = '.'): self
     {
-        $this->withConfigurationSource($this->jsonConfigurationFileReader->readConfiguration($path, $pathDelimiter));
+        $this->configurationSourceStructs[] = [
+            'type' => 'factory',
+            'value' => fn () => $this->jsonConfigurationFileReader->readConfiguration($path, $pathDelimiter)
+        ];
 
         return $this;
     }
@@ -105,11 +107,13 @@ class GlobalConfigurationBuilder
      * @param string $path The path to the PHP file
      * @param string $pathDelimiter The delimiter between nested path segments
      * @return self For chaining
-     * @throws ConfigurationException Thrown if the PHP file was non-existent or did not contain an array
      */
     public function withPhpFileConfigurationSource(string $path, string $pathDelimiter = '.'): self
     {
-        $this->withConfigurationSource($this->phpConfigurationFileReader->readConfiguration($path, $pathDelimiter));
+        $this->configurationSourceStructs[] = [
+            'type' => 'factory',
+            'value' => fn () => $this->phpConfigurationFileReader->readConfiguration($path, $pathDelimiter)
+        ];
 
         return $this;
     }
