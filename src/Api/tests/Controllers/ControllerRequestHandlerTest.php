@@ -56,7 +56,7 @@ class ControllerRequestHandlerTest extends TestCase
             ->method('setContentNegotiator')
             ->with($this->contentNegotiator);
         $controller->expects($this->once())
-            ->method('setNegotiatedResponseFactory');
+            ->method('setResponseFactory');
         $controllerCallable = [$controller, 'noParameters'];
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')

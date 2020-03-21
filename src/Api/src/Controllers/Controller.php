@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Api\Controllers;
 
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
-use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
@@ -39,8 +39,8 @@ class Controller
     protected ?ResponseFormatter $responseFormatter = null;
     /** @var IContentNegotiator|null The content negotiator */
     protected ?IContentNegotiator $contentNegotiator = null;
-    /** @var INegotiatedResponseFactory|null The negotiated response factory */
-    protected ?INegotiatedResponseFactory $negotiatedResponseFactory = null;
+    /** @var IResponseFactory|null The response factory */
+    protected ?IResponseFactory $responseFactory = null;
 
     /**
      * Sets the content negotiator
@@ -54,14 +54,14 @@ class Controller
     }
 
     /**
-     * Sets the negotiated response factory
+     * Sets the response factory
      *
-     * @param INegotiatedResponseFactory $negotiatedResponseFactory The negotiated response factory
+     * @param IResponseFactory $responseFactory The response factory
      * @internal
      */
-    public function setNegotiatedResponseFactory(INegotiatedResponseFactory $negotiatedResponseFactory): void
+    public function setResponseFactory(IResponseFactory $responseFactory): void
     {
-        $this->negotiatedResponseFactory = $negotiatedResponseFactory;
+        $this->responseFactory = $responseFactory;
     }
 
     /**
@@ -112,7 +112,7 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return $this->negotiatedResponseFactory->createResponse(
+        return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCodes::HTTP_BAD_REQUEST,
             $headers,
@@ -135,7 +135,7 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return $this->negotiatedResponseFactory->createResponse(
+        return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCodes::HTTP_CONFLICT,
             $headers,
@@ -167,7 +167,7 @@ class Controller
         $headers = $headers ?? new HttpHeaders();
         $headers->add('Location', (string)$uri);
 
-        return $this->negotiatedResponseFactory->createResponse(
+        return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCodes::HTTP_CREATED,
             $headers,
@@ -190,7 +190,7 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return $this->negotiatedResponseFactory->createResponse(
+        return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCodes::HTTP_FORBIDDEN,
             $headers,
@@ -230,7 +230,7 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return $this->negotiatedResponseFactory->createResponse(
+        return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
             $headers,
@@ -268,7 +268,7 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return $this->negotiatedResponseFactory->createResponse(
+        return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCodes::HTTP_NO_CONTENT,
             $headers,
@@ -291,7 +291,7 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return $this->negotiatedResponseFactory->createResponse(
+        return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCodes::HTTP_NOT_FOUND,
             $headers,
@@ -314,7 +314,7 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return $this->negotiatedResponseFactory->createResponse(
+        return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCodes::HTTP_OK,
             $headers,
@@ -375,7 +375,7 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        return $this->negotiatedResponseFactory->createResponse(
+        return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCodes::HTTP_UNAUTHORIZED,
             $headers,
@@ -409,7 +409,7 @@ class Controller
             throw new InvalidArgumentException('URI must be a string or instance of ' . Uri::class);
         }
 
-        $response = $this->negotiatedResponseFactory->createResponse(
+        $response = $this->responseFactory->createResponse(
             $this->request,
             $statusCode,
             $headers,

@@ -16,7 +16,7 @@ use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
 use Aphiria\Exceptions\IExceptionHandler;
 use Aphiria\IO\Streams\Stream;
-use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\HttpException;
@@ -39,28 +39,28 @@ class HttpExceptionHandler implements IExceptionHandler
     protected bool $useProblemDetails;
     /** @var IHttpRequestMessage|null The current request, if there is one */
     protected ?IHttpRequestMessage $request;
-    /** @var INegotiatedResponseFactory|null The optional negotiated response factory */
-    protected ?INegotiatedResponseFactory $negotiatedResponseFactory;
-    /** @var Closure[] The mapping of exception types to closures that return negotiated responses */
-    protected array $negotiatedResponseFactories = [];
+    /** @var IResponseFactory|null The optional response factory */
+    protected ?IResponseFactory $responseFactory;
+    /** @var Closure[] The mapping of exception types to closures that return responses */
+    protected array $responseFactories = [];
     /** @var IResponseWriter What is used to write the response */
     protected IResponseWriter $responseWriter;
 
     /**
      * @param bool $useProblemDetails Whether or not to use problem details
      * @param IHttpRequestMessage|null $request The current request, if there is one
-     * @param INegotiatedResponseFactory|null $negotiatedResponseFactory The optional negotiated response factory
+     * @param IResponseFactory|null $responseFactory The optional response factory
      * @param IResponseWriter|null $responseWriter What is used to write the response
      */
     public function __construct(
         bool $useProblemDetails = true,
         IHttpRequestMessage $request = null,
-        INegotiatedResponseFactory $negotiatedResponseFactory = null,
+        IResponseFactory $responseFactory = null,
         IResponseWriter $responseWriter = null
     ) {
         $this->useProblemDetails = $useProblemDetails;
         $this->request = $request;
-        $this->negotiatedResponseFactory = $negotiatedResponseFactory;
+        $this->responseFactory = $responseFactory;
         $this->responseWriter = $responseWriter ?? new StreamResponseWriter();
     }
 
@@ -85,12 +85,12 @@ class HttpExceptionHandler implements IExceptionHandler
     /**
      * Registers many factories for exceptions
      *
-     * @param Closure[] $exceptionTypesToFactories The mapping of exception types to response factories
+     * @param Closure[] $exceptionTypesToFactories The mapping of exception types to factories
      */
-    public function registerManyNegotiatedResponseFactories(array $exceptionTypesToFactories): void
+    public function registerManyResponseFactories(array $exceptionTypesToFactories): void
     {
         foreach ($exceptionTypesToFactories as $exceptionType => $factory) {
-            $this->registerNegotiatedResponseFactory($exceptionType, $factory);
+            $this->registerResponseFactory($exceptionType, $factory);
         }
     }
 
@@ -98,21 +98,21 @@ class HttpExceptionHandler implements IExceptionHandler
      * Registers a factory for a specific type of exception
      *
      * @param string $exceptionType The type of exception whose factory we're registering
-     * @param Closure $factory The factory that takes in an instance of the exception, the request, and the negotiated response factory
+     * @param Closure $factory The factory that takes in an instance of the exception, the request, and the response factory
      */
-    public function registerNegotiatedResponseFactory(string $exceptionType, Closure $factory): void
+    public function registerResponseFactory(string $exceptionType, Closure $factory): void
     {
-        $this->negotiatedResponseFactories[$exceptionType] = $factory;
+        $this->responseFactories[$exceptionType] = $factory;
     }
 
     /**
-     * Sets the negotiated response factory
+     * Sets the response factory
      *
-     * @param INegotiatedResponseFactory $negotiatedResponseFactory The response factory to set
+     * @param IResponseFactory $responseFactory The response factory to set
      */
-    public function setNegotiatedResponseFactory(INegotiatedResponseFactory $negotiatedResponseFactory): void
+    public function setResponseFactory(IResponseFactory $responseFactory): void
     {
-        $this->negotiatedResponseFactory = $negotiatedResponseFactory;
+        $this->responseFactory = $responseFactory;
     }
 
     /**
@@ -159,13 +159,13 @@ class HttpExceptionHandler implements IExceptionHandler
      * @param Exception $ex The exception that was thrown
      * @return IHttpResponseMessage The created response
      * @throws SerializationException Thrown if the problem details could not be serialized
-     * @throws HttpException Thrown if the response could not be negotiated
+     * @throws HttpException Thrown if the response could not be created
      */
     protected function createProblemDetailsResponse(Exception $ex): IHttpResponseMessage
     {
-        // Try to take advantage of the negotiated response factory
-        if ($this->negotiatedResponseFactory !== null && $this->request !== null) {
-            $response = $this->negotiatedResponseFactory->createResponse(
+        // Try to take advantage of the response factory
+        if ($this->responseFactory !== null && $this->request !== null) {
+            $response = $this->responseFactory->createResponse(
                 $this->request,
                 HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
                 null,
@@ -192,7 +192,7 @@ class HttpExceptionHandler implements IExceptionHandler
      *
      * @param Exception $ex The exception that was thrown
      * @return IHttpResponseMessage The creates request
-     * @throws HttpException Thrown if the response could not be negotiated
+     * @throws HttpException Thrown if the response could not be created
      * @throws SerializationException Thrown if the problem details could not be serialized
      */
     protected function createResponseWithoutRequest(Exception $ex): IHttpResponseMessage
@@ -210,13 +210,13 @@ class HttpExceptionHandler implements IExceptionHandler
      * @param Exception $ex The exception that was thrown
      * @param IHttpRequestMessage $request The current request
      * @return IHttpResponseMessage The creates request
-     * @throws HttpException Thrown if the response could not be negotiated
+     * @throws HttpException Thrown if the response could not be created
      * @throws SerializationException Thrown if the problem details could not be serialized
      */
     protected function createResponseWithRequest(Exception $ex, IHttpRequestMessage $request): IHttpResponseMessage
     {
-        if ($this->negotiatedResponseFactory !== null && isset($this->negotiatedResponseFactories[\get_class($ex)])) {
-            return $this->negotiatedResponseFactories[\get_class($ex)]($ex);
+        if ($this->responseFactory !== null && isset($this->responseFactories[\get_class($ex)])) {
+            return $this->responseFactories[\get_class($ex)]($ex);
         }
 
         // We can't do much even with the request if we cannot negotiate it

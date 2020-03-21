@@ -16,7 +16,7 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\Http\HttpExceptionHandler;
 use Aphiria\Exceptions\LogLevelRegistry;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
-use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\IResponseWriter;
@@ -54,7 +54,7 @@ class ExceptionHandlerComponentTest extends TestCase
         $this->assertSame(LogLevel::ALERT, $this->logLevels->getLogLevel(new Exception));
     }
 
-    public function testInitializeWithNegotiatedResponseFactoryRegistersFactory(): void
+    public function testInitializeWithResponseFactoryRegistersFactory(): void
     {
         $expectedResponse = $this->createMock(IHttpResponseMessage::class);
         $responseWriter = $this->createMock(IResponseWriter::class);
@@ -63,12 +63,12 @@ class ExceptionHandlerComponentTest extends TestCase
             ->with($expectedResponse);
         $httpExceptionHandler = new HttpExceptionHandler(true, null, null, $responseWriter);
         // Need to make sure the content negotiator is set so that the factory is invoked
-        $httpExceptionHandler->setNegotiatedResponseFactory($this->createMock(INegotiatedResponseFactory::class));
+        $httpExceptionHandler->setResponseFactory($this->createMock(IResponseFactory::class));
         $httpExceptionHandler->setRequest($this->createMock(IHttpRequestMessage::class));
         $this->container->bindInstance(HttpExceptionHandler::class, $httpExceptionHandler);
 
         $factory = fn (Exception $ex) => $expectedResponse;
-        $this->exceptionHandlerComponent->withNegotiatedResponseFactory(Exception::class, $factory);
+        $this->exceptionHandlerComponent->withResponseFactory(Exception::class, $factory);
         $this->exceptionHandlerComponent->build();
         $httpExceptionHandler->handle(new Exception());
     }

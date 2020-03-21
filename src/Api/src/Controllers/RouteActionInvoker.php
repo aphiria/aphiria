@@ -15,7 +15,7 @@ namespace Aphiria\Api\Controllers;
 use Aphiria\Api\Validation\IRequestBodyValidator;
 use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
-use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
@@ -34,26 +34,26 @@ final class RouteActionInvoker implements IRouteActionInvoker
 {
     /** @var IRequestBodyValidator The validator for request bodies, or null if we aren't validating them */
     private ?IRequestBodyValidator $requestBodyValidator;
-    /** @var INegotiatedResponseFactory The negotiated response factory */
-    private INegotiatedResponseFactory $negotiatedResponseFactory;
+    /** @var IResponseFactory The response factory */
+    private IResponseFactory $responseFactory;
     /** @var IControllerParameterResolver The controller parameter resolver to use */
     private IControllerParameterResolver $controllerParameterResolver;
 
     /**
      * @param IContentNegotiator|null $contentNegotiator The content negotiator, or null if using the default negotiator
      * @param IRequestBodyValidator|null $requestBodyValidator The validator for request bodies, or null if we aren't validating them
-     * @param INegotiatedResponseFactory|null $negotiatedResponseFactory The negotiated response factory
+     * @param IResponseFactory|null $responseFactory The response factory
      * @param IControllerParameterResolver|null $controllerParameterResolver The controller parameter resolver to use
      */
     public function __construct(
         IContentNegotiator $contentNegotiator = null,
         IRequestBodyValidator $requestBodyValidator = null,
-        INegotiatedResponseFactory $negotiatedResponseFactory = null,
+        IResponseFactory $responseFactory = null,
         IControllerParameterResolver $controllerParameterResolver = null
     ) {
         $this->requestBodyValidator = $requestBodyValidator;
         $contentNegotiator ??= new ContentNegotiator();
-        $this->negotiatedResponseFactory = $negotiatedResponseFactory ?? new NegotiatedResponseFactory($contentNegotiator);
+        $this->responseFactory = $responseFactory ?? new NegotiatedResponseFactory($contentNegotiator);
         $this->controllerParameterResolver = $controllerParameterResolver ?? new ControllerParameterResolver($contentNegotiator);
     }
 
@@ -144,7 +144,7 @@ final class RouteActionInvoker implements IRouteActionInvoker
         }
 
         // Attempt to create an OK response from the return value
-        return $this->negotiatedResponseFactory->createResponse(
+        return $this->responseFactory->createResponse(
             $request,
             HttpStatusCodes::HTTP_OK,
             null,

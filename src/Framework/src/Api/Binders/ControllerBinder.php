@@ -19,7 +19,7 @@ use Aphiria\Api\Validation\RequestBodyValidator;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
-use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
 
@@ -41,7 +41,7 @@ final class ControllerBinder extends Binder
         $routeActionInvoker = new RouteActionInvoker(
             $container->resolve(IContentNegotiator::class),
             $requestBodyValidator,
-            $container->resolve(INegotiatedResponseFactory::class),
+            $container->resolve(IResponseFactory::class),
             $controllerParameterResolver
         );
         $container->bindInstance(IRouteActionInvoker::class, $routeActionInvoker);

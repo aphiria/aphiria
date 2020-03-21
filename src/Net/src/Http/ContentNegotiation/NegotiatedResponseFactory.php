@@ -21,6 +21,7 @@ use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Http\StringBody;
@@ -30,7 +31,7 @@ use InvalidArgumentException;
 /**
  * Defines the factory that generates HTTP responses from negotiated content
  */
-final class NegotiatedResponseFactory implements INegotiatedResponseFactory
+final class NegotiatedResponseFactory implements IResponseFactory
 {
     /** @var IContentNegotiator The content negotiator to use */
     private IContentNegotiator $contentNegotiator;

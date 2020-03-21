@@ -15,7 +15,7 @@ namespace Aphiria\Framework\Exceptions\Binders;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\Http\HttpExceptionHandler;
-use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\IHttpRequestMessage;
 
 /**
@@ -39,11 +39,11 @@ class ExceptionHandlerBinder extends Binder
                 $httpExceptionHandler->setRequest($request);
             }
 
-            /** @var INegotiatedResponseFactory|null */
-            $negotiatedResponseFactory = null;
+            /** @var IResponseFactory|null */
+            $responseFactory = null;
 
-            if ($container->tryResolve(INegotiatedResponseFactory::class, $negotiatedResponseFactory)) {
-                $httpExceptionHandler->setNegotiatedResponseFactory($negotiatedResponseFactory);
+            if ($container->tryResolve(IResponseFactory::class, $responseFactory)) {
+                $httpExceptionHandler->setResponseFactory($responseFactory);
             }
         }
     }

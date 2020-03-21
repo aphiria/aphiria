@@ -24,7 +24,7 @@ use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\Http\HttpExceptionHandler;
 use Aphiria\Exceptions\IExceptionHandler;
 use Aphiria\Exceptions\LogLevelRegistry;
-use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
@@ -92,11 +92,11 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     {
         $useProblemDetails = GlobalConfiguration::getBool('aphiria.exceptions.useProblemDetails');
         $exceptionHandler = new HttpExceptionHandler($useProblemDetails);
-        $exceptionHandler->registerManyNegotiatedResponseFactories([
-            HttpException::class => function (HttpException $ex, IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory) {
+        $exceptionHandler->registerManyResponseFactories([
+            HttpException::class => function (HttpException $ex, IHttpRequestMessage $request, IResponseFactory $responseFactory) {
                 return $ex->getResponse();
             },
-            InvalidRequestBodyException::class => function (InvalidRequestBodyException $ex, IHttpRequestMessage $request, INegotiatedResponseFactory $responseFactory) use ($useProblemDetails) {
+            InvalidRequestBodyException::class => function (InvalidRequestBodyException $ex, IHttpRequestMessage $request, IResponseFactory $responseFactory) use ($useProblemDetails) {
                 if ($useProblemDetails) {
                     $body = new ValidationProblemDetails($ex->getErrors());
                     $response = $responseFactory->createResponse($request, HttpStatusCodes::HTTP_BAD_REQUEST, null, $body);

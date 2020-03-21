@@ -29,7 +29,7 @@ class ExceptionHandlerComponent implements IComponent
     /** @var IServiceResolver The service resolver */
     private IServiceResolver $serviceResolver;
     /** @var Closure[] The mapping of exception types to response factories */
-    private array $negotiatedResponseFactories = [];
+    private array $responseFactories = [];
     /** @var Closure[] The mapping of exception types to log level factories */
     private array $logLevelFactories = [];
 
@@ -50,7 +50,7 @@ class ExceptionHandlerComponent implements IComponent
         $httpExceptionHandler = null;
 
         if ($this->serviceResolver->tryResolve(HttpExceptionHandler::class, $httpExceptionHandler)) {
-            $httpExceptionHandler->registerManyNegotiatedResponseFactories($this->negotiatedResponseFactories);
+            $httpExceptionHandler->registerManyResponseFactories($this->responseFactories);
         }
 
         $logLevels = $this->serviceResolver->resolve(LogLevelRegistry::class);
@@ -75,12 +75,12 @@ class ExceptionHandlerComponent implements IComponent
      * Adds an exception response factory for a particular exception type
      *
      * @param string $exceptionType The type of exception that's thrown
-     * @param Closure $responseFactory The factory that takes in an instance of the exception, the request, and the negotiated content factory, and returns a response
+     * @param Closure $responseFactory The factory that takes in an instance of the exception, the request, and the response factory, and returns a response
      * @return self For chaining
      */
-    public function withNegotiatedResponseFactory(string $exceptionType, Closure $responseFactory): self
+    public function withResponseFactory(string $exceptionType, Closure $responseFactory): self
     {
-        $this->negotiatedResponseFactories[$exceptionType] = $responseFactory;
+        $this->responseFactories[$exceptionType] = $responseFactory;
 
         return $this;
     }

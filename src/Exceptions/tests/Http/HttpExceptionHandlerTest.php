@@ -14,7 +14,7 @@ namespace Aphiria\Exceptions\Tests\Http;
 
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Exceptions\Http\HttpExceptionHandler;
-use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
@@ -33,20 +33,20 @@ class HttpExceptionHandlerTest extends TestCase
     private IResponseWriter $responseWriter;
     /** @var IHttpRequestMessage|MockObject */
     private IHttpRequestMessage $request;
-    /** @var INegotiatedResponseFactory|MockObject */
-    private INegotiatedResponseFactory $negotiatedResponseFactory;
+    /** @var IResponseFactory|MockObject */
+    private IResponseFactory $responseFactory;
 
     protected function setUp(): void
     {
         $this->request = $this->createMock(IHttpRequestMessage::class);
-        $this->negotiatedResponseFactory = $this->createMock(INegotiatedResponseFactory::class);
+        $this->responseFactory = $this->createMock(IResponseFactory::class);
         $this->responseWriter = $this->createMock(IResponseWriter::class);
     }
 
     public function testHavingRequestSetButAnExceptionGetsThrownCausesGenericResponse(): void
     {
         $exceptionHandler = $this->createExceptionHandler(true, true, true);
-        $exceptionHandler->registerNegotiatedResponseFactory(
+        $exceptionHandler->registerResponseFactory(
             Exception::class,
             function (Exception $ex) {
                 throw new Exception();
@@ -75,11 +75,11 @@ class HttpExceptionHandlerTest extends TestCase
         $exceptionHandler->handle(new Exception);
     }
 
-    public function testHavingRequestSetButNoNegotiatedResponseFactoryAndUsingProblemDetailsCreatesProblemDetailsResponse(): void
+    public function testHavingRequestSetButNoResponseFactoryAndUsingProblemDetailsCreatesProblemDetailsResponse(): void
     {
         $exceptionHandler = $this->createExceptionHandler(true, true, true);
         $expectedResponse = new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
-        $this->negotiatedResponseFactory->expects($this->once())
+        $this->responseFactory->expects($this->once())
             ->method('createResponse')
             ->with($this->request, HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, null, $this->isInstanceOf(ProblemDetails::class))
             ->willReturn($expectedResponse);
@@ -89,11 +89,11 @@ class HttpExceptionHandlerTest extends TestCase
         $exceptionHandler->handle(new Exception);
     }
 
-    public function testHavingRequestSetWithANegotiatedResponseFactoryCreatesResponseFromFactory(): void
+    public function testHavingRequestSetWithAResponseFactoryCreatesResponseFromFactory(): void
     {
         $exceptionHandler = $this->createExceptionHandler(true, true, true);
         $expectedResponse = new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
-        $exceptionHandler->registerNegotiatedResponseFactory(
+        $exceptionHandler->registerResponseFactory(
             Exception::class,
             fn (Exception $ex) => $expectedResponse
         );
@@ -103,11 +103,11 @@ class HttpExceptionHandlerTest extends TestCase
         $exceptionHandler->handle(new Exception);
     }
 
-    public function testHavingRequestSetWithManyNegotiatedResponseFactoriesCreatesResponseFromFactory(): void
+    public function testHavingRequestSetWithManyResponseFactoriesCreatesResponseFromFactory(): void
     {
         $exceptionHandler = $this->createExceptionHandler(true, true, true);
         $expectedResponse = new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
-        $exceptionHandler->registerManyNegotiatedResponseFactories([
+        $exceptionHandler->registerManyResponseFactories([
             Exception::class => fn (Exception $ex) => $expectedResponse
         ]);
         $this->responseWriter->expects($this->once())
@@ -148,7 +148,7 @@ class HttpExceptionHandlerTest extends TestCase
      *
      * @param bool $useProblemDetails Whether or not to use problem details
      * @param bool $setRequest Whether or not to set the request
-     * @param bool $setResponseFactory Whether or not to set the negotiated response factory
+     * @param bool $setResponseFactory Whether or not to set the response factory
      * @return HttpExceptionHandler The exception handler
      */
     private function createExceptionHandler(
@@ -159,7 +159,7 @@ class HttpExceptionHandlerTest extends TestCase
         return new HttpExceptionHandler(
             $useProblemDetails,
             $setRequest ? $this->request : null,
-            $setResponseFactory ? $this->negotiatedResponseFactory : null,
+            $setResponseFactory ? $this->responseFactory : null,
             $this->responseWriter
         );
     }

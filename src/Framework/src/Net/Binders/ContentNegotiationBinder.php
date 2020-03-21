@@ -22,7 +22,7 @@ use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\IEncodingMatcher;
 use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
 use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
-use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
 use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 
@@ -69,8 +69,8 @@ class ContentNegotiationBinder extends Binder
             $encodingMatcher,
             $languageMatcher
         );
-        $negotiatedResponseFactory = new NegotiatedResponseFactory($contentNegotiator);
+        $responseFactory = new NegotiatedResponseFactory($contentNegotiator);
         $container->bindInstance(IContentNegotiator::class, $contentNegotiator);
-        $container->bindInstance(INegotiatedResponseFactory::class, $negotiatedResponseFactory);
+        $container->bindInstance(IResponseFactory::class, $responseFactory);
     }
 }
