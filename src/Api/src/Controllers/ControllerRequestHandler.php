@@ -64,7 +64,7 @@ final class ControllerRequestHandler implements IRequestHandler
         $this->controller->setRequestParser(new RequestParser);
         $this->controller->setResponseFormatter(new ResponseFormatter);
         $this->controller->setContentNegotiator($this->contentNegotiator);
-        $this->controller->setNegotiatedResponseFactory(new NegotiatedResponseFactory($this->contentNegotiator));
+        $this->controller->setResponseFactory(new NegotiatedResponseFactory($this->contentNegotiator));
 
         return $this->routeActionInvoker->invokeRouteAction(
             $this->routeActionDelegate,

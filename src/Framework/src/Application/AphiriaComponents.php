@@ -128,37 +128,18 @@ trait AphiriaComponents
     }
 
     /**
-     * Adds the exception handler middleware to the beginning of the middleware collection
-     *
-     * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @return self For chaining
-     */
-    protected function withExceptionHandlerMiddleware(IApplicationBuilder $appBuilder): self
-    {
-        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
-        if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
-            $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance, $appBuilder));
-        }
-
-        $appBuilder->getComponent(ExceptionHandlerComponent::class)
-            ->withExceptionHandlerMiddleware();
-
-        return $this;
-    }
-
-    /**
      * Adds an exception response factory to the exception handler component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param string $exceptionType The type of exception whose response factory we're registering
-     * @param Closure $responseFactory The factory that takes in an instance of the exception, ?IHttpRequestMessage, and INegotiatedResponseFactory and creates a response
+     * @param Closure $responseFactory The factory that takes in an instance of the exception, IHttpRequestMessage, and IResponseFactory and creates a response
      * @return self For chaining
      */
     protected function withExceptionResponseFactory(IApplicationBuilder $appBuilder, string $exceptionType, Closure $responseFactory): self
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
-            $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance, $appBuilder));
+            $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));
         }
 
         $appBuilder->getComponent(ExceptionHandlerComponent::class)
@@ -204,7 +185,7 @@ trait AphiriaComponents
     {
         //Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
-            $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance, $appBuilder));
+            $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));
         }
 
         $appBuilder->getComponent(ExceptionHandlerComponent::class)

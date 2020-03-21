@@ -18,21 +18,17 @@ declare(strict_types=1);
  * @license   https://github.com/aphiria/aphiria/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Net\Http\ContentNegotiation;
+namespace Aphiria\Net\Http;
 
-use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
 use InvalidArgumentException;
 
 /**
- * Defines interface for negotiated response factories to implement
+ * Defines interface for response factories to implement
  */
-interface INegotiatedResponseFactory
+interface IResponseFactory
 {
     /**
-     * Creates a response with a negotiated body
+     * Creates a response from the input parameters
      *
      * @param IHttpRequestMessage $request The current request
      * @param int $statusCode The status code to use
@@ -40,7 +36,7 @@ interface INegotiatedResponseFactory
      * @param object|string|int|float|array|null $rawBody The raw body to use in the response
      * @return IHttpResponseMessage The created response
      * @throws InvalidArgumentException Thrown if the body is not a supported type
-     * @throws HttpException Thrown if the response content could not be negotiated
+     * @throws HttpException Thrown if there was an error reading request data
      */
     public function createResponse(
         IHttpRequestMessage $request,

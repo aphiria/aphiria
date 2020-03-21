@@ -12,14 +12,11 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Exceptions\Components;
 
-use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
-use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
-use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
-use Aphiria\Exceptions\Middleware\ExceptionHandler;
+use Aphiria\Exceptions\Http\HttpExceptionHandler;
+use Aphiria\Exceptions\LogLevelRegistry;
 use Aphiria\Framework\Application\AphiriaComponents;
-use Aphiria\Middleware\MiddlewareBinding;
 use Closure;
 
 /**
@@ -31,23 +28,17 @@ class ExceptionHandlerComponent implements IComponent
 
     /** @var IServiceResolver The service resolver */
     private IServiceResolver $serviceResolver;
-    /** @var IApplicationBuilder The application builder */
-    private IApplicationBuilder $appBuilder;
-    /** @var bool Whether or not to use the exception handler middleware */
-    private bool $exceptionHandlerMiddlewareEnabled = false;
     /** @var Closure[] The mapping of exception types to response factories */
-    private array $exceptionResponseFactories = [];
+    private array $responseFactories = [];
     /** @var Closure[] The mapping of exception types to log level factories */
     private array $logLevelFactories = [];
 
     /**
      * @param IServiceResolver $serviceResolver The service resolver
-     * @param IApplicationBuilder $appBuilder The application builder
      */
-    public function __construct(IServiceResolver $serviceResolver, IApplicationBuilder $appBuilder)
+    public function __construct(IServiceResolver $serviceResolver)
     {
         $this->serviceResolver = $serviceResolver;
-        $this->appBuilder = $appBuilder;
     }
 
     /**
@@ -55,27 +46,15 @@ class ExceptionHandlerComponent implements IComponent
      */
     public function build(): void
     {
-        if ($this->exceptionHandlerMiddlewareEnabled) {
-            $this->withGlobalMiddleware($this->appBuilder, new MiddlewareBinding(ExceptionHandler::class), 0);
+        /** @var HttpExceptionHandler|null $httpExceptionHandler */
+        $httpExceptionHandler = null;
+
+        if ($this->serviceResolver->tryResolve(HttpExceptionHandler::class, $httpExceptionHandler)) {
+            $httpExceptionHandler->registerManyResponseFactories($this->responseFactories);
         }
 
-        $exceptionResponseFactories = $this->serviceResolver->resolve(ExceptionResponseFactoryRegistry::class);
-        $logLevelFactories = $this->serviceResolver->resolve(ExceptionLogLevelFactoryRegistry::class);
-
-        $exceptionResponseFactories->registerManyFactories($this->exceptionResponseFactories);
-        $logLevelFactories->registerManyFactories($this->logLevelFactories);
-    }
-
-    /**
-     * Enables the exception handler middleware
-     *
-     * @return self For chaining
-     */
-    public function withExceptionHandlerMiddleware(): self
-    {
-        $this->exceptionHandlerMiddlewareEnabled = true;
-
-        return $this;
+        $logLevels = $this->serviceResolver->resolve(LogLevelRegistry::class);
+        $logLevels->registerManyLogLevelFactories($this->logLevelFactories);
     }
 
     /**
@@ -96,12 +75,12 @@ class ExceptionHandlerComponent implements IComponent
      * Adds an exception response factory for a particular exception type
      *
      * @param string $exceptionType The type of exception that's thrown
-     * @param Closure $responseFactory The factory that takes in an instance of the exception type and returns an HTTP response
+     * @param Closure $responseFactory The factory that takes in an instance of the exception, the request, and the response factory, and returns a response
      * @return self For chaining
      */
     public function withResponseFactory(string $exceptionType, Closure $responseFactory): self
     {
-        $this->exceptionResponseFactories[$exceptionType] = $responseFactory;
+        $this->responseFactories[$exceptionType] = $responseFactory;
 
         return $this;
     }

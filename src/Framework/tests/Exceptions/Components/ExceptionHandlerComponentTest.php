@@ -11,17 +11,16 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Exceptions\Components;
 
-use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\DependencyInjection\Container;
-use Aphiria\Exceptions\ExceptionLogLevelFactoryRegistry;
-use Aphiria\Exceptions\ExceptionResponseFactoryRegistry;
-use Aphiria\Exceptions\Middleware\ExceptionHandler;
+use Aphiria\DependencyInjection\IContainer;
+use Aphiria\Exceptions\Http\HttpExceptionHandler;
+use Aphiria\Exceptions\LogLevelRegistry;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
-use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
-use Aphiria\Middleware\MiddlewareBinding;
+use Aphiria\Net\Http\IResponseFactory;
+use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IResponseWriter;
 use Exception;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
@@ -30,41 +29,15 @@ use Psr\Log\LogLevel;
  */
 class ExceptionHandlerComponentTest extends TestCase
 {
+    private IContainer $container;
     private ExceptionHandlerComponent $exceptionHandlerComponent;
-    /** @var IApplicationBuilder|MockObject */
-    private IApplicationBuilder $appBuilder;
-    private ExceptionResponseFactoryRegistry $exceptionResponseFactories;
-    private ExceptionLogLevelFactoryRegistry $exceptionLogLevelFactories;
-    private MiddlewareComponent $middlewareComponent;
+    private LogLevelRegistry $logLevels;
 
     protected function setUp(): void
     {
-        $container = new Container();
-        $container->bindInstance(ExceptionResponseFactoryRegistry::class, $this->exceptionResponseFactories = new ExceptionResponseFactoryRegistry());
-        $container->bindInstance(ExceptionLogLevelFactoryRegistry::class, $this->exceptionLogLevelFactories = new ExceptionLogLevelFactoryRegistry());
-        $this->appBuilder = $this->createMock(IApplicationBuilder::class);
-        $this->middlewareComponent = new class() extends MiddlewareComponent
-        {
-            private array $middleware = [];
-
-            public function __construct()
-            {
-                // Don't do anything
-            }
-
-            public function getMiddleware(): array
-            {
-                return $this->middleware;
-            }
-
-            public function withGlobalMiddleware($middlewareBindings, int $priority = null): self
-            {
-                $this->middleware[] = $middlewareBindings;
-
-                return $this;
-            }
-        };
-        $this->exceptionHandlerComponent = new ExceptionHandlerComponent($container, $this->appBuilder);
+        $this->container = new Container();
+        $this->container->bindInstance(LogLevelRegistry::class, $this->logLevels = new LogLevelRegistry());
+        $this->exceptionHandlerComponent = new ExceptionHandlerComponent($this->container);
     }
 
     protected function tearDown(): void
@@ -73,32 +46,30 @@ class ExceptionHandlerComponentTest extends TestCase
         Container::$globalInstance = null;
     }
 
-    public function testInitializeWithExceptionHandlerMiddlewareRegistersTheMiddleware(): void
-    {
-        // The Aphiria components use the global instance of the container, so make sure it's set
-        Container::$globalInstance = new Container();
-        $this->appBuilder->expects($this->once())
-            ->method('getComponent')
-            ->with(MiddlewareComponent::class)
-            ->willReturn($this->middlewareComponent);
-        $this->exceptionHandlerComponent->withExceptionHandlerMiddleware();
-        $this->exceptionHandlerComponent->build();
-        $this->assertEquals([new MiddlewareBinding(ExceptionHandler::class)], $this->middlewareComponent->getMiddleware());
-    }
-
     public function testInitializeWithLogLevelFactoryRegistersFactory(): void
     {
         $factory = fn (Exception $ex) => LogLevel::ALERT;
         $this->exceptionHandlerComponent->withLogLevelFactory(Exception::class, $factory);
         $this->exceptionHandlerComponent->build();
-        $this->assertSame($factory, $this->exceptionLogLevelFactories->getFactory(Exception::class));
+        $this->assertSame(LogLevel::ALERT, $this->logLevels->getLogLevel(new Exception));
     }
 
     public function testInitializeWithResponseFactoryRegistersFactory(): void
     {
-        $factory = fn (Exception $ex) => $this->createMock(IHttpResponseMessage::class);
+        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
+        $responseWriter = $this->createMock(IResponseWriter::class);
+        $responseWriter->expects($this->once())
+            ->method('writeResponse')
+            ->with($expectedResponse);
+        $httpExceptionHandler = new HttpExceptionHandler(true, null, null, $responseWriter);
+        // Need to make sure the content negotiator is set so that the factory is invoked
+        $httpExceptionHandler->setResponseFactory($this->createMock(IResponseFactory::class));
+        $httpExceptionHandler->setRequest($this->createMock(IHttpRequestMessage::class));
+        $this->container->bindInstance(HttpExceptionHandler::class, $httpExceptionHandler);
+
+        $factory = fn (Exception $ex) => $expectedResponse;
         $this->exceptionHandlerComponent->withResponseFactory(Exception::class, $factory);
         $this->exceptionHandlerComponent->build();
-        $this->assertSame($factory, $this->exceptionResponseFactories->getFactory(Exception::class));
+        $httpExceptionHandler->handle(new Exception());
     }
 }

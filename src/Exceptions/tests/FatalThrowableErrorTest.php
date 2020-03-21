@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Api\Tests\Exceptions;
+namespace Aphiria\Exceptions\Tests;
 
 use Aphiria\Exceptions\FatalThrowableError;
 use ErrorException;

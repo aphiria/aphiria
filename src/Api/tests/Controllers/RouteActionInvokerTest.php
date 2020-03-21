@@ -23,7 +23,7 @@ use Aphiria\Api\Tests\Controllers\Mocks\User;
 use Aphiria\Api\Validation\InvalidRequestBodyException;
 use Aphiria\Api\Validation\IRequestBodyValidator;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
-use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
@@ -47,20 +47,20 @@ class RouteActionInvokerTest extends TestCase
     private IControllerParameterResolver $parameterResolver;
     /** @var IContentNegotiator|MockObject */
     private IContentNegotiator $contentNegotiator;
-    /** @var INegotiatedResponseFactory|MockObject */
-    private INegotiatedResponseFactory $negotiatedResponseFactory;
+    /** @var IResponseFactory|MockObject */
+    private IResponseFactory $responseFactory;
     private Controller $controller;
 
     protected function setUp(): void
     {
         $this->requestBodyValidator = $this->createMock(IRequestBodyValidator::class);
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
-        $this->negotiatedResponseFactory = $this->createMock(INegotiatedResponseFactory::class);
+        $this->responseFactory = $this->createMock(IResponseFactory::class);
         $this->parameterResolver = $this->createMock(IControllerParameterResolver::class);
         $this->invoker = new RouteActionInvoker(
             $this->contentNegotiator,
             $this->requestBodyValidator,
-            $this->negotiatedResponseFactory,
+            $this->responseFactory,
             $this->parameterResolver
         );
         $this->controller = new Controller();
@@ -125,7 +125,7 @@ class RouteActionInvokerTest extends TestCase
         /** @var IHttpRequestMessage|MockObject $request */
         $request = $this->createMock(IHttpRequestMessage::class);
         $expectedResponse = $this->createMock(IHttpResponseMessage::class);
-        $this->negotiatedResponseFactory->method('createResponse')
+        $this->responseFactory->method('createResponse')
             ->with($request, HttpStatusCodes::HTTP_OK, null, $this->callback(fn ($actionResult) => $actionResult instanceof User))
             ->willReturn($expectedResponse);
         $actualResponse = $this->invoker->invokeRouteAction(

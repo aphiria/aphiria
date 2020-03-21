@@ -12,42 +12,41 @@ declare(strict_types=1);
 
 namespace Aphiria\Exceptions;
 
-use Aphiria\Net\Http\IResponseWriter;
-use Aphiria\Net\Http\StreamResponseWriter;
 use ErrorException;
 use Exception;
+use Monolog\Handler\ErrorLogHandler;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Throwable;
 
 /**
- * The exception handler that handles exceptions that were unhandled in the application
+ * Defines the global exception handler
  */
 class GlobalExceptionHandler
 {
-    /** @var IExceptionResponseFactory The factory that create exception responses */
-    private IExceptionResponseFactory $exceptionResponseFactory;
-    /** @var IExceptionLogger The exception logger */
-    private IExceptionLogger $logger;
-    /** @var int The bitwise value of error levels that are to be thrown as exceptions */
-    protected int $errorThrownLevels;
-    /** @var IResponseWriter What to use to write a response */
-    protected IResponseWriter $responseWriter;
+    /** @const The default name to use for the logger */
+    private const DEFAULT_LOGGER_NAME = 'app';
+    /** @var IExceptionHandler The underlying exception handler */
+    protected IExceptionHandler $exceptionHandler;
+    /** @var LoggerInterface The PSR-3 logger */
+    protected LoggerInterface $logger;
+    /** @var LogLevelRegistry The registry of exception log levels */
+    protected LogLevelRegistry $logLevels;
 
     /**
-     * @param IExceptionResponseFactory|null $exceptionResponseFactory The factory that create exception responses, or null if using the default factory
-     * @param IExceptionLogger|null $logger The exception logger
-     * @param int $errorThrownLevels The bitwise value of error levels that are to be thrown as exceptions
-     * @param IResponseWriter $responseWriter What to use to write a response
+     * @param IExceptionHandler $exceptionHandler The underlying exception handler
+     * @param LoggerInterface|null $logger The PSR-3 logger
+     * @param LogLevelRegistry|null $logLevels The registry of exception log levels
      */
     public function __construct(
-        IExceptionResponseFactory $exceptionResponseFactory = null,
-        IExceptionLogger $logger = null,
-        int $errorThrownLevels = E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED),
-        IResponseWriter $responseWriter = null
+        IExceptionHandler $exceptionHandler,
+        LoggerInterface $logger = null,
+        LogLevelRegistry $logLevels = null
     ) {
-        $this->exceptionResponseFactory = $exceptionResponseFactory ?? new ExceptionResponseFactory();
-        $this->logger = $logger ?? new ExceptionLogger();
-        $this->errorThrownLevels = $errorThrownLevels;
-        $this->responseWriter = $responseWriter ?? new StreamResponseWriter();
+        $this->exceptionHandler = $exceptionHandler;
+        $this->logger = $logger  ?? new Logger(self::DEFAULT_LOGGER_NAME, [new ErrorLogHandler()]);
+        $this->logLevels = $logLevels ?? new LogLevelRegistry();
     }
 
     /**
@@ -58,7 +57,7 @@ class GlobalExceptionHandler
      * @param string $file The file the error occurred in
      * @param int $line The line number the error occurred at
      * @param array $context The symbol table
-     * @throws ErrorException Thrown because the error is converted to an exception
+     * @throws ErrorException Thrown if the error was reportable based on its level
      */
     public function handleError(
         int $level,
@@ -67,9 +66,7 @@ class GlobalExceptionHandler
         int $line = 0,
         array $context = []
     ): void {
-        $this->logger->logError($level, $message, $file, $line, $context);
-
-        if ($this->shouldThrowError($level)) {
+        if ((\error_reporting() & $level) !== 0) {
             throw new ErrorException($message, 0, $level, $file, $line);
         }
     }
@@ -86,9 +83,9 @@ class GlobalExceptionHandler
             $ex = new FatalThrowableError($ex);
         }
 
-        $this->logger->logException($ex);
-        $response = $this->exceptionResponseFactory->createResponseFromException($ex, null);
-        $this->responseWriter->writeResponse($response);
+        $logLevel = $this->logLevels->getLogLevel($ex) ?? LogLevel::ERROR;
+        $this->logger->{$logLevel}($ex);
+        $this->exceptionHandler->handle($ex);
     }
 
     /**
@@ -115,16 +112,5 @@ class GlobalExceptionHandler
         set_error_handler([$this, 'handleError']);
         set_exception_handler([$this, 'handleException']);
         register_shutdown_function([$this, 'handleShutdown']);
-    }
-
-    /**
-     * Gets whether or not the error level is throwable
-     *
-     * @param int $level The bitwise level
-     * @return bool True if the level is throwable, otherwise false
-     */
-    protected function shouldThrowError(int $level): bool
-    {
-        return ($this->errorThrownLevels & $level) !== 0;
     }
 }

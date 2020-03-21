@@ -20,7 +20,7 @@ use Aphiria\Net\Http\IHttpRequestMessage;
 interface IRequestBodyValidator
 {
     /**
-     * Validates the negotiated request body
+     * Validates the request body
      *
      * @param IHttpRequestMessage $request The request whose body we're validating
      * @param mixed $body The deserialized body to validate
