@@ -62,7 +62,7 @@ class HttpExceptionHandlerTest extends TestCase
         $exceptionHandler->handle(new Exception);
     }
 
-    public function testHavingRequestSetButNoNegotiatedResponseFactoryAndNotUsingProblemDetailsCreatesGenericResponse(): void
+    public function testHavingRequestSetButNoResponseFactoryAndNotUsingProblemDetailsCreatesGenericResponse(): void
     {
         $exceptionHandler = $this->createExceptionHandler(false, true, true);
         $this->responseWriter->expects($this->once())
