@@ -10,15 +10,15 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Exceptions\Tests\Http;
+namespace Aphiria\Exceptions\Tests\Console;
 
-use Aphiria\Exceptions\Http\HttpExceptionHandler;
+use Aphiria\Exceptions\Console\ConsoleExceptionHandler;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the HTTP exception handler
+ * Tests the console exception handler
  */
-class HttpExceptionHandlerTest extends TestCase
+class ConsoleExceptionHandlerTest extends TestCase
 {
     public function testDummy(): void
     {

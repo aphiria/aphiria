@@ -19,12 +19,11 @@ use Aphiria\Application\IBootstrapper;
 use Aphiria\Configuration\ConfigurationException;
 use Aphiria\Configuration\GlobalConfiguration;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\Exceptions\Console\ConsoleExceptionHandler;
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\Http\HttpExceptionHandler;
 use Aphiria\Exceptions\IExceptionHandler;
-use Aphiria\Exceptions\Logger;
 use Aphiria\Exceptions\LogLevelFactoryRegistry;
-use Aphiria\Exceptions\ILogger;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
@@ -32,7 +31,7 @@ use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\Response;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler;
-use Monolog\Logger as MonologLogger;
+use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -57,8 +56,12 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
      */
     public function bootstrap(): void
     {
-        // TODO: Need to switch on whether or not we're running in HTTP or console
-        $exceptionHandler = $this->createAndBindHttpExceptionHandler();
+        if ($this->isRunningInConsole()) {
+            $exceptionHandler = $this->createAndBindConsoleExceptionHandler();
+        } else {
+            $exceptionHandler = $this->createAndBindHttpExceptionHandler();
+        }
+
         $logger = $this->createAndBindLogger();
         $globalExceptionHandler = new GlobalExceptionHandler(
             $exceptionHandler,
@@ -71,16 +74,13 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     }
 
     /**
-     * Creates and binds an exception log level factory registry
+     * Creates and binds the exception handler for console applications
      *
-     * @return LogLevelFactoryRegistry The created exception log level factories
+     * @return IExceptionHandler The exception handler for console applications
      */
-    protected function createAndBindLogLevelFactories(): LogLevelFactoryRegistry
+    protected function createAndBindConsoleExceptionHandler(): IExceptionHandler
     {
-        $exceptionLogLevelFactories = new LogLevelFactoryRegistry();
-        $this->container->bindInstance(LogLevelFactoryRegistry::class, $exceptionLogLevelFactories);
-
-        return $exceptionLogLevelFactories;
+        return new ConsoleExceptionHandler();
     }
 
     /**
@@ -121,7 +121,7 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
      */
     protected function createAndBindLogger(): LoggerInterface
     {
-        $logger = new MonologLogger(GlobalConfiguration::getString('aphiria.logging.name'));
+        $logger = new Logger(GlobalConfiguration::getString('aphiria.logging.name'));
 
         foreach (GlobalConfiguration::getArray('aphiria.logging.handlers') as $handlerConfiguration) {
             switch ($handlerConfiguration['type']) {
@@ -146,5 +146,28 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
         $this->container->bindInstance(LoggerInterface::class, $logger);
 
         return $logger;
+    }
+
+    /**
+     * Creates and binds an exception log level factory registry
+     *
+     * @return LogLevelFactoryRegistry The created exception log level factories
+     */
+    protected function createAndBindLogLevelFactories(): LogLevelFactoryRegistry
+    {
+        $exceptionLogLevelFactories = new LogLevelFactoryRegistry();
+        $this->container->bindInstance(LogLevelFactoryRegistry::class, $exceptionLogLevelFactories);
+
+        return $exceptionLogLevelFactories;
+    }
+
+    /**
+     * Gets whether or not the app is running in the console
+     *
+     * @return bool True if the application is running in the console, otherwise false
+     */
+    protected function isRunningInConsole(): bool
+    {
+        return \PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg';
     }
 }

@@ -160,33 +160,6 @@ class AphiriaComponentsTest extends TestCase
         $component->build($this->appBuilder, 'foo', $encoder);
     }
 
-    public function testWithExceptionResponseFactoryConfiguresComponentToHaveFactory(): void
-    {
-        $responseFactory = fn (Exception $ex) => $this->createMock(IHttpResponseMessage::class);
-        $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
-        $expectedComponent->expects($this->once())
-            ->method('withResponseFactory')
-            ->with(Exception::class, $responseFactory);
-        $this->appBuilder->expects($this->at(0))
-            ->method('hasComponent')
-            ->with(ExceptionHandlerComponent::class)
-            ->willReturn(true);
-        $this->appBuilder->expects($this->at(1))
-            ->method('getComponent')
-            ->with(ExceptionHandlerComponent::class)
-            ->willReturn($expectedComponent);
-        $component = new class()
-        {
-            use AphiriaComponents;
-
-            public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $responseFactory): void
-            {
-                $this->withExceptionResponseFactory($appBuilder, $exceptionType, $responseFactory);
-            }
-        };
-        $component->build($this->appBuilder, Exception::class, $responseFactory);
-    }
-
     public function testWithGlobalMiddlewareConfiguresComponentToHaveMiddleware(): void
     {
         $middlewareBinding = new MiddlewareBinding('foo');
@@ -239,6 +212,33 @@ class AphiriaComponentsTest extends TestCase
             }
         };
         $component->build($this->appBuilder, Exception::class, $logLevelFactory);
+    }
+
+    public function testWithNegotiatedResponseFactoryConfiguresComponentToHaveFactory(): void
+    {
+        $responseFactory = fn (Exception $ex) => $this->createMock(IHttpResponseMessage::class);
+        $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
+        $expectedComponent->expects($this->once())
+            ->method('withNegotiatedResponseFactory')
+            ->with(Exception::class, $responseFactory);
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponent')
+            ->with(ExceptionHandlerComponent::class)
+            ->willReturn(true);
+        $this->appBuilder->expects($this->at(1))
+            ->method('getComponent')
+            ->with(ExceptionHandlerComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class()
+        {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $responseFactory): void
+            {
+                $this->withExceptionResponseFactory($appBuilder, $exceptionType, $responseFactory);
+            }
+        };
+        $component->build($this->appBuilder, Exception::class, $responseFactory);
     }
 
     public function testWithObjectConstraintsConfiguresComponentToHaveObjectConstraints(): void

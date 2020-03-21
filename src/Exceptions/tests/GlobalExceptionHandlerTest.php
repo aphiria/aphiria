@@ -20,5 +20,8 @@ use PHPUnit\Framework\TestCase;
  */
 class GlobalExceptionHandlerTest extends TestCase
 {
-     // TODO
+    public function testDummy(): void
+    {
+        $this->assertTrue(true);
+    }
 }
