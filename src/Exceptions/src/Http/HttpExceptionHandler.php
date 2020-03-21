@@ -69,10 +69,14 @@ class HttpExceptionHandler implements IExceptionHandler
      */
     public function handle(Exception $ex): void
     {
-        if ($this->request === null) {
-            $response = $this->createResponseWithoutRequest($ex);
-        } else {
-            $response = $this->createResponseWithRequest($ex, $this->request);
+        try {
+            if ($this->request === null) {
+                $response = $this->createResponseWithoutRequest($ex);
+            } else {
+                $response = $this->createResponseWithRequest($ex, $this->request);
+            }
+        } catch (Exception $ex) {
+            $response = $this->createDefaultResponse($ex);
         }
 
         $this->responseWriter->writeResponse($response);
@@ -188,15 +192,13 @@ class HttpExceptionHandler implements IExceptionHandler
      *
      * @param Exception $ex The exception that was thrown
      * @return IHttpResponseMessage The creates request
+     * @throws HttpException Thrown if the response could not be negotiated
+     * @throws SerializationException Thrown if the problem details could not be serialized
      */
     protected function createResponseWithoutRequest(Exception $ex): IHttpResponseMessage
     {
         if ($this->useProblemDetails) {
-            try {
-                return $this->createProblemDetailsResponse($ex);
-            } catch (SerializationException|HttpException $ex) {
-                return $this->createDefaultResponse($ex);
-            }
+            return $this->createProblemDetailsResponse($ex);
         }
 
         return $this->createDefaultResponse($ex);
@@ -208,17 +210,16 @@ class HttpExceptionHandler implements IExceptionHandler
      * @param Exception $ex The exception that was thrown
      * @param IHttpRequestMessage $request The current request
      * @return IHttpResponseMessage The creates request
+     * @throws HttpException Thrown if the response could not be negotiated
+     * @throws SerializationException Thrown if the problem details could not be serialized
      */
     protected function createResponseWithRequest(Exception $ex, IHttpRequestMessage $request): IHttpResponseMessage
     {
-        if (
-            $this->negotiatedResponseFactory === null
-            || ($responseFactory = $this->negotiatedResponseFactories[\get_class($ex)]) === null
-        ) {
-            // We can't do much even with the request if we cannot negotiate it
-            return $this->createResponseWithoutRequest($ex);
+        if ($this->negotiatedResponseFactory !== null && isset($this->negotiatedResponseFactories[\get_class($ex)])) {
+            return $this->negotiatedResponseFactories[\get_class($ex)]($ex);
         }
 
-        return $responseFactory($ex, $request, $this->negotiatedResponseFactory);
+        // We can't do much even with the request if we cannot negotiate it
+        return $this->createResponseWithoutRequest($ex);
     }
 }

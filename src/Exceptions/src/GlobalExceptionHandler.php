@@ -31,27 +31,22 @@ class GlobalExceptionHandler
     protected IExceptionHandler $exceptionHandler;
     /** @var LoggerInterface The PSR-3 logger */
     protected LoggerInterface $logger;
-    /** @var LogLevelFactoryRegistry The registry of exception log level factories */
-    protected LogLevelFactoryRegistry $logLevelFactories;
-    /** @var int The bitwise value of error levels that are to be thrown as exceptions */
-    protected int $errorThrownLevels;
+    /** @var LogLevelRegistry The registry of exception log levels */
+    protected LogLevelRegistry $logLevels;
 
     /**
      * @param IExceptionHandler $exceptionHandler The underlying exception handler
      * @param LoggerInterface|null $logger The PSR-3 logger
-     * @param LogLevelFactoryRegistry|null $logLevelFactories The registry of exception log level factories
-     * @param int $errorThrownLevels The bitwise value of error levels that are to be thrown as exceptions
+     * @param LogLevelRegistry|null $logLevels The registry of exception log levels
      */
     public function __construct(
         IExceptionHandler $exceptionHandler,
         LoggerInterface $logger = null,
-        LogLevelFactoryRegistry $logLevelFactories = null,
-        int $errorThrownLevels = E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED)
+        LogLevelRegistry $logLevels = null
     ) {
         $this->exceptionHandler = $exceptionHandler;
         $this->logger = $logger  ?? new Logger(self::DEFAULT_LOGGER_NAME, [new ErrorLogHandler()]);
-        $this->logLevelFactories = $logLevelFactories ?? new LogLevelFactoryRegistry();
-        $this->errorThrownLevels = $errorThrownLevels;
+        $this->logLevels = $logLevels ?? new LogLevelRegistry();
     }
 
     /**
@@ -62,7 +57,7 @@ class GlobalExceptionHandler
      * @param string $file The file the error occurred in
      * @param int $line The line number the error occurred at
      * @param array $context The symbol table
-     * @throws ErrorException Thrown because the error is converted to an exception
+     * @throws ErrorException Thrown if the error was reportable based on its level
      */
     public function handleError(
         int $level,
@@ -71,9 +66,7 @@ class GlobalExceptionHandler
         int $line = 0,
         array $context = []
     ): void {
-        $this->logger->log($level, $message, $context);
-
-        if (($this->errorThrownLevels & $level) !== 0) {
+        if ((\error_reporting() & $level) !== 0) {
             throw new ErrorException($message, 0, $level, $file, $line);
         }
     }
@@ -90,10 +83,8 @@ class GlobalExceptionHandler
             $ex = new FatalThrowableError($ex);
         }
 
-        $logLevelFactory = $this->logLevelFactories->getFactory(get_class($ex));
-        $logLevel = $logLevelFactory === null ? LogLevel::ERROR : $logLevelFactory($ex);
+        $logLevel = $this->logLevels->getLogLevel($ex) ?? LogLevel::ERROR;
         $this->logger->{$logLevel}($ex);
-
         $this->exceptionHandler->handle($ex);
     }
 

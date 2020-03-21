@@ -37,7 +37,7 @@ class ExceptionResult
         } elseif (\is_array($messages)) {
             $this->messages = $messages;
         } else {
-            throw new InvalidArgumentException('Messages must be string or array of strings');
+            throw new InvalidArgumentException('Messages must be a string or array of strings');
         }
     }
 

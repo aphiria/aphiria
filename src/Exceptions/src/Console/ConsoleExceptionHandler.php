@@ -46,8 +46,8 @@ class ConsoleExceptionHandler implements IExceptionHandler
      */
     public function handle(Exception $ex): void
     {
-        if (($exceptionResultFactory = $this->exceptionResultFactories[\get_class($ex)]) !== null) {
-            $result = $exceptionResultFactory($ex);
+        if (isset($this->exceptionResultFactories[\get_class($ex)])) {
+            $result = $this->exceptionResultFactories[\get_class($ex)]($ex);
         } else {
             $result = $this->createDefaultExceptionResult($ex);
         }

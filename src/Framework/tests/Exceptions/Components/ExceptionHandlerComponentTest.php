@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Tests\Exceptions\Components;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\Http\HttpExceptionHandler;
-use Aphiria\Exceptions\LogLevelFactoryRegistry;
+use Aphiria\Exceptions\LogLevelRegistry;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Aphiria\Net\Http\IHttpRequestMessage;
@@ -31,12 +31,12 @@ class ExceptionHandlerComponentTest extends TestCase
 {
     private IContainer $container;
     private ExceptionHandlerComponent $exceptionHandlerComponent;
-    private LogLevelFactoryRegistry $exceptionLogLevelFactories;
+    private LogLevelRegistry $logLevels;
 
     protected function setUp(): void
     {
         $this->container = new Container();
-        $this->container->bindInstance(LogLevelFactoryRegistry::class, $this->exceptionLogLevelFactories = new LogLevelFactoryRegistry());
+        $this->container->bindInstance(LogLevelRegistry::class, $this->logLevels = new LogLevelRegistry());
         $this->exceptionHandlerComponent = new ExceptionHandlerComponent($this->container);
     }
 
@@ -51,7 +51,7 @@ class ExceptionHandlerComponentTest extends TestCase
         $factory = fn (Exception $ex) => LogLevel::ALERT;
         $this->exceptionHandlerComponent->withLogLevelFactory(Exception::class, $factory);
         $this->exceptionHandlerComponent->build();
-        $this->assertSame($factory, $this->exceptionLogLevelFactories->getFactory(Exception::class));
+        $this->assertSame(LogLevel::ALERT, $this->logLevels->getLogLevel(new Exception));
     }
 
     public function testInitializeWithNegotiatedResponseFactoryRegistersFactory(): void

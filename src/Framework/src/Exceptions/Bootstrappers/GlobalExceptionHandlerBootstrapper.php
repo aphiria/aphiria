@@ -23,7 +23,7 @@ use Aphiria\Exceptions\Console\ConsoleExceptionHandler;
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\Http\HttpExceptionHandler;
 use Aphiria\Exceptions\IExceptionHandler;
-use Aphiria\Exceptions\LogLevelFactoryRegistry;
+use Aphiria\Exceptions\LogLevelRegistry;
 use Aphiria\Net\Http\ContentNegotiation\INegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
@@ -66,8 +66,7 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
         $globalExceptionHandler = new GlobalExceptionHandler(
             $exceptionHandler,
             $logger,
-            $this->createAndBindLogLevelFactories(),
-            GlobalConfiguration::getInt('aphiria.exceptions.errorThrownLevels')
+            $this->createAndBindLogLevels()
         );
         $globalExceptionHandler->registerWithPhp();
         $this->container->bindInstance(GlobalExceptionHandler::class, $globalExceptionHandler);
@@ -149,16 +148,16 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     }
 
     /**
-     * Creates and binds an exception log level factory registry
+     * Creates and binds an exception log level registry
      *
-     * @return LogLevelFactoryRegistry The created exception log level factories
+     * @return LogLevelRegistry The created exception log level registry
      */
-    protected function createAndBindLogLevelFactories(): LogLevelFactoryRegistry
+    protected function createAndBindLogLevels(): LogLevelRegistry
     {
-        $exceptionLogLevelFactories = new LogLevelFactoryRegistry();
-        $this->container->bindInstance(LogLevelFactoryRegistry::class, $exceptionLogLevelFactories);
+        $logLevels = new LogLevelRegistry();
+        $this->container->bindInstance(LogLevelRegistry::class, $logLevels);
 
-        return $exceptionLogLevelFactories;
+        return $logLevels;
     }
 
     /**
