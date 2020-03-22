@@ -14,8 +14,8 @@ namespace Aphiria\Framework\Exceptions\Components;
 
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
+use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\Http\HttpExceptionRenderer;
-use Aphiria\Exceptions\LogLevelRegistry;
 use Aphiria\Framework\Application\AphiriaComponents;
 use Closure;
 
@@ -53,8 +53,8 @@ class ExceptionHandlerComponent implements IComponent
             $httpExceptionRenderer->registerManyResponseFactories($this->responseFactories);
         }
 
-        $logLevels = $this->serviceResolver->resolve(LogLevelRegistry::class);
-        $logLevels->registerManyLogLevelFactories($this->logLevelFactories);
+        $globalExceptionHandler = $this->serviceResolver->resolve(GlobalExceptionHandler::class);
+        $globalExceptionHandler->registerManyLogLevelFactories($this->logLevelFactories);
     }
 
     /**

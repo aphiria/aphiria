@@ -14,7 +14,6 @@ namespace Aphiria\Exceptions\Tests;
 
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\IExceptionRenderer;
-use Aphiria\Exceptions\LogLevelRegistry;
 use ErrorException;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -31,7 +30,6 @@ class GlobalExceptionHandlerTest extends TestCase
     private IExceptionRenderer $exceptionRenderer;
     /** @var LoggerInterface|MockObject */
     private LoggerInterface $logger;
-    private LogLevelRegistry $logLevels;
     private GlobalExceptionHandler $globalExceptionHandler;
     private int $prevErrorReporting;
 
@@ -40,12 +38,7 @@ class GlobalExceptionHandlerTest extends TestCase
         $this->prevErrorReporting = \error_reporting();
         $this->exceptionRenderer = $this->createMock(IExceptionRenderer::class);
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->logLevels = new LogLevelRegistry();
-        $this->globalExceptionHandler = new GlobalExceptionHandler(
-            $this->exceptionRenderer,
-            $this->logger,
-            $this->logLevels
-        );
+        $this->globalExceptionHandler = new GlobalExceptionHandler($this->exceptionRenderer, $this->logger);
         $this->globalExceptionHandler->registerWithPhp();
     }
 
@@ -93,13 +86,25 @@ class GlobalExceptionHandlerTest extends TestCase
         $this->globalExceptionHandler->handleException($exception);
     }
 
-    public function testHandlingExceptionWithCustomErrorLogLevelUsesIt(): void
+    public function testHandlingExceptionWithManyCustomErrorLogLevelUsesThem(): void
     {
         $exception = new Exception;
         $this->logger->expects($this->once())
             ->method('emergency')
             ->with($exception);
-        $this->logLevels->registerLogLevelFactory(Exception::class, fn (Exception $ex) => LogLevel::EMERGENCY);
+        $this->globalExceptionHandler->registerManyLogLevelFactories([
+            Exception::class => fn (Exception $ex) => LogLevel::EMERGENCY
+        ]);
+        $this->globalExceptionHandler->handleException($exception);
+    }
+
+    public function testHandlingExceptionWithSingleCustomErrorLogLevelUsesIt(): void
+    {
+        $exception = new Exception;
+        $this->logger->expects($this->once())
+            ->method('emergency')
+            ->with($exception);
+        $this->globalExceptionHandler->registerLogLevelFactory(Exception::class, fn (Exception $ex) => LogLevel::EMERGENCY);
         $this->globalExceptionHandler->handleException($exception);
     }
 }

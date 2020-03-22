@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Exceptions;
 
+use Closure;
 use ErrorException;
 use Exception;
 use Monolog\Handler\ErrorLogHandler;
@@ -23,7 +24,7 @@ use Throwable;
 /**
  * Defines the global exception handler
  */
-class GlobalExceptionHandler
+class GlobalExceptionHandler implements IGlobalExceptionHandler
 {
     /** @const The default name to use for the logger */
     private const DEFAULT_LOGGER_NAME = 'app';
@@ -31,33 +32,23 @@ class GlobalExceptionHandler
     protected IExceptionRenderer $exceptionRenderer;
     /** @var LoggerInterface The PSR-3 logger */
     protected LoggerInterface $logger;
-    /** @var LogLevelRegistry The registry of exception log levels */
-    protected LogLevelRegistry $logLevels;
+    /** @var Closure[] The mapping of exception types to log level factories */
+    private array $logLevelFactories = [];
 
     /**
      * @param IExceptionRenderer $exceptionRenderer The underlying exception renderer
      * @param LoggerInterface|null $logger The PSR-3 logger
-     * @param LogLevelRegistry|null $logLevels The registry of exception log levels
      */
     public function __construct(
         IExceptionRenderer $exceptionRenderer,
-        LoggerInterface $logger = null,
-        LogLevelRegistry $logLevels = null
+        LoggerInterface $logger = null
     ) {
         $this->exceptionRenderer = $exceptionRenderer;
         $this->logger = $logger  ?? new Logger(self::DEFAULT_LOGGER_NAME, [new ErrorLogHandler()]);
-        $this->logLevels = $logLevels ?? new LogLevelRegistry();
     }
 
     /**
-     * Handles an error
-     *
-     * @param int $level The level of the error
-     * @param string $message The message
-     * @param string $file The file the error occurred in
-     * @param int $line The line number the error occurred at
-     * @param array $context The symbol table
-     * @throws ErrorException Thrown if the error was reportable based on its level
+     * @inheritdoc
      */
     public function handleError(
         int $level,
@@ -72,9 +63,7 @@ class GlobalExceptionHandler
     }
 
     /**
-     * Handles an exception
-     *
-     * @param Throwable $ex The exception to handle
+     * @inheritdoc
      */
     public function handleException(Throwable $ex): void
     {
@@ -83,13 +72,18 @@ class GlobalExceptionHandler
             $ex = new FatalThrowableError($ex);
         }
 
-        $logLevel = $this->logLevels->getLogLevel($ex) ?? LogLevel::ERROR;
+        if (isset($this->logLevelFactories[\get_class($ex)])) {
+            $logLevel = $this->logLevelFactories[\get_class($ex)]($ex);
+        } else {
+            $logLevel = LogLevel::ERROR;
+        }
+
         $this->logger->{$logLevel}($ex);
         $this->exceptionRenderer->render($ex);
     }
 
     /**
-     * Handles a PHP shutdown
+     * @inheritdoc
      */
     public function handleShutdown(): void
     {
@@ -103,7 +97,30 @@ class GlobalExceptionHandler
     }
 
     /**
-     * Registers the exception and error handlers with PHP
+     * Registers an exception log level factory
+     *
+     * @param string $exceptionType The exception whose factory we're registering
+     * @param Closure $factory The factory that takes in an exception of the input type and returns a PSR-3 log level
+     */
+    public function registerLogLevelFactory(string $exceptionType, Closure $factory): void
+    {
+        $this->logLevelFactories[$exceptionType] = $factory;
+    }
+
+    /**
+     * Registers an exception log level factory for an exception type
+     *
+     * @param Closure[] $exceptionTypesToFactories The exception types to factories
+     */
+    public function registerManyLogLevelFactories(array $exceptionTypesToFactories): void
+    {
+        foreach ($exceptionTypesToFactories as $exceptionType => $responseFactory) {
+            $this->registerLogLevelFactory($exceptionType, $responseFactory);
+        }
+    }
+
+    /**
+     * @inheritdoc
      */
     public function registerWithPhp(): void
     {

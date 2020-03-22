@@ -13,15 +13,18 @@ namespace Aphiria\Framework\Tests\Exceptions\Components;
 
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\Http\HttpExceptionRenderer;
-use Aphiria\Exceptions\LogLevelRegistry;
+use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\IResponseWriter;
 use Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
 /**
@@ -31,12 +34,19 @@ class ExceptionHandlerComponentTest extends TestCase
 {
     private IContainer $container;
     private ExceptionHandlerComponent $exceptionHandlerComponent;
-    private LogLevelRegistry $logLevels;
+    private GlobalExceptionHandler $globalExceptionHandler;
+    /** @var LoggerInterface|MockObject */
+    private LoggerInterface $logger;
 
     protected function setUp(): void
     {
+        $this->logger = $this->createMock(LoggerInterface::class);
+        $this->globalExceptionHandler = new GlobalExceptionHandler(
+            $this->createMock(IExceptionRenderer::class),
+            $this->logger
+        );
         $this->container = new Container();
-        $this->container->bindInstance(LogLevelRegistry::class, $this->logLevels = new LogLevelRegistry());
+        $this->container->bindInstance(GlobalExceptionHandler::class, $this->globalExceptionHandler);
         $this->exceptionHandlerComponent = new ExceptionHandlerComponent($this->container);
     }
 
@@ -48,10 +58,14 @@ class ExceptionHandlerComponentTest extends TestCase
 
     public function testInitializeWithLogLevelFactoryRegistersFactory(): void
     {
+        $expectedException = new Exception;
+        $this->logger->expects($this->once())
+            ->method('alert')
+            ->with($expectedException);
         $factory = fn (Exception $ex) => LogLevel::ALERT;
         $this->exceptionHandlerComponent->withLogLevelFactory(Exception::class, $factory);
         $this->exceptionHandlerComponent->build();
-        $this->assertSame(LogLevel::ALERT, $this->logLevels->getLogLevel(new Exception));
+        $this->globalExceptionHandler->handleException($expectedException);
     }
 
     public function testInitializeWithResponseFactoryRegistersFactory(): void
