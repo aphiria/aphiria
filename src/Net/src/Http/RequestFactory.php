@@ -234,7 +234,11 @@ class RequestFactory
             $uriString .= "$user:" . ($password ?? '') . '@';
         }
 
-        $uriString .= $host . ($port === null ? '' : ":$port") . "{$path}?{$queryString}";
+        $uriString .= $host . ($port === null ? '' : ":$port") . $path;
+
+        if (!empty($queryString)) {
+            $uriString .= "?$queryString";
+        }
 
         return new Uri($uriString);
     }
