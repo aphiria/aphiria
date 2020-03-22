@@ -14,7 +14,7 @@ namespace Aphiria\Exceptions\Http;
 
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
-use Aphiria\Exceptions\IExceptionHandler;
+use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
@@ -31,9 +31,9 @@ use Closure;
 use Exception;
 
 /**
- * Defines the exception handler for HTTP-based apps
+ * Defines the exception renderer for HTTP-based apps
  */
-class HttpExceptionHandler implements IExceptionHandler
+class HttpExceptionRenderer implements IExceptionRenderer
 {
     /** @var bool Whether or not to use problem details */
     protected bool $useProblemDetails;
@@ -67,7 +67,7 @@ class HttpExceptionHandler implements IExceptionHandler
     /**
      * @inheritdoc
      */
-    public function handle(Exception $ex): void
+    public function render(Exception $ex): void
     {
         try {
             if ($this->request === null) {

@@ -13,7 +13,7 @@ namespace Aphiria\Framework\Tests\Exceptions\Components;
 
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Exceptions\Http\HttpExceptionHandler;
+use Aphiria\Exceptions\Http\HttpExceptionRenderer;
 use Aphiria\Exceptions\LogLevelRegistry;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Net\Http\IResponseFactory;
@@ -61,15 +61,15 @@ class ExceptionHandlerComponentTest extends TestCase
         $responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($expectedResponse);
-        $httpExceptionHandler = new HttpExceptionHandler(true, null, null, $responseWriter);
+        $httpExceptionHandler = new HttpExceptionRenderer(true, null, null, $responseWriter);
         // Need to make sure the content negotiator is set so that the factory is invoked
         $httpExceptionHandler->setResponseFactory($this->createMock(IResponseFactory::class));
         $httpExceptionHandler->setRequest($this->createMock(IHttpRequestMessage::class));
-        $this->container->bindInstance(HttpExceptionHandler::class, $httpExceptionHandler);
+        $this->container->bindInstance(HttpExceptionRenderer::class, $httpExceptionHandler);
 
         $factory = fn (Exception $ex) => $expectedResponse;
         $this->exceptionHandlerComponent->withResponseFactory(Exception::class, $factory);
         $this->exceptionHandlerComponent->build();
-        $httpExceptionHandler->handle(new Exception());
+        $httpExceptionHandler->render(new Exception());
     }
 }

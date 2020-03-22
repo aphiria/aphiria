@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Exceptions\Tests\Http;
 
 use Aphiria\Api\Errors\ProblemDetails;
-use Aphiria\Exceptions\Http\HttpExceptionHandler;
+use Aphiria\Exceptions\Http\HttpExceptionRenderer;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
@@ -25,9 +25,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the HTTP exception handler
+ * Tests the HTTP exception renderer
  */
-class HttpExceptionHandlerTest extends TestCase
+class HttpExceptionRendererTest extends TestCase
 {
     /** @var IResponseWriter|MockObject */
     private IResponseWriter $responseWriter;
@@ -45,8 +45,8 @@ class HttpExceptionHandlerTest extends TestCase
 
     public function testHavingRequestSetButAnExceptionGetsThrownCausesGenericResponse(): void
     {
-        $exceptionHandler = $this->createExceptionHandler(true, true, true);
-        $exceptionHandler->registerResponseFactory(
+        $exceptionRenderer = $this->createExceptionRenderer(true, true, true);
+        $exceptionRenderer->registerResponseFactory(
             Exception::class,
             function (Exception $ex) {
                 throw new Exception();
@@ -59,12 +59,12 @@ class HttpExceptionHandlerTest extends TestCase
                     && $response->getBody() === null
                     && $response->getHeaders()->count() === 0;
             }));
-        $exceptionHandler->handle(new Exception);
+        $exceptionRenderer->render(new Exception);
     }
 
     public function testHavingRequestSetButNoResponseFactoryAndNotUsingProblemDetailsCreatesGenericResponse(): void
     {
-        $exceptionHandler = $this->createExceptionHandler(false, true, true);
+        $exceptionRenderer = $this->createExceptionRenderer(false, true, true);
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($this->callback(function (IHttpResponseMessage $response) {
@@ -72,12 +72,12 @@ class HttpExceptionHandlerTest extends TestCase
                     && $response->getBody() === null
                     && $response->getHeaders()->count() === 0;
             }));
-        $exceptionHandler->handle(new Exception);
+        $exceptionRenderer->render(new Exception);
     }
 
     public function testHavingRequestSetButNoResponseFactoryAndUsingProblemDetailsCreatesProblemDetailsResponse(): void
     {
-        $exceptionHandler = $this->createExceptionHandler(true, true, true);
+        $exceptionRenderer = $this->createExceptionRenderer(true, true, true);
         $expectedResponse = new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
         $this->responseFactory->expects($this->once())
             ->method('createResponse')
@@ -86,39 +86,39 @@ class HttpExceptionHandlerTest extends TestCase
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($expectedResponse);
-        $exceptionHandler->handle(new Exception);
+        $exceptionRenderer->render(new Exception);
     }
 
     public function testHavingRequestSetWithAResponseFactoryCreatesResponseFromFactory(): void
     {
-        $exceptionHandler = $this->createExceptionHandler(true, true, true);
+        $exceptionRenderer = $this->createExceptionRenderer(true, true, true);
         $expectedResponse = new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
-        $exceptionHandler->registerResponseFactory(
+        $exceptionRenderer->registerResponseFactory(
             Exception::class,
             fn (Exception $ex) => $expectedResponse
         );
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($expectedResponse);
-        $exceptionHandler->handle(new Exception);
+        $exceptionRenderer->render(new Exception);
     }
 
     public function testHavingRequestSetWithManyResponseFactoriesCreatesResponseFromFactory(): void
     {
-        $exceptionHandler = $this->createExceptionHandler(true, true, true);
+        $exceptionRenderer = $this->createExceptionRenderer(true, true, true);
         $expectedResponse = new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
-        $exceptionHandler->registerManyResponseFactories([
+        $exceptionRenderer->registerManyResponseFactories([
             Exception::class => fn (Exception $ex) => $expectedResponse
         ]);
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($expectedResponse);
-        $exceptionHandler->handle(new Exception);
+        $exceptionRenderer->render(new Exception);
     }
 
     public function testNotHavingRequestSetAndNotUsingProblemDetailsCreatesGenericResponse(): void
     {
-        $exceptionHandler = $this->createExceptionHandler(false, false, false);
+        $exceptionRenderer = $this->createExceptionRenderer(false, false, false);
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($this->callback(function (IHttpResponseMessage $response) {
@@ -126,12 +126,12 @@ class HttpExceptionHandlerTest extends TestCase
                     && $response->getBody() === null
                     && $response->getHeaders()->count() === 0;
             }));
-        $exceptionHandler->handle(new Exception);
+        $exceptionRenderer->render(new Exception);
     }
 
     public function testNotHavingRequestSetAndUsingProblemDetailsCreatesProblemDetailsResponse(): void
     {
-        $exceptionHandler = $this->createExceptionHandler(true, false, false);
+        $exceptionRenderer = $this->createExceptionRenderer(true, false, false);
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($this->callback(function (IHttpResponseMessage $response) {
@@ -140,23 +140,23 @@ class HttpExceptionHandlerTest extends TestCase
                     && $response->getBody()->readAsString() === '{"type":"https:\/\/tools.ietf.org\/html\/rfc7231#section-6.6.1","title":"An error occurred","detail":null,"status":500,"instance":null}'
                     && $response->getHeaders()->getFirst('Content-Type') === 'application/problem+json';
             }));
-        $exceptionHandler->handle(new Exception);
+        $exceptionRenderer->render(new Exception);
     }
 
     /**
-     * Creates an exception handler
+     * Creates an exception renderer
      *
      * @param bool $useProblemDetails Whether or not to use problem details
      * @param bool $setRequest Whether or not to set the request
      * @param bool $setResponseFactory Whether or not to set the response factory
-     * @return HttpExceptionHandler The exception handler
+     * @return HttpExceptionRenderer The exception renderer
      */
-    private function createExceptionHandler(
+    private function createExceptionRenderer(
         bool $useProblemDetails,
         bool $setRequest,
         bool $setResponseFactory
-    ): HttpExceptionHandler {
-        return new HttpExceptionHandler(
+    ): HttpExceptionRenderer {
+        return new HttpExceptionRenderer(
             $useProblemDetails,
             $setRequest ? $this->request : null,
             $setResponseFactory ? $this->responseFactory : null,

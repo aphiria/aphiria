@@ -15,14 +15,14 @@ namespace Aphiria\Exceptions\Console;
 use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCodes;
-use Aphiria\Exceptions\IExceptionHandler;
+use Aphiria\Exceptions\IExceptionRenderer;
 use Closure;
 use Exception;
 
 /**
- * Defines the exception handler for console applications
+ * Defines the exception renderer for console applications
  */
-class ConsoleExceptionHandler implements IExceptionHandler
+class ConsoleExceptionRenderer implements IExceptionRenderer
 {
     /** @var IOutput The output to write to */
     protected IOutput $output;
@@ -44,7 +44,7 @@ class ConsoleExceptionHandler implements IExceptionHandler
     /**
      * @inheritdoc
      */
-    public function handle(Exception $ex): void
+    public function render(Exception $ex): void
     {
         if (isset($this->exceptionResultFactories[\get_class($ex)])) {
             $result = $this->exceptionResultFactories[\get_class($ex)]($ex);

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Exceptions\Tests;
 
 use Aphiria\Exceptions\GlobalExceptionHandler;
-use Aphiria\Exceptions\IExceptionHandler;
+use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\LogLevelRegistry;
 use ErrorException;
 use Exception;
@@ -27,8 +27,8 @@ use Psr\Log\LogLevel;
  */
 class GlobalExceptionHandlerTest extends TestCase
 {
-    /** @var IExceptionHandler|MockObject */
-    private IExceptionHandler $exceptionHandler;
+    /** @var IExceptionRenderer|MockObject */
+    private IExceptionRenderer $exceptionRenderer;
     /** @var LoggerInterface|MockObject */
     private LoggerInterface $logger;
     private LogLevelRegistry $logLevels;
@@ -38,11 +38,11 @@ class GlobalExceptionHandlerTest extends TestCase
     protected function setUp(): void
     {
         $this->prevErrorReporting = \error_reporting();
-        $this->exceptionHandler = $this->createMock(IExceptionHandler::class);
+        $this->exceptionRenderer = $this->createMock(IExceptionRenderer::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->logLevels = new LogLevelRegistry();
         $this->globalExceptionHandler = new GlobalExceptionHandler(
-            $this->exceptionHandler,
+            $this->exceptionRenderer,
             $this->logger,
             $this->logLevels
         );
@@ -80,6 +80,15 @@ class GlobalExceptionHandlerTest extends TestCase
         $exception = new Exception;
         $this->logger->expects($this->once())
             ->method('error')
+            ->with($exception);
+        $this->globalExceptionHandler->handleException($exception);
+    }
+
+    public function testHandlingExceptionRendersException(): void
+    {
+        $exception = new Exception;
+        $this->exceptionRenderer->expects($this->once())
+            ->method('render')
             ->with($exception);
         $this->globalExceptionHandler->handleException($exception);
     }

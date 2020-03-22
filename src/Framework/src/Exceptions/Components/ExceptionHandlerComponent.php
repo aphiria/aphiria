@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Exceptions\Components;
 
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
-use Aphiria\Exceptions\Http\HttpExceptionHandler;
+use Aphiria\Exceptions\Http\HttpExceptionRenderer;
 use Aphiria\Exceptions\LogLevelRegistry;
 use Aphiria\Framework\Application\AphiriaComponents;
 use Closure;
@@ -46,11 +46,11 @@ class ExceptionHandlerComponent implements IComponent
      */
     public function build(): void
     {
-        /** @var HttpExceptionHandler|null $httpExceptionHandler */
-        $httpExceptionHandler = null;
+        /** @var HttpExceptionRenderer|null $httpExceptionRenderer */
+        $httpExceptionRenderer = null;
 
-        if ($this->serviceResolver->tryResolve(HttpExceptionHandler::class, $httpExceptionHandler)) {
-            $httpExceptionHandler->registerManyResponseFactories($this->responseFactories);
+        if ($this->serviceResolver->tryResolve(HttpExceptionRenderer::class, $httpExceptionRenderer)) {
+            $httpExceptionRenderer->registerManyResponseFactories($this->responseFactories);
         }
 
         $logLevels = $this->serviceResolver->resolve(LogLevelRegistry::class);

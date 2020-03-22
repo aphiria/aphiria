@@ -19,10 +19,10 @@ use Aphiria\Application\IBootstrapper;
 use Aphiria\Configuration\ConfigurationException;
 use Aphiria\Configuration\GlobalConfiguration;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Exceptions\Console\ConsoleExceptionHandler;
+use Aphiria\Exceptions\Console\ConsoleExceptionRenderer;
 use Aphiria\Exceptions\GlobalExceptionHandler;
-use Aphiria\Exceptions\Http\HttpExceptionHandler;
-use Aphiria\Exceptions\IExceptionHandler;
+use Aphiria\Exceptions\Http\HttpExceptionRenderer;
+use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\LogLevelRegistry;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\HttpException;
@@ -57,14 +57,14 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     public function bootstrap(): void
     {
         if ($this->isRunningInConsole()) {
-            $exceptionHandler = $this->createAndBindConsoleExceptionHandler();
+            $exceptionRenderer = $this->createAndBindConsoleExceptionRenderer();
         } else {
-            $exceptionHandler = $this->createAndBindHttpExceptionHandler();
+            $exceptionRenderer = $this->createAndBindHttpExceptionRenderer();
         }
 
         $logger = $this->createAndBindLogger();
         $globalExceptionHandler = new GlobalExceptionHandler(
-            $exceptionHandler,
+            $exceptionRenderer,
             $logger,
             $this->createAndBindLogLevels()
         );
@@ -73,26 +73,26 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     }
 
     /**
-     * Creates and binds the exception handler for console applications
+     * Creates and binds the exception renderer for console applications
      *
-     * @return IExceptionHandler The exception handler for console applications
+     * @return IExceptionRenderer The exception renderer for console applications
      */
-    protected function createAndBindConsoleExceptionHandler(): IExceptionHandler
+    protected function createAndBindConsoleExceptionRenderer(): IExceptionRenderer
     {
-        return new ConsoleExceptionHandler();
+        return new ConsoleExceptionRenderer();
     }
 
     /**
-     * Creates and binds the exception handler for HTTP applications
+     * Creates and binds the exception renderer for HTTP applications
      *
-     * @return IExceptionHandler The exception handler for HTTP applications
+     * @return IExceptionRenderer The exception renderer for HTTP applications
      * @throws ConfigurationException Thrown if configuration values were invalid or missing
      */
-    protected function createAndBindHttpExceptionHandler(): IExceptionHandler
+    protected function createAndBindHttpExceptionRenderer(): IExceptionRenderer
     {
         $useProblemDetails = GlobalConfiguration::getBool('aphiria.exceptions.useProblemDetails');
-        $exceptionHandler = new HttpExceptionHandler($useProblemDetails);
-        $exceptionHandler->registerManyResponseFactories([
+        $exceptionRenderer = new HttpExceptionRenderer($useProblemDetails);
+        $exceptionRenderer->registerManyResponseFactories([
             HttpException::class => function (HttpException $ex, IHttpRequestMessage $request, IResponseFactory $responseFactory) {
                 return $ex->getResponse();
             },
@@ -107,9 +107,9 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                 return new Response(HttpStatusCodes::HTTP_BAD_REQUEST);
             }
         ]);
-        $this->container->bindInstance([IExceptionHandler::class, HttpExceptionHandler::class], $exceptionHandler);
+        $this->container->bindInstance([IExceptionRenderer::class, HttpExceptionRenderer::class], $exceptionRenderer);
 
-        return $exceptionHandler;
+        return $exceptionRenderer;
     }
 
     /**

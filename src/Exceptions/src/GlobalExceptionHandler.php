@@ -27,24 +27,24 @@ class GlobalExceptionHandler
 {
     /** @const The default name to use for the logger */
     private const DEFAULT_LOGGER_NAME = 'app';
-    /** @var IExceptionHandler The underlying exception handler */
-    protected IExceptionHandler $exceptionHandler;
+    /** @var IExceptionRenderer The underlying exception renderer */
+    protected IExceptionRenderer $exceptionRenderer;
     /** @var LoggerInterface The PSR-3 logger */
     protected LoggerInterface $logger;
     /** @var LogLevelRegistry The registry of exception log levels */
     protected LogLevelRegistry $logLevels;
 
     /**
-     * @param IExceptionHandler $exceptionHandler The underlying exception handler
+     * @param IExceptionRenderer $exceptionRenderer The underlying exception renderer
      * @param LoggerInterface|null $logger The PSR-3 logger
      * @param LogLevelRegistry|null $logLevels The registry of exception log levels
      */
     public function __construct(
-        IExceptionHandler $exceptionHandler,
+        IExceptionRenderer $exceptionRenderer,
         LoggerInterface $logger = null,
         LogLevelRegistry $logLevels = null
     ) {
-        $this->exceptionHandler = $exceptionHandler;
+        $this->exceptionRenderer = $exceptionRenderer;
         $this->logger = $logger  ?? new Logger(self::DEFAULT_LOGGER_NAME, [new ErrorLogHandler()]);
         $this->logLevels = $logLevels ?? new LogLevelRegistry();
     }
@@ -85,7 +85,7 @@ class GlobalExceptionHandler
 
         $logLevel = $this->logLevels->getLogLevel($ex) ?? LogLevel::ERROR;
         $this->logger->{$logLevel}($ex);
-        $this->exceptionHandler->handle($ex);
+        $this->exceptionRenderer->render($ex);
     }
 
     /**

@@ -15,14 +15,15 @@ namespace Aphiria\Exceptions;
 use Exception;
 
 /**
- * Defines the interface for exception handlers to implement
+ * Defines the interface for exception renderers to implement
  */
-interface IExceptionHandler
+interface IExceptionRenderer
 {
     /**
-     * Handles an exception
+     * Renders an exception
+     * Note: This should be done by writing to output directly, not returning an output value
      *
      * @param Exception $ex The exception that was thrown
      */
-    public function handle(Exception $ex): void;
+    public function render(Exception $ex): void;
 }
