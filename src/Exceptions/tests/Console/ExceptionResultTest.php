@@ -40,6 +40,14 @@ class ExceptionResultTest extends TestCase
         new ExceptionResult(0, $this);
     }
 
+    public function testOutOfBoundsStatusCodesAreMovedInBounds(): void
+    {
+        $lowStatusCodeResult = new ExceptionResult(-1, 'foo');
+        $highStatusCodeResult = new ExceptionResult(255, 'bar');
+        $this->assertEquals(0, $lowStatusCodeResult->getStatusCode());
+        $this->assertEquals(254, $highStatusCodeResult->getStatusCode());
+    }
+
     public function testStringMessageGetsConvertedToArrayOfStrings(): void
     {
         $result = new ExceptionResult(0, 'foo');

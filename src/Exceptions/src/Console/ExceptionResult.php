@@ -30,7 +30,13 @@ class ExceptionResult
      */
     public function __construct(int $statusCode, $messages)
     {
-        $this->statusCode = $statusCode;
+        if ($statusCode < 0) {
+            $this->statusCode = 0;
+        } elseif ($statusCode >= 255) {
+            $this->statusCode = 254;
+        } else {
+            $this->statusCode = $statusCode;
+        }
 
         if (\is_string($messages)) {
             $this->messages = [$messages];
