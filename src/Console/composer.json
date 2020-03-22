@@ -25,7 +25,6 @@
         }
     },
     "require": {
-        "aphiria/console": "1.0.*@dev",
         "aphiria/dependency-injection": "1.0.*@dev",
         "aphiria/reflection": "1.0.*@dev",
         "doctrine/annotations": "2.0.*@dev",
