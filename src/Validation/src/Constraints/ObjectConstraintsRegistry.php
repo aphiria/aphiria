@@ -24,6 +24,7 @@ final class ObjectConstraintsRegistry
      * Copies a registry into this one
      *
      * @param ObjectConstraintsRegistry $objectConstraints The constraints to copy
+     * @internal
      */
     public function copy(ObjectConstraintsRegistry $objectConstraints): void
     {

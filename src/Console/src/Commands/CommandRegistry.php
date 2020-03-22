@@ -37,6 +37,7 @@ final class CommandRegistry
      * Copies a command registry into this one
      *
      * @param CommandRegistry $commands The commands to copy
+     * @internal
      */
     public function copy(CommandRegistry $commands): void
     {

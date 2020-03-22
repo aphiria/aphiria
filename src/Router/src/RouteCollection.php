@@ -79,6 +79,7 @@ final class RouteCollection
      * Copies a route collection into this one
      *
      * @param RouteCollection $routes The routes to copy
+     * @internal
      */
     public function copy(RouteCollection $routes): void
     {
