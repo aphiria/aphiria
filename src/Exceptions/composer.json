@@ -25,10 +25,6 @@
         }
     },
     "require": {
-        "aphiria/api": "1.0.*@dev",
-        "aphiria/console": "1.0.*@dev",
-        "aphiria/middleware": "1.0.*@dev",
-        "aphiria/net": "1.0.*@dev",
         "monolog/monolog": "~2.0",
         "php": "^7.4",
         "psr/log": "~1.0"

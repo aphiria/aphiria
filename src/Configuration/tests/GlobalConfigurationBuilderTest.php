@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Configuration\Tests;
 
 use Aphiria\Configuration\HashTableConfiguration;
-use Aphiria\Configuration\ConfigurationException;
 use Aphiria\Configuration\GlobalConfiguration;
 use Aphiria\Configuration\GlobalConfigurationBuilder;
+use Aphiria\Configuration\InvalidConfigurationFileException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -86,7 +86,7 @@ class GlobalConfigurationBuilderTest extends TestCase
     public function testWithJsonFileThatContainsInvalidJsonThrowsException(): void
     {
         $path = __DIR__ . '/files/invalid-configuration.json';
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(InvalidConfigurationFileException::class);
         $this->expectExceptionMessage("Invalid JSON in $path");
         $this->builder->withJsonFileConfigurationSource($path);
         $this->builder->build();
@@ -94,7 +94,7 @@ class GlobalConfigurationBuilderTest extends TestCase
 
     public function testWithJsonFileForNonExistentPathThrowsException(): void
     {
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(InvalidConfigurationFileException::class);
         $this->expectExceptionMessage('/doesnotexist does not exist');
         $this->builder->withJsonFileConfigurationSource('/doesnotexist');
         $this->builder->build();
@@ -136,7 +136,7 @@ class GlobalConfigurationBuilderTest extends TestCase
     public function testWithPhpFileThatContainsInvalidPhpThrowsException(): void
     {
         $path = __DIR__ . '/files/invalid-configuration.php';
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(InvalidConfigurationFileException::class);
         $this->expectExceptionMessage("Configuration in $path must be an array");
         $this->builder->withPhpFileConfigurationSource($path);
         $this->builder->build();
@@ -144,7 +144,7 @@ class GlobalConfigurationBuilderTest extends TestCase
 
     public function testWithPhpFileForNonExistentPathThrowsException(): void
     {
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(InvalidConfigurationFileException::class);
         $this->expectExceptionMessage('/doesnotexist does not exist');
         $this->builder->withPhpFileConfigurationSource('/doesnotexist');
         $this->builder->build();

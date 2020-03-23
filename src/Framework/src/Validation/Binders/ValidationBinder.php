@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Validation\Binders;
 
-use Aphiria\Configuration\ConfigurationException;
 use Aphiria\Configuration\GlobalConfiguration;
+use Aphiria\Configuration\MissingConfigurationValueException;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
@@ -27,6 +27,7 @@ use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\Validator;
 use Doctrine\Annotations\AnnotationException;
+use InvalidArgumentException;
 
 /**
  * Defines the validation binder
@@ -35,7 +36,8 @@ final class ValidationBinder extends Binder
 {
     /**
      * @inheritdoc
-     * @throws ConfigurationException Thrown if the config is missing values
+     * @throws MissingConfigurationValueException Thrown if the config is missing values
+     * @throws InvalidArgumentException Thrown if the error message interpolator configuration is invalid
      * @throws AnnotationException Thrown if PHP is not configured to handle scanning for annotations
      */
     public function bind(IContainer $container): void
@@ -82,7 +84,7 @@ final class ValidationBinder extends Binder
                 );
                 break;
             default:
-                throw new ConfigurationException("Unsupported error message interpolator type {$errorMessageInterpolatorConfiguration['type']}");
+                throw new InvalidArgumentException("Unsupported error message interpolator type {$errorMessageInterpolatorConfiguration['type']}");
         }
 
         $container->bindInstance(IErrorMessageInterpolator::class, $errorMessageInterpolator);

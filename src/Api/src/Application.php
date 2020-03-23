@@ -21,7 +21,7 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 /**
  * Defines the top-level request handler that makes up an application
  */
-class App implements IRequestHandler
+class Application implements IRequestHandler
 {
     /** @var IRequestHandler The request handler that will be the last to be executed in the middleware pipeline and performs routing */
     private IRequestHandler $router;

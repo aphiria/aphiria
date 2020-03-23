@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Serialization\Binders;
 
-use Aphiria\Configuration\ConfigurationException;
 use Aphiria\Configuration\GlobalConfiguration;
+use Aphiria\Configuration\MissingConfigurationValueException;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Serialization\Encoding\CamelCasePropertyNameFormatter;
@@ -29,7 +29,7 @@ final class SerializerBinder extends Binder
 {
     /**
      * @inheritdoc
-     * @throws ConfigurationException Thrown if the config is missing values
+     * @throws MissingConfigurationValueException Thrown if the config is missing values
      */
     public function bind(IContainer $container): void
     {

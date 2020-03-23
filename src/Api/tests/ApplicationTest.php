@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Tests;
 
-use Aphiria\Api\App;
+use Aphiria\Api\Application;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
@@ -22,11 +22,11 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the app
+ * Tests the application
  */
-class AppTest extends TestCase
+class ApplicationTest extends TestCase
 {
-    private App $app;
+    private Application $app;
     /** @var IRequestHandler|MockObject */
     private IRequestHandler $router;
     private MiddlewareCollection $middleware;
@@ -35,7 +35,7 @@ class AppTest extends TestCase
     {
         $this->router = $this->createMock(IRequestHandler::class);
         $this->middleware = new MiddlewareCollection();
-        $this->app = new App($this->router, $this->middleware);
+        $this->app = new Application($this->router, $this->middleware);
     }
 
     public function testHandleWillSendRequestThroughMiddlewarePipeline(): void

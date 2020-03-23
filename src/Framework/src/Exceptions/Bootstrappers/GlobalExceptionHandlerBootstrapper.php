@@ -16,19 +16,20 @@ use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
 use Aphiria\Api\Validation\InvalidRequestBodyException;
 use Aphiria\Api\Validation\ValidationProblemDetails;
 use Aphiria\Application\IBootstrapper;
-use Aphiria\Configuration\ConfigurationException;
 use Aphiria\Configuration\GlobalConfiguration;
+use Aphiria\Configuration\MissingConfigurationValueException;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Exceptions\Console\ConsoleExceptionRenderer;
 use Aphiria\Exceptions\GlobalExceptionHandler;
-use Aphiria\Exceptions\Http\HttpExceptionRenderer;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\IGlobalExceptionHandler;
-use Aphiria\Net\Http\IResponseFactory;
+use Aphiria\Framework\Exceptions\Console\ConsoleExceptionRenderer;
+use Aphiria\Framework\Exceptions\Http\HttpExceptionRenderer;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\Response;
+use InvalidArgumentException;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler;
 use Monolog\Logger;
@@ -52,7 +53,6 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
 
     /**
      * @inheritdoc
-     * @throws ConfigurationException Thrown if the configuration was not valid
      */
     public function bootstrap(): void
     {
@@ -85,7 +85,7 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
      * Creates and binds the exception renderer for HTTP applications
      *
      * @return IExceptionRenderer The exception renderer for HTTP applications
-     * @throws ConfigurationException Thrown if configuration values were invalid or missing
+     * @throws MissingConfigurationValueException Thrown if configuration values were invalid or missing
      */
     protected function createAndBindHttpExceptionRenderer(): IExceptionRenderer
     {
@@ -115,7 +115,8 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
      * Creates and binds a PSR-3 logger instance to use in the exception handler
      *
      * @return LoggerInterface The PSR-3 logger to use
-     * @throws ConfigurationException Thrown if the configuration was invalid
+     * @throws InvalidArgumentException Thrown if the configuration was invalid
+     * @throws MissingConfigurationValueException Thrown if configuration values were invalid or missing
      */
     protected function createAndBindLogger(): LoggerInterface
     {
@@ -137,7 +138,7 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                     ));
                     break;
                 default:
-                    throw new ConfigurationException("Unsupported logging handler type {$handlerConfiguration['type']}");
+                    throw new InvalidArgumentException("Unsupported logging handler type {$handlerConfiguration['type']}");
             }
         }
 

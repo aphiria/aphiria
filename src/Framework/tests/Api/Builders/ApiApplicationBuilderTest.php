@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Api\Builders;
 
-use Aphiria\Api\App;
+use Aphiria\Api\Application;
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IModule;
 use Aphiria\Application\IComponent;
@@ -42,7 +42,7 @@ class ApiApplicationBuilderTest extends TestCase
     {
         // Bind the router to the container
         $router = $this->createMock(IRequestHandler::class);
-        $this->container->for(App::class, function (IContainer $container) use ($router) {
+        $this->container->for(Application::class, function (IContainer $container) use ($router) {
             $container->bindInstance(IRequestHandler::class, $router);
         });
         $this->appBuilder->build();
@@ -83,7 +83,7 @@ class ApiApplicationBuilderTest extends TestCase
         // Purposely registering out of order to ensure that order does not matter
         $this->appBuilder->withComponent($component);
         $this->appBuilder->withModule($module);
-        $this->container->for(App::class, function (IContainer $container) {
+        $this->container->for(Application::class, function (IContainer $container) {
             $container->bindInstance(IRequestHandler::class, $this->createMock(IRequestHandler::class));
         });
         $this->appBuilder->build();

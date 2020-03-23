@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Configuration\Tests;
 
 use Aphiria\Configuration\HashTableConfiguration;
-use Aphiria\Configuration\ConfigurationException;
+use Aphiria\Configuration\MissingConfigurationValueException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -89,7 +89,7 @@ class HashTableConfigurationTest extends TestCase
 
     public function testGetValueForNonExistentNestedPathThrowsException(): void
     {
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(MissingConfigurationValueException::class);
         $this->expectExceptionMessage('No configuration value at foo.blah');
         $configuration = new HashTableConfiguration(['foo' => ['bar' => 'baz']]);
         $configuration->getValue('foo.blah');
@@ -97,7 +97,7 @@ class HashTableConfigurationTest extends TestCase
 
     public function testGetValueForNonExistentTopLevelPathThrowsException(): void
     {
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(MissingConfigurationValueException::class);
         $this->expectExceptionMessage('No configuration value at baz');
         $configuration = new HashTableConfiguration(['foo' => 'bar']);
         $configuration->getValue('baz');

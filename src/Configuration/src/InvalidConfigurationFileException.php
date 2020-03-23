@@ -15,9 +15,9 @@ namespace Aphiria\Configuration;
 use Exception;
 
 /**
- * Defines an exception that's thrown when a configuration value could not be read or was invalid
+ * Defines the exception that's thrown when a configuration file is invalid
  */
-final class ConfigurationException extends Exception
+class InvalidConfigurationFileException extends Exception
 {
     // Don't do anything
 }

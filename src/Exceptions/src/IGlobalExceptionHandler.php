@@ -10,7 +10,6 @@
 
 namespace Aphiria\Exceptions;
 
-
 use ErrorException;
 use Throwable;
 

@@ -23,7 +23,7 @@ interface IConfiguration
      * @param string $path The period-delimited path to the value in the config to get
      * @return array The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws ConfigurationException Thrown if there was no value at the input path
+     * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
     public function getArray(string $path): array;
 
@@ -33,7 +33,7 @@ interface IConfiguration
      * @param string $path The period-delimited path to the value in the config to get
      * @return bool The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws ConfigurationException Thrown if there was no value at the input path
+     * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
     public function getBool(string $path): bool;
 
@@ -43,7 +43,7 @@ interface IConfiguration
      * @param string $path The period-delimited path to the value in the config to get
      * @return float The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws ConfigurationException Thrown if there was no value at the input path
+     * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
     public function getFloat(string $path): float;
 
@@ -53,7 +53,7 @@ interface IConfiguration
      * @param string $path The period-delimited path to the value in the config to get
      * @return int The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws ConfigurationException Thrown if there was no value at the input path
+     * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
     public function getInt(string $path): int;
 
@@ -63,7 +63,7 @@ interface IConfiguration
      * @param string $path The period-delimited path to the value in the config to get
      * @return string The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws ConfigurationException Thrown if there was no value at the input path
+     * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
     public function getString(string $path): string;
 
@@ -72,7 +72,7 @@ interface IConfiguration
      *
      * @param string $path The period-delimited path to the value in the config to get
      * @return mixed The value at the path
-     * @throws ConfigurationException Thrown if there was no value at the input path
+     * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
     public function getValue(string $path);
 

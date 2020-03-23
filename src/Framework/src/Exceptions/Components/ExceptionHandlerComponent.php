@@ -15,8 +15,9 @@ namespace Aphiria\Framework\Exceptions\Components;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Exceptions\GlobalExceptionHandler;
-use Aphiria\Exceptions\Http\HttpExceptionRenderer;
 use Aphiria\Framework\Application\AphiriaComponents;
+use Aphiria\Framework\Exceptions\Console\ConsoleExceptionRenderer;
+use Aphiria\Framework\Exceptions\Http\HttpExceptionRenderer;
 use Closure;
 
 /**
@@ -28,8 +29,10 @@ class ExceptionHandlerComponent implements IComponent
 
     /** @var IServiceResolver The service resolver */
     private IServiceResolver $serviceResolver;
-    /** @var Closure[] The mapping of exception types to response factories */
-    private array $responseFactories = [];
+    /** @var Closure[] The mapping of exception types to HTTP response factories */
+    private array $httpResponseFactories = [];
+    /** @var Closure[] The mapping of exception types to console result factories */
+    private array $consoleOutputWriters = [];
     /** @var Closure[] The mapping of exception types to log level factories */
     private array $logLevelFactories = [];
 
@@ -50,11 +53,46 @@ class ExceptionHandlerComponent implements IComponent
         $httpExceptionRenderer = null;
 
         if ($this->serviceResolver->tryResolve(HttpExceptionRenderer::class, $httpExceptionRenderer)) {
-            $httpExceptionRenderer->registerManyResponseFactories($this->responseFactories);
+            $httpExceptionRenderer->registerManyResponseFactories($this->httpResponseFactories);
+        }
+
+        /** @var ConsoleExceptionRenderer|null $consoleExceptionRenderer */
+        $consoleExceptionRenderer = null;
+
+        if ($this->serviceResolver->tryResolve(ConsoleExceptionRenderer::class, $consoleExceptionRenderer)) {
+            $consoleExceptionRenderer->registerManyOutputWriters($this->consoleOutputWriters);
         }
 
         $globalExceptionHandler = $this->serviceResolver->resolve(GlobalExceptionHandler::class);
         $globalExceptionHandler->registerManyLogLevelFactories($this->logLevelFactories);
+    }
+
+    /**
+     * Adds a console exception output writer
+     *
+     * @param string $exceptionType The type of exception that's thrown
+     * @param Closure $callback The factory that takes in the exception and output, and writes messages/returns a status code
+     * @return self For chaining
+     */
+    public function withConsoleOutputWriter(string $exceptionType, Closure $callback): self
+    {
+        $this->consoleOutputWriters[$exceptionType] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Adds an HTTP exception response factory for a particular exception type
+     *
+     * @param string $exceptionType The type of exception that's thrown
+     * @param Closure $responseFactory The factory that takes in an instance of the exception, the request, and the response factory, and returns a response
+     * @return self For chaining
+     */
+    public function withHttpResponseFactory(string $exceptionType, Closure $responseFactory): self
+    {
+        $this->httpResponseFactories[$exceptionType] = $responseFactory;
+
+        return $this;
     }
 
     /**
@@ -67,20 +105,6 @@ class ExceptionHandlerComponent implements IComponent
     public function withLogLevelFactory(string $exceptionType, Closure $logLevelFactory): self
     {
         $this->logLevelFactories[$exceptionType] = $logLevelFactory;
-
-        return $this;
-    }
-
-    /**
-     * Adds an exception response factory for a particular exception type
-     *
-     * @param string $exceptionType The type of exception that's thrown
-     * @param Closure $responseFactory The factory that takes in an instance of the exception, the request, and the response factory, and returns a response
-     * @return self For chaining
-     */
-    public function withResponseFactory(string $exceptionType, Closure $responseFactory): self
-    {
-        $this->responseFactories[$exceptionType] = $responseFactory;
 
         return $this;
     }

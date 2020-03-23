@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Routing\Binders;
 
-use Aphiria\Configuration\ConfigurationException;
 use Aphiria\Configuration\GlobalConfiguration;
+use Aphiria\Configuration\MissingConfigurationValueException;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
@@ -35,7 +35,7 @@ final class RoutingBinder extends Binder
 {
     /**
      * @inheritdoc
-     * @throws ConfigurationException Thrown if the config is missing values
+     * @throws MissingConfigurationValueException Thrown if the config is missing values
      * @throws AnnotationException Thrown if PHP is not configured to handle scanning for annotations
      */
     public function bind(IContainer $container): void

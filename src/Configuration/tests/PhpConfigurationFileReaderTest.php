@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration\Tests;
 
-use Aphiria\Configuration\ConfigurationException;
+use Aphiria\Configuration\InvalidConfigurationFileException;
 use Aphiria\Configuration\PhpConfigurationFileReader;
 use PHPUnit\Framework\TestCase;
 
@@ -43,14 +43,14 @@ class PhpConfigurationFileReaderTest extends TestCase
     public function testReadingInvalidPhpThrowsException(): void
     {
         $path = __DIR__ . '/files/invalid-configuration.php';
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(InvalidConfigurationFileException::class);
         $this->expectExceptionMessage("Configuration in $path must be an array");
         $this->reader->readConfiguration($path);
     }
 
     public function testReadingNonExistentPathThrowsException(): void
     {
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(InvalidConfigurationFileException::class);
         $this->expectExceptionMessage('/doesnotexist does not exist');
         $this->reader->readConfiguration('/doesnotexist');
     }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Configuration\Tests;
 
 use Aphiria\Configuration\HashTableConfiguration;
-use Aphiria\Configuration\ConfigurationException;
+use Aphiria\Configuration\MissingConfigurationValueException;
 use Aphiria\Configuration\GlobalConfiguration;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -111,7 +111,7 @@ class GlobalConfigurationTest extends TestCase
 
     public function testGetValueForNonExistentNestedPathThrowsException(): void
     {
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(MissingConfigurationValueException::class);
         $this->expectExceptionMessage('No configuration value at foo.blah');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => ['bar' => 'baz']]));
         GlobalConfiguration::getValue('foo.blah');
@@ -119,7 +119,7 @@ class GlobalConfigurationTest extends TestCase
 
     public function testGetValueForNonExistentTopLevelPathThrowsException(): void
     {
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(MissingConfigurationValueException::class);
         $this->expectExceptionMessage('No configuration value at baz');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
         GlobalConfiguration::getValue('baz');

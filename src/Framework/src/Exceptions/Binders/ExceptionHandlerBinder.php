@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Exceptions\Binders;
 
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Exceptions\Http\HttpExceptionRenderer;
+use Aphiria\Framework\Exceptions\Http\HttpExceptionRenderer;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\IHttpRequestMessage;
 

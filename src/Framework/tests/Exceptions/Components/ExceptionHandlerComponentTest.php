@@ -11,15 +11,17 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Exceptions\Components;
 
+use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\GlobalExceptionHandler;
-use Aphiria\Exceptions\Http\HttpExceptionRenderer;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
-use Aphiria\Net\Http\IResponseFactory;
+use Aphiria\Framework\Exceptions\Console\ConsoleExceptionRenderer;
+use Aphiria\Framework\Exceptions\Http\HttpExceptionRenderer;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\IResponseWriter;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -56,19 +58,27 @@ class ExceptionHandlerComponentTest extends TestCase
         Container::$globalInstance = null;
     }
 
-    public function testInitializeWithLogLevelFactoryRegistersFactory(): void
+    public function testBuildWithConsoleOutputWriterRegistersCallback(): void
     {
-        $expectedException = new Exception;
-        $this->logger->expects($this->once())
-            ->method('alert')
-            ->with($expectedException);
-        $factory = fn (Exception $ex) => LogLevel::ALERT;
-        $this->exceptionHandlerComponent->withLogLevelFactory(Exception::class, $factory);
+        $output = $this->createMock(IOutput::class);
+        $output->expects($this->once())
+            ->method('writeln')
+            ->with('foo');
+        // Make sure the renderer doesn't cause the app to exit
+        $consoleExceptionHandler = new ConsoleExceptionRenderer($output, false);
+        $this->container->bindInstance(ConsoleExceptionRenderer::class, $consoleExceptionHandler);
+
+        $outputWriter = function (Exception $ex, IOutput $output) {
+            $output->writeln('foo');
+
+            return 0;
+        };
+        $this->exceptionHandlerComponent->withConsoleOutputWriter(Exception::class, $outputWriter);
         $this->exceptionHandlerComponent->build();
-        $this->globalExceptionHandler->handleException($expectedException);
+        $consoleExceptionHandler->render(new Exception());
     }
 
-    public function testInitializeWithResponseFactoryRegistersFactory(): void
+    public function testBuildWithHttpResponseFactoryRegistersFactory(): void
     {
         $expectedResponse = $this->createMock(IHttpResponseMessage::class);
         $responseWriter = $this->createMock(IResponseWriter::class);
@@ -82,8 +92,20 @@ class ExceptionHandlerComponentTest extends TestCase
         $this->container->bindInstance(HttpExceptionRenderer::class, $httpExceptionHandler);
 
         $factory = fn (Exception $ex) => $expectedResponse;
-        $this->exceptionHandlerComponent->withResponseFactory(Exception::class, $factory);
+        $this->exceptionHandlerComponent->withHttpResponseFactory(Exception::class, $factory);
         $this->exceptionHandlerComponent->build();
         $httpExceptionHandler->render(new Exception());
+    }
+
+    public function testBuildWithLogLevelFactoryRegistersFactory(): void
+    {
+        $expectedException = new Exception;
+        $this->logger->expects($this->once())
+            ->method('alert')
+            ->with($expectedException);
+        $factory = fn (Exception $ex) => LogLevel::ALERT;
+        $this->exceptionHandlerComponent->withLogLevelFactory(Exception::class, $factory);
+        $this->exceptionHandlerComponent->build();
+        $this->globalExceptionHandler->handleException($expectedException);
     }
 }

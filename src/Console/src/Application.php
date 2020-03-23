@@ -34,7 +34,7 @@ use Throwable;
 /**
  * Defines a console application
  */
-class App implements ICommandBus
+class Application implements ICommandBus
 {
     /** @var CommandRegistry The commands registered to the application */
     private CommandRegistry $commands;

@@ -19,7 +19,7 @@ use Aphiria\Console\Input\ArgumentTypes;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionTypes;
-use Aphiria\Console\App;
+use Aphiria\Console\Application;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCodes;
 use Aphiria\Console\Tests\Output\Mocks\Output;
@@ -28,16 +28,16 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests the console application
  */
-class AppTest extends TestCase
+class ApplicationTest extends TestCase
 {
     private CommandRegistry $commands;
     private Output $output;
-    private App $app;
+    private Application $app;
 
     protected function setUp(): void
     {
         $this->commands = new CommandRegistry();
-        $this->app = new App($this->commands);
+        $this->app = new Application($this->commands);
         $this->output = new Output();
     }
 

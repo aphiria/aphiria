@@ -23,7 +23,7 @@ interface IConfigurationFileReader
      * @param string $path The path to the file to read
      * @param string $pathDelimiter The delimiter for nested path segments
      * @return IConfiguration The configuration that was read
-     * @throws ConfigurationException Thrown if the configuration could not be read
+     * @throws InvalidConfigurationFileException Thrown if the configuration could not be read
      */
     public function readConfiguration(string $path, string $pathDelimiter = '.'): IConfiguration;
 }

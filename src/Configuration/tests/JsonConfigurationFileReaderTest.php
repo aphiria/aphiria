@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration\Tests;
 
-use Aphiria\Configuration\ConfigurationException;
+use Aphiria\Configuration\InvalidConfigurationFileException;
 use Aphiria\Configuration\JsonConfigurationFileReader;
 use PHPUnit\Framework\TestCase;
 
@@ -43,14 +43,14 @@ class JsonConfigurationFileReaderTest extends TestCase
     public function testReadingInvalidJsonThrowsException(): void
     {
         $path = __DIR__ . '/files/invalid-configuration.json';
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(InvalidConfigurationFileException::class);
         $this->expectExceptionMessage("Invalid JSON in $path");
         $this->reader->readConfiguration($path);
     }
 
     public function testReadingNonExistentPathThrowsException(): void
     {
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(InvalidConfigurationFileException::class);
         $this->expectExceptionMessage('/doesnotexist does not exist');
         $this->reader->readConfiguration('/doesnotexist');
     }

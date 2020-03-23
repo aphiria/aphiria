@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Api\Builders;
 
-use Aphiria\Api\App;
+use Aphiria\Api\Application;
 use Aphiria\Application\Builders\ApplicationBuilder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
@@ -45,9 +45,9 @@ final class ApiApplicationBuilder extends ApplicationBuilder
         $this->buildComponents();
 
         try {
-            $apiApp = new App(
-                $this->container->for(App::class, fn (IContainer $container) => $container->resolve(IRequestHandler::class)),
-                $this->container->for(App::class, fn (IContainer $container) => $container->resolve(MiddlewareCollection::class))
+            $apiApp = new Application(
+                $this->container->for(Application::class, fn (IContainer $container) => $container->resolve(IRequestHandler::class)),
+                $this->container->for(Application::class, fn (IContainer $container) => $container->resolve(MiddlewareCollection::class))
             );
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build the API application', 0, $ex);

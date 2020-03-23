@@ -108,6 +108,27 @@ trait AphiriaComponents
     }
 
     /**
+     * Adds a console callback that takes in the exception and the output, and writes messages/returns the status code
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param string $exceptionType The type of exception whose result factory we're registering
+     * @param Closure $callback The callback that takes in an exception and the output, and writes messages/returns the status code
+     * @return self For chaining
+     */
+    protected function withConsoleExceptionOutputWriter(IApplicationBuilder $appBuilder, string $exceptionType, Closure $callback): self
+    {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
+            $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));
+        }
+
+        $appBuilder->getComponent(ExceptionHandlerComponent::class)
+            ->withConsoleOutputWriter($exceptionType, $callback);
+
+        return $this;
+    }
+
+    /**
      * Adds an encoder to the encoder component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
@@ -128,14 +149,14 @@ trait AphiriaComponents
     }
 
     /**
-     * Adds an exception response factory to the exception handler component
+     * Adds an HTTP exception response factory to the exception handler component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param string $exceptionType The type of exception whose response factory we're registering
      * @param Closure $responseFactory The factory that takes in an instance of the exception, IHttpRequestMessage, and IResponseFactory and creates a response
      * @return self For chaining
      */
-    protected function withExceptionResponseFactory(IApplicationBuilder $appBuilder, string $exceptionType, Closure $responseFactory): self
+    protected function withHttpExceptionResponseFactory(IApplicationBuilder $appBuilder, string $exceptionType, Closure $responseFactory): self
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
@@ -143,7 +164,7 @@ trait AphiriaComponents
         }
 
         $appBuilder->getComponent(ExceptionHandlerComponent::class)
-            ->withResponseFactory($exceptionType, $responseFactory);
+            ->withHttpResponseFactory($exceptionType, $responseFactory);
 
         return $this;
     }

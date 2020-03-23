@@ -23,13 +23,13 @@ class PhpConfigurationFileReader implements IConfigurationFileReader
     public function readConfiguration(string $path, string $pathDelimiter = '.'): IConfiguration
     {
         if (!\file_exists($path)) {
-            throw new ConfigurationException("$path does not exist");
+            throw new InvalidConfigurationFileException("$path does not exist");
         }
 
         $hashTable = require $path;
 
         if (!\is_array($hashTable)) {
-            throw new ConfigurationException("Configuration in $path must be an array");
+            throw new InvalidConfigurationFileException("Configuration in $path must be an array");
         }
 
         return new HashTableConfiguration($hashTable, $pathDelimiter);

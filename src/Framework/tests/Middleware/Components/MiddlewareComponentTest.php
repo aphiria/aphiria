@@ -40,7 +40,7 @@ class MiddlewareComponentTest extends TestCase
         $this->middlewareComponent = new MiddlewareComponent($this->dependencyResolver);
     }
 
-    public function testInitializeWithAttributeMiddlewareSetsAttributes(): void
+    public function testBuildWithAttributeMiddlewareSetsAttributes(): void
     {
         $expectedMiddleware = new class($this->createMock(IHttpResponseMessage::class)) extends AttributeMiddleware
         {
@@ -71,7 +71,7 @@ class MiddlewareComponentTest extends TestCase
         $this->assertEquals([$expectedMiddleware], $middlewareCollection->getAll());
     }
 
-    public function testInitializeWithMiddlewareThatIsNotCorrectInterfaceThrowsException(): void
+    public function testBuildWithMiddlewareThatIsNotCorrectInterfaceThrowsException(): void
     {
         $invalidMiddleware = $this;
         $this->expectException(InvalidArgumentException::class);

@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Console\Binders;
 
-use Aphiria\Configuration\ConfigurationException;
 use Aphiria\Configuration\GlobalConfiguration;
+use Aphiria\Configuration\MissingConfigurationValueException;
 use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
 use Aphiria\Console\Commands\Caching\FileCommandRegistryCache;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
@@ -29,7 +29,7 @@ final class CommandBinder extends Binder
 {
     /**
      * @inheritdoc
-     * @throws ConfigurationException Thrown if the the config is missing values
+     * @throws MissingConfigurationValueException Thrown if the the config is missing values
      * @throws AnnotationException Thrown if PHP is not configured to handle scanning for annotations
      */
     public function bind(IContainer $container): void

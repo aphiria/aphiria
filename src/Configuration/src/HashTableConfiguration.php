@@ -84,7 +84,7 @@ class HashTableConfiguration implements IConfiguration
             if (!isset($value[$pathPart])) {
                 $fullPathToThisPart = implode($this->pathDelimiter, \array_slice($explodedPath, 0, $i + 1));
 
-                throw new ConfigurationException("No configuration value at $fullPathToThisPart");
+                throw new MissingConfigurationValueException($fullPathToThisPart);
             }
 
             $value = $value[$pathPart];
@@ -102,7 +102,7 @@ class HashTableConfiguration implements IConfiguration
             $value = $this->getArray($path);
 
             return true;
-        } catch (ConfigurationException $ex) {
+        } catch (MissingConfigurationValueException $ex) {
             $value = null;
 
             return false;
@@ -118,7 +118,7 @@ class HashTableConfiguration implements IConfiguration
             $value = $this->getBool($path);
 
             return true;
-        } catch (ConfigurationException $ex) {
+        } catch (MissingConfigurationValueException $ex) {
             $value = null;
 
             return false;
@@ -134,7 +134,7 @@ class HashTableConfiguration implements IConfiguration
             $value = $this->getFloat($path);
 
             return true;
-        } catch (ConfigurationException $ex) {
+        } catch (MissingConfigurationValueException $ex) {
             $value = null;
 
             return false;
@@ -150,7 +150,7 @@ class HashTableConfiguration implements IConfiguration
             $value = $this->getInt($path);
 
             return true;
-        } catch (ConfigurationException $ex) {
+        } catch (MissingConfigurationValueException $ex) {
             $value = null;
 
             return false;
@@ -166,7 +166,7 @@ class HashTableConfiguration implements IConfiguration
             $value = $this->getString($path);
 
             return true;
-        } catch (ConfigurationException $ex) {
+        } catch (MissingConfigurationValueException $ex) {
             $value = null;
 
             return false;
@@ -182,7 +182,7 @@ class HashTableConfiguration implements IConfiguration
             $value = $this->getValue($path);
 
             return true;
-        } catch (ConfigurationException $ex) {
+        } catch (MissingConfigurationValueException $ex) {
             $value = null;
 
             return false;

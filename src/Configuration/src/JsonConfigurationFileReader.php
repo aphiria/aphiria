@@ -25,13 +25,13 @@ class JsonConfigurationFileReader implements IConfigurationFileReader
     public function readConfiguration($path, string $pathDelimiter = '.'): IConfiguration
     {
         if (!\file_exists($path)) {
-            throw new ConfigurationException("$path does not exist");
+            throw new InvalidConfigurationFileException("$path does not exist");
         }
 
         try {
             $decodedJson = \json_decode(\file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $ex) {
-            throw new ConfigurationException("Invalid JSON in $path", 0, $ex);
+            throw new InvalidConfigurationFileException("Invalid JSON in $path", 0, $ex);
         }
 
         return new HashTableConfiguration($decodedJson, $pathDelimiter);

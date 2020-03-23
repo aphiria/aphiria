@@ -133,6 +133,37 @@ class AphiriaComponentsTest extends TestCase
         $component->build($this->appBuilder, $callback);
     }
 
+    public function testWithConsoleExceptionOutputWriterConfiguresComponentToHaveWriter(): void
+    {
+        $outputWriter = function (Exception $ex, IOutput $output) {
+            $output->writeln('foo');
+
+            return 1;
+        };
+        $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
+        $expectedComponent->expects($this->once())
+            ->method('withConsoleOutputWriter')
+            ->with(Exception::class, $outputWriter);
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponent')
+            ->with(ExceptionHandlerComponent::class)
+            ->willReturn(true);
+        $this->appBuilder->expects($this->at(1))
+            ->method('getComponent')
+            ->with(ExceptionHandlerComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class()
+        {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $callback): void
+            {
+                $this->withConsoleExceptionOutputWriter($appBuilder, $exceptionType, $callback);
+            }
+        };
+        $component->build($this->appBuilder, Exception::class, $outputWriter);
+    }
+
     public function testWithEncodersConfiguresComponentToHaveEncoders(): void
     {
         $encoder = $this->createMock(IEncoder::class);
@@ -158,6 +189,33 @@ class AphiriaComponentsTest extends TestCase
             }
         };
         $component->build($this->appBuilder, 'foo', $encoder);
+    }
+
+    public function testWithHttpResponseFactoryConfiguresComponentToHaveFactory(): void
+    {
+        $responseFactory = fn (Exception $ex) => $this->createMock(IHttpResponseMessage::class);
+        $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
+        $expectedComponent->expects($this->once())
+            ->method('withHttpResponseFactory')
+            ->with(Exception::class, $responseFactory);
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponent')
+            ->with(ExceptionHandlerComponent::class)
+            ->willReturn(true);
+        $this->appBuilder->expects($this->at(1))
+            ->method('getComponent')
+            ->with(ExceptionHandlerComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class()
+        {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $responseFactory): void
+            {
+                $this->withHttpExceptionResponseFactory($appBuilder, $exceptionType, $responseFactory);
+            }
+        };
+        $component->build($this->appBuilder, Exception::class, $responseFactory);
     }
 
     public function testWithGlobalMiddlewareConfiguresComponentToHaveMiddleware(): void
@@ -239,33 +297,6 @@ class AphiriaComponentsTest extends TestCase
             }
         };
         $component->build($this->appBuilder, $callback);
-    }
-
-    public function testWithResponseFactoryConfiguresComponentToHaveFactory(): void
-    {
-        $responseFactory = fn (Exception $ex) => $this->createMock(IHttpResponseMessage::class);
-        $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
-        $expectedComponent->expects($this->once())
-            ->method('withResponseFactory')
-            ->with(Exception::class, $responseFactory);
-        $this->appBuilder->expects($this->at(0))
-            ->method('hasComponent')
-            ->with(ExceptionHandlerComponent::class)
-            ->willReturn(true);
-        $this->appBuilder->expects($this->at(1))
-            ->method('getComponent')
-            ->with(ExceptionHandlerComponent::class)
-            ->willReturn($expectedComponent);
-        $component = new class()
-        {
-            use AphiriaComponents;
-
-            public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $responseFactory): void
-            {
-                $this->withExceptionResponseFactory($appBuilder, $exceptionType, $responseFactory);
-            }
-        };
-        $component->build($this->appBuilder, Exception::class, $responseFactory);
     }
 
     public function testWithRouteAnnotationsConfiguresComponentToHaveAnnotations(): void

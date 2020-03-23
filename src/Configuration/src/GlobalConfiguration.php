@@ -38,7 +38,7 @@ class GlobalConfiguration
      * @param string $path The period-delimited path to the value in the config to get
      * @return array The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws ConfigurationException Thrown if there was no value at the input path
+     * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
     public static function getArray(string $path): array
     {
@@ -52,7 +52,7 @@ class GlobalConfiguration
             }
         }
 
-        throw self::createMissingValueException($path);
+        throw new MissingConfigurationValueException($path);
     }
 
     /**
@@ -61,7 +61,7 @@ class GlobalConfiguration
      * @param string $path The period-delimited path to the value in the config to get
      * @return bool The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws ConfigurationException Thrown if there was no value at the input path
+     * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
     public static function getBool(string $path): bool
     {
@@ -75,7 +75,7 @@ class GlobalConfiguration
             }
         }
 
-        throw self::createMissingValueException($path);
+        throw new MissingConfigurationValueException($path);
     }
 
     /**
@@ -84,7 +84,7 @@ class GlobalConfiguration
      * @param string $path The period-delimited path to the value in the config to get
      * @return float The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws ConfigurationException Thrown if there was no value at the input path
+     * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
     public static function getFloat(string $path): float
     {
@@ -98,7 +98,7 @@ class GlobalConfiguration
             }
         }
 
-        throw self::createMissingValueException($path);
+        throw new MissingConfigurationValueException($path);
     }
 
     /**
@@ -107,7 +107,7 @@ class GlobalConfiguration
      * @param string $path The period-delimited path to the value in the config to get
      * @return int The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws ConfigurationException Thrown if there was no value at the input path
+     * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
     public static function getInt(string $path): int
     {
@@ -121,7 +121,7 @@ class GlobalConfiguration
             }
         }
 
-        throw self::createMissingValueException($path);
+        throw new MissingConfigurationValueException($path);
     }
 
     /**
@@ -130,7 +130,7 @@ class GlobalConfiguration
      * @param string $path The period-delimited path to the value in the config to get
      * @return string The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws ConfigurationException Thrown if there was no value at the input path
+     * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
     public static function getString(string $path): string
     {
@@ -144,7 +144,7 @@ class GlobalConfiguration
             }
         }
 
-        throw self::createMissingValueException($path);
+        throw new MissingConfigurationValueException($path);
     }
 
     /**
@@ -153,7 +153,7 @@ class GlobalConfiguration
      * @param string $path The period-delimited path to the value in the config to get
      * @return mixed The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
-     * @throws ConfigurationException Thrown if there was no value at the input path
+     * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
     public static function getValue(string $path)
     {
@@ -167,7 +167,7 @@ class GlobalConfiguration
             }
         }
 
-        throw self::createMissingValueException($path);
+        throw new MissingConfigurationValueException($path);
     }
 
     /**
@@ -195,7 +195,7 @@ class GlobalConfiguration
             $value = self::getArray($path);
 
             return true;
-        } catch (ConfigurationException $ex) {
+        } catch (MissingConfigurationValueException $ex) {
             $value = null;
 
             return false;
@@ -217,7 +217,7 @@ class GlobalConfiguration
             $value = self::getBool($path);
 
             return true;
-        } catch (ConfigurationException $ex) {
+        } catch (MissingConfigurationValueException $ex) {
             $value = null;
 
             return false;
@@ -239,7 +239,7 @@ class GlobalConfiguration
             $value = self::getFloat($path);
 
             return true;
-        } catch (ConfigurationException $ex) {
+        } catch (MissingConfigurationValueException $ex) {
             $value = null;
 
             return false;
@@ -261,7 +261,7 @@ class GlobalConfiguration
             $value = self::getInt($path);
 
             return true;
-        } catch (ConfigurationException $ex) {
+        } catch (MissingConfigurationValueException $ex) {
             $value = null;
 
             return false;
@@ -283,7 +283,7 @@ class GlobalConfiguration
             $value = self::getString($path);
 
             return true;
-        } catch (ConfigurationException $ex) {
+        } catch (MissingConfigurationValueException $ex) {
             $value = null;
 
             return false;
@@ -305,22 +305,11 @@ class GlobalConfiguration
             $value = self::getValue($path);
 
             return true;
-        } catch (ConfigurationException $ex) {
+        } catch (MissingConfigurationValueException $ex) {
             $value = null;
 
             return false;
         }
-    }
-
-    /**
-     * Creates an exception when a value was missing from the configuration
-     *
-     * @param string $path The path that was being looked up
-     * @return ConfigurationException The created exception
-     */
-    private static function createMissingValueException(string $path): ConfigurationException
-    {
-        return new ConfigurationException("No configuration value at $path");
     }
 
     /**

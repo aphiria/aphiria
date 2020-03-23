@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Routing\Components;
 
-use Aphiria\Api\App;
+use Aphiria\Api\Application;
 use Aphiria\Api\Router;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IContainer;
@@ -64,7 +64,7 @@ class RouterComponent implements IComponent
         $routeRegistrants->add(new RouteBuilderRouteRegistrant($this->callbacks));
         $routeRegistrants->registerRoutes($this->container->resolve(RouteCollection::class));
         $this->container->for(
-            App::class,
+            Application::class,
             fn (IContainer $container) => $container->bindFactory(IRequestHandler::class, fn () => $this->container->resolve(Router::class))
         );
     }

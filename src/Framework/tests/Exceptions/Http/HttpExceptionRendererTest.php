@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Exceptions\Tests\Http;
+namespace Aphiria\Framework\Tests\Exceptions\Http;
 
 use Aphiria\Api\Errors\ProblemDetails;
-use Aphiria\Exceptions\Http\HttpExceptionRenderer;
+use Aphiria\Framework\Exceptions\Http\HttpExceptionRenderer;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
