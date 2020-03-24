@@ -106,16 +106,6 @@ class HttpExceptionRenderer implements IExceptionRenderer
     }
 
     /**
-     * Sets the response factory
-     *
-     * @param IResponseFactory $responseFactory The response factory to set
-     */
-    public function setResponseFactory(IResponseFactory $responseFactory): void
-    {
-        $this->responseFactory = $responseFactory;
-    }
-
-    /**
      * Sets the current request in case it wasn't initially available
      *
      * @param IHttpRequestMessage $request The current request
@@ -123,6 +113,16 @@ class HttpExceptionRenderer implements IExceptionRenderer
     public function setRequest(IHttpRequestMessage $request): void
     {
         $this->request = $request;
+    }
+
+    /**
+     * Sets the response factory
+     *
+     * @param IResponseFactory $responseFactory The response factory to set
+     */
+    public function setResponseFactory(IResponseFactory $responseFactory): void
+    {
+        $this->responseFactory = $responseFactory;
     }
 
     /**

@@ -78,7 +78,10 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
      */
     protected function createAndBindConsoleExceptionRenderer(): IExceptionRenderer
     {
-        return new ConsoleExceptionRenderer();
+        $exceptionRenderer = new ConsoleExceptionRenderer();
+        $this->container->bindInstance([IExceptionRenderer::class, ConsoleExceptionRenderer::class], $exceptionRenderer);
+
+        return $exceptionRenderer;
     }
 
     /**
