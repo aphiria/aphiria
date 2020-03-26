@@ -15,6 +15,7 @@ namespace Aphiria\Framework\DependencyInjection\Components;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
+use Aphiria\DependencyInjection\IContainer;
 
 /**
  * Defines the binder component
@@ -23,15 +24,19 @@ class BinderComponent implements IComponent
 {
     /** @var IBinderDispatcher The binder dispatcher */
     private IBinderDispatcher $binderDispatcher;
+    /** @var IContainer The container to dispatch binders with */
+    private IContainer $container;
     /** @var Binder[] The list of binders to dispatch */
     private array $binders = [];
 
     /**
      * @param IBinderDispatcher $binderDispatcher The binder dispatcher
+     * @param IContainer $container The container to dispatch binders with
      */
-    public function __construct(IBinderDispatcher $binderDispatcher)
+    public function __construct(IBinderDispatcher $binderDispatcher, IContainer $container)
     {
         $this->binderDispatcher = $binderDispatcher;
+        $this->container = $container;
     }
 
     /**
@@ -39,7 +44,7 @@ class BinderComponent implements IComponent
      */
     public function build(): void
     {
-        $this->binderDispatcher->dispatch($this->binders);
+        $this->binderDispatcher->dispatch($this->binders, $this->container);
     }
 
     /**

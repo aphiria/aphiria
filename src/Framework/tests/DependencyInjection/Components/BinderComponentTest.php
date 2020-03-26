@@ -13,6 +13,7 @@ namespace Aphiria\Framework\Tests\DependencyInjection\Components;
 
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
+use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -30,7 +31,7 @@ class BinderComponentTest extends TestCase
     protected function setUp(): void
     {
         $this->binderDispatcher = $this->createMock(IBinderDispatcher::class);
-        $this->binderComponent = new BinderComponent($this->binderDispatcher);
+        $this->binderComponent = new BinderComponent($this->binderDispatcher, new Container());
     }
 
     public function testBuildWithBindersAppendsToListOfBindersToBeDispatched(): void

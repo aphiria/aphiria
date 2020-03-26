@@ -37,7 +37,7 @@ class BindingInspectorBinderDispatcherTest extends TestCase
     {
         $this->container = $this->createMock(IContainer::class);
         $this->cache = $this->createMock(IBinderBindingCache::class);
-        $this->dispatcher = new BindingInspectorBinderDispatcher($this->container, $this->cache);
+        $this->dispatcher = new BindingInspectorBinderDispatcher($this->cache);
     }
 
     public function testDispatchingWithCacheForcesBindingInspectionAndSetsCacheOnCacheMiss(): void
@@ -64,7 +64,7 @@ class BindingInspectorBinderDispatcherTest extends TestCase
             ->with('foo', $this->callback(function (Closure $factory) {
                 return true;
             }));
-        $this->dispatcher->dispatch([$expectedBinder]);
+        $this->dispatcher->dispatch([$expectedBinder], $this->container);
     }
 
     public function testDispatchingWithCacheUsesResultsOnCacheHit(): void
@@ -82,12 +82,12 @@ class BindingInspectorBinderDispatcherTest extends TestCase
         $this->container->expects($this->once())
             ->method('bindFactory')
             ->with('foo', $this->callback(fn (Closure $factory)  => true));
-        $this->dispatcher->dispatch([$expectedBinder]);
+        $this->dispatcher->dispatch([$expectedBinder], $this->container);
     }
 
     public function testDispatchingWithNoCacheForcesBindingInspection(): void
     {
-        $dispatcher = new BindingInspectorBinderDispatcher($this->container);
+        $dispatcher = new BindingInspectorBinderDispatcher();
         $expectedBinder = new class extends Binder {
             public function bind(IContainer $container): void
             {
@@ -97,6 +97,6 @@ class BindingInspectorBinderDispatcherTest extends TestCase
         $this->container->expects($this->once())
             ->method('bindFactory')
             ->with('foo', $this->callback(fn (Closure $factory) => true));
-        $dispatcher->dispatch([$expectedBinder]);
+        $dispatcher->dispatch([$expectedBinder], $this->container);
     }
 }

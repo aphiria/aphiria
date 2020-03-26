@@ -29,24 +29,22 @@ final class BindingInspectorBinderDispatcher implements IBinderDispatcher
     private BindingInspector $bindingInspector;
 
     /**
-     * @param IContainer $container The container to use when dispatching binders
      * @param IBinderBindingCache|null $binderBindingCache The cache to use for binder bindings, or null if not caching
      * @param BindingInspector|null $bindingInspector The binding inspector to use, or null if using the default
      */
     public function __construct(
-        IContainer $container,
         IBinderBindingCache $binderBindingCache = null,
         BindingInspector $bindingInspector = null
     ) {
         $this->binderBindingCache = $binderBindingCache;
         $this->bindingInspector = $bindingInspector ?? new BindingInspector();
-        $this->lazyBindingRegistrant = new LazyBindingRegistrant($container);
+        $this->lazyBindingRegistrant = new LazyBindingRegistrant();
     }
 
     /**
      * @inheritdoc
      */
-    public function dispatch(array $binders): void
+    public function dispatch(array $binders, IContainer $container): void
     {
         if ($this->binderBindingCache === null) {
             $binderBindings = $this->bindingInspector->getBindings($binders);
@@ -55,6 +53,6 @@ final class BindingInspectorBinderDispatcher implements IBinderDispatcher
             $this->binderBindingCache->set($binderBindings);
         }
 
-        $this->lazyBindingRegistrant->registerBindings($binderBindings);
+        $this->lazyBindingRegistrant->registerBindings($binderBindings, $container);
     }
 }

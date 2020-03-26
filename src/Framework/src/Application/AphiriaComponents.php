@@ -47,7 +47,7 @@ trait AphiriaComponents
     {
         if (!$appBuilder->hasComponent(BinderComponent::class)) {
             $appBuilder->withComponent(
-                new BinderComponent(Container::$globalInstance->resolve(IBinderDispatcher::class)),
+                new BinderComponent(Container::$globalInstance->resolve(IBinderDispatcher::class), Container::$globalInstance),
                 0
             );
         }

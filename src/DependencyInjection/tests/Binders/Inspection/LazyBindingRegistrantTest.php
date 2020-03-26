@@ -35,7 +35,7 @@ class LazyBindingRegistrantTest extends TestCase
     protected function setUp(): void
     {
         $this->container = $this->createMock(IContainer::class);
-        $this->registrant = new LazyBindingRegistrant($this->container);
+        $this->registrant = new LazyBindingRegistrant();
     }
 
     public function testRegisteringTargetedBindingAndResolvingItWillAddBindingSetInConstructor(): void
@@ -120,7 +120,7 @@ class LazyBindingRegistrantTest extends TestCase
         $this->container->expects($this->at(6))
             ->method('bindInstance')
             ->with(IFoo::class, $this->callback(fn (Foo $foo) => true));
-        $this->registrant->registerBindings($bindings);
+        $this->registrant->registerBindings($bindings, $this->container);
         $initialCallback($this->container);
         $initialFactory();
         $unbindCallback($this->container);
@@ -144,7 +144,7 @@ class LazyBindingRegistrantTest extends TestCase
             ->with('bar', $this->callback(function (Closure $factory) {
                 return $factory instanceof Closure;
             }));
-        $this->registrant->registerBindings($bindings);
+        $this->registrant->registerBindings($bindings, $this->container);
     }
 
     public function testRegisteringUniversalBindingAndResolvingItWillAddBindingSetInConstructor(): void
@@ -174,7 +174,7 @@ class LazyBindingRegistrantTest extends TestCase
             ->with(IFoo::class, $this->callback(function (Foo $foo) {
                 return $foo instanceof Foo;
             }));
-        $this->registrant->registerBindings($bindings);
+        $this->registrant->registerBindings($bindings, $this->container);
         $actualFactory();
     }
 
@@ -192,6 +192,6 @@ class LazyBindingRegistrantTest extends TestCase
             ->with(IFoo::class, $this->callback(function (Closure $factory) {
                 return $factory instanceof Closure;
             }));
-        $this->registrant->registerBindings($bindings);
+        $this->registrant->registerBindings($bindings, $this->container);
     }
 }
