@@ -10,12 +10,14 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\DependencyInjection\Binders\Inspection\Caching;
+namespace Aphiria\DependencyInjection\Binders\Metadata\Caching;
+
+use Aphiria\DependencyInjection\Binders\Metadata\BinderMetadataCollection;
 
 /**
- * Defines the binder binding cache that uses a file as the cache
+ * Defines the binder metadata collection cache that's backed by file storage
  */
-final class FileBinderBindingCache implements IBinderBindingCache
+final class FileBinderMetadataCollectionCache implements IBinderMetadataCollectionCache
 {
     /** @var string The cache file path */
     private string $filePath;
@@ -41,7 +43,7 @@ final class FileBinderBindingCache implements IBinderBindingCache
     /**
      * @inheritdoc
      */
-    public function get(): ?array
+    public function get(): ?BinderMetadataCollection
     {
         $rawContents = @\file_get_contents($this->filePath);
 
@@ -55,8 +57,8 @@ final class FileBinderBindingCache implements IBinderBindingCache
     /**
      * @inheritdoc
      */
-    public function set(array $bindings): void
+    public function set(BinderMetadataCollection $binderMetadataCollection): void
     {
-        \file_put_contents($this->filePath, \base64_encode(\serialize($bindings)));
+        \file_put_contents($this->filePath, \base64_encode(\serialize($binderMetadataCollection)));
     }
 }

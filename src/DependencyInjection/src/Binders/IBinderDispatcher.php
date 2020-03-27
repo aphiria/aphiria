@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection\Binders;
 
+use Aphiria\DependencyInjection\IContainer;
+
 /**
  * Defines the interface for binder dispatchers to implement
  */
@@ -21,6 +23,7 @@ interface IBinderDispatcher
      * Dispatches binders
      *
      * @param Binder[] $binders The binders to dispatch
+     * @param IContainer $container The container to dispatch the binders with
      */
-    public function dispatch(array $binders): void;
+    public function dispatch(array $binders, IContainer $container): void;
 }

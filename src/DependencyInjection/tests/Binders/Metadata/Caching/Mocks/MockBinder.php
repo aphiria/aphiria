@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\DependencyInjection\Tests\Binders\Inspection\Caching\Mocks;
+namespace Aphiria\DependencyInjection\Tests\Binders\Metadata\Caching\Mocks;
 
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\Tests\Binders\Mocks\Binder;

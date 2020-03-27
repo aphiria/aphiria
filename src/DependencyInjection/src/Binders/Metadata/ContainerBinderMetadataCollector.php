@@ -10,16 +10,16 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\DependencyInjection\Binders\Inspection;
+namespace Aphiria\DependencyInjection\Binders\Metadata;
 
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ResolutionException;
 
 /**
- * Defines a container that can be used to inspect the bindings set in a binder
- * @internal
+ * Defines what a collector of metadata about a binder
  */
-final class BindingInspectionContainer implements IContainer
+final class ContainerBinderMetadataCollector implements IBinderMetadataCollector, IContainer
 {
     /** @var null The value of an empty target */
     private const EMPTY_TARGET = null;
@@ -29,10 +29,10 @@ final class BindingInspectionContainer implements IContainer
     private ?string $currentTarget = null;
     /** @var array The stack of targets */
     private array $targetStack = [];
-    /** @var BinderBinding[] The binder bindings that were found */
-    private array $binderBindings = [];
-    /** @var Binder|null The current binder class */
-    private ?Binder $currBinder = null;
+    /** @var BoundInterface[] The list of bound interfaces that were found */
+    private array $boundInterfaces = [];
+    /** @var ResolvedInterface[] The list of resolved interfaces that were found */
+    private array $resolvedInterfaces = [];
 
     /**
      * @param IContainer $container The underlying container to use to resolve and bind instances
@@ -47,7 +47,7 @@ final class BindingInspectionContainer implements IContainer
      */
     public function bindFactory($interfaces, callable $factory, bool $resolveAsSingleton = false): void
     {
-        $this->addBinderBinding($interfaces);
+        $this->addBoundInterface($interfaces);
 
         if ($this->currentTarget === null) {
             $this->container->bindFactory($interfaces, $factory, $resolveAsSingleton);
@@ -61,7 +61,7 @@ final class BindingInspectionContainer implements IContainer
      */
     public function bindInstance($interfaces, object $instance): void
     {
-        $this->addBinderBinding($interfaces);
+        $this->addBoundInterface($interfaces);
 
         if ($this->currentTarget === null) {
             $this->container->bindInstance($interfaces, $instance);
@@ -75,7 +75,7 @@ final class BindingInspectionContainer implements IContainer
      */
     public function bindPrototype($interfaces, string $concreteClass = null, array $primitives = []): void
     {
-        $this->addBinderBinding($interfaces);
+        $this->addBoundInterface($interfaces);
 
         if ($this->currentTarget === null) {
             $this->container->bindPrototype($interfaces, $concreteClass, $primitives);
@@ -89,7 +89,7 @@ final class BindingInspectionContainer implements IContainer
      */
     public function bindSingleton($interfaces, string $concreteClass = null, array $primitives = []): void
     {
-        $this->addBinderBinding($interfaces);
+        $this->addBoundInterface($interfaces);
 
         if ($this->currentTarget === null) {
             $this->container->bindSingleton($interfaces, $concreteClass, $primitives);
@@ -117,6 +117,26 @@ final class BindingInspectionContainer implements IContainer
     /**
      * @inheritdoc
      */
+    public function collect(Binder $binder): BinderMetadata
+    {
+        try {
+            $binder->bind($this);
+
+            return new BinderMetadata($binder, $this->boundInterfaces, $this->resolvedInterfaces);
+        } catch (ResolutionException $ex) {
+            $incompleteBinderMetadata = new BinderMetadata($binder, $this->boundInterfaces, $this->resolvedInterfaces);
+
+            throw new FailedBinderMetadataCollectionException($incompleteBinderMetadata, $ex->getInterface(), 0, $ex);
+        } finally {
+            // Reset for next time
+            $this->boundInterfaces = $this->resolvedInterfaces = $this->targetStack = [];
+            $this->currentTarget = null;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function for(string $targetClass, callable $callback)
     {
         $this->currentTarget = $targetClass;
@@ -128,23 +148,6 @@ final class BindingInspectionContainer implements IContainer
         $this->currentTarget = end($this->targetStack) ?: self::EMPTY_TARGET;
 
         return $result;
-    }
-
-    /**
-     * Gets all the bindings that were found
-     *
-     * @return BinderBinding[] The bindings that were found
-     */
-    public function getBindings(): array
-    {
-        // We don't want the keys returned
-        $binderBindings = [];
-
-        foreach ($this->binderBindings as $interface => $bindings) {
-            $binderBindings = [...$binderBindings, ...$bindings];
-        }
-
-        return $binderBindings;
     }
 
     /**
@@ -164,21 +167,16 @@ final class BindingInspectionContainer implements IContainer
      */
     public function resolve(string $interface): object
     {
+        // Resolve the interface before we add it to the list of resolved interfaces
         if ($this->currentTarget === null) {
-            return $this->container->resolve($interface);
+            $resolvedInterface = $this->container->resolve($interface);
+        } else {
+            $resolvedInterface = $this->container->for($this->currentTarget, fn (IContainer $container) => $container->resolve($interface));
         }
 
-        return $this->container->for($this->currentTarget, fn (IContainer $container) => $container->resolve($interface));
-    }
+        $this->addResolvedInterface($interface);
 
-    /**
-     * Sets the current binding
-     *
-     * @param Binder $binder The current binding
-     */
-    public function setBinder(Binder $binder): void
-    {
-        $this->currBinder = $binder;
+        return $resolvedInterface;
     }
 
     /**
@@ -186,11 +184,18 @@ final class BindingInspectionContainer implements IContainer
      */
     public function tryResolve(string $interface, ?object &$instance): bool
     {
+        // Try to resolve the interface before we add it to the list of resolved interfaces
         if ($this->currentTarget === null) {
-            return $this->container->tryResolve($interface, $instance);
+            $successful = $this->container->tryResolve($interface, $instance);
+        } else {
+            $successful = $this->container->for($this->currentTarget, fn(IContainer $container) => $container->tryResolve($interface, $instance));
         }
 
-        return $this->container->for($this->currentTarget, fn (IContainer $container) => $container->tryResolve($interface, $instance));
+        if ($successful) {
+            $this->addResolvedInterface($interface);
+        }
+
+        return $successful;
     }
 
     /**
@@ -206,60 +211,34 @@ final class BindingInspectionContainer implements IContainer
     }
 
     /**
-     * Adds a binding to the container if it does not already exist
+     * Adds a bound interface to the list of bound interfaces
      *
-     * @param array|string $interfaces The interface or interfaces we're registering a binding for
+     * @param string[]|string $interfaces The interface or interfaces we're binding
      */
-    private function addBinderBinding($interfaces): void
+    private function addBoundInterface($interfaces): void
     {
         foreach ((array)$interfaces as $interface) {
-            $binderBinding = $this->createBinderBinding($interface);
-            $isTargetedBinding = $binderBinding instanceof TargetedBinderBinding;
+            $boundInterface = new BoundInterface($interface, $this->currentTarget);
 
-            if (!isset($this->binderBindings[$interface])) {
-                $this->binderBindings[$interface] = [$binderBinding];
-                continue;
-            }
-
-            // Check if this exact binding has already been registered
-            $bindingAlreadyExists = false;
-
-            /** @var BinderBinding $existingBinderBinding */
-            foreach ($this->binderBindings[$interface] as $existingBinderBinding) {
-                if (
-                    $binderBinding->getInterface() !== $existingBinderBinding->getInterface()
-                    || $binderBinding->getBinder() !== $existingBinderBinding->getBinder()
-                ) {
-                    continue;
-                }
-
-                if ($isTargetedBinding) {
-                    if ($existingBinderBinding instanceof TargetedBinderBinding) {
-                        $bindingAlreadyExists = true;
-                        break;
-                    }
-                } elseif ($existingBinderBinding instanceof UniversalBinderBinding) {
-                    $bindingAlreadyExists = true;
-                    break;
-                }
-            }
-
-            if (!$bindingAlreadyExists) {
-                $this->binderBindings[$interface][] = $binderBinding;
+            // We do not want to double-add bound interfaces (a universal and targeted binding are considered different)
+            if (!\in_array($boundInterface, $this->boundInterfaces, false)) {
+                $this->boundInterfaces[] = $boundInterface;
             }
         }
     }
 
     /**
-     * Creates an inspection binding
+     * Adds a resolved interface to the list of resolved interfaces
      *
-     * @param string $interface The interface that was bound
-     * @return BinderBinding The binding for the interface
+     * @param string $interface The interface we're resolving
      */
-    private function createBinderBinding(string $interface): BinderBinding
+    private function addResolvedInterface(string $interface): void
     {
-        return $this->currentTarget === null
-            ? new UniversalBinderBinding($interface, $this->currBinder)
-            : new TargetedBinderBinding($this->currentTarget, $interface, $this->currBinder);
+        $resolvedInterface = new ResolvedInterface($interface, $this->currentTarget);
+
+        // We do not want to double-add resolved interfaces (a universal and targeted binding are considered different)
+        if (!\in_array($resolvedInterface, $this->resolvedInterfaces, false)) {
+            $this->resolvedInterfaces[] = $resolvedInterface;
+        }
     }
 }

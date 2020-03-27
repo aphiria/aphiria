@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\DependencyInjection\Tests\Binders\Inspection\Mocks;
+namespace Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks;
 
 /**
- * Defines a fake concrete class for use in testing
+ * Defines an example interface
  */
-final class Foo implements IFoo
+interface IFoo
 {
     // Don't do anything
 }
