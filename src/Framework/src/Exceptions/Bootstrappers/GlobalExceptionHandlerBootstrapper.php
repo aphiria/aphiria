@@ -53,17 +53,22 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
 
     /**
      * @inheritdoc
+     * @throws MissingConfigurationValueException Thrown if the config was missing values
      */
     public function bootstrap(): void
     {
+        $httpExceptionRenderer = $this->createAndBindHttpExceptionRenderer();
+        $consoleExceptionRenderer = $this->createAndBindConsoleExceptionRenderer();
+        $logger = $this->createAndBindLogger();
+
         if ($this->isRunningInConsole()) {
-            $exceptionRenderer = $this->createAndBindConsoleExceptionRenderer();
+            $this->container->bindInstance(IExceptionRenderer::class, $consoleExceptionRenderer);
+            $globalExceptionHandler = new GlobalExceptionHandler($consoleExceptionRenderer, $logger);
         } else {
-            $exceptionRenderer = $this->createAndBindHttpExceptionRenderer();
+            $this->container->bindInstance(IExceptionRenderer::class, $httpExceptionRenderer);
+            $globalExceptionHandler = new GlobalExceptionHandler($httpExceptionRenderer, $logger);
         }
 
-        $logger = $this->createAndBindLogger();
-        $globalExceptionHandler = new GlobalExceptionHandler($exceptionRenderer, $logger);
         $globalExceptionHandler->registerWithPhp();
         $this->container->bindInstance(
             [IGlobalExceptionHandler::class, GlobalExceptionHandler::class],
@@ -79,7 +84,8 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     protected function createAndBindConsoleExceptionRenderer(): IExceptionRenderer
     {
         $exceptionRenderer = new ConsoleExceptionRenderer();
-        $this->container->bindInstance([IExceptionRenderer::class, ConsoleExceptionRenderer::class], $exceptionRenderer);
+        // We'll bind to the interface in the calling method
+        $this->container->bindInstance(ConsoleExceptionRenderer::class, $exceptionRenderer);
 
         return $exceptionRenderer;
     }
@@ -109,7 +115,8 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                 return new Response(HttpStatusCodes::HTTP_BAD_REQUEST);
             }
         ]);
-        $this->container->bindInstance([IExceptionRenderer::class, HttpExceptionRenderer::class], $exceptionRenderer);
+        // We'll bind to the interface in the calling method
+        $this->container->bindInstance(HttpExceptionRenderer::class, $exceptionRenderer);
 
         return $exceptionRenderer;
     }

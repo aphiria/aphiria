@@ -9,4 +9,4 @@
 
 <h1>Documentation</h1>
 
-Full documentation is available <a href="https://www.aphiria.com/docs/master/http-exception-handling.html" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/master/exception-handling.html" target="_blank">here</a>.

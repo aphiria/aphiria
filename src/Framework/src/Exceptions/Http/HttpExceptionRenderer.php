@@ -216,7 +216,7 @@ class HttpExceptionRenderer implements IExceptionRenderer
     protected function createResponseWithRequest(Exception $ex, IHttpRequestMessage $request): IHttpResponseMessage
     {
         if ($this->responseFactory !== null && isset($this->responseFactories[\get_class($ex)])) {
-            return $this->responseFactories[\get_class($ex)]($ex);
+            return $this->responseFactories[\get_class($ex)]($ex, $request, $this->responseFactory);
         }
 
         // We can't do much even with the request if we cannot negotiate it

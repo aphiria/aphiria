@@ -48,7 +48,7 @@ class HttpExceptionRendererTest extends TestCase
         $exceptionRenderer = $this->createExceptionRenderer(true, true, true);
         $exceptionRenderer->registerResponseFactory(
             Exception::class,
-            function (Exception $ex) {
+            function (Exception $ex, IHttpRequestMessage $request, IResponseFactory $responseFactory) {
                 throw new Exception();
             }
         );
@@ -95,7 +95,7 @@ class HttpExceptionRendererTest extends TestCase
         $expectedResponse = new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
         $exceptionRenderer->registerResponseFactory(
             Exception::class,
-            fn (Exception $ex) => $expectedResponse
+            fn (Exception $ex, IHttpRequestMessage $request, IResponseFactory $responseFactory) => $expectedResponse
         );
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
@@ -108,7 +108,7 @@ class HttpExceptionRendererTest extends TestCase
         $exceptionRenderer = $this->createExceptionRenderer(true, true, true);
         $expectedResponse = new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
         $exceptionRenderer->registerManyResponseFactories([
-            Exception::class => fn (Exception $ex) => $expectedResponse
+            Exception::class => fn (Exception $ex, IHttpRequestMessage $request, IResponseFactory $responseFactory) => $expectedResponse
         ]);
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
