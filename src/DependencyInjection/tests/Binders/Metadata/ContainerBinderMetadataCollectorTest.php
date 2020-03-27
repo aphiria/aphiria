@@ -13,16 +13,18 @@ declare(strict_types=1);
 namespace Aphiria\DependencyInjection\Tests\Binders\Metadata;
 
 use Aphiria\DependencyInjection\Binders\Binder;
-use Aphiria\DependencyInjection\Binders\Metadata\BinderMetadataCollector;
+use Aphiria\DependencyInjection\Binders\Metadata\ContainerBinderMetadataCollector;
+use Aphiria\DependencyInjection\Binders\Metadata\FailedBinderMetadataCollectionException;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\Foo;
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the binder metadata collector
+ * Tests the container binder metadata collector
  */
-class BinderMetadataCollectorTest extends TestCase
+class ContainerBinderMetadataCollectorTest extends TestCase
 {
     private IContainer $container;
 
@@ -47,9 +49,9 @@ class BinderMetadataCollectorTest extends TestCase
                 });
             }
         };
-        $collector = new BinderMetadataCollector($binder, $this->container);
-        $binder->bind($collector);
-        $actualBoundInterfaces = $collector->getBoundInterfaces();
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $binderMetadata = $collector->collect($binder);
+        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
         $this->assertCount(4, $actualBoundInterfaces);
 
         foreach ($actualBoundInterfaces as $i => $actualBoundInterface) {
@@ -71,9 +73,9 @@ class BinderMetadataCollectorTest extends TestCase
                 $container->bindSingleton('foo3', Foo::class);
             }
         };
-        $collector = new BinderMetadataCollector($binder, $this->container);
-        $binder->bind($collector);
-        $actualBoundInterfaces = $collector->getBoundInterfaces();
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $binderMetadata = $collector->collect($binder);
+        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
         $this->assertCount(4, $actualBoundInterfaces);
 
         foreach ($actualBoundInterfaces as $i => $actualBoundInterface) {
@@ -93,9 +95,9 @@ class BinderMetadataCollectorTest extends TestCase
                 $container->bindInstance('foo', new Foo());
             }
         };
-        $collector = new BinderMetadataCollector($binder, $this->container);
-        $binder->bind($collector);
-        $actualBoundInterfaces = $collector->getBoundInterfaces();
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $binderMetadata = $collector->collect($binder);
+        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
         $this->assertCount(2, $actualBoundInterfaces);
         $this->assertEquals('bar', $actualBoundInterfaces[0]->getTargetClass());
         $this->assertEquals('foo', $actualBoundInterfaces[0]->getInterface());
@@ -116,9 +118,9 @@ class BinderMetadataCollectorTest extends TestCase
                 });
             }
         };
-        $collector = new BinderMetadataCollector($binder, $this->container);
-        $binder->bind($collector);
-        $actualBoundInterfaces = $collector->getBoundInterfaces();
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $binderMetadata = $collector->collect($binder);
+        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
         $this->assertCount(1, $actualBoundInterfaces);
         $this->assertEquals('bar', $actualBoundInterfaces[0]->getTargetClass());
         $this->assertEquals('foo', $actualBoundInterfaces[0]->getInterface());
@@ -133,12 +135,32 @@ class BinderMetadataCollectorTest extends TestCase
                 $container->bindInstance('foo', new Foo());
             }
         };
-        $collector = new BinderMetadataCollector($binder, $this->container);
-        $binder->bind($collector);
-        $actualBoundInterfaces = $collector->getBoundInterfaces();
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $binderMetadata = $collector->collect($binder);
+        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
         $this->assertCount(1, $actualBoundInterfaces);
         $this->assertFalse($actualBoundInterfaces[0]->isTargeted());
         $this->assertEquals('foo', $actualBoundInterfaces[0]->getInterface());
+    }
+
+    public function testResolveDoesNotAddResolvedBindingIfResolutionFailed(): void
+    {
+        $binder = new class() extends Binder {
+            public function bind(IContainer $container): void
+            {
+                $container->resolve('foo');
+            }
+        };
+        $collector = new ContainerBinderMetadataCollector($this->container);
+
+        try {
+            $collector->collect($binder);
+            $this->fail('Expected to throw exception');
+        } catch (FailedBinderMetadataCollectionException $ex) {
+            $this->assertEmpty($ex->getIncompleteBinderMetadata()->getResolvedInterfaces());
+        } catch (Exception $ex) {
+            $this->fail('Expected ' . FailedBinderMetadataCollectionException::class . ' to be thrown');
+        }
     }
 
     public function testResolvingMethodsCreatesTargetedResolvedInterfaces(): void
@@ -157,9 +179,9 @@ class BinderMetadataCollectorTest extends TestCase
                 });
             }
         };
-        $collector = new BinderMetadataCollector($binder, $this->container);
-        $binder->bind($collector);
-        $actualResolvedInterfaces = $collector->getResolvedInterfaces();
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $binderMetadata = $collector->collect($binder);
+        $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
         $this->assertCount(2, $actualResolvedInterfaces);
 
         foreach ($actualResolvedInterfaces as $i => $actualResolvedInterface) {
@@ -180,9 +202,9 @@ class BinderMetadataCollectorTest extends TestCase
                 $container->tryResolve('foo1', $foo);
             }
         };
-        $collector = new BinderMetadataCollector($binder, $this->container);
-        $binder->bind($collector);
-        $actualResolvedInterfaces = $collector->getResolvedInterfaces();
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $binderMetadata = $collector->collect($binder);
+        $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
         $this->assertCount(2, $actualResolvedInterfaces);
 
         foreach ($actualResolvedInterfaces as $i => $actualResolvedInterface) {
@@ -204,9 +226,9 @@ class BinderMetadataCollectorTest extends TestCase
                 $container->resolve('foo');
             }
         };
-        $collector = new BinderMetadataCollector($binder, $this->container);
-        $binder->bind($collector);
-        $actualResolvedInterfaces = $collector->getResolvedInterfaces();
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $binderMetadata = $collector->collect($binder);
+        $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
         $this->assertCount(2, $actualResolvedInterfaces);
         $this->assertEquals('bar', $actualResolvedInterfaces[0]->getTargetClass());
         $this->assertEquals('foo', $actualResolvedInterfaces[0]->getInterface());
@@ -226,9 +248,9 @@ class BinderMetadataCollectorTest extends TestCase
                 });
             }
         };
-        $collector = new BinderMetadataCollector($binder, $this->container);
-        $binder->bind($collector);
-        $actualResolvedInterfaces = $collector->getResolvedInterfaces();
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $binderMetadata = $collector->collect($binder);
+        $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
         $this->assertCount(1, $actualResolvedInterfaces);
         $this->assertEquals('bar', $actualResolvedInterfaces[0]->getTargetClass());
         $this->assertEquals('foo', $actualResolvedInterfaces[0]->getInterface());
@@ -244,11 +266,24 @@ class BinderMetadataCollectorTest extends TestCase
                 $container->resolve('foo');
             }
         };
-        $collector = new BinderMetadataCollector($binder, $this->container);
-        $binder->bind($collector);
-        $actualResolvedInterfaces = $collector->getResolvedInterfaces();
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $binderMetadata = $collector->collect($binder);
+        $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
         $this->assertCount(1, $actualResolvedInterfaces);
         $this->assertFalse($actualResolvedInterfaces[0]->isTargeted());
         $this->assertEquals('foo', $actualResolvedInterfaces[0]->getInterface());
+    }
+
+    public function testTryResolveDoesNotAddResolvedBindingIfResolutionFailed(): void
+    {
+        $binder = new class() extends Binder {
+            public function bind(IContainer $container): void
+            {
+                $foo = null;
+                $container->tryResolve('foo', $foo);
+            }
+        };
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $this->assertEmpty($collector->collect($binder)->getResolvedInterfaces());
     }
 }

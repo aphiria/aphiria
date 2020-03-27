@@ -14,7 +14,6 @@ namespace Aphiria\DependencyInjection\Binders\Metadata;
 
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\DependencyInjection\ResolutionException;
 
 /**
  * Defines a factory for binder metadata collections
@@ -23,13 +22,17 @@ final class BinderMetadataCollectionFactory
 {
     /** @var IContainer The container to use when creating the collection */
     private IContainer $container;
+    /** @var IBinderMetadataCollector The collector of binder metadata */
+    private IBinderMetadataCollector $binderMetadataCollector;
 
     /**
      * @param IContainer $container The container to use when creating the collection
+     * @param IBinderMetadataCollector|null $binderMetadataCollector The collector of binder metadata
      */
-    public function __construct(IContainer $container)
+    public function __construct(IContainer $container, IBinderMetadataCollector $binderMetadataCollector = null)
     {
         $this->container = $container;
+        $this->binderMetadataCollector = $binderMetadataCollector ?? new ContainerBinderMetadataCollector($this->container);
     }
 
     /**
@@ -46,9 +49,9 @@ final class BinderMetadataCollectionFactory
 
         foreach ($binders as $binder) {
             try {
-                $binderMetadatas[] = $this->getBinderMetadata($binder);
-            } catch (ResolutionException $ex) {
-                self::addFailedResolutionToMap($failedInterfacesToBinders, $ex->getInterface(), $binder);
+                $binderMetadatas[] = $this->binderMetadataCollector->collect($binder);
+            } catch (FailedBinderMetadataCollectionException $ex) {
+                self::addFailedResolutionToMap($failedInterfacesToBinders, $ex);
             }
 
             $binderMetadatas = [
@@ -68,38 +71,39 @@ final class BinderMetadataCollectionFactory
      * Adds a failed resolution to a map
      *
      * @param array $failedInterfacesToBinders The map to add to
-     * @param string $interface The interface that could not be resolved
-     * @param Binder $binder The binder where the resolution failed
+     * @param FailedBinderMetadataCollectionException $ex The exception that was thrown
      */
     private static function addFailedResolutionToMap(
         array &$failedInterfacesToBinders,
-        string $interface,
-        Binder $binder
+        FailedBinderMetadataCollectionException $ex
     ): void {
+        $interface = $ex->getFailedInterface();
+
         if (!isset($failedInterfacesToBinders[$interface])) {
             $failedInterfaces[$interface] = [];
         }
 
-        $failedInterfacesToBinders[$interface][] = $binder;
+        $failedInterfacesToBinders[$interface][] = $ex->getIncompleteBinderMetadata()->getBinder();
     }
 
     /**
-     * Gets the metadata for a binder
+     * Removes a failed resolution from the map
      *
-     * @param Binder $binder The binder whose metadata we want
-     * @return BinderMetadata The binder's metadata
-     * @throws ResolutionException Thrown if there was an error resolving any dependencies
+     * @param array $failedInterfacesToBinders The map to remove from
+     * @param string $interface The interface to remove
+     * @param int $binderIndex The index of the binder to remove
      */
-    private function getBinderMetadata(Binder $binder): BinderMetadata
-    {
-        $binderMetadataCollector = new BinderMetadataCollector($binder, $this->container);
-        $binder->bind($binderMetadataCollector);
+    private static function removeFailedResolutionFromMap(
+        array &$failedInterfacesToBinders,
+        string $interface,
+        int $binderIndex
+    ): void {
+        unset($failedInterfacesToBinders[$interface][$binderIndex]);
 
-        return new BinderMetadata(
-            $binder,
-            $binderMetadataCollector->getBoundInterfaces(),
-            $binderMetadataCollector->getResolvedInterfaces()
-        );
+        // If this interface doesn't have any more failed binders, remove it
+        if (\count($failedInterfacesToBinders[$interface]) === 0) {
+            unset($failedInterfacesToBinders[$interface]);
+        }
     }
 
     /**
@@ -111,6 +115,7 @@ final class BinderMetadataCollectionFactory
     private function retryFailedBinders(array &$failedInterfacesToBinders): array
     {
         $binderMetadatas = [];
+        $fixedBinderClasses = [];
 
         foreach ($failedInterfacesToBinders as $interface => $binders) {
             if (!$this->container->hasBinding($interface)) {
@@ -120,20 +125,21 @@ final class BinderMetadataCollectionFactory
 
             foreach ($binders as $i => $binder) {
                 try {
-                    $binderMetadatas[] = $this->getBinderMetadata($binder);
-                    // The binder must have been able to resolve everything, so remove it
-                    unset($failedInterfacesToBinders[$interface][$i]);
-
-                    // If this interface doesn't have any more failed binders, remove it
-                    if (\count($failedInterfacesToBinders[$interface]) === 0) {
-                        unset($failedInterfacesToBinders[$interface]);
+                    // Don't double-retry a binder that has already been fixed
+                    if (!isset($fixedBinderClasses[\get_class($binder)])) {
+                        $binderMetadatas[] = $this->binderMetadataCollector->collect($binder);
+                        $fixedBinderClasses[\get_class($binder)] = true;
                     }
-                } catch (ResolutionException $ex) {
-                    self::addFailedResolutionToMap(
-                        $failedInterfacesToBinders,
-                        $ex->getInterface(),
-                        $binder
-                    );
+
+                    // The binder must have been able to resolve everything, so make sure we don't retry it again
+                    self::removeFailedResolutionFromMap($failedInterfacesToBinders, $interface, $i);
+                } catch (FailedBinderMetadataCollectionException $ex) {
+                    self::addFailedResolutionToMap($failedInterfacesToBinders, $ex);
+
+                    // Remove any interfaces that did get resolved successfully prior to the exception
+                    foreach ($ex->getIncompleteBinderMetadata()->getResolvedInterfaces() as $resolvedInterface) {
+                        self::removeFailedResolutionFromMap($failedInterfacesToBinders, $resolvedInterface->getInterface(), $i);
+                    }
                 }
             }
         }
