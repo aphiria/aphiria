@@ -143,7 +143,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $this->assertEquals('foo', $actualBoundInterfaces[0]->getInterface());
     }
 
-    public function testResolveDoesNotAddResolvedBindingIfResolutionFailed(): void
+    public function testResolveAddsResolvedBindingEvenIfResolutionFailed(): void
     {
         $binder = new class() extends Binder {
             public function bind(IContainer $container): void
@@ -157,7 +157,8 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             $collector->collect($binder);
             $this->fail('Expected to throw exception');
         } catch (FailedBinderMetadataCollectionException $ex) {
-            $this->assertEmpty($ex->getIncompleteBinderMetadata()->getResolvedInterfaces());
+            $this->assertCount(1, $ex->getIncompleteBinderMetadata()->getResolvedInterfaces());
+            $this->assertEquals('foo', $ex->getIncompleteBinderMetadata()->getResolvedInterfaces()[0]->getInterface());
         } catch (Exception $ex) {
             $this->fail('Expected ' . FailedBinderMetadataCollectionException::class . ' to be thrown');
         }
@@ -274,7 +275,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $this->assertEquals('foo', $actualResolvedInterfaces[0]->getInterface());
     }
 
-    public function testTryResolveDoesNotAddResolvedBindingIfResolutionFailed(): void
+    public function testTryResolveAddsResolvedBindingEventIfResolutionFailed(): void
     {
         $binder = new class() extends Binder {
             public function bind(IContainer $container): void
@@ -284,6 +285,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             }
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
-        $this->assertEmpty($collector->collect($binder)->getResolvedInterfaces());
+        $this->assertCount(1, $collector->collect($binder)->getResolvedInterfaces());
+        $this->assertEquals('foo', $collector->collect($binder)->getResolvedInterfaces()[0]->getInterface());
     }
 }

@@ -142,6 +142,11 @@ final class BinderMetadataCollectionFactory
 
                     // Remove any interfaces that did get resolved successfully prior to the exception
                     foreach ($ex->getIncompleteBinderMetadata()->getResolvedInterfaces() as $resolvedInterface) {
+                        // Check if this interface was successfully resolved before removing it from the map
+                        if ($resolvedInterface->getInterface() === $ex->getFailedInterface()) {
+                            continue;
+                        }
+
                         self::removeFailedResolutionFromMap($failedInterfacesToBinders, $resolvedInterface->getInterface(), $i);
                     }
                 }

@@ -167,16 +167,13 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
      */
     public function resolve(string $interface): object
     {
-        // Resolve the interface before we add it to the list of resolved interfaces
-        if ($this->currentTarget === null) {
-            $resolvedInterface = $this->container->resolve($interface);
-        } else {
-            $resolvedInterface = $this->container->for($this->currentTarget, fn (IContainer $container) => $container->resolve($interface));
-        }
-
         $this->addResolvedInterface($interface);
 
-        return $resolvedInterface;
+        if ($this->currentTarget === null) {
+            return $this->container->resolve($interface);
+        }
+
+        return $this->container->for($this->currentTarget, fn (IContainer $container) => $container->resolve($interface));
     }
 
     /**
@@ -184,18 +181,13 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
      */
     public function tryResolve(string $interface, ?object &$instance): bool
     {
-        // Try to resolve the interface before we add it to the list of resolved interfaces
+        $this->addResolvedInterface($interface);
+
         if ($this->currentTarget === null) {
-            $successful = $this->container->tryResolve($interface, $instance);
-        } else {
-            $successful = $this->container->for($this->currentTarget, fn(IContainer $container) => $container->tryResolve($interface, $instance));
+            return $this->container->tryResolve($interface, $instance);
         }
 
-        if ($successful) {
-            $this->addResolvedInterface($interface);
-        }
-
-        return $successful;
+        return $this->container->for($this->currentTarget, fn(IContainer $container) => $container->tryResolve($interface, $instance));
     }
 
     /**
