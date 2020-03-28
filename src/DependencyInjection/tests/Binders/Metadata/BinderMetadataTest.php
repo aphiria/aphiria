@@ -17,6 +17,7 @@ use Aphiria\DependencyInjection\Binders\Metadata\BoundInterface;
 use Aphiria\DependencyInjection\Binders\Metadata\ResolvedInterface;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\Tests\Binders\Mocks\Binder;
+use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -46,7 +47,7 @@ class BinderMetadataTest extends TestCase
                 // Don't do anything
             }
         };
-        $expectedBoundInterfaces = [new BoundInterface('foo'), new BoundInterface('bar')];
+        $expectedBoundInterfaces = [new BoundInterface('foo', new UniversalContext()), new BoundInterface('bar', new UniversalContext())];
         $binderMetadata = new BinderMetadata($binder, $expectedBoundInterfaces, []);
         $this->assertSame($expectedBoundInterfaces, $binderMetadata->getBoundInterfaces());
     }
@@ -60,7 +61,7 @@ class BinderMetadataTest extends TestCase
                 // Don't do anything
             }
         };
-        $expectedResolvedInterfaces = [new ResolvedInterface('foo'), new ResolvedInterface('bar')];
+        $expectedResolvedInterfaces = [new ResolvedInterface('foo', new UniversalContext()), new ResolvedInterface('bar', new UniversalContext())];
         $binderMetadata = new BinderMetadata($binder, [], $expectedResolvedInterfaces);
         $this->assertSame($expectedResolvedInterfaces, $binderMetadata->getResolvedInterfaces());
     }

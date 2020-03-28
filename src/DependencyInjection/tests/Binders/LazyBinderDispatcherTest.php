@@ -25,8 +25,10 @@ use Aphiria\DependencyInjection\FactoryContainerBinding;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IContainerBinding;
 use Aphiria\DependencyInjection\InstanceContainerBinding;
+use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\Foo;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\IFoo;
+use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -91,18 +93,18 @@ class LazyBinderDispatcherTest extends TestCase
         $binder = new class extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->for('bar', function (IContainer $container) {
+                $container->for(new TargetedContext('bar'), function (IContainer $container) {
                     $container->bindInstance(IFoo::class, new Foo());
                 });
             }
         };
         $this->createDispatcher()->dispatch([$binder], $this->container);
         /** @var FactoryContainerBinding $lazyBinding */
-        $lazyBinding = $this->container->for('bar', fn (IContainer $container) => $container->getBinding(IFoo::class));
+        $lazyBinding = $this->container->for(new TargetedContext('bar'), fn (IContainer $container) => $container->getBinding(IFoo::class));
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
         $this->assertInstanceOf(Foo::class, ($lazyBinding->getFactory())());
         /** @var InstanceContainerBinding $bindingFromBinder */
-        $bindingFromBinder = $this->container->for('bar', fn (IContainer $container) => $container->getBinding(IFoo::class));
+        $bindingFromBinder = $this->container->for(new TargetedContext('bar'), fn (IContainer $container) => $container->getBinding(IFoo::class));
         $this->assertInstanceOf(InstanceContainerBinding::class, $bindingFromBinder);
         $this->assertInstanceOf(Foo::class, $bindingFromBinder->getInstance());
     }
@@ -126,6 +128,26 @@ class LazyBinderDispatcherTest extends TestCase
         $this->assertInstanceOf(Foo::class, $bindingFromBinder->getInstance());
     }
 
+    public function testDispatchingUsesUniversalContextWhenBindingBinders(): void
+    {
+        $binder = new class extends Binder {
+            public function bind(IContainer $container): void
+            {
+                $container->bindInstance(IFoo::class, new Foo());
+            }
+        };
+        $this->createDispatcher()->dispatch([$binder], $this->container);
+
+        /**
+         * We're testing that, when a lazy factory binding is invoked and the binder run, the binder's bindings occur
+         * in the universal context, not in the targeted context that invoked the lazy factory binding.
+         */
+        $this->container->for(new TargetedContext('foo'), function (IContainer $container) {
+            $container->resolve(IFoo::class);
+        });
+        $this->assertInstanceOf(Foo::class, $this->container->resolve(IFoo::class));
+    }
+
     public function testDispatchingWithCacheForcesCreationOfMetadataCollectionAndSetsCacheOnCacheMiss(): void
     {
         $binder = new class extends Binder {
@@ -142,7 +164,7 @@ class LazyBinderDispatcherTest extends TestCase
             ->method('set')
             ->with($this->callback(function (BinderMetadataCollection $collection) use ($binder) {
                 $expectedCollection = new BinderMetadataCollection([
-                    new BinderMetadata($binder, [new BoundInterface('foo')], [])
+                    new BinderMetadata($binder, [new BoundInterface('foo', new UniversalContext)], [])
                 ]);
 
                 // Intentionally not checking reference equality

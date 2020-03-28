@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\DependencyInjection\Tests\Binders\Metadata;
 
 use Aphiria\DependencyInjection\Binders\Metadata\ResolvedInterface;
+use Aphiria\DependencyInjection\TargetedContext;
+use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,23 +24,14 @@ class ResolvedInterfaceTest extends TestCase
 {
     public function testGetInterfaceReturnsSetInterface(): void
     {
-        $interface = new ResolvedInterface('foo');
+        $interface = new ResolvedInterface('foo', new UniversalContext());
         $this->assertEquals('foo', $interface->getInterface());
     }
 
-    public function testGetTargetClassReturnsSetTargetClass(): void
+    public function testGetContextReturnsSetContext(): void
     {
-        $interfaceWithTarget = new ResolvedInterface('foo', 'bar');
-        $this->assertEquals('bar', $interfaceWithTarget->getTargetClass());
-        $interfaceWithoutTarget = new ResolvedInterface('foo');
-        $this->assertNull($interfaceWithoutTarget->getTargetClass());
-    }
-
-    public function testIsTargetedReturnsWhetherOrNotTargetIsSet(): void
-    {
-        $interfaceWithTarget = new ResolvedInterface('foo', 'bar');
-        $this->assertTrue($interfaceWithTarget->isTargeted());
-        $interfaceWithoutTarget = new ResolvedInterface('foo');
-        $this->assertFalse($interfaceWithoutTarget->isTargeted());
+        $expectedContext = new TargetedContext('bar');
+        $interface = new ResolvedInterface('foo', $expectedContext);
+        $this->assertSame($expectedContext, $interface->getContext());
     }
 }

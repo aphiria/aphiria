@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection\Binders\Metadata;
 
+use Aphiria\DependencyInjection\Context;
+
 /**
  * Defines a resolved interface from a binder
  */
@@ -19,17 +21,17 @@ final class ResolvedInterface
 {
     /** @var string The interface that was resolved */
     private string $interface;
-    /** @var string|null The optional target class for the resolved interface */
-    private ?string $targetClass;
+    /** @var Context The context that the resolution occurred in */
+    private Context $context;
 
     /**
      * @param string $interface The interface that was resolved
-     * @param string|null $targetClass The optional target class for the resolved interface
+     * @param Context $context The context that the resolution occurred in
      */
-    public function __construct(string $interface, string $targetClass = null)
+    public function __construct(string $interface, Context $context)
     {
         $this->interface = $interface;
-        $this->targetClass = $targetClass;
+        $this->context = $context;
     }
 
     /**
@@ -43,22 +45,12 @@ final class ResolvedInterface
     }
 
     /**
-     * Gets the target for the resolved interface
+     * Gets the context that the resolution occurred in
      *
-     * @return string|null The target class if there was one, otherwise null
+     * @return Context The context that the resolution occurred in
      */
-    public function getTargetClass(): ?string
+    public function getContext(): Context
     {
-        return $this->targetClass;
-    }
-
-    /**
-     * Gets whether or not the resolved interface is targeted
-     *
-     * @return bool True if the resolved interface is targeted, otherwise false
-     */
-    public function isTargeted(): bool
-    {
-        return $this->targetClass !== null;
+        return $this->context;
     }
 }

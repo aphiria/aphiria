@@ -44,6 +44,7 @@ final class ImpossibleBindingException extends Exception
 
         // Remove the trailing ','
         $message = substr($message, 0, -2);
+
         parent::__construct($message, $code, $previous);
     }
 }

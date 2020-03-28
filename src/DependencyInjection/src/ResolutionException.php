@@ -22,20 +22,30 @@ final class ResolutionException extends Exception
 {
     /** @var string The name of the interface that could not be resolved */
     private string $interface;
-    /** @var string|null The target class of the interface, or null if there is no target */
-    private ?string $targetClass;
+    /** @var Context The context that the exception was thrown in */
+    private Context $context;
 
     /**
      * @inheritdoc
      * @param string $interface The name of the interface that could not be resolved
-     * @param string|null $targetClass The target class of the interface, or null if there is no target
+     * @param Context $context The context that the exception was thrown in
      */
-    public function __construct(string $interface, ?string $targetClass, string $message = '', int $code = 0, Throwable $previous = null)
+    public function __construct(string $interface, Context $context, string $message = '', int $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
 
         $this->interface = $interface;
-        $this->targetClass = $targetClass;
+        $this->context = $context;
+    }
+
+    /**
+     * Gets the context that the exception was thrown in
+     *
+     * @return Context The context
+     */
+    public function getContext(): Context
+    {
+        return $this->context;
     }
 
     /**
@@ -46,15 +56,5 @@ final class ResolutionException extends Exception
     public function getInterface(): string
     {
         return $this->interface;
-    }
-
-    /**
-     * Gets the target class that failed
-     *
-     * @return string|null The target class of the interface, or null if there is no target
-     */
-    public function getTargetClass(): ?string
-    {
-        return $this->targetClass;
     }
 }

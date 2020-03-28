@@ -18,6 +18,7 @@ use Aphiria\DependencyInjection\Binders\Metadata\ResolvedInterface;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\IFoo;
 use Aphiria\DependencyInjection\Tests\Binders\Mocks\Binder;
+use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -33,7 +34,7 @@ class FailedBinderMetadataCollectionExceptionTest extends TestCase
                 $container->resolve(IFoo::class);
             }
         };
-        $binderMetadata = new BinderMetadata($binder, [], [new ResolvedInterface(IFoo::class)]);
+        $binderMetadata = new BinderMetadata($binder, [], [new ResolvedInterface(IFoo::class, new UniversalContext())]);
         $exception = new FailedBinderMetadataCollectionException($binderMetadata, IFoo::class);
         $this->assertEquals('Failed to collect metadata for ' . \get_class($binder), $exception->getMessage());
         $this->assertSame($binderMetadata, $exception->getIncompleteBinderMetadata());

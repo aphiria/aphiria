@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection;
 
+use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
@@ -32,16 +33,20 @@ class Container implements IContainer
      * @var Container|null
      */
     public static ?Container $globalInstance = null;
-    /** @var null The value of an empty target */
-    private const EMPTY_TARGET = null;
-    /** @var string|null The current target */
-    protected ?string $currentTarget = null;
-    /** @var array The stack of targets */
-    protected array $targetStack = [];
+    /** @var Context The current context */
+    protected Context $currentContext;
+    /** @var Context[] The stack of contexts */
+    protected array $contextStack = [];
     /** @var IContainerBinding[][] The list of bindings */
     protected array $bindings = [];
     /** @var array The cache of reflection constructors and their parameters */
     protected array $constructorReflectionCache = [];
+
+    public function __construct()
+    {
+        // Default to a universal context
+        $this->currentContext = new UniversalContext();
+    }
 
     /**
      * Prepares the container for serialization
@@ -58,10 +63,13 @@ class Container implements IContainer
     public function __wakeup()
     {
         if (($globalInstance = self::$globalInstance) !== null) {
-            $this->currentTarget = $globalInstance->currentTarget;
-            $this->targetStack = $globalInstance->targetStack;
+            $this->currentContext = $globalInstance->currentContext;
+            $this->contextStack = $globalInstance->contextStack;
             $this->bindings = $globalInstance->bindings;
             $this->constructorReflectionCache = $globalInstance->constructorReflectionCache;
+        } else {
+            $this->currentContext = new UniversalContext();
+            $this->contextStack = $this->bindings = $this->constructorReflectionCache = [];
         }
     }
 
@@ -152,16 +160,24 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function for(string $targetClass, callable $callback)
+    public function for($context, callable $callback)
     {
+        if (\is_string($context)) {
+            $context = new TargetedContext($context);
+        }
+
+        if (!$context instanceof Context) {
+            throw new InvalidArgumentException('Context must be an instance of ' . Context::class . ' or string');
+        }
+
         // We're duplicating the tracking of targets here so that we can know if any bindings are targeted or universal
-        $this->currentTarget = $targetClass;
-        $this->targetStack[] = $targetClass;
+        $this->currentContext = $context;
+        $this->contextStack[] = $context;
 
         $result = $callback($this);
 
-        array_pop($this->targetStack);
-        $this->currentTarget = end($this->targetStack) ?: self::EMPTY_TARGET;
+        array_pop($this->contextStack);
+        $this->currentContext = end($this->contextStack) ?: new UniversalContext();
 
         return $result;
     }
@@ -171,13 +187,14 @@ class Container implements IContainer
      */
     public function hasBinding(string $interface): bool
     {
-        if ($this->currentTarget !== self::EMPTY_TARGET
-            && $this->hasTargetedBinding($interface, $this->currentTarget)
+        if (
+            $this->currentContext->isTargeted()
+            && $this->hasTargetedBinding($interface, $this->currentContext->getTargetClass())
         ) {
             return true;
         }
 
-        return $this->hasTargetedBinding($interface, self::EMPTY_TARGET);
+        return $this->hasTargetedBinding($interface);
     }
 
     /**
@@ -209,7 +226,7 @@ class Container implements IContainer
                 $instance = $factory();
                 break;
             default:
-                throw new ResolutionException($interface, $this->currentTarget, 'Invalid binding type "' . get_class($binding) . '"');
+                throw new ResolutionException($interface, $this->currentContext, 'Invalid binding type "' . get_class($binding) . '"');
         }
 
         if ($binding->resolveAsSingleton()) {
@@ -241,8 +258,10 @@ class Container implements IContainer
      */
     public function unbind($interfaces): void
     {
+        $target = $this->currentContext->getTargetClass() ?? '';
+
         foreach ((array)$interfaces as $interface) {
-            unset($this->bindings[$this->currentTarget][$interface]);
+            unset($this->bindings[$target][$interface]);
         }
     }
 
@@ -254,11 +273,13 @@ class Container implements IContainer
      */
     protected function addBinding(string $interface, IContainerBinding $binding): void
     {
-        if (!isset($this->bindings[$this->currentTarget])) {
-            $this->bindings[$this->currentTarget] = [];
+        $target = $this->currentContext->getTargetClass() ?? '';
+
+        if (!isset($this->bindings[$target])) {
+            $this->bindings[$target] = [];
         }
 
-        $this->bindings[$this->currentTarget][$interface] = $binding;
+        $this->bindings[$target][$interface] = $binding;
     }
 
     /**
@@ -270,12 +291,15 @@ class Container implements IContainer
     protected function getBinding(string $interface): ?IContainerBinding
     {
         // If there's a targeted binding, use it
-        if ($this->currentTarget !== self::EMPTY_TARGET && isset($this->bindings[$this->currentTarget][$interface])) {
-            return $this->bindings[$this->currentTarget][$interface];
+        if (
+            $this->currentContext->isTargeted()
+            && isset($this->bindings[$this->currentContext->getTargetClass()][$interface])
+        ) {
+            return $this->bindings[$this->currentContext->getTargetClass()][$interface];
         }
 
         // If there's a universal binding, use it
-        return $this->bindings[self::EMPTY_TARGET][$interface] ?? null;
+        return $this->bindings[''][$interface] ?? null;
     }
 
     /**
@@ -309,11 +333,11 @@ class Container implements IContainer
                 if (!$reflectionClass->isInstantiable()) {
                     throw new ResolutionException(
                         $class,
-                        $this->currentTarget,
+                        $this->currentContext,
                         sprintf(
                             '%s is not instantiable%s',
                             $class,
-                            $this->currentTarget === null ? '' : " (dependency of {$this->currentTarget})"
+                            $this->currentContext->isTargeted() ? '' :" (dependency of {$this->currentContext->getTargetClass()})"
                         )
                     );
                 }
@@ -332,7 +356,7 @@ class Container implements IContainer
 
             return new $class(...$constructorParameters);
         } catch (ReflectionException $ex) {
-            throw new ResolutionException($class, $this->currentTarget, "Failed to resolve class $class", 0, $ex);
+            throw new ResolutionException($class, $this->currentContext, "Failed to resolve class $class", 0, $ex);
         }
     }
 
@@ -370,7 +394,7 @@ class Container implements IContainer
                  */
                 if ($class !== null && $this->hasTargetedBinding($parameterClassName, $class)) {
                     $resolvedParameter = $this->for(
-                        $class,
+                        new TargetedContext($class),
                         fn (IContainer $container) => $container->resolve($parameter->getClass()->getName())
                     );
                 } else {

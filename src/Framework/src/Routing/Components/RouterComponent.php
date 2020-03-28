@@ -16,6 +16,7 @@ use Aphiria\Api\Application;
 use Aphiria\Api\Router;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
 use Aphiria\Routing\Builders\RouteBuilderRouteRegistrant;
@@ -64,7 +65,7 @@ class RouterComponent implements IComponent
         $routeRegistrants->add(new RouteBuilderRouteRegistrant($this->callbacks));
         $routeRegistrants->registerRoutes($this->container->resolve(RouteCollection::class));
         $this->container->for(
-            Application::class,
+            new TargetedContext(Application::class),
             fn (IContainer $container) => $container->bindFactory(IRequestHandler::class, fn () => $this->container->resolve(Router::class))
         );
     }
