@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\DependencyInjection\Tests;
 
 use Aphiria\DependencyInjection\ResolutionException;
+use Aphiria\DependencyInjection\TargetedContext;
+use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -20,15 +22,16 @@ use PHPUnit\Framework\TestCase;
  */
 class ResolutionExceptionTest extends TestCase
 {
-    public function testGetInterfaceReturnsInterfaceInjectedInConstructor(): void
+    public function testGetContextReturnsContextInjectedInConstructor(): void
     {
-        $exception = new ResolutionException('foo', null);
-        $this->assertEquals('foo', $exception->getInterface());
+        $expectedContext = new TargetedContext('bar');
+        $exception = new ResolutionException('foo', $expectedContext);
+        $this->assertSame($expectedContext, $exception->getContext());
     }
 
-    public function testGetTargetClassReturnsTargetClassInjectedInConstructor(): void
+    public function testGetInterfaceReturnsInterfaceInjectedInConstructor(): void
     {
-        $exception = new ResolutionException('foo', 'bar');
-        $this->assertEquals('bar', $exception->getTargetClass());
+        $exception = new ResolutionException('foo', new UniversalContext());
+        $this->assertEquals('foo', $exception->getInterface());
     }
 }

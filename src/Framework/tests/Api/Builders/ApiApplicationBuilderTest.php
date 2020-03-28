@@ -18,6 +18,7 @@ use Aphiria\Application\IModule;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\Framework\Api\Builders\ApiApplicationBuilder;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use PHPUnit\Framework\TestCase;
@@ -42,7 +43,7 @@ class ApiApplicationBuilderTest extends TestCase
     {
         // Bind the router to the container
         $router = $this->createMock(IRequestHandler::class);
-        $this->container->for(Application::class, function (IContainer $container) use ($router) {
+        $this->container->for(new TargetedContext(Application::class), function (IContainer $container) use ($router) {
             $container->bindInstance(IRequestHandler::class, $router);
         });
         $this->appBuilder->build();
@@ -83,7 +84,7 @@ class ApiApplicationBuilderTest extends TestCase
         // Purposely registering out of order to ensure that order does not matter
         $this->appBuilder->withComponent($component);
         $this->appBuilder->withModule($module);
-        $this->container->for(Application::class, function (IContainer $container) {
+        $this->container->for(new TargetedContext(Application::class), function (IContainer $container) {
             $container->bindInstance(IRequestHandler::class, $this->createMock(IRequestHandler::class));
         });
         $this->appBuilder->build();

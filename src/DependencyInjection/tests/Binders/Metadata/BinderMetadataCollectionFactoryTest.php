@@ -21,10 +21,12 @@ use Aphiria\DependencyInjection\Binders\Metadata\ImpossibleBindingException;
 use Aphiria\DependencyInjection\Binders\Metadata\ResolvedInterface;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\Bar;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\Foo;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\IBar;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\IFoo;
+use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -48,7 +50,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
             }
         };
         $expectedCollection = new BinderMetadataCollection([
-            new BinderMetadata($binder, [new BoundInterface(IFoo::class)], [])
+            new BinderMetadata($binder, [new BoundInterface(IFoo::class, new UniversalContext())], [])
         ]);
         $actualCollection = $this->factory->createBinderMetadataCollection([$binder]);
         $this->assertEquals($expectedCollection, $actualCollection);
@@ -59,7 +61,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         $binderA = new class extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->for('SomeClass', function (IContainer $container) {
+                $container->for(new TargetedContext('SomeClass'), function (IContainer $container) {
                     $container->resolve(IFoo::class);
                 });
             }
@@ -72,8 +74,8 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         };
         // Binder B will be before binder A because it isn't dependent on another binder's bindings
         $expectedCollection = new BinderMetadataCollection([
-            new BinderMetadata($binderB, [new BoundInterface(IFoo::class)], []),
-            new BinderMetadata($binderA, [], [new ResolvedInterface(IFoo::class, 'SomeClass')])
+            new BinderMetadata($binderB, [new BoundInterface(IFoo::class, new UniversalContext())], []),
+            new BinderMetadata($binderA, [], [new ResolvedInterface(IFoo::class, new TargetedContext('SomeClass'))])
         ]);
         $actualCollection = $this->factory->createBinderMetadataCollection([$binderA, $binderB]);
         $this->assertEquals($expectedCollection, $actualCollection);
@@ -91,7 +93,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         $binderB = new class extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->for('SomeClass', function (IContainer $container) {
+                $container->for(new TargetedContext('SomeClass'), function (IContainer $container) {
                     $container->bindInstance(IFoo::class, new Foo());
                 });
             }
@@ -116,8 +118,8 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         };
         // Binder B will be before binder A because it isn't dependent on another binder's bindings
         $expectedCollection = new BinderMetadataCollection([
-            new BinderMetadata($binderB, [new BoundInterface(IFoo::class)], []),
-            new BinderMetadata($binderA, [new BoundInterface('foo')], [new ResolvedInterface(IFoo::class)])
+            new BinderMetadata($binderB, [new BoundInterface(IFoo::class, new UniversalContext())], []),
+            new BinderMetadata($binderA, [new BoundInterface('foo', new UniversalContext())], [new ResolvedInterface(IFoo::class, new UniversalContext())])
         ]);
         $actualCollection = $this->factory->createBinderMetadataCollection([$binderA, $binderB]);
         $this->assertEquals($expectedCollection, $actualCollection);
@@ -128,7 +130,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         $binderA = new class extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->for('SomeClass', function (IContainer $container) {
+                $container->for(new TargetedContext('SomeClass'), function (IContainer $container) {
                     $container->resolve(IFoo::class);
                     $container->bindPrototype(IBar::class, Bar::class);
                 });
@@ -137,15 +139,15 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         $binderB = new class extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->for('SomeClass', function (IContainer $container) {
+                $container->for(new TargetedContext('SomeClass'), function (IContainer $container) {
                     $container->bindInstance(IFoo::class, new Foo());
                 });
             }
         };
         // Binder B will be before binder A because it isn't dependent on another binder's bindings
         $expectedCollection = new BinderMetadataCollection([
-            new BinderMetadata($binderB, [new BoundInterface(IFoo::class, 'SomeClass')], []),
-            new BinderMetadata($binderA, [new BoundInterface(IBar::class, 'SomeClass')], [new ResolvedInterface(IFoo::class, 'SomeClass')])
+            new BinderMetadata($binderB, [new BoundInterface(IFoo::class, new TargetedContext('SomeClass'))], []),
+            new BinderMetadata($binderA, [new BoundInterface(IBar::class, new TargetedContext('SomeClass'))], [new ResolvedInterface(IFoo::class, new TargetedContext('SomeClass'))])
         ]);
         $actualCollection = $this->factory->createBinderMetadataCollection([$binderA, $binderB]);
         $this->assertEquals($expectedCollection, $actualCollection);
@@ -200,9 +202,9 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         };
         // Binder B will be before binder A because it isn't dependent on another binder's bindings
         $expectedCollection = new BinderMetadataCollection([
-            new BinderMetadata($binderB, [new BoundInterface(IFoo::class)], []),
-            new BinderMetadata($binderC, [new BoundInterface(IBar::class)], []),
-            new BinderMetadata($binderA, [new BoundInterface('foo')], [new ResolvedInterface(IFoo::class), new ResolvedInterface(IBar::class)])
+            new BinderMetadata($binderB, [new BoundInterface(IFoo::class, new UniversalContext())], []),
+            new BinderMetadata($binderC, [new BoundInterface(IBar::class, new UniversalContext())], []),
+            new BinderMetadata($binderA, [new BoundInterface('foo', new UniversalContext())], [new ResolvedInterface(IFoo::class, new UniversalContext()), new ResolvedInterface(IBar::class, new UniversalContext())])
         ]);
         $actualCollection = $this->factory->createBinderMetadataCollection([$binderA, $binderB, $binderC]);
         $this->assertEquals($expectedCollection, $actualCollection);

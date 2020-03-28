@@ -13,9 +13,11 @@ declare(strict_types=1);
 namespace Aphiria\DependencyInjection\Tests;
 
 use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\Context;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\CallException;
 use Aphiria\DependencyInjection\ResolutionException;
+use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\Tests\Mocks\Bar;
 use Aphiria\DependencyInjection\Tests\Mocks\BaseClass;
 use Aphiria\DependencyInjection\Tests\Mocks\Blah;
@@ -35,6 +37,7 @@ use Aphiria\DependencyInjection\Tests\Mocks\IPerson;
 use Aphiria\DependencyInjection\Tests\Mocks\MagicCallMethod;
 use Aphiria\DependencyInjection\Tests\Mocks\StaticSetters;
 use DateTime;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -54,7 +57,7 @@ class ContainerTest extends TestCase
     public function testBindingTargetedFactory(): void
     {
         $this->container->for(
-            ConstructorWithInterface::class,
+            new TargetedContext(ConstructorWithInterface::class),
             fn (IContainer $container) => $container->bindFactory(IFoo::class, fn () => new Bar)
         );
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
@@ -68,7 +71,7 @@ class ContainerTest extends TestCase
     public function testBindingTargetedSingletonFactory(): void
     {
         $this->container->for(
-            ConstructorWithInterface::class,
+            new TargetedContext(ConstructorWithInterface::class),
             fn (IContainer $container) => $container->bindFactory(IFoo::class, fn () => new Bar, true)
         );
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
@@ -184,42 +187,42 @@ class ContainerTest extends TestCase
 
     public function testCheckingIfTargetBoundInterfaceIsBound(): void
     {
-        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $container->bindPrototype(IFoo::class, Bar::class);
         });
-        $this->assertTrue($this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->assertTrue($this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             return $container->hasBinding(IFoo::class);
         }));
         // Reset for factory
-        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $container->unbind(IFoo::class);
         });
-        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $container->bindFactory(IFoo::class, function () {
                 return new Bar;
             });
         });
-        $this->assertTrue($this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->assertTrue($this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             return $container->hasBinding(IFoo::class);
         }));
         // Reset for instance
-        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $container->unbind(IFoo::class);
         });
-        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $container->bindInstance(IFoo::class, new Bar);
         });
-        $this->assertTrue($this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->assertTrue($this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             return $container->hasBinding(IFoo::class);
         }));
         // Reset for singleton
-        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $container->unbind(IFoo::class);
         });
-        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $container->bindSingleton(IFoo::class, Bar::class);
         });
-        $this->assertTrue($this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->assertTrue($this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             return $container->hasBinding(IFoo::class);
         }));
     }
@@ -238,7 +241,7 @@ class ContainerTest extends TestCase
     public function testCheckingTargetHasBindingWhenItOnlyHasUniversalBinding(): void
     {
         $this->container->bindPrototype(IFoo::class, Bar::class);
-        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $this->assertTrue($container->hasBinding(IFoo::class));
         });
     }
@@ -246,7 +249,7 @@ class ContainerTest extends TestCase
     public function testCheckingUnboundTargetedBinding(): void
     {
         $this->assertFalse(
-            $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+            $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
                 return $container->hasBinding(IFoo::class);
             })
         );
@@ -401,10 +404,25 @@ class ContainerTest extends TestCase
         $this->assertEquals(23, $instance2->getId());
     }
 
+    public function testForWithInvalidParameterThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Context must be an instance of ' . Context::class . ' or string');
+        $this->container->for(1, fn (IContainer $container) => null);
+    }
+
+    public function testForWithStringContextCreatesTargetedBinding(): void
+    {
+        $this->container->for('foo', fn (IContainer $container) => $container->bindInstance(IFoo::class, new Bar));
+        $this->container->for('foo', function (IContainer $container) {
+            $this->assertInstanceOf(Bar::class, $container->resolve(IFoo::class));
+        });
+    }
+
     public function testGettingTargetedBindingWhenOneDoesNotExistButUniversalBindingExists(): void
     {
         $this->container->bindSingleton(IFoo::class, Bar::class);
-        $instance = $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $instance = $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             return $container->resolve(IFoo::class);
         });
         $this->assertInstanceOf(IFoo::class, $instance);
@@ -444,13 +462,13 @@ class ContainerTest extends TestCase
 
     public function testMultipleTargetedBindings(): void
     {
-        $this->container->for('baz', function (IContainer $container) {
+        $this->container->for(new TargetedContext('baz'), function (IContainer $container) {
             $container->bindSingleton(['foo', 'bar'], Bar::class);
         });
-        $this->assertTrue($this->container->for('baz', function (IContainer $container) {
+        $this->assertTrue($this->container->for(new TargetedContext('baz'), function (IContainer $container) {
             return $container->hasBinding('foo');
         }));
-        $this->assertTrue($this->container->for('baz', function (IContainer $container) {
+        $this->assertTrue($this->container->for(new TargetedContext('baz'), function (IContainer $container) {
             return $container->hasBinding('bar');
         }));
     }
@@ -478,12 +496,12 @@ class ContainerTest extends TestCase
 
     public function testResolvingInstanceBoundInTargetedCallback(): void
     {
-        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $container->bindFactory(IFoo::class, function () {
                 return new Bar;
             });
         });
-        $instance = $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $instance = $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             return $container->resolve(IFoo::class);
         });
         $this->assertInstanceOf(Bar::class, $instance);
@@ -491,13 +509,13 @@ class ContainerTest extends TestCase
 
     public function testResolvingPrototypeForTarget(): void
     {
-        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $container->bindPrototype(IFoo::class, Bar::class);
         });
-        $instance1 = $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $instance1 = $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             return $container->resolve(IFoo::class);
         });
-        $instance2 = $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $instance2 = $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             return $container->resolve(IFoo::class);
         });
         $this->assertInstanceOf(Bar::class, $instance1);
@@ -513,13 +531,13 @@ class ContainerTest extends TestCase
 
     public function testResolvingSingletonForTarget(): void
     {
-        $this->container->for('foo', function (IContainer $container) {
+        $this->container->for(new TargetedContext('foo'), function (IContainer $container) {
             $container->bindSingleton(IFoo::class, Bar::class);
         });
-        $instance1 = $this->container->for('foo', function (IContainer $container) {
+        $instance1 = $this->container->for(new TargetedContext('foo'), function (IContainer $container) {
             return $container->resolve(IFoo::class);
         });
-        $instance2 = $this->container->for('foo', function (IContainer $container) {
+        $instance2 = $this->container->for(new TargetedContext('foo'), function (IContainer $container) {
             return $container->resolve(IFoo::class);
         });
         $this->assertInstanceOf(Bar::class, $instance1);
@@ -569,7 +587,7 @@ class ContainerTest extends TestCase
     public function testTargetedBindingOfInstanceToInterface(): void
     {
         $targetedInstance = new Bar();
-        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) use ($targetedInstance) {
+        $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) use ($targetedInstance) {
             $container->bindInstance(IFoo::class, $targetedInstance);
         });
         // This universal binding should NOT take precedence over the class binding
@@ -580,20 +598,20 @@ class ContainerTest extends TestCase
 
     public function testTargetedFactoryBindingsOnlyApplyToNextCall(): void
     {
-        $this->container->for('foo', function (IContainer $container) {
+        $this->container->for(new TargetedContext('foo'), function (IContainer $container) {
             $container->bindFactory(IFoo::class, function () {
                 return new Bar();
             });
         });
-        $this->container->for('bar', function (IContainer $container) {
+        $this->container->for(new TargetedContext('bar'), function (IContainer $container) {
             $container->bindFactory('doesNotExist', function () {
                 return new Bar();
             });
         });
-        $this->assertFalse($this->container->for('foo', function (IContainer $container) {
+        $this->assertFalse($this->container->for(new TargetedContext('foo'), function (IContainer $container) {
             return $container->hasBinding('doesNotExist');
         }));
-        $this->assertTrue($this->container->for('bar', function (IContainer $container) {
+        $this->assertTrue($this->container->for(new TargetedContext('bar'), function (IContainer $container) {
             return $container->hasBinding('doesNotExist');
         }));
     }
@@ -602,48 +620,48 @@ class ContainerTest extends TestCase
     {
         $instance1 = new Bar();
         $instance2 = new Bar();
-        $this->container->for('foo', function (IContainer $container) use ($instance1) {
+        $this->container->for(new TargetedContext('foo'), function (IContainer $container) use ($instance1) {
             $container->bindInstance(IFoo::class, $instance1);
         });
-        $this->container->for('bar', function (IContainer $container) use ($instance2) {
+        $this->container->for(new TargetedContext('bar'), function (IContainer $container) use ($instance2) {
             $container->bindInstance('doesNotExist', $instance2);
         });
-        $this->assertFalse($this->container->for('foo', function (IContainer $container) {
+        $this->assertFalse($this->container->for(new TargetedContext('foo'), function (IContainer $container) {
             return $container->hasBinding('doesNotExist');
         }));
-        $this->assertTrue($this->container->for('bar', function (IContainer $container) {
+        $this->assertTrue($this->container->for(new TargetedContext('bar'), function (IContainer $container) {
             return $container->hasBinding('doesNotExist');
         }));
     }
 
     public function testTargetedPrototypeBindingsOnlyApplyToNextCall(): void
     {
-        $this->container->for('foo', function (IContainer $container) {
+        $this->container->for(new TargetedContext('foo'), function (IContainer $container) {
             $container->bindPrototype(IFoo::class, 'bar');
         });
-        $this->container->for('baz', function (IContainer $container) {
+        $this->container->for(new TargetedContext('baz'), function (IContainer $container) {
             $container->bindPrototype('doesNotExist', 'bar');
         });
-        $this->assertFalse($this->container->for('foo', function (IContainer $container) {
+        $this->assertFalse($this->container->for(new TargetedContext('foo'), function (IContainer $container) {
             return $container->hasBinding('doesNotExist');
         }));
-        $this->assertTrue($this->container->for('baz', function (IContainer $container) {
+        $this->assertTrue($this->container->for(new TargetedContext('baz'), function (IContainer $container) {
             return $container->hasBinding('doesNotExist');
         }));
     }
 
     public function testTargetedSingletonBindingsOnlyApplyToNextCall(): void
     {
-        $this->container->for('foo', function (IContainer $container) {
+        $this->container->for(new TargetedContext('foo'), function (IContainer $container) {
             $container->bindSingleton(IFoo::class, 'bar');
         });
-        $this->container->for('baz', function (IContainer $container) {
+        $this->container->for(new TargetedContext('baz'), function (IContainer $container) {
             $container->bindSingleton('doesNotExist', 'bar');
         });
-        $this->assertFalse($this->container->for('foo', function (IContainer $container) {
+        $this->assertFalse($this->container->for(new TargetedContext('foo'), function (IContainer $container) {
             return $container->hasBinding('doesNotExist');
         }));
-        $this->assertTrue($this->container->for('baz', function (IContainer $container) {
+        $this->assertTrue($this->container->for(new TargetedContext('baz'), function (IContainer $container) {
             return $container->hasBinding('doesNotExist');
         }));
     }
@@ -691,13 +709,13 @@ class ContainerTest extends TestCase
 
     public function testUnbindingTargetedBinding(): void
     {
-        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $container->bindPrototype(IFoo::class, Bar::class);
         });
-        $this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $container->unbind(IFoo::class);
         });
-        $this->assertFalse($this->container->for(ConstructorWithInterface::class, function (IContainer $container) {
+        $this->assertFalse($this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             return $container->hasBinding(IFoo::class);
         }));
     }

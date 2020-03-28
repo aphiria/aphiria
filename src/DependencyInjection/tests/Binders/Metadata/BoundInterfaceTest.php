@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\DependencyInjection\Tests\Binders\Metadata;
 
 use Aphiria\DependencyInjection\Binders\Metadata\BoundInterface;
+use Aphiria\DependencyInjection\TargetedContext;
+use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -20,26 +22,16 @@ use PHPUnit\Framework\TestCase;
  */
 class BoundInterfaceTest extends TestCase
 {
-
     public function testGetInterfaceReturnsSetInterface(): void
     {
-        $interface = new BoundInterface('foo');
+        $interface = new BoundInterface('foo', new UniversalContext());
         $this->assertEquals('foo', $interface->getInterface());
     }
 
-    public function testGetTargetClassReturnsSetTargetClass(): void
+    public function testGetContextReturnsSetContext(): void
     {
-        $interfaceWithTarget = new BoundInterface('foo', 'bar');
-        $this->assertEquals('bar', $interfaceWithTarget->getTargetClass());
-        $interfaceWithoutTarget = new BoundInterface('foo');
-        $this->assertNull($interfaceWithoutTarget->getTargetClass());
-    }
-
-    public function testIsTargetedReturnsWhetherOrNotTargetIsSet(): void
-    {
-        $interfaceWithTarget = new BoundInterface('foo', 'bar');
-        $this->assertTrue($interfaceWithTarget->isTargeted());
-        $interfaceWithoutTarget = new BoundInterface('foo');
-        $this->assertFalse($interfaceWithoutTarget->isTargeted());
+        $expectedContext = new TargetedContext('bar');
+        $interface = new BoundInterface('foo', $expectedContext);
+        $this->assertSame($expectedContext, $interface->getContext());
     }
 }

@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection\Binders\Metadata;
 
+use Aphiria\DependencyInjection\Context;
+
 /**
  * Defines an interface that was bound in a binder
  */
@@ -19,17 +21,17 @@ final class BoundInterface
 {
     /** @var string The interface that was bound */
     private string $interface;
-    /** @var string|null The optional target class for the bound interface */
-    private ?string $targetClass;
+    /** @var Context The context that the binding occurred in */
+    private Context $context;
 
     /**
      * @param string $interface The interface that was bound
-     * @param string|null $targetClass The optional target class for the bound interface
+     * @param Context $context The context that the binding occurred in
      */
-    public function __construct(string $interface, string $targetClass = null)
+    public function __construct(string $interface, Context $context)
     {
         $this->interface = $interface;
-        $this->targetClass = $targetClass;
+        $this->context = $context;
     }
 
     /**
@@ -43,22 +45,12 @@ final class BoundInterface
     }
 
     /**
-     * Gets the target for the bound interface
+     * Gets the context that the binding occurred in
      *
-     * @return string|null The target class if there was one, otherwise null
+     * @return Context The context that the binding occurred in
      */
-    public function getTargetClass(): ?string
+    public function getContext(): Context
     {
-        return $this->targetClass;
-    }
-
-    /**
-     * Gets whether or not the bound interface is targeted
-     *
-     * @return bool True if the bound interface is targeted, otherwise false
-     */
-    public function isTargeted(): bool
-    {
-        return $this->targetClass !== null;
+        return $this->context;
     }
 }

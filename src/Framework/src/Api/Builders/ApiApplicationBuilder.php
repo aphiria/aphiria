@@ -16,6 +16,7 @@ use Aphiria\Api\Application;
 use Aphiria\Application\Builders\ApplicationBuilder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
+use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use RuntimeException;
@@ -46,8 +47,14 @@ final class ApiApplicationBuilder extends ApplicationBuilder
 
         try {
             $apiApp = new Application(
-                $this->container->for(Application::class, fn (IContainer $container) => $container->resolve(IRequestHandler::class)),
-                $this->container->for(Application::class, fn (IContainer $container) => $container->resolve(MiddlewareCollection::class))
+                $this->container->for(
+                    new TargetedContext(Application::class),
+                    fn (IContainer $container) => $container->resolve(IRequestHandler::class)
+                ),
+                $this->container->for(
+                    new TargetedContext(Application::class),
+                    fn (IContainer $container) => $container->resolve(MiddlewareCollection::class)
+                )
             );
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build the API application', 0, $ex);

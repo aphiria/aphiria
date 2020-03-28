@@ -20,6 +20,7 @@ use Aphiria\DependencyInjection\Binders\Metadata\Caching\IBinderMetadataCollecti
 use Aphiria\DependencyInjection\Binders\Metadata\ImpossibleBindingException;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
+use Aphiria\DependencyInjection\UniversalContext;
 use Closure;
 
 /**
@@ -65,9 +66,9 @@ class LazyBinderDispatcher implements IBinderDispatcher
                     $container
                 );
 
-                if ($boundInterface->isTargeted()) {
+                if ($boundInterface->getContext()->isTargeted()) {
                     $container->for(
-                        $boundInterface->getTargetClass(),
+                        $boundInterface->getContext(),
                         fn (IContainer $container) => $container->bindFactory($boundInterface->getInterface(), $resolvingFactory)
                     );
                 } else {
@@ -98,9 +99,9 @@ class LazyBinderDispatcher implements IBinderDispatcher
              * binding defined in the binder.  Otherwise, we'd get into an infinite loop every time we tried
              * to resolve it.
              */
-            if ($boundInterface->isTargeted()) {
+            if ($boundInterface->getContext()->isTargeted()) {
                 $container->for(
-                    $boundInterface->getTargetClass(),
+                    $boundInterface->getContext(),
                     fn (IContainer $container) => $container->unbind($boundInterface->getInterface())
                 );
             } else {
@@ -132,7 +133,11 @@ class LazyBinderDispatcher implements IBinderDispatcher
 
         // Make sure we don't double-dispatch this binder
         if (!isset($this->alreadyDispatchedBinderClasses[$key])) {
-            $binder->bind($container);
+            /**
+             * In the case that whatever invoked the lazy factory was a targeted binding/resolution, make sure that the
+             * binder doesn't inherit that context, and instead is run in the universal context.
+             */
+            $container->for(new UniversalContext(), fn (IContainer $container) => $binder->bind($container));
             $this->alreadyDispatchedBinderClasses[$key] = true;
         }
     }
@@ -147,9 +152,9 @@ class LazyBinderDispatcher implements IBinderDispatcher
      */
     private function resolveBoundInterface(BoundInterface $boundInterface, IContainer $container): object
     {
-        if ($boundInterface->isTargeted()) {
+        if ($boundInterface->getContext()->isTargeted()) {
             return $container->for(
-                $boundInterface->getTargetClass(),
+                $boundInterface->getContext(),
                 fn (IContainer $container) => $container->resolve($boundInterface->getInterface())
             );
         }

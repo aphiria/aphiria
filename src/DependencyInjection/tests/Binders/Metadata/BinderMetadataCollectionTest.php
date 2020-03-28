@@ -18,6 +18,8 @@ use Aphiria\DependencyInjection\Binders\Metadata\BinderMetadataCollection;
 use Aphiria\DependencyInjection\Binders\Metadata\BoundInterface;
 use Aphiria\DependencyInjection\Binders\Metadata\ResolvedInterface;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\TargetedContext;
+use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,19 +30,19 @@ class BinderMetadataCollectionTest extends TestCase
     public function testBinderThatResolvesTargetedInterfaceIsNotReturnedForTargetedBoundInterfaceWithSameInterfaceButDifferentTarget(): void
     {
         $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface('foo', 'bar')])
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface('foo', new TargetedContext('bar'))])
         ];
         $collection = new BinderMetadataCollection($binderMetadatas);
-        $this->assertEmpty($collection->getBinderMetadataThatResolveInterface(new BoundInterface('foo', 'baz')));
+        $this->assertEmpty($collection->getBinderMetadataThatResolveInterface(new BoundInterface('foo', new TargetedContext('baz'))));
     }
 
     public function testBinderThatResolvesTargetedInterfaceIsReturnedForUniversalBoundInterfaceWithSameInterface(): void
     {
         $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface('foo', 'bar')])
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface('foo', new TargetedContext('bar'))])
         ];
         $collection = new BinderMetadataCollection($binderMetadatas);
-        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(new BoundInterface('foo'));
+        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(new BoundInterface('foo', new UniversalContext()));
         $this->assertCount(1, $actualBinderMetadatas);
         $this->assertSame($binderMetadatas[0], $actualBinderMetadatas[0]);
     }
@@ -48,10 +50,10 @@ class BinderMetadataCollectionTest extends TestCase
     public function testBinderThatResolvesTargetedInterfaceIsReturnedForTargetedBoundInterfaceWithSameInterfaceAndTarget(): void
     {
         $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface('foo', 'bar')])
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface('foo', new TargetedContext('bar'))])
         ];
         $collection = new BinderMetadataCollection($binderMetadatas);
-        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(new BoundInterface('foo', 'bar'));
+        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(new BoundInterface('foo', new TargetedContext('bar')));
         $this->assertCount(1, $actualBinderMetadatas);
         $this->assertSame($binderMetadatas[0], $actualBinderMetadatas[0]);
     }
@@ -59,20 +61,20 @@ class BinderMetadataCollectionTest extends TestCase
     public function testBinderThatUniversallyResolvesInterfaceIsNotReturnedForUniversalBoundInterfaceWithDifferentInterface(): void
     {
         $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface('foo')])
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface('foo', new UniversalContext())])
         ];
         $collection = new BinderMetadataCollection($binderMetadatas);
-        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(new BoundInterface('bar'));
+        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(new BoundInterface('bar', new UniversalContext()));
         $this->assertEmpty($actualBinderMetadatas);
     }
 
     public function testBinderThatUniversallyResolvesInterfaceIsReturnedForUniversalBoundInterfaceWithSameInterface(): void
     {
         $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface('foo')])
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface('foo', new UniversalContext())])
         ];
         $collection = new BinderMetadataCollection($binderMetadatas);
-        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(new BoundInterface('foo'));
+        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(new BoundInterface('foo', new UniversalContext()));
         $this->assertCount(1, $actualBinderMetadatas);
         $this->assertSame($binderMetadatas[0], $actualBinderMetadatas[0]);
     }
@@ -80,10 +82,10 @@ class BinderMetadataCollectionTest extends TestCase
     public function testBinderThatUniversallyResolvesInterfaceIsNotReturnedForTargetedBoundInterfaceWithSameInterface(): void
     {
         $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface('foo')])
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface('foo', new UniversalContext())])
         ];
         $collection = new BinderMetadataCollection($binderMetadatas);
-        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(new BoundInterface('foo', 'bar'));
+        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(new BoundInterface('foo', new TargetedContext('bar')));
         $this->assertEmpty($actualBinderMetadatas);
     }
 

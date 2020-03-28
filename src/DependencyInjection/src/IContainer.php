@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection;
 
+use InvalidArgumentException;
+
 /**
  * Defines the interface for dependency injection containers to implement
  */
@@ -80,12 +82,13 @@ interface IContainer extends IServiceResolver
     );
 
     /**
-     * Sets a target for all calls in the callback
+     * Sets a context for all calls in the callback
      *
-     * @param string $targetClass The target class
-     * @param callable $callback The callback containing targeted container method calls
+     * @param Context|string $context The context (or name of the target class) to apply to all bindings and resolutions
+     * @param callable $callback The callback that takes in an IContainer and performs bindings/resolutions under the context
+     * @throws InvalidArgumentException Thrown if the context was not of the correct type
      */
-    public function for(string $targetClass, callable $callback);
+    public function for($context, callable $callback);
 
     /**
      * Gets whether or not an interface has a binding

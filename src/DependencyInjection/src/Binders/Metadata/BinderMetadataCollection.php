@@ -33,8 +33,8 @@ final class BinderMetadataCollection
 
         foreach ($this->binderMetadatas as $binderMetadata) {
             foreach ($binderMetadata->getResolvedInterfaces() as $resolvedInterface) {
-                if ($resolvedInterface->isTargeted()) {
-                    $targetClass = $resolvedInterface->getTargetClass();
+                if ($resolvedInterface->getContext()->isTargeted()) {
+                    $targetClass = $resolvedInterface->getContext()->getTargetClass();
                     $interface = $resolvedInterface->getInterface();
 
                     if (!isset($this->targetedResolutions[$targetClass])) {
@@ -98,11 +98,11 @@ final class BinderMetadataCollection
          */
         $binders = [];
 
-        if ($boundInterface->isTargeted()) {
-            if (isset($this->targetedResolutions[$boundInterface->getTargetClass()][$boundInterface->getInterface()])) {
+        if ($boundInterface->getContext()->isTargeted()) {
+            if (isset($this->targetedResolutions[$boundInterface->getContext()->getTargetClass()][$boundInterface->getInterface()])) {
                 $binders = [
                     ...$binders,
-                    ...$this->targetedResolutions[$boundInterface->getTargetClass()][$boundInterface->getInterface()]
+                    ...$this->targetedResolutions[$boundInterface->getContext()->getTargetClass()][$boundInterface->getInterface()]
                 ];
             }
         } else {
