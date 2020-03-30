@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Exceptions\Http;
+namespace Aphiria\Framework\Api\Exceptions;
 
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
@@ -31,9 +31,9 @@ use Closure;
 use Exception;
 
 /**
- * Defines the exception renderer for HTTP-based apps
+ * Defines the exception renderer for API applications
  */
-class HttpExceptionRenderer implements IExceptionRenderer
+class ApiExceptionRenderer implements IExceptionRenderer
 {
     /** @var bool Whether or not to use problem details */
     protected bool $useProblemDetails;

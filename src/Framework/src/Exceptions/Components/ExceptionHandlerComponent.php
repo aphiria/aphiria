@@ -15,9 +15,9 @@ namespace Aphiria\Framework\Exceptions\Components;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Exceptions\GlobalExceptionHandler;
+use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
 use Aphiria\Framework\Application\AphiriaComponents;
-use Aphiria\Framework\Exceptions\Console\ConsoleExceptionRenderer;
-use Aphiria\Framework\Exceptions\Http\HttpExceptionRenderer;
+use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Closure;
 
 /**
@@ -49,11 +49,11 @@ class ExceptionHandlerComponent implements IComponent
      */
     public function build(): void
     {
-        /** @var HttpExceptionRenderer|null $httpExceptionRenderer */
-        $httpExceptionRenderer = null;
+        /** @var ApiExceptionRenderer|null $apiExceptionRenderer */
+        $apiExceptionRenderer = null;
 
-        if ($this->serviceResolver->tryResolve(HttpExceptionRenderer::class, $httpExceptionRenderer)) {
-            $httpExceptionRenderer->registerManyResponseFactories($this->httpResponseFactories);
+        if ($this->serviceResolver->tryResolve(ApiExceptionRenderer::class, $apiExceptionRenderer)) {
+            $apiExceptionRenderer->registerManyResponseFactories($this->httpResponseFactories);
         }
 
         /** @var ConsoleExceptionRenderer|null $consoleExceptionRenderer */

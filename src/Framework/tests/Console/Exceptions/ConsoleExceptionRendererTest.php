@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\Exceptions\Console;
+namespace Aphiria\Framework\Tests\Console\Exceptions;
 
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Framework\Exceptions\Console\ConsoleExceptionRenderer;
+use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;

@@ -22,8 +22,8 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\IGlobalExceptionHandler;
-use Aphiria\Framework\Exceptions\Console\ConsoleExceptionRenderer;
-use Aphiria\Framework\Exceptions\Http\HttpExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
+use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
@@ -57,7 +57,7 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
      */
     public function bootstrap(): void
     {
-        $httpExceptionRenderer = $this->createAndBindHttpExceptionRenderer();
+        $apiExceptionRenderer = $this->createAndBindApiExceptionRenderer();
         $consoleExceptionRenderer = $this->createAndBindConsoleExceptionRenderer();
         $logger = $this->createAndBindLogger();
 
@@ -65,8 +65,8 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
             $this->container->bindInstance(IExceptionRenderer::class, $consoleExceptionRenderer);
             $globalExceptionHandler = new GlobalExceptionHandler($consoleExceptionRenderer, $logger);
         } else {
-            $this->container->bindInstance(IExceptionRenderer::class, $httpExceptionRenderer);
-            $globalExceptionHandler = new GlobalExceptionHandler($httpExceptionRenderer, $logger);
+            $this->container->bindInstance(IExceptionRenderer::class, $apiExceptionRenderer);
+            $globalExceptionHandler = new GlobalExceptionHandler($apiExceptionRenderer, $logger);
         }
 
         $globalExceptionHandler->registerWithPhp();
@@ -77,29 +77,15 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     }
 
     /**
-     * Creates and binds the exception renderer for console applications
+     * Creates and binds the exception renderer for API applications
      *
-     * @return IExceptionRenderer The exception renderer for console applications
-     */
-    protected function createAndBindConsoleExceptionRenderer(): IExceptionRenderer
-    {
-        $exceptionRenderer = new ConsoleExceptionRenderer();
-        // We'll bind to the interface in the calling method
-        $this->container->bindInstance(ConsoleExceptionRenderer::class, $exceptionRenderer);
-
-        return $exceptionRenderer;
-    }
-
-    /**
-     * Creates and binds the exception renderer for HTTP applications
-     *
-     * @return IExceptionRenderer The exception renderer for HTTP applications
+     * @return IExceptionRenderer The exception renderer for API applications
      * @throws MissingConfigurationValueException Thrown if configuration values were invalid or missing
      */
-    protected function createAndBindHttpExceptionRenderer(): IExceptionRenderer
+    protected function createAndBindApiExceptionRenderer(): IExceptionRenderer
     {
         $useProblemDetails = GlobalConfiguration::getBool('aphiria.exceptions.useProblemDetails');
-        $exceptionRenderer = new HttpExceptionRenderer($useProblemDetails);
+        $exceptionRenderer = new ApiExceptionRenderer($useProblemDetails);
         $exceptionRenderer->registerManyResponseFactories([
             HttpException::class => function (HttpException $ex, IHttpRequestMessage $request, IResponseFactory $responseFactory) {
                 return $ex->getResponse();
@@ -116,7 +102,21 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
             }
         ]);
         // We'll bind to the interface in the calling method
-        $this->container->bindInstance(HttpExceptionRenderer::class, $exceptionRenderer);
+        $this->container->bindInstance(ApiExceptionRenderer::class, $exceptionRenderer);
+
+        return $exceptionRenderer;
+    }
+
+    /**
+     * Creates and binds the exception renderer for console applications
+     *
+     * @return IExceptionRenderer The exception renderer for console applications
+     */
+    protected function createAndBindConsoleExceptionRenderer(): IExceptionRenderer
+    {
+        $exceptionRenderer = new ConsoleExceptionRenderer();
+        // We'll bind to the interface in the calling method
+        $this->container->bindInstance(ConsoleExceptionRenderer::class, $exceptionRenderer);
 
         return $exceptionRenderer;
     }

@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Exceptions\Console;
+namespace Aphiria\Framework\Console\Exceptions;
 
 use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
@@ -47,13 +47,11 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     public function render(Exception $ex): void
     {
         if (isset($this->outputWriters[\get_class($ex)])) {
-            $statusCode = $this->outputWriters[\get_class($ex)]($ex, $this->output);
+            $statusCode = $this->outputWriters[\get_class($ex)]($ex, $this->output) ?? StatusCodes::FATAL;
         } else {
             $statusCode  = StatusCodes::FATAL;
             $this->output->writeln($this->getDefaultExceptionMessages($ex));
         }
-
-        $statusCode ??= StatusCodes::FATAL;
 
         if ($this->shouldExit) {
             exit($statusCode);

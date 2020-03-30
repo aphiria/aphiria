@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Exceptions\Binders;
 
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Framework\Exceptions\Http\HttpExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\IHttpRequestMessage;
 
@@ -28,22 +28,22 @@ class ExceptionHandlerBinder extends Binder
      */
     public function bind(IContainer $container): void
     {
-        /** @var HttpExceptionRenderer|null $httpExceptionRenderer */
-        $httpExceptionRenderer = null;
+        /** @var ApiExceptionRenderer|null $apiExceptionRenderer */
+        $apiExceptionRenderer = null;
 
-        if ($container->tryResolve(HttpExceptionRenderer::class, $httpExceptionRenderer)) {
+        if ($container->tryResolve(ApiExceptionRenderer::class, $apiExceptionRenderer)) {
             /** @var IHttpRequestMessage|null $request */
             $request = null;
 
             if ($container->tryResolve(IHttpRequestMessage::class, $request)) {
-                $httpExceptionRenderer->setRequest($request);
+                $apiExceptionRenderer->setRequest($request);
             }
 
             /** @var IResponseFactory|null */
             $responseFactory = null;
 
             if ($container->tryResolve(IResponseFactory::class, $responseFactory)) {
-                $httpExceptionRenderer->setResponseFactory($responseFactory);
+                $apiExceptionRenderer->setResponseFactory($responseFactory);
             }
         }
     }

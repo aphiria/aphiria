@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\Exceptions\Http;
+namespace Aphiria\Framework\Tests\Api\Exceptions;
 
 use Aphiria\Api\Errors\ProblemDetails;
-use Aphiria\Framework\Exceptions\Http\HttpExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
@@ -25,9 +25,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the HTTP exception renderer
+ * Tests the API exception renderer
  */
-class HttpExceptionRendererTest extends TestCase
+class ApiExceptionRendererTest extends TestCase
 {
     /** @var IResponseWriter|MockObject */
     private IResponseWriter $responseWriter;
@@ -149,14 +149,14 @@ class HttpExceptionRendererTest extends TestCase
      * @param bool $useProblemDetails Whether or not to use problem details
      * @param bool $setRequest Whether or not to set the request
      * @param bool $setResponseFactory Whether or not to set the response factory
-     * @return HttpExceptionRenderer The exception renderer
+     * @return ApiExceptionRenderer The exception renderer
      */
     private function createExceptionRenderer(
         bool $useProblemDetails,
         bool $setRequest,
         bool $setResponseFactory
-    ): HttpExceptionRenderer {
-        return new HttpExceptionRenderer(
+    ): ApiExceptionRenderer {
+        return new ApiExceptionRenderer(
             $useProblemDetails,
             $setRequest ? $this->request : null,
             $setResponseFactory ? $this->responseFactory : null,
