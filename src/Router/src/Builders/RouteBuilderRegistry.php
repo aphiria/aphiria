@@ -52,7 +52,7 @@ final class RouteBuilderRegistry
      */
     public function delete(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
     {
-        return $this->map('DELETE', $pathTemplate, $hostTemplate, $isHttpsOnly);
+        return $this->route('DELETE', $pathTemplate, $hostTemplate, $isHttpsOnly);
     }
 
     /**
@@ -65,7 +65,7 @@ final class RouteBuilderRegistry
      */
     public function get(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
     {
-        return $this->map('GET', $pathTemplate, $hostTemplate, $isHttpsOnly);
+        return $this->route('GET', $pathTemplate, $hostTemplate, $isHttpsOnly);
     }
 
     /**
@@ -82,6 +82,58 @@ final class RouteBuilderRegistry
     }
 
     /**
+     * Creates a route builder with the OPTIONS HTTP method
+     *
+     * @param string $pathTemplate The path template
+     * @param string|null $hostTemplate The host template
+     * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
+     * @return RouteBuilder The configured route builder
+     */
+    public function options(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
+    {
+        return $this->route('OPTIONS', $pathTemplate, $hostTemplate, $isHttpsOnly);
+    }
+
+    /**
+     * Creates a route builder with the PATCH HTTP method
+     *
+     * @param string $pathTemplate The path template
+     * @param string|null $hostTemplate The host template
+     * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
+     * @return RouteBuilder The configured route builder
+     */
+    public function patch(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
+    {
+        return $this->route('PATCH', $pathTemplate, $hostTemplate, $isHttpsOnly);
+    }
+
+    /**
+     * Creates a route builder with the POST HTTP method
+     *
+     * @param string $pathTemplate The path template
+     * @param string|null $hostTemplate The host template
+     * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
+     * @return RouteBuilder The configured route builder
+     */
+    public function post(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
+    {
+        return $this->route('POST', $pathTemplate, $hostTemplate, $isHttpsOnly);
+    }
+
+    /**
+     * Creates a route builder with the PUT HTTP method
+     *
+     * @param string $pathTemplate The path template
+     * @param string|null $hostTemplate The host template
+     * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
+     * @return RouteBuilder The configured route builder
+     */
+    public function put(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
+    {
+        return $this->route('PUT', $pathTemplate, $hostTemplate, $isHttpsOnly);
+    }
+
+    /**
      * Creates a route builder with some values already set
      *
      * @param array|string $httpMethods The HTTP method or list of methods the route uses
@@ -90,7 +142,7 @@ final class RouteBuilderRegistry
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
-    public function map(
+    public function route(
         $httpMethods,
         string $pathTemplate,
         string $hostTemplate = null,
@@ -107,58 +159,6 @@ final class RouteBuilderRegistry
         $this->routeBuilders[] = $routeBuilder;
 
         return $routeBuilder;
-    }
-
-    /**
-     * Creates a route builder with the OPTIONS HTTP method
-     *
-     * @param string $pathTemplate The path template
-     * @param string|null $hostTemplate The host template
-     * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
-     * @return RouteBuilder The configured route builder
-     */
-    public function options(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
-    {
-        return $this->map('OPTIONS', $pathTemplate, $hostTemplate, $isHttpsOnly);
-    }
-
-    /**
-     * Creates a route builder with the PATCH HTTP method
-     *
-     * @param string $pathTemplate The path template
-     * @param string|null $hostTemplate The host template
-     * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
-     * @return RouteBuilder The configured route builder
-     */
-    public function patch(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
-    {
-        return $this->map('PATCH', $pathTemplate, $hostTemplate, $isHttpsOnly);
-    }
-
-    /**
-     * Creates a route builder with the POST HTTP method
-     *
-     * @param string $pathTemplate The path template
-     * @param string|null $hostTemplate The host template
-     * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
-     * @return RouteBuilder The configured route builder
-     */
-    public function post(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
-    {
-        return $this->map('POST', $pathTemplate, $hostTemplate, $isHttpsOnly);
-    }
-
-    /**
-     * Creates a route builder with the PUT HTTP method
-     *
-     * @param string $pathTemplate The path template
-     * @param string|null $hostTemplate The host template
-     * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
-     * @return RouteBuilder The configured route builder
-     */
-    public function put(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
-    {
-        return $this->map('PUT', $pathTemplate, $hostTemplate, $isHttpsOnly);
     }
 
     /**

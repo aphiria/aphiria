@@ -92,8 +92,8 @@ $routes = new AphiriaRouteCollection();
 $routeBuilders = new RouteBuilderRegistry();
 
 for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
-    $routeBuilders->map('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
-        ->toMethod('Foo', (string)$routeIter);
+    $routeBuilders->route('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
+        ->mapsToMethod('Foo', (string)$routeIter);
 }
 
 $routes->addMany($routeBuilders->buildAll());

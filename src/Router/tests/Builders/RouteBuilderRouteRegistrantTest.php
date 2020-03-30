@@ -27,7 +27,7 @@ class RouteBuilderRouteRegistrantTest extends TestCase
     {
         $callback = function (RouteBuilderRegistry $routeBuilders) {
             $routeBuilders->get('foo')
-                ->toMethod('foo', 'bar');
+                ->mapsToMethod('foo', 'bar');
         };
         $registrant = new RouteBuilderRouteRegistrant([$callback]);
         $routes = new RouteCollection();

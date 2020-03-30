@@ -148,13 +148,13 @@ final class AnnotationRouteRegistrant implements IRouteRegistrant
 
             foreach ($this->annotationReader->getMethodAnnotations($method) as $methodAnnotation) {
                 if ($methodAnnotation instanceof Route) {
-                    $routeBuilder = $routeBuilders->map(
+                    $routeBuilder = $routeBuilders->route(
                         $methodAnnotation->httpMethods,
                         $methodAnnotation->path,
                         $methodAnnotation->host,
                         $methodAnnotation->isHttpsOnly
                     );
-                    $routeBuilder->toMethod($controller->getName(), $method->getName());
+                    $routeBuilder->mapsToMethod($controller->getName(), $method->getName());
 
                     foreach ($methodAnnotation->constraints as $constraint) {
                         $constraintClassName = $constraint->className;

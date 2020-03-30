@@ -42,8 +42,8 @@ class RouteBuilderTest extends TestCase
 
     public function testChainingOnFluentMethodsReturnsCorrectInstance(): void
     {
-        $this->assertSame($this->routeBuilder, $this->routeBuilder->toClosure(fn () => null));
-        $this->assertSame($this->routeBuilder, $this->routeBuilder->toMethod('Foo', 'bar'));
+        $this->assertSame($this->routeBuilder, $this->routeBuilder->mapsToClosure(fn () => null));
+        $this->assertSame($this->routeBuilder, $this->routeBuilder->mapsToMethod('Foo', 'bar'));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withAttribute('foo', 'bar'));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withManyAttributes(['foo' => 'bar']));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withManyMiddleware(['Foo']));
@@ -54,7 +54,7 @@ class RouteBuilderTest extends TestCase
     public function testAttributesAreSetWhenPassingIndividualAttributes(): void
     {
         $this->routeBuilder->withAttribute('foo', 'bar');
-        $this->routeBuilder->toMethod('class', 'method');
+        $this->routeBuilder->mapsToMethod('class', 'method');
         $route = $this->routeBuilder->build();
         $this->assertEquals(['foo' => 'bar'], $route->attributes);
     }
@@ -62,7 +62,7 @@ class RouteBuilderTest extends TestCase
     public function testAttributesAreSetWhenPassingMultipleAttributes(): void
     {
         $this->routeBuilder->withManyAttributes(['foo' => 'bar']);
-        $this->routeBuilder->toMethod('class', 'method');
+        $this->routeBuilder->mapsToMethod('class', 'method');
         $route = $this->routeBuilder->build();
         $this->assertEquals(['foo' => 'bar'], $route->attributes);
     }
@@ -70,7 +70,7 @@ class RouteBuilderTest extends TestCase
     public function testClosureIsSetWhenUsingClosureAction(): void
     {
         $closure = fn () => null;
-        $this->routeBuilder->toClosure($closure);
+        $this->routeBuilder->mapsToClosure($closure);
         $route = $this->routeBuilder->build();
         $this->assertSame($closure, $route->action->closure);
     }
@@ -80,7 +80,7 @@ class RouteBuilderTest extends TestCase
         /** @var IRouteConstraint|MockObject $constraint */
         $constraint = $this->createMock(IRouteConstraint::class);
         $this->routeBuilder->withConstraint($constraint);
-        $this->routeBuilder->toMethod('class', 'method');
+        $this->routeBuilder->mapsToMethod('class', 'method');
         $route = $this->routeBuilder->build();
         $this->assertContains($constraint, $route->constraints);
     }
@@ -98,7 +98,7 @@ class RouteBuilderTest extends TestCase
             new MiddlewareBinding('foo', ['bar' => 'baz']),
             new MiddlewareBinding('dave', ['young' => 'cool']),
         ]);
-        $this->routeBuilder->toMethod('class', 'method');
+        $this->routeBuilder->mapsToMethod('class', 'method');
         $route = $this->routeBuilder->build();
         $this->assertCount(2, $route->middlewareBindings);
         $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[0]);
@@ -113,7 +113,7 @@ class RouteBuilderTest extends TestCase
     {
         $constraints = [$this->createMock(IRouteConstraint::class)];
         $this->routeBuilder->withManyConstraints($constraints);
-        $this->routeBuilder->toMethod('class', 'method');
+        $this->routeBuilder->mapsToMethod('class', 'method');
         $route = $this->routeBuilder->build();
         $this->assertContains($constraints[0], $route->constraints);
     }
@@ -121,7 +121,7 @@ class RouteBuilderTest extends TestCase
     public function testManyMiddlewareBindingsAreSetWhenPassingThemInAsStrings(): void
     {
         $this->routeBuilder->withManyMiddleware(['foo', 'bar']);
-        $this->routeBuilder->toMethod('class', 'method');
+        $this->routeBuilder->mapsToMethod('class', 'method');
         $route = $this->routeBuilder->build();
         $this->assertCount(2, $route->middlewareBindings);
         $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[0]);
@@ -134,7 +134,7 @@ class RouteBuilderTest extends TestCase
 
     public function testMethodIsSetWhenUsingMethodAction(): void
     {
-        $this->routeBuilder->toMethod('foo', 'bar');
+        $this->routeBuilder->mapsToMethod('foo', 'bar');
         $route = $this->routeBuilder->build();
         $this->assertSame('foo', $route->action->className);
         $this->assertSame('bar', $route->action->methodName);
@@ -143,7 +143,7 @@ class RouteBuilderTest extends TestCase
     public function testMiddlewareBindingIsSet(): void
     {
         $this->routeBuilder->withMiddleware('foo', ['bar' => 'baz']);
-        $this->routeBuilder->toMethod('class', 'method');
+        $this->routeBuilder->mapsToMethod('class', 'method');
         $route = $this->routeBuilder->build();
         $this->assertCount(1, $route->middlewareBindings);
         $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[0]);
@@ -153,7 +153,7 @@ class RouteBuilderTest extends TestCase
 
     public function testNameIsSet(): void
     {
-        $route = $this->routeBuilder->toMethod('class', 'method')
+        $route = $this->routeBuilder->mapsToMethod('class', 'method')
             ->withName('foo')
             ->build();
         $this->assertEquals('foo', $route->name);
@@ -163,7 +163,7 @@ class RouteBuilderTest extends TestCase
     {
         $expectedUriTemplate = new UriTemplate('foo', 'example.com', true);
         $routeBuilder = new RouteBuilder(['GET'], $expectedUriTemplate);
-        $routeBuilder->toMethod('Foo', 'bar');
+        $routeBuilder->mapsToMethod('Foo', 'bar');
         $route = $routeBuilder->build();
         $this->assertSame($expectedUriTemplate, $route->uriTemplate);
     }

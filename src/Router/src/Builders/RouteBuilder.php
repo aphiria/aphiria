@@ -80,7 +80,7 @@ class RouteBuilder
      * @param Closure $controller The closure the route uses
      * @return self For chaining
      */
-    public function toClosure(Closure $controller): self
+    public function mapsToClosure(Closure $controller): self
     {
         $this->action = new ClosureRouteAction($controller);
 
@@ -94,7 +94,7 @@ class RouteBuilder
      * @param string $controllerMethodName The name of the method the route goes to
      * @return self For chaining
      */
-    public function toMethod(string $controllerClassName, string $controllerMethodName): self
+    public function mapsToMethod(string $controllerClassName, string $controllerMethodName): self
     {
         $this->action = new MethodRouteAction($controllerClassName, $controllerMethodName);
 

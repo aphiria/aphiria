@@ -13,7 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Application;
 
 use Aphiria\Application\Builders\IApplicationBuilder;
+use Aphiria\Application\IModule;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Application\AphiriaComponents;
@@ -50,8 +52,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithBindersRegistersBindersToComponent(): void
     {
-        $binder = new class() extends Binder
-        {
+        $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
@@ -69,8 +70,7 @@ class AphiriaComponentsTest extends TestCase
             ->method('getComponent')
             ->with(BinderComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class()
-        {
+        $component = new class() {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, Binder $binder): void
@@ -94,8 +94,7 @@ class AphiriaComponentsTest extends TestCase
             ->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class()
-        {
+        $component = new class() {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -108,7 +107,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithCommandsConfiguresComponentToHaveCommands(): void
     {
-        $callback = fn (CommandRegistry $commands) => null;
+        $callback = fn(CommandRegistry $commands) => null;
         $expectedComponent = $this->createMock(CommandComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withCommands')
@@ -121,8 +120,7 @@ class AphiriaComponentsTest extends TestCase
             ->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class()
-        {
+        $component = new class() {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, Closure $callback): void
@@ -152,8 +150,7 @@ class AphiriaComponentsTest extends TestCase
             ->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class()
-        {
+        $component = new class() {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $callback): void
@@ -179,8 +176,7 @@ class AphiriaComponentsTest extends TestCase
             ->method('getComponent')
             ->with(SerializerComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class()
-        {
+        $component = new class() {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, string $type, IEncoder $encoder): void
@@ -193,7 +189,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithHttpResponseFactoryConfiguresComponentToHaveFactory(): void
     {
-        $responseFactory = fn (Exception $ex) => $this->createMock(IHttpResponseMessage::class);
+        $responseFactory = fn(Exception $ex) => $this->createMock(IHttpResponseMessage::class);
         $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withHttpResponseFactory')
@@ -206,12 +202,14 @@ class AphiriaComponentsTest extends TestCase
             ->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class()
-        {
+        $component = new class() {
             use AphiriaComponents;
 
-            public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $responseFactory): void
-            {
+            public function build(
+                IApplicationBuilder $appBuilder,
+                string $exceptionType,
+                Closure $responseFactory
+            ): void {
                 $this->withHttpExceptionResponseFactory($appBuilder, $exceptionType, $responseFactory);
             }
         };
@@ -233,12 +231,14 @@ class AphiriaComponentsTest extends TestCase
             ->method('getComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class()
-        {
+        $component = new class() {
             use AphiriaComponents;
 
-            public function build(IApplicationBuilder $appBuilder, MiddlewareBinding $middlewareBinding, int $priority): void
-            {
+            public function build(
+                IApplicationBuilder $appBuilder,
+                MiddlewareBinding $middlewareBinding,
+                int $priority
+            ): void {
                 $this->withGlobalMiddleware($appBuilder, $middlewareBinding, $priority);
             }
         };
@@ -247,7 +247,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithLogLevelFactoryConfiguresComponentToHaveFactory(): void
     {
-        $logLevelFactory = fn (Exception $ex) => LogLevel::ALERT;
+        $logLevelFactory = fn(Exception $ex) => LogLevel::ALERT;
         $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withLogLevelFactory')
@@ -260,21 +260,60 @@ class AphiriaComponentsTest extends TestCase
             ->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class()
-        {
+        $component = new class() {
             use AphiriaComponents;
 
-            public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $logLevelFactory): void
-            {
+            public function build(
+                IApplicationBuilder $appBuilder,
+                string $exceptionType,
+                Closure $logLevelFactory
+            ): void {
                 $this->withLogLevelFactory($appBuilder, $exceptionType, $logLevelFactory);
             }
         };
         $component->build($this->appBuilder, Exception::class, $logLevelFactory);
     }
 
+    public function testWithModulesAddsMultipleModulesToAppBuilder(): void
+    {
+        $modules = [$this->createMock(IModule::class), $this->createMock(IModule::class)];
+        $this->appBuilder->expects($this->at(0))
+            ->method('withModule')
+            ->with($modules[0]);
+        $this->appBuilder->expects($this->at(1))
+            ->method('withModule')
+            ->with($modules[1]);
+        $component = new class() {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, array $modules): void
+            {
+                $this->withModules($appBuilder, $modules);
+            }
+        };
+        $component->build($this->appBuilder, $modules);
+    }
+
+    public function testWithModulesAddsSingleModuleToAppBuilder(): void
+    {
+        $module = $this->createMock(IModule::class);
+        $this->appBuilder->expects($this->once())
+            ->method('withModule')
+            ->with($module);
+        $component = new class() {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, IModule $module): void
+            {
+                $this->withModules($appBuilder, $module);
+            }
+        };
+        $component->build($this->appBuilder, $module);
+    }
+
     public function testWithObjectConstraintsConfiguresComponentToHaveObjectConstraints(): void
     {
-        $callback = fn (ObjectConstraintsRegistry $objectConstraints) => null;
+        $callback = fn(ObjectConstraintsRegistry $objectConstraints) => null;
         $expectedComponent = $this->createMock(ValidationComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withObjectConstraints')
@@ -287,8 +326,7 @@ class AphiriaComponentsTest extends TestCase
             ->method('getComponent')
             ->with(ValidationComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class()
-        {
+        $component = new class() {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, Closure $callback): void
@@ -312,8 +350,7 @@ class AphiriaComponentsTest extends TestCase
             ->method('getComponent')
             ->with(RouterComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class()
-        {
+        $component = new class() {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -326,7 +363,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithRoutesConfiguresComponentToHaveRoutes(): void
     {
-        $callback = fn (RouteBuilderRegistry $routeBuilders) => null;
+        $callback = fn(RouteBuilderRegistry $routeBuilders) => null;
         $expectedComponent = $this->createMock(RouterComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withRoutes')
@@ -339,8 +376,7 @@ class AphiriaComponentsTest extends TestCase
             ->method('getComponent')
             ->with(RouterComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class()
-        {
+        $component = new class() {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, Closure $callback): void
@@ -364,8 +400,7 @@ class AphiriaComponentsTest extends TestCase
             ->method('getComponent')
             ->with(ValidationComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class()
-        {
+        $component = new class() {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
