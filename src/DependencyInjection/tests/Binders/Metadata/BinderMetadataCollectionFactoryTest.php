@@ -107,7 +107,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
             public function bind(IContainer $container): void
             {
                 $container->resolve(IFoo::class);
-                $container->bindPrototype('foo', 'bar');
+                $container->bindClass('foo', 'bar');
             }
         };
         $binderB = new class extends Binder {
@@ -132,7 +132,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
             {
                 $container->for(new TargetedContext('SomeClass'), function (IContainer $container) {
                     $container->resolve(IFoo::class);
-                    $container->bindPrototype(IBar::class, Bar::class);
+                    $container->bindClass(IBar::class, Bar::class);
                 });
             }
         };
@@ -161,7 +161,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
             {
                 // This will fail the first time, but should pass the second time
                 $container->resolve(IFoo::class);
-                $container->bindPrototype('foo', 'bar');
+                $container->bindClass('foo', 'bar');
                 // This will continue to not be able to be resolved
                 $container->resolve(IBar::class);
             }
@@ -184,7 +184,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
             public function bind(IContainer $container): void
             {
                 $container->resolve(IFoo::class);
-                $container->bindPrototype('foo', 'bar');
+                $container->bindClass('foo', 'bar');
                 $container->resolve(IBar::class);
             }
         };

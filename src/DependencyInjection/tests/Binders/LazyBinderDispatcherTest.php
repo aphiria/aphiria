@@ -153,7 +153,7 @@ class LazyBinderDispatcherTest extends TestCase
         $binder = new class extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindPrototype('foo', 'bar');
+                $container->bindClass('foo', 'bar');
             }
         };
         $cache = $this->createMock(IBinderMetadataCollectionCache::class);
@@ -178,7 +178,7 @@ class LazyBinderDispatcherTest extends TestCase
         $binder = new class extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindPrototype(IFoo::class, Foo::class);
+                $container->bindClass(IFoo::class, Foo::class);
             }
         };
         $this->createDispatcher()->dispatch([$binder], $this->container);
@@ -197,7 +197,7 @@ class LazyBinderDispatcherTest extends TestCase
         $binder = new class extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindPrototype(IFoo::class, Foo::class);
+                $container->bindClass(IFoo::class, Foo::class);
             }
         };
         $this->createDispatcher()->dispatch([$binder], $this->container);

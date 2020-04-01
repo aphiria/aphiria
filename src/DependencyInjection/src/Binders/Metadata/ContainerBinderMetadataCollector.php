@@ -49,6 +49,27 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * @inheritdoc
      */
+    public function bindClass(
+        $interfaces,
+        string $concreteClass,
+        array $primitives = [],
+        bool $resolveAsSingleton = false
+    ): void {
+        $this->addBoundInterface($interfaces);
+
+        if ($this->currentContext === null) {
+            $this->container->bindClass($interfaces, $concreteClass, $primitives, $resolveAsSingleton);
+        } else {
+            $this->container->for(
+                $this->currentContext,
+                fn (IContainer $container) => $container->bindClass($interfaces, $concreteClass, $primitives, $resolveAsSingleton)
+            );
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function bindFactory($interfaces, callable $factory, bool $resolveAsSingleton = false): void
     {
         $this->addBoundInterface($interfaces);
@@ -71,34 +92,6 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
             $this->container->bindInstance($interfaces, $instance);
         } else {
             $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindInstance($interfaces, $instance));
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function bindPrototype($interfaces, string $concreteClass = null, array $primitives = []): void
-    {
-        $this->addBoundInterface($interfaces);
-
-        if ($this->currentContext === null) {
-            $this->container->bindPrototype($interfaces, $concreteClass, $primitives);
-        } else {
-            $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindPrototype($interfaces, $concreteClass, $primitives));
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function bindSingleton($interfaces, string $concreteClass = null, array $primitives = []): void
-    {
-        $this->addBoundInterface($interfaces);
-
-        if ($this->currentContext === null) {
-            $this->container->bindSingleton($interfaces, $concreteClass, $primitives);
-        } else {
-            $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindSingleton($interfaces, $concreteClass, $primitives));
         }
     }
 

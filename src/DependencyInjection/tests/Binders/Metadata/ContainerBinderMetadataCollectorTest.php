@@ -49,15 +49,14 @@ class ContainerBinderMetadataCollectorTest extends TestCase
                         return new Foo();
                     });
                     $container->bindInstance('foo1', new Foo());
-                    $container->bindPrototype('foo2', Foo::class);
-                    $container->bindSingleton('foo3', Foo::class);
+                    $container->bindClass('foo2', Foo::class);
                 });
             }
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
         $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
-        $this->assertCount(4, $actualBoundInterfaces);
+        $this->assertCount(3, $actualBoundInterfaces);
 
         foreach ($actualBoundInterfaces as $i => $actualBoundInterface) {
             $this->assertEquals('bar', $actualBoundInterface->getContext()->getTargetClass());
@@ -74,14 +73,13 @@ class ContainerBinderMetadataCollectorTest extends TestCase
                     return new Foo();
                 });
                 $container->bindInstance('foo1', new Foo());
-                $container->bindPrototype('foo2', Foo::class);
-                $container->bindSingleton('foo3', Foo::class);
+                $container->bindClass('foo2', Foo::class);
             }
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
         $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
-        $this->assertCount(4, $actualBoundInterfaces);
+        $this->assertCount(3, $actualBoundInterfaces);
 
         foreach ($actualBoundInterfaces as $i => $actualBoundInterface) {
             $this->assertEquals("foo$i", $actualBoundInterface->getInterface());

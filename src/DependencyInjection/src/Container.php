@@ -76,6 +76,20 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
+    public function bindClass(
+        $interfaces,
+        string $concreteClass,
+        array $primitives = [],
+        bool $resolveAsSingleton = false
+    ): void {
+        foreach ((array)$interfaces as $interface) {
+            $this->addBinding($interface, new ClassContainerBinding($concreteClass, $primitives, $resolveAsSingleton));
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function bindFactory($interfaces, callable $factory, bool $resolveAsSingleton = false): void
     {
         $binding = new FactoryContainerBinding($factory, $resolveAsSingleton);
@@ -94,26 +108,6 @@ class Container implements IContainer
 
         foreach ((array)$interfaces as $interface) {
             $this->addBinding($interface, $binding);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function bindPrototype($interfaces, string $concreteClass = null, array $primitives = []): void
-    {
-        foreach ((array)$interfaces as $interface) {
-            $this->addBinding($interface, new ClassContainerBinding($concreteClass ?? $interface, $primitives, false));
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function bindSingleton($interfaces, string $concreteClass = null, array $primitives = []): void
-    {
-        foreach ((array)$interfaces as $interface) {
-            $this->addBinding($interface, new ClassContainerBinding($concreteClass ?? $interface, $primitives, true));
         }
     }
 

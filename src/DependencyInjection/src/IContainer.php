@@ -20,6 +20,21 @@ use InvalidArgumentException;
 interface IContainer extends IServiceResolver
 {
     /**
+     * Binds a class to use whenever resolving an interface
+     *
+     * @param string|array $interfaces The interface or interfaces to bind to
+     * @param string $concreteClass The concrete class to bind to the interface
+     * @param array $primitives The list of primitives to inject (must be in same order they appear in constructor),
+     * @param bool $resolveAsSingleton Whether or not to resolve the class as a singleton
+     */
+    public function bindClass(
+        $interfaces,
+        string $concreteClass,
+        array $primitives = [],
+        bool $resolveAsSingleton = false
+    ): void;
+
+    /**
      * Binds a factory that will return a concrete instance of the interface
      *
      * @param string|array $interfaces The interface or interfaces to bind to
@@ -35,24 +50,6 @@ interface IContainer extends IServiceResolver
      * @param object $instance The instance to bind
      */
     public function bindInstance($interfaces, object $instance): void;
-
-    /**
-     * Binds a non-singleton concrete class to an interface
-     *
-     * @param string|array $interfaces The interface or interfaces to bind to
-     * @param string|null $concreteClass The concrete class to bind, or null if the interface actually is a concrete class
-     * @param array $primitives The list of primitives to inject (must be in same order they appear in constructor)
-     */
-    public function bindPrototype($interfaces, string $concreteClass = null, array $primitives = []): void;
-
-    /**
-     * Binds a singleton concrete class to an interface
-     *
-     * @param string|array $interfaces The interface or interfaces to bind to
-     * @param string|null $concreteClass The concrete class to bind, or null if the interface actually is a concrete class
-     * @param array $primitives The list of primitives to inject (must be in same order they appear in constructor)
-     */
-    public function bindSingleton($interfaces, string $concreteClass = null, array $primitives = []): void;
 
     /**
      * Resolves a closure's parameters and calls it
