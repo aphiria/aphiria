@@ -26,7 +26,7 @@ use Aphiria\Routing\UriTemplates\AstRouteUriFactory;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\FileTrieCache;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieFactory;
 use Aphiria\Routing\UriTemplates\IRouteUriFactory;
-use Doctrine\Annotations\AnnotationException;
+use Doctrine\Common\Annotations\AnnotationException;
 
 /**
  * Defines the routing binder
