@@ -1,6 +1,6 @@
 <phpunit
-        bootstrap="tests/bootstrap.php"
-        colors="true">
+    bootstrap="phpunit.bootstrap.php"
+    colors="true">
     <testsuite name="RouteMatcher">
         <directory>tests</directory>
     </testsuite>

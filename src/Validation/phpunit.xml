@@ -1,5 +1,5 @@
 <phpunit
-    bootstrap="vendor/autoload.php"
+    bootstrap="phpunit.bootstrap.php"
     colors="true">
     <testsuite name="Validation">
         <directory>tests</directory>

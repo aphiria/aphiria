@@ -1,5 +1,5 @@
 <phpunit
-    bootstrap="tests/bootstrap.php"
+    bootstrap="phpunit.bootstrap.php"
     colors="true">
     <testsuite name="Console">
         <directory>tests</directory>
