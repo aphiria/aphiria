@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
+use Aphiria\Collections\IDictionary;
+use Aphiria\Collections\IImmutableDictionary;
 use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
@@ -21,8 +23,6 @@ use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use InvalidArgumentException;
-use Aphiria\Collections\IDictionary;
-use Aphiria\Collections\IImmutableDictionary;
 use RuntimeException;
 
 /**

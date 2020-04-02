@@ -24,7 +24,7 @@ class BetweenConstraintTest extends TestCase
     public function testFailingConstraint(): void
     {
         $constraint = new BetweenConstraint(1, 2, true, true, 'foo');
-        $this->assertFalse($constraint->passes(.9,));
+        $this->assertFalse($constraint->passes(.9, ));
         $this->assertFalse($constraint->passes(2.1));
     }
 

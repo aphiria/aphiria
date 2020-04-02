@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http;
 
+use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\HttpHeaders;
 use InvalidArgumentException;
-use Aphiria\Collections\KeyValuePair;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 

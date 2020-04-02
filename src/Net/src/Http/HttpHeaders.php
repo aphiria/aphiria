@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
-use InvalidArgumentException;
 use Aphiria\Collections\HashTable;
 use Aphiria\Collections\KeyValuePair;
+use InvalidArgumentException;
 use OutOfBoundsException;
 use RuntimeException;
 

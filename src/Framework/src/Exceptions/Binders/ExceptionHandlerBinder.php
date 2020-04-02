@@ -15,8 +15,8 @@ namespace Aphiria\Framework\Exceptions\Binders;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
-use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IResponseFactory;
 
 /**
  * Defines the exception handler binder

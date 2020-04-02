@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
-use Exception;
-use InvalidArgumentException;
 use Aphiria\IO\Streams\MultiStream;
 use Aphiria\IO\Streams\Stream;
+use Exception;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**

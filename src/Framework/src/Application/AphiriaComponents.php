@@ -48,8 +48,10 @@ trait AphiriaComponents
     {
         if (!$appBuilder->hasComponent(BinderComponent::class)) {
             $appBuilder->withComponent(
-                new BinderComponent(Container::$globalInstance->resolve(IBinderDispatcher::class),
-                    Container::$globalInstance),
+                new BinderComponent(
+                    Container::$globalInstance->resolve(IBinderDispatcher::class),
+                    Container::$globalInstance
+                ),
                 0
             );
         }
@@ -195,8 +197,10 @@ trait AphiriaComponents
             // Bind the middleware collection here so that it can be used in the component
             Container::$globalInstance->hasBinding(MiddlewareCollection::class)
                 ? $middlewareCollection = Container::$globalInstance->resolve(MiddlewareCollection::class)
-                : Container::$globalInstance->bindInstance(MiddlewareCollection::class,
-                $middlewareCollection = new MiddlewareCollection());
+                : Container::$globalInstance->bindInstance(
+                    MiddlewareCollection::class,
+                    $middlewareCollection = new MiddlewareCollection()
+                );
             $appBuilder->withComponent(new MiddlewareComponent(Container::$globalInstance));
         }
 

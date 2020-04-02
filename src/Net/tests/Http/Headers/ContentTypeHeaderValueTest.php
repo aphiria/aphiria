@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http\Headers;
 
-use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
-use InvalidArgumentException;
 use Aphiria\Collections\IImmutableDictionary;
 use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Collections\KeyValuePair;
+use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**

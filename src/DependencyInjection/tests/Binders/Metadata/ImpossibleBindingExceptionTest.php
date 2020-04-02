@@ -61,8 +61,7 @@ class ImpossibleBindingExceptionTest extends TestCase
      */
     private function createBinder(): Binder
     {
-        return new class() extends Binder
-        {
+        return new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything

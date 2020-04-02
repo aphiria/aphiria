@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
+use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Net\Http\Formatting\HttpHeaderParser;
 use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Collections\ImmutableHashTable;
 use PHPUnit\Framework\TestCase;
 
 /**

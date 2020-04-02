@@ -150,7 +150,7 @@ class ValidatorTest extends TestCase
             }
         };
         /** @var IConstraint[] $constraints */
-        $constraints = [$this->createMockConstraint(false, 1,)];
+        $constraints = [$this->createMockConstraint(false, 1, )];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             \get_class($object),
             [],
@@ -210,7 +210,8 @@ class ValidatorTest extends TestCase
         $constraints = [$this->createMockConstraint(true, 1)];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             \get_class($object),
-            ['prop' => $constraints], []
+            ['prop' => $constraints],
+            []
         ));
         $this->assertTrue($this->validator->tryValidateObject($object));
     }

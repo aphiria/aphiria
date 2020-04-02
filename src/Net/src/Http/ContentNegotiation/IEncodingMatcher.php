@@ -8,6 +8,8 @@
  * @license   https://github.com/aphiria/aphiria/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Net\Http\ContentNegotiation;
 
 use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;

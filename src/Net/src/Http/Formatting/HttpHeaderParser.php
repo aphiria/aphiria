@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
-use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Collections\IImmutableDictionary;
 use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Collections\KeyValuePair;
+use Aphiria\Net\Http\HttpHeaders;
 use RuntimeException;
 
 /**

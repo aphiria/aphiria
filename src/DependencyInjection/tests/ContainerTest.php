@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection\Tests;
 
+use Aphiria\DependencyInjection\CallException;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\Context;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\DependencyInjection\CallException;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\Tests\Mocks\Bar;

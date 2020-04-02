@@ -58,7 +58,7 @@ final class ProgressBar
      *
      * @throws Exception Thrown if there was an error writing the output
      */
-	public function complete(): void
+    public function complete(): void
     {
         $this->setProgress($this->maxSteps);
     }
@@ -68,7 +68,7 @@ final class ProgressBar
      *
      * @return bool True if the progress bar is complete, otherwise false
      */
-	public function isComplete(): bool
+    public function isComplete(): bool
     {
         return $this->maxSteps === $this->progress;
     }
@@ -79,7 +79,7 @@ final class ProgressBar
      * @param int $progress The current progress
      * @throws Exception Thrown if there was an error formatting the output
      */
-	public function setProgress(int $progress): void
+    public function setProgress(int $progress): void
     {
         // Bound the progress between 0 and the max steps
         $prevProgress = $this->progress;

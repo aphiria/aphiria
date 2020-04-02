@@ -31,6 +31,7 @@
         "symfony/dotenv": "~5.0"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
         "phpunit/phpunit": "~9.0"
     },
     "scripts": {

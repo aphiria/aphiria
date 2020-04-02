@@ -12,14 +12,14 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http;
 
+use Aphiria\Collections\HashTable;
+use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\RequestTargetTypes;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
-use Aphiria\Collections\HashTable;
-use Aphiria\Collections\KeyValuePair;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

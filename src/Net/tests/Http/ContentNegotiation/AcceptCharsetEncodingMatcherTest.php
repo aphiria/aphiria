@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Net\Tests\Http\Formatting;
+namespace Aphiria\Net\Tests\Http\ContentNegotiation;
 
 use Aphiria\Net\Http\ContentNegotiation\AcceptCharsetEncodingMatcher;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
@@ -116,7 +116,8 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $this->headers->add('Content-Type', 'text/html; charset=utf-16');
         $encoding = $this->matcher->getBestEncodingMatch(
             ['utf-8'],
-            $this->request, $this->headerParser->parseContentTypeHeader($this->headers)
+            $this->request,
+            $this->headerParser->parseContentTypeHeader($this->headers)
         );
         $this->assertNull($encoding);
     }

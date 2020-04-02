@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\IO\Tests\Streams;
 
-use InvalidArgumentException;
 use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\MultiStream;
 use Aphiria\IO\Streams\Stream;
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

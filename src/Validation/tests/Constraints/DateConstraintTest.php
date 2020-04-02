@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints;
 
-use DateTime;
 use Aphiria\Validation\Constraints\DateConstraint;
+use DateTime;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

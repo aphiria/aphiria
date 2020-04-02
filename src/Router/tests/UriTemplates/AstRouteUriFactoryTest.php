@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Router\Tests\UriTemplates;
+namespace Aphiria\Routing\Tests\UriTemplates;
 
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
@@ -18,12 +18,8 @@ use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\AstRouteUriFactory;
 use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Lexers\LexingException;
-use Aphiria\Routing\UriTemplates\Lexers\Token;
-use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
-use Aphiria\Routing\UriTemplates\Lexers\TokenTypes;
 use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
-use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
 use Aphiria\Routing\UriTemplates\RouteUriCreationException;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use OutOfBoundsException;

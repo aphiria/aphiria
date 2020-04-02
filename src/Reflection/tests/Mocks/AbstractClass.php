@@ -17,5 +17,4 @@ namespace Aphiria\Reflection\Tests\Mocks;
  */
 abstract class AbstractClass
 {
-
 }

@@ -16,9 +16,9 @@ use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\LazyBinderDispatcher;
 use Aphiria\DependencyInjection\Binders\Metadata\BinderMetadata;
 use Aphiria\DependencyInjection\Binders\Metadata\BinderMetadataCollection;
-use Aphiria\DependencyInjection\Binders\Metadata\ContainerBinderMetadataCollector;
 use Aphiria\DependencyInjection\Binders\Metadata\BoundInterface;
 use Aphiria\DependencyInjection\Binders\Metadata\Caching\IBinderMetadataCollectionCache;
+use Aphiria\DependencyInjection\Binders\Metadata\ContainerBinderMetadataCollector;
 use Aphiria\DependencyInjection\ClassContainerBinding;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\FactoryContainerBinding;
@@ -43,8 +43,7 @@ class LazyBinderDispatcherTest extends TestCase
     protected function setUp(): void
     {
         // Allow us to more easily retrieve bindings for testing purposes
-        $this->container = new class extends Container
-        {
+        $this->container = new class extends Container {
             public function getBinding(string $interface): ?IContainerBinding
             {
                 return parent::getBinding($interface);
@@ -54,7 +53,7 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingBinderThatResolvesAnotherBindersBindingCausesBothToBeActivelyDispatched(): void
     {
-        $binderA = new  class extends Binder {
+        $binderA = new class extends Binder {
             public bool $binderDispatched = false;
 
             public function bind(IContainer $container): void

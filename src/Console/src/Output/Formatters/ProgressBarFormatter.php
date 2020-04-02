@@ -103,9 +103,9 @@ class ProgressBarFormatter implements IProgressBarObserver
         } else {
             $percentCompleteString = $this->compilePercent($progress, $maxSteps);
             $completedProgressString = str_repeat(
-                    $this->completedProgressChar,
-                    (int)max(0, floor($progress / $maxSteps * ($this->progressBarWidth - 2) - strlen($percentCompleteString)))
-                ) . $percentCompleteString;
+                $this->completedProgressChar,
+                (int)max(0, floor($progress / $maxSteps * ($this->progressBarWidth - 2) - strlen($percentCompleteString)))
+            ) . $percentCompleteString;
             $progressLeftString = str_repeat(
                 $this->remainingProgressChar,
                 max(0, $this->progressBarWidth - 2 - strlen($completedProgressString))

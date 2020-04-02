@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection\Binders;
 
-use Aphiria\Reflection\TypeFinder;
 use Aphiria\Reflection\ITypeFinder;
+use Aphiria\Reflection\TypeFinder;
 use InvalidArgumentException;
 use ReflectionClass;
 

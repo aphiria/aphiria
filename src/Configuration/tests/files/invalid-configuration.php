@@ -8,4 +8,6 @@
  * @license   https://github.com/aphiria/aphiria/blob/master/LICENSE.md
  */
 
+declare(strict_types=1);
+
 // Don't do anything

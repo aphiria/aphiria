@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Aphiria
  *
@@ -36,8 +37,7 @@ class RouterComponentTest extends TestCase
         $this->container = new Container();
         $this->routerComponent = new RouterComponent($this->container);
         $this->container->bindInstance(RouteCollection::class, $this->routes = new RouteCollection());
-        $this->routeRegistrants = new class() extends RouteRegistrantCollection
-        {
+        $this->routeRegistrants = new class() extends RouteRegistrantCollection {
             public function getAll(): array
             {
                 return $this->routeRegistrants;

@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
+use Aphiria\Collections\HashTable;
 use Aphiria\Net\Http\Formatting\HttpBodyParser;
 use Aphiria\Net\Http\IHttpBody;
-use Aphiria\Collections\HashTable;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

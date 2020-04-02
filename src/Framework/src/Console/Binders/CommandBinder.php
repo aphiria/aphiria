@@ -20,7 +20,7 @@ use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
-use Doctrine\Annotations\AnnotationException;
+use Doctrine\Common\Annotations\AnnotationException;
 
 /**
  * Defines the console command binder

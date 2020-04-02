@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Sessions\Tests\Handlers;
 
+use Aphiria\Sessions\Handlers\DriverSessionHandler;
 use Aphiria\Sessions\Handlers\ISessionDriver;
 use Aphiria\Sessions\Handlers\ISessionEncrypter;
-use Aphiria\Sessions\Handlers\DriverSessionHandler;
 use Aphiria\Sessions\Handlers\SessionEncryptionException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\IO\Tests;
 
-use DateTime;
 use Aphiria\IO\FileSystem;
 use Aphiria\IO\FileSystemException;
+use DateTime;
 use PHPUnit\Framework\TestCase;
 
 /**

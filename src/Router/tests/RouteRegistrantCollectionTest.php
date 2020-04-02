@@ -13,11 +13,11 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests;
 
 use Aphiria\Routing\Caching\IRouteCache;
+use Aphiria\Routing\IRouteRegistrant;
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
-use Aphiria\Routing\RouteRegistrantCollection;
-use Aphiria\Routing\IRouteRegistrant;
 use Aphiria\Routing\RouteCollection;
+use Aphiria\Routing\RouteRegistrantCollection;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
@@ -29,8 +29,7 @@ class RouteRegistrantCollectionTest extends TestCase
     public function testAddingRegistrantCausesItToBeInvokedWhenRegisteringRoutes(): void
     {
         $registrants = new RouteRegistrantCollection();
-        $singleRegistrant = new class() implements IRouteRegistrant
-        {
+        $singleRegistrant = new class() implements IRouteRegistrant {
             public bool $wasInvoked = false;
 
             /**

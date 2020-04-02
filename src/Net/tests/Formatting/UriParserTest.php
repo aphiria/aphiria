@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Formatting;
 
+use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Uri;
-use Aphiria\Collections\ImmutableHashTable;
 use PHPUnit\Framework\TestCase;
 
 /**

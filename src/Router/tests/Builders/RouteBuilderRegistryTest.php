@@ -189,8 +189,13 @@ class RouteBuilderRegistryTest extends TestCase
         $innerConstraints = [$this->createMock(IRouteConstraint::class)];
         $innerGroupMiddlewareBinding = new MiddlewareBinding('bar');
         $routeMiddlewareBinding = new MiddlewareBinding('baz');
-        $outerGroupOptions = new RouteGroupOptions('op', null, false, $outerConstraints,
-            [$outerGroupMiddlewareBinding]);
+        $outerGroupOptions = new RouteGroupOptions(
+            'op',
+            null,
+            false,
+            $outerConstraints,
+            [$outerGroupMiddlewareBinding]
+        );
         $this->registry->group(
             $outerGroupOptions,
             function (RouteBuilderRegistry $registry) use (
@@ -198,8 +203,13 @@ class RouteBuilderRegistryTest extends TestCase
                 $innerGroupMiddlewareBinding,
                 $routeMiddlewareBinding
             ) {
-                $innerGroupOptions = new RouteGroupOptions('ip', null, false, $innerConstraints,
-                    [$innerGroupMiddlewareBinding]);
+                $innerGroupOptions = new RouteGroupOptions(
+                    'ip',
+                    null,
+                    false,
+                    $innerConstraints,
+                    [$innerGroupMiddlewareBinding]
+                );
                 $registry->group(
                     $innerGroupOptions,
                     function (RouteBuilderRegistry $registry) use ($routeMiddlewareBinding) {

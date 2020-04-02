@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Aphiria
  *
@@ -11,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Configuration\Bootstrappers;
 
-use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\Configuration\GlobalConfiguration;
 use Aphiria\Configuration\GlobalConfigurationBuilder;
+use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\Framework\Configuration\Bootstrappers\ConfigurationBootstrapper;
 use PHPUnit\Framework\TestCase;
 

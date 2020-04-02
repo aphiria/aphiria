@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Aphiria
  *
@@ -35,8 +36,7 @@ class ValidationComponentTest extends TestCase
     {
         $this->container = new Container();
         $this->container->bindInstance(ObjectConstraintsRegistry::class, $this->objectConstraints = new ObjectConstraintsRegistry());
-        $this->objectConstraintsRegistrants = new class() extends ObjectConstraintsRegistrantCollection
-        {
+        $this->objectConstraintsRegistrants = new class() extends ObjectConstraintsRegistrantCollection {
             public function getAll(): array
             {
                 return $this->registrants;

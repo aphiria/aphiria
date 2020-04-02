@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests;
 
+use Aphiria\Console\Application;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Input\Argument;
@@ -19,7 +20,6 @@ use Aphiria\Console\Input\ArgumentTypes;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionTypes;
-use Aphiria\Console\Application;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCodes;
 use Aphiria\Console\Tests\Output\Mocks\Output;

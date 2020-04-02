@@ -31,7 +31,8 @@ final class RouteVariableConstraintFactoryRegistrant
             fn () => new AlphaConstraint()
         );
         $constraintFactory->registerConstraintFactory(
-            AlphanumericConstraint::getSlug(), fn () => new AlphanumericConstraint()
+            AlphanumericConstraint::getSlug(),
+            fn () => new AlphanumericConstraint()
         );
         $constraintFactory->registerConstraintFactory(
             BetweenConstraint::getSlug(),

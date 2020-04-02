@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection\Tests\Binders;
 
-use InvalidArgumentException;
 use Aphiria\DependencyInjection\Binders\FileBinderFinder;
 use Aphiria\DependencyInjection\Tests\Binders\Mocks\Finder\BinderA;
 use Aphiria\DependencyInjection\Tests\Binders\Mocks\Finder\BinderB;
 use Aphiria\DependencyInjection\Tests\Binders\Mocks\Finder\Subdirectory\BinderC;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**

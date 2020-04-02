@@ -14,15 +14,15 @@ namespace Aphiria\Routing\Tests\Annotations;
 
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Reflection\ITypeFinder;
+use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
 use Aphiria\Routing\Annotations\Get;
 use Aphiria\Routing\Annotations\Middleware;
 use Aphiria\Routing\Annotations\RouteConstraint;
 use Aphiria\Routing\Annotations\RouteGroup;
-use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
-use Aphiria\Routing\Tests\Annotations\Mocks\DummyConstraint;
-use Aphiria\Routing\Tests\Annotations\Mocks\DummyMiddleware;
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\RouteCollection;
+use Aphiria\Routing\Tests\Annotations\Mocks\DummyConstraint;
+use Aphiria\Routing\Tests\Annotations\Mocks\DummyMiddleware;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -48,8 +48,7 @@ class AnnotationRouteRegistrantTest extends TestCase
 
     public function testRegisteringRouteWithAllPropertiesSetCreatesRouteWithAllThosePropertiesSet(): void
     {
-        $controller = new class extends Controller
-        {
+        $controller = new class extends Controller {
             /**
              * @Get("foo", host="example.com", name="routename", isHttpsOnly=true, attributes={"foo":"bar"}, constraints={@RouteConstraint(DummyConstraint::class, constructorParams={"param"})})
              */
@@ -78,8 +77,7 @@ class AnnotationRouteRegistrantTest extends TestCase
 
     public function testRegisteringRouteWithMiddlewareCreatesRouteWithThatMiddleware(): void
     {
-        $controller = new class extends Controller
-        {
+        $controller = new class extends Controller {
             /**
              * @Get("bar")
              * @Middleware(DummyMiddleware::class, attributes={"foo":"bar"})
@@ -108,8 +106,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         /**
          * @Middleware(DummyMiddleware::class, attributes={"foo":"bar"})
          */
-        $controller = new class extends Controller
-        {
+        $controller = new class extends Controller {
             /**
              * @Get("bar")
              * @Middleware(DummyMiddleware::class, attributes={"baz":"blah"})
@@ -137,8 +134,7 @@ class AnnotationRouteRegistrantTest extends TestCase
 
     public function testRegisteringRouteWithMultipleMiddlewareCreatesRouteWithThoseMiddleware(): void
     {
-        $controller = new class extends Controller
-        {
+        $controller = new class extends Controller {
             /**
              * @Get("bar")
              * @Middleware(DummyMiddleware::class, attributes={"foo":"bar"})
@@ -170,8 +166,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         /**
          * @RouteGroup("")
          */
-        $controller = new class extends Controller
-        {
+        $controller = new class extends Controller {
             /**
              * @Get("foo")
              */
@@ -197,8 +192,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         /**
          * @RouteGroup("foo")
          */
-        $controller = new class extends Controller
-        {
+        $controller = new class extends Controller {
             /**
              * @Get("bar")
              */
@@ -224,8 +218,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         /**
          * @RouteGroup("", host="example.com")
          */
-        $controller = new class extends Controller
-        {
+        $controller = new class extends Controller {
             /**
              * @Get("", host="api")
              */
@@ -251,8 +244,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         /**
          * @RouteGroup("", isHttpsOnly=true)
          */
-        $controller = new class extends Controller
-        {
+        $controller = new class extends Controller {
             /**
              * @Get("", isHttpsOnly=true)
              */
@@ -286,8 +278,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         /**
          * @RouteGroup("", attributes={"foo":"bar"})
          */
-        $controller = new class extends Controller
-        {
+        $controller = new class extends Controller {
             /**
              * @Get("")
              */
@@ -321,8 +312,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         /**
          * @RouteGroup("", constraints={@RouteConstraint(DummyConstraint::class, constructorParams={"foo"})})
          */
-        $controller = new class extends Controller
-        {
+        $controller = new class extends Controller {
             /**
              * @Get("")
              */

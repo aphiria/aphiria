@@ -18,7 +18,7 @@ declare(strict_types=1);
  * @license   https://github.com/aphiria/aphiria/blob/master/LICENSE.md
  */
 
-namespace Aphiria\Routing\Tests\UriMatchers\Compilers\Trees\Caching;
+namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries\Caching;
 
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\MethodRouteAction;

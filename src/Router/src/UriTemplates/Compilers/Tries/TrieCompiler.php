@@ -193,8 +193,10 @@ final class TrieCompiler implements ITrieCompiler
             }
 
             $constraintParams = $childAstNode->hasChildren() ? $childAstNode->children[0]->value : [];
-            $constraints[] = $this->constraintFactory->createConstraint((string)$childAstNode->value,
-                $constraintParams);
+            $constraints[] = $this->constraintFactory->createConstraint(
+                (string)$childAstNode->value,
+                $constraintParams
+            );
         }
 
         return new RouteVariable((string)$astNode->value, $constraints);

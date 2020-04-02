@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Headers;
 
-use InvalidArgumentException;
 use Aphiria\Collections\IImmutableDictionary;
 use Aphiria\Collections\ImmutableHashTable;
+use InvalidArgumentException;
 
 /**
  * Defines the Accept-Language header value

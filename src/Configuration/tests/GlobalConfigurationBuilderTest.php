@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration\Tests;
 
-use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\Configuration\GlobalConfiguration;
 use Aphiria\Configuration\GlobalConfigurationBuilder;
+use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\Configuration\InvalidConfigurationFileException;
 use PHPUnit\Framework\TestCase;
 
