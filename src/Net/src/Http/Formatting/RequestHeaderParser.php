@@ -12,13 +12,13 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
+use Aphiria\Collections\IImmutableDictionary;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use Aphiria\Net\Http\HttpHeaders;
 use InvalidArgumentException;
-use Aphiria\Collections\IImmutableDictionary;
 
 /**
  * Defines the request header parser

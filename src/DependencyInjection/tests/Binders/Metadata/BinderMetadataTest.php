@@ -27,8 +27,7 @@ class BinderMetadataTest extends TestCase
 {
     public function testGetBinderReturnsSetBinder(): void
     {
-        $expectedBinder = new class() extends Binder
-        {
+        $expectedBinder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
@@ -40,8 +39,7 @@ class BinderMetadataTest extends TestCase
 
     public function testGetBoundInterfacesReturnsSetBoundInterfaces(): void
     {
-        $binder = new class() extends Binder
-        {
+        $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
@@ -54,8 +52,7 @@ class BinderMetadataTest extends TestCase
 
     public function testGetBoundInterfacesReturnsSetResolvedInterfaces(): void
     {
-        $binder = new class() extends Binder
-        {
+        $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything

@@ -10,13 +10,13 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Net\Tests\Http\Formatting;
+namespace Aphiria\Net\Tests\Http\ContentNegotiation\MediaTypeFormatters;
 
+use Aphiria\IO\Streams\IStream;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use Aphiria\Serialization\JsonSerializer;
 use InvalidArgumentException;
-use Aphiria\IO\Streams\IStream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

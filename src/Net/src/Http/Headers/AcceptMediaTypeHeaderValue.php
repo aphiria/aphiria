@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Headers;
 
-use InvalidArgumentException;
 use Aphiria\Collections\IImmutableDictionary;
+use InvalidArgumentException;
 
 /**
  * Defines the Accept media type header value

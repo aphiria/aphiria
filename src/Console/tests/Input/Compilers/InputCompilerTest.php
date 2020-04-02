@@ -115,7 +115,7 @@ class InputCompilerTest extends TestCase
                 [],
                 '',
                 '',
-                ),
+            ),
             fn () => $this->createMock(ICommandHandler::class)
         );
         $input = $this->compiler->compile('foo bar baz');

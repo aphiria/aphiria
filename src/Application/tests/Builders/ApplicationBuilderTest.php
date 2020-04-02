@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Application\Tests\Builders;
 
 use Aphiria\Application\Builders\ApplicationBuilder;
-use Aphiria\Application\IModule;
 use Aphiria\Application\IComponent;
+use Aphiria\Application\IModule;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
@@ -27,8 +27,7 @@ class ApplicationBuilderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->appBuilder = new class() extends ApplicationBuilder
-        {
+        $this->appBuilder = new class() extends ApplicationBuilder {
             public function build(): object
             {
                 $this->buildModules();
@@ -46,8 +45,7 @@ class ApplicationBuilderTest extends TestCase
          * When I initialize those components, I'm adding them to an array so that I can check the initialization order.
          */
         $initializedComponents = [];
-        $lowPriorityComponent = new class($initializedComponents) implements IComponent
-        {
+        $lowPriorityComponent = new class($initializedComponents) implements IComponent {
             private array $builtComponentsBuilders;
 
             public function __construct(array &$builtComponentBuilders)
@@ -60,8 +58,7 @@ class ApplicationBuilderTest extends TestCase
                 $this->builtComponentsBuilders[] = $this;
             }
         };
-        $highPriorityComponent = new class($initializedComponents) implements IComponent
-        {
+        $highPriorityComponent = new class($initializedComponents) implements IComponent {
             private array $builtComponentsBuilders;
 
             public function __construct(array &$builtComponentBuilders)

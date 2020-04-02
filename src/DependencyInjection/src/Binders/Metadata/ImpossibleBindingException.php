@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection\Binders\Metadata;
 
-use Exception;
 use Aphiria\DependencyInjection\Binders\Binder;
+use Exception;
 use Throwable;
 
 /**

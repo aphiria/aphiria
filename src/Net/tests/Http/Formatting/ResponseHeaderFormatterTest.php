@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
-use Aphiria\Net\Http\Headers\Cookie;
 use Aphiria\Net\Http\Formatting\ResponseHeaderFormatter;
+use Aphiria\Net\Http\Headers\Cookie;
 use Aphiria\Net\Http\HttpHeaders;
 use DateTime;
 use PHPUnit\Framework\TestCase;

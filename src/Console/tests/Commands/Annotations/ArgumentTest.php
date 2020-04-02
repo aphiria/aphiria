@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests\Commands\Annotations;
 
-use Aphiria\Console\Input\ArgumentTypes;
 use Aphiria\Console\Commands\Annotations\Argument;
+use Aphiria\Console\Input\ArgumentTypes;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Tests;
 
-use Aphiria\Api\Router;
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
+use Aphiria\Api\Router;
 use Aphiria\Api\Tests\Controllers\Mocks\Controller as ControllerMock;
 use Aphiria\Api\Tests\Mocks\AttributeMiddleware;
 use Aphiria\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;

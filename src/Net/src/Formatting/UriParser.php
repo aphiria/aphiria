@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Formatting;
 
-use Aphiria\Net\Uri;
 use Aphiria\Collections\IImmutableDictionary;
 use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Collections\KeyValuePair;
+use Aphiria\Net\Uri;
 
 /**
  * Defines the URI parser

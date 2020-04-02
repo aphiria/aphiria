@@ -107,7 +107,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithCommandsConfiguresComponentToHaveCommands(): void
     {
-        $callback = fn(CommandRegistry $commands) => null;
+        $callback = fn (CommandRegistry $commands) => null;
         $expectedComponent = $this->createMock(CommandComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withCommands')
@@ -189,7 +189,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithHttpResponseFactoryConfiguresComponentToHaveFactory(): void
     {
-        $responseFactory = fn(Exception $ex) => $this->createMock(IHttpResponseMessage::class);
+        $responseFactory = fn (Exception $ex) => $this->createMock(IHttpResponseMessage::class);
         $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withHttpResponseFactory')
@@ -247,7 +247,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithLogLevelFactoryConfiguresComponentToHaveFactory(): void
     {
-        $logLevelFactory = fn(Exception $ex) => LogLevel::ALERT;
+        $logLevelFactory = fn (Exception $ex) => LogLevel::ALERT;
         $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withLogLevelFactory')
@@ -313,7 +313,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithObjectConstraintsConfiguresComponentToHaveObjectConstraints(): void
     {
-        $callback = fn(ObjectConstraintsRegistry $objectConstraints) => null;
+        $callback = fn (ObjectConstraintsRegistry $objectConstraints) => null;
         $expectedComponent = $this->createMock(ValidationComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withObjectConstraints')
@@ -363,7 +363,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithRoutesConfiguresComponentToHaveRoutes(): void
     {
-        $callback = fn(RouteBuilderRegistry $routeBuilders) => null;
+        $callback = fn (RouteBuilderRegistry $routeBuilders) => null;
         $expectedComponent = $this->createMock(RouterComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withRoutes')

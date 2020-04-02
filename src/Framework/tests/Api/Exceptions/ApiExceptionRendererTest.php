@@ -14,10 +14,10 @@ namespace Aphiria\Framework\Tests\Api\Exceptions;
 
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
-use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\IResponseWriter;
 use Aphiria\Net\Http\Response;
 use Exception;

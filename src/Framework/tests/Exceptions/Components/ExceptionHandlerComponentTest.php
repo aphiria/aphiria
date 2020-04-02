@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Aphiria
  *
@@ -16,9 +17,9 @@ use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\IExceptionRenderer;
-use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
-use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
+use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
+use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\IResponseFactory;

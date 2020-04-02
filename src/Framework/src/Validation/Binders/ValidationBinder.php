@@ -26,7 +26,7 @@ use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\Validator;
-use Doctrine\Annotations\AnnotationException;
+use Doctrine\Common\Annotations\AnnotationException;
 use InvalidArgumentException;
 
 /**
@@ -60,7 +60,7 @@ final class ValidationBinder extends Binder
 
         if (GlobalConfiguration::tryGetArray('aphiria.validation.errorMessageTemplates', $errorMessageTemplateConfiguration)) {
             switch ($errorMessageTemplateConfiguration['type']) {
-                case DefaultErrorMessageTemplateRegistry::class;
+                case DefaultErrorMessageTemplateRegistry::class:
                     $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry();
                     break;
                 default:

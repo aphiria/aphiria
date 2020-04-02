@@ -42,7 +42,7 @@ class AnnotationConstraintsRegistrantTest extends TestCase
 
     public function testMethodsWithConstraintsAreRegistered(): void
     {
-        $object = new class () {
+        $object = new class() {
             /**
              * @Required
              */
@@ -64,7 +64,7 @@ class AnnotationConstraintsRegistrantTest extends TestCase
 
     public function testMethodsWithNonValidationConstraintAnnotationsAreNotRegistered(): void
     {
-        $object = new class () {
+        $object = new class() {
             /**
              * @\Doctrine\Common\Annotations\Annotation\Required
              */
@@ -84,7 +84,7 @@ class AnnotationConstraintsRegistrantTest extends TestCase
 
     public function testPropertiesWithConstraintsAreRegistered(): void
     {
-        $object = new class () {
+        $object = new class() {
             /**
              * @Required
              */
@@ -103,7 +103,7 @@ class AnnotationConstraintsRegistrantTest extends TestCase
 
     public function testPropertiesWithNonValidationConstraintAnnotationsAreNotRegistered(): void
     {
-        $object = new class () {
+        $object = new class() {
             /**
              * @\Doctrine\Common\Annotations\Annotation\Required
              */

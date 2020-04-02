@@ -74,10 +74,12 @@ final class AnnotationRouteRegistrant implements IRouteRegistrant
             if ($routeGroupOptions === null) {
                 $this->registerRouteBuilders($reflectionController, $routeBuilders);
             } else {
-                $routeBuilders->group($routeGroupOptions,
+                $routeBuilders->group(
+                    $routeGroupOptions,
                     function (RouteBuilderRegistry $routeBuilders) use ($reflectionController) {
                         $this->registerRouteBuilders($reflectionController, $routeBuilders);
-                    });
+                    }
+                );
             }
         }
 
@@ -115,8 +117,10 @@ final class AnnotationRouteRegistrant implements IRouteRegistrant
                     );
                 }
             } elseif ($classAnnotation instanceof Middleware) {
-                $middlewareBindings[] = new MiddlewareBinding($classAnnotation->className,
-                    $classAnnotation->attributes);
+                $middlewareBindings[] = new MiddlewareBinding(
+                    $classAnnotation->className,
+                    $classAnnotation->attributes
+                );
             }
         }
 
@@ -167,8 +171,10 @@ final class AnnotationRouteRegistrant implements IRouteRegistrant
 
                     $routeBuilder->withManyAttributes($methodAnnotation->attributes);
                 } elseif ($methodAnnotation instanceof Middleware) {
-                    $middlewareBindings[] = new MiddlewareBinding($methodAnnotation->className,
-                        $methodAnnotation->attributes);
+                    $middlewareBindings[] = new MiddlewareBinding(
+                        $methodAnnotation->className,
+                        $methodAnnotation->attributes
+                    );
                 }
             }
 

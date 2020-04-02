@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Net\Tests\Http\ResponseFactories;
+namespace Aphiria\Net\Tests\Http\ContentNegotiation;
 
 use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;

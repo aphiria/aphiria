@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Console\Builders;
 
 use Aphiria\Application\Builders\IApplicationBuilder;
-use Aphiria\Application\IModule;
 use Aphiria\Application\IComponent;
+use Aphiria\Application\IModule;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\Framework\Console\Builders\ConsoleApplicationBuilder;
@@ -44,8 +44,7 @@ class ConsoleApplicationBuilderTest extends TestCase
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void
     {
         $builtParts = [];
-        $module = new class($builtParts) implements IModule
-        {
+        $module = new class($builtParts) implements IModule {
             private array $builtParts;
 
             public function __construct(array &$builtParts)
@@ -58,8 +57,7 @@ class ConsoleApplicationBuilderTest extends TestCase
                 $this->builtParts[] = \get_class($this);
             }
         };
-        $component = new class($builtParts) implements IComponent
-        {
+        $component = new class($builtParts) implements IComponent {
             private array $builtParts;
 
             public function __construct(array &$builtParts)

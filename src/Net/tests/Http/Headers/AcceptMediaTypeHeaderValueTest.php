@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http\Headers;
 
-use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
-use InvalidArgumentException;
 use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Collections\KeyValuePair;
+use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**

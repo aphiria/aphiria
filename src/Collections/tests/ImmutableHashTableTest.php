@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Collections\Tests;
 
-use InvalidArgumentException;
 use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\Collections\Tests\Mocks\MockObject;
+use InvalidArgumentException;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
+use Aphiria\Collections\HashTable;
+use Aphiria\Collections\IDictionary;
+use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\MultipartBody;
@@ -19,9 +22,6 @@ use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
 use finfo;
 use InvalidArgumentException;
-use Aphiria\Collections\HashTable;
-use Aphiria\Collections\IDictionary;
-use Aphiria\Collections\KeyValuePair;
 use RuntimeException;
 
 /**

@@ -10,17 +10,17 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries\Compilers;
+namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries;
 
 use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
-use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
-use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\LiteralTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RootTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RouteVariable;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieCompiler;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\VariableTrieNode;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
+use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
 use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
 use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Lexers\TokenStream;

@@ -12,13 +12,13 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http;
 
+use Aphiria\IO\Streams\IStream;
+use Aphiria\IO\Streams\MultiStream;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
-use Aphiria\IO\Streams\IStream;
-use Aphiria\IO\Streams\MultiStream;
 use PHPUnit\Framework\TestCase;
 
 /**

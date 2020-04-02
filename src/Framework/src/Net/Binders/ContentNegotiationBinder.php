@@ -22,9 +22,9 @@ use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\IEncodingMatcher;
 use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
 use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
-use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
 use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
+use Aphiria\Net\Http\IResponseFactory;
 
 /**
  * Defines the content negotiation binder

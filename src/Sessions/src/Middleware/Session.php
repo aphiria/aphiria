@@ -13,10 +13,10 @@ declare(strict_types=1);
 namespace Aphiria\Sessions\Middleware;
 
 use Aphiria\Middleware\IMiddleware;
-use Aphiria\Net\Http\Headers\Cookie;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\Headers\Cookie;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Sessions\ISession;

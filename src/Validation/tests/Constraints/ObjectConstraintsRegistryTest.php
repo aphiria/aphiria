@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints;
 
-use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\Constraints\ObjectConstraints;
+use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use PHPUnit\Framework\TestCase;
 
 /**

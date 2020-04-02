@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Net\Tests\Http\Formatting;
+namespace Aphiria\Net\Tests\Http\ContentNegotiation;
 
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatch;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;

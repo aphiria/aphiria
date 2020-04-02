@@ -15,9 +15,9 @@ namespace Aphiria\Console\Tests\Commands;
 use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
+use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Commands\ICommandRegistrant;
-use Aphiria\Console\Commands\CommandRegistry;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,8 +28,7 @@ class CommandRegistrantCollectionTest extends TestCase
     public function testAddingRegistrantCausesItToBeInvokedWhenRegisteringRoutes(): void
     {
         $commandRegistrants = new CommandRegistrantCollection();
-        $singleRegistrant = new class() implements ICommandRegistrant
-        {
+        $singleRegistrant = new class() implements ICommandRegistrant {
             public bool $wasInvoked = false;
 
             /**

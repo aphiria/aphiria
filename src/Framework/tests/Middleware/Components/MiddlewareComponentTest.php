@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Aphiria
  *
@@ -42,8 +43,7 @@ class MiddlewareComponentTest extends TestCase
 
     public function testBuildWithAttributeMiddlewareSetsAttributes(): void
     {
-        $expectedMiddleware = new class($this->createMock(IHttpResponseMessage::class)) extends AttributeMiddleware
-        {
+        $expectedMiddleware = new class($this->createMock(IHttpResponseMessage::class)) extends AttributeMiddleware {
             private IHttpResponseMessage $expectedResponse;
 
             public function __construct(IHttpResponseMessage $expectedResponse)

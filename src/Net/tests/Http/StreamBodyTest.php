@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http;
 
-use Aphiria\Net\Http\StreamBody;
 use Aphiria\IO\Streams\IStream;
+use Aphiria\Net\Http\StreamBody;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

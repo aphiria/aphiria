@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Configuration\Tests;
 
+use Aphiria\Configuration\GlobalConfiguration;
 use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\Configuration\MissingConfigurationValueException;
-use Aphiria\Configuration\GlobalConfiguration;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
