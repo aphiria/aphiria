@@ -17,8 +17,8 @@ use Aphiria\Reflection\TypeFinder;
 use Aphiria\Validation\Constraints\IObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraints;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
-use Doctrine\Annotations\AnnotationReader;
-use Doctrine\Annotations\Reader;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader;
 use ReflectionClass;
 
 /**

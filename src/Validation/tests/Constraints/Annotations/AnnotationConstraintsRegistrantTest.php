@@ -17,8 +17,8 @@ use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegist
 use Aphiria\Validation\Constraints\Annotations\Required;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\Constraints\RequiredConstraint;
-use Doctrine\Annotations\AnnotationReader;
-use Doctrine\Annotations\Reader;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -66,7 +66,7 @@ class AnnotationConstraintsRegistrantTest extends TestCase
     {
         $object = new class () {
             /**
-             * @\Doctrine\Annotations\Annotation\Required
+             * @\Doctrine\Common\Annotations\Annotation\Required
              */
             public function method(): bool
             {
@@ -105,7 +105,7 @@ class AnnotationConstraintsRegistrantTest extends TestCase
     {
         $object = new class () {
             /**
-             * @\Doctrine\Annotations\Annotation\Required
+             * @\Doctrine\Common\Annotations\Annotation\Required
              */
             public bool $prop = true;
         };

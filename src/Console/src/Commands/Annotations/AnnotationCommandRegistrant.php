@@ -22,8 +22,8 @@ use Aphiria\Console\Input\Option;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
-use Doctrine\Annotations\AnnotationReader;
-use Doctrine\Annotations\Reader;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader;
 use ReflectionClass;
 use ReflectionException;
 

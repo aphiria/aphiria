@@ -23,8 +23,8 @@ use Aphiria\Routing\Tests\Annotations\Mocks\DummyConstraint;
 use Aphiria\Routing\Tests\Annotations\Mocks\DummyMiddleware;
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\RouteCollection;
-use Doctrine\Annotations\AnnotationReader;
-use Doctrine\Annotations\Reader;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
