@@ -129,7 +129,7 @@ class RequestFactory
         foreach ($server as $name => $values) {
             // If this header supports multiple values and has unquoted string delimiters...
             $containsMultipleValues = isset(self::$headersThatPermitMultipleValues[$name])
-                && count($explodedValues = preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', $values)) > 1;
+                && \count($explodedValues = preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', $values)) > 1;
 
             if ($containsMultipleValues) {
                 foreach ($explodedValues as $value) {
@@ -176,7 +176,7 @@ class RequestFactory
         if ($isUsingTrustedProxy && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']])) {
             $protoString = $server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']];
             $protoArray = explode(',', $protoString);
-            $isSecure = count($protoArray) > 0 && in_array(strtolower($protoArray[0]), ['https', 'ssl', 'on'], true);
+            $isSecure = \count($protoArray) > 0 && \in_array(strtolower($protoArray[0]), ['https', 'ssl', 'on'], true);
         } else {
             $isSecure = isset($server['HTTPS']) && $server['HTTPS'] !== 'off';
         }
@@ -273,7 +273,7 @@ class RequestFactory
             $ipAddresses[] = $serverRemoteAddress;
         }
 
-        $fallbackIPAddresses = count($ipAddresses) === 0 ? [] : [$ipAddresses[0]];
+        $fallbackIPAddresses = \count($ipAddresses) === 0 ? [] : [$ipAddresses[0]];
 
         foreach ($ipAddresses as $index => $ipAddress) {
             // Check for valid IP address
@@ -282,12 +282,12 @@ class RequestFactory
             }
 
             // Don't accept trusted proxies
-            if (in_array($ipAddress, $this->trustedProxyIPAddresses, true)) {
+            if (\in_array($ipAddress, $this->trustedProxyIPAddresses, true)) {
                 unset($ipAddresses[$index]);
             }
         }
 
-        $clientIPAddresses = count($ipAddresses) === 0 ? $fallbackIPAddresses : array_reverse($ipAddresses);
+        $clientIPAddresses = \count($ipAddresses) === 0 ? $fallbackIPAddresses : array_reverse($ipAddresses);
 
         return $clientIPAddresses[0] ?? null;
     }
@@ -300,7 +300,7 @@ class RequestFactory
      */
     protected function isUsingTrustedProxy(array $server): bool
     {
-        return in_array($server['REMOTE_ADDR'] ?? '', $this->trustedProxyIPAddresses, true);
+        return \in_array($server['REMOTE_ADDR'] ?? '', $this->trustedProxyIPAddresses, true);
     }
 
     /**

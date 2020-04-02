@@ -45,7 +45,7 @@ class TableFormatter
      */
     public function format(array $rows, array $headers = []): string
     {
-        if (count($rows) === 0) {
+        if (\count($rows) === 0) {
             return '';
         }
 
@@ -56,7 +56,7 @@ class TableFormatter
         unset($row);
 
         // If there are headers, we want them to be formatted along with the rows
-        $headersAndRows = count($headers) === 0 ? $rows : [...[$headers], ...$rows];
+        $headersAndRows = \count($headers) === 0 ? $rows : [...[$headers], ...$rows];
         $maxLengths = $this->padding->normalizeColumns($headersAndRows);
         $eolChar = $this->padding->getEolChar();
         $rowText = explode(
@@ -82,7 +82,7 @@ class TableFormatter
         }
 
         $borderText = $this->intersectionChar . implode($this->intersectionChar, $borders) . $this->intersectionChar;
-        $headerText = count($headers) > 0 ? array_shift($rowText) . $eolChar . $borderText . $eolChar : '';
+        $headerText = \count($headers) > 0 ? array_shift($rowText) . $eolChar . $borderText . $eolChar : '';
 
         return $borderText . $eolChar . $headerText . implode($eolChar, $rowText) . $eolChar . $borderText;
     }

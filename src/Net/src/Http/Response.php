@@ -60,7 +60,7 @@ class Response implements IHttpResponseMessage
 
         $headers = '';
 
-        if (count($this->headers) > 0) {
+        if (\count($this->headers) > 0) {
             $headers .= "\r\n{$this->headers}";
         }
 

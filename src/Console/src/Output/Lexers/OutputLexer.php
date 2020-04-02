@@ -30,7 +30,7 @@ final class OutputLexer implements IOutputLexer
         $inOpenTag = false;
         $inCloseTag = false;
         $charArray = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
-        $textLength = count($charArray);
+        $textLength = \count($charArray);
 
         foreach ($charArray as $charIter => $char) {
             switch ($char) {
@@ -133,15 +133,15 @@ final class OutputLexer implements IOutputLexer
      */
     private static function getSurroundingText(array $charArray, int $position): string
     {
-        if (count($charArray) <= 3) {
+        if (\count($charArray) <= 3) {
             return implode('', $charArray);
         }
 
         if ($position <= 3) {
-            return implode('', array_slice($charArray, 0, 4));
+            return implode('', \array_slice($charArray, 0, 4));
         }
 
-        return implode('', array_slice($charArray, $position - 3, 4));
+        return implode('', \array_slice($charArray, $position - 3, 4));
     }
 
     /**
@@ -153,7 +153,7 @@ final class OutputLexer implements IOutputLexer
      */
     private static function lookBehind(array $charArray, int $currPosition): ?string
     {
-        if ($currPosition === 0 || count($charArray) === 0) {
+        if ($currPosition === 0 || \count($charArray) === 0) {
             return null;
         }
 
@@ -169,7 +169,7 @@ final class OutputLexer implements IOutputLexer
      */
     private static function peek(array $charArray, int $currPosition): ?string
     {
-        $charArrayLength = count($charArray);
+        $charArrayLength = \count($charArray);
 
         if ($charArrayLength === 0 || $charArrayLength === $currPosition + 1) {
             return null;

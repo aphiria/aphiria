@@ -36,7 +36,7 @@ class HttpException extends Exception
     ) {
         parent::__construct($message, $code, $previous);
 
-        if (is_int($statusCodeOrResponse)) {
+        if (\is_int($statusCodeOrResponse)) {
             $this->response = new Response($statusCodeOrResponse);
         } elseif ($statusCodeOrResponse instanceof IHttpResponseMessage) {
             $this->response = $statusCodeOrResponse;

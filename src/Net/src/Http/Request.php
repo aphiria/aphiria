@@ -111,7 +111,7 @@ class Request implements IHttpRequestMessage
         $startLine = "{$this->method} {$this->getRequestTarget()} HTTP/{$this->protocolVersion}";
         $headers = '';
 
-        if (count($this->headers) > 0) {
+        if (\count($this->headers) > 0) {
             $headers .= "\r\n{$this->headers}";
         }
 

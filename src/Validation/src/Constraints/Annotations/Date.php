@@ -39,7 +39,7 @@ final class Date implements IConstraintAnnotation
         }
 
         if (\is_array($values['value'])) {
-            if (count($values['value']) === 0) {
+            if (\count($values['value']) === 0) {
                 throw new InvalidArgumentException('Must specify at least one acceptable date format');
             }
 

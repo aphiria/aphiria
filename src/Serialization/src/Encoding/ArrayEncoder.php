@@ -39,7 +39,7 @@ final class ArrayEncoder implements IEncoder
             throw new InvalidArgumentException('Type must end in "[]"');
         }
 
-        if (!is_array($values)) {
+        if (!\is_array($values)) {
             throw new InvalidArgumentException('Value must be an array');
         }
 
@@ -59,11 +59,11 @@ final class ArrayEncoder implements IEncoder
      */
     public function encode($values, EncodingContext $context)
     {
-        if (!is_array($values)) {
+        if (!\is_array($values)) {
             throw new InvalidArgumentException('Value must be an array');
         }
 
-        if (count($values) === 0) {
+        if (\count($values) === 0) {
             return [];
         }
 

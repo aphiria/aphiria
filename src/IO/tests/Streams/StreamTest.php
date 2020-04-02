@@ -52,7 +52,7 @@ class StreamTest extends TestCase
         $handle = fopen('php://temp', 'rb');
         $stream = new Stream($handle);
         $stream->close();
-        $this->assertFalse(is_resource($handle));
+        $this->assertFalse(\is_resource($handle));
     }
 
     public function testCopyingToClosedStreamThrowsException(): void
@@ -82,7 +82,7 @@ class StreamTest extends TestCase
         $handle = fopen('php://temp', 'rb');
         $stream = new Stream($handle);
         unset($stream);
-        $this->assertFalse(is_resource($handle));
+        $this->assertFalse(\is_resource($handle));
     }
 
     public function testGettingLengthOfClosedStreamThrowsException(): void

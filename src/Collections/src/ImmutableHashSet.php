@@ -52,7 +52,7 @@ class ImmutableHashSet implements IImmutableSet
      */
     public function count(): int
     {
-        return count($this->values);
+        return \count($this->values);
     }
 
     /**

@@ -108,7 +108,7 @@ final class MultiStream implements IStream
      */
     public function getLength(): ?int
     {
-        if (count($this->streams) === 0) {
+        if (\count($this->streams) === 0) {
             return null;
         }
 
@@ -138,11 +138,11 @@ final class MultiStream implements IStream
      */
     public function isEof(): bool
     {
-        if (count($this->streams) === 0) {
+        if (\count($this->streams) === 0) {
             throw new RuntimeException('Unable to tell if at EOF on closed stream');
         }
 
-        return $this->streamIndex === count($this->streams) - 1 && $this->streams[$this->streamIndex]->isEof();
+        return $this->streamIndex === \count($this->streams) - 1 && $this->streams[$this->streamIndex]->isEof();
     }
 
     /**
@@ -174,7 +174,7 @@ final class MultiStream implements IStream
      */
     public function read(int $length): string
     {
-        if (count($this->streams) === 0) {
+        if (\count($this->streams) === 0) {
             return '';
         }
 
@@ -183,10 +183,10 @@ final class MultiStream implements IStream
 
         while ($remainingLength > 0) {
             $currStreamBuffer = $this->streams[$this->streamIndex]->read($remainingLength);
-            $remainingLength -= strlen($currStreamBuffer);
+            $remainingLength -= \strlen($currStreamBuffer);
             $buffer .= $currStreamBuffer;
 
-            if ($this->streamIndex === count($this->streams) - 1) {
+            if ($this->streamIndex === \count($this->streams) - 1) {
                 break;
             }
 
@@ -195,7 +195,7 @@ final class MultiStream implements IStream
             }
         }
 
-        $this->position = strlen($buffer);
+        $this->position = \strlen($buffer);
 
         return $buffer;
     }
@@ -205,7 +205,7 @@ final class MultiStream implements IStream
      */
     public function readToEnd(): string
     {
-        if (count($this->streams) === 0) {
+        if (\count($this->streams) === 0) {
             return '';
         }
 
@@ -270,7 +270,7 @@ final class MultiStream implements IStream
                 $stream->seek($this->position - $currPosition);
 
                 // Rewind the remaining streams
-                for ($remainingIndex = $this->streamIndex + 1;$remainingIndex < count($this->streams);$remainingIndex++) {
+                for ($remainingIndex = $this->streamIndex + 1;$remainingIndex < \count($this->streams);$remainingIndex++) {
                     $this->streams[$remainingIndex]->rewind();
                 }
 

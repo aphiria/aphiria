@@ -68,7 +68,7 @@ EOF;
     {
         $commands = $this->commands->getAllCommands();
 
-        if (count($commands) === 0) {
+        if (\count($commands) === 0) {
             return '  <info>No commands</info>';
         }
 
@@ -108,11 +108,11 @@ EOF;
         foreach ($commands as $command) {
             $commandNameParts = explode(':', $command->name);
 
-            if (count($commandNameParts) > 1 && !in_array($commandNameParts[0], $firstCommandNamesToCategories, true)) {
+            if (\count($commandNameParts) > 1 && !\in_array($commandNameParts[0], $firstCommandNamesToCategories, true)) {
                 $categorizedCommandNames[] = $command->name;
 
                 // If this is the first command for this category
-                if (!in_array($commandNameParts[0], $firstCommandNamesToCategories, true)) {
+                if (!\in_array($commandNameParts[0], $firstCommandNamesToCategories, true)) {
                     $firstCommandNamesToCategories[$command->name] = $commandNameParts[0];
                 }
             }
@@ -128,7 +128,7 @@ EOF;
                 // If this is the first command of its category, display the category
                 if (
                     isset($firstCommandNamesToCategories[trim($row[0])])
-                    && in_array(trim($row[0]), $categorizedCommandNames, true)
+                    && \in_array(trim($row[0]), $categorizedCommandNames, true)
                 ) {
                     $output .= "<comment>{$firstCommandNamesToCategories[trim($row[0])]}</comment>" . PHP_EOL;
                 }

@@ -74,7 +74,7 @@ class HashSet implements ISet
      */
     public function count(): int
     {
-        return count($this->values);
+        return \count($this->values);
     }
 
     /**
@@ -94,7 +94,7 @@ class HashSet implements ISet
 
         // We don't use array_intersect because that does string comparisons, which requires __toString()
         foreach ($this->values as $value) {
-            if (in_array($value, $values, true)) {
+            if (\in_array($value, $values, true)) {
                 $intersectedValues[] = $value;
             }
         }

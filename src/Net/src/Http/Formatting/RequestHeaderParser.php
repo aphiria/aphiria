@@ -41,7 +41,7 @@ class RequestHeaderParser extends HttpHeaderParser
         }
 
         $parsedHeaderValues = [];
-        $numHeaderValues = count($headerValues);
+        $numHeaderValues = \count($headerValues);
 
         for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept-Charset', $i);
@@ -69,7 +69,7 @@ class RequestHeaderParser extends HttpHeaderParser
         }
 
         $parsedHeaderValues = [];
-        $numHeaderValues = count($headerValues);
+        $numHeaderValues = \count($headerValues);
 
         for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept', $i);
@@ -97,7 +97,7 @@ class RequestHeaderParser extends HttpHeaderParser
         }
 
         $parsedHeaderValues = [];
-        $numHeaderValues = count($headerValues);
+        $numHeaderValues = \count($headerValues);
 
         for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept-Language', $i);

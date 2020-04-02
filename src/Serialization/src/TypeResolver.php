@@ -25,7 +25,7 @@ final class TypeResolver
      */
     public static function getArrayType(string $type): ?string
     {
-        if (substr($type, -2) !== '[]' || strlen($type) === 2) {
+        if (substr($type, -2) !== '[]' || \strlen($type) === 2) {
             return null;
         }
 
@@ -41,15 +41,15 @@ final class TypeResolver
      */
     public static function resolveType($value): string
     {
-        if (is_array($value)) {
-            if (count($value) === 0) {
+        if (\is_array($value)) {
+            if (\count($value) === 0) {
                 return 'array';
             }
 
             return self::resolveType($value[0]) . '[]';
         }
 
-        return is_object($value) ? get_class($value) : gettype($value);
+        return \is_object($value) ? \get_class($value) : \gettype($value);
     }
 
     /**

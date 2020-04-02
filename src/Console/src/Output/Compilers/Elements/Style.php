@@ -94,7 +94,7 @@ final class Style
         }
 
         // Don't double-add a style
-        if (!in_array($style, $this->textStyles, true)) {
+        if (!\in_array($style, $this->textStyles, true)) {
             $this->textStyles[] = $style;
         }
     }
@@ -142,7 +142,7 @@ final class Style
             $endCodes[] = self::$supportedTextStyles[$style][1];
         }
 
-        if (count($startCodes) === 0 && count($endCodes) === 0) {
+        if (\count($startCodes) === 0 && \count($endCodes) === 0) {
             // No point in trying to format the text
             return $text;
         }

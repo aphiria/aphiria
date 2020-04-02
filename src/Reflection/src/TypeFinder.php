@@ -84,11 +84,11 @@ final class TypeFinder implements ITypeFinder
      */
     private function findAllTypesWithFilter($directories, bool $recursive, int $typeFilter): array
     {
-        if (is_string($directories)) {
+        if (\is_string($directories)) {
             $directories = [$directories];
         }
 
-        if (!is_array($directories)) {
+        if (!\is_array($directories)) {
             throw new InvalidArgumentException('Directories must be a string or array of strings');
         }
 
@@ -129,12 +129,12 @@ final class TypeFinder implements ITypeFinder
     private function getTypeFromTokens(array $tokens, int $typeFilter): array
     {
         $types = [];
-        $numTokens = count($tokens);
+        $numTokens = \count($tokens);
         $namespace = '';
 
         for ($i = 0;$i < $numTokens;$i++) {
             // Skip literals
-            if (is_string($tokens[$i])) {
+            if (\is_string($tokens[$i])) {
                 continue;
             }
 
@@ -146,7 +146,7 @@ final class TypeFinder implements ITypeFinder
 
                     // Collect all the namespace parts and separators
                     while (isset($tokens[++$i][1])) {
-                        if (in_array($tokens[$i][0], [T_NS_SEPARATOR, T_STRING], true)) {
+                        if (\in_array($tokens[$i][0], [T_NS_SEPARATOR, T_STRING], true)) {
                             $namespace .= $tokens[$i][1];
                         }
                     }

@@ -89,7 +89,7 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
     {
         $error = error_get_last();
 
-        if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+        if ($error !== null && \in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
             $this->handleException(
                 new FatalErrorException($error['message'], $error['type'], 0, $error['file'], $error['line'])
             );

@@ -31,7 +31,7 @@ final class RouteBuilderRouteRegistrant implements IRouteRegistrant
      */
     public function __construct($routeBuilderClosures)
     {
-        if (is_array($routeBuilderClosures)) {
+        if (\is_array($routeBuilderClosures)) {
             $this->routeBuilderClosures = $routeBuilderClosures;
         } elseif ($routeBuilderClosures instanceof Closure) {
             $this->routeBuilderClosures = [$routeBuilderClosures];

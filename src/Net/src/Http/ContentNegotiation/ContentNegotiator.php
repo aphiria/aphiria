@@ -63,7 +63,7 @@ final class ContentNegotiator implements IContentNegotiator
             ];
         }
 
-        if (count($mediaTypeFormatters) === 0) {
+        if (\count($mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
         }
 

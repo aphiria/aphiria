@@ -30,7 +30,7 @@ final class ArgvInputTokenizer implements IInputTokenizer
             $tokens = $_SERVER['argv'];
         }
 
-        if (!is_array($tokens)) {
+        if (!\is_array($tokens)) {
             throw new InvalidArgumentException(self::class . ' only accepts arrays as input');
         }
 

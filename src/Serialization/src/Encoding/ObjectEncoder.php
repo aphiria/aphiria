@@ -51,7 +51,7 @@ final class ObjectEncoder implements IEncoder
      */
     public function addIgnoredProperty(string $type, $propertyNames): void
     {
-        if (!is_string($propertyNames) && !is_array($propertyNames)) {
+        if (!\is_string($propertyNames) && !\is_array($propertyNames)) {
             throw new InvalidArgumentException('Property name must be a string or array of strings');
         }
 
@@ -73,7 +73,7 @@ final class ObjectEncoder implements IEncoder
             throw new InvalidArgumentException("Type $type is not a valid class name");
         }
 
-        if (!is_array($objectHash)) {
+        if (!\is_array($objectHash)) {
             throw new InvalidArgumentException('Value must be an associative array');
         }
 
@@ -164,7 +164,7 @@ final class ObjectEncoder implements IEncoder
      */
     public function encode($object, EncodingContext $context)
     {
-        if (!is_object($object)) {
+        if (!\is_object($object)) {
             throw new InvalidArgumentException('Value must be an object');
         }
 
@@ -216,11 +216,11 @@ final class ObjectEncoder implements IEncoder
             throw new InvalidArgumentException('Must pass in an instance of ' . ReflectionParameter::class . ' or ' . ReflectionProperty::class);
         }
 
-        if (!is_array($encodedValue)) {
+        if (!\is_array($encodedValue)) {
             throw new EncodingException('Value must be an array');
         }
 
-        if (count($encodedValue) === 0) {
+        if (\count($encodedValue) === 0) {
             return [];
         }
 
@@ -232,14 +232,14 @@ final class ObjectEncoder implements IEncoder
                 ->decode($encodedValue, $type, $context);
         }
 
-        if (is_object($encodedValue[0])) {
-            $type = get_class($encodedValue[0]) . '[]';
+        if (\is_object($encodedValue[0])) {
+            $type = \get_class($encodedValue[0]) . '[]';
 
             return $this->encoders->getEncoderForType($type)
                 ->decode($encodedValue, $type, $context);
         }
 
-        $type = gettype($encodedValue[0]) . '[]';
+        $type = \gettype($encodedValue[0]) . '[]';
 
         return $this->encoders->getEncoderForType($type)
             ->decode($encodedValue, $type, $context);
@@ -308,7 +308,7 @@ final class ObjectEncoder implements IEncoder
 
         // At this point, let's just check if the value we're trying to decode is a scalar, and if so, just return it
         if (is_scalar($constructorParamValue)) {
-            $type = gettype($constructorParamValue);
+            $type = \gettype($constructorParamValue);
 
             return $this->encoders->getEncoderForType($type)
                 ->decode($constructorParamValue, $type, $context);
@@ -366,7 +366,7 @@ final class ObjectEncoder implements IEncoder
 
         // At this point, let's just check if the value we're trying to decode is a scalar, and if so, just return it
         if (is_scalar($encodedPropertyValue)) {
-            $type = gettype($encodedPropertyValue);
+            $type = \gettype($encodedPropertyValue);
 
             return $this->encoders->getEncoderForType($type)
                 ->decode($encodedPropertyValue, $type, $context);

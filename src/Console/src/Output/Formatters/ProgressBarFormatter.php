@@ -104,11 +104,11 @@ class ProgressBarFormatter implements IProgressBarObserver
             $percentCompleteString = $this->compilePercent($progress, $maxSteps);
             $completedProgressString = str_repeat(
                 $this->completedProgressChar,
-                (int)max(0, floor($progress / $maxSteps * ($this->progressBarWidth - 2) - strlen($percentCompleteString)))
+                (int)max(0, floor($progress / $maxSteps * ($this->progressBarWidth - 2) - \strlen($percentCompleteString)))
             ) . $percentCompleteString;
             $progressLeftString = str_repeat(
                 $this->remainingProgressChar,
-                max(0, $this->progressBarWidth - 2 - strlen($completedProgressString))
+                max(0, $this->progressBarWidth - 2 - \strlen($completedProgressString))
             );
         }
 
@@ -198,9 +198,9 @@ class ProgressBarFormatter implements IProgressBarObserver
         foreach ($timeFormats as $index => $timeFormat) {
             if ($secondsRemaining >= $timeFormat[0]) {
                 if ((isset($timeFormats[$index + 1]) && $secondsRemaining < $timeFormats[$index + 1][0])
-                    || count($timeFormats) === $index - 1
+                    || \count($timeFormats) === $index - 1
                 ) {
-                    if (count($timeFormat) === 2) {
+                    if (\count($timeFormat) === 2) {
                         return $timeFormat[1];
                     }
 

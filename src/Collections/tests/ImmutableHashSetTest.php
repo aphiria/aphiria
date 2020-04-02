@@ -92,7 +92,7 @@ class ImmutableHashSetTest extends TestCase
 
         foreach ($set as $key => $value) {
             // Make sure the hash keys aren't returned by the iterator
-            $this->assertTrue(is_int($key));
+            $this->assertTrue(\is_int($key));
             $actualValues[] = $value;
         }
 

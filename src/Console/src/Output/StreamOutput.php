@@ -34,7 +34,7 @@ class StreamOutput extends Output
      */
     public function __construct($outputStream, $inputStream, IOutputCompiler $compiler = null)
     {
-        if (!is_resource($outputStream) || !is_resource($inputStream)) {
+        if (!\is_resource($outputStream) || !\is_resource($inputStream)) {
             throw new InvalidArgumentException('The stream must be a resource');
         }
 

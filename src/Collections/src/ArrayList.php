@@ -71,7 +71,7 @@ class ArrayList implements IList
      */
     public function count(): int
     {
-        return count($this->values);
+        return \count($this->values);
     }
 
     /**
@@ -79,7 +79,7 @@ class ArrayList implements IList
      */
     public function get(int $index)
     {
-        if ($index < 0 || $index >= count($this)) {
+        if ($index < 0 || $index >= \count($this)) {
             throw new OutOfRangeException("Index $index is out of range");
         }
 
@@ -129,7 +129,7 @@ class ArrayList implements IList
      */
     public function offsetExists($index): bool
     {
-        return array_key_exists($index, $this->values);
+        return \array_key_exists($index, $this->values);
     }
 
     /**

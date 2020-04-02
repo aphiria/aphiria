@@ -62,7 +62,7 @@ final class InputCompiler implements IInputCompiler
     {
         $tokens = $this->selectTokenizer($rawInput)->tokenize($rawInput);
 
-        if (count($tokens) === 0) {
+        if (\count($tokens) === 0) {
             throw new CommandNotFoundException('');
         }
 
@@ -92,11 +92,11 @@ final class InputCompiler implements IInputCompiler
      */
     private function selectTokenizer($rawInput): IInputTokenizer
     {
-        if (is_string($rawInput)) {
+        if (\is_string($rawInput)) {
             return $this->stringTokenizer;
         }
 
-        if (is_array($rawInput)) {
+        if (\is_array($rawInput)) {
             if (isset($rawInput['name'])) {
                 return $this->arrayListTokenizer;
             }
@@ -118,7 +118,7 @@ final class InputCompiler implements IInputCompiler
     {
         if (isset($options[$name])) {
             // We now consider this option to have multiple values
-            if (!is_array($options[$name])) {
+            if (!\is_array($options[$name])) {
                 $options[$name] = [$options[$name]];
             }
 
@@ -147,7 +147,7 @@ final class InputCompiler implements IInputCompiler
         $hasSetArrayArgument = false;
 
         foreach ($command->arguments as $argument) {
-            if (count($argumentValues) === 0) {
+            if (\count($argumentValues) === 0) {
                 if (!$argument->isOptional()) {
                     throw new RuntimeException("Argument \"{$argument->name}\" does not have default value");
                 }
@@ -162,7 +162,7 @@ final class InputCompiler implements IInputCompiler
                     // Add the rest of the values in the input to this argument
                     $restOfArgumentValues = [];
 
-                    while (count($argumentValues) > 0) {
+                    while (\count($argumentValues) > 0) {
                         $restOfArgumentValues[] = array_shift($argumentValues);
                     }
 
@@ -191,8 +191,8 @@ final class InputCompiler implements IInputCompiler
         foreach ($command->options as $option) {
             $shortNameIsSet = $option->shortName === null
                 ? false
-                : array_key_exists($option->shortName, $rawOptions);
-            $longNameIsSet = array_key_exists($option->name, $rawOptions);
+                : \array_key_exists($option->shortName, $rawOptions);
+            $longNameIsSet = \array_key_exists($option->name, $rawOptions);
 
             // All options are optional (duh)
             if ($shortNameIsSet || $longNameIsSet) {
@@ -229,9 +229,9 @@ final class InputCompiler implements IInputCompiler
      */
     private static function hasTooManyArguments(array $argumentValues, array $commandArguments): bool
     {
-        if (count($argumentValues) > count($commandArguments)) {
+        if (\count($argumentValues) > \count($commandArguments)) {
             // Only when the last argument is an array do we allow more input arguments than command arguments
-            if (count($commandArguments) === 0 || !end($commandArguments)->isArray()) {
+            if (\count($commandArguments) === 0 || !end($commandArguments)->isArray()) {
                 return true;
             }
         }
@@ -307,7 +307,7 @@ final class InputCompiler implements IInputCompiler
         array &$argumentValues,
         array &$options
     ): void {
-        if (count($tokens) === 0) {
+        if (\count($tokens) === 0) {
             throw new InvalidArgumentException('Tokens cannot be empty');
         }
 

@@ -30,19 +30,19 @@ class KeyHasher
      */
     public function getHashKey($value): string
     {
-        if (is_string($value)) {
+        if (\is_string($value)) {
             return "__aphiria:s:$value";
         }
 
-        if (is_int($value)) {
+        if (\is_int($value)) {
             return "__aphiria:i:$value";
         }
 
-        if (is_float($value)) {
+        if (\is_float($value)) {
             return "__aphiria:f:$value";
         }
 
-        if (is_object($value)) {
+        if (\is_object($value)) {
             if (method_exists($value, '__toString')) {
                 return "__aphiria:so:$value";
             }
@@ -50,11 +50,11 @@ class KeyHasher
             return '__aphiria:o:' . spl_object_hash($value);
         }
 
-        if (is_array($value)) {
+        if (\is_array($value)) {
             return '__aphiria:a:' . md5(serialize($value));
         }
 
-        if (is_resource($value)) {
+        if (\is_resource($value)) {
             return '__aphiria:r:' . $value;
         }
 

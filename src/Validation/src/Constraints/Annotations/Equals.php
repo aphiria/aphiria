@@ -34,7 +34,7 @@ final class Equals implements IConstraintAnnotation
      */
     public function __construct(array $values)
     {
-        if (!array_key_exists('value', $values)) {
+        if (!\array_key_exists('value', $values)) {
             throw new InvalidArgumentException('Must specify a value to compare against');
         }
 

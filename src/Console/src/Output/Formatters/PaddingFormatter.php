@@ -81,7 +81,7 @@ class PaddingFormatter
 
         // Find the max number of columns that appear in any given row
         foreach ($rows as $row) {
-            $maxNumColumns = max($maxNumColumns, count($row));
+            $maxNumColumns = max($maxNumColumns, \count($row));
         }
 
         $maxLengths = array_pad([], $maxNumColumns, 0);

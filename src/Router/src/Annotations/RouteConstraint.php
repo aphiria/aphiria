@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Annotations;
 
-use Doctrine\Annotations\Annotation\Target;
+use Doctrine\Common\Annotations\Annotation\Target;
 use InvalidArgumentException;
 
 /**

@@ -51,7 +51,7 @@ class ImmutableHashTable implements IImmutableDictionary
      */
     public function containsKey($key): bool
     {
-        return array_key_exists($this->getHashKey($key), $this->hashKeysToKvps);
+        return \array_key_exists($this->getHashKey($key), $this->hashKeysToKvps);
     }
 
     /**
@@ -73,7 +73,7 @@ class ImmutableHashTable implements IImmutableDictionary
      */
     public function count(): int
     {
-        return count($this->hashKeysToKvps);
+        return \count($this->hashKeysToKvps);
     }
 
     /**

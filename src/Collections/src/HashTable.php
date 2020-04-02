@@ -73,7 +73,7 @@ class HashTable implements IDictionary
      */
     public function containsKey($key): bool
     {
-        return array_key_exists($this->getHashKey($key), $this->hashKeysToKvps);
+        return \array_key_exists($this->getHashKey($key), $this->hashKeysToKvps);
     }
 
     /**
@@ -95,7 +95,7 @@ class HashTable implements IDictionary
      */
     public function count(): int
     {
-        return count($this->hashKeysToKvps);
+        return \count($this->hashKeysToKvps);
     }
 
     /**

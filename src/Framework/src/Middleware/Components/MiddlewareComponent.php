@@ -51,7 +51,7 @@ class MiddlewareComponent implements IComponent
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(
-                    sprintf('%s does not implement %s', get_class($middleware), IMiddleware::class)
+                    sprintf('%s does not implement %s', \get_class($middleware), IMiddleware::class)
                 );
             }
 
@@ -72,7 +72,7 @@ class MiddlewareComponent implements IComponent
      */
     public function withGlobalMiddleware($middlewareBindings, int $priority = null): self
     {
-        $middlewareBindings = is_array($middlewareBindings) ? $middlewareBindings : [$middlewareBindings];
+        $middlewareBindings = \is_array($middlewareBindings) ? $middlewareBindings : [$middlewareBindings];
 
         foreach ($middlewareBindings as $middlewareBinding) {
             $this->middleware[] = ['middlewareBinding' => $middlewareBinding, 'priority' => $priority];

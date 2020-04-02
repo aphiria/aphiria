@@ -39,11 +39,11 @@ class RequiredConstraint extends Constraint
             return false;
         }
 
-        if (is_string($value) && $value === '') {
+        if (\is_string($value) && $value === '') {
             return false;
         }
 
-        if ((is_array($value) || $value instanceof Countable) && count($value) === 0) {
+        if ((\is_array($value) || $value instanceof Countable) && \count($value) === 0) {
             return false;
         }
 

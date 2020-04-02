@@ -41,7 +41,7 @@ class Queue implements Countable, IteratorAggregate
      */
     public function containsValue($value): bool
     {
-        return in_array($value, $this->values);
+        return \in_array($value, $this->values);
     }
 
     /**
@@ -49,7 +49,7 @@ class Queue implements Countable, IteratorAggregate
      */
     public function count(): int
     {
-        return count($this->values);
+        return \count($this->values);
     }
 
     /**
@@ -59,7 +59,7 @@ class Queue implements Countable, IteratorAggregate
      */
     public function dequeue()
     {
-        if (count($this->values) === 0) {
+        if (\count($this->values) === 0) {
             return null;
         }
 

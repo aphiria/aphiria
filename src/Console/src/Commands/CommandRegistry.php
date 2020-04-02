@@ -146,7 +146,7 @@ final class CommandRegistry
      */
     public function tryGetHandler($command, ?ICommandHandler &$commandHandler): bool
     {
-        if (is_string($command)) {
+        if (\is_string($command)) {
             $commandName = $command;
         } elseif ($command instanceof Command) {
             $commandName = $command->name;

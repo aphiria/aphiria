@@ -34,7 +34,7 @@ final class DateConstraint extends Constraint
     {
         parent::__construct($errorMessageId);
 
-        if (count($acceptableFormats) === 0) {
+        if (\count($acceptableFormats) === 0) {
             throw new InvalidArgumentException('Must specify at least one acceptable format');
         }
 

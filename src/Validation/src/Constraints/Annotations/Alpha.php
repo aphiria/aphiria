@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Constraints\Annotations;
 
 use Aphiria\Validation\Constraints\AlphaConstraint;
-use Doctrine\Annotations\Annotation\Target;
+use Doctrine\Common\Annotations\Annotation\Target;
 
 /**
  * Defines the alpha constraint annotation

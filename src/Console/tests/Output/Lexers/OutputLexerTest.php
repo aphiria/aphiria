@@ -83,7 +83,7 @@ class OutputLexerTest extends TestCase
     public function testLexingMultipleLines(): void
     {
         // We record the EOL length because it differs on OSs
-        $eolLength = strlen(PHP_EOL);
+        $eolLength = \strlen(PHP_EOL);
         $text = '<foo>' . PHP_EOL . 'bar' . PHP_EOL . '</foo>' . PHP_EOL . 'baz';
         $expectedOutput = [
             new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 0),

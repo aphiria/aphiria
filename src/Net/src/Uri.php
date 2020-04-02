@@ -326,7 +326,7 @@ class Uri
         }
 
         /** @link https://tools.ietf.org/html/rfc3986#section-3 */
-        if ($authority === null && $pathIsSet && strlen($this->path) >= 2 && strpos($this->path, '//') === 0) {
+        if ($authority === null && $pathIsSet && \strlen($this->path) >= 2 && strpos($this->path, '//') === 0) {
             throw new InvalidArgumentException('Path cannot start with "//" if the URI has no authority');
         }
     }

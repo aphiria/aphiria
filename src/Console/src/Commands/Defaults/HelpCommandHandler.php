@@ -139,7 +139,7 @@ EOF;
      */
     private function getArgumentText(Command $command): string
     {
-        if (count($command->arguments) === 0) {
+        if (\count($command->arguments) === 0) {
             return '  No arguments';
         }
 
@@ -163,7 +163,7 @@ EOF;
      */
     private function getOptionText(Command $command): string
     {
-        if (count($command->options) === 0) {
+        if (\count($command->options) === 0) {
             return '  No options';
         }
 

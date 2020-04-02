@@ -49,7 +49,7 @@ class MediaTypeHeaderValue
         $this->parameters = $parameters ?? new ImmutableHashTable([]);
         $mediaTypeParts = explode('/', $mediaType);
 
-        if (count($mediaTypeParts) !== 2 || empty($mediaTypeParts[0]) || empty($mediaTypeParts[1])) {
+        if (\count($mediaTypeParts) !== 2 || empty($mediaTypeParts[0]) || empty($mediaTypeParts[1])) {
             throw new InvalidArgumentException("Media type must be in format {type}/{sub-type}, received $mediaType");
         }
 

@@ -76,16 +76,16 @@ final class Stream implements IStream
      */
     public function __construct($handle, ?int $length = null)
     {
-        if (!is_resource($handle)) {
+        if (!\is_resource($handle)) {
             throw new InvalidArgumentException('Stream must be a resource');
         }
 
         $this->handle = $handle;
         $this->length = $length;
         $streamMetadata = \stream_get_meta_data($this->handle);
-        $this->isReadable = in_array($streamMetadata['mode'], self::$readStreamModes, true);
+        $this->isReadable = \in_array($streamMetadata['mode'], self::$readStreamModes, true);
         $this->isSeekable = $streamMetadata['seekable'];
-        $this->isWritable = in_array($streamMetadata['mode'], self::$writeStreamModes, true);
+        $this->isWritable = \in_array($streamMetadata['mode'], self::$writeStreamModes, true);
     }
 
     /**

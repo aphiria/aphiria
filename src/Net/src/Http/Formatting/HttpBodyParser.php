@@ -142,10 +142,10 @@ class HttpBodyParser
         $parsedBodyParts = [];
 
         foreach ($rawBodyParts as $rawBodyPart) {
-            $headerStartIndex = strlen("\r\n");
+            $headerStartIndex = \strlen("\r\n");
             $headerEndIndex = strpos($rawBodyPart, "\r\n\r\n");
-            $bodyStartIndex = $headerEndIndex + strlen("\r\n\r\n");
-            $bodyEndIndex = strlen($rawBodyPart) - strlen("\r\n");
+            $bodyStartIndex = $headerEndIndex + \strlen("\r\n\r\n");
+            $bodyEndIndex = \strlen($rawBodyPart) - \strlen("\r\n");
             $rawHeaders = explode("\r\n", substr($rawBodyPart, $headerStartIndex, $headerEndIndex - $headerStartIndex));
             $parsedHeaders = new HttpHeaders();
 

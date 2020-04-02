@@ -401,7 +401,7 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        if (is_string($uri)) {
+        if (\is_string($uri)) {
             $uriString = $uri;
         } elseif ($uri instanceof Uri) {
             $uriString = (string)$uri;

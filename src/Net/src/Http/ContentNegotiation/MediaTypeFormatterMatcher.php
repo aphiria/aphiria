@@ -41,7 +41,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     public function __construct(array $mediaTypeFormatters, RequestHeaderParser $headerParser = null)
     {
-        if (count($mediaTypeFormatters) === 0) {
+        if (\count($mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
         }
 
@@ -91,7 +91,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
         string $ioType
     ): ?MediaTypeFormatterMatch {
         // Rank the media type headers if they are rankable
-        if (count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof IHeaderValueWithQualityScore) {
+        if (\count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof IHeaderValueWithQualityScore) {
             $mediaTypeHeaders = $this->rankAcceptMediaTypeHeaders($mediaTypeHeaders);
         }
 

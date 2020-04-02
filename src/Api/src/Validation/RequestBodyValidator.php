@@ -56,7 +56,7 @@ final class RequestBodyValidator implements IRequestBodyValidator
         if ($this->languageMatcher !== null) {
             $memoizationKey = \spl_object_hash($request);
 
-            if (!array_key_exists($memoizationKey, $this->memoizedMatchedLanguagesByRequest)) {
+            if (!\array_key_exists($memoizationKey, $this->memoizedMatchedLanguagesByRequest)) {
                 $language = $this->languageMatcher->getBestLanguageMatch($request);
                 $this->memoizedMatchedLanguagesByRequest[$memoizationKey] = $language;
 

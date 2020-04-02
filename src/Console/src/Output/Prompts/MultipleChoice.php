@@ -53,7 +53,7 @@ class MultipleChoice extends Question
      */
     public function choicesAreAssociative(): bool
     {
-        return count(array_filter(array_keys($this->choices), 'is_string')) > 0;
+        return \count(array_filter(array_keys($this->choices), 'is_string')) > 0;
     }
 
     /**
@@ -82,7 +82,7 @@ class MultipleChoice extends Question
             $selectedChoices = $this->getSelectedIndexChoices($answers);
         }
 
-        if (count($selectedChoices) === 0) {
+        if (\count($selectedChoices) === 0) {
             throw new InvalidArgumentException('Invalid choice');
         }
 
@@ -128,7 +128,7 @@ class MultipleChoice extends Question
         $selectedChoices = [];
 
         foreach ($answers as $answer) {
-            if (array_key_exists($answer, $this->choices)) {
+            if (\array_key_exists($answer, $this->choices)) {
                 $selectedChoices[] = $this->choices[$answer];
             }
         }
@@ -154,8 +154,8 @@ class MultipleChoice extends Question
 
             $answer = (int)$answer;
 
-            if ($answer < 1 || $answer > count($this->choices)) {
-                throw new InvalidArgumentException('Choice must be between 1 and ' . count($this->choices));
+            if ($answer < 1 || $answer > \count($this->choices)) {
+                throw new InvalidArgumentException('Choice must be between 1 and ' . \count($this->choices));
             }
 
             // Answers are 1-indexed

@@ -319,7 +319,7 @@ class GlobalConfiguration
      */
     private static function validateConfigurationSources(): void
     {
-        if (count(self::$configurationSources) === 0) {
+        if (\count(self::$configurationSources) === 0) {
             throw new RuntimeException('No source configurations set');
         }
     }

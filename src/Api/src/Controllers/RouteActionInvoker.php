@@ -66,7 +66,7 @@ final class RouteActionInvoker implements IRouteActionInvoker
         array $routeVariables
     ): IHttpResponseMessage {
         try {
-            if (is_array($routeActionDelegate)) {
+            if (\is_array($routeActionDelegate)) {
                 $reflectionFunction = new ReflectionMethod($routeActionDelegate[0], $routeActionDelegate[1]);
 
                 if (!$reflectionFunction->isPublic()) {
@@ -160,12 +160,12 @@ final class RouteActionInvoker implements IRouteActionInvoker
      */
     private static function getRouteActionDisplayName(callable $routeActionDelegate): string
     {
-        if (is_array($routeActionDelegate)) {
-            if (is_string($routeActionDelegate[0])) {
+        if (\is_array($routeActionDelegate)) {
+            if (\is_string($routeActionDelegate[0])) {
                 return $routeActionDelegate[0];
             }
 
-            return get_class($routeActionDelegate[0]) . '::' . $routeActionDelegate[1];
+            return \get_class($routeActionDelegate[0]) . '::' . $routeActionDelegate[1];
         }
 
         return Closure::class;

@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Annotations;
 
-use Doctrine\Annotations\Annotation\Required;
-use Doctrine\Annotations\Annotation\Target;
+use Doctrine\Common\Annotations\Annotation\Required;
+use Doctrine\Common\Annotations\Annotation\Target;
 use InvalidArgumentException;
 
 /**

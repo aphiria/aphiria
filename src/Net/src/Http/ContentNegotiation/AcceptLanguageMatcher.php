@@ -44,7 +44,7 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
     {
         $acceptLanguageHeaders = $this->headerParser->parseAcceptLanguageHeader($request->getHeaders());
 
-        if (count($acceptLanguageHeaders) === 0) {
+        if (\count($acceptLanguageHeaders) === 0) {
             return null;
         }
 
@@ -64,7 +64,7 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
                 }
 
                 array_pop($languageParts);
-            } while (count($languageParts) > 0);
+            } while (\count($languageParts) > 0);
         }
 
         return null;

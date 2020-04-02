@@ -39,7 +39,7 @@ abstract class AttributeMiddleware implements IMiddleware
      */
     protected function getAttribute(string $name, $default = null)
     {
-        if (!array_key_exists($name, $this->attributes)) {
+        if (!\array_key_exists($name, $this->attributes)) {
             return $default;
         }
 

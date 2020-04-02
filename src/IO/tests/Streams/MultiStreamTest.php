@@ -69,8 +69,8 @@ class MultiStreamTest extends TestCase
         $this->multiStream->addStream($stream1);
         $this->multiStream->addStream($stream2);
         $this->multiStream->close();
-        $this->assertFalse(is_resource($handle1));
-        $this->assertFalse(is_resource($handle2));
+        $this->assertFalse(\is_resource($handle1));
+        $this->assertFalse(\is_resource($handle2));
     }
 
     public function testCopyingToClosedStreamThrowsException(): void
@@ -110,8 +110,8 @@ class MultiStreamTest extends TestCase
         $this->multiStream->addStream($stream1);
         $this->multiStream->addStream($stream2);
         unset($this->multiStream);
-        $this->assertFalse(is_resource($handle1));
-        $this->assertFalse(is_resource($handle2));
+        $this->assertFalse(\is_resource($handle1));
+        $this->assertFalse(\is_resource($handle2));
     }
 
     public function testEofOnlyReturnsTrueIfLastStreamIsAtEof(): void

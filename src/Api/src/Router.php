@@ -108,7 +108,7 @@ class Router implements IRequestHandler
             $controller = $this->serviceResolver->resolve($routeAction->className);
             $routeActionDelegate = [$controller, $routeAction->methodName];
 
-            if (!is_callable($routeActionDelegate)) {
+            if (!\is_callable($routeActionDelegate)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Controller method %s::%s() does not exist',
@@ -124,7 +124,7 @@ class Router implements IRequestHandler
 
         if (!$controller instanceof Controller) {
             throw new InvalidArgumentException(
-                sprintf('Controller %s does not extend %s', get_class($controller), Controller::class)
+                sprintf('Controller %s does not extend %s', \get_class($controller), Controller::class)
             );
         }
     }
@@ -145,7 +145,7 @@ class Router implements IRequestHandler
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(
-                    sprintf('Middleware %s does not implement %s', get_class($middleware), IMiddleware::class)
+                    sprintf('Middleware %s does not implement %s', \get_class($middleware), IMiddleware::class)
                 );
             }
 

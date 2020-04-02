@@ -131,7 +131,7 @@ class Container implements IContainer
      */
     public function callMethod($instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false)
     {
-        $className = is_string($instance) ? $instance : get_class($instance);
+        $className = \is_string($instance) ? $instance : \get_class($instance);
 
         if (!method_exists($instance, $methodName)) {
             if (!$ignoreMissingMethod) {
@@ -203,7 +203,7 @@ class Container implements IContainer
             return $this->resolveClass($interface);
         }
 
-        switch (get_class($binding)) {
+        switch (\get_class($binding)) {
             case InstanceContainerBinding::class:
                 /** @var InstanceContainerBinding $binding */
                 return $binding->getInstance();
@@ -220,7 +220,7 @@ class Container implements IContainer
                 $instance = $factory();
                 break;
             default:
-                throw new ResolutionException($interface, $this->currentContext, 'Invalid binding type "' . get_class($binding) . '"');
+                throw new ResolutionException($interface, $this->currentContext, 'Invalid binding type "' . \get_class($binding) . '"');
         }
 
         if ($binding->resolveAsSingleton()) {
@@ -423,7 +423,7 @@ class Container implements IContainer
      */
     protected function resolvePrimitive(ReflectionParameter $parameter, array &$primitives)
     {
-        if (count($primitives) > 0) {
+        if (\count($primitives) > 0) {
             // Grab the next primitive
             return array_shift($primitives);
         }

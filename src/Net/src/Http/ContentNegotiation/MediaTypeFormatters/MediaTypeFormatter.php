@@ -44,6 +44,6 @@ abstract class MediaTypeFormatter implements IMediaTypeFormatter
         $lowercaseSupportedEncodings = array_map('strtolower', $this->getSupportedEncodings());
         $lowercaseEncoding = strtolower($encoding);
 
-        return in_array($lowercaseEncoding, $lowercaseSupportedEncodings, true);
+        return \in_array($lowercaseEncoding, $lowercaseSupportedEncodings, true);
     }
 }

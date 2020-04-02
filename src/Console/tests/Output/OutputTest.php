@@ -31,7 +31,7 @@ class OutputTest extends TestCase
     {
         ob_start();
         $this->output->clear();
-        $this->assertEquals(chr(27) . '[2J' . chr(27) . '[;H', ob_get_clean());
+        $this->assertEquals(\chr(27) . '[2J' . \chr(27) . '[;H', ob_get_clean());
     }
 
     public function testWritingMultipleMessagesWithNewLines(): void

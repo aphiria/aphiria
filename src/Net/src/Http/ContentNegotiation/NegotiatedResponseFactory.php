@@ -116,8 +116,8 @@ final class NegotiatedResponseFactory implements IResponseFactory
             return new StringBody((string)$rawBody);
         }
 
-        if ((!is_object($rawBody) && !is_array($rawBody)) || is_callable($rawBody)) {
-            throw new InvalidArgumentException('Unsupported body type ' . gettype($rawBody));
+        if ((!\is_object($rawBody) && !\is_array($rawBody)) || \is_callable($rawBody)) {
+            throw new InvalidArgumentException('Unsupported body type ' . \gettype($rawBody));
         }
 
         $type = TypeResolver::resolveType($rawBody);
