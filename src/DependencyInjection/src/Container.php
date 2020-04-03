@@ -82,8 +82,10 @@ class Container implements IContainer
         array $primitives = [],
         bool $resolveAsSingleton = false
     ): void {
+        $binding = new ClassContainerBinding($concreteClass, $primitives, $resolveAsSingleton);
+
         foreach ((array)$interfaces as $interface) {
-            $this->addBinding($interface, new ClassContainerBinding($concreteClass, $primitives, $resolveAsSingleton));
+            $this->addBinding($interface, $binding);
         }
     }
 
