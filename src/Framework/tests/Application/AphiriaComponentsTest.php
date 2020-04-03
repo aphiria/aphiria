@@ -17,6 +17,7 @@ use Aphiria\Application\IModule;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Binders\Binder;
+use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Application\AphiriaComponents;
 use Aphiria\Framework\Console\Components\CommandComponent;
@@ -48,6 +49,32 @@ class AphiriaComponentsTest extends TestCase
     protected function setUp(): void
     {
         $this->appBuilder = $this->createMock(IApplicationBuilder::class);
+    }
+
+    public function testWithBinderDispatcherRegisterBinderDispatcherToComponent(): void
+    {
+        $binderDispatcher = $this->createMock(IBinderDispatcher::class);
+        $expectedComponent = $this->createMock(BinderComponent::class);
+        $expectedComponent->expects($this->once())
+            ->method('withBinderDispatcher')
+            ->with($binderDispatcher);
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponent')
+            ->with(BinderComponent::class)
+            ->willReturn(true);
+        $this->appBuilder->expects($this->at(1))
+            ->method('getComponent')
+            ->with(BinderComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class() {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, IBinderDispatcher $binderDispatcher): void
+            {
+                $this->withBinderDispatcher($appBuilder, $binderDispatcher);
+            }
+        };
+        $component->build($this->appBuilder, $binderDispatcher);
     }
 
     public function testWithBindersRegistersBindersToComponent(): void

@@ -17,8 +17,8 @@ use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * Tests the binder component
@@ -26,13 +26,10 @@ use PHPUnit\Framework\TestCase;
 class BinderComponentTest extends TestCase
 {
     private BinderComponent $binderComponent;
-    /** @var IBinderDispatcher|MockObject */
-    private IBinderDispatcher $binderDispatcher;
 
     protected function setUp(): void
     {
-        $this->binderDispatcher = $this->createMock(IBinderDispatcher::class);
-        $this->binderComponent = new BinderComponent($this->binderDispatcher, new Container());
+        $this->binderComponent = new BinderComponent(new Container());
     }
 
     public function testBuildWithBindersAppendsToListOfBindersToBeDispatched(): void
@@ -49,9 +46,11 @@ class BinderComponentTest extends TestCase
                 // Don't do anything
             }
         };
-        $this->binderDispatcher->expects($this->once())
+        $binderDispatcher = $this->createMock(IBinderDispatcher::class);
+        $binderDispatcher->expects($this->once())
             ->method('dispatch')
             ->with([$binder1, $binder2]);
+        $this->binderComponent->withBinderDispatcher($binderDispatcher);
         $this->binderComponent->withBinders($binder1);
         $this->binderComponent->withBinders($binder2);
         $this->binderComponent->build();
@@ -71,9 +70,11 @@ class BinderComponentTest extends TestCase
                 // Don't do anything
             }
         };
-        $this->binderDispatcher->expects($this->once())
+        $binderDispatcher = $this->createMock(IBinderDispatcher::class);
+        $binderDispatcher->expects($this->once())
             ->method('dispatch')
             ->with([$binder1, $binder2]);
+        $this->binderComponent->withBinderDispatcher($binderDispatcher);
         $this->binderComponent->withBinders([$binder1, $binder2]);
         $this->binderComponent->build();
     }
@@ -86,10 +87,19 @@ class BinderComponentTest extends TestCase
                 // Don't do anything
             }
         };
-        $this->binderDispatcher->expects($this->once())
+        $binderDispatcher = $this->createMock(IBinderDispatcher::class);
+        $binderDispatcher->expects($this->once())
             ->method('dispatch')
             ->with([$binder]);
+        $this->binderComponent->withBinderDispatcher($binderDispatcher);
         $this->binderComponent->withBinders($binder);
+        $this->binderComponent->build();
+    }
+
+    public function testBuildingWithoutBinderDispatcherThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Must call withBinderDispatcher() before building');
         $this->binderComponent->build();
     }
 }

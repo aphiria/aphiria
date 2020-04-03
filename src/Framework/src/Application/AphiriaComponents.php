@@ -36,20 +36,37 @@ use Closure;
  */
 trait AphiriaComponents
 {
+    protected function withBinderDispatcher(IApplicationBuilder $appBuilder, IBinderDispatcher $binderDispatcher): self
+    {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        if (!$appBuilder->hasComponent(BinderComponent::class)) {
+            $appBuilder->withComponent(
+                new BinderComponent(
+                    Container::$globalInstance
+                ),
+                0
+            );
+        }
+
+        $appBuilder->getComponent(BinderComponent::class)
+            ->withBinderDispatcher($binderDispatcher);
+
+        return $this;
+    }
+
     /**
      * Adds binders to the binder component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param Binder|Binder[] $binders The binder or list of binders to add
      * @return self For chaining
-     * @throws ResolutionException Thrown if there was a problem resolving dependencies
      */
     protected function withBinders(IApplicationBuilder $appBuilder, $binders): self
     {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(BinderComponent::class)) {
             $appBuilder->withComponent(
                 new BinderComponent(
-                    Container::$globalInstance->resolve(IBinderDispatcher::class),
                     Container::$globalInstance
                 ),
                 0

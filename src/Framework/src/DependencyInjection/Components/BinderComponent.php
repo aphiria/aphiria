@@ -16,35 +16,53 @@ use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\IContainer;
+use RuntimeException;
 
 /**
  * Defines the binder component
  */
 class BinderComponent implements IComponent
 {
-    /** @var IBinderDispatcher The binder dispatcher */
-    private IBinderDispatcher $binderDispatcher;
+    /** @var IBinderDispatcher|null The binder dispatcher */
+    private ?IBinderDispatcher $binderDispatcher = null;
     /** @var IContainer The container to dispatch binders with */
     private IContainer $container;
     /** @var Binder[] The list of binders to dispatch */
     private array $binders = [];
 
     /**
-     * @param IBinderDispatcher $binderDispatcher The binder dispatcher
      * @param IContainer $container The container to dispatch binders with
      */
-    public function __construct(IBinderDispatcher $binderDispatcher, IContainer $container)
+    public function __construct(IContainer $container)
     {
-        $this->binderDispatcher = $binderDispatcher;
         $this->container = $container;
     }
 
     /**
      * @inheritdoc
+     * @throws RuntimeException Thrown if the binder dispatcher was not set
      */
     public function build(): void
     {
+        if ($this->binderDispatcher === null) {
+            throw new RuntimeException('Must call withBinderDispatcher() before building');
+        }
+
         $this->binderDispatcher->dispatch($this->binders, $this->container);
+    }
+
+    /**
+     * Adds a binder dispatcher to use
+     *
+     * @param IBinderDispatcher $binderDispatcher The binder dispatcher to use
+     * @return self For chaining
+     */
+    public function withBinderDispatcher(IBinderDispatcher $binderDispatcher): self
+    {
+        $this->binderDispatcher = $binderDispatcher;
+        $this->container->bindInstance(IBinderDispatcher::class, $this->binderDispatcher);
+
+        return $this;
     }
 
     /**
