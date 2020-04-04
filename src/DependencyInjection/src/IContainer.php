@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection;
 
-use InvalidArgumentException;
+use Closure;
 
 /**
  * Defines the interface for dependency injection containers to implement
@@ -54,12 +54,12 @@ interface IContainer extends IServiceResolver
     /**
      * Resolves a closure's parameters and calls it
      *
-     * @param callable $closure The closure to resolve
+     * @param Closure $closure The closure to resolve
      * @param array $primitives The list of primitives to inject (must be in same order they appear in closure)
      * @return mixed The result of the call
      * @throws CallException Thrown if there was an error calling the method
      */
-    public function callClosure(callable $closure, array $primitives = []);
+    public function callClosure(Closure $closure, array $primitives = []);
 
     /**
      * Resolves a method's parameters and calls it
@@ -77,15 +77,6 @@ interface IContainer extends IServiceResolver
         array $primitives = [],
         bool $ignoreMissingMethod = false
     );
-
-    /**
-     * Sets a context for all calls in the callback
-     *
-     * @param Context|string $context The context (or name of the target class) to apply to all bindings and resolutions
-     * @param callable $callback The callback that takes in an IContainer and performs bindings/resolutions under the context
-     * @throws InvalidArgumentException Thrown if the context was not of the correct type
-     */
-    public function for($context, callable $callback);
 
     /**
      * Gets whether or not an interface has a binding

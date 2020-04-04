@@ -87,8 +87,9 @@ abstract class ApplicationBuilder implements IApplicationBuilder
      */
     protected function buildModules(): void
     {
-        foreach ($this->modules as $module) {
-            $module->build($this);
+        // Modules might be registered inside of modules, so we use a for loop instead of foreach (keys are changing)
+        for ($i = 0;$i < \count($this->modules);$i++) {
+            $this->modules[$i]->build($this);
         }
     }
 }

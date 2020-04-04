@@ -43,7 +43,7 @@ class FileBinderMetadataCollectionCacheTest extends TestCase
     {
         \file_put_contents(self::FILE_PATH, 'foo');
         $this->cache->flush();
-        $this->assertFileNotExists(self::FILE_PATH);
+        $this->assertFileDoesNotExist(self::FILE_PATH);
     }
 
     public function testGettingFromCacheWhenFileDoesExistReturnsBinderMetadataCollection(): void

@@ -18,6 +18,7 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\UniversalContext;
+use Closure;
 use InvalidArgumentException;
 
 /**
@@ -98,7 +99,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * @inheritdoc
      */
-    public function callClosure(callable $closure, array $primitives = [])
+    public function callClosure(Closure $closure, array $primitives = [])
     {
         return $this->container->callClosure($closure, $primitives);
     }

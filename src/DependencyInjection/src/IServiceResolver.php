@@ -12,11 +12,22 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection;
 
+use InvalidArgumentException;
+
 /**
  * Defines the interface for service resolvers to implement
  */
 interface IServiceResolver
 {
+    /**
+     * Sets a context for all calls in the callback
+     *
+     * @param Context|string $context The context (or name of the target class) to apply to all bindings and resolutions
+     * @param callable $callback The callback that takes in an instance of the implementing resolver and performs actions under the context
+     * @throws InvalidArgumentException Thrown if the context was not of the correct type
+     */
+    public function for($context, callable $callback);
+
     /**
      * Resolve an instance of the interface
      *

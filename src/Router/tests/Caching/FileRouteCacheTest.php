@@ -47,7 +47,7 @@ class FileRouteCacheTest extends TestCase
     {
         \file_put_contents(self::PATH, 'foo');
         $this->cache->flush();
-        $this->assertFileNotExists(self::PATH);
+        $this->assertFileDoesNotExist(self::PATH);
     }
 
     public function testGetOnHitReturnsRoutesWithClosureAction(): void

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection;
 
+use Closure;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
@@ -116,7 +117,7 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function callClosure(callable $closure, array $primitives = [])
+    public function callClosure(Closure $closure, array $primitives = [])
     {
         try {
             $unresolvedParameters = (new ReflectionFunction($closure))->getParameters();
@@ -333,7 +334,7 @@ class Container implements IContainer
                         sprintf(
                             '%s is not instantiable%s',
                             $class,
-                            $this->currentContext->isTargeted() ? '' :" (dependency of {$this->currentContext->getTargetClass()})"
+                            $this->currentContext->isTargeted() ? " (dependency of {$this->currentContext->getTargetClass()})" : ''
                         )
                     );
                 }

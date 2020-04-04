@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Application\Tests\Builders;
 
 use Aphiria\Application\Builders\ApplicationBuilder;
+use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use OutOfBoundsException;
@@ -86,16 +87,6 @@ class ApplicationBuilderTest extends TestCase
         $this->appBuilder->build();
     }
 
-    public function testModulesAreBuiltOnBuild(): void
-    {
-        $module = $this->createMock(IModule::class);
-        $module->expects($this->once())
-            ->method('build')
-            ->with($this->appBuilder);
-        $this->appBuilder->withModule($module);
-        $this->appBuilder->build();
-    }
-
     public function testHasComponentReturnsWhetherOrNotComponentIsRegistered(): void
     {
         $component = $this->createMock(IComponent::class);
@@ -109,5 +100,38 @@ class ApplicationBuilderTest extends TestCase
         $this->expectException(OutOfBoundsException::class);
         $this->expectErrorMessage('No component of type foo found');
         $this->appBuilder->getComponent('foo');
+    }
+
+    public function testModulesAreBuiltOnBuild(): void
+    {
+        $module = $this->createMock(IModule::class);
+        $module->expects($this->once())
+            ->method('build')
+            ->with($this->appBuilder);
+        $this->appBuilder->withModule($module);
+        $this->appBuilder->build();
+    }
+
+    public function testModulesThatAreRegisteredInsideOfModulesAreBuilt(): void
+    {
+        $innerModule = $this->createMock(IModule::class);
+        $innerModule->expects($this->once())
+            ->method('build')
+            ->with($this->appBuilder);
+        $outerModule = new class($innerModule) implements IModule {
+            private IModule $innerModule;
+
+            public function __construct(IModule $innerModule)
+            {
+                $this->innerModule = $innerModule;
+            }
+
+            public function build(IApplicationBuilder $appBuilder): void
+            {
+                $appBuilder->withModule($this->innerModule);
+            }
+        };
+        $this->appBuilder->withModule($outerModule);
+        $this->appBuilder->build();
     }
 }
