@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
+namespace Aphiria\DependencyInjection\Tests\Mocks;
+
 /**
  * Mocks a base class
  */
-namespace Aphiria\DependencyInjection\Tests\Mocks;
-
 abstract class BaseClass implements IFoo
 {
     // Don't do anything
