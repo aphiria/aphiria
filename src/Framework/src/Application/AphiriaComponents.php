@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Application;
 
 use Aphiria\Application\Builders\IApplicationBuilder;
+use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\Binders\Binder;
@@ -124,6 +125,21 @@ trait AphiriaComponents
 
         $appBuilder->getComponent(CommandComponent::class)
             ->withCommands($callback);
+
+        return $this;
+    }
+
+    /**
+     * Adds a component to the application builder
+     * Note: This is to simply a syntactic sugar method to make it easier to chain things
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param IComponent $component The component to add
+     * @return self For chaining
+     */
+    public function withComponent(IApplicationBuilder $appBuilder, IComponent $component): self
+    {
+        $appBuilder->withComponent($component);
 
         return $this;
     }

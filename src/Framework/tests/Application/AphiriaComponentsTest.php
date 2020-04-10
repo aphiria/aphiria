@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Application;
 
 use Aphiria\Application\Builders\IApplicationBuilder;
+use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Output\IOutput;
@@ -156,6 +157,23 @@ class AphiriaComponentsTest extends TestCase
             }
         };
         $component->build($this->appBuilder, $callback);
+    }
+
+    public function testWithComponentAddsComponentToAppBuilder(): void
+    {
+        $component = $this->createMock(IComponent::class);
+        $this->appBuilder->expects($this->once())
+            ->method('withComponent')
+            ->with($component);
+        $module = new class() {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, IComponent $component): void
+            {
+                $this->withComponent($appBuilder, $component);
+            }
+        };
+        $module->build($this->appBuilder, $component);
     }
 
     public function testWithConsoleExceptionOutputWriterConfiguresComponentToHaveWriter(): void
