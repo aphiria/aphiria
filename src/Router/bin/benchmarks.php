@@ -10,15 +10,6 @@
 
 declare(strict_types=1);
 
-/**
- * This benchmark is testing how fast a realistic route may take to match.
- * Specifically, we're adding 400 routes with the structure "/abc123/123/:foo/123".
- * We're testing a mix of literal and variable path segments, and averaging
- * the amount of time it takes to match each of 400 unique routes registered.
- * The goal is to negate any performance gains and losses by testing routes
- * registered first or last, and instead focus on matching each route.
- */
-
 require __DIR__ . '/../vendor/autoload.php';
 
 use Aphiria\Routing\Builders\RouteBuilderRegistry;
@@ -30,6 +21,15 @@ use Symfony\Component\Routing\Matcher\Dumper\PhpMatcherDumper;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route as SymfonyRoute;
 use Symfony\Component\Routing\RouteCollection as SymfonyRouteCollection;
+
+/**
+ * This benchmark is testing how fast a realistic route may take to match.
+ * Specifically, we're adding 400 routes with the structure "/abc123/123/:foo/123".
+ * We're testing a mix of literal and variable path segments, and averaging
+ * the amount of time it takes to match each of 400 unique routes registered.
+ * The goal is to negate any performance gains and losses by testing routes
+ * registered first or last, and instead focus on matching each route.
+ */
 
 $numTests = 100;
 $numRoutes = 400;
