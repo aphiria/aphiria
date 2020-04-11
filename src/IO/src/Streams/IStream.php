@@ -98,6 +98,13 @@ interface IStream
     public function read(int $length): string;
 
     /**
+     * Reads the stream as a PHP resource
+     *
+     * @return resource The stream as a PHP resource
+     */
+    public function readAsResource();
+
+    /**
      * Reads to the end of the stream
      *
      * @return string The stream contents as a string

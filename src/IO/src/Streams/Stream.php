@@ -232,6 +232,16 @@ final class Stream implements IStream
     /**
      * @inheritdoc
      */
+    public function readAsResource()
+    {
+        $this->rewind();
+
+        return $this->handle;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function readToEnd(): string
     {
         if (!$this->isReadable) {

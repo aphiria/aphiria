@@ -203,6 +203,23 @@ final class MultiStream implements IStream
     /**
      * @inheritdoc
      */
+    public function readAsResource()
+    {
+        $this->rewind();
+        $handle = fopen('php://temp', 'r+b');
+
+        while (!$this->isEof()) {
+            fwrite($handle, $this->read(8192));
+        }
+
+        rewind($handle);
+
+        return $handle;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function readToEnd(): string
     {
         if (\count($this->streams) === 0) {

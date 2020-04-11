@@ -179,6 +179,13 @@ class StreamTest extends TestCase
         $this->assertEquals(3, $stream->getPosition());
     }
 
+    public function testReadAsResourceReturnsUnderlyingHandle(): void
+    {
+        $handle = fopen('php://temp', 'w+b');
+        $stream = new Stream($handle);
+        $this->assertSame($handle, $stream->readAsResource());
+    }
+
     public function testReadingFromClosedStreamThrowsException(): void
     {
         $this->expectException(RuntimeException::class);

@@ -203,6 +203,18 @@ class MultiStreamTest extends TestCase
         $this->assertFalse($this->multiStream->isSeekable());
     }
 
+    public function testReadAsResourceReturnsResourceWithAllStreamsData(): void
+    {
+        $stream1 = new Stream(fopen('php://temp', 'r+b'));
+        $stream2 = new Stream(fopen('php://temp', 'r+b'));
+        $stream1->write('abc');
+        $stream2->write('def');
+        $this->multiStream->addStream($stream1);
+        $this->multiStream->addStream($stream2);
+        $resource = $this->multiStream->readAsResource();
+        $this->assertEquals('abcdef', stream_get_contents($resource));
+    }
+
     public function testReadingEmptyStreamReturnsEmptyString(): void
     {
         $this->assertEquals('', $this->multiStream->read(123));
