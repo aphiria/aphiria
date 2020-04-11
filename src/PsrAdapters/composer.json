@@ -1,13 +1,11 @@
 {
-    "name": "aphiria/net",
-    "description": "The Aphiria network library",
+    "name": "aphiria/psr-adapters",
+    "description": "The Aphiria PSR adapter library",
     "keywords": [
         "PHP",
-        "network",
-        "http",
-        "request",
-        "response",
-        "cookie"
+        "adapter",
+        "psr-7",
+        "psr-11"
     ],
     "authors": [
         {
@@ -19,25 +17,23 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Aphiria\\Net\\": "src"
+            "Aphiria\\PsrAdapters\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Aphiria\\Net\\Tests\\": "tests"
+            "Aphiria\\PsrAdapters\\Tests\\": "tests"
         }
     },
     "require": {
-        "aphiria/collections": "1.0.*@dev",
-        "aphiria/io": "1.0.*@dev",
-        "aphiria/serialization": "1.0.*@dev",
-        "ext-fileinfo": "*",
-        "ext-json": "*",
-        "ext-mbstring": "*",
-        "php": "^7.4"
+        "aphiria/net": "1.0.*@dev",
+        "php": "^7.4",
+        "psr/http-factory": "^1.0",
+        "psr/http-message": "^1.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
+        "nyholm/psr7": "^1.2",
         "phpunit/phpunit": "~9.1"
     },
     "scripts": {

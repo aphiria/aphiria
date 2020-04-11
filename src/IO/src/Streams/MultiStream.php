@@ -89,8 +89,6 @@ final class MultiStream implements IStream
         foreach ($this->streams as $stream) {
             $stream->close();
         }
-
-        $this->streams = [];
     }
 
     /**
@@ -198,23 +196,6 @@ final class MultiStream implements IStream
         $this->position = \strlen($buffer);
 
         return $buffer;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function readAsResource()
-    {
-        $this->rewind();
-        $handle = fopen('php://temp', 'r+b');
-
-        while (!$this->isEof()) {
-            fwrite($handle, $this->read(8192));
-        }
-
-        rewind($handle);
-
-        return $handle;
     }
 
     /**

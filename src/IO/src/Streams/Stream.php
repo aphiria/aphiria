@@ -59,7 +59,7 @@ final class Stream implements IStream
         'x+b',
         'x+t'
     ];
-    /** @var resource The underlying stream handle */
+    /** @var resource|null The underlying stream handle, or null if it has been detached */
     private $handle;
     /** @var int|null The length of the stream, if known */
     private ?int $length;
@@ -115,15 +115,14 @@ final class Stream implements IStream
      */
     public function close(): void
     {
-        if (\is_resource($this->handle) && \fclose($this->handle) === false) {
-            throw new RuntimeException('Failed to close stream');
-        }
+        if (\is_resource($this->handle)) {
+            if (\fclose($this->handle) === false) {
+                throw new RuntimeException('Failed to close stream');
+            }
 
-        $this->handle = null;
-        $this->length = null;
-        $this->isReadable = false;
-        $this->isSeekable = false;
-        $this->isWritable = false;
+            $this->handle = $this->length = null;
+            $this->isReadable = $this->isSeekable = $this->isWritable = false;
+        }
     }
 
     /**
@@ -227,16 +226,6 @@ final class Stream implements IStream
         }
 
         return $content;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function readAsResource()
-    {
-        $this->rewind();
-
-        return $this->handle;
     }
 
     /**

@@ -55,6 +55,25 @@ class RequestParser
     }
 
     /**
+     * Gets the MIME type of the body
+     *
+     * @param IHttpRequestMessage|MultipartBodyPart $request The request or multipart body part to parse
+     * @return string|null The mime type if one is set, otherwise null
+     * @throws InvalidArgumentException Thrown if the request is neither a request nor a multipart body part
+     * @throws RuntimeException Thrown if the MIME type could not be determined
+     */
+    public function getActualMimeType($request): ?string
+    {
+        if (!$request instanceof IHttpRequestMessage && !$request instanceof MultipartBodyPart) {
+            throw new InvalidArgumentException(
+                'Request must be of type ' . IHttpRequestMessage::class . ' or ' . MultipartBodyPart::class
+            );
+        }
+
+        return $this->bodyParser->getMimeType($request->getBody());
+    }
+
+    /**
      * Gets the client IP address from the request
      *
      * @param IHttpRequestMessage $request The request to look in
@@ -69,22 +88,21 @@ class RequestParser
     }
 
     /**
-     * Gets the MIME type of the body
+     * Gets the MIME type that was specified by the client (eg browser)
+     * Note: This may not be the actual MIME type
      *
-     * @param IHttpRequestMessage|MultipartBodyPart $request The request or multipart body part to parse
-     * @return string|null The mime type if one is set, otherwise null
-     * @throws InvalidArgumentException Thrown if the request is neither a request nor a multipart body part
-     * @throws RuntimeException Thrown if the MIME type could not be determined
+     * @param MultipartBodyPart $bodyPart The body part whose MIME type we want
+     * @return string|null The MIME type if one could be determined, otherwise null
      */
-    public function getMimeType($request): ?string
+    public function getClientMimeType(MultipartBodyPart $bodyPart): ?string
     {
-        if (!$request instanceof IHttpRequestMessage && !$request instanceof MultipartBodyPart) {
-            throw new InvalidArgumentException(
-                'Request must be of type ' . IHttpRequestMessage::class . ' or ' . MultipartBodyPart::class
-            );
+        $clientMimeType = null;
+
+        if ($bodyPart->getHeaders()->tryGetFirst('Content-Type', $clientMimeType)) {
+            return $clientMimeType;
         }
 
-        return $this->bodyParser->getMimeType($request->getBody());
+        return null;
     }
 
     /**

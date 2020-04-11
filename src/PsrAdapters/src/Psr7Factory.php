@@ -10,8 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Net\Psr7;
+namespace Aphiria\PsrAdapters;
 
+use Aphiria\IO\Streams\IStream;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\IHttpRequestMessage;
@@ -21,6 +22,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 
 /**
@@ -71,8 +73,7 @@ class Psr7Factory
     {
         $psr7Request = $this->psr7RequestFactory->createServerRequest(
             $aphiriaRequest->getMethod(),
-            (string)$aphiriaRequest->getUri(),
-            // TODO: How do I get the original SERVER vars?
+            (string)$aphiriaRequest->getUri()
         );
 
         foreach ($aphiriaRequest->getHeaders() as $kvp) {
@@ -80,11 +81,13 @@ class Psr7Factory
         }
 
         if (($aphiriaBody = $aphiriaRequest->getBody()) !== null) {
-            $psr7Body = $this->psr7StreamFactory->createStreamFromResource($aphiriaBody->readAsStream()->readAsResource());
-            $psr7Request = $psr7Request->withBody($psr7Body);
+            $psr7Request = $psr7Request->withBody($this->createPsr7Stream($aphiriaBody->readAsStream()));
         }
 
-        if (($multipartBody = $this->aphiriaRequestParser->readAsMultipart($aphiriaRequest)) !== null) {
+        if (
+            $this->aphiriaRequestParser->isMultipart($aphiriaRequest)
+            && ($multipartBody = $this->aphiriaRequestParser->readAsMultipart($aphiriaRequest)) !== null
+        ) {
             $psr7UploadedFiles = [];
 
             foreach ($multipartBody->getParts() as $i => $part) {
@@ -92,32 +95,47 @@ class Psr7Factory
                     continue;
                 }
 
-                $parsedContentDisposition = $this->aphiriaRequestHeaderParser->parseParameters(
+                $contentDispositionParameters = $this->aphiriaRequestHeaderParser->parseParameters(
                     $part->getHeaders(),
                     'Content-Disposition'
                 );
-                $filename = null;
+                $name = $filename = null;
 
-                if (!$parsedContentDisposition->tryGet('filename', $filename)) {
-                    $filename = (string)$i;
+                if (!$contentDispositionParameters->tryGet('name', $name)) {
+                    $name = (string)$i;
                 }
 
-                $psr7UploadedFiles[$filename] = $this->psr7UploadedFactoryInterface->createUploadedFile(
-                    $this->psr7StreamFactory->createStreamFromResource($partBody->readAsStream()->readAsResource()),
-                    $partBody->getLength()
+                $contentDispositionParameters->tryGet('filename', $filename);
+                $psr7UploadedFiles[$name] = $this->psr7UploadedFactoryInterface->createUploadedFile(
+                    $this->createPsr7Stream($partBody->readAsStream()),
+                    $partBody->getLength(),
+                    \UPLOAD_ERR_OK,
+                    $filename,
+                    $this->aphiriaRequestParser->getClientMimeType($part)
                 );
             }
 
             $psr7Request = $psr7Request->withUploadedFiles($psr7UploadedFiles);
         }
 
+        $psr7CookieParams = $psr7QueryParams = [];
 
-        $psr7CookieParams = $this->aphiriaRequestParser->parseCookies($aphiriaRequest)->toArray();
-        $psr7QueryParams = $this->aphiriaRequestParser->parseQueryString($aphiriaRequest)->toArray();
+        foreach ($this->aphiriaRequestParser->parseCookies($aphiriaRequest) as $kvp) {
+            $psr7CookieParams[$kvp->getKey()] = $kvp->getValue();
+        }
+
+        foreach ($this->aphiriaRequestParser->parseQueryString($aphiriaRequest) as $kvp) {
+            $psr7QueryParams[$kvp->getKey()] = $kvp->getValue();
+        }
+
         $psr7Request = $psr7Request->withCookieParams($psr7CookieParams)
             ->withQueryParams($psr7QueryParams);
 
-        // TODO: How can I grab the parsed body from an Aphiria request?
+        $parsedBody = null;
+
+        if ($aphiriaRequest->getProperties()->tryGet('__APHIRIA_PARSED_BODY', $parsedBody)) {
+            $psr7Request = $psr7Request->withParsedBody($parsedBody);
+        }
 
         foreach ($aphiriaRequest->getProperties() as $kvp) {
             $psr7Request = $psr7Request->withAttribute($kvp->getKey(), $kvp->getValue());
@@ -145,10 +163,27 @@ class Psr7Factory
         }
 
         if (($aphiriaBody = $aphiriaResponse->getBody()) !== null) {
-            $psr7Body = $this->psr7StreamFactory->createStreamFromResource($aphiriaBody->readAsStream()->readAsResource());
-            $psr7Response = $psr7Response->withBody($psr7Body);
+            $psr7Response = $psr7Response->withBody($this->createPsr7Stream($aphiriaBody->readAsStream()));
         }
 
         return $psr7Response;
+    }
+
+    /**
+     * Creates a PSR-7 stream from an Aphiria stream
+     *
+     * @param IStream $stream The Aphiria stream
+     * @return StreamInterface The PSR-7 stream
+     */
+    public function createPsr7Stream(IStream $stream): StreamInterface
+    {
+        $stream->rewind();
+        $handle = \fopen('php://temp', 'r+b');
+
+        while (!$stream->isEof()) {
+            \fwrite($handle, $stream->read(8192));
+        }
+
+        return $this->psr7StreamFactory->createStreamFromResource($handle);
     }
 }

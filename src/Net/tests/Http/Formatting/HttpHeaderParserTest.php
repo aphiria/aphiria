@@ -55,6 +55,12 @@ class HttpHeaderParserTest extends TestCase
         $this->assertTrue($this->parser->isMultipart($headers));
     }
 
+    public function testCheckingIfMultipartReturnsFalseIfNoContentTypeHeaderIsSpecified(): void
+    {
+        $headers = new HttpHeaders();
+        $this->assertFalse($this->parser->isMultipart($headers));
+    }
+
     public function testGettingParametersForIndexThatDoesNotExistReturnsEmptyDictionary(): void
     {
         $headers = new HttpHeaders();

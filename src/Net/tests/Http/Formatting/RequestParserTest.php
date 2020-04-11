@@ -14,11 +14,13 @@ namespace Aphiria\Net\Tests\Http\Formatting;
 
 use Aphiria\Collections\HashTable;
 use Aphiria\Collections\IDictionary;
+use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\IHttpRequestMessage;
 use Aphiria\Net\Http\MultipartBodyPart;
+use Aphiria\Net\Http\StringBody;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -51,6 +53,13 @@ class RequestParserTest extends TestCase
             ->willReturn($this->properties);
     }
 
+    public function testGettingActualMimeTypeOfNonRequestNorMultipartBodyPartThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Request must be of type %s or %s', IHttpRequestMessage::class, MultipartBodyPart::class));
+        $this->parser->getActualMimeType([]);
+    }
+
     public function testGettingClientIPAddressReturnsNullWhenPropertyIsNotSet(): void
     {
         $this->assertNull($this->parser->getClientIPAddress($this->request));
@@ -62,11 +71,28 @@ class RequestParserTest extends TestCase
         $this->assertEquals('127.0.0.1', $this->parser->getClientIPAddress($this->request));
     }
 
-    public function testGettingMimeTypeOfNonRequestNorMultipartBodyPartThrowsException(): void
+    public function testGettingClientMimeTypeForMultipartWithContentTypeReturnsCorrectMimeType(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Request must be of type %s or %s', IHttpRequestMessage::class, MultipartBodyPart::class));
-        $this->parser->getMimeType([]);
+        $bodyPart = new MultipartBodyPart(
+            new HttpHeaders([new KeyValuePair('Content-Type', 'image/png')]),
+            new StringBody('')
+        );
+        $this->assertEquals('image/png', $this->parser->getClientMimeType($bodyPart));
+    }
+
+    public function testGettingClientMimeTypeForMultipartWithoutContentTypeHeaderReturnsNull(): void
+    {
+        $bodyPart = new MultipartBodyPart(new HttpHeaders(), new StringBody(''));
+        $this->assertNull($this->parser->getClientMimeType($bodyPart));
+    }
+
+    public function testGettingClientMimeTypeForMultipartWithUncommonFilenameExtensionReturnsNull(): void
+    {
+        $bodyPart = new MultipartBodyPart(
+            new HttpHeaders([new KeyValuePair('Content-Disposition', 'filename=foo.dave')]),
+            new StringBody('')
+        );
+        $this->assertNull($this->parser->getClientMimeType($bodyPart));
     }
 
     public function testParsingMultipartRequestWithoutBoundaryThrowsException(): void
