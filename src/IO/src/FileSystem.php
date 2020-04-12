@@ -183,9 +183,9 @@ class FileSystem
             $iter->setMaxDepth(0);
         }
 
-        foreach ($iter as $path => $item) {
+        foreach ($iter as $itemPath => $item) {
             if ($item->isDir()) {
-                $directories[] = $path;
+                $directories[] = $itemPath;
             }
         }
 
@@ -286,9 +286,9 @@ class FileSystem
             $iter->setMaxDepth(0);
         }
 
-        foreach ($iter as $path => $item) {
+        foreach ($iter as $itemPath => $item) {
             if ($item->isFile()) {
-                $files[] = $path;
+                $files[] = $itemPath;
             }
         }
 
