@@ -88,7 +88,6 @@ echo formatResults('Symfony', \memory_get_usage() - $startMemory, \microtime(tru
  */
 
 $startMemory = \memory_get_usage();
-$routes = new AphiriaRouteCollection();
 $routeBuilders = new RouteBuilderRegistry();
 
 for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
@@ -96,6 +95,7 @@ for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
         ->mapsToMethod('Foo', (string)$routeIter);
 }
 
+$routes = new AphiriaRouteCollection();
 $routes->addMany($routeBuilders->buildAll());
 $routeMatcher = new TrieRouteMatcher((new TrieFactory($routes))->createTrie());
 $startTime = \microtime(true);
