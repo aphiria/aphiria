@@ -59,7 +59,7 @@ final class Stream implements IStream
         'x+b',
         'x+t'
     ];
-    /** @var resource|null The underlying stream handle, or null if it has been detached */
+    /** @var resource|null The underlying stream handle, or null if it has been closed */
     private $handle;
     /** @var int|null The length of the stream, if known */
     private ?int $length;

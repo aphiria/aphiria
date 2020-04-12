@@ -89,6 +89,8 @@ final class MultiStream implements IStream
         foreach ($this->streams as $stream) {
             $stream->close();
         }
+
+        $this->streams = [];
     }
 
     /**
