@@ -10,15 +10,15 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\PsrAdapters;
+namespace Aphiria\PsrAdapters\Psr11;
 
 use Aphiria\DependencyInjection\IContainer;
 use Psr\Container\ContainerInterface;
 
 /**
- * Defines a factory for PSR-11 models
+ * Defines the interface for PSR-11 factories to implement
  */
-class Psr11Factory
+interface IPsr11Factory
 {
     /**
      * Creates a PSR-11 container from an Aphiria container
@@ -26,8 +26,5 @@ class Psr11Factory
      * @param IContainer $container The Aphiria container
      * @return ContainerInterface The PSR-11 container
      */
-    public function createPsr11Container(IContainer $container): ContainerInterface
-    {
-        // TODO
-    }
+    public function createPsr11Container(IContainer $container): ContainerInterface;
 }
