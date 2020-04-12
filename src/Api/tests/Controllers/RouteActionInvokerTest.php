@@ -227,6 +227,24 @@ class RouteActionInvokerTest extends TestCase
         }
     }
 
+    public function testParsedBodyIsStoredInRequestProperty(): void
+    {
+        $request = $this->createRequestWithoutBody('http://foo.com');
+        $expectedUser = new User(123, 'foo@bar.com');
+        $this->parameterResolver->expects($this->once())
+            ->method('resolveParameter')
+            ->with($this->anything(), $this->anything())
+            ->willReturn($expectedUser);
+        $this->invoker->invokeRouteAction(
+            [$this->controller, 'objectParameter'],
+            $request,
+            []
+        );
+        $this->assertEquals($expectedUser, $request->getProperties()->get('__APHIRIA_PARSED_BODY'));
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
     public function testRequestBodyDeserializationExceptionIsRethrownAsHttpException(): void
     {
         try {

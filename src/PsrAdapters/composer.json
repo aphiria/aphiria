@@ -1,0 +1,50 @@
+{
+    "name": "aphiria/psr-adapters",
+    "description": "The Aphiria PSR adapter library",
+    "keywords": [
+        "PHP",
+        "adapter",
+        "psr-7",
+        "psr-11"
+    ],
+    "authors": [
+        {
+            "name": "David Young",
+            "email": "dave@aphiria.com",
+            "role": "Architect"
+        }
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Aphiria\\PsrAdapters\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aphiria\\PsrAdapters\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "aphiria/dependency-injection": "1.0.*@dev",
+        "aphiria/net": "1.0.*@dev",
+        "php": "^7.4",
+        "psr/http-factory": "^1.0",
+        "psr/http-message": "^1.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "nyholm/psr7": "^1.2",
+        "phpunit/phpunit": "~9.1"
+    },
+    "scripts": {
+        "lint-check": "php-cs-fixer fix --config=.php_cs -v --diff --dry-run",
+        "lint-fix": "php-cs-fixer fix --config=.php_cs -v --diff"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "minimum-stability": "dev"
+}

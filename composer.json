@@ -27,6 +27,7 @@
             "Aphiria\\IO\\": "src/IO/src",
             "Aphiria\\Middleware\\": "src/Middleware/src",
             "Aphiria\\Net\\": "src/Net/src",
+            "Aphiria\\PsrAdapters\\": "src/PsrAdapters/src",
             "Aphiria\\Reflection\\": "src/Reflection/src",
             "Aphiria\\Routing\\": "src/Router/src",
             "Aphiria\\Serialization\\": "src/Serialization/src",
@@ -47,6 +48,7 @@
             "Aphiria\\IO\\Tests\\": "src/IO/tests",
             "Aphiria\\Middleware\\Tests\\": "src/Middleware/tests",
             "Aphiria\\Net\\Tests\\": "src/Net/tests",
+            "Aphiria\\PsrAdapters\\Tests\\": "src/PsrAdapters/tests",
             "Aphiria\\Reflection\\Tests\\": "src/Reflection/tests",
             "Aphiria\\Routing\\Tests\\": "src/Router/tests",
             "Aphiria\\Serialization\\Tests\\": "src/Serialization/tests",
@@ -64,11 +66,14 @@
         "monolog/monolog": "~2.0",
         "opis/closure": "3.5.*",
         "php": "^7.4",
+        "psr/http-factory": "^1.0",
+        "psr/http-message": "^1.0",
         "psr/log": "~1.0",
         "symfony/dotenv": "~5.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
+        "nyholm/psr7": "^1.2",
         "phpunit/phpunit": "~9.1"
     },
     "scripts": {
