@@ -172,7 +172,7 @@ class ApiExceptionRenderer implements IExceptionRenderer
                 $this->createProblemDetails($ex)
             );
 
-            return (new ProblemDetailsResponseMutator)->mutateResponse($response);
+            return (new ProblemDetailsResponseMutator())->mutateResponse($response);
         }
 
         // We have to manually create a response

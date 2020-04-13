@@ -43,7 +43,7 @@ class LazyBinderDispatcherTest extends TestCase
     protected function setUp(): void
     {
         // Allow us to more easily retrieve bindings for testing purposes
-        $this->container = new class extends Container {
+        $this->container = new class() extends Container {
             public function getBinding(string $interface): ?IContainerBinding
             {
                 return parent::getBinding($interface);
@@ -53,7 +53,7 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingBinderThatResolvesAnotherBindersBindingCausesBothToBeActivelyDispatched(): void
     {
-        $binderA = new class extends Binder {
+        $binderA = new class() extends Binder {
             public bool $binderDispatched = false;
 
             public function bind(IContainer $container): void
@@ -66,7 +66,7 @@ class LazyBinderDispatcherTest extends TestCase
                 $container->bindInstance(IFoo::class, new Foo());
             }
         };
-        $binderB = new class extends Binder {
+        $binderB = new class() extends Binder {
             public bool $binderDispatched = false;
 
             public function bind(IContainer $container): void
@@ -89,7 +89,7 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingTargetedBindingRegistersBindingsFromBinder(): void
     {
-        $binder = new class extends Binder {
+        $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->for(new TargetedContext('bar'), function (IContainer $container) {
@@ -110,7 +110,7 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingUniversalBindingRegistersBindingsFromBinder(): void
     {
-        $binder = new class extends Binder {
+        $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindInstance(IFoo::class, new Foo());
@@ -129,7 +129,7 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingUsesUniversalContextWhenBindingBinders(): void
     {
-        $binder = new class extends Binder {
+        $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindInstance(IFoo::class, new Foo());
@@ -149,7 +149,7 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingWithCacheForcesCreationOfMetadataCollectionAndSetsCacheOnCacheMiss(): void
     {
-        $binder = new class extends Binder {
+        $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindClass('foo', 'bar');
@@ -163,7 +163,7 @@ class LazyBinderDispatcherTest extends TestCase
             ->method('set')
             ->with($this->callback(function (BinderMetadataCollection $collection) use ($binder) {
                 $expectedCollection = new BinderMetadataCollection([
-                    new BinderMetadata($binder, [new BoundInterface('foo', new UniversalContext)], [])
+                    new BinderMetadata($binder, [new BoundInterface('foo', new UniversalContext())], [])
                 ]);
 
                 // Intentionally not checking reference equality
@@ -174,7 +174,7 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingWithCacheUsesResultsOnCacheHit(): void
     {
-        $binder = new class extends Binder {
+        $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindClass(IFoo::class, Foo::class);
@@ -193,7 +193,7 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingWithNoCacheForcesCollectionCreation(): void
     {
-        $binder = new class extends Binder {
+        $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindClass(IFoo::class, Foo::class);

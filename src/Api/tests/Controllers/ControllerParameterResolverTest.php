@@ -93,7 +93,7 @@ class ControllerParameterResolverTest extends TestCase
         $mediaTypeFormatter->expects($this->once())
             ->method('readFromStream')
             ->with($request->getBody()->readAsStream(), User::class)
-            ->willThrowException(new SerializationException);
+            ->willThrowException(new SerializationException());
         $this->contentNegotiator->expects($this->once())
             ->method('negotiateRequestContent')
             ->with(User::class, $request)

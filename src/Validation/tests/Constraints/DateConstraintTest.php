@@ -34,8 +34,8 @@ class DateConstraintTest extends TestCase
         $format1 = 'F j';
         $format2 = 's:i:H d-m-Y';
         $constraint = new DateConstraint([$format1, $format2], 'foo');
-        $this->assertTrue($constraint->passes((new DateTime)->format($format1)));
-        $this->assertTrue($constraint->passes((new DateTime)->format($format2)));
+        $this->assertTrue($constraint->passes((new DateTime())->format($format1)));
+        $this->assertTrue($constraint->passes((new DateTime())->format($format2)));
     }
 
     public function testGettingErrorMessageId(): void
@@ -54,7 +54,7 @@ class DateConstraintTest extends TestCase
         $format1 = 'F j';
         $format2 = 's:i:H d-m-Y';
         $constraint = new DateConstraint([$format1, $format2], 'foo');
-        $this->assertFalse($constraint->passes((new DateTime)->format('His')));
-        $this->assertFalse($constraint->passes((new DateTime)->format('Y')));
+        $this->assertFalse($constraint->passes((new DateTime())->format('His')));
+        $this->assertFalse($constraint->passes((new DateTime())->format('Y')));
     }
 }

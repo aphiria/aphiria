@@ -228,7 +228,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $responseMediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
             ->with($rawBody, $this->isInstanceOf(Stream::class), null)
-            ->willThrowException(new SerializationException);
+            ->willThrowException(new SerializationException());
         $request = $this->createRequest('http://foo.com');
         $this->setUpContentNegotiationMock(
             User::class,

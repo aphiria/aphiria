@@ -24,9 +24,9 @@ class FatalThrowableErrorTest extends TestCase
     public function throwableProvider(): array
     {
         return [
-            [new ParseError],
-            [new TypeError],
-            [new InvalidArgumentException],
+            [new ParseError()],
+            [new TypeError()],
+            [new InvalidArgumentException()],
         ];
     }
 

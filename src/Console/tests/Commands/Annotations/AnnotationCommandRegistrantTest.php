@@ -63,7 +63,7 @@ class AnnotationCommandRegistrantTest extends TestCase
          *     helpText="command help text"
          *  )
          */
-        $commandHandler = new class implements ICommandHandler {
+        $commandHandler = new class() implements ICommandHandler {
             public function handle(Input $input, IOutput $output)
             {
                 return;

@@ -66,7 +66,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
 
     public function testBindingMethodsCreatesUniversalBoundInterfaces(): void
     {
-        $binder = new class extends Binder {
+        $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindFactory('foo0', function () {
@@ -155,7 +155,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
 
     public function testForWithStringContextCreatesTargetedBinding(): void
     {
-        $this->container->for('foo', fn (IContainer $container) => $container->bindInstance(IFoo::class, new Bar));
+        $this->container->for('foo', fn (IContainer $container) => $container->bindInstance(IFoo::class, new Bar()));
         $this->container->for('foo', function (IContainer $container) {
             $this->assertInstanceOf(Bar::class, $container->resolve(IFoo::class));
         });
@@ -188,7 +188,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             $container->bindInstance('foo0', new Foo());
             $container->bindInstance('foo1', new Foo());
         });
-        $binder = new class extends Binder {
+        $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->for(new TargetedContext('bar'), function (IContainer $container) {
@@ -213,7 +213,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
     {
         $this->container->bindInstance('foo0', new Foo());
         $this->container->bindInstance('foo1', new Foo());
-        $binder = new class extends Binder {
+        $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->resolve('foo0');

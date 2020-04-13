@@ -54,8 +54,8 @@ class ConsoleExceptionRendererTest extends TestCase
         $this->output->expects($this->at(1))
             ->method('writeln')
             ->with('bar');
-        $this->exceptionRenderer->render(new Exception);
-        $this->exceptionRenderer->render(new InvalidArgumentException);
+        $this->exceptionRenderer->render(new Exception());
+        $this->exceptionRenderer->render(new InvalidArgumentException());
     }
 
     public function testRenderingExceptionWithNoRegisteredOutputWriterUsesDefaultResultMessage(): void
@@ -80,7 +80,7 @@ class ConsoleExceptionRendererTest extends TestCase
         $this->output->expects($this->once())
             ->method('writeln')
             ->with('foo');
-        $this->exceptionRenderer->render(new Exception);
+        $this->exceptionRenderer->render(new Exception());
     }
 
     public function testSettingOutputUsesNewOutputToWriteExceptionMessages(): void
@@ -98,6 +98,6 @@ class ConsoleExceptionRendererTest extends TestCase
                 return 0;
             }
         );
-        $this->exceptionRenderer->render(new Exception);
+        $this->exceptionRenderer->render(new Exception());
     }
 }

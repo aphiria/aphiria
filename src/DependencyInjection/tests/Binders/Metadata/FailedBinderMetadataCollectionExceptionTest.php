@@ -28,7 +28,7 @@ class FailedBinderMetadataCollectionExceptionTest extends TestCase
 {
     public function testPropertiesAreSet(): void
     {
-        $binder = new class extends Binder {
+        $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->resolve(IFoo::class);

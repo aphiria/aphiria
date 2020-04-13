@@ -32,7 +32,7 @@ abstract class Serializer implements ISerializer
      */
     public function __construct(EncoderRegistry $encoders = null)
     {
-        $this->encoders = $encoders ?? (new DefaultEncoderRegistrant)->registerDefaultEncoders(new EncoderRegistry);
+        $this->encoders = $encoders ?? (new DefaultEncoderRegistrant())->registerDefaultEncoders(new EncoderRegistry());
     }
 
     /**

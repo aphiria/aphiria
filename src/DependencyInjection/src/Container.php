@@ -346,7 +346,7 @@ class Container implements IContainer
 
             if ($constructor === null) {
                 // No constructor, so instantiating is easy
-                return new $class;
+                return new $class();
             }
 
             $constructorParameters = $this->resolveParameters($class, $parameters, $primitives);

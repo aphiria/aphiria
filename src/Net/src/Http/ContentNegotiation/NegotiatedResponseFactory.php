@@ -53,7 +53,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
         HttpHeaders $headers = null,
         $rawBody = null
     ): IHttpResponseMessage {
-        $headers = $headers ?? new HttpHeaders;
+        $headers = $headers ?? new HttpHeaders();
 
         try {
             /** @var ContentNegotiationResult|null $contentNegotiationResult */

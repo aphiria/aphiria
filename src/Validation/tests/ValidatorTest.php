@@ -101,7 +101,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateMethodWithMagicMethodIsSkipped(): void
     {
-        $object = new class {
+        $object = new class() {
             public function __toString(): string
             {
                 die('Should not get here');
@@ -112,7 +112,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateMethodWithRequiredParamsIsSkipped(): void
     {
-        $object = new class {
+        $object = new class() {
             public function foo(int $foo): string
             {
                 die('Should not get here');
@@ -256,7 +256,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateObjectWithInvalidValueSetsConstraintViolations(): void
     {
-        $object = new class {
+        $object = new class() {
             public int $prop = 1;
         };
         /** @var IConstraint[] $constraints */
@@ -360,7 +360,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidatePropertyWithInvalidValueSetsConstraintViolations(): void
     {
-        $object = new class {
+        $object = new class() {
             public int $prop = 1;
         };
         /** @var IConstraint[] $constraints */
@@ -406,7 +406,7 @@ class ValidatorTest extends TestCase
 
     public function testValidateMethodWithCircularDependencyThrowsException(): void
     {
-        $object1 = new class {
+        $object1 = new class() {
             public ?object $methodReturnValue = null;
 
             public function method(): object
@@ -414,7 +414,7 @@ class ValidatorTest extends TestCase
                 return $this->methodReturnValue;
             }
         };
-        $object2 = new class {
+        $object2 = new class() {
             public ?object $methodReturnValue = null;
 
             public function method(): object
@@ -431,10 +431,10 @@ class ValidatorTest extends TestCase
 
     public function testValidateObjectWithCircularDependencyThrowsException(): void
     {
-        $object1 = new class {
+        $object1 = new class() {
             public ?object $prop = null;
         };
-        $object2 = new class {
+        $object2 = new class() {
             public ?object $prop = null;
         };
         $object1->prop = $object2;
@@ -447,10 +447,10 @@ class ValidatorTest extends TestCase
 
     public function testValidatePropertyWithCircularDependencyThrowsException(): void
     {
-        $object1 = new class {
+        $object1 = new class() {
             public ?object $prop = null;
         };
-        $object2 = new class {
+        $object2 = new class() {
             public ?object $prop = null;
         };
         $object1->prop = $object2;

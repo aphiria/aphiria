@@ -31,7 +31,7 @@ class DateConstraintTest extends TestCase
     {
         $format = 'F j';
         $constraint = new DateConstraint($format);
-        $this->assertFalse($constraint->passes((new DateTime)->format('Ymd')));
+        $this->assertFalse($constraint->passes((new DateTime())->format('Ymd')));
     }
 
     public function testFailingMultipleFormats(): void
@@ -39,8 +39,8 @@ class DateConstraintTest extends TestCase
         $format1 = 'F j';
         $format2 = 'j F';
         $constraint = new DateConstraint([$format1, $format2]);
-        $this->assertFalse($constraint->passes((new DateTime)->format('Ymd')));
-        $this->assertFalse($constraint->passes((new DateTime)->format('Ymd')));
+        $this->assertFalse($constraint->passes((new DateTime())->format('Ymd')));
+        $this->assertFalse($constraint->passes((new DateTime())->format('Ymd')));
     }
 
     public function testEmptyListOfFormatsThrowsException(): void
@@ -54,7 +54,7 @@ class DateConstraintTest extends TestCase
     {
         $format = 'F j';
         $constraint = new DateConstraint($format);
-        $this->assertTrue($constraint->passes((new DateTime)->format($format)));
+        $this->assertTrue($constraint->passes((new DateTime())->format($format)));
     }
 
     public function testPassingMultipleFormats(): void
@@ -62,7 +62,7 @@ class DateConstraintTest extends TestCase
         $format1 = 'F j';
         $format2 = 'j F';
         $constraint = new DateConstraint([$format1, $format2]);
-        $this->assertTrue($constraint->passes((new DateTime)->format($format1)));
-        $this->assertTrue($constraint->passes((new DateTime)->format($format2)));
+        $this->assertTrue($constraint->passes((new DateTime())->format($format1)));
+        $this->assertTrue($constraint->passes((new DateTime())->format($format2)));
     }
 }

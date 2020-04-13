@@ -63,8 +63,8 @@ class MultipartBodyTest extends TestCase
             ->method('readAsStream')
             ->willReturn($streamMock2);
         $parts = [
-            new MultipartBodyPart(new HttpHeaders, $body1),
-            new MultipartBodyPart(new HttpHeaders, $body2)
+            new MultipartBodyPart(new HttpHeaders(), $body1),
+            new MultipartBodyPart(new HttpHeaders(), $body2)
         ];
         $body = new MultipartBody($parts, '123');
         $this->assertNull($body->getLength());
@@ -95,8 +95,8 @@ class MultipartBodyTest extends TestCase
             ->method('readAsStream')
             ->willReturn($streamMock2);
         $parts = [
-            new MultipartBodyPart(new HttpHeaders, $body1),
-            new MultipartBodyPart(new HttpHeaders, $body2)
+            new MultipartBodyPart(new HttpHeaders(), $body1),
+            new MultipartBodyPart(new HttpHeaders(), $body2)
         ];
         $body = new MultipartBody($parts, '123');
         /**

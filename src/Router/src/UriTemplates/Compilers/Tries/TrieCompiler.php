@@ -49,7 +49,7 @@ final class TrieCompiler implements ITrieCompiler
     ) {
         if ($constraintFactory === null) {
             $this->constraintFactory = new RouteVariableConstraintFactory();
-            (new RouteVariableConstraintFactoryRegistrant)->registerConstraintFactories($this->constraintFactory);
+            (new RouteVariableConstraintFactoryRegistrant())->registerConstraintFactories($this->constraintFactory);
         } else {
             $this->constraintFactory = $constraintFactory;
         }

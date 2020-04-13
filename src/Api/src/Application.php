@@ -43,7 +43,7 @@ class Application implements IRequestHandler
      */
     public function handle(IHttpRequestMessage $request): IHttpResponseMessage
     {
-        $middlewarePipeline = (new MiddlewarePipelineFactory)->createPipeline($this->middleware->getAll(), $this->router);
+        $middlewarePipeline = (new MiddlewarePipelineFactory())->createPipeline($this->middleware->getAll(), $this->router);
 
         return $middlewarePipeline->handle($request);
     }
