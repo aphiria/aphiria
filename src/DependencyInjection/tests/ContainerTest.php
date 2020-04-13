@@ -58,7 +58,7 @@ class ContainerTest extends TestCase
     {
         $this->container->for(
             new TargetedContext(ConstructorWithInterface::class),
-            fn (IContainer $container) => $container->bindFactory(IFoo::class, fn () => new Bar)
+            fn (IContainer $container) => $container->bindFactory(IFoo::class, fn () => new Bar())
         );
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
@@ -72,7 +72,7 @@ class ContainerTest extends TestCase
     {
         $this->container->for(
             new TargetedContext(ConstructorWithInterface::class),
-            fn (IContainer $container) => $container->bindFactory(IFoo::class, fn () => new Bar, true)
+            fn (IContainer $container) => $container->bindFactory(IFoo::class, fn () => new Bar(), true)
         );
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
@@ -99,7 +99,7 @@ class ContainerTest extends TestCase
 
     public function testBindingUniversalFactory(): void
     {
-        $this->container->bindFactory(IFoo::class, fn () => new Bar);
+        $this->container->bindFactory(IFoo::class, fn () => new Bar());
         $instance1 = $this->container->resolve(IFoo::class);
         $instance2 = $this->container->resolve(IFoo::class);
         $this->assertInstanceOf(Bar::class, $instance1);
@@ -108,7 +108,7 @@ class ContainerTest extends TestCase
 
     public function testBindingUniversalSingletonFactory(): void
     {
-        $this->container->bindFactory(IFoo::class, fn () => new Bar, true);
+        $this->container->bindFactory(IFoo::class, fn () => new Bar(), true);
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
         $this->assertInstanceOf(ConstructorWithInterface::class, $instance1);
@@ -179,7 +179,7 @@ class ContainerTest extends TestCase
 
     public function testCallingStaticMethod(): void
     {
-        $person = new Dave;
+        $person = new Dave();
         $this->container->bindInstance(IPerson::class, $person);
         $this->container->callMethod(StaticSetters::class, 'setStaticSetterDependency', [$person]);
         $this->assertSame($person, StaticSetters::$staticDependency);
@@ -199,7 +199,7 @@ class ContainerTest extends TestCase
         });
         $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $container->bindFactory(IFoo::class, function () {
-                return new Bar;
+                return new Bar();
             });
         });
         $this->assertTrue($this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
@@ -210,7 +210,7 @@ class ContainerTest extends TestCase
             $container->unbind(IFoo::class);
         });
         $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
-            $container->bindInstance(IFoo::class, new Bar);
+            $container->bindInstance(IFoo::class, new Bar());
         });
         $this->assertTrue($this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             return $container->hasBinding(IFoo::class);
@@ -223,7 +223,7 @@ class ContainerTest extends TestCase
         $this->assertTrue($this->container->hasBinding(IFoo::class));
         $this->container->unbind(IFoo::class);
         $this->container->bindFactory(IFoo::class, function () {
-            return new Bar;
+            return new Bar();
         });
         $this->assertTrue($this->container->hasBinding(IFoo::class));
     }
@@ -352,10 +352,10 @@ class ContainerTest extends TestCase
         $tests();
         $this->container->unbind([IFoo::class, IPerson::class]);
         $this->container->bindFactory(IFoo::class, function () {
-            return new Foo(new Dave);
+            return new Foo(new Dave());
         });
         $this->container->bindFactory(IPerson::class, function () {
-            return new Dave;
+            return new Dave();
         });
         $tests();
     }
@@ -375,10 +375,10 @@ class ContainerTest extends TestCase
             [23]
         );
         $this->container->bindFactory(IFoo::class, function () {
-            return new Bar;
+            return new Bar();
         });
         $this->container->bindFactory(IPerson::class, function () {
-            return new Dave;
+            return new Dave();
         });
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance1 */
         $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
@@ -397,10 +397,10 @@ class ContainerTest extends TestCase
             true
         );
         $this->container->bindFactory(IFoo::class, function () {
-            return new Bar;
+            return new Bar();
         });
         $this->container->bindFactory(IPerson::class, function () {
-            return new Dave;
+            return new Dave();
         });
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance1 */
         $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
@@ -421,7 +421,7 @@ class ContainerTest extends TestCase
 
     public function testForWithStringContextCreatesTargetedBinding(): void
     {
-        $this->container->for('foo', fn (IContainer $container) => $container->bindInstance(IFoo::class, new Bar));
+        $this->container->for('foo', fn (IContainer $container) => $container->bindInstance(IFoo::class, new Bar()));
         $this->container->for('foo', function (IContainer $container) {
             $this->assertInstanceOf(Bar::class, $container->resolve(IFoo::class));
         });
@@ -439,7 +439,7 @@ class ContainerTest extends TestCase
     public function testInstancesAreDifferentWhenUsingFactory(): void
     {
         $this->container->bindFactory(BaseClass::class, function () {
-            return new Bar;
+            return new Bar();
         });
         $instance1 = $this->container->resolve(BaseClass::class);
         $instance2 = $this->container->resolve(BaseClass::class);
@@ -515,7 +515,7 @@ class ContainerTest extends TestCase
     {
         $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             $container->bindFactory(IFoo::class, function () {
-                return new Bar;
+                return new Bar();
             });
         });
         $instance = $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
@@ -718,7 +718,7 @@ class ContainerTest extends TestCase
     public function testUnbindingFactory(): void
     {
         $this->container->bindFactory(BaseClass::class, function () {
-            return new Bar;
+            return new Bar();
         });
         $this->container->unbind(BaseClass::class);
         $this->assertFalse($this->container->hasBinding(BaseClass::class));

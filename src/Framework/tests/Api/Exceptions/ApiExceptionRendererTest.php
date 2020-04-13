@@ -59,7 +59,7 @@ class ApiExceptionRendererTest extends TestCase
                     && $response->getBody() === null
                     && $response->getHeaders()->count() === 0;
             }));
-        $exceptionRenderer->render(new Exception);
+        $exceptionRenderer->render(new Exception());
     }
 
     public function testHavingRequestSetButNoResponseFactoryAndNotUsingProblemDetailsCreatesGenericResponse(): void
@@ -72,7 +72,7 @@ class ApiExceptionRendererTest extends TestCase
                     && $response->getBody() === null
                     && $response->getHeaders()->count() === 0;
             }));
-        $exceptionRenderer->render(new Exception);
+        $exceptionRenderer->render(new Exception());
     }
 
     public function testHavingRequestSetButNoResponseFactoryAndUsingProblemDetailsCreatesProblemDetailsResponse(): void
@@ -86,7 +86,7 @@ class ApiExceptionRendererTest extends TestCase
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($expectedResponse);
-        $exceptionRenderer->render(new Exception);
+        $exceptionRenderer->render(new Exception());
     }
 
     public function testHavingRequestSetWithAResponseFactoryCreatesResponseFromFactory(): void
@@ -100,7 +100,7 @@ class ApiExceptionRendererTest extends TestCase
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($expectedResponse);
-        $exceptionRenderer->render(new Exception);
+        $exceptionRenderer->render(new Exception());
     }
 
     public function testHavingRequestSetWithManyResponseFactoriesCreatesResponseFromFactory(): void
@@ -113,7 +113,7 @@ class ApiExceptionRendererTest extends TestCase
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($expectedResponse);
-        $exceptionRenderer->render(new Exception);
+        $exceptionRenderer->render(new Exception());
     }
 
     public function testNotHavingRequestSetAndNotUsingProblemDetailsCreatesGenericResponse(): void
@@ -126,7 +126,7 @@ class ApiExceptionRendererTest extends TestCase
                     && $response->getBody() === null
                     && $response->getHeaders()->count() === 0;
             }));
-        $exceptionRenderer->render(new Exception);
+        $exceptionRenderer->render(new Exception());
     }
 
     public function testNotHavingRequestSetAndUsingProblemDetailsCreatesProblemDetailsResponse(): void
@@ -140,7 +140,7 @@ class ApiExceptionRendererTest extends TestCase
                     && $response->getBody()->readAsString() === '{"type":"https:\/\/tools.ietf.org\/html\/rfc7231#section-6.6.1","title":"An error occurred","detail":null,"status":500,"instance":null}'
                     && $response->getHeaders()->getFirst('Content-Type') === 'application/problem+json';
             }));
-        $exceptionRenderer->render(new Exception);
+        $exceptionRenderer->render(new Exception());
     }
 
     /**

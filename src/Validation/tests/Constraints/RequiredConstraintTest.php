@@ -40,7 +40,7 @@ class RequiredConstraintTest extends TestCase
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void
     {
-        $this->assertEquals(['value' => 'val'], (new RequiredConstraint)->getErrorMessagePlaceholders('val'));
+        $this->assertEquals(['value' => 'val'], (new RequiredConstraint())->getErrorMessagePlaceholders('val'));
     }
 
     public function testSetValuePasses(): void

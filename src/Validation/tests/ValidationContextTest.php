@@ -140,7 +140,7 @@ class ValidationContextTest extends TestCase
     public function testGettingRootValueReturnsParentValueIfParentContextExists(): void
     {
         $parentContext = new ValidationContext($this);
-        $childContext = new ValidationContext(new class {
+        $childContext = new ValidationContext(new class() {
         }, null, null, $parentContext);
         $this->assertSame($this, $childContext->getRootValue());
         $this->assertSame($this, $parentContext->getRootValue());

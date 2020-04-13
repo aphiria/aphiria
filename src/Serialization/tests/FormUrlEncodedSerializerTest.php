@@ -68,7 +68,7 @@ class FormUrlEncodedSerializerTest extends TestCase
         $encoder->expects($this->once())
             ->method('decode')
             ->with(['foo' => 'bar'], 'foo')
-            ->will($this->throwException(new EncodingException));
+            ->will($this->throwException(new EncodingException()));
         $this->encoders->registerEncoder('foo', $encoder);
         $this->serializer->deserialize('foo=bar', 'foo');
     }
@@ -82,7 +82,7 @@ class FormUrlEncodedSerializerTest extends TestCase
         $encoder->expects($this->once())
             ->method('encode')
             ->with($user)
-            ->will($this->throwException(new EncodingException));
+            ->will($this->throwException(new EncodingException()));
         $this->encoders->registerEncoder(User::class, $encoder);
         $this->serializer->serialize($user);
     }

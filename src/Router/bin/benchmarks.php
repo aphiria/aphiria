@@ -71,7 +71,7 @@ for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
 }
 
 $dumper = new PhpMatcherDumper($routes);
-eval('?'.'>'.$dumper->dump());
+eval('?' . '>' . $dumper->dump());
 $router = new ProjectUrlMatcher(new RequestContext());
 $startTime = \microtime(true);
 

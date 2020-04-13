@@ -35,7 +35,7 @@ class NumericConstraintTest extends TestCase
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void
     {
-        $this->assertEquals(['value' => 'val'], (new NumericConstraint)->getErrorMessagePlaceholders('val'));
+        $this->assertEquals(['value' => 'val'], (new NumericConstraint())->getErrorMessagePlaceholders('val'));
     }
 
     public function testPassingValue(): void

@@ -36,7 +36,7 @@ class AlphaConstraintTest extends TestCase
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void
     {
-        $this->assertEquals(['value' => 'val'], (new AlphaConstraint)->getErrorMessagePlaceholders('val'));
+        $this->assertEquals(['value' => 'val'], (new AlphaConstraint())->getErrorMessagePlaceholders('val'));
     }
 
     public function testPassingValue(): void

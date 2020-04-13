@@ -100,7 +100,7 @@ class ExceptionHandlerComponentTest extends TestCase
 
     public function testBuildWithLogLevelFactoryRegistersFactory(): void
     {
-        $expectedException = new Exception;
+        $expectedException = new Exception();
         $this->logger->expects($this->once())
             ->method('alert')
             ->with($expectedException);

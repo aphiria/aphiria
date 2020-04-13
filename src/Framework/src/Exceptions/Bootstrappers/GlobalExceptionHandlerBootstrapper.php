@@ -95,7 +95,7 @@ final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                     $body = new ValidationProblemDetails($ex->getErrors());
                     $response = $responseFactory->createResponse($request, HttpStatusCodes::HTTP_BAD_REQUEST, null, $body);
 
-                    return (new ProblemDetailsResponseMutator)->mutateResponse($response);
+                    return (new ProblemDetailsResponseMutator())->mutateResponse($response);
                 }
 
                 return new Response(HttpStatusCodes::HTTP_BAD_REQUEST);

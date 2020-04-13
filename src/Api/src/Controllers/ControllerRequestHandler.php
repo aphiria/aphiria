@@ -61,8 +61,8 @@ final class ControllerRequestHandler implements IRequestHandler
     public function handle(IHttpRequestMessage $request): IHttpResponseMessage
     {
         $this->controller->setRequest($request);
-        $this->controller->setRequestParser(new RequestParser);
-        $this->controller->setResponseFormatter(new ResponseFormatter);
+        $this->controller->setRequestParser(new RequestParser());
+        $this->controller->setResponseFormatter(new ResponseFormatter());
         $this->controller->setContentNegotiator($this->contentNegotiator);
         $this->controller->setResponseFactory(new NegotiatedResponseFactory($this->contentNegotiator));
 

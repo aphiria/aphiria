@@ -72,7 +72,7 @@ class RouteActionInvokerTest extends TestCase
             $this->parameterResolver->expects($this->once())
                 ->method('resolveParameter')
                 ->with($this->anything(), $this->anything())
-                ->willThrowException(new FailedRequestContentNegotiationException);
+                ->willThrowException(new FailedRequestContentNegotiationException());
             $this->invoker->invokeRouteAction(
                 [$this->controller, 'stringParameter'],
                 $this->createMock(IHttpRequestMessage::class),
@@ -90,7 +90,7 @@ class RouteActionInvokerTest extends TestCase
             $this->parameterResolver->expects($this->once())
                 ->method('resolveParameter')
                 ->with($this->anything(), $this->anything())
-                ->willThrowException(new FailedScalarParameterConversionException);
+                ->willThrowException(new FailedScalarParameterConversionException());
             $this->invoker->invokeRouteAction(
                 [$this->controller, 'stringParameter'],
                 $this->createMock(IHttpRequestMessage::class),
@@ -215,7 +215,7 @@ class RouteActionInvokerTest extends TestCase
             $this->parameterResolver->expects($this->once())
                 ->method('resolveParameter')
                 ->with($this->anything(), $this->anything())
-                ->willThrowException(new MissingControllerParameterValueException);
+                ->willThrowException(new MissingControllerParameterValueException());
             $this->invoker->invokeRouteAction(
                 [$this->controller, 'stringParameter'],
                 $this->createMock(IHttpRequestMessage::class),
@@ -251,7 +251,7 @@ class RouteActionInvokerTest extends TestCase
             $this->parameterResolver->expects($this->once())
                 ->method('resolveParameter')
                 ->with($this->anything(), $this->anything())
-                ->willThrowException(new RequestBodyDeserializationException);
+                ->willThrowException(new RequestBodyDeserializationException());
             $this->invoker->invokeRouteAction(
                 [$this->controller, 'stringParameter'],
                 $this->createMock(IHttpRequestMessage::class),

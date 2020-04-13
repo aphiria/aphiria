@@ -34,21 +34,21 @@ class DateTimeEncoderTest extends TestCase
 
     public function testDecodingDateTimeCreatesDateTime(): void
     {
-        $encodedValue = (new DateTime)->format(DateTime::ATOM);
+        $encodedValue = (new DateTime())->format(DateTime::ATOM);
         $value = $this->dateTimeEncoder->decode($encodedValue, DateTime::class, new EncodingContext());
         $this->assertInstanceOf(DateTime::class, $value);
     }
 
     public function testDecodingDateTimeImmutableCreatesDateTimeImmutable(): void
     {
-        $encodedValue = (new DateTimeImmutable)->format(DateTime::ATOM);
+        $encodedValue = (new DateTimeImmutable())->format(DateTime::ATOM);
         $value = $this->dateTimeEncoder->decode($encodedValue, DateTimeImmutable::class, new EncodingContext());
         $this->assertInstanceOf(DateTimeImmutable::class, $value);
     }
 
     public function testDecodingDateTimeInterfaceCreatesDateTimeImmutable(): void
     {
-        $encodedValue = (new DateTime)->format(DateTime::ATOM);
+        $encodedValue = (new DateTime())->format(DateTime::ATOM);
         $value = $this->dateTimeEncoder->decode($encodedValue, DateTimeInterface::class, new EncodingContext());
         $this->assertInstanceOf(DateTimeImmutable::class, $value);
     }
