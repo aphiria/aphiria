@@ -1,13 +1,11 @@
 <p align="center"><a href="https://www.aphiria.com" target="_blank" title="Aphiria"><img src="https://www.aphiria.com/images/aphiria-logo.svg"></a></p>
 
 <p align="center">
-
-[![Build Status](https://travis-ci.com/aphiria/application.svg)](https://travis-ci.com/aphiria/application)
-[![Coverage Status](https://coveralls.io/repos/github/aphiria/application/badge.svg?branch=master)](https://coveralls.io/github/aphiria/application?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/aphiria/application/v/stable.svg)](https://packagist.org/packages/aphiria/application)
-[![Latest Unstable Version](https://poser.pugx.org/aphiria/application/v/unstable.svg)](https://packagist.org/packages/aphiria/application)
-[![License](https://poser.pugx.org/aphiria/application/license.svg)](https://packagist.org/packages/aphiria/application)
-
+<a href="https://travis-ci.com/aphiria/application"><img src="https://travis-ci.com/aphiria/application.svg?branch=master"></a>
+<a href='https://coveralls.io/github/aphiria/application?branch=master'><img src='https://coveralls.io/repos/github/aphiria/application/badge.svg?branch=master' alt='Coverage Status' /></a>
+<a href="https://packagist.org/packages/aphiria/application"><img src="https://poser.pugx.org/aphiria/application/v/stable.svg"></a>
+<a href="https://packagist.org/packages/aphiria/application"><img src="https://poser.pugx.org/aphiria/application/v/unstable.svg"></a>
+<a href="https://packagist.org/packages/aphiria/application"><img src="https://poser.pugx.org/aphiria/application/license.svg"></a>
 </p>
 
 # Application

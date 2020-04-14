@@ -4,7 +4,7 @@
     <testsuite name="IO">
         <directory>tests</directory>
     </testsuite>
-     <filter>
+    <filter>
         <whitelist>
             <directory suffix=".php">src</directory>
         </whitelist>

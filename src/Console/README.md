@@ -1,13 +1,11 @@
 <p align="center"><a href="https://www.aphiria.com" target="_blank" title="Aphiria"><img src="https://www.aphiria.com/images/aphiria-logo.svg"></a></p>
 
 <p align="center">
-
-[![Build Status](https://travis-ci.com/aphiria/console.svg)](https://travis-ci.com/aphiria/console)
-[![Coverage Status](https://coveralls.io/repos/github/aphiria/console/badge.svg?branch=master)](https://coveralls.io/github/aphiria/console?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/aphiria/console/v/stable.svg)](https://packagist.org/packages/aphiria/console)
-[![Latest Unstable Version](https://poser.pugx.org/aphiria/console/v/unstable.svg)](https://packagist.org/packages/aphiria/console)
-[![License](https://poser.pugx.org/aphiria/console/license.svg)](https://packagist.org/packages/aphiria/console)
-
+<a href="https://travis-ci.com/aphiria/console"><img src="https://travis-ci.com/aphiria/console.svg?branch=master"></a>
+<a href='https://coveralls.io/github/aphiria/console?branch=master'><img src='https://coveralls.io/repos/github/aphiria/console/badge.svg?branch=master' alt='Coverage Status' /></a>
+<a href="https://packagist.org/packages/aphiria/console"><img src="https://poser.pugx.org/aphiria/console/v/stable.svg"></a>
+<a href="https://packagist.org/packages/aphiria/console"><img src="https://poser.pugx.org/aphiria/console/v/unstable.svg"></a>
+<a href="https://packagist.org/packages/aphiria/console"><img src="https://poser.pugx.org/aphiria/console/license.svg"></a>
 </p>
 
 # Console

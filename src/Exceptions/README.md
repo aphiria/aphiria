@@ -1,13 +1,11 @@
 <p align="center"><a href="https://www.aphiria.com" target="_blank" title="Aphiria"><img src="https://www.aphiria.com/images/aphiria-logo.svg"></a></p>
 
 <p align="center">
-
-[![Build Status](https://travis-ci.com/aphiria/exceptions.svg)](https://travis-ci.com/aphiria/exceptions)
-[![Coverage Status](https://coveralls.io/repos/github/aphiria/exceptions/badge.svg?branch=master)](https://coveralls.io/github/aphiria/exceptions?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/aphiria/exceptions/v/stable.svg)](https://packagist.org/packages/aphiria/exceptions)
-[![Latest Unstable Version](https://poser.pugx.org/aphiria/exceptions/v/unstable.svg)](https://packagist.org/packages/aphiria/exceptions)
-[![License](https://poser.pugx.org/aphiria/exceptions/license.svg)](https://packagist.org/packages/aphiria/exceptions)
-
+<a href="https://travis-ci.com/aphiria/exceptions"><img src="https://travis-ci.com/aphiria/exceptions.svg?branch=master"></a>
+<a href='https://coveralls.io/github/aphiria/exceptions?branch=master'><img src='https://coveralls.io/repos/github/aphiria/exceptions/badge.svg?branch=master' alt='Coverage Status' /></a>
+<a href="https://packagist.org/packages/aphiria/exceptions"><img src="https://poser.pugx.org/aphiria/exceptions/v/stable.svg"></a>
+<a href="https://packagist.org/packages/aphiria/exceptions"><img src="https://poser.pugx.org/aphiria/exceptions/v/unstable.svg"></a>
+<a href="https://packagist.org/packages/aphiria/exceptions"><img src="https://poser.pugx.org/aphiria/exceptions/license.svg"></a>
 </p>
 
 # Exceptions
