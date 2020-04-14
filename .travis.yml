@@ -13,8 +13,12 @@ before_script:
   - composer dump-autoload -o
 
 script:
-  - vendor/bin/phpunit --verbose
+  - if php -v | grep -q 'Xdebug'; then phpenv config-rm xdebug.ini; fi
+  - phpdbg -qrr vendor/bin/phpunit --coverage-clover ./.coverage/clover.xml --verbose
   - composer run-script lint-check
+
+after_success:
+  - vendor/bin/php-coveralls --coverage_clover=./.coverage/clover.xml -v
 
 deploy:
   - provider: script
