@@ -15,11 +15,11 @@ before_script:
   - composer dump-autoload -o
 
 script:
-  - vendor/bin/phpunit --coverage-clover clover.xml --verbose
+  - vendor/bin/phpunit --coverage-clover ./.coverage/clover.xml --verbose
   - composer run-script lint-check
 
 after_success:
-  - vendor/bin/php-coveralls --coverage_clover=clover.xml -v
+  - vendor/bin/php-coveralls --coverage_clover=./.coverage/clover.xml -v
 
 deploy:
   - provider: script
