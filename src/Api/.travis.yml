@@ -4,13 +4,18 @@ php:
   - 7.4
 
 before_script:
+  - if php -v | grep -q 'Xdebug'; then phpenv config-rm xdebug.ini; fi
+  - pecl install pcov
   - composer self-update
   - composer install
   - composer dump-autoload -o
 
 script:
-  - vendor/bin/phpunit --verbose
+  - vendor/bin/phpunit --coverage-clover ./.coverage/clover.xml --verbose
   - composer run-script lint-check
+
+after_success:
+  - vendor/bin/php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
 
 notifications:
   email:

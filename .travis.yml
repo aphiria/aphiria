@@ -19,7 +19,7 @@ script:
   - composer run-script lint-check
 
 after_success:
-  - vendor/bin/php-coveralls --coverage_clover=./.coverage/clover.xml -v
+  - vendor/bin/php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
 
 deploy:
   - provider: script

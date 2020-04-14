@@ -73,8 +73,8 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
-        "php-coveralls/php-coveralls": "^2.2",
         "nyholm/psr7": "^1.2",
+        "php-coveralls/php-coveralls": "^2.2",
         "phpunit/phpunit": "~9.1"
     },
     "scripts": {
