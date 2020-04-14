@@ -8,13 +8,14 @@ git:
   depth: false
 
 before_script:
+  - pecl install pcov
   - composer self-update
   - composer install
   - composer dump-autoload -o
 
 script:
   - if php -v | grep -q 'Xdebug'; then phpenv config-rm xdebug.ini; fi
-  - phpdbg -qrr vendor/bin/phpunit --coverage-clover ./.coverage/clover.xml --verbose
+  - vendor/bin/phpunit --coverage-clover ./.coverage/clover.xml --verbose
   - composer run-script lint-check
 
 after_success:
