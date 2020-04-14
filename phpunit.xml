@@ -4,7 +4,7 @@
     <testsuite name="Aphiria">
         <directory>src/*/tests</directory>
     </testsuite>
-     <filter>
+    <filter>
         <whitelist>
             <directory suffix=".php">src/*/src</directory>
         </whitelist>
