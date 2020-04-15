@@ -24,6 +24,7 @@
         }
     },
     "require": {
+        "aphiria/middleware": "1.0.*@dev",
         "aphiria/net": "1.0.*@dev",
         "php": "^7.4"
     },
