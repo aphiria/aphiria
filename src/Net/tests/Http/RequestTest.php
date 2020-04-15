@@ -18,6 +18,7 @@ use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\RequestTargetTypes;
+use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -165,6 +166,13 @@ class RequestTest extends TestCase
     {
         $requestQueryString = new Request($requestQueryString, new Uri($uri));
         $this->assertEquals($expectedRequestQueryString, (string)$requestQueryString);
+    }
+
+    public function testRequestWithHeadersAndBodyEndsWithBody(): void
+    {
+        $request = new Request('GET', new Uri('https://example.com'), new HttpHeaders(), new StringBody('foo'));
+        $request->getHeaders()->add('Foo', 'bar');
+        $this->assertEquals("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar\r\n\r\nfoo", (string)$request);
     }
 
     public function testRequestWithHeadersButNoBodyEndsWithBlankLine(): void

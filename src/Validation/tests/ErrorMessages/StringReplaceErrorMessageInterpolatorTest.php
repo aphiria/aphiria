@@ -52,4 +52,11 @@ class StringReplaceErrorMessageInterpolatorTest extends TestCase
             $interpolator->interpolate('foo {bar} {baz}', ['bar' => 'dave', 'baz' => 'young'])
         );
     }
+
+    public function testSetDefaultLocaleDoesNotDoAnything(): void
+    {
+        $interpolator = new StringReplaceErrorMessageInterpolator();
+        $interpolator->setDefaultLocale('foo');
+        $this->assertEquals('foo dave', $interpolator->interpolate('foo {bar}', ['bar' => 'dave']));
+    }
 }

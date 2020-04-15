@@ -16,6 +16,7 @@ use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IHttpBody;
 use Aphiria\Net\Http\Response;
+use Aphiria\Net\Http\StringBody;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -75,6 +76,13 @@ class ResponseTest extends TestCase
         $response = new Response();
         $response->setStatusCode(200, 'OK');
         $this->assertEquals("HTTP/1.1 200 OK\r\n\r\n", (string)$response);
+    }
+
+    public function testResponseWithHeadersAndBodyEndsWithBody(): void
+    {
+        $response = new Response(200, new HttpHeaders(), new StringBody('foo'));
+        $response->getHeaders()->add('Foo', 'bar');
+        $this->assertEquals("HTTP/1.1 200 OK\r\nFoo: bar\r\n\r\nfoo", (string)$response);
     }
 
     public function testResponseWithHeadersButNoBodyEndsWithBlankLine(): void

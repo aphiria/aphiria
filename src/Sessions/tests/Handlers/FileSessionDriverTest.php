@@ -47,6 +47,13 @@ class FileSessionDriverTest extends TestCase
         $this->driver = new FileSessionDriver(self::BASE_PATH);
     }
 
+    public function testDeleteDeletesFiles(): void
+    {
+        $this->driver->set('foo', 'bar');
+        $this->driver->delete('foo');
+        $this->assertFileDoesNotExist(self::BASE_PATH . '/foo');
+    }
+
     public function testGarbageCollectionDeletesFiles(): void
     {
         $this->driver->set('foo', 'bar');

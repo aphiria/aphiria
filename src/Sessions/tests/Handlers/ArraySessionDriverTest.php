@@ -28,6 +28,22 @@ class ArraySessionDriverTest extends TestCase
         $this->driver = new ArraySessionDriver();
     }
 
+    public function testDeleteRemovesSessionFromArray(): void
+    {
+        $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage('Session with ID foo does not exist');
+        $this->driver->set('foo', 'bar');
+        $this->driver->delete('foo');
+        $this->driver->get('foo');
+    }
+
+    public function testGcDoesNothing(): void
+    {
+        $this->driver->set('foo', 'bar');
+        $this->driver->gc(0);
+        $this->assertEquals('bar', $this->driver->get('foo'));
+    }
+
     public function testGettingNonExistentSessionThrowsException(): void
     {
         $this->expectException(OutOfBoundsException::class);

@@ -94,7 +94,7 @@ final class Session implements IMiddleware
      */
     public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
     {
-        if (\random_int(0, 100) / 100 === $this->gcChance) {
+        if (\random_int(0, 100) / 100 < $this->gcChance) {
             $this->sessionHandler->gc($this->sessionTtl);
         }
 
@@ -131,7 +131,7 @@ final class Session implements IMiddleware
             new Cookie(
                 $this->sessionCookieName,
                 $this->session->getId(),
-                $this->sessionTtl,
+                time() + $this->sessionTtl,
                 $this->sessionCookiePath,
                 $this->sessionCookieDomain,
                 $this->sessionCookieIsSecure,

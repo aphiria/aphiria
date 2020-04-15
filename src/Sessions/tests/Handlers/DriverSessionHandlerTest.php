@@ -39,6 +39,14 @@ class DriverSessionHandlerTest extends TestCase
         $this->assertTrue($this->sessionHandler->close());
     }
 
+    public function testDestroyDeletesUnderlyingSession(): void
+    {
+        $this->driver->expects($this->once())
+            ->method('delete')
+            ->with('foo');
+        $this->sessionHandler->destroy('foo');
+    }
+
     public function testGcCallsGcOnDriver(): void
     {
         $this->driver->expects($this->once())

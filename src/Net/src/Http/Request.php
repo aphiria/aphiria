@@ -115,13 +115,13 @@ class Request implements IHttpRequestMessage
             $headers .= "\r\n{$this->headers}";
         }
 
-        $request = $startLine . $headers . "\r\n\r\n";
+        $serializedRequest = $startLine . $headers . "\r\n\r\n";
 
         if ($this->body !== null) {
-            $request .= $this->getBody();
+            $serializedRequest .= $this->getBody();
         }
 
-        return $request;
+        return $serializedRequest;
     }
 
     /**
