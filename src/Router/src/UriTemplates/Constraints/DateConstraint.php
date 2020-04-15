@@ -18,7 +18,7 @@ use InvalidArgumentException;
 /**
  * Defines the date constraint
  */
-final class DateConstraint
+final class DateConstraint implements IRouteVariableConstraint
 {
     /** @var array The list of acceptable date formats */
     private array $formats;
