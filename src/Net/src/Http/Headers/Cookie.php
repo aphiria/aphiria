@@ -74,7 +74,7 @@ final class Cookie
             $this->maxAge = null;
         } elseif (\is_int($expiration)) {
             $this->expiration = DateTime::createFromFormat('U', (string)$expiration);
-            $this->maxAge = $expiration;
+            $this->maxAge = $expiration - time();
         } elseif ($expiration instanceof DateTime) {
             $this->expiration = $expiration;
         } else {

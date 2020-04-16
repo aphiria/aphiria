@@ -97,7 +97,12 @@ class SessionTest extends TestCase
             $this->session,
             $this->sessionHandler,
             3600,
-            'session'
+            'session',
+            null,
+            null,
+            false,
+            true,
+            0 // Make sure GC doesn't happen
         );
         $middleware->handle($this->request, $this->next);
     }
@@ -120,11 +125,12 @@ class SessionTest extends TestCase
             '/path',
             'example.com',
             true,
-            true
+            true,
+            0
         );
         $actualResponse = $middleware->handle($this->request, $this->next);
         $this->assertMatchesRegularExpression(
-            '/^session=foo; Expires=[^;]+; Max\-Age=\d+; Domain=example\.com; Path=%2Fpath; Secure; HttpOnly; SameSite=lax$/',
+            '/^session=foo; Expires=[^;]+; Max\-Age=3600; Path=%2Fpath; Domain=example\.com; Secure; HttpOnly; SameSite=lax$/',
             $actualResponse->getHeaders()->getFirst('Set-Cookie')
         );
     }
@@ -143,7 +149,12 @@ class SessionTest extends TestCase
             $this->session,
             $this->sessionHandler,
             3600,
-            'session'
+            'session',
+            null,
+            null,
+            false,
+            true,
+            0 // Make sure GC doesn't happen
         );
         $middleware->handle($this->request, $this->next);
     }
@@ -167,7 +178,12 @@ class SessionTest extends TestCase
             $this->session,
             $this->sessionHandler,
             3600,
-            'session'
+            'session',
+            null,
+            null,
+            false,
+            true,
+            0 // Make sure GC doesn't happen
         );
         $middleware->handle($this->request, $this->next);
     }
@@ -176,10 +192,22 @@ class SessionTest extends TestCase
     {
         $this->session->expects($this->at(0))
             ->method('regenerateId');
+        $this->session->expects($this->at(1))
+            ->method('getId')
+            ->willReturn('foo');
         $this->session->expects($this->at(2))
             ->method('setMany')
             ->with(['bar' => 'baz']);
-        $this->session->method('getId')
+        $this->session->expects($this->at(3))
+            ->method('ageFlashData');
+        $this->session->expects($this->at(4))
+            ->method('getId')
+            ->willReturn('foo');
+        $this->session->expects($this->at(5))
+            ->method('getAll')
+            ->willReturn(['bar' => 'baz']);
+        $this->session->expects($this->at(6))
+            ->method('getId')
             ->willReturn('foo');
         $this->sessionHandler->expects($this->at(0))
             ->method('open')
@@ -192,7 +220,12 @@ class SessionTest extends TestCase
             $this->session,
             $this->sessionHandler,
             3600,
-            'session'
+            'session',
+            null,
+            null,
+            false,
+            true,
+            0 // Make sure GC doesn't happen
         );
         $middleware->handle($this->request, $this->next);
     }
@@ -214,7 +247,12 @@ class SessionTest extends TestCase
             $this->session,
             $this->sessionHandler,
             3600,
-            'session'
+            'session',
+            null,
+            null,
+            false,
+            true,
+            0 // Make sure GC doesn't happen
         );
         $middleware->handle($this->request, $this->next);
     }

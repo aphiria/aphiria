@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http;
 
+use Aphiria\Collections\KeyValuePair;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\IHttpBody;
@@ -37,12 +38,8 @@ class StreamResponseWriterTest extends TestCase
     {
         $this->outputStream = new Stream(fopen('php://temp', 'r+b'));
         $this->writer = new StreamResponseWriter($this->outputStream);
-        $this->headers = new HttpHeaders();
+        $this->headers = new HttpHeaders([new KeyValuePair('Foo', 'bar')]);
         $this->body = $this->createMock(IHttpBody::class);
-        // The body will always get written to the output stream in every test
-        $this->body->expects($this->once())
-            ->method('writeToStream')
-            ->with($this->outputStream);
 
         // Set up the response
         $this->response = $this->createMock(IHttpResponseMessage::class);
@@ -54,6 +51,8 @@ class StreamResponseWriterTest extends TestCase
             ->willReturn('1.1');
         $this->response->method('getStatusCode')
             ->willReturn(200);
+        $this->response->method('getReasonPhrase')
+            ->willReturn('OK');
     }
 
     /**
@@ -61,9 +60,22 @@ class StreamResponseWriterTest extends TestCase
      */
     public function testBodyIsWrittenToOutputStream(): void
     {
-        $this->response->expects($this->once())
-            ->method('getReasonPhrase')
-            ->willReturn(null);
+        $this->body->expects($this->once())
+            ->method('writeToStream')
+            ->with($this->outputStream);
         $this->writer->writeResponse($this->response);
+    }
+
+    public function testWritingResponseWhenHeadersAreSentDoesNotDoAnything(): void
+    {
+        $writer = new class($this->outputStream) extends StreamResponseWriter {
+            public function headersAreSent(): bool
+            {
+                return true;
+            }
+        };
+        $writer->writeResponse($this->response);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 }

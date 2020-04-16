@@ -51,12 +51,12 @@ class ResponseHeaderFormatter extends HttpHeaderParser
         $headerValue .= "; Expires={$expiration->format(self::EXPIRATION_DATE_FORMAT)}";
         $headerValue .= '; Max-Age=0';
 
-        if ($domain !== null) {
-            $headerValue .= '; Domain=' . urlencode($domain);
-        }
-
         if ($path !== null) {
             $headerValue .= '; Path=' . urlencode($path);
+        }
+
+        if ($domain !== null) {
+            $headerValue .= '; Domain=' . urlencode($domain);
         }
 
         if ($isSecure) {
@@ -118,12 +118,12 @@ class ResponseHeaderFormatter extends HttpHeaderParser
             $headerValue .= "; Max-Age=$maxAge";
         }
 
-        if (($domain = $cookie->getDomain()) !== null) {
-            $headerValue .= '; Domain=' . urlencode($domain);
-        }
-
         if (($path = $cookie->getPath()) !== null) {
             $headerValue .= '; Path=' . urlencode($path);
+        }
+
+        if (($domain = $cookie->getDomain()) !== null) {
+            $headerValue .= '; Domain=' . urlencode($domain);
         }
 
         if ($cookie->isSecure()) {

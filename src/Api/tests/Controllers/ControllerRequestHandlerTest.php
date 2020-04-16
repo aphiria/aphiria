@@ -14,7 +14,7 @@ namespace Aphiria\Api\Tests\Controllers;
 
 use Aphiria\Api\Controllers\ControllerRequestHandler;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
-use Aphiria\Api\Tests\Controllers\Mocks\Controller;
+use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\IHttpRequestMessage;
@@ -45,8 +45,8 @@ class ControllerRequestHandlerTest extends TestCase
     {
         /** @var IHttpRequestMessage|MockObject $request */
         $request = $this->createMock(IHttpRequestMessage::class);
-        /** @var Controller|MockObject $controller */
-        $controller = $this->createMock(Controller::class);
+        /** @var ControllerWithEndpoints|MockObject $controller */
+        $controller = $this->createMock(ControllerWithEndpoints::class);
         $controller->expects($this->once())
             ->method('setRequest')
             ->with($request);
@@ -79,8 +79,8 @@ class ControllerRequestHandlerTest extends TestCase
         $request = $this->createMock(IHttpRequestMessage::class);
         /** @var IHttpResponseMessage|MockObject $expectedResponse */
         $expectedResponse = $this->createMock(IHttpResponseMessage::class);
-        /** @var Controller|MockObject $controller */
-        $controller = $this->createMock(Controller::class);
+        /** @var ControllerWithEndpoints|MockObject $controller */
+        $controller = $this->createMock(ControllerWithEndpoints::class);
         $controllerCallable = [$controller, 'noParameters'];
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')

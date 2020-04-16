@@ -152,7 +152,7 @@ class UriTest extends TestCase
     public function outOfRangePortProvider(): array
     {
         return [
-            ['foo.com:0'],
+            ['http://foo.com:0'],
             ['foo.com:65536'],
         ];
     }

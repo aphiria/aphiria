@@ -12,9 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Collections;
 
-use RuntimeException;
-use Throwable;
-
 /**
  * Defines the key hasher
  * @internal
@@ -26,7 +23,6 @@ class KeyHasher
      *
      * @param string|float|int|object|array|resource $value The value whose hash key we want
      * @return string The value's hash key
-     * @throws RuntimeException Thrown if the value's hash key could not be calculated
      */
     public function getHashKey($value): string
     {
@@ -59,10 +55,6 @@ class KeyHasher
         }
 
         // As a last-ditch effort, try to convert the value to a string
-        try {
-            return '__aphiria:u' . $value;
-        } catch (Throwable $ex) {
-            throw new RuntimeException('Value could not be converted to a key', 0, $ex);
-        }
+        return '__aphiria:u' . $value;
     }
 }

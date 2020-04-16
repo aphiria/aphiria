@@ -37,11 +37,23 @@ class MediaTypeHeaderValueTest extends TestCase
         $value = new MediaTypeHeaderValue('foo/bar', $parameters);
         $this->assertEquals('foo/bar', $value->getMediaType());
     }
+    public function testGettingParametersReturnsOnesSetInConstructor(): void
+    {
+        $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
+        $value = new MediaTypeHeaderValue('foo/bar', $parameters);
+        $this->assertSame($parameters, $value->getParameters());
+    }
 
     public function testGettingSubTypeReturnsCorrectSubType(): void
     {
         $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
         $this->assertEquals('bar', $value->getSubType());
+    }
+
+    public function testGettingSubTypeWithoutSuffixForSubTypeWithoutSuffixReturnsCorrectSubType(): void
+    {
+        $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
+        $this->assertEquals('bar', $value->getSubTypeWithoutSuffix());
     }
 
     public function testGettingTypeReturnsCorrectType(): void

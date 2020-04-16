@@ -26,7 +26,7 @@ class CookieTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->cookie = new Cookie('name', 'value', 1234, '/', 'foo.com', true, true, Cookie::SAME_SITE_LAX);
+        $this->cookie = new Cookie('name', 'value', time() + 1234, '/', 'foo.com', true, true, Cookie::SAME_SITE_LAX);
     }
 
     public function testConstructorOnNullExpiration(): void
@@ -106,7 +106,9 @@ class CookieTest extends TestCase
 
     public function testGettingExpiration(): void
     {
-        $this->assertEquals(1234, (int)$this->cookie->getExpiration()->format('U'));
+        $expiration = time() + 3600;
+        $cookie = new Cookie('foo', 'bar', $expiration);
+        $this->assertEquals($expiration, (int)$cookie->getExpiration()->format('U'));
     }
 
     public function testGettingMaxAge(): void

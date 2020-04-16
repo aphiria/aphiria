@@ -64,9 +64,6 @@ class ImmutableHashTableTest extends TestCase
         $hashTable->get('does not exist');
     }
 
-    /**
-     * Tests that getting the keys returns the original keys, not the hash keys
-     */
     public function testGettingKeysReturnsOriginalKeysNotHashKeys(): void
     {
         $kvp1 = new KeyValuePair(new MockObject(), 'foo');
@@ -80,7 +77,7 @@ class ImmutableHashTableTest extends TestCase
         $kvp1 = new KeyValuePair('foo', 'bar');
         $kvp2 = new KeyValuePair('baz', 'blah');
         $hashTable = new ImmutableHashTable([$kvp1, $kvp2]);
-        $this->assertEquals([$kvp1->getKey(), $kvp2->getKey()], $hashTable->getKeys());
+        $this->assertEquals([$kvp1->getValue(), $kvp2->getValue()], $hashTable->getValues());
     }
 
     public function testIteratingOverValues(): void
@@ -101,9 +98,6 @@ class ImmutableHashTableTest extends TestCase
         $this->assertEquals($expectedArray, $actualValues);
     }
 
-    /**
-     * Tests that a non-key-value pair in the constructor throws an exception
-     */
     public function testNonKeyValuePairInConstructorThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -127,9 +121,6 @@ class ImmutableHashTableTest extends TestCase
         $this->assertEquals($expectedArray, $hashTable->toArray());
     }
 
-    /**
-     * Tests the trying to get a value returns true if the key exists and false if it doesn't
-     */
     public function testTryGetReturnsTrueIfKeyExistsAndFalseIfValueDoesNotExist(): void
     {
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);

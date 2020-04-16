@@ -280,11 +280,6 @@ class RequestFactory
             if (filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
                 unset($ipAddresses[$index]);
             }
-
-            // Don't accept trusted proxies
-            if (\in_array($ipAddress, $this->trustedProxyIPAddresses, true)) {
-                unset($ipAddresses[$index]);
-            }
         }
 
         $clientIPAddresses = \count($ipAddresses) === 0 ? $fallbackIPAddresses : array_reverse($ipAddresses);

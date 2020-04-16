@@ -12,13 +12,14 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Tests\Controllers;
 
+use Aphiria\Api\Controllers\Controller;
 use Aphiria\Api\Controllers\FailedRequestContentNegotiationException;
 use Aphiria\Api\Controllers\FailedScalarParameterConversionException;
 use Aphiria\Api\Controllers\IControllerParameterResolver;
 use Aphiria\Api\Controllers\MissingControllerParameterValueException;
 use Aphiria\Api\Controllers\RequestBodyDeserializationException;
 use Aphiria\Api\Controllers\RouteActionInvoker;
-use Aphiria\Api\Tests\Controllers\Mocks\Controller;
+use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
 use Aphiria\Api\Tests\Controllers\Mocks\User;
 use Aphiria\Api\Validation\InvalidRequestBodyException;
 use Aphiria\Api\Validation\IRequestBodyValidator;
@@ -30,8 +31,11 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Uri;
+use Closure;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use ReflectionFunctionAbstract;
 use ReflectionParameter;
 use RuntimeException;
 
@@ -49,7 +53,7 @@ class RouteActionInvokerTest extends TestCase
     private IContentNegotiator $contentNegotiator;
     /** @var IResponseFactory|MockObject */
     private IResponseFactory $responseFactory;
-    private Controller $controller;
+    private ControllerWithEndpoints $controller;
 
     protected function setUp(): void
     {
@@ -63,7 +67,7 @@ class RouteActionInvokerTest extends TestCase
             $this->responseFactory,
             $this->parameterResolver
         );
-        $this->controller = new Controller();
+        $this->controller = new ControllerWithEndpoints();
     }
 
     public function testFailedRequestContentNegotiationExceptionIsRethrownAsHttpException(): void
@@ -207,6 +211,37 @@ class RouteActionInvokerTest extends TestCase
         );
         $this->assertNull($response->getBody());
         $this->assertEquals(HttpStatusCodes::HTTP_NO_CONTENT, $response->getStatusCode());
+    }
+
+    public function testInvokingRouteActionWithUnreflectableRouteActionDelegateThrowsException(): void
+    {
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Reflection failed for ' . Closure::class);
+        $routeActionInvoker = new class() extends RouteActionInvoker {
+            protected function reflectRouteActionDelegate(callable $routeActionDelegate): ReflectionFunctionAbstract
+            {
+                throw new ReflectionException();
+            }
+        };
+        $routeActionInvoker->invokeRouteAction(fn () => null, $this->createRequestWithoutBody('http://example.com'), []);
+    }
+
+    public function testInvokingRouteActionWithUnreflectableStaticRouteActionDelegateThrowsException(): void
+    {
+        $this->expectException(HttpException::class);
+        $controller = new class() extends Controller {
+            public static function foo(): void
+            {
+            }
+        };
+        $this->expectExceptionMessage('Reflection failed for ' . \get_class($controller) . '::foo');
+        $routeActionInvoker = new class() extends RouteActionInvoker {
+            protected function reflectRouteActionDelegate(callable $routeActionDelegate): ReflectionFunctionAbstract
+            {
+                throw new ReflectionException();
+            }
+        };
+        $routeActionInvoker->invokeRouteAction([\get_class($controller), 'foo'], $this->createRequestWithoutBody('http://example.com'), []);
     }
 
     public function testMissingControllerParameterValueExceptionIsRethrownAsHttpException(): void

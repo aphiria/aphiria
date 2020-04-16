@@ -301,7 +301,7 @@ class Uri
     }
 
     /**
-     * Validates all the properties
+     * Validates some properties that parse_url() does not
      *
      * @throws InvalidArgumentException Thrown if any of the properties are invalid
      */
@@ -311,23 +311,6 @@ class Uri
 
         if (!isset($acceptedSchemes[$this->scheme])) {
             throw new InvalidArgumentException("Scheme \"{$this->scheme}\" is invalid");
-        }
-
-        if ($this->port !== null && ($this->port < 1 || $this->port > 65535)) {
-            throw new InvalidArgumentException("Port {$this->port} must be between 1 and 65535, inclusive");
-        }
-
-        $authority = $this->getAuthority();
-        $pathIsSet = $this->path !== null && $this->path !== '';
-
-        /** @link https://tools.ietf.org/html/rfc3986#section-3 */
-        if ($authority !== null && $pathIsSet > 0 && $this->path[0] !== '/') {
-            throw new InvalidArgumentException('Path must be null/empty or start with "/" if the URI has an authority');
-        }
-
-        /** @link https://tools.ietf.org/html/rfc3986#section-3 */
-        if ($authority === null && $pathIsSet && \strlen($this->path) >= 2 && strpos($this->path, '//') === 0) {
-            throw new InvalidArgumentException('Path cannot start with "//" if the URI has no authority');
         }
     }
 }

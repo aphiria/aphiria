@@ -42,7 +42,7 @@ class HttpHeaderParser
         $contentType = null;
         $headers->tryGetFirst('Content-Type', $contentType);
 
-        return preg_match("/application\/json/i", $contentType) === 1;
+        return \is_string($contentType) && preg_match("/application\/json/i", $contentType) === 1;
     }
 
     /**

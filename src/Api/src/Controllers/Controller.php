@@ -336,6 +336,14 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
+        if (($body = $this->request->getBody()) === null) {
+            if (substr($type, -2) === '[]') {
+                return [];
+            }
+
+            return null;
+        }
+
         $contentNegotiationResult = $this->contentNegotiator->negotiateRequestContent($type, $this->request);
         $mediaTypeFormatter = $contentNegotiationResult->getFormatter();
 
@@ -344,10 +352,6 @@ class Controller
                 HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 "Failed to negotiate request content with type $type"
             );
-        }
-
-        if (($body = $this->request->getBody()) === null) {
-            return [];
         }
 
         try {
@@ -406,7 +410,7 @@ class Controller
         } elseif ($uri instanceof Uri) {
             $uriString = (string)$uri;
         } else {
-            throw new InvalidArgumentException('URI must be a string or instance of ' . Uri::class);
+            throw new InvalidArgumentException('URI must be a string or an instance of ' . Uri::class);
         }
 
         $response = $this->responseFactory->createResponse(

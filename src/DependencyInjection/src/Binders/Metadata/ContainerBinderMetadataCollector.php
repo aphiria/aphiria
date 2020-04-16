@@ -57,15 +57,10 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
         bool $resolveAsSingleton = false
     ): void {
         $this->addBoundInterface($interfaces);
-
-        if ($this->currentContext === null) {
-            $this->container->bindClass($interfaces, $concreteClass, $primitives, $resolveAsSingleton);
-        } else {
-            $this->container->for(
-                $this->currentContext,
-                fn (IContainer $container) => $container->bindClass($interfaces, $concreteClass, $primitives, $resolveAsSingleton)
-            );
-        }
+        $this->container->for(
+            $this->currentContext,
+            fn (IContainer $container) => $container->bindClass($interfaces, $concreteClass, $primitives, $resolveAsSingleton)
+        );
     }
 
     /**
@@ -74,12 +69,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     public function bindFactory($interfaces, callable $factory, bool $resolveAsSingleton = false): void
     {
         $this->addBoundInterface($interfaces);
-
-        if ($this->currentContext === null) {
-            $this->container->bindFactory($interfaces, $factory, $resolveAsSingleton);
-        } else {
-            $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindFactory($interfaces, $factory, $resolveAsSingleton));
-        }
+        $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindFactory($interfaces, $factory, $resolveAsSingleton));
     }
 
     /**
@@ -88,12 +78,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     public function bindInstance($interfaces, object $instance): void
     {
         $this->addBoundInterface($interfaces);
-
-        if ($this->currentContext === null) {
-            $this->container->bindInstance($interfaces, $instance);
-        } else {
-            $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindInstance($interfaces, $instance));
-        }
+        $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindInstance($interfaces, $instance));
     }
 
     /**
@@ -161,10 +146,6 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
      */
     public function hasBinding(string $interface): bool
     {
-        if ($this->currentContext === null) {
-            return $this->container->hasBinding($interface);
-        }
-
         return $this->container->for($this->currentContext, fn (IContainer $container) => $container->hasBinding($interface));
     }
 
@@ -193,10 +174,6 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
      */
     public function unbind($interfaces): void
     {
-        if ($this->currentContext === null) {
-            $this->container->unbind($interfaces);
-        }
-
         $this->container->for($this->currentContext, fn (IContainer $container) => $container->unbind($interfaces));
     }
 

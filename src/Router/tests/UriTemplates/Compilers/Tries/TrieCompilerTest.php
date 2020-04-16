@@ -19,11 +19,14 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\RootTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RouteVariable;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieCompiler;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\VariableTrieNode;
+use Aphiria\Routing\UriTemplates\Constraints\IntegerConstraint;
 use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
 use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
 use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
 use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
+use Aphiria\Routing\UriTemplates\Lexers\LexingException;
 use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
+use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
@@ -173,61 +176,16 @@ class TrieCompilerTest extends TestCase
         $this->assertEquals($this->expectedTrie, $this->compiler->compile($expectedRoute));
     }
 
-    public function testCompilingRequiredAndOptionalPathSegmentsCreatesNodesWithSameRoute(): void
+    public function testCompilingInvalidVariableNodeThrowsException(): void
     {
-        $optionalNode = (new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART))
-            ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
-            ->addChild(new AstNode(AstNodeTypes::TEXT, 'bar'));
+        $this->expectException(InvalidUriTemplateException::class);
+        $this->expectExceptionMessage('Unexpected node type ' . AstNodeTypes::PATH);
+        $variableNode = new AstNode(AstNodeTypes::VARIABLE, 'foo');
+        // Add an invalid child to the variable node
+        $variableNode->addChild(new AstNode(AstNodeTypes::PATH, null));
         $pathAst = (new AstNode(AstNodeTypes::PATH, null))
             ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
-            ->addChild(new AstNode(AstNodeTypes::TEXT, 'foo'))
-            ->addChild($optionalNode);
-        $this->ast->addChild($pathAst);
-        $pathTemplate = '/foo[/bar]';
-        $expectedRoute = $this->createRoute($pathTemplate);
-        $this->expectedTrie->addChild(new LiteralTrieNode(
-            'foo',
-            [
-                new LiteralTrieNode(
-                    'bar',
-                    [],
-                    $expectedRoute
-                )
-            ],
-            $expectedRoute
-        ));
-        $this->lexer->expects($this->once())
-            ->method('lex')
-            ->with($pathTemplate)
-            ->willReturn(new TokenStream([]));
-        $this->assertEquals($this->expectedTrie, $this->compiler->compile($expectedRoute));
-    }
-
-    public function testCompilingTextOnlyPathAstAddsRouteToNode(): void
-    {
-        $pathAst = (new AstNode(AstNodeTypes::PATH, null))
-            ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
-            ->addChild(new AstNode(AstNodeTypes::TEXT, 'foo'));
-        $this->ast->addChild($pathAst);
-        $pathTemplate = '/foo';
-        $expectedRoute = $this->createRoute($pathTemplate);
-        $this->expectedTrie->addChild(new LiteralTrieNode(
-            'foo',
-            [],
-            $expectedRoute
-        ));
-        $this->lexer->expects($this->once())
-            ->method('lex')
-            ->with($pathTemplate)
-            ->willReturn(new TokenStream([]));
-        $this->assertEquals($this->expectedTrie, $this->compiler->compile($expectedRoute));
-    }
-
-    public function testCompilingVariableOnlyPathAstAddsRouteToNode(): void
-    {
-        $pathAst = (new AstNode(AstNodeTypes::PATH, null))
-            ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
-            ->addChild(new AstNode(AstNodeTypes::VARIABLE, 'foo'));
+            ->addChild($variableNode);
         $this->ast->addChild($pathAst);
         $pathTemplate = '/:foo';
         $expectedRoute = $this->createRoute($pathTemplate);
@@ -240,7 +198,7 @@ class TrieCompilerTest extends TestCase
             ->method('lex')
             ->with($pathTemplate)
             ->willReturn(new TokenStream([]));
-        $this->assertEquals($this->expectedTrie, $this->compiler->compile($expectedRoute));
+        $this->compiler->compile($expectedRoute);
     }
 
     public function testCompilingPathVariableCreatesVariableNodeWithRouteVariable(): void
@@ -346,6 +304,124 @@ class TrieCompilerTest extends TestCase
             ->with($pathTemplate)
             ->willReturn(new TokenStream([]));
         $this->assertEquals($this->expectedTrie, $this->compiler->compile($expectedRoute));
+    }
+
+    public function testCompilingRequiredAndOptionalPathSegmentsCreatesNodesWithSameRoute(): void
+    {
+        $optionalNode = (new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART))
+            ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
+            ->addChild(new AstNode(AstNodeTypes::TEXT, 'bar'));
+        $pathAst = (new AstNode(AstNodeTypes::PATH, null))
+            ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
+            ->addChild(new AstNode(AstNodeTypes::TEXT, 'foo'))
+            ->addChild($optionalNode);
+        $this->ast->addChild($pathAst);
+        $pathTemplate = '/foo[/bar]';
+        $expectedRoute = $this->createRoute($pathTemplate);
+        $this->expectedTrie->addChild(new LiteralTrieNode(
+            'foo',
+            [
+                new LiteralTrieNode(
+                    'bar',
+                    [],
+                    $expectedRoute
+                )
+            ],
+            $expectedRoute
+        ));
+        $this->lexer->expects($this->once())
+            ->method('lex')
+            ->with($pathTemplate)
+            ->willReturn(new TokenStream([]));
+        $this->assertEquals($this->expectedTrie, $this->compiler->compile($expectedRoute));
+    }
+
+    public function testCompilingTextOnlyPathAstAddsRouteToNode(): void
+    {
+        $pathAst = (new AstNode(AstNodeTypes::PATH, null))
+            ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
+            ->addChild(new AstNode(AstNodeTypes::TEXT, 'foo'));
+        $this->ast->addChild($pathAst);
+        $pathTemplate = '/foo';
+        $expectedRoute = $this->createRoute($pathTemplate);
+        $this->expectedTrie->addChild(new LiteralTrieNode(
+            'foo',
+            [],
+            $expectedRoute
+        ));
+        $this->lexer->expects($this->once())
+            ->method('lex')
+            ->with($pathTemplate)
+            ->willReturn(new TokenStream([]));
+        $this->assertEquals($this->expectedTrie, $this->compiler->compile($expectedRoute));
+    }
+
+    public function testCompilingVariableOnlyPathAstAddsRouteToNode(): void
+    {
+        $pathAst = (new AstNode(AstNodeTypes::PATH, null))
+            ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
+            ->addChild(new AstNode(AstNodeTypes::VARIABLE, 'foo'));
+        $this->ast->addChild($pathAst);
+        $pathTemplate = '/:foo';
+        $expectedRoute = $this->createRoute($pathTemplate);
+        $this->expectedTrie->addChild(new VariableTrieNode(
+            new RouteVariable('foo'),
+            [],
+            $expectedRoute
+        ));
+        $this->lexer->expects($this->once())
+            ->method('lex')
+            ->with($pathTemplate)
+            ->willReturn(new TokenStream([]));
+        $this->assertEquals($this->expectedTrie, $this->compiler->compile($expectedRoute));
+    }
+
+    public function testConstructingCompilerWithoutConstraintsStillRegistersDefaultOnes(): void
+    {
+        // Set up AST
+        $variableNode = (new AstNode(AstNodeTypes::VARIABLE, 'foo'))
+            ->addChild(new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, 'int'));
+        $pathAst = (new AstNode(AstNodeTypes::PATH, null))
+            ->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'))
+            ->addChild($variableNode);
+        $this->ast->addChild($pathAst);
+
+        // Test compiling
+        $pathTemplate = '/:foo(int)';
+        $expectedRoute = $this->createRoute($pathTemplate);
+        $this->expectedTrie->addChild(new VariableTrieNode(
+            new RouteVariable('foo', [new IntegerConstraint()]),
+            [],
+            $expectedRoute
+        ));
+        $this->lexer->expects($this->once())
+            ->method('lex')
+            ->with($pathTemplate)
+            ->willReturn(new TokenStream([]));
+        $compiler = new TrieCompiler(null, $this->parser, $this->lexer);
+        $this->assertEquals($this->expectedTrie, $compiler->compile($expectedRoute));
+    }
+
+    public function testLexingExceptionGetsRethrown(): void
+    {
+        $this->expectException(InvalidUriTemplateException::class);
+        $this->expectExceptionMessage('URI template could not be compiled');
+        $this->lexer->method('lex')
+            ->willThrowException(new LexingException());
+        $this->compiler->compile($this->createRoute('/path'));
+    }
+
+    public function testUnexpectedTokenExceptionGetsRethrown(): void
+    {
+        $this->expectException(InvalidUriTemplateException::class);
+        $this->expectExceptionMessage('URI template could not be compiled');
+        $tokens = new TokenStream([]);
+        $this->lexer->method('lex')
+            ->willReturn($tokens);
+        $this->parser->method('parse')
+            ->with($tokens)
+            ->willThrowException(new UnexpectedTokenException());
+        $this->compiler->compile($this->createRoute('/path'));
     }
 
     /**

@@ -60,6 +60,14 @@ class RequestParserTest extends TestCase
         $this->parser->getActualMimeType([]);
     }
 
+    public function testGettingActualMimeTypeReturnsCorrectMimeType(): void
+    {
+        $this->body->expects($this->once())
+            ->method('readAsString')
+            ->willReturn('<?xml version="1.0"?><foo />');
+        $this->assertEquals('text/xml', $this->parser->getActualMimeType($this->request));
+    }
+
     public function testGettingClientIPAddressReturnsNullWhenPropertyIsNotSet(): void
     {
         $this->assertNull($this->parser->getClientIPAddress($this->request));
@@ -95,6 +103,45 @@ class RequestParserTest extends TestCase
         $this->assertNull($this->parser->getClientMimeType($bodyPart));
     }
 
+    public function testIsJsonReturnsWhetherOrNotARequestIsJson(): void
+    {
+        $this->headers->add('Content-Type', 'application/json');
+        $this->assertTrue($this->parser->isJson($this->request));
+        $this->headers->removeKey('Content-Type');
+        $this->assertFalse($this->parser->isJson($this->request));
+    }
+
+    public function testParseAcceptCharsetHeaderReturnsThem(): void
+    {
+        $this->headers->add('Accept-Charset', 'utf-8; q=0.1');
+        $values = $this->parser->parseAcceptCharsetHeader($this->request);
+        $this->assertCount(1, $values);
+        $this->assertEquals(0.1, $values[0]->getParameters()->get('q'));
+    }
+
+    public function testParseAcceptHeaderReturnsThem(): void
+    {
+        $this->headers->add('Accept', 'tex/plain; q=0.1');
+        $values = $this->parser->parseAcceptHeader($this->request);
+        $this->assertCount(1, $values);
+        $this->assertEquals(0.1, $values[0]->getParameters()->get('q'));
+    }
+
+    public function testParseAcceptLanguageHeaderReturnsThem(): void
+    {
+        $this->headers->add('Accept-language', 'en; q=0.1');
+        $values = $this->parser->parseAcceptLanguageHeader($this->request);
+        $this->assertCount(1, $values);
+        $this->assertEquals(0.1, $values[0]->getParameters()->get('q'));
+    }
+
+    public function testParseContentTypeHeaderReturnsIt(): void
+    {
+        $this->headers->add('Content-Type', 'application/json');
+        $value = $this->parser->parseContentTypeHeader($this->request);
+        $this->assertEquals('application/json', $value->getMediaType());
+    }
+
     public function testParsingMultipartRequestWithoutBoundaryThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -108,5 +155,21 @@ class RequestParserTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Request must be of type %s or %s', IHttpRequestMessage::class, MultipartBodyPart::class));
         $this->parser->readAsMultipart([]);
+    }
+
+    public function testReadAsFormInputReturnsInput(): void
+    {
+        $this->body->method('readAsString')
+            ->willReturn('foo=bar');
+        $value = $this->parser->readAsFormInput($this->request);
+        $this->assertEquals('bar', $value->get('foo'));
+    }
+
+    public function testReadAsJsonReturnsInput(): void
+    {
+        $this->body->method('readAsString')
+            ->willReturn('{"foo":"bar"}');
+        $value = $this->parser->readAsJson($this->request);
+        $this->assertEquals('bar', $value['foo']);
     }
 }

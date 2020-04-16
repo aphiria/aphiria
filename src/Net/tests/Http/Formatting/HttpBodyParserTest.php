@@ -47,12 +47,30 @@ class HttpBodyParserTest extends TestCase
         $this->assertNull($this->parser->getMimeType(null));
     }
 
+    public function testGettingMimeTypeForBodyThatAlreadyHasBeenCheckedReturnsSameMimeType(): void
+    {
+        $this->body->expects($this->once())
+            ->method('readAsString')
+            ->willReturn('<?xml version="1.0"?><foo />');
+        $this->assertEquals('text/xml', $this->parser->getMimeType($this->body));
+        $this->assertEquals('text/xml', $this->parser->getMimeType($this->body));
+    }
+
     public function testGettingMimeTypeReturnsCorrectMimeType(): void
     {
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn('<?xml version="1.0"?><foo />');
         $this->assertEquals('text/xml', $this->parser->getMimeType($this->body));
+    }
+
+    public function testParsingInputWithFormUrlEncodedBodyThatAlreadyHasBeenCheckedReturnsSameInput(): void
+    {
+        $this->body->expects($this->once())
+            ->method('readAsString')
+            ->willReturn('foo=bar');
+        $this->assertEquals('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
+        $this->assertEquals('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
     }
 
     public function testParsingInputWithFormUrlEncodedBodyReturnsParsedFormData(): void

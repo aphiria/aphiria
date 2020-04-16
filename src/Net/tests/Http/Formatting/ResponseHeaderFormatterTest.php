@@ -66,10 +66,10 @@ class ResponseHeaderFormatterTest extends TestCase
     public function testCookieWithMaxAgeSetsExpiresAndMaxAgeProperty(): void
     {
         $expiration = 3600;
-        $cookie = new Cookie('foo', 'bar', $expiration, null, null, false, false, null);
+        $cookie = new Cookie('foo', 'bar', time() + $expiration, null, null, false, false, null);
         $this->formatter->setCookie($this->headers, $cookie);
-        $this->assertEquals(
-            'foo=bar; Expires=' . $cookie->getExpiration()->format('D, d M Y H:i:s \G\M\T') . '; Max-Age=3600',
+        $this->assertMatchesRegularExpression(
+            '/^foo=bar; Expires=[^;]+; Max-Age=3600$/',
             $this->headers->getFirst('Set-Cookie')
         );
     }

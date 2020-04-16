@@ -17,6 +17,7 @@ use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\ITrieCache;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\ITrieCompiler;
+use Aphiria\Routing\UriTemplates\Compilers\Tries\LiteralTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RootTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieFactory;
 use Aphiria\Routing\UriTemplates\UriTemplate;
@@ -74,6 +75,8 @@ class TrieFactoryTest extends TestCase
         $this->routes->add(new Route(new UriTemplate('foo'), new MethodRouteAction('Bar', 'baz'), []));
         $trieFactory = new TrieFactory($this->routes, null, $this->trieCompiler);
         $expectedTrie = new RootTrieNode();
+        // Make sure child nodes get added, too
+        $expectedTrie->addChild(new LiteralTrieNode('foo', []));
         $this->trieCompiler->expects($this->once())
             ->method('compile')
             ->willReturn($expectedTrie);

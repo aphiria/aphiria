@@ -19,6 +19,7 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\RouteVariable;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\VariableTrieNode;
 use Aphiria\Routing\UriTemplates\UriTemplate;
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -120,6 +121,19 @@ class TrieNodeTest extends TestCase
             )
         ];
         $this->assertEquals($expectedChildren, $this->node->getAllChildren());
+    }
+
+    public function testAddingInvalidChildNodeThrowsException(): void
+    {
+        $invalidChildNode = new class() extends TrieNode {
+            public function __construct()
+            {
+                parent::__construct([], [], null);
+            }
+        };
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unexpected trie node type ' . \get_class($invalidChildNode));
+        $this->node->addChild($invalidChildNode);
     }
 
     public function testAddingLiteralChildNormalizesValueInMap(): void
@@ -277,8 +291,9 @@ class TrieNodeTest extends TestCase
 
     public function testAddingChildWithSameVariablePartsMergesRoutes(): void
     {
-        $fooRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
+        $fooRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'foo'), []);
         $barRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
+        $bazRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'baz'), []);
         $this->node->addChild(new VariableTrieNode(
             new RouteVariable('foo'),
             [],
@@ -286,13 +301,18 @@ class TrieNodeTest extends TestCase
         ));
         $this->node->addChild(new VariableTrieNode(
             new RouteVariable('foo'),
-            [],
+            // Test that grandchildren also get merged in
+            [
+                new LiteralTrieNode('bar', [], [$bazRoute])
+            ],
             [$barRoute]
         ));
         $expectedChildren = [
             new VariableTrieNode(
                 new RouteVariable('foo'),
-                [],
+                [
+                    new LiteralTrieNode('bar', [], [$bazRoute])
+                ],
                 [$fooRoute, $barRoute]
             )
         ];

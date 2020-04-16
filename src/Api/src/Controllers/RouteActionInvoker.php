@@ -25,12 +25,13 @@ use Aphiria\Net\Http\Response;
 use Closure;
 use ReflectionException;
 use ReflectionFunction;
+use ReflectionFunctionAbstract;
 use ReflectionMethod;
 
 /**
  * Defines the route action invoker
  */
-final class RouteActionInvoker implements IRouteActionInvoker
+class RouteActionInvoker implements IRouteActionInvoker
 {
     /** @const The name of the property to store the parsed body in */
     private const PARSED_BODY_PROPERTY_NAME = '__APHIRIA_PARSED_BODY';
@@ -68,21 +69,7 @@ final class RouteActionInvoker implements IRouteActionInvoker
         array $routeVariables
     ): IHttpResponseMessage {
         try {
-            if (\is_array($routeActionDelegate)) {
-                $reflectionFunction = new ReflectionMethod($routeActionDelegate[0], $routeActionDelegate[1]);
-
-                if (!$reflectionFunction->isPublic()) {
-                    throw new HttpException(
-                        HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
-                        sprintf(
-                            'Controller method %s must be public',
-                            self::getRouteActionDisplayName($routeActionDelegate)
-                        )
-                    );
-                }
-            } else {
-                $reflectionFunction = new ReflectionFunction($routeActionDelegate);
-            }
+            $reflectionFunction = $this->reflectRouteActionDelegate($routeActionDelegate);
         } catch (ReflectionException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
@@ -159,6 +146,23 @@ final class RouteActionInvoker implements IRouteActionInvoker
     }
 
     /**
+     * Reflects a route action delegate
+     * Note: This is split out primarily for testability
+     *
+     * @param callable $routeActionDelegate The route action delegate to reflect
+     * @return ReflectionFunctionAbstract The reflected method/function
+     * @throws ReflectionException Thrown if there was an error reflecting the delegate
+     */
+    protected function reflectRouteActionDelegate(callable $routeActionDelegate): ReflectionFunctionAbstract
+    {
+        if (\is_array($routeActionDelegate)) {
+            return new ReflectionMethod($routeActionDelegate[0], $routeActionDelegate[1]);
+        }
+
+        return new ReflectionFunction($routeActionDelegate);
+    }
+
+    /**
      * Gets the display name for a route action for use in exception messages
      *
      * @param callable $routeActionDelegate The route action delegate whose display name we want
@@ -168,7 +172,7 @@ final class RouteActionInvoker implements IRouteActionInvoker
     {
         if (\is_array($routeActionDelegate)) {
             if (\is_string($routeActionDelegate[0])) {
-                return $routeActionDelegate[0];
+                return $routeActionDelegate[0] . '::' . $routeActionDelegate[1];
             }
 
             return \get_class($routeActionDelegate[0]) . '::' . $routeActionDelegate[1];

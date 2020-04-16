@@ -18,7 +18,7 @@ use Aphiria\IO\Streams\Stream;
 /**
  * Defines the stream response writer
  */
-final class StreamResponseWriter implements IResponseWriter
+class StreamResponseWriter implements IResponseWriter
 {
     /** @var IStream The output stream to write the body to */
     private IStream $outputStream;

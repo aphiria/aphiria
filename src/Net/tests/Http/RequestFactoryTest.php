@@ -297,6 +297,15 @@ class RequestFactoryTest extends TestCase
         $this->assertEquals(['foo/bar;p="A,B"', 'baz'], $request->getHeaders()->get('Accept'));
     }
 
+    public function testRemoteAddrUsedAsIpAddressWhenNotUsingTrustedProxy(): void
+    {
+        $request = $this->factory->createRequestFromSuperglobals([
+            'REMOTE_ADDR' => '192.168.2.1',
+            'HTTP_HOST' => 'foo.com'
+        ]);
+        $this->assertEquals('192.168.2.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
+    }
+
     public function testRequestUriQueryStringIsUsedIfQueryStringServerPropertyDoesNotExist(): void
     {
         $request = $this->factory->createRequestFromSuperglobals([

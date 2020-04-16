@@ -35,6 +35,11 @@ class KeyHasherTest extends TestCase
         $this->assertEquals('__aphiria:a:' . md5(serialize($array)), $this->keyHasher->getHashKey($array));
     }
 
+    public function testNullCanBeHashed(): void
+    {
+        $this->assertEquals('__aphiria:u', $this->keyHasher->getHashKey(null));
+    }
+
     public function testScalarsAreHashedToCorrectKey(): void
     {
         $this->assertEquals('__aphiria:s:1', $this->keyHasher->getHashKey('1'));

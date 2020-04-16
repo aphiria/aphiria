@@ -23,7 +23,7 @@ use RuntimeException;
 /**
  * Defines a mock controller for use in testing
  */
-class Controller extends BaseController
+class ControllerWithEndpoints extends BaseController
 {
     /**
      * Mocks a method with an array parameter
@@ -48,6 +48,17 @@ class Controller extends BaseController
     }
 
     /**
+     * Mocks a method with a callable parameter
+     *
+     * @param callable $foo The float
+     * @return IHttpResponseMessage The response
+     */
+    public function callableParameter(callable $foo): IHttpResponseMessage
+    {
+        return $this->createResponseWithBody((string)$foo);
+    }
+
+    /**
      * Mocks a method with a parameter with a default value
      *
      * @param string $foo The string
@@ -57,6 +68,7 @@ class Controller extends BaseController
     {
         return $this->createResponseWithBody($foo);
     }
+
     /**
      * Mocks a method with a float parameter
      *

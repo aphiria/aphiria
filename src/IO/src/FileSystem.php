@@ -104,7 +104,7 @@ class FileSystem
 
         foreach ($items as $item) {
             if ($item->isDir()) {
-                if (!$this->deleteDirectory($item->getRealPath())) {
+                if (!$this->deleteDirectory($item->getRealPath(), $keepDirectoryStructure)) {
                     return false;
                 }
             } elseif ($item->isFile()) {

@@ -85,4 +85,9 @@ class HttpHeaderParserTest extends TestCase
         $this->assertEquals('baz', $this->parser->parseParameters($headers, 'Foo')->get('bar'));
         $this->assertEquals('baz', $this->parser->parseParameters($headers, 'Bar')->get('bar'));
     }
+
+    public function testIsJsonForHeadersWithoutContentTypeReturnsFalse(): void
+    {
+        $this->assertFalse($this->parser->isJson(new HttpHeaders()));
+    }
 }

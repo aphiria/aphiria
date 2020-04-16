@@ -54,9 +54,31 @@ class FileSystemTest extends TestCase
         @rmdir(__DIR__ . '/tmp');
     }
 
+    public function testCopyingDirectoryThatCannotCopyFileReturnsFalse(): void
+    {
+        $fileSystem = new class() extends FileSystem {
+            public function copyFile(string $source, string $target): bool
+            {
+                return false;
+            }
+        };
+        $this->assertFalse($fileSystem->copyDirectory(__DIR__ . '/files/subdirectory', __DIR__ . '/tmp'));
+    }
+
     public function testCopyingDirectoryThatIsNotADirectoryReturnsFalse(): void
     {
         $this->assertFalse($this->fileSystem->copyDirectory(__DIR__ . '/doesnotexist', __DIR__ . '/tmp'));
+    }
+
+    public function testCopyingDirectoryWhenTargetDirectoryCannotBeCreatedReturnsFalse(): void
+    {
+        $fileSystem = new class() extends FileSystem {
+            public function makeDirectory(string $path, int $mode = 0777, bool $isRecursive = false): bool
+            {
+                return false;
+            }
+        };
+        $this->assertFalse($fileSystem->copyDirectory(__DIR__, __DIR__ . '/tmp'));
     }
 
     public function testCopyingFileCopiesTheContents(): void
@@ -72,15 +94,70 @@ class FileSystemTest extends TestCase
         @mkdir(__DIR__ . '/tmp');
         @mkdir(__DIR__ . '/tmp/subdirectory');
         file_put_contents(__DIR__ . '/tmp/subdirectory/foo.txt', 'bar');
-        $this->fileSystem->deleteDirectory(__DIR__ . '/tmp');
+        $this->assertTrue($this->fileSystem->deleteDirectory(__DIR__ . '/tmp'));
         $this->assertFalse($this->fileSystem->exists(__DIR__ . '/tmp'));
 
         // Just in case, remove the structure
         foreach (['/tmp/subdirectory/foo.txt', '/tmp/subdirectory', '/tmp'] as $relativePath) {
             if (\file_exists(__DIR__ . $relativePath)) {
-                @\unlink(__DIR__ . $relativePath);
+                if (\is_file(__DIR__ . $relativePath)) {
+                    @unlink(__DIR__ . $relativePath);
+                } else {
+                    @rmdir(__DIR__ . $relativePath);
+                }
             }
         }
+    }
+
+    public function testDeletingDirectoryButKeepingStructureDeletesFilesAndKeepsDirectories(): void
+    {
+        @mkdir(__DIR__ . '/tmp');
+        @mkdir(__DIR__ . '/tmp/subdirectory');
+        file_put_contents(__DIR__ . '/tmp/subdirectory/foo.txt', 'bar');
+        $this->assertTrue($this->fileSystem->deleteDirectory(__DIR__ . '/tmp', true));
+        $this->assertTrue($this->fileSystem->exists(__DIR__ . '/tmp'));
+        $this->assertTrue($this->fileSystem->exists(__DIR__ . '/tmp/subdirectory'));
+        $this->assertFalse($this->fileSystem->exists(__DIR__ . '/tmp/subdirectory/foo.txt'));
+
+        // Just in case, remove the structure
+        foreach (['/tmp/subdirectory/foo.txt', '/tmp/subdirectory', '/tmp'] as $relativePath) {
+            if (\file_exists(__DIR__ . $relativePath)) {
+                if (\is_file(__DIR__ . $relativePath)) {
+                    @unlink(__DIR__ . $relativePath);
+                } else {
+                    @rmdir(__DIR__ . $relativePath);
+                }
+            }
+        }
+    }
+
+    public function testDeletingDirectoryThatCannotDeleteFilesReturnsFalse(): void
+    {
+        $fileSystem = new class() extends FileSystem {
+            public function deleteFile(string $path): bool
+            {
+                return false;
+            }
+        };
+        @mkdir(__DIR__ . '/tmp');
+        file_put_contents(__DIR__ . '/tmp/foo.txt', 'bar');
+        $this->assertFalse($fileSystem->deleteDirectory(__DIR__ . '/tmp'));
+
+        // Just in case, remove the structure
+        foreach (['/tmp/foo.txt', '/tmp'] as $relativePath) {
+            if (\file_exists(__DIR__ . $relativePath)) {
+                if (\is_file(__DIR__ . $relativePath)) {
+                    @unlink(__DIR__ . $relativePath);
+                } else {
+                    @rmdir(__DIR__ . $relativePath);
+                }
+            }
+        }
+    }
+
+    public function testDeletingDirectoryThatIsNotDirectoryReturnsFalse(): void
+    {
+        $this->assertFalse($this->fileSystem->deleteDirectory(__FILE__));
     }
 
     public function testDeletingFileActuallyDeletesIt(): void
@@ -96,6 +173,11 @@ class FileSystemTest extends TestCase
         $this->assertFalse($this->fileSystem->exists(__DIR__ . '/doesnotexist'));
         $this->assertTrue($this->fileSystem->exists(__FILE__));
         $this->assertFalse($this->fileSystem->exists(__DIR__ . '/doesnotexist.txt'));
+    }
+
+    public function testGetDirectoriesForPathThatIsNotDirectoryReturnsEmptyArray(): void
+    {
+        $this->assertEmpty($this->fileSystem->getDirectories(__FILE__));
     }
 
     public function testGettingBasenameForInvalidFileThrowsException(): void

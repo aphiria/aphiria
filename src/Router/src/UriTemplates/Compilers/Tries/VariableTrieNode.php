@@ -48,7 +48,7 @@ final class VariableTrieNode extends TrieNode
         if (\count($this->parts) === 1 && $this->parts[0] instanceof RouteVariable) {
             $this->onlyContainsVariable = true;
         } else {
-            // This must contain at least two  parts (variable or literal parts)
+            // This must contain at least two parts (variable or literal parts)
             $this->onlyContainsVariable = false;
             $this->regex = '';
 

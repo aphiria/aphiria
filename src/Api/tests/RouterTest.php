@@ -15,7 +15,7 @@ namespace Aphiria\Api\Tests;
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Router;
-use Aphiria\Api\Tests\Controllers\Mocks\Controller as ControllerMock;
+use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints as ControllerMock;
 use Aphiria\Api\Tests\Mocks\AttributeMiddleware;
 use Aphiria\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;
 use Aphiria\DependencyInjection\IServiceResolver;

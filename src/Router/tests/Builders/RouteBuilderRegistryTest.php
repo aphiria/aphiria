@@ -289,7 +289,7 @@ class RouteBuilderRegistryTest extends TestCase
 
     public function testRouteConvenienceMethodsCreateRoutesWithProperMethods(): void
     {
-        foreach (['DELETE', 'GET', 'OPTIONS', 'PATCH', 'PUT'] as $httpMethod) {
+        foreach (['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT'] as $httpMethod) {
             /** @var RouteBuilder $routeBuilder */
             $routeBuilder = $this->registry->{\strtolower($httpMethod)}('foo');
             $routeBuilder->mapsToMethod('Foo', 'bar');
