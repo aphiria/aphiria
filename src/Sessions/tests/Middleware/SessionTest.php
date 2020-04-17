@@ -78,7 +78,7 @@ class SessionTest extends TestCase
             null,
             false,
             true,
-            1
+            1.1 // The GC checks uses '<'.  So, to ensure we always do GC, set it at higher than 100%
         );
         $middleware->handle($this->request, $this->next);
     }

@@ -78,6 +78,7 @@ class ValidationBinderTest extends TestCase
 
     public function testConstraintCacheIsUsedInProd(): void
     {
+        // Basically just ensuring we cover the production case in this test
         putenv('APP_ENV=production');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->binder->bind($this->container);
