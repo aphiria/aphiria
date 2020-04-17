@@ -46,11 +46,11 @@ class RoutingBinderTest extends TestCase
         GlobalConfiguration::resetConfigurationSources();
         $this->currEnvironment = getenv('APP_ENV') ?: null;
 
-        if (!\file_exists(dirname(self::ROUTE_CACHE_PATH))) {
+        if (!\file_exists(\dirname(self::ROUTE_CACHE_PATH))) {
             mkdir(\dirname(self::ROUTE_CACHE_PATH));
         }
 
-        if (!\file_exists(dirname(self::TRIE_CACHE_PATH))) {
+        if (!\file_exists(\dirname(self::TRIE_CACHE_PATH))) {
             mkdir(\dirname(self::TRIE_CACHE_PATH));
         }
 
@@ -71,10 +71,10 @@ class RoutingBinderTest extends TestCase
         }
 
         // The trie and route cache are in the same directory
-        if (\file_exists(dirname(self::ROUTE_CACHE_PATH))) {
+        if (\file_exists(\dirname(self::ROUTE_CACHE_PATH))) {
             @\unlink(self::ROUTE_CACHE_PATH);
             @\unlink(self::TRIE_CACHE_PATH);
-            \rmdir(dirname(self::ROUTE_CACHE_PATH));
+            \rmdir(\dirname(self::ROUTE_CACHE_PATH));
         }
     }
 
