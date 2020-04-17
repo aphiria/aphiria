@@ -38,7 +38,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Defines the global exception handler bootstrapper
  */
-final class GlobalExceptionHandlerBootstrapper implements IBootstrapper
+class GlobalExceptionHandlerBootstrapper implements IBootstrapper
 {
     /** @var IContainer The DI container */
     protected IContainer $container;

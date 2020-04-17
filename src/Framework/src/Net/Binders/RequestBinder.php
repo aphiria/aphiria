@@ -40,10 +40,20 @@ class RequestBinder extends Binder
     protected function getRequest(): IHttpRequestMessage
     {
         // The $_SERVER superglobal will not have enough info to construct a request when running from the console
-        if (\PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg') {
+        if ($this->isRunningInConsole()) {
             return new Request('GET', new Uri('http://localhost'));
         }
 
         return (new RequestFactory())->createRequestFromSuperglobals($_SERVER);
+    }
+
+    /**
+     * Gets whether or not we're running in the console
+     *
+     * @return bool True if running in console, otherwise false
+     */
+    protected function isRunningInConsole(): bool
+    {
+        return \PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg';
     }
 }

@@ -108,6 +108,13 @@ class TypeFinderTest extends TestCase
         );
     }
 
+    public function testFindAllTypesWithInvalidDirectoryParameterThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Directories must be a string or array of strings');
+        $this->finder->findAllTypes($this);
+    }
+
     public function testFindAllTypesWithNonDirectoryPathThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

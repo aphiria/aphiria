@@ -76,7 +76,7 @@ class FormUrlEncodedSerializerTest extends TestCase
     public function testEncodingExceptionThrownDuringSerializationIsRethrown(): void
     {
         $this->expectException(SerializationException::class);
-        $this->expectExceptionMessage('Failed to serialize value');
+        $this->expectExceptionMessage('Failed to encode value');
         $user = new User(123, 'foo@bar.com');
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->once())

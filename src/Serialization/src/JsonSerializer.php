@@ -43,6 +43,7 @@ final class JsonSerializer extends Serializer
         try {
             $serializedValue = json_encode($encodedValue, JSON_THROW_ON_ERROR);
         } catch (JsonException $ex) {
+            echo 'here';
             throw new SerializationException('Failed to serialize value', 0, $ex);
         }
 

@@ -33,6 +33,20 @@ class UriTemplateParserTest extends TestCase
         $this->parser = new UriTemplateParser();
     }
 
+    public function testParsingClosingBracketWhenNotParsingOptionalRoutePartTreatsBracketAsText(): void
+    {
+        $tokens = new TokenStream([
+            new Token(TokenTypes::T_PUNCTUATION, '/'),
+            new Token(TokenTypes::T_PUNCTUATION, ']')
+        ]);
+        $pathNode = new AstNode(AstNodeTypes::PATH);
+        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
+        $pathNode->addChild(new AstNode(AstNodeTypes::TEXT, ']'));
+        $expectedAst = new AstNode(AstNodeTypes::ROOT);
+        $expectedAst->addChild($pathNode);
+        $this->assertEquals($expectedAst, $this->parser->parse($tokens));
+    }
+
     public function testParsingInvalidBracketInMiddleOfConstraintThrowsException(): void
     {
         $this->expectException(UnexpectedTokenException::class);
@@ -132,6 +146,20 @@ class UriTemplateParserTest extends TestCase
             new Token(TokenTypes::T_TEXT, 'foo')
         ]);
         $this->parser->parse($tokens);
+    }
+
+    public function testParsingNonStandardPunctuationJustGetsTreatedAsText(): void
+    {
+        $tokens = new TokenStream([
+            new Token(TokenTypes::T_PUNCTUATION, '/'),
+            new Token(TokenTypes::T_PUNCTUATION, '!')
+        ]);
+        $pathNode = new AstNode(AstNodeTypes::PATH);
+        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
+        $pathNode->addChild(new AstNode(AstNodeTypes::TEXT, '!'));
+        $expectedAst = new AstNode(AstNodeTypes::ROOT);
+        $expectedAst->addChild($pathNode);
+        $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
     public function testParsingOptionalHostPartThatDoesEndWithPeriodThrowsException(): void

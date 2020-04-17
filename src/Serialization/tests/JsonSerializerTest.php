@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Serialization\Tests;
 
 use Aphiria\Serialization\Encoding\EncoderRegistry;
+use Aphiria\Serialization\Encoding\EncodingContext;
 use Aphiria\Serialization\Encoding\EncodingException;
 use Aphiria\Serialization\Encoding\IEncoder;
 use Aphiria\Serialization\JsonSerializer;
@@ -83,7 +84,7 @@ class JsonSerializerTest extends TestCase
     public function testEncodingExceptionThrownDuringSerializationIsRethrown(): void
     {
         $this->expectException(SerializationException::class);
-        $this->expectExceptionMessage('Failed to serialize value');
+        $this->expectExceptionMessage('Failed to encode value');
         $user = new User(123, 'foo@bar.com');
         $encoder = $this->createMock(IEncoder::class);
         $encoder->expects($this->once())
@@ -97,7 +98,26 @@ class JsonSerializerTest extends TestCase
     public function testSerializeThrowSerializationExceptionDuringJsonEncoding(): void
     {
         $this->expectException(SerializationException::class);
-        $this->expectExceptionMessage('Failed to serialize value');
+        $this->expectExceptionMessage('Failed to encode value');
         $this->serializer->serialize(123456);
+    }
+
+    public function testSerializingInvalidValueThrowsException(): void
+    {
+        $this->expectException(SerializationException::class);
+        $this->expectExceptionMessage('Failed to serialize value');
+        $this->encoders->registerEncoder('int', new class() implements IEncoder {
+            public function decode($value, string $type, EncodingContext $context)
+            {
+                return null;
+            }
+
+            public function encode($value, EncodingContext $context)
+            {
+                // Make the encoded value a too-long value so that we cannot encode it
+                return 9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999;
+            }
+        });
+        $this->serializer->serialize(1234);
     }
 }

@@ -66,7 +66,7 @@ abstract class Serializer implements ISerializer
             return $this->encoders->getEncoderForValue($value)
                 ->encode($value, new EncodingContext());
         } catch (EncodingException | InvalidArgumentException | OutOfBoundsException $ex) {
-            throw new SerializationException('Failed to serialize value', 0, $ex);
+            throw new SerializationException('Failed to encode value', 0, $ex);
         }
     }
 }
