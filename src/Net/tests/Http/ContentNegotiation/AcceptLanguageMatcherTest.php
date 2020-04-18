@@ -33,6 +33,13 @@ class AcceptLanguageMatcherTest extends TestCase
         $this->request = new Request('GET', new Uri('http://example.com'), $this->headers);
     }
 
+    public function testLanguageIsFirstSupportedWhenLanguagesAreEqualScoreWildcards(): void
+    {
+        $this->headers->add('Accept-Language', '*');
+        $this->headers->add('Accept-Language', '*', true);
+        $this->assertEquals('en-US', (new AcceptLanguageMatcher(['en-US', 'en-GB']))->getBestLanguageMatch($this->request));
+    }
+
     public function testLanguageIsNullWhenNoMatchesAreFound(): void
     {
         $this->headers->add('Accept-Language', 'en-US; q=1');

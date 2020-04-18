@@ -56,7 +56,10 @@ class HttpBodyParser
         $fileInfo = new finfo(FILEINFO_MIME_TYPE);
 
         if (($mimeType = $fileInfo->buffer($body->readAsString())) === false) {
+            // Cannot test failing to writing data into a file buffer
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('Could not determine mime type of body');
+            // @codeCoverageIgnoreEnd
         }
 
         // Cache this for next time

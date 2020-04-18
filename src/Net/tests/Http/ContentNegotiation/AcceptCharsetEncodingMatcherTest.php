@@ -107,8 +107,41 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
     {
         $this->headers->add('Accept-Charset', 'utf-8; q=0.1');
         $this->headers->add('Accept-Charset', 'utf-16; q=0.5', true);
+        $this->headers->add('Accept-Charset', 'utf-32; q=0.6', true);
+        $encoding = $this->matcher->getBestEncodingMatch(['utf-8', 'utf-16', 'utf-32'], $this->request);
+        $this->assertEquals('utf-32', $encoding);
+    }
+
+    public function testBestEncodingIsFirstSupportedOneIfBothHaveEqualScoresAndAreNotWildcards(): void
+    {
+        $this->headers->add('Accept-Charset', 'utf-8');
+        $this->headers->add('Accept-Charset', 'utf-16', true);
         $encoding = $this->matcher->getBestEncodingMatch(['utf-8', 'utf-16'], $this->request);
-        $this->assertEquals('utf-16', $encoding);
+        $this->assertEquals('utf-8', $encoding);
+    }
+
+    public function testBestEncodingIsFirstSupportedOneIfBothHaveEqualScoresAndAreWildcards(): void
+    {
+        $this->headers->add('Accept-Charset', '*');
+        $this->headers->add('Accept-Charset', '*', true);
+        $encoding = $this->matcher->getBestEncodingMatch(['utf-8'], $this->request);
+        $this->assertEquals('utf-8', $encoding);
+    }
+
+    public function testBestEncodingIsNonWildcardIfBothHaveEqualsScoresAndWildcardIsBeforeNon(): void
+    {
+        $this->headers->add('Accept-Charset', '*');
+        $this->headers->add('Accept-Charset', 'utf-8', true);
+        $encoding = $this->matcher->getBestEncodingMatch(['utf-8'], $this->request);
+        $this->assertEquals('utf-8', $encoding);
+    }
+
+    public function testBestEncodingIsNonWildcardIfBothHaveEqualsScoresAndWildcardisAfterNon(): void
+    {
+        $this->headers->add('Accept-Charset', 'utf-8');
+        $this->headers->add('Accept-Charset', '*', true);
+        $encoding = $this->matcher->getBestEncodingMatch(['utf-8'], $this->request);
+        $this->assertEquals('utf-8', $encoding);
     }
 
     public function testBestEncodingIsNullWhenFormatterDoesNotSupportCharsetFromContentTypeHeader(): void

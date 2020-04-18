@@ -14,8 +14,10 @@ namespace Aphiria\Net\Tests\Http\ContentNegotiation\MediaTypeFormatters;
 
 use Aphiria\IO\Streams\IStream;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use Aphiria\Serialization\JsonSerializer;
+use Aphiria\Serialization\SerializationException as SerializerSerializationException;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -74,6 +76,35 @@ class JsonMediaTypeFormatterTest extends TestCase
         $expectedUser = new User(123, 'foo@bar.com');
         $actualUser = $this->formatter->readFromStream($stream, User::class);
         $this->assertEquals($expectedUser, $actualUser);
+    }
+
+    public function testSerializerSerializationExceptionGetsRethrownWhenReading(): void
+    {
+        $this->expectException(SerializationException::class);
+        $this->expectExceptionMessage('Failed to read content from stream as type ' . User::class);
+        $serializer = $this->createMock(JsonSerializer::class);
+        $serializer->expects($this->once())
+            ->method('deserialize')
+            ->with('foo', User::class)
+            ->willThrowException(new SerializerSerializationException());
+        $stream = $this->createStreamWithStringBody('foo');
+        $formatter = new JsonMediaTypeFormatter($serializer);
+        $formatter->readFromStream($stream, User::class);
+    }
+
+    public function testSerializerSerializationExceptionGetsRethrownWhenWriting(): void
+    {
+        $this->expectException(SerializationException::class);
+        $this->expectExceptionMessage('Failed to write content to stream');
+        $user = new User(123, 'foo@bar.com');
+        $stream = $this->createMock(IStream::class);
+        $serializer = $this->createMock(JsonSerializer::class);
+        $serializer->expects($this->once())
+            ->method('serialize')
+            ->with($user)
+            ->willThrowException(new SerializerSerializationException());
+        $formatter = new JsonMediaTypeFormatter($serializer);
+        $formatter->writeToStream($user, $stream, null);
     }
 
     public function testWritingArrayOfObjectsIsSuccessful(): void

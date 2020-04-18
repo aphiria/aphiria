@@ -58,10 +58,6 @@ abstract class TextMediaTypeFormatter extends MediaTypeFormatter
             throw new InvalidArgumentException(static::class . ' can only write strings');
         }
 
-        if (!\is_string($value)) {
-            throw new InvalidArgumentException(static::class . ' can only write strings');
-        }
-
         $encoding = $encoding ?? $this->getDefaultEncoding();
 
         if (!$this->encodingIsSupported($encoding)) {

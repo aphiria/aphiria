@@ -256,6 +256,24 @@ class ContentNegotiatorTest extends TestCase
         $this->assertEquals('utf-16', $result->getEncoding());
     }
 
+    public function testResponseEncodingIsSetFromAcceptCharsetHeaderWhenPresent(): void
+    {
+        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-8']);
+        $formatter->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
+        $this->headers->add('Accept', 'application/json');
+        $this->headers->add('Accept-Charset', 'utf-8');
+        $negotiator = new ContentNegotiator([$formatter]);
+        $result = $negotiator->negotiateResponseContent(User::class, $this->request);
+        $this->assertSame($formatter, $result->getFormatter());
+        $this->assertEquals('utf-8', $result->getEncoding());
+    }
+
     public function testResponseLanguageIsNullWhenNoMatchingSupportedLanguage(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
@@ -271,7 +289,6 @@ class ContentNegotiatorTest extends TestCase
             ->method('getBestLanguageMatch')
             ->with($this->request)
             ->willReturn(null);
-        $this->headers->add('Accept-Charset', 'utf-8');
         $negotiator = new ContentNegotiator([$formatter], null, null, $languageMatcher);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
         $this->assertSame($formatter, $result->getFormatter());

@@ -71,6 +71,82 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $this->assertEquals('application/json', $match->getMediaType());
     }
 
+    public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoreAndHaveNoWildcards(): void
+    {
+        $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter1->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
+        $formatter2 = $this->createFormatterMock(['text/json'], 0);
+        $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
+        $this->headers->add('Accept', 'application/json');
+        $this->headers->add('Accept', 'text/json', true);
+        $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertSame($formatter1, $match->getFormatter());
+        $this->assertEquals('application/json', $match->getMediaType());
+    }
+
+    public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoresAndOneHasWildcardType(): void
+    {
+        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $formatter->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
+        $matcher = new MediaTypeFormatterMatcher([$formatter]);
+        $this->headers->add('Accept', '*/*');
+        $this->headers->add('Accept', 'application/*', true);
+        $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertSame($formatter, $match->getFormatter());
+        $this->assertEquals('application/json', $match->getMediaType());
+    }
+
+    public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoreWildcardSubTypes(): void
+    {
+        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $formatter->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
+        $matcher = new MediaTypeFormatterMatcher([$formatter]);
+        $this->headers->add('Accept', 'application/*');
+        $this->headers->add('Accept', 'application/*', true);
+        $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertSame($formatter, $match->getFormatter());
+        $this->assertEquals('application/json', $match->getMediaType());
+    }
+
+    public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoreAndOneHasWilcardSubTypeAndOtherDoesNot(): void
+    {
+        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $formatter->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
+        $matcher = new MediaTypeFormatterMatcher([$formatter]);
+        $this->headers->add('Accept', 'application/*');
+        $this->headers->add('Accept', 'application/json', true);
+        $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertSame($formatter, $match->getFormatter());
+        $this->assertEquals('application/json', $match->getMediaType());
+    }
+
+    public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoreWildcardTypes(): void
+    {
+        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $formatter->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
+        $matcher = new MediaTypeFormatterMatcher([$formatter]);
+        $this->headers->add('Accept', '*/*');
+        $this->headers->add('Accept', '*/*', true);
+        $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertSame($formatter, $match->getFormatter());
+        $this->assertEquals('application/json', $match->getMediaType());
+    }
+
     public function testBestFormatterIsSelectedByMatchingSupportedMediaTypesInContentTypeHeader(): void
     {
         $formatter1 = $this->createFormatterMock(['application/json'], 1);
@@ -129,6 +205,22 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter, $match->getFormatter());
         $this->assertEquals('text/plain', $match->getMediaType());
+    }
+
+    public function testBestFormatterMatchesHigherQualityScoreWhenBothMediaTypesAreFullyQualified(): void
+    {
+        $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter2 = $this->createFormatterMock(['text/json'], 1);
+        $formatter2->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
+        $this->headers->add('Accept', 'application/json; q=0.3');
+        $this->headers->add('Accept', 'text/json; q=0.5', true);
+        $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
+        $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertSame($formatter2, $match->getFormatter());
+        $this->assertEquals('text/json', $match->getMediaType());
     }
 
     public function tesBestFormatterMatchesWildcardTypeWithHigherQualityScoreThanSpecificMediaType(): void

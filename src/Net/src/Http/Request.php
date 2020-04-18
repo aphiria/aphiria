@@ -201,15 +201,13 @@ class Request implements IHttpRequestMessage
                 }
 
                 return $requestTarget;
-            case RequestTargetTypes::ABSOLUTE_FORM:
-                return (string)$this->uri;
             case RequestTargetTypes::AUTHORITY_FORM:
                 return $this->uri->getAuthority(false) ?? '';
             case RequestTargetTypes::ASTERISK_FORM:
                 return '*';
+            case RequestTargetTypes::ABSOLUTE_FORM:
             default:
-                // Shouldn't happen
-                return '';
+                return (string)$this->uri;
         }
     }
 

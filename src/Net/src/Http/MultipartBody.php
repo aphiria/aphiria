@@ -94,6 +94,8 @@ class MultipartBody extends StreamBody
      */
     private static function createDefaultBoundary(): string
     {
+        // Cannot test a failing random byte call
+        // @codeCoverageIgnoreStart
         try {
             // The following creates a UUID v4
             $string = random_bytes(16);
@@ -104,6 +106,7 @@ class MultipartBody extends StreamBody
         } catch (Exception $ex) {
             throw new RuntimeException('Failed to generate random bytes', 0, $ex);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
