@@ -18,9 +18,6 @@ use Aphiria\Console\Output\Compilers\Elements\Style;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the element registry
- */
 class ElementRegistryTest extends TestCase
 {
     private ElementRegistry $elements;

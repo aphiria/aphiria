@@ -17,9 +17,6 @@ use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the resolution exception
- */
 class ResolutionExceptionTest extends TestCase
 {
     public function testGetContextReturnsContextInjectedInConstructor(): void

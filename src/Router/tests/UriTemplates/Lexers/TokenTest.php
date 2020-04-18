@@ -16,9 +16,6 @@ use Aphiria\Routing\UriTemplates\Lexers\Token;
 use Aphiria\Routing\UriTemplates\Lexers\TokenTypes;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests a lexer token
- */
 class TokenTest extends TestCase
 {
     public function testPropertiesAreSetInConstructor(): void

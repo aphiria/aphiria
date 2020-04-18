@@ -15,9 +15,6 @@ namespace Aphiria\Middleware\Tests;
 use Aphiria\Middleware\MiddlewareBinding;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests middleware bindings
- */
 class MiddlewareBindingTest extends TestCase
 {
     public function testPropertiesAreSetInConstructor(): void

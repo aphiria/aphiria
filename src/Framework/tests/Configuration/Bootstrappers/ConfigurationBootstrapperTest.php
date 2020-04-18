@@ -18,9 +18,6 @@ use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\Framework\Configuration\Bootstrappers\ConfigurationBootstrapper;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the configuration bootstrapper
- */
 class ConfigurationBootstrapperTest extends TestCase
 {
     private GlobalConfigurationBuilder $globalConfigurationBuilder;

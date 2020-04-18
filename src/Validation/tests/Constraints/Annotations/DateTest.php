@@ -16,9 +16,6 @@ use Aphiria\Validation\Constraints\Annotations\Date;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the date constraint annotation
- */
 class DateTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

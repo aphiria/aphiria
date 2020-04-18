@@ -15,9 +15,6 @@ namespace Aphiria\DependencyInjection\Tests;
 use Aphiria\DependencyInjection\TargetedContext;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests a targeted context
- */
 class TargetedContextTest extends TestCase
 {
     public function testMethodsIndicateATargetedContext(): void

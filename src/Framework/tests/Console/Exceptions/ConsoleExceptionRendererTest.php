@@ -19,9 +19,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the console exception renderer
- */
 class ConsoleExceptionRendererTest extends TestCase
 {
     private ConsoleExceptionRenderer $exceptionRenderer;

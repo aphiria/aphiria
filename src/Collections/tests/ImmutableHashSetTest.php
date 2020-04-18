@@ -13,12 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Collections\Tests;
 
 use Aphiria\Collections\ImmutableHashSet;
-use Aphiria\Collections\Tests\Mocks\MockObject;
+use Aphiria\Collections\Tests\Mocks\FakeObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests an immutable hash set
- */
 class ImmutableHashSetTest extends TestCase
 {
     public function testAddingArrayValueIsAcceptable(): void
@@ -49,7 +46,7 @@ class ImmutableHashSetTest extends TestCase
 
     public function testAddingValue(): void
     {
-        $object = new MockObject();
+        $object = new FakeObject();
         $set = new ImmutableHashSet([$object]);
         $this->assertEquals([$object], $set->toArray());
     }
@@ -60,15 +57,15 @@ class ImmutableHashSetTest extends TestCase
         $this->assertFalse($setWithNoValues->containsValue('foo'));
         $setWithStringValue = new ImmutableHashSet(['foo']);
         $this->assertTrue($setWithStringValue->containsValue('foo'));
-        $object = new MockObject();
+        $object = new FakeObject();
         $setWithObjectValue = new ImmutableHashSet([$object]);
         $this->assertTrue($setWithObjectValue->containsValue($object));
     }
 
     public function testCountReturnsNumberOfUniqueValuesInSet(): void
     {
-        $object1 = new MockObject();
-        $object2 = new MockObject();
+        $object1 = new FakeObject();
+        $object2 = new FakeObject();
         $this->assertEquals(0, (new ImmutableHashSet([]))->count());
         $setWithOneValue = new ImmutableHashSet([$object1]);
         $this->assertEquals(1, $setWithOneValue->count());
@@ -84,8 +81,8 @@ class ImmutableHashSetTest extends TestCase
     public function testIteratingOverValuesReturnsValuesNotHashKeys(): void
     {
         $expectedValues = [
-            new MockObject(),
-            new MockObject()
+            new FakeObject(),
+            new FakeObject()
         ];
         $set = new ImmutableHashSet($expectedValues);
         $actualValues = [];

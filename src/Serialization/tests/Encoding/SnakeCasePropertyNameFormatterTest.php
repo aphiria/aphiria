@@ -15,9 +15,6 @@ namespace Aphiria\Serialization\Tests\Encoding;
 use Aphiria\Serialization\Encoding\SnakeCasePropertyNameFormatter;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the snake case property name formatter
- */
 class SnakeCasePropertyNameFormatterTest extends TestCase
 {
     private SnakeCasePropertyNameFormatter $formatter;

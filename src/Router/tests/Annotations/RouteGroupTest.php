@@ -16,9 +16,6 @@ use Aphiria\Routing\Annotations\RouteConstraint;
 use Aphiria\Routing\Annotations\RouteGroup;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the route group annotation
- */
 class RouteGroupTest extends TestCase
 {
     public function testDefaultValuesOfRoutePropertiesAreSet(): void

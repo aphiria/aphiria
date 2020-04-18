@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\Middleware;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests middleware bindings
- */
 class MiddlewareBindingTest extends TestCase
 {
     public function testPropertiesAreSetInConstructor(): void

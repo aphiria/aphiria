@@ -16,9 +16,6 @@ use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\Configuration\MissingConfigurationValueException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the hash table configuration
- */
 class HashTableConfigurationTest extends TestCase
 {
     public function testGetArrayForNestedValueReturnsArray(): void

@@ -15,9 +15,6 @@ namespace Aphiria\DependencyInjection\Tests;
 use Aphiria\DependencyInjection\ClassContainerBinding;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the class container binding
- */
 class ClassContainerBindingTest extends TestCase
 {
     private ClassContainerBinding $binding;

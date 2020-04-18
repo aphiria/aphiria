@@ -15,9 +15,6 @@ namespace Aphiria\Console\Tests\Input\Compilers;
 use Aphiria\Console\Input\Compilers\CommandNotFoundException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the command not found exception
- */
 class CommandNotFoundExceptionTest extends TestCase
 {
     public function testGettingCommandNameReturnsOneSetInConstructor(): void

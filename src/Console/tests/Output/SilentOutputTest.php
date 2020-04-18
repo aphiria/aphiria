@@ -15,9 +15,6 @@ namespace Aphiria\Console\Tests\Output;
 use Aphiria\Console\Output\SilentOutput;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the silent output
- */
 class SilentOutputTest extends TestCase
 {
     private SilentOutput $output;

@@ -15,9 +15,6 @@ namespace Aphiria\Framework\Tests\Configuration\Bootstrappers;
 use Aphiria\Framework\Configuration\Bootstrappers\EnvironmentVariableBootstrapper;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the environment variable bootstrapper
- */
 class EnvironmentVariableBootstrapperTest extends TestCase
 {
     private EnvironmentVariableBootstrapper $environmentVariableBootstrapper;

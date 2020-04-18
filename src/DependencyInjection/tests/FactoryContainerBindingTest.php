@@ -15,9 +15,6 @@ namespace Aphiria\DependencyInjection\Tests;
 use Aphiria\DependencyInjection\FactoryContainerBinding;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the factory container binding
- */
 class FactoryContainerBindingTest extends TestCase
 {
     public function testCheckingIfResolvedAsSingleton(): void

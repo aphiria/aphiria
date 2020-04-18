@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\Requests;
 use Aphiria\Routing\Requests\RequestHeaderParser;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the request header parser
- */
 class RequestHeaderParserTest extends TestCase
 {
     /** @var array The $_SERVER super global to use */

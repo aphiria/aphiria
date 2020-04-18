@@ -16,9 +16,6 @@ use Aphiria\Validation\Constraints\MaxConstraint;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the max constraint
- */
 class MaxConstraintTest extends TestCase
 {
     public function testFailingConstraint(): void

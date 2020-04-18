@@ -15,9 +15,6 @@ namespace Aphiria\Collections\Tests;
 use Aphiria\Collections\Stack;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the stack
- */
 class StackTest extends TestCase
 {
     private Stack $stack;

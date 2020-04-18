@@ -22,9 +22,6 @@ use Aphiria\Framework\Console\Binders\CommandBinder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the command binder
- */
 class CommandBinderTest extends TestCase
 {
     /** @var IContainer|MockObject */

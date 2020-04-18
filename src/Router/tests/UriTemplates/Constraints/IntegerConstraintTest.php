@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\UriTemplates\Constraints;
 use Aphiria\Routing\UriTemplates\Constraints\IntegerConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the integer constraint
- */
 class IntegerConstraintTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void

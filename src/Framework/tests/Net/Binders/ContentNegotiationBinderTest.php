@@ -28,9 +28,6 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatt
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the content negotiation binder
- */
 class ContentNegotiationBinderTest extends TestCase
 {
     /** @var IContainer|MockObject */

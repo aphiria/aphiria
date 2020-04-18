@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints\Annotations;
 use Aphiria\Validation\Constraints\Annotations\Email;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the email constraint annotation
- */
 class EmailTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

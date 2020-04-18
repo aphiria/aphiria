@@ -18,9 +18,6 @@ use Aphiria\Net\Http\IHttpRequestMessage;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the request binder
- */
 class RequestBinderTest extends TestCase
 {
     /** @var IContainer|MockObject */

@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints;
 use Aphiria\Validation\Constraints\Constraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the constraint
- */
 class ConstraintTest extends TestCase
 {
     private Constraint $constraint;

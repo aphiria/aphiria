@@ -16,9 +16,6 @@ use Aphiria\Console\Input\Tokenizers\StringInputTokenizer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the string input tokenizer
- */
 class StringInputTokenizerTest extends TestCase
 {
     private StringInputTokenizer $tokenizer;

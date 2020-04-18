@@ -18,9 +18,6 @@ use Aphiria\Console\Output\Lexers\OutputTokenTypes;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the output lexer
- */
 class OutputLexerTest extends TestCase
 {
     private OutputLexer $lexer;

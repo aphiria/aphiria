@@ -19,9 +19,6 @@ use Aphiria\DependencyInjection\Tests\Binders\Mocks\Finder\Subdirectory\BinderC;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the file binder finder
- */
 class FileBinderFinderTest extends TestCase
 {
     private const BINDER_DIRECTORY = __DIR__ . '/Mocks/Finder';

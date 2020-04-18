@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints\Annotations;
 use Aphiria\Validation\Constraints\Annotations\Alphanumeric;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the alphanumeric constraint annotation
- */
 class AlphanumericTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

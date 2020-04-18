@@ -17,9 +17,6 @@ use Aphiria\Sessions\Session;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests sessions
- */
 class SessionTest extends TestCase
 {
     public function testAgingFlashDataEvictsOldData(): void

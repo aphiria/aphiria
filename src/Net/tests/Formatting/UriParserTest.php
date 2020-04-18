@@ -17,9 +17,6 @@ use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Uri;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the URI parser
- */
 class UriParserTest extends TestCase
 {
     private UriParser $parser;

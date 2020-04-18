@@ -17,9 +17,6 @@ use Aphiria\Validation\ConstraintViolation;
 use Aphiria\Validation\ValidationException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the validation exception
- */
 class ValidationExceptionTest extends TestCase
 {
     public function testViolationsAreSameOnesPassedViaConstructor(): void

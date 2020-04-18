@@ -30,9 +30,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the validation binder
- */
 class ValidationBinderTest extends TestCase
 {
     /** @var IContainer|MockObject */

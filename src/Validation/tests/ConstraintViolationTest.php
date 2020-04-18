@@ -16,9 +16,6 @@ use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\ConstraintViolation;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the constraint violation
- */
 class ConstraintViolationTest extends TestCase
 {
     public function testGettingErrorMessageReturnsOneSetInConstructor(): void

@@ -16,9 +16,6 @@ use Aphiria\Routing\Annotations\RouteConstraint;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the route constraint annotation
- */
 class RouteConstraintTest extends TestCase
 {
     public function testConstructorParamsCanBeSetFromConstructorParams(): void

@@ -16,9 +16,6 @@ use Aphiria\Serialization\Tests\Encoding\Mocks\User;
 use Aphiria\Serialization\TypeResolver;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the type resolver
- */
 class TypeResolverTest extends TestCase
 {
     public function testGettingArrayTypeReturnsNullForNonTypedArrays(): void

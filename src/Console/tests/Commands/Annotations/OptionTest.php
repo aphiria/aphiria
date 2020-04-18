@@ -17,9 +17,6 @@ use Aphiria\Console\Input\OptionTypes;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the option annotation
- */
 class OptionTest extends TestCase
 {
     public function testDefaultValuesOfOptionPropertiesAreSet(): void

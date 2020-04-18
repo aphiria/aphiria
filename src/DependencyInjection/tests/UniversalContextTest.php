@@ -15,9 +15,6 @@ namespace Aphiria\DependencyInjection\Tests;
 use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the universal context
- */
 class UniversalContextTest extends TestCase
 {
     public function testMethodsIndicateUniversalContext(): void

@@ -16,9 +16,6 @@ use Aphiria\Console\Output\Prompts\MultipleChoice;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the multiple choice question
- */
 class MultipleChoiceTest extends TestCase
 {
     private MultipleChoice $indexedChoiceQuestion;

@@ -32,9 +32,6 @@ use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the lazy binder dispatcher
- */
 class LazyBinderDispatcherTest extends TestCase
 {
     /** @var IContainer|MockObject */

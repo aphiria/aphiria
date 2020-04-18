@@ -20,9 +20,6 @@ use DateTimeInterface;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the DateTime encoder
- */
 class DateTimeEncoderTest extends TestCase
 {
     private DateTimeEncoder $dateTimeEncoder;

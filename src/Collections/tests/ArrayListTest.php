@@ -16,9 +16,6 @@ use Aphiria\Collections\ArrayList;
 use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the array list
- */
 class ArrayListTest extends TestCase
 {
     private ArrayList $arrayList;

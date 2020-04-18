@@ -17,9 +17,6 @@ use Aphiria\Net\Http\StreamBody;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the stream body
- */
 class StreamBodyTest extends TestCase
 {
     public function testCastingToStringConvertsUnderlyingStreamToString(): void

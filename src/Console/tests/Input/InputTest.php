@@ -15,9 +15,6 @@ namespace Aphiria\Console\Tests\Input;
 use Aphiria\Console\Input\Input;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the command input
- */
 class InputTest extends TestCase
 {
     public function testPropertiesAreSetInConstructor(): void

@@ -21,9 +21,6 @@ use Aphiria\Routing\RouteRegistrantCollection;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the router component
- */
 class RouterComponentTest extends TestCase
 {
     private RouterComponent $routerComponent;

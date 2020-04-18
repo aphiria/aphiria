@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\Annotations;
 use Aphiria\Routing\Annotations\Put;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the PUT annotation
- */
 class PutTest extends TestCase
 {
     public function testPutHttpMethodIsSet(): void

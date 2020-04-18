@@ -21,9 +21,6 @@ use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the multipart body
- */
 class MultipartBodyTest extends TestCase
 {
     public function testGettingBoundaryReturnsBoundarySpecifiedInConstructor(): void

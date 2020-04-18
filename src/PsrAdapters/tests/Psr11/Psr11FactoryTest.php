@@ -17,9 +17,6 @@ use Aphiria\PsrAdapters\Psr11\Psr11Container;
 use Aphiria\PsrAdapters\Psr11\Psr11Factory;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the PSR-11 factory
- */
 class Psr11FactoryTest extends TestCase
 {
     private Psr11Factory $containerFactory;

@@ -16,9 +16,6 @@ use Aphiria\Configuration\InvalidConfigurationFileException;
 use Aphiria\Configuration\JsonConfigurationFileReader;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the JSON file configuration reader
- */
 class JsonConfigurationFileReaderTest extends TestCase
 {
     private JsonConfigurationFileReader $reader;

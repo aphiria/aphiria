@@ -16,9 +16,6 @@ use Aphiria\Validation\Constraints\Annotations\Equals;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the equals constraint annotation
- */
 class EqualsTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

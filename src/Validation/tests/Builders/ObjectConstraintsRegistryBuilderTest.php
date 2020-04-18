@@ -17,9 +17,6 @@ use Aphiria\Validation\Constraints\ObjectConstraints;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the object constraints registry builder
- */
 class ObjectConstraintsRegistryBuilderTest extends TestCase
 {
     private ObjectConstraintsRegistryBuilder $builder;

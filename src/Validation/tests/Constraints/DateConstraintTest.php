@@ -17,9 +17,6 @@ use DateTime;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the date constraint
- */
 class DateConstraintTest extends TestCase
 {
     public function testEmptyAcceptableFormatsThrowsException(): void

@@ -16,9 +16,6 @@ use Aphiria\Sessions\Handlers\ArraySessionDriver;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the array session driver
- */
 class ArraySessionDriverTest extends TestCase
 {
     private ArraySessionDriver $driver;

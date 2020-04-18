@@ -16,9 +16,6 @@ use Aphiria\DependencyInjection\InstanceContainerBinding;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-/**
- * Tests the instance container binding
- */
 class InstanceContainerBindingTest extends TestCase
 {
     public function testAlwaysResolvedAsSingleton(): void

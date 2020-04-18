@@ -24,9 +24,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 
-/**
- * Tests the trie node
- */
 class TrieNodeTest extends TestCase
 {
     /** @var TrieNode|MockObject */

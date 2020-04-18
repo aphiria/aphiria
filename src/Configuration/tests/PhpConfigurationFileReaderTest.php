@@ -16,9 +16,6 @@ use Aphiria\Configuration\InvalidConfigurationFileException;
 use Aphiria\Configuration\PhpConfigurationFileReader;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the PHP file configuration reader
- */
 class PhpConfigurationFileReaderTest extends TestCase
 {
     private PhpConfigurationFileReader $reader;

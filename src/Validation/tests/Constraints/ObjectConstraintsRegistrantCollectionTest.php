@@ -19,9 +19,6 @@ use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the object constraints registrant collection
- */
 class ObjectConstraintsRegistrantCollectionTest extends TestCase
 {
     public function testAddingRegistrantCausesItToBeInvokedWhenRegisteringRoutes(): void

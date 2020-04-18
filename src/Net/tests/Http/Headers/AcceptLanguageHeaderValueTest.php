@@ -19,9 +19,6 @@ use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the Accept-Language header value
- */
 class AcceptLanguageHeaderValueTest extends TestCase
 {
     public function qualityScoreOutsideAcceptedRangeProvider(): array

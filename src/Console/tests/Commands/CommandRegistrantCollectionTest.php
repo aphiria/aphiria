@@ -20,9 +20,6 @@ use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Commands\ICommandRegistrant;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the command registrant collection
- */
 class CommandRegistrantCollectionTest extends TestCase
 {
     public function testAddingRegistrantCausesItToBeInvokedWhenRegisteringRoutes(): void

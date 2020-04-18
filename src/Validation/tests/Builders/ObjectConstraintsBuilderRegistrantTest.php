@@ -18,9 +18,6 @@ use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the closure constraint registrant
- */
 class ObjectConstraintsBuilderRegistrantTest extends TestCase
 {
     public function testRegisteringConstraintsRegistersConstraintsFromClosures(): void

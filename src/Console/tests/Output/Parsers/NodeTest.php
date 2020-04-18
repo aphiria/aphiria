@@ -15,9 +15,6 @@ namespace Aphiria\Console\Tests\Output\Parsers;
 use Aphiria\Console\Tests\Output\Parsers\Mocks\AstNode;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the output node
- */
 class NodeTest extends TestCase
 {
     public function testAddingChild(): void

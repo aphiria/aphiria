@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints;
 use Aphiria\Validation\Constraints\NumericConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the numeric constraint
- */
 class NumericConstraintTest extends TestCase
 {
     public function testFailingValue(): void

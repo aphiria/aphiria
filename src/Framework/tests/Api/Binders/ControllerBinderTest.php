@@ -23,9 +23,6 @@ use Aphiria\Validation\IValidator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the controller binder
- */
 class ControllerBinderTest extends TestCase
 {
     /** @var IContainer|MockObject */

@@ -15,9 +15,6 @@ namespace Aphiria\Sessions\Tests\Ids;
 use Aphiria\Sessions\Ids\UuidV4IdGenerator;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the UUID V4 ID generator
- */
 class UuidV4IdGeneratorTest extends TestCase
 {
     private UuidV4IdGenerator $idGenerator;

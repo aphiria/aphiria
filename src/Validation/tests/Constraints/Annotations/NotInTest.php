@@ -16,9 +16,6 @@ use Aphiria\Validation\Constraints\Annotations\NotIn;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the not-in constraint annotation
- */
 class NotInTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

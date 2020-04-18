@@ -34,9 +34,6 @@ use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the trie compiler
- */
 class TrieCompilerTest extends TestCase
 {
     private TrieCompiler $compiler;

@@ -16,9 +16,6 @@ use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\ObjectConstraints;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests object constraints
- */
 class ObjectConstraintsTest extends TestCase
 {
     public function testAddingMultipleMethodConstraintsMakesThemGettable(): void

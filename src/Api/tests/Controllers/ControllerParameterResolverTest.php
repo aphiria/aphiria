@@ -31,9 +31,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
 
-/**
- * Tests the controller parameter resolver
- */
 class ControllerParameterResolverTest extends TestCase
 {
     private ControllerParameterResolver $resolver;

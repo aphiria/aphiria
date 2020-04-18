@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints;
 use Aphiria\Validation\Constraints\NotInConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the not-in-array constraint
- */
 class NotInConstraintTest extends TestCase
 {
     public function testGettingErrorMessageId(): void

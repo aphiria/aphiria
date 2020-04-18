@@ -18,9 +18,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the progress bar
- */
 class ProgressBarTest extends TestCase
 {
     private ProgressBar $progressBar;

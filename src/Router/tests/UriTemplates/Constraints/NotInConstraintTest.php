@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\UriTemplates\Constraints;
 use Aphiria\Routing\UriTemplates\Constraints\NotInConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the not-in-array constraint
- */
 class NotInConstraintTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void

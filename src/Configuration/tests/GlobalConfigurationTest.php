@@ -18,9 +18,6 @@ use Aphiria\Configuration\MissingConfigurationValueException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the global configuration
- */
 class GlobalConfigurationTest extends TestCase
 {
     protected function setUp(): void

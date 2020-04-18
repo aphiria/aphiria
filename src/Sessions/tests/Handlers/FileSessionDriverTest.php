@@ -16,9 +16,6 @@ use Aphiria\Sessions\Handlers\FileSessionDriver;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the file session driver
- */
 class FileSessionDriverTest extends TestCase
 {
     private const BASE_PATH = __DIR__ . '/tmp';

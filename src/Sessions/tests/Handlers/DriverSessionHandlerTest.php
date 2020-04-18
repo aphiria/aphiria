@@ -19,9 +19,6 @@ use Aphiria\Sessions\Handlers\SessionEncryptionException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the session handler powered by a driver
- */
 class DriverSessionHandlerTest extends TestCase
 {
     /** @var ISessionDriver|MockObject */

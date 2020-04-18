@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints\Annotations;
 use Aphiria\Validation\Constraints\Annotations\Numeric;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the numeric constraint annotation
- */
 class NumericTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

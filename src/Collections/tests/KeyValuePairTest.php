@@ -15,9 +15,6 @@ namespace Aphiria\Collections\Tests;
 use Aphiria\Collections\KeyValuePair;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the key-value pair
- */
 class KeyValuePairTest extends TestCase
 {
     public function testGettingKey(): void

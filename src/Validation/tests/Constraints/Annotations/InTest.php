@@ -16,9 +16,6 @@ use Aphiria\Validation\Constraints\Annotations\In;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the in constraint annotation
- */
 class InTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

@@ -29,9 +29,6 @@ use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\IFoo;
 use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the binder metadata collection factory
- */
 class BinderMetadataCollectionFactoryTest extends TestCase
 {
     private BinderMetadataCollectionFactory $factory;

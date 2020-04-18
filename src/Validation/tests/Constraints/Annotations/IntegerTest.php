@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints\Annotations;
 use Aphiria\Validation\Constraints\Annotations\Integer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the integer constraint annotation
- */
 class IntegerTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

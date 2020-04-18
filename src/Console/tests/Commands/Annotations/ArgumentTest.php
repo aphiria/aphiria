@@ -17,9 +17,6 @@ use Aphiria\Console\Input\ArgumentTypes;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the argument annotation
- */
 class ArgumentTest extends TestCase
 {
     public function testDefaultValuesOfArgumentPropertiesAreSet(): void

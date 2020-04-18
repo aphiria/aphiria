@@ -14,15 +14,12 @@ namespace Aphiria\Collections\Tests;
 
 use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Collections\KeyValuePair;
-use Aphiria\Collections\Tests\Mocks\MockObject;
+use Aphiria\Collections\Tests\Mocks\FakeObject;
 use InvalidArgumentException;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the immutable hash table
- */
 class ImmutableHashTableTest extends TestCase
 {
     public function testContainsKey(): void
@@ -66,8 +63,8 @@ class ImmutableHashTableTest extends TestCase
 
     public function testGettingKeysReturnsOriginalKeysNotHashKeys(): void
     {
-        $kvp1 = new KeyValuePair(new MockObject(), 'foo');
-        $kvp2 = new KeyValuePair(new MockObject(), 'bar');
+        $kvp1 = new KeyValuePair(new FakeObject(), 'foo');
+        $kvp2 = new KeyValuePair(new FakeObject(), 'bar');
         $hashTable = new ImmutableHashTable([$kvp1, $kvp2]);
         $this->assertEquals([$kvp1->getKey(), $kvp2->getKey()], $hashTable->getKeys());
     }

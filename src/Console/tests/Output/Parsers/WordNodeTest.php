@@ -15,9 +15,6 @@ namespace Aphiria\Console\Tests\Output\Parsers;
 use Aphiria\Console\Output\Parsers\WordAstNode;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the word node
- */
 class WordNodeTest extends TestCase
 {
     public function testIsTag(): void

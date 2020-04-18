@@ -15,9 +15,6 @@ namespace Aphiria\Api\Tests\Validation;
 use Aphiria\Api\Validation\ValidationProblemDetails;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the validation problem details
- */
 class ValidationProblemDetailsTest extends TestCase
 {
     public function testConstructorSetsAllTheProperties(): void

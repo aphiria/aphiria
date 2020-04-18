@@ -25,9 +25,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the middleware component
- */
 class MiddlewareComponentTest extends TestCase
 {
     private MiddlewareComponent $middlewareComponent;

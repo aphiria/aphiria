@@ -16,9 +16,6 @@ use Aphiria\Validation\Constraints\Annotations\Regex;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the regex constraint annotation
- */
 class RegexTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

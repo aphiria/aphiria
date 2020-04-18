@@ -17,9 +17,6 @@ use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the bound interface
- */
 class BoundInterfaceTest extends TestCase
 {
     public function testGetInterfaceReturnsSetInterface(): void

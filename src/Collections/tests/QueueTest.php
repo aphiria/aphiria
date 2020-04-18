@@ -15,9 +15,6 @@ namespace Aphiria\Collections\Tests;
 use Aphiria\Collections\Queue;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the queue
- */
 class QueueTest extends TestCase
 {
     private Queue $queue;

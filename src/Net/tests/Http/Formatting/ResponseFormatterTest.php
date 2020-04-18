@@ -22,9 +22,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the HTTP response message formatter
- */
 class ResponseFormatterTest extends TestCase
 {
     private ResponseFormatter $formatter;

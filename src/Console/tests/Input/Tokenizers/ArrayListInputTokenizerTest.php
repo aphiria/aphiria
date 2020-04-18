@@ -17,9 +17,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the array list input tokenizer
- */
 class ArrayListInputTokenizerTest extends TestCase
 {
     private ArrayListInputTokenizer $tokenizer;

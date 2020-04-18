@@ -15,9 +15,6 @@ namespace Aphiria\Net\Tests\Http;
 use Aphiria\Net\Http\HttpStatusCodes;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the HTTP status codes
- */
 class HttpStatusCodesTest extends TestCase
 {
     public function testExistingStatusCodeReturnsDefaultStatusText(): void

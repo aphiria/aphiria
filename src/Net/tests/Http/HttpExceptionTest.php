@@ -18,9 +18,6 @@ use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the HTTP exception
- */
 class HttpExceptionTest extends TestCase
 {
     public function testCodeIsSameOneSetInConstructor(): void

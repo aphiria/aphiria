@@ -19,9 +19,6 @@ use Aphiria\Console\Commands\ICommandHandler;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the command registry
- */
 class CommandRegistryTest extends TestCase
 {
     private CommandRegistry $commands;

@@ -24,9 +24,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the request
- */
 class RequestTest extends TestCase
 {
     private Request $request;

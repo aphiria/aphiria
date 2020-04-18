@@ -27,9 +27,6 @@ use Aphiria\Serialization\TypeResolver;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the serializer binder
- */
 class SerializerBinderTest extends TestCase
 {
     /** @var IContainer|MockObject */

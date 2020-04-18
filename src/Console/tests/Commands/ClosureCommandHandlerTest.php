@@ -18,9 +18,6 @@ use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCodes;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the closure command handler
- */
 class ClosureCommandHandlerTest extends TestCase
 {
     public function testHandlingInvokesClosure(): void

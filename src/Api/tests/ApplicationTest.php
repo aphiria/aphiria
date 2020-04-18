@@ -21,9 +21,6 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the application
- */
 class ApplicationTest extends TestCase
 {
     private Application $app;

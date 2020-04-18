@@ -16,9 +16,6 @@ use Aphiria\Console\Output\Lexers\OutputToken;
 use Aphiria\Console\Output\Lexers\OutputTokenTypes;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the output token
- */
 class OutputTokenTest extends TestCase
 {
     public function testPropertiesAreSetInConstructor(): void

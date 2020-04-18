@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints;
 use Aphiria\Validation\Constraints\CallbackConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the callback constraint
- */
 class CallbackConstraintTest extends TestCase
 {
     public function testCallbackIsExecuted(): void

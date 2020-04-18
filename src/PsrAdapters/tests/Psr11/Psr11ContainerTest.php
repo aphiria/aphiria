@@ -21,9 +21,6 @@ use Aphiria\PsrAdapters\Psr11\Psr11Container;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the PSR-11 container
- */
 class Psr11ContainerTest extends TestCase
 {
     /** @var IContainer|MockObject */

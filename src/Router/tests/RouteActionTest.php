@@ -17,9 +17,6 @@ use Closure;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the route action
- */
 class RouteActionTest extends TestCase
 {
     /** @const The name of the class used in our method action */

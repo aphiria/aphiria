@@ -25,9 +25,6 @@ use Aphiria\Routing\UriTemplates\UriTemplate;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the AST route URI factory
- */
 class AstRouteUriFactoryTest extends TestCase
 {
     private RouteCollection $routes;

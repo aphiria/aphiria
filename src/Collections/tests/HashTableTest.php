@@ -14,14 +14,11 @@ namespace Aphiria\Collections\Tests;
 
 use Aphiria\Collections\HashTable;
 use Aphiria\Collections\KeyValuePair;
-use Aphiria\Collections\Tests\Mocks\MockObject;
+use Aphiria\Collections\Tests\Mocks\FakeObject;
 use InvalidArgumentException;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the hash table
- */
 class HashTableTest extends TestCase
 {
     private HashTable $hashTable;
@@ -108,8 +105,8 @@ class HashTableTest extends TestCase
      */
     public function testGettingKeysReturnsOriginalKeysNotHashKeys(): void
     {
-        $key1 = new MockObject();
-        $key2 = new MockObject();
+        $key1 = new FakeObject();
+        $key2 = new FakeObject();
         $this->hashTable->add($key1, 'foo');
         $this->hashTable->add($key2, 'bar');
         $this->assertEquals([$key1, $key2], $this->hashTable->getKeys());

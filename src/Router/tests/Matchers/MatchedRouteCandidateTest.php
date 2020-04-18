@@ -18,9 +18,6 @@ use Aphiria\Routing\Route;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests a matched route candidate
- */
 class MatchedRouteCandidateTest extends TestCase
 {
     public function testPropertiesSetCorrectlyInConstructor(): void

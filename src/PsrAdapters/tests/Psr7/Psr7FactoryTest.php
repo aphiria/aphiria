@@ -32,9 +32,6 @@ use Nyholm\Psr7\Uri as Psr7Uri;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UploadedFileInterface;
 
-/**
- * Tests the PSR-7 factory
- */
 class Psr7FactoryTest extends TestCase
 {
     private Psr7Factory $psr7Factory;

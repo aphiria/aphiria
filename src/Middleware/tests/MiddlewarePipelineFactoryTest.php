@@ -20,9 +20,6 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the middleware pipeline factory
- */
 class MiddlewarePipelineFactoryTest extends TestCase
 {
     private MiddlewarePipelineFactory $pipelineFactory;

@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\Annotations;
 use Aphiria\Routing\Annotations\Delete;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the DELETE annotation
- */
 class DeleteTest extends TestCase
 {
     public function testDeleteHttpMethodIsSet(): void

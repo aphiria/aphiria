@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints\Annotations;
 use Aphiria\Validation\Constraints\Annotations\Alpha;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the alpha constraint annotation
- */
 class AlphaTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

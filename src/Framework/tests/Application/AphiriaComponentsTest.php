@@ -41,9 +41,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
-/**
- * Tests the Aphiria component trait
- */
 class AphiriaComponentsTest extends TestCase
 {
     /** @var IApplicationBuilder|MockObject */

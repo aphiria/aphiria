@@ -41,9 +41,6 @@ use DateTime;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the dependency injection container
- */
 class ContainerTest extends TestCase
 {
     private Container $container;

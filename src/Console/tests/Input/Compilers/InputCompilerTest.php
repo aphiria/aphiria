@@ -24,9 +24,6 @@ use Aphiria\Console\Input\OptionTypes;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the input compiler
- */
 class InputCompilerTest extends TestCase
 {
     private InputCompiler $compiler;

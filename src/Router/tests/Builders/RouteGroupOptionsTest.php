@@ -17,9 +17,6 @@ use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the route group options
- */
 class RouteGroupOptionsTest extends TestCase
 {
     private RouteGroupOptions $routeGroupOptions;

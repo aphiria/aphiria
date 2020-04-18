@@ -18,9 +18,6 @@ use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\Configuration\InvalidConfigurationFileException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the global configuration builder
- */
 class GlobalConfigurationBuilderTest extends TestCase
 {
     private GlobalConfigurationBuilder $builder;

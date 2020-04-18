@@ -33,9 +33,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-/**
- * Tests the global exception handler bootstrapper
- */
 class GlobalExceptionHandlerBootstrapperTest extends TestCase
 {
     /** @var IContainer|MockObject */

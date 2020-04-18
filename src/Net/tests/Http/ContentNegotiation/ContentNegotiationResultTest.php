@@ -16,9 +16,6 @@ use Aphiria\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the content negotiation result
- */
 class ContentNegotiationResultTest extends TestCase
 {
     public function testGettingEncodingReturnsSameOneInConstructor(): void

@@ -22,9 +22,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-/**
- * Tests the command binding
- */
 class CommandBindingTest extends TestCase
 {
     public function testPropertiesAreSetInConstructorWhenUsingCommandHandlerInterface(): void

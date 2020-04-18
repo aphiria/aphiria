@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests;
 
-use Aphiria\Collections\Tests\Mocks\MockObject;
+use Aphiria\Collections\Tests\Mocks\FakeObject;
 use Aphiria\Validation\CircularDependencyException;
 use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\ObjectConstraints;
@@ -24,14 +24,11 @@ use Aphiria\Validation\Validator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the validator
- */
 class ValidatorTest extends TestCase
 {
     private Validator $validator;
     private ObjectConstraintsRegistry $objectConstraints;
-    /** @var IErrorMessageInterpolator|MockObject */
+    /** @var IErrorMessageInterpolator|FakeObject */
     private IErrorMessageInterpolator $errorMessageInterpolator;
 
     protected function setUp(): void

@@ -22,9 +22,6 @@ use Aphiria\Validation\Constraints\RequiredConstraint;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the validation component
- */
 class ValidationComponentTest extends TestCase
 {
     private Container $container;

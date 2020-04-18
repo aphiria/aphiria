@@ -16,9 +16,6 @@ use Aphiria\Validation\Constraints\Annotations\Min;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the min constraint annotation
- */
 class MinTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

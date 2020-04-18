@@ -20,9 +20,6 @@ use Aphiria\Net\Http\Request;
 use Aphiria\Net\Uri;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the Accept-Charset encoding matcher
- */
 class AcceptCharsetEncodingMatcherTest extends TestCase
 {
     private AcceptCharsetEncodingMatcher $matcher;

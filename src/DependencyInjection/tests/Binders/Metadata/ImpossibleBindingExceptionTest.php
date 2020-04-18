@@ -17,9 +17,6 @@ use Aphiria\DependencyInjection\Binders\Metadata\ImpossibleBindingException;
 use Aphiria\DependencyInjection\IContainer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the impossible binding exception
- */
 class ImpossibleBindingExceptionTest extends TestCase
 {
     public function testMultipleFailedBindersForSingleInterfaceAreFormattedCorrectly(): void

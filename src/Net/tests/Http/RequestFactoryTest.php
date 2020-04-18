@@ -17,9 +17,6 @@ use Aphiria\Net\Http\StreamBody;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the request factory
- */
 class RequestFactoryTest extends TestCase
 {
     private RequestFactory $factory;

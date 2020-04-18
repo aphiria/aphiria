@@ -18,9 +18,6 @@ use Aphiria\Net\Http\MultipartBodyPart;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the multipart body part
- */
 class MultipartBodyPartTest extends TestCase
 {
     private MultipartBodyPart $bodyPart;

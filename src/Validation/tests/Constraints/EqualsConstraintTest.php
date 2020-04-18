@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints;
 use Aphiria\Validation\Constraints\EqualsConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the equals constraint
- */
 class EqualsConstraintTest extends TestCase
 {
     public function testEqualValuesPass(): void

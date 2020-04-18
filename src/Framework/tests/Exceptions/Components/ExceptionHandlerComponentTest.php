@@ -30,9 +30,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-/**
- * Tests the exception handler component
- */
 class ExceptionHandlerComponentTest extends TestCase
 {
     private IContainer $container;

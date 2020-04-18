@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\Annotations;
 use Aphiria\Routing\Annotations\Trace;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the TRACE annotation
- */
 class TraceTest extends TestCase
 {
     public function testTraceHttpMethodIsSet(): void

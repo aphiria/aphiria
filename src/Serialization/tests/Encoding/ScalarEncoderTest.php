@@ -17,9 +17,6 @@ use Aphiria\Serialization\Encoding\ScalarEncoder;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the scalar encoder
- */
 class ScalarEncoderTest extends TestCase
 {
     private ScalarEncoder $scalarEncoder;

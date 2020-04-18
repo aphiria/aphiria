@@ -24,9 +24,6 @@ use Aphiria\Net\Http\Handlers\IRequestHandler;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the API application builder
- */
 class ApiApplicationBuilderTest extends TestCase
 {
     private Container $container;

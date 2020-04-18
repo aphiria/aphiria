@@ -16,9 +16,6 @@ use Aphiria\Console\Output\Compilers\Elements\Element;
 use Aphiria\Console\Output\Compilers\Elements\Style;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the output element
- */
 class ElementTest extends TestCase
 {
     public function testPropertiesAreSetInConstructor(): void

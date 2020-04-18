@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\Annotations;
 use Aphiria\Routing\Annotations\Post;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the POST annotation
- */
 class PostTest extends TestCase
 {
     public function testPostHttpMethodIsSet(): void

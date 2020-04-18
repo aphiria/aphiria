@@ -21,9 +21,6 @@ use Aphiria\Console\Output\IOutput;
 use Closure;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the about command handler
- */
 class AboutCommandHandlerTest extends TestCase
 {
     private AboutCommandHandler $handler;

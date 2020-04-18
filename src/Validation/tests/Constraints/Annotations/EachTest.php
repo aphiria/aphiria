@@ -18,9 +18,6 @@ use Aphiria\Validation\Constraints\Annotations\Required;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the each constraint annotation
- */
 class EachTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

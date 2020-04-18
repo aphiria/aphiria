@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints;
 use Aphiria\Validation\Constraints\EmailConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the email constraint
- */
 class EmailConstraintTest extends TestCase
 {
     public function testGettingErrorMessageId(): void

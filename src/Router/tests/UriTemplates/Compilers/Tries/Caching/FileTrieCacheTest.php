@@ -22,9 +22,6 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\RootTrieNode;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the file trie cache
- */
 class FileTrieCacheTest extends TestCase
 {
     /** @var string The path to the trie cache */
