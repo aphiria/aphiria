@@ -35,8 +35,8 @@
         "phpunit/phpunit": "~9.1"
     },
     "scripts": {
-        "lint-check": "php-cs-fixer fix --config=.php_cs -v --diff --dry-run",
-        "lint-fix": "php-cs-fixer fix --config=.php_cs -v --diff"
+        "lint-check": "php-cs-fixer fix --config=.php_cs.dist -v --diff --dry-run",
+        "lint-fix": "php-cs-fixer fix --config=.php_cs.dist -v --diff"
     },
     "extra": {
         "branch-alias": {
