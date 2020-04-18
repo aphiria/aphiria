@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\UriTemplates\Constraints;
 use Aphiria\Routing\UriTemplates\Constraints\RegexConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the regex constraint
- */
 class RegexConstraintTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void

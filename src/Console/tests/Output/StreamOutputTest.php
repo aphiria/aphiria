@@ -18,9 +18,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the stream output
- */
 class StreamOutputTest extends TestCase
 {
     private StreamOutput $output;

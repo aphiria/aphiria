@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints;
 use Aphiria\Validation\Constraints\InConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the in-array constraint
- */
 class InConstraintTest extends TestCase
 {
     public function testGettingErrorMessageId(): void

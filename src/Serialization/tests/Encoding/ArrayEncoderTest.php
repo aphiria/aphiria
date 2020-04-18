@@ -19,9 +19,6 @@ use Aphiria\Serialization\Encoding\IEncoder;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the array encoder
- */
 class ArrayEncoderTest extends TestCase
 {
     private EncoderRegistry $encoders;

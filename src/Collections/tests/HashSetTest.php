@@ -13,12 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Collections\Tests;
 
 use Aphiria\Collections\HashSet;
-use Aphiria\Collections\Tests\Mocks\MockObject;
+use Aphiria\Collections\Tests\Mocks\FakeObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests a hash set
- */
 class HashSetTest extends TestCase
 {
     private HashSet $set;
@@ -57,7 +54,7 @@ class HashSetTest extends TestCase
 
     public function testAddingValue(): void
     {
-        $object = new MockObject();
+        $object = new FakeObject();
         $this->set->add($object);
         $this->assertEquals([$object], $this->set->toArray());
     }
@@ -67,7 +64,7 @@ class HashSetTest extends TestCase
         $this->assertFalse($this->set->containsValue('foo'));
         $this->set->add('foo');
         $this->assertTrue($this->set->containsValue('foo'));
-        $object = new MockObject();
+        $object = new FakeObject();
         $this->assertFalse($this->set->containsValue($object));
         $this->set->add($object);
         $this->assertTrue($this->set->containsValue($object));
@@ -75,15 +72,15 @@ class HashSetTest extends TestCase
 
     public function testClearingSetRemovesAllValues(): void
     {
-        $this->set->add(new MockObject());
+        $this->set->add(new FakeObject());
         $this->set->clear();
         $this->assertEquals([], $this->set->toArray());
     }
 
     public function testCountReturnsNumberOfUniqueValuesInSet(): void
     {
-        $object1 = new MockObject();
-        $object2 = new MockObject();
+        $object1 = new FakeObject();
+        $object2 = new FakeObject();
         $this->assertEquals(0, $this->set->count());
         $this->set->add($object1);
         $this->assertEquals(1, $this->set->count());
@@ -95,7 +92,7 @@ class HashSetTest extends TestCase
 
     public function testEqualButNotSameObjectsAreNotIntersected(): void
     {
-        $object1 = new MockObject();
+        $object1 = new FakeObject();
         $object2 = clone $object1;
         $this->set->add($object1);
         $this->set->intersect([$object2]);
@@ -104,8 +101,8 @@ class HashSetTest extends TestCase
 
     public function testIntersectingIntersectsValuesOfSetAndArray(): void
     {
-        $object1 = new MockObject();
-        $object2 = new MockObject();
+        $object1 = new FakeObject();
+        $object2 = new FakeObject();
         $this->set->add($object1);
         $this->set->add($object2);
         $this->set->intersect([$object2]);
@@ -118,8 +115,8 @@ class HashSetTest extends TestCase
     public function testIteratingOverValuesReturnsValuesNotHashKeys(): void
     {
         $expectedValues = [
-            new MockObject(),
-            new MockObject()
+            new FakeObject(),
+            new FakeObject()
         ];
         $this->set->addRange($expectedValues);
         $actualValues = [];
@@ -135,7 +132,7 @@ class HashSetTest extends TestCase
 
     public function testRemovingValue(): void
     {
-        $object = new MockObject();
+        $object = new FakeObject();
         $this->set->add($object);
         $this->set->removeValue($object);
         $this->assertEquals([], $this->set->toArray());
@@ -152,7 +149,7 @@ class HashSetTest extends TestCase
 
     public function testUnionUnionsValuesOfSetAndArray(): void
     {
-        $object = new MockObject();
+        $object = new FakeObject();
         $this->set->add($object);
         $this->set->union(['bar', 'baz']);
         $this->assertEquals([$object, 'bar', 'baz'], $this->set->toArray());

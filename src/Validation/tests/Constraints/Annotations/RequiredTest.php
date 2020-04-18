@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints\Annotations;
 use Aphiria\Validation\Constraints\Annotations\Required;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the required constraint annotation
- */
 class RequiredTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

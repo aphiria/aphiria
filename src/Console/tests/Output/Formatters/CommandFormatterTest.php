@@ -20,9 +20,6 @@ use Aphiria\Console\Input\OptionTypes;
 use Aphiria\Console\Output\Formatters\CommandFormatter;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the command formatter
- */
 class CommandFormatterTest extends TestCase
 {
     private CommandFormatter $formatter;

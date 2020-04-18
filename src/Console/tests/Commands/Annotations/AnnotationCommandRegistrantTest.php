@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests\Commands\Annotations;
 
-use Aphiria\Collections\Tests\Mocks\MockObject;
+use Aphiria\Collections\Tests\Mocks\FakeObject;
 use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
 use Aphiria\Console\Commands\Annotations\Argument;
 use Aphiria\Console\Commands\Annotations\Command;
@@ -28,16 +28,13 @@ use Aphiria\Reflection\ITypeFinder;
 use Doctrine\Common\Annotations\Annotation\Required;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the reflection command annotation registrant
- */
 class AnnotationCommandRegistrantTest extends TestCase
 {
     private AnnotationCommandRegistrant $registrant;
     private CommandRegistry $commands;
-    /** @var IServiceResolver|MockObject */
+    /** @var IServiceResolver|FakeObject */
     private IServiceResolver $commandHandlerResolver;
-    /** @var ITypeFinder|MockObject */
+    /** @var ITypeFinder|FakeObject */
     private ITypeFinder $typeFinder;
 
     protected function setUp(): void

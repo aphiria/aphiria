@@ -19,9 +19,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the HTTP body parser
- */
 class HttpBodyParserTest extends TestCase
 {
     private HttpBodyParser $parser;

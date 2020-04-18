@@ -23,9 +23,6 @@ use Aphiria\Framework\Console\Components\CommandComponent;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the command component
- */
 class CommandComponentTest extends TestCase
 {
     private Container $container;

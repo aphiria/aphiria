@@ -18,9 +18,6 @@ use Aphiria\Routing\Route;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the route matching result
- */
 class RouteMatchingResultTest extends TestCase
 {
     public function testMatchFoundIsFalseIfMatchedRouteIsNull(): void

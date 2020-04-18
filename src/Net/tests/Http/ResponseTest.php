@@ -19,9 +19,6 @@ use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the response class
- */
 class ResponseTest extends TestCase
 {
     public function testDefaultReasonPhraseIsSet(): void

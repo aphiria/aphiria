@@ -20,9 +20,6 @@ use Aphiria\Routing\UriTemplates\UriTemplate;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the HTTP method constraint
- */
 class HttpMethodRouteConstraintTest extends TestCase
 {
     public function testCreatingWithLowercaseStringNormalizesItToUppercase(): void

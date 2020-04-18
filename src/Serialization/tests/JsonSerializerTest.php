@@ -21,9 +21,6 @@ use Aphiria\Serialization\SerializationException;
 use Aphiria\Serialization\Tests\Encoding\Mocks\User;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the JSON serializer
- */
 class JsonSerializerTest extends TestCase
 {
     private JsonSerializer $serializer;

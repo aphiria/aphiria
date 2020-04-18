@@ -15,9 +15,6 @@ namespace Aphiria\Console\Tests\Output\Prompts;
 use Aphiria\Console\Output\Prompts\Confirmation;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the confirmation question
- */
 class ConfirmationTest extends TestCase
 {
     private Confirmation $question;

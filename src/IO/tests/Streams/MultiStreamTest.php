@@ -20,9 +20,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the multi-stream
- */
 class MultiStreamTest extends TestCase
 {
     private MultiStream $multiStream;

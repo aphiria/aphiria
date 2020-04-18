@@ -24,9 +24,6 @@ use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the API exception renderer
- */
 class ApiExceptionRendererTest extends TestCase
 {
     /** @var IResponseWriter|MockObject */

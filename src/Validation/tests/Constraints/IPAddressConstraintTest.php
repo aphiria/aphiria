@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints;
 use Aphiria\Validation\Constraints\IPAddressConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the IP address constraint
- */
 class IPAddressConstraintTest extends TestCase
 {
     public function testFailingValue(): void

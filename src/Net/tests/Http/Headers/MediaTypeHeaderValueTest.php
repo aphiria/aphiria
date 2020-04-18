@@ -19,9 +19,6 @@ use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the media type header value
- */
 class MediaTypeHeaderValueTest extends TestCase
 {
     public function testGettingCharsetReturnsOneSetInConstructor(): void

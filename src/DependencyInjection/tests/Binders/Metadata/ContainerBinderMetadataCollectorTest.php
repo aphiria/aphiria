@@ -26,9 +26,6 @@ use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the container binder metadata collector
- */
 class ContainerBinderMetadataCollectorTest extends TestCase
 {
     private IContainer $container;

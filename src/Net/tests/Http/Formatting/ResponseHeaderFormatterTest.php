@@ -18,9 +18,6 @@ use Aphiria\Net\Http\HttpHeaders;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the HTTP response header formatter
- */
 class ResponseHeaderFormatterTest extends TestCase
 {
     private ResponseHeaderFormatter $formatter;

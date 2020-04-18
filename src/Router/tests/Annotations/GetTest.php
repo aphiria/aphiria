@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\Annotations;
 use Aphiria\Routing\Annotations\Get;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the GET annotation
- */
 class GetTest extends TestCase
 {
     public function testGetHttpMethodIsSet(): void

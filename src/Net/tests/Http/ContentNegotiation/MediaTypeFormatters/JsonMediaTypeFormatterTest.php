@@ -22,9 +22,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the JSON media type formatter
- */
 class JsonMediaTypeFormatterTest extends TestCase
 {
     private JsonMediaTypeFormatter $formatter;

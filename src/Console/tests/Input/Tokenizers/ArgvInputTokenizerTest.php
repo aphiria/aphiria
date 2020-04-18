@@ -16,9 +16,6 @@ use Aphiria\Console\Input\Tokenizers\ArgvInputTokenizer;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the argv input tokenizer
- */
 class ArgvInputTokenizerTest extends TestCase
 {
     private ArgvInputTokenizer $tokenizer;

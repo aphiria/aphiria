@@ -18,9 +18,6 @@ use Aphiria\DependencyInjection\Binders\Metadata\Caching\FileBinderMetadataColle
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Caching\Mocks\MockBinder;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the file binder metadata collection cache
- */
 class FileBinderMetadataCollectionCacheTest extends TestCase
 {
     /** string The path to the cache */

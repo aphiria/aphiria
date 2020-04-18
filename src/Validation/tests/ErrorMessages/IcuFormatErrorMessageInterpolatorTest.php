@@ -17,9 +17,6 @@ use Aphiria\Validation\ErrorMessages\IcuFormatErrorMessageInterpolator;
 use Aphiria\Validation\ErrorMessages\IErrorMessageTemplateRegistry;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the ICU format error message interpolator
- */
 class IcuFormatErrorMessageInterpolatorTest extends TestCase
 {
     public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithNoPlaceholders(): void

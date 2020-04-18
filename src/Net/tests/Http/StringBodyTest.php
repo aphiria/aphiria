@@ -17,9 +17,6 @@ use Aphiria\Net\Http\StringBody;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the string body
- */
 class StringBodyTest extends TestCase
 {
     public function testCastingToStringReturnsContents(): void

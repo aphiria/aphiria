@@ -38,9 +38,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the router kernel
- */
 class RouterTest extends TestCase
 {
     private Router $router;

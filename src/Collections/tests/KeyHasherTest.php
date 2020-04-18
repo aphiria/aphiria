@@ -17,9 +17,6 @@ use Aphiria\Collections\Tests\Mocks\SerializableObject;
 use Aphiria\Collections\Tests\Mocks\UnserializableObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the key hasher
- */
 class KeyHasherTest extends TestCase
 {
     private KeyHasher $keyHasher;

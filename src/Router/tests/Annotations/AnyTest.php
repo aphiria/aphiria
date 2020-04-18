@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\Annotations;
 use Aphiria\Routing\Annotations\Any;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the annotation for any HTTP method
- */
 class AnyTest extends TestCase
 {
     public function testNoHttpMethodsSet(): void

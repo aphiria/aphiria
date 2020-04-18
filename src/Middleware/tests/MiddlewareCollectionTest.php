@@ -16,9 +16,6 @@ use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareCollection;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the middleware collection
- */
 class MiddlewareCollectionTest extends TestCase
 {
     private MiddlewareCollection $middlewareCollection;

@@ -21,9 +21,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the console prompt
- */
 class PromptTest extends TestCase
 {
     /** @var IOutput|MockObject */

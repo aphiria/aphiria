@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\ErrorMessages;
 use Aphiria\Validation\ErrorMessages\DefaultErrorMessageTemplateRegistry;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the default error message template registry
- */
 class DefaultErrorMessageTemplateRegistryTest extends TestCase
 {
     public function testGetErrorMessageTemplateReturnsErrorMessageIdRegardlessOfLocale(): void

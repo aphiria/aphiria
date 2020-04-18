@@ -19,9 +19,6 @@ use Aphiria\Application\IModule;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the application builder
- */
 class ApplicationBuilderTest extends TestCase
 {
     private ApplicationBuilder $appBuilder;

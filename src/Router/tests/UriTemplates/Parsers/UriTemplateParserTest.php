@@ -21,9 +21,6 @@ use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the URI template parser
- */
 class UriTemplateParserTest extends TestCase
 {
     private UriTemplateParser $parser;

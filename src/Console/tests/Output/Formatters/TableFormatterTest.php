@@ -16,9 +16,6 @@ use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\Formatters\TableFormatter;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the table formatter
- */
 class TableFormatterTest extends TestCase
 {
     private TableFormatter $formatter;

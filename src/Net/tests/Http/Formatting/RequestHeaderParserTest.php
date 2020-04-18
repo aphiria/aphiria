@@ -16,9 +16,6 @@ use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\HttpHeaders;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the request header parser
- */
 class RequestHeaderParserTest extends TestCase
 {
     private RequestHeaderParser $parser;

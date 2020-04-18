@@ -15,9 +15,6 @@ namespace Aphiria\Console\Tests\Output\Formatters;
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the padding formatter
- */
 class PaddingFormatterTest extends TestCase
 {
     private PaddingFormatter $formatter;

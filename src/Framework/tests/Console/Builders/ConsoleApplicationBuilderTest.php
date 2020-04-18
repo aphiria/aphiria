@@ -25,9 +25,6 @@ use Aphiria\Framework\Console\Builders\ConsoleApplicationBuilder;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the console application builder
- */
 class ConsoleApplicationBuilderTest extends TestCase
 {
     private Container $container;

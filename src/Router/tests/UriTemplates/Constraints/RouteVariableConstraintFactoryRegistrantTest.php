@@ -26,9 +26,6 @@ use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactoryRegis
 use Aphiria\Routing\UriTemplates\Constraints\UuidV4Constraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the route variable constraint factory registrant
- */
 class RouteVariableConstraintFactoryRegistrantTest extends TestCase
 {
     private RouteVariableConstraintFactoryRegistrant $registrant;

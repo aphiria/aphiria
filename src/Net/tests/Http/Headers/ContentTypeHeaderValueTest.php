@@ -19,9 +19,6 @@ use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the Content-Type header value
- */
 class ContentTypeHeaderValueTest extends TestCase
 {
     public function testGettingCharsetReturnsOneSetInConstructor(): void

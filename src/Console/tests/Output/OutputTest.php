@@ -15,9 +15,6 @@ namespace Aphiria\Console\Tests\Output;
 use Aphiria\Console\Tests\Output\Mocks\Output;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the output class
- */
 class OutputTest extends TestCase
 {
     private Output $output;

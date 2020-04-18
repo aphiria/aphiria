@@ -18,9 +18,6 @@ use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the Accept media type header value
- */
 class AcceptMediaTypeHeaderValueTest extends TestCase
 {
     public function qualityScoreOutsideAcceptedRangeProvider(): array

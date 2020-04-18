@@ -16,9 +16,6 @@ use Aphiria\Validation\Constraints\MinConstraint;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the min constraint
- */
 class MinConstraintTest extends TestCase
 {
     public function testFailingConstraint(): void

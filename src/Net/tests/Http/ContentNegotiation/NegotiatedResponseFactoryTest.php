@@ -33,9 +33,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the negotiated response factory
- */
 class NegotiatedResponseFactoryTest extends TestCase
 {
     private NegotiatedResponseFactory $factory;

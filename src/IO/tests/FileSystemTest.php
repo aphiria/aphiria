@@ -17,9 +17,6 @@ use Aphiria\IO\FileSystemException;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the file system
- */
 class FileSystemTest extends TestCase
 {
     private FileSystem $fileSystem;

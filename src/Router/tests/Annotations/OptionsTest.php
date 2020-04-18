@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\Annotations;
 use Aphiria\Routing\Annotations\Options;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the OPTIONS annotation
- */
 class OptionsTest extends TestCase
 {
     public function testOptionsHttpMethodIsSet(): void

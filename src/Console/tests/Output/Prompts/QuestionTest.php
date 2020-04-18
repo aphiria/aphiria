@@ -15,9 +15,6 @@ namespace Aphiria\Console\Tests\Output\Prompts;
 use Aphiria\Console\Output\Prompts\Question;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the console prompt question
- */
 class QuestionTest extends TestCase
 {
     private Question $question;

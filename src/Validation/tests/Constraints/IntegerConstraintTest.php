@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints;
 use Aphiria\Validation\Constraints\IntegerConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the integer constraint
- */
 class IntegerConstraintTest extends TestCase
 {
     public function testFailingValue(): void

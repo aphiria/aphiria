@@ -18,9 +18,6 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the problem details response mutator
- */
 class ProblemDetailsResponseMutatorTest extends TestCase
 {
     private ProblemDetailsResponseMutator $mutator;

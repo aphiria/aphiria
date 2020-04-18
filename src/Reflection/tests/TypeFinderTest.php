@@ -21,9 +21,6 @@ use Aphiria\Reflection\TypeFinder;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the type finder
- */
 class TypeFinderTest extends TestCase
 {
     private const DIRECTORY = __DIR__ . '/Mocks';

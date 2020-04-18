@@ -15,9 +15,6 @@ namespace Aphiria\Api\Tests\Errors;
 use Aphiria\Api\Errors\ProblemDetails;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the problem details
- */
 class ProblemDetailsTest extends TestCase
 {
     public function testConstructorSetsProperties(): void

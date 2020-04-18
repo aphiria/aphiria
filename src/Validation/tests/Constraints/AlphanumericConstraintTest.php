@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints;
 use Aphiria\Validation\Constraints\AlphanumericConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the alpha-numeric constraint
- */
 class AlphanumericConstraintTest extends TestCase
 {
     public function testFailingValue(): void

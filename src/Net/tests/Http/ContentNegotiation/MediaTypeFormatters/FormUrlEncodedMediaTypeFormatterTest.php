@@ -20,9 +20,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the form URL-encoded media type formatter
- */
 class FormUrlEncodedMediaTypeFormatterTest extends TestCase
 {
     private FormUrlEncodedMediaTypeFormatter $formatter;

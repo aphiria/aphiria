@@ -21,9 +21,6 @@ use Aphiria\Routing\RouteRegistrantCollection;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the route registrant collection
- */
 class RouteRegistrantCollectionTest extends TestCase
 {
     public function testAddingRegistrantCausesItToBeInvokedWhenRegisteringRoutes(): void

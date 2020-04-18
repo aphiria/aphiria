@@ -17,9 +17,6 @@ use Aphiria\Validation\Constraints\IConstraint;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the each constraint
- */
 class EachConstraintTest extends TestCase
 {
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void

@@ -18,9 +18,6 @@ use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the route collection
- */
 class RouteCollectionTest extends TestCase
 {
     private RouteCollection $collection;

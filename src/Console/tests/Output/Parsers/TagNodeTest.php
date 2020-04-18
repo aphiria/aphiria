@@ -15,9 +15,6 @@ namespace Aphiria\Console\Tests\Output\Parsers;
 use Aphiria\Console\Output\Parsers\TagAstNode;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the tag node
- */
 class TagNodeTest extends TestCase
 {
     public function testIsTag(): void

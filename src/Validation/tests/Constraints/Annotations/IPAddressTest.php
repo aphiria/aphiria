@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints\Annotations;
 use Aphiria\Validation\Constraints\Annotations\IPAddress;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the IP address constraint annotation
- */
 class IPAddressTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

@@ -19,9 +19,6 @@ use Aphiria\Net\Http\Request;
 use Aphiria\Net\Uri;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the accept language matcher
- */
 class AcceptLanguageMatcherTest extends TestCase
 {
     private HttpHeaders $headers;

@@ -17,9 +17,6 @@ use DateTime;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests cookies
- */
 class CookieTest extends TestCase
 {
     private Cookie $cookie;

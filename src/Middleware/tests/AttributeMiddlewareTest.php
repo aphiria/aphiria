@@ -15,9 +15,6 @@ namespace Aphiria\Middleware\Tests;
 use Aphiria\Middleware\Tests\Mocks\AttributeMiddleware;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the attribute middleware
- */
 class AttributeMiddlewareTest extends TestCase
 {
     private AttributeMiddleware $middleware;

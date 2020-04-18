@@ -24,9 +24,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the variable trie node
- */
 class VariableTrieNodeTest extends TestCase
 {
     public function testCreatingWithEmptyPartsThrowsException(): void

@@ -17,9 +17,6 @@ use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
 use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the lexer token stream
- */
 class TokenStreamTest extends TestCase
 {
     public function testCheckingNextTypeAlwaysReturnsNextType(): void

@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\UriTemplates\Constraints;
 use Aphiria\Routing\UriTemplates\Constraints\AlphaConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the alpha constraint
- */
 class AlphaConstraintTest extends TestCase
 {
     public function testAlphaCharsPass(): void

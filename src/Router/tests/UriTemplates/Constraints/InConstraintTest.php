@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\UriTemplates\Constraints;
 use Aphiria\Routing\UriTemplates\Constraints\InConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the in-array constraint
- */
 class InConstraintTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void

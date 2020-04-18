@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the URI template
- */
 class UriTemplateTest extends TestCase
 {
     public function testHostIsNullIfNoValueIsSpecified(): void

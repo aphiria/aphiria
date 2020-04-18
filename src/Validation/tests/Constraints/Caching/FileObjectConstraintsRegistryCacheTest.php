@@ -18,9 +18,6 @@ use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\Tests\Constraints\Mocks\MockConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the file constraint registry cache
- */
 class FileObjectConstraintsRegistryCacheTest extends TestCase
 {
     /** @var string The path to the constraint cache */

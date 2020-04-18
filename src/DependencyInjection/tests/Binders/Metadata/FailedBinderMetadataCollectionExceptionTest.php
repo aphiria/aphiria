@@ -21,9 +21,6 @@ use Aphiria\DependencyInjection\Tests\Binders\Mocks\Binder;
 use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the failed binder metadata collection exception
- */
 class FailedBinderMetadataCollectionExceptionTest extends TestCase
 {
     public function testPropertiesAreSet(): void

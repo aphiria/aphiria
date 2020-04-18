@@ -18,9 +18,6 @@ use Aphiria\Serialization\Encoding\EncoderRegistry;
 use Aphiria\Serialization\Encoding\IEncoder;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the serializer component
- */
 class SerializerComponentTest extends TestCase
 {
     private SerializerComponent $serializerComponent;

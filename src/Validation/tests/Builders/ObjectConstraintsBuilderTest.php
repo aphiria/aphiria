@@ -16,9 +16,6 @@ use Aphiria\Validation\Builders\ObjectConstraintsBuilder;
 use Aphiria\Validation\Constraints\IConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the object constraints builder
- */
 class ObjectConstraintsBuilderTest extends TestCase
 {
     private ObjectConstraintsBuilder $builder;

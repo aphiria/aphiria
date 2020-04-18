@@ -17,9 +17,6 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the media type formatter match result
- */
 class MediaTypeFormatterMatchTest extends TestCase
 {
     public function testGettingFormatterReturnsSameOneInConstructor(): void

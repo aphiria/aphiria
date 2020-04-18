@@ -27,9 +27,6 @@ use Closure;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the routing binder
- */
 class RoutingBinderTest extends TestCase
 {
     private const ROUTE_CACHE_PATH = __DIR__ . '/tmp/routes.txt';

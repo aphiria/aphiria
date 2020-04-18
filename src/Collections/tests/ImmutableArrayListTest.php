@@ -17,9 +17,6 @@ use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the immutable array list
- */
 class ImmutableArrayListTest extends TestCase
 {
     public function testCheckingOffsetExists(): void

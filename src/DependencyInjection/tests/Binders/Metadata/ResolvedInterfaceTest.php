@@ -17,9 +17,6 @@ use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the resolved interface
- */
 class ResolvedInterfaceTest extends TestCase
 {
     public function testGetInterfaceReturnsSetInterface(): void

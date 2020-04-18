@@ -18,9 +18,6 @@ use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the progress bar formatter
- */
 class ProgressBarFormatterTest extends TestCase
 {
     /** @var IOutput|MockObject */

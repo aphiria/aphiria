@@ -15,9 +15,6 @@ namespace Aphiria\Serialization\Tests\Encoding;
 use Aphiria\Serialization\Encoding\CamelCasePropertyNameFormatter;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the camel case property name formatter
- */
 class CamelCasePropertyNameFormatterTest extends TestCase
 {
     private CamelCasePropertyNameFormatter $formatter;

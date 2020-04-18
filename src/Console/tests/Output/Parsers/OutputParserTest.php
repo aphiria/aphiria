@@ -21,9 +21,6 @@ use Aphiria\Console\Output\Parsers\WordAstNode;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the output parser
- */
 class OutputParserTest extends TestCase
 {
     private OutputParser $parser;

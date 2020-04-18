@@ -26,9 +26,6 @@ use Aphiria\Console\StatusCodes;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the help command handler
- */
 class HelpCommandHandlerTest extends TestCase
 {
     /** @var IOutput|MockObject */

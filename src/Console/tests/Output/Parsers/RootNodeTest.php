@@ -15,9 +15,6 @@ namespace Aphiria\Console\Tests\Output\Parsers;
 use Aphiria\Console\Output\Parsers\RootAstNode;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the root node
- */
 class RootNodeTest extends TestCase
 {
     public function testIsRoot(): void

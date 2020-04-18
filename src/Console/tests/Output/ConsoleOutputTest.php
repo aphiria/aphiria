@@ -15,9 +15,6 @@ namespace Aphiria\Console\Tests\Output;
 use Aphiria\Console\Output\ConsoleOutput;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the console output
- */
 class ConsoleOutputTest extends TestCase
 {
     public function testClearWritesAsciiCodesToClearScreen(): void

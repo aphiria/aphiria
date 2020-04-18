@@ -16,9 +16,6 @@ use Aphiria\Validation\ErrorMessages\IErrorMessageTemplateRegistry;
 use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolator;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the string replacement error message interpolator
- */
 class StringReplaceErrorMessageInterpolatorTest extends TestCase
 {
     public function testErrorMessageIdWithNoPlaceholdersIsReturnedIntact(): void

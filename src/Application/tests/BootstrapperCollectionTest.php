@@ -16,9 +16,6 @@ use Aphiria\Application\BootstrapperCollection;
 use Aphiria\Application\IBootstrapper;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the bootstrapper collection
- */
 class BootstrapperCollectionTest extends TestCase
 {
     private BootstrapperCollection $bootstrappers;

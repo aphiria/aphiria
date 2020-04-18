@@ -20,9 +20,6 @@ use Aphiria\Net\Http\IResponseFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the exception handler binder
- */
 class ExceptionHandlerBinderTest extends TestCase
 {
     /** @var IContainer|MockObject */

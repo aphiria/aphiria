@@ -16,9 +16,6 @@ use Aphiria\Routing\Annotations\Route;
 use Aphiria\Routing\Annotations\RouteConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the route annotation
- */
 class RouteTest extends TestCase
 {
     public function testDefaultValuesOfRoutePropertiesAreSet(): void

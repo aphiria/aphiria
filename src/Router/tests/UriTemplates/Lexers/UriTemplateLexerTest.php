@@ -19,9 +19,6 @@ use Aphiria\Routing\UriTemplates\Lexers\TokenTypes;
 use Aphiria\Routing\UriTemplates\Lexers\UriTemplateLexer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the URI template lexer
- */
 class UriTemplateLexerTest extends TestCase
 {
     private UriTemplateLexer $lexer;

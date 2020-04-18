@@ -22,9 +22,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use SessionHandlerInterface;
 
-/**
- * Tests the session middleware
- */
 class SessionTest extends TestCase
 {
     /** @var ISession|MockObject */

@@ -16,9 +16,6 @@ use Aphiria\Validation\Constraints\Annotations\Max;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the max constraint annotation
- */
 class MaxTest extends TestCase
 {
     public function testCreatingConstraintFromAnnotationCreatesCorrectConstraint(): void

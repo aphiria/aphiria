@@ -18,9 +18,6 @@ use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Tests\Commands\Mocks\MockCommandHandler;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the file command registry
- */
 class FileCommandRegistryCacheTest extends TestCase
 {
     /** @var string The path to the command cache */

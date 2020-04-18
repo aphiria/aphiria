@@ -19,9 +19,6 @@ use Aphiria\Console\Output\Compilers\OutputCompiler;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the output compiler
- */
 class OutputCompilerTest extends TestCase
 {
     private ElementRegistry $elements;

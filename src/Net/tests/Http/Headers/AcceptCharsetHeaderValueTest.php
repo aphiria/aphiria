@@ -19,9 +19,6 @@ use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the Accept-Charset header value
- */
 class AcceptCharsetHeaderValueTest extends TestCase
 {
     public function qualityScoreOutsideAcceptedRangeProvider(): array

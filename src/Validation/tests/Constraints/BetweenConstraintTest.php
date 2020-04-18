@@ -16,9 +16,6 @@ use Aphiria\Validation\Constraints\BetweenConstraint;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the between constraint
- */
 class BetweenConstraintTest extends TestCase
 {
     public function testFailingConstraint(): void

@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\UriTemplates\Constraints;
 use Aphiria\Routing\UriTemplates\Constraints\UuidV4Constraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the UUIDV4 constraint
- */
 class UuidV4ConstraintTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void

@@ -19,9 +19,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the HTML media type formatter
- */
 class HtmlMediaTypeFormatterTest extends TestCase
 {
     private HtmlMediaTypeFormatter $formatter;

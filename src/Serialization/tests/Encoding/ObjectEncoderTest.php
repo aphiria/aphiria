@@ -46,9 +46,6 @@ use Aphiria\Serialization\Tests\Encoding\Mocks\User;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the object encoder
- */
 class ObjectEncoderTest extends TestCase
 {
     private EncoderRegistry $encoders;

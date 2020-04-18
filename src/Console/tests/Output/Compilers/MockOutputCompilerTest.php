@@ -15,9 +15,6 @@ namespace Aphiria\Console\Tests\Output\Compilers;
 use Aphiria\Console\Output\Compilers\MockOutputCompiler;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the mock output compiler
- */
 class MockOutputCompilerTest extends TestCase
 {
     public function testCompilingStyledMessage(): void

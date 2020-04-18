@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests;
 use Aphiria\Routing\MethodRouteAction;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the method route action
- */
 class MethodRouteActionTest extends TestCase
 {
     /** @const The name of the class used in our method action */

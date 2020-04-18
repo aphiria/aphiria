@@ -19,9 +19,6 @@ use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the closure command registrant
- */
 class ClosureCommandRegistrantTest extends TestCase
 {
     public function testRegisteringCommandsRegistersCommandsFromClosures(): void

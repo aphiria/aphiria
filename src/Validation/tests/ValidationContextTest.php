@@ -18,9 +18,6 @@ use Aphiria\Validation\ConstraintViolation;
 use Aphiria\Validation\ValidationContext;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the validation context
- */
 class ValidationContextTest extends TestCase
 {
     public function testAddingManyConstraintViolations(): void

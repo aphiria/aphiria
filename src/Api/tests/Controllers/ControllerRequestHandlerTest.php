@@ -22,9 +22,6 @@ use Aphiria\Net\Http\IHttpResponseMessage;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the controller request handler
- */
 class ControllerRequestHandlerTest extends TestCase
 {
     /** @var IServiceResolver|MockObject */

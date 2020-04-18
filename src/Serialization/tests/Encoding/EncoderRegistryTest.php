@@ -19,9 +19,6 @@ use OutOfBoundsException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the encoder registry
- */
 class EncoderRegistryTest extends TestCase
 {
     private EncoderRegistry $encoderRegistry;

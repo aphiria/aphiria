@@ -23,9 +23,6 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Throwable;
 
-/**
- * Tests the global exception handler
- */
 class GlobalExceptionHandlerTest extends TestCase
 {
     /** @var IExceptionRenderer|MockObject */

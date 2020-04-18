@@ -18,9 +18,6 @@ use InvalidArgumentException;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the HTTP headers
- */
 class HttpHeadersTest extends TestCase
 {
     private HttpHeaders $headers;

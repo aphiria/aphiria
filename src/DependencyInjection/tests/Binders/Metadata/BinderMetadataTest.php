@@ -20,9 +20,6 @@ use Aphiria\DependencyInjection\Tests\Binders\Mocks\Binder;
 use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the binder metadata
- */
 class BinderMetadataTest extends TestCase
 {
     public function testGetBinderReturnsSetBinder(): void

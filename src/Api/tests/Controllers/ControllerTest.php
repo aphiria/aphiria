@@ -32,9 +32,6 @@ use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the controller
- */
 class ControllerTest extends TestCase
 {
     private Controller $controller;

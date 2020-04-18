@@ -24,9 +24,6 @@ use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the trie factory
- */
 class TrieFactoryTest extends TestCase
 {
     private TrieFactory $trieFactory;

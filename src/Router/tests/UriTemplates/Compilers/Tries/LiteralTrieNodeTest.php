@@ -22,9 +22,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 
-/**
- * Tests the literal trie node
- */
 class LiteralTrieNodeTest extends TestCase
 {
     public function testCreatingWithSingleRouteConvertsItToArrayOfRoutes(): void

@@ -22,9 +22,6 @@ use Doctrine\Common\Annotations\Reader;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the annotation constraint registrant
- */
 class AnnotationConstraintsRegistrantTest extends TestCase
 {
     private const PATH = __DIR__;

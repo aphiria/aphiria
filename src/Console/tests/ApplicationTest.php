@@ -26,9 +26,6 @@ use Aphiria\Console\StatusCodes;
 use Aphiria\Console\Tests\Output\Mocks\Output;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the console application
- */
 class ApplicationTest extends TestCase
 {
     private CommandRegistry $commands;

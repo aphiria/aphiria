@@ -23,9 +23,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the media type formatter matcher
- */
 class MediaTypeFormatterMatcherTest extends TestCase
 {
     private HttpHeaders $headers;

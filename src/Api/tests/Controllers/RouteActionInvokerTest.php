@@ -39,9 +39,6 @@ use ReflectionFunctionAbstract;
 use ReflectionParameter;
 use RuntimeException;
 
-/**
- * Tests the route action invoker
- */
 class RouteActionInvokerTest extends TestCase
 {
     /** @var IRequestBodyValidator|MockObject */

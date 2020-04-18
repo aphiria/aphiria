@@ -20,9 +20,6 @@ use Aphiria\Serialization\SerializationException;
 use Aphiria\Serialization\Tests\Encoding\Mocks\User;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the form URL-encoded serializer
- */
 class FormUrlEncodedSerializerTest extends TestCase
 {
     private FormUrlEncodedSerializer $serializer;

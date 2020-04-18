@@ -24,9 +24,6 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\VariableTrieNode;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the trie route matcher
- */
 class TrieRouteMatcherTest extends TestCase
 {
     private TrieRouteMatcher $matcher;

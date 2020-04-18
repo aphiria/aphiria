@@ -15,9 +15,6 @@ namespace Aphiria\Validation\Tests\Constraints;
 use Aphiria\Validation\Constraints\RegexConstraint;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the regex constraint
- */
 class RegexConstraintTest extends TestCase
 {
     public function testGettingErrorMessageId(): void

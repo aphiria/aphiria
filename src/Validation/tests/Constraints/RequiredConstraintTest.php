@@ -16,9 +16,6 @@ use Aphiria\Validation\Constraints\RequiredConstraint;
 use Countable;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the required constraint
- */
 class RequiredConstraintTest extends TestCase
 {
     public function testEmptyArrayFails(): void

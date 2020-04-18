@@ -18,9 +18,6 @@ use Aphiria\Console\Output\Compilers\Elements\TextStyles;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the style class
- */
 class StyleTest extends TestCase
 {
     public function testAddingInvalidTextStyle(): void

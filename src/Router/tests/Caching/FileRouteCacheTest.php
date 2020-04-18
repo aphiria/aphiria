@@ -22,9 +22,6 @@ use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the file route cache
- */
 class FileRouteCacheTest extends TestCase
 {
     /** @var string The path to the route cache */

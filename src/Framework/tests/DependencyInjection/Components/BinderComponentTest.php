@@ -20,9 +20,6 @@ use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the binder component
- */
 class BinderComponentTest extends TestCase
 {
     private BinderComponent $binderComponent;

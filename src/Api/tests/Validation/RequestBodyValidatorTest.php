@@ -24,9 +24,6 @@ use Aphiria\Validation\ValidationException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the request body validator
- */
 class RequestBodyValidatorTest extends TestCase
 {
     /** @var IHttpRequestMessage|MockObject */

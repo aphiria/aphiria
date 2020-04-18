@@ -20,9 +20,6 @@ use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the route builder registry
- */
 class RouteBuilderRegistryTest extends TestCase
 {
     private RouteBuilderRegistry $registry;

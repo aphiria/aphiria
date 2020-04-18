@@ -16,9 +16,6 @@ use Aphiria\Serialization\Encoding\EncodingContext;
 use Aphiria\Serialization\Tests\Encoding\Mocks\User;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the encoding context
- */
 class EncodingContextTest extends TestCase
 {
     private EncodingContext $context;

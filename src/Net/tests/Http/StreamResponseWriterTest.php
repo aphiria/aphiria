@@ -21,9 +21,6 @@ use Aphiria\Net\Http\StreamResponseWriter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the stream response writer
- */
 class StreamResponseWriterTest extends TestCase
 {
     private StreamResponseWriter $writer;

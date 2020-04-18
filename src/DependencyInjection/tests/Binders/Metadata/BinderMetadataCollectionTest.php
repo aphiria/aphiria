@@ -22,9 +22,6 @@ use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the binder metadata collection
- */
 class BinderMetadataCollectionTest extends TestCase
 {
     public function testBinderThatResolvesTargetedInterfaceIsNotReturnedForTargetedBoundInterfaceWithSameInterfaceButDifferentTarget(): void

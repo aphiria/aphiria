@@ -15,9 +15,6 @@ namespace Aphiria\Routing\Tests\Annotations;
 use Aphiria\Routing\Annotations\Patch;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the PATCH annotation
- */
 class PatchTest extends TestCase
 {
     public function testPatchHttpMethodIsSet(): void

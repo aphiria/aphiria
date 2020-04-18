@@ -19,9 +19,6 @@ use Aphiria\Routing\Route;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests a route
- */
 class RouteTest extends TestCase
 {
     private Route $route;

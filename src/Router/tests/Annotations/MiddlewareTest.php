@@ -16,9 +16,6 @@ use Aphiria\Routing\Annotations\Middleware;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the middleware annotation
- */
 class MiddlewareTest extends TestCase
 {
     public function testAttributesCanBeSetFromAttributes(): void

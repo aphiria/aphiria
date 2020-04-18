@@ -18,9 +18,6 @@ use Aphiria\Routing\RouteCollection;
 use Closure;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the route builder route registrant
- */
 class RouteBuilderRouteRegistrantTest extends TestCase
 {
     public function testConstructingWithInvalidCallbackThrowsException(): void

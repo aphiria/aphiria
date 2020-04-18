@@ -20,9 +20,6 @@ use Aphiria\Console\Input\OptionTypes;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the command
- */
 class CommandTest extends TestCase
 {
     public function testEmptyNameThrowsException(): void

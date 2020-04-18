@@ -16,9 +16,6 @@ use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the abstract syntax tree node
- */
 class AstNodeTest extends TestCase
 {
     public function testCheckingForChildrenReturnsCorrectValue(): void

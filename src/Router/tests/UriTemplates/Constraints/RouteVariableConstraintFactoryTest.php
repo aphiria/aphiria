@@ -18,9 +18,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * Tests the route variable constraint factory
- */
 class RouteVariableConstraintFactoryTest extends TestCase
 {
     private RouteVariableConstraintFactory $constraintFactory;

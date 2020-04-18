@@ -16,9 +16,6 @@ use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the URI
- */
 class UriTest extends TestCase
 {
     private Uri $uri;

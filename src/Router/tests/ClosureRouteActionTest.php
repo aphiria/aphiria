@@ -16,9 +16,6 @@ use Aphiria\Routing\ClosureRouteAction;
 use Closure;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the closure route action
- */
 class ClosureRouteActionTest extends TestCase
 {
     private ClosureRouteAction $closureAction;

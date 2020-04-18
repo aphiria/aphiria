@@ -25,9 +25,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the HTTP request message parser
- */
 class RequestParserTest extends TestCase
 {
     private RequestParser $parser;

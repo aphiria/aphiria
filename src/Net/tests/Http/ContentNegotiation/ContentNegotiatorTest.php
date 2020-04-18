@@ -22,9 +22,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the content negotiator
- */
 class ContentNegotiatorTest extends TestCase
 {
     /** @var IHttpRequestMessage|MockObject The request message to use in tests */

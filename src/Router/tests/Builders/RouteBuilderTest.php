@@ -21,9 +21,6 @@ use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Defines the tests for the route builder
- */
 class RouteBuilderTest extends TestCase
 {
     private RouteBuilder $routeBuilder;
