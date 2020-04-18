@@ -69,7 +69,10 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
     {
         // It's Throwable, but not an Exception
         if (!$ex instanceof Exception) {
+            // We cannot mock Throwable.  So, this is untestable.
+            // @codeCoverageIgnoreStart
             $ex = new FatalThrowableError($ex);
+            // @codeCoverageIgnoreEnd
         }
 
         if (isset($this->logLevelFactories[\get_class($ex)])) {
@@ -84,10 +87,11 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
 
     /**
      * @inheritdoc
+     * @param array|null $error The error that was thrown (only used for testing)
      */
-    public function handleShutdown(): void
+    public function handleShutdown(array $error = null): void
     {
-        $error = error_get_last();
+        $error = $error ?? error_get_last();
 
         if ($error !== null && \in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
             $this->handleException(

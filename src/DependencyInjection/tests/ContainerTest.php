@@ -16,6 +16,7 @@ use Aphiria\DependencyInjection\CallException;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\Context;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\IContainerBinding;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\Tests\Mocks\Bar;
@@ -118,7 +119,7 @@ class ContainerTest extends TestCase
         $this->assertNotSame($instance1, $instance2);
     }
 
-    public function testCallingMethodWithPrimitiveTypes(): void
+    public function testCallingClosureWithPrimitiveTypes(): void
     {
         $instance = new ConstructorWithSetters();
         $this->container->callMethod($instance, 'setPrimitive', ['foo']);
@@ -134,7 +135,7 @@ class ContainerTest extends TestCase
         $this->container->callMethod($instance, 'setPrimitive');
     }
 
-    public function testCallingMethodWithTypeHintedAndPrimitiveTypes(): void
+    public function testCallingClosureWithTypeHintedAndPrimitiveTypes(): void
     {
         $this->container->bindClass(IFoo::class, Bar::class, [], true);
         $instance = new ConstructorWithSetters();
@@ -148,7 +149,7 @@ class ContainerTest extends TestCase
         $this->assertEquals(Bar::class . ':foo', $response);
     }
 
-    public function testCallingMethodWithTypeHints(): void
+    public function testCallingClosureWithTypeHints(): void
     {
         $this->container->bindClass(IFoo::class, Bar::class, [], true);
         $instance = new ConstructorWithSetters();
@@ -156,6 +157,13 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Bar::class, $instance->getInterface());
         $response = $this->container->callClosure(fn (IFoo $interface) => \get_class($interface));
         $this->assertEquals(Bar::class, $response);
+    }
+
+    public function testCallingClosureWithUnresolvableParametersThrowsException(): void
+    {
+        $this->expectException(CallException::class);
+        $this->expectExceptionMessage('Failed to call closure');
+        $this->container->callClosure(fn (IFoo $foo) => null);
     }
 
     public function testCallingNonExistentMethod(): void
@@ -569,6 +577,25 @@ class ContainerTest extends TestCase
         } catch (ResolutionException $ex) {
             // Don't do anything
         }
+    }
+
+    public function testResolvingWithUnsupportedBindingTypeThrowsException(): void
+    {
+        $this->expectException(ResolutionException::class);
+        $container = new class() extends Container {
+            public function bindUnsupported(): void
+            {
+                $unsupportedBinding = new class() implements IContainerBinding {
+                    public function resolveAsSingleton(): bool
+                    {
+                        return true;
+                    }
+                };
+                $this->addBinding(IFoo::class, $unsupportedBinding);
+            }
+        };
+        $container->bindUnsupported();
+        $container->resolve(IFoo::class);
     }
 
     public function testSingletonDependenciesInPrototype(): void

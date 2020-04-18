@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Exceptions\Tests;
 
+use Aphiria\Exceptions\FatalErrorException;
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\IExceptionRenderer;
 use ErrorException;
@@ -20,6 +21,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Throwable;
 
 /**
  * Tests the global exception handler
@@ -106,5 +108,33 @@ class GlobalExceptionHandlerTest extends TestCase
             ->with($exception);
         $this->globalExceptionHandler->registerLogLevelFactory(Exception::class, fn (Exception $ex) => LogLevel::EMERGENCY);
         $this->globalExceptionHandler->handleException($exception);
+    }
+
+    public function testHandleShutdownThrowsErrorsAsExceptions(): void
+    {
+        $errors = [
+            ['type' => \E_ERROR, 'message' => 'foo', 'file' => '/file', 'line' => 1],
+            ['type' => \E_PARSE, 'message' => 'foo', 'file' => '/file', 'line' => 1],
+            ['type' => \E_CORE_ERROR, 'message' => 'foo', 'file' => '/file', 'line' => 1],
+            ['type' => \E_COMPILE_ERROR, 'message' => 'foo', 'file' => '/file', 'line' => 1]
+        ];
+        $globalExceptionHandler = new class($this->createMock(IExceptionRenderer::class)) extends GlobalExceptionHandler {
+            public ?Throwable $handledException = null;
+
+            public function handleException(Throwable $ex): void
+            {
+                $this->handledException = $ex;
+            }
+        };
+
+        foreach ($errors as $error) {
+            $globalExceptionHandler->handleShutdown($error);
+            $this->assertInstanceOf(FatalErrorException::class, $globalExceptionHandler->handledException);
+            $this->assertEquals($error['message'], $globalExceptionHandler->handledException->getMessage());
+            $this->assertEquals($error['type'], $globalExceptionHandler->handledException->getCode());
+            $this->assertEquals(0, $globalExceptionHandler->handledException->getSeverity());
+            $this->assertEquals($error['file'], $globalExceptionHandler->handledException->getFile());
+            $this->assertEquals($error['line'], $globalExceptionHandler->handledException->getLine());
+        }
     }
 }

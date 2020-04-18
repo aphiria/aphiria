@@ -146,19 +146,60 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $this->assertEquals('foo', $actualBoundInterfaces[0]->getInterface());
     }
 
+    public function testCallClosurePassesThroughToComposedContainer(): void
+    {
+        $closure = fn (int $foo) => null;
+        $primitives = [1];
+        $container = $this->createMock(IContainer::class);
+        $container->expects($this->once())
+            ->method('callClosure')
+            ->with($closure, $primitives)
+            ->willReturn(true);
+        $collector = new ContainerBinderMetadataCollector($container);
+        $collector->callClosure($closure, $primitives);
+    }
+
+    public function testCallMethodPassesThroughToComposedContainer(): void
+    {
+        $class = new class() {
+            public function foo(): bool
+            {
+                return true;
+            }
+        };
+        $container = $this->createMock(IContainer::class);
+        $container->expects($this->once())
+            ->method('callMethod')
+            ->with($class, 'foo', [1], false)
+            ->willReturn(true);
+        $collector = new ContainerBinderMetadataCollector($container);
+        $collector->callMethod($class, 'foo', [1]);
+    }
+
     public function testForWithInvalidParameterThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Context must be an instance of ' . Context::class . ' or string');
-        $this->container->for(1, fn (IContainer $container) => null);
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $collector->for(1, fn (IContainer $container) => null);
     }
 
     public function testForWithStringContextCreatesTargetedBinding(): void
     {
         $this->container->for('foo', fn (IContainer $container) => $container->bindInstance(IFoo::class, new Bar()));
-        $this->container->for('foo', function (IContainer $container) {
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $collector->for('foo', function (IContainer $container) {
             $this->assertInstanceOf(Bar::class, $container->resolve(IFoo::class));
         });
+    }
+
+    public function testHasBindingPassesThroughToComposedContainerWithCurrentContext(): void
+    {
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $this->assertFalse($collector->hasBinding(IFoo::class));
+        $this->container->for('foo', fn (IContainer $container) => $container->bindInstance(IFoo::class, new Foo()));
+        $this->assertFalse($collector->hasBinding(IFoo::class));
+        $this->assertTrue($collector->for('foo', fn (IContainer $container) => $container->hasBinding(IFoo::class)));
     }
 
     public function testResolveAddsResolvedBindingEvenIfResolutionFailed(): void
@@ -305,5 +346,14 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $collector = new ContainerBinderMetadataCollector($this->container);
         $this->assertCount(1, $collector->collect($binder)->getResolvedInterfaces());
         $this->assertEquals('foo', $collector->collect($binder)->getResolvedInterfaces()[0]->getInterface());
+    }
+
+    public function testUnbindPassesThroughToComposedContainerWithCurrentContext(): void
+    {
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $collector->for('foo', fn (IContainer $container) => $container->bindInstance(IFoo::class, new Foo()));
+        $this->assertTrue($collector->for('foo', fn (IContainer $container) => $container->hasBinding(IFoo::class)));
+        $collector->for('foo', fn (IContainer $container) => $container->unbind(IFoo::class));
+        $this->assertFalse($collector->for('foo', fn (IContainer $container) => $container->hasBinding(IFoo::class)));
     }
 }

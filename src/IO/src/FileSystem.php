@@ -256,7 +256,10 @@ class FileSystem
         $fileSize = filesize($path);
 
         if ($fileSize === false) {
+            // Cannot test a failure to get a file's size
+            // @codeCoverageIgnoreStart
             throw new FileSystemException("Failed to get file size of $path");
+            // @codeCoverageIgnoreEnd
         }
 
         return $fileSize;
@@ -311,13 +314,19 @@ class FileSystem
         $modifiedTimestamp = filemtime($path);
 
         if ($modifiedTimestamp === false) {
+            // Cannot test failing to get a file's modification time
+            // @codeCoverageIgnoreStart
             throw new FileSystemException("Failed to get last modified time of $path");
+            // @codeCoverageIgnoreEnd
         }
 
         $modifiedDateTime = DateTime::createFromFormat('U', (string)$modifiedTimestamp);
 
         if ($modifiedDateTime === false) {
+            // Cannot test failing to get a file's modification time
+            // @codeCoverageIgnoreStart
             throw new FileSystemException('Failed to convert last modified time to DateTime object');
+            // @codeCoverageIgnoreEnd
         }
 
         return $modifiedDateTime;
@@ -338,7 +347,10 @@ class FileSystem
         $files = glob($pattern, $flags);
 
         if ($files === false) {
+            // Cannot test failing to get a glob
+            // @codeCoverageIgnoreStart
             throw new FileSystemException("Glob failed for pattern \"$pattern\" with flags $flags");
+            // @codeCoverageIgnoreEnd
         }
 
         return $files;
@@ -449,7 +461,10 @@ class FileSystem
         $bytesWritten = file_put_contents($path, $data, $flags);
 
         if ($bytesWritten === false) {
+            // Cannot test failing to write to a file
+            // @codeCoverageIgnoreStart
             throw new FileSystemException("Failed to write data to path $path");
+            // @codeCoverageIgnoreEnd
         }
 
         return $bytesWritten;

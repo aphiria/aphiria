@@ -117,7 +117,10 @@ final class Stream implements IStream
     {
         if (\is_resource($this->handle)) {
             if (\fclose($this->handle) === false) {
+                // Cannot test failed stream closures
+                // @codeCoverageIgnoreStart
                 throw new RuntimeException('Failed to close stream');
+                // @codeCoverageIgnoreEnd
             }
 
             $this->handle = $this->length = null;
@@ -151,13 +154,7 @@ final class Stream implements IStream
 
         $fileStats = \fstat($this->handle);
 
-        if (isset($fileStats['size'])) {
-            $this->length = $fileStats['size'];
-
-            return $this->length;
-        }
-
-        return null;
+        return isset($fileStats['size']) ? ($this->length = $fileStats['size']) : null;
     }
 
     /**
@@ -170,7 +167,10 @@ final class Stream implements IStream
         }
 
         if (($position = \ftell($this->handle)) === false) {
+            // Cannot test failing to get the position of a stream
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('Failed to get position of stream');
+            // @codeCoverageIgnoreEnd
         }
 
         return $position;
@@ -222,7 +222,10 @@ final class Stream implements IStream
         }
 
         if (($content = \fread($this->handle, $length)) === false) {
+            // Cannot test failing to read a stream
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('Failed to read stream');
+            // @codeCoverageIgnoreEnd
         }
 
         return $content;
@@ -238,7 +241,10 @@ final class Stream implements IStream
         }
 
         if (($content = \stream_get_contents($this->handle)) === false) {
+            // Cannot test failing to get a stream's contents
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('Failed to read stream');
+            // @codeCoverageIgnoreEnd
         }
 
         return $content;
@@ -262,7 +268,10 @@ final class Stream implements IStream
         }
 
         if (\fseek($this->handle, $offset, $whence) === -1) {
+            // Cannot test failing to seek in a stream
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('Error while seeking stream');
+            // @codeCoverageIgnoreEnd
         }
     }
 
@@ -276,7 +285,10 @@ final class Stream implements IStream
         }
 
         if (\fwrite($this->handle, $data) === false) {
+            // Cannot test failing to write to a stream
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('Failed to write to stream');
+            // @codeCoverageIgnoreEnd
         }
 
         // Reset the length, which if knowable will be recalculated next time getLength() is called

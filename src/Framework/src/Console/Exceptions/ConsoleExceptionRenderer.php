@@ -53,11 +53,12 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
             $this->output->writeln($this->getDefaultExceptionMessages($ex));
         }
 
-        // @codeCoverageIgnoreStart
         if ($this->shouldExit) {
+            // We cannot actually call exit() from a test, even from a separate process
+            // @codeCoverageIgnoreStart
             exit($statusCode);
+            // @codeCoverageIgnoreEnd
         }
-        // @codeCoverageIgnoreEnd
     }
 
     /**

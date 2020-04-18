@@ -98,10 +98,6 @@ final class BinderMetadataCollectionFactory
         string $interface,
         int $binderIndex
     ): void {
-        if (!isset($failedInterfacesToBinders[$interface][$binderIndex])) {
-            return;
-        }
-
         unset($failedInterfacesToBinders[$interface][$binderIndex]);
 
         // If this interface doesn't have any more failed binders, remove it

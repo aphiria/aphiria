@@ -73,6 +73,16 @@ class MultiStreamTest extends TestCase
         $this->assertFalse(\is_resource($handle2));
     }
 
+    public function testConstructingAddsStreams(): void
+    {
+        $stream1 = new Stream(fopen('php://temp', 'r+b'));
+        $stream1->write('foo');
+        $stream2 = new Stream(fopen('php://temp', 'r+b'));
+        $stream2->write('bar');
+        $multistream = new MultiStream([$stream1, $stream2]);
+        $this->assertEquals('foobar', (string)$multistream);
+    }
+
     public function testCopyingToClosedStreamThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
@@ -189,18 +199,7 @@ class MultiStreamTest extends TestCase
 
     public function testIsWritableAlwaysReturnsFalse(): void
     {
-        $seekableStream = $this->createReadableStream();
-        $unseekableStream = $this->createReadableStream();
-        $seekableStream->expects($this->once())
-            ->method('isSeekable')
-            ->willReturn(true);
-        $unseekableStream->expects($this->once())
-            ->method('isSeekable')
-            ->willReturn(false);
-        $this->multiStream->addStream($seekableStream);
-        $this->assertTrue($this->multiStream->isSeekable());
-        $this->multiStream->addStream($unseekableStream);
-        $this->assertFalse($this->multiStream->isSeekable());
+        $this->assertFalse($this->multiStream->isWritable());
     }
 
     public function testReadingEmptyStreamReturnsEmptyString(): void
@@ -352,6 +351,22 @@ class MultiStreamTest extends TestCase
         $this->multiStream->seek(0);
     }
 
+    public function testSeekingWithInvalidWhenceThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Whence -1 is invalid');
+        $stream = new Stream(fopen('php://temp', 'r+b'));
+        $stream->write('foo');
+        $this->multiStream->addStream($stream);
+        $this->multiStream->seek(0, -1);
+    }
+
+    public function testSeekingWithUnknownLengthThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->multiStream->seek(0);
+    }
+
     public function testToStringRewindsStreamsAndReadsThemToTheEnd(): void
     {
         $stream1 = new Stream(fopen('php://temp', 'r+b'));
@@ -363,6 +378,18 @@ class MultiStreamTest extends TestCase
         $this->multiStream->addStream($stream1);
         $this->multiStream->addStream($stream2);
         $this->assertEquals('foobar', (string)$this->multiStream);
+    }
+
+    public function testToStringWithUnseekableStreamReturnsEmptyString(): void
+    {
+        $unseekableStream = $this->createReadableStream();
+        $unseekableStream->expects($this->once())
+            ->method('isSeekable')
+            ->willReturn(false);
+        $unseekableStream->expects($this->never())
+            ->method('readToEnd');
+        $multiStream = new MultiStream([$unseekableStream]);
+        $this->assertEmpty((string)$multiStream);
     }
 
     public function testWritingThrowsException(): void
