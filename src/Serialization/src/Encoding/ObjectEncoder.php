@@ -218,10 +218,6 @@ final class ObjectEncoder implements IEncoder
         $encodedValue,
         EncodingContext $context
     ) {
-        if (!$reflection instanceof ReflectionParameter && !$reflection instanceof  ReflectionProperty) {
-            throw new InvalidArgumentException('Must pass in an instance of ' . ReflectionParameter::class . ' or ' . ReflectionProperty::class);
-        }
-
         if (!\is_array($encodedValue)) {
             throw new EncodingException('Value must be an array');
         }
@@ -239,10 +235,7 @@ final class ObjectEncoder implements IEncoder
         }
 
         if (\is_object($encodedValue[0])) {
-            $type = \get_class($encodedValue[0]) . '[]';
-
-            return $this->encoders->getEncoderForType($type)
-                ->decode($encodedValue, $type, $context);
+            throw new EncodingException('Cannot decode arrays of objects');
         }
 
         $type = \gettype($encodedValue[0]) . '[]';
@@ -378,7 +371,7 @@ final class ObjectEncoder implements IEncoder
                 ->decode($encodedPropertyValue, $type, $context);
         }
 
-        throw new EncodingException("Failed to decode property {$encodedPropertyValue->getName()}");
+        throw new EncodingException("Failed to decode property {$property->getName()}");
     }
 
     /**

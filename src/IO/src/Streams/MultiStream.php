@@ -281,7 +281,10 @@ final class MultiStream implements IStream
             $stream->seek(0, SEEK_END);
             $currPosition += $currStreamLength;
         }
+        // For some reason, this is being picked up as missing coverage
+        // @codeCoverageIgnoreStart
     }
+    // @codeCoverageIgnoreEnd
 
     /**
      * @inheritdoc

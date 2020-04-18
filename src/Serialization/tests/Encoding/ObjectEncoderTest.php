@@ -29,6 +29,7 @@ use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedParamsAndNoGe
 use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithTypedVariadicParams;
 use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUnsetTypedPublicProperty;
 use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedOptionalParams;
+use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedParam;
 use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedParamAndTypedPropertiesAndNoGetters;
 use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedParamAndTypedPropertyAndTypedGetter;
 use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedParamsWithTypedGetters;
@@ -37,6 +38,10 @@ use Aphiria\Serialization\Tests\Encoding\Mocks\ConstructorWithUntypedVariadicPar
 use Aphiria\Serialization\Tests\Encoding\Mocks\DerivedClassWithProperties;
 use Aphiria\Serialization\Tests\Encoding\Mocks\NoConstructor;
 use Aphiria\Serialization\Tests\Encoding\Mocks\PublicArrayProperty;
+use Aphiria\Serialization\Tests\Encoding\Mocks\PublicUntypedProperty;
+use Aphiria\Serialization\Tests\Encoding\Mocks\PublicUntypedPropertyWithNonScalarTypedGetter;
+use Aphiria\Serialization\Tests\Encoding\Mocks\PublicUntypedPropertyWithScalarTypedGetter;
+use Aphiria\Serialization\Tests\Encoding\Mocks\PublicUntypedPropertyWithTypedMethodsThatAreNotGetters;
 use Aphiria\Serialization\Tests\Encoding\Mocks\User;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -84,6 +89,22 @@ class ObjectEncoderTest extends TestCase
         $this->objectEncoder->decode(['foo' => 'bar'], PublicArrayProperty::class, new EncodingContext());
     }
 
+    public function testDecodingClassWithArrayPublicPropertyThrowsExceptionIfEncodedValueIsArrayOfObjects(): void
+    {
+        $this->expectException(EncodingException::class);
+        $this->expectExceptionMessage('Cannot decode arrays of objects');
+        $this->objectEncoder->decode(['foo' => [$this]], PublicArrayProperty::class, new EncodingContext());
+    }
+
+    public function testDecodingClassWithArrayPublicPropertySetsItToEmptyIfEncodedValueIsEmpty(): void
+    {
+        $context = new EncodingContext();
+        $encodedValue = ['foo' => []];
+        $value = $this->objectEncoder->decode($encodedValue, PublicArrayProperty::class, $context);
+        $this->assertInstanceOf(PublicArrayProperty::class, $value);
+        $this->assertEmpty($value->foo);
+    }
+
     public function testDecodingClassWithArrayPublicPropertyWorksIfEncodedArrayContainsScalars(): void
     {
         $context = new EncodingContext();
@@ -97,6 +118,13 @@ class ObjectEncoderTest extends TestCase
         $value = $this->objectEncoder->decode($encodedValue, PublicArrayProperty::class, $context);
         $this->assertInstanceOf(PublicArrayProperty::class, $value);
         $this->assertEquals(['bar', 'baz'], $value->foo);
+    }
+
+    public function testDecodingClassWithConstructorUntypedParamAndNoTypedCorrelatingPropertyThrowsExceptionIfEncodedValueIsNotScalar(): void
+    {
+        $this->expectException(EncodingException::class);
+        $this->expectExceptionMessage('Failed to decode constructor parameter foo');
+        $this->objectEncoder->decode(['foo' => $this], ConstructorWithUntypedParam::class, new EncodingContext());
     }
 
     public function testDecodingClassWithNoConstructorParamsButWithTypedPropertyDecodesByPropertyType(): void
@@ -272,6 +300,79 @@ class ObjectEncoderTest extends TestCase
         $this->assertTrue($value->hasBaz());
     }
 
+    public function testDecodingClassWithUntypedPropertyAndNoGetterCanStillBeDecodedIfScalar(): void
+    {
+        $context = new EncodingContext();
+        $encoder = $this->createMock(IEncoder::class);
+        $encoder->expects($this->once())
+            ->method('decode')
+            ->with('bar', 'string', $context)
+            ->willReturn('bar');
+        $this->encoders->registerEncoder('string', $encoder);
+        $decodedValue = $this->objectEncoder->decode(
+            ['foo' => 'bar'],
+            PublicUntypedProperty::class,
+            $context
+        );
+        $this->assertInstanceOf(PublicUntypedProperty::class, $decodedValue);
+        $this->assertEquals('bar', $decodedValue->foo);
+    }
+
+    public function testDecodingClassWithUntypedPropertyAndNoGetterThrowsExceptionIfEncodedValueIsNotScalar(): void
+    {
+        $this->expectException(EncodingException::class);
+        $this->expectExceptionMessage('Failed to decode property foo');
+        $context = new EncodingContext();
+        $this->objectEncoder->decode(
+            ['foo' => ['bar']],
+            PublicUntypedProperty::class,
+            $context
+        );
+    }
+
+    public function testDecodingClassWithUntypedPropertyAndTypedGetterThrowsExceptionIfPropertyValueCouldNotBeDecoded(): void
+    {
+        $this->expectException(EncodingException::class);
+        $this->expectExceptionMessage('Failed to decode property foo');
+        $context = new EncodingContext();
+        $encoder = $this->createMock(IEncoder::class);
+        $encoder->expects($this->once())
+            ->method('decode')
+            ->with(['bar'], 'array', $context)
+            ->willThrowException(new EncodingException());
+        $this->encoders->registerEncoder('string[]', $encoder);
+        $this->objectEncoder->decode(['foo' => ['bar']], PublicUntypedPropertyWithNonScalarTypedGetter::class, $context);
+    }
+
+    public function testDecodingClassWithUntypedPropertyAndMethodsThatAreNotGettersThrowsExceptionIfDecodedValueIsNotScalar(): void
+    {
+        $this->expectException(EncodingException::class);
+        $this->expectExceptionMessage('Failed to decode property foo');
+        $this->objectEncoder->decode(
+            ['foo' => ['bar']],
+            PublicUntypedPropertyWithTypedMethodsThatAreNotGetters::class,
+            new EncodingContext()
+        );
+    }
+
+    public function testDecodingClassWithUntypedPropertyAndTypedGetterUsesTypeFromGetterToDecode(): void
+    {
+        $context = new EncodingContext();
+        $encoder = $this->createMock(IEncoder::class);
+        $encoder->expects($this->once())
+            ->method('decode')
+            ->with('bar', 'string', $context)
+            ->willReturn('bar');
+        $this->encoders->registerEncoder('string', $encoder);
+        $decodedValue = $this->objectEncoder->decode(
+            ['foo' => 'bar'],
+            PublicUntypedPropertyWithScalarTypedGetter::class,
+            $context
+        );
+        $this->assertInstanceOf(PublicUntypedPropertyWithScalarTypedGetter::class, $decodedValue);
+        $this->assertEquals('bar', $decodedValue->getFoo());
+    }
+
     public function testDecodingClassWitVariadicConstructorParamThrowsExceptionIfEncodedValueIsNotArray(): void
     {
         $this->expectException(EncodingException::class);
@@ -402,7 +503,6 @@ class ObjectEncoderTest extends TestCase
 
     public function testEncodingFormatsPropertyNameFormatterIfOneIsSpecified(): void
     {
-        /** @var IPropertyNameFormatter|PHPUnit_Framework_MockObject_MockObject $propertyNameFormatter */
         $propertyNameFormatter = $this->createMock(IPropertyNameFormatter::class);
         $objectEncoder = new ObjectEncoder($this->encoders, $propertyNameFormatter);
         $this->encoders->registerDefaultScalarEncoder(new ScalarEncoder());
