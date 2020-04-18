@@ -35,6 +35,12 @@ class EqualsTest extends TestCase
         $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
     }
 
+    public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
+    {
+        $annotation = new Equals(['value' => 'val', 'errorMessageId' => 'foo']);
+        $this->assertEquals('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testNotSettingValueThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

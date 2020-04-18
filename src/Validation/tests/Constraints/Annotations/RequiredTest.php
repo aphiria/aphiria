@@ -34,6 +34,12 @@ class RequiredTest extends TestCase
         $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
     }
 
+    public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
+    {
+        $annotation = new Required(['errorMessageId' => 'foo']);
+        $this->assertEquals('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testCreatingWithEmptyArrayCreatesInstance(): void
     {
         new Required([]);

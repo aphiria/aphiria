@@ -394,6 +394,46 @@ class Psr7FactoryTest extends TestCase
         $this->assertEquals(\UPLOAD_ERR_OK, $psr7UploadedFiles['file2']->getError());
     }
 
+    public function testCreatePsr7UploadedFilesForMultipartRequestWithPartThatHasEmptyBodyGetsSkipped(): void
+    {
+        $aphiriaHeaders = new HttpHeaders([new KeyValuePair('Content-Type', 'multipart/form-data; boundary=--test')]);
+        $fileBodyPart = new MultipartBodyPart(
+            new HttpHeaders([
+                new KeyValuePair('Content-Disposition', 'name="file1"; filename="foo.png"'),
+                new KeyValuePair('Content-Type', 'image/png')
+            ]),
+            null
+        );
+        $aphiriaRequest = new Request(
+            'GET',
+            new Uri('https://example.com'),
+            $aphiriaHeaders,
+            new MultipartBody([$fileBodyPart], '--test')
+        );
+        /**
+         * Technically, the request parser will always force a StringBody, even if it's empty.  However, just to add a
+         * safe guard, let's double check if the body is null before doing anything.  So, let's fake the request parser
+         * allowing null bodies on multipart body parts.
+         */
+        $aphiriaRequestParser = new class() extends RequestParser {
+            public function readAsMultipart($request): ?MultipartBody
+            {
+                return new MultipartBody([new MultipartBodyPart(new HttpHeaders(), null)]);
+            }
+        };
+        $psr17Factory = new Psr17Factory();
+        $psr7Factory = new Psr7Factory(
+            $psr17Factory,
+            $psr17Factory,
+            $psr17Factory,
+            $psr17Factory,
+            $psr17Factory,
+            null,
+            $aphiriaRequestParser
+        );
+        $this->assertCount(0, $psr7Factory->createPsr7UploadedFiles($aphiriaRequest));
+    }
+
     public function testCreatePsr7UploadedFilesForNonMultipartRequestReturnsEmptyUploadedFiles(): void
     {
         $aphiriaRequest = new Request('GET', new Uri('https://example.com'));

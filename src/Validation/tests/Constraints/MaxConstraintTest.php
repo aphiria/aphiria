@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Constraints;
 
 use Aphiria\Validation\Constraints\MaxConstraint;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -37,6 +38,13 @@ class MaxConstraintTest extends TestCase
     {
         $constraint = new MaxConstraint(2, true, 'foo');
         $this->assertEquals(['value' => 'val', 'max' => 2], $constraint->getErrorMessagePlaceholders('val'));
+    }
+
+    public function testNonNumericMaxThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Max must be numeric');
+        new MaxConstraint('foo', true);
     }
 
     public function testPassingValue(): void

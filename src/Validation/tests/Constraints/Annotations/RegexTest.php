@@ -35,6 +35,12 @@ class RegexTest extends TestCase
         $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
     }
 
+    public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
+    {
+        $annotation = new Regex(['value' => 'regex', 'errorMessageId' => 'foo']);
+        $this->assertEquals('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testNotSettingValueThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

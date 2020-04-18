@@ -35,6 +35,12 @@ class DateTest extends TestCase
         $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
     }
 
+    public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
+    {
+        $annotation = new Date(['value' => ['Ymd'], 'errorMessageId' => 'foo']);
+        $this->assertEquals('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testNotSettingArrayOfAcceptableFormatsThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

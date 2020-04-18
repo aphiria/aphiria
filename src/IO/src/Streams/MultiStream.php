@@ -217,7 +217,7 @@ final class MultiStream implements IStream
             $this->streamIndex = $streamIndex;
         }
 
-        $this->position = $this->getLength();
+        $this->position = $this->getLength() ?? 0;
 
         return $buffer;
     }
@@ -249,7 +249,7 @@ final class MultiStream implements IStream
                 $this->position += $offset;
                 break;
             case SEEK_END:
-                $this->position = $this->getLength() + $offset;
+                $this->position = $this->getLength() + $offset ?? 0;
                 break;
             case SEEK_SET:
                 $this->position = $offset;
@@ -270,7 +270,7 @@ final class MultiStream implements IStream
                 $stream->seek($this->position - $currPosition);
 
                 // Rewind the remaining streams
-                for ($remainingIndex = $this->streamIndex + 1;$remainingIndex < \count($this->streams);$remainingIndex++) {
+                for ($remainingIndex = $this->streamIndex + 1; $remainingIndex < \count($this->streams); $remainingIndex++) {
                     $this->streams[$remainingIndex]->rewind();
                 }
 

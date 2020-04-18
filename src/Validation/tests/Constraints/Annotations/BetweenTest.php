@@ -35,6 +35,12 @@ class BetweenTest extends TestCase
         $this->assertNotEmpty($annotation->createConstraintFromAnnotation()->getErrorMessageId());
     }
 
+    public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
+    {
+        $annotation = new Between(['min' => 2, 'max' => 2, 'errorMessageId' => 'foo']);
+        $this->assertEquals('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
+    }
+
     public function testMaxIsInclusiveCanBeSetViaConstructor(): void
     {
         $annotation = new Between(['min' => 1, 'max' => 2, 'maxIsInclusive' => false]);

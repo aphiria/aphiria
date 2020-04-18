@@ -160,10 +160,6 @@ final class TypeFinder implements ITypeFinder
 
                     // Scan previous tokens to see if they're double colons, which would mean this is a class constant
                     for ($j = $i - 1;$j >= 0;$j--) {
-                        if (!isset($tokens[$j][1])) {
-                            break;
-                        }
-
                         if ($tokens[$j][0] === T_DOUBLE_COLON) {
                             break 2;
                         }

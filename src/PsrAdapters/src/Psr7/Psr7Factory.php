@@ -62,21 +62,25 @@ class Psr7Factory implements IPsr7Factory
      * @param StreamFactoryInterface $psr7StreamFactory The PSR-7 stream factory
      * @param UploadedFileFactoryInterface $psr7UploadedFactoryInterface The PSR-7 uploaded file factory
      * @param UriFactoryInterface $psr7UriFactory The PSR-7 URI factory
+     * @param RequestHeaderParser|null $aphiriaRequestHeaderParser The Aphiria request header parser
+     * @param RequestParser|null $aphiriaRequestParser The Aphiria request parser
      */
     public function __construct(
         ServerRequestFactoryInterface $psr7RequestFactory,
         ResponseFactoryInterface $psr7ResponseFactory,
         StreamFactoryInterface $psr7StreamFactory,
         UploadedFileFactoryInterface $psr7UploadedFactoryInterface,
-        UriFactoryInterface $psr7UriFactory
+        UriFactoryInterface $psr7UriFactory,
+        RequestHeaderParser $aphiriaRequestHeaderParser = null,
+        RequestParser $aphiriaRequestParser = null
     ) {
         $this->psr7RequestFactory = $psr7RequestFactory;
         $this->psr7ResponseFactory = $psr7ResponseFactory;
         $this->psr7StreamFactory = $psr7StreamFactory;
         $this->psr7UploadedFactoryInterface = $psr7UploadedFactoryInterface;
         $this->psr7UriFactory = $psr7UriFactory;
-        $this->aphiriaRequestHeaderParser = new RequestHeaderParser();
-        $this->aphiriaRequestParser = new RequestParser($this->aphiriaRequestHeaderParser);
+        $this->aphiriaRequestHeaderParser = $aphiriaRequestHeaderParser ?? new RequestHeaderParser();
+        $this->aphiriaRequestParser = $aphiriaRequestParser ?? new RequestParser($this->aphiriaRequestHeaderParser);
     }
 
     /**

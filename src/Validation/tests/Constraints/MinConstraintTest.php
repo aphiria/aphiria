@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Constraints;
 
 use Aphiria\Validation\Constraints\MinConstraint;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -37,6 +38,13 @@ class MinConstraintTest extends TestCase
     {
         $constraint = new MinConstraint(2, true, 'foo');
         $this->assertEquals(['value' => 'val', 'min' => 2], $constraint->getErrorMessagePlaceholders('val'));
+    }
+
+    public function testNonNumericMinThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Min must be numeric');
+        new MinConstraint('foo', true);
     }
 
     public function testPassingValue(): void
