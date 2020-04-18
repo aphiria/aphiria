@@ -253,8 +253,11 @@ final class Validator implements IValidator
 
         try {
             $reflectionMethod = new ReflectionMethod($class, $methodName);
+            // Cannot test failed reflection calls
+            // @codeCoverageIgnoreStart
         } catch (ReflectionException $ex) {
             throw new ValidationException($validationContext->getConstraintViolations(), "Failed to reflect method $class::$methodName()", 0, $ex);
+            // @codeCoverageIgnoreEnd
         }
 
         // Don't bother with magic methods or methods that require parameters
@@ -358,8 +361,11 @@ final class Validator implements IValidator
 
         try {
             $reflectionProperty = new ReflectionProperty($class, $propertyName);
+            // Cannot test failed reflection calls
+            // @codeCoverageIgnoreStart
         } catch (ReflectionException $ex) {
             throw new ValidationException($validationContext->getConstraintViolations(), "Failed to reflect property $class::$propertyName", 0, $ex);
+            // @codeCoverageIgnoreEnd
         }
 
         $reflectionProperty->setAccessible(true);

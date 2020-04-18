@@ -79,8 +79,11 @@ final class ObjectEncoder implements IEncoder
 
         try {
             $class = new ReflectionClass($type);
+            // Cannot test failing reflection
+            // @codeCoverageIgnoreStart
         } catch (ReflectionException $ex) {
             throw new EncodingException("Reflection failed on type $type", 0, $ex);
+            // @codeCoverageIgnoreEnd
         }
 
         $normalizedPropertyNames = $this->normalizeHashProperties($objectHash);
@@ -103,8 +106,11 @@ final class ObjectEncoder implements IEncoder
                             $encodedConstructorParamName,
                             $context
                         );
+                        // Cannot test failing reflection
+                        // @codeCoverageIgnoreStart
                     } catch (ReflectionException $ex) {
                         throw new EncodingException('Failed to decode constructor param ' . $constructorParam->getName(), 0, $ex);
+                        // @codeCoverageIgnoreEnd
                     }
 
                     if ($constructorParam->isVariadic()) {

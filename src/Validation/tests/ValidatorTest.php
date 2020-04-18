@@ -19,7 +19,9 @@ use Aphiria\Validation\Constraints\ObjectConstraints;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\ConstraintViolation;
 use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
+use Aphiria\Validation\ValidationException;
 use Aphiria\Validation\Validator;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -445,6 +447,65 @@ class ValidatorTest extends TestCase
         $this->validator->validateObject($object1);
     }
 
+    public function testValidateMethodThatDoesNotExistThrowsException(): void
+    {
+        $class = new class() {
+        };
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(\get_class($class) . '::foo() does not exist');
+        $this->validator->validateMethod($class, 'foo');
+    }
+
+    public function testValidateMethodThrowsIfInvalid(): void
+    {
+        $class = new class() {
+            public function foo(): string
+            {
+                return 'foo';
+            }
+        };
+        $this->expectException(ValidationException::class);
+        $constraint = $this->createMock(IConstraint::class);
+        $constraint->expects($this->once())
+            ->method('passes')
+            ->with('foo')
+            ->willReturn(false);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($class),
+            [],
+            ['foo' => [$constraint]]
+        ));
+        $this->validator->validateMethod($class, 'foo');
+    }
+
+    public function testValidatePropertyThatDoesNotExistThrowsException(): void
+    {
+        $class = new class() {
+        };
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(\get_class($class) . '::foo does not exist');
+        $this->validator->validateProperty($class, 'foo');
+    }
+
+    public function testValidatePropertyThrowsIfInvalid(): void
+    {
+        $class = new class() {
+            public string $foo = 'foo';
+        };
+        $this->expectException(ValidationException::class);
+        $constraint = $this->createMock(IConstraint::class);
+        $constraint->expects($this->once())
+            ->method('passes')
+            ->with('foo')
+            ->willReturn(false);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            \get_class($class),
+            ['foo' => [$constraint]],
+            []
+        ));
+        $this->validator->validateProperty($class, 'foo');
+    }
+
     public function testValidatePropertyWithCircularDependencyThrowsException(): void
     {
         $object1 = new class() {
@@ -458,6 +519,17 @@ class ValidatorTest extends TestCase
         $this->expectException(CircularDependencyException::class);
         $this->expectExceptionMessage('Circular dependency on ' . \get_class($object2) . ' detected');
         $this->validator->validateProperty($object1, 'prop');
+    }
+
+    public function testValidateValueThrowsIfInvalid(): void
+    {
+        $this->expectException(ValidationException::class);
+        $constraint = $this->createMock(IConstraint::class);
+        $constraint->expects($this->once())
+            ->method('passes')
+            ->with('foo')
+            ->willReturn(false);
+        $this->validator->validateValue('foo', [$constraint]);
     }
 
     /**
