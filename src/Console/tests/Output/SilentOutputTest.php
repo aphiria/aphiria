@@ -27,6 +27,13 @@ class SilentOutputTest extends TestCase
         $this->output = new SilentOutput();
     }
 
+    public function testClearDoesNothing(): void
+    {
+        $this->output->clear();
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
     public function testReadLineReturnsEmptyString(): void
     {
         $this->assertEquals('', $this->output->readLine());
@@ -43,6 +50,19 @@ class SilentOutputTest extends TestCase
     {
         ob_start();
         $this->output->writeln('foo');
+        $this->assertEmpty(ob_get_clean());
+    }
+
+    public function testWritingUsingUnderlyingMethodDoesNothing(): void
+    {
+        $output = new class() extends SilentOutput {
+            public function doWrite(string $message, bool $includeNewLine): void
+            {
+                parent::doWrite($message, $includeNewLine);
+            }
+        };
+        ob_start();
+        $output->doWrite('foo', false);
         $this->assertEmpty(ob_get_clean());
     }
 }

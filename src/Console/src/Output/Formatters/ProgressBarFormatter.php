@@ -181,8 +181,7 @@ class ProgressBarFormatter implements IProgressBarObserver
             return 'Complete';
         }
 
-        $elapsedTime = time() - $this->startTime->getTimestamp();
-        $secondsRemaining = round($elapsedTime * $maxSteps / $progress - $elapsedTime);
+        $secondsRemaining = $this->getSecondsRemaining($progress, $maxSteps);
         $timeFormats = [
             [0, 'less than 1 sec'],
             [1, '1 sec'],
@@ -198,7 +197,7 @@ class ProgressBarFormatter implements IProgressBarObserver
         foreach ($timeFormats as $index => $timeFormat) {
             if ($secondsRemaining >= $timeFormat[0]) {
                 if ((isset($timeFormats[$index + 1]) && $secondsRemaining < $timeFormats[$index + 1][0])
-                    || \count($timeFormats) === $index - 1
+                    || $index === \count($timeFormats) - 1
                 ) {
                     if (\count($timeFormat) === 2) {
                         return $timeFormat[1];
@@ -210,5 +209,19 @@ class ProgressBarFormatter implements IProgressBarObserver
         }
 
         return 'Estimating...';
+    }
+
+    /**
+     * Gets the number of seconds remaining
+     *
+     * @param int $progress The current progress
+     * @param int $maxSteps The max number of steps
+     * @return float The number of seconds remaining
+     */
+    protected function getSecondsRemaining(int $progress, int $maxSteps): float
+    {
+        $elapsedTime = time() - $this->startTime->getTimestamp();
+
+        return round($elapsedTime * $maxSteps / $progress - $elapsedTime);
     }
 }

@@ -17,7 +17,7 @@ use Aphiria\Console\Output\Compilers\IOutputCompiler;
 /**
  * Defines the console response
  */
-final class ConsoleOutput extends StreamOutput
+class ConsoleOutput extends StreamOutput
 {
     /**
      * @param IOutputCompiler|null $outputCompiler The output compiler to use

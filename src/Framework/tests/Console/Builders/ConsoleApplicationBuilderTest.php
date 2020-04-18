@@ -15,10 +15,15 @@ namespace Aphiria\Framework\Tests\Console\Builders;
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
+use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ResolutionException;
+use Aphiria\DependencyInjection\UniversalContext;
 use Aphiria\Framework\Console\Builders\ConsoleApplicationBuilder;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * Tests the console application builder
@@ -75,5 +80,18 @@ class ConsoleApplicationBuilderTest extends TestCase
         $this->appBuilder->withModule($module);
         $this->appBuilder->build();
         $this->assertEquals([\get_class($module), \get_class($component)], $builtParts);
+    }
+
+    public function testBuildThatThrowsResolutionExceptionIsRethrown(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Failed to build the console application');
+        $container = $this->createMock(IContainer::class);
+        $container->expects($this->once())
+            ->method('resolve')
+            ->with(CommandRegistry::class)
+            ->willThrowException(new ResolutionException(CommandRegistry::class, new UniversalContext()));
+        $appBuilder = new ConsoleApplicationBuilder($container);
+        $appBuilder->build();
     }
 }

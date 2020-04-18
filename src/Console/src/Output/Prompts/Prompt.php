@@ -63,13 +63,7 @@ class Prompt
             $output->write($question->getAnswerLineString());
         }
 
-        $answer = $output->readLine();
-
-        if ($answer === false) {
-            throw new RuntimeException('Failed to get answer');
-        }
-
-        $answer = trim($answer);
+        $answer = trim($output->readLine());
 
         if ($answer === '') {
             $answer = $question->defaultAnswer;

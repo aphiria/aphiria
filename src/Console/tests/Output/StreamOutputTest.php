@@ -16,6 +16,7 @@ use Aphiria\Console\Output\Compilers\OutputCompiler;
 use Aphiria\Console\Output\StreamOutput;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * Tests the stream output
@@ -34,6 +35,13 @@ class StreamOutputTest extends TestCase
         $this->output = new StreamOutput(fopen('php://memory', 'wb'), $this->inputStream, $this->compiler);
     }
 
+    public function testClearDoesNothing(): void
+    {
+        $this->output->clear();
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
     public function testGettingStream(): void
     {
         $this->assertIsResource($this->output->getOutputStream());
@@ -50,6 +58,16 @@ class StreamOutputTest extends TestCase
         fwrite($this->inputStream, 'foo');
         rewind($this->inputStream);
         $this->assertEquals('foo', $this->output->readLine());
+    }
+
+    public function testReadingLineThatIsNotAtEofThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Failed to read line');
+        $message = str_repeat('a', 4097);
+        fwrite($this->inputStream, $message);
+        rewind($this->inputStream);
+        $this->output->readLine();
     }
 
     public function testWriteOnArray(): void

@@ -145,6 +145,16 @@ class CommandRegistryTest extends TestCase
         $this->assertNull($commandHandler);
     }
 
+    public function testTryGettingHandlerUsingCommandUsesTheCommandNameToLookItUp(): void
+    {
+        $command = new Command('foo');
+        $expectedCommandHandler = $this->createMock(ICommandHandler::class);
+        $this->commands->registerCommand($command, fn () => $expectedCommandHandler);
+        $actualCommandHandler = null;
+        $this->assertTrue($this->commands->tryGetHandler($command, $actualCommandHandler));
+        $this->assertSame($expectedCommandHandler, $actualCommandHandler);
+    }
+
     public function testTryGettingHandlerOfInvalidTypeThrowsInvalidArgumentException(): void
     {
         $commandHandler = null;

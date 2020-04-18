@@ -25,6 +25,7 @@ use Aphiria\Console\Input\OptionTypes;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Reflection\ITypeFinder;
+use Doctrine\Common\Annotations\Annotation\Required;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -50,6 +51,26 @@ class AnnotationCommandRegistrantTest extends TestCase
             null,
             $this->typeFinder
         );
+    }
+
+    public function testNonCommandAnnotationsAreIgnored(): void
+    {
+        /**
+         * @Required
+         * @Command("foo")
+         */
+        $commandHandler = new class() implements ICommandHandler {
+            public function handle(Input $input, IOutput $output)
+            {
+                return;
+            }
+        };
+        $this->typeFinder->expects($this->once())
+            ->method('findAllSubTypesOfType')
+            ->with(ICommandHandler::class, [__DIR__])
+            ->willReturn([\get_class($commandHandler)]);
+        $this->registrant->registerCommands($this->commands);
+        $this->assertCount(1, $this->commands->getAllCommands());
     }
 
     public function testRegisteringCommandWithAllPropertiesSetCreatesCommandWithAllPropertiesSet(): void

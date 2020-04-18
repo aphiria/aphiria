@@ -19,7 +19,6 @@ use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 use Closure;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -40,7 +39,6 @@ class AboutCommandHandlerTest extends TestCase
     {
         $this->commands->registerCommand(new Command('cat:foo', [], [], ''), $this->createCommandHandlerFactory());
         $this->commands->registerCommand(new Command('ant:bar', [], [], ''), $this->createCommandHandlerFactory());
-        /** @var IOutput|MockObject $output */
         $output = $this->createMock(IOutput::class);
         $body = '<comment>ant</comment>' . \PHP_EOL
             . '  <info>ant:bar</info>' . \PHP_EOL
@@ -56,7 +54,6 @@ class AboutCommandHandlerTest extends TestCase
     {
         $this->commands->registerCommand(new Command('cat:foo', [], [], ''), $this->createCommandHandlerFactory());
         $this->commands->registerCommand(new Command('cat:bar', [], [], ''), $this->createCommandHandlerFactory());
-        /** @var IOutput|MockObject $output */
         $output = $this->createMock(IOutput::class);
         $body = '<comment>cat</comment>' . \PHP_EOL
             . '  <info>cat:bar</info>' . \PHP_EOL
@@ -67,13 +64,25 @@ class AboutCommandHandlerTest extends TestCase
         $this->handler->handle(new Input('about', [], []), $output);
     }
 
+    public function testHavingNoCommandsDisplaysMessageSayingSo(): void
+    {
+        $output = $this->createMock(IOutput::class);
+        $body = '  <info>No commands</info>';
+        $output->expects($this->once())
+            ->method('writeln')
+            ->with(self::compileOutput($body));
+        $this->handler->handle(new Input('about', [], []), $output);
+    }
+
     public function testUncategorizedCommandsAreListedBeforeCategorizedCommands(): void
     {
         $this->commands->registerCommand(new Command('foo', [], [], ''), $this->createCommandHandlerFactory());
         $this->commands->registerCommand(new Command('cat:bar', [], [], ''), $this->createCommandHandlerFactory());
-        /** @var IOutput|MockObject $output */
+        // Test a command that should come before a previous uncategorized command
+        $this->commands->registerCommand(new Command('baz', [], [], ''), $this->createCommandHandlerFactory());
         $output = $this->createMock(IOutput::class);
-        $body = '  <info>foo    </info>' . \PHP_EOL
+        $body = '  <info>baz    </info>' . \PHP_EOL
+            . '  <info>foo    </info>' . \PHP_EOL
             . '<comment>cat</comment>' . \PHP_EOL
             . '  <info>cat:bar</info>';
         $output->expects($this->once())

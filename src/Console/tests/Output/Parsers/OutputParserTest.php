@@ -189,6 +189,13 @@ class OutputParserTest extends TestCase
         );
     }
 
+    public function testParsingInvalidOutputTokenTypeThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unknown token type "foo" with value "bar" near character #0');
+        $this->parser->parse([new OutputToken('foo', 'bar', 0)]);
+    }
+
     public function testParsingPlainText(): void
     {
         $tokens = [

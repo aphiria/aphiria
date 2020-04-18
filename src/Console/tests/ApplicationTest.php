@@ -17,6 +17,7 @@ use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\ArgumentTypes;
+use Aphiria\Console\Input\Compilers\IInputCompiler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionTypes;
@@ -39,6 +40,55 @@ class ApplicationTest extends TestCase
         $this->commands = new CommandRegistry();
         $this->app = new Application($this->commands);
         $this->output = new Output();
+    }
+
+    public function testHandlingAboutCommandWithNoHandlerThrowsException(): void
+    {
+        $output = $this->createMock(IOutput::class);
+        $output->expects($this->once())
+            ->method('writeln')
+            ->with('<fatal>About command not registered</fatal>')
+            ->willReturnArgument(0);
+        // Purposely use new commands that don't have anything registerd to them
+        $app = new class(new CommandRegistry()) extends Application {
+            protected function formatExceptionMessage($ex): string
+            {
+                // Simplify testing
+                return $ex->getMessage();
+            }
+
+            protected function registerDefaultCommands(): void
+            {
+                // Simulate overriding and not registering any commands
+            }
+        };
+        $status = $app->handle('', $output);
+        $this->assertEquals(StatusCodes::FATAL, $status);
+    }
+
+    public function testHandlingCommandWithNoHandlerThrowsException(): void
+    {
+        // The default input compiler protects us from compiling commands without handlers
+        // So, use a custom one for this test
+        $inputCompiler = $this->createMock(IInputCompiler::class);
+        $inputCompiler->expects($this->once())
+            ->method('compile')
+            ->with('foo')
+            ->willReturn(new Input('foo', [], []));
+        $output = $this->createMock(IOutput::class);
+        $output->expects($this->once())
+            ->method('writeln')
+            ->with('<error>Command "foo" is not registered</error>')
+            ->willReturnArgument(0);
+        $app = new class($this->commands, $inputCompiler) extends Application {
+            protected function formatExceptionMessage($ex): string
+            {
+                // Simplify testing
+                return $ex->getMessage();
+            }
+        };
+        $status = $app->handle('foo', $output);
+        $this->assertEquals(StatusCodes::ERROR, $status);
     }
 
     public function testHandlingEmptyCommandReturnsOk(): void

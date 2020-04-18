@@ -144,8 +144,6 @@ final class InputCompiler implements IInputCompiler
             throw new RuntimeException('Too many arguments');
         }
 
-        $hasSetArrayArgument = false;
-
         foreach ($command->arguments as $argument) {
             if (\count($argumentValues) === 0) {
                 if (!$argument->isOptional()) {
@@ -153,24 +151,17 @@ final class InputCompiler implements IInputCompiler
                 }
 
                 $arguments[$argument->name] = $argument->defaultValue;
+            } elseif ($argument->isArray()) {
+                // Add the rest of the values in the input to this argument
+                $restOfArgumentValues = [];
+
+                while (\count($argumentValues) > 0) {
+                    $restOfArgumentValues[] = array_shift($argumentValues);
+                }
+
+                $arguments[$argument->name] = $restOfArgumentValues;
             } else {
-                if ($hasSetArrayArgument) {
-                    throw new RuntimeException('Array argument must appear at end of list of arguments');
-                }
-
-                if ($argument->isArray()) {
-                    // Add the rest of the values in the input to this argument
-                    $restOfArgumentValues = [];
-
-                    while (\count($argumentValues) > 0) {
-                        $restOfArgumentValues[] = array_shift($argumentValues);
-                    }
-
-                    $arguments[$argument->name] = $restOfArgumentValues;
-                    $hasSetArrayArgument = true;
-                } else {
-                    $arguments[$argument->name] = array_shift($argumentValues);
-                }
+                $arguments[$argument->name] = array_shift($argumentValues);
             }
         }
 
@@ -256,14 +247,9 @@ final class InputCompiler implements IInputCompiler
      * @param string $token The token to parse
      * @param array $remainingTokens The list of remaining tokens
      * @return array The name of the option mapped to its value
-     * @throws RuntimeException Thrown if the option could not be parsed
      */
     private static function parseLongOption(string $token, array &$remainingTokens): array
     {
-        if (mb_strpos($token, '--') !== 0) {
-            throw new RuntimeException("Invalid long option \"$token\"");
-        }
-
         // Trim the "--"
         $option = mb_substr($token, 2);
 
@@ -299,7 +285,6 @@ final class InputCompiler implements IInputCompiler
      * @param string $commandName The parsed command name
      * @param array $argumentValues The parsed input arguments
      * @param array $options The parsed input options
-     * @throws InvalidArgumentException Thrown if the tokens are empty
      */
     private static function parseTokens(
         array $tokens,
@@ -307,10 +292,7 @@ final class InputCompiler implements IInputCompiler
         array &$argumentValues,
         array &$options
     ): void {
-        if (\count($tokens) === 0) {
-            throw new InvalidArgumentException('Tokens cannot be empty');
-        }
-
+        // We're guaranteed that tokens is not empty from an upstream check
         $commandName = array_shift($tokens);
 
         while ($token = array_shift($tokens)) {
@@ -333,14 +315,9 @@ final class InputCompiler implements IInputCompiler
      *
      * @param string $token The token to parse
      * @return array The name of the option mapped to its value
-     * @throws RuntimeException Thrown if the option could not be parsed
      */
     private static function parseShortOption(string $token): array
     {
-        if (mb_strpos($token, '-') !== 0) {
-            throw new RuntimeException("Invalid short option \"$token\"");
-        }
-
         // Trim the "-"
         $token = mb_substr($token, 1);
         $options = [];

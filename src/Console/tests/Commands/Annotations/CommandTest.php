@@ -17,6 +17,7 @@ use Aphiria\Console\Commands\Annotations\Command;
 use Aphiria\Console\Commands\Annotations\Option;
 use Aphiria\Console\Input\ArgumentTypes;
 use Aphiria\Console\Input\OptionTypes;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -44,6 +45,13 @@ class CommandTest extends TestCase
     {
         $command = new Command(['value' => 'foo']);
         $this->assertEquals('foo', $command->name);
+    }
+
+    public function testNoNameThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Command name must be set');
+        new Command([]);
     }
 
     public function testPropertiesAreSetViaConstructor(): void

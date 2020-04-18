@@ -28,7 +28,6 @@ use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
 use Exception;
 use InvalidArgumentException;
-use RuntimeException;
 use Throwable;
 
 /**
@@ -77,7 +76,9 @@ class Application implements ICommandBus
                 $aboutCommandHandler = null;
 
                 if (!$this->commands->tryGetHandler('about', $aboutCommandHandler)) {
-                    throw new RuntimeException('About command not registered');
+                    $output->writeln('<fatal>About command not registered</fatal>');
+
+                    return StatusCodes::FATAL;
                 }
 
                 $output = $output ?? new ConsoleOutput();

@@ -89,6 +89,35 @@ class ProgressBarFormatterTest extends TestCase
         $formatter->onProgressChanged(0, 5, 10);
     }
 
+    public function testOnProgressWithImpossiblyLowTimeLeftShowsCorrectTime(): void
+    {
+        $formatter = new class($this->output, 12) extends ProgressBarFormatter {
+            protected function getSecondsRemaining(int $progress, int $maxSteps): float
+            {
+                return -1;
+            }
+        };
+        $this->output->expects($this->at(0))
+            ->method('write')
+            ->with($this->callback(fn ($value) => $this->progressBarMatchesExpectedValue('[10%-------] 1/10' . \PHP_EOL . 'Time remaining: Estimating...', $value, false)));
+        $formatter->numSeconds = 172800;
+        $formatter->onProgressChanged(0, 1, 10);
+    }
+
+    public function testOnProgressWithVeryLongTimeLeftShowsCorrectTime(): void
+    {
+        $formatter = new class($this->output, 12) extends ProgressBarFormatter {
+            protected function getSecondsRemaining(int $progress, int $maxSteps): float
+            {
+                return 172800;
+            }
+        };
+        $this->output->expects($this->at(0))
+            ->method('write')
+            ->with($this->callback(fn ($value) => $this->progressBarMatchesExpectedValue('[10%-------] 1/10' . \PHP_EOL . 'Time remaining: 2 days', $value, false)));
+        $formatter->onProgressChanged(0, 1, 10);
+    }
+
     public function testOnProgressWithZeroProgressIndicatesThatTheTimeRemainingIsStillBeingEstimated(): void
     {
         $formatter = new ProgressBarFormatter($this->output, 12);

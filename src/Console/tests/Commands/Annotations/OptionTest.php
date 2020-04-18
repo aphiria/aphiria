@@ -14,6 +14,7 @@ namespace Aphiria\Console\Tests\Commands\Annotations;
 
 use Aphiria\Console\Commands\Annotations\Option;
 use Aphiria\Console\Input\OptionTypes;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -41,6 +42,20 @@ class OptionTest extends TestCase
     {
         $option = new Option(['value' => 'foo', 'type' => OptionTypes::REQUIRED_VALUE]);
         $this->assertEquals('foo', $option->name);
+    }
+
+    public function testNoNameThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Option name must be set');
+        new Option([]);
+    }
+
+    public function testNoTypeThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Option type must be set');
+        new Option(['value' => 'foo']);
     }
 
     public function testPropertiesAreSetViaConstructor(): void

@@ -171,7 +171,7 @@ final class OutputLexer implements IOutputLexer
     {
         $charArrayLength = \count($charArray);
 
-        if ($charArrayLength === 0 || $charArrayLength === $currPosition + 1) {
+        if ($charArrayLength === 0 || $currPosition === $charArrayLength - 1) {
             return null;
         }
 

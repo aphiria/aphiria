@@ -17,7 +17,7 @@ use Aphiria\Console\Output\Compilers\MockOutputCompiler;
 /**
  * Defines the silent output, which does not write anything
  */
-final class SilentOutput extends Output
+class SilentOutput extends Output
 {
     public function __construct()
     {

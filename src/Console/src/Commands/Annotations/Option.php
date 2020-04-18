@@ -49,11 +49,11 @@ final class Option
         }
 
         if (empty($this->name)) {
-            throw new InvalidArgumentException('Argument name must be set');
+            throw new InvalidArgumentException('Option name must be set');
         }
 
         if (!isset($values['type'])) {
-            throw new InvalidArgumentException('Argument type must be set');
+            throw new InvalidArgumentException('Option type must be set');
         }
 
         $this->shortName = $values['shortName'] ?? null;

@@ -131,15 +131,44 @@ class OutputLexerTest extends TestCase
         );
     }
 
-    public function testLexingOpenTagInsideOfCloseTag(): void
+    public function testLexingOpenTagInsideOfAnotherTagCreatesExceptionMessagesWithCorrectContexts(): void
+    {
+        // Test various permutations to make sure we're always getting the proper surround text context
+        $inputs = [
+            ['<<', 'Invalid tags near "<<", character #1'],
+            ['<fo<', 'Invalid tags near "<fo<", character #3'],
+            ['<foo<', 'Invalid tags near "foo<", character #4']
+        ];
+
+        foreach ($inputs as $input) {
+            try {
+                $this->lexer->lex($input[0]);
+                $this->fail('Failed to throw exception');
+            } catch (RuntimeException $ex) {
+                $this->assertEquals($input[1], $ex->getMessage());
+            }
+        }
+    }
+
+    public function testLexingOpenTagAtEndOfInputIsIgnored(): void
+    {
+        $expectedOutput = [
+            new OutputToken(OutputTokenTypes::T_EOF, null, 1)
+        ];
+        $this->assertEquals($expectedOutput, $this->lexer->lex('<'));
+    }
+
+    public function testLexingOpenTagInsideOfCloseTagThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Invalid tags near "></<", character #7');
         $this->lexer->lex('<foo></<bar>foo>');
     }
 
-    public function testLexingOpenTagInsideOfOpenTag(): void
+    public function testLexingOpenTagInsideOfOpenTagThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Invalid tags near "foo<", character #4');
         $this->lexer->lex('<foo<bar>>');
     }
 
