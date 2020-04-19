@@ -16,7 +16,6 @@ use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Framework\Console\Components\CommandComponent;
@@ -48,12 +47,11 @@ class CommandComponentTest extends TestCase
     public function testBuildRegistersCommandsRegisteredInCallbacks(): void
     {
         $expectedCommand = new Command('foo');
-        $expectedCommandHandlerFactory = fn () => $this->createMock(ICommandHandler::class);
-        $this->commandComponent->withCommands(fn (CommandRegistry $commands) => $commands->registerCommand($expectedCommand, $expectedCommandHandlerFactory));
+        $this->commandComponent->withCommands(fn (CommandRegistry $commands) => $commands->registerCommand($expectedCommand, 'Handler'));
         $this->commandComponent->build();
         $this->assertCount(1, $this->commands->getAllCommandBindings());
         $this->assertSame($expectedCommand, $this->commands->getAllCommandBindings()[0]->command);
-        $this->assertSame($expectedCommandHandlerFactory, $this->commands->getAllCommandBindings()[0]->commandHandlerFactory);
+        $this->assertSame('Handler', $this->commands->getAllCommandBindings()[0]->commandHandlerClassName);
     }
 
     public function testBuildWithAnnotationsAddsAnnotationRegistrant(): void

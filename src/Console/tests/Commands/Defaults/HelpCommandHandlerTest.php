@@ -15,7 +15,6 @@ namespace Aphiria\Console\Tests\Commands\Defaults;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\Defaults\HelpCommandHandler;
-use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\ArgumentTypes;
 use Aphiria\Console\Input\Input;
@@ -58,7 +57,7 @@ class HelpCommandHandlerTest extends TestCase
                 'The description',
                 'The help text'
             ),
-            fn () => $this->createMock(ICommandHandler::class)
+            'Handler'
         );
         $this->output->expects($this->once())
             ->method('writeln')
@@ -75,7 +74,7 @@ class HelpCommandHandlerTest extends TestCase
                 [],
                 'The description'
             ),
-            fn () => $this->createMock(ICommandHandler::class)
+            'Handler'
         );
         $this->output->expects($this->once())
             ->method('writeln')
@@ -100,7 +99,7 @@ class HelpCommandHandlerTest extends TestCase
                 [],
                 'The description'
             ),
-            fn () => $this->createMock(ICommandHandler::class)
+            'Handler'
         );
         $this->output->expects($this->once())
             ->method('writeln')
@@ -117,7 +116,7 @@ class HelpCommandHandlerTest extends TestCase
                 [],
                 ''
             ),
-            fn () => $this->createMock(ICommandHandler::class)
+            'Handler'
         );
         $this->output->expects($this->once())
             ->method('writeln')
@@ -134,7 +133,7 @@ class HelpCommandHandlerTest extends TestCase
                 [],
                 ''
             ),
-            fn () => $this->createMock(ICommandHandler::class)
+            'Handler'
         );
         $this->output->expects($this->once())
             ->method('writeln')
@@ -151,7 +150,7 @@ class HelpCommandHandlerTest extends TestCase
                 [],
                 'The description'
             ),
-            fn () => $this->createMock(ICommandHandler::class)
+            'Handler'
         );
         $this->output->expects($this->once())
             ->method('writeln')
@@ -168,7 +167,7 @@ class HelpCommandHandlerTest extends TestCase
                 [new Option('opt1', null, OptionTypes::REQUIRED_VALUE, 'Opt1 description')],
                 'The description'
             ),
-            fn () => $this->createMock(ICommandHandler::class)
+            'Handler'
         );
         $this->output->expects($this->once())
             ->method('writeln')
@@ -185,7 +184,7 @@ class HelpCommandHandlerTest extends TestCase
                 [new Option('opt1', 'o', OptionTypes::REQUIRED_VALUE, 'Opt1 description')],
                 'The description'
             ),
-            fn () => $this->createMock(ICommandHandler::class)
+            'Handler'
         );
         $this->output->expects($this->once())
             ->method('writeln')

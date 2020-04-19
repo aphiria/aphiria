@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Commands;
 
-use Closure;
 use InvalidArgumentException;
 
 /**
@@ -74,13 +73,12 @@ final class CommandRegistry
      * Registers a command
      *
      * @param Command $command The command to register
-     * @param Closure $commandHandlerFactory The factory that will create the command handler
-     *      Note: This must be parameterless
+     * @param string $commandHandlerClassName The name of the command handler class
      * @throws InvalidArgumentException Thrown if the command handler is not a Closure nor a command handler
      */
-    public function registerCommand(Command $command, Closure $commandHandlerFactory): void
+    public function registerCommand(Command $command, string $commandHandlerClassName): void
     {
-        $this->bindings[self::normalizeCommandName($command->name)] = new CommandBinding($command, $commandHandlerFactory);
+        $this->bindings[self::normalizeCommandName($command->name)] = new CommandBinding($command, $commandHandlerClassName);
     }
 
     /**
@@ -140,11 +138,11 @@ final class CommandRegistry
      * Tries to find the command handler for a particular command
      *
      * @param Command|string $command Either the command name or the instance of the command
-     * @param ICommandHandler|null $commandHandler The command handler, if there was one
+     * @param string|null $commandHandlerClassName The command handler class name, if there was one
      * @return bool True if there was a handler for the command, otherwise false
      * @throws InvalidArgumentException Thrown if the command was not a string nor a Command
      */
-    public function tryGetHandler($command, ?ICommandHandler &$commandHandler): bool
+    public function tryGetHandlerClassName($command, ?string &$commandHandlerClassName): bool
     {
         if (\is_string($command)) {
             $commandName = $command;
@@ -161,7 +159,7 @@ final class CommandRegistry
             return false;
         }
 
-        $commandHandler = $binding->resolveCommandHandler();
+        $commandHandlerClassName = $binding->commandHandlerClassName;
 
         return true;
     }

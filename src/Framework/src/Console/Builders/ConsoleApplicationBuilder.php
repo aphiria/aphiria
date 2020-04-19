@@ -45,7 +45,7 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
         $this->buildComponents();
 
         try {
-            $consoleApp = new Application($this->container->resolve(CommandRegistry::class));
+            $consoleApp = new Application($this->container->resolve(CommandRegistry::class), $this->container);
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build the console application', 0, $ex);
         }

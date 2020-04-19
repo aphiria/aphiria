@@ -15,7 +15,6 @@ namespace Aphiria\Console\Tests\Commands\Caching;
 use Aphiria\Console\Commands\Caching\FileCommandRegistryCache;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\Console\Tests\Commands\Mocks\MockCommandHandler;
 use PHPUnit\Framework\TestCase;
 
 class FileCommandRegistryCacheTest extends TestCase
@@ -46,12 +45,9 @@ class FileCommandRegistryCacheTest extends TestCase
     public function testGetOnHitReturnsCommands(): void
     {
         $commands = new CommandRegistry();
-        // We are explicitly using an actual class here because Opis has trouble serializing mocks/anonymous classes
-        $commands->registerCommand(new Command('foo'), fn () => new MockCommandHandler());
-        // We have to clone the commands because serializing them will technically alter closure/serialized closure property values
-        $expectedCommands = clone $commands;
+        $commands->registerCommand(new Command('foo'), 'Foo');
         $this->cache->set($commands);
-        $this->assertEquals($expectedCommands, $this->cache->get());
+        $this->assertEquals($commands, $this->cache->get());
     }
 
     public function testGetOnMissReturnsNull(): void

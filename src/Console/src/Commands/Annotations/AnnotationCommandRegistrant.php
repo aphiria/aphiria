@@ -100,10 +100,7 @@ final class AnnotationCommandRegistrant implements ICommandRegistrant
                     $commandAnnotation->description,
                     $commandAnnotation->helpText
                 );
-                $commands->registerCommand(
-                    $command,
-                    fn () => $this->commandHandlerResolver->resolve($commandHandler)
-                );
+                $commands->registerCommand($command, $commandHandler);
             }
         }
     }

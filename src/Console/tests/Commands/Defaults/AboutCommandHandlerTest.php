@@ -15,10 +15,8 @@ namespace Aphiria\Console\Tests\Commands\Defaults;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\Defaults\AboutCommandHandler;
-use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
-use Closure;
 use PHPUnit\Framework\TestCase;
 
 class AboutCommandHandlerTest extends TestCase
@@ -34,8 +32,8 @@ class AboutCommandHandlerTest extends TestCase
 
     public function testCommandsAreAlphabeticallySortedByCategories(): void
     {
-        $this->commands->registerCommand(new Command('cat:foo', [], [], ''), $this->createCommandHandlerFactory());
-        $this->commands->registerCommand(new Command('ant:bar', [], [], ''), $this->createCommandHandlerFactory());
+        $this->commands->registerCommand(new Command('cat:foo', [], [], ''), 'Handler1');
+        $this->commands->registerCommand(new Command('ant:bar', [], [], ''), 'Handler2');
         $output = $this->createMock(IOutput::class);
         $body = '<comment>ant</comment>' . \PHP_EOL
             . '  <info>ant:bar</info>' . \PHP_EOL
@@ -49,8 +47,8 @@ class AboutCommandHandlerTest extends TestCase
 
     public function testCommandsAreAlphabeticallySortedWithinCategories(): void
     {
-        $this->commands->registerCommand(new Command('cat:foo', [], [], ''), $this->createCommandHandlerFactory());
-        $this->commands->registerCommand(new Command('cat:bar', [], [], ''), $this->createCommandHandlerFactory());
+        $this->commands->registerCommand(new Command('cat:foo', [], [], ''), 'Handler1');
+        $this->commands->registerCommand(new Command('cat:bar', [], [], ''), 'Handler2');
         $output = $this->createMock(IOutput::class);
         $body = '<comment>cat</comment>' . \PHP_EOL
             . '  <info>cat:bar</info>' . \PHP_EOL
@@ -73,10 +71,10 @@ class AboutCommandHandlerTest extends TestCase
 
     public function testUncategorizedCommandsAreListedBeforeCategorizedCommands(): void
     {
-        $this->commands->registerCommand(new Command('foo', [], [], ''), $this->createCommandHandlerFactory());
-        $this->commands->registerCommand(new Command('cat:bar', [], [], ''), $this->createCommandHandlerFactory());
+        $this->commands->registerCommand(new Command('foo', [], [], ''), 'Handler1');
+        $this->commands->registerCommand(new Command('cat:bar', [], [], ''), 'Handler2');
         // Test a command that should come before a previous uncategorized command
-        $this->commands->registerCommand(new Command('baz', [], [], ''), $this->createCommandHandlerFactory());
+        $this->commands->registerCommand(new Command('baz', [], [], ''), 'Handler3');
         $output = $this->createMock(IOutput::class);
         $body = '  <info>baz    </info>' . \PHP_EOL
             . '  <info>foo    </info>' . \PHP_EOL
@@ -103,15 +101,5 @@ About <b>Aphiria</b>
 {{body}}
 EOF;
         return \str_replace('{{body}}', $body, $template);
-    }
-
-    /**
-     * Creates a closure that returns a mock command handler
-     *
-     * @return Closure The closure that creates a mock command handler
-     */
-    private function createCommandHandlerFactory(): Closure
-    {
-        return fn () => $this->createMock(ICommandHandler::class);
     }
 }

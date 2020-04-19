@@ -33,7 +33,6 @@ use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\UriTemplate;
-use Closure;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -81,7 +80,7 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(ControllerMock::class, 'noParameters', null),
+                new RouteAction(ControllerMock::class, 'noParameters'),
                 [],
                 [$middlewareBinding]
             ),
@@ -116,7 +115,7 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(ControllerMock::class, 'noParameters', null),
+                new RouteAction(ControllerMock::class, 'noParameters'),
                 [],
                 [$middlewareBinding]
             ),
@@ -174,7 +173,7 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(ControllerMock::class, 'noParameters', null),
+                new RouteAction(ControllerMock::class, 'noParameters'),
                 [],
                 [
                     new MiddlewareBinding(MiddlewareThatIncrementsHeader::class),
@@ -225,7 +224,7 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(ControllerMock::class, 'doesNotExist', null),
+                new RouteAction(ControllerMock::class, 'doesNotExist'),
                 [],
                 []
             ),
@@ -251,7 +250,7 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(ControllerMock::class, 'noParameters', null),
+                new RouteAction(ControllerMock::class, 'noParameters'),
                 [],
                 []
             ),
@@ -280,7 +279,7 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(__CLASS__, __METHOD__, null),
+                new RouteAction(__CLASS__, __METHOD__),
                 [],
                 []
             ),
