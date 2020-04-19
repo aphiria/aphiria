@@ -33,7 +33,6 @@ use Aphiria\Routing\Matchers\IRouteMatcher;
 use Aphiria\Routing\Matchers\RouteMatchingResult;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\RouteAction;
-use Closure;
 use InvalidArgumentException;
 
 /**
@@ -104,22 +103,17 @@ class Router implements IRequestHandler
         ?Controller &$controller,
         ?callable &$routeActionDelegate
     ): void {
-        if ($routeAction->usesMethod()) {
-            $controller = $this->serviceResolver->resolve($routeAction->className);
-            $routeActionDelegate = [$controller, $routeAction->methodName];
+        $controller = $this->serviceResolver->resolve($routeAction->className);
+        $routeActionDelegate = [$controller, $routeAction->methodName];
 
-            if (!\is_callable($routeActionDelegate)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Controller method %s::%s() does not exist',
-                        $routeAction->className,
-                        $routeAction->methodName
-                    )
-                );
-            }
-        } else {
-            $controller = new Controller();
-            $routeActionDelegate = Closure::bind($routeAction->closure, $controller, Controller::class);
+        if (!\is_callable($routeActionDelegate)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Controller method %s::%s() does not exist',
+                    $routeAction->className,
+                    $routeAction->methodName
+                )
+            );
         }
 
         if (!$controller instanceof Controller) {

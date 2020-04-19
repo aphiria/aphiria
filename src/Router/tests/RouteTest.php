@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests;
 
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
-use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
@@ -23,7 +23,7 @@ class RouteTest extends TestCase
 {
     private Route $route;
     private UriTemplate $uriTemplate;
-    private MethodRouteAction $routeAction;
+    private RouteAction $routeAction;
     /** @var IRouteConstraint[] */
     private array $constraints;
     /** @var MiddlewareBinding[] */
@@ -32,7 +32,7 @@ class RouteTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->routeAction = new MethodRouteAction('Foo', 'bar');
+        $this->routeAction = new RouteAction('Foo', 'bar');
         $this->uriTemplate = new UriTemplate('foo');
         $this->constraints = [$this->createMock(IRouteConstraint::class)];
         $this->middlewareBindings = [new MiddlewareBinding('Foo')];

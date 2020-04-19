@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries;
 
-use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\LiteralTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RouteVariable;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
@@ -43,7 +43,7 @@ class VariableTrieNodeTest extends TestCase
 
     public function testCreatingWithSingleRouteConvertsItToArrayOfRoutes(): void
     {
-        $expectedRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
+        $expectedRoute = new Route(new UriTemplate(''), new RouteAction('Foo', 'bar'), []);
         $node = new VariableTrieNode(new RouteVariable('foo'), [], $expectedRoute);
         $this->assertCount(1, $node->routes);
         $this->assertSame($expectedRoute, $node->routes[0]);
@@ -170,7 +170,7 @@ class VariableTrieNodeTest extends TestCase
     {
         $expectedParts = [new RouteVariable('foo')];
         $expectedChildren = [new LiteralTrieNode('bar', [])];
-        $expectedRoutes = [new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), [])];
+        $expectedRoutes = [new Route(new UriTemplate(''), new RouteAction('Foo', 'bar'), [])];
         $expectedHostTrie = $this->createMockNode();
         $node = new VariableTrieNode($expectedParts, $expectedChildren, $expectedRoutes, $expectedHostTrie);
         $this->assertSame($expectedParts, $node->parts);

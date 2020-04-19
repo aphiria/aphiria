@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries;
 
-use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\ITrieCache;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\ITrieCompiler;
@@ -52,7 +52,7 @@ class TrieFactoryTest extends TestCase
 
     public function testCreatingTrieWithCacheMissSetsItInCache(): void
     {
-        $this->routes->add(new Route(new UriTemplate('foo'), new MethodRouteAction('Bar', 'baz'), []));
+        $this->routes->add(new Route(new UriTemplate('foo'), new RouteAction('Bar', 'baz'), []));
         $expectedTrie = new RootTrieNode();
         $this->trieCache->expects($this->once())
             ->method('get')
@@ -69,7 +69,7 @@ class TrieFactoryTest extends TestCase
 
     public function testCreatingTrieWithNoCacheSetCreatesTrieFromCompiler(): void
     {
-        $this->routes->add(new Route(new UriTemplate('foo'), new MethodRouteAction('Bar', 'baz'), []));
+        $this->routes->add(new Route(new UriTemplate('foo'), new RouteAction('Bar', 'baz'), []));
         $trieFactory = new TrieFactory($this->routes, null, $this->trieCompiler);
         $expectedTrie = new RootTrieNode();
         // Make sure child nodes get added, too

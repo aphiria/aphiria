@@ -14,8 +14,8 @@ namespace Aphiria\Routing\Tests\Matchers\Constraints;
 
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\Matchers\MatchedRouteCandidate;
-use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -55,7 +55,7 @@ class HttpMethodRouteConstraintTest extends TestCase
     {
         $constraint = new HttpMethodRouteConstraint(['GET']);
         $matchedRoute = new MatchedRouteCandidate(
-            new Route(new UriTemplate('foo'), new MethodRouteAction('Foo', 'bar'), []),
+            new Route(new UriTemplate('foo'), new RouteAction('Foo', 'bar'), []),
             []
         );
         $this->assertTrue($constraint->passes($matchedRoute, 'GET', 'example.com', '/foo', []));
@@ -67,7 +67,7 @@ class HttpMethodRouteConstraintTest extends TestCase
     {
         $constraint = new HttpMethodRouteConstraint(['POST']);
         $matchedRoute = new MatchedRouteCandidate(
-            new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []),
+            new Route(new UriTemplate(''), new RouteAction('Foo', 'bar'), []),
             []
         );
         $this->assertTrue($constraint->passes($matchedRoute, 'post', 'example.com', '/', []));

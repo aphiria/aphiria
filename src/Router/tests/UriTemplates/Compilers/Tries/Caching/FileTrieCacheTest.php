@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries\Caching;
 
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
-use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\FileTrieCache;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\LiteralTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RootTrieNode;
@@ -52,7 +52,7 @@ class FileTrieCacheTest extends TestCase
         // We are purposely testing setting every type of property inside the route to test that they're all unserializable
         $route = new Route(
             new UriTemplate('foo'),
-            new MethodRouteAction('Foo', 'bar'),
+            new RouteAction('Foo', 'bar'),
             [$this->createMock(IRouteConstraint::class)],
             [new MiddlewareBinding('foo')]
         );

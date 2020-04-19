@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests\Matchers;
 
 use Aphiria\Routing\Matchers\RouteMatchingResult;
-use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
@@ -28,7 +28,7 @@ class RouteMatchingResultTest extends TestCase
 
     public function testMethodAllowedOnlyIfRouteIsNullAndAllowedMethodsIsPopulated(): void
     {
-        $route = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
+        $route = new Route(new UriTemplate(''), new RouteAction('Foo', 'bar'), []);
         $resultWithPopulatedRoute = new RouteMatchingResult($route, []);
         $this->assertTrue($resultWithPopulatedRoute->methodIsAllowed);
         $resultWithUnpopulatedRouteAndNoAllowedMethods = new RouteMatchingResult(null, []);
@@ -39,7 +39,7 @@ class RouteMatchingResultTest extends TestCase
 
     public function testPropertiesSetInConstructor(): void
     {
-        $expectedMatchedRoute = new Route(new UriTemplate(''), new MethodRouteAction('Foo', 'bar'), []);
+        $expectedMatchedRoute = new Route(new UriTemplate(''), new RouteAction('Foo', 'bar'), []);
         $expectedRouteVariables = ['foo' => 'bar'];
         $expectedAllowedMethods = ['GET'];
         $routeMatchingResult = new RouteMatchingResult(

@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\UriTemplates\Compilers\Tries;
 
-use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\LiteralTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RootTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RouteVariable;
@@ -430,6 +430,6 @@ class TrieCompilerTest extends TestCase
      */
     private function createRoute(string $pathTemplate, string $hostTemplate = null): Route
     {
-        return new Route(new UriTemplate($pathTemplate, $hostTemplate), new MethodRouteAction('Foo', 'bar'), []);
+        return new Route(new UriTemplate($pathTemplate, $hostTemplate), new RouteAction('Foo', 'bar'), []);
     }
 }

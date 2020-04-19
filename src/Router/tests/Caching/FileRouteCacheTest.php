@@ -13,11 +13,10 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests\Caching;
 
 use Aphiria\Routing\Caching\FileRouteCache;
-use Aphiria\Routing\ClosureRouteAction;
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
-use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
@@ -47,30 +46,13 @@ class FileRouteCacheTest extends TestCase
         $this->assertFileDoesNotExist(self::PATH);
     }
 
-    public function testGetOnHitReturnsRoutesWithClosureAction(): void
+    public function testGetOnHitReturnsRoutesWithAction(): void
     {
         // We are purposely testing setting every type of property inside the route to test that they're all unserializable
         $routes = new RouteCollection([
             new Route(
                 new UriTemplate('foo'),
-                new ClosureRouteAction(fn () => null),
-                [$this->createMock(IRouteConstraint::class)],
-                [new MiddlewareBinding('foo')]
-            )
-        ]);
-        // We have to clone the routes because serializing them will technically alter closure/serialized closure property values
-        $expectedRoutes = clone $routes;
-        $this->cache->set($routes);
-        $this->assertEquals($expectedRoutes, $this->cache->get());
-    }
-
-    public function testGetOnHitReturnsRoutesWithMethodAction(): void
-    {
-        // We are purposely testing setting every type of property inside the route to test that they're all unserializable
-        $routes = new RouteCollection([
-            new Route(
-                new UriTemplate('foo'),
-                new MethodRouteAction('Foo', 'bar'),
+                new RouteAction('Foo', 'bar'),
                 [$this->createMock(IRouteConstraint::class)],
                 [new MiddlewareBinding('foo')]
             )
