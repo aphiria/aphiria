@@ -31,20 +31,6 @@ final class RouteCollection
     }
 
     /**
-     * Performs a deep clone of the routes (used in some tests)
-     */
-    public function __clone()
-    {
-        foreach ($this->routes as $index => $route) {
-            $this->routes[$index] = clone $route;
-        }
-
-        foreach ($this->namedRoutes as $name => $route) {
-            $this->namedRoutes[$name] = clone $route;
-        }
-    }
-
-    /**
      * Adds a route to the collection
      *
      * @param Route $route The route to add

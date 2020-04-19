@@ -65,10 +65,6 @@ final class FileCommandRegistryCache implements ICommandRegistryCache
      */
     public function set(CommandRegistry $commands): void
     {
-        /**
-         * Under the hood, Opis will actually mutate the properties of the commands so that closures can be serialized
-         * properly.  To make sure we're not changing the properties in the input commands, we clone it before serialization.
-         */
-        \file_put_contents($this->path, \serialize(clone $commands));
+        \file_put_contents($this->path, \serialize($commands));
     }
 }

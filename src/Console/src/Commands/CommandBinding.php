@@ -31,12 +31,4 @@ final class CommandBinding
         $this->command = $command;
         $this->commandHandlerClassName = $commandHandlerClassName;
     }
-
-    /**
-     * Performs a deep clone of objects (used in some of our tests)
-     */
-    public function __clone()
-    {
-        $this->command = clone $this->command;
-    }
 }

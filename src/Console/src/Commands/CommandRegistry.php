@@ -23,16 +23,6 @@ final class CommandRegistry
     private array $bindings = [];
 
     /**
-     * Performs a deep clone of objects (used in some of our tests)
-     */
-    public function __clone()
-    {
-        foreach ($this->bindings as $name => $binding) {
-            $this->bindings[$name] = clone $binding;
-        }
-    }
-
-    /**
      * Copies a command registry into this one
      *
      * @param CommandRegistry $commands The commands to copy
