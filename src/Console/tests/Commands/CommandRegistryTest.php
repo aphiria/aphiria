@@ -15,7 +15,6 @@ namespace Aphiria\Console\Tests\Commands;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandBinding;
 use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\Console\Commands\ICommandHandler;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -32,7 +31,7 @@ class CommandRegistryTest extends TestCase
     {
         $registry1 = new CommandRegistry();
         $registry2 = new CommandRegistry();
-        $expectedBinding = new CommandBinding(new Command('foo'), fn () => $this->createMock(ICommandHandler::class));
+        $expectedBinding = new CommandBinding(new Command('foo'), 'Foo');
         $registry1->registerManyCommands([$expectedBinding]);
         $registry2->copy($registry1);
         $this->assertSame([$expectedBinding], $registry2->getAllCommandBindings());
@@ -41,8 +40,8 @@ class CommandRegistryTest extends TestCase
     public function testGettingAllCommandBindingsReturnsExpectedBindings(): void
     {
         $expectedBindings = [
-            new CommandBinding(new Command('foo'), fn () => $this->createMock(ICommandHandler::class)),
-            new CommandBinding(new Command('bar'), fn () => $this->createMock(ICommandHandler::class))
+            new CommandBinding(new Command('foo'), 'Foo'),
+            new CommandBinding(new Command('bar'), 'Bar')
         ];
         $this->commands->registerManyCommands($expectedBindings);
         $actualBindings = $this->commands->getAllCommandBindings();
@@ -56,14 +55,8 @@ class CommandRegistryTest extends TestCase
         $expectedCommand1 = new Command('command1', [], [], '');
         $expectedCommand2 = new Command('command2', [], [], '');
         $this->commands->registerManyCommands([
-            new CommandBinding(
-                $expectedCommand1,
-                fn () => $this->createMock(ICommandHandler::class)
-            ),
-            new CommandBinding(
-                $expectedCommand2,
-                fn () => $this->createMock(ICommandHandler::class)
-            )
+            new CommandBinding($expectedCommand1, 'Handler1'),
+            new CommandBinding($expectedCommand2, 'Handler2')
         ]);
         $actualCommands = $this->commands->getAllCommands();
         $this->assertCount(2, $actualCommands);
@@ -74,25 +67,21 @@ class CommandRegistryTest extends TestCase
     public function testRegisteringCommandNormalizesName(): void
     {
         $command = new Command('foo', [], [], '');
-        $expectedCommandHandler = $this->createMock(ICommandHandler::class);
-        $commandHandlerFactory = fn () => $expectedCommandHandler;
-        $this->commands->registerCommand($command, $commandHandlerFactory);
-        $actualCommandHandler = null;
-        $this->assertTrue($this->commands->tryGetHandler('FOO', $actualCommandHandler));
-        $this->assertSame($expectedCommandHandler, $actualCommandHandler);
+        $this->commands->registerCommand($command, 'Handler');
+        $actualCommandHandlerClassName = null;
+        $this->assertTrue($this->commands->tryGetHandlerClassName('FOO', $actualCommandHandlerClassName));
+        $this->assertSame('Handler', $actualCommandHandlerClassName);
     }
 
     public function testRegisteringManyCommandsNormalizesNames(): void
     {
         $command = new Command('foo', [], [], '');
-        $expectedCommandHandler = $this->createMock(ICommandHandler::class);
-        $commandHandlerFactory = fn () => $expectedCommandHandler;
         $this->commands->registerManyCommands([
-            new CommandBinding($command, $commandHandlerFactory)
+            new CommandBinding($command, 'Handler')
         ]);
-        $actualCommandHandler = null;
-        $this->assertTrue($this->commands->tryGetHandler('FOO', $actualCommandHandler));
-        $this->assertSame($expectedCommandHandler, $actualCommandHandler);
+        $actualCommandHandlerClassName = null;
+        $this->assertTrue($this->commands->tryGetHandlerClassName('FOO', $actualCommandHandlerClassName));
+        $this->assertSame('Handler', $actualCommandHandlerClassName);
     }
 
     public function testTryGettingBindingReturnsFalseIfNoCommandWasFound(): void
@@ -105,15 +94,13 @@ class CommandRegistryTest extends TestCase
     public function testTryGettingBindingReturnsTrueIfCommandWasFound(): void
     {
         $expectedCommand = new Command('foo', [], [], '');
-        $expectedCommandHandler = $this->createMock(ICommandHandler::class);
-        $commandHandlerFactory = fn () => $expectedCommandHandler;
-        $this->commands->registerCommand($expectedCommand, $commandHandlerFactory);
+        $this->commands->registerCommand($expectedCommand, 'Handler');
         /** @var CommandBinding|null $actualBinding */
         $actualBinding = null;
         $this->assertTrue($this->commands->tryGetBinding('foo', $actualBinding));
         $this->assertNotNull($actualBinding);
         $this->assertSame($expectedCommand, $actualBinding->command);
-        $this->assertSame($expectedCommandHandler, $actualBinding->resolveCommandHandler());
+        $this->assertSame('Handler', $actualBinding->commandHandlerClassName);
     }
 
     public function testTryGettingCommandReturnsFalseIfNoCommandWasFound(): void
@@ -126,48 +113,42 @@ class CommandRegistryTest extends TestCase
     public function testTryGettingCommandReturnsTrueIfCommandWasFound(): void
     {
         $expectedCommand = new Command('foo', [], [], '');
-        $this->commands->registerCommand(
-            $expectedCommand,
-            fn () => $this->createMock(ICommandHandler::class)
-        );
+        $this->commands->registerCommand($expectedCommand, 'Handler');
         $actualCommand = null;
         $this->assertTrue($this->commands->tryGetCommand('foo', $actualCommand));
         $this->assertSame($expectedCommand, $actualCommand);
     }
 
-    public function testTryGettingHandlerReturnsFalseIfNoCommandWasFound(): void
+    public function testTryGettingHandlerClassNameReturnsFalseIfNoCommandWasFound(): void
     {
-        $commandHandler = null;
-        $this->assertFalse($this->commands->tryGetHandler('foo', $commandHandler));
-        $this->assertNull($commandHandler);
+        $commandHandlerClassName = null;
+        $this->assertFalse($this->commands->tryGetHandlerClassName('foo', $commandHandlerClassName));
+        $this->assertNull($commandHandlerClassName);
     }
 
-    public function testTryGettingHandlerUsingCommandUsesTheCommandNameToLookItUp(): void
+    public function testTryGettingHandlerClassNameUsingCommandUsesTheCommandNameToLookItUp(): void
     {
         $command = new Command('foo');
-        $expectedCommandHandler = $this->createMock(ICommandHandler::class);
-        $this->commands->registerCommand($command, fn () => $expectedCommandHandler);
-        $actualCommandHandler = null;
-        $this->assertTrue($this->commands->tryGetHandler($command, $actualCommandHandler));
-        $this->assertSame($expectedCommandHandler, $actualCommandHandler);
+        $this->commands->registerCommand($command, 'Handler');
+        $actualCommandHandlerClassName = null;
+        $this->assertTrue($this->commands->tryGetHandlerClassName($command, $actualCommandHandlerClassName));
+        $this->assertSame('Handler', $actualCommandHandlerClassName);
     }
 
-    public function testTryGettingHandlerOfInvalidTypeThrowsInvalidArgumentException(): void
+    public function testTryGettingHandlerClassNameOfInvalidTypeThrowsInvalidArgumentException(): void
     {
-        $commandHandler = null;
+        $commandHandlerClassName = null;
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Command must be either a string or an instance of %s', Command::class));
-        $this->commands->tryGetHandler(100, $commandHandler);
+        $this->commands->tryGetHandlerClassName(100, $commandHandlerClassName);
     }
 
-    public function testTryGettingHandlerReturnsTrueIfCommandWasFound(): void
+    public function testTryGettingHandlerClassNameReturnsTrueIfCommandWasFound(): void
     {
         $expectedCommand = new Command('foo', [], [], '');
-        $expectedCommandHandler = $this->createMock(ICommandHandler::class);
-        $commandHandlerFactory = fn () => $expectedCommandHandler;
-        $this->commands->registerCommand($expectedCommand, $commandHandlerFactory);
+        $this->commands->registerCommand($expectedCommand, 'Handler');
         $actualCommandHandler = null;
-        $this->assertTrue($this->commands->tryGetHandler('foo', $actualCommandHandler));
-        $this->assertSame($expectedCommandHandler, $actualCommandHandler);
+        $this->assertTrue($this->commands->tryGetHandlerClassName('foo', $actualCommandHandler));
+        $this->assertSame('Handler', $actualCommandHandler);
     }
 }

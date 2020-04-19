@@ -14,8 +14,8 @@ namespace Aphiria\Routing\Tests;
 
 use Aphiria\Routing\Caching\IRouteCache;
 use Aphiria\Routing\IRouteRegistrant;
-use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteRegistrantCollection;
 use Aphiria\Routing\UriTemplates\UriTemplate;
@@ -46,7 +46,7 @@ class RouteRegistrantCollectionTest extends TestCase
     public function testCacheHitCopiesCachedConstraintsIntoParameterConstraints(): void
     {
         $cachedRoutes = new RouteCollection();
-        $cachedRoutes->add(new Route(new UriTemplate('foo'), new MethodRouteAction('Foo', 'bar'), []));
+        $cachedRoutes->add(new Route(new UriTemplate('foo'), new RouteAction('Foo', 'bar'), []));
         $cache = $this->createMock(IRouteCache::class);
         $cache->expects($this->at(0))
             ->method('get')

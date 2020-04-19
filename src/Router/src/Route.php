@@ -57,27 +57,4 @@ final class Route
         $this->name = $name;
         $this->attributes = $attributes;
     }
-
-    /**
-     * Performs a deep clone of object properties
-     */
-    public function __clone()
-    {
-        $this->action = clone $this->action;
-        $this->uriTemplate = clone $this->uriTemplate;
-        $clonedConstraints = [];
-
-        foreach ($this->constraints as $constraint) {
-            $clonedConstraints[] = clone $constraint;
-        }
-
-        $this->constraints = $clonedConstraints;
-        $clonedMiddlewareBindings = [];
-
-        foreach ($this->middlewareBindings as $middlewareBinding) {
-            $clonedMiddlewareBindings[] = clone $middlewareBinding;
-        }
-
-        $this->middlewareBindings = $clonedMiddlewareBindings;
-    }
 }

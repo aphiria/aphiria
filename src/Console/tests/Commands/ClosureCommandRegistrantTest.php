@@ -16,7 +16,6 @@ use Aphiria\Console\Commands\ClosureCommandRegistrant;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandBinding;
 use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\Console\Commands\ICommandHandler;
 use PHPUnit\Framework\TestCase;
 
 class ClosureCommandRegistrantTest extends TestCase
@@ -24,9 +23,8 @@ class ClosureCommandRegistrantTest extends TestCase
     public function testRegisteringCommandsRegistersCommandsFromClosures(): void
     {
         $expectedCommand = new Command('foo');
-        $expectedCommandHandlerFactory = fn () => $this->createMock(ICommandHandler::class);
-        $closures = [function (CommandRegistry $commands) use ($expectedCommand, $expectedCommandHandlerFactory) {
-            $commands->registerCommand($expectedCommand, $expectedCommandHandlerFactory);
+        $closures = [function (CommandRegistry $commands) use ($expectedCommand) {
+            $commands->registerCommand($expectedCommand, 'Handler');
         }];
         $closureCommandRegistrant = new ClosureCommandRegistrant($closures);
         $commands = new CommandRegistry();
@@ -36,6 +34,6 @@ class ClosureCommandRegistrantTest extends TestCase
         $actualBinding = null;
         $this->assertTrue($commands->tryGetBinding('foo', $actualBinding));
         $this->assertSame($expectedCommand, $actualBinding->command);
-        $this->assertSame($expectedCommandHandlerFactory, $actualBinding->commandHandlerFactory);
+        $this->assertSame('Handler', $actualBinding->commandHandlerClassName);
     }
 }

@@ -65,10 +65,6 @@ final class FileRouteCache implements IRouteCache
      */
     public function set(RouteCollection $routes): void
     {
-        /**
-         * Under the hood, Opis will actually mutate the properties of the actions so that closures can be serialized
-         * properly.  To make sure we're not changing the properties in the input routes, we clone it before serialization.
-         */
-        \file_put_contents($this->path, \serialize(clone $routes));
+        \file_put_contents($this->path, \serialize($routes));
     }
 }

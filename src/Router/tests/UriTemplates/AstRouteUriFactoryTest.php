@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\UriTemplates;
 
-use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\AstRouteUriFactory;
 use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
@@ -231,7 +231,7 @@ class AstRouteUriFactoryTest extends TestCase
     ): void {
         $this->routes->add(new Route(
             new UriTemplate($pathTemplate, $hostTemplate, $isHttpsOnly),
-            new MethodRouteAction('foo', 'bar'),
+            new RouteAction('foo', 'bar'),
             [],
             [],
             $name

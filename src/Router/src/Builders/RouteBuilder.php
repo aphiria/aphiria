@@ -12,15 +12,12 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Builders;
 
-use Aphiria\Routing\ClosureRouteAction;
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
-use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\UriTemplate;
-use Closure;
 use InvalidArgumentException;
 use LogicException;
 
@@ -75,19 +72,6 @@ class RouteBuilder
     }
 
     /**
-     * Binds the controller the route uses to be a closure
-     *
-     * @param Closure $controller The closure the route uses
-     * @return self For chaining
-     */
-    public function mapsToClosure(Closure $controller): self
-    {
-        $this->action = new ClosureRouteAction($controller);
-
-        return $this;
-    }
-
-    /**
      * Binds the controller the route uses to be a method
      *
      * @param string $controllerClassName The name of the class the route goes to
@@ -96,7 +80,7 @@ class RouteBuilder
      */
     public function mapsToMethod(string $controllerClassName, string $controllerMethodName): self
     {
-        $this->action = new MethodRouteAction($controllerClassName, $controllerMethodName);
+        $this->action = new RouteAction($controllerClassName, $controllerMethodName);
 
         return $this;
     }

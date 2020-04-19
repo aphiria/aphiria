@@ -30,7 +30,6 @@
         "doctrine/annotations": "1.8.*@dev",
         "ext-ctype": "*",
         "ext-mbstring": "*",
-        "opis/closure": "3.5.*",
         "php": "^7.4"
     },
     "require-dev": {

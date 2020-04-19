@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests;
 
-use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
@@ -27,20 +27,11 @@ class RouteCollectionTest extends TestCase
         $this->collection = new RouteCollection();
     }
 
-    public function testCloneClonesNamedRoutes(): void
-    {
-        $routes = new RouteCollection();
-        $expectedRoute = new Route(new UriTemplate('foo'), new MethodRouteAction('Foo', 'bar'), [], [], 'name');
-        $routes->add($expectedRoute);
-        $clonedRoutes = clone $routes;
-        $this->assertEquals($expectedRoute, $clonedRoutes->getNamedRoute('name'));
-    }
-
     public function testCopyEffectivelyDuplicatesAnotherCollection(): void
     {
         $routes1 = new RouteCollection();
         $routes2 = new RouteCollection();
-        $expectedRoute = new Route(new UriTemplate('foo'), new MethodRouteAction('Foo', 'bar'), [], [], 'name');
+        $expectedRoute = new Route(new UriTemplate('foo'), new RouteAction('Foo', 'bar'), [], [], 'name');
         $routes1->add($expectedRoute);
         $routes2->copy($routes1);
         $this->assertSame([$expectedRoute], $routes2->getAll());
@@ -50,7 +41,7 @@ class RouteCollectionTest extends TestCase
     public function testCreatingWithRoutesAddsRoutesToCollection(): void
     {
         $expectedRoutes = [
-            new Route(new UriTemplate('abc'), new MethodRouteAction('Foo', 'bar'), [])
+            new Route(new UriTemplate('abc'), new RouteAction('Foo', 'bar'), [])
         ];
         $collection = new RouteCollection($expectedRoutes);
         $this->assertEquals($expectedRoutes, $collection->getAll());
@@ -59,8 +50,8 @@ class RouteCollectionTest extends TestCase
     public function testGettingAllRoutesReturnsAllRegisteredRoutes(): void
     {
         $expectedRoutes = [
-            new Route(new UriTemplate('abc'), new MethodRouteAction('Foo', 'bar'), []),
-            new Route(new UriTemplate('def'), new MethodRouteAction('Foo', 'baz'), [])
+            new Route(new UriTemplate('abc'), new RouteAction('Foo', 'bar'), []),
+            new Route(new UriTemplate('def'), new RouteAction('Foo', 'baz'), [])
         ];
         $this->collection->addMany($expectedRoutes);
         $this->assertEquals($expectedRoutes, $this->collection->getAll());
@@ -75,7 +66,7 @@ class RouteCollectionTest extends TestCase
     {
         $expectedRoute = new Route(
             new UriTemplate('abc'),
-            new MethodRouteAction('Foo', 'bar'),
+            new RouteAction('Foo', 'bar'),
             [],
             [],
             'foo'
@@ -88,7 +79,7 @@ class RouteCollectionTest extends TestCase
     {
         $expectedRoute = new Route(
             new UriTemplate('abc'),
-            new MethodRouteAction('Foo', 'bar'),
+            new RouteAction('Foo', 'bar'),
             [],
             [],
             'foo'

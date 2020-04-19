@@ -15,8 +15,8 @@ namespace Aphiria\Routing\Tests\Matchers;
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\Matchers\TrieRouteMatcher;
-use Aphiria\Routing\MethodRouteAction;
 use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\LiteralTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RootTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RouteVariable;
@@ -40,12 +40,12 @@ class TrieRouteMatcherTest extends TestCase
         $routes = [
             new Route(
                 new UriTemplate('foo'),
-                new MethodRouteAction('foo', 'bar1'),
+                new RouteAction('foo', 'bar1'),
                 [new HttpMethodRouteConstraint('GET')]
             ),
             new Route(
                 new UriTemplate('foo'),
-                new MethodRouteAction('foo', 'bar2'),
+                new RouteAction('foo', 'bar2'),
                 [new HttpMethodRouteConstraint('POST')]
             )
         ];
@@ -64,7 +64,7 @@ class TrieRouteMatcherTest extends TestCase
     {
         $expectedRoute = new Route(
             new UriTemplate('foo'),
-            new MethodRouteAction('foo', 'bar'),
+            new RouteAction('foo', 'bar'),
             [new HttpMethodRouteConstraint('GET')]
         );
         $this->rootNode->addChild(new LiteralTrieNode(
@@ -81,7 +81,7 @@ class TrieRouteMatcherTest extends TestCase
     {
         $expectedRoute = new Route(
             new UriTemplate('foo'),
-            new MethodRouteAction('foo', 'bar'),
+            new RouteAction('foo', 'bar'),
             [new HttpMethodRouteConstraint('GET')]
         );
         $this->rootNode->addChild(new VariableTrieNode(
@@ -89,7 +89,7 @@ class TrieRouteMatcherTest extends TestCase
             [],
             new Route(
                 new UriTemplate(':var'),
-                new MethodRouteAction('foo', 'bar'),
+                new RouteAction('foo', 'bar'),
                 [new HttpMethodRouteConstraint('GET')]
             )
         ));
@@ -108,7 +108,7 @@ class TrieRouteMatcherTest extends TestCase
     {
         $expectedRoute = new Route(
             new UriTemplate(''),
-            new MethodRouteAction('foo', 'bar'),
+            new RouteAction('foo', 'bar'),
             [new HttpMethodRouteConstraint('GET')]
         );
         $this->rootNode->addChild(new LiteralTrieNode(
@@ -125,7 +125,7 @@ class TrieRouteMatcherTest extends TestCase
     {
         $expectedRoute = new Route(
             new UriTemplate(''),
-            new MethodRouteAction('foo', 'bar'),
+            new RouteAction('foo', 'bar'),
             [new HttpMethodRouteConstraint('GET')]
         );
         $this->rootNode->addChild(new LiteralTrieNode(
@@ -154,7 +154,7 @@ class TrieRouteMatcherTest extends TestCase
     {
         $expectedRoute = new Route(
             new UriTemplate(''),
-            new MethodRouteAction('foo', 'bar'),
+            new RouteAction('foo', 'bar'),
             [new HttpMethodRouteConstraint('GET')]
         );
         $this->rootNode->addChild(new LiteralTrieNode(
@@ -187,7 +187,7 @@ class TrieRouteMatcherTest extends TestCase
             ->method('passes')
             ->with($this->anything(), 'GET', '', 'foo', [])
             ->willReturn(true);
-        $expectedRoute = new Route(new UriTemplate('foo'), new MethodRouteAction('foo', 'bar'), [$constraint]);
+        $expectedRoute = new Route(new UriTemplate('foo'), new RouteAction('foo', 'bar'), [$constraint]);
         $this->rootNode->addChild(new LiteralTrieNode(
             'foo',
             [],
@@ -208,7 +208,7 @@ class TrieRouteMatcherTest extends TestCase
         $this->rootNode->addChild(new LiteralTrieNode(
             'foo',
             [],
-            new Route(new UriTemplate('foo'), new MethodRouteAction('foo', 'bar'), [$constraint])
+            new Route(new UriTemplate('foo'), new RouteAction('foo', 'bar'), [$constraint])
         ));
         $matchingResult = $this->matcher->matchRoute('GET', '', 'foo');
         $this->assertFalse($matchingResult->matchFound);
@@ -219,7 +219,7 @@ class TrieRouteMatcherTest extends TestCase
     {
         $expectedRoute = new Route(
             new UriTemplate('foo'),
-            new MethodRouteAction('foo', 'bar'),
+            new RouteAction('foo', 'bar'),
             [new HttpMethodRouteConstraint('GET')]
         );
         $this->rootNode->addChild(new LiteralTrieNode(
@@ -251,7 +251,7 @@ class TrieRouteMatcherTest extends TestCase
             [],
             new Route(
                 new UriTemplate('foo'),
-                new MethodRouteAction('foo', 'bar'),
+                new RouteAction('foo', 'bar'),
                 [new HttpMethodRouteConstraint('GET')]
             )
         ));
@@ -263,7 +263,7 @@ class TrieRouteMatcherTest extends TestCase
     public function testRouteVariableIsSetFromMatchingVariableNodes(): void
     {
         $constraint = new HttpMethodRouteConstraint('GET');
-        $expectedRoute = new Route(new UriTemplate(':var1/:var2'), new MethodRouteAction('foo', 'bar'), [$constraint]);
+        $expectedRoute = new Route(new UriTemplate(':var1/:var2'), new RouteAction('foo', 'bar'), [$constraint]);
         $this->rootNode->addChild(new VariableTrieNode(
             new RouteVariable('var1'),
             [
@@ -292,7 +292,7 @@ class TrieRouteMatcherTest extends TestCase
                     [],
                     new Route(
                         new UriTemplate(':var1/foo'),
-                        new MethodRouteAction('foo', 'bar'),
+                        new RouteAction('foo', 'bar'),
                         [new HttpMethodRouteConstraint('GET')]
                     )
                 )
@@ -300,7 +300,7 @@ class TrieRouteMatcherTest extends TestCase
         ));
         $expectedRoute = new Route(
             new UriTemplate(':var2/bar'),
-            new MethodRouteAction('foo', 'bar'),
+            new RouteAction('foo', 'bar'),
             [new HttpMethodRouteConstraint('GET')]
         );
         $this->rootNode->addChild(new VariableTrieNode(
@@ -329,13 +329,13 @@ class TrieRouteMatcherTest extends TestCase
         $this->rootNode->addChild(new VariableTrieNode(
             new RouteVariable('var1'),
             [],
-            new Route(new UriTemplate(':var1'), new MethodRouteAction('foo', 'bar'), [$failingConstraint])
+            new Route(new UriTemplate(':var1'), new RouteAction('foo', 'bar'), [$failingConstraint])
         ));
         $passingConstraint = $this->createMock(IRouteConstraint::class);
         $passingConstraint->expects($this->once())
             ->method('passes')
             ->willReturn(true);
-        $expectedRoute = new Route(new UriTemplate(':var2'), new MethodRouteAction('foo', 'bar'), [$passingConstraint]);
+        $expectedRoute = new Route(new UriTemplate(':var2'), new RouteAction('foo', 'bar'), [$passingConstraint]);
         $this->rootNode->addChild(new VariableTrieNode(
             new RouteVariable('var2'),
             [],

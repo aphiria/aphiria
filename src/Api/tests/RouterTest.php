@@ -33,7 +33,6 @@ use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\UriTemplate;
-use Closure;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -81,7 +80,7 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(ControllerMock::class, 'noParameters', null),
+                new RouteAction(ControllerMock::class, 'noParameters'),
                 [],
                 [$middlewareBinding]
             ),
@@ -116,7 +115,7 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(ControllerMock::class, 'noParameters', null),
+                new RouteAction(ControllerMock::class, 'noParameters'),
                 [],
                 [$middlewareBinding]
             ),
@@ -174,7 +173,7 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(ControllerMock::class, 'noParameters', null),
+                new RouteAction(ControllerMock::class, 'noParameters'),
                 [],
                 [
                     new MiddlewareBinding(MiddlewareThatIncrementsHeader::class),
@@ -212,39 +211,6 @@ class RouterTest extends TestCase
         }
     }
 
-    public function testRouteActionWithClosureControllerBindsItToControllerObjectAndInvokesIt(): void
-    {
-        $request = $this->createRequestMock('GET', 'http://foo.com/bar');
-        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
-        // Purposely getting $this to verify that it's bound to an instance of Controller later on
-        $controllerClosure = fn () => $this;
-        $matchingResult = new RouteMatchingResult(
-            new Route(
-                new UriTemplate('foo'),
-                new RouteAction(null, null, $controllerClosure),
-                [],
-                []
-            ),
-            [],
-            []
-        );
-        $this->routeMatcher->expects($this->once())
-            ->method('matchRoute')
-            ->with('GET', 'foo.com', '/bar')
-            ->willReturn($matchingResult);
-        $this->routeActionInvoker->expects($this->once())
-            ->method('invokeRouteAction')
-            ->with($this->callback(function (Closure $closure) {
-                // Theoretically, this should return the $this, but now bound to a controller instance
-                /** @var Controller $boundController */
-                $boundController = $closure();
-
-                return $boundController instanceof Controller;
-            }))
-            ->willReturn($expectedResponse);
-        $this->assertSame($expectedResponse, $this->router->handle($request));
-    }
-
     public function testRouteActionWithNonExistentControllerMethodThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -258,7 +224,7 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(ControllerMock::class, 'doesNotExist', null),
+                new RouteAction(ControllerMock::class, 'doesNotExist'),
                 [],
                 []
             ),
@@ -284,7 +250,7 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(ControllerMock::class, 'noParameters', null),
+                new RouteAction(ControllerMock::class, 'noParameters'),
                 [],
                 []
             ),
@@ -313,7 +279,7 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(__CLASS__, __METHOD__, null),
+                new RouteAction(__CLASS__, __METHOD__),
                 [],
                 []
             ),

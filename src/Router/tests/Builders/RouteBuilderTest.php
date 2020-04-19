@@ -39,7 +39,6 @@ class RouteBuilderTest extends TestCase
 
     public function testChainingOnFluentMethodsReturnsCorrectInstance(): void
     {
-        $this->assertSame($this->routeBuilder, $this->routeBuilder->mapsToClosure(fn () => null));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->mapsToMethod('Foo', 'bar'));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withAttribute('foo', 'bar'));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withManyAttributes(['foo' => 'bar']));
@@ -62,14 +61,6 @@ class RouteBuilderTest extends TestCase
         $this->routeBuilder->mapsToMethod('class', 'method');
         $route = $this->routeBuilder->build();
         $this->assertEquals(['foo' => 'bar'], $route->attributes);
-    }
-
-    public function testClosureIsSetWhenUsingClosureAction(): void
-    {
-        $closure = fn () => null;
-        $this->routeBuilder->mapsToClosure($closure);
-        $route = $this->routeBuilder->build();
-        $this->assertSame($closure, $route->action->closure);
     }
 
     public function testConstraintBindingIsSet(): void
