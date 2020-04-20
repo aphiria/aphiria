@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Routing\Matchers\TrieRouteMatcher;
 use Aphiria\Routing\RouteCollection as AphiriaRouteCollection;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieFactory;
@@ -88,15 +88,15 @@ echo formatResults('Symfony', \memory_get_usage() - $startMemory, \microtime(tru
  */
 
 $startMemory = \memory_get_usage();
-$routeBuilders = new RouteBuilderRegistry();
+$routesBuilder = new RouteCollectionBuilder();
 
 for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
-    $routeBuilders->route('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
+    $routesBuilder->route('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
         ->mapsToMethod('Foo', (string)$routeIter);
 }
 
 $routes = new AphiriaRouteCollection();
-$routes->addMany($routeBuilders->buildAll());
+$routes->addMany($routesBuilder->build()->getAll());
 $routeMatcher = new TrieRouteMatcher((new TrieFactory($routes))->createTrie());
 $startTime = \microtime(true);
 

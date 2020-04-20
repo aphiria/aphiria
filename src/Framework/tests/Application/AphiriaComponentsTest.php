@@ -32,7 +32,7 @@ use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\IHttpResponseMessage;
-use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Serialization\Encoding\IEncoder;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Closure;
@@ -702,7 +702,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithRoutesConfiguresComponentToHaveRoutes(): void
     {
-        $callback = fn (RouteBuilderRegistry $routeBuilders) => null;
+        $callback = fn (RouteCollectionBuilder $routeBuilders) => null;
         $expectedComponent = $this->createMock(RouterComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withRoutes')
@@ -747,7 +747,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withRoutes($appBuilder, $callback);
             }
         };
-        $callback = fn (RouteBuilderRegistry $routeBuilders) => null;
+        $callback = fn (RouteCollectionBuilder $routeBuilders) => null;
         $component->build($this->appBuilder, $callback);
     }
 

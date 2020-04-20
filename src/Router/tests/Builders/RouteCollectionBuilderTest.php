@@ -13,36 +13,36 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests\Builders;
 
 use Aphiria\Routing\Builders\RouteBuilder;
-use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Routing\Builders\RouteGroupOptions;
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use PHPUnit\Framework\TestCase;
 
-class RouteBuilderRegistryTest extends TestCase
+class RouteCollectionBuilderTest extends TestCase
 {
-    private RouteBuilderRegistry $registry;
+    private RouteCollectionBuilder $builder;
 
     protected function setUp(): void
     {
-        $this->registry = new RouteBuilderRegistry();
+        $this->builder = new RouteCollectionBuilder();
     }
 
     public function testBuildingWithNoRoutesReturnsEmptyArray(): void
     {
-        $this->assertEmpty($this->registry->buildAll());
+        $this->assertEmpty($this->builder->build()->getAll());
     }
 
     public function testGroupAttributesToMatchOnAreMergedWithRouteAttributesToMatch(): void
     {
         $groupOptions = new RouteGroupOptions('foo', null, false, [], [], ['H1' => 'val1']);
-        $this->registry->group($groupOptions, function (RouteBuilderRegistry $registry) {
+        $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
             $registry->route('GET', '')
                 ->mapsToMethod('foo', 'bar')
                 ->withAttribute('H2', 'val2');
         });
-        $routes = $this->registry->buildAll();
+        $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertEquals(['H1' => 'val1', 'H2' => 'val2'], $routes[0]->attributes);
     }
@@ -52,12 +52,12 @@ class RouteBuilderRegistryTest extends TestCase
         $groupConstraints = [$this->createMock(IRouteConstraint::class)];
         $groupOptions = new RouteGroupOptions('foo', null, false, $groupConstraints);
         $routeConstraints = [$this->createMock(IRouteConstraint::class)];
-        $this->registry->group($groupOptions, function (RouteBuilderRegistry $registry) use ($routeConstraints) {
+        $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) use ($routeConstraints) {
             $registry->route('GET', '')
                 ->mapsToMethod('foo', 'bar')
                 ->withManyConstraints($routeConstraints);
         });
-        $routes = $this->registry->buildAll();
+        $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertContains($groupConstraints[0], $routes[0]->constraints);
         $this->assertContains($routeConstraints[0], $routes[0]->constraints);
@@ -66,11 +66,11 @@ class RouteBuilderRegistryTest extends TestCase
     public function testGroupingAppendsToRouteHostTemplate(): void
     {
         $groupOptions = new RouteGroupOptions('foo', 'baz', false);
-        $this->registry->group($groupOptions, function (RouteBuilderRegistry $registry) {
+        $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
             $registry->route('GET', '', 'bar')
                 ->mapsToMethod('controller', 'method');
         });
-        $routes = $this->registry->buildAll();
+        $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertEquals('bar.baz', $routes[0]->uriTemplate->hostTemplate);
     }
@@ -78,13 +78,13 @@ class RouteBuilderRegistryTest extends TestCase
     public function testGroupOptionsDoNotApplyToRoutesAddedOutsideGroup(): void
     {
         $groupOptions = new RouteGroupOptions('gp');
-        $this->registry->group($groupOptions, function (RouteBuilderRegistry $registry) {
+        $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
             $registry->route('GET', 'rp1')
                 ->mapsToMethod('c1', 'm1');
         });
-        $this->registry->route('POST', 'rp2')
+        $this->builder->route('POST', 'rp2')
             ->mapsToMethod('c2', 'm2');
-        $routes = $this->registry->buildAll();
+        $routes = $this->builder->build()->getAll();
         $this->assertCount(2, $routes);
         $this->assertEquals('/gp/rp1', $routes[0]->uriTemplate->pathTemplate);
         $this->assertEquals('/rp2', $routes[1]->uriTemplate->pathTemplate);
@@ -95,86 +95,86 @@ class RouteBuilderRegistryTest extends TestCase
         $groupMiddlewareBinding = new MiddlewareBinding('foo');
         $routeMiddlewareBinding = new MiddlewareBinding('bar');
         $groupOptions = new RouteGroupOptions('', null, false, [], [$groupMiddlewareBinding], []);
-        $this->registry->group($groupOptions, function (RouteBuilderRegistry $registry) use ($routeMiddlewareBinding) {
+        $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) use ($routeMiddlewareBinding) {
             // Use the bulk-with method so we can pass in an already-instantiated object to check against later
             $registry->route('GET', '')
                 ->mapsToMethod('foo', 'bar')
                 ->withManyMiddleware([$routeMiddlewareBinding]);
         });
-        $routes = $this->registry->buildAll();
+        $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertEquals([$groupMiddlewareBinding, $routeMiddlewareBinding], $routes[0]->middlewareBindings);
     }
 
     public function testGroupHostWithNestedGroupHostHasDotBetweenThem(): void
     {
-        $registry = new RouteBuilderRegistry();
-        $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteBuilderRegistry $registry) {
-            $registry->group(new RouteGroupOptions('', 'foo'), function (RouteBuilderRegistry $registry) {
+        $registry = new RouteCollectionBuilder();
+        $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteCollectionBuilder $registry) {
+            $registry->group(new RouteGroupOptions('', 'foo'), function (RouteCollectionBuilder $registry) {
                 $registry->route('GET', 'baz', 'bar')
                     ->mapsToMethod('c1', 'm1');
             });
         });
-        $routes = $registry->buildAll();
+        $routes = $registry->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertEquals('bar.foo.example.com', $routes[0]->uriTemplate->hostTemplate);
     }
 
     public function testGroupHostWithNoDotAndRouteHostWithTrailingDotHasDotBetweenThem(): void
     {
-        $registry = new RouteBuilderRegistry();
-        $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteBuilderRegistry $registry) {
+        $registry = new RouteCollectionBuilder();
+        $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteCollectionBuilder $registry) {
             $registry->route('GET', '', 'foo.')
                 ->mapsToMethod('c1', 'm1');
         });
-        $routes = $registry->buildAll();
+        $routes = $registry->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertEquals('foo.example.com', $routes[0]->uriTemplate->hostTemplate);
     }
 
     public function testGroupHostWithNoDotAndRouteHostWithNoDosHasDotBetweenThem(): void
     {
-        $registry = new RouteBuilderRegistry();
-        $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteBuilderRegistry $registry) {
+        $registry = new RouteCollectionBuilder();
+        $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteCollectionBuilder $registry) {
             $registry->route('GET', '', 'foo')
                 ->mapsToMethod('c1', 'm1');
         });
-        $routes = $registry->buildAll();
+        $routes = $registry->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertEquals('foo.example.com', $routes[0]->uriTemplate->hostTemplate);
     }
 
     public function testGroupPathWithNoSlashAndRoutePathWithLeadingSlashHaveSlashBetweenThem(): void
     {
-        $registry = new RouteBuilderRegistry();
-        $registry->group(new RouteGroupOptions('foo'), function (RouteBuilderRegistry $registry) {
+        $registry = new RouteCollectionBuilder();
+        $registry->group(new RouteGroupOptions('foo'), function (RouteCollectionBuilder $registry) {
             $registry->route('GET', '/bar')
                 ->mapsToMethod('c1', 'm1');
         });
-        $routes = $registry->buildAll();
+        $routes = $registry->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertEquals('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
     }
 
     public function testGroupPathWithNoSlashAndRoutePathWithNoSlashHaveSlashBetweenThem(): void
     {
-        $registry = new RouteBuilderRegistry();
-        $registry->group(new RouteGroupOptions('foo'), function (RouteBuilderRegistry $registry) {
+        $registry = new RouteCollectionBuilder();
+        $registry->group(new RouteGroupOptions('foo'), function (RouteCollectionBuilder $registry) {
             $registry->route('GET', 'bar')
                 ->mapsToMethod('c1', 'm1');
         });
-        $routes = $registry->buildAll();
+        $routes = $registry->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertEquals('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
     }
 
     public function testHttpsOnlyGroupOverridesHttpsSettingInRoutes(): void
     {
-        $this->registry->group(new RouteGroupOptions('', null, true), function (RouteBuilderRegistry $registry) {
+        $this->builder->group(new RouteGroupOptions('', null, true), function (RouteCollectionBuilder $registry) {
             $registry->route('GET', '', null, false)
                 ->mapsToMethod('foo', 'bar');
         });
-        $routes = $this->registry->buildAll();
+        $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertTrue($routes[0]->uriTemplate->isHttpsOnly);
     }
@@ -193,9 +193,9 @@ class RouteBuilderRegistryTest extends TestCase
             $outerConstraints,
             [$outerGroupMiddlewareBinding]
         );
-        $this->registry->group(
+        $this->builder->group(
             $outerGroupOptions,
-            function (RouteBuilderRegistry $registry) use (
+            function (RouteCollectionBuilder $registry) use (
                 $innerConstraints,
                 $innerGroupMiddlewareBinding,
                 $routeMiddlewareBinding
@@ -209,7 +209,7 @@ class RouteBuilderRegistryTest extends TestCase
                 );
                 $registry->group(
                     $innerGroupOptions,
-                    function (RouteBuilderRegistry $registry) use ($routeMiddlewareBinding) {
+                    function (RouteCollectionBuilder $registry) use ($routeMiddlewareBinding) {
                         // Use the bulk-with method so we can pass in an already-instantiated object to check against later
                         $registry->route('GET', 'rp')
                             ->mapsToMethod('foo', 'bar')
@@ -218,7 +218,7 @@ class RouteBuilderRegistryTest extends TestCase
                 );
             }
         );
-        $routes = $this->registry->buildAll();
+        $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertEquals('/op/ip/rp', $routes[0]->uriTemplate->pathTemplate);
         $this->assertContains($outerConstraints[0], $routes[0]->constraints);
@@ -234,27 +234,27 @@ class RouteBuilderRegistryTest extends TestCase
     public function testGroupingPrependsToRoutePathTemplate(): void
     {
         $groupOptions = new RouteGroupOptions('foo');
-        $this->registry->group($groupOptions, function (RouteBuilderRegistry $registry) {
+        $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
             $registry->route('GET', 'bar')
                 ->mapsToMethod('controller', 'method');
         });
-        $routes = $this->registry->buildAll();
+        $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertEquals('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
     }
 
     public function testRouteAddsLeadingSlashToPath(): void
     {
-        $this->registry->route('GET', 'foo')
+        $this->builder->route('GET', 'foo')
             ->mapsToMethod('Foo', 'bar');
-        $routes = $this->registry->buildAll();
+        $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertEquals('/foo', $routes[0]->uriTemplate->pathTemplate);
     }
 
     public function testRouteBuilderIsCreatedWithAttributesToMatchParameter(): void
     {
-        $routeBuilder = $this->registry->route('GET', '')
+        $routeBuilder = $this->builder->route('GET', '')
             ->mapsToMethod('foo', 'bar')
             ->withAttribute('FOO', 'BAR');
         $route = $routeBuilder->build();
@@ -264,7 +264,7 @@ class RouteBuilderRegistryTest extends TestCase
     public function testRouteBuilderIsCreatedWithConstraints(): void
     {
         $constraints = [$this->createMock(IRouteConstraint::class)];
-        $routeBuilder = $this->registry->route('GET', '')
+        $routeBuilder = $this->builder->route('GET', '')
             ->mapsToMethod('foo', 'bar')
             ->withManyConstraints($constraints);
         $route = $routeBuilder->build();
@@ -273,7 +273,7 @@ class RouteBuilderRegistryTest extends TestCase
 
     public function testRouteBuilderIsCreatedWithHttpMethodParameterSet(): void
     {
-        $routeBuilder = $this->registry->route(['GET', 'DELETE'], '')
+        $routeBuilder = $this->builder->route(['GET', 'DELETE'], '')
             ->mapsToMethod('foo', 'bar');
         $route = $routeBuilder->build();
         $this->assertCount(1, $route->constraints);
@@ -288,7 +288,7 @@ class RouteBuilderRegistryTest extends TestCase
     {
         foreach (['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT'] as $httpMethod) {
             /** @var RouteBuilder $routeBuilder */
-            $routeBuilder = $this->registry->{\strtolower($httpMethod)}('foo');
+            $routeBuilder = $this->builder->{\strtolower($httpMethod)}('foo');
             $routeBuilder->mapsToMethod('Foo', 'bar');
             $route = $routeBuilder->build();
             $this->assertCount(1, $route->constraints);
