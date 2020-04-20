@@ -16,7 +16,7 @@ use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IRequest;
 use ReflectionParameter;
 
 /**
@@ -44,7 +44,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      */
     public function resolveParameter(
         ReflectionParameter $reflectionParameter,
-        IHttpRequestMessage $request,
+        IRequest $request,
         array $routeVariables
     ) {
         $queryStringVars = $this->uriParser->parseQueryString($request->getUri());
@@ -81,7 +81,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      * Resolves an object parameter using content negotiator
      *
      * @param ReflectionParameter $reflectionParameter The parameter to resolve
-     * @param IHttpRequestMessage $request The current request
+     * @param IRequest $request The current request
      * @return object|null The resolved parameter
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
@@ -89,7 +89,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      */
     private function resolveObjectParameter(
         ReflectionParameter $reflectionParameter,
-        IHttpRequestMessage $request
+        IRequest $request
     ): ?object {
         if ($request->getBody() === null) {
             if (!$reflectionParameter->allowsNull()) {

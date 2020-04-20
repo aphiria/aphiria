@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Middleware;
 
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 
 /**
  * Defines the middleware request handler
@@ -39,7 +39,7 @@ final class MiddlewareRequestHandler implements IRequestHandler
     /**
      * @inheritdoc
      */
-    public function handle(IHttpRequestMessage $request): IHttpResponseMessage
+    public function handle(IRequest $request): IResponse
     {
         return $this->middleware->handle($request, $this->next);
     }

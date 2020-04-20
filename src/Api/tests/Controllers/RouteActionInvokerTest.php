@@ -26,8 +26,8 @@ use Aphiria\Api\Validation\IRequestBodyValidator;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Uri;
@@ -76,7 +76,7 @@ class RouteActionInvokerTest extends TestCase
                 ->willThrowException(new FailedRequestContentNegotiationException());
             $this->invoker->invokeRouteAction(
                 [$this->controller, 'stringParameter'],
-                $this->createMock(IHttpRequestMessage::class),
+                $this->createMock(IRequest::class),
                 []
             );
             $this->fail('Failed to assert that a 415 was thrown');
@@ -94,7 +94,7 @@ class RouteActionInvokerTest extends TestCase
                 ->willThrowException(new FailedScalarParameterConversionException());
             $this->invoker->invokeRouteAction(
                 [$this->controller, 'stringParameter'],
-                $this->createMock(IHttpRequestMessage::class),
+                $this->createMock(IRequest::class),
                 []
             );
             $this->fail('Failed to assert that a 400 was thrown');
@@ -105,14 +105,14 @@ class RouteActionInvokerTest extends TestCase
 
     public function testInvokingClosureReturnsResponseReturnedFromClosure(): void
     {
-        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
+        $expectedResponse = $this->createMock(IResponse::class);
         $closure = function (int $foo) use ($expectedResponse) {
             $this->assertEquals(123, $foo);
 
             return $expectedResponse;
         };
-        /** @var IHttpRequestMessage|MockObject $request */
-        $request = $this->createMock(IHttpRequestMessage::class);
+        /** @var IRequest|MockObject $request */
+        $request = $this->createMock(IRequest::class);
         $this->parameterResolver->expects($this->once())
             ->method('resolveParameter')
             ->with($this->isInstanceOf(ReflectionParameter::class), $request)
@@ -123,9 +123,9 @@ class RouteActionInvokerTest extends TestCase
 
     public function testInvokingMethodThatReturnsPopoCreatesOkResponseFromReturnValue(): void
     {
-        /** @var IHttpRequestMessage|MockObject $request */
-        $request = $this->createMock(IHttpRequestMessage::class);
-        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
+        /** @var IRequest|MockObject $request */
+        $request = $this->createMock(IRequest::class);
+        $expectedResponse = $this->createMock(IResponse::class);
         $this->responseFactory->method('createResponse')
             ->with($request, HttpStatusCodes::HTTP_OK, null, $this->callback(fn ($actionResult) => $actionResult instanceof User))
             ->willReturn($expectedResponse);
@@ -250,7 +250,7 @@ class RouteActionInvokerTest extends TestCase
                 ->willThrowException(new MissingControllerParameterValueException());
             $this->invoker->invokeRouteAction(
                 [$this->controller, 'stringParameter'],
-                $this->createMock(IHttpRequestMessage::class),
+                $this->createMock(IRequest::class),
                 []
             );
             $this->fail('Failed to assert that a 400 was thrown');
@@ -286,7 +286,7 @@ class RouteActionInvokerTest extends TestCase
                 ->willThrowException(new RequestBodyDeserializationException());
             $this->invoker->invokeRouteAction(
                 [$this->controller, 'stringParameter'],
-                $this->createMock(IHttpRequestMessage::class),
+                $this->createMock(IRequest::class),
                 []
             );
             $this->fail('Failed to assert that a 522 was thrown');

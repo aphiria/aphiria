@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http\Formatting;
 
 use Aphiria\Net\Http\Headers\Cookie;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
@@ -38,7 +38,7 @@ class ResponseFormatter
     /**
      * Deletes a cookie from headers
      *
-     * @param IHttpResponseMessage $response The response to format
+     * @param IResponse $response The response to format
      * @param string $name The name of the cookie to delete
      * @param string|null $path The path to the cookie to delete if set, otherwise null
      * @param string|null $domain The domain of the cookie to delete if set, otherwise null
@@ -47,7 +47,7 @@ class ResponseFormatter
      * @param string|null $sameSite The same-site setting to use if set, otherwise null
      */
     public function deleteCookie(
-        IHttpResponseMessage $response,
+        IResponse $response,
         string $name,
         ?string $path = null,
         ?string $domain = null,
@@ -69,10 +69,10 @@ class ResponseFormatter
     /**
      * Sets a cookie in the headers
      *
-     * @param IHttpResponseMessage $response The response to set the cookie in
+     * @param IResponse $response The response to set the cookie in
      * @param Cookie $cookie The cookie to set
      */
-    public function setCookie(IHttpResponseMessage $response, Cookie $cookie): void
+    public function setCookie(IResponse $response, Cookie $cookie): void
     {
         $this->headerFormatter->setCookie($response->getHeaders(), $cookie);
     }
@@ -80,10 +80,10 @@ class ResponseFormatter
     /**
      * Sets cookies in the headers
      *
-     * @param IHttpResponseMessage $response The response to set the cookies in
+     * @param IResponse $response The response to set the cookies in
      * @param Cookie[] $cookies The cookies to set
      */
-    public function setCookies(IHttpResponseMessage $response, array $cookies): void
+    public function setCookies(IResponse $response, array $cookies): void
     {
         $this->headerFormatter->setCookies($response->getHeaders(), $cookies);
     }
@@ -91,13 +91,13 @@ class ResponseFormatter
     /**
      * Sets up the response to redirect to a particular URI
      *
-     * @param IHttpResponseMessage $response The response to format
+     * @param IResponse $response The response to format
      * @param Uri|string $uri The URI to redirect to
      * @param int $statusCode The status code
      * @throws InvalidArgumentException Thrown if the URI is not an instance of URI or a string
      * @throws RuntimeException Thrown if the location header's hash key could not be calculated
      */
-    public function redirectToUri(IHttpResponseMessage $response, $uri, int $statusCode = 302): void
+    public function redirectToUri(IResponse $response, $uri, int $statusCode = 302): void
     {
         if (\is_string($uri)) {
             $uriString = $uri;
@@ -114,12 +114,12 @@ class ResponseFormatter
     /**
      * Writes JSON to the response
      *
-     * @param IHttpResponseMessage $response The response to write to
+     * @param IResponse $response The response to write to
      * @param array $content The JSON to write
      * @throws InvalidArgumentException Thrown if the input JSON is incorrectly formatted
      * @throws RuntimeException Thrown if the content type header's hash key could not be calculated
      */
-    public function writeJson(IHttpResponseMessage $response, array $content): void
+    public function writeJson(IResponse $response, array $content): void
     {
         $json = json_encode($content);
 

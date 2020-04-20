@@ -13,20 +13,20 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http\Formatting;
 
 use Aphiria\Net\Http\Formatting\ResponseHeaderFormatter;
+use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
-use Aphiria\Net\Http\HttpHeaders;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 
 class ResponseHeaderFormatterTest extends TestCase
 {
     private ResponseHeaderFormatter $formatter;
-    private HttpHeaders $headers;
+    private Headers $headers;
 
     protected function setUp(): void
     {
         $this->formatter = new ResponseHeaderFormatter();
-        $this->headers = new HttpHeaders();
+        $this->headers = new Headers();
     }
 
     public function testCookiePropertiesWithValuesAreUrlEncoded(): void

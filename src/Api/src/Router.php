@@ -26,8 +26,8 @@ use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Response;
 use Aphiria\Routing\Matchers\IRouteMatcher;
 use Aphiria\Routing\Matchers\RouteMatchingResult;
@@ -70,7 +70,7 @@ class Router implements IRequestHandler
     /**
      * @inheritdoc
      */
-    public function handle(IHttpRequestMessage $request): IHttpResponseMessage
+    public function handle(IRequest $request): IResponse
     {
         $matchingResult = $this->matchRoute($request);
         $controller = $routeActionDelegate = null;
@@ -156,11 +156,11 @@ class Router implements IRequestHandler
     /**
      * Gets the matching route for the input request
      *
-     * @param IHttpRequestMessage $request The current request
+     * @param IRequest $request The current request
      * @return RouteMatchingResult The route matching result
      * @throws HttpException Thrown if there was no matching route, or if the request was invalid for the matched route
      */
-    private function matchRoute(IHttpRequestMessage $request): RouteMatchingResult
+    private function matchRoute(IRequest $request): RouteMatchingResult
     {
         $uri = $request->getUri();
         $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->getHost(), $uri->getPath());

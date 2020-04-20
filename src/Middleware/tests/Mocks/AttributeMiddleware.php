@@ -14,8 +14,8 @@ namespace Aphiria\Middleware\Tests\Mocks;
 
 use Aphiria\Middleware\AttributeMiddleware as BaseAttributeMiddleware;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 
 /**
  * Mocks attribute middleware for use in tests
@@ -37,7 +37,7 @@ class AttributeMiddleware extends BaseAttributeMiddleware
     /**
      * @inheritdoc
      */
-    public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
+    public function handle(IRequest $request, IRequestHandler $next): IResponse
     {
         return $next->handle($request);
     }

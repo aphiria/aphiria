@@ -13,18 +13,18 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\Collections\KeyValuePair;
-use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\Headers;
 use InvalidArgumentException;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
 class HttpHeadersTest extends TestCase
 {
-    private HttpHeaders $headers;
+    private Headers $headers;
 
     protected function setUp(): void
     {
-        $this->headers = new HttpHeaders();
+        $this->headers = new Headers();
     }
 
     public function testAddingStringValue(): void

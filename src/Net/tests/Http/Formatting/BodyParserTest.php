@@ -13,22 +13,22 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http\Formatting;
 
 use Aphiria\Collections\HashTable;
-use Aphiria\Net\Http\Formatting\HttpBodyParser;
-use Aphiria\Net\Http\IHttpBody;
+use Aphiria\Net\Http\Formatting\BodyParser;
+use Aphiria\Net\Http\IBody;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class HttpBodyParserTest extends TestCase
+class BodyParserTest extends TestCase
 {
-    private HttpBodyParser $parser;
-    /** @var IHttpBody|MockObject The body to use in tests */
-    private IHttpBody $body;
+    private BodyParser $parser;
+    /** @var IBody|MockObject The body to use in tests */
+    private IBody $body;
 
     protected function setUp(): void
     {
-        $this->parser = new HttpBodyParser();
-        $this->body = $this->createMock(IHttpBody::class);
+        $this->parser = new BodyParser();
+        $this->body = $this->createMock(IBody::class);
     }
 
     public function testGettingExistingFormInputReturnsThatInputsValue(): void

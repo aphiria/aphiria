@@ -17,8 +17,8 @@ use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -40,8 +40,8 @@ class ControllerRequestHandlerTest extends TestCase
 
     public function testHandlingRequestSetsControllerProperties(): void
     {
-        /** @var IHttpRequestMessage|MockObject $request */
-        $request = $this->createMock(IHttpRequestMessage::class);
+        /** @var IRequest|MockObject $request */
+        $request = $this->createMock(IRequest::class);
         /** @var ControllerWithEndpoints|MockObject $controller */
         $controller = $this->createMock(ControllerWithEndpoints::class);
         $controller->expects($this->once())
@@ -58,7 +58,7 @@ class ControllerRequestHandlerTest extends TestCase
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')
             ->with($controllerCallable, $request, [])
-            ->willReturn($this->createMock(IHttpResponseMessage::class));
+            ->willReturn($this->createMock(IResponse::class));
 
         $requestHandler = new ControllerRequestHandler(
             $controller,
@@ -72,10 +72,10 @@ class ControllerRequestHandlerTest extends TestCase
 
     public function testHandlingRequestReturnsResponseFromRouteInvoker(): void
     {
-        /** @var IHttpRequestMessage|MockObject $request */
-        $request = $this->createMock(IHttpRequestMessage::class);
-        /** @var IHttpResponseMessage|MockObject $expectedResponse */
-        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
+        /** @var IRequest|MockObject $request */
+        $request = $this->createMock(IRequest::class);
+        /** @var IResponse|MockObject $expectedResponse */
+        $expectedResponse = $this->createMock(IResponse::class);
         /** @var ControllerWithEndpoints|MockObject $controller */
         $controller = $this->createMock(ControllerWithEndpoints::class);
         $controllerCallable = [$controller, 'noParameters'];

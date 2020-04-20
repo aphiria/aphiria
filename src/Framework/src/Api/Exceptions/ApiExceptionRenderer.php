@@ -20,8 +20,8 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatt
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\IResponseWriter;
 use Aphiria\Net\Http\Response;
@@ -37,8 +37,8 @@ class ApiExceptionRenderer implements IExceptionRenderer
 {
     /** @var bool Whether or not to use problem details */
     protected bool $useProblemDetails;
-    /** @var IHttpRequestMessage|null The current request, if there is one */
-    protected ?IHttpRequestMessage $request;
+    /** @var IRequest|null The current request, if there is one */
+    protected ?IRequest $request;
     /** @var IResponseFactory|null The optional response factory */
     protected ?IResponseFactory $responseFactory;
     /** @var Closure[] The mapping of exception types to closures that return responses */
@@ -48,13 +48,13 @@ class ApiExceptionRenderer implements IExceptionRenderer
 
     /**
      * @param bool $useProblemDetails Whether or not to use problem details
-     * @param IHttpRequestMessage|null $request The current request, if there is one
+     * @param IRequest|null $request The current request, if there is one
      * @param IResponseFactory|null $responseFactory The optional response factory
      * @param IResponseWriter|null $responseWriter What is used to write the response
      */
     public function __construct(
         bool $useProblemDetails = true,
-        IHttpRequestMessage $request = null,
+        IRequest $request = null,
         IResponseFactory $responseFactory = null,
         IResponseWriter $responseWriter = null
     ) {
@@ -108,9 +108,9 @@ class ApiExceptionRenderer implements IExceptionRenderer
     /**
      * Sets the current request in case it wasn't initially available
      *
-     * @param IHttpRequestMessage $request The current request
+     * @param IRequest $request The current request
      */
-    public function setRequest(IHttpRequestMessage $request): void
+    public function setRequest(IRequest $request): void
     {
         $this->request = $request;
     }
@@ -130,9 +130,9 @@ class ApiExceptionRenderer implements IExceptionRenderer
      * Note: It is very important that this method never throws an exception
      *
      * @param Exception $ex The exception that was thrown
-     * @return IHttpResponseMessage The created response
+     * @return IResponse The created response
      */
-    protected function createDefaultResponse(Exception $ex): IHttpResponseMessage
+    protected function createDefaultResponse(Exception $ex): IResponse
     {
         return new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
@@ -157,11 +157,11 @@ class ApiExceptionRenderer implements IExceptionRenderer
      * Creates a problem details response
      *
      * @param Exception $ex The exception that was thrown
-     * @return IHttpResponseMessage The created response
+     * @return IResponse The created response
      * @throws SerializationException Thrown if the problem details could not be serialized
      * @throws HttpException Thrown if the response could not be created
      */
-    protected function createProblemDetailsResponse(Exception $ex): IHttpResponseMessage
+    protected function createProblemDetailsResponse(Exception $ex): IResponse
     {
         // Try to take advantage of the response factory
         if ($this->responseFactory !== null && $this->request !== null) {
@@ -191,11 +191,11 @@ class ApiExceptionRenderer implements IExceptionRenderer
      * Creates a response without a request context
      *
      * @param Exception $ex The exception that was thrown
-     * @return IHttpResponseMessage The creates request
+     * @return IResponse The creates request
      * @throws HttpException Thrown if the response could not be created
      * @throws SerializationException Thrown if the problem details could not be serialized
      */
-    protected function createResponseWithoutRequest(Exception $ex): IHttpResponseMessage
+    protected function createResponseWithoutRequest(Exception $ex): IResponse
     {
         if ($this->useProblemDetails) {
             return $this->createProblemDetailsResponse($ex);
@@ -208,12 +208,12 @@ class ApiExceptionRenderer implements IExceptionRenderer
      * Creates a response with a request context
      *
      * @param Exception $ex The exception that was thrown
-     * @param IHttpRequestMessage $request The current request
-     * @return IHttpResponseMessage The creates request
+     * @param IRequest $request The current request
+     * @return IResponse The creates request
      * @throws HttpException Thrown if the response could not be created
      * @throws SerializationException Thrown if the problem details could not be serialized
      */
-    protected function createResponseWithRequest(Exception $ex, IHttpRequestMessage $request): IHttpResponseMessage
+    protected function createResponseWithRequest(Exception $ex, IRequest $request): IResponse
     {
         if ($this->responseFactory !== null && isset($this->responseFactories[\get_class($ex)])) {
             return $this->responseFactories[\get_class($ex)]($ex, $request, $this->responseFactory);

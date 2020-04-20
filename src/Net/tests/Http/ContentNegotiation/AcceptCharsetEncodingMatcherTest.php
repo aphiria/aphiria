@@ -14,8 +14,8 @@ namespace Aphiria\Net\Tests\Http\ContentNegotiation;
 
 use Aphiria\Net\Http\ContentNegotiation\AcceptCharsetEncodingMatcher;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Uri;
 use PHPUnit\Framework\TestCase;
@@ -24,14 +24,14 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
 {
     private AcceptCharsetEncodingMatcher $matcher;
     private RequestHeaderParser $headerParser;
-    private HttpHeaders $headers;
-    private IHttpRequestMessage $request;
+    private Headers $headers;
+    private IRequest $request;
 
     protected function setUp(): void
     {
         $this->matcher = new AcceptCharsetEncodingMatcher();
         $this->headerParser = new RequestHeaderParser();
-        $this->headers = new HttpHeaders();
+        $this->headers = new Headers();
         $this->request = new Request('GET', new Uri('http://example.com'), $this->headers);
     }
 

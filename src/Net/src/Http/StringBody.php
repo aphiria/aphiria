@@ -18,7 +18,7 @@ use Aphiria\IO\Streams\Stream;
 /**
  * Defines the string HTTP body
  */
-class StringBody implements IHttpBody
+class StringBody implements IBody
 {
     /** @var string The body content */
     protected string $content = '';

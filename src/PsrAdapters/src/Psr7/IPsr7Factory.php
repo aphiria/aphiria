@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\PsrAdapters\Psr7;
 
 use Aphiria\IO\Streams\IStream;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Uri;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -31,17 +31,17 @@ interface IPsr7Factory
      * Creates an Aphiria request from a PSR-7 request
      *
      * @param ServerRequestInterface $psr7Request The PSR-7 request to create an Aphiria request from
-     * @return IHttpRequestMessage The Aphiria request
+     * @return IRequest The Aphiria request
      */
-    public function createAphiriaRequest(ServerRequestInterface $psr7Request): IHttpRequestMessage;
+    public function createAphiriaRequest(ServerRequestInterface $psr7Request): IRequest;
 
     /**
      * Creates an Aphiria response from a PSR-7 response
      *
      * @param ResponseInterface $psr7Response The PSR-7 response to create an Aphiria response from
-     * @return IHttpResponseMessage The Aphiria response
+     * @return IResponse The Aphiria response
      */
-    public function createAphiriaResponse(ResponseInterface $psr7Response): IHttpResponseMessage;
+    public function createAphiriaResponse(ResponseInterface $psr7Response): IResponse;
 
     /**
      * Creates an Aphiria stream from a PSR-7 stream
@@ -62,18 +62,18 @@ interface IPsr7Factory
     /**
      * Creates a PSR-7 request from an Aphiria request
      *
-     * @param IHttpRequestMessage $aphiriaRequest The Aphiria request to create a PSR-7 request from
+     * @param IRequest $aphiriaRequest The Aphiria request to create a PSR-7 request from
      * @return ServerRequestInterface The PSR-7 request
      */
-    public function createPsr7Request(IHttpRequestMessage $aphiriaRequest): ServerRequestInterface;
+    public function createPsr7Request(IRequest $aphiriaRequest): ServerRequestInterface;
 
     /**
      * Creates a PSR-7 request from an Aphiria response
      *
-     * @param IHttpResponseMessage $aphiriaResponse The Aphiria response to create a PSR-7 response from
+     * @param IResponse $aphiriaResponse The Aphiria response to create a PSR-7 response from
      * @return ResponseInterface The PSR-7 response
      */
-    public function createPsr7Response(IHttpResponseMessage $aphiriaResponse): ResponseInterface;
+    public function createPsr7Response(IResponse $aphiriaResponse): ResponseInterface;
 
     /**
      * Creates a PSR-7 stream from an Aphiria stream
@@ -86,10 +86,10 @@ interface IPsr7Factory
     /**
      * Creates a mapping of PSR-7 uploaded files from an Aphiria request
      *
-     * @param IHttpRequestMessage $aphiriaRequest The Aphiria request
+     * @param IRequest $aphiriaRequest The Aphiria request
      * @return UploadedFileInterface[] The mapping of file names to file instances
      */
-    public function createPsr7UploadedFiles(IHttpRequestMessage $aphiriaRequest): array;
+    public function createPsr7UploadedFiles(IRequest $aphiriaRequest): array;
 
     /**
      * Creates a PSR-7 URI from an Aphiria URI

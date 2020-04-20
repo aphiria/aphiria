@@ -15,7 +15,7 @@ namespace Aphiria\Net\Http;
 /**
  * Defines the interface for HTTP response messages to implement
  */
-interface IHttpResponseMessage extends IHttpMessage
+interface IResponse extends IHttpMessage
 {
     /**
      * Gets the reason phrase of the response

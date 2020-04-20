@@ -17,7 +17,7 @@ use Aphiria\IO\Streams\IStream;
 /**
  * Defines the stream HTTP body
  */
-class StreamBody implements IHttpBody
+class StreamBody implements IBody
 {
     /** @var IStream The body content */
     protected IStream $stream;

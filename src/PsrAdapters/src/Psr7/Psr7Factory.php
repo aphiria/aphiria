@@ -16,9 +16,9 @@ use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Formatting\RequestParser;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\Request;
@@ -86,7 +86,7 @@ class Psr7Factory implements IPsr7Factory
     /**
      * @inheritdoc
      */
-    public function createAphiriaRequest(ServerRequestInterface $psr7Request): IHttpRequestMessage
+    public function createAphiriaRequest(ServerRequestInterface $psr7Request): IRequest
     {
         $aphiriaRequest = new Request(
             $psr7Request->getMethod(),
@@ -107,7 +107,7 @@ class Psr7Factory implements IPsr7Factory
             /** @var UploadedFileInterface $uploadedFile */
             foreach ($psr7Request->getUploadedFiles() as $name => $uploadedFile) {
                 $bodyPart = new MultipartBodyPart(
-                    new HttpHeaders(),
+                    new Headers(),
                     new StreamBody($this->createAphiriaStream($uploadedFile->getStream()))
                 );
                 $contentDisposition = "name=$name";
@@ -146,7 +146,7 @@ class Psr7Factory implements IPsr7Factory
     /**
      * @inheritdoc
      */
-    public function createAphiriaResponse(ResponseInterface $psr7Response): IHttpResponseMessage
+    public function createAphiriaResponse(ResponseInterface $psr7Response): IResponse
     {
         $aphiriaResponse = new Response(
             $psr7Response->getStatusCode(),
@@ -188,7 +188,7 @@ class Psr7Factory implements IPsr7Factory
     /**
      * @inheritdoc
      */
-    public function createPsr7Request(IHttpRequestMessage $aphiriaRequest): ServerRequestInterface
+    public function createPsr7Request(IRequest $aphiriaRequest): ServerRequestInterface
     {
         $psr7Request = $this->psr7RequestFactory->createServerRequest(
             $aphiriaRequest->getMethod(),
@@ -233,7 +233,7 @@ class Psr7Factory implements IPsr7Factory
     /**
      * @inheritdoc
      */
-    public function createPsr7Response(IHttpResponseMessage $aphiriaResponse): ResponseInterface
+    public function createPsr7Response(IResponse $aphiriaResponse): ResponseInterface
     {
         $psr7Response = $this->psr7ResponseFactory->createResponse(
             $aphiriaResponse->getStatusCode(),
@@ -270,7 +270,7 @@ class Psr7Factory implements IPsr7Factory
     /**
      * @inheritdoc
      */
-    public function createPsr7UploadedFiles(IHttpRequestMessage $aphiriaRequest): array
+    public function createPsr7UploadedFiles(IRequest $aphiriaRequest): array
     {
         if (
             !$this->aphiriaRequestParser->isMultipart($aphiriaRequest)

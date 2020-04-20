@@ -12,15 +12,15 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
+use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
-use Aphiria\Net\Http\HttpHeaders;
 use DateTime;
 use RuntimeException;
 
 /**
  * Defines the response header formatter
  */
-class ResponseHeaderFormatter extends HttpHeaderParser
+class ResponseHeaderFormatter extends HeaderParser
 {
     /** @const The date format to use for the expiration property of cookies */
     private const EXPIRATION_DATE_FORMAT = 'D, d M Y H:i:s \G\M\T';
@@ -28,7 +28,7 @@ class ResponseHeaderFormatter extends HttpHeaderParser
     /**
      * Deletes a cookie from headers
      *
-     * @param HttpHeaders $headers The headers to format
+     * @param Headers $headers The headers to format
      * @param string $name The name of the cookie to delete
      * @param string|null $path The path to the cookie to delete if set, otherwise null
      * @param string|null $domain The domain of the cookie to delete if set, otherwise null
@@ -38,7 +38,7 @@ class ResponseHeaderFormatter extends HttpHeaderParser
      * @throws RuntimeException Thrown if the set cookie header's hash key could not be calculated
      */
     public function deleteCookie(
-        HttpHeaders $headers,
+        Headers $headers,
         string $name,
         ?string $path = null,
         ?string $domain = null,
@@ -77,11 +77,11 @@ class ResponseHeaderFormatter extends HttpHeaderParser
     /**
      * Sets a cookie in the headers
      *
-     * @param HttpHeaders $headers The headers to set the cookie in
+     * @param Headers $headers The headers to set the cookie in
      * @param Cookie $cookie The cookie to set
      * @throws RuntimeException Thrown if the set cookie header's hash key could not be calculated
      */
-    public function setCookie(HttpHeaders $headers, Cookie $cookie): void
+    public function setCookie(Headers $headers, Cookie $cookie): void
     {
         $headers->add('Set-Cookie', $this->getSetCookieHeaderValue($cookie), true);
     }
@@ -89,11 +89,11 @@ class ResponseHeaderFormatter extends HttpHeaderParser
     /**
      * Sets cookies in the headers
      *
-     * @param HttpHeaders $headers The headers to set the cookies in
+     * @param Headers $headers The headers to set the cookies in
      * @param Cookie[] $cookies The cookies to set
      * @throws RuntimeException Thrown if the set cookie header's hash key could not be calculated
      */
-    public function setCookies(HttpHeaders $headers, array $cookies): void
+    public function setCookies(Headers $headers, array $cookies): void
     {
         foreach ($cookies as $cookie) {
             $this->setCookie($headers, $cookie);

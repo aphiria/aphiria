@@ -17,8 +17,8 @@ use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\Headers\Cookie;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Sessions\ISession;
 use SessionHandlerInterface;
 
@@ -92,7 +92,7 @@ final class Session implements IMiddleware
     /**
      * @inheritdoc
      */
-    public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
+    public function handle(IRequest $request, IRequestHandler $next): IResponse
     {
         if (\random_int(0, 100) / 100 < $this->gcChance) {
             $this->sessionHandler->gc($this->sessionTtl);
@@ -122,9 +122,9 @@ final class Session implements IMiddleware
     /**
      * Writes the current session to the response
      *
-     * @param IHttpResponseMessage $response The response to write to
+     * @param IResponse $response The response to write to
      */
-    protected function writeSessionToResponse(IHttpResponseMessage $response): void
+    protected function writeSessionToResponse(IResponse $response): void
     {
         $this->responseFormatter->setCookie(
             $response,

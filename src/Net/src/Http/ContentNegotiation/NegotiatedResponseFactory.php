@@ -15,12 +15,12 @@ namespace Aphiria\Net\Http\ContentNegotiation;
 use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
+use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\HttpStatusCodes;
-use Aphiria\Net\Http\IHttpBody;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IBody;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StreamBody;
@@ -48,12 +48,12 @@ final class NegotiatedResponseFactory implements IResponseFactory
      * @inheritdoc
      */
     public function createResponse(
-        IHttpRequestMessage $request,
+        IRequest $request,
         int $statusCode,
-        HttpHeaders $headers = null,
+        Headers $headers = null,
         $rawBody = null
-    ): IHttpResponseMessage {
-        $headers = $headers ?? new HttpHeaders();
+    ): IResponse {
+        $headers = $headers ?? new Headers();
 
         try {
             /** @var ContentNegotiationResult|null $contentNegotiationResult */
@@ -92,19 +92,19 @@ final class NegotiatedResponseFactory implements IResponseFactory
     /**
      * Creates a negotiated response body from a request
      *
-     * @param IHttpRequestMessage $request The current request
+     * @param IRequest $request The current request
      * @param object|string|int|float|array|null $rawBody The raw body to use in the response
      * @param ContentNegotiationResult|null $contentNegotiationResult The response content negotiation result
-     * @return IHttpBody|null The body if one was created, otherwise null
+     * @return IBody|null The body if one was created, otherwise null
      * @throws InvalidArgumentException Thrown if the body is not a supported type
      * @throws HttpException Thrown if the response content could not be negotiated
      */
     private function createBody(
-        IHttpRequestMessage $request,
+        IRequest $request,
         $rawBody,
         ContentNegotiationResult &$contentNegotiationResult = null
-    ): ?IHttpBody {
-        if ($rawBody === null || $rawBody instanceof IHttpBody) {
+    ): ?IBody {
+        if ($rawBody === null || $rawBody instanceof IBody) {
             return $rawBody;
         }
 
@@ -156,7 +156,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
      */
     private function createNotAcceptableException(string $type): HttpException
     {
-        $headers = new HttpHeaders();
+        $headers = new Headers();
         $headers->add('Content-Type', 'application/json');
         $body = new StringBody(json_encode($this->contentNegotiator->getAcceptableResponseMediaTypes($type)));
         $response = new Response(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, $headers, $body);

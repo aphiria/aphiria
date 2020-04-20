@@ -15,8 +15,8 @@ namespace Aphiria\Net\Http\Formatting;
 use Aphiria\Collections\HashTable;
 use Aphiria\Collections\IDictionary;
 use Aphiria\Collections\KeyValuePair;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpBody;
+use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
@@ -27,7 +27,7 @@ use RuntimeException;
 /**
  * Defines the HTTP body parser
  */
-class HttpBodyParser
+class BodyParser
 {
     /** @var array The mapping of body hash IDs to their parsed form input */
     private array $parsedFormInputCache = [];
@@ -37,11 +37,11 @@ class HttpBodyParser
     /**
      * Gets the MIME type of the body
      *
-     * @param IHttpBody $body The body whose MIME type we want
+     * @param IBody $body The body whose MIME type we want
      * @return string|null The mime type if one is set, otherwise null
      * @throws RuntimeException Thrown if the MIME type could not be determined
      */
-    public function getMimeType(?IHttpBody $body): ?string
+    public function getMimeType(?IBody $body): ?string
     {
         if ($body === null) {
             return null;
@@ -71,10 +71,10 @@ class HttpBodyParser
     /**
      * Parses a request body as form input
      *
-     * @param IHttpBody|null $body The body to parse
+     * @param IBody|null $body The body to parse
      * @return IDictionary The body form input as a collection
      */
-    public function readAsFormInput(?IHttpBody $body): IDictionary
+    public function readAsFormInput(?IBody $body): IDictionary
     {
         if ($body === null) {
             return new HashTable();
@@ -104,11 +104,11 @@ class HttpBodyParser
     /**
      * Attempts to read the request body as JSON
      *
-     * @param IHttpBody|null $body The body to parse
+     * @param IBody|null $body The body to parse
      * @return array The request body as JSON
      * @throws RuntimeException Thrown if the body could not be read as JSON
      */
-    public function readAsJson(?IHttpBody $body): array
+    public function readAsJson(?IBody $body): array
     {
         if ($body === null) {
             return [];
@@ -126,13 +126,13 @@ class HttpBodyParser
     /**
      * Reads the body as a multipart body
      *
-     * @param IHttpBody|null $body The body to parse
+     * @param IBody|null $body The body to parse
      * @param string $boundary The boundary that separates the multipart body parts
      * @return MultipartBody|null The multipart body if it could be read as a multipart body, otherwise null
      * @throws InvalidArgumentException Thrown if the body parts were invalid
      * @throws RuntimeException Thrown if the headers' hash keys could not be calculated
      */
-    public function readAsMultipart(?IHttpBody $body, string $boundary): ?MultipartBody
+    public function readAsMultipart(?IBody $body, string $boundary): ?MultipartBody
     {
         if ($body === null) {
             return null;
@@ -150,7 +150,7 @@ class HttpBodyParser
             $bodyStartIndex = $headerEndIndex + \strlen("\r\n\r\n");
             $bodyEndIndex = \strlen($rawBodyPart) - \strlen("\r\n");
             $rawHeaders = explode("\r\n", substr($rawBodyPart, $headerStartIndex, $headerEndIndex - $headerStartIndex));
-            $parsedHeaders = new HttpHeaders();
+            $parsedHeaders = new Headers();
 
             foreach ($rawHeaders as $headerLine) {
                 [$headerName, $headerValue] = explode(':', $headerLine, 2);

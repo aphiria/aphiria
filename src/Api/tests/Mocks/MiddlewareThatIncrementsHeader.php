@@ -14,8 +14,8 @@ namespace Aphiria\Api\Tests\Mocks;
 
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 
 /**
  * Mocks middleware that increments a header value for use in tests
@@ -25,9 +25,9 @@ class MiddlewareThatIncrementsHeader implements IMiddleware
     /**
      * @inheritdoc
      */
-    public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
+    public function handle(IRequest $request, IRequestHandler $next): IResponse
     {
-        /** @var IHttpResponseMessage $response */
+        /** @var IResponse $response */
         $response = $next->handle($request);
         $currValues = [];
 

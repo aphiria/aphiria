@@ -15,8 +15,8 @@ namespace Aphiria\Middleware\Tests;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -33,10 +33,10 @@ class MiddlewarePipelineFactoryTest extends TestCase
     {
         // We cannot test this directly because the middleware is internal to the request handler
         // So, we must test it by trying to execute the pipeline
-        /** @var IHttpRequestMessage|MockObject $request */
-        $request = $this->createMock(IHttpRequestMessage::class);
-        /** @var IHttpResponseMessage|MockObject $response */
-        $response = $this->createMock(IHttpResponseMessage::class);
+        /** @var IRequest|MockObject $request */
+        $request = $this->createMock(IRequest::class);
+        /** @var IResponse|MockObject $response */
+        $response = $this->createMock(IResponse::class);
         /** @var IRequestHandler|MockObject $controllerHandler */
         $controllerHandler = $this->createMock(IRequestHandler::class);
         /** @var IMiddleware|MockObject $middleware1 */
@@ -66,10 +66,10 @@ class MiddlewarePipelineFactoryTest extends TestCase
     {
         // We cannot test this directly because the middleware is internal to the request handler
         // So, we must test it by trying to execute the pipeline
-        /** @var IHttpRequestMessage|MockObject $request */
-        $request = $this->createMock(IHttpRequestMessage::class);
-        /** @var IHttpResponseMessage|MockObject $response */
-        $response = $this->createMock(IHttpResponseMessage::class);
+        /** @var IRequest|MockObject $request */
+        $request = $this->createMock(IRequest::class);
+        /** @var IResponse|MockObject $response */
+        $response = $this->createMock(IResponse::class);
         /** @var IRequestHandler|MockObject $controllerHandler */
         $controllerHandler = $this->createMock(IRequestHandler::class);
         /** @var IMiddleware|MockObject $middleware */

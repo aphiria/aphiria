@@ -14,9 +14,9 @@ namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\IO\Streams\Stream;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpBody;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IBody;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\StreamResponseWriter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -25,21 +25,21 @@ class StreamResponseWriterTest extends TestCase
 {
     private StreamResponseWriter $writer;
     private Stream $outputStream;
-    /** @var IHttpResponseMessage|MockObject The response to use in tests */
-    private IHttpResponseMessage $response;
-    private HttpHeaders $headers;
-    /** @var IHttpBody|MockObject the response body to use in tests */
-    private IHttpBody $body;
+    /** @var IResponse|MockObject The response to use in tests */
+    private IResponse $response;
+    private Headers $headers;
+    /** @var IBody|MockObject the response body to use in tests */
+    private IBody $body;
 
     protected function setUp(): void
     {
         $this->outputStream = new Stream(fopen('php://temp', 'r+b'));
         $this->writer = new StreamResponseWriter($this->outputStream);
-        $this->headers = new HttpHeaders([new KeyValuePair('Foo', 'bar')]);
-        $this->body = $this->createMock(IHttpBody::class);
+        $this->headers = new Headers([new KeyValuePair('Foo', 'bar')]);
+        $this->body = $this->createMock(IBody::class);
 
         // Set up the response
-        $this->response = $this->createMock(IHttpResponseMessage::class);
+        $this->response = $this->createMock(IResponse::class);
         $this->response->method('getHeaders')
             ->willReturn($this->headers);
         $this->response->method('getBody')

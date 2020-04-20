@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Tests\Net\Binders;
 
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Net\Binders\RequestBinder;
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IRequest;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -32,7 +32,7 @@ class RequestBinderTest extends TestCase
     {
         $this->container->expects($this->once())
             ->method('bindInstance')
-            ->with(IHttpRequestMessage::class, $this->callback(function (IHttpRequestMessage $request) {
+            ->with(IRequest::class, $this->callback(function (IRequest $request) {
                 return (string)$request->getUri() === 'http://localhost';
             }));
         (new RequestBinder())->bind($this->container);
@@ -42,7 +42,7 @@ class RequestBinderTest extends TestCase
     {
         $this->container->expects($this->once())
             ->method('bindInstance')
-            ->with(IHttpRequestMessage::class, $this->callback(function (IHttpRequestMessage $request) {
+            ->with(IRequest::class, $this->callback(function (IRequest $request) {
                 return (string)$request->getUri() === 'http://localhost';
             }));
         $binder = new class() extends RequestBinder {
@@ -61,7 +61,7 @@ class RequestBinderTest extends TestCase
         unset($_SERVER['argv']);
         $this->container->expects($this->once())
             ->method('bindInstance')
-            ->with(IHttpRequestMessage::class, $this->callback(function (IHttpRequestMessage $request) {
+            ->with(IRequest::class, $this->callback(function (IRequest $request) {
                 return (string)$request->getUri() === 'http://example.com';
             }));
         $binder = new class() extends RequestBinder {

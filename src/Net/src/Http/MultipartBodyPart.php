@@ -17,16 +17,16 @@ namespace Aphiria\Net\Http;
  */
 class MultipartBodyPart
 {
-    /** @var HttpHeaders The headers of this body part */
-    private HttpHeaders $headers;
-    /** @var IHttpBody|null The body of this body part if one is set, otherwise null */
-    private ?IHttpBody $body;
+    /** @var Headers The headers of this body part */
+    private Headers $headers;
+    /** @var IBody|null The body of this body part if one is set, otherwise null */
+    private ?IBody $body;
 
     /**
-     * @param HttpHeaders $headers The headers of this body part
-     * @param IHttpBody|null $body The body of this body part if one is set, otherwise null
+     * @param Headers $headers The headers of this body part
+     * @param IBody|null $body The body of this body part if one is set, otherwise null
      */
-    public function __construct(HttpHeaders $headers, ?IHttpBody $body)
+    public function __construct(Headers $headers, ?IBody $body)
     {
         $this->headers = $headers;
         $this->body = $body;
@@ -46,9 +46,9 @@ class MultipartBodyPart
     /**
      * Gets the body of this body part
      *
-     * @return IHttpBody|null The body of this body part if one is set, otherwise null
+     * @return IBody|null The body of this body part if one is set, otherwise null
      */
-    public function getBody(): ?IHttpBody
+    public function getBody(): ?IBody
     {
         return $this->body;
     }
@@ -56,9 +56,9 @@ class MultipartBodyPart
     /**
      * Gets the headers of this body part
      *
-     * @return HttpHeaders The headers of this body part
+     * @return Headers The headers of this body part
      */
-    public function getHeaders(): HttpHeaders
+    public function getHeaders(): Headers
     {
         return $this->headers;
     }

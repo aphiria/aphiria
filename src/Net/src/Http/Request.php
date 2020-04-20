@@ -21,14 +21,14 @@ use RuntimeException;
 /**
  * Defines an HTTP request message
  */
-class Request implements IHttpRequestMessage
+class Request implements IRequest
 {
     /** @var string The request method */
     protected string $method = '';
-    /** @var HttpHeaders The request headers */
-    protected ?HttpHeaders $headers;
-    /** @var IHttpBody|null The request body if there is one, otherwise null */
-    protected ?IHttpBody $body;
+    /** @var Headers The request headers */
+    protected ?Headers $headers;
+    /** @var IBody|null The request body if there is one, otherwise null */
+    protected ?IBody $body;
     /** @var Uri The request URI */
     protected Uri $uri;
     /** @var IDictionary The request properties */
@@ -68,8 +68,8 @@ class Request implements IHttpRequestMessage
     /**
      * @param string $method The request method
      * @param Uri $uri The request URI
-     * @param HttpHeaders|null $headers The request headers if any are set, otherwise null
-     * @param IHttpBody $body The request body
+     * @param Headers|null $headers The request headers if any are set, otherwise null
+     * @param IBody $body The request body
      * @param IDictionary|null $properties The request properties
      * @param string $protocolVersion The HTTP protocol version
      * @param string $requestTargetType The type of request target URI this request uses
@@ -79,15 +79,15 @@ class Request implements IHttpRequestMessage
     public function __construct(
         string $method,
         Uri $uri,
-        HttpHeaders $headers = null,
-        ?IHttpBody $body = null,
+        Headers $headers = null,
+        ?IBody $body = null,
         IDictionary $properties = null,
         string $protocolVersion = '1.1',
         string $requestTargetType = RequestTargetTypes::ORIGIN_FORM
     ) {
         $this->method = strtoupper($method);
         $this->uri = $uri;
-        $this->headers = $headers ?? new HttpHeaders();
+        $this->headers = $headers ?? new Headers();
         $this->body = $body;
         $this->properties = $properties ?? new HashTable();
         $this->protocolVersion = $protocolVersion;
@@ -127,7 +127,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getBody(): ?IHttpBody
+    public function getBody(): ?IBody
     {
         return $this->body;
     }
@@ -135,7 +135,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function getHeaders(): HttpHeaders
+    public function getHeaders(): Headers
     {
         return $this->headers;
     }
@@ -175,7 +175,7 @@ class Request implements IHttpRequestMessage
     /**
      * @inheritdoc
      */
-    public function setBody(IHttpBody $body): void
+    public function setBody(IBody $body): void
     {
         $this->body = $body;
     }

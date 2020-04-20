@@ -18,7 +18,7 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IRequest;
 use InvalidArgumentException;
 
 /**
@@ -96,7 +96,7 @@ final class ContentNegotiator implements IContentNegotiator
     /**
      * @inheritdoc
      */
-    public function negotiateRequestContent(string $type, IHttpRequestMessage $request): ContentNegotiationResult
+    public function negotiateRequestContent(string $type, IRequest $request): ContentNegotiationResult
     {
         $requestHeaders = $request->getHeaders();
         $contentTypeHeader = $this->headerParser->parseContentTypeHeader($requestHeaders);
@@ -134,7 +134,7 @@ final class ContentNegotiator implements IContentNegotiator
     /**
      * @inheritdoc
      */
-    public function negotiateResponseContent(string $type, IHttpRequestMessage $request): ContentNegotiationResult
+    public function negotiateResponseContent(string $type, IRequest $request): ContentNegotiationResult
     {
         $language = $this->languageMatcher->getBestLanguageMatch($request);
 
@@ -170,13 +170,13 @@ final class ContentNegotiator implements IContentNegotiator
      *
      * @param string $type The type to negotiate
      * @param string|null $language The selected language
-     * @param IHttpRequestMessage $request The current request
+     * @param IRequest $request The current request
      * @return ContentNegotiationResult The content negotiation result
      */
     private function createDefaultResponseContentNegotiationResult(
         string $type,
         ?string $language,
-        IHttpRequestMessage $request
+        IRequest $request
     ): ContentNegotiationResult {
         // Default to the first registered media type formatter that can write the input type
         $selectedMediaTypeFormatter = null;

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Api\Validation;
 
 use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\ValidationException;
@@ -50,7 +50,7 @@ final class RequestBodyValidator implements IRequestBodyValidator
     /**
      * @inheritdoc
      */
-    public function validate(IHttpRequestMessage $request, $body): void
+    public function validate(IRequest $request, $body): void
     {
         // Set up the locale for the error messages, if possible
         if ($this->languageMatcher !== null) {

@@ -16,9 +16,9 @@ use Aphiria\Collections\HashTable;
 use Aphiria\Collections\IDictionary;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Formatting\RequestParser;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpBody;
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IBody;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
 use InvalidArgumentException;
@@ -28,20 +28,20 @@ use PHPUnit\Framework\TestCase;
 class RequestParserTest extends TestCase
 {
     private RequestParser $parser;
-    /** @var IHttpRequestMessage|MockObject The request message to use in tests */
-    private IHttpRequestMessage $request;
-    private HttpHeaders $headers;
-    /** @var IHttpBody|MockObject The body to use in tests */
-    private IHttpBody $body;
+    /** @var IRequest|MockObject The request message to use in tests */
+    private IRequest $request;
+    private Headers $headers;
+    /** @var IBody|MockObject The body to use in tests */
+    private IBody $body;
     private IDictionary $properties;
 
     protected function setUp(): void
     {
         $this->parser = new RequestParser();
-        $this->headers = new HttpHeaders();
-        $this->body = $this->createMock(IHttpBody::class);
+        $this->headers = new Headers();
+        $this->body = $this->createMock(IBody::class);
         $this->properties = new HashTable();
-        $this->request = $this->createMock(IHttpRequestMessage::class);
+        $this->request = $this->createMock(IRequest::class);
         $this->request->method('getHeaders')
             ->willReturn($this->headers);
         $this->request->method('getBody')
@@ -53,7 +53,7 @@ class RequestParserTest extends TestCase
     public function testGettingActualMimeTypeOfNonRequestNorMultipartBodyPartThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Request must be of type %s or %s', IHttpRequestMessage::class, MultipartBodyPart::class));
+        $this->expectExceptionMessage(sprintf('Request must be of type %s or %s', IRequest::class, MultipartBodyPart::class));
         $this->parser->getActualMimeType([]);
     }
 
@@ -79,7 +79,7 @@ class RequestParserTest extends TestCase
     public function testGettingClientMimeTypeForMultipartWithContentTypeReturnsCorrectMimeType(): void
     {
         $bodyPart = new MultipartBodyPart(
-            new HttpHeaders([new KeyValuePair('Content-Type', 'image/png')]),
+            new Headers([new KeyValuePair('Content-Type', 'image/png')]),
             new StringBody('')
         );
         $this->assertEquals('image/png', $this->parser->getClientMimeType($bodyPart));
@@ -87,14 +87,14 @@ class RequestParserTest extends TestCase
 
     public function testGettingClientMimeTypeForMultipartWithoutContentTypeHeaderReturnsNull(): void
     {
-        $bodyPart = new MultipartBodyPart(new HttpHeaders(), new StringBody(''));
+        $bodyPart = new MultipartBodyPart(new Headers(), new StringBody(''));
         $this->assertNull($this->parser->getClientMimeType($bodyPart));
     }
 
     public function testGettingClientMimeTypeForMultipartWithUncommonFilenameExtensionReturnsNull(): void
     {
         $bodyPart = new MultipartBodyPart(
-            new HttpHeaders([new KeyValuePair('Content-Disposition', 'filename=foo.dave')]),
+            new Headers([new KeyValuePair('Content-Disposition', 'filename=foo.dave')]),
             new StringBody('')
         );
         $this->assertNull($this->parser->getClientMimeType($bodyPart));
@@ -150,7 +150,7 @@ class RequestParserTest extends TestCase
     public function testParsingNonRequestNorMultipartBodyPartThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Request must be of type %s or %s', IHttpRequestMessage::class, MultipartBodyPart::class));
+        $this->expectExceptionMessage(sprintf('Request must be of type %s or %s', IRequest::class, MultipartBodyPart::class));
         $this->parser->readAsMultipart([]);
     }
 

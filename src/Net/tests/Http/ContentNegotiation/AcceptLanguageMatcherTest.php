@@ -13,20 +13,20 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http\ContentNegotiation;
 
 use Aphiria\Net\Http\ContentNegotiation\AcceptLanguageMatcher;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Uri;
 use PHPUnit\Framework\TestCase;
 
 class AcceptLanguageMatcherTest extends TestCase
 {
-    private HttpHeaders $headers;
-    private IHttpRequestMessage $request;
+    private Headers $headers;
+    private IRequest $request;
 
     protected function setUp(): void
     {
-        $this->headers = new HttpHeaders();
+        $this->headers = new Headers();
         $this->request = new Request('GET', new Uri('http://example.com'), $this->headers);
     }
 

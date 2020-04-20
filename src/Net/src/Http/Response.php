@@ -15,12 +15,12 @@ namespace Aphiria\Net\Http;
 /**
  * Defines an HTTP response message
  */
-class Response implements IHttpResponseMessage
+class Response implements IResponse
 {
-    /** @var IHttpBody|null The body of the response if there is one, otherwise null */
-    protected ?IHttpBody $body;
-    /** @var HttpHeaders The list of response headers */
-    protected ?HttpHeaders $headers;
+    /** @var IBody|null The body of the response if there is one, otherwise null */
+    protected ?IBody $body;
+    /** @var Headers The list of response headers */
+    protected ?Headers $headers;
     /** @var string|null The response reason phrase if there is one, otherwise null */
     protected ?string $reasonPhrase;
     /** @var int The response status code */
@@ -30,19 +30,19 @@ class Response implements IHttpResponseMessage
 
     /**
      * @param int $statusCode The response status code
-     * @param HttpHeaders|null $headers The list of response headers
-     * @param IHttpBody|null $body The response body
+     * @param Headers|null $headers The list of response headers
+     * @param IBody|null $body The response body
      * @param string $protocolVersion The HTTP protocol version
      */
     public function __construct(
         int $statusCode = HttpStatusCodes::HTTP_OK,
-        HttpHeaders $headers = null,
-        ?IHttpBody $body = null,
+        Headers $headers = null,
+        ?IBody $body = null,
         string $protocolVersion = '1.1'
     ) {
         $this->statusCode = $statusCode;
         $this->reasonPhrase = HttpStatusCodes::getDefaultReasonPhrase($this->statusCode);
-        $this->headers = $headers ?? new HttpHeaders();
+        $this->headers = $headers ?? new Headers();
         $this->body = $body;
         $this->protocolVersion = $protocolVersion;
     }
@@ -76,7 +76,7 @@ class Response implements IHttpResponseMessage
     /**
      * @inheritdoc
      */
-    public function getBody(): ?IHttpBody
+    public function getBody(): ?IBody
     {
         return $this->body;
     }
@@ -84,7 +84,7 @@ class Response implements IHttpResponseMessage
     /**
      * @inheritdoc
      */
-    public function getHeaders(): HttpHeaders
+    public function getHeaders(): Headers
     {
         return $this->headers;
     }
@@ -116,7 +116,7 @@ class Response implements IHttpResponseMessage
     /**
      * @inheritdoc
      */
-    public function setBody(IHttpBody $body): void
+    public function setBody(IBody $body): void
     {
         $this->body = $body;
     }

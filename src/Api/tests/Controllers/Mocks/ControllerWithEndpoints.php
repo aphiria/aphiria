@@ -14,8 +14,8 @@ namespace Aphiria\Api\Tests\Controllers\Mocks;
 
 use Aphiria\Api\Controllers\Controller as BaseController;
 use Aphiria\Net\Http\HttpStatusCodes;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
 use RuntimeException;
@@ -29,9 +29,9 @@ class ControllerWithEndpoints extends BaseController
      * Mocks a method with an array parameter
      *
      * @param array $foo The array
-     * @return IHttpResponseMessage The response
+     * @return IResponse The response
      */
-    public function arrayParameter(array $foo): IHttpResponseMessage
+    public function arrayParameter(array $foo): IResponse
     {
         return $this->createResponseWithBody(\json_encode($foo));
     }
@@ -40,9 +40,9 @@ class ControllerWithEndpoints extends BaseController
      * Mocks a method with a bool parameter
      *
      * @param bool $foo The bool
-     * @return IHttpResponseMessage The response
+     * @return IResponse The response
      */
-    public function boolParameter(bool $foo): IHttpResponseMessage
+    public function boolParameter(bool $foo): IResponse
     {
         return $this->createResponseWithBody((string)$foo);
     }
@@ -51,9 +51,9 @@ class ControllerWithEndpoints extends BaseController
      * Mocks a method with a callable parameter
      *
      * @param callable $foo The float
-     * @return IHttpResponseMessage The response
+     * @return IResponse The response
      */
-    public function callableParameter(callable $foo): IHttpResponseMessage
+    public function callableParameter(callable $foo): IResponse
     {
         return $this->createResponseWithBody((string)$foo);
     }
@@ -62,9 +62,9 @@ class ControllerWithEndpoints extends BaseController
      * Mocks a method with a parameter with a default value
      *
      * @param string $foo The string
-     * @return IHttpResponseMessage The response
+     * @return IResponse The response
      */
-    public function defaultValueParameter(string $foo = 'bar'): IHttpResponseMessage
+    public function defaultValueParameter(string $foo = 'bar'): IResponse
     {
         return $this->createResponseWithBody($foo);
     }
@@ -73,9 +73,9 @@ class ControllerWithEndpoints extends BaseController
      * Mocks a method with a float parameter
      *
      * @param float $foo The float
-     * @return IHttpResponseMessage The response
+     * @return IResponse The response
      */
-    public function floatParameter(float $foo): IHttpResponseMessage
+    public function floatParameter(float $foo): IResponse
     {
         return $this->createResponseWithBody((string)$foo);
     }
@@ -83,9 +83,9 @@ class ControllerWithEndpoints extends BaseController
     /**
      * Gets the current request (for use in tests)
      *
-     * @return IHttpRequestMessage The current request
+     * @return IRequest The current request
      */
-    public function getRequest(): IHttpRequestMessage
+    public function getRequest(): IRequest
     {
         return $this->request;
     }
@@ -94,9 +94,9 @@ class ControllerWithEndpoints extends BaseController
      * Mocks a method with an int parameter
      *
      * @param int $foo The int
-     * @return IHttpResponseMessage The response
+     * @return IResponse The response
      */
-    public function intParameter(int $foo): IHttpResponseMessage
+    public function intParameter(int $foo): IResponse
     {
         return $this->createResponseWithBody((string)$foo);
     }
@@ -106,7 +106,7 @@ class ControllerWithEndpoints extends BaseController
      *
      * @return Response The method name
      */
-    public function noParameters(): IHttpResponseMessage
+    public function noParameters(): IResponse
     {
         return $this->createResponseWithBody('noParameters');
     }
@@ -117,7 +117,7 @@ class ControllerWithEndpoints extends BaseController
      * @param mixed $foo The parameter to use in the response
      * @return Response The response
      */
-    public function noTypeHintParameter($foo): IHttpResponseMessage
+    public function noTypeHintParameter($foo): IResponse
     {
         return $this->createResponseWithBody((string)$foo);
     }
@@ -128,7 +128,7 @@ class ControllerWithEndpoints extends BaseController
      * @param User|null $user The user
      * @return Response The response
      */
-    public function nullableObjectParameter(?User $user): IHttpResponseMessage
+    public function nullableObjectParameter(?User $user): IResponse
     {
         return $this->createResponseWithBody($user === null ? 'null' : 'notnull');
     }
@@ -139,7 +139,7 @@ class ControllerWithEndpoints extends BaseController
      * @param int|null $foo The nullable parameter
      * @return Response The response
      */
-    public function nullableScalarParameter(?int $foo): IHttpResponseMessage
+    public function nullableScalarParameter(?int $foo): IResponse
     {
         return $this->createResponseWithBody($foo === null ? 'null' : 'notnull');
     }
@@ -148,9 +148,9 @@ class ControllerWithEndpoints extends BaseController
      * Mocks a method with an object parameter
      *
      * @param User $user The user
-     * @return IHttpResponseMessage The response
+     * @return IResponse The response
      */
-    public function objectParameter(User $user): IHttpResponseMessage
+    public function objectParameter(User $user): IResponse
     {
         return $this->createResponseWithBody("id:{$user->getId()}, email:{$user->getEmail()}");
     }
@@ -177,9 +177,9 @@ class ControllerWithEndpoints extends BaseController
      * Mocks a method with a string parameter
      *
      * @param string $foo The string
-     * @return IHttpResponseMessage The response
+     * @return IResponse The response
      */
-    public function stringParameter(string $foo): IHttpResponseMessage
+    public function stringParameter(string $foo): IResponse
     {
         return $this->createResponseWithBody($foo);
     }
@@ -207,7 +207,7 @@ class ControllerWithEndpoints extends BaseController
      *
      * @return Response The name of the method
      */
-    protected function protectedMethod(): IHttpResponseMessage
+    protected function protectedMethod(): IResponse
     {
         return $this->createResponseWithBody('protectedMethod');
     }
@@ -228,7 +228,7 @@ class ControllerWithEndpoints extends BaseController
      *
      * @return Response The name of the method
      */
-    private function privateMethod(): IHttpResponseMessage
+    private function privateMethod(): IResponse
     {
         return $this->createResponseWithBody('privateMethod');
     }

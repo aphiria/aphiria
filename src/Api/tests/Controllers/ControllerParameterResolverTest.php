@@ -23,7 +23,7 @@ use Aphiria\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
@@ -210,7 +210,7 @@ class ControllerParameterResolverTest extends TestCase
     {
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([ControllerWithEndpoints::class, 'noTypeHintParameter'], 'foo'),
-            $this->createMock(IHttpRequestMessage::class),
+            $this->createMock(IRequest::class),
             ['foo' => 'bar']
         );
         $this->assertEquals('bar', $resolvedParameter);

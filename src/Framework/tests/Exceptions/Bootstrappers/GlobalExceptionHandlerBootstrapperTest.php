@@ -21,8 +21,8 @@ use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Framework\Exceptions\Bootstrappers\GlobalExceptionHandlerBootstrapper;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use InvalidArgumentException;
 use Monolog\Handler\StreamHandler;
@@ -91,9 +91,9 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->bootstrapper->setIsRunningInConsole(false);
         $this->bootstrapper->bootstrap();
-        $this->apiExceptionRenderer->setRequest($this->createMock(IHttpRequestMessage::class));
+        $this->apiExceptionRenderer->setRequest($this->createMock(IRequest::class));
         $this->apiExceptionRenderer->setResponseFactory($this->createMock(IResponseFactory::class));
-        $exception = new HttpException($this->createMock(IHttpResponseMessage::class));
+        $exception = new HttpException($this->createMock(IResponse::class));
         $this->apiExceptionRenderer->render($exception);
     }
 
@@ -106,7 +106,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->bootstrapper->setIsRunningInConsole(false);
         $this->bootstrapper->bootstrap();
-        $this->apiExceptionRenderer->setRequest($this->createMock(IHttpRequestMessage::class));
+        $this->apiExceptionRenderer->setRequest($this->createMock(IRequest::class));
         $this->apiExceptionRenderer->setResponseFactory($this->createMock(IResponseFactory::class));
         $exception = new InvalidRequestBodyException(['foo']);
         $this->apiExceptionRenderer->render($exception);
@@ -121,7 +121,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->bootstrapper->setIsRunningInConsole(false);
         $this->bootstrapper->bootstrap();
-        $this->apiExceptionRenderer->setRequest($this->createMock(IHttpRequestMessage::class));
+        $this->apiExceptionRenderer->setRequest($this->createMock(IRequest::class));
         $this->apiExceptionRenderer->setResponseFactory($this->createMock(IResponseFactory::class));
         $exception = new InvalidRequestBodyException(['foo']);
         $this->apiExceptionRenderer->render($exception);

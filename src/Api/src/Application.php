@@ -15,8 +15,8 @@ namespace Aphiria\Api;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 
 /**
  * Defines the top-level request handler that makes up an application
@@ -41,7 +41,7 @@ class Application implements IRequestHandler
     /**
      * @inheritdoc
      */
-    public function handle(IHttpRequestMessage $request): IHttpResponseMessage
+    public function handle(IRequest $request): IResponse
     {
         $middlewarePipeline = (new MiddlewarePipelineFactory())->createPipeline($this->middleware->getAll(), $this->router);
 

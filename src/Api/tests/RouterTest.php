@@ -21,11 +21,11 @@ use Aphiria\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
+use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\HttpStatusCodes;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Uri;
 use Aphiria\Routing\Matchers\IRouteMatcher;
 use Aphiria\Routing\Matchers\RouteMatchingResult;
@@ -151,8 +151,8 @@ class RouterTest extends TestCase
     public function testMiddlewareIsResolvedAndIsInvokedInCorrectOrder(): void
     {
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
-        $expectedHeaders = new HttpHeaders();
-        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
+        $expectedHeaders = new Headers();
+        $expectedResponse = $this->createMock(IResponse::class);
         $expectedResponse->method('getHeaders')
             ->willReturn($expectedHeaders);
         $middleware1 = new MiddlewareThatIncrementsHeader();
@@ -241,7 +241,7 @@ class RouterTest extends TestCase
     public function testRouteActionWithControllerClassNameResolvesItAndInvokesIt(): void
     {
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
-        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
+        $expectedResponse = $this->createMock(IResponse::class);
         $controller = new ControllerMock();
         $this->serviceResolver->expects($this->once())
             ->method('resolve')
@@ -302,11 +302,11 @@ class RouterTest extends TestCase
      *
      * @param string $method The HTTP method to use
      * @param string $uri The URI to use
-     * @return IHttpRequestMessage|MockObject The mocked request
+     * @return IRequest|MockObject The mocked request
      */
-    private function createRequestMock(string $method, string $uri): IHttpRequestMessage
+    private function createRequestMock(string $method, string $uri): IRequest
     {
-        $request = $this->createMock(IHttpRequestMessage::class);
+        $request = $this->createMock(IRequest::class);
         $request->method('getMethod')
             ->willReturn($method);
         $request->method('getUri')

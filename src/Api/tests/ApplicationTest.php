@@ -16,8 +16,8 @@ use Aphiria\Api\Application;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -37,7 +37,7 @@ class ApplicationTest extends TestCase
 
     public function testHandleWillSendRequestThroughMiddlewarePipeline(): void
     {
-        $request = $this->createMock(IHttpRequestMessage::class);
+        $request = $this->createMock(IRequest::class);
         $middleware = $this->createMock(IMiddleware::class);
         $middleware->expects($this->once())
             ->method('handle')
@@ -48,8 +48,8 @@ class ApplicationTest extends TestCase
 
     public function testHandleWithNoMiddlewareStillSendsRequestToRouter(): void
     {
-        $request = $this->createMock(IHttpRequestMessage::class);
-        $response = $this->createMock(IHttpResponseMessage::class);
+        $request = $this->createMock(IRequest::class);
+        $response = $this->createMock(IResponse::class);
         $this->router->expects($this->once())
             ->method('handle')
             ->with($request)

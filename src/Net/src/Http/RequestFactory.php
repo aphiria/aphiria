@@ -93,11 +93,11 @@ class RequestFactory
      * Creates a request message from PHP superglobals
      *
      * @param array $server The server superglobal
-     * @return IHttpRequestMessage The created request message
+     * @return IRequest The created request message
      * @throws InvalidArgumentException Thrown if any of the headers were in an invalid format
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
-    public function createRequestFromSuperglobals(array $server): IHttpRequestMessage
+    public function createRequestFromSuperglobals(array $server): IRequest
     {
         $method = $server['REQUEST_METHOD'] ?? 'GET';
 
@@ -118,13 +118,13 @@ class RequestFactory
      * Creates headers from PHP globals
      *
      * @param array $server The global server array
-     * @return HttpHeaders The request headers
+     * @return Headers The request headers
      * @throws InvalidArgumentException Thrown if any of the headers were in an invalid format
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
-    protected function createHeadersFromSuperglobals(array $server): HttpHeaders
+    protected function createHeadersFromSuperglobals(array $server): Headers
     {
-        $headers = new HttpHeaders();
+        $headers = new Headers();
 
         foreach ($server as $name => $values) {
             // If this header supports multiple values and has unquoted string delimiters...
@@ -301,12 +301,12 @@ class RequestFactory
     /**
      * Adds a header value
      *
-     * @param HttpHeaders $headers The headers to add to
+     * @param Headers $headers The headers to add to
      * @param string $name The name of the header
      * @param mixed $value The header value to add
      * @param bool $append Whether or not to append the value
      */
-    private function addHeaderValue(HttpHeaders $headers, string $name, $value, bool $append): void
+    private function addHeaderValue(Headers $headers, string $name, $value, bool $append): void
     {
         $decodedValue = trim((string)(isset(self::$headersToUrlDecode[$name]) ? urldecode($value) : $value));
 

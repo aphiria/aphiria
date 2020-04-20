@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http;
 
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpBody;
+use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -21,14 +21,14 @@ use PHPUnit\Framework\TestCase;
 class MultipartBodyPartTest extends TestCase
 {
     private MultipartBodyPart $bodyPart;
-    private HttpHeaders $headers;
-    /** @var IHttpBody|MockObject The body to use in tests */
-    private IHttpBody $body;
+    private Headers $headers;
+    /** @var IBody|MockObject The body to use in tests */
+    private IBody $body;
 
     protected function setUp(): void
     {
-        $this->headers = new HttpHeaders();
-        $this->body = $this->createMock(IHttpBody::class);
+        $this->headers = new Headers();
+        $this->body = $this->createMock(IBody::class);
         $this->bodyPart = new MultipartBodyPart($this->headers, $this->body);
     }
 

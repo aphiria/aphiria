@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http\Formatting;
 
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
+use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
@@ -25,15 +25,15 @@ use PHPUnit\Framework\TestCase;
 class ResponseFormatterTest extends TestCase
 {
     private ResponseFormatter $formatter;
-    /** @var IHttpResponseMessage|MockObject The message to use in tests */
-    private IHttpResponseMessage $response;
-    private HttpHeaders $headers;
+    /** @var IResponse|MockObject The message to use in tests */
+    private IResponse $response;
+    private Headers $headers;
 
     protected function setUp(): void
     {
         $this->formatter = new ResponseFormatter();
-        $this->headers = new HttpHeaders();
-        $this->response = $this->createMock(IHttpResponseMessage::class);
+        $this->headers = new Headers();
+        $this->response = $this->createMock(IResponse::class);
         $this->response->method('getHeaders')
             ->willReturn($this->headers);
     }

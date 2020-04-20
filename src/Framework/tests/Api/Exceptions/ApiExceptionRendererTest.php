@@ -15,8 +15,8 @@ namespace Aphiria\Framework\Tests\Api\Exceptions;
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
 use Aphiria\Net\Http\HttpStatusCodes;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\IResponseWriter;
 use Aphiria\Net\Http\Response;
@@ -28,14 +28,14 @@ class ApiExceptionRendererTest extends TestCase
 {
     /** @var IResponseWriter|MockObject */
     private IResponseWriter $responseWriter;
-    /** @var IHttpRequestMessage|MockObject */
-    private IHttpRequestMessage $request;
+    /** @var IRequest|MockObject */
+    private IRequest $request;
     /** @var IResponseFactory|MockObject */
     private IResponseFactory $responseFactory;
 
     protected function setUp(): void
     {
-        $this->request = $this->createMock(IHttpRequestMessage::class);
+        $this->request = $this->createMock(IRequest::class);
         $this->responseFactory = $this->createMock(IResponseFactory::class);
         $this->responseWriter = $this->createMock(IResponseWriter::class);
     }
@@ -45,13 +45,13 @@ class ApiExceptionRendererTest extends TestCase
         $exceptionRenderer = $this->createExceptionRenderer(true, true, true);
         $exceptionRenderer->registerResponseFactory(
             Exception::class,
-            function (Exception $ex, IHttpRequestMessage $request, IResponseFactory $responseFactory) {
+            function (Exception $ex, IRequest $request, IResponseFactory $responseFactory) {
                 throw new Exception();
             }
         );
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
-            ->with($this->callback(function (IHttpResponseMessage $response) {
+            ->with($this->callback(function (IResponse $response) {
                 return $response->getStatusCode() === HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR
                     && $response->getBody() === null
                     && $response->getHeaders()->count() === 0;
@@ -64,7 +64,7 @@ class ApiExceptionRendererTest extends TestCase
         $exceptionRenderer = $this->createExceptionRenderer(false, true, true);
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
-            ->with($this->callback(function (IHttpResponseMessage $response) {
+            ->with($this->callback(function (IResponse $response) {
                 return $response->getStatusCode() === HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR
                     && $response->getBody() === null
                     && $response->getHeaders()->count() === 0;
@@ -92,7 +92,7 @@ class ApiExceptionRendererTest extends TestCase
         $expectedResponse = new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
         $exceptionRenderer->registerResponseFactory(
             Exception::class,
-            fn (Exception $ex, IHttpRequestMessage $request, IResponseFactory $responseFactory) => $expectedResponse
+            fn (Exception $ex, IRequest $request, IResponseFactory $responseFactory) => $expectedResponse
         );
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
@@ -105,7 +105,7 @@ class ApiExceptionRendererTest extends TestCase
         $exceptionRenderer = $this->createExceptionRenderer(true, true, true);
         $expectedResponse = new Response(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR);
         $exceptionRenderer->registerManyResponseFactories([
-            Exception::class => fn (Exception $ex, IHttpRequestMessage $request, IResponseFactory $responseFactory) => $expectedResponse
+            Exception::class => fn (Exception $ex, IRequest $request, IResponseFactory $responseFactory) => $expectedResponse
         ]);
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
@@ -118,7 +118,7 @@ class ApiExceptionRendererTest extends TestCase
         $exceptionRenderer = $this->createExceptionRenderer(false, false, false);
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
-            ->with($this->callback(function (IHttpResponseMessage $response) {
+            ->with($this->callback(function (IResponse $response) {
                 return $response->getStatusCode() === HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR
                     && $response->getBody() === null
                     && $response->getHeaders()->count() === 0;
@@ -131,7 +131,7 @@ class ApiExceptionRendererTest extends TestCase
         $exceptionRenderer = $this->createExceptionRenderer(true, false, false);
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
-            ->with($this->callback(function (IHttpResponseMessage $response) {
+            ->with($this->callback(function (IResponse $response) {
                 return $response->getStatusCode() === HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR
                     && $response->getBody() !== null
                     && $response->getBody()->readAsString() === '{"type":"https:\/\/tools.ietf.org\/html\/rfc7231#section-6.6.1","title":"An error occurred","detail":null,"status":500,"instance":null}'

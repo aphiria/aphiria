@@ -13,26 +13,26 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http\Formatting;
 
 use Aphiria\Collections\IImmutableDictionary;
+use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
-use Aphiria\Net\Http\HttpHeaders;
 use InvalidArgumentException;
 
 /**
  * Defines the request header parser
  */
-class RequestHeaderParser extends HttpHeaderParser
+class RequestHeaderParser extends HeaderParser
 {
     /**
      * Parses the Accept-Charset header
      *
-     * @param HttpHeaders $headers The request headers to parse
+     * @param Headers $headers The request headers to parse
      * @return AcceptCharsetHeaderValue[] The list of charset header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
-    public function parseAcceptCharsetHeader(HttpHeaders $headers): array
+    public function parseAcceptCharsetHeader(Headers $headers): array
     {
         $headerValues = [];
 
@@ -56,11 +56,11 @@ class RequestHeaderParser extends HttpHeaderParser
     /**
      * Parses the Accept header
      *
-     * @param HttpHeaders $headers The request headers to parse
+     * @param Headers $headers The request headers to parse
      * @return AcceptMediaTypeHeaderValue[] The list of media type header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
-    public function parseAcceptHeader(HttpHeaders $headers): array
+    public function parseAcceptHeader(Headers $headers): array
     {
         $headerValues = [];
 
@@ -84,11 +84,11 @@ class RequestHeaderParser extends HttpHeaderParser
     /**
      * Parses the Accept-Language header
      *
-     * @param HttpHeaders $headers The request headers to parse
+     * @param Headers $headers The request headers to parse
      * @return AcceptLanguageHeaderValue[] The list of language header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
-    public function parseAcceptLanguageHeader(HttpHeaders $headers): array
+    public function parseAcceptLanguageHeader(Headers $headers): array
     {
         $headerValues = [];
 
@@ -112,11 +112,11 @@ class RequestHeaderParser extends HttpHeaderParser
     /**
      * Parses the Content-Type header
      *
-     * @param HttpHeaders $headers The request headers to parse
+     * @param Headers $headers The request headers to parse
      * @return ContentTypeHeaderValue|null The parsed header if one exists, otherwise null
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
-    public function parseContentTypeHeader(HttpHeaders $headers): ?ContentTypeHeaderValue
+    public function parseContentTypeHeader(Headers $headers): ?ContentTypeHeaderValue
     {
         if (!$headers->containsKey('Content-Type')) {
             return null;
@@ -131,10 +131,10 @@ class RequestHeaderParser extends HttpHeaderParser
     /**
      * Parses the request headers for all cookie values
      *
-     * @param HttpHeaders $headers The headers to parse
+     * @param Headers $headers The headers to parse
      * @return IImmutableDictionary The mapping of cookie names to values
      */
-    public function parseCookies(HttpHeaders $headers): IImmutableDictionary
+    public function parseCookies(Headers $headers): IImmutableDictionary
     {
         return $this->parseParameters($headers, 'Cookie');
     }

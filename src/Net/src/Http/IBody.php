@@ -18,7 +18,7 @@ use RuntimeException;
 /**
  * Defines the interface for all HTTP message bodies to implement
  */
-interface IHttpBody
+interface IBody
 {
     /**
      * Reads the HTTP body as a string

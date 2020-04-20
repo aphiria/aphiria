@@ -15,7 +15,7 @@ namespace Aphiria\Api\Tests\Validation;
 use Aphiria\Api\Validation\InvalidRequestBodyException;
 use Aphiria\Api\Validation\RequestBodyValidator;
 use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\ConstraintViolation;
 use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
@@ -26,8 +26,8 @@ use PHPUnit\Framework\TestCase;
 
 class RequestBodyValidatorTest extends TestCase
 {
-    /** @var IHttpRequestMessage|MockObject */
-    private IHttpRequestMessage $request;
+    /** @var IRequest|MockObject */
+    private IRequest $request;
     /** @var IValidator|MockObject */
     private IValidator $validator;
     /** @var IErrorMessageInterpolator|MockObject */
@@ -38,7 +38,7 @@ class RequestBodyValidatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->request = $this->createMock(IHttpRequestMessage::class);
+        $this->request = $this->createMock(IRequest::class);
         $this->validator = $this->createMock(IValidator::class);
         $this->errorMessageInterpolator = $this->createMock(IErrorMessageInterpolator::class);
         $this->languageMatcher = $this->createMock(ILanguageMatcher::class);

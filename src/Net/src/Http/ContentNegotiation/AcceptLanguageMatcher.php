@@ -15,7 +15,7 @@ namespace Aphiria\Net\Http\ContentNegotiation;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
 use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IRequest;
 
 /**
  * Defines the language matcher that looks at the accept language header
@@ -40,7 +40,7 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
     /**
      * @inheritdoc
      */
-    public function getBestLanguageMatch(IHttpRequestMessage $request): ?string
+    public function getBestLanguageMatch(IRequest $request): ?string
     {
         $acceptLanguageHeaders = $this->headerParser->parseAcceptLanguageHeader($request->getHeaders());
 

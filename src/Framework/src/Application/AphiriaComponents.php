@@ -193,7 +193,7 @@ trait AphiriaComponents
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param string $exceptionType The type of exception whose response factory we're registering
-     * @param Closure $responseFactory The factory that takes in an instance of the exception, IHttpRequestMessage, and IResponseFactory and creates a response
+     * @param Closure $responseFactory The factory that takes in an instance of the exception, IRequest, and IResponseFactory and creates a response
      * @return self For chaining
      */
     protected function withHttpExceptionResponseFactory(

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation;
 
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IRequest;
 use InvalidArgumentException;
 
 /**
@@ -32,19 +32,19 @@ interface IContentNegotiator
      * Gets the negotiation result for the request body
      *
      * @param string $type The type to negotiate (best to use TypeResolver::resolveType())
-     * @param IHttpRequestMessage $request The request to negotiate with
+     * @param IRequest $request The request to negotiate with
      * @return ContentNegotiationResult The content negotiation result
      * @throws InvalidArgumentException Thrown if the Content-Type header was incorrectly formatted
      */
-    public function negotiateRequestContent(string $type, IHttpRequestMessage $request): ContentNegotiationResult;
+    public function negotiateRequestContent(string $type, IRequest $request): ContentNegotiationResult;
 
     /**
      * Gets the negotiation result for the response body
      *
      * @param string $type The type to negotiate
-     * @param IHttpRequestMessage $request The request to negotiate with
+     * @param IRequest $request The request to negotiate with
      * @return ContentNegotiationResult The content negotiation result
      * @throws InvalidArgumentException Thrown if the Accept header's media types were incorrectly formatted
      */
-    public function negotiateResponseContent(string $type, IHttpRequestMessage $request): ContentNegotiationResult;
+    public function negotiateResponseContent(string $type, IRequest $request): ContentNegotiationResult;
 }

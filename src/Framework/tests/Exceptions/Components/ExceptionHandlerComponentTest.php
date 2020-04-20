@@ -20,8 +20,8 @@ use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\IResponseWriter;
 use Exception;
@@ -78,7 +78,7 @@ class ExceptionHandlerComponentTest extends TestCase
 
     public function testBuildWithHttpResponseFactoryRegistersFactory(): void
     {
-        $expectedResponse = $this->createMock(IHttpResponseMessage::class);
+        $expectedResponse = $this->createMock(IResponse::class);
         $responseWriter = $this->createMock(IResponseWriter::class);
         $responseWriter->expects($this->once())
             ->method('writeResponse')
@@ -86,7 +86,7 @@ class ExceptionHandlerComponentTest extends TestCase
         $httpExceptionHandler = new ApiExceptionRenderer(true, null, null, $responseWriter);
         // Need to make sure the content negotiator is set so that the factory is invoked
         $httpExceptionHandler->setResponseFactory($this->createMock(IResponseFactory::class));
-        $httpExceptionHandler->setRequest($this->createMock(IHttpRequestMessage::class));
+        $httpExceptionHandler->setRequest($this->createMock(IRequest::class));
         $this->container->bindInstance(ApiExceptionRenderer::class, $httpExceptionHandler);
 
         $factory = fn (Exception $ex) => $expectedResponse;

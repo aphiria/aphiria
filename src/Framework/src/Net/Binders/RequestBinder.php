@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Net\Binders;
 
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\RequestFactory;
 use Aphiria\Net\Uri;
@@ -29,15 +29,15 @@ class RequestBinder extends Binder
      */
     public function bind(IContainer $container): void
     {
-        $container->bindInstance(IHttpRequestMessage::class, $this->getRequest());
+        $container->bindInstance(IRequest::class, $this->getRequest());
     }
 
     /**
      * Gets the current request
      *
-     * @return IHttpRequestMessage The request
+     * @return IRequest The request
      */
-    protected function getRequest(): IHttpRequestMessage
+    protected function getRequest(): IRequest
     {
         // The $_SERVER superglobal will not have enough info to construct a request when running from the console
         if ($this->isRunningInConsole()) {

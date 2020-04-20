@@ -14,8 +14,8 @@ namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\Collections\HashTable;
 use Aphiria\Collections\KeyValuePair;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpBody;
+use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\RequestTargetTypes;
 use Aphiria\Net\Http\StringBody;
@@ -27,16 +27,16 @@ use PHPUnit\Framework\TestCase;
 class RequestTest extends TestCase
 {
     private Request $request;
-    private HttpHeaders $headers;
-    /** @var IHttpBody|MockObject The mock body */
-    private IHttpBody $body;
+    private Headers $headers;
+    /** @var IBody|MockObject The mock body */
+    private IBody $body;
     private Uri $uri;
     private HashTable $properties;
 
     protected function setUp(): void
     {
-        $this->headers = new HttpHeaders();
-        $this->body = $this->createMock(IHttpBody::class);
+        $this->headers = new Headers();
+        $this->body = $this->createMock(IBody::class);
         $this->uri = new Uri('https://example.com');
         $this->properties = new HashTable([new KeyValuePair('foo', 'bar')]);
         $this->request = new Request(
@@ -81,7 +81,7 @@ class RequestTest extends TestCase
 
     public function testHostHeaderIsNotAddedIfItAlreadyExists(): void
     {
-        $headers = new HttpHeaders();
+        $headers = new Headers();
         $headers->add('Host', 'foo.com');
         $request = new Request('GET', new Uri('https://bar.com'), $headers);
         $this->assertEquals('foo.com', $request->getHeaders()->getFirst('Host'));
@@ -167,7 +167,7 @@ class RequestTest extends TestCase
 
     public function testRequestWithHeadersAndBodyEndsWithBody(): void
     {
-        $request = new Request('GET', new Uri('https://example.com'), new HttpHeaders(), new StringBody('foo'));
+        $request = new Request('GET', new Uri('https://example.com'), new Headers(), new StringBody('foo'));
         $request->getHeaders()->add('Foo', 'bar');
         $this->assertEquals("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar\r\n\r\nfoo", (string)$request);
     }
@@ -187,8 +187,8 @@ class RequestTest extends TestCase
 
     public function testSettingBody(): void
     {
-        /** @var IHttpBody $body */
-        $body = $this->createMock(IHttpBody::class);
+        /** @var IBody $body */
+        $body = $this->createMock(IBody::class);
         $this->request->setBody($body);
         $this->assertSame($body, $this->request->getBody());
     }

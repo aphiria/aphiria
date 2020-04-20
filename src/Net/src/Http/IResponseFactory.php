@@ -22,18 +22,18 @@ interface IResponseFactory
     /**
      * Creates a response from the input parameters
      *
-     * @param IHttpRequestMessage $request The current request
+     * @param IRequest $request The current request
      * @param int $statusCode The status code to use
-     * @param HttpHeaders|null $headers The headers to use
+     * @param Headers|null $headers The headers to use
      * @param object|string|int|float|array|null $rawBody The raw body to use in the response
-     * @return IHttpResponseMessage The created response
+     * @return IResponse The created response
      * @throws InvalidArgumentException Thrown if the body is not a supported type
      * @throws HttpException Thrown if there was an error reading request data
      */
     public function createResponse(
-        IHttpRequestMessage $request,
+        IRequest $request,
         int $statusCode,
-        HttpHeaders $headers = null,
+        Headers $headers = null,
         $rawBody = null
-    ): IHttpResponseMessage;
+    ): IResponse;
 }

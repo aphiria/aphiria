@@ -19,11 +19,11 @@ use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
+use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\HttpStatusCodes;
-use Aphiria\Net\Http\IHttpBody;
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\IBody;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Http\StringBody;
@@ -123,7 +123,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     public function testCreatingResponseFromStringWithAlreadySetContentLengthHeaderDoesNotOverwriteContentLength(): void
     {
         $rawBody = 'foo';
-        $headers = new HttpHeaders();
+        $headers = new Headers();
         $headers->add('Content-Length', 123);
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, $headers, $rawBody);
         $this->assertEquals(123, $response->getHeaders()->getFirst('Content-Length'));
@@ -168,14 +168,14 @@ class NegotiatedResponseFactoryTest extends TestCase
 
     public function testCreatingResponseWithHeadersUsesThoseHeaders(): void
     {
-        $headers = new HttpHeaders();
+        $headers = new Headers();
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, $headers, null);
         $this->assertSame($headers, $response->getHeaders());
     }
 
     public function testCreatingResponseWithHttpBodyJustUsesThatBody(): void
     {
-        $expectedBody = $this->createMock(IHttpBody::class);
+        $expectedBody = $this->createMock(IBody::class);
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, null, $expectedBody);
         $this->assertSame($expectedBody, $response->getBody());
     }
@@ -288,12 +288,12 @@ class NegotiatedResponseFactoryTest extends TestCase
      * Sets up the content negotiatior to return a specific result
      *
      * @param string $expectedType The expected content type
-     * @param IHttpRequestMessage $expectedRequest The expected Request
+     * @param IRequest $expectedRequest The expected Request
      * @param ContentNegotiationResult $expectedContentNegotiationResult The result to return
      */
     private function setUpContentNegotiationMock(
         string $expectedType,
-        IHttpRequestMessage $expectedRequest,
+        IRequest $expectedRequest,
         ContentNegotiationResult $expectedContentNegotiationResult
     ): void {
         $this->contentNegotiator->expects($this->once())

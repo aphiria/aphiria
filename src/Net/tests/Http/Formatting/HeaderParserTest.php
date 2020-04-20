@@ -13,22 +13,22 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http\Formatting;
 
 use Aphiria\Collections\ImmutableHashTable;
-use Aphiria\Net\Http\Formatting\HttpHeaderParser;
-use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\Formatting\HeaderParser;
+use Aphiria\Net\Http\Headers;
 use PHPUnit\Framework\TestCase;
 
-class HttpHeaderParserTest extends TestCase
+class HeaderParserTest extends TestCase
 {
-    private HttpHeaderParser $parser;
+    private HeaderParser $parser;
 
     protected function setUp(): void
     {
-        $this->parser = new HttpHeaderParser();
+        $this->parser = new HeaderParser();
     }
 
     public function testCheckingIfJsonChecksContentTypeHeader(): void
     {
-        $headers = new HttpHeaders();
+        $headers = new Headers();
         $headers->add('Content-Type', 'text/plain');
         $this->assertFalse($this->parser->isJson($headers));
         $headers->removeKey('Content-Type');
@@ -41,7 +41,7 @@ class HttpHeaderParserTest extends TestCase
 
     public function testCheckingIfMultipartChecksContentTypeHeader(): void
     {
-        $headers = new HttpHeaders();
+        $headers = new Headers();
         $headers->add('Content-Type', 'text/plain');
         $this->assertFalse($this->parser->isMultipart($headers));
         $headers->removeKey('Content-Type');
@@ -54,20 +54,20 @@ class HttpHeaderParserTest extends TestCase
 
     public function testCheckingIfMultipartReturnsFalseIfNoContentTypeHeaderIsSpecified(): void
     {
-        $headers = new HttpHeaders();
+        $headers = new Headers();
         $this->assertFalse($this->parser->isMultipart($headers));
     }
 
     public function testGettingParametersForIndexThatDoesNotExistReturnsEmptyDictionary(): void
     {
-        $headers = new HttpHeaders();
+        $headers = new Headers();
         $headers->add('Foo', 'bar; baz');
         $this->assertEquals(new ImmutableHashTable([]), $this->parser->parseParameters($headers, 'Foo', 1));
     }
 
     public function testGettingParametersWithMixOfValueAndValueLessParametersReturnsCorrectParameters(): void
     {
-        $headers = new HttpHeaders();
+        $headers = new Headers();
         $headers->add('Foo', 'bar; baz="blah"');
         $values = $this->parser->parseParameters($headers, 'Foo');
         $this->assertNull($values->get('bar'));
@@ -76,7 +76,7 @@ class HttpHeaderParserTest extends TestCase
 
     public function testGettingParametersWithQuotedAndUnquotedValuesReturnsArrayWithUnquotedValue(): void
     {
-        $headers = new HttpHeaders();
+        $headers = new Headers();
         $headers->add('Foo', 'bar=baz');
         $headers->add('Bar', 'bar="baz"');
         $this->assertEquals('baz', $this->parser->parseParameters($headers, 'Foo')->get('bar'));
@@ -85,6 +85,6 @@ class HttpHeaderParserTest extends TestCase
 
     public function testIsJsonForHeadersWithoutContentTypeReturnsFalse(): void
     {
-        $this->assertFalse($this->parser->isJson(new HttpHeaders()));
+        $this->assertFalse($this->parser->isJson(new Headers()));
     }
 }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IResponse;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -54,7 +54,7 @@ class HttpExceptionTest extends TestCase
 
     public function testResponseSetInConstructorIsUsedAsResponseInException(): void
     {
-        $response = $this->createMock(IHttpResponseMessage::class);
+        $response = $this->createMock(IResponse::class);
         $exception = new HttpException($response);
         $this->assertSame($response, $exception->getResponse());
     }

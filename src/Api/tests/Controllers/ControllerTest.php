@@ -17,12 +17,12 @@ use Aphiria\Net\Http\ContentNegotiation\ContentNegotiationResult;
 use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
+use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpHeaders;
 use Aphiria\Net\Http\HttpStatusCodes;
-use Aphiria\Net\Http\IHttpBody;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IBody;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
@@ -35,8 +35,8 @@ use PHPUnit\Framework\TestCase;
 class ControllerTest extends TestCase
 {
     private Controller $controller;
-    /** @var IHttpRequestMessage|MockObject */
-    private IHttpRequestMessage $request;
+    /** @var IRequest|MockObject */
+    private IRequest $request;
     /** @var IResponseFactory|MockObject */
     private IResponseFactory $responseFactory;
 
@@ -44,52 +44,52 @@ class ControllerTest extends TestCase
     {
         // Allow us to more easily test the convenience methods
         $this->controller = new class() extends Controller {
-            public function badRequest($body = null, HttpHeaders $headers = null): IHttpResponseMessage
+            public function badRequest($body = null, Headers $headers = null): IResponse
             {
                 return parent::badRequest($body, $headers);
             }
 
-            public function conflict($body = null, HttpHeaders $headers = null): IHttpResponseMessage
+            public function conflict($body = null, Headers $headers = null): IResponse
             {
                 return parent::conflict($body, $headers);
             }
 
-            public function created($uri, $body = null, HttpHeaders $headers = null): IHttpResponseMessage
+            public function created($uri, $body = null, Headers $headers = null): IResponse
             {
                 return parent::created($uri, $body, $headers);
             }
 
-            public function forbidden($body = null, HttpHeaders $headers = null): IHttpResponseMessage
+            public function forbidden($body = null, Headers $headers = null): IResponse
             {
                 return parent::forbidden($body, $headers);
             }
 
-            public function found($uri, $body = null, HttpHeaders $headers = null): IHttpResponseMessage
+            public function found($uri, $body = null, Headers $headers = null): IResponse
             {
                 return parent::found($uri, $body, $headers);
             }
 
-            public function internalServerError($body = null, HttpHeaders $headers = null): IHttpResponseMessage
+            public function internalServerError($body = null, Headers $headers = null): IResponse
             {
                 return parent::internalServerError($body, $headers);
             }
 
-            public function movedPermanently($uri, $body = null, HttpHeaders $headers = null): IHttpResponseMessage
+            public function movedPermanently($uri, $body = null, Headers $headers = null): IResponse
             {
                 return parent::movedPermanently($uri, $body, $headers);
             }
 
-            public function noContent(HttpHeaders $headers = null): IHttpResponseMessage
+            public function noContent(Headers $headers = null): IResponse
             {
                 return parent::noContent($headers);
             }
 
-            public function notFound($body = null, HttpHeaders $headers = null): IHttpResponseMessage
+            public function notFound($body = null, Headers $headers = null): IResponse
             {
                 return parent::notFound($body, $headers);
             }
 
-            public function ok($body = null, HttpHeaders $headers = null): IHttpResponseMessage
+            public function ok($body = null, Headers $headers = null): IResponse
             {
                 return parent::ok($body, $headers);
             }
@@ -99,12 +99,12 @@ class ControllerTest extends TestCase
                 return parent::readRequestBodyAs($type);
             }
 
-            public function unauthorized($body = null, HttpHeaders $headers = null): IHttpResponseMessage
+            public function unauthorized($body = null, Headers $headers = null): IResponse
             {
                 return parent::unauthorized($body, $headers);
             }
         };
-        $this->request = $this->createMock(IHttpRequestMessage::class);
+        $this->request = $this->createMock(IRequest::class);
         $this->responseFactory = $this->createMock(IResponseFactory::class);
         $this->responseFactory->method('createResponse')
             ->with($this->request)
@@ -119,8 +119,8 @@ class ControllerTest extends TestCase
     public function testBadRequestCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $response = $this->controller->badRequest($expectedBody, $expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_BAD_REQUEST, $response->getStatusCode());
         $this->assertSame($expectedBody, $response->getBody());
@@ -130,8 +130,8 @@ class ControllerTest extends TestCase
     public function testConflictCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $response = $this->controller->conflict($expectedBody, $expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_CONFLICT, $response->getStatusCode());
         $this->assertSame($expectedBody, $response->getBody());
@@ -143,16 +143,16 @@ class ControllerTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('URI must be a string or an instance of ' . Uri::class);
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $this->controller->created([], $expectedBody, $expectedHeaders);
     }
 
     public function testCreatedWithStringUriCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $response = $this->controller->created('https://example.com', $expectedBody, $expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_CREATED, $response->getStatusCode());
         $this->assertEquals('https://example.com', $response->getHeaders()->getFirst('Location'));
@@ -163,8 +163,8 @@ class ControllerTest extends TestCase
     public function testCreatedWithUriCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $response = $this->controller->created(new Uri('https://example.com'), $expectedBody, $expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_CREATED, $response->getStatusCode());
         $this->assertEquals('https://example.com', $response->getHeaders()->getFirst('Location'));
@@ -177,16 +177,16 @@ class ControllerTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('URI must be a string or an instance of ' . Uri::class);
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $this->controller->found([], $expectedBody, $expectedHeaders);
     }
 
     public function testFoundWithStringUriCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $response = $this->controller->found('https://example.com', $expectedBody, $expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_FOUND, $response->getStatusCode());
         $this->assertEquals('https://example.com', $response->getHeaders()->getFirst('Location'));
@@ -197,8 +197,8 @@ class ControllerTest extends TestCase
     public function testFoundWithUriCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $response = $this->controller->found(new Uri('https://example.com'), $expectedBody, $expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_FOUND, $response->getStatusCode());
         $this->assertEquals('https://example.com', $response->getHeaders()->getFirst('Location'));
@@ -209,8 +209,8 @@ class ControllerTest extends TestCase
     public function testForbiddenCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $response = $this->controller->forbidden($expectedBody, $expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_FORBIDDEN, $response->getStatusCode());
         $this->assertSame($expectedBody, $response->getBody());
@@ -247,8 +247,8 @@ class ControllerTest extends TestCase
     public function testInternalServerErrorCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $response = $this->controller->internalServerError($expectedBody, $expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
         $this->assertSame($expectedBody, $response->getBody());
@@ -260,16 +260,16 @@ class ControllerTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('URI must be a string or an instance of ' . Uri::class);
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $this->controller->movedPermanently([], $expectedBody, $expectedHeaders);
     }
 
     public function testMovedPermanentlyWithStringUriCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $response = $this->controller->movedPermanently('https://example.com', $expectedBody, $expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_MOVED_PERMANENTLY, $response->getStatusCode());
         $this->assertEquals('https://example.com', $response->getHeaders()->getFirst('Location'));
@@ -280,8 +280,8 @@ class ControllerTest extends TestCase
     public function testMovedPermanentlyWithUriCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $response = $this->controller->movedPermanently(new Uri('https://example.com'), $expectedBody, $expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_MOVED_PERMANENTLY, $response->getStatusCode());
         $this->assertEquals('https://example.com', $response->getHeaders()->getFirst('Location'));
@@ -292,7 +292,7 @@ class ControllerTest extends TestCase
     public function testNoContentCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedHeaders = new HttpHeaders();
+        $expectedHeaders = new Headers();
         $response = $this->controller->noContent($expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_NO_CONTENT, $response->getStatusCode());
         $this->assertSame($expectedHeaders, $response->getHeaders());
@@ -301,8 +301,8 @@ class ControllerTest extends TestCase
     public function testNotFoundCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $response = $this->controller->notFound($expectedBody, $expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_NOT_FOUND, $response->getStatusCode());
         $this->assertSame($expectedBody, $response->getBody());
@@ -312,8 +312,8 @@ class ControllerTest extends TestCase
     public function testOkCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $response = $this->controller->ok($expectedBody, $expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_OK, $response->getStatusCode());
         $this->assertSame($expectedBody, $response->getBody());
@@ -416,8 +416,8 @@ class ControllerTest extends TestCase
     public function testUnauthorizedCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IHttpBody::class);
-        $expectedHeaders = new HttpHeaders();
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
         $response = $this->controller->unauthorized($expectedBody, $expectedHeaders);
         $this->assertEquals(HttpStatusCodes::HTTP_UNAUTHORIZED, $response->getStatusCode());
         $this->assertSame($expectedBody, $response->getBody());

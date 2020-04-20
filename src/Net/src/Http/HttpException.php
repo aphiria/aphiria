@@ -20,12 +20,12 @@ use InvalidArgumentException;
  */
 class HttpException extends Exception
 {
-    /** @var IHttpResponseMessage The response */
-    private IHttpResponseMessage $response;
+    /** @var IResponse The response */
+    private IResponse $response;
 
     /**
      * @inheritdoc
-     * @param int|IHttpResponseMessage $statusCodeOrResponse The status code or fully-formed response
+     * @param int|IResponse $statusCodeOrResponse The status code or fully-formed response
      * @throws InvalidArgumentException Thrown if the first parameter is neither a status code nor an HTTP response
      */
     public function __construct(
@@ -38,7 +38,7 @@ class HttpException extends Exception
 
         if (\is_int($statusCodeOrResponse)) {
             $this->response = new Response($statusCodeOrResponse);
-        } elseif ($statusCodeOrResponse instanceof IHttpResponseMessage) {
+        } elseif ($statusCodeOrResponse instanceof IResponse) {
             $this->response = $statusCodeOrResponse;
         } else {
             throw new InvalidArgumentException('First parameter must be either a status code or an HTTP response');
@@ -48,9 +48,9 @@ class HttpException extends Exception
     /**
      * Gets the response
      *
-     * @return IHttpResponseMessage The response
+     * @return IResponse The response
      */
-    public function getResponse(): IHttpResponseMessage
+    public function getResponse(): IResponse
     {
         return $this->response;
     }

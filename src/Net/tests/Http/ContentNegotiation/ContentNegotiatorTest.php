@@ -15,8 +15,8 @@ namespace Aphiria\Net\Tests\Http\ContentNegotiation;
 use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpRequestMessage;
+use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -24,14 +24,14 @@ use PHPUnit\Framework\TestCase;
 
 class ContentNegotiatorTest extends TestCase
 {
-    /** @var IHttpRequestMessage|MockObject The request message to use in tests */
-    private IHttpRequestMessage $request;
-    private HttpHeaders $headers;
+    /** @var IRequest|MockObject The request message to use in tests */
+    private IRequest $request;
+    private Headers $headers;
 
     protected function setUp(): void
     {
-        $this->headers = new HttpHeaders();
-        $this->request = $this->createMock(IHttpRequestMessage::class);
+        $this->headers = new Headers();
+        $this->request = $this->createMock(IRequest::class);
         $this->request->method('getHeaders')
             ->willReturn($this->headers);
     }

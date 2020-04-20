@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http\Handlers;
 
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Exception;
 
 /**
@@ -25,10 +25,10 @@ interface IRequestHandler
     /**
      * Handles a request and returns a response
      *
-     * @param IHttpRequestMessage $request The incoming request
-     * @return IHttpResponseMessage The response
+     * @param IRequest $request The incoming request
+     * @return IResponse The response
      * @throws HttpException Thrown if there was an HTTP exception processing the request
      * @throws Exception Thrown if there was any other type of exception thrown while processing the request
      */
-    public function handle(IHttpRequestMessage $request): IHttpResponseMessage;
+    public function handle(IRequest $request): IResponse;
 }

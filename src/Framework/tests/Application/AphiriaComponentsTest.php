@@ -31,7 +31,7 @@ use Aphiria\Framework\Serialization\Components\SerializerComponent;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Serialization\Encoding\IEncoder;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
@@ -380,7 +380,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithHttpResponseFactoryConfiguresComponentToHaveFactory(): void
     {
-        $responseFactory = fn (Exception $ex) => $this->createMock(IHttpResponseMessage::class);
+        $responseFactory = fn (Exception $ex) => $this->createMock(IResponse::class);
         $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withHttpResponseFactory')
@@ -428,7 +428,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withHttpExceptionResponseFactory($appBuilder, $exceptionType, $factory);
             }
         };
-        $callback = fn (Exception $ex) => $this->createMock(IHttpResponseMessage::class);
+        $callback = fn (Exception $ex) => $this->createMock(IResponse::class);
         $component->build($this->appBuilder, Exception::class, $callback);
     }
 

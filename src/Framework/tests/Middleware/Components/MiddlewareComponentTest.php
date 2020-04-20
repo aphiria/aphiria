@@ -19,8 +19,8 @@ use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -40,15 +40,15 @@ class MiddlewareComponentTest extends TestCase
 
     public function testBuildWithAttributeMiddlewareSetsAttributes(): void
     {
-        $expectedMiddleware = new class($this->createMock(IHttpResponseMessage::class)) extends AttributeMiddleware {
-            private IHttpResponseMessage $expectedResponse;
+        $expectedMiddleware = new class($this->createMock(IResponse::class)) extends AttributeMiddleware {
+            private IResponse $expectedResponse;
 
-            public function __construct(IHttpResponseMessage $expectedResponse)
+            public function __construct(IResponse $expectedResponse)
             {
                 $this->expectedResponse = $expectedResponse;
             }
 
-            public function handle(IHttpRequestMessage $request, IRequestHandler $next): IHttpResponseMessage
+            public function handle(IRequest $request, IRequestHandler $next): IResponse
             {
                 return $this->expectedResponse;
             }

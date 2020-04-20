@@ -42,7 +42,7 @@ class StreamResponseWriter implements IResponseWriter
     /**
      * @inheritdoc
      */
-    public function writeResponse(IHttpResponseMessage $response): void
+    public function writeResponse(IResponse $response): void
     {
         if ($this->headersAreSent()) {
             return;

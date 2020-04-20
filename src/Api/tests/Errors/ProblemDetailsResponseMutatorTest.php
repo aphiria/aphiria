@@ -13,23 +13,23 @@ declare(strict_types=1);
 namespace Aphiria\Api\Tests\Errors;
 
 use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IResponse;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ProblemDetailsResponseMutatorTest extends TestCase
 {
     private ProblemDetailsResponseMutator $mutator;
-    private HttpHeaders $headers;
-    /** @var IHttpResponseMessage|MockObject */
-    private IHttpResponseMessage $response;
+    private Headers $headers;
+    /** @var IResponse|MockObject */
+    private IResponse $response;
 
     protected function setUp(): void
     {
         $this->mutator = new ProblemDetailsResponseMutator();
-        $this->headers = new HttpHeaders();
-        $this->response = $this->createMock(IHttpResponseMessage::class);
+        $this->headers = new Headers();
+        $this->response = $this->createMock(IResponse::class);
         $this->response->method('getHeaders')
             ->willReturn($this->headers);
     }

@@ -18,7 +18,7 @@ use Aphiria\Net\Uri;
 /**
  * Defines the interface for HTTP request messages to implement
  */
-interface IHttpRequestMessage extends IHttpMessage
+interface IRequest extends IHttpMessage
 {
     /**
      * Gets the HTTP method for the request

@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Sessions\Tests\Middleware;
 
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Sessions\ISession;
 use Aphiria\Sessions\Middleware\Session;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -28,12 +28,12 @@ class SessionTest extends TestCase
     private ISession $session;
     /** @var \SessionHandlerInterface|MockObject */
     private \SessionHandlerInterface $sessionHandler;
-    private HttpHeaders $requestHeaders;
-    /** @var IHttpRequestMessage|MockObject */
-    private IHttpRequestMessage $request;
-    private HttpHeaders $responseHeaders;
-    /** @var IHttpResponseMessage|MockObject */
-    private IHttpResponseMessage $response;
+    private Headers $requestHeaders;
+    /** @var IRequest|MockObject */
+    private IRequest $request;
+    private Headers $responseHeaders;
+    /** @var IResponse|MockObject */
+    private IResponse $response;
     /** @var IRequestHandler|MockObject */
     private IRequestHandler $next;
 
@@ -41,12 +41,12 @@ class SessionTest extends TestCase
     {
         $this->session = $this->createMock(ISession::class);
         $this->sessionHandler = $this->createMock(SessionHandlerInterface::class);
-        $this->requestHeaders = new HttpHeaders();
-        $this->request = $this->createMock(IHttpRequestMessage::class);
+        $this->requestHeaders = new Headers();
+        $this->request = $this->createMock(IRequest::class);
         $this->request->method('getHeaders')
             ->willReturn($this->requestHeaders);
-        $this->responseHeaders = new HttpHeaders();
-        $this->response = $this->createMock(IHttpResponseMessage::class);
+        $this->responseHeaders = new Headers();
+        $this->response = $this->createMock(IResponse::class);
         $this->response->method('getHeaders')
             ->willReturn($this->responseHeaders);
         $this->next = $this->createMock(IRequestHandler::class);

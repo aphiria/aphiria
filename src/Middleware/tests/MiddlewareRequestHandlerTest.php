@@ -15,8 +15,8 @@ namespace Aphiria\Middleware\Tests;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareRequestHandler;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -28,10 +28,10 @@ class MiddlewareRequestHandlerTest extends TestCase
         $middleware = $this->createMock(IMiddleware::class);
         /** @var IRequestHandler|MockObject $next */
         $next = $this->createMock(IRequestHandler::class);
-        /** @var IHttpRequestMessage|MockObject $request */
-        $request = $this->createMock(IHttpRequestMessage::class);
-        /** @var IHttpResponseMessage|MockObject $response */
-        $response = $this->createMock(IHttpResponseMessage::class);
+        /** @var IRequest|MockObject $request */
+        $request = $this->createMock(IRequest::class);
+        /** @var IResponse|MockObject $response */
+        $response = $this->createMock(IResponse::class);
         $middleware->expects($this->once())
             ->method('handle')
             ->with($request, $next)

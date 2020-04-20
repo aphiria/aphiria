@@ -18,8 +18,8 @@ use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 
 final class ControllerRequestHandler implements IRequestHandler
 {
@@ -58,7 +58,7 @@ final class ControllerRequestHandler implements IRequestHandler
     /**
      * @inheritdoc
      */
-    public function handle(IHttpRequestMessage $request): IHttpResponseMessage
+    public function handle(IRequest $request): IResponse
     {
         $this->controller->setRequest($request);
         $this->controller->setRequestParser(new RequestParser());

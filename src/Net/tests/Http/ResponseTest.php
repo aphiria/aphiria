@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http;
 
-use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpStatusCodes;
-use Aphiria\Net\Http\IHttpBody;
+use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
 use PHPUnit\Framework\TestCase;
@@ -29,12 +29,12 @@ class ResponseTest extends TestCase
 
     public function testGettingAndSettingBody(): void
     {
-        /** @var IHttpBody $body1 */
-        $body1 = $this->createMock(IHttpBody::class);
+        /** @var IBody $body1 */
+        $body1 = $this->createMock(IBody::class);
         $response = new Response(200, null, $body1);
         $this->assertSame($body1, $response->getBody());
-        /** @var IHttpBody $body2 */
-        $body2 = $this->createMock(IHttpBody::class);
+        /** @var IBody $body2 */
+        $body2 = $this->createMock(IBody::class);
         $response->setBody($body2);
         $this->assertSame($body2, $response->getBody());
     }
@@ -49,7 +49,7 @@ class ResponseTest extends TestCase
 
     public function testGettingHeaders(): void
     {
-        $headers = new HttpHeaders();
+        $headers = new Headers();
         $response = new Response(200, $headers);
         $this->assertSame($headers, $response->getHeaders());
     }
@@ -77,7 +77,7 @@ class ResponseTest extends TestCase
 
     public function testResponseWithHeadersAndBodyEndsWithBody(): void
     {
-        $response = new Response(200, new HttpHeaders(), new StringBody('foo'));
+        $response = new Response(200, new Headers(), new StringBody('foo'));
         $response->getHeaders()->add('Foo', 'bar');
         $this->assertEquals("HTTP/1.1 200 OK\r\nFoo: bar\r\n\r\nfoo", (string)$response);
     }

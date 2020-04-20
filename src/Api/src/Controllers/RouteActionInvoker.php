@@ -18,8 +18,8 @@ use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\Response;
 use Closure;
@@ -65,9 +65,9 @@ class RouteActionInvoker implements IRouteActionInvoker
      */
     public function invokeRouteAction(
         callable $routeActionDelegate,
-        IHttpRequestMessage $request,
+        IRequest $request,
         array $routeVariables
-    ): IHttpResponseMessage {
+    ): IResponse {
         try {
             $reflectionFunction = $this->reflectRouteActionDelegate($routeActionDelegate);
         } catch (ReflectionException $ex) {
@@ -127,7 +127,7 @@ class RouteActionInvoker implements IRouteActionInvoker
 
         $actionResult = $routeActionDelegate(...$resolvedParameters);
 
-        if ($actionResult instanceof IHttpResponseMessage) {
+        if ($actionResult instanceof IResponse) {
             return $actionResult;
         }
 

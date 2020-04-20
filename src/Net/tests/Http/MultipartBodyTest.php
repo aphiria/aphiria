@@ -14,8 +14,8 @@ namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\MultiStream;
-use Aphiria\Net\Http\HttpHeaders;
-use Aphiria\Net\Http\IHttpBody;
+use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
@@ -44,11 +44,11 @@ class MultipartBodyTest extends TestCase
         $streamMock1->expects($this->once())
             ->method('getLength')
             ->willReturn(1);
-        $body1 = $this->createMock(IHttpBody::class);
+        $body1 = $this->createMock(IBody::class);
         $body1->expects($this->once())
             ->method('readAsStream')
             ->willReturn($streamMock1);
-        $body2 = $this->createMock(IHttpBody::class);
+        $body2 = $this->createMock(IBody::class);
         $streamMock2 = $this->createMock(IStream::class);
         $streamMock2->expects($this->once())
             ->method('isReadable')
@@ -60,8 +60,8 @@ class MultipartBodyTest extends TestCase
             ->method('readAsStream')
             ->willReturn($streamMock2);
         $parts = [
-            new MultipartBodyPart(new HttpHeaders(), $body1),
-            new MultipartBodyPart(new HttpHeaders(), $body2)
+            new MultipartBodyPart(new Headers(), $body1),
+            new MultipartBodyPart(new Headers(), $body2)
         ];
         $body = new MultipartBody($parts, '123');
         $this->assertNull($body->getLength());
@@ -76,11 +76,11 @@ class MultipartBodyTest extends TestCase
         $streamMock1->expects($this->once())
             ->method('getLength')
             ->willReturn(1);
-        $body1 = $this->createMock(IHttpBody::class);
+        $body1 = $this->createMock(IBody::class);
         $body1->expects($this->once())
             ->method('readAsStream')
             ->willReturn($streamMock1);
-        $body2 = $this->createMock(IHttpBody::class);
+        $body2 = $this->createMock(IBody::class);
         $streamMock2 = $this->createMock(IStream::class);
         $streamMock2->expects($this->once())
             ->method('isReadable')
@@ -92,8 +92,8 @@ class MultipartBodyTest extends TestCase
             ->method('readAsStream')
             ->willReturn($streamMock2);
         $parts = [
-            new MultipartBodyPart(new HttpHeaders(), $body1),
-            new MultipartBodyPart(new HttpHeaders(), $body2)
+            new MultipartBodyPart(new Headers(), $body1),
+            new MultipartBodyPart(new Headers(), $body2)
         ];
         $body = new MultipartBody($parts, '123');
         /**
@@ -163,7 +163,7 @@ class MultipartBodyTest extends TestCase
      */
     private function createMultipartBodyPart(array $rawHeaders, string $body): MultipartBodyPart
     {
-        $headers = new HttpHeaders();
+        $headers = new Headers();
 
         foreach ($rawHeaders as $name => $value) {
             $headers->add($name, $value);

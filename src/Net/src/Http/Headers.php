@@ -21,7 +21,7 @@ use RuntimeException;
 /**
  * Defines HTTP headers
  */
-final class HttpHeaders extends HashTable
+final class Headers extends HashTable
 {
     /**
      * Gets the headers as a string

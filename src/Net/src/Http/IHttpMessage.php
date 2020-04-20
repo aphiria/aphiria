@@ -28,16 +28,16 @@ interface IHttpMessage
     /**
      * Gets the body of the HTTP message
      *
-     * @return IHttpBody|null The body if there is one, otherwise null
+     * @return IBody|null The body if there is one, otherwise null
      */
-    public function getBody(): ?IHttpBody;
+    public function getBody(): ?IBody;
 
     /**
      * Gets the headers of the HTTP message
      *
-     * @return HttpHeaders The headers
+     * @return Headers The headers
      */
-    public function getHeaders(): HttpHeaders;
+    public function getHeaders(): Headers;
 
     /**
      * Gets the protocol version (eg '1.1' or '2.0') from the HTTP message
@@ -49,7 +49,7 @@ interface IHttpMessage
     /**
      * Sets the body of the HTTP message
      *
-     * @param IHttpBody $body The body
+     * @param IBody $body The body
      */
-    public function setBody(IHttpBody $body): void;
+    public function setBody(IBody $body): void;
 }

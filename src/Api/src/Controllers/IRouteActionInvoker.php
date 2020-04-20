@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
-use Aphiria\Net\Http\IHttpRequestMessage;
-use Aphiria\Net\Http\IHttpResponseMessage;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Exception;
 
 /**
@@ -25,14 +25,14 @@ interface IRouteActionInvoker
      * Invokes a route action
      *
      * @param callable $routeActionDelegate The route action delegate to invoke
-     * @param IHttpRequestMessage $request The current request
+     * @param IRequest $request The current request
      * @param array $routeVariables The route variables
-     * @return IHttpResponseMessage The response
+     * @return IResponse The response
      * @throws Exception Thrown if there was any error processing the request
      */
     public function invokeRouteAction(
         callable $routeActionDelegate,
-        IHttpRequestMessage $request,
+        IRequest $request,
         array $routeVariables
-    ): IHttpResponseMessage;
+    ): IResponse;
 }

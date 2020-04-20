@@ -15,7 +15,7 @@ namespace Aphiria\PsrAdapters\Tests\Psr7;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Formatting\RequestParser;
-use Aphiria\Net\Http\HttpHeaders;
+use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\Request;
@@ -178,16 +178,16 @@ class Psr7FactoryTest extends TestCase
 
     public function testCreatePsr7RequestForMultipartRequestSetsSameUploadedFiles(): void
     {
-        $aphiriaHeaders = new HttpHeaders([new KeyValuePair('Content-Type', 'multipart/form-data; boundary=--test')]);
+        $aphiriaHeaders = new Headers([new KeyValuePair('Content-Type', 'multipart/form-data; boundary=--test')]);
         $file1BodyPart = new MultipartBodyPart(
-            new HttpHeaders([
+            new Headers([
                 new KeyValuePair('Content-Disposition', 'name="file1"; filename="foo.png"'),
                 new KeyValuePair('Content-Type', 'image/png')
             ]),
             new StringBody('file1contents')
         );
         $file2BodyPart = new MultipartBodyPart(
-            new HttpHeaders([
+            new Headers([
                 new KeyValuePair('Content-Disposition', 'name="file2"; filename="bar.png"'),
                 new KeyValuePair('Content-Type', 'image/png')
             ]),
@@ -215,9 +215,9 @@ class Psr7FactoryTest extends TestCase
 
     public function testCreatePsr7RequestForMultipartRequestWithoutNameDefaultsToUsingIndex(): void
     {
-        $aphiriaHeaders = new HttpHeaders([new KeyValuePair('Content-Type', 'multipart/form-data; boundary=--test')]);
+        $aphiriaHeaders = new Headers([new KeyValuePair('Content-Type', 'multipart/form-data; boundary=--test')]);
         $fileBodyPart = new MultipartBodyPart(
-            new HttpHeaders([
+            new Headers([
                 new KeyValuePair('Content-Disposition', 'filename="foo.png"'),
                 new KeyValuePair('Content-Type', 'image/png')
             ]),
@@ -257,7 +257,7 @@ class Psr7FactoryTest extends TestCase
 
     public function testCreatePsr7RequestSetsSameCookies(): void
     {
-        $headers = new HttpHeaders([
+        $headers = new Headers([
             new KeyValuePair('Cookie', 'foo=bar; baz=blah')
         ]);
         $aphiriaRequest = new Request('GET', new Uri('https://example.com'), $headers);
@@ -267,7 +267,7 @@ class Psr7FactoryTest extends TestCase
 
     public function testCreatePsr7RequestSetsSameHeaders(): void
     {
-        $aphiriaHeaders = new HttpHeaders();
+        $aphiriaHeaders = new Headers();
         $aphiriaHeaders->add('Foo', 'bar');
         $aphiriaHeaders->add('Baz', 'blah');
         $aphiriaRequest = new Request('GET', new Uri('https://example.com'), $aphiriaHeaders);
@@ -316,7 +316,7 @@ class Psr7FactoryTest extends TestCase
 
     public function testCreatePsr7ResponseSetsSameHeaders(): void
     {
-        $headers = new HttpHeaders([
+        $headers = new Headers([
             new KeyValuePair('Foo', 'bar'),
             new KeyValuePair('Baz', 'blah')
         ]);
@@ -358,16 +358,16 @@ class Psr7FactoryTest extends TestCase
 
     public function testCreatePsr7UploadedFilesForMultipartRequestCreatesUploadedFiles(): void
     {
-        $aphiriaHeaders = new HttpHeaders([new KeyValuePair('Content-Type', 'multipart/form-data; boundary=--test')]);
+        $aphiriaHeaders = new Headers([new KeyValuePair('Content-Type', 'multipart/form-data; boundary=--test')]);
         $file1BodyPart = new MultipartBodyPart(
-            new HttpHeaders([
+            new Headers([
                 new KeyValuePair('Content-Disposition', 'name="file1"; filename="foo.png"'),
                 new KeyValuePair('Content-Type', 'image/png')
             ]),
             new StringBody('file1contents')
         );
         $file2BodyPart = new MultipartBodyPart(
-            new HttpHeaders([
+            new Headers([
                 new KeyValuePair('Content-Disposition', 'name="file2"; filename="bar.png"'),
                 new KeyValuePair('Content-Type', 'image/png')
             ]),
@@ -393,9 +393,9 @@ class Psr7FactoryTest extends TestCase
 
     public function testCreatePsr7UploadedFilesForMultipartRequestWithPartThatHasEmptyBodyGetsSkipped(): void
     {
-        $aphiriaHeaders = new HttpHeaders([new KeyValuePair('Content-Type', 'multipart/form-data; boundary=--test')]);
+        $aphiriaHeaders = new Headers([new KeyValuePair('Content-Type', 'multipart/form-data; boundary=--test')]);
         $fileBodyPart = new MultipartBodyPart(
-            new HttpHeaders([
+            new Headers([
                 new KeyValuePair('Content-Disposition', 'name="file1"; filename="foo.png"'),
                 new KeyValuePair('Content-Type', 'image/png')
             ]),
@@ -415,7 +415,7 @@ class Psr7FactoryTest extends TestCase
         $aphiriaRequestParser = new class() extends RequestParser {
             public function readAsMultipart($request): ?MultipartBody
             {
-                return new MultipartBody([new MultipartBodyPart(new HttpHeaders(), null)]);
+                return new MultipartBody([new MultipartBodyPart(new Headers(), null)]);
             }
         };
         $psr17Factory = new Psr17Factory();
