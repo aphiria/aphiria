@@ -56,7 +56,7 @@ final class RoutingBinder extends Binder
         // Bind as a factory so that our app builders can register all routes prior to the routes being built
         $container->bindFactory(
             [IRouteMatcher::class, TrieRouteMatcher::class],
-            function () use ($routes, $routeRegistrants, $trieCache) {
+            static function () use ($routes, $routeRegistrants, $trieCache) {
                 $routeRegistrants->registerRoutes($routes);
 
                 return new TrieRouteMatcher((new TrieFactory($routes, $trieCache))->createTrie());

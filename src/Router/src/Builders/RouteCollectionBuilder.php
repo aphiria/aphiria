@@ -12,14 +12,14 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Builders;
 
-use Aphiria\Routing\Route;
+use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use Closure;
 
 /**
- * Defines the route builder registry
+ * Defines the route collection builder
  */
-final class RouteBuilderRegistry
+final class RouteCollectionBuilder
 {
     /** @var RouteBuilder[] The list of registered route builders */
     private array $routeBuilders = [];
@@ -27,11 +27,11 @@ final class RouteBuilderRegistry
     private array $groupOptionsStack = [];
 
     /**
-     * Builds all the route builders in the registry
+     * Builds a route collection from all the route builders
      *
-     * @return Route[] The list of routes built by this registry
+     * @return RouteCollection The collection of built routes
      */
-    public function buildAll(): array
+    public function build(): RouteCollection
     {
         $builtRoutes = [];
 
@@ -39,7 +39,7 @@ final class RouteBuilderRegistry
             $builtRoutes[] = $routeBuilder->build();
         }
 
-        return $builtRoutes;
+        return new RouteCollection($builtRoutes);
     }
 
     /**

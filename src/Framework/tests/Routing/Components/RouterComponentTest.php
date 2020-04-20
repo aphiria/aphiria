@@ -15,7 +15,7 @@ namespace Aphiria\Framework\Tests\Routing\Components;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
-use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteRegistrantCollection;
 use PHPUnit\Framework\TestCase;
@@ -45,7 +45,7 @@ class RouterComponentTest extends TestCase
 
     public function testBuildRegistersRoutesRegisteredInCallbacks(): void
     {
-        $this->routerComponent->withRoutes(fn (RouteBuilderRegistry $routeBuilders) => $routeBuilders->get('/foo')->mapsToMethod('Foo', 'bar'));
+        $this->routerComponent->withRoutes(fn (RouteCollectionBuilder $routeBuilders) => $routeBuilders->get('/foo')->mapsToMethod('Foo', 'bar'));
         $this->routerComponent->build();
         $this->assertCount(1, $this->routes->getAll());
         $this->assertEquals('/foo', $this->routes->getAll()[0]->uriTemplate->pathTemplate);

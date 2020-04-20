@@ -15,7 +15,7 @@ namespace Aphiria\Routing\Annotations;
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
-use Aphiria\Routing\Builders\RouteBuilderRegistry;
+use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Routing\Builders\RouteGroupOptions;
 use Aphiria\Routing\IRouteRegistrant;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
@@ -56,7 +56,7 @@ final class AnnotationRouteRegistrant implements IRouteRegistrant
      */
     public function registerRoutes(RouteCollection $routes): void
     {
-        $routeBuilders = new RouteBuilderRegistry();
+        $routeBuilders = new RouteCollectionBuilder();
 
         foreach ($this->typeFinder->findAllClasses($this->paths, true) as $controllerClass) {
             $reflectionController = new ReflectionClass($controllerClass);
@@ -76,14 +76,14 @@ final class AnnotationRouteRegistrant implements IRouteRegistrant
             } else {
                 $routeBuilders->group(
                     $routeGroupOptions,
-                    function (RouteBuilderRegistry $routeBuilders) use ($reflectionController) {
+                    function (RouteCollectionBuilder $routeBuilders) use ($reflectionController) {
                         $this->registerRouteBuilders($reflectionController, $routeBuilders);
                     }
                 );
             }
         }
 
-        $routes->addMany($routeBuilders->buildAll());
+        $routes->addMany($routeBuilders->build()->getAll());
     }
 
     /**
@@ -142,9 +142,9 @@ final class AnnotationRouteRegistrant implements IRouteRegistrant
      * Registers route builders for a controller class
      *
      * @param ReflectionClass $controller The controller class to create route builders from
-     * @param RouteBuilderRegistry $routeBuilders The registry to register route builders to
+     * @param RouteCollectionBuilder $routeBuilders The registry to register route builders to
      */
-    private function registerRouteBuilders(ReflectionClass $controller, RouteBuilderRegistry $routeBuilders): void
+    private function registerRouteBuilders(ReflectionClass $controller, RouteCollectionBuilder $routeBuilders): void
     {
         foreach ($controller->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $routeBuilder = null;
