@@ -22,6 +22,12 @@ use RuntimeException;
 
 class ImmutableHashTableTest extends TestCase
 {
+    public function testArrayAccessReturnsValuesAtKeys(): void
+    {
+        $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
+        $this->assertEquals('bar', $hashTable['foo']);
+    }
+
     public function testContainsKey(): void
     {
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
@@ -75,6 +81,13 @@ class ImmutableHashTableTest extends TestCase
         $kvp2 = new KeyValuePair('baz', 'blah');
         $hashTable = new ImmutableHashTable([$kvp1, $kvp2]);
         $this->assertEquals([$kvp1->getValue(), $kvp2->getValue()], $hashTable->getValues());
+    }
+
+    public function testIssetReturnsWhetherOrNotKeyIsSet(): void
+    {
+        $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
+        $this->assertTrue(isset($hashTable['foo']));
+        $this->assertFalse(isset($hashTable['baz']));
     }
 
     public function testIteratingOverValues(): void

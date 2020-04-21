@@ -58,14 +58,14 @@ class HeaderParserTest extends TestCase
         $this->assertFalse($this->parser->isMultipart($headers));
     }
 
-    public function testGettingParametersForIndexThatDoesNotExistReturnsEmptyDictionary(): void
+    public function testParsingParametersForIndexThatDoesNotExistReturnsEmptyDictionary(): void
     {
         $headers = new Headers();
         $headers->add('Foo', 'bar; baz');
         $this->assertEquals(new ImmutableHashTable([]), $this->parser->parseParameters($headers, 'Foo', 1));
     }
 
-    public function testGettingParametersWithMixOfValueAndValueLessParametersReturnsCorrectParameters(): void
+    public function testParsingParametersWithMixOfValueAndValueLessParametersReturnsCorrectParameters(): void
     {
         $headers = new Headers();
         $headers->add('Foo', 'bar; baz="blah"');
@@ -74,7 +74,7 @@ class HeaderParserTest extends TestCase
         $this->assertEquals('blah', $values->get('baz'));
     }
 
-    public function testGettingParametersWithQuotedAndUnquotedValuesReturnsArrayWithUnquotedValue(): void
+    public function testParsingParametersWithQuotedAndUnquotedValuesReturnsArrayWithUnquotedValue(): void
     {
         $headers = new Headers();
         $headers->add('Foo', 'bar=baz');

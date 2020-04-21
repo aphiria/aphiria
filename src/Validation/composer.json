@@ -4,13 +4,12 @@
     "keywords": [
         "PHP",
         "validation",
-        "input",
-        "model state"
+        "constraints"
     ],
     "authors": [
         {
             "name": "David Young",
-            "email": "dave@opulencephp.com",
+            "email": "dave@aphiria.com",
             "role": "Architect"
         }
     ],

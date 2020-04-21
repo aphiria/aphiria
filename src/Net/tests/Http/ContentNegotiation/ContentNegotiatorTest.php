@@ -36,7 +36,7 @@ class ContentNegotiatorTest extends TestCase
             ->willReturn($this->headers);
     }
 
-    public function testEmptyListOfFormattersThrowsExceptionWhen(): void
+    public function testEmptyListOfFormattersThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('List of formatters cannot be empty');
@@ -122,6 +122,13 @@ class ContentNegotiatorTest extends TestCase
         $this->assertNull($result->getMediaType());
         $this->assertNull($result->getEncoding());
         $this->assertNull($result->getLanguage());
+    }
+
+    public function testNotSpecifyingFormattersIsAcceptable(): void
+    {
+        new ContentNegotiator();
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testRequestResultEncodingIsSetFromContentTypeHeaderIfSet(): void

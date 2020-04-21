@@ -21,6 +21,7 @@ use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
+use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -108,6 +109,18 @@ class RequestParserTest extends TestCase
         $this->assertFalse($this->parser->isJson($this->request));
     }
 
+    public function testIsMultipartReturnsWhetherOrNotARequestIsMultipart(): void
+    {
+        $this->headers->add('Content-Type', 'text/plain');
+        $this->assertFalse($this->parser->isMultipart($this->request));
+        $this->headers->removeKey('Content-Type');
+        $this->headers->add('Content-Type', 'multipart/mixed');
+        $this->assertTrue($this->parser->isMultipart($this->request));
+        $this->headers->removeKey('Content-Type');
+        $this->headers->add('Content-Type', 'multipart/form-data');
+        $this->assertTrue($this->parser->isMultipart($this->request));
+    }
+
     public function testParseAcceptCharsetHeaderReturnsThem(): void
     {
         $this->headers->add('Accept-Charset', 'utf-8; q=0.1');
@@ -139,6 +152,14 @@ class RequestParserTest extends TestCase
         $this->assertEquals('application/json', $value->getMediaType());
     }
 
+    public function testParsingCookiesReturnsCorrectValuesWithMultipleCookieValues(): void
+    {
+        $this->headers->add('Cookie', 'foo=bar; baz=blah');
+        $cookies = $this->parser->parseCookies($this->request);
+        $this->assertEquals('bar', $cookies->get('foo'));
+        $this->assertEquals('blah', $cookies->get('baz'));
+    }
+
     public function testParsingMultipartRequestWithoutBoundaryThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -152,6 +173,23 @@ class RequestParserTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Request must be of type %s or %s', IRequest::class, MultipartBodyPart::class));
         $this->parser->readAsMultipart([]);
+    }
+
+    public function testParsingParametersReturnsCorrectParameters(): void
+    {
+        $this->headers->add('Foo', 'bar; baz="blah"');
+        $values = $this->parser->parseParameters($this->request, 'Foo');
+        $this->assertNull($values->get('bar'));
+        $this->assertEquals('blah', $values->get('baz'));
+    }
+
+    public function testParsingQueryStringReturnsDictionaryOfValues(): void
+    {
+        $request = $this->createMock(IRequest::class);
+        $request->expects($this->once())
+            ->method('getUri')
+            ->willReturn(new Uri('http://host.com?foo=bar'));
+        $this->assertEquals('bar', $this->parser->parseQueryString($request)->get('foo'));
     }
 
     public function testReadAsFormInputReturnsInput(): void
@@ -168,5 +206,20 @@ class RequestParserTest extends TestCase
             ->willReturn('{"foo":"bar"}');
         $value = $this->parser->readAsJson($this->request);
         $this->assertEquals('bar', $value['foo']);
+    }
+
+    public function testReadingAsMultipartRequestWithHeadersExtractsBody(): void
+    {
+        $this->headers->add('Content-Type', 'multipart/form-data; boundary=boundary');
+        $this->body->expects($this->once())
+            ->method('readAsString')
+            ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
+        $multipartBody = $this->parser->readAsMultipart($this->request);
+        $this->assertNotNull($multipartBody);
+        $bodyParts = $multipartBody->getParts();
+        $this->assertCount(1, $bodyParts);
+        $body = $bodyParts[0]->getBody();
+        $this->assertNotNull($body);
+        $this->assertEquals('body', $body->readAsString());
     }
 }
