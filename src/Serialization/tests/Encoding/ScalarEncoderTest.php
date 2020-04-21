@@ -41,6 +41,7 @@ class ScalarEncoderTest extends TestCase
         $this->assertSame(1.0, $this->scalarEncoder->decode(1.0, 'double', new EncodingContext()));
         $this->assertSame(1, $this->scalarEncoder->decode(1, 'int', new EncodingContext()));
         $this->assertSame(1, $this->scalarEncoder->decode(1, 'integer', new EncodingContext()));
+        $this->assertSame('foo', $this->scalarEncoder->decode('foo', 'string', new EncodingContext()));
     }
 
     public function testEncodingNonScalarThrowsException(): void
