@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Output;
 
-use Aphiria\Console\Drivers\ITerminalDriver;
-use Aphiria\Console\Drivers\TerminalDriverSelector;
+use Aphiria\Console\Drivers\CliDriverSelector;
+use Aphiria\Console\Drivers\ICliDriver;
 use Aphiria\Console\Output\Compilers\IOutputCompiler;
 use Aphiria\Console\Output\Compilers\OutputCompiler;
 
@@ -24,27 +24,27 @@ abstract class Output implements IOutput
 {
     /** @var IOutputCompiler The output compiler to use */
     protected IOutputCompiler $outputCompiler;
-    /** @var ITerminalDriver The terminal driver */
-    protected ITerminalDriver $terminalDriver;
+    /** @var ICliDriver The CLI driver */
+    protected ICliDriver $cliDriver;
     /** @var bool Whether or not to include styling on output messages */
     protected bool $includeStyles = true;
 
     /**
      * @param IOutputCompiler|null $outputCompiler The output compiler to use
-     * @param ITerminalDriver|null $terminalDriver The terminal driver
+     * @param ICliDriver|null $cliDriver The CLI driver
      */
-    public function __construct(IOutputCompiler $outputCompiler = null, ITerminalDriver $terminalDriver = null)
+    public function __construct(IOutputCompiler $outputCompiler = null, ICliDriver $cliDriver = null)
     {
         $this->outputCompiler = $outputCompiler ?? new OutputCompiler();
-        $this->terminalDriver = $terminalDriver ?? (new TerminalDriverSelector())->select();
+        $this->cliDriver = $cliDriver ?? (new CliDriverSelector())->select();
     }
 
     /**
      * @inheritdoc
      */
-    public function getTerminalDriver(): ITerminalDriver
+    public function getCliDriver(): ICliDriver
     {
-        return $this->terminalDriver;
+        return $this->cliDriver;
     }
 
     /**

@@ -15,9 +15,9 @@ namespace Aphiria\Console\Drivers;
 use Aphiria\Console\Output\IOutput;
 
 /**
- * Defines the Unix-based terminal driver
+ * Defines the *nix-based CLI driver
  */
-class UnixTerminalDriver extends TerminalDriver
+class UnixLikeDriver extends CliDriver
 {
     /**
      * @inheritdoc
@@ -28,6 +28,7 @@ class UnixTerminalDriver extends TerminalDriver
             throw new HiddenInputNotSupportedException('STTY must be supported to hide input');
         }
 
+        // @codeCoverageIgnoreStart
         shell_exec('stty -echo');
         $input = fgets(STDIN, 4096);
         shell_exec('stty ' . shell_exec('stty -g'));
@@ -36,13 +37,16 @@ class UnixTerminalDriver extends TerminalDriver
         $output->writeln('');
 
         return $input;
+
+        // @codeCoverageIgnoreEnd
     }
 
     /**
      * @inheritdoc
+     * @codeCoverageIgnore
      */
-    protected function getTerminalDimensionsFromOS(): ?array
+    protected function getCliDimensionsFromOS(): ?array
     {
-        return $this->getTerminalDimensionsFromStty();
+        return $this->getCliDimensionsFromStty();
     }
 }

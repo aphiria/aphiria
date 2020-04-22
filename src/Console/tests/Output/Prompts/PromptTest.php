@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests\Output\Prompts;
 
-use Aphiria\Console\Drivers\ITerminalDriver;
+use Aphiria\Console\Drivers\ICliDriver;
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\Output\Prompts\MultipleChoice;
@@ -123,16 +123,16 @@ class PromptTest extends TestCase
         $this->assertEquals('Dave', $answer);
     }
 
-    public function testAskingHiddenAnswerQuestionWillUseTerminalDriver(): void
+    public function testAskingHiddenAnswerQuestionWillUseCliDriver(): void
     {
-        $terminalDriver = $this->createMock(ITerminalDriver::class);
-        $terminalDriver->expects($this->once())
+        $cliDriver = $this->createMock(ICliDriver::class);
+        $cliDriver->expects($this->once())
             ->method('readHiddenInput')
             ->with($this->output)
             ->willReturn('foo');
         $this->output->expects($this->once())
-            ->method('getTerminalDriver')
-            ->willReturn($terminalDriver);
+            ->method('getCliDriver')
+            ->willReturn($cliDriver);
         $answer = $this->prompt->ask(new Question('Question', null, true), $this->output);
         $this->assertEquals('foo', $answer);
     }

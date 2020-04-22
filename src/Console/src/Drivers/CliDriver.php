@@ -15,25 +15,25 @@ namespace Aphiria\Console\Drivers;
 use Aphiria\Console\StatusCodes;
 
 /**
- * Defines a base terminal driver that's common to multiple OS
+ * Defines a base CLI driver that's common to multiple OS
  */
-abstract class TerminalDriver implements ITerminalDriver
+abstract class CliDriver implements ICliDriver
 {
     /** @var int The default height */
     protected const DEFAULT_HEIGHT = 60;
     /** @var int The default width */
     protected const DEFAULT_WIDTH = 80;
-    /** @var int|null The determine height of the terminal */
+    /** @var int|null The determine height of the CLI */
     protected ?int $height = null;
-    /** @var int|null The determine width of the terminal */
+    /** @var int|null The determine width of the CLI */
     protected ?int $width = null;
-    /** @var bool|null Whether or not the terminal support STTY, or null if we haven't checked */
+    /** @var bool|null Whether or not the CLI support STTY, or null if we haven't checked */
     protected ?bool $supportsStty = null;
 
     /**
      * @inheritdoc
      */
-    public function getTerminalHeight(): int
+    public function getCliHeight(): int
     {
         if ($this->height !== null) {
             return $this->height;
@@ -43,11 +43,13 @@ abstract class TerminalDriver implements ITerminalDriver
             return $this->height = (int)$height;
         }
 
-        if (($terminalDimensions = $this->getTerminalDimensionsFromOS()) !== null) {
-            $this->width = $terminalDimensions[0];
-            $this->height = $terminalDimensions[1];
+        if (($cliDimensions = $this->getCliDimensionsFromOS()) !== null) {
+            // @codeCoverageIgnoreStart
+            $this->width = $cliDimensions[0];
+            $this->height = $cliDimensions[1];
 
             return $this->height;
+            // @codeCoverageIgnoreEnd
         }
 
         return $this->height = self::DEFAULT_HEIGHT;
@@ -56,7 +58,7 @@ abstract class TerminalDriver implements ITerminalDriver
     /**
      * @inheritdoc
      */
-    public function getTerminalWidth(): int
+    public function getCliWidth(): int
     {
         if ($this->width !== null) {
             return $this->width;
@@ -66,9 +68,9 @@ abstract class TerminalDriver implements ITerminalDriver
             return $this->width = (int)$width;
         }
 
-        if (($terminalDimensions = $this->getTerminalDimensionsFromOS()) !== null) {
-            $this->width = $terminalDimensions[0];
-            $this->height = $terminalDimensions[1];
+        if (($cliDimensions = $this->getCliDimensionsFromOS()) !== null) {
+            $this->width = $cliDimensions[0];
+            $this->height = $cliDimensions[1];
 
             return $this->width;
         }
@@ -77,18 +79,19 @@ abstract class TerminalDriver implements ITerminalDriver
     }
 
     /**
-     * Gets the terminal dimensions as a tuple using OS-specific methods
+     * Gets the CLI dimensions as a tuple using OS-specific methods
      *
-     * @return array|null The terminal dimensions (width x height), if gettable, otherwise null
+     * @return array|null The CLI dimensions (width x height), if gettable, otherwise null
      */
-    abstract protected function getTerminalDimensionsFromOS(): ?array;
+    abstract protected function getCliDimensionsFromOS(): ?array;
 
     /**
-     * Gets the terminal dimensions from STTY as a tuple
+     * Gets the CLI dimensions from STTY as a tuple
      *
      * @return array|null The dimensions (width x height) as a tuple if found, otherwise null
+     * @codeCoverageIgnore
      */
-    protected function getTerminalDimensionsFromStty(): ?array
+    protected function getCliDimensionsFromStty(): ?array
     {
         $sttyOutput = $this->runProcess('stty -a | grep columns');
 
@@ -111,6 +114,7 @@ abstract class TerminalDriver implements ITerminalDriver
      *
      * @param string $command The command to run in the process
      * @return string|null The output of the process
+     * @codeCoverageIgnore
      */
     protected function runProcess(string $command): ?string
     {
@@ -139,6 +143,7 @@ abstract class TerminalDriver implements ITerminalDriver
      * Gets whether or not this driver supports stty
      *
      * @return bool Whether or not STTY is supported
+     * @codeCoverageIgnore
      */
     protected function supportsStty(): bool
     {

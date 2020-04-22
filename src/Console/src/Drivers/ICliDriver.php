@@ -15,23 +15,23 @@ namespace Aphiria\Console\Drivers;
 use Aphiria\Console\Output\IOutput;
 
 /**
- * Defines the interface for terminal drivers to implement
+ * Defines the interface for CLI drivers to implement
  */
-interface ITerminalDriver
+interface ICliDriver
 {
     /**
-     * Gets the height of the terminal
+     * Gets the height of the CLI
      *
-     * @return int The height of the terminal
+     * @return int The height of the CLI
      */
-    public function getTerminalHeight(): int;
+    public function getCliHeight(): int;
 
     /**
-     * Gets the width of the terminal
+     * Gets the width of the CLI
      *
-     * @return int The width of the terminal
+     * @return int The width of the CLI
      */
-    public function getTerminalWidth(): int;
+    public function getCliWidth(): int;
 
     /**
      * Gets the hidden input value
