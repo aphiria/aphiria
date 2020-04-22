@@ -22,27 +22,27 @@ class UnixTerminalDriver extends TerminalDriver
     /**
      * @inheritdoc
      */
-    public function readHiddenInput(IOutput $output): string
+    public function readHiddenInput(IOutput $output): ?string
     {
-        // TODO: Implement readHiddenInput() method.
-        return '';
+        if (!$this->supportsStty()) {
+            throw new HiddenInputNotSupportedException('STTY must be supported to hide input');
+        }
+
+        shell_exec('stty -echo');
+        $input = fgets(STDIN, 4096);
+        shell_exec('stty ' . shell_exec('stty -g'));
+
+        // Break to a new line so we don't continue on the previous line
+        $output->writeln('');
+
+        return $input;
     }
 
     /**
      * @inheritdoc
      */
-    protected function getTerminalHeightFromOs(): ?int
+    protected function getTerminalDimensionsFromOS(): ?array
     {
-        // TODO: Implement getTerminalHeightFromOs() method.
-        return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function getTerminalWidthFromOs(): ?int
-    {
-        // TODO: Implement getTerminalWidthFromOs() method.
-        return null;
+        return $this->getTerminalDimensionsFromStty();
     }
 }

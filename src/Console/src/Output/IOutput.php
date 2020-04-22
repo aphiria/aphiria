@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Output;
 
+use Aphiria\Console\Drivers\ITerminalDriver;
 use RuntimeException;
 
 /**
@@ -23,6 +24,13 @@ interface IOutput
      * Clears the output from view
      */
     public function clear(): void;
+
+    /**
+     * Gets the terminal driver for the output
+     *
+     * @return ITerminalDriver The terminal driver
+     */
+    public function getTerminalDriver(): ITerminalDriver;
 
     /**
      * Sets whether or not messages should be styled

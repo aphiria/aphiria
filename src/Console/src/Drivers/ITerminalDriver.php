@@ -37,7 +37,8 @@ interface ITerminalDriver
      * Gets the hidden input value
      *
      * @param IOutput $output The current output
-     * @return string The value of the input
+     * @return string|null The value of the input, or null if none was entered
+     * @throws HiddenInputNotSupportedException Thrown if hidden input is not supported
      */
-    public function readHiddenInput(IOutput $output): string;
+    public function readHiddenInput(IOutput $output): ?string;
 }

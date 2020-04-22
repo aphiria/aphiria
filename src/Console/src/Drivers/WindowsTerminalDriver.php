@@ -22,27 +22,68 @@ class WindowsTerminalDriver extends TerminalDriver
     /**
      * @inheritdoc
      */
-    public function readHiddenInput(IOutput $output): string
+    public function readHiddenInput(IOutput $output): ?string
     {
-        // TODO: Implement readHiddenInput() method.
-        return '';
+        $hiddenInputExePath = __DIR__ . '/../../bin/hiddeninput.exe';
+
+        // Check if we're running from a PHAR
+        if (strpos(__FILE__, 'phar:') === 0) {
+            $hiddenInputExeTempPath = sys_get_temp_dir() . '/hiddeninput.exe';
+            copy($hiddenInputExePath, $hiddenInputExeTempPath);
+            $input = shell_exec($hiddenInputExeTempPath);
+            unlink($hiddenInputExeTempPath);
+        } else {
+            $input = shell_exec($hiddenInputExePath);
+        }
+
+        // Break to a new line so we don't continue on the previous line
+        $output->writeln('');
+
+        return $input;
+    }
+
+    /**
+     * Gets the terminal dimensions from the console mode as a tuple
+     *
+     * @return array|null The dimensions (width x height) as a tuple if found, otherwise null
+     */
+    protected function getTerminalDimensionsFromConsoleMode(): ?array
+    {
+        $modeOutput = $this->runProcess('mode CON');
+
+        if (
+            $modeOutput === null
+            || !preg_match('/--------+\r?\n.+?(\d+)\r?\n.+?(\d+)\r?\n/', $modeOutput, $matches)
+        ) {
+            return null;
+        }
+
+        return [(int)$matches[2], (int)$matches[1]];
     }
 
     /**
      * @inheritdoc
      */
-    protected function getTerminalHeightFromOs(): ?int
+    protected function getTerminalDimensionsFromOS(): ?array
     {
-        // TODO: Implement getTerminalHeightFromOs() method.
-        return null;
-    }
+        if (
+            \is_string($ansicon = getenv('ANSICON'))
+            && preg_match('/^(\d+)x(\d+)(?: \((\d+)x(\d+)\))?$/', trim($ansicon), $matches)
+        ) {
+            return [(int)$matches[1], (int)($matches[4] ?? $matches[2])];
+        }
 
-    /**
-     * @inheritdoc
-     */
-    protected function getTerminalWidthFromOs(): ?int
-    {
-        // TODO: Implement getTerminalWidthFromOs() method.
+        if (
+            (!\function_exists('sapi_windows_vt100_support') || !\sapi_windows_vt100_support(fopen('php://stdout', 'wb')))
+            && $this->supportsStty()
+        ) {
+            return $this->getTerminalDimensionsFromStty();
+        }
+
+        if (($consoleModeDimensions = $this->getTerminalDimensionsFromConsoleMode()) !== null) {
+            return $consoleModeDimensions;
+        }
+
         return null;
     }
 }
