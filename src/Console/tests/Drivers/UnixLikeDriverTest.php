@@ -104,8 +104,8 @@ class UnixLikeDriverTest extends TestCase
         $matches = [];
 
         if (
-            \preg_match('/rows.(\d+);.columns.(\d+);/i', $sttyOutput, $matches) !== true
-            && \preg_match('/;.(\d+).rows;.(\d+).columns/i', $sttyOutput, $matches) !== true
+            \preg_match('/rows.(\d+);.columns.(\d+);/i', $sttyOutput, $matches) !== 1
+            && \preg_match('/;.(\d+).rows;.(\d+).columns/i', $sttyOutput, $matches) !== 1
         ) {
             $this->fail('Dimensions could not be read from STTY output');
         }
