@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Output;
 
+use Aphiria\Console\Drivers\ICliDriver;
 use RuntimeException;
 
 /**
@@ -23,6 +24,13 @@ interface IOutput
      * Clears the output from view
      */
     public function clear(): void;
+
+    /**
+     * Gets the CLI driver for the output
+     *
+     * @return ICliDriver The CLI driver
+     */
+    public function getCliDriver(): ICliDriver;
 
     /**
      * Sets whether or not messages should be styled

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Output\Prompts;
 
+use Aphiria\Console\Drivers\HiddenInputNotSupportedException;
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\IOutput;
 use RuntimeException;
@@ -39,6 +40,7 @@ class Prompt
      * @param IOutput $output The output to write to
      * @return mixed The user's answer to the question
      * @throws RuntimeException Thrown if we failed to get the user's answer
+     * @throws HiddenInputNotSupportedException Thrown if hidden inputs are not supported
      */
     public function ask(Question $question, IOutput $output)
     {
@@ -63,9 +65,17 @@ class Prompt
             $output->write($question->getAnswerLineString());
         }
 
-        $answer = trim($output->readLine());
+        if ($question->isHidden) {
+            $answer = $output->getCliDriver()->readHiddenInput($output);
+        } else {
+            $answer = $output->readLine();
+        }
 
-        if ($answer === '') {
+        if (\is_string($answer)) {
+            $answer = trim($answer);
+        }
+
+        if ($answer === '' || $answer === null) {
             $answer = $question->defaultAnswer;
         }
 

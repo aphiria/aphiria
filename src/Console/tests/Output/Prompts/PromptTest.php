@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests\Output\Prompts;
 
+use Aphiria\Console\Drivers\ICliDriver;
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\Output\Prompts\MultipleChoice;
@@ -120,6 +121,20 @@ class PromptTest extends TestCase
             ->with("<question>{$question->text}</question>");
         $answer = $this->prompt->ask($question, $this->output);
         $this->assertEquals('Dave', $answer);
+    }
+
+    public function testAskingHiddenAnswerQuestionWillUseCliDriver(): void
+    {
+        $cliDriver = $this->createMock(ICliDriver::class);
+        $cliDriver->expects($this->once())
+            ->method('readHiddenInput')
+            ->with($this->output)
+            ->willReturn('foo');
+        $this->output->expects($this->once())
+            ->method('getCliDriver')
+            ->willReturn($cliDriver);
+        $answer = $this->prompt->ask(new Question('Question', null, true), $this->output);
+        $this->assertEquals('foo', $answer);
     }
 
     public function testEmptyDefaultAnswerToIndexedChoices(): void
