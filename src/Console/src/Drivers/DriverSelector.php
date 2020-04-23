@@ -15,14 +15,14 @@ namespace Aphiria\Console\Drivers;
 /**
  * Defines what selects the driver to use
  */
-class CliDriverSelector
+class DriverSelector
 {
     /**
      * Selects the appropriate CLI driver for this OS
      *
-     * @return ICliDriver The CLI driver to use
+     * @return IDriver The CLI driver to use
      */
-    public function select(): ICliDriver
+    public function select(): IDriver
     {
         return DIRECTORY_SEPARATOR === '\\' ? new WindowsDriver() : new UnixLikeDriver();
     }

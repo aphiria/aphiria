@@ -17,7 +17,7 @@ use Aphiria\Console\Output\IOutput;
 /**
  * Defines the interface for CLI drivers to implement
  */
-interface ICliDriver
+interface IDriver
 {
     /**
      * Gets the height of the CLI

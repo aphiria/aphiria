@@ -17,7 +17,7 @@ use Aphiria\Console\StatusCodes;
 /**
  * Defines a base CLI driver that's common to multiple OS
  */
-abstract class CliDriver implements ICliDriver
+abstract class Driver implements IDriver
 {
     /** @var int The default height */
     protected const DEFAULT_HEIGHT = 60;

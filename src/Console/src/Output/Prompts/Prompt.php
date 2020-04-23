@@ -66,7 +66,7 @@ class Prompt
         }
 
         if ($question->isHidden) {
-            $answer = $output->getCliDriver()->readHiddenInput($output);
+            $answer = $output->getDriver()->readHiddenInput($output);
         } else {
             $answer = $output->readLine();
         }

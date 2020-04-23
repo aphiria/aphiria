@@ -17,7 +17,7 @@ use Aphiria\Console\Output\IOutput;
 /**
  * Defines the Windows OS CLI driver
  */
-class WindowsDriver extends CliDriver
+class WindowsDriver extends Driver
 {
     /** @var string The path to the hidden input exe */
     private const HIDDEN_INPUT_EXE_PATH = __DIR__ . '/../../bin/hiddeninput.exe';

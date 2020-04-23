@@ -17,7 +17,7 @@ use Aphiria\Console\Output\IOutput;
 /**
  * Defines the *nix-based CLI driver
  */
-class UnixLikeDriver extends CliDriver
+class UnixLikeDriver extends Driver
 {
     /**
      * @inheritdoc

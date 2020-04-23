@@ -12,16 +12,16 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests\Drivers;
 
-use Aphiria\Console\Drivers\CliDriverSelector;
+use Aphiria\Console\Drivers\DriverSelector;
 use Aphiria\Console\Drivers\UnixLikeDriver;
 use Aphiria\Console\Drivers\WindowsDriver;
 use PHPUnit\Framework\TestCase;
 
-class CliDriverSelectorTest extends TestCase
+class DriverSelectorTest extends TestCase
 {
-    public function testCliDriverIsSelectedBasedOnOS(): void
+    public function testDriverIsSelectedBasedOnOS(): void
     {
-        $selector = new CliDriverSelector();
+        $selector = new DriverSelector();
 
         if (\DIRECTORY_SEPARATOR === '\\') {
             $this->assertInstanceOf(WindowsDriver::class, $selector->select());
