@@ -15,11 +15,14 @@ namespace Aphiria\Framework\Application;
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
+use Aphiria\Console\Commands\CommandBinding;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\ResolutionException;
+use Aphiria\Framework\Console\Commands\FlushFrameworkCachesCommand;
+use Aphiria\Framework\Console\Commands\FlushFrameworkCachesCommandHandler;
 use Aphiria\Framework\Console\Components\CommandComponent;
 use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
@@ -184,6 +187,34 @@ trait AphiriaComponents
 
         $appBuilder->getComponent(SerializerComponent::class)
             ->withEncoder($class, $encoder);
+
+        return $this;
+    }
+
+    /**
+     * Registers all the built-in framework commands
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @return self For chaining
+     */
+    protected function withFrameworkCommands(IApplicationBuilder $appBuilder): self
+    {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        if (!$appBuilder->hasComponent(CommandComponent::class)) {
+            // Bind the command registry here so that it can be used in the component
+            if (!Container::$globalInstance->hasBinding(CommandRegistry::class)) {
+                Container::$globalInstance->bindInstance(CommandRegistry::class, new CommandRegistry());
+            }
+
+            $appBuilder->withComponent(new CommandComponent(Container::$globalInstance));
+        }
+
+        $appBuilder->getComponent(CommandComponent::class)
+            ->withCommands(static function (CommandRegistry $commands) {
+                $commands->registerManyCommands([
+                    new CommandBinding(new FlushFrameworkCachesCommand(), FlushFrameworkCachesCommandHandler::class)
+                ]);
+            });
 
         return $this;
     }

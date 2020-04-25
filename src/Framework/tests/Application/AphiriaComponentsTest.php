@@ -378,6 +378,61 @@ class AphiriaComponentsTest extends TestCase
         $component->build($this->appBuilder, self::class, $this->createMock(IEncoder::class));
     }
 
+    public function testWithFrameworkCommandsConfiguresComponentToHaveAnnotations(): void
+    {
+        $expectedComponent = $this->createMock(CommandComponent::class);
+        $expectedComponent->expects($this->once())
+            ->method('withCommands')
+            ->with($this->callback(function (Closure $callback) {
+                $commands = new CommandRegistry();
+                $callback($commands);
+                $commandHandler = null;
+
+                return $commands->tryGetCommand('framework:flushcaches', $commandHandler);
+            }));
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponent')
+            ->with(CommandComponent::class)
+            ->willReturn(true);
+        $this->appBuilder->expects($this->at(1))
+            ->method('getComponent')
+            ->with(CommandComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class() {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder): void
+            {
+                $this->withFrameworkCommands($appBuilder);
+            }
+        };
+        $component->build($this->appBuilder);
+    }
+
+    public function testWithFrameworkCommandsRegistersComponentIfItIsNotRegisteredYet(): void
+    {
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponent')
+            ->with(CommandComponent::class)
+            ->willReturn(false);
+        $this->appBuilder->expects($this->at(1))
+            ->method('withComponent')
+            ->with($this->isInstanceOf(CommandComponent::class));
+        $this->appBuilder->expects($this->at(2))
+            ->method('getComponent')
+            ->with(CommandComponent::class)
+            ->willReturn($this->createMock(CommandComponent::class));
+        $component = new class() {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder): void
+            {
+                $this->withFrameworkCommands($appBuilder);
+            }
+        };
+        $component->build($this->appBuilder);
+    }
+
     public function testWithHttpResponseFactoryConfiguresComponentToHaveFactory(): void
     {
         $responseFactory = fn (Exception $ex) => $this->createMock(IResponse::class);
