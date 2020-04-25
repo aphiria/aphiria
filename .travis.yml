@@ -16,7 +16,7 @@ git:
   depth: false
 
 before_script:
-  - if [ "$INLCUDE_COVERAGE" == 'true' ] && [php -v | grep -q 'Xdebug']; then phpenv config-rm xdebug.ini; fi
+  - if [ "$INLCUDE_COVERAGE" == 'true' ] && [ php -v | grep -q 'Xdebug' ]; then phpenv config-rm xdebug.ini; fi
   - if [ "$INLCUDE_COVERAGE" == 'true' ]; then pecl install pcov; fi
   - composer self-update
   - composer install
