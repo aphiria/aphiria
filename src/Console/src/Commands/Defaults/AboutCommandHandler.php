@@ -26,9 +26,9 @@ final class AboutCommandHandler implements ICommandHandler
 {
     /** @var string The template for the output */
     private static string $template = <<<EOF
------------------------------
-About <b>Aphiria</b>
------------------------------
+{{hr}}
+<b>Aphiria</b>
+{{hr}}
 {{commands}}
 EOF;
     /** @var CommandRegistry The commands */
@@ -54,7 +54,11 @@ EOF;
     public function handle(Input $input, IOutput $output)
     {
         // Compile the template
-        $compiledTemplate = str_replace('{{commands}}', $this->getCommandText(), self::$template);
+        $compiledTemplate = \str_replace(
+            ['{{commands}}', '{{hr}}'],
+            [$this->getCommandText(), \str_repeat('-', $output->getDriver()->getCliWidth())],
+            self::$template
+        );
 
         $output->writeln($compiledTemplate);
     }

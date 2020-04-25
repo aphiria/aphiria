@@ -30,9 +30,9 @@ final class HelpCommandHandler implements ICommandHandler
 {
     /** @var string The template for the output */
     private static string $template = <<<EOF
------------------------------
+{{hr}}
 Command: <info>{{name}}</info>
------------------------------
+{{hr}}
 <b>{{command}}</b>
 
 <comment>Description:</comment>
@@ -93,8 +93,9 @@ EOF;
 
             // Compile the template
             $compiledTemplate = str_replace(
-                ['{{command}}', '{{description}}', '{{name}}', '{{arguments}}', '{{options}}', '{{helpText}}'],
+                ['{{hr}}', '{{command}}', '{{description}}', '{{name}}', '{{arguments}}', '{{options}}', '{{helpText}}'],
                 [
+                    \str_repeat('-', $output->getDriver()->getCliWidth()),
                     $this->commandFormatter->format($command),
                     empty($command->description) ? 'No description' : $command->description,
                     $command->name,
