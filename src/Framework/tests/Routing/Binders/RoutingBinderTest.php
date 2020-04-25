@@ -17,11 +17,15 @@ use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Routing\Binders\RoutingBinder;
 use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
+use Aphiria\Routing\Caching\FileRouteCache;
+use Aphiria\Routing\Caching\IRouteCache;
 use Aphiria\Routing\Matchers\IRouteMatcher;
 use Aphiria\Routing\Matchers\TrieRouteMatcher;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteRegistrantCollection;
 use Aphiria\Routing\UriTemplates\AstRouteUriFactory;
+use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\FileTrieCache;
+use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\ITrieCache;
 use Aphiria\Routing\UriTemplates\IRouteUriFactory;
 use Closure;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -57,6 +61,12 @@ class RoutingBinderTest extends TestCase
             ->with(RouteCollection::class, $this->isInstanceOf(RouteCollection::class));
         $this->container->expects($this->at(1))
             ->method('bindInstance')
+            ->with(IRouteCache::class, $this->isInstanceOf(FileRouteCache::class));
+        $this->container->expects($this->at(2))
+            ->method('bindInstance')
+            ->with(ITrieCache::class, $this->isInstanceOf(FileTrieCache::class));
+        $this->container->expects($this->at(3))
+            ->method('bindInstance')
             ->with(RouteRegistrantCollection::class, $this->isInstanceOf(RouteRegistrantCollection::class));
     }
 
@@ -78,7 +88,7 @@ class RoutingBinderTest extends TestCase
     public function testAnnotationRegistrantIsBound(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(4))
+        $this->container->expects($this->at(6))
             ->method('bindInstance')
             ->with(AnnotationRouteRegistrant::class, $this->isInstanceOf(AnnotationRouteRegistrant::class));
         $this->binder->bind($this->container);
@@ -89,13 +99,18 @@ class RoutingBinderTest extends TestCase
         // Basically just ensuring we cover the production case in this test
         \putenv('APP_ENV=production');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
+        $this->container->expects($this->at(4))
+            ->method('bindFactory')
+            ->with([IRouteMatcher::class, TrieRouteMatcher::class], $this->callback(function (Closure $factory) {
+                return $factory() instanceof TrieRouteMatcher;
+            }));
         $this->binder->bind($this->container);
     }
 
     public function testRouteUriFactoryIsBound(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(3))
+        $this->container->expects($this->at(5))
             ->method('bindInstance')
             ->with(IRouteUriFactory::class, $this->isInstanceOf(AstRouteUriFactory::class));
         $this->binder->bind($this->container);
@@ -104,7 +119,7 @@ class RoutingBinderTest extends TestCase
     public function testTrieRouteMatcherIsBound(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(2))
+        $this->container->expects($this->at(4))
             ->method('bindFactory')
             ->with([IRouteMatcher::class, TrieRouteMatcher::class], $this->callback(function (Closure $factory) {
                 return $factory() instanceof TrieRouteMatcher;

@@ -18,6 +18,7 @@ use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\Caching\FileObjectConstraintsRegistryCache;
+use Aphiria\Validation\Constraints\Caching\IObjectConstraintsRegistryCache;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\ErrorMessages\DefaultErrorMessageTemplateRegistry;
@@ -46,16 +47,16 @@ final class ValidationBinder extends Binder
         $container->bindInstance(ObjectConstraintsRegistry::class, $objectConstraints);
         $validator = new Validator($objectConstraints);
         $container->bindInstance([IValidator::class, Validator::class], $validator);
+        $constraintCache = new FileObjectConstraintsRegistryCache(GlobalConfiguration::getString('aphiria.validation.constraintsCachePath'));
+        $container->bindInstance(IObjectConstraintsRegistryCache::class, $constraintCache);
 
         if (getenv('APP_ENV') === 'production') {
-            $constraintCache = new FileObjectConstraintsRegistryCache(GlobalConfiguration::getString('aphiria.validation.constraintsCachePath'));
+            $constraintsRegistrants = new ObjectConstraintsRegistrantCollection($constraintCache);
         } else {
-            $constraintCache = null;
+            $constraintsRegistrants = new ObjectConstraintsRegistrantCollection(null);
         }
 
-        $constraintsRegistrants = new ObjectConstraintsRegistrantCollection($constraintCache);
         $container->bindInstance(ObjectConstraintsRegistrantCollection::class, $constraintsRegistrants);
-
         $errorMessageTemplateConfiguration = null;
 
         if (GlobalConfiguration::tryGetArray('aphiria.validation.errorMessageTemplates', $errorMessageTemplateConfiguration)) {

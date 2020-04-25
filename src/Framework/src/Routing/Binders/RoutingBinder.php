@@ -18,12 +18,14 @@ use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
 use Aphiria\Routing\Caching\FileRouteCache;
+use Aphiria\Routing\Caching\IRouteCache;
 use Aphiria\Routing\Matchers\IRouteMatcher;
 use Aphiria\Routing\Matchers\TrieRouteMatcher;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteRegistrantCollection;
 use Aphiria\Routing\UriTemplates\AstRouteUriFactory;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\FileTrieCache;
+use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\ITrieCache;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieFactory;
 use Aphiria\Routing\UriTemplates\IRouteUriFactory;
 use Doctrine\Common\Annotations\AnnotationException;
@@ -42,15 +44,17 @@ final class RoutingBinder extends Binder
     {
         $routes = new RouteCollection();
         $container->bindInstance(RouteCollection::class, $routes);
+        $trieCache = new FileTrieCache(GlobalConfiguration::getString('aphiria.routing.trieCachePath'));
+        $routeCache = new FileRouteCache(GlobalConfiguration::getString('aphiria.routing.routeCachePath'));
+        $container->bindInstance(IRouteCache::class, $routeCache);
+        $container->bindInstance(ITrieCache::class, $trieCache);
 
         if (getenv('APP_ENV') === 'production') {
-            $trieCache = new FileTrieCache(GlobalConfiguration::getString('aphiria.routing.trieCachePath'));
-            $routeCache = new FileRouteCache(GlobalConfiguration::getString('aphiria.routing.routeCachePath'));
+            $routeRegistrants = new RouteRegistrantCollection($routeCache);
         } else {
-            $trieCache = $routeCache = null;
+            $routeRegistrants = new RouteRegistrantCollection();
         }
 
-        $routeRegistrants = new RouteRegistrantCollection($routeCache);
         $container->bindInstance(RouteRegistrantCollection::class, $routeRegistrants);
 
         // Bind as a factory so that our app builders can register all routes prior to the routes being built
@@ -59,7 +63,13 @@ final class RoutingBinder extends Binder
             static function () use ($routes, $routeRegistrants, $trieCache) {
                 $routeRegistrants->registerRoutes($routes);
 
-                return new TrieRouteMatcher((new TrieFactory($routes, $trieCache))->createTrie());
+                if (\getenv('APP_ENV') === 'production') {
+                    $trieFactory = new TrieFactory($routes, $trieCache);
+                } else {
+                    $trieFactory = new TrieFactory($routes);
+                }
+
+                return new TrieRouteMatcher(($trieFactory)->createTrie());
             },
             true
         );

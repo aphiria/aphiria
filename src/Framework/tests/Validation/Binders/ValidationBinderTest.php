@@ -17,6 +17,8 @@ use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Validation\Binders\ValidationBinder;
 use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
+use Aphiria\Validation\Constraints\Caching\FileObjectConstraintsRegistryCache;
+use Aphiria\Validation\Constraints\Caching\IObjectConstraintsRegistryCache;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\ErrorMessages\DefaultErrorMessageTemplateRegistry;
@@ -53,6 +55,9 @@ class ValidationBinderTest extends TestCase
             ->with([IValidator::class, Validator::class], $this->isInstanceOf(Validator::class));
         $this->container->expects($this->at(2))
             ->method('bindInstance')
+            ->with(IObjectConstraintsRegistryCache::class, $this->isInstanceOf(FileObjectConstraintsRegistryCache::class));
+        $this->container->expects($this->at(3))
+            ->method('bindInstance')
             ->with(ObjectConstraintsRegistrantCollection::class, $this->isInstanceOf(ObjectConstraintsRegistrantCollection::class));
     }
 
@@ -67,7 +72,7 @@ class ValidationBinderTest extends TestCase
     public function testAnnotationRegistrantIsRegistered(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(4))
+        $this->container->expects($this->at(5))
             ->method('bindInstance')
             ->with(AnnotationObjectConstraintsRegistrant::class, $this->isInstanceOf(AnnotationObjectConstraintsRegistrant::class));
         $this->binder->bind($this->container);
@@ -89,7 +94,7 @@ class ValidationBinderTest extends TestCase
             'type' => \get_class($errorMessageTemplates)
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        $this->container->expects($this->at(3))
+        $this->container->expects($this->at(4))
             ->method('resolve')
             ->with(\get_class($errorMessageTemplates))
             ->willReturn($errorMessageTemplates);
@@ -109,7 +114,7 @@ class ValidationBinderTest extends TestCase
     public function testIcuFormatErrorMessageInterpolatorIsSupported(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(3))
+        $this->container->expects($this->at(4))
             ->method('bindInstance')
             ->with(IErrorMessageInterpolator::class, $this->isInstanceOf(StringReplaceErrorMessageInterpolator::class));
         $this->binder->bind($this->container);
@@ -123,7 +128,7 @@ class ValidationBinderTest extends TestCase
             'defaultLocale' => 'en'
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        $this->container->expects($this->at(3))
+        $this->container->expects($this->at(4))
             ->method('bindInstance')
             ->with(IErrorMessageInterpolator::class, $this->isInstanceOf(IcuFormatErrorMessageInterpolator::class));
         $this->binder->bind($this->container);

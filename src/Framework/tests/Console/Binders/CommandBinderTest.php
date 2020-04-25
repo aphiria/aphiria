@@ -15,6 +15,8 @@ namespace Aphiria\Framework\Tests\Console\Binders;
 use Aphiria\Configuration\GlobalConfiguration;
 use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
+use Aphiria\Console\Commands\Caching\FileCommandRegistryCache;
+use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\IContainer;
@@ -42,6 +44,9 @@ class CommandBinderTest extends TestCase
             ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));
         $this->container->expects($this->at(1))
             ->method('bindInstance')
+            ->with(ICommandRegistryCache::class, $this->isInstanceOf(FileCommandRegistryCache::class));
+        $this->container->expects($this->at(2))
+            ->method('bindInstance')
             ->with(CommandRegistrantCollection::class, $this->isInstanceOf(CommandRegistrantCollection::class));
     }
 
@@ -56,7 +61,7 @@ class CommandBinderTest extends TestCase
     public function testAnnotationRegistrantIsRegistered(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(2))
+        $this->container->expects($this->at(3))
             ->method('bindInstance')
             ->with(AnnotationCommandRegistrant::class, $this->isInstanceOf(AnnotationCommandRegistrant::class));
         $this->binder->bind($this->container);
@@ -66,9 +71,7 @@ class CommandBinderTest extends TestCase
     {
         // Basically just ensuring we cover the production case in this test
         putenv('APP_ENV=production');
-        $config = self::getBaseConfig();
-        $config['aphiria']['console']['commandCachePath'] = '/commands';
-        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->binder->bind($this->container);
     }
 
@@ -83,6 +86,7 @@ class CommandBinderTest extends TestCase
             'aphiria' => [
                 'console' => [
                     'annotationPaths' => ['/src'],
+                    'commandCachePath' => '/commandCache.txt'
                 ]
             ]
         ];
