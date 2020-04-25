@@ -24,7 +24,7 @@ class ServeCommandHandlerTest extends TestCase
         $output = $this->createMock(IOutput::class);
         $output->expects($this->once())
             ->method('writeln')
-            ->with('<info>Running at http://localhost.app:443');
+            ->with('<info>Running at http://localhost.app:443</info>');
         $input = new Input(
             'app:serve',
             [],
