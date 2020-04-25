@@ -15,6 +15,8 @@ namespace Aphiria\Framework\Tests\Application;
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
+use Aphiria\Configuration\GlobalConfiguration;
+use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Binders\Binder;
@@ -50,6 +52,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->appBuilder = $this->createMock(IApplicationBuilder::class);
         Container::$globalInstance = new Container();
+        GlobalConfiguration::resetConfigurationSources();
     }
 
     public function testWithBinderDispatcherRegisterBinderDispatcherToComponent(): void
@@ -386,9 +389,9 @@ class AphiriaComponentsTest extends TestCase
             ->with($this->callback(function (Closure $callback) {
                 $commands = new CommandRegistry();
                 $callback($commands);
-                $commandHandler = null;
 
-                return $commands->tryGetCommand('framework:flushcaches', $commandHandler);
+                return $commands->tryGetCommand('framework:flushcaches', $flushCommandHandler)
+                    && $commands->tryGetCommand('app:serve', $serveCommandHandler);
             }));
         $this->appBuilder->expects($this->at(0))
             ->method('hasComponent')
@@ -398,6 +401,9 @@ class AphiriaComponentsTest extends TestCase
             ->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($expectedComponent);
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration([
+            'aphiria' => ['api' => ['localhostRouterPath' => '/router']]
+        ]));
         $component = new class() {
             use AphiriaComponents;
 

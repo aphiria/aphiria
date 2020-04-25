@@ -23,6 +23,8 @@ use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Framework\Console\Commands\FlushFrameworkCachesCommand;
 use Aphiria\Framework\Console\Commands\FlushFrameworkCachesCommandHandler;
+use Aphiria\Framework\Console\Commands\ServeCommand;
+use Aphiria\Framework\Console\Commands\ServeCommandHandler;
 use Aphiria\Framework\Console\Components\CommandComponent;
 use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
@@ -212,7 +214,8 @@ trait AphiriaComponents
         $appBuilder->getComponent(CommandComponent::class)
             ->withCommands(static function (CommandRegistry $commands) {
                 $commands->registerManyCommands([
-                    new CommandBinding(new FlushFrameworkCachesCommand(), FlushFrameworkCachesCommandHandler::class)
+                    new CommandBinding(new FlushFrameworkCachesCommand(), FlushFrameworkCachesCommandHandler::class),
+                    new CommandBinding(new ServeCommand(), ServeCommandHandler::class)
                 ]);
             });
 
