@@ -1,25 +1,34 @@
 language: php
 
-php:
-  - 7.4
+matrix:
+  include:
+    - php: 7.4
+      env: INLCUDE_COVERAGE='true'
+    - php: nightly
+
+  allow_failures:
+    - php: nightly
+
+  fast_finish: true
 
 # Shallow clones can cause issues with subtree splits
 git:
   depth: false
 
 before_script:
-  - if php -v | grep -q 'Xdebug'; then phpenv config-rm xdebug.ini; fi
-  - pecl install pcov
+  - if [ "$INLCUDE_COVERAGE" == 'true' ] && [php -v | grep -q 'Xdebug']; then phpenv config-rm xdebug.ini; fi
+  - if [ "$INLCUDE_COVERAGE" == 'true' ]; then pecl install pcov; fi
   - composer self-update
   - composer install
   - composer dump-autoload -o
 
 script:
-  - vendor/bin/phpunit --coverage-clover ./.coverage/clover.xml --verbose
-  - composer run-script lint-check
+  - if [ "$INLCUDE_COVERAGE" != 'true' ]; then vendor/bin/phpunit; fi
+  - if [ "$INLCUDE_COVERAGE" == 'true' ]; then vendor/bin/phpunit --coverage-clover ./.coverage/clover.xml --verbose; fi
+  - if [ "$INLCUDE_COVERAGE" == 'true' ]; then composer run-script lint-check; fi
 
 after_success:
-  - vendor/bin/php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
+  - if [ "$INLCUDE_COVERAGE" == 'true' ]; then vendor/bin/php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v; fi
 
 deploy:
   - provider: script
@@ -33,6 +42,3 @@ notifications:
     - dave@aphiria.com
 
 sudo: false
-
-matrix:
-  fast_finish: true
