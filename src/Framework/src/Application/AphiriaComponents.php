@@ -197,9 +197,10 @@ trait AphiriaComponents
      * Registers all the built-in framework commands
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param string[] $commandNamesToExclude The names of built-in commands to exclude
      * @return self For chaining
      */
-    protected function withFrameworkCommands(IApplicationBuilder $appBuilder): self
+    protected function withFrameworkCommands(IApplicationBuilder $appBuilder, array $commandNamesToExclude = []): self
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(CommandComponent::class)) {
@@ -212,11 +213,19 @@ trait AphiriaComponents
         }
 
         $appBuilder->getComponent(CommandComponent::class)
-            ->withCommands(static function (CommandRegistry $commands) {
-                $commands->registerManyCommands([
+            ->withCommands(static function (CommandRegistry $commands) use ($commandNamesToExclude) {
+                $commandBindings = [
                     new CommandBinding(new FlushFrameworkCachesCommand(), FlushFrameworkCachesCommandHandler::class),
                     new CommandBinding(new ServeCommand(), ServeCommandHandler::class)
-                ]);
+                ];
+
+                foreach ($commandBindings as $commandBinding) {
+                    if (\in_array($commandBinding->command->name, $commandNamesToExclude, true)) {
+                        continue;
+                    }
+
+                    $commands->registerCommand($commandBinding->command, $commandBinding->commandHandlerClassName);
+                }
             });
 
         return $this;

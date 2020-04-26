@@ -381,7 +381,7 @@ class AphiriaComponentsTest extends TestCase
         $component->build($this->appBuilder, self::class, $this->createMock(IEncoder::class));
     }
 
-    public function testWithFrameworkCommandsConfiguresComponentToHaveAnnotations(): void
+    public function testWithFrameworkCommandsConfiguresComponentToHaveCommands(): void
     {
         $expectedComponent = $this->createMock(CommandComponent::class);
         $expectedComponent->expects($this->once())
@@ -410,6 +410,40 @@ class AphiriaComponentsTest extends TestCase
             public function build(IApplicationBuilder $appBuilder): void
             {
                 $this->withFrameworkCommands($appBuilder);
+            }
+        };
+        $component->build($this->appBuilder);
+    }
+
+    public function testWithFrameworkCommandsExcludesSpecificOnes(): void
+    {
+        $expectedComponent = $this->createMock(CommandComponent::class);
+        $expectedComponent->expects($this->once())
+            ->method('withCommands')
+            ->with($this->callback(function (Closure $callback) {
+                $commands = new CommandRegistry();
+                $callback($commands);
+
+                return $commands->tryGetCommand('framework:flushcaches', $flushCommandHandler)
+                    && !$commands->tryGetCommand('app:serve', $serveCommandHandler);
+            }));
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponent')
+            ->with(CommandComponent::class)
+            ->willReturn(true);
+        $this->appBuilder->expects($this->at(1))
+            ->method('getComponent')
+            ->with(CommandComponent::class)
+            ->willReturn($expectedComponent);
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration([
+            'aphiria' => ['api' => ['localhostRouterPath' => '/router']]
+        ]));
+        $component = new class() {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder): void
+            {
+                $this->withFrameworkCommands($appBuilder, ['app:serve']);
             }
         };
         $component->build($this->appBuilder);
