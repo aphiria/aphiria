@@ -12,22 +12,36 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Testing;
 
+use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 
 /**
  * Defines a request client for tests
  */
-class Client
+class ApplicationClient
 {
+    /** @var IRequestHandler The API application */
+    protected IRequestHandler $app;
+
     /**
-     * Sends a request and gets a response
+     * @param IRequestHandler $app The API application
+     */
+    public function __construct(IRequestHandler $app)
+    {
+        $this->app = $app;
+    }
+
+    /**
+     * Sends a request through the application and gets a response
      *
      * @param IRequest $request The request to send
      * @return IResponse The returned response
+     * @throws HttpException Thrown if there was an error handling the request
      */
     public function send(IRequest $request): IResponse
     {
-        // TODO
+        return $this->app->handle($request);
     }
 }
