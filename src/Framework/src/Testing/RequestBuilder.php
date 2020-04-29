@@ -29,6 +29,7 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Uri;
+use Aphiria\Serialization\TypeResolver;
 use InvalidArgumentException;
 use LogicException;
 
@@ -114,19 +115,7 @@ class RequestBuilder
         if ($body instanceof IBody) {
             $new->body = $body;
         } elseif (\is_array($body) || \is_object($body) || \is_scalar($body)) {
-            if (\is_array($body)) {
-                if (\count($body) === 0) {
-                    $type = 'array';
-                } elseif (\is_object($body[0])) {
-                    $type = \get_class($body[0]);
-                } else {
-                    $type = \gettype($body[0]);
-                }
-            } elseif (\is_object($body)) {
-                $type = \get_class($body);
-            } else {
-                $type = \gettype($body);
-            }
+            $type = TypeResolver::resolveType($body);
 
             // Grab the media type formatter from a dummy request that has the same headers
             $mediaTypeFormatterMatch = $new->mediaTypeFormatterMatcher->getBestRequestMediaTypeFormatterMatch(

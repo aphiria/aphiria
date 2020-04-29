@@ -12,23 +12,43 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Testing;
 
+use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Formatting\ResponseHeaderParser;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IResponse;
+use Aphiria\Serialization\TypeResolver;
+use InvalidArgumentException;
 
 /**
  * Defines assertions that can be made on HTTP responses
  */
 class ResponseAssertions
 {
+    /** @var IMediaTypeFormatterMatcher The media type formatter matcher */
+    private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
     /** @var ResponseHeaderParser The response header parser */
     private ResponseHeaderParser $responseHeaderParser;
 
     /**
+     * @param IMediaTypeFormatterMatcher|null $mediaTypeFormatterMatcher The media type formatter matcher
      * @param ResponseHeaderParser|null $responseHeaderParser The response header parser
      */
-    public function __construct(ResponseHeaderParser $responseHeaderParser = null)
-    {
+    public function __construct(
+        IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
+        ResponseHeaderParser $responseHeaderParser = null
+    ) {
+        $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher([
+            new JsonMediaTypeFormatter(),
+            new FormUrlEncodedMediaTypeFormatter(),
+            new HtmlMediaTypeFormatter(),
+            new PlainTextMediaTypeFormatter()
+        ]);
         $this->responseHeaderParser = $responseHeaderParser ?? new ResponseHeaderParser();
     }
 
@@ -131,6 +151,7 @@ class ResponseAssertions
      * @param mixed $expectedValue The expected value
      * @param IResponse $response The response to inspect
      * @throws AssertionFailedException Thrown if the assertion failed
+     * @throws SerializationException Thrown if there was an error deserializing the response body
      */
     public function assertParsedBodyEquals($expectedValue, IResponse $response): void
     {
@@ -139,7 +160,23 @@ class ResponseAssertions
                 throw new AssertionFailedException('Failed to assert that the response body equals the expected value');
             }
         } else {
-            // TODO: Need to do content negotiation on the response body, and support arrays, objects, and scalars
+            $type = TypeResolver::resolveType($expectedValue);
+            // TODO: We don't currently support doing this for responses.  How do I separate negotiating the response media type formatter to use based on the request's Accept type and based on whatever the response content type actually is?
+            // TODO: Do I just create a dummy request whose Accept header is the same as the Content-Type response header?  Are there cases this wouldn't work for?
+            $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestResponseMediaTypeFormatterMatch(
+                $type,
+                $response
+            );
+
+            if ($mediaTypeFormatterMatch === null) {
+                throw new InvalidArgumentException("No media type formatter available for $type");
+            }
+
+            $actualValue = $mediaTypeFormatterMatch->getFormatter()->readFromStream($response->getBody()->readAsStream(), $type);
+
+            if ($actualValue !== $expectedValue) {
+                throw new AssertionFailedException('Failed to assert that the response body matches the expected value');
+            }
         }
     }
 
