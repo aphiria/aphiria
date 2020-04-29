@@ -21,8 +21,10 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFo
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Formatting\ResponseHeaderParser;
 use Aphiria\Net\Http\IBody;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Serialization\TypeResolver;
+use Closure;
 use InvalidArgumentException;
 
 /**
@@ -149,34 +151,36 @@ class ResponseAssertions
      * Asserts that the parsed response body matches the expected value
      *
      * @param mixed $expectedValue The expected value
+     * @param IRequest $request The request that generated the response (used for content negotiation)
      * @param IResponse $response The response to inspect
      * @throws AssertionFailedException Thrown if the assertion failed
      * @throws SerializationException Thrown if there was an error deserializing the response body
      */
-    public function assertParsedBodyEquals($expectedValue, IResponse $response): void
+    public function assertParsedBodyEquals($expectedValue, IRequest $request, IResponse $response): void
     {
         if ($expectedValue instanceof IBody) {
             if ($response->getBody() !== $expectedValue) {
                 throw new AssertionFailedException('Failed to assert that the response body equals the expected value');
             }
-        } else {
-            $type = TypeResolver::resolveType($expectedValue);
-            // TODO: We don't currently support doing this for responses.  How do I separate negotiating the response media type formatter to use based on the request's Accept type and based on whatever the response content type actually is?
-            // TODO: Do I just create a dummy request whose Accept header is the same as the Content-Type response header?  Are there cases this wouldn't work for?
-            $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestResponseMediaTypeFormatterMatch(
-                $type,
-                $response
-            );
+        } elseif ($this->getParsedBody($request, $response, TypeResolver::resolveType($expectedValue)) !== $expectedValue) {
+            throw new AssertionFailedException('Failed to assert that the response body matches the expected value');
+        }
+    }
 
-            if ($mediaTypeFormatterMatch === null) {
-                throw new InvalidArgumentException("No media type formatter available for $type");
-            }
-
-            $actualValue = $mediaTypeFormatterMatch->getFormatter()->readFromStream($response->getBody()->readAsStream(), $type);
-
-            if ($actualValue !== $expectedValue) {
-                throw new AssertionFailedException('Failed to assert that the response body matches the expected value');
-            }
+    /**
+     * Asserts that the parsed response body passes a callback
+     *
+     * @param IRequest $request The request that generated the response (used for content negotiation)
+     * @param IResponse $response The response to inspect
+     * @param string $type The type to parse the response body as
+     * @param Closure $callback The callback that takes in the parsed body (mixed type) and returns true if it passes, otherwise false
+     * @throws AssertionFailedException Thrown if the assertion failed
+     * @throws SerializationException Thrown if there was an error deserializing the response body
+     */
+    public function assertParsedBodyPassesCallback(IRequest $request, IResponse $response, string $type, Closure $callback): void
+    {
+        if (!$callback($this->getParsedBody($request, $response, $type))) {
+            throw new AssertionFailedException('Failed to assert that the response body passes the callback');
         }
     }
 
@@ -194,5 +198,32 @@ class ResponseAssertions
         if ($actualStatusCode !== $expectedStatusCode) {
             throw new AssertionFailedException("Expected status code $expectedStatusCode, got $actualStatusCode");
         }
+    }
+
+    /**
+     * Gets a parsed body from the response
+     *
+     * @param IRequest $request The request that generated the response (used for content negotiation)
+     * @param IResponse $response The response whose body we want
+     * @param string $type The type to deserialize the body to
+     * @return mixed|null An instance of type, or null if the body is not set
+     * @throws SerializationException Thrown if the body could not be read
+     */
+    private function getParsedBody(IRequest $request, IResponse $response, string $type)
+    {
+        if (($body = $response->getBody()) === null) {
+            return null;
+        }
+
+        $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestResponseMediaTypeFormatterMatch(
+            $type,
+            $request
+        );
+
+        if ($mediaTypeFormatterMatch === null) {
+            throw new InvalidArgumentException("No media type formatter available for $type");
+        }
+
+        return $mediaTypeFormatterMatch->getFormatter()->readFromStream($body->readAsStream(), $type);
     }
 }

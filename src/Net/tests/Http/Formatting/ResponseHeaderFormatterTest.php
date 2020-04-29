@@ -15,7 +15,6 @@ namespace Aphiria\Net\Tests\Http\Formatting;
 use Aphiria\Net\Http\Formatting\ResponseHeaderFormatter;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
-use DateTime;
 use PHPUnit\Framework\TestCase;
 
 class ResponseHeaderFormatterTest extends TestCase
@@ -49,24 +48,13 @@ class ResponseHeaderFormatterTest extends TestCase
         );
     }
 
-    public function testCookieWithExpirationSetsExpiresProperty(): void
+    public function testCookieWithMaxAgeSetsMaxAge(): void
     {
-        $expiration = new DateTime();
-        $cookie = new Cookie('foo', 'bar', $expiration, null, null, false, false, null);
+        $maxAge = 3600;
+        $cookie = new Cookie('foo', 'bar', $maxAge, null, null, false, false, null);
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertEquals(
-            'foo=bar; Expires=' . $expiration->format('D, d M Y H:i:s \G\M\T'),
-            $this->headers->getFirst('Set-Cookie')
-        );
-    }
-
-    public function testCookieWithMaxAgeSetsExpiresAndMaxAgeProperty(): void
-    {
-        $expiration = 3600;
-        $cookie = new Cookie('foo', 'bar', time() + $expiration, null, null, false, false, null);
-        $this->formatter->setCookie($this->headers, $cookie);
-        $this->assertMatchesRegularExpression(
-            '/^foo=bar; Expires=[^;]+; Max-Age=3600$/',
+            'foo=bar; Max-Age=3600',
             $this->headers->getFirst('Set-Cookie')
         );
     }
@@ -105,47 +93,35 @@ class ResponseHeaderFormatterTest extends TestCase
     {
         $this->formatter->deleteCookie($this->headers, 'foo');
         $this->formatter->deleteCookie($this->headers, 'bar');
-        $expectedExpiration = DateTime::createFromFormat('U', '0')->format('D, d M Y H:i:s \G\M\T');
         $expectedHeaders = [
-            "foo=; Expires=$expectedExpiration; Max-Age=0; HttpOnly; SameSite=lax",
-            "bar=; Expires=$expectedExpiration; Max-Age=0; HttpOnly; SameSite=lax"
+            'foo=; Max-Age=0; HttpOnly; SameSite=lax',
+            'bar=; Max-Age=0; HttpOnly; SameSite=lax'
         ];
         $this->assertEquals($expectedHeaders, $this->headers->get('Set-Cookie'));
-    }
-
-    public function testDeletingCookieSetsExpirationAndMaxAgeToEpochAndZero(): void
-    {
-        $this->formatter->deleteCookie($this->headers, 'foo', null, null, false, false, null);
-        $expectedExpiration = DateTime::createFromFormat('U', '0')->format('D, d M Y H:i:s \G\M\T');
-        $this->assertEquals("foo=; Expires=$expectedExpiration; Max-Age=0", $this->headers->getFirst('Set-Cookie'));
     }
 
     public function testDeletingCookieWithSpecificDomain(): void
     {
         $this->formatter->deleteCookie($this->headers, 'foo', null, 'domain.com', false, false, null);
-        $expectedExpiration = DateTime::createFromFormat('U', '0')->format('D, d M Y H:i:s \G\M\T');
-        $this->assertEquals("foo=; Expires=$expectedExpiration; Max-Age=0; Domain=domain.com", $this->headers->getFirst('Set-Cookie'));
+        $this->assertEquals('foo=; Max-Age=0; Domain=domain.com', $this->headers->getFirst('Set-Cookie'));
     }
 
     public function testDeletingCookieWithSpecificPath(): void
     {
         $this->formatter->deleteCookie($this->headers, 'foo', '/', null, false, false, null);
-        $expectedExpiration = DateTime::createFromFormat('U', '0')->format('D, d M Y H:i:s \G\M\T');
-        $this->assertEquals("foo=; Expires=$expectedExpiration; Max-Age=0; Path=%2F", $this->headers->getFirst('Set-Cookie'));
+        $this->assertEquals('foo=; Max-Age=0; Path=%2F', $this->headers->getFirst('Set-Cookie'));
     }
 
     public function testDeletingCookieWithSecure(): void
     {
         $this->formatter->deleteCookie($this->headers, 'foo', null, null, true, false, null);
-        $expectedExpiration = DateTime::createFromFormat('U', '0')->format('D, d M Y H:i:s \G\M\T');
-        $this->assertEquals("foo=; Expires=$expectedExpiration; Max-Age=0; Secure", $this->headers->getFirst('Set-Cookie'));
+        $this->assertEquals('foo=; Max-Age=0; Secure', $this->headers->getFirst('Set-Cookie'));
     }
 
     public function testDeletingCookieWithSameSite(): void
     {
         $this->formatter->deleteCookie($this->headers, 'foo', null, null, false, false, Cookie::SAME_SITE_STRICT);
-        $expectedExpiration = DateTime::createFromFormat('U', '0')->format('D, d M Y H:i:s \G\M\T');
-        $this->assertEquals("foo=; Expires=$expectedExpiration; Max-Age=0; SameSite=strict", $this->headers->getFirst('Set-Cookie'));
+        $this->assertEquals('foo=; Max-Age=0; SameSite=strict', $this->headers->getFirst('Set-Cookie'));
     }
 
     public function testHttpOnlyCookieSetsHttpOnlyFlag(): void

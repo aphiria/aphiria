@@ -14,7 +14,6 @@ namespace Aphiria\Net\Http\Formatting;
 
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
-use DateTime;
 use RuntimeException;
 
 /**
@@ -22,9 +21,6 @@ use RuntimeException;
  */
 class ResponseHeaderFormatter extends HeaderParser
 {
-    /** @const The date format to use for the expiration property of cookies */
-    private const EXPIRATION_DATE_FORMAT = 'D, d M Y H:i:s \G\M\T';
-
     /**
      * Deletes a cookie from headers
      *
@@ -47,8 +43,6 @@ class ResponseHeaderFormatter extends HeaderParser
         ?string $sameSite = Cookie::SAME_SITE_LAX
     ): void {
         $headerValue = "$name=";
-        $expiration = DateTime::createFromFormat('U', '0');
-        $headerValue .= "; Expires={$expiration->format(self::EXPIRATION_DATE_FORMAT)}";
         $headerValue .= '; Max-Age=0';
 
         if ($path !== null) {
@@ -109,10 +103,6 @@ class ResponseHeaderFormatter extends HeaderParser
     private function getSetCookieHeaderValue(Cookie $cookie): string
     {
         $headerValue = "{$cookie->getName()}=" . urlencode($cookie->getValue());
-
-        if (($expiration = $cookie->getExpiration()) !== null) {
-            $headerValue .= '; Expires=' . $expiration->format(self::EXPIRATION_DATE_FORMAT);
-        }
 
         if (($maxAge = $cookie->getMaxAge()) !== null) {
             $headerValue .= "; Max-Age=$maxAge";

@@ -14,7 +14,6 @@ namespace Aphiria\Net\Http\Formatting;
 
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
-use DateTime;
 
 /**
  * Defines the response header parser
@@ -38,17 +37,13 @@ class ResponseHeaderParser extends HeaderParser
         $cookies = [];
 
         foreach ($setCookieHeaders as $i => $setCookieHeader) {
-            $name = $value = $expires = $maxAge = $path = $domain = $sameSite = null;
+            $name = $value = $maxAge = $path = $domain = $sameSite = null;
             $isSecure = false;
             $isHttpOnly = true;
 
             foreach ($this->parseParameters($headers, 'Set-Cookie', $i) as $kvp) {
                 switch ($kvp->getKey()) {
-                    case 'Expires':
-                        $expires = DateTime::createFromFormat('D, d M Y H:i:s \G\M\T', $kvp->getValue());
-                        break;
                     case 'Max-Age':
-                        // TODO: What do I do with max age?  Cookie doesn't take it in.
                         $maxAge = (int)$kvp->getValue();
                         break;
                     case 'Path':
@@ -81,7 +76,7 @@ class ResponseHeaderParser extends HeaderParser
             $cookies[] = new Cookie(
                 $name,
                 $value,
-                $expires,
+                $maxAge,
                 $path,
                 $domain,
                 $isSecure,
