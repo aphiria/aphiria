@@ -145,13 +145,6 @@ class RequestParserTest extends TestCase
         $this->assertEquals(0.1, $values[0]->getParameters()->get('q'));
     }
 
-    public function testParseContentTypeHeaderReturnsIt(): void
-    {
-        $this->headers->add('Content-Type', 'application/json');
-        $value = $this->parser->parseContentTypeHeader($this->request);
-        $this->assertEquals('application/json', $value->getMediaType());
-    }
-
     public function testParsingCookiesReturnsCorrectValuesWithMultipleCookieValues(): void
     {
         $this->headers->add('Cookie', 'foo=bar; baz=blah');

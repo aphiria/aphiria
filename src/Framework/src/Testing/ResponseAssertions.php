@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Testing;
 
+use Aphiria\Net\Http\Formatting\ResponseHeaderParser;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IResponse;
 
@@ -20,6 +21,17 @@ use Aphiria\Net\Http\IResponse;
  */
 class ResponseAssertions
 {
+    /** @var ResponseHeaderParser The response header parser */
+    private ResponseHeaderParser $responseHeaderParser;
+
+    /**
+     * @param ResponseHeaderParser|null $responseHeaderParser The response header parser
+     */
+    public function __construct(ResponseHeaderParser $responseHeaderParser = null)
+    {
+        $this->responseHeaderParser = $responseHeaderParser ?? new ResponseHeaderParser();
+    }
+
     /**
      * Asserts that a cookie value matches an expected value
      *
@@ -30,7 +42,13 @@ class ResponseAssertions
      */
     public function assertCookieEquals($expectedValue, IResponse $response, string $cookieName): void
     {
-        // TODO: I think I need something to parse the Set-Cookie header
+        foreach ($this->responseHeaderParser->parseCookies($response->getHeaders()) as $cookie) {
+            if ($cookie->getName() === $cookieName && $cookie->getValue() === $expectedValue) {
+                return;
+            }
+        }
+
+        throw new AssertionFailedException("Failed to assert that cookie $cookieName has expected value");
     }
 
     /**
@@ -42,7 +60,13 @@ class ResponseAssertions
      */
     public function assertHasCookie(IResponse $response, string $cookieName): void
     {
-        // TODO: I think I need something to parse the Set-Cookie header
+        foreach ($this->responseHeaderParser->parseCookies($response->getHeaders()) as $cookie) {
+            if ($cookie->getName() === $cookieName) {
+                return;
+            }
+        }
+
+        throw new AssertionFailedException("Failed to assert that cookie $cookieName is set");
     }
 
     /**
