@@ -226,10 +226,10 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
             ->with(
                 [IApiExceptionRenderer::class, ApiExceptionRenderer::class],
                 $this->callback(function (ApiExceptionRenderer $apiExceptionRenderer) {
-                        $this->apiExceptionRenderer = $apiExceptionRenderer;
+                    $this->apiExceptionRenderer = $apiExceptionRenderer;
 
-                        return true;
-                    })
+                    return true;
+                })
             );
         $this->container->expects($this->at(1))
             ->method('bindInstance')
