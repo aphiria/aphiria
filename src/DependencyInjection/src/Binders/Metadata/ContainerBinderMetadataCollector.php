@@ -166,7 +166,10 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     {
         $this->addResolvedInterface($interface);
 
-        return $this->container->for($this->currentContext, fn (IContainer $container) => $container->tryResolve($interface, $instance));
+        // Use a long closure so that we can pass the instance in by reference
+        return $this->container->for($this->currentContext, function (IContainer $container) use ($interface, &$instance) {
+            return $container->tryResolve($interface, $instance);
+        });
     }
 
     /**
