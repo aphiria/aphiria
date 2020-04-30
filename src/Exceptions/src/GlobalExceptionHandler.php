@@ -12,13 +12,11 @@ declare(strict_types=1);
 
 namespace Aphiria\Exceptions;
 
-use Closure;
 use ErrorException;
 use Exception;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 use Throwable;
 
 /**
@@ -32,19 +30,22 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
     protected IExceptionRenderer $exceptionRenderer;
     /** @var LoggerInterface The PSR-3 logger */
     protected LoggerInterface $logger;
-    /** @var Closure[] The mapping of exception types to log level factories */
-    private array $logLevelFactories = [];
+    /** @var LogLevelFactory The factory for PSR-3 log levels */
+    protected $logLevelFactory;
 
     /**
      * @param IExceptionRenderer $exceptionRenderer The underlying exception renderer
      * @param LoggerInterface|null $logger The PSR-3 logger
+     * @param LogLevelFactory|null $logLevelFactory The PSR-3 log level factory
      */
     public function __construct(
         IExceptionRenderer $exceptionRenderer,
-        LoggerInterface $logger = null
+        LoggerInterface $logger = null,
+        LogLevelFactory $logLevelFactory = null
     ) {
         $this->exceptionRenderer = $exceptionRenderer;
         $this->logger = $logger  ?? new Logger(self::DEFAULT_LOGGER_NAME, [new ErrorLogHandler()]);
+        $this->logLevelFactory = $logLevelFactory ?? new LogLevelFactory();
     }
 
     /**
@@ -75,12 +76,7 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
             // @codeCoverageIgnoreEnd
         }
 
-        if (isset($this->logLevelFactories[\get_class($ex)])) {
-            $logLevel = $this->logLevelFactories[\get_class($ex)]($ex);
-        } else {
-            $logLevel = LogLevel::ERROR;
-        }
-
+        $logLevel = $this->logLevelFactory->createLogLevel($ex);
         $this->logger->{$logLevel}($ex);
         $this->exceptionRenderer->render($ex);
     }
@@ -97,29 +93,6 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
             $this->handleException(
                 new FatalErrorException($error['message'], $error['type'], 0, $error['file'], $error['line'])
             );
-        }
-    }
-
-    /**
-     * Registers an exception log level factory
-     *
-     * @param string $exceptionType The exception whose factory we're registering
-     * @param Closure $factory The factory that takes in an exception of the input type and returns a PSR-3 log level
-     */
-    public function registerLogLevelFactory(string $exceptionType, Closure $factory): void
-    {
-        $this->logLevelFactories[$exceptionType] = $factory;
-    }
-
-    /**
-     * Registers an exception log level factory for an exception type
-     *
-     * @param Closure[] $exceptionTypesToFactories The exception types to factories
-     */
-    public function registerManyLogLevelFactories(array $exceptionTypesToFactories): void
-    {
-        foreach ($exceptionTypesToFactories as $exceptionType => $responseFactory) {
-            $this->registerLogLevelFactory($exceptionType, $responseFactory);
         }
     }
 

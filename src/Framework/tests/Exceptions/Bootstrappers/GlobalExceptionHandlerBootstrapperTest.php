@@ -17,6 +17,7 @@ use Aphiria\Configuration\GlobalConfiguration;
 use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\IExceptionRenderer;
+use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Framework\Exceptions\Bootstrappers\GlobalExceptionHandlerBootstrapper;
@@ -65,7 +66,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->addBootstrapAssertions();
         $this->addLoggerAssertion();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(3))
+        $this->container->expects($this->at(4))
             ->method('bindInstance')
             ->with(IExceptionRenderer::class, $this->isInstanceOf(ApiExceptionRenderer::class));
         $this->bootstrapper->setIsRunningInConsole(false);
@@ -77,7 +78,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->addBootstrapAssertions();
         $this->addLoggerAssertion();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(3))
+        $this->container->expects($this->at(4))
             ->method('bindInstance')
             ->with(IExceptionRenderer::class, $this->isInstanceOf(ConsoleExceptionRenderer::class));
         $this->bootstrapper->setIsRunningInConsole(true);
@@ -125,6 +126,17 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->apiExceptionRenderer->setResponseFactory($this->createMock(IResponseFactory::class));
         $exception = new InvalidRequestBodyException(['foo']);
         $this->apiExceptionRenderer->render($exception);
+    }
+
+    public function testLogLevelFactoryIsCreatedAndBound(): void
+    {
+        $this->addBootstrapAssertions();
+        $this->addLoggerAssertion();
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
+        $this->container->expects($this->at(3))
+            ->method('bindInstance')
+            ->with(LogLevelFactory::class, $this->isInstanceOf(LogLevelFactory::class));
+        $this->bootstrapper->bootstrap();
     }
 
     public function testLoggerSupportsStreamHandler(): void
