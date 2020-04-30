@@ -14,7 +14,6 @@ namespace Aphiria\Framework\Api\Exceptions;
 
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
-use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
@@ -33,7 +32,7 @@ use Exception;
 /**
  * Defines the exception renderer for API applications
  */
-class ApiExceptionRenderer implements IExceptionRenderer
+class ApiExceptionRenderer implements IApiExceptionRenderer
 {
     /** @var bool Whether or not to use problem details */
     protected bool $useProblemDetails;
@@ -65,21 +64,30 @@ class ApiExceptionRenderer implements IExceptionRenderer
     }
 
     /**
+     * Creates a response from an exception
+     *
+     * @param Exception $ex The exception that was thrown
+     * @return IResponse The response
+     */
+    public function createResponse(Exception $ex): IResponse
+    {
+        try {
+            if ($this->request === null) {
+                return $this->createResponseWithoutRequest($ex);
+            }
+
+            return $this->createResponseWithRequest($ex, $this->request);
+        } catch (Exception $ex) {
+            return $this->createDefaultResponse($ex);
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     public function render(Exception $ex): void
     {
-        try {
-            if ($this->request === null) {
-                $response = $this->createResponseWithoutRequest($ex);
-            } else {
-                $response = $this->createResponseWithRequest($ex, $this->request);
-            }
-        } catch (Exception $ex) {
-            $response = $this->createDefaultResponse($ex);
-        }
-
-        $this->responseWriter->writeResponse($response);
+        $this->responseWriter->writeResponse($this->createResponse($ex));
     }
 
     /**

@@ -24,6 +24,7 @@ use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\IGlobalExceptionHandler;
 use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
@@ -103,8 +104,8 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                 return new Response(HttpStatusCodes::HTTP_BAD_REQUEST);
             }
         ]);
-        // We'll bind to the interface in the calling method
-        $this->container->bindInstance(ApiExceptionRenderer::class, $exceptionRenderer);
+        // We'll bind IExceptionRenderer in the calling method
+        $this->container->bindInstance([IApiExceptionRenderer::class, ApiExceptionRenderer::class], $exceptionRenderer);
 
         return $exceptionRenderer;
     }

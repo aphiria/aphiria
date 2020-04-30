@@ -19,6 +19,7 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Framework\Exceptions\Bootstrappers\GlobalExceptionHandlerBootstrapper;
 use Aphiria\Net\Http\HttpException;
@@ -222,11 +223,14 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
     {
         $this->container->expects($this->at(0))
             ->method('bindInstance')
-            ->with(ApiExceptionRenderer::class, $this->callback(function (ApiExceptionRenderer $apiExceptionRenderer) {
-                $this->apiExceptionRenderer = $apiExceptionRenderer;
+            ->with(
+                [IApiExceptionRenderer::class, ApiExceptionRenderer::class],
+                $this->callback(function (ApiExceptionRenderer $apiExceptionRenderer) {
+                        $this->apiExceptionRenderer = $apiExceptionRenderer;
 
-                return true;
-            }));
+                        return true;
+                    })
+            );
         $this->container->expects($this->at(1))
             ->method('bindInstance')
             ->with(ConsoleExceptionRenderer::class, $this->isInstanceOf(ConsoleExceptionRenderer::class));
