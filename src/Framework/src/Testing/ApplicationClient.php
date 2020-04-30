@@ -12,7 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Testing;
 
-use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\DependencyInjection\IContainer;
+use Aphiria\Framework\Api\Builders\ApiApplicationBuilder;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
@@ -22,15 +23,19 @@ use Aphiria\Net\Http\IResponse;
  */
 class ApplicationClient
 {
-    /** @var IRequestHandler The API application */
-    protected IRequestHandler $app;
+    /** @var ApiApplicationBuilder The API application builder */
+    protected ApiApplicationBuilder $appBuilder;
+    /** @var IContainer The DI container */
+    protected IContainer $container;
 
     /**
-     * @param IRequestHandler $app The API application
+     * @param ApiApplicationBuilder $appBuilder The API application builder
+     * @param IContainer $container The DI container
      */
-    public function __construct(IRequestHandler $app)
+    public function __construct(ApiApplicationBuilder $appBuilder, IContainer $container)
     {
-        $this->app = $app;
+        $this->appBuilder = $appBuilder;
+        $this->container = $container;
     }
 
     /**
@@ -42,6 +47,13 @@ class ApplicationClient
      */
     public function send(IRequest $request): IResponse
     {
-        return $this->app->handle($request);
+        /**
+         * We build the app every time so that we can ensure that the correct request is bound and set in all
+         * classes that depend on it
+         */
+        $this->container->bindInstance(IRequest::class, $request);
+
+        return $this->appBuilder->build()
+            ->handle($request);
     }
 }

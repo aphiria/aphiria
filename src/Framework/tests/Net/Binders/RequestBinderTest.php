@@ -72,4 +72,15 @@ class RequestBinderTest extends TestCase
         };
         $binder->bind($this->container);
     }
+
+    public function testRequestIsNotBoundIfItIsAlreadyBound(): void
+    {
+        $this->container->expects($this->once())
+            ->method('hasBinding')
+            ->with(IRequest::class)
+            ->willReturn(true);
+        $this->container->expects($this->never())
+            ->method('bindInstance');
+        (new RequestBinder())->bind($this->container);
+    }
 }

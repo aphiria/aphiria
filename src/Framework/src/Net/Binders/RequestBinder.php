@@ -29,7 +29,10 @@ class RequestBinder extends Binder
      */
     public function bind(IContainer $container): void
     {
-        $container->bindInstance(IRequest::class, $this->getRequest());
+        // Integration tests might set the request outside of a binder, so don't reset it if it is already bound
+        if (!$container->hasBinding(IRequest::class)) {
+            $container->bindInstance(IRequest::class, $this->getRequest());
+        }
     }
 
     /**

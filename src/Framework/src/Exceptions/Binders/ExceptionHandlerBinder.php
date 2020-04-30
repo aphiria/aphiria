@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Exceptions\Binders;
 
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponseFactory;
 
@@ -28,10 +28,10 @@ class ExceptionHandlerBinder extends Binder
      */
     public function bind(IContainer $container): void
     {
-        /** @var ApiExceptionRenderer|null $apiExceptionRenderer */
+        /** @var IApiExceptionRenderer|null $apiExceptionRenderer */
         $apiExceptionRenderer = null;
 
-        if ($container->tryResolve(ApiExceptionRenderer::class, $apiExceptionRenderer)) {
+        if ($container->tryResolve(IApiExceptionRenderer::class, $apiExceptionRenderer)) {
             /** @var IRequest|null $request */
             $request = null;
 

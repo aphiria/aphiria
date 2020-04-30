@@ -91,9 +91,7 @@ class ApiExceptionRenderer implements IApiExceptionRenderer
     }
 
     /**
-     * Registers many factories for exceptions
-     *
-     * @param Closure[] $exceptionTypesToFactories The mapping of exception types to factories
+     * @inheritdoc
      */
     public function registerManyResponseFactories(array $exceptionTypesToFactories): void
     {
@@ -103,10 +101,7 @@ class ApiExceptionRenderer implements IApiExceptionRenderer
     }
 
     /**
-     * Registers a factory for a specific type of exception
-     *
-     * @param string $exceptionType The type of exception whose factory we're registering
-     * @param Closure $factory The factory that takes in an instance of the exception, the request, and the response factory
+     * @inheritdoc
      */
     public function registerResponseFactory(string $exceptionType, Closure $factory): void
     {
@@ -114,9 +109,7 @@ class ApiExceptionRenderer implements IApiExceptionRenderer
     }
 
     /**
-     * Sets the current request in case it wasn't initially available
-     *
-     * @param IRequest $request The current request
+     * @inheritdoc
      */
     public function setRequest(IRequest $request): void
     {
@@ -124,9 +117,7 @@ class ApiExceptionRenderer implements IApiExceptionRenderer
     }
 
     /**
-     * Sets the response factory
-     *
-     * @param IResponseFactory $responseFactory The response factory to set
+     * @inheritdoc
      */
     public function setResponseFactory(IResponseFactory $responseFactory): void
     {
