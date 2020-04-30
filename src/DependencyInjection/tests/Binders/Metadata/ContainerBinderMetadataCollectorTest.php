@@ -345,6 +345,15 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $this->assertEquals('foo', $collector->collect($binder)->getResolvedInterfaces()[0]->getInterface());
     }
 
+    public function testTryResolveResolvesInterfaceUsingComposedContainer(): void
+    {
+        $this->container->bindInstance(self::class, $this);
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $instance = null;
+        $this->assertTrue($collector->tryResolve(self::class, $instance));
+        $this->assertSame($this, $instance);
+    }
+
     public function testUnbindPassesThroughToComposedContainerWithCurrentContext(): void
     {
         $collector = new ContainerBinderMetadataCollector($this->container);
