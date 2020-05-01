@@ -24,15 +24,26 @@ use Aphiria\Net\Uri;
  */
 class RequestBinder extends Binder
 {
+    /** @var IRequest|null The overriding request if one is set (useful for integration tests) */
+    private static ?IRequest $overridingRequest = null;
+
+    /**
+     * Sets the request to use (useful for integration tests)
+     *
+     * @param IRequest $overridingRequest The request to use
+     */
+    public static function setOverridingRequest(IRequest $overridingRequest): void
+    {
+        self::$overridingRequest = $overridingRequest;
+    }
+
     /**
      * @inheritdoc
      */
     public function bind(IContainer $container): void
     {
-        // Integration tests might set the request outside of a binder, so don't reset it if it is already bound
-        if (!$container->hasBinding(IRequest::class)) {
-            $container->bindInstance(IRequest::class, $this->getRequest());
-        }
+        // Integration tests might have overridden the request to use
+        $container->bindInstance(IRequest::class, self::$overridingRequest ?? $this->getRequest());
     }
 
     /**

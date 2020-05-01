@@ -13,7 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Testing;
 
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Framework\Api\Builders\ApiApplicationBuilder;
+use Aphiria\Framework\Net\Binders\RequestBinder;
+use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
@@ -23,18 +24,18 @@ use Aphiria\Net\Http\IResponse;
  */
 class ApplicationClient
 {
-    /** @var ApiApplicationBuilder The API application builder */
-    protected ApiApplicationBuilder $appBuilder;
+    /** @var IRequestHandler The application */
+    private IRequestHandler $app;
     /** @var IContainer The DI container */
     protected IContainer $container;
 
     /**
-     * @param ApiApplicationBuilder $appBuilder The API application builder
+     * @param IRequestHandler$app The application
      * @param IContainer $container The DI container
      */
-    public function __construct(ApiApplicationBuilder $appBuilder, IContainer $container)
+    public function __construct(IRequestHandler $app, IContainer $container)
     {
-        $this->appBuilder = $appBuilder;
+        $this->app = $app;
         $this->container = $container;
     }
 
@@ -48,12 +49,12 @@ class ApplicationClient
     public function send(IRequest $request): IResponse
     {
         /**
-         * We build the app every time so that we can ensure that the correct request is bound and set in all
-         * classes that depend on it
+         * We override the request binder's request with this one that it is the same one that's resolved/used by
+         * other classes, eg controllers and exception renderers.  We explicitly resolve the request so that it
+         * dispatches the request binder, which in turn dispatches any other binders that resolved IRequest.
          */
-        $this->container->bindInstance(IRequest::class, $request);
+        RequestBinder::setOverridingRequest($request);
 
-        return $this->appBuilder->build()
-            ->handle($request);
+        return $this->app->handle($this->container->resolve(IRequest::class));
     }
 }
