@@ -113,7 +113,9 @@ class RequestBuilder
     {
         $new = clone $this;
 
-        if ($body instanceof IBody) {
+        if ($body === null) {
+            $new->body = null;
+        } elseif ($body instanceof IBody) {
             $new->body = $body;
         } elseif (\is_array($body) || \is_object($body) || \is_scalar($body)) {
             $type = TypeResolver::resolveType($body);

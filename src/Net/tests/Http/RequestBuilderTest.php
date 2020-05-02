@@ -166,6 +166,15 @@ class RequestBuilderTest extends TestCase
         $this->assertEquals('application/json', $request->getHeaders()->getFirst('Content-Type'));
     }
 
+    public function testWithBodyWithNullBodySetsBodyToNull(): void
+    {
+        $request = $this->requestBuilder->withMethod('GET')
+            ->withUri('http://localhost')
+            ->withBody(null)
+            ->build();
+        $this->assertNull($request->getBody());
+    }
+
     public function testWithHeaderCanAppendToHeader(): void
     {
         $request = $this->requestBuilder->withMethod('GET')
