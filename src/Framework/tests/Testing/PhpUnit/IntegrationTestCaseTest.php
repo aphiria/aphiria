@@ -25,6 +25,8 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatt
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\RequestBuilder;
 use Aphiria\Net\Http\Response;
@@ -34,11 +36,13 @@ use PHPUnit\Framework\TestCase;
 
 class IntegrationTestCaseTest extends TestCase
 {
+    private IRequestHandler $app;
     private IntegrationTestCase $integrationTests;
 
     protected function setUp(): void
     {
-        $this->integrationTests = new class($this->createMock(IRequestHandler::class)) extends IntegrationTestCase {
+        $this->app = $this->createMock(IRequestHandler::class);
+        $this->integrationTests = new class($this->app) extends IntegrationTestCase {
             private static ?string $failMessage = null;
             private IRequestHandler $app;
             private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
@@ -67,10 +71,23 @@ class IntegrationTestCaseTest extends TestCase
                 return self::$failMessage;
             }
 
+            public function send(IRequest $request): IResponse
+            {
+                // Make this request accessible by the DI container so the application client doesn't bomb out
+                Container::$globalInstance->bindInstance(IRequest::class, $request);
+
+                return parent::send($request);
+            }
+
             // Make this publicly accessible
             public function setUp(): void
             {
                 parent::setUp();
+            }
+
+            protected function createApplication(IContainer $container): IRequestHandler
+            {
+                return $this->app;
             }
 
             protected function createRequestBuilder(IContainer $container): RequestBuilder
@@ -87,11 +104,6 @@ class IntegrationTestCaseTest extends TestCase
                 $container->bindInstance(IMediaTypeFormatterMatcher::class, $this->mediaTypeFormatterMatcher);
 
                 return parent::createResponseAssertions($container);
-            }
-
-            protected function getApp(IContainer $container): IRequestHandler
-            {
-                return $this->app;
             }
         };
         $this->integrationTests->setUp();
@@ -194,17 +206,27 @@ class IntegrationTestCaseTest extends TestCase
             new Headers([new KeyValuePair('Foo', 'bar')]),
             new StringBody('{"foo":"bar"}')
         );
+        $this->app->expects($this->once())
+            ->method('handle')
+            ->with($request)
+            ->willReturn($response);
+        $this->integrationTests->send($request);
         $expectedParsedBody = new class() {
             public string $foo = 'bar';
         };
-        $this->integrationTests->assertParsedBodyEquals($expectedParsedBody, $request, $response);
+        $this->integrationTests->assertParsedBodyEquals($expectedParsedBody, $response);
     }
 
     public function testAssertParsedBodyEqualsThrowsOnFailure(): void
     {
         $request = new Request('GET', new Uri('http://localhost'));
         $response = new Response(200);
-        $this->integrationTests->assertParsedBodyEquals($this, $request, $response);
+        $this->app->expects($this->once())
+            ->method('handle')
+            ->with($request)
+            ->willReturn($response);
+        $this->integrationTests->send($request);
+        $this->integrationTests->assertParsedBodyEquals($this, $response);
         $this->assertEquals(
             'Failed to assert that the response body matches the expected value',
             $this->integrationTests->getFailMessage()
@@ -226,8 +248,12 @@ class IntegrationTestCaseTest extends TestCase
         $expectedParsedBody = new class() {
             public string $foo = 'bar';
         };
+        $this->app->expects($this->once())
+            ->method('handle')
+            ->with($request)
+            ->willReturn($response);
+        $this->integrationTests->send($request);
         $this->integrationTests->assertParsedBodyPassesCallback(
-            $request,
             $response,
             \get_class($expectedParsedBody),
             fn ($parsedBody) => true
@@ -238,8 +264,12 @@ class IntegrationTestCaseTest extends TestCase
     {
         $request = new Request('GET', new Uri('http://localhost'));
         $response = new Response(200);
+        $this->app->expects($this->once())
+            ->method('handle')
+            ->with($request)
+            ->willReturn($response);
+        $this->integrationTests->send($request);
         $this->integrationTests->assertParsedBodyPassesCallback(
-            $request,
             $response,
             self::class,
             fn ($parsedBody) => false
@@ -264,5 +294,103 @@ class IntegrationTestCaseTest extends TestCase
             'Expected status code 500, got 200',
             $this->integrationTests->getFailMessage()
         );
+    }
+
+    public function testDeleteSendsRequestToClient(): void
+    {
+        $expectedResponse = $this->createMock(IResponse::class);
+        $this->app->expects($this->once())
+            ->method('handle')
+            ->with($this->callback(function (IRequest $request) {
+                return $request->getMethod() === 'DELETE'
+                    && (string)$request->getUri() === 'http://localhost'
+                    && $request->getHeaders()->get('Foo') === ['bar']
+                    && (string)$request->getBody() === '{"foo":"bar"}';
+            }))
+            ->willReturn($expectedResponse);
+        $actualResponse = $this->integrationTests->delete(
+            'http://localhost',
+            ['Foo' => ['bar']],
+            new StringBody('{"foo":"bar"}')
+        );
+        $this->assertSame($expectedResponse, $actualResponse);
+    }
+
+    public function testGetSendsRequestToClient(): void
+    {
+        $expectedResponse = $this->createMock(IResponse::class);
+        $this->app->expects($this->once())
+            ->method('handle')
+            ->with($this->callback(function (IRequest $request) {
+                return $request->getMethod() === 'GET'
+                    && (string)$request->getUri() === 'http://localhost'
+                    && $request->getHeaders()->get('Foo') === ['bar'];
+            }))
+            ->willReturn($expectedResponse);
+        $actualResponse = $this->integrationTests->get(
+            'http://localhost',
+            ['Foo' => ['bar']]
+        );
+        $this->assertSame($expectedResponse, $actualResponse);
+    }
+
+    public function testOptionsSendsRequestToClient(): void
+    {
+        $expectedResponse = $this->createMock(IResponse::class);
+        $this->app->expects($this->once())
+            ->method('handle')
+            ->with($this->callback(function (IRequest $request) {
+                return $request->getMethod() === 'OPTIONS'
+                    && (string)$request->getUri() === 'http://localhost'
+                    && $request->getHeaders()->get('Foo') === ['bar']
+                    && (string)$request->getBody() === '{"foo":"bar"}';
+            }))
+            ->willReturn($expectedResponse);
+        $actualResponse = $this->integrationTests->options(
+            'http://localhost',
+            ['Foo' => ['bar']],
+            new StringBody('{"foo":"bar"}')
+        );
+        $this->assertSame($expectedResponse, $actualResponse);
+    }
+
+    public function testPostSendsRequestToClient(): void
+    {
+        $expectedResponse = $this->createMock(IResponse::class);
+        $this->app->expects($this->once())
+            ->method('handle')
+            ->with($this->callback(function (IRequest $request) {
+                return $request->getMethod() === 'POST'
+                    && (string)$request->getUri() === 'http://localhost'
+                    && $request->getHeaders()->get('Foo') === ['bar']
+                    && (string)$request->getBody() === '{"foo":"bar"}';
+            }))
+            ->willReturn($expectedResponse);
+        $actualResponse = $this->integrationTests->post(
+            'http://localhost',
+            ['Foo' => ['bar']],
+            new StringBody('{"foo":"bar"}')
+        );
+        $this->assertSame($expectedResponse, $actualResponse);
+    }
+
+    public function testPutSendsRequestToClient(): void
+    {
+        $expectedResponse = $this->createMock(IResponse::class);
+        $this->app->expects($this->once())
+            ->method('handle')
+            ->with($this->callback(function (IRequest $request) {
+                return $request->getMethod() === 'PUT'
+                    && (string)$request->getUri() === 'http://localhost'
+                    && $request->getHeaders()->get('Foo') === ['bar']
+                    && (string)$request->getBody() === '{"foo":"bar"}';
+            }))
+            ->willReturn($expectedResponse);
+        $actualResponse = $this->integrationTests->put(
+            'http://localhost',
+            ['Foo' => ['bar']],
+            new StringBody('{"foo":"bar"}')
+        );
+        $this->assertSame($expectedResponse, $actualResponse);
     }
 }

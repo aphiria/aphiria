@@ -57,7 +57,7 @@ class RequestBuilder
      */
     public function __construct(
         IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
-        string $defaultContentType = '*/*',
+        string $defaultContentType = 'application/json',
         string $defaultAccept = '*/*'
     ) {
         $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher([

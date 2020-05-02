@@ -50,7 +50,7 @@ class RequestBuilderTest extends TestCase
         $request = $this->requestBuilder->withMethod('GET')
             ->withUri('http://localhost')
             ->build();
-        $this->assertEquals(['*/*'], $request->getHeaders()->get('Content-Type'));
+        $this->assertEquals(['application/json'], $request->getHeaders()->get('Content-Type'));
         $this->assertEquals(['*/*'], $request->getHeaders()->get('Accept'));
     }
 

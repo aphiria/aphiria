@@ -22,9 +22,12 @@ use Aphiria\Framework\Testing\ResponseAssertions;
 use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\HttpException;
+use Aphiria\Net\Http\IHttpClient;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\RequestBuilder;
+use Aphiria\Net\Uri;
 use Closure;
 use PHPUnit\Framework\TestCase;
 
@@ -33,19 +36,26 @@ use PHPUnit\Framework\TestCase;
  */
 abstract class IntegrationTestCase extends TestCase
 {
-    /** @var ApplicationClient The application client */
-    protected ApplicationClient $client;
     /** @var ResponseAssertions The response assertions */
     protected ResponseAssertions $responseAssertions;
     /** @var RequestBuilder The request builder */
     protected RequestBuilder $requestBuilder;
+    /** @var IRequest|null The most recently sent request from the helper methods in this class */
+    protected ?IRequest $lastRequest = null;
+    /**
+     * The application client
+     * This is private for DX so that we can control setting the last request and using that for any assertions that need it
+     *
+     * @var IHttpClient
+     */
+    private IHttpClient $client;
 
     protected function setUp(): void
     {
         $container = new Container();
         Container::$globalInstance = $container;
         $container->bindInstance([IServiceResolver::class, IContainer::class, Container::class], $container);
-        $this->client = new ApplicationClient($this->getApp($container), $container);
+        $this->client = $this->createClient($container);
         $this->requestBuilder = $this->createRequestBuilder($container);
         $this->responseAssertions = $this->createResponseAssertions($container);
     }
@@ -137,14 +147,12 @@ abstract class IntegrationTestCase extends TestCase
      * Asserts that the parsed response body matches the expected value
      *
      * @param mixed $expectedValue The expected value
-     * @param IRequest $request The request that generated the response (used for content negotiation)
      * @param IResponse $response The response to inspect
-     * @throws SerializationException Thrown if there was an error deserializing the response body
      */
-    public function assertParsedBodyEquals($expectedValue, IRequest $request, IResponse $response): void
+    public function assertParsedBodyEquals($expectedValue, IResponse $response): void
     {
         try {
-            $this->responseAssertions->assertParsedBodyEquals($expectedValue, $request, $response);
+            $this->responseAssertions->assertParsedBodyEquals($expectedValue, $this->lastRequest, $response);
             $this->assertTrue(true);
         } catch (AssertionFailedException $ex) {
             $this->fail($ex->getMessage());
@@ -154,16 +162,15 @@ abstract class IntegrationTestCase extends TestCase
     /**
      * Asserts that the parsed response body passes a callback
      *
-     * @param IRequest $request The request that generated the response (used for content negotiation)
      * @param IResponse $response The response to inspect
      * @param string $type The type to parse the response body as
      * @param Closure $callback The callback that takes in the parsed body (mixed type) and returns true if it passes, otherwise false
      * @throws SerializationException Thrown if there was an error deserializing the response body
      */
-    public function assertParsedBodyPassesCallback(IRequest $request, IResponse $response, string $type, Closure $callback): void
+    public function assertParsedBodyPassesCallback(IResponse $response, string $type, Closure $callback): void
     {
         try {
-            $this->responseAssertions->assertParsedBodyPassesCallback($request, $response, $type, $callback);
+            $this->responseAssertions->assertParsedBodyPassesCallback($this->lastRequest, $response, $type, $callback);
             $this->assertTrue(true);
         } catch (AssertionFailedException $ex) {
             $this->fail($ex->getMessage());
@@ -187,12 +194,137 @@ abstract class IntegrationTestCase extends TestCase
     }
 
     /**
+     * Sends a DELETE request
+     *
+     * @param string|Uri $uri The URI to request
+     * @param array $headers The mapping of header names to values
+     * @param mixed $body The body of the request
+     * @return IResponse The response
+     * @throws HttpException Thrown if there was an error sending the request
+     * @throws SerializationException Thrown if the body could not be serialized
+     */
+    public function delete($uri, array $headers = [], $body = null): IResponse
+    {
+        $request = $this->requestBuilder->withMethod('DELETE')
+            ->withUri($uri)
+            ->withManyHeaders($headers)
+            ->withBody($body)
+            ->build();
+
+        return $this->send($request);
+    }
+
+    /**
+     * Sends a GET request
+     *
+     * @param string|Uri $uri The URI to request
+     * @param array $headers The mapping of header names to values
+     * @return IResponse The response
+     * @throws HttpException Thrown if there was an error sending the request
+     */
+    public function get($uri, array $headers = []): IResponse
+    {
+        $request = $this->requestBuilder->withMethod('GET')
+            ->withUri($uri)
+            ->withManyHeaders($headers)
+            ->build();
+
+        return $this->send($request);
+    }
+
+    /**
+     * Sends an OPTIONS request
+     *
+     * @param string|Uri $uri The URI to request
+     * @param array $headers The mapping of header names to values
+     * @param mixed $body The body of the request
+     * @return IResponse The response
+     * @throws HttpException Thrown if there was an error sending the request
+     * @throws SerializationException Thrown if the body could not be serialized
+     */
+    public function options($uri, array $headers = [], $body = null): IResponse
+    {
+        $request = $this->requestBuilder->withMethod('OPTIONS')
+            ->withUri($uri)
+            ->withManyHeaders($headers)
+            ->withBody($body)
+            ->build();
+
+        return $this->send($request);
+    }
+
+    /**
+     * Sends a POST request
+     *
+     * @param string|Uri $uri The URI to request
+     * @param array $headers The mapping of header names to values
+     * @param mixed $body The body of the request
+     * @return IResponse The response
+     * @throws HttpException Thrown if there was an error sending the request
+     * @throws SerializationException Thrown if the body could not be serialized
+     */
+    public function post($uri, array $headers = [], $body = null): IResponse
+    {
+        $request = $this->requestBuilder->withMethod('POST')
+            ->withUri($uri)
+            ->withManyHeaders($headers)
+            ->withBody($body)
+            ->build();
+
+        return $this->send($request);
+    }
+
+    /**
+     * Sends a PUT request
+     *
+     * @param string|Uri $uri The URI to request
+     * @param array $headers The mapping of header names to values
+     * @param mixed $body The body of the request
+     * @return IResponse The response
+     * @throws HttpException Thrown if there was an error sending the request
+     * @throws SerializationException Thrown if the body could not be serialized
+     */
+    public function put($uri, array $headers = [], $body = null): IResponse
+    {
+        $request = $this->requestBuilder->withMethod('PUT')
+            ->withUri($uri)
+            ->withManyHeaders($headers)
+            ->withBody($body)
+            ->build();
+
+        return $this->send($request);
+    }
+
+    /**
+     * Sends a request to the application
+     *
+     * @param IRequest $request The request to send
+     * @return IResponse The response
+     * @throws HttpException Thrown if there was an error sending the request
+     */
+    public function send(IRequest $request): IResponse
+    {
+        return $this->client->send($this->lastRequest = $request);
+    }
+
+    /**
      * Gets the built application that will handle requests
      *
      * @param IContainer $container The DI container
      * @return IRequestHandler The application
      */
-    abstract protected function getApp(IContainer $container): IRequestHandler;
+    abstract protected function createApplication(IContainer $container): IRequestHandler;
+
+    /**
+     * Creates an HTTP client for use in integration tests
+     *
+     * @param IContainer $container The DI container
+     * @return IHttpClient The HTTP client to be used
+     */
+    protected function createClient(IContainer $container): IHttpClient
+    {
+        return new ApplicationClient($this->createApplication($container), $container);
+    }
 
     /**
      * Creates a request builder that can be used in integration tests

@@ -158,6 +158,7 @@ class ResponseAssertions
     public function assertParsedBodyEquals($expectedValue, IRequest $request, IResponse $response): void
     {
         try {
+            // Purposely not checking references here
             if ($expectedValue instanceof IBody) {
                 if ($response->getBody() != $expectedValue) {
                     throw new AssertionFailedException('Failed to assert that the response body equals the expected value');
