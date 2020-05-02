@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Testing;
+namespace Aphiria\Net\Http;
 
 use Aphiria\Collections\HashTable;
 use Aphiria\Collections\IDictionary;
@@ -23,11 +23,6 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatt
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
-use Aphiria\Net\Http\Headers;
-use Aphiria\Net\Http\IBody;
-use Aphiria\Net\Http\IRequest;
-use Aphiria\Net\Http\Request;
-use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Uri;
 use Aphiria\Serialization\TypeResolver;
 use InvalidArgumentException;
@@ -50,6 +45,10 @@ class RequestBuilder
     private ?IBody $body = null;
     /** @var IDictionary The request properties */
     private IDictionary $properties;
+    /** @var string The protocol version */
+    private string $protocolVersion = '1.1';
+    /** @var string The request target type */
+    private string $requestTargetType = RequestTargetTypes::ORIGIN_FORM;
 
     /**
      * @param IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher The media type formatter matcher
@@ -96,7 +95,9 @@ class RequestBuilder
             $this->uri,
             $this->headers,
             $this->body,
-            $this->properties
+            $this->properties,
+            $this->protocolVersion,
+            $this->requestTargetType
         );
     }
 
@@ -131,6 +132,7 @@ class RequestBuilder
             $bodyStream = new Stream(\fopen('php://temp', 'w+b'));
             $mediaTypeFormatterMatch->getFormatter()->writeToStream($body, $bodyStream, $encoding);
             $new->body = new StreamBody($bodyStream);
+            $new->headers->add('Content-Type', $mediaTypeFormatterMatch->getMediaType());
         } else {
             throw new InvalidArgumentException('Body must either implement ' . IBody::class . ' or be an array, object, or scalar');
         }
@@ -150,6 +152,23 @@ class RequestBuilder
     {
         $new = clone $this;
         $new->headers->add($name, $values, $append);
+
+        return $new;
+    }
+
+    /**
+     * Adds a header to the request
+     *
+     * @param array $headers The mapping of header names to values
+     * @return self For chaining
+     */
+    public function withManyHeaders(array $headers): self
+    {
+        $new = clone $this;
+
+        foreach ($headers as $name => $value) {
+            $new->headers->add($name, $value);
+        }
 
         return $new;
     }
@@ -179,6 +198,34 @@ class RequestBuilder
     {
         $new = clone $this;
         $new->properties->add($name, $value);
+
+        return $new;
+    }
+
+    /**
+     * Sets the protocol version of the request
+     *
+     * @param string $protocolVersion
+     * @return self For chaining
+     */
+    public function withProtocolVersion(string $protocolVersion): self
+    {
+        $new = clone $this;
+        $new->protocolVersion = $protocolVersion;
+
+        return $new;
+    }
+
+    /**
+     * Sets the target type of the request
+     *
+     * @param string $requestTargetType
+     * @return self For chaining
+     */
+    public function withRequestTargetType(string $requestTargetType): self
+    {
+        $new = clone $this;
+        $new->requestTargetType = $requestTargetType;
 
         return $new;
     }

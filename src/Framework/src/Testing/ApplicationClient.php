@@ -15,14 +15,14 @@ namespace Aphiria\Framework\Testing;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Framework\Net\Binders\RequestBinder;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
-use Aphiria\Net\Http\HttpException;
+use Aphiria\Net\Http\IHttpClient;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 
 /**
  * Defines a request client for tests
  */
-class ApplicationClient
+class ApplicationClient implements IHttpClient
 {
     /** @var IRequestHandler The application */
     private IRequestHandler $app;
@@ -40,11 +40,7 @@ class ApplicationClient
     }
 
     /**
-     * Sends a request through the application and gets a response
-     *
-     * @param IRequest $request The request to send
-     * @return IResponse The returned response
-     * @throws HttpException Thrown if there was an error handling the request
+     * @inheritdoc
      */
     public function send(IRequest $request): IResponse
     {

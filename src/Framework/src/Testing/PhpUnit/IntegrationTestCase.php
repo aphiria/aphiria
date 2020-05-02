@@ -15,14 +15,16 @@ namespace Aphiria\Framework\Testing\PhpUnit;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IServiceResolver;
+use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Framework\Testing\ApplicationClient;
 use Aphiria\Framework\Testing\AssertionFailedException;
-use Aphiria\Framework\Testing\RequestBuilder;
 use Aphiria\Framework\Testing\ResponseAssertions;
+use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
+use Aphiria\Net\Http\RequestBuilder;
 use Closure;
 use PHPUnit\Framework\TestCase;
 
@@ -44,10 +46,8 @@ abstract class IntegrationTestCase extends TestCase
         Container::$globalInstance = $container;
         $container->bindInstance([IServiceResolver::class, IContainer::class, Container::class], $container);
         $this->client = new ApplicationClient($this->getApp($container), $container);
-
-        // TODO: Do I add a test module so that I can use binders to grab things like the media type formatter matcher?
-        $this->requestBuilder = new RequestBuilder();
-        $this->responseAssertions = new ResponseAssertions();
+        $this->requestBuilder = $this->createRequestBuilder($container);
+        $this->responseAssertions = new ResponseAssertions($container->resolve(IMediaTypeFormatterMatcher::class));
     }
 
     /**
@@ -193,4 +193,16 @@ abstract class IntegrationTestCase extends TestCase
      * @return IRequestHandler The application
      */
     abstract protected function getApp(IContainer $container): IRequestHandler;
+
+    /**
+     * Creates a request builder that can be used in integration tests
+     *
+     * @param IContainer $container The DI container
+     * @return RequestBuilder The request builder
+     * @throws ResolutionException Thrown if the media type formatter matcher could not be resolved
+     */
+    protected function createRequestBuilder(IContainer $container): RequestBuilder
+    {
+        return new RequestBuilder($container->resolve(IMediaTypeFormatterMatcher::class));
+    }
 }
