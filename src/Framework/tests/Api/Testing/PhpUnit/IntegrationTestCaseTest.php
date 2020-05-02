@@ -10,13 +10,13 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\Testing\PhpUnit;
+namespace Aphiria\Framework\Tests\Api\Testing\PhpUnit;
 
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Framework\Testing\PhpUnit\IntegrationTestCase;
-use Aphiria\Framework\Testing\ResponseAssertions;
+use Aphiria\Framework\Api\Testing\PhpUnit\IntegrationTestCase;
+use Aphiria\Framework\Api\Testing\ResponseAssertions;
 use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedMediaTypeFormatter;
@@ -79,7 +79,37 @@ class IntegrationTestCaseTest extends TestCase
                 return parent::send($request);
             }
 
-            // Make this publicly accessible
+            // Make this public for testability
+            public function delete($uri, array $headers = [], $body = null): IResponse
+            {
+                return parent::delete($uri, $headers, $body);
+            }
+
+            // Make this public for testability
+            public function get($uri, array $headers = []): IResponse
+            {
+                return parent::get($uri, $headers);
+            }
+
+            // Make this public for testability
+            public function options($uri, array $headers = [], $body = null): IResponse
+            {
+                return parent::options($uri, $headers, $body);
+            }
+
+            // Make this public for testability
+            public function post($uri, array $headers = [], $body = null): IResponse
+            {
+                return parent::post($uri, $headers, $body);
+            }
+
+            // Make this public for testability
+            public function put($uri, array $headers = [], $body = null): IResponse
+            {
+                return parent::put($uri, $headers, $body);
+            }
+
+            // Make this public for testability
             public function setUp(): void
             {
                 parent::setUp();

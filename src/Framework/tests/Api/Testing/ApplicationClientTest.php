@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\Testing;
+namespace Aphiria\Framework\Tests\Api\Testing;
 
 use Aphiria\DependencyInjection\IServiceResolver;
+use Aphiria\Framework\Api\Testing\ApplicationClient;
 use Aphiria\Framework\Net\Binders\RequestBinder;
-use Aphiria\Framework\Testing\ApplicationClient;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;

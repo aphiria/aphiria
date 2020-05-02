@@ -10,9 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Testing;
+namespace Aphiria\Framework\Api\Testing;
 
 use Aphiria\DependencyInjection\IServiceResolver;
+use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Framework\Net\Binders\RequestBinder;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\IHttpClient;
@@ -41,6 +42,7 @@ class ApplicationClient implements IHttpClient
 
     /**
      * @inheritdoc
+     * @throws ResolutionException Thrown if the request could not be resolved
      */
     public function send(IRequest $request): IResponse
     {

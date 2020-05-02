@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\Testing;
+namespace Aphiria\Framework\Tests\Api\Testing;
 
 use Aphiria\Collections\KeyValuePair;
-use Aphiria\Framework\Testing\AssertionFailedException;
-use Aphiria\Framework\Testing\ResponseAssertions;
+use Aphiria\Framework\Api\Testing\AssertionFailedException;
+use Aphiria\Framework\Api\Testing\ResponseAssertions;
 use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Request;

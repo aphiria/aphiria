@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Testing;
+namespace Aphiria\Framework\Api\Testing;
 
 use Exception;
 
