@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Testing;
 
-use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Framework\Net\Binders\RequestBinder;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\HttpException;
@@ -26,17 +26,17 @@ class ApplicationClient
 {
     /** @var IRequestHandler The application */
     private IRequestHandler $app;
-    /** @var IContainer The DI container */
-    protected IContainer $container;
+    /** @var IServiceResolver The DI service resolver */
+    protected IServiceResolver $serviceResolver;
 
     /**
      * @param IRequestHandler$app The application
-     * @param IContainer $container The DI container
+     * @param IServiceResolver $serviceResolver The DI service resolver
      */
-    public function __construct(IRequestHandler $app, IContainer $container)
+    public function __construct(IRequestHandler $app, IServiceResolver $serviceResolver)
     {
         $this->app = $app;
-        $this->container = $container;
+        $this->serviceResolver = $serviceResolver;
     }
 
     /**
@@ -55,6 +55,6 @@ class ApplicationClient
          */
         RequestBinder::setOverridingRequest($request);
 
-        return $this->app->handle($this->container->resolve(IRequest::class));
+        return $this->app->handle($this->serviceResolver->resolve(IRequest::class));
     }
 }

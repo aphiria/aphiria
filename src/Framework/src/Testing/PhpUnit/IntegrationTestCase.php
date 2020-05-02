@@ -15,22 +15,21 @@ namespace Aphiria\Framework\Testing\PhpUnit;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IServiceResolver;
-use Aphiria\Framework\Api\Builders\ApiApplicationBuilder;
 use Aphiria\Framework\Testing\ApplicationClient;
 use Aphiria\Framework\Testing\AssertionFailedException;
 use Aphiria\Framework\Testing\RequestBuilder;
 use Aphiria\Framework\Testing\ResponseAssertions;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
+use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
-use App\App;
 use Closure;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Defines a base integration test case
  */
-class IntegrationTestCase extends TestCase
+abstract class IntegrationTestCase extends TestCase
 {
     /** @var ApplicationClient The application client */
     protected ApplicationClient $client;
@@ -44,10 +43,7 @@ class IntegrationTestCase extends TestCase
         $container = new Container();
         Container::$globalInstance = $container;
         $container->bindInstance([IServiceResolver::class, IContainer::class, Container::class], $container);
-        // TODO: How do I grab the app module?
-        $app = (new ApiApplicationBuilder($container))->withModule(new App($container))
-            ->build();
-        $this->client = new ApplicationClient($app, $container);
+        $this->client = new ApplicationClient($this->getApp($container), $container);
 
         // TODO: Do I add a test module so that I can use binders to grab things like the media type formatter matcher?
         $this->requestBuilder = new RequestBuilder();
@@ -189,4 +185,12 @@ class IntegrationTestCase extends TestCase
             $this->fail($ex->getMessage());
         }
     }
+
+    /**
+     * Gets the built application that will handle requests
+     *
+     * @param IContainer $container The DI container
+     * @return IRequestHandler The application
+     */
+    abstract protected function getApp(IContainer $container): IRequestHandler;
 }
