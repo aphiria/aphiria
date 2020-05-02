@@ -126,8 +126,8 @@ class SessionTest extends TestCase
             0
         );
         $actualResponse = $middleware->handle($this->request, $this->next);
-        $this->assertMatchesRegularExpression(
-            '/^session=foo; Expires=[^;]+; Max\-Age=3600; Path=%2Fpath; Domain=example\.com; Secure; HttpOnly; SameSite=lax$/',
+        $this->assertEquals(
+            'session=foo; Max-Age=3600; Path=%2Fpath; Domain=example.com; Secure; HttpOnly; SameSite=lax',
             $actualResponse->getHeaders()->getFirst('Set-Cookie')
         );
     }

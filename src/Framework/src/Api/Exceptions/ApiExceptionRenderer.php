@@ -14,7 +14,6 @@ namespace Aphiria\Framework\Api\Exceptions;
 
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
-use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
@@ -33,7 +32,7 @@ use Exception;
 /**
  * Defines the exception renderer for API applications
  */
-class ApiExceptionRenderer implements IExceptionRenderer
+class ApiExceptionRenderer implements IApiExceptionRenderer
 {
     /** @var bool Whether or not to use problem details */
     protected bool $useProblemDetails;
@@ -65,27 +64,34 @@ class ApiExceptionRenderer implements IExceptionRenderer
     }
 
     /**
+     * Creates a response from an exception
+     *
+     * @param Exception $ex The exception that was thrown
+     * @return IResponse The response
+     */
+    public function createResponse(Exception $ex): IResponse
+    {
+        try {
+            if ($this->request === null) {
+                return $this->createResponseWithoutRequest($ex);
+            }
+
+            return $this->createResponseWithRequest($ex, $this->request);
+        } catch (Exception $ex) {
+            return $this->createDefaultResponse($ex);
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     public function render(Exception $ex): void
     {
-        try {
-            if ($this->request === null) {
-                $response = $this->createResponseWithoutRequest($ex);
-            } else {
-                $response = $this->createResponseWithRequest($ex, $this->request);
-            }
-        } catch (Exception $ex) {
-            $response = $this->createDefaultResponse($ex);
-        }
-
-        $this->responseWriter->writeResponse($response);
+        $this->responseWriter->writeResponse($this->createResponse($ex));
     }
 
     /**
-     * Registers many factories for exceptions
-     *
-     * @param Closure[] $exceptionTypesToFactories The mapping of exception types to factories
+     * @inheritdoc
      */
     public function registerManyResponseFactories(array $exceptionTypesToFactories): void
     {
@@ -95,10 +101,7 @@ class ApiExceptionRenderer implements IExceptionRenderer
     }
 
     /**
-     * Registers a factory for a specific type of exception
-     *
-     * @param string $exceptionType The type of exception whose factory we're registering
-     * @param Closure $factory The factory that takes in an instance of the exception, the request, and the response factory
+     * @inheritdoc
      */
     public function registerResponseFactory(string $exceptionType, Closure $factory): void
     {
@@ -106,9 +109,7 @@ class ApiExceptionRenderer implements IExceptionRenderer
     }
 
     /**
-     * Sets the current request in case it wasn't initially available
-     *
-     * @param IRequest $request The current request
+     * @inheritdoc
      */
     public function setRequest(IRequest $request): void
     {
@@ -116,9 +117,7 @@ class ApiExceptionRenderer implements IExceptionRenderer
     }
 
     /**
-     * Sets the response factory
-     *
-     * @param IResponseFactory $responseFactory The response factory to set
+     * @inheritdoc
      */
     public function setResponseFactory(IResponseFactory $responseFactory): void
     {

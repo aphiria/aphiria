@@ -58,6 +58,14 @@ class HeaderParserTest extends TestCase
         $this->assertFalse($this->parser->isMultipart($headers));
     }
 
+    public function testParseContentTypeHeaderReturnsIt(): void
+    {
+        $headers = new Headers();
+        $headers->add('Content-Type', 'application/json');
+        $value = $this->parser->parseContentTypeHeader($headers);
+        $this->assertEquals('application/json', $value->getMediaType());
+    }
+
     public function testParsingParametersForIndexThatDoesNotExistReturnsEmptyDictionary(): void
     {
         $headers = new Headers();

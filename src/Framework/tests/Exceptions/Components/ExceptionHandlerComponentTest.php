@@ -15,9 +15,9 @@ namespace Aphiria\Framework\Tests\Exceptions\Components;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Exceptions\GlobalExceptionHandler;
-use Aphiria\Exceptions\IExceptionRenderer;
+use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Net\Http\IRequest;
@@ -25,28 +25,20 @@ use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\IResponseWriter;
 use Exception;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
 class ExceptionHandlerComponentTest extends TestCase
 {
     private IContainer $container;
     private ExceptionHandlerComponent $exceptionHandlerComponent;
-    private GlobalExceptionHandler $globalExceptionHandler;
-    /** @var LoggerInterface|MockObject */
-    private LoggerInterface $logger;
+    private LogLevelFactory $logLevelFactory;
 
     protected function setUp(): void
     {
-        $this->logger = $this->createMock(LoggerInterface::class);
-        $this->globalExceptionHandler = new GlobalExceptionHandler(
-            $this->createMock(IExceptionRenderer::class),
-            $this->logger
-        );
+        $this->logLevelFactory = new LogLevelFactory();
         $this->container = new Container();
-        $this->container->bindInstance(GlobalExceptionHandler::class, $this->globalExceptionHandler);
+        $this->container->bindInstance(LogLevelFactory::class, $this->logLevelFactory);
         $this->exceptionHandlerComponent = new ExceptionHandlerComponent($this->container);
     }
 
@@ -87,7 +79,7 @@ class ExceptionHandlerComponentTest extends TestCase
         // Need to make sure the content negotiator is set so that the factory is invoked
         $httpExceptionHandler->setResponseFactory($this->createMock(IResponseFactory::class));
         $httpExceptionHandler->setRequest($this->createMock(IRequest::class));
-        $this->container->bindInstance(ApiExceptionRenderer::class, $httpExceptionHandler);
+        $this->container->bindInstance(IApiExceptionRenderer::class, $httpExceptionHandler);
 
         $factory = fn (Exception $ex) => $expectedResponse;
         $this->exceptionHandlerComponent->withHttpResponseFactory(Exception::class, $factory);
@@ -98,12 +90,9 @@ class ExceptionHandlerComponentTest extends TestCase
     public function testBuildWithLogLevelFactoryRegistersFactory(): void
     {
         $expectedException = new Exception();
-        $this->logger->expects($this->once())
-            ->method('alert')
-            ->with($expectedException);
         $factory = fn (Exception $ex) => LogLevel::ALERT;
         $this->exceptionHandlerComponent->withLogLevelFactory(Exception::class, $factory);
         $this->exceptionHandlerComponent->build();
-        $this->globalExceptionHandler->handleException($expectedException);
+        $this->assertEquals(LogLevel::ALERT, $this->logLevelFactory->createLogLevel($expectedException));
     }
 }

@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http\Headers;
 
 use Aphiria\Net\Http\Headers\Cookie;
-use DateTime;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -23,13 +22,7 @@ class CookieTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->cookie = new Cookie('name', 'value', time() + 1234, '/', 'foo.com', true, true, Cookie::SAME_SITE_LAX);
-    }
-
-    public function testConstructorOnNullExpiration(): void
-    {
-        $cookie = new Cookie('name', 'value', null, '/', 'foo.com', true, true, Cookie::SAME_SITE_LAX);
-        $this->assertNull($cookie->getExpiration());
+        $this->cookie = new Cookie('name', 'value', 1234, '/', 'foo.com', true, true, Cookie::SAME_SITE_LAX);
     }
 
     public function testCheckingIfIsHttpOnly(): void
@@ -101,13 +94,6 @@ class CookieTest extends TestCase
         $this->assertEquals('foo.com', $this->cookie->getDomain());
     }
 
-    public function testGettingExpiration(): void
-    {
-        $expiration = time() + 3600;
-        $cookie = new Cookie('foo', 'bar', $expiration);
-        $this->assertEquals($expiration, (int)$cookie->getExpiration()->format('U'));
-    }
-
     public function testGettingMaxAge(): void
     {
         $this->assertEquals(1234, $this->cookie->getMaxAge());
@@ -140,30 +126,9 @@ class CookieTest extends TestCase
         $this->cookie->setName('=');
     }
 
-    public function testSettingDateTimeAsExpirationDoesNotSetMaxAge(): void
-    {
-        $expiration = new DateTime();
-        $cookie = new Cookie('name', 'value', $expiration);
-        $this->assertSame($expiration, $cookie->getExpiration());
-        $this->assertNull($cookie->getMaxAge());
-    }
-
-    public function testSettingInvalidExpirationValueThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Expiration must be integer or DateTime');
-        new Cookie('foo', 'bar', 'baz');
-    }
-
     public function testSettingMaxAge(): void
     {
         $this->cookie->setMaxAge(3600);
         $this->assertEquals(3600, $this->cookie->getMaxAge());
-    }
-
-    public function testSettingNullExpirationSetsNullExpiration(): void
-    {
-        $this->cookie->setExpiration(null);
-        $this->assertNull($this->cookie->getExpiration());
     }
 }

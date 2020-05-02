@@ -14,6 +14,7 @@ namespace Aphiria\Framework\Tests\Exceptions\Binders;
 
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Exceptions\Binders\ExceptionHandlerBinder;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponseFactory;
@@ -25,7 +26,7 @@ class ExceptionHandlerBinderTest extends TestCase
     /** @var IContainer|MockObject */
     private IContainer $container;
     private ExceptionHandlerBinder $binder;
-    private ?ApiExceptionRenderer $apiExceptionRenderer;
+    private ?IApiExceptionRenderer $apiExceptionRenderer;
     private ?IRequest $request;
     private ?IResponseFactory $responseFactory;
 
@@ -38,7 +39,7 @@ class ExceptionHandlerBinderTest extends TestCase
         // Set up some universal mocks
         $this->container->expects($this->at(0))
             ->method('tryResolve')
-            ->with(ApiExceptionRenderer::class, $this->apiExceptionRenderer)
+            ->with(IApiExceptionRenderer::class, $this->apiExceptionRenderer)
             ->willReturnCallback(function ($type, &$object) {
                 // Capture the object parameter so we can make assertions on it later
                 $object = $this->apiExceptionRenderer = new class() extends ApiExceptionRenderer {

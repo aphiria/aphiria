@@ -131,7 +131,7 @@ final class Session implements IMiddleware
             new Cookie(
                 $this->sessionCookieName,
                 $this->session->getId(),
-                time() + $this->sessionTtl,
+                $this->sessionTtl,
                 $this->sessionCookiePath,
                 $this->sessionCookieDomain,
                 $this->sessionCookieIsSecure,

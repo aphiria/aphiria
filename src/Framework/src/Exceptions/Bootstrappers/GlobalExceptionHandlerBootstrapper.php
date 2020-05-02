@@ -22,7 +22,9 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\IGlobalExceptionHandler;
+use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
@@ -60,13 +62,14 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
         $apiExceptionRenderer = $this->createAndBindApiExceptionRenderer();
         $consoleExceptionRenderer = $this->createAndBindConsoleExceptionRenderer();
         $logger = $this->createAndBindLogger();
+        $logLevelFactory = $this->createAndBindLogLevelFactory();
 
         if ($this->isRunningInConsole()) {
             $this->container->bindInstance(IExceptionRenderer::class, $consoleExceptionRenderer);
-            $globalExceptionHandler = new GlobalExceptionHandler($consoleExceptionRenderer, $logger);
+            $globalExceptionHandler = new GlobalExceptionHandler($consoleExceptionRenderer, $logger, $logLevelFactory);
         } else {
             $this->container->bindInstance(IExceptionRenderer::class, $apiExceptionRenderer);
-            $globalExceptionHandler = new GlobalExceptionHandler($apiExceptionRenderer, $logger);
+            $globalExceptionHandler = new GlobalExceptionHandler($apiExceptionRenderer, $logger, $logLevelFactory);
         }
 
         $globalExceptionHandler->registerWithPhp();
@@ -101,8 +104,8 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                 return new Response(HttpStatusCodes::HTTP_BAD_REQUEST);
             }
         ]);
-        // We'll bind to the interface in the calling method
-        $this->container->bindInstance(ApiExceptionRenderer::class, $exceptionRenderer);
+        // We'll bind IExceptionRenderer in the calling method
+        $this->container->bindInstance([IApiExceptionRenderer::class, ApiExceptionRenderer::class], $exceptionRenderer);
 
         return $exceptionRenderer;
     }
@@ -155,6 +158,19 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
         $this->container->bindInstance(LoggerInterface::class, $logger);
 
         return $logger;
+    }
+
+    /**
+     * Creates and binds a log level factory for use in the exception handler
+     *
+     * @return LogLevelFactory The bound log level factory
+     */
+    protected function createAndBindLogLevelFactory(): LogLevelFactory
+    {
+        $logLevelFactory = new LogLevelFactory();
+        $this->container->bindInstance(LogLevelFactory::class, $logLevelFactory);
+
+        return $logLevelFactory;
     }
 
     /**

@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Headers;
 
-use DateTime;
 use InvalidArgumentException;
 
 /**
@@ -30,8 +29,6 @@ final class Cookie
     private string $name = '';
     /** @var mixed The value of the cookie */
     private $value;
-    /** @var DateTime|null The expiration timestamp of the cookie if set, otherwise null */
-    private ?DateTime $expiration;
     /** @var int|null The max age of the cookie if set, otherwise null */
     private ?int $maxAge = null;
     /** @var string|null The path the cookie is valid on if set, otherwise null */
@@ -48,7 +45,7 @@ final class Cookie
     /**
      * @param string $name The name of the cookie
      * @param mixed $value The value of the cookie
-     * @param DateTime|int|null $expiration The expiration of the cookie if set, otherwise null
+     * @param int|null $maxAge The expiration (in seconds from now) the cookie is valid for, or null if it's a session cookie
      * @param string|null $path The path the cookie applies to
      * @param string|null $domain The domain the cookie applies to
      * @param bool $isSecure Whether or not this cookie is HTTPS-only
@@ -59,7 +56,7 @@ final class Cookie
     public function __construct(
         string $name,
         $value,
-        $expiration = null,
+        int $maxAge = null,
         ?string $path = null,
         ?string $domain = null,
         bool $isSecure = false,
@@ -68,19 +65,7 @@ final class Cookie
     ) {
         $this->setName($name);
         $this->value = $value;
-
-        if ($expiration === null) {
-            $this->expiration = null;
-            $this->maxAge = null;
-        } elseif (\is_int($expiration)) {
-            $this->expiration = DateTime::createFromFormat('U', (string)$expiration);
-            $this->maxAge = $expiration - time();
-        } elseif ($expiration instanceof DateTime) {
-            $this->expiration = $expiration;
-        } else {
-            throw new InvalidArgumentException('Expiration must be integer or DateTime');
-        }
-
+        $this->maxAge = $maxAge;
         $this->path = $path;
         $this->domain = $domain;
         $this->isSecure = $isSecure;
@@ -104,16 +89,6 @@ final class Cookie
     public function getDomain(): ?string
     {
         return $this->domain;
-    }
-
-    /**
-     * Gets the expiration of the cookie
-     *
-     * @return DateTime|null The expiration if set, otherwise null
-     */
-    public function getExpiration(): ?DateTime
-    {
-        return $this->expiration;
     }
 
     /**
@@ -194,17 +169,6 @@ final class Cookie
     public function setDomain(string $domain): void
     {
         $this->domain = $domain;
-    }
-
-    /**
-     * Sets the expiration of the cookie
-     *
-     * @param DateTime|int|null $expiration The expiration if set, otherwise null
-     * @throws InvalidArgumentException Thrown if the expiration is not an integer or DateTime
-     */
-    public function setExpiration($expiration): void
-    {
-        $this->expiration = $expiration;
     }
 
     /**

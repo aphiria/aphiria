@@ -53,7 +53,7 @@ class ResponseFormatterTest extends TestCase
     {
         $this->formatter->deleteCookie($this->response, 'name', '/path', 'example.com', true, true, 'lax');
         $this->assertEquals(
-            'name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Path=%2Fpath; Domain=example.com; Secure; HttpOnly; SameSite=lax',
+            'name=; Max-Age=0; Path=%2Fpath; Domain=example.com; Secure; HttpOnly; SameSite=lax',
             $this->headers->getFirst('Set-Cookie')
         );
     }
@@ -87,10 +87,10 @@ class ResponseFormatterTest extends TestCase
     {
         $this->formatter->setCookie(
             $this->response,
-            new Cookie('name', 'value', time() + 3600, '/path', 'example.com', true, true, 'lax')
+            new Cookie('name', 'value', 3600, '/path', 'example.com', true, true, 'lax')
         );
-        $this->assertMatchesRegularExpression(
-            '/^name=value; Expires=[^;]+; Max\-Age=3600; Path=%2Fpath; Domain=example\.com; Secure; HttpOnly; SameSite=lax$/',
+        $this->assertEquals(
+            'name=value; Max-Age=3600; Path=%2Fpath; Domain=example.com; Secure; HttpOnly; SameSite=lax',
             $this->headers->getFirst('Set-Cookie')
         );
     }
@@ -99,16 +99,16 @@ class ResponseFormatterTest extends TestCase
     {
         $this->formatter->setCookies(
             $this->response,
-            [new Cookie('name1', 'value1', time() + 3600), new Cookie('name2', 'value2', time() + 3600)]
+            [new Cookie('name1', 'value1', 3600), new Cookie('name2', 'value2', 7200)]
         );
         $cookies = $this->headers->get('Set-Cookie');
         $this->assertCount(2, $cookies);
-        $this->assertMatchesRegularExpression(
-            '/^name1=value1; Expires=[^;]+; Max\-Age=3600; HttpOnly; SameSite=lax$/',
+        $this->assertEquals(
+            'name1=value1; Max-Age=3600; HttpOnly; SameSite=lax',
             $cookies[0]
         );
-        $this->assertMatchesRegularExpression(
-            '/^name2=value2; Expires=[^;]+; Max\-Age=3600; HttpOnly; SameSite=lax$/',
+        $this->assertEquals(
+            'name2=value2; Max-Age=7200; HttpOnly; SameSite=lax',
             $cookies[1]
         );
     }

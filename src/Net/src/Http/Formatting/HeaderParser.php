@@ -16,6 +16,8 @@ use Aphiria\Collections\IImmutableDictionary;
 use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -58,6 +60,25 @@ class HeaderParser
         $headers->tryGetFirst('Content-Type', $contentType);
 
         return \is_string($contentType) && preg_match("/multipart\//i", $contentType) === 1;
+    }
+
+    /**
+     * Parses the Content-Type header
+     *
+     * @param Headers $headers The request headers to parse
+     * @return ContentTypeHeaderValue|null The parsed header if one exists, otherwise null
+     * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
+     */
+    public function parseContentTypeHeader(Headers $headers): ?ContentTypeHeaderValue
+    {
+        if (!$headers->containsKey('Content-Type')) {
+            return null;
+        }
+
+        $contentTypeHeaderParameters = $this->parseParameters($headers, 'Content-Type');
+        $contentType = $contentTypeHeaderParameters->getKeys()[0];
+
+        return new ContentTypeHeaderValue($contentType, $contentTypeHeaderParameters);
     }
 
     /**

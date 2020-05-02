@@ -14,8 +14,8 @@ namespace Aphiria\Framework\Exceptions\Components;
 
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
-use Aphiria\Exceptions\GlobalExceptionHandler;
-use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
+use Aphiria\Exceptions\LogLevelFactory;
+use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Application\AphiriaComponents;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Closure;
@@ -49,10 +49,10 @@ class ExceptionHandlerComponent implements IComponent
      */
     public function build(): void
     {
-        /** @var ApiExceptionRenderer|null $apiExceptionRenderer */
+        /** @var IApiExceptionRenderer|null $apiExceptionRenderer */
         $apiExceptionRenderer = null;
 
-        if ($this->serviceResolver->tryResolve(ApiExceptionRenderer::class, $apiExceptionRenderer)) {
+        if ($this->serviceResolver->tryResolve(IApiExceptionRenderer::class, $apiExceptionRenderer)) {
             $apiExceptionRenderer->registerManyResponseFactories($this->httpResponseFactories);
         }
 
@@ -63,8 +63,8 @@ class ExceptionHandlerComponent implements IComponent
             $consoleExceptionRenderer->registerManyOutputWriters($this->consoleOutputWriters);
         }
 
-        $globalExceptionHandler = $this->serviceResolver->resolve(GlobalExceptionHandler::class);
-        $globalExceptionHandler->registerManyLogLevelFactories($this->logLevelFactories);
+        $logLevelFactory = $this->serviceResolver->resolve(LogLevelFactory::class);
+        $logLevelFactory->registerManyLogLevelFactories($this->logLevelFactories);
     }
 
     /**

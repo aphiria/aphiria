@@ -17,7 +17,6 @@ use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
-use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use InvalidArgumentException;
 
 /**
@@ -107,25 +106,6 @@ class RequestHeaderParser extends HeaderParser
         }
 
         return $parsedHeaderValues;
-    }
-
-    /**
-     * Parses the Content-Type header
-     *
-     * @param Headers $headers The request headers to parse
-     * @return ContentTypeHeaderValue|null The parsed header if one exists, otherwise null
-     * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
-     */
-    public function parseContentTypeHeader(Headers $headers): ?ContentTypeHeaderValue
-    {
-        if (!$headers->containsKey('Content-Type')) {
-            return null;
-        }
-
-        $contentTypeHeaderParameters = $this->parseParameters($headers, 'Content-Type');
-        $contentType = $contentTypeHeaderParameters->getKeys()[0];
-
-        return new ContentTypeHeaderValue($contentType, $contentTypeHeaderParameters);
     }
 
     /**
