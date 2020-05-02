@@ -15,6 +15,7 @@ namespace Aphiria\Framework\Tests\Testing;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\Framework\Testing\AssertionFailedException;
 use Aphiria\Framework\Testing\ResponseAssertions;
+use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\Response;
@@ -90,7 +91,7 @@ class ResponseAssertionsTest extends TestCase
     public function testAssertHasHeaderThrowWhenHeaderDoesNotExist(): void
     {
         $this->expectException(AssertionFailedException::class);
-        $this->expectExceptionMessage('Failed asserting that response has header Foo');
+        $this->expectExceptionMessage('Failed to assert that header Foo is set');
         $response = new Response(200);
         $this->assertions->assertHasHeader($response, 'Foo');
     }
@@ -145,6 +146,22 @@ class ResponseAssertionsTest extends TestCase
         $this->assertions->assertHeaderMatchesRegex('/^bar$/', $response, 'Foo');
     }
 
+    public function testAssertParsedBodyEqualsWithBodyThatCannotBeNegotiatedThrows(): void
+    {
+        $this->expectException(AssertionFailedException::class);
+        $this->expectExceptionMessage('Failed to parse the response body');
+        $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
+        $body = new StringBody('{}');
+        $response = new Response(200, null, $body);
+        $mediaTypeFormatterMatcher = $this->createMock(IMediaTypeFormatterMatcher::class);
+        $mediaTypeFormatterMatcher->expects($this->once())
+            ->method('getBestResponseMediaTypeFormatterMatch')
+            ->with(self::class, $request)
+            ->willReturn(null);
+        $assertions = new ResponseAssertions($mediaTypeFormatterMatcher);
+        $assertions->assertParsedBodyEquals($this, $request, $response);
+    }
+
     public function testAssertParsedBodyEqualsWithHttpBodyDoesNotThrowOnMatch(): void
     {
         $request = new Request('GET', new Uri('http://localhost'));
@@ -191,6 +208,31 @@ class ResponseAssertionsTest extends TestCase
         $this->assertions->assertParsedBodyEquals($expectedParsedBody, $request, $response);
     }
 
+    public function testAssertParsedBodyEqualsWithNullBodyThrows(): void
+    {
+        $this->expectException(AssertionFailedException::class);
+        $this->expectExceptionMessage('Failed to assert that the response body matches the expected value');
+        $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
+        $response = new Response(200);
+        $this->assertions->assertParsedBodyEquals($this, $request, $response);
+    }
+
+    public function testAssertParsedBodyPassesCallbackWithBodyThatCannotBeNegotiatedThrows(): void
+    {
+        $this->expectException(AssertionFailedException::class);
+        $this->expectExceptionMessage('Failed to parse the response body');
+        $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
+        $body = new StringBody('{}');
+        $response = new Response(200, null, $body);
+        $mediaTypeFormatterMatcher = $this->createMock(IMediaTypeFormatterMatcher::class);
+        $mediaTypeFormatterMatcher->expects($this->once())
+            ->method('getBestResponseMediaTypeFormatterMatch')
+            ->with(self::class, $request)
+            ->willReturn(null);
+        $assertions = new ResponseAssertions($mediaTypeFormatterMatcher);
+        $assertions->assertParsedBodyPassesCallback($request, $response, self::class, fn ($parsedBody) => true);
+    }
+
     public function testAssertParsedBodyPassesCallbackWithNonHttpBodyDoesNotThrowOnMatch(): void
     {
         $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
@@ -229,7 +271,7 @@ class ResponseAssertionsTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testAssertStatusCodeEqualsThrowOnNoMatch(): void
+    public function testAssertStatusCodeEqualsThrowsOnNoMatch(): void
     {
         $this->expectException(AssertionFailedException::class);
         $this->expectExceptionMessage('Expected status code 200, got 500');

@@ -47,7 +47,7 @@ abstract class IntegrationTestCase extends TestCase
         $container->bindInstance([IServiceResolver::class, IContainer::class, Container::class], $container);
         $this->client = new ApplicationClient($this->getApp($container), $container);
         $this->requestBuilder = $this->createRequestBuilder($container);
-        $this->responseAssertions = new ResponseAssertions($container->resolve(IMediaTypeFormatterMatcher::class));
+        $this->responseAssertions = $this->createResponseAssertions($container);
     }
 
     /**
@@ -204,5 +204,17 @@ abstract class IntegrationTestCase extends TestCase
     protected function createRequestBuilder(IContainer $container): RequestBuilder
     {
         return new RequestBuilder($container->resolve(IMediaTypeFormatterMatcher::class));
+    }
+
+    /**
+     * Creates response assertions that can be used in integration tests
+     *
+     * @param IContainer $container The DI container
+     * @return ResponseAssertions The response assertions
+     * @throws ResolutionException Thrown if the media type formatter matcher could not be resolved
+     */
+    protected function createResponseAssertions(IContainer $container): ResponseAssertions
+    {
+        return new ResponseAssertions($container->resolve(IMediaTypeFormatterMatcher::class));
     }
 }

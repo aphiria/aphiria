@@ -101,7 +101,7 @@ class ResponseAssertions
     public function assertHasHeader(IResponse $response, string $headerName): void
     {
         if (!$response->getHeaders()->containsKey($headerName)) {
-            throw new AssertionFailedException("Failed asserting that response has header $headerName");
+            throw new AssertionFailedException("Failed to assert that header $headerName is set");
         }
     }
 
@@ -154,16 +154,19 @@ class ResponseAssertions
      * @param IRequest $request The request that generated the response (used for content negotiation)
      * @param IResponse $response The response to inspect
      * @throws AssertionFailedException Thrown if the assertion failed
-     * @throws SerializationException Thrown if there was an error deserializing the response body
      */
     public function assertParsedBodyEquals($expectedValue, IRequest $request, IResponse $response): void
     {
-        if ($expectedValue instanceof IBody) {
-            if ($response->getBody() != $expectedValue) {
-                throw new AssertionFailedException('Failed to assert that the response body equals the expected value');
+        try {
+            if ($expectedValue instanceof IBody) {
+                if ($response->getBody() != $expectedValue) {
+                    throw new AssertionFailedException('Failed to assert that the response body equals the expected value');
+                }
+            } elseif ($this->getParsedBody($request, $response, TypeResolver::resolveType($expectedValue)) != $expectedValue) {
+                throw new AssertionFailedException('Failed to assert that the response body matches the expected value');
             }
-        } elseif ($this->getParsedBody($request, $response, TypeResolver::resolveType($expectedValue)) != $expectedValue) {
-            throw new AssertionFailedException('Failed to assert that the response body matches the expected value');
+        } catch (SerializationException | InvalidArgumentException $ex) {
+            throw new AssertionFailedException('Failed to parse the response body', 0, $ex);
         }
     }
 
@@ -175,12 +178,15 @@ class ResponseAssertions
      * @param string $type The type to parse the response body as
      * @param Closure $callback The callback that takes in the parsed body (mixed type) and returns true if it passes, otherwise false
      * @throws AssertionFailedException Thrown if the assertion failed
-     * @throws SerializationException Thrown if there was an error deserializing the response body
      */
     public function assertParsedBodyPassesCallback(IRequest $request, IResponse $response, string $type, Closure $callback): void
     {
-        if (!$callback($this->getParsedBody($request, $response, $type))) {
-            throw new AssertionFailedException('Failed to assert that the response body passes the callback');
+        try {
+            if (!$callback($this->getParsedBody($request, $response, $type))) {
+                throw new AssertionFailedException('Failed to assert that the response body passes the callback');
+            }
+        } catch (SerializationException | InvalidArgumentException $ex) {
+            throw new AssertionFailedException('Failed to parse the response body', 0, $ex);
         }
     }
 
