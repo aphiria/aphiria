@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Api\Testing;
 
-use Aphiria\DependencyInjection\IServiceResolver;
+use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Testing\ApplicationClient;
 use Aphiria\Framework\Net\Binders\RequestBinder;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
@@ -26,22 +26,22 @@ class ApplicationClientTest extends TestCase
 {
     /** @var IRequestHandler|MockObject */
     private IRequestHandler $app;
-    /** @var IServiceResolver|MockObject */
-    private IServiceResolver $serviceResolver;
+    /** @var IContainer|MockObject */
+    private IContainer $container;
     private ApplicationClient $appClient;
 
     protected function setUp(): void
     {
         $this->app = $this->createMock(IRequestHandler::class);
-        $this->serviceResolver = $this->createMock(IServiceResolver::class);
-        $this->appClient = new ApplicationClient($this->app, $this->serviceResolver);
+        $this->container = $this->createMock(IContainer::class);
+        $this->appClient = new ApplicationClient($this->app, $this->container);
     }
 
     public function testSendOverridesRequestBinderRequestAndInvokesApp(): void
     {
         $response = $this->createMock(IResponse::class);
         $request = $this->createMock(IRequest::class);
-        $this->serviceResolver->expects($this->once())
+        $this->container->expects($this->once())
             ->method('resolve')
             ->with(IRequest::class)
             ->willReturn($request);
@@ -53,5 +53,23 @@ class ApplicationClientTest extends TestCase
         $reflectionProperty = new ReflectionProperty(RequestBinder::class, 'overridingRequest');
         $reflectionProperty->setAccessible(true);
         $this->assertSame($request, $reflectionProperty->getValue());
+    }
+
+    public function testSendRebindsRequestIfResolvedRequestDoeNotMatchInputRequest(): void
+    {
+        $response = $this->createMock(IResponse::class);
+        $request = $this->createMock(IRequest::class);
+        $this->container->expects($this->at(0))
+            ->method('resolve')
+            ->with(IRequest::class)
+            ->willReturn($this->createMock(IRequest::class));
+        $this->container->expects($this->at(1))
+            ->method('bindInstance')
+            ->with(IRequest::class, $request);
+        $this->app->expects($this->once())
+            ->method('handle')
+            ->with($request)
+            ->willReturn($response);
+        $this->assertSame($response, $this->appClient->send($request));
     }
 }

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Api\Testing;
 
-use Aphiria\DependencyInjection\IServiceResolver;
+use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Framework\Net\Binders\RequestBinder;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
@@ -27,17 +27,17 @@ class ApplicationClient implements IHttpClient
 {
     /** @var IRequestHandler The application */
     private IRequestHandler $app;
-    /** @var IServiceResolver The DI service resolver */
-    protected IServiceResolver $serviceResolver;
+    /** @var IContainer The DI container */
+    protected IContainer $container;
 
     /**
      * @param IRequestHandler$app The application
-     * @param IServiceResolver $serviceResolver The DI service resolver
+     * @param IContainer $container The DI container
      */
-    public function __construct(IRequestHandler $app, IServiceResolver $serviceResolver)
+    public function __construct(IRequestHandler $app, IContainer $container)
     {
         $this->app = $app;
-        $this->serviceResolver = $serviceResolver;
+        $this->container = $container;
     }
 
     /**
@@ -52,7 +52,12 @@ class ApplicationClient implements IHttpClient
          * dispatches the request binder, which in turn dispatches any other binders that resolved IRequest.
          */
         RequestBinder::setOverridingRequest($request);
+        $resolvedRequest = $this->container->resolve(IRequest::class);
 
-        return $this->app->handle($this->serviceResolver->resolve(IRequest::class));
+        if ($resolvedRequest !== $request) {
+            $this->container->bindInstance(IRequest::class, $request);
+        }
+
+        return $this->app->handle($request);
     }
 }
