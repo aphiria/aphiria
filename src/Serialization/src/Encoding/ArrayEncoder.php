@@ -35,12 +35,21 @@ final class ArrayEncoder implements IEncoder
      */
     public function decode($values, string $type, EncodingContext $context)
     {
-        if (substr($type, -2, 2) !== '[]') {
-            throw new InvalidArgumentException('Type must end in "[]"');
-        }
-
         if (!\is_array($values)) {
             throw new InvalidArgumentException('Value must be an array');
+        }
+
+        if ($type === 'array') {
+            // We cannot infer the type of array when it's empty.  So, only allow "array" for empty arrays.
+            if (\count($values) > 0) {
+                throw new InvalidArgumentException('Must specify the type of array, eg "int[]", for non-empty arrays');
+            }
+
+            return [];
+        }
+
+        if (substr($type, -2, 2) !== '[]') {
+            throw new InvalidArgumentException('Type must end in "[]"');
         }
 
         $actualType = substr($type, 0, -2);

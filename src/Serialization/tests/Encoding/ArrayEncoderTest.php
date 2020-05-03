@@ -30,6 +30,18 @@ class ArrayEncoderTest extends TestCase
         $this->arrayEncoder = new ArrayEncoder($this->encoders);
     }
 
+    public function testDecodingArrayTypeForEmptyArrayReturnsEmptyArray(): void
+    {
+        $this->assertEmpty($this->arrayEncoder->decode([], 'array', new EncodingContext()));
+    }
+
+    public function testDecodingArrayTypeForValueThatIsNotEmptyThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Must specify the type of array, eg "int[]", for non-empty arrays');
+        $this->arrayEncoder->decode(['foo'], 'array', new EncodingContext());
+    }
+
     public function testDecodingCallsParentDecoderOnEachElement(): void
     {
         $context = new EncodingContext();
