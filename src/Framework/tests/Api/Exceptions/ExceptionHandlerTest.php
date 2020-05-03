@@ -51,7 +51,10 @@ class ExceptionHandlerTest extends TestCase
             ->method('handle')
             ->with($request)
             ->willThrowException($expectedException);
-        $this->exceptionRenderer->expects($this->once())
+        $this->exceptionRenderer->expects($this->at(0))
+            ->method('setRequest')
+            ->with($request);
+        $this->exceptionRenderer->expects($this->at(1))
             ->method('createResponse')
             ->willReturn($expectedResponse);
         $this->logLevelFactory->registerLogLevelFactory(Exception::class, fn (Exception $ex) => LogLevel::EMERGENCY);

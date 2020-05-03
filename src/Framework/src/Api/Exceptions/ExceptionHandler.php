@@ -57,6 +57,7 @@ class ExceptionHandler implements IMiddleware
         } catch (Exception $ex) {
             $logLevel = $this->logLevelFactory->createLogLevel($ex);
             $this->logger->{$logLevel}($ex);
+            $this->exceptionRenderer->setRequest($request);
 
             return $this->exceptionRenderer->createResponse($ex);
         }
