@@ -307,7 +307,19 @@ class Uri
      */
     private function validateProperties(): void
     {
-        $acceptedSchemes = ['' => true, 'http' => true, 'https' => true];
+        $acceptedSchemes = [
+            '' => true,
+            'about' => true,
+            'data' => true,
+            'file' => true,
+            'ftp' => true,
+            'git' => true,
+            'http' => true,
+            'https' => true,
+            'sftp' => true,
+            'ssh' => true,
+            'svn' => true
+        ];
 
         if (!isset($acceptedSchemes[$this->scheme])) {
             throw new InvalidArgumentException("Scheme \"{$this->scheme}\" is invalid");

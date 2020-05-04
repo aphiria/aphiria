@@ -25,6 +25,7 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\RequestBuilder;
 use Aphiria\Net\Uri;
+use InvalidArgumentException;
 
 /**
  * Defines functionality to simplify running of integration tests
@@ -44,6 +45,14 @@ trait IntegrationTest
      * @var IHttpClient
      */
     private IHttpClient $client;
+
+    /**
+     * Gets the built application that will handle requests
+     *
+     * @param IContainer $container The DI container
+     * @return IRequestHandler The application
+     */
+    abstract protected function createApplication(IContainer $container): IRequestHandler;
 
     /**
      * Initializes dependencies before each test
@@ -96,6 +105,26 @@ trait IntegrationTest
     }
 
     /**
+     * Creates a fully-qualified URI to be used in requests
+     *
+     * @param string $uri The URI or relative path to create a URI from
+     * @return Uri The URI
+     * @throws InvalidArgumentException Thrown if the URI could not be parsed into a URI
+     */
+    protected function createUri(string $uri): Uri
+    {
+        if (preg_match('/^(about|data|file|ftp|git|http|https|sftp|ssh|svn):\/\//i', $uri) === 1) {
+            return new Uri($uri);
+        }
+
+        if (($appUrl = \getenv('APP_URL')) === false || empty($appUrl)) {
+            throw new InvalidArgumentException('Environment variable "APP_URL" must be set to use a relative path');
+        }
+
+        return new Uri(rtrim($appUrl, '/') . '/' . ltrim($uri, '/'));
+    }
+
+    /**
      * Sends a DELETE request
      *
      * @param string|Uri $uri The URI to request
@@ -108,7 +137,7 @@ trait IntegrationTest
     protected function delete($uri, array $headers = [], $body = null): IResponse
     {
         $request = $this->requestBuilder->withMethod('DELETE')
-            ->withUri($uri)
+            ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
             ->withBody($body)
             ->build();
@@ -127,7 +156,7 @@ trait IntegrationTest
     protected function get($uri, array $headers = []): IResponse
     {
         $request = $this->requestBuilder->withMethod('GET')
-            ->withUri($uri)
+            ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
             ->build();
 
@@ -147,7 +176,7 @@ trait IntegrationTest
     protected function options($uri, array $headers = [], $body = null): IResponse
     {
         $request = $this->requestBuilder->withMethod('OPTIONS')
-            ->withUri($uri)
+            ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
             ->withBody($body)
             ->build();
@@ -168,7 +197,7 @@ trait IntegrationTest
     protected function post($uri, array $headers = [], $body = null): IResponse
     {
         $request = $this->requestBuilder->withMethod('POST')
-            ->withUri($uri)
+            ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
             ->withBody($body)
             ->build();
@@ -189,7 +218,7 @@ trait IntegrationTest
     protected function put($uri, array $headers = [], $body = null): IResponse
     {
         $request = $this->requestBuilder->withMethod('PUT')
-            ->withUri($uri)
+            ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
             ->withBody($body)
             ->build();
@@ -208,12 +237,4 @@ trait IntegrationTest
     {
         return $this->client->send($this->lastRequest = $request);
     }
-
-    /**
-     * Gets the built application that will handle requests
-     *
-     * @param IContainer $container The DI container
-     * @return IRequestHandler The application
-     */
-    abstract protected function createApplication(IContainer $container): IRequestHandler;
 }

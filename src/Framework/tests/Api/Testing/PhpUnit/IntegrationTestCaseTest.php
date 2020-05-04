@@ -32,15 +32,18 @@ use Aphiria\Net\Http\RequestBuilder;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class IntegrationTestCaseTest extends TestCase
 {
     private IRequestHandler $app;
     private IntegrationTestCase $integrationTests;
+    private string $prevAppUrl;
 
     protected function setUp(): void
     {
+        $this->prevAppUrl = \getenv('APP_URL') ?: '';
         $this->app = $this->createMock(IRequestHandler::class);
         $this->integrationTests = new class($this->app) extends IntegrationTestCase {
             private static ?string $failMessage = null;
@@ -142,6 +145,29 @@ class IntegrationTestCaseTest extends TestCase
     protected function tearDown(): void
     {
         Container::$globalInstance = null;
+        putenv("APP_URL={$this->prevAppUrl}");
+    }
+
+    public function getAppUrlsAndPaths(): array
+    {
+        return [
+            ['http://localhost', 'path'],
+            ['http://localhost/', 'path'],
+            ['http://localhost', '/path'],
+            ['http://localhost/', '/path']
+        ];
+    }
+
+    public function getFullyQualifiedUris(): array
+    {
+        $schemes = ['about', 'data', 'file', 'ftp', 'git', 'http', 'https', 'sftp', 'ssh', 'svn'];
+        $uris = [];
+
+        foreach ($schemes as $scheme) {
+            $uris[] = ["$scheme://localhost/path"];
+        }
+
+        return $uris;
     }
 
     public function testAssertCookieEqualsDoesNotThrowOnSuccess(): void
@@ -422,5 +448,43 @@ class IntegrationTestCaseTest extends TestCase
             new StringBody('{"foo":"bar"}')
         );
         $this->assertSame($expectedResponse, $actualResponse);
+    }
+
+    /**
+     * @dataProvider getFullyQualifiedUris
+     * @param string $expectedUri The expected URI
+     */
+    public function testSendingRequestWithFullyQualifiedUrisUseThoseUris(string $expectedUri): void
+    {
+        $this->app->expects($this->once())
+            ->method('handle')
+            ->with($this->callback(function (IRequest $request) use ($expectedUri) {
+                return (string)$request->getUri() === $expectedUri;
+            }));
+        $this->integrationTests->get($expectedUri);
+    }
+
+    /**
+     * @dataProvider getAppUrlsAndPaths
+     * @param string $appUrl The URL to set as the app URL environment variable
+     * @param string $path The relative path
+     */
+    public function testSendingRequestWithRelativeUriCreatesCorrectUri(string $appUrl, string $path): void
+    {
+        \putenv("APP_URL=$appUrl");
+        $this->app->expects($this->once())
+            ->method('handle')
+            ->with($this->callback(function (IRequest $request) {
+                return (string)$request->getUri() === 'http://localhost/path';
+            }));
+        $this->integrationTests->get($path);
+    }
+
+    public function testSendingRequestWithRelativeUriWithoutAppUrlEnvironmentVariableSetThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Environment variable "APP_URL" must be set to use a relative path');
+        \putenv('APP_URL=');
+        $this->integrationTests->get('/foo');
     }
 }
