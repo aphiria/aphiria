@@ -83,7 +83,7 @@ final class OutputCompiler implements IOutputCompiler
                 return '';
             }
 
-            return (string)$node->value ?: '';
+            return $node->value === null ? '' : (string)$node->value;
         }
 
         $output = '';
