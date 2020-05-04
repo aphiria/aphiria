@@ -105,26 +105,6 @@ trait IntegrationTest
     }
 
     /**
-     * Creates a fully-qualified URI to be used in requests
-     *
-     * @param string $uri The URI or relative path to create a URI from
-     * @return Uri The URI
-     * @throws InvalidArgumentException Thrown if the URI could not be parsed into a URI
-     */
-    protected function createUri(string $uri): Uri
-    {
-        if (preg_match('/^(about|data|file|ftp|git|http|https|sftp|ssh|svn):\/\//i', $uri) === 1) {
-            return new Uri($uri);
-        }
-
-        if (($appUrl = \getenv('APP_URL')) === false || empty($appUrl)) {
-            throw new InvalidArgumentException('Environment variable "APP_URL" must be set to use a relative path');
-        }
-
-        return new Uri(rtrim($appUrl, '/') . '/' . ltrim($uri, '/'));
-    }
-
-    /**
      * Sends a DELETE request
      *
      * @param string|Uri $uri The URI to request
@@ -161,6 +141,22 @@ trait IntegrationTest
             ->build();
 
         return $this->send($request);
+    }
+
+    /**
+     * Gets the current application's URI
+     *
+     * @return string|null The app URI if one was set, otherwise null
+     */
+    protected function getAppUri(): ?string
+    {
+        $appUrl = \getenv('APP_URL');
+
+        if ($appUrl === false || empty($appUrl)) {
+            return null;
+        }
+
+        return $appUrl;
     }
 
     /**
@@ -236,5 +232,25 @@ trait IntegrationTest
     protected function send(IRequest $request): IResponse
     {
         return $this->client->send($this->lastRequest = $request);
+    }
+
+    /**
+     * Creates a fully-qualified URI to be used in requests
+     *
+     * @param string $uri The URI or relative path to create a URI from
+     * @return Uri The URI
+     * @throws InvalidArgumentException Thrown if the URI could not be parsed into a URI
+     */
+    private function createUri(string $uri): Uri
+    {
+        if (preg_match('/^(about|data|file|ftp|git|http|https|sftp|ssh|svn):\/\//i', $uri) === 1) {
+            return new Uri($uri);
+        }
+
+        if (($appUrl = $this->getAppUri()) === null) {
+            throw new InvalidArgumentException('Environment variable "APP_URL" must be set to use a relative path');
+        }
+
+        return new Uri(rtrim($appUrl, '/') . '/' . ltrim($uri, '/'));
     }
 }
