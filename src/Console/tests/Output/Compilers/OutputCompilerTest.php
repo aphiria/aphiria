@@ -59,6 +59,12 @@ class OutputCompilerTest extends TestCase
         $this->assertEquals('bazblah', $this->compiler->compile('<foo>baz</foo><bar>blah</bar>', false));
     }
 
+    public function testCompilingElementWithZeroAsInnerText(): void
+    {
+        $this->elements->registerElement(new Element('foo', new Style('green')));
+        $this->assertEquals("\033[32m0\033[39m", $this->compiler->compile('<foo>0</foo>'));
+    }
+
     public function testCompilingEscapedTagAtBeginning(): void
     {
         $this->elements->registerElement(new Element('foo', new Style('green')));
