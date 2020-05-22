@@ -17,6 +17,23 @@ use PHPUnit\Framework\TestCase;
 
 class TypeTest extends TestCase
 {
+    public function getIsPhpTypeTests(): array
+    {
+        return [
+            ['array', true],
+            ['bool', true],
+            ['callable', true],
+            ['float', true],
+            ['int', true],
+            ['mixed', true],
+            ['null', true],
+            ['object', true],
+            ['resource', true],
+            ['string', true],
+            [self::class, false]
+        ];
+    }
+
     public function testGetPhpTypeReturnsPhpType(): void
     {
         $type = new Type('int');
@@ -77,5 +94,15 @@ class TypeTest extends TestCase
         $this->assertTrue($nullableType->isNullable());
         $nonNullableType = new Type('int');
         $this->assertFalse($nonNullableType->isNullable());
+    }
+
+    /**
+     * @param string $type The type to test
+     * @param bool $expectedValue The expected value
+     * @dataProvider getIsPhpTypeTests
+     */
+    public function testIsPhpTypeReturnsTrueForPhpTypes(string $type, bool $expectedValue): void
+    {
+        $this->assertEquals($expectedValue, Type::isPhpType($type));
     }
 }

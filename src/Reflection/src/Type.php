@@ -77,6 +77,32 @@ final class Type
     }
 
     /**
+     * Checks whether or not a type is a PHP type
+     *
+     * @param string $type The type to check
+     * @return bool True if the type is a PHP type, otherwise false
+     */
+    public static function isPhpType(string $type): bool
+    {
+        switch ($type) {
+            case self::PHP_ARRAY:
+            case self::PHP_BOOL:
+            case self::PHP_CALLABLE:
+            case self::PHP_FLOAT:
+            case self::PHP_INT:
+            case self::PHP_ITERABLE:
+            case self::PHP_MIXED:
+            case self::PHP_NULL:
+            case self::PHP_OBJECT:
+            case self::PHP_RESOURCE:
+            case self::PHP_STRING:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
      * Gets the name of the class
      *
      * @return string|null The name of the class, or null if it's not a class
