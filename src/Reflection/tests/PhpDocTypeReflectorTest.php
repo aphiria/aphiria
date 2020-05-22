@@ -16,6 +16,7 @@ use Aphiria\Reflection\PhpDocTypeReflector;
 use Aphiria\Reflection\Type;
 use Closure;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 class PhpDocTypeReflectorTest extends TestCase
 {
@@ -24,6 +25,24 @@ class PhpDocTypeReflectorTest extends TestCase
     protected function setUp(): void
     {
         $this->reflector = new PhpDocTypeReflector();
+    }
+
+    public function testGetPropertyTypesForClassWithoutThatPropertyThrowsException(): void
+    {
+        $this->expectException(ReflectionException::class);
+        $object = new class() {
+        };
+        $this->reflector->getPropertyTypes(\get_class($object), 'foo');
+    }
+
+    public function testGetPropertyTypesForCollectionReturnsTypesWithKeyAndValueTypesSet(): void
+    {
+        $object = new class() {
+            /** @var \Foo<string, string> */
+            public $foo;
+        };
+        $expectedTypes = [new Type('\Foo', 'Foo', false, true, new Type('string'), new Type('string'))];
+        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
     }
 
     public function testGetPropertyTypesForCompoundTypeReturnsAllTypes(): void
@@ -54,11 +73,36 @@ class PhpDocTypeReflectorTest extends TestCase
 
     public function testGetPropertyTypesForNullableTypeReturnsNullableTypes(): void
     {
+        // Test both ways of declaring something nullable
         $object = new class() {
             /** @var string|null */
             public $foo;
+            /** @var ?string */
+            public $bar;
         };
         $expectedTypes = [new Type('string', null, true)];
+        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
+        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'bar'));
+    }
+
+    public function testGetPropertyTypesInfersTypedArrays(): void
+    {
+        $object = new class() {
+            /** @var array */
+            public $foo;
+        };
+        $expectedTypes = [new Type('array', null, false, true)];
+        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
+    }
+
+    public function testGetPropertyTypesInfersTypedMixedArrays(): void
+    {
+        $object = new class() {
+            /** @var mixed[] */
+            public $foo;
+        };
+        // We cannot infer the key/value types from mixed arrays because each key/value might by a different type
+        $expectedTypes = [new Type('array', null, false, true)];
         $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
     }
 

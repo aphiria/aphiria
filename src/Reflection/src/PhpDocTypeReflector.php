@@ -48,24 +48,22 @@ class PhpDocTypeReflector implements ITypeReflector
 
     /**
      * @inheritdoc
+     * @throws ReflectionException Thrown if the property could not be reflected
      */
     public function getPropertyTypes(string $class, string $property): ?array
     {
         try {
             $reflectedProperty = new ReflectionProperty($class, $property);
             $docBlock = $this->docBlockFactory->create($reflectedProperty);
-        } catch (ReflectionException | InvalidArgumentException $ex) {
+        } catch (InvalidArgumentException $ex) {
             // Exceptions here can be caused by a property not having any PHPDoc.  So, just swallow them.
             return null;
         }
 
         $types = null;
 
+        /** @var TagWithType $tag */
         foreach ($docBlock->getTagsByName('var') as $tag) {
-            if (!$tag instanceof TagWithType) {
-                continue;
-            }
-
             if (($typesForThisTag = $this->createTypesFromPhpDocType($tag->getType())) !== null) {
                 if ($types === null) {
                     $types = [];
@@ -156,53 +154,26 @@ class PhpDocTypeReflector implements ITypeReflector
 
         // Handle something like string[]
         if (substr($serializedDocType, -2) === '[]') {
-            if ($serializedDocType === 'mixed[]') {
-                $keyType = $valueType = null;
-            } else {
-                $keyType = new Type('int');
-                $valueTypes = $this->createTypesFromPhpDocType(
-                    (new TypeResolver())->resolve(substr($serializedDocType, 0, -2))
-                );
-                $valueType = $valueTypes === null || \count($valueTypes) === 0 ? null : $valueTypes[0];
-            }
+            $keyType = new Type('int');
+            $valueTypes = $this->createTypesFromPhpDocType(
+                (new TypeResolver())->resolve(substr($serializedDocType, 0, -2))
+            );
+            $valueType = $valueTypes === null || \count($valueTypes) === 0 ? null : $valueTypes[0];
 
             return [new Type('array', null, $isNullable, true, $keyType, $valueType)];
         }
 
-        $normalizedDocType = self::normalizeType($serializedDocType);
         $class = null;
 
-        if (!Type::isPhpType($normalizedDocType)) {
-            $class = \substr($normalizedDocType, 1);
-            $normalizedDocType = 'object';
+        if (!Type::isPhpType($serializedDocType)) {
+            $class = \substr($serializedDocType, 1);
+            $serializedDocType = 'object';
         }
 
-        if ($normalizedDocType === 'array') {
+        if ($serializedDocType === 'array') {
             return [new Type('array', null, $isNullable, true, null, null)];
         }
 
-        return [new Type($normalizedDocType, $class, $isNullable)];
-    }
-
-    /**
-     * Normalizes a PHPDoc type to a PHP type
-     *
-     * @param string $phpDocType The PHPDoc type to normalize
-     * @return string The normalized type
-     */
-    private static function normalizeType(string $phpDocType): string
-    {
-        switch ($phpDocType) {
-            case 'boolean':
-                return 'bool';
-            case 'double':
-                return 'float';
-            case 'integer':
-                return 'int';
-            case 'void':
-                return 'null';
-            default:
-                return $phpDocType;
-        }
+        return [new Type($serializedDocType, $class, $isNullable)];
     }
 }
