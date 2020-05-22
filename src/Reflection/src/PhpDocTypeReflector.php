@@ -132,7 +132,9 @@ class PhpDocTypeReflector implements ITypeReflector
             $class = null;
 
             if (!Type::isPhpType($phpType)) {
-                $class = \substr($phpType, 1);
+                // Types should not have preceding slashes
+                $class = ltrim($phpType, '\\');
+                $phpType = 'object';
             }
 
             $keyTypes = $this->createTypesFromPhpDocType($docType->getKeyType());
@@ -166,7 +168,8 @@ class PhpDocTypeReflector implements ITypeReflector
         $class = null;
 
         if (!Type::isPhpType($serializedDocType)) {
-            $class = \substr($serializedDocType, 1);
+            // Types should not have preceding slashes
+            $class = \ltrim($serializedDocType, '\\');
             $serializedDocType = 'object';
         }
 

@@ -38,10 +38,10 @@ class PhpDocTypeReflectorTest extends TestCase
     public function testGetPropertyTypesForCollectionReturnsTypesWithKeyAndValueTypesSet(): void
     {
         $object = new class() {
-            /** @var \Foo<string, string> */
+            /** @var Foo<string, string> */
             public $foo;
         };
-        $expectedTypes = [new Type('\Foo', 'Foo', false, true, new Type('string'), new Type('string'))];
+        $expectedTypes = [new Type('object', 'Foo', false, true, new Type('string'), new Type('string'))];
         $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
     }
 
@@ -83,6 +83,16 @@ class PhpDocTypeReflectorTest extends TestCase
         $expectedTypes = [new Type('string', null, true)];
         $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
         $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'bar'));
+    }
+
+    public function testGetPropertyTypesForObjectTypeReturnsObjectTypes(): void
+    {
+        $object = new class() {
+            /** @var Foo */
+            public $foo;
+        };
+        $expectedTypes = [new Type('object', 'Foo')];
+        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
     }
 
     public function testGetPropertyTypesInfersTypedArrays(): void
