@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Reflection;
 
 use InvalidArgumentException;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use phpDocumentor\Reflection\DocBlock\Tags\TagWithType;
 use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\DocBlockFactoryInterface;
@@ -23,6 +25,7 @@ use phpDocumentor\Reflection\Types\Compound;
 use phpDocumentor\Reflection\Types\Null_;
 use phpDocumentor\Reflection\Types\Nullable;
 use ReflectionException;
+use ReflectionMethod;
 use ReflectionProperty;
 
 /**
@@ -40,10 +43,32 @@ class PhpDocTypeReflector implements ITypeReflector
 
     /**
      * @inheritdoc
+     * @throws ReflectionException Thrown if the method or parameter does not exist
      */
     public function getParameterTypes(string $class, string $method, string $parameter): ?array
     {
-        // TODO: Implement getType() method.
+        try {
+            $reflectedMethod = new ReflectionMethod($class, $method);
+            $methodHasParameter = false;
+
+            foreach ($reflectedMethod->getParameters() as $reflectionParameter) {
+                if ($reflectionParameter->getName() === $parameter) {
+                    $methodHasParameter = true;
+                    break;
+                }
+            }
+
+            if (!$methodHasParameter) {
+                throw new ReflectionException("Parameter $parameter does not exist in $class::$method()");
+            }
+
+            $docBlock = $this->docBlockFactory->create($reflectedMethod);
+        } catch (InvalidArgumentException $ex) {
+            // Exceptions here can be caused by a method not having any PHPDoc.  So, just swallow them.
+            return null;
+        }
+
+        return $this->getTypesFromDocBlock($docBlock, 'param', $parameter);
     }
 
     /**
@@ -60,28 +85,24 @@ class PhpDocTypeReflector implements ITypeReflector
             return null;
         }
 
-        $types = null;
-
-        /** @var TagWithType $tag */
-        foreach ($docBlock->getTagsByName('var') as $tag) {
-            if (($typesForThisTag = $this->createTypesFromPhpDocType($tag->getType())) !== null) {
-                if ($types === null) {
-                    $types = [];
-                }
-
-                $types = [...$types, ...$typesForThisTag];
-            }
-        }
-
-        return $types;
+        return $this->getTypesFromDocBlock($docBlock, 'var');
     }
 
     /**
      * @inheritdoc
+     * @throws ReflectionException Thrown if the method did not exist
      */
     public function getReturnTypes(string $class, string $method): ?array
     {
-        // TODO: Implement getReturnTypes() method.
+        try {
+            $reflectedMethod = new ReflectionMethod($class, $method);
+            $docBlock = $this->docBlockFactory->create($reflectedMethod);
+        } catch (InvalidArgumentException $ex) {
+            // Exceptions here can be caused by a method not having any PHPDoc.  So, just swallow them.
+            return null;
+        }
+
+        return $this->getTypesFromDocBlock($docBlock, 'return');
     }
 
     /**
@@ -95,6 +116,7 @@ class PhpDocTypeReflector implements ITypeReflector
     {
         $isNullable = $isNullable || $docType instanceof Null_ || $docType instanceof Nullable;
 
+        // Eg ?string, get string
         if ($docType instanceof Nullable) {
             $docType = $docType->getActualType();
         }
@@ -178,5 +200,36 @@ class PhpDocTypeReflector implements ITypeReflector
         }
 
         return [new Type($serializedDocType, $class, $isNullable)];
+    }
+
+    /**
+     * Gets all the types from a doc block for a particular tag
+     *
+     * @param DocBlock $docBlock The PHPDoc block to search through
+     * @param string $phpDocTagName The name of the PHPDoc tag name to search for
+     * @param string|null $variableName The name of the variable whose doc block we want, or null if not filtering by variable
+     * @return array|null The list of return types if there any, otherwise null
+     */
+    private function getTypesFromDocBlock(DocBlock $docBlock, string $phpDocTagName, string $variableName = null): ?array
+    {
+        $types = null;
+
+        /** @var TagWithType $tag */
+        foreach ($docBlock->getTagsByName($phpDocTagName) as $tag) {
+            // Skip if this is a @param doc block for a different variable than desired
+            if ($variableName !== null && $tag instanceof Param && $tag->getVariableName() !== $variableName) {
+                continue;
+            }
+
+            if (($typesForThisTag = $this->createTypesFromPhpDocType($tag->getType())) !== null) {
+                if ($types === null) {
+                    $types = [];
+                }
+
+                $types = [...$types, ...$typesForThisTag];
+            }
+        }
+
+        return $types;
     }
 }
