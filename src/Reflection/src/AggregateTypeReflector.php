@@ -17,7 +17,7 @@ use InvalidArgumentException;
 /**
  * Defines the type reflector that composes one or many other reflectors to try to get type information
  */
-class TypeReflector implements ITypeReflector
+class AggregateTypeReflector implements ITypeReflector
 {
     /** @var ITypeReflector[] The list of type reflectors to use */
     private array $typeReflectors;

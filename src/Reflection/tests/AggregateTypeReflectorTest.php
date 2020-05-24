@@ -14,17 +14,17 @@ namespace Aphiria\Reflection\Tests;
 
 use Aphiria\Reflection\ITypeReflector;
 use Aphiria\Reflection\Type;
-use Aphiria\Reflection\TypeReflector;
+use Aphiria\Reflection\AggregateTypeReflector;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-class TypeReflectorTest extends TestCase
+class AggregateTypeReflectorTest extends TestCase
 {
     public function testEmptyReflectorsThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('List of type reflectors cannot be empty');
-        new TypeReflector([]);
+        new AggregateTypeReflector([]);
     }
 
     public function testGetParameterTypesReturnsFirstNonNullTypes(): void
@@ -43,7 +43,7 @@ class TypeReflectorTest extends TestCase
             ->willReturn($expectedTypes);
         $subReflector2->expects($this->never())
             ->method('getParameterTypes');
-        $reflector = new TypeReflector([$subReflector1, $subReflector2]);
+        $reflector = new AggregateTypeReflector([$subReflector1, $subReflector2]);
         $this->assertEquals($expectedTypes, $reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
     }
 
@@ -59,7 +59,7 @@ class TypeReflectorTest extends TestCase
             ->method('getParameterTypes')
             ->with(\get_class($object), 'foo', 'bar')
             ->willReturn(null);
-        $reflector = new TypeReflector([$subReflector]);
+        $reflector = new AggregateTypeReflector([$subReflector]);
         $this->assertNull($reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
     }
 
@@ -77,7 +77,7 @@ class TypeReflectorTest extends TestCase
             ->willReturn($expectedTypes);
         $subReflector2->expects($this->never())
             ->method('getPropertyTypes');
-        $reflector = new TypeReflector([$subReflector1, $subReflector2]);
+        $reflector = new AggregateTypeReflector([$subReflector1, $subReflector2]);
         $this->assertEquals($expectedTypes, $reflector->getPropertyTypes(\get_class($object), 'foo'));
     }
 
@@ -91,7 +91,7 @@ class TypeReflectorTest extends TestCase
             ->method('getPropertyTypes')
             ->with(\get_class($object), 'foo')
             ->willReturn(null);
-        $reflector = new TypeReflector([$subReflector]);
+        $reflector = new AggregateTypeReflector([$subReflector]);
         $this->assertNull($reflector->getPropertyTypes(\get_class($object), 'foo'));
     }
 
@@ -112,7 +112,7 @@ class TypeReflectorTest extends TestCase
             ->willReturn($expectedTypes);
         $subReflector2->expects($this->never())
             ->method('getReturnTypes');
-        $reflector = new TypeReflector([$subReflector1, $subReflector2]);
+        $reflector = new AggregateTypeReflector([$subReflector1, $subReflector2]);
         $this->assertEquals($expectedTypes, $reflector->getReturnTypes(\get_class($object), 'foo'));
     }
 
@@ -128,7 +128,7 @@ class TypeReflectorTest extends TestCase
             ->method('getReturnTypes')
             ->with(\get_class($object), 'foo')
             ->willReturn(null);
-        $reflector = new TypeReflector([$subReflector]);
+        $reflector = new AggregateTypeReflector([$subReflector]);
         $this->assertNull($reflector->getReturnTypes(\get_class($object), 'foo'));
     }
 }
