@@ -80,6 +80,14 @@ class TypeTest extends TestCase
         $this->assertSame($valueType, $type->getIterableValueType());
     }
 
+    public function testIsClassReturnsWhetherOrNotTypeIsClass(): void
+    {
+        $classType = new Type('object', 'Foo');
+        $this->assertTrue($classType->isClass());
+        $nonClassType = new Type('int');
+        $this->assertFalse($nonClassType->isClass());
+    }
+
     public function testIsIterableReturnsWhetherOrNotTypeIsIterable(): void
     {
         $iterableType = new Type('array', null, false, true, new Type('int'), new Type('string'));
