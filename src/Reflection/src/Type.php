@@ -14,6 +14,9 @@ namespace Aphiria\Reflection;
 
 /**
  * Defines a PHP type
+ *
+ * Note:  This class takes inspiration from Symfony's Type class
+ * @link https://github.com/symfony/symfony/blob/5.0/src/Symfony/Component/PropertyInfo/Type.php
  */
 final class Type
 {

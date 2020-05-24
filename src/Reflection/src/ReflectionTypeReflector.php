@@ -22,12 +22,23 @@ use ReflectionType;
  */
 class ReflectionTypeReflector implements ITypeReflector
 {
+    /** @var array The type reflection cache */
+    private array $cache = [
+        'parameters' => [],
+        'properties' => [],
+        'returnTypes' => []
+    ];
+
     /**
      * @inheritdoc
      * @throws ReflectionException Thrown if the method or parameter did not exist
      */
     public function getParameterTypes(string $class, string $method, string $parameter): ?array
     {
+        if (isset($this->cache['parameters'][$class][$method][$parameter])) {
+            return $this->cache['parameters'][$class][$method][$parameter];
+        }
+
         $reflectedMethod = new ReflectionMethod($class, $method);
 
         foreach ($reflectedMethod->getParameters() as $reflectedParameter) {
@@ -36,10 +47,22 @@ class ReflectionTypeReflector implements ITypeReflector
             }
 
             if (($type = $reflectedParameter->getType()) === null) {
-                return null;
+                $types = null;
+            } else {
+                $types = $this->createTypesFromReflectionType($type);
             }
 
-            return $this->createTypesFromReflectionType($type);
+            if (!isset($this->cache['parameters'][$class])) {
+                $this->cache['parameters'][$class] = [];
+            }
+
+            if (!isset($this->cache['parameters'][$class][$method])) {
+                $this->cache['parameters'][$class][$method] = [];
+            }
+
+            $this->cache['parameters'][$class][$method][$parameter] = $types;
+
+            return $types;
         }
 
         throw new ReflectionException("Parameter $parameter does not exist in $class::$method()");
@@ -51,13 +74,25 @@ class ReflectionTypeReflector implements ITypeReflector
      */
     public function getPropertyTypes(string $class, string $property): ?array
     {
+        if (isset($this->cache['properties'][$class][$property])) {
+            return $this->cache['properties'][$class][$property];
+        }
+
         $reflectedProperty = new ReflectionProperty($class, $property);
 
         if (($type = $reflectedProperty->getType()) === null) {
             return null;
         }
 
-        return $this->createTypesFromReflectionType($type);
+        $types = $this->createTypesFromReflectionType($type);
+
+        if (!isset($this->cache['properties'][$class])) {
+            $this->cache['properties'][$class] = [];
+        }
+
+        $this->cache['properties'][$class][$property] = $types;
+
+        return $types;
     }
 
     /**
@@ -66,13 +101,25 @@ class ReflectionTypeReflector implements ITypeReflector
      */
     public function getReturnTypes(string $class, string $method): ?array
     {
+        if (isset($this->cache['returnTypes'][$class][$method])) {
+            return $this->cache['returnTypes'][$class][$method];
+        }
+
         $reflectedMethod = new ReflectionMethod($class, $method);
 
         if (($type = $reflectedMethod->getReturnType()) === null) {
             return null;
         }
 
-        return $this->createTypesFromReflectionType($type);
+        $types = $this->createTypesFromReflectionType($type);
+
+        if (!isset($this->cache['returnTypes'][$class])) {
+            $this->cache['returnTypes'][$class] = [];
+        }
+
+        $this->cache['returnTypes'][$class][$method] = $types;
+
+        return $types;
     }
 
     /**

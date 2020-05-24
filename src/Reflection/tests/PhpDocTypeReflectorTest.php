@@ -216,6 +216,20 @@ class PhpDocTypeReflectorTest extends TestCase
         $this->assertNull($this->reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
     }
 
+    public function testGetParameterTypesCachesResultsForNextTime(): void
+    {
+        $object = new class() {
+            /** @param string $bar */
+            public function foo($bar)
+            {
+            }
+        };
+        $expectedTypes = [new Type('string')];
+        $this->assertEquals($expectedTypes, $this->reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
+        // Technically, we're just manually making sure that the code paths are hit via code coverage
+        $this->assertEquals($expectedTypes, $this->reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
+    }
+
     public function testGetPropertyTypesForClassWithoutThatPropertyThrowsException(): void
     {
         $this->expectException(ReflectionException::class);
@@ -346,6 +360,18 @@ class PhpDocTypeReflectorTest extends TestCase
             public $foo;
         };
         $this->assertNull($this->reflector->getPropertyTypes(\get_class($object), 'foo'));
+    }
+
+    public function testGetPropertyTypesCachesResultsForNextTime(): void
+    {
+        $object = new class() {
+            /** @var string */
+            public $foo;
+        };
+        $expectedTypes = [new Type('string')];
+        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
+        // Technically, we're just manually making sure that the code paths are hit via code coverage
+        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
     }
 
     public function testGetReturnTypesForClassWithoutThatMethodThrowsException(): void
@@ -509,5 +535,20 @@ class PhpDocTypeReflectorTest extends TestCase
             }
         };
         $this->assertNull($this->reflector->getReturnTypes(\get_class($object), 'foo'));
+    }
+
+    public function testGetReturnTypesCachesResultsForNextTime(): void
+    {
+        $object = new class() {
+            /** @return string */
+            public function foo()
+            {
+                return '';
+            }
+        };
+        $expectedTypes = [new Type('string')];
+        $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'foo'));
+        // Technically, we're just manually making sure that the code paths are hit via code coverage
+        $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'foo'));
     }
 }

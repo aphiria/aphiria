@@ -30,12 +30,24 @@ use ReflectionProperty;
 
 /**
  * Defines the parameter type that uses PHPDoc to infer the type
+ *
+ * Note:  This reflector takes inspiration from Symfony's PhpDocTypeHelper
+ * @link https://github.com/symfony/symfony/blob/5.0/src/Symfony/Component/PropertyInfo/Util/PhpDocTypeHelper.php
  */
 class PhpDocTypeReflector implements ITypeReflector
 {
     /** @var DocBlockFactoryInterface The doc block factory */
     private DocBlockFactoryInterface $docBlockFactory;
+    /** @var array The type reflection cache */
+    private array $cache = [
+        'parameters' => [],
+        'properties' => [],
+        'returnTypes' => []
+    ];
 
+    /**
+     * @param DocBlockFactoryInterface|null $docBlockFactory The doc block factory to use
+     */
     public function __construct(DocBlockFactoryInterface $docBlockFactory = null)
     {
         $this->docBlockFactory = $docBlockFactory ?? DocBlockFactory::createInstance();
@@ -47,6 +59,10 @@ class PhpDocTypeReflector implements ITypeReflector
      */
     public function getParameterTypes(string $class, string $method, string $parameter): ?array
     {
+        if (isset($this->cache['parameters'][$class][$method][$parameter])) {
+            return $this->cache['parameters'][$class][$method][$parameter];
+        }
+
         try {
             $reflectedMethod = new ReflectionMethod($class, $method);
             $methodHasParameter = false;
@@ -68,7 +84,19 @@ class PhpDocTypeReflector implements ITypeReflector
             return null;
         }
 
-        return $this->getTypesFromDocBlock($docBlock, 'param', $parameter);
+        $types = $this->getTypesFromDocBlock($docBlock, 'param', $parameter);
+
+        if (!isset($this->cache['parameters'][$class])) {
+            $this->cache['parameters'][$class] = [];
+        }
+
+        if (!isset($this->cache['parameters'][$class][$method])) {
+            $this->cache['parameters'][$class][$method] = [];
+        }
+
+        $this->cache['parameters'][$class][$method][$parameter] = $types;
+
+        return $types;
     }
 
     /**
@@ -77,6 +105,10 @@ class PhpDocTypeReflector implements ITypeReflector
      */
     public function getPropertyTypes(string $class, string $property): ?array
     {
+        if (isset($this->cache['properties'][$class][$property])) {
+            return $this->cache['properties'][$class][$property];
+        }
+
         try {
             $reflectedProperty = new ReflectionProperty($class, $property);
             $docBlock = $this->docBlockFactory->create($reflectedProperty);
@@ -85,7 +117,15 @@ class PhpDocTypeReflector implements ITypeReflector
             return null;
         }
 
-        return $this->getTypesFromDocBlock($docBlock, 'var');
+        $types = $this->getTypesFromDocBlock($docBlock, 'var');
+
+        if (!isset($this->cache['properties'][$class])) {
+            $this->cache['properties'][$class] = [];
+        }
+
+        $this->cache['properties'][$class][$property] = $types;
+
+        return $types;
     }
 
     /**
@@ -94,6 +134,10 @@ class PhpDocTypeReflector implements ITypeReflector
      */
     public function getReturnTypes(string $class, string $method): ?array
     {
+        if (isset($this->cache['returnTypes'][$class][$method])) {
+            return $this->cache['returnTypes'][$class][$method];
+        }
+
         try {
             $reflectedMethod = new ReflectionMethod($class, $method);
             $docBlock = $this->docBlockFactory->create($reflectedMethod);
@@ -102,7 +146,15 @@ class PhpDocTypeReflector implements ITypeReflector
             return null;
         }
 
-        return $this->getTypesFromDocBlock($docBlock, 'return');
+        $types = $this->getTypesFromDocBlock($docBlock, 'return');
+
+        if (!isset($this->cache['returnTypes'][$class])) {
+            $this->cache['returnTypes'][$class] = [];
+        }
+
+        $this->cache['returnTypes'][$class][$method] = $types;
+
+        return $types;
     }
 
     /**

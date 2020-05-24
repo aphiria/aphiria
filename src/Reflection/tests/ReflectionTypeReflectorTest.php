@@ -153,6 +153,19 @@ class ReflectionTypeReflectorTest extends TestCase
         $this->assertEquals([new Type('string')], $this->reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
     }
 
+    public function testGetParameterTypesCachesResultsForNextTime(): void
+    {
+        $object = new class() {
+            public function foo(string $bar)
+            {
+            }
+        };
+        $expectedTypes = [new Type('string')];
+        $this->assertEquals($expectedTypes, $this->reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
+        // Technically, we're just manually making sure that the code paths are hit via code coverage
+        $this->assertEquals($expectedTypes, $this->reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
+    }
+
     public function testGetPropertyTypesForArrayPropertyCreatesArrayType(): void
     {
         $object = new class() {
@@ -220,6 +233,17 @@ class ReflectionTypeReflectorTest extends TestCase
             public string $foo;
         };
         $this->assertEquals([new Type('string')], $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
+    }
+
+    public function testGetPropertyTypesCachesResultsForNextTime(): void
+    {
+        $object = new class() {
+            public string $foo;
+        };
+        $expectedTypes = [new Type('string')];
+        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
+        // Technically, we're just manually making sure that the code paths are hit via code coverage
+        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
     }
 
     public function testGetReturnTypesForArrayMethodCreatesArrayType(): void
@@ -320,5 +344,19 @@ class ReflectionTypeReflectorTest extends TestCase
             }
         };
         $this->assertEquals([new Type('null')], $this->reflector->getReturnTypes(\get_class($object), 'foo'));
+    }
+
+    public function testGetReturnTypesCachesResultsForNextTime(): void
+    {
+        $object = new class() {
+            public function foo(): string
+            {
+                return '';
+            }
+        };
+        $expectedTypes = [new Type('string')];
+        $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'foo'));
+        // Technically, we're just manually making sure that the code paths are hit via code coverage
+        $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'foo'));
     }
 }

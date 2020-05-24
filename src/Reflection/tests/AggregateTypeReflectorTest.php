@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Reflection\Tests;
 
+use Aphiria\Reflection\AggregateTypeReflector;
 use Aphiria\Reflection\ITypeReflector;
 use Aphiria\Reflection\Type;
-use Aphiria\Reflection\AggregateTypeReflector;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

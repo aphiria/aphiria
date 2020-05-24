@@ -14,10 +14,10 @@ namespace Aphiria\Framework\Reflection\Binders;
 
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\Reflection\AggregateTypeReflector;
 use Aphiria\Reflection\ITypeReflector;
 use Aphiria\Reflection\PhpDocTypeReflector;
 use Aphiria\Reflection\ReflectionTypeReflector;
-use Aphiria\Reflection\AggregateTypeReflector;
 
 /**
  * Defines the binder for type reflectors
