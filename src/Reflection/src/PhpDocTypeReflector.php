@@ -86,16 +86,7 @@ class PhpDocTypeReflector implements ITypeReflector
         }
 
         $types = $this->getTypesFromDocBlock($docBlock, 'param', $reflectionParameter, $parameter);
-
-        if (!isset($this->cache['parameters'][$class])) {
-            $this->cache['parameters'][$class] = [];
-        }
-
-        if (!isset($this->cache['parameters'][$class][$method])) {
-            $this->cache['parameters'][$class][$method] = [];
-        }
-
-        $this->cache['parameters'][$class][$method][$parameter] = $types;
+        $this->cacheTypes('parameters', $types, $class, $method, $parameter);
 
         return $types;
     }
@@ -119,12 +110,7 @@ class PhpDocTypeReflector implements ITypeReflector
         }
 
         $types = $this->getTypesFromDocBlock($docBlock, 'var', $reflectedProperty);
-
-        if (!isset($this->cache['properties'][$class])) {
-            $this->cache['properties'][$class] = [];
-        }
-
-        $this->cache['properties'][$class][$property] = $types;
+        $this->cacheTypes('properties', $types, $class, $property);
 
         return $types;
     }
@@ -148,14 +134,32 @@ class PhpDocTypeReflector implements ITypeReflector
         }
 
         $types = $this->getTypesFromDocBlock($docBlock, 'return', $reflectedMethod);
-
-        if (!isset($this->cache['returnTypes'][$class])) {
-            $this->cache['returnTypes'][$class] = [];
-        }
-
-        $this->cache['returnTypes'][$class][$method] = $types;
+        $this->cacheTypes('returnTypes', $types, $class, $method);
 
         return $types;
+    }
+
+    /**
+     * Caches types for a specific path
+     *
+     * @param string $key The initial cache key
+     * @param array|null $types The types to cache
+     * @param string ...$args The cache keys
+     */
+    private function cacheTypes(string $key, ?array $types, string ...$args): void
+    {
+        $currValue = &$this->cache[$key];
+
+        // Populate each level of the cache map
+        foreach ($args as $arg) {
+            if (!isset($currValue[$arg])) {
+                $currValue[$arg] = [];
+            }
+
+            $currValue = &$currValue[$arg];
+        }
+
+        $currValue = $types;
     }
 
     /**
