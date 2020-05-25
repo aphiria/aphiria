@@ -26,6 +26,7 @@ use phpDocumentor\Reflection\Types\Null_;
 use phpDocumentor\Reflection\Types\Nullable;
 use ReflectionException;
 use ReflectionMethod;
+use ReflectionParameter;
 use ReflectionProperty;
 
 /**
@@ -84,7 +85,7 @@ class PhpDocTypeReflector implements ITypeReflector
             return null;
         }
 
-        $types = $this->getTypesFromDocBlock($docBlock, 'param', $parameter);
+        $types = $this->getTypesFromDocBlock($docBlock, 'param', $reflectionParameter, $parameter);
 
         if (!isset($this->cache['parameters'][$class])) {
             $this->cache['parameters'][$class] = [];
@@ -117,7 +118,7 @@ class PhpDocTypeReflector implements ITypeReflector
             return null;
         }
 
-        $types = $this->getTypesFromDocBlock($docBlock, 'var');
+        $types = $this->getTypesFromDocBlock($docBlock, 'var', $reflectedProperty);
 
         if (!isset($this->cache['properties'][$class])) {
             $this->cache['properties'][$class] = [];
@@ -146,7 +147,7 @@ class PhpDocTypeReflector implements ITypeReflector
             return null;
         }
 
-        $types = $this->getTypesFromDocBlock($docBlock, 'return');
+        $types = $this->getTypesFromDocBlock($docBlock, 'return', $reflectedMethod);
 
         if (!isset($this->cache['returnTypes'][$class])) {
             $this->cache['returnTypes'][$class] = [];
@@ -161,10 +162,11 @@ class PhpDocTypeReflector implements ITypeReflector
      * Creates a list of types from a PHPDoc
      *
      * @param PhpDocType $docType The PHPDoc type
+     * @param ReflectionMethod|ReflectionProperty|ReflectionParameter $reflectedData The reflected data
      * @param bool $isNullable Whether or not the type is nullable
      * @return Type[]|null The list of types if they could be created, otherwise null
      */
-    private function createTypesFromPhpDocType(PhpDocType $docType, bool $isNullable = false): ?array
+    private function createTypesFromPhpDocType(PhpDocType $docType, $reflectedData, bool $isNullable = false): ?array
     {
         $isNullable = $isNullable || $docType instanceof Null_ || $docType instanceof Nullable;
 
@@ -189,7 +191,7 @@ class PhpDocTypeReflector implements ITypeReflector
                     continue;
                 }
 
-                if (($singleTypes = $this->createTypesFromPhpDocType($singleDocType, $isNullable)) !== null) {
+                if (($singleTypes = $this->createTypesFromPhpDocType($singleDocType, $reflectedData, $isNullable)) !== null) {
                     if ($types === null) {
                         $types = [];
                     }
@@ -211,8 +213,8 @@ class PhpDocTypeReflector implements ITypeReflector
                 $phpType = 'object';
             }
 
-            $keyTypes = $this->createTypesFromPhpDocType($docType->getKeyType());
-            $valueTypes = $this->createTypesFromPhpDocType($docType->getValueType());
+            $keyTypes = $this->createTypesFromPhpDocType($docType->getKeyType(), $reflectedData);
+            $valueTypes = $this->createTypesFromPhpDocType($docType->getValueType(), $reflectedData);
 
             return [
                 new Type(
@@ -232,7 +234,8 @@ class PhpDocTypeReflector implements ITypeReflector
         if (substr($serializedDocType, -2) === '[]') {
             $keyType = new Type('int');
             $valueTypes = $this->createTypesFromPhpDocType(
-                (new TypeResolver())->resolve(substr($serializedDocType, 0, -2))
+                (new TypeResolver())->resolve(substr($serializedDocType, 0, -2)),
+                $reflectedData
             );
             $valueType = $valueTypes === null || \count($valueTypes) === 0 ? null : $valueTypes[0];
 
@@ -245,6 +248,10 @@ class PhpDocTypeReflector implements ITypeReflector
             // Types should not have preceding slashes
             $class = \ltrim($serializedDocType, '\\');
             $serializedDocType = 'object';
+
+            if ($class === 'self' || $class === '$this') {
+                $class = $reflectedData->getDeclaringClass()->getName();
+            }
         }
 
         if ($serializedDocType === 'array') {
@@ -259,11 +266,16 @@ class PhpDocTypeReflector implements ITypeReflector
      *
      * @param DocBlock $docBlock The PHPDoc block to search through
      * @param string $phpDocTagName The name of the PHPDoc tag name to search for
+     * @param ReflectionMethod|ReflectionProperty|ReflectionParameter $reflectedData The reflected data
      * @param string|null $variableName The name of the variable whose doc block we want, or null if not filtering by variable
      * @return array|null The list of return types if there any, otherwise null
      */
-    private function getTypesFromDocBlock(DocBlock $docBlock, string $phpDocTagName, string $variableName = null): ?array
-    {
+    private function getTypesFromDocBlock(
+        DocBlock $docBlock,
+        string $phpDocTagName,
+        $reflectedData,
+        string $variableName = null
+    ): ?array {
         $types = null;
 
         /** @var TagWithType $tag */
@@ -273,7 +285,7 @@ class PhpDocTypeReflector implements ITypeReflector
                 continue;
             }
 
-            if (($typesForThisTag = $this->createTypesFromPhpDocType($tag->getType())) !== null) {
+            if (($typesForThisTag = $this->createTypesFromPhpDocType($tag->getType(), $reflectedData)) !== null) {
                 if ($types === null) {
                     $types = [];
                 }

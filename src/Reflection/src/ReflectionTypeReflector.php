@@ -14,6 +14,7 @@ namespace Aphiria\Reflection;
 
 use ReflectionException;
 use ReflectionMethod;
+use ReflectionParameter;
 use ReflectionProperty;
 use ReflectionType;
 
@@ -49,7 +50,7 @@ class ReflectionTypeReflector implements ITypeReflector
             if (($type = $reflectedParameter->getType()) === null) {
                 $types = null;
             } else {
-                $types = $this->createTypesFromReflectionType($type);
+                $types = $this->createTypesFromReflectionType($type, $reflectedParameter);
             }
 
             if (!isset($this->cache['parameters'][$class])) {
@@ -84,7 +85,7 @@ class ReflectionTypeReflector implements ITypeReflector
             return null;
         }
 
-        $types = $this->createTypesFromReflectionType($type);
+        $types = $this->createTypesFromReflectionType($type, $reflectedProperty);
 
         if (!isset($this->cache['properties'][$class])) {
             $this->cache['properties'][$class] = [];
@@ -111,7 +112,7 @@ class ReflectionTypeReflector implements ITypeReflector
             return null;
         }
 
-        $types = $this->createTypesFromReflectionType($type);
+        $types = $this->createTypesFromReflectionType($type, $reflectedMethod);
 
         if (!isset($this->cache['returnTypes'][$class])) {
             $this->cache['returnTypes'][$class] = [];
@@ -126,9 +127,10 @@ class ReflectionTypeReflector implements ITypeReflector
      * Creates types from a reflection type
      *
      * @param ReflectionType $reflectedType The reflected type to convert
+     * @param ReflectionMethod|ReflectionProperty|ReflectionParameter $reflectedData The reflected data
      * @return Type[] The list of types
      */
-    private function createTypesFromReflectionType(ReflectionType $reflectedType): array
+    private function createTypesFromReflectionType(ReflectionType $reflectedType, $reflectedData): array
     {
         // TODO: When PHP 8 is released, add support for ReflectionUnionType
         $isNullable = $reflectedType->allowsNull();
@@ -143,6 +145,11 @@ class ReflectionTypeReflector implements ITypeReflector
         }
 
         if (!Type::isPhpType($typeName)) {
+            // TODO: When PHP 8 is released, add support for "static" return types
+            if ($typeName === 'self') {
+                $typeName = $reflectedData->getDeclaringClass()->getName();
+            }
+
             return [new Type('object', $typeName, $isNullable)];
         }
 

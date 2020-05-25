@@ -153,6 +153,17 @@ class ReflectionTypeReflectorTest extends TestCase
         $this->assertEquals([new Type('string')], $this->reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
     }
 
+    public function testGetParameterTypesForSelfReturnsObjectTypesForSelf(): void
+    {
+        $object = new class() {
+            public function foo(self $bar)
+            {
+            }
+        };
+        $expectedTypes = [new Type('object', \get_class($object))];
+        $this->assertEquals($expectedTypes, $this->reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
+    }
+
     public function testGetParameterTypesCachesResultsForNextTime(): void
     {
         $object = new class() {
@@ -314,7 +325,7 @@ class ReflectionTypeReflectorTest extends TestCase
         $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'foo'));
     }
 
-    public function testGetReturnTypesForMetohdWithoutTypeReturnsNull(): void
+    public function testGetReturnTypesForMethodWithoutTypeReturnsNull(): void
     {
         $object = new class() {
             public function foo()
@@ -334,6 +345,18 @@ class ReflectionTypeReflectorTest extends TestCase
             }
         };
         $this->assertEquals([new Type('string')], $this->reflector->getReturnTypes(\get_class($object), 'foo'));
+    }
+
+    public function testGetReturnTypesForSelfReturnsObjectTypesForSelf(): void
+    {
+        $object = new class() {
+            public function foo(): self
+            {
+                return $this;
+            }
+        };
+        $expectedTypes = [new Type('object', \get_class($object))];
+        $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'foo'));
     }
 
     public function testGetReturnTypesForVoidMethodCreatesNullType(): void

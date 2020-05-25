@@ -134,6 +134,18 @@ class PhpDocTypeReflectorTest extends TestCase
         $this->assertEquals($expectedTypes, $this->reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
     }
 
+    public function testGetParameterTypesForSelfReturnsObjectTypesForSelf(): void
+    {
+        $object = new class() {
+            /** @param self $bar */
+            public function foo($bar)
+            {
+            }
+        };
+        $expectedTypes = [new Type('object', \get_class($object))];
+        $this->assertEquals($expectedTypes, $this->reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
+    }
+
     public function testGetParameterTypesInfersTypedArrays(): void
     {
         $object = new class() {
@@ -298,6 +310,16 @@ class PhpDocTypeReflectorTest extends TestCase
         $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
     }
 
+    public function testGetPropertyTypesForSelfReturnsObjectTypesForSelf(): void
+    {
+        $object = new class() {
+            /** @var self */
+            public $foo;
+        };
+        $expectedTypes = [new Type('object', \get_class($object))];
+        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
+    }
+
     public function testGetPropertyTypesInfersTypedArrays(): void
     {
         $object = new class() {
@@ -452,6 +474,30 @@ class PhpDocTypeReflectorTest extends TestCase
             }
         };
         $expectedTypes = [new Type('object', 'Foo')];
+        $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'foo'));
+    }
+
+    public function testGetReturnTypesForSelfReturnsObjectTypesForSelf(): void
+    {
+        $object = new class() {
+            /** @return self */
+            public function foo()
+            {
+            }
+        };
+        $expectedTypes = [new Type('object', \get_class($object))];
+        $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'foo'));
+    }
+
+    public function testGetReturnTypesForThisReturnsObjectTypesForSelf(): void
+    {
+        $object = new class() {
+            /** @return $this */
+            public function foo()
+            {
+            }
+        };
+        $expectedTypes = [new Type('object', \get_class($object))];
         $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'foo'));
     }
 
