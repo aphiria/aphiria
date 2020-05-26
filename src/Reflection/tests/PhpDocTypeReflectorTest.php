@@ -13,8 +13,11 @@ declare(strict_types=1);
 namespace Aphiria\Reflection\Tests;
 
 use Aphiria\Reflection\PhpDocTypeReflector;
+use Aphiria\Reflection\Tests\Mocks\ClassWithTypedCollections;
+use Aphiria\Reflection\Tests\Mocks\ClassWithTypedObjectArrays;
+use Aphiria\Reflection\Tests\Mocks\ClassWithTypedObjects;
+use Aphiria\Reflection\Tests\Mocks\Finder\ClassA;
 use Aphiria\Reflection\Type;
-use Closure;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 
@@ -63,14 +66,10 @@ class PhpDocTypeReflectorTest extends TestCase
 
     public function testGetParameterTypesForCollectionReturnsTypesWithKeyAndValueTypesSet(): void
     {
-        $object = new class() {
-            /** @param Foo<string, string> $bar */
-            public function foo($bar)
-            {
-            }
-        };
-        $expectedTypes = [new Type('object', 'Foo', false, true, new Type('string'), new Type('string'))];
-        $this->assertEquals($expectedTypes, $this->reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
+        // PHPDoc does not like figuring out namespaces from anonymous classes.  So, use a real one.
+        $object = new ClassWithTypedCollections();
+        $expectedTypes = [new Type('object', ClassA::class, false, true, new Type('string'), new Type('string'))];
+        $this->assertEquals($expectedTypes, $this->reflector->getParameterTypes(\get_class($object), 'methodWithParam', 'param'));
     }
 
     public function testGetParameterTypesForCompoundTypeReturnsAllTypes(): void
@@ -124,14 +123,10 @@ class PhpDocTypeReflectorTest extends TestCase
 
     public function testGetParameterTypesForObjectTypeReturnsObjectTypes(): void
     {
-        $object = new class() {
-            /** @param Foo $bar */
-            public function foo($bar)
-            {
-            }
-        };
-        $expectedTypes = [new Type('object', 'Foo')];
-        $this->assertEquals($expectedTypes, $this->reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
+        // PHPDoc does not like figuring out namespaces from anonymous classes.  So, use a real one.
+        $object = new ClassWithTypedObjects();
+        $expectedTypes = [new Type('object', ClassA::class)];
+        $this->assertEquals($expectedTypes, $this->reflector->getParameterTypes(\get_class($object), 'methodWithParam', 'param'));
     }
 
     public function testGetParameterTypesForSelfReturnsObjectTypesForSelf(): void
@@ -173,14 +168,10 @@ class PhpDocTypeReflectorTest extends TestCase
 
     public function testGetParameterTypesInfersTypedObjectArrays(): void
     {
-        $object = new class() {
-            /** @param Closure[] $bar */
-            public function foo($bar)
-            {
-            }
-        };
-        $expectedTypes = [new Type('array', null, false, true, new Type('int'), new Type('object', Closure::class))];
-        $this->assertEquals($expectedTypes, $this->reflector->getParameterTypes(\get_class($object), 'foo', 'bar'));
+        // PHPDoc does not like figuring out namespaces from anonymous classes.  So, use a real one.
+        $object = new ClassWithTypedObjectArrays();
+        $expectedTypes = [new Type('array', null, false, true, new Type('int'), new Type('object', ClassA::class))];
+        $this->assertEquals($expectedTypes, $this->reflector->getParameterTypes(\get_class($object), 'methodWithParam', 'param'));
     }
 
     public function testGetParameterTypesInfersTypedScalarArrays(): void
@@ -252,12 +243,10 @@ class PhpDocTypeReflectorTest extends TestCase
 
     public function testGetPropertyTypesForCollectionReturnsTypesWithKeyAndValueTypesSet(): void
     {
-        $object = new class() {
-            /** @var Foo<string, string> */
-            public $foo;
-        };
-        $expectedTypes = [new Type('object', 'Foo', false, true, new Type('string'), new Type('string'))];
-        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
+        // PHPDoc does not like figuring out namespaces from anonymous classes.  So, use a real one.
+        $object = new ClassWithTypedCollections();
+        $expectedTypes = [new Type('object', ClassA::class, false, true, new Type('string'), new Type('string'))];
+        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'property'));
     }
 
     public function testGetPropertyTypesForCompoundTypeReturnsAllTypes(): void
@@ -302,12 +291,10 @@ class PhpDocTypeReflectorTest extends TestCase
 
     public function testGetPropertyTypesForObjectTypeReturnsObjectTypes(): void
     {
-        $object = new class() {
-            /** @var Foo */
-            public $foo;
-        };
-        $expectedTypes = [new Type('object', 'Foo')];
-        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
+        // PHPDoc does not like figuring out namespaces from anonymous classes.  So, use a real one.
+        $object = new ClassWithTypedObjects();
+        $expectedTypes = [new Type('object', ClassA::class)];
+        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'property'));
     }
 
     public function testGetPropertyTypesForSelfReturnsObjectTypesForSelf(): void
@@ -343,12 +330,10 @@ class PhpDocTypeReflectorTest extends TestCase
 
     public function testGetPropertyTypesInfersTypedObjectArrays(): void
     {
-        $object = new class() {
-            /** @var Closure[] */
-            public $foo;
-        };
-        $expectedTypes = [new Type('array', null, false, true, new Type('int'), new Type('object', Closure::class))];
-        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'foo'));
+        // PHPDoc does not like figuring out namespaces from anonymous classes.  So, use a real one.
+        $object = new ClassWithTypedObjectArrays();
+        $expectedTypes = [new Type('array', null, false, true, new Type('int'), new Type('object', ClassA::class))];
+        $this->assertEquals($expectedTypes, $this->reflector->getPropertyTypes(\get_class($object), 'property'));
     }
 
     public function testGetPropertyTypesInfersTypedScalarArrays(): void
@@ -406,14 +391,10 @@ class PhpDocTypeReflectorTest extends TestCase
 
     public function testGetReturnTypesForCollectionReturnsTypesWithKeyAndValueTypesSet(): void
     {
-        $object = new class() {
-            /** @return Foo<string, string> */
-            public function foo()
-            {
-            }
-        };
-        $expectedTypes = [new Type('object', 'Foo', false, true, new Type('string'), new Type('string'))];
-        $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'foo'));
+        // PHPDoc does not like figuring out namespaces from anonymous classes.  So, use a real one.
+        $object = new ClassWithTypedCollections();
+        $expectedTypes = [new Type('object', ClassA::class, false, true, new Type('string'), new Type('string'))];
+        $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'methodWithReturnType'));
     }
 
     public function testGetReturnTypesForCompoundTypeReturnsAllTypes(): void
@@ -467,14 +448,10 @@ class PhpDocTypeReflectorTest extends TestCase
 
     public function testGetReturnTypesForObjectTypeReturnsObjectTypes(): void
     {
-        $object = new class() {
-            /** @return Foo */
-            public function foo()
-            {
-            }
-        };
-        $expectedTypes = [new Type('object', 'Foo')];
-        $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'foo'));
+        // PHPDoc does not like figuring out namespaces from anonymous classes.  So, use a real one.
+        $object = new ClassWithTypedObjects();
+        $expectedTypes = [new Type('object', ClassA::class)];
+        $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'methodWithReturnType'));
     }
 
     public function testGetReturnTypesForSelfReturnsObjectTypesForSelf(): void
@@ -528,14 +505,10 @@ class PhpDocTypeReflectorTest extends TestCase
 
     public function testGetReturnTypesInfersTypedObjectArrays(): void
     {
-        $object = new class() {
-            /** @return Closure[] */
-            public function foo()
-            {
-            }
-        };
-        $expectedTypes = [new Type('array', null, false, true, new Type('int'), new Type('object', Closure::class))];
-        $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'foo'));
+        // PHPDoc does not like figuring out namespaces from anonymous classes.  So, use a real one.
+        $object = new ClassWithTypedObjectArrays();
+        $expectedTypes = [new Type('array', null, false, true, new Type('int'), new Type('object', ClassA::class))];
+        $this->assertEquals($expectedTypes, $this->reflector->getReturnTypes(\get_class($object), 'methodWithReturnType'));
     }
 
     public function testGetReturnTypesInfersTypedScalarArrays(): void

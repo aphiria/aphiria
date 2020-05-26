@@ -10,11 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Reflection\Tests\Mocks;
+namespace Aphiria\Reflection\Tests\Mocks\Finder;
 
 /**
- * Mocks an abstract class
+ * Defines a mock class
  */
-abstract class AbstractClass
+class ClassA
 {
+    // Don't do anything
 }

@@ -12,18 +12,18 @@ declare(strict_types=1);
 
 namespace Aphiria\Reflection\Tests;
 
-use Aphiria\Reflection\Tests\Mocks\AbstractClass;
-use Aphiria\Reflection\Tests\Mocks\ClassA;
-use Aphiria\Reflection\Tests\Mocks\ClassB;
-use Aphiria\Reflection\Tests\Mocks\IInterface;
-use Aphiria\Reflection\Tests\Mocks\Subdirectory\ClassC;
+use Aphiria\Reflection\Tests\Mocks\Finder\AbstractClass;
+use Aphiria\Reflection\Tests\Mocks\Finder\ClassA;
+use Aphiria\Reflection\Tests\Mocks\Finder\ClassB;
+use Aphiria\Reflection\Tests\Mocks\Finder\IInterface;
+use Aphiria\Reflection\Tests\Mocks\Finder\Subdirectory\ClassC;
 use Aphiria\Reflection\TypeFinder;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class TypeFinderTest extends TestCase
 {
-    private const DIRECTORY = __DIR__ . '/Mocks';
+    private const DIRECTORY = __DIR__ . '/Mocks/Finder';
     private TypeFinder $finder;
 
     protected function setUp(): void
