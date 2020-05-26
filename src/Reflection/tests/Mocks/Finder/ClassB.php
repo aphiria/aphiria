@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Reflection\Tests\Mocks;
+namespace Aphiria\Reflection\Tests\Mocks\Finder;
 
 /**
- * Defines a mock interface
+ * Defines a mock class
  */
-interface IInterface
+class ClassB extends ClassA
 {
     // Don't do anything
 }

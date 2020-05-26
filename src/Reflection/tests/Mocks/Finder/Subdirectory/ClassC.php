@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Reflection\Tests\Mocks\Subdirectory;
+namespace Aphiria\Reflection\Tests\Mocks\Finder\Subdirectory;
 
 /**
  * Defines a mock class

@@ -22,8 +22,11 @@ use phpDocumentor\Reflection\Type as PhpDocType;
 use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Types\Collection;
 use phpDocumentor\Reflection\Types\Compound;
+use phpDocumentor\Reflection\Types\Context;
+use phpDocumentor\Reflection\Types\ContextFactory;
 use phpDocumentor\Reflection\Types\Null_;
 use phpDocumentor\Reflection\Types\Nullable;
+use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionParameter;
@@ -39,6 +42,10 @@ class PhpDocTypeReflector implements ITypeReflector
 {
     /** @var DocBlockFactoryInterface The doc block factory */
     private DocBlockFactoryInterface $docBlockFactory;
+    /** @var ContextFactory The doc block context factory (helps with namespacing types) */
+    private ContextFactory $docBlockContextFactory;
+    /** @var Context[] The mapping of cache keys to contexts */
+    private array $docBlockContextCache = [];
     /** @var array The type reflection cache */
     private array $cache = [
         'parameters' => [],
@@ -52,6 +59,7 @@ class PhpDocTypeReflector implements ITypeReflector
     public function __construct(DocBlockFactoryInterface $docBlockFactory = null)
     {
         $this->docBlockFactory = $docBlockFactory ?? DocBlockFactory::createInstance();
+        $this->docBlockContextFactory = new ContextFactory();
     }
 
     /**
@@ -79,7 +87,10 @@ class PhpDocTypeReflector implements ITypeReflector
                 throw new ReflectionException("Parameter $parameter does not exist in $class::$method()");
             }
 
-            $docBlock = $this->docBlockFactory->create($reflectedMethod);
+            $docBlock = $this->docBlockFactory->create(
+                $reflectedMethod,
+                $this->createDocBlockContext($reflectedMethod->getDeclaringClass())
+            );
         } catch (InvalidArgumentException $ex) {
             // Exceptions here can be caused by a method not having any PHPDoc.  So, just swallow them.
             return null;
@@ -103,7 +114,10 @@ class PhpDocTypeReflector implements ITypeReflector
 
         try {
             $reflectedProperty = new ReflectionProperty($class, $property);
-            $docBlock = $this->docBlockFactory->create($reflectedProperty);
+            $docBlock = $this->docBlockFactory->create(
+                $reflectedProperty,
+                $this->createDocBlockContext($reflectedProperty->getDeclaringClass())
+            );
         } catch (InvalidArgumentException $ex) {
             // Exceptions here can be caused by a property not having any PHPDoc.  So, just swallow them.
             return null;
@@ -127,7 +141,10 @@ class PhpDocTypeReflector implements ITypeReflector
 
         try {
             $reflectedMethod = new ReflectionMethod($class, $method);
-            $docBlock = $this->docBlockFactory->create($reflectedMethod);
+            $docBlock = $this->docBlockFactory->create(
+                $reflectedMethod,
+                $this->createDocBlockContext($reflectedMethod->getDeclaringClass())
+            );
         } catch (InvalidArgumentException $ex) {
             // Exceptions here can be caused by a method not having any PHPDoc.  So, just swallow them.
             return null;
@@ -160,6 +177,31 @@ class PhpDocTypeReflector implements ITypeReflector
         }
 
         $currValue = $types;
+    }
+
+    /**
+     * Create a doc block context and caches the results to improve performance
+     *
+     * @param ReflectionClass $reflectedClass The reflected class to create the context from
+     * @return Context The created context
+     */
+    private function createDocBlockContext(ReflectionClass $reflectedClass): Context
+    {
+        /**
+         * For reference, Symfony found that creating this context is very costly
+         *
+         * @link https://github.com/symfony/symfony/commit/063e880861eb8ec28d14efdce0042f7ce8c4bba9
+         */
+        $cacheKey = "{$reflectedClass->getNamespaceName()}:{$reflectedClass->getFileName()}";
+
+        if (isset($this->docBlockContextCache[$cacheKey])) {
+            return $this->docBlockContextCache[$cacheKey];
+        }
+
+        $context = $this->docBlockContextFactory->createFromReflector($reflectedClass);
+        $this->docBlockContextCache[$cacheKey] = $context;
+
+        return $context;
     }
 
     /**
