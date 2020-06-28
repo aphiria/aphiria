@@ -19,6 +19,7 @@ use Aphiria\DependencyInjection\IContainer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -70,6 +71,10 @@ final class SymfonySerializerBinder extends Binder
                     }
 
                     $normalizers[] = new ObjectNormalizer(null, $nameConverter);
+                    break;
+                case ArrayDenormalizer::class:
+                    $normalizers[] = new ArrayDenormalizer();
+                    break;
             }
         }
 
