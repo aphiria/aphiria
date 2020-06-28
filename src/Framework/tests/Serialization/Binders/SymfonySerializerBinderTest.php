@@ -21,6 +21,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -41,6 +42,14 @@ class SymfonySerializerBinderTest extends TestCase
         $this->container->expects($this->at(0))
             ->method('bindInstance')
             ->with([SerializerInterface::class, Serializer::class], $this->isInstanceOf(Serializer::class));
+    }
+
+    public function testArrayDenormalizerIsInstantiatedWithCorrectFormat(): void
+    {
+        $config = self::getBaseConfig();
+        $config['aphiria']['serialization']['normalizers'][] = ArrayDenormalizer::class;
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        $this->binder->bind($this->container);
     }
 
     public function testDateTimeNormalizerIsInstantiatedWithCorrectFormat(): void
