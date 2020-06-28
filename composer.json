@@ -30,7 +30,6 @@
             "Aphiria\\PsrAdapters\\": "src/PsrAdapters/src",
             "Aphiria\\Reflection\\": "src/Reflection/src",
             "Aphiria\\Routing\\": "src/Router/src",
-            "Aphiria\\Serialization\\": "src/Serialization/src",
             "Aphiria\\Sessions\\": "src/Sessions/src",
             "Aphiria\\Validation\\": "src/Validation/src"
         }
@@ -51,7 +50,6 @@
             "Aphiria\\PsrAdapters\\Tests\\": "src/PsrAdapters/tests",
             "Aphiria\\Reflection\\Tests\\": "src/Reflection/tests",
             "Aphiria\\Routing\\Tests\\": "src/Router/tests",
-            "Aphiria\\Serialization\\Tests\\": "src/Serialization/tests",
             "Aphiria\\Sessions\\Tests\\": "src/Sessions/tests",
             "Aphiria\\Validation\\Tests\\": "src/Validation/tests"
         }

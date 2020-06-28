@@ -16,6 +16,7 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatt
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\IRequest;
 use InvalidArgumentException;
@@ -56,6 +57,7 @@ final class ContentNegotiator implements IContentNegotiator
         if ($mediaTypeFormatters === null) {
             $mediaTypeFormatters = [
                 new JsonMediaTypeFormatter(),
+                new XmlMediaTypeFormatter(),
                 new HtmlMediaTypeFormatter(),
                 new PlainTextMediaTypeFormatter()
             ];

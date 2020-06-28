@@ -22,6 +22,7 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatt
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
 use Aphiria\Net\Uri;
 use Aphiria\Reflection\TypeResolver;
 use InvalidArgumentException;
@@ -61,6 +62,7 @@ class RequestBuilder
     ) {
         $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher([
             new JsonMediaTypeFormatter(),
+            new XmlMediaTypeFormatter(),
             new HtmlMediaTypeFormatter(),
             new PlainTextMediaTypeFormatter()
         ]);

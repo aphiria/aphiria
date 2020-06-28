@@ -18,6 +18,7 @@ use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatt
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\ResponseHeaderParser;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
@@ -46,6 +47,7 @@ class ResponseAssertions
     ) {
         $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher([
             new JsonMediaTypeFormatter(),
+            new XmlMediaTypeFormatter(),
             new HtmlMediaTypeFormatter(),
             new PlainTextMediaTypeFormatter()
         ]);
