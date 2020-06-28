@@ -54,7 +54,8 @@ class ValidationComponentTest extends TestCase
 
     public function testBuildWithAnnotationsAddsAnnotationRegistrant(): void
     {
-        $annotationObjectConstraintsRegistrant = new AnnotationObjectConstraintsRegistrant(__DIR__);
+        // We use an empty directory so that we don't actually scan any annotations
+        $annotationObjectConstraintsRegistrant = new AnnotationObjectConstraintsRegistrant(__DIR__ . '/files');
         $this->container->bindInstance(AnnotationObjectConstraintsRegistrant::class, $annotationObjectConstraintsRegistrant);
         $this->validationComponent->withAnnotations();
         $this->validationComponent->build();
