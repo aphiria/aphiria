@@ -30,7 +30,7 @@
     "require": {
         "aphiria/collections": "1.0.*@dev",
         "aphiria/io": "1.0.*@dev",
-        "aphiria/serialization": "1.0.*@dev",
+        "aphiria/reflection": "1.0.*@dev",
         "ext-fileinfo": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
