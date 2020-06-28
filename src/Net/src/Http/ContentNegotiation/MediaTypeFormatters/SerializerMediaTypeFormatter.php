@@ -13,25 +13,28 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
 use Aphiria\IO\Streams\IStream;
-use Aphiria\Serialization\ISerializer;
-use Aphiria\Serialization\SerializationException as SerializerSerializationException;
-use Aphiria\Serialization\TypeResolver;
+use Aphiria\Reflection\TypeResolver;
 use InvalidArgumentException;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Defines the base class for media type formatters that use serializers to extend
  */
 abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
 {
-    /** @var ISerializer The serializer this formatter uses */
-    private ISerializer $serializer;
+    /** @var SerializerInterface The serializer this formatter uses */
+    private SerializerInterface $serializer;
+    /** @var string The format to (de)serialize to */
+    private string $format;
 
     /**
-     * @param ISerializer $serializer The serializer this formatter uses
+     * @param SerializerInterface $serializer The serializer this formatter uses
+     * @param string $format The format to (de)serialize to
      */
-    protected function __construct(ISerializer $serializer)
+    protected function __construct(SerializerInterface $serializer, string $format)
     {
         $this->serializer = $serializer;
+        $this->format = $format;
     }
 
     /**
@@ -43,11 +46,7 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
             throw new InvalidArgumentException(static::class . " cannot read type $type");
         }
 
-        try {
-            return $this->serializer->deserialize((string)$stream, $type);
-        } catch (SerializerSerializationException $ex) {
-            throw new SerializationException("Failed to read content from stream as type $type", 0, $ex);
-        }
+        return $this->serializer->deserialize((string)$stream, $type, $this->format);
     }
 
     /**
@@ -67,12 +66,7 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
             throw new InvalidArgumentException("$encoding is not supported for " . static::class);
         }
 
-        try {
-            $serializedObject = $this->serializer->serialize($value);
-        } catch (SerializerSerializationException $ex) {
-            throw new SerializationException('Failed to write content to stream', 0, $ex);
-        }
-
+        $serializedObject = $this->serializer->serialize($value, $this->format);
         $encodedSerializedObject = mb_convert_encoding($serializedObject, $encoding);
         $stream->write($encodedSerializedObject);
     }

@@ -68,7 +68,9 @@
         "psr/http-factory": "^1.0",
         "psr/http-message": "^1.0",
         "psr/log": "~1.0",
-        "symfony/dotenv": "~5.0"
+        "symfony/dotenv": "~5.1",
+        "symfony/property-access": "^5.1",
+        "symfony/serializer": "^5.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",

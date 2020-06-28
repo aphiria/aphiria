@@ -19,7 +19,6 @@ use Aphiria\Framework\Api\Testing\PhpUnit\IntegrationTestCase;
 use Aphiria\Framework\Api\Testing\ResponseAssertions;
 use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
@@ -57,7 +56,6 @@ class IntegrationTestCaseTest extends TestCase
                 $this->app = $app;
                 $this->mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher([
                     new JsonMediaTypeFormatter(),
-                    new FormUrlEncodedMediaTypeFormatter(),
                     new HtmlMediaTypeFormatter(),
                     new PlainTextMediaTypeFormatter()
                 ]);

@@ -25,7 +25,7 @@ use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Http\StringBody;
-use Aphiria\Serialization\TypeResolver;
+use Aphiria\Reflection\TypeResolver;
 use InvalidArgumentException;
 
 /**

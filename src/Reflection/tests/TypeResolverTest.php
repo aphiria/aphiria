@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Serialization\Tests;
+namespace Aphiria\Reflection\Tests;
 
-use Aphiria\Serialization\Tests\Encoding\Mocks\User;
-use Aphiria\Serialization\TypeResolver;
+use Aphiria\Reflection\Tests\Mocks\User;
+use Aphiria\Reflection\TypeResolver;
 use PHPUnit\Framework\TestCase;
 
 class TypeResolverTest extends TestCase

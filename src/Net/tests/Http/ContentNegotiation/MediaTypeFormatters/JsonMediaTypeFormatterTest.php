@@ -14,10 +14,7 @@ namespace Aphiria\Net\Tests\Http\ContentNegotiation\MediaTypeFormatters;
 
 use Aphiria\IO\Streams\IStream;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
-use Aphiria\Serialization\JsonSerializer;
-use Aphiria\Serialization\SerializationException as SerializerSerializationException;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -28,8 +25,7 @@ class JsonMediaTypeFormatterTest extends TestCase
 
     protected function setUp(): void
     {
-        $serializer = new JsonSerializer();
-        $this->formatter = new JsonMediaTypeFormatter($serializer);
+        $this->formatter = new JsonMediaTypeFormatter();
     }
 
     public function testCanReadAnyType(): void
@@ -75,45 +71,16 @@ class JsonMediaTypeFormatterTest extends TestCase
         $this->assertEquals($expectedUser, $actualUser);
     }
 
-    public function testSerializerSerializationExceptionGetsRethrownWhenReading(): void
-    {
-        $this->expectException(SerializationException::class);
-        $this->expectExceptionMessage('Failed to read content from stream as type ' . User::class);
-        $serializer = $this->createMock(JsonSerializer::class);
-        $serializer->expects($this->once())
-            ->method('deserialize')
-            ->with('foo', User::class)
-            ->willThrowException(new SerializerSerializationException());
-        $stream = $this->createStreamWithStringBody('foo');
-        $formatter = new JsonMediaTypeFormatter($serializer);
-        $formatter->readFromStream($stream, User::class);
-    }
-
-    public function testSerializerSerializationExceptionGetsRethrownWhenWriting(): void
-    {
-        $this->expectException(SerializationException::class);
-        $this->expectExceptionMessage('Failed to write content to stream');
-        $user = new User(123, 'foo@bar.com');
-        $stream = $this->createMock(IStream::class);
-        $serializer = $this->createMock(JsonSerializer::class);
-        $serializer->expects($this->once())
-            ->method('serialize')
-            ->with($user)
-            ->willThrowException(new SerializerSerializationException());
-        $formatter = new JsonMediaTypeFormatter($serializer);
-        $formatter->writeToStream($user, $stream, null);
-    }
-
     public function testWritingArrayOfObjectsIsSuccessful(): void
     {
-        $stream = $this->createStreamThatExpectsBody('[{"id":123,"email":"foo@bar.com"}]');
+        $stream = $this->createStreamThatExpectsBody('[{"email":"foo@bar.com","id":123}]');
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream([$user], $stream, 'utf-8');
     }
 
     public function testWritingToStreamSetsStreamContentsFromSerializedValue(): void
     {
-        $stream = $this->createStreamThatExpectsBody('{"id":123,"email":"foo@bar.com"}');
+        $stream = $this->createStreamThatExpectsBody('{"email":"foo@bar.com","id":123}');
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $stream, 'utf-8');
     }
@@ -130,7 +97,7 @@ class JsonMediaTypeFormatterTest extends TestCase
     {
         $stream = $this->createMock(IStream::class);
         $user = new User(123, 'foo@bar.com');
-        $expectedEncodedValue = \mb_convert_encoding('{"id":123,"email":"foo@bar.com"}', 'utf-8');
+        $expectedEncodedValue = \mb_convert_encoding('{"email":"foo@bar.com","id":123}', 'utf-8');
         $stream->expects($this->once())
             ->method('write')
             ->with($expectedEncodedValue);

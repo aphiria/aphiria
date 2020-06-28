@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Serialization\Encoding;
 
-use Aphiria\Serialization\TypeResolver;
+use Aphiria\Reflection\TypeResolver;
 use OutOfBoundsException;
 
 /**

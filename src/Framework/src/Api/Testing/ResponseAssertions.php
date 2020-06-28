@@ -14,7 +14,6 @@ namespace Aphiria\Framework\Api\Testing;
 
 use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
@@ -23,7 +22,7 @@ use Aphiria\Net\Http\Formatting\ResponseHeaderParser;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
-use Aphiria\Serialization\TypeResolver;
+use Aphiria\Reflection\TypeResolver;
 use Closure;
 use InvalidArgumentException;
 
@@ -47,7 +46,6 @@ class ResponseAssertions
     ) {
         $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher([
             new JsonMediaTypeFormatter(),
-            new FormUrlEncodedMediaTypeFormatter(),
             new HtmlMediaTypeFormatter(),
             new PlainTextMediaTypeFormatter()
         ]);
