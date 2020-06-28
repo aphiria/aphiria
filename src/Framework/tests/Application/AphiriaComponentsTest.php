@@ -29,13 +29,11 @@ use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
 use Aphiria\Framework\Routing\Components\RouterComponent;
-use Aphiria\Framework\Serialization\Components\SerializerComponent;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
-use Aphiria\Serialization\Encoding\IEncoder;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Closure;
 use Exception;
@@ -329,56 +327,6 @@ class AphiriaComponentsTest extends TestCase
         };
         $callback = fn (Exception $ex, IOutput $output) => null;
         $component->build($this->appBuilder, Exception::class, $callback);
-    }
-
-    public function testWithEncodersConfiguresComponentToHaveEncoders(): void
-    {
-        $encoder = $this->createMock(IEncoder::class);
-        $expectedComponent = $this->createMock(SerializerComponent::class);
-        $expectedComponent->expects($this->once())
-            ->method('withEncoder')
-            ->with('foo', $encoder);
-        $this->appBuilder->expects($this->at(0))
-            ->method('hasComponent')
-            ->with(SerializerComponent::class)
-            ->willReturn(true);
-        $this->appBuilder->expects($this->at(1))
-            ->method('getComponent')
-            ->with(SerializerComponent::class)
-            ->willReturn($expectedComponent);
-        $component = new class() {
-            use AphiriaComponents;
-
-            public function build(IApplicationBuilder $appBuilder, string $type, IEncoder $encoder): void
-            {
-                $this->withEncoder($appBuilder, $type, $encoder);
-            }
-        };
-        $component->build($this->appBuilder, 'foo', $encoder);
-    }
-
-    public function testWithEncoderRegistersComponentIfItIsNotRegisteredYet(): void
-    {
-        $this->appBuilder->expects($this->at(0))
-            ->method('hasComponent')
-            ->with(SerializerComponent::class)
-            ->willReturn(false);
-        $this->appBuilder->expects($this->at(1))
-            ->method('withComponent')
-            ->with($this->isInstanceOf(SerializerComponent::class));
-        $this->appBuilder->expects($this->at(2))
-            ->method('getComponent')
-            ->with(SerializerComponent::class)
-            ->willReturn($this->createMock(SerializerComponent::class));
-        $component = new class() {
-            use AphiriaComponents;
-
-            public function build(IApplicationBuilder $appBuilder, string $type, IEncoder $encoder): void
-            {
-                $this->withEncoder($appBuilder, $type, $encoder);
-            }
-        };
-        $component->build($this->appBuilder, self::class, $this->createMock(IEncoder::class));
     }
 
     public function testWithFrameworkCommandsConfiguresComponentToHaveCommands(): void

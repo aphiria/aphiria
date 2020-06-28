@@ -13,49 +13,44 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http\ContentNegotiation\MediaTypeFormatters;
 
 use Aphiria\IO\Streams\IStream;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\FormUrlEncodedMediaTypeFormatter;
+use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
 use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
-use Aphiria\Serialization\FormUrlEncodedSerializer;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class FormUrlEncodedMediaTypeFormatterTest extends TestCase
+class XmlMediaTypeFormatterTest extends TestCase
 {
-    private FormUrlEncodedMediaTypeFormatter $formatter;
+    private XmlMediaTypeFormatter $formatter;
 
     protected function setUp(): void
     {
-        $serializer = new FormUrlEncodedSerializer();
-        $this->formatter = new FormUrlEncodedMediaTypeFormatter($serializer);
+        $this->formatter = new XmlMediaTypeFormatter();
     }
 
-    public function testCanReadOnlyObjectsAndArrays(): void
+    public function testCanReadAnyType(): void
     {
         $this->assertTrue($this->formatter->canReadType(User::class));
-        $this->assertTrue($this->formatter->canReadType('array'));
-        $this->assertTrue($this->formatter->canReadType('string[]'));
-        $this->assertTrue($this->formatter->canReadType(User::class . '[]'));
-        $this->assertFalse($this->formatter->canReadType('string'));
+        $this->assertTrue($this->formatter->canReadType('string'));
     }
 
-    public function testCanWriteOnlyObjectsAndArrays(): void
+    public function testCanWriteAnyType(): void
     {
         $this->assertTrue($this->formatter->canWriteType(User::class));
-        $this->assertTrue($this->formatter->canWriteType('array'));
-        $this->assertTrue($this->formatter->canWriteType('string[]'));
-        $this->assertTrue($this->formatter->canWriteType(User::class . '[]'));
-        $this->assertFalse($this->formatter->canWriteType('string'));
+        $this->assertTrue($this->formatter->canWriteType('string'));
     }
 
     public function testCorrectSupportedEncodingsAreReturned(): void
     {
-        $this->assertEquals(['utf-8', 'ISO-8859-1'], $this->formatter->getSupportedEncodings());
+        $this->assertEquals(['utf-8', 'utf-16', 'iso-8859'], $this->formatter->getSupportedEncodings());
     }
 
     public function testCorrectSupportedMediaTypesAreReturned(): void
     {
-        $this->assertEquals(['application/x-www-form-urlencoded'], $this->formatter->getSupportedMediaTypes());
+        $this->assertEquals(
+            ['text/xml', 'application/problem+xml'],
+            $this->formatter->getSupportedMediaTypes()
+        );
     }
 
     public function testDefaultEncodingReturnsFirstSupportedEncoding(): void
@@ -65,61 +60,45 @@ class FormUrlEncodedMediaTypeFormatterTest extends TestCase
 
     public function testDefaultMediaTypeReturnsFirstSupportedMediaType(): void
     {
-        $this->assertEquals('application/x-www-form-urlencoded', $this->formatter->getDefaultMediaType());
+        $this->assertEquals('text/xml', $this->formatter->getDefaultMediaType());
     }
 
     public function testReadingFromStreamDeserializesStreamContents(): void
     {
-        $stream = $this->createStreamWithStringBody('id=123&email=foo%40bar.com');
+        $stream = $this->createStreamWithStringBody('<user><id>123</id><email>foo@bar.com</email></user>');
         $expectedUser = new User(123, 'foo@bar.com');
         $actualUser = $this->formatter->readFromStream($stream, User::class);
         $this->assertEquals($expectedUser, $actualUser);
     }
 
-    public function testReadingTypeThatCannotBeReadThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('% s cannot read type string', FormUrlEncodedMediaTypeFormatter::class));
-        $stream = $this->createMock(IStream::class);
-        $this->formatter->readFromStream($stream, 'string');
-    }
-
     public function testWritingArrayOfObjectsIsSuccessful(): void
     {
-        $stream = $this->createStreamThatExpectsBody('0%5Bid%5D=123&0%5Bemail%5D=foo%40bar.com');
+        $xml = <<<XML
+<?xml version="1.0"?>
+<response><item key="0"><email>foo@bar.com</email><id>123</id></item></response>
+
+XML;
+        $stream = $this->createStreamThatExpectsBody($xml);
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream([$user], $stream, 'utf-8');
     }
 
     public function testWritingToStreamSetsStreamContentsFromSerializedValue(): void
     {
-        $stream = $this->createStreamThatExpectsBody('id=123&email=foo%40bar.com');
+        $xml = <<<XML
+<?xml version="1.0"?>
+<response><email>foo@bar.com</email><id>123</id></response>
+
+XML;
+        $stream = $this->createStreamThatExpectsBody($xml);
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $stream, 'utf-8');
-    }
-
-    public function testWritingConvertsToInputEncoding(): void
-    {
-        $stream = $this->createMock(IStream::class);
-        $user = new User(123, 'foo@bar.com');
-        $expectedEncodedValue = \mb_convert_encoding('id=123&email=foo%40bar.com', 'ISO-8859-1');
-        $stream->expects($this->once())
-            ->method('write')
-            ->with($expectedEncodedValue);
-        $this->formatter->writeToStream($user, $stream, 'ISO-8859-1');
-    }
-
-    public function testWritingTypeThatCannotBeWrittenThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('%s cannot write type string', FormUrlEncodedMediaTypeFormatter::class));
-        $this->formatter->writeToStream('foo', $this->createMock(IStream::class), null);
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('foo is not supported for %s', FormUrlEncodedMediaTypeFormatter::class));
+        $this->expectExceptionMessage(sprintf('foo is not supported for %s', XmlMediaTypeFormatter::class));
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
     }
@@ -128,7 +107,12 @@ class FormUrlEncodedMediaTypeFormatterTest extends TestCase
     {
         $stream = $this->createMock(IStream::class);
         $user = new User(123, 'foo@bar.com');
-        $expectedEncodedValue = mb_convert_encoding('id=123&email=foo%40bar.com', 'utf-8');
+        $xml = <<<XML
+<?xml version="1.0"?>
+<response><email>foo@bar.com</email><id>123</id></response>
+
+XML;
+        $expectedEncodedValue = \mb_convert_encoding($xml, 'utf-8');
         $stream->expects($this->once())
             ->method('write')
             ->with($expectedEncodedValue);

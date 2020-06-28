@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Serialization\Tests\Encoding\Mocks;
+namespace Aphiria\Reflection\Tests\Mocks;
 
 /**
  * Mocks a user object

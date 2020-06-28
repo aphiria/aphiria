@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
 use Aphiria\IO\Streams\IStream;
-use Aphiria\Serialization\TypeResolver;
+use Aphiria\Reflection\TypeResolver;
 use InvalidArgumentException;
 
 /**

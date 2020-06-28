@@ -12,27 +12,27 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters;
 
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * Defines the JSON media type formatter
+ * Defines the XML media type formatter
  */
-final class JsonMediaTypeFormatter extends SerializerMediaTypeFormatter
+final class XmlMediaTypeFormatter extends SerializerMediaTypeFormatter
 {
     /** @var array The list of supported character encodings */
-    private static array $supportedEncodings = ['utf-8'];
+    private static array $supportedEncodings = ['utf-8', 'utf-16', 'iso-8859'];
     /** @var array The list of supported media types */
-    private static array $supportedMediaTypes = ['application/json', 'text/json', 'application/problem+json'];
+    private static array $supportedMediaTypes = ['text/xml', 'application/problem+xml'];
 
     /**
      * @param SerializerInterface|null $serializer The JSON serializer to use
      */
     public function __construct(SerializerInterface $serializer = null)
     {
-        parent::__construct($serializer ?? new Serializer([new ObjectNormalizer()], [new JsonEncoder()]), 'json');
+        parent::__construct($serializer ?? new Serializer([new ObjectNormalizer()], [new XmlEncoder()]), 'xml');
     }
 
     /**

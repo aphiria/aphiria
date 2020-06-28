@@ -30,11 +30,9 @@ use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
 use Aphiria\Framework\Routing\Components\RouterComponent;
-use Aphiria\Framework\Serialization\Components\SerializerComponent;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
-use Aphiria\Serialization\Encoding\IEncoder;
 use Closure;
 
 /**
@@ -169,26 +167,6 @@ trait AphiriaComponents
 
         $appBuilder->getComponent(ExceptionHandlerComponent::class)
             ->withConsoleOutputWriter($exceptionType, $callback);
-
-        return $this;
-    }
-
-    /**
-     * Adds an encoder to the encoder component
-     *
-     * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param string $class The class whose encoder we're registering
-     * @param IEncoder $encoder The encoder to register
-     * @return self For chaining
-     */
-    protected function withEncoder(IApplicationBuilder $appBuilder, string $class, IEncoder $encoder): self
-    {
-        if (!$appBuilder->hasComponent(SerializerComponent::class)) {
-            $appBuilder->withComponent(new SerializerComponent(Container::$globalInstance));
-        }
-
-        $appBuilder->getComponent(SerializerComponent::class)
-            ->withEncoder($class, $encoder);
 
         return $this;
     }
