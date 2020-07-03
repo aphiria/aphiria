@@ -1,0 +1,53 @@
+{
+    "name": "aphiria/content-negotiation",
+    "description": "The Aphiria content negotiation library",
+    "keywords": [
+        "PHP",
+        "content-negotiation",
+        "media type"
+    ],
+    "authors": [
+        {
+            "name": "David Young",
+            "email": "dave@aphiria.com",
+            "role": "Architect"
+        }
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Aphiria\\ContentNegotiation\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aphiria\\ContentNegotiation\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "aphiria/io": "1.0.*@dev",
+        "aphiria/net": "1.0.*@dev",
+        "aphiria/reflection": "1.0.*@dev",
+        "ext-fileinfo": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "php": "^7.4",
+        "symfony/property-access": "^5.1",
+        "symfony/serializer": "^5.1"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "php-coveralls/php-coveralls": "^2.2",
+        "phpunit/phpunit": "~9.1"
+    },
+    "scripts": {
+        "lint-check": "php-cs-fixer fix --config=.php_cs.dist -v --diff --dry-run",
+        "lint-fix": "php-cs-fixer fix --config=.php_cs.dist -v --diff"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "minimum-stability": "dev"
+}

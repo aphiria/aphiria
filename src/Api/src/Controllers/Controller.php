@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
-use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
+use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
 use Aphiria\Net\Http\Headers;

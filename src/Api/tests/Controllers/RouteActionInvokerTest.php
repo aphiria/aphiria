@@ -23,7 +23,7 @@ use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
 use Aphiria\Api\Tests\Controllers\Mocks\User;
 use Aphiria\Api\Validation\InvalidRequestBodyException;
 use Aphiria\Api\Validation\IRequestBodyValidator;
-use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IRequest;

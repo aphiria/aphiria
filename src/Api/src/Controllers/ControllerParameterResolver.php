@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
+use Aphiria\ContentNegotiation\ContentNegotiator;
+use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Formatting\UriParser;
-use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
-use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\IRequest;
 use ReflectionParameter;
 

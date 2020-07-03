@@ -14,7 +14,7 @@ namespace Aphiria\Api\Tests\Validation;
 
 use Aphiria\Api\Validation\InvalidRequestBodyException;
 use Aphiria\Api\Validation\RequestBodyValidator;
-use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
+use Aphiria\ContentNegotiation\ILanguageMatcher;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\ConstraintViolation;

@@ -12,13 +12,13 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Api\Testing;
 
-use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
+use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
+use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\ResponseHeaderParser;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;

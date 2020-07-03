@@ -13,10 +13,10 @@ declare(strict_types=1);
 namespace Aphiria\Api\Tests\Controllers;
 
 use Aphiria\Api\Controllers\Controller;
-use Aphiria\Net\Http\ContentNegotiation\ContentNegotiationResult;
-use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
+use Aphiria\ContentNegotiation\ContentNegotiationResult;
+use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
