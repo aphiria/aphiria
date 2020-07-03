@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Console\Binders;
 
-use Aphiria\Configuration\GlobalConfiguration;
-use Aphiria\Configuration\MissingConfigurationValueException;
+use Aphiria\Application\Configuration\GlobalConfiguration;
+use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
 use Aphiria\Console\Commands\Caching\FileCommandRegistryCache;
 use Aphiria\Console\Commands\Caching\ICommandRegistryCache;

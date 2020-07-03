@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Serialization\Binders;
 
-use Aphiria\Configuration\GlobalConfiguration;
-use Aphiria\Configuration\MissingConfigurationValueException;
+use Aphiria\Application\Configuration\GlobalConfiguration;
+use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;

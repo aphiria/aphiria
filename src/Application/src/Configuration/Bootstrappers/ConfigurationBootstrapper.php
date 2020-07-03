@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Configuration\Bootstrappers;
+namespace Aphiria\Application\Configuration\Bootstrappers;
 
+use Aphiria\Application\Configuration\GlobalConfigurationBuilder;
 use Aphiria\Application\IBootstrapper;
-use Aphiria\Configuration\GlobalConfigurationBuilder;
 
 /**
  * Defines the configuration bootstrapper

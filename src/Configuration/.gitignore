@@ -1,9 +1,0 @@
-.coverage/
-.idea/
-.php_cs.cache
-.phpunit.result.cache
-composer.lock
-composer.phar
-nbproject/
-phpunit.phar
-vendor/

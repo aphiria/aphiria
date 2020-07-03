@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Net\Binders;
 
-use Aphiria\Configuration\GlobalConfiguration;
+use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Net\Http\ContentNegotiation\AcceptCharsetEncodingMatcher;

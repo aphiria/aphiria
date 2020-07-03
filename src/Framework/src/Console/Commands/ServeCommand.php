@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Console\Commands;
 
-use Aphiria\Configuration\GlobalConfiguration;
-use Aphiria\Configuration\MissingConfigurationValueException;
+use Aphiria\Application\Configuration\GlobalConfiguration;
+use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionTypes;

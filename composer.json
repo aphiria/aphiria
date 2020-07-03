@@ -2,9 +2,12 @@
     "name": "aphiria/aphiria",
     "description": "The Aphiria framework",
     "keywords": [
-        "PHP",
-        "API",
-        "REST"
+        "php",
+        "api",
+        "rest",
+        "http",
+        "content negotiation",
+        "router"
     ],
     "authors": [
         {
@@ -19,7 +22,6 @@
             "Aphiria\\Api\\": "src/Api/src",
             "Aphiria\\Application\\": "src/Application/src",
             "Aphiria\\Collections\\": "src/Collections/src",
-            "Aphiria\\Configuration\\": "src/Configuration/src",
             "Aphiria\\Console\\": "src/Console/src",
             "Aphiria\\DependencyInjection\\": "src/DependencyInjection/src",
             "Aphiria\\Exceptions\\": "src/Exceptions/src",
@@ -39,7 +41,6 @@
             "Aphiria\\Api\\Tests\\": "src/Api/tests",
             "Aphiria\\Application\\Tests\\": "src/Application/tests",
             "Aphiria\\Collections\\Tests\\": "src/Collections/tests",
-            "Aphiria\\Configuration\\Tests\\": "src/Configuration/tests",
             "Aphiria\\Console\\Tests\\": "src/Console/tests",
             "Aphiria\\DependencyInjection\\Tests\\": "src/DependencyInjection/tests",
             "Aphiria\\Exceptions\\Tests\\": "src/Exceptions/tests",

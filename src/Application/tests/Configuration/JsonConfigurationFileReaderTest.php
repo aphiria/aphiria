@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\Tests;
+namespace Aphiria\Application\Tests\Configuration;
 
-use Aphiria\Configuration\InvalidConfigurationFileException;
-use Aphiria\Configuration\JsonConfigurationFileReader;
+use Aphiria\Application\Configuration\InvalidConfigurationFileException;
+use Aphiria\Application\Configuration\JsonConfigurationFileReader;
 use PHPUnit\Framework\TestCase;
 
 class JsonConfigurationFileReaderTest extends TestCase

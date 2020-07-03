@@ -13,10 +13,10 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Application;
 
 use Aphiria\Application\Builders\IApplicationBuilder;
+use Aphiria\Application\Configuration\GlobalConfiguration;
+use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
-use Aphiria\Configuration\GlobalConfiguration;
-use Aphiria\Configuration\HashTableConfiguration;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Binders\Binder;

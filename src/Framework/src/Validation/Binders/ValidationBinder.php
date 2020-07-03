@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Validation\Binders;
 
-use Aphiria\Configuration\GlobalConfiguration;
-use Aphiria\Configuration\MissingConfigurationValueException;
+use Aphiria\Application\Configuration\GlobalConfiguration;
+use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
