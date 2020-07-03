@@ -33,13 +33,17 @@ class NegotiatedRequestBuilder extends RequestBuilder
 {
     /** @var IMediaTypeFormatterMatcher The media type formatter matcher */
     private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
+    /** @var string The default content type to use for bodies */
+    private string $defaultContentType;
 
     /**
      * @param IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher The media type formatter matcher
+     * @param string $defaultContentType The default content type to use for bodies
      * @param string $defaultAccept The default Accept header value
      */
     public function __construct(
         IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
+        string $defaultContentType = 'application/json',
         string $defaultAccept = '*/*'
     ) {
         parent::__construct();
@@ -50,6 +54,7 @@ class NegotiatedRequestBuilder extends RequestBuilder
                 new HtmlMediaTypeFormatter(),
                 new PlainTextMediaTypeFormatter()
             ]);
+        $this->defaultContentType = $defaultContentType;
         $this->headers->add('Accept', $defaultAccept);
     }
 
@@ -68,6 +73,10 @@ class NegotiatedRequestBuilder extends RequestBuilder
             $new->body = $body;
         } elseif (\is_array($body) || \is_object($body) || \is_scalar($body)) {
             $type = TypeResolver::resolveType($body);
+
+            if (!$new->headers->containsKey('Content-Type')) {
+                $new->headers->add('Content-Type', $this->defaultContentType);
+            }
 
             // Grab the media type formatter from a dummy request that has the same headers
             $mediaTypeFormatterMatch = $new->mediaTypeFormatterMatcher->getBestRequestMediaTypeFormatterMatch(
