@@ -8,7 +8,7 @@
 <a href="https://packagist.org/packages/aphiria/content-negotiation"><img src="https://poser.pugx.org/aphiria/content-negotiation/license.svg"></a>
 </p>
 
-# Net
+# Content Negotiation
 
 > **Note:** This library is not stable yet.
 
