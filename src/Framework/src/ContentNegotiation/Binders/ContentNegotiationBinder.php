@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Net\Binders;
+namespace Aphiria\Framework\ContentNegotiation\Binders;
 
 use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\ContentNegotiation\AcceptCharsetEncodingMatcher;

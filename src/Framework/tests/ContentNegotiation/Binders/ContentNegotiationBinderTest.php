@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\Net\Binders;
+namespace Aphiria\Framework\Tests\ContentNegotiation\Binders;
 
 use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
@@ -24,7 +24,7 @@ use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Framework\Net\Binders\ContentNegotiationBinder;
+use Aphiria\Framework\ContentNegotiation\Binders\ContentNegotiationBinder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
