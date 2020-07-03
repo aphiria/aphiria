@@ -14,10 +14,10 @@ namespace Aphiria\ContentNegotiation\Tests;
 
 use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\ContentNegotiation\Tests\Mocks\User;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\Request;
-use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;

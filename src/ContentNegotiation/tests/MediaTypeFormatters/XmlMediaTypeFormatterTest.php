@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\ContentNegotiation\Tests\MediaTypeFormatters;
 
 use Aphiria\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
+use Aphiria\ContentNegotiation\Tests\Mocks\User;
 use Aphiria\IO\Streams\IStream;
-use Aphiria\Net\Tests\Http\Formatting\Mocks\User;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
