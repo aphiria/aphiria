@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Validation;
 
-use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
+use Aphiria\ContentNegotiation\ILanguageMatcher;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;

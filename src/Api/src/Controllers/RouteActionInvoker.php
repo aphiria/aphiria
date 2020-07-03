@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Api\Controllers;
 
 use Aphiria\Api\Validation\IRequestBodyValidator;
-use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
-use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
-use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
+use Aphiria\ContentNegotiation\ContentNegotiator;
+use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IRequest;

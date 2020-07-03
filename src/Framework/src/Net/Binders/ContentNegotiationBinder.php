@@ -13,17 +13,17 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Net\Binders;
 
 use Aphiria\Application\Configuration\GlobalConfiguration;
+use Aphiria\ContentNegotiation\AcceptCharsetEncodingMatcher;
+use Aphiria\ContentNegotiation\AcceptLanguageMatcher;
+use Aphiria\ContentNegotiation\ContentNegotiator;
+use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\IEncodingMatcher;
+use Aphiria\ContentNegotiation\ILanguageMatcher;
+use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
+use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
+use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Net\Http\ContentNegotiation\AcceptCharsetEncodingMatcher;
-use Aphiria\Net\Http\ContentNegotiation\AcceptLanguageMatcher;
-use Aphiria\Net\Http\ContentNegotiation\ContentNegotiator;
-use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
-use Aphiria\Net\Http\ContentNegotiation\IEncodingMatcher;
-use Aphiria\Net\Http\ContentNegotiation\ILanguageMatcher;
-use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatcher;
-use Aphiria\Net\Http\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\IResponseFactory;
 
 /**

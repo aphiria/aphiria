@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Api\Testing;
 
+use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
-use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\IHttpClient;

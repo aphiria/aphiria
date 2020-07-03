@@ -14,9 +14,9 @@ namespace Aphiria\Framework\Tests\Api\Binders;
 
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Controllers\RouteActionInvoker;
+use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Binders\ControllerBinder;
-use Aphiria\Net\Http\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;

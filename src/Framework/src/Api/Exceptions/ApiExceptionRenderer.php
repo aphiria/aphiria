@@ -14,9 +14,9 @@ namespace Aphiria\Framework\Api\Exceptions;
 
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\IO\Streams\Stream;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IRequest;

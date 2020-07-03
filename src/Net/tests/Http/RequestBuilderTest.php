@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http;
 
+use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
+use Aphiria\ContentNegotiation\MediaTypeFormatterMatch;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\IO\Streams\IStream;
-use Aphiria\Net\Http\ContentNegotiation\IMediaTypeFormatterMatcher;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatterMatch;
-use Aphiria\Net\Http\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
