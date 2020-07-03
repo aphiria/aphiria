@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration;
+namespace Aphiria\Application\Configuration;
 
 /**
  * Defines the interface for configuration file readers to implement

@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\Tests;
+namespace Aphiria\Application\Tests\Configuration;
 
-use Aphiria\Configuration\GlobalConfiguration;
-use Aphiria\Configuration\HashTableConfiguration;
-use Aphiria\Configuration\MissingConfigurationValueException;
+use Aphiria\Application\Configuration\GlobalConfiguration;
+use Aphiria\Application\Configuration\HashTableConfiguration;
+use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 

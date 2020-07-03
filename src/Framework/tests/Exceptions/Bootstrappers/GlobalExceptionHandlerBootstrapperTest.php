@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Exceptions\Bootstrappers;
 
 use Aphiria\Api\Validation\InvalidRequestBodyException;
-use Aphiria\Configuration\GlobalConfiguration;
-use Aphiria\Configuration\HashTableConfiguration;
+use Aphiria\Application\Configuration\GlobalConfiguration;
+use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\LogLevelFactory;

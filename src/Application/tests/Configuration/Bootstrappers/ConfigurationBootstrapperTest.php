@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\Configuration\Bootstrappers;
+namespace Aphiria\Application\Tests\Configuration\Bootstrappers;
 
-use Aphiria\Configuration\GlobalConfiguration;
-use Aphiria\Configuration\GlobalConfigurationBuilder;
-use Aphiria\Configuration\HashTableConfiguration;
-use Aphiria\Framework\Configuration\Bootstrappers\ConfigurationBootstrapper;
+use Aphiria\Application\Configuration\Bootstrappers\ConfigurationBootstrapper;
+use Aphiria\Application\Configuration\GlobalConfiguration;
+use Aphiria\Application\Configuration\GlobalConfigurationBuilder;
+use Aphiria\Application\Configuration\HashTableConfiguration;
 use PHPUnit\Framework\TestCase;
 
 class ConfigurationBootstrapperTest extends TestCase

@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration;
+namespace Aphiria\Application\Configuration;
 
 /**
  * Defines the configuration reader that reads a PHP files

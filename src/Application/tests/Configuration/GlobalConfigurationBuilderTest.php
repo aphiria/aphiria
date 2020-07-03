@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Configuration\Tests;
+namespace Aphiria\Application\Tests\Configuration;
 
-use Aphiria\Configuration\GlobalConfiguration;
-use Aphiria\Configuration\GlobalConfigurationBuilder;
-use Aphiria\Configuration\HashTableConfiguration;
-use Aphiria\Configuration\InvalidConfigurationFileException;
+use Aphiria\Application\Configuration\GlobalConfiguration;
+use Aphiria\Application\Configuration\GlobalConfigurationBuilder;
+use Aphiria\Application\Configuration\HashTableConfiguration;
+use Aphiria\Application\Configuration\InvalidConfigurationFileException;
 use PHPUnit\Framework\TestCase;
 
 class GlobalConfigurationBuilderTest extends TestCase

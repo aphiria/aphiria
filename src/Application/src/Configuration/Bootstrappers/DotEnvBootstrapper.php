@@ -10,15 +10,15 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Configuration\Bootstrappers;
+namespace Aphiria\Application\Configuration\Bootstrappers;
 
 use Aphiria\Application\IBootstrapper;
 use Symfony\Component\Dotenv\Dotenv;
 
 /**
- * Defines the environment variable bootstrapper
+ * Defines the DotEnv bootstrapper
  */
-final class EnvironmentVariableBootstrapper implements IBootstrapper
+final class DotEnvBootstrapper implements IBootstrapper
 {
     /** @var string The path to the .env file */
     private string $envPath;

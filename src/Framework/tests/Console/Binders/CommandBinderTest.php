@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Console\Binders;
 
-use Aphiria\Configuration\GlobalConfiguration;
-use Aphiria\Configuration\HashTableConfiguration;
+use Aphiria\Application\Configuration\GlobalConfiguration;
+use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
 use Aphiria\Console\Commands\Caching\FileCommandRegistryCache;
 use Aphiria\Console\Commands\Caching\ICommandRegistryCache;

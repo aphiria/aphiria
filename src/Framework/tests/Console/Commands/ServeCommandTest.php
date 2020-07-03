@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Console\Commands;
 
-use Aphiria\Configuration\GlobalConfiguration;
-use Aphiria\Configuration\HashTableConfiguration;
+use Aphiria\Application\Configuration\GlobalConfiguration;
+use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionTypes;
 use Aphiria\Framework\Console\Commands\ServeCommand;
