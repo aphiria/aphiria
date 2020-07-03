@@ -14,6 +14,7 @@ namespace Aphiria\Framework\Api\Testing;
 
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
+use Aphiria\ContentNegotiation\NegotiatedRequestBuilder;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IServiceResolver;
@@ -23,7 +24,6 @@ use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\IHttpClient;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
-use Aphiria\Net\Http\RequestBuilder;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
 
@@ -34,8 +34,8 @@ trait IntegrationTest
 {
     /** @var ResponseAssertions The response assertions */
     protected ResponseAssertions $responseAssertions;
-    /** @var RequestBuilder The request builder */
-    protected RequestBuilder $requestBuilder;
+    /** @var NegotiatedRequestBuilder The request builder */
+    protected NegotiatedRequestBuilder $requestBuilder;
     /** @var IRequest|null The most recently sent request from the helper methods in this class */
     protected ?IRequest $lastRequest = null;
     /**
@@ -84,12 +84,12 @@ trait IntegrationTest
      * Creates a request builder that can be used in integration tests
      *
      * @param IContainer $container The DI container
-     * @return RequestBuilder The request builder
+     * @return NegotiatedRequestBuilder The request builder
      * @throws ResolutionException Thrown if the media type formatter matcher could not be resolved
      */
-    protected function createRequestBuilder(IContainer $container): RequestBuilder
+    protected function createRequestBuilder(IContainer $container): NegotiatedRequestBuilder
     {
-        return new RequestBuilder($container->resolve(IMediaTypeFormatterMatcher::class));
+        return new NegotiatedRequestBuilder($container->resolve(IMediaTypeFormatterMatcher::class));
     }
 
     /**

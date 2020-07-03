@@ -14,71 +14,38 @@ namespace Aphiria\Net\Http;
 
 use Aphiria\Collections\HashTable;
 use Aphiria\Collections\IDictionary;
-use Aphiria\Collections\KeyValuePair;
-use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
-use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
-use Aphiria\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
-use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
-use Aphiria\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
-use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
-use Aphiria\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
-use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Uri;
-use Aphiria\Reflection\TypeResolver;
 use InvalidArgumentException;
 use LogicException;
 
 /**
  * Defines a request builder
  */
-class RequestBuilder
+class RequestBuilder implements IRequestBuilder
 {
-    /** @var IMediaTypeFormatterMatcher The media type formatter matcher */
-    private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
     /** @var string|null The HTTP method */
-    private ?string $method = null;
+    protected ?string $method = null;
     /** @var Uri|null The URI of the request */
-    private ?Uri $uri = null;
+    protected ?Uri $uri = null;
     /** @var Headers The request headers */
-    private Headers $headers;
+    protected Headers $headers;
     /** @var IBody The request body */
-    private ?IBody $body = null;
+    protected ?IBody $body = null;
     /** @var IDictionary The request properties */
-    private IDictionary $properties;
+    protected IDictionary $properties;
     /** @var string The protocol version */
-    private string $protocolVersion = '1.1';
+    protected string $protocolVersion = '1.1';
     /** @var string The request target type */
-    private string $requestTargetType = RequestTargetTypes::ORIGIN_FORM;
+    protected string $requestTargetType = RequestTargetTypes::ORIGIN_FORM;
 
-    /**
-     * @param IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher The media type formatter matcher
-     * @param string $defaultContentType The default Content-Type header value
-     * @param string $defaultAccept The default Accept header value
-     */
-    public function __construct(
-        IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
-        string $defaultContentType = 'application/json',
-        string $defaultAccept = '*/*'
-    ) {
-        $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher([
-            new JsonMediaTypeFormatter(),
-            new XmlMediaTypeFormatter(),
-            new HtmlMediaTypeFormatter(),
-            new PlainTextMediaTypeFormatter()
-        ]);
-        $this->headers = new Headers([
-            new KeyValuePair('Content-Type', $defaultContentType),
-            new KeyValuePair('Accept', $defaultAccept)
-        ]);
+    public function __construct()
+    {
+        $this->headers = new Headers();
         $this->properties = new HashTable();
     }
 
     /**
-     * Builds the request
-     *
-     * @return IRequest The built request
-     * @throws LogicException Thrown if required properties on the request builder were not set
-     * @throws InvalidArgumentException Thrown if the request was invalid
+     * @inheritdoc
      */
     public function build(): IRequest
     {
@@ -102,53 +69,18 @@ class RequestBuilder
     }
 
     /**
-     * Sets a body tha
-     *
-     * @param IBody|mixed $body The request body or the raw body that will be converted to a request
-     * @return self For chaining
-     * @throws InvalidArgumentException Thrown if the body type was not supported
-     * @throws SerializationException Thrown if the body could not be serialized
+     * @inheritdoc
      */
-    public function withBody($body): self
+    public function withBody(?IBody $body): self
     {
         $new = clone $this;
-
-        if ($body === null) {
-            $new->body = null;
-        } elseif ($body instanceof IBody) {
-            $new->body = $body;
-        } elseif (\is_array($body) || \is_object($body) || \is_scalar($body)) {
-            $type = TypeResolver::resolveType($body);
-
-            // Grab the media type formatter from a dummy request that has the same headers
-            $mediaTypeFormatterMatch = $new->mediaTypeFormatterMatcher->getBestRequestMediaTypeFormatterMatch(
-                $type,
-                new Request($new->method ?? 'GET', $new->uri ?? new Uri('http://localhost'), $new->headers)
-            );
-
-            if ($mediaTypeFormatterMatch === null) {
-                throw new InvalidArgumentException("No media type formatter available for $type");
-            }
-
-            $encoding = $mediaTypeFormatterMatch->getFormatter()->getDefaultEncoding();
-            $bodyStream = new Stream(\fopen('php://temp', 'w+b'));
-            $mediaTypeFormatterMatch->getFormatter()->writeToStream($body, $bodyStream, $encoding);
-            $new->body = new StreamBody($bodyStream);
-            $new->headers->add('Content-Type', $mediaTypeFormatterMatch->getMediaType());
-        } else {
-            throw new InvalidArgumentException('Body must either implement ' . IBody::class . ' or be an array, object, or scalar');
-        }
+        $new->body = $body;
 
         return $new;
     }
 
     /**
-     * Adds a header to the request
-     *
-     * @param string $name The name of the header to add
-     * @param array|string $values The value(s) to add
-     * @param bool $append Whether or not to append the value(s) if the header already exists
-     * @return self For chaining
+     * @inheritdoc
      */
     public function withHeader(string $name, $values, bool $append = false): self
     {
@@ -159,10 +91,7 @@ class RequestBuilder
     }
 
     /**
-     * Adds a header to the request
-     *
-     * @param array $headers The mapping of header names to values
-     * @return self For chaining
+     * @inheritdoc
      */
     public function withManyHeaders(array $headers): self
     {
@@ -176,10 +105,7 @@ class RequestBuilder
     }
 
     /**
-     * Sets the HTTP method
-     *
-     * @param string $method The HTTP method
-     * @return self For chaining
+     * @inheritdoc
      */
     public function withMethod(string $method): self
     {
@@ -190,11 +116,7 @@ class RequestBuilder
     }
 
     /**
-     * Adds a property to the request
-     *
-     * @param string $name The name of the property to add
-     * @param mixed $value The value of the property
-     * @return self For chaining
+     * @inheritdoc
      */
     public function withProperty(string $name, $value): self
     {
@@ -205,10 +127,7 @@ class RequestBuilder
     }
 
     /**
-     * Sets the protocol version of the request
-     *
-     * @param string $protocolVersion
-     * @return self For chaining
+     * @inheritdoc
      */
     public function withProtocolVersion(string $protocolVersion): self
     {
@@ -219,10 +138,7 @@ class RequestBuilder
     }
 
     /**
-     * Sets the target type of the request
-     *
-     * @param string $requestTargetType
-     * @return self For chaining
+     * @inheritdoc
      */
     public function withRequestTargetType(string $requestTargetType): self
     {
@@ -233,11 +149,7 @@ class RequestBuilder
     }
 
     /**
-     * Sets the request URI
-     *
-     * @param string|Uri $uri The request URI
-     * @return self For chaining
-     * @throws InvalidArgumentException Thrown if the URI was not a string nor URI
+     * @inheritdoc
      */
     public function withUri($uri): self
     {

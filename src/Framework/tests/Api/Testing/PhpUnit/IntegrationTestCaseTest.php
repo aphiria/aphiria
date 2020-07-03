@@ -19,6 +19,7 @@ use Aphiria\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
+use Aphiria\ContentNegotiation\NegotiatedRequestBuilder;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Testing\PhpUnit\IntegrationTestCase;
@@ -28,7 +29,6 @@ use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Request;
-use Aphiria\Net\Http\RequestBuilder;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
@@ -123,7 +123,7 @@ class IntegrationTestCaseTest extends TestCase
                 return $this->app;
             }
 
-            protected function createRequestBuilder(IContainer $container): RequestBuilder
+            protected function createRequestBuilder(IContainer $container): NegotiatedRequestBuilder
             {
                 // Make sure the DI container can resolve this
                 $container->bindInstance(IMediaTypeFormatterMatcher::class, $this->mediaTypeFormatterMatcher);
