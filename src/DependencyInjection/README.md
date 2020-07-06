@@ -22,4 +22,4 @@ composer require aphiria/dependency-injection:^1.0@dev
 
 ## Documentation
 
-Full documentation is available <a href="https://www.aphiria.com/docs/master/di-container.html" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/master/dependency-injection.html" target="_blank">here</a>.
