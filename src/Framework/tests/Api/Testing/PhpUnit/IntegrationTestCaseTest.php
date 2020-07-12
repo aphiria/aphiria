@@ -101,6 +101,12 @@ class IntegrationTestCaseTest extends TestCase
             }
 
             // Make this public for testability
+            public function patch($uri, array $headers = [], $body = null): IResponse
+            {
+                return parent::patch($uri, $headers, $body);
+            }
+
+            // Make this public for testability
             public function post($uri, array $headers = [], $body = null): IResponse
             {
                 return parent::post($uri, $headers, $body);
@@ -403,6 +409,26 @@ class IntegrationTestCaseTest extends TestCase
             }))
             ->willReturn($expectedResponse);
         $actualResponse = $this->integrationTests->options(
+            'http://localhost',
+            ['Foo' => ['bar']],
+            new StringBody('{"foo":"bar"}')
+        );
+        $this->assertSame($expectedResponse, $actualResponse);
+    }
+
+    public function testPatchSendsRequestToClient(): void
+    {
+        $expectedResponse = $this->createMock(IResponse::class);
+        $this->app->expects($this->once())
+            ->method('handle')
+            ->with($this->callback(function (IRequest $request) {
+                return $request->getMethod() === 'PATCH'
+                    && (string)$request->getUri() === 'http://localhost'
+                    && $request->getHeaders()->get('Foo') === ['bar']
+                    && (string)$request->getBody() === '{"foo":"bar"}';
+            }))
+            ->willReturn($expectedResponse);
+        $actualResponse = $this->integrationTests->patch(
             'http://localhost',
             ['Foo' => ['bar']],
             new StringBody('{"foo":"bar"}')

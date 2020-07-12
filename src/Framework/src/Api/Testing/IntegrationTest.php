@@ -181,6 +181,27 @@ trait IntegrationTest
     }
 
     /**
+     * Sends a PATCH request
+     *
+     * @param string|Uri $uri The URI to request
+     * @param array $headers The mapping of header names to values
+     * @param mixed $body The body of the request
+     * @return IResponse The response
+     * @throws HttpException Thrown if there was an error sending the request
+     * @throws SerializationException Thrown if the body could not be serialized
+     */
+    protected function patch($uri, array $headers = [], $body = null): IResponse
+    {
+        $request = $this->requestBuilder->withMethod('PATCH')
+            ->withUri($this->createUri($uri))
+            ->withManyHeaders($headers)
+            ->withBody($body)
+            ->build();
+
+        return $this->send($request);
+    }
+
+    /**
      * Sends a POST request
      *
      * @param string|Uri $uri The URI to request
