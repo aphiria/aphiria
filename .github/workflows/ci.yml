@@ -35,9 +35,13 @@ jobs:
         run: |
           composer global require twinh/php-coveralls
           php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
-      - name: Get Tag Name
-        id: get_tag_name
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       - name: Split Subtrees
-        if: github.ref == 'refs/heads/master'
-        run: bash bin/split.sh ${{ github.ref }} davidbyoung ${{ secrets.GITHUB_TOKEN }} ${{ steps.get_tag_name.outputs.VERSION }}
+        if: github.ref == 'refs/heads/master' || startswith(github.ref, 'refs/tags/')
+        run: |
+          if [[ ${GITHUB_REF} == "refs/tags/*" ]]; then
+            tag=${GITHUB_REF/refs\/tags\//}
+          else
+            tag=""
+          fi
+
+          bash bin/split.sh ${{ github.ref }} davidbyoung ${{ secrets.GITHUB_TOKEN }} $tag
