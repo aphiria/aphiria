@@ -36,7 +36,7 @@ do
     if [ -z "$GIT_TAG" ]
     then
         echo "Adding remote $remote"
-        git remote add "$remote" "git@github.com:aphiria/$remote.git"
+        git remote add "$remote" "$remote_uri"
 
         echo "Splitting $dir"
         sha=$(./bin/splitsh-lite --prefix="src/$dir")
@@ -48,7 +48,7 @@ do
         fi
 
         echo "Pushing $dir to $remote"
-        git push "$remote" "$sha:$GIT_BRANCH" -f
+        git push "$remote" "$sha:$GIT_BRANCH"
     else
         tmp_split_dir="/tmp/tag-split"
         echo "Creating $tmp_split_dir for $remote"
