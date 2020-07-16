@@ -1,7 +1,7 @@
 <p align="center"><a href="https://www.aphiria.com" target="_blank" title="Aphiria"><img src="https://www.aphiria.com/images/aphiria-logo.svg"></a></p>
 
 <p align="center">
-<a href="https://travis-ci.com/aphiria/content-negotiation"><img src="https://travis-ci.com/aphiria/content-negotiation.svg?branch=master"></a>
+<a href="https://github.com/aphiria/content-negotiation/actions"><img src="https://github.com/aphiria/content-negotiation/workflows/ci/badge.svg"></a>
 <a href='https://coveralls.io/github/aphiria/content-negotiation?branch=master'><img src='https://coveralls.io/repos/github/aphiria/content-negotiation/badge.svg?branch=master' alt='Coverage Status' /></a>
 <a href="https://packagist.org/packages/aphiria/content-negotiation"><img src="https://poser.pugx.org/aphiria/content-negotiation/v/stable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/content-negotiation"><img src="https://poser.pugx.org/aphiria/content-negotiation/v/unstable.svg"></a>
