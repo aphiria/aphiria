@@ -37,6 +37,8 @@ jobs:
           php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
       - name: Split Subtrees
         if: github.ref == 'refs/heads/master' || startswith(github.ref, 'refs/tags/')
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
           if [[ ${GITHUB_REF} == "refs/tags/*" ]]; then
             tag=${GITHUB_REF/refs\/tags\//}
@@ -44,4 +46,8 @@ jobs:
             tag=""
           fi
 
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add - <<< "${{ secrets.CI_SSH_KEY }}"
           bash bin/split.sh ${{ github.ref }} davidbyoung ${{ secrets.CI_ACCESS_TOKEN }} "$tag"
