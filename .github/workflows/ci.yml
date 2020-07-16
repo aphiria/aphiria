@@ -9,7 +9,7 @@ jobs:
       fail-fast: true
       matrix:
         php: ['7.4']
-        stability: [prefer-lowest, prefer-stable]
+        stability: [prefer-stable]
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
     steps:
       - name: Check Out Code
@@ -30,6 +30,8 @@ jobs:
       - name: Run Linter
         run: composer run-script lint-check
       - name: Publish Coverage Results
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: vendor/bin/php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
       - name: Get Tag Name
         id: get_tag_name
