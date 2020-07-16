@@ -27,10 +27,8 @@ fi
 
 declare -A dirs_to_repos=(["Api"]="api" ["Application"]="application" ["Collections"]="collections" ["Console"]="console" ["ContentNegotiation"]="content-negotiation" ["DependencyInjection"]="dependency-injection" ["Exceptions"]="exceptions" ["Framework"]="framework" ["IO"]="io" ["Middleware"]="middleware" ["Net"]="net" ["PsrAdapters"]="psr-adapters" ["Reflection"]="reflection" ["Router"]="router" ["Sessions"]="sessions" ["Validation"]="validation")
 
-echo "Git user: $GIT_USER"
-
-git config user.name "$GIT_USER"
-git config user.email "dbyoung2@gmail.com"
+git config --global user.name "$GIT_USER"
+git config --global user.email "dbyoung2@gmail.com"
 
 for dir in "${!dirs_to_repos[@]}"
 do
@@ -52,7 +50,7 @@ do
             exit 1
         fi
 
-        echo "Pushing $dir to $remote"
+        echo "Pushing SHA $sha from $dir to $remote"
         git push "$remote" "$sha:$GIT_BRANCH"
     else
         tmp_split_dir="/tmp/tag-split"
