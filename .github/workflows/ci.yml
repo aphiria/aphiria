@@ -8,8 +8,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: '7.4'
-        stability: [prefer-lowest, prefer-stable]
+        php: ['7.4']
+        stability: [prefer-stable]
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
     steps:
       - name: Check Out Code
@@ -29,8 +29,12 @@ jobs:
         run: vendor/bin/phpunit --coverage-clover ./.coverage/clover.xml --verbose
       - name: Run Linter
         run: composer run-script lint-check
-      - name: Publish Coverage Results
-        run: vendor/bin/php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
+      - name: Upload Coverage Results To Coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer global require twinh/php-coveralls
+          php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
       - name: Get Tag Name
         id: get_tag_name
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
