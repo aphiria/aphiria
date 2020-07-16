@@ -2,26 +2,11 @@
 
 set -e
 
-GIT_BRANCH="$1"
-GIT_USER="$2"
-GIT_ACCESS_TOKEN="$3"
-GIT_TAG="$4"
+GIT_REF="$1"
 
-if [ -z "$GIT_BRANCH" ]
+if [ -z "$GIT_REF" ]
 then
-    echo "No Git branch specified"
-    exit 1
-fi
-
-if [ -z "$GIT_USER" ]
-then
-    echo "No Git user specified"
-    exit 1
-fi
-
-if [ -z "$GIT_ACCESS_TOKEN" ]
-then
-    echo "No Git access token specified"
+    echo "No Git ref specified"
     exit 1
 fi
 
@@ -32,9 +17,22 @@ do
     remote=${dirs_to_repos[$dir]}
     remote_uri="git@github.com:aphiria/$remote.git"
 
-    # Push to the subtree's repo, and do not leak any sensitive info in the logs
-    if [ -z "$GIT_TAG" ]
-    then
+    if [[ $GIT_REF == "refs/tags/*" ]]; then
+        tag_name=${GIT_REF/refs\/tags\//}
+        tmp_split_dir="/tmp/tag-split"
+        echo "Creating $tmp_split_dir for $remote"
+        rm -rf $tmp_split_dir
+        mkdir $tmp_split_dir
+
+        (
+            echo "Creating $tag_name for $remote"
+            cd $tmp_split_dir
+            git clone "$remote_uri"
+            git checkout master
+            git tag "$tag_name"
+            git push origin --tags
+        )
+    else
         echo "Adding remote $remote"
         git remote add "$remote" "$remote_uri"
 
@@ -48,20 +46,6 @@ do
         fi
 
         echo "Pushing SHA $sha from $dir to $remote"
-        git push "$remote" "$sha:$GIT_BRANCH"
-    else
-        tmp_split_dir="/tmp/tag-split"
-        echo "Creating $tmp_split_dir for $remote"
-        rm -rf $tmp_split_dir
-        mkdir $tmp_split_dir
-
-        (
-            echo "Creating $GIT_TAG for $remote"
-            cd $tmp_split_dir
-            git clone "$remote_uri"
-            git checkout master
-            git tag "$GIT_TAG"
-            git push origin --tags
-        )
+        git push "$remote" "$sha:$GIT_REF"
     fi
 done
