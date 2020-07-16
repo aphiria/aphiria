@@ -27,13 +27,10 @@ fi
 
 declare -A dirs_to_repos=(["Api"]="api" ["Application"]="application" ["Collections"]="collections" ["Console"]="console" ["ContentNegotiation"]="content-negotiation" ["DependencyInjection"]="dependency-injection" ["Exceptions"]="exceptions" ["Framework"]="framework" ["IO"]="io" ["Middleware"]="middleware" ["Net"]="net" ["PsrAdapters"]="psr-adapters" ["Reflection"]="reflection" ["Router"]="router" ["Sessions"]="sessions" ["Validation"]="validation")
 
-git config --global user.name "$GIT_USER"
-git config --global user.email "dbyoung2@gmail.com"
-
 for dir in "${!dirs_to_repos[@]}"
 do
     remote=${dirs_to_repos[$dir]}
-    remote_uri="https://$GIT_USER:$GIT_ACCESS_TOKEN@github.com/aphiria/$remote.git"
+    remote_uri="git@github.com:aphiria/$remote.git"
 
     # Push to the subtree's repo, and do not leak any sensitive info in the logs
     if [ -z "$GIT_TAG" ]
