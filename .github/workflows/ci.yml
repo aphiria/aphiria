@@ -29,11 +29,12 @@ jobs:
         run: vendor/bin/phpunit --coverage-clover ./.coverage/clover.xml --verbose
       - name: Run Linter
         run: composer run-script lint-check
-      - name: Publish Coverage Results
+      - name: Upload Coverage Results To Coveralls
         env:
-          COVERALLS_RUN_LOCALLY: 1
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
-        run: vendor/bin/php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer global require twinh/php-coveralls
+          php-coveralls --coverage_clover=./.coverage/clover.xml -v
       - name: Get Tag Name
         id: get_tag_name
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
