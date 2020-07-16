@@ -27,6 +27,9 @@ fi
 
 declare -A dirs_to_repos=(["Api"]="api" ["Application"]="application" ["Collections"]="collections" ["Console"]="console" ["ContentNegotiation"]="content-negotiation" ["DependencyInjection"]="dependency-injection" ["Exceptions"]="exceptions" ["Framework"]="framework" ["IO"]="io" ["Middleware"]="middleware" ["Net"]="net" ["PsrAdapters"]="psr-adapters" ["Reflection"]="reflection" ["Router"]="router" ["Sessions"]="sessions" ["Validation"]="validation")
 
+git config --global user.name 'David Young'
+git config --global user.email 'davidbyoung@users.noreply.github.com'
+
 for dir in "${!dirs_to_repos[@]}"
 do
     remote=${dirs_to_repos[$dir]}
