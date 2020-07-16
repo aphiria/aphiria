@@ -48,7 +48,7 @@ do
         fi
 
         echo "Pushing $dir to $remote"
-        git push "$remote" "$sha:$GIT_BRANCH" -f >/dev/null 2>&1
+        git push "$remote" "$sha:$GIT_BRANCH" -f
     else
         tmp_split_dir="/tmp/tag-split"
         echo "Creating $tmp_split_dir for $remote"
