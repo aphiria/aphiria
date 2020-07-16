@@ -44,4 +44,4 @@ jobs:
             tag=""
           fi
 
-          bash bin/split.sh ${{ github.ref }} github-actions ${{ secrets.CI_ACCESS_TOKEN }} $tag
+          bash bin/split.sh ${{ github.ref }} davidbyoung ${{ secrets.CI_ACCESS_TOKEN }} $tag
