@@ -25,7 +25,7 @@
         }
     },
     "require": {
-        "aphiria/dependency-injection": "1.0.*@dev",
+        "aphiria/dependency-injection": "0.*@dev",
         "aphiria/reflection": "0.*@dev",
         "doctrine/annotations": "1.8.*@dev",
         "php": "^7.4"

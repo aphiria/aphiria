@@ -25,8 +25,8 @@
         }
     },
     "require": {
-        "aphiria/content-negotiation": "1.0.*@dev",
-        "aphiria/dependency-injection": "1.0.*@dev",
+        "aphiria/content-negotiation": "0.*@dev",
+        "aphiria/dependency-injection": "0.*@dev",
         "aphiria/middleware": "0.*@dev",
         "aphiria/router": "0.*@dev",
         "aphiria/validation": "0.*@dev",
