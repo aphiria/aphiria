@@ -25,7 +25,7 @@
         }
     },
     "require": {
-        "aphiria/aphiria": "1.0.*@dev",
+        "aphiria/aphiria": "0.*@dev",
         "php": "^7.4",
         "psr/log": "~1.0",
         "symfony/dotenv": "~5.0"
@@ -41,7 +41,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "0.x-dev"
         }
     },
     "minimum-stability": "dev"

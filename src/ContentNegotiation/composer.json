@@ -25,9 +25,9 @@
         }
     },
     "require": {
-        "aphiria/io": "1.0.*@dev",
-        "aphiria/net": "1.0.*@dev",
-        "aphiria/reflection": "1.0.*@dev",
+        "aphiria/io": "0.*@dev",
+        "aphiria/net": "0.*@dev",
+        "aphiria/reflection": "0.*@dev",
         "ext-fileinfo": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
@@ -46,7 +46,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "0.x-dev"
         }
     },
     "minimum-stability": "dev"

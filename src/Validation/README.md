@@ -2,7 +2,7 @@
 
 <p align="center">
 <a href="https://github.com/aphiria/validation/actions"><img src="https://github.com/aphiria/validation/workflows/ci/badge.svg"></a>
-<a href='https://coveralls.io/github/aphiria/validation?branch=master'><img src='https://coveralls.io/repos/github/aphiria/validation/badge.svg?branch=master' alt='Coverage Status' /></a>
+<a href='https://coveralls.io/github/aphiria/validation?branch=0.x'><img src='https://coveralls.io/repos/github/aphiria/validation/badge.svg?branch=0.x' alt='Coverage Status' /></a>
 <a href="https://packagist.org/packages/aphiria/validation"><img src="https://poser.pugx.org/aphiria/validation/v/stable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/validation"><img src="https://poser.pugx.org/aphiria/validation/v/unstable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/validation"><img src="https://poser.pugx.org/aphiria/validation/license.svg"></a>
@@ -22,4 +22,4 @@ composer require aphiria/validation:^1.0@dev
 
 ## Documentation
 
-Full documentation is available <a href="https://www.aphiria.com/docs/master/validation.html" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/0.x/validation.html" target="_blank">here</a>.

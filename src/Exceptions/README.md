@@ -2,7 +2,7 @@
 
 <p align="center">
 <a href="https://github.com/aphiria/exceptions/actions"><img src="https://github.com/aphiria/exceptions/workflows/ci/badge.svg"></a>
-<a href='https://coveralls.io/github/aphiria/exceptions?branch=master'><img src='https://coveralls.io/repos/github/aphiria/exceptions/badge.svg?branch=master' alt='Coverage Status' /></a>
+<a href='https://coveralls.io/github/aphiria/exceptions?branch=0.x'><img src='https://coveralls.io/repos/github/aphiria/exceptions/badge.svg?branch=0.x' alt='Coverage Status' /></a>
 <a href="https://packagist.org/packages/aphiria/exceptions"><img src="https://poser.pugx.org/aphiria/exceptions/v/stable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/exceptions"><img src="https://poser.pugx.org/aphiria/exceptions/v/unstable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/exceptions"><img src="https://poser.pugx.org/aphiria/exceptions/license.svg"></a>
@@ -22,4 +22,4 @@ composer require aphiria/exceptions:^1.0@dev
 
 ## Documentation
 
-Full documentation is available <a href="https://www.aphiria.com/docs/master/exception-handling.html" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/0.x/exception-handling.html" target="_blank">here</a>.

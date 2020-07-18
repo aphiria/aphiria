@@ -26,14 +26,14 @@
         }
     },
     "require": {
-        "aphiria/reflection": "1.0.*@dev",
+        "aphiria/reflection": "0.*@dev",
         "doctrine/annotations": "1.8.*@dev",
         "ext-ctype": "*",
         "ext-mbstring": "*",
         "php": "^7.4"
     },
     "require-dev": {
-        "aphiria/api": "1.0.*@dev",
+        "aphiria/api": "0.*@dev",
         "friendsofphp/php-cs-fixer": "^3.0",
         "nikic/fast-route": "1.2",
         "php-coveralls/php-coveralls": "^2.2",
@@ -46,7 +46,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "0.x-dev"
         }
     },
     "minimum-stability": "dev"

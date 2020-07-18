@@ -5,7 +5,7 @@ Aphiria
 
 @link      https://www.aphiria.com
 @copyright Copyright (C) {$copyrightYear} David Young
-@license   https://github.com/aphiria/aphiria/blob/master/LICENSE.md
+@license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
 EOT;
 
 return PhpCsFixer\Config::create()

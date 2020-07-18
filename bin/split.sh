@@ -28,7 +28,7 @@ do
             echo "Creating $tag_name for $remote"
             cd $tmp_split_dir
             git clone "$remote_uri"
-            git checkout master
+            git checkout "0.x"
             git tag "$tag_name"
             git push origin --tags
         )

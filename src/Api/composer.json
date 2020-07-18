@@ -27,9 +27,9 @@
     "require": {
         "aphiria/content-negotiation": "1.0.*@dev",
         "aphiria/dependency-injection": "1.0.*@dev",
-        "aphiria/middleware": "1.0.*@dev",
-        "aphiria/router": "1.0.*@dev",
-        "aphiria/validation": "1.0.*@dev",
+        "aphiria/middleware": "0.*@dev",
+        "aphiria/router": "0.*@dev",
+        "aphiria/validation": "0.*@dev",
         "monolog/monolog": "~2.0",
         "php": "^7.4",
         "psr/log": "~1.0"
@@ -45,7 +45,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "0.x-dev"
         }
     },
     "minimum-stability": "dev"

@@ -2,7 +2,7 @@
 
 <p align="center">
 <a href="https://github.com/aphiria/sessions/actions"><img src="https://github.com/aphiria/sessions/workflows/ci/badge.svg"></a>
-<a href='https://coveralls.io/github/aphiria/sessions?branch=master'><img src='https://coveralls.io/repos/github/aphiria/sessions/badge.svg?branch=master' alt='Coverage Status' /></a>
+<a href='https://coveralls.io/github/aphiria/sessions?branch=0.x'><img src='https://coveralls.io/repos/github/aphiria/sessions/badge.svg?branch=0.x' alt='Coverage Status' /></a>
 <a href="https://packagist.org/packages/aphiria/sessions"><img src="https://poser.pugx.org/aphiria/sessions/v/stable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/sessions"><img src="https://poser.pugx.org/aphiria/sessions/v/unstable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/sessions"><img src="https://poser.pugx.org/aphiria/sessions/license.svg"></a>
@@ -22,4 +22,4 @@ composer require aphiria/sessions:^1.0@dev
 
 ## Documentation
 
-Full documentation is available <a href="https://www.aphiria.com/docs/master/sessions.html" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/0.x/sessions.html" target="_blank">here</a>.

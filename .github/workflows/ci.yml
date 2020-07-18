@@ -36,7 +36,7 @@ jobs:
           composer global require twinh/php-coveralls
           php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
       - name: Split Subtrees
-        if: github.ref == 'refs/heads/master' || startswith(github.ref, 'refs/tags/')
+        if: github.ref == 'refs/heads/0.x' || startswith(github.ref, 'refs/tags/')
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |

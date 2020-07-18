@@ -2,7 +2,7 @@
 
 <p align="center">
 <a href="https://github.com/aphiria/api/actions"><img src="https://github.com/aphiria/api/workflows/ci/badge.svg"></a>
-<a href='https://coveralls.io/github/aphiria/api?branch=master'><img src='https://coveralls.io/repos/github/aphiria/api/badge.svg?branch=master' alt='Coverage Status' /></a>
+<a href='https://coveralls.io/github/aphiria/api?branch=0.x'><img src='https://coveralls.io/repos/github/aphiria/api/badge.svg?branch=0.x' alt='Coverage Status' /></a>
 <a href="https://packagist.org/packages/aphiria/api"><img src="https://poser.pugx.org/aphiria/api/v/stable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/api"><img src="https://poser.pugx.org/aphiria/api/v/unstable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/api"><img src="https://poser.pugx.org/aphiria/api/license.svg"></a>
@@ -24,6 +24,6 @@ composer require aphiria/api:^1.0@dev
 
 Read the full documentation for this library's components:
 
-* <a href="https://www.aphiria.com/docs/master/controllers.html" target="_blank">Controllers</a>
-* <a href="https://www.aphiria.com/docs/master/http-exception-handling.html" target="_blank">Exception Handling</a>
-* <a href="https://www.aphiria.com/docs/master/content-negotiation.html" target="_blank">Content Negotiation</a>
+* <a href="https://www.aphiria.com/docs/0.x/controllers.html" target="_blank">Controllers</a>
+* <a href="https://www.aphiria.com/docs/0.x/http-exception-handling.html" target="_blank">Exception Handling</a>
+* <a href="https://www.aphiria.com/docs/0.x/content-negotiation.html" target="_blank">Content Negotiation</a>

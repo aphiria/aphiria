@@ -2,7 +2,7 @@
 
 <p align="center">
 <a href="https://github.com/aphiria/dependency-injection/actions"><img src="https://github.com/aphiria/dependency-injection/workflows/ci/badge.svg"></a>
-<a href='https://coveralls.io/github/aphiria/dependency-injection?branch=master'><img src='https://coveralls.io/repos/github/aphiria/dependency-injection/badge.svg?branch=master' alt='Coverage Status' /></a>
+<a href='https://coveralls.io/github/aphiria/dependency-injection?branch=0.x'><img src='https://coveralls.io/repos/github/aphiria/dependency-injection/badge.svg?branch=0.x' alt='Coverage Status' /></a>
 <a href="https://packagist.org/packages/aphiria/dependency-injection"><img src="https://poser.pugx.org/aphiria/dependency-injection/v/stable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/dependency-injection"><img src="https://poser.pugx.org/aphiria/dependency-injection/v/unstable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/dependency-injection"><img src="https://poser.pugx.org/aphiria/dependency-injection/license.svg"></a>
@@ -22,4 +22,4 @@ composer require aphiria/dependency-injection:^1.0@dev
 
 ## Documentation
 
-Full documentation is available <a href="https://www.aphiria.com/docs/master/dependency-injection.html" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/0.x/dependency-injection.html" target="_blank">here</a>.
