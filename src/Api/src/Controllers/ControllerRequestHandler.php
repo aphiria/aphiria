@@ -17,8 +17,8 @@ use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
-use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 
 final class ControllerRequestHandler implements IRequestHandler

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Middleware;
 
-use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\IRequestHandler;
 
 /**
  * Defines the factory for middleware pipelines

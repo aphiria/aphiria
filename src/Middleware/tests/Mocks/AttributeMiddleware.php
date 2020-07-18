@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Middleware\Tests\Mocks;
 
 use Aphiria\Middleware\AttributeMiddleware as BaseAttributeMiddleware;
-use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 
 /**

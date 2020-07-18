@@ -14,8 +14,8 @@ namespace Aphiria\Middleware\Tests;
 
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareRequestHandler;
-use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

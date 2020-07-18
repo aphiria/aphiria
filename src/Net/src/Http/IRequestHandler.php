@@ -10,11 +10,8 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Net\Http\Handlers;
+namespace Aphiria\Net\Http;
 
-use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\IRequest;
-use Aphiria\Net\Http\IResponse;
 use Exception;
 
 /**

@@ -17,7 +17,7 @@ use Aphiria\Api\Router;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\TargetedContext;
-use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
 use Aphiria\Routing\Builders\RouteCollectionBuilderRouteRegistrant;
 use Aphiria\Routing\RouteCollection;

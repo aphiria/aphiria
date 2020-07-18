@@ -15,9 +15,9 @@ namespace Aphiria\Framework\Api\Testing;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Framework\Net\Binders\RequestBinder;
-use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\IHttpClient;
 use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 
 /**

@@ -14,8 +14,8 @@ namespace Aphiria\Api;
 
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
-use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 
 /**

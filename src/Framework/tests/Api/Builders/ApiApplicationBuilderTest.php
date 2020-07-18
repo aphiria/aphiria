@@ -20,7 +20,7 @@ use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\Framework\Api\Builders\ApiApplicationBuilder;
-use Aphiria\Net\Http\Handlers\IRequestHandler;
+use Aphiria\Net\Http\IRequestHandler;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 

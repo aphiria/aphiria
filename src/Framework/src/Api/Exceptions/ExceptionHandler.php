@@ -14,8 +14,8 @@ namespace Aphiria\Framework\Api\Exceptions;
 
 use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Middleware\IMiddleware;
-use Aphiria\Net\Http\Handlers\IRequestHandler;
 use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 use Exception;
 use Psr\Log\LoggerInterface;
