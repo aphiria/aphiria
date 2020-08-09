@@ -24,10 +24,11 @@ interface ITypeFinder
      *
      * @param string|string[] $directories The path or list of paths of directories to search
      * @param bool $recursive Whether or not we want to recurse through all directories
+     * @param bool $includeAbstractClasses Whether or not to include abstract classes
      * @return string[] The list of all class names
      * @throws InvalidArgumentException Thrown if the paths are not a string or array of strings
      */
-    public function findAllClasses($directories, bool $recursive = false): array;
+    public function findAllClasses($directories, bool $recursive = false, bool $includeAbstractClasses = false): array;
 
     /**
      * Recursively finds all interfaces in the paths

@@ -35,7 +35,7 @@ class RouteActionInvoker implements IRouteActionInvoker
 {
     /** @const The name of the property to store the parsed body in */
     private const PARSED_BODY_PROPERTY_NAME = '__APHIRIA_PARSED_BODY';
-    /** @var IRequestBodyValidator The validator for request bodies, or null if we aren't validating them */
+    /** @var IRequestBodyValidator|null The validator for request bodies, or null if we aren't validating them */
     private ?IRequestBodyValidator $requestBodyValidator;
     /** @var IResponseFactory The response factory */
     private IResponseFactory $responseFactory;

@@ -94,8 +94,8 @@ class Router implements IRequestHandler
      * Creates a controller from a route action
      *
      * @param RouteAction $routeAction The route action to create the controller from
-     * @param Controller $controller The "out" parameter that will contain the controller
-     * @param callable $routeActionDelegate The "out" parameter that will contain the route action delegate
+     * @param Controller|null $controller The "out" parameter that will contain the controller
+     * @param callable|null $routeActionDelegate The "out" parameter that will contain the route action delegate
      * @throws ResolutionException Thrown if the controller could not be resolved
      */
     private function createController(
