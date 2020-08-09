@@ -8,7 +8,7 @@ Aphiria
 @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
 EOT;
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
