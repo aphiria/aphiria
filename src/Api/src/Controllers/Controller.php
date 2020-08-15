@@ -98,6 +98,29 @@ class Controller
     }
 
     /**
+     * Creates an accepted response
+     *
+     * @param object|string|int|float|array|null $body The raw response body
+     * @param Headers|null $headers The headers to use
+     * @return IResponse The response
+     * @throws HttpException Thrown if there was an error creating the response
+     * @throws LogicException Thrown if the request is not set
+     */
+    protected function accepted($body = null, Headers $headers = null): IResponse
+    {
+        if (!$this->request instanceof IRequest) {
+            throw new LogicException('Request is not set');
+        }
+
+        return $this->responseFactory->createResponse(
+            $this->request,
+            HttpStatusCodes::HTTP_ACCEPTED,
+            $headers,
+            $body
+        );
+    }
+
+    /**
      * Creates a bad request response
      *
      * @param object|string|int|float|array|null $body The raw response body
