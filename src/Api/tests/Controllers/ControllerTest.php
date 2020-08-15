@@ -44,6 +44,11 @@ class ControllerTest extends TestCase
     {
         // Allow us to more easily test the convenience methods
         $this->controller = new class() extends Controller {
+            public function accepted($body = null, Headers $headers = null): IResponse
+            {
+                return parent::accepted($body, $headers);
+            }
+
             public function badRequest($body = null, Headers $headers = null): IResponse
             {
                 return parent::badRequest($body, $headers);
@@ -114,6 +119,17 @@ class ControllerTest extends TestCase
                 return new Response($statusCode, $headers, $body);
             });
         $this->controller->setResponseFactory($this->responseFactory);
+    }
+
+    public function testAcceptedCreatesCorrectResponse(): void
+    {
+        $this->controller->setRequest($this->request);
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
+        $response = $this->controller->accepted($expectedBody, $expectedHeaders);
+        $this->assertEquals(HttpStatusCodes::HTTP_ACCEPTED, $response->getStatusCode());
+        $this->assertSame($expectedBody, $response->getBody());
+        $this->assertSame($expectedHeaders, $response->getHeaders());
     }
 
     public function testBadRequestCreatesCorrectResponse(): void
@@ -220,6 +236,7 @@ class ControllerTest extends TestCase
     public function testHelperMethodsWithoutSetRequestThrowsException(): void
     {
         $helperCallbacks = [
+            fn () => $this->controller->accepted(),
             fn () => $this->controller->badRequest(),
             fn () => $this->controller->conflict(),
             fn () => $this->controller->created('https://example.com'),
