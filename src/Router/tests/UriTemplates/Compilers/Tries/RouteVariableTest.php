@@ -22,7 +22,7 @@ class RouteVariableTest extends TestCase
     {
         $expectedConstraints = [$this->createMock(IRouteVariableConstraint::class)];
         $routeVariable = new RouteVariable('foo', $expectedConstraints);
-        $this->assertEquals('foo', $routeVariable->name);
+        $this->assertSame('foo', $routeVariable->name);
         $this->assertSame($expectedConstraints, $routeVariable->constraints);
     }
 }

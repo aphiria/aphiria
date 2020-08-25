@@ -40,7 +40,7 @@ class TableFormatterTest extends TestCase
             '+-----+' . PHP_EOL .
             '| a   |' . PHP_EOL .
             '+-----+';
-        $this->assertEquals($expected, $this->formatter->format($rows, $headers));
+        $this->assertSame($expected, $this->formatter->format($rows, $headers));
     }
 
     public function testFormattingSingleRow(): void
@@ -50,7 +50,7 @@ class TableFormatterTest extends TestCase
             '+---+----+-----+' . PHP_EOL .
             '| a | bb | ccc |' . PHP_EOL .
             '+---+----+-----+';
-        $this->assertEquals($expected, $this->formatter->format($rows));
+        $this->assertSame($expected, $this->formatter->format($rows));
     }
 
     public function testFormattingSingleRowAndColumn(): void
@@ -60,7 +60,7 @@ class TableFormatterTest extends TestCase
             '+---+' . PHP_EOL .
             '| a |' . PHP_EOL .
             '+---+';
-        $this->assertEquals($expected, $this->formatter->format($rows));
+        $this->assertSame($expected, $this->formatter->format($rows));
     }
 
     public function testFormattingTableWithCustomCharacters(): void
@@ -85,7 +85,7 @@ class TableFormatterTest extends TestCase
             'I_ aa_I_ bb_I_   _I<br>' .
             'I_aaa_I_bbb_I_ccc_I<br>' .
             '*=====*=====*=====*';
-        $this->assertEquals($expected, $this->formatter->format($rows, $headers));
+        $this->assertSame($expected, $this->formatter->format($rows, $headers));
     }
 
     public function testFormattingTableWithCustomPaddingString(): void
@@ -96,7 +96,7 @@ class TableFormatterTest extends TestCase
             '+-----+' . PHP_EOL .
             '|__a__|' . PHP_EOL .
             '+-----+';
-        $this->assertEquals($expected, $this->formatter->format($rows));
+        $this->assertSame($expected, $this->formatter->format($rows));
     }
 
     public function testFormattingTableWithHeadersButWithoutRows(): void
@@ -120,7 +120,7 @@ class TableFormatterTest extends TestCase
             '| aa  | bb  |     |      |' . PHP_EOL .
             '| aaa | bbb | ccc |      |' . PHP_EOL .
             '+-----+-----+-----+------+';
-        $this->assertEquals($expected, $this->formatter->format($rows, $headers));
+        $this->assertSame($expected, $this->formatter->format($rows, $headers));
     }
 
     public function testFormattingTableWithMoreRowColumnsThanHeaders(): void
@@ -139,7 +139,7 @@ class TableFormatterTest extends TestCase
             '| aa  | bb  |     |' . PHP_EOL .
             '| aaa | bbb | ccc |' . PHP_EOL .
             '+-----+-----+-----+';
-        $this->assertEquals($expected, $this->formatter->format($rows, $headers));
+        $this->assertSame($expected, $this->formatter->format($rows, $headers));
     }
 
     public function testFormattingTableWithoutHeaders(): void
@@ -155,7 +155,7 @@ class TableFormatterTest extends TestCase
             '| aa  | bb  |     |' . PHP_EOL .
             '| aaa | bbb | ccc |' . PHP_EOL .
             '+-----+-----+-----+';
-        $this->assertEquals($expected, $this->formatter->format($rows));
+        $this->assertSame($expected, $this->formatter->format($rows));
     }
 
     public function testSettingRowsWithNonArrayValues(): void
@@ -165,6 +165,6 @@ class TableFormatterTest extends TestCase
             '| foo |' . PHP_EOL .
             '| bar |' . PHP_EOL .
             '+-----+';
-        $this->assertEquals($expected, $this->formatter->format(['foo', 'bar']));
+        $this->assertSame($expected, $this->formatter->format(['foo', 'bar']));
     }
 }

@@ -46,19 +46,19 @@ class StyleTest extends TestCase
     public function testFormattingEmptyString(): void
     {
         $styles = new Style(Colors::RED, Colors::GREEN, [TextStyles::BOLD, TextStyles::UNDERLINE, TextStyles::BLINK]);
-        $this->assertEquals('', $styles->format(''));
+        $this->assertSame('', $styles->format(''));
     }
 
     public function testFormattingStringWithAllStyles(): void
     {
         $styles = new Style(Colors::RED, Colors::GREEN, [TextStyles::BOLD, TextStyles::UNDERLINE, TextStyles::BLINK]);
-        $this->assertEquals("\033[31;42;1;4;5mfoo\033[39;49;22;24;25m", $styles->format('foo'));
+        $this->assertSame("\033[31;42;1;4;5mfoo\033[39;49;22;24;25m", $styles->format('foo'));
     }
 
     public function testFormattingStringWithoutStyles(): void
     {
         $styles = new Style();
-        $this->assertEquals('foo', $styles->format('foo'));
+        $this->assertSame('foo', $styles->format('foo'));
     }
 
     public function testNotPassingAnythingInConstructor(): void
@@ -71,8 +71,8 @@ class StyleTest extends TestCase
     public function testPassingColorsInConstructor(): void
     {
         $style = new Style(Colors::BLUE, Colors::GREEN);
-        $this->assertEquals(Colors::BLUE, $style->foregroundColor);
-        $this->assertEquals(Colors::GREEN, $style->backgroundColor);
+        $this->assertSame(Colors::BLUE, $style->foregroundColor);
+        $this->assertSame(Colors::GREEN, $style->backgroundColor);
     }
 
     public function testRemovingInvalidTextStyle(): void
@@ -94,14 +94,14 @@ class StyleTest extends TestCase
     {
         $style = new Style();
         $style->backgroundColor = Colors::GREEN;
-        $this->assertEquals(Colors::GREEN, $style->backgroundColor);
+        $this->assertSame(Colors::GREEN, $style->backgroundColor);
     }
 
     public function testSettingForegroundColor(): void
     {
         $style = new Style();
         $style->foregroundColor = Colors::BLUE;
-        $this->assertEquals(Colors::BLUE, $style->foregroundColor);
+        $this->assertSame(Colors::BLUE, $style->foregroundColor);
     }
 
     public function testSettingNullBackgroundColor(): void

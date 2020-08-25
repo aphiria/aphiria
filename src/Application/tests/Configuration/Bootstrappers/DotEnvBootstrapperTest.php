@@ -27,6 +27,6 @@ class DotEnvBootstrapperTest extends TestCase
     public function testBootstrapReadsDotEnvFilesIntoEnvironmentVariables(): void
     {
         $this->dotEnvBootstrapper->bootstrap();
-        $this->assertEquals('bar', \getenv('FOO'));
+        $this->assertSame('bar', \getenv('FOO'));
     }
 }

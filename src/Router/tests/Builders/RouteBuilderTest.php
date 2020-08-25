@@ -91,8 +91,8 @@ class RouteBuilderTest extends TestCase
         $this->assertCount(2, $route->middlewareBindings);
         $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[0]);
         $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[1]);
-        $this->assertEquals('foo', $route->middlewareBindings[0]->className);
-        $this->assertEquals('dave', $route->middlewareBindings[1]->className);
+        $this->assertSame('foo', $route->middlewareBindings[0]->className);
+        $this->assertSame('dave', $route->middlewareBindings[1]->className);
         $this->assertEquals(['bar' => 'baz'], $route->middlewareBindings[0]->attributes);
         $this->assertEquals(['young' => 'cool'], $route->middlewareBindings[1]->attributes);
     }
@@ -114,8 +114,8 @@ class RouteBuilderTest extends TestCase
         $this->assertCount(2, $route->middlewareBindings);
         $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[0]);
         $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[1]);
-        $this->assertEquals('foo', $route->middlewareBindings[0]->className);
-        $this->assertEquals('bar', $route->middlewareBindings[1]->className);
+        $this->assertSame('foo', $route->middlewareBindings[0]->className);
+        $this->assertSame('bar', $route->middlewareBindings[1]->className);
         $this->assertEquals([], $route->middlewareBindings[0]->attributes);
         $this->assertEquals([], $route->middlewareBindings[1]->attributes);
     }
@@ -135,7 +135,7 @@ class RouteBuilderTest extends TestCase
         $route = $this->routeBuilder->build();
         $this->assertCount(1, $route->middlewareBindings);
         $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[0]);
-        $this->assertEquals('foo', $route->middlewareBindings[0]->className);
+        $this->assertSame('foo', $route->middlewareBindings[0]->className);
         $this->assertEquals(['bar' => 'baz'], $route->middlewareBindings[0]->attributes);
     }
 
@@ -144,7 +144,7 @@ class RouteBuilderTest extends TestCase
         $route = $this->routeBuilder->mapsToMethod('class', 'method')
             ->withName('foo')
             ->build();
-        $this->assertEquals('foo', $route->name);
+        $this->assertSame('foo', $route->name);
     }
 
     public function testUriTemplateIsSet(): void

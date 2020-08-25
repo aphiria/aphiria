@@ -58,12 +58,12 @@ class AcceptCharsetHeaderValueTest extends TestCase
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('q', '.5')]);
         $value = new AcceptCharsetHeaderValue('utf-8', $parameters);
-        $this->assertEquals(.5, $value->getQuality());
+        $this->assertSame(.5, $value->getQuality());
     }
 
     public function testQualityDefaultsToOne(): void
     {
         $value = new AcceptCharsetHeaderValue('utf-8', null);
-        $this->assertEquals(1, $value->getQuality());
+        $this->assertEquals(1.0, $value->getQuality());
     }
 }

@@ -21,7 +21,7 @@ class ConstraintViolationTest extends TestCase
     public function testGettingErrorMessageReturnsOneSetInConstructor(): void
     {
         $violation = new ConstraintViolation('error', $this->createMock(IConstraint::class), 'foo', 'bar');
-        $this->assertEquals('error', $violation->getErrorMessage());
+        $this->assertSame('error', $violation->getErrorMessage());
     }
 
     public function testGetInvalidValueReturnsOneSetInConstructor(): void
@@ -32,7 +32,7 @@ class ConstraintViolationTest extends TestCase
             'foo',
             'bar'
         );
-        $this->assertEquals('foo', $violation->getInvalidValue());
+        $this->assertSame('foo', $violation->getInvalidValue());
     }
 
     public function testGetMethodNameReturnsOneSetInConstructor(): void
@@ -45,7 +45,7 @@ class ConstraintViolationTest extends TestCase
             null,
             'method'
         );
-        $this->assertEquals('method', $violation->getMethodName());
+        $this->assertSame('method', $violation->getMethodName());
     }
 
     public function testGetPropertyNameReturnsOneSetInConstructor(): void
@@ -57,7 +57,7 @@ class ConstraintViolationTest extends TestCase
             'bar',
             'prop'
         );
-        $this->assertEquals('prop', $violation->getPropertyName());
+        $this->assertSame('prop', $violation->getPropertyName());
     }
 
     public function testGetRootValueReturnsOneSetInConstructor(): void
@@ -68,7 +68,7 @@ class ConstraintViolationTest extends TestCase
             'foo',
             'bar'
         );
-        $this->assertEquals('bar', $violation->getRootValue());
+        $this->assertSame('bar', $violation->getRootValue());
     }
 
     public function testGetConstraintReturnsOneSetInConstructor(): void

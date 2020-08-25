@@ -19,7 +19,7 @@ class UuidV4ConstraintTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {
-        $this->assertEquals('uuidv4', UuidV4Constraint::getSlug());
+        $this->assertSame('uuidv4', UuidV4Constraint::getSlug());
     }
 
     public function testMatchingStringsPass(): void

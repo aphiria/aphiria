@@ -28,7 +28,7 @@ class AlphanumericConstraintTest extends TestCase
 
     public function testCorrectSlugIsReturned(): void
     {
-        $this->assertEquals('alphanumeric', AlphanumericConstraint::getSlug());
+        $this->assertSame('alphanumeric', AlphanumericConstraint::getSlug());
     }
 
     public function testNonAlphanumericCharsFail(): void

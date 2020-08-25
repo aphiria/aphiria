@@ -53,7 +53,7 @@ class RouteTest extends TestCase
         $this->assertSame($this->routeAction, $this->route->action);
         $this->assertSame($this->constraints, $this->route->constraints);
         $this->assertSame($this->middlewareBindings, $this->route->middlewareBindings);
-        $this->assertEquals('name', $this->route->name);
+        $this->assertSame('name', $this->route->name);
         $this->assertSame($this->attributes, $this->route->attributes);
     }
 }

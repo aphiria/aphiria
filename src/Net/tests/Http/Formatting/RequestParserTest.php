@@ -63,7 +63,7 @@ class RequestParserTest extends TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn('<?xml version="1.0"?><foo />');
-        $this->assertEquals('text/xml', $this->parser->getActualMimeType($this->request));
+        $this->assertSame('text/xml', $this->parser->getActualMimeType($this->request));
     }
 
     public function testGettingClientIPAddressReturnsNullWhenPropertyIsNotSet(): void
@@ -74,7 +74,7 @@ class RequestParserTest extends TestCase
     public function testGettingClientIPAddressReturnsPropertyValueWhenPropertyIsSet(): void
     {
         $this->properties->add('CLIENT_IP_ADDRESS', '127.0.0.1');
-        $this->assertEquals('127.0.0.1', $this->parser->getClientIPAddress($this->request));
+        $this->assertSame('127.0.0.1', $this->parser->getClientIPAddress($this->request));
     }
 
     public function testGettingClientMimeTypeForMultipartWithContentTypeReturnsCorrectMimeType(): void
@@ -83,7 +83,7 @@ class RequestParserTest extends TestCase
             new Headers([new KeyValuePair('Content-Type', 'image/png')]),
             new StringBody('')
         );
-        $this->assertEquals('image/png', $this->parser->getClientMimeType($bodyPart));
+        $this->assertSame('image/png', $this->parser->getClientMimeType($bodyPart));
     }
 
     public function testGettingClientMimeTypeForMultipartWithoutContentTypeHeaderReturnsNull(): void
@@ -126,7 +126,7 @@ class RequestParserTest extends TestCase
         $this->headers->add('Accept-Charset', 'utf-8; q=0.1');
         $values = $this->parser->parseAcceptCharsetHeader($this->request);
         $this->assertCount(1, $values);
-        $this->assertEquals(0.1, $values[0]->getParameters()->get('q'));
+        $this->assertSame('0.1', $values[0]->getParameters()->get('q'));
     }
 
     public function testParseAcceptHeaderReturnsThem(): void
@@ -134,7 +134,7 @@ class RequestParserTest extends TestCase
         $this->headers->add('Accept', 'tex/plain; q=0.1');
         $values = $this->parser->parseAcceptHeader($this->request);
         $this->assertCount(1, $values);
-        $this->assertEquals(0.1, $values[0]->getParameters()->get('q'));
+        $this->assertSame('0.1', $values[0]->getParameters()->get('q'));
     }
 
     public function testParseAcceptLanguageHeaderReturnsThem(): void
@@ -142,23 +142,23 @@ class RequestParserTest extends TestCase
         $this->headers->add('Accept-language', 'en; q=0.1');
         $values = $this->parser->parseAcceptLanguageHeader($this->request);
         $this->assertCount(1, $values);
-        $this->assertEquals(0.1, $values[0]->getParameters()->get('q'));
+        $this->assertSame('0.1', $values[0]->getParameters()->get('q'));
     }
 
     public function testParseContentTypeReturnsContentTypeHeader(): void
     {
         $this->headers->add('Content-Type', 'application/json; charset=utf-8');
         $header = $this->parser->parseContentTypeHeader($this->request);
-        $this->assertEquals('application/json', $header->getMediaType());
-        $this->assertEquals('utf-8', $header->getCharset());
+        $this->assertSame('application/json', $header->getMediaType());
+        $this->assertSame('utf-8', $header->getCharset());
     }
 
     public function testParsingCookiesReturnsCorrectValuesWithMultipleCookieValues(): void
     {
         $this->headers->add('Cookie', 'foo=bar; baz=blah');
         $cookies = $this->parser->parseCookies($this->request);
-        $this->assertEquals('bar', $cookies->get('foo'));
-        $this->assertEquals('blah', $cookies->get('baz'));
+        $this->assertSame('bar', $cookies->get('foo'));
+        $this->assertSame('blah', $cookies->get('baz'));
     }
 
     public function testParsingMultipartRequestWithoutBoundaryThrowsException(): void
@@ -181,7 +181,7 @@ class RequestParserTest extends TestCase
         $this->headers->add('Foo', 'bar; baz="blah"');
         $values = $this->parser->parseParameters($this->request, 'Foo');
         $this->assertNull($values->get('bar'));
-        $this->assertEquals('blah', $values->get('baz'));
+        $this->assertSame('blah', $values->get('baz'));
     }
 
     public function testParsingQueryStringReturnsDictionaryOfValues(): void
@@ -190,7 +190,7 @@ class RequestParserTest extends TestCase
         $request->expects($this->once())
             ->method('getUri')
             ->willReturn(new Uri('http://host.com?foo=bar'));
-        $this->assertEquals('bar', $this->parser->parseQueryString($request)->get('foo'));
+        $this->assertSame('bar', $this->parser->parseQueryString($request)->get('foo'));
     }
 
     public function testReadAsFormInputReturnsInput(): void
@@ -198,7 +198,7 @@ class RequestParserTest extends TestCase
         $this->body->method('readAsString')
             ->willReturn('foo=bar');
         $value = $this->parser->readAsFormInput($this->request);
-        $this->assertEquals('bar', $value->get('foo'));
+        $this->assertSame('bar', $value->get('foo'));
     }
 
     public function testReadAsJsonReturnsInput(): void
@@ -206,7 +206,7 @@ class RequestParserTest extends TestCase
         $this->body->method('readAsString')
             ->willReturn('{"foo":"bar"}');
         $value = $this->parser->readAsJson($this->request);
-        $this->assertEquals('bar', $value['foo']);
+        $this->assertSame('bar', $value['foo']);
     }
 
     public function testReadingAsMultipartRequestWithHeadersExtractsBody(): void
@@ -221,6 +221,6 @@ class RequestParserTest extends TestCase
         $this->assertCount(1, $bodyParts);
         $body = $bodyParts[0]->getBody();
         $this->assertNotNull($body);
-        $this->assertEquals('body', $body->readAsString());
+        $this->assertSame('body', $body->readAsString());
     }
 }

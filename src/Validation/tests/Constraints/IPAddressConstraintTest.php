@@ -27,7 +27,7 @@ class IPAddressConstraintTest extends TestCase
     public function testGettingErrorMessageId(): void
     {
         $constraint = new IPAddressConstraint('foo');
-        $this->assertEquals('foo', $constraint->getErrorMessageId());
+        $this->assertSame('foo', $constraint->getErrorMessageId());
     }
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void

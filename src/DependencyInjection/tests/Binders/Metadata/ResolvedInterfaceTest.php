@@ -22,7 +22,7 @@ class ResolvedInterfaceTest extends TestCase
     public function testGetInterfaceReturnsSetInterface(): void
     {
         $interface = new ResolvedInterface('foo', new UniversalContext());
-        $this->assertEquals('foo', $interface->getInterface());
+        $this->assertSame('foo', $interface->getInterface());
     }
 
     public function testGetContextReturnsSetContext(): void

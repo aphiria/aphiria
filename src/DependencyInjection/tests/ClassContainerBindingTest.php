@@ -34,7 +34,7 @@ class ClassContainerBindingTest extends TestCase
 
     public function testGettingConcreteClass(): void
     {
-        $this->assertEquals('foo', $this->binding->getConcreteClass());
+        $this->assertSame('foo', $this->binding->getConcreteClass());
     }
 
     public function testGettingConstructorPrimitives(): void

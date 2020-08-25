@@ -58,8 +58,8 @@ class RequestBuilderTest extends TestCase
         $request = $this->requestBuilder->withMethod('GET')
             ->withUri('http://localhost/path')
             ->build();
-        $this->assertEquals('GET /path HTTP/1.1', explode("\r\n", (string)$request)[0]);
-        $this->assertEquals('localhost', $request->getHeaders()->getFirst('Host'));
+        $this->assertSame('GET /path HTTP/1.1', explode("\r\n", (string)$request)[0]);
+        $this->assertSame('localhost', $request->getHeaders()->getFirst('Host'));
     }
 
     public function testWithBodyWithHttpBodyUsesThatBody(): void
@@ -124,7 +124,7 @@ class RequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withProperty('foo', 'bar')
             ->build();
-        $this->assertEquals('bar', $request->getProperties()->get('foo'));
+        $this->assertSame('bar', $request->getProperties()->get('foo'));
     }
 
     public function testWithProtocolVersionSetsProtocolVersion(): void
@@ -133,7 +133,7 @@ class RequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withProtocolVersion('2.0')
             ->build();
-        $this->assertEquals('GET / HTTP/2.0', explode("\r\n", (string)$request)[0]);
+        $this->assertSame('GET / HTTP/2.0', explode("\r\n", (string)$request)[0]);
     }
 
     public function testWithRequestTargetTypeSetsRequestTargetType(): void
@@ -142,7 +142,7 @@ class RequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withRequestTargetType(RequestTargetTypes::ABSOLUTE_FORM)
             ->build();
-        $this->assertEquals('GET http://localhost HTTP/1.1', explode("\r\n", (string)$request)[0]);
+        $this->assertSame('GET http://localhost HTTP/1.1', explode("\r\n", (string)$request)[0]);
     }
 
     public function testWithStringUriSetsRequestUri(): void

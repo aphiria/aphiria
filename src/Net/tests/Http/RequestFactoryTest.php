@@ -33,8 +33,8 @@ class RequestFactoryTest extends TestCase
             'PHP_AUTH_PW' => 'pw',
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals('user', $request->getUri()->getUser());
-        $this->assertEquals('pw', $request->getUri()->getPassword());
+        $this->assertSame('user', $request->getUri()->getUser());
+        $this->assertSame('pw', $request->getUri()->getPassword());
     }
 
     public function testBodyIsCreatedFromInputStream(): void
@@ -51,8 +51,8 @@ class RequestFactoryTest extends TestCase
             'HTTP_COOKIE' => '%25',
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals('%25', $request->getHeaders()->getFirst('Foo'));
-        $this->assertEquals('%', $request->getHeaders()->getFirst('Cookie'));
+        $this->assertSame('%25', $request->getHeaders()->getFirst('Foo'));
+        $this->assertSame('%', $request->getHeaders()->getFirst('Cookie'));
     }
 
     public function testClientIPAddressIsSetAsPropertyWhenUsingTrustedProxy(): void
@@ -62,7 +62,7 @@ class RequestFactoryTest extends TestCase
             'REMOTE_ADDR' => '192.168.1.1',
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals('192.168.1.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
+        $this->assertSame('192.168.1.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
     }
 
     public function clientIPDataProvider(): array
@@ -96,7 +96,7 @@ class RequestFactoryTest extends TestCase
             'HTTP_CLIENT_IP' => '192.168.1.1',
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals('192.168.1.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
+        $this->assertSame('192.168.1.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
     }
 
     public function testClientPortUsedToDeterminePortWithTrustedProxy(): void
@@ -107,7 +107,7 @@ class RequestFactoryTest extends TestCase
             'HTTP_X_FORWARDED_PORT' => 8080,
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals(8080, $request->getUri()->getPort());
+        $this->assertSame(8080, $request->getUri()->getPort());
     }
 
     public function clientProtoProvider(): array
@@ -142,7 +142,7 @@ class RequestFactoryTest extends TestCase
             'HTTP_X_FORWARDED_PROTO' => 'https',
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals(443, $request->getUri()->getPort());
+        $this->assertSame(443, $request->getUri()->getPort());
     }
 
     public function testCommaInHeaderThatDoesNotPermitMultipleValuesDoesNotSplitHeaderValue(): void
@@ -160,7 +160,7 @@ class RequestFactoryTest extends TestCase
             'HTTP_COOKIE' => 'foo=bar; baz=blah',
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals('foo=bar; baz=blah', $request->getHeaders()->getFirst('Cookie'));
+        $this->assertSame('foo=bar; baz=blah', $request->getHeaders()->getFirst('Cookie'));
     }
 
     public function testExceptionThrownWhenUsingUntrustedProxyHost(): void
@@ -175,13 +175,13 @@ class RequestFactoryTest extends TestCase
         $factory = new RequestFactory(['192.168.2.1']);
         $server = ['REMOTE_ADDR' => '192.168.2.1', 'HTTP_X_FORWARDED_HOST' => 'foo.com, bar.com'];
         $request = $factory->createRequestFromSuperglobals($server);
-        $this->assertEquals('bar.com', $request->getUri()->getHost());
+        $this->assertSame('bar.com', $request->getUri()->getHost());
     }
 
     public function testHostWithPortStripsPortFromHost(): void
     {
         $request = $this->factory->createRequestFromSuperglobals(['HTTP_HOST' => 'foo.com:8080']);
-        $this->assertEquals('foo.com', $request->getUri()->getHost());
+        $this->assertSame('foo.com', $request->getUri()->getHost());
     }
 
     public function httpServerPropertyProvider(): array
@@ -228,7 +228,7 @@ class RequestFactoryTest extends TestCase
             'REQUEST_METHOD' => 'CONNECT',
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals('CONNECT', $request->getMethod());
+        $this->assertSame('CONNECT', $request->getMethod());
     }
 
     public function testInvalidHostCharThrowsException(): void
@@ -245,7 +245,7 @@ class RequestFactoryTest extends TestCase
             'X-HTTP-METHOD-OVERRIDE' => 'PUT',
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals('PUT', $request->getMethod());
+        $this->assertSame('PUT', $request->getMethod());
     }
 
     public function testMultipleHeaderValuesAreAppended(): void
@@ -263,7 +263,7 @@ class RequestFactoryTest extends TestCase
             'REQUEST_URI' => '/foo/bar?baz=blah',
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals('/foo/bar', $request->getUri()->getPath());
+        $this->assertSame('/foo/bar', $request->getUri()->getPath());
     }
 
     public function testPortHeaderSetsPortOnUri(): void
@@ -272,7 +272,7 @@ class RequestFactoryTest extends TestCase
             'SERVER_PORT' => 8080,
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals(8080, $request->getUri()->getPort());
+        $this->assertSame(8080, $request->getUri()->getPort());
     }
 
     public function testQueryStringServerPropertyIsUsedBeforeRequestUriQueryString(): void
@@ -282,7 +282,7 @@ class RequestFactoryTest extends TestCase
             'REQUEST_URI' => '/baz?blah=dave',
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals('foo=bar', $request->getUri()->getQueryString());
+        $this->assertSame('foo=bar', $request->getUri()->getQueryString());
     }
 
     public function testQuotedCommaInHeaderRemainsIntact(): void
@@ -300,7 +300,7 @@ class RequestFactoryTest extends TestCase
             'REMOTE_ADDR' => '192.168.2.1',
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals('192.168.2.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
+        $this->assertSame('192.168.2.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
     }
 
     public function testRequestUriQueryStringIsUsedIfQueryStringServerPropertyDoesNotExist(): void
@@ -309,7 +309,7 @@ class RequestFactoryTest extends TestCase
             'REQUEST_URI' => '/foo?bar=baz',
             'HTTP_HOST' => 'foo.com'
         ]);
-        $this->assertEquals('bar=baz', $request->getUri()->getQueryString());
+        $this->assertSame('bar=baz', $request->getUri()->getQueryString());
     }
 
     public function testSpecialCaseHeadersAreAddedToRequestHeaders(): void

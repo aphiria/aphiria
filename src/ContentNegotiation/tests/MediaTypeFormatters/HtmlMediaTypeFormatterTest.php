@@ -52,12 +52,12 @@ class HtmlMediaTypeFormatterTest extends TestCase
 
     public function testDefaultEncodingReturnsFirstSupportedEncoding(): void
     {
-        $this->assertEquals('utf-8', $this->formatter->getDefaultEncoding());
+        $this->assertSame('utf-8', $this->formatter->getDefaultEncoding());
     }
 
     public function testDefaultMediaTypeReturnsFirstSupportedMediaType(): void
     {
-        $this->assertEquals('text/html', $this->formatter->getDefaultMediaType());
+        $this->assertSame('text/html', $this->formatter->getDefaultMediaType());
     }
 
     public function testReadingAsArrayOfStringsThrowsException(): void
@@ -71,7 +71,7 @@ class HtmlMediaTypeFormatterTest extends TestCase
     {
         $stream = $this->createStreamWithStringBody('foo');
         $value = $this->formatter->readFromStream($stream, 'string');
-        $this->assertEquals('foo', $value);
+        $this->assertSame('foo', $value);
     }
 
     public function testReadingNonStringThrowsException(): void

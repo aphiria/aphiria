@@ -19,7 +19,7 @@ class RegexConstraintTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {
-        $this->assertEquals('regex', RegexConstraint::getSlug());
+        $this->assertSame('regex', RegexConstraint::getSlug());
     }
 
     public function testMatchingStringsPass(): void

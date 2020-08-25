@@ -51,8 +51,8 @@ class UriTemplateTest extends TestCase
     public function testPropertiesAreSetInConstructor(): void
     {
         $uriTemplate = new UriTemplate('/foo', 'example.com', false);
-        $this->assertEquals('/foo', $uriTemplate->pathTemplate);
-        $this->assertEquals('example.com', $uriTemplate->hostTemplate);
+        $this->assertSame('/foo', $uriTemplate->pathTemplate);
+        $this->assertSame('example.com', $uriTemplate->hostTemplate);
         $this->assertFalse($uriTemplate->isHttpsOnly);
         $this->assertTrue($uriTemplate->isAbsoluteUri);
     }
@@ -60,18 +60,18 @@ class UriTemplateTest extends TestCase
     public function testToStringIgnoresHostIfItIsNull(): void
     {
         $uriTemplate = new UriTemplate('/foo');
-        $this->assertEquals('/foo', (string)$uriTemplate);
+        $this->assertSame('/foo', (string)$uriTemplate);
     }
 
     public function testToStringIncludesHostIfItIsDefined(): void
     {
         $uriTemplate = new UriTemplate('/foo', 'example.com');
-        $this->assertEquals('example.com/foo', (string)$uriTemplate);
+        $this->assertSame('example.com/foo', (string)$uriTemplate);
     }
 
     public function testTrailingSlashIsStrippedFromHost(): void
     {
         $uriTemplate = new UriTemplate('foo', 'example.com/');
-        $this->assertEquals('example.com', $uriTemplate->hostTemplate);
+        $this->assertSame('example.com', $uriTemplate->hostTemplate);
     }
 }

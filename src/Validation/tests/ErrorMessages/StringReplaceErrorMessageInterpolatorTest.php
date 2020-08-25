@@ -21,7 +21,7 @@ class StringReplaceErrorMessageInterpolatorTest extends TestCase
     public function testErrorMessageIdWithNoPlaceholdersIsReturnedIntact(): void
     {
         $interpolator = new StringReplaceErrorMessageInterpolator();
-        $this->assertEquals('foo bar', $interpolator->interpolate('foo bar'));
+        $this->assertSame('foo bar', $interpolator->interpolate('foo bar'));
     }
 
     public function testInterpolatingGetsErrorMessageTemplateFromRegistry(): void
@@ -32,19 +32,19 @@ class StringReplaceErrorMessageInterpolatorTest extends TestCase
             ->with('foo', 'en-US')
             ->willReturn('bar');
         $interpolator = new StringReplaceErrorMessageInterpolator($errorMessageTemplates);
-        $this->assertEquals('bar', $interpolator->interpolate('foo', [], 'en-US'));
+        $this->assertSame('bar', $interpolator->interpolate('foo', [], 'en-US'));
     }
 
     public function testLeftoverUnusedPlaceholdersAreRemovedFromInterpolatedErrorMessage(): void
     {
         $interpolator = new StringReplaceErrorMessageInterpolator();
-        $this->assertEquals('foo ', $interpolator->interpolate('foo {bar}'));
+        $this->assertSame('foo ', $interpolator->interpolate('foo {bar}'));
     }
 
     public function testPlaceholdersArePopulated(): void
     {
         $interpolator = new StringReplaceErrorMessageInterpolator();
-        $this->assertEquals(
+        $this->assertSame(
             'foo dave young',
             $interpolator->interpolate('foo {bar} {baz}', ['bar' => 'dave', 'baz' => 'young'])
         );
@@ -54,6 +54,6 @@ class StringReplaceErrorMessageInterpolatorTest extends TestCase
     {
         $interpolator = new StringReplaceErrorMessageInterpolator();
         $interpolator->setDefaultLocale('foo');
-        $this->assertEquals('foo dave', $interpolator->interpolate('foo {bar}', ['bar' => 'dave']));
+        $this->assertSame('foo dave', $interpolator->interpolate('foo {bar}', ['bar' => 'dave']));
     }
 }

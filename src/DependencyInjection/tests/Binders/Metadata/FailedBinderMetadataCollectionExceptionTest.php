@@ -33,8 +33,8 @@ class FailedBinderMetadataCollectionExceptionTest extends TestCase
         };
         $binderMetadata = new BinderMetadata($binder, [], [new ResolvedInterface(IFoo::class, new UniversalContext())]);
         $exception = new FailedBinderMetadataCollectionException($binderMetadata, IFoo::class);
-        $this->assertEquals('Failed to collect metadata for ' . \get_class($binder), $exception->getMessage());
+        $this->assertSame('Failed to collect metadata for ' . \get_class($binder), $exception->getMessage());
         $this->assertSame($binderMetadata, $exception->getIncompleteBinderMetadata());
-        $this->assertEquals(IFoo::class, $exception->getFailedInterface());
+        $this->assertSame(IFoo::class, $exception->getFailedInterface());
     }
 }

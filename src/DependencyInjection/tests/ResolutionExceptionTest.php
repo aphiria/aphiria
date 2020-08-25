@@ -29,6 +29,6 @@ class ResolutionExceptionTest extends TestCase
     public function testGetInterfaceReturnsInterfaceInjectedInConstructor(): void
     {
         $exception = new ResolutionException('foo', new UniversalContext());
-        $this->assertEquals('foo', $exception->getInterface());
+        $this->assertSame('foo', $exception->getInterface());
     }
 }

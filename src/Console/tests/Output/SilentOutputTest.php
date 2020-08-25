@@ -33,7 +33,7 @@ class SilentOutputTest extends TestCase
 
     public function testReadLineReturnsEmptyString(): void
     {
-        $this->assertEquals('', $this->output->readLine());
+        $this->assertSame('', $this->output->readLine());
     }
 
     public function testWrite(): void

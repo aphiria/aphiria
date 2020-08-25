@@ -36,7 +36,7 @@ class BodyParserTest extends TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn('foo=bar');
-        $this->assertEquals('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
+        $this->assertSame('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
     }
 
     public function testGettingMimeTypeOfNullBodyReturnsNull(): void
@@ -49,8 +49,8 @@ class BodyParserTest extends TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn('<?xml version="1.0"?><foo />');
-        $this->assertEquals('text/xml', $this->parser->getMimeType($this->body));
-        $this->assertEquals('text/xml', $this->parser->getMimeType($this->body));
+        $this->assertSame('text/xml', $this->parser->getMimeType($this->body));
+        $this->assertSame('text/xml', $this->parser->getMimeType($this->body));
     }
 
     public function testGettingMimeTypeReturnsCorrectMimeType(): void
@@ -58,7 +58,7 @@ class BodyParserTest extends TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn('<?xml version="1.0"?><foo />');
-        $this->assertEquals('text/xml', $this->parser->getMimeType($this->body));
+        $this->assertSame('text/xml', $this->parser->getMimeType($this->body));
     }
 
     public function testParsingInputWithFormUrlEncodedBodyThatAlreadyHasBeenCheckedReturnsSameInput(): void
@@ -66,8 +66,8 @@ class BodyParserTest extends TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn('foo=bar');
-        $this->assertEquals('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
-        $this->assertEquals('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
+        $this->assertSame('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
+        $this->assertSame('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
     }
 
     public function testParsingInputWithFormUrlEncodedBodyReturnsParsedFormData(): void
@@ -75,7 +75,7 @@ class BodyParserTest extends TestCase
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn('foo=bar');
-        $this->assertEquals('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
+        $this->assertSame('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
     }
 
     public function testParsingInputWithNullBodyReturnsEmptyDictionary(): void
@@ -115,8 +115,8 @@ class BodyParserTest extends TestCase
         $this->assertNotNull($multipartBody);
         $bodyParts = $multipartBody->getParts();
         $this->assertCount(1, $bodyParts);
-        $this->assertEquals('bar', $bodyParts[0]->getHeaders()->getFirst('Foo'));
-        $this->assertEquals('blah', $bodyParts[0]->getHeaders()->getFirst('Baz'));
+        $this->assertSame('bar', $bodyParts[0]->getHeaders()->getFirst('Foo'));
+        $this->assertSame('blah', $bodyParts[0]->getHeaders()->getFirst('Baz'));
     }
 
     public function testParsingMultipartRequestWithHeadersExtractsBody(): void
@@ -130,7 +130,7 @@ class BodyParserTest extends TestCase
         $this->assertCount(1, $bodyParts);
         $body = $bodyParts[0]->getBody();
         $this->assertNotNull($body);
-        $this->assertEquals('body', $body->readAsString());
+        $this->assertSame('body', $body->readAsString());
     }
 
     public function testParsingMultipartRequestWithNullBodyReturnsNull(): void
@@ -167,7 +167,7 @@ class BodyParserTest extends TestCase
         $this->assertNotNull($multipartBody);
         $bodyParts = $multipartBody->getParts();
         $this->assertCount(1, $bodyParts);
-        $this->assertEquals(
+        $this->assertSame(
             'multipart/mixed; boundary="boundary2"',
             $bodyParts[0]->getHeaders()->getFirst('Content-Type')
         );
@@ -185,6 +185,6 @@ class BodyParserTest extends TestCase
             '--boundary2--';
         $body = $bodyParts[0]->getBody();
         $this->assertNotNull($body);
-        $this->assertEquals($expectedBodyString, $body->readAsString());
+        $this->assertSame($expectedBodyString, $body->readAsString());
     }
 }

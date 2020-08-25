@@ -29,7 +29,7 @@ class LogLevelFactoryTest extends TestCase
     public function testCreatingLogLevelDefaultsToErrorLogLevelIfExceptionHasNoCustomLogLevel(): void
     {
         $exception = new Exception();
-        $this->assertEquals(LogLevel::ERROR, $this->factory->createLogLevel($exception));
+        $this->assertSame(LogLevel::ERROR, $this->factory->createLogLevel($exception));
     }
 
     public function testCreatingLogLevelWithManyCustomErrorLogLevelUsesThem(): void
@@ -38,13 +38,13 @@ class LogLevelFactoryTest extends TestCase
         $this->factory->registerManyLogLevelFactories([
             Exception::class => fn (Exception $ex) => LogLevel::EMERGENCY
         ]);
-        $this->assertEquals(LogLevel::EMERGENCY, $this->factory->createLogLevel($exception));
+        $this->assertSame(LogLevel::EMERGENCY, $this->factory->createLogLevel($exception));
     }
 
     public function testCreatingLogLevelWithSingleCustomErrorLogLevelUsesIt(): void
     {
         $exception = new Exception();
         $this->factory->registerLogLevelFactory(Exception::class, fn (Exception $ex) => LogLevel::EMERGENCY);
-        $this->assertEquals(LogLevel::EMERGENCY, $this->factory->createLogLevel($exception));
+        $this->assertSame(LogLevel::EMERGENCY, $this->factory->createLogLevel($exception));
     }
 }

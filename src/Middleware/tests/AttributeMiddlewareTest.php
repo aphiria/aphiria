@@ -27,12 +27,12 @@ class AttributeMiddlewareTest extends TestCase
     public function testGettingAttributeReturnsSameValueInSetter(): void
     {
         $this->middleware->setAttributes(['foo' => 'bar']);
-        $this->assertEquals('bar', $this->middleware->getAttribute('foo'));
+        $this->assertSame('bar', $this->middleware->getAttribute('foo'));
     }
 
     public function testGettingAttributeThatDoesNotExistReturnsDefaultValue(): void
     {
         $this->assertNull($this->middleware->getAttribute('foo'));
-        $this->assertEquals('bar', $this->middleware->getAttribute('foo', 'bar'));
+        $this->assertSame('bar', $this->middleware->getAttribute('foo', 'bar'));
     }
 }

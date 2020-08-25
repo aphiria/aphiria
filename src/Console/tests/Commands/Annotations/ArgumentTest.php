@@ -22,8 +22,8 @@ class ArgumentTest extends TestCase
     public function testDefaultValuesOfArgumentPropertiesAreSet(): void
     {
         $argument = new Argument(['value' => 'foo', 'type' => ArgumentTypes::REQUIRED]);
-        $this->assertEquals('foo', $argument->name);
-        $this->assertEquals(ArgumentTypes::REQUIRED, $argument->type);
+        $this->assertSame('foo', $argument->name);
+        $this->assertSame(ArgumentTypes::REQUIRED, $argument->type);
         $this->assertNull($argument->description);
         $this->assertNull($argument->defaultValue);
     }
@@ -31,13 +31,13 @@ class ArgumentTest extends TestCase
     public function testNameCanBeSetViaName(): void
     {
         $argument = new Argument(['name' => 'foo', 'type' => ArgumentTypes::REQUIRED]);
-        $this->assertEquals('foo', $argument->name);
+        $this->assertSame('foo', $argument->name);
     }
 
     public function testNameCanBeSetViaValue(): void
     {
         $argument = new Argument(['value' => 'foo', 'type' => ArgumentTypes::REQUIRED]);
-        $this->assertEquals('foo', $argument->name);
+        $this->assertSame('foo', $argument->name);
     }
 
     public function testNoNameThrowsException(): void
@@ -62,9 +62,9 @@ class ArgumentTest extends TestCase
             'description' => 'description',
             'defaultValue' => 'val'
         ]);
-        $this->assertEquals('foo', $argument->name);
-        $this->assertEquals(ArgumentTypes::REQUIRED, $argument->type);
-        $this->assertEquals('description', $argument->description);
-        $this->assertEquals('val', $argument->defaultValue);
+        $this->assertSame('foo', $argument->name);
+        $this->assertSame(ArgumentTypes::REQUIRED, $argument->type);
+        $this->assertSame('description', $argument->description);
+        $this->assertSame('val', $argument->defaultValue);
     }
 }

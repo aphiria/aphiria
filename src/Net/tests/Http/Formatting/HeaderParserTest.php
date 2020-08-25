@@ -63,7 +63,7 @@ class HeaderParserTest extends TestCase
         $headers = new Headers();
         $headers->add('Content-Type', 'application/json');
         $value = $this->parser->parseContentTypeHeader($headers);
-        $this->assertEquals('application/json', $value->getMediaType());
+        $this->assertSame('application/json', $value->getMediaType());
     }
 
     public function testParsingParametersForIndexThatDoesNotExistReturnsEmptyDictionary(): void
@@ -79,7 +79,7 @@ class HeaderParserTest extends TestCase
         $headers->add('Foo', 'bar; baz="blah"');
         $values = $this->parser->parseParameters($headers, 'Foo');
         $this->assertNull($values->get('bar'));
-        $this->assertEquals('blah', $values->get('baz'));
+        $this->assertSame('blah', $values->get('baz'));
     }
 
     public function testParsingParametersWithQuotedAndUnquotedValuesReturnsArrayWithUnquotedValue(): void
@@ -87,8 +87,8 @@ class HeaderParserTest extends TestCase
         $headers = new Headers();
         $headers->add('Foo', 'bar=baz');
         $headers->add('Bar', 'bar="baz"');
-        $this->assertEquals('baz', $this->parser->parseParameters($headers, 'Foo')->get('bar'));
-        $this->assertEquals('baz', $this->parser->parseParameters($headers, 'Bar')->get('bar'));
+        $this->assertSame('baz', $this->parser->parseParameters($headers, 'Foo')->get('bar'));
+        $this->assertSame('baz', $this->parser->parseParameters($headers, 'Bar')->get('bar'));
     }
 
     public function testIsJsonForHeadersWithoutContentTypeReturnsFalse(): void

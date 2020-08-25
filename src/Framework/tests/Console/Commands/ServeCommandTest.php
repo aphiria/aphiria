@@ -29,8 +29,8 @@ class ServeCommandTest extends TestCase
     public function testCorrectValuesAreSetInConstructor(): void
     {
         $command = new ServeCommand('router');
-        $this->assertEquals('app:serve', $command->name);
-        $this->assertEquals('Runs your app locally', $command->description);
+        $this->assertSame('app:serve', $command->name);
+        $this->assertSame('Runs your app locally', $command->description);
         $expectedOptions = [
             new Option('domain', null, OptionTypes::REQUIRED_VALUE, 'The domain to run your app at', 'localhost'),
             new Option('port', null, OptionTypes::REQUIRED_VALUE, 'The port to run your app at', 80),
@@ -47,6 +47,6 @@ class ServeCommandTest extends TestCase
         );
         $command = new ServeCommand();
         $this->assertCount(4, $command->options);
-        $this->assertEquals('/foo', $command->options[3]->defaultValue);
+        $this->assertSame('/foo', $command->options[3]->defaultValue);
     }
 }

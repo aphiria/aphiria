@@ -93,6 +93,6 @@ class ExceptionHandlerComponentTest extends TestCase
         $factory = fn (Exception $ex) => LogLevel::ALERT;
         $this->exceptionHandlerComponent->withLogLevelFactory(Exception::class, $factory);
         $this->exceptionHandlerComponent->build();
-        $this->assertEquals(LogLevel::ALERT, $this->logLevelFactory->createLogLevel($expectedException));
+        $this->assertSame(LogLevel::ALERT, $this->logLevelFactory->createLogLevel($expectedException));
     }
 }

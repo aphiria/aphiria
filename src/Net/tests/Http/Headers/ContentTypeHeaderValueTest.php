@@ -25,35 +25,35 @@ class ContentTypeHeaderValueTest extends TestCase
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
         $value = new ContentTypeHeaderValue('foo/bar', $parameters);
-        $this->assertEquals('utf-8', $value->getCharset());
+        $this->assertSame('utf-8', $value->getCharset());
     }
 
     public function testGettingMediaTypeReturnsOneSetInConstructor(): void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
         $value = new ContentTypeHeaderValue('foo/bar', $parameters);
-        $this->assertEquals('foo/bar', $value->getMediaType());
+        $this->assertSame('foo/bar', $value->getMediaType());
     }
 
     public function testGettingSubTypeReturnsCorrectSubtType(): void
     {
         $value = new ContentTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
-        $this->assertEquals('bar', $value->getSubType());
+        $this->assertSame('bar', $value->getSubType());
     }
 
     public function testGettingTypeReturnsCorrectType(): void
     {
         $value = new ContentTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
-        $this->assertEquals('foo', $value->getType());
+        $this->assertSame('foo', $value->getType());
     }
 
     public function testTypeWithSuffixSetsTypeSubTypeAndSuffixesCorrectly(): void
     {
         $value = new ContentTypeHeaderValue('application/foo+json', $this->createMock(IImmutableDictionary::class));
-        $this->assertEquals('application', $value->getType());
-        $this->assertEquals('foo+json', $value->getSubType());
-        $this->assertEquals('foo', $value->getSubTypeWithoutSuffix());
-        $this->assertEquals('json', $value->getSuffix());
+        $this->assertSame('application', $value->getType());
+        $this->assertSame('foo+json', $value->getSubType());
+        $this->assertSame('foo', $value->getSubTypeWithoutSuffix());
+        $this->assertSame('json', $value->getSuffix());
     }
 
     public function incorrectlyFormattedMediaTypeProvider(): array

@@ -19,7 +19,7 @@ class IntegerConstraintTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {
-        $this->assertEquals('int', IntegerConstraint::getSlug());
+        $this->assertSame('int', IntegerConstraint::getSlug());
     }
 
     public function testFailingValue(): void

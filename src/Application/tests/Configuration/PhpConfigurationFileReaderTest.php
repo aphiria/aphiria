@@ -28,13 +28,13 @@ class PhpConfigurationFileReaderTest extends TestCase
     public function testReadingConfigurationCreatesConfigurationFromContentsOfPhpFile(): void
     {
         $configuration = $this->reader->readConfiguration(__DIR__ . '/files/configuration.php');
-        $this->assertEquals('bar', $configuration->getString('foo'));
+        $this->assertSame('bar', $configuration->getString('foo'));
     }
 
     public function testReadingConfigurationWithCustomDelimiterAllowsAccessWithThatDelimiter(): void
     {
         $configuration = $this->reader->readConfiguration(__DIR__ . '/files/configuration-delimiter.php', ':');
-        $this->assertEquals('baz', $configuration->getString('foo:bar'));
+        $this->assertSame('baz', $configuration->getString('foo:bar'));
     }
 
     public function testReadingInvalidPhpThrowsException(): void

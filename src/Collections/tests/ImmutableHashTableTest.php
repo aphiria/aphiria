@@ -25,7 +25,7 @@ class ImmutableHashTableTest extends TestCase
     public function testArrayAccessReturnsValuesAtKeys(): void
     {
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
-        $this->assertEquals('bar', $hashTable['foo']);
+        $this->assertSame('bar', $hashTable['foo']);
     }
 
     public function testContainsKey(): void
@@ -51,13 +51,13 @@ class ImmutableHashTableTest extends TestCase
     public function testCount(): void
     {
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar'), new KeyValuePair('baz', 'blah')]);
-        $this->assertEquals(2, $hashTable->count());
+        $this->assertSame(2, $hashTable->count());
     }
 
     public function testGetting(): void
     {
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
-        $this->assertEquals('bar', $hashTable->get('foo'));
+        $this->assertSame('bar', $hashTable->get('foo'));
     }
 
     public function testGettingAbsentVariableThrowsException(): void
@@ -101,7 +101,7 @@ class ImmutableHashTableTest extends TestCase
 
         foreach ($hashTable as $key => $value) {
             // Make sure the hash keys aren't returned by the iterator
-            $this->assertTrue(\is_int($key));
+            $this->assertIsInt($key);
             $actualValues[] = $value;
         }
 
@@ -138,7 +138,7 @@ class ImmutableHashTableTest extends TestCase
         $this->assertFalse($hashTable->tryGet('baz', $value));
         $this->assertNull($value);
         $this->assertTrue($hashTable->tryGet('foo', $value));
-        $this->assertEquals('bar', $value);
+        $this->assertSame('bar', $value);
     }
 
     public function testUnsettingValueThrowsException(): void

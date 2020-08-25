@@ -21,7 +21,7 @@ class RouteGroupTest extends TestCase
     public function testDefaultValuesOfRoutePropertiesAreSet(): void
     {
         $routeGroup = new RouteGroup([]);
-        $this->assertEquals('', $routeGroup->path);
+        $this->assertSame('', $routeGroup->path);
         $this->assertNull($routeGroup->host);
         $this->assertFalse($routeGroup->isHttpsOnly);
         $this->assertEquals([], $routeGroup->attributes);
@@ -31,13 +31,13 @@ class RouteGroupTest extends TestCase
     public function testPathCanBeSetViaPath(): void
     {
         $routeGroup = new RouteGroup(['path' => '/foo']);
-        $this->assertEquals('/foo', $routeGroup->path);
+        $this->assertSame('/foo', $routeGroup->path);
     }
 
     public function testPathCanBeSetViaValue(): void
     {
         $routeGroup = new RouteGroup(['value' => '/foo']);
-        $this->assertEquals('/foo', $routeGroup->path);
+        $this->assertSame('/foo', $routeGroup->path);
     }
 
     public function testPropertiesAreSetViaConstructor(): void
@@ -49,12 +49,12 @@ class RouteGroupTest extends TestCase
             'attributes' => ['attr' => 'val'],
             'constraints' => [new RouteConstraint(['className' => 'constraintClass', 'constructorParams' => ['param']])]
         ]);
-        $this->assertEquals('/foo', $routeGroup->path);
-        $this->assertEquals('example.com', $routeGroup->host);
+        $this->assertSame('/foo', $routeGroup->path);
+        $this->assertSame('example.com', $routeGroup->host);
         $this->assertTrue($routeGroup->isHttpsOnly);
         $this->assertEquals(['attr' => 'val'], $routeGroup->attributes);
         $this->assertCount(1, $routeGroup->constraints);
-        $this->assertEquals('constraintClass', $routeGroup->constraints[0]->className);
+        $this->assertSame('constraintClass', $routeGroup->constraints[0]->className);
         $this->assertEquals(['param'], $routeGroup->constraints[0]->constructorParams);
     }
 }

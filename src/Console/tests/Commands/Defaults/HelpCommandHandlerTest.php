@@ -45,7 +45,7 @@ class HelpCommandHandlerTest extends TestCase
         $this->output->expects($this->once())
             ->method('writeln')
             ->with('<error>Command foo does not exist</error>');
-        $this->assertEquals(StatusCodes::ERROR, $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output));
+        $this->assertSame(StatusCodes::ERROR, $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output));
     }
 
     public function testHandlingCommandWithHelpTextIncludesIt(): void
@@ -90,7 +90,7 @@ class HelpCommandHandlerTest extends TestCase
         $this->output->expects($this->once())
             ->method('writeln')
             ->with("<comment>Pass in the name of the command you'd like help with</comment>");
-        $this->assertEquals(StatusCodes::OK, $this->handler->handle(new Input('help', [], []), $this->output));
+        $this->assertSame(StatusCodes::OK, $this->handler->handle(new Input('help', [], []), $this->output));
     }
 
     public function testHandlingWithNoArgumentsStillHasDefaultArgumentDescription(): void

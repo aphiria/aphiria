@@ -21,7 +21,7 @@ class DateConstraintTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {
-        $this->assertEquals('date', DateConstraint::getSlug());
+        $this->assertSame('date', DateConstraint::getSlug());
     }
 
     public function testFailingSingleFormat(): void

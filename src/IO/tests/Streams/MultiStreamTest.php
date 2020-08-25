@@ -54,7 +54,7 @@ class MultiStreamTest extends TestCase
         $this->multiStream->addStream($unseekableStream);
         $this->multiStream->close();
         $this->assertTrue($this->multiStream->isSeekable());
-        $this->assertEquals(0, $this->multiStream->getPosition());
+        $this->assertSame(0, $this->multiStream->getPosition());
     }
 
     public function testClosingStreamUnsetsSubstreamResources(): void
@@ -77,7 +77,7 @@ class MultiStreamTest extends TestCase
         $stream2 = new Stream(fopen('php://temp', 'r+b'));
         $stream2->write('bar');
         $multistream = new MultiStream([$stream1, $stream2]);
-        $this->assertEquals('foobar', (string)$multistream);
+        $this->assertSame('foobar', (string)$multistream);
     }
 
     public function testCopyingToClosedStreamThrowsException(): void
@@ -105,7 +105,7 @@ class MultiStreamTest extends TestCase
         $destinationStream = new Stream(fopen('php://temp', 'r+b'));
         $this->multiStream->copyToStream($destinationStream, 1);
         $destinationStream->rewind();
-        $this->assertEquals('foobar', $destinationStream->readToEnd());
+        $this->assertSame('foobar', $destinationStream->readToEnd());
     }
 
     public function testDestroyingStreamUnsetsSubstreamResources(): void
@@ -176,7 +176,7 @@ class MultiStreamTest extends TestCase
             ->willReturn(20);
         $this->multiStream->addStream($stream1);
         $this->multiStream->addStream($stream2);
-        $this->assertEquals(30, $this->multiStream->getLength());
+        $this->assertSame(30, $this->multiStream->getLength());
     }
 
     public function testGettingLengthWithoutAnySubstreamsReturnsNull(): void
@@ -201,7 +201,7 @@ class MultiStreamTest extends TestCase
 
     public function testReadingEmptyStreamReturnsEmptyString(): void
     {
-        $this->assertEquals('', $this->multiStream->read(123));
+        $this->assertSame('', $this->multiStream->read(123));
     }
 
     public function testReadingFromMultipleStreamsReadsFirstToEofAndRemainderFromSecond(): void
@@ -218,8 +218,8 @@ class MultiStreamTest extends TestCase
             ->willReturn('o');
         $this->multiStream->addStream($stream1);
         $this->multiStream->addStream($stream2);
-        $this->assertEquals('foo', $this->multiStream->read(3));
-        $this->assertEquals(3, $this->multiStream->getPosition());
+        $this->assertSame('foo', $this->multiStream->read(3));
+        $this->assertSame(3, $this->multiStream->getPosition());
     }
 
     public function testReadingFromSingleStreamReadsThatStream(): void
@@ -230,7 +230,7 @@ class MultiStreamTest extends TestCase
             ->with(3)
             ->willReturn('foo');
         $this->multiStream->addStream($stream);
-        $this->assertEquals('foo', $this->multiStream->read(3));
+        $this->assertSame('foo', $this->multiStream->read(3));
     }
 
     public function testReadingToEndWithMultipleStreamsReadsFromCurrentPositionToEnd(): void
@@ -242,16 +242,16 @@ class MultiStreamTest extends TestCase
         $this->multiStream->addStream($stream1);
         $this->multiStream->addStream($stream2);
         $this->multiStream->rewind();
-        $this->assertEquals('abcde', $this->multiStream->readToEnd());
+        $this->assertSame('abcde', $this->multiStream->readToEnd());
         $this->assertTrue($this->multiStream->isEof());
         $this->multiStream->seek(1);
-        $this->assertEquals('bcde', $this->multiStream->readToEnd());
+        $this->assertSame('bcde', $this->multiStream->readToEnd());
         $this->assertTrue($this->multiStream->isEof());
     }
 
     public function testReadingToEndWithNoStreamsReturnsEmptyString(): void
     {
-        $this->assertEquals('', $this->multiStream->readToEnd());
+        $this->assertSame('', $this->multiStream->readToEnd());
     }
 
     public function testReadingToEndWithSingleStreamReadsItToEnd(): void
@@ -260,7 +260,7 @@ class MultiStreamTest extends TestCase
         $stream->write('foo');
         $this->multiStream->addStream($stream);
         $this->multiStream->seek(1);
-        $this->assertEquals('oo', $this->multiStream->readToEnd());
+        $this->assertSame('oo', $this->multiStream->readToEnd());
         $this->assertTrue($this->multiStream->isEof());
     }
 
@@ -288,29 +288,29 @@ class MultiStreamTest extends TestCase
         $this->multiStream->addStream($stream3);
 
         $this->multiStream->seek(1);
-        $this->assertEquals(1, $stream1->getPosition());
-        $this->assertEquals(0, $stream2->getPosition());
-        $this->assertEquals(0, $stream3->getPosition());
+        $this->assertSame(1, $stream1->getPosition());
+        $this->assertSame(0, $stream2->getPosition());
+        $this->assertSame(0, $stream3->getPosition());
 
         $this->multiStream->seek(3);
-        $this->assertEquals(3, $stream1->getPosition());
-        $this->assertEquals(0, $stream2->getPosition());
-        $this->assertEquals(0, $stream3->getPosition());
+        $this->assertSame(3, $stream1->getPosition());
+        $this->assertSame(0, $stream2->getPosition());
+        $this->assertSame(0, $stream3->getPosition());
 
         $this->multiStream->seek(4);
-        $this->assertEquals(3, $stream1->getPosition());
-        $this->assertEquals(1, $stream2->getPosition());
-        $this->assertEquals(0, $stream3->getPosition());
+        $this->assertSame(3, $stream1->getPosition());
+        $this->assertSame(1, $stream2->getPosition());
+        $this->assertSame(0, $stream3->getPosition());
 
         $this->multiStream->seek(5);
-        $this->assertEquals(3, $stream1->getPosition());
-        $this->assertEquals(2, $stream2->getPosition());
-        $this->assertEquals(0, $stream3->getPosition());
+        $this->assertSame(3, $stream1->getPosition());
+        $this->assertSame(2, $stream2->getPosition());
+        $this->assertSame(0, $stream3->getPosition());
 
         $this->multiStream->seek(6);
-        $this->assertEquals(3, $stream1->getPosition());
-        $this->assertEquals(2, $stream2->getPosition());
-        $this->assertEquals(1, $stream3->getPosition());
+        $this->assertSame(3, $stream1->getPosition());
+        $this->assertSame(2, $stream2->getPosition());
+        $this->assertSame(1, $stream3->getPosition());
     }
 
     public function testSeekingWithSingleStreamSeeksToCorrectPosition(): void
@@ -319,11 +319,11 @@ class MultiStreamTest extends TestCase
         $stream->write('foobar');
         $this->multiStream->addStream($stream);
         $this->multiStream->seek(1);
-        $this->assertEquals(1, $stream->getPosition());
+        $this->assertSame(1, $stream->getPosition());
         $this->multiStream->seek(2, SEEK_CUR);
-        $this->assertEquals(3, $stream->getPosition());
+        $this->assertSame(3, $stream->getPosition());
         $this->multiStream->seek(-1, SEEK_END);
-        $this->assertEquals(5, $stream->getPosition());
+        $this->assertSame(5, $stream->getPosition());
     }
 
     public function testSeekingStreamWithUnknownLengthThrowsException(): void
@@ -374,7 +374,7 @@ class MultiStreamTest extends TestCase
         $stream2->seek(1);
         $this->multiStream->addStream($stream1);
         $this->multiStream->addStream($stream2);
-        $this->assertEquals('foobar', (string)$this->multiStream);
+        $this->assertSame('foobar', (string)$this->multiStream);
     }
 
     public function testToStringWithUnseekableStreamReturnsEmptyString(): void

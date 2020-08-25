@@ -186,7 +186,7 @@ class IntegrationTestCaseTest extends TestCase
     {
         $response = new Response(200);
         $this->integrationTests->assertCookieEquals('bar', $response, 'foo');
-        $this->assertEquals(
+        $this->assertSame(
             'Failed to assert that cookie foo has expected value',
             $this->integrationTests->getFailMessage()
         );
@@ -202,7 +202,7 @@ class IntegrationTestCaseTest extends TestCase
     {
         $response = new Response(200);
         $this->integrationTests->assertHasCookie($response, 'foo');
-        $this->assertEquals(
+        $this->assertSame(
             'Failed to assert that cookie foo is set',
             $this->integrationTests->getFailMessage()
         );
@@ -218,7 +218,7 @@ class IntegrationTestCaseTest extends TestCase
     {
         $response = new Response(200);
         $this->integrationTests->assertHasHeader($response, 'Foo');
-        $this->assertEquals(
+        $this->assertSame(
             'Failed to assert that header Foo is set',
             $this->integrationTests->getFailMessage()
         );
@@ -234,7 +234,7 @@ class IntegrationTestCaseTest extends TestCase
     {
         $response = new Response(200);
         $this->integrationTests->assertHeaderEquals(['bar'], $response, 'Foo');
-        $this->assertEquals(
+        $this->assertSame(
             'No header value for Foo is set',
             $this->integrationTests->getFailMessage()
         );
@@ -250,7 +250,7 @@ class IntegrationTestCaseTest extends TestCase
     {
         $response = new Response(200);
         $this->integrationTests->assertHeaderMatchesRegex('/^bar$/', $response, 'Foo');
-        $this->assertEquals(
+        $this->assertSame(
             'No header value for Foo is set',
             $this->integrationTests->getFailMessage()
         );
@@ -289,7 +289,7 @@ class IntegrationTestCaseTest extends TestCase
             ->willReturn($response);
         $this->integrationTests->send($request);
         $this->integrationTests->assertParsedBodyEquals($this, $response);
-        $this->assertEquals(
+        $this->assertSame(
             'Failed to assert that the response body matches the expected value',
             $this->integrationTests->getFailMessage()
         );
@@ -336,7 +336,7 @@ class IntegrationTestCaseTest extends TestCase
             self::class,
             fn ($parsedBody) => false
         );
-        $this->assertEquals(
+        $this->assertSame(
             'Failed to assert that the response body passes the callback',
             $this->integrationTests->getFailMessage()
         );
@@ -352,7 +352,7 @@ class IntegrationTestCaseTest extends TestCase
     {
         $response = new Response(200);
         $this->integrationTests->assertStatusCodeEquals(500, $response);
-        $this->assertEquals(
+        $this->assertSame(
             'Expected status code 500, got 200',
             $this->integrationTests->getFailMessage()
         );

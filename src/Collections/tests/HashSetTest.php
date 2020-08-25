@@ -81,13 +81,13 @@ class HashSetTest extends TestCase
     {
         $object1 = new FakeObject();
         $object2 = new FakeObject();
-        $this->assertEquals(0, $this->set->count());
+        $this->assertSame(0, $this->set->count());
         $this->set->add($object1);
-        $this->assertEquals(1, $this->set->count());
+        $this->assertSame(1, $this->set->count());
         $this->set->add($object1);
-        $this->assertEquals(1, $this->set->count());
+        $this->assertSame(1, $this->set->count());
         $this->set->add($object2);
-        $this->assertEquals(2, $this->set->count());
+        $this->assertSame(2, $this->set->count());
     }
 
     public function testEqualButNotSameObjectsAreNotIntersected(): void
@@ -123,7 +123,7 @@ class HashSetTest extends TestCase
 
         foreach ($this->set as $key => $value) {
             // Make sure the hash keys aren't returned by the iterator
-            $this->assertTrue(\is_int($key));
+            $this->assertIsInt($key);
             $actualValues[] = $value;
         }
 

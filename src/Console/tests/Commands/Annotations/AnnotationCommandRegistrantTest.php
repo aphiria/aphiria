@@ -96,25 +96,25 @@ class AnnotationCommandRegistrantTest extends TestCase
 
         // Command assertions
         $command = $this->commands->getAllCommands()[0];
-        $this->assertEquals('foo', $command->name);
-        $this->assertEquals('command description', $command->description);
-        $this->assertEquals('command help text', $command->helpText);
+        $this->assertSame('foo', $command->name);
+        $this->assertSame('command description', $command->description);
+        $this->assertSame('command help text', $command->helpText);
 
         // Argument assertions
         $this->assertCount(1, $command->arguments);
         $arg1 = $command->arguments[0];
-        $this->assertEquals('arg1', $arg1->name);
-        $this->assertEquals(ArgumentTypes::REQUIRED, $arg1->type);
-        $this->assertEquals('arg1 description', $arg1->description);
-        $this->assertEquals('arg1 value', $arg1->defaultValue);
+        $this->assertSame('arg1', $arg1->name);
+        $this->assertSame(ArgumentTypes::REQUIRED, $arg1->type);
+        $this->assertSame('arg1 description', $arg1->description);
+        $this->assertSame('arg1 value', $arg1->defaultValue);
 
         // Option assertions
         $this->assertCount(1, $command->options);
         $opt1 = $command->options[0];
-        $this->assertEquals('opt1', $opt1->name);
-        $this->assertEquals('o', $opt1->shortName);
-        $this->assertEquals(OptionTypes::REQUIRED_VALUE, $opt1->type);
-        $this->assertEquals('opt1 description', $opt1->description);
-        $this->assertEquals('opt1 value', $opt1->defaultValue);
+        $this->assertSame('opt1', $opt1->name);
+        $this->assertSame('o', $opt1->shortName);
+        $this->assertSame(OptionTypes::REQUIRED_VALUE, $opt1->type);
+        $this->assertSame('opt1 description', $opt1->description);
+        $this->assertSame('opt1 value', $opt1->defaultValue);
     }
 }

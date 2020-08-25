@@ -46,7 +46,7 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo bar\\baz');
-        $this->assertEquals('bar\\baz', $input->arguments['arg']);
+        $this->assertSame('bar\\baz', $input->arguments['arg']);
     }
 
     public function testCompilingArgvInputIsCompiledCorrectly(): void
@@ -56,7 +56,7 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile(['foo', 'bar']);
-        $this->assertEquals('bar', $input->commandName);
+        $this->assertSame('bar', $input->commandName);
     }
 
     public function testCompilingArgumentShortOptionLongOption(): void
@@ -74,10 +74,10 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo bar -r --opt1=dave');
-        $this->assertEquals('foo', $input->commandName);
-        $this->assertEquals('bar', $input->arguments['arg']);
+        $this->assertSame('foo', $input->commandName);
+        $this->assertSame('bar', $input->arguments['arg']);
         $this->assertNull($input->options['opt2']);
-        $this->assertEquals('dave', $input->options['opt1']);
+        $this->assertSame('dave', $input->options['opt1']);
     }
 
     public function testCompilingArrayArgumentWithOptionalArgumentAfterIsAcceptable(): void
@@ -97,7 +97,7 @@ class InputCompilerTest extends TestCase
         );
         $input = $this->compiler->compile('foo bar baz');
         $this->assertEquals(['bar', 'baz'], $input->arguments['arg1']);
-        $this->assertEquals('blah', $input->arguments['arg2']);
+        $this->assertSame('blah', $input->arguments['arg2']);
     }
 
     public function testCompilingArrayArgumentCreatesListOfValues(): void
@@ -141,7 +141,7 @@ class InputCompilerTest extends TestCase
     {
         $this->commands->registerCommand(new Command('foo', [], [], ''), 'Handler');
         $input = $this->compiler->compile(['name' => 'foo']);
-        $this->assertEquals('foo', $input->commandName);
+        $this->assertSame('foo', $input->commandName);
     }
 
     public function testCompilingArrayLongOptionWithEqualsSign(): void
@@ -158,7 +158,7 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo --opt=dave --opt=young');
-        $this->assertEquals('foo', $input->commandName);
+        $this->assertSame('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
         $this->assertEquals(['dave', 'young'], $input->options['opt']);
     }
@@ -177,7 +177,7 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo --opt dave --opt young');
-        $this->assertEquals('foo', $input->commandName);
+        $this->assertSame('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
         $this->assertEquals(['dave', 'young'], $input->options['opt']);
     }
@@ -194,7 +194,7 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo');
-        $this->assertEquals('foo', $input->commandName);
+        $this->assertSame('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
         $this->assertEquals([], $input->options);
     }
@@ -217,9 +217,9 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo --opt=dave');
-        $this->assertEquals('foo', $input->commandName);
+        $this->assertSame('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
-        $this->assertEquals('dave', $input->options['opt']);
+        $this->assertSame('dave', $input->options['opt']);
     }
 
     public function testCompilingLongOptionWithoutEqualsSign(): void
@@ -234,9 +234,9 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo --opt dave');
-        $this->assertEquals('foo', $input->commandName);
+        $this->assertSame('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
-        $this->assertEquals('dave', $input->options['opt']);
+        $this->assertSame('dave', $input->options['opt']);
     }
 
     public function testCompilingLongOptionWithoutEqualsSignWithArgumentAfter(): void
@@ -251,9 +251,9 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo --opt dave bar');
-        $this->assertEquals('foo', $input->commandName);
-        $this->assertEquals('bar', $input->arguments['arg']);
-        $this->assertEquals('dave', $input->options['opt']);
+        $this->assertSame('foo', $input->commandName);
+        $this->assertSame('bar', $input->arguments['arg']);
+        $this->assertSame('dave', $input->options['opt']);
     }
 
     public function testCompilingLongOptionWithoutEqualsSignWithQuotedValue(): void
@@ -271,10 +271,10 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile("foo --opt1 'dave' --opt2=\"young\"");
-        $this->assertEquals('foo', $input->commandName);
+        $this->assertSame('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
-        $this->assertEquals('dave', $input->options['opt1']);
-        $this->assertEquals('young', $input->options['opt2']);
+        $this->assertSame('dave', $input->options['opt1']);
+        $this->assertSame('young', $input->options['opt2']);
     }
 
 
@@ -294,10 +294,10 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo bar baz blah');
-        $this->assertEquals('foo', $input->commandName);
-        $this->assertEquals('bar', $input->arguments['arg1']);
-        $this->assertEquals('baz', $input->arguments['arg2']);
-        $this->assertEquals('blah', $input->arguments['arg3']);
+        $this->assertSame('foo', $input->commandName);
+        $this->assertSame('bar', $input->arguments['arg1']);
+        $this->assertSame('baz', $input->arguments['arg2']);
+        $this->assertSame('blah', $input->arguments['arg3']);
         $this->assertEquals([], $input->options);
     }
 
@@ -317,7 +317,7 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo -r -f -d');
-        $this->assertEquals('foo', $input->commandName);
+        $this->assertSame('foo', $input->commandName);
         $this->assertNull($input->options['opt1']);
         $this->assertNull($input->options['opt2']);
         $this->assertNull($input->options['opt3']);
@@ -340,7 +340,7 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo -rfd');
-        $this->assertEquals('foo', $input->commandName);
+        $this->assertSame('foo', $input->commandName);
         $this->assertNull($input->options['opt1']);
         $this->assertNull($input->options['opt2']);
         $this->assertNull($input->options['opt3']);
@@ -376,7 +376,7 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo');
-        $this->assertEquals('bar', $input->arguments['arg']);
+        $this->assertSame('bar', $input->arguments['arg']);
     }
 
     public function testCompilingRequiredArgumentsWithoutSpecifyingAllValuesThrowsException(): void
@@ -423,8 +423,8 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo bar');
-        $this->assertEquals('foo', $input->commandName);
-        $this->assertEquals('bar', $input->arguments['arg']);
+        $this->assertSame('foo', $input->commandName);
+        $this->assertSame('bar', $input->arguments['arg']);
         $this->assertEquals([], $input->options);
     }
 
@@ -440,7 +440,7 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo -r');
-        $this->assertEquals('foo', $input->commandName);
+        $this->assertSame('foo', $input->commandName);
         $this->assertNull($input->options['opt']);
         $this->assertEquals([], $input->arguments);
     }
@@ -460,7 +460,7 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo --opt1 --opt2');
-        $this->assertEquals('foo', $input->commandName);
+        $this->assertSame('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
         $this->assertEquals(null, $input->options['opt1']);
         $this->assertEquals(null, $input->options['opt2']);
@@ -470,7 +470,7 @@ class InputCompilerTest extends TestCase
     {
         $this->commands->registerCommand(new Command('foo'), 'Handler');
         $input = $this->compiler->compile('foo');
-        $this->assertEquals('foo', $input->commandName);
+        $this->assertSame('foo', $input->commandName);
     }
 
     public function testCompilingUnregisteredCommandThrowsException(): void
@@ -496,8 +496,8 @@ class InputCompilerTest extends TestCase
             'Handler'
         );
         $input = $this->compiler->compile('foo');
-        $this->assertEquals('foo value', $input->options['foo']);
-        $this->assertEquals('bar value', $input->options['bar']);
+        $this->assertSame('foo value', $input->options['foo']);
+        $this->assertSame('bar value', $input->options['bar']);
         $this->assertFalse(isset($input->options['baz']));
     }
 

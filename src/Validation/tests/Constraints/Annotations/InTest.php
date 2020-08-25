@@ -35,7 +35,7 @@ class InTest extends TestCase
     public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
     {
         $annotation = new In(['value' => [1], 'errorMessageId' => 'foo']);
-        $this->assertEquals('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
+        $this->assertSame('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
     }
 
     public function testNotSettingArrayValuesThrowsException(): void
@@ -48,7 +48,7 @@ class InTest extends TestCase
     public function testSettingErrorMessageId(): void
     {
         $annotation = new In(['value' => [123], 'errorMessageId' => 'foo']);
-        $this->assertEquals('foo', $annotation->errorMessageId);
+        $this->assertSame('foo', $annotation->errorMessageId);
     }
 
     public function testValuesCanBeSetViaValue(): void

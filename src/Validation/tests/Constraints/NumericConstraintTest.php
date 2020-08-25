@@ -27,7 +27,7 @@ class NumericConstraintTest extends TestCase
     public function testGettingErrorMessageId(): void
     {
         $constraint = new NumericConstraint('foo');
-        $this->assertEquals('foo', $constraint->getErrorMessageId());
+        $this->assertSame('foo', $constraint->getErrorMessageId());
     }
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void
