@@ -28,8 +28,8 @@ class UriTest extends TestCase
     public function testAbsolutePathUriReturnsPathAndQueryString(): void
     {
         $uri = new Uri('/foo?bar=baz');
-        $this->assertEquals('/foo', $uri->getPath());
-        $this->assertEquals('bar=baz', $uri->getQueryString());
+        $this->assertSame('/foo', $uri->getPath());
+        $this->assertSame('bar=baz', $uri->getQueryString());
     }
 
     public function testDoubleSlashPathWithoutAuthorityThrowsException(): void
@@ -42,7 +42,7 @@ class UriTest extends TestCase
     public function testFragmentReservedCharsAreEncoded(): void
     {
         $uri = new Uri('#dave=%young');
-        $this->assertEquals('dave=%25young', $uri->getFragment());
+        $this->assertSame('dave=%25young', $uri->getFragment());
     }
 
     public function authorityWithNoUserPasswordProvider(): array
@@ -83,53 +83,53 @@ class UriTest extends TestCase
     {
         $uriWithUserAndPassword = new Uri($uri);
         $this->assertEquals($expectedUri, $uriWithUserAndPassword->getAuthority());
-        $this->assertEquals('host', $uriWithUserAndPassword->getAuthority(false));
+        $this->assertSame('host', $uriWithUserAndPassword->getAuthority(false));
     }
 
     public function testGettingFragment(): void
     {
-        $this->assertEquals('fragment', $this->uri->getFragment());
+        $this->assertSame('fragment', $this->uri->getFragment());
     }
 
     public function testGettingHost(): void
     {
-        $this->assertEquals('host', $this->uri->getHost());
+        $this->assertSame('host', $this->uri->getHost());
     }
 
     public function testGettingPassword(): void
     {
-        $this->assertEquals('password', $this->uri->getPassword());
+        $this->assertSame('password', $this->uri->getPassword());
     }
 
     public function testGettingPath(): void
     {
-        $this->assertEquals('/path', $this->uri->getPath());
+        $this->assertSame('/path', $this->uri->getPath());
     }
 
     public function testGettingPort(): void
     {
-        $this->assertEquals(80, $this->uri->getPort());
+        $this->assertSame(80, $this->uri->getPort());
     }
 
     public function testGettingQueryString(): void
     {
-        $this->assertEquals('query', $this->uri->getQueryString());
+        $this->assertSame('query', $this->uri->getQueryString());
     }
 
     public function testGettingScheme(): void
     {
-        $this->assertEquals('http', $this->uri->getScheme());
+        $this->assertSame('http', $this->uri->getScheme());
     }
 
     public function testGettingUser(): void
     {
-        $this->assertEquals('user', $this->uri->getUser());
+        $this->assertSame('user', $this->uri->getUser());
     }
 
     public function testHostIsLowerCased(): void
     {
         $uri = new Uri('http://FOO.COM');
-        $this->assertEquals('foo.com', $uri->getHost());
+        $this->assertSame('foo.com', $uri->getHost());
     }
 
     public function testInvalidSchemeThrowsException(): void
@@ -167,31 +167,31 @@ class UriTest extends TestCase
     public function testPathReservedCharsAreEncoded(): void
     {
         $uri = new Uri('/%path');
-        $this->assertEquals('/%25path', $uri->getPath());
+        $this->assertSame('/%25path', $uri->getPath());
     }
 
     public function testQueryStringReservedCharsAreEncoded(): void
     {
         $uri = new Uri('?dave=%young');
-        $this->assertEquals('dave=%25young', $uri->getQueryString());
+        $this->assertSame('dave=%25young', $uri->getQueryString());
     }
 
     public function testSchemeIsLowerCased(): void
     {
         $uri = new Uri('HTTP://foo.com');
-        $this->assertEquals('http', $uri->getScheme());
+        $this->assertSame('http', $uri->getScheme());
     }
 
     public function testToStringWithAllPartsIsCreatedCorrectly(): void
     {
         $uri = new Uri('http://user:password@host:8080/path?query#fragment');
-        $this->assertEquals('http://user:password@host:8080/path?query#fragment', (string)$uri);
+        $this->assertSame('http://user:password@host:8080/path?query#fragment', (string)$uri);
     }
 
     public function testToStringWithFragmentStringIncludesFragment(): void
     {
         $uri = new Uri('http://host#fragment');
-        $this->assertEquals('http://host#fragment', (string)$uri);
+        $this->assertSame('http://host#fragment', (string)$uri);
     }
 
     public function httpUriProvider(): array
@@ -214,30 +214,30 @@ class UriTest extends TestCase
     public function testToStringWithNoSchemedDoesNotIncludeThatValue(): void
     {
         $uri = new Uri('host');
-        $this->assertEquals('host', (string)$uri);
+        $this->assertSame('host', (string)$uri);
     }
 
     public function testToStringWithNoUserPasswordDoesNotIncludeThoseValues(): void
     {
         $uri = new Uri('http://host');
-        $this->assertEquals('http://host', (string)$uri);
+        $this->assertSame('http://host', (string)$uri);
     }
 
     public function testToStringWithQueryStringIncludesQueryString(): void
     {
         $uri = new Uri('http://host?query');
-        $this->assertEquals('http://host?query', (string)$uri);
+        $this->assertSame('http://host?query', (string)$uri);
     }
 
     public function testToStringWithUserPasswordIncludesThoseValues(): void
     {
         $uri = new Uri('http://user:password@host');
-        $this->assertEquals('http://user:password@host', (string)$uri);
+        $this->assertSame('http://user:password@host', (string)$uri);
     }
 
     public function testToStringWithUserButNoPasswordOnlyIncludesUser(): void
     {
         $uri = new Uri('http://user@host');
-        $this->assertEquals('http://user@host', (string)$uri);
+        $this->assertSame('http://user@host', (string)$uri);
     }
 }

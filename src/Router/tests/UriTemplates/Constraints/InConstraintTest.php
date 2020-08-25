@@ -19,7 +19,7 @@ class InConstraintTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {
-        $this->assertEquals('in', InConstraint::getSlug());
+        $this->assertSame('in', InConstraint::getSlug());
     }
 
     public function testValueInArrayPasses(): void

@@ -57,8 +57,8 @@ class GlobalExceptionHandlerTest extends TestCase
             $this->globalExceptionHandler->handleError(E_ERROR, 'foo');
             $this->fail('Expected error to be thrown as exception');
         } catch (ErrorException $ex) {
-            $this->assertEquals(E_ERROR, $ex->getSeverity());
-            $this->assertEquals('foo', $ex->getMessage());
+            $this->assertSame(E_ERROR, $ex->getSeverity());
+            $this->assertSame('foo', $ex->getMessage());
         }
     }
 
@@ -118,11 +118,11 @@ class GlobalExceptionHandlerTest extends TestCase
         foreach ($errors as $error) {
             $globalExceptionHandler->handleShutdown($error);
             $this->assertInstanceOf(FatalErrorException::class, $globalExceptionHandler->handledException);
-            $this->assertEquals($error['message'], $globalExceptionHandler->handledException->getMessage());
+            $this->assertSame($error['message'], $globalExceptionHandler->handledException->getMessage());
             $this->assertEquals($error['type'], $globalExceptionHandler->handledException->getCode());
-            $this->assertEquals(0, $globalExceptionHandler->handledException->getSeverity());
-            $this->assertEquals($error['file'], $globalExceptionHandler->handledException->getFile());
-            $this->assertEquals($error['line'], $globalExceptionHandler->handledException->getLine());
+            $this->assertSame(0, $globalExceptionHandler->handledException->getSeverity());
+            $this->assertSame($error['file'], $globalExceptionHandler->handledException->getFile());
+            $this->assertSame($error['line'], $globalExceptionHandler->handledException->getLine());
         }
     }
 }

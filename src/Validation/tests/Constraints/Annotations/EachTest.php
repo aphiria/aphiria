@@ -37,7 +37,7 @@ class EachTest extends TestCase
     public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
     {
         $annotation = new Each(['value' => $this->createMock(IConstraintAnnotation::class), 'errorMessageId' => 'foo']);
-        $this->assertEquals('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
+        $this->assertSame('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
     }
 
     public function testNotSettingArrayOfConstraintsThrowsException(): void
@@ -60,7 +60,7 @@ class EachTest extends TestCase
             'value' => [$this->createMock(IConstraintAnnotation::class)],
             'errorMessageId' => 'foo'
         ]);
-        $this->assertEquals('foo', $annotation->errorMessageId);
+        $this->assertSame('foo', $annotation->errorMessageId);
     }
 
     public function testSettingSingleConstraintIsAccepted(): void

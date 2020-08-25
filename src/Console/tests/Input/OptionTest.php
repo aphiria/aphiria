@@ -58,22 +58,22 @@ class OptionTest extends TestCase
 
     public function testGettingDefaultValue(): void
     {
-        $this->assertEquals('bar', $this->option->defaultValue);
+        $this->assertSame('bar', $this->option->defaultValue);
     }
 
     public function testGettingDescription(): void
     {
-        $this->assertEquals('Foo option', $this->option->description);
+        $this->assertSame('Foo option', $this->option->description);
     }
 
     public function testGettingName(): void
     {
-        $this->assertEquals('foo', $this->option->name);
+        $this->assertSame('foo', $this->option->name);
     }
 
     public function testGettingShortName(): void
     {
-        $this->assertEquals('f', $this->option->shortName);
+        $this->assertSame('f', $this->option->shortName);
     }
 
     public function testNonAlphabeticShortName(): void

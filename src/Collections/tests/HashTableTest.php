@@ -31,14 +31,14 @@ class HashTableTest extends TestCase
     public function testAddingRangeMakesEachValueRetrievable(): void
     {
         $this->hashTable->addRange([new KeyValuePair('foo', 'bar'), new KeyValuePair('baz', 'blah')]);
-        $this->assertEquals('bar', $this->hashTable->get('foo'));
-        $this->assertEquals('blah', $this->hashTable->get('baz'));
+        $this->assertSame('bar', $this->hashTable->get('foo'));
+        $this->assertSame('blah', $this->hashTable->get('baz'));
     }
 
     public function testAddingValueMakesItRetrievable(): void
     {
         $this->hashTable->add('foo', 'bar');
-        $this->assertEquals('bar', $this->hashTable->get('foo'));
+        $this->assertSame('bar', $this->hashTable->get('foo'));
     }
 
     public function testCheckingOffsetExists(): void
@@ -77,15 +77,15 @@ class HashTableTest extends TestCase
     public function testCount(): void
     {
         $this->hashTable->add('foo', 'bar');
-        $this->assertEquals(1, $this->hashTable->count());
+        $this->assertSame(1, $this->hashTable->count());
         $this->hashTable->add('bar', 'foo');
-        $this->assertEquals(2, $this->hashTable->count());
+        $this->assertSame(2, $this->hashTable->count());
     }
 
     public function testGetting(): void
     {
         $this->hashTable->add('foo', 'bar');
-        $this->assertEquals('bar', $this->hashTable->get('foo'));
+        $this->assertSame('bar', $this->hashTable->get('foo'));
     }
 
     public function testGettingAbsentVariableThrowsException(): void
@@ -97,7 +97,7 @@ class HashTableTest extends TestCase
     public function testGettingAsArray(): void
     {
         $this->hashTable->add('foo', 'bar');
-        $this->assertEquals('bar', $this->hashTable['foo']);
+        $this->assertSame('bar', $this->hashTable['foo']);
     }
 
     /**
@@ -131,7 +131,7 @@ class HashTableTest extends TestCase
 
         foreach ($this->hashTable as $key => $value) {
             // Make sure the hash keys aren't returned by the iterator
-            $this->assertTrue(\is_int($key));
+            $this->assertIsInt($key);
             $actualValues[] = $value;
         }
 
@@ -159,8 +159,8 @@ class HashTableTest extends TestCase
     public function testPassingParametersInConstructor(): void
     {
         $hashTable = new HashTable([new KeyValuePair('foo', 'bar'), new KeyValuePair('baz', 'blah')]);
-        $this->assertEquals('bar', $hashTable->get('foo'));
-        $this->assertEquals('blah', $hashTable->get('baz'));
+        $this->assertSame('bar', $hashTable->get('foo'));
+        $this->assertSame('blah', $hashTable->get('baz'));
     }
 
     public function testRemoveKey(): void
@@ -173,7 +173,7 @@ class HashTableTest extends TestCase
     public function testSettingItem(): void
     {
         $this->hashTable['foo'] = 'bar';
-        $this->assertEquals('bar', $this->hashTable['foo']);
+        $this->assertSame('bar', $this->hashTable['foo']);
     }
 
     public function testToArray(): void
@@ -197,7 +197,7 @@ class HashTableTest extends TestCase
         $this->assertNull($value);
         $this->hashTable->add('foo', 'bar');
         $this->assertTrue($this->hashTable->tryGet('foo', $value));
-        $this->assertEquals('bar', $value);
+        $this->assertSame('bar', $value);
     }
 
     public function testUnsetting(): void

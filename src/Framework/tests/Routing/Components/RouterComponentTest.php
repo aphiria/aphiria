@@ -48,7 +48,7 @@ class RouterComponentTest extends TestCase
         $this->routerComponent->withRoutes(fn (RouteCollectionBuilder $routeBuilders) => $routeBuilders->get('/foo')->mapsToMethod('Foo', 'bar'));
         $this->routerComponent->build();
         $this->assertCount(1, $this->routes->getAll());
-        $this->assertEquals('/foo', $this->routes->getAll()[0]->uriTemplate->pathTemplate);
+        $this->assertSame('/foo', $this->routes->getAll()[0]->uriTemplate->pathTemplate);
     }
 
     public function testBuildWithAnnotationsAddsAnnotationRegistrant(): void

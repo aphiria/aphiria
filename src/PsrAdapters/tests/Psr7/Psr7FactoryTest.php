@@ -53,7 +53,7 @@ class Psr7FactoryTest extends TestCase
         $psr7Body = Psr7Stream::create('foo');
         $psr7Request = new Psr7Request('GET', 'https://example.com', [], $psr7Body);
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
-        $this->assertEquals('foo', $aphiriaRequest->getBody()->readAsString());
+        $this->assertSame('foo', $aphiriaRequest->getBody()->readAsString());
     }
 
     public function testCreateAphiriaRequestSetsParsedBody(): void
@@ -79,15 +79,15 @@ class Psr7FactoryTest extends TestCase
             ->withAttribute('foo', 'bar')
             ->withAttribute('baz', 'blah');
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
-        $this->assertEquals('bar', $aphiriaRequest->getProperties()->get('foo'));
-        $this->assertEquals('blah', $aphiriaRequest->getProperties()->get('baz'));
+        $this->assertSame('bar', $aphiriaRequest->getProperties()->get('foo'));
+        $this->assertSame('blah', $aphiriaRequest->getProperties()->get('baz'));
     }
 
     public function testCreateAphiriaRequestSetsSameUri(): void
     {
         $psr7Request = new Psr7Request('GET', 'https://dave:abc123@example.com?foo=bar#baz=blah');
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
-        $this->assertEquals('https://dave:abc123@example.com?foo=bar#baz=blah', (string)$aphiriaRequest->getUri());
+        $this->assertSame('https://dave:abc123@example.com?foo=bar#baz=blah', (string)$aphiriaRequest->getUri());
     }
 
     public function testCreateAphiriaRequestWithFileUploadsCreatesMultipartRequest(): void
@@ -105,21 +105,21 @@ class Psr7FactoryTest extends TestCase
         $aphiriaMultipartBody = (new RequestParser())->readAsMultipart($aphiriaRequest);
         $aphiriaMultipartBodyParts = $aphiriaMultipartBody->getParts();
         $this->assertCount(3, $aphiriaMultipartBodyParts);
-        $this->assertEquals('foo', $aphiriaMultipartBodyParts[0]->getBody()->readAsString());
-        $this->assertEquals('image/png', $aphiriaMultipartBodyParts[0]->getHeaders()->getFirst('Content-Type'));
-        $this->assertEquals(
+        $this->assertSame('foo', $aphiriaMultipartBodyParts[0]->getBody()->readAsString());
+        $this->assertSame('image/png', $aphiriaMultipartBodyParts[0]->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame(
             'name=foo; filename=foo.png',
             $aphiriaMultipartBodyParts[0]->getHeaders()->getFirst('Content-Disposition')
         );
-        $this->assertEquals('bar', $aphiriaMultipartBodyParts[1]->getBody()->readAsString());
+        $this->assertSame('bar', $aphiriaMultipartBodyParts[1]->getBody()->readAsString());
         $this->assertFalse($aphiriaMultipartBodyParts[1]->getHeaders()->containsKey('Content-Type'));
-        $this->assertEquals(
+        $this->assertSame(
             'name=bar; filename=bar.png',
             $aphiriaMultipartBodyParts[1]->getHeaders()->getFirst('Content-Disposition')
         );
-        $this->assertEquals('baz', $aphiriaMultipartBodyParts[2]->getBody()->readAsString());
+        $this->assertSame('baz', $aphiriaMultipartBodyParts[2]->getBody()->readAsString());
         $this->assertFalse($aphiriaMultipartBodyParts[2]->getHeaders()->containsKey('Content-Type'));
-        $this->assertEquals(
+        $this->assertSame(
             'name=baz',
             $aphiriaMultipartBodyParts[2]->getHeaders()->getFirst('Content-Disposition')
         );
@@ -130,7 +130,7 @@ class Psr7FactoryTest extends TestCase
         $psr7Body = Psr7Stream::create('foo');
         $psr7Response = new Psr7Response(200, [], $psr7Body);
         $aphiriaResponse = $this->psr7Factory->createAphiriaResponse($psr7Response);
-        $this->assertEquals('foo', $aphiriaResponse->getBody()->readAsString());
+        $this->assertSame('foo', $aphiriaResponse->getBody()->readAsString());
     }
 
     public function testCreateAphiriaResponseSetsSameHeaders(): void
@@ -145,27 +145,27 @@ class Psr7FactoryTest extends TestCase
     {
         $psr7Response = new Psr7Response(200);
         $aphiriaResponse = $this->psr7Factory->createAphiriaResponse($psr7Response);
-        $this->assertEquals(1.1, $aphiriaResponse->getProtocolVersion());
+        $this->assertSame('1.1', $aphiriaResponse->getProtocolVersion());
     }
 
     public function testCreateAphiriaResponseSetsSameReasonPhrase(): void
     {
         $psr7Response = new Psr7Response(200);
         $aphiriaResponse = $this->psr7Factory->createAphiriaResponse($psr7Response);
-        $this->assertEquals('OK', $aphiriaResponse->getReasonPhrase());
+        $this->assertSame('OK', $aphiriaResponse->getReasonPhrase());
     }
 
     public function testCreateAphiriaResponseSetsSameStatusCode(): void
     {
         $psr7Response = new Psr7Response(200);
         $aphiriaResponse = $this->psr7Factory->createAphiriaResponse($psr7Response);
-        $this->assertEquals(200, $aphiriaResponse->getStatusCode());
+        $this->assertSame(200, $aphiriaResponse->getStatusCode());
     }
 
     public function testCreateAphiriaStreamCreatesStreamWithSameContents(): void
     {
         $psr7Stream = Psr7Stream::create('foo');
-        $this->assertEquals('foo', (string)$this->psr7Factory->createAphiriaStream($psr7Stream));
+        $this->assertSame('foo', (string)$this->psr7Factory->createAphiriaStream($psr7Stream));
     }
 
     public function testCreateAphiriaUriCreatesUriWithAllProperties(): void
@@ -173,7 +173,7 @@ class Psr7FactoryTest extends TestCase
         $expectedUri = 'https://dave:abc123@example.com/path?foo=bar#baz=blah';
         $psr7Uri = new Psr7Uri($expectedUri);
         $aphiriaUri = $this->psr7Factory->createAphiriaUri($psr7Uri);
-        $this->assertEquals($expectedUri, (string)$aphiriaUri);
+        $this->assertSame($expectedUri, (string)$aphiriaUri);
     }
 
     public function testCreatePsr7RequestForMultipartRequestSetsSameUploadedFiles(): void
@@ -203,14 +203,14 @@ class Psr7FactoryTest extends TestCase
         /** @var UploadedFileInterface[] $psr7UploadedFiles */
         $psr7UploadedFiles = $psr7Request->getUploadedFiles();
         $this->assertCount(2, $psr7UploadedFiles);
-        $this->assertEquals('file1contents', (string)$psr7UploadedFiles['file1']->getStream());
-        $this->assertEquals('foo.png', $psr7UploadedFiles['file1']->getClientFilename());
-        $this->assertEquals('image/png', $psr7UploadedFiles['file1']->getClientMediaType());
-        $this->assertEquals(\UPLOAD_ERR_OK, $psr7UploadedFiles['file1']->getError());
-        $this->assertEquals('file2contents', (string)$psr7UploadedFiles['file2']->getStream());
-        $this->assertEquals('bar.png', $psr7UploadedFiles['file2']->getClientFilename());
-        $this->assertEquals('image/png', $psr7UploadedFiles['file2']->getClientMediaType());
-        $this->assertEquals(\UPLOAD_ERR_OK, $psr7UploadedFiles['file2']->getError());
+        $this->assertSame('file1contents', (string)$psr7UploadedFiles['file1']->getStream());
+        $this->assertSame('foo.png', $psr7UploadedFiles['file1']->getClientFilename());
+        $this->assertSame('image/png', $psr7UploadedFiles['file1']->getClientMediaType());
+        $this->assertSame(\UPLOAD_ERR_OK, $psr7UploadedFiles['file1']->getError());
+        $this->assertSame('file2contents', (string)$psr7UploadedFiles['file2']->getStream());
+        $this->assertSame('bar.png', $psr7UploadedFiles['file2']->getClientFilename());
+        $this->assertSame('image/png', $psr7UploadedFiles['file2']->getClientMediaType());
+        $this->assertSame(\UPLOAD_ERR_OK, $psr7UploadedFiles['file2']->getError());
     }
 
     public function testCreatePsr7RequestForMultipartRequestWithoutNameDefaultsToUsingIndex(): void
@@ -233,10 +233,10 @@ class Psr7FactoryTest extends TestCase
         /** @var UploadedFileInterface[] $psr7UploadedFiles */
         $psr7UploadedFiles = $psr7Request->getUploadedFiles();
         $this->assertCount(1, $psr7UploadedFiles);
-        $this->assertEquals('filecontents', (string)$psr7UploadedFiles['0']->getStream());
-        $this->assertEquals('foo.png', $psr7UploadedFiles['0']->getClientFilename());
-        $this->assertEquals('image/png', $psr7UploadedFiles['0']->getClientMediaType());
-        $this->assertEquals(\UPLOAD_ERR_OK, $psr7UploadedFiles['0']->getError());
+        $this->assertSame('filecontents', (string)$psr7UploadedFiles['0']->getStream());
+        $this->assertSame('foo.png', $psr7UploadedFiles['0']->getClientFilename());
+        $this->assertSame('image/png', $psr7UploadedFiles['0']->getClientMediaType());
+        $this->assertSame(\UPLOAD_ERR_OK, $psr7UploadedFiles['0']->getError());
     }
 
     public function testCreatePsr7RequestSetsParsedBodyIfOneIsPresent(): void
@@ -252,7 +252,7 @@ class Psr7FactoryTest extends TestCase
         $aphiriaBody = new StringBody('foo');
         $aphiriaRequest = new Request('GET', new Uri('https://example.com'), null, $aphiriaBody);
         $psr7Request = $this->psr7Factory->createPsr7Request($aphiriaRequest);
-        $this->assertEquals('foo', (string)$psr7Request->getBody());
+        $this->assertSame('foo', (string)$psr7Request->getBody());
     }
 
     public function testCreatePsr7RequestSetsSameCookies(): void
@@ -280,7 +280,7 @@ class Psr7FactoryTest extends TestCase
     {
         $aphiriaRequest = new Request('GET', new Uri('https://example.com'));
         $psr7Request = $this->psr7Factory->createPsr7Request($aphiriaRequest);
-        $this->assertEquals('GET', $psr7Request->getMethod());
+        $this->assertSame('GET', $psr7Request->getMethod());
     }
 
     public function testCreatePsr7RequestSetsSameProperties(): void
@@ -303,7 +303,7 @@ class Psr7FactoryTest extends TestCase
     {
         $aphiriaRequest = new Request('GET', new Uri('https://example.com'));
         $psr7Request = $this->psr7Factory->createPsr7Request($aphiriaRequest);
-        $this->assertEquals('https://example.com', (string)$psr7Request->getUri());
+        $this->assertSame('https://example.com', (string)$psr7Request->getUri());
     }
 
     public function testCreatePsr7ResponseSetsSameBody(): void
@@ -311,7 +311,7 @@ class Psr7FactoryTest extends TestCase
         $aphiriaBody = new StringBody('foo');
         $aphiriaResponse = new Response(200, null, $aphiriaBody);
         $psr7Response = $this->psr7Factory->createPsr7Response($aphiriaResponse);
-        $this->assertEquals('foo', (string)$psr7Response->getBody());
+        $this->assertSame('foo', (string)$psr7Response->getBody());
     }
 
     public function testCreatePsr7ResponseSetsSameHeaders(): void
@@ -329,21 +329,21 @@ class Psr7FactoryTest extends TestCase
     {
         $aphiriaResponse = new Response(200);
         $psr7Response = $this->psr7Factory->createPsr7Response($aphiriaResponse);
-        $this->assertEquals(1.1, $psr7Response->getProtocolVersion());
+        $this->assertSame('1.1', $psr7Response->getProtocolVersion());
     }
 
     public function testCreatePsr7ResponseSetsSameReasonPhrase(): void
     {
         $aphiriaResponse = new Response(200);
         $psr7Response = $this->psr7Factory->createPsr7Response($aphiriaResponse);
-        $this->assertEquals('OK', $psr7Response->getReasonPhrase());
+        $this->assertSame('OK', $psr7Response->getReasonPhrase());
     }
 
     public function testCreatePsr7ResponseSetsSameStatusCode(): void
     {
         $aphiriaResponse = new Response(200);
         $psr7Response = $this->psr7Factory->createPsr7Response($aphiriaResponse);
-        $this->assertEquals(200, $psr7Response->getStatusCode());
+        $this->assertSame(200, $psr7Response->getStatusCode());
     }
 
     public function testCreatePsr7StreamCreatesWorkingStream(): void
@@ -352,8 +352,8 @@ class Psr7FactoryTest extends TestCase
         $aphiriaStream->write('foo');
         $psr7Stream = $this->psr7Factory->createPsr7Stream($aphiriaStream);
         $psr7Stream->rewind();
-        $this->assertEquals(3, $psr7Stream->getSize());
-        $this->assertEquals('foo', $psr7Stream->getContents());
+        $this->assertSame(3, $psr7Stream->getSize());
+        $this->assertSame('foo', $psr7Stream->getContents());
     }
 
     public function testCreatePsr7UploadedFilesForMultipartRequestCreatesUploadedFiles(): void
@@ -381,14 +381,14 @@ class Psr7FactoryTest extends TestCase
         );
         $psr7UploadedFiles = $this->psr7Factory->createPsr7UploadedFiles($aphiriaRequest);
         $this->assertCount(2, $psr7UploadedFiles);
-        $this->assertEquals('file1contents', (string)$psr7UploadedFiles['file1']->getStream());
-        $this->assertEquals('foo.png', $psr7UploadedFiles['file1']->getClientFilename());
-        $this->assertEquals('image/png', $psr7UploadedFiles['file1']->getClientMediaType());
-        $this->assertEquals(\UPLOAD_ERR_OK, $psr7UploadedFiles['file1']->getError());
-        $this->assertEquals('file2contents', (string)$psr7UploadedFiles['file2']->getStream());
-        $this->assertEquals('bar.png', $psr7UploadedFiles['file2']->getClientFilename());
-        $this->assertEquals('image/png', $psr7UploadedFiles['file2']->getClientMediaType());
-        $this->assertEquals(\UPLOAD_ERR_OK, $psr7UploadedFiles['file2']->getError());
+        $this->assertSame('file1contents', (string)$psr7UploadedFiles['file1']->getStream());
+        $this->assertSame('foo.png', $psr7UploadedFiles['file1']->getClientFilename());
+        $this->assertSame('image/png', $psr7UploadedFiles['file1']->getClientMediaType());
+        $this->assertSame(\UPLOAD_ERR_OK, $psr7UploadedFiles['file1']->getError());
+        $this->assertSame('file2contents', (string)$psr7UploadedFiles['file2']->getStream());
+        $this->assertSame('bar.png', $psr7UploadedFiles['file2']->getClientFilename());
+        $this->assertSame('image/png', $psr7UploadedFiles['file2']->getClientMediaType());
+        $this->assertSame(\UPLOAD_ERR_OK, $psr7UploadedFiles['file2']->getError());
     }
 
     public function testCreatePsr7UploadedFilesForMultipartRequestWithPartThatHasEmptyBodyGetsSkipped(): void
@@ -442,6 +442,6 @@ class Psr7FactoryTest extends TestCase
         $expectedUri = 'https://dave:abc123@example.com/path?foo=bar#baz=blah';
         $aphiriaUri = new Uri($expectedUri);
         $psr7Uri = $this->psr7Factory->createPsr7Uri($aphiriaUri);
-        $this->assertEquals($expectedUri, (string)$psr7Uri);
+        $this->assertSame($expectedUri, (string)$psr7Uri);
     }
 }

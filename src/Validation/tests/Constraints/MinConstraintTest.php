@@ -28,7 +28,7 @@ class MinConstraintTest extends TestCase
     public function testGettingErrorMessageId(): void
     {
         $constraint = new MinConstraint(1, true, 'foo');
-        $this->assertEquals('foo', $constraint->getErrorMessageId());
+        $this->assertSame('foo', $constraint->getErrorMessageId());
     }
 
     public function testGettingErrorPlaceholders(): void

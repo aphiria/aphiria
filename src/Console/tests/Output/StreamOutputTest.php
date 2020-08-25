@@ -54,7 +54,7 @@ class StreamOutputTest extends TestCase
     {
         fwrite($this->inputStream, 'foo');
         rewind($this->inputStream);
-        $this->assertEquals('foo', $this->output->readLine());
+        $this->assertSame('foo', $this->output->readLine());
     }
 
     public function testReadingLineThatIsNotAtEofThrowsException(): void
@@ -71,27 +71,27 @@ class StreamOutputTest extends TestCase
     {
         $this->output->write(['foo', 'bar']);
         rewind($this->output->getOutputStream());
-        $this->assertEquals('foobar', stream_get_contents($this->output->getOutputStream()));
+        $this->assertSame('foobar', stream_get_contents($this->output->getOutputStream()));
     }
 
     public function testWriteOnString(): void
     {
         $this->output->write('foo');
         rewind($this->output->getOutputStream());
-        $this->assertEquals('foo', stream_get_contents($this->output->getOutputStream()));
+        $this->assertSame('foo', stream_get_contents($this->output->getOutputStream()));
     }
 
     public function testWritelnOnArray(): void
     {
         $this->output->writeln(['foo', 'bar']);
         rewind($this->output->getOutputStream());
-        $this->assertEquals('foo' . PHP_EOL . 'bar' . PHP_EOL, stream_get_contents($this->output->getOutputStream()));
+        $this->assertSame('foo' . PHP_EOL . 'bar' . PHP_EOL, stream_get_contents($this->output->getOutputStream()));
     }
 
     public function testWritelnOnString(): void
     {
         $this->output->writeln('foo');
         rewind($this->output->getOutputStream());
-        $this->assertEquals('foo' . PHP_EOL, stream_get_contents($this->output->getOutputStream()));
+        $this->assertSame('foo' . PHP_EOL, stream_get_contents($this->output->getOutputStream()));
     }
 }

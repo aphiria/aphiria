@@ -185,7 +185,7 @@ class LazyBinderDispatcherTest extends TestCase
         /** @var ClassContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(ClassContainerBinding::class, $bindingFromBinder);
-        $this->assertEquals(Foo::class, $bindingFromBinder->getConcreteClass());
+        $this->assertSame(Foo::class, $bindingFromBinder->getConcreteClass());
     }
 
     public function testDispatchingWithNoCacheForcesCollectionCreation(): void
@@ -204,7 +204,7 @@ class LazyBinderDispatcherTest extends TestCase
         /** @var ClassContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(ClassContainerBinding::class, $bindingFromBinder);
-        $this->assertEquals(Foo::class, $bindingFromBinder->getConcreteClass());
+        $this->assertSame(Foo::class, $bindingFromBinder->getConcreteClass());
     }
 
     /**

@@ -93,7 +93,7 @@ class RouterTest extends TestCase
             ->willReturn($matchingResult);
         $this->router->handle($request);
         // Test that the middleware actually set the headers
-        $this->assertEquals('bar', $middleware->getAttribute('foo'));
+        $this->assertSame('bar', $middleware->getAttribute('foo'));
     }
 
     public function testInvalidMiddlewareThrowsExceptionThatIsCaught(): void
@@ -142,7 +142,7 @@ class RouterTest extends TestCase
             $this->router->handle($request);
         } catch (HttpException $ex) {
             $exceptionThrown = true;
-            $this->assertEquals('GET', $ex->getResponse()->getHeaders()->getFirst('Allow'));
+            $this->assertSame('GET', $ex->getResponse()->getHeaders()->getFirst('Allow'));
         }
 
         $this->assertTrue($exceptionThrown, 'Failed to throw exception');
@@ -207,7 +207,7 @@ class RouterTest extends TestCase
             $this->router->handle($request);
             $this->fail('Failed to throw exception');
         } catch (HttpException $ex) {
-            $this->assertEquals(HttpStatusCodes::HTTP_NOT_FOUND, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::HTTP_NOT_FOUND, $ex->getResponse()->getStatusCode());
         }
     }
 

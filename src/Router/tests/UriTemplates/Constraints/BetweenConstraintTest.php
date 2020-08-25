@@ -20,7 +20,7 @@ class BetweenConstraintTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {
-        $this->assertEquals('between', BetweenConstraint::getSlug());
+        $this->assertSame('between', BetweenConstraint::getSlug());
     }
 
     public function testInclusiveFlagsAreRespected(): void

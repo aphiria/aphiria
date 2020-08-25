@@ -34,7 +34,7 @@ class MediaTypeFormatterMatchTest extends TestCase
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeHeaderValue = new ContentTypeHeaderValue('foo/bar');
         $match = new MediaTypeFormatterMatch($formatter, 'baz/blah', $mediaTypeHeaderValue);
-        $this->assertEquals('baz/blah', $match->getMediaType());
+        $this->assertSame('baz/blah', $match->getMediaType());
     }
 
     public function testGettingMediaTypeHeaderReturnsSameOneInConstructor(): void

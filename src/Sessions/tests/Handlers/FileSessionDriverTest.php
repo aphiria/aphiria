@@ -69,12 +69,12 @@ class FileSessionDriverTest extends TestCase
     public function testGettingReturnsDataWrittenToFile(): void
     {
         \file_put_contents(self::BASE_PATH . '/foo', 'bar');
-        $this->assertEquals('bar', $this->driver->get('foo'));
+        $this->assertSame('bar', $this->driver->get('foo'));
     }
 
     public function testSettingDataWritesItToFile(): void
     {
         $this->driver->set('foo', 'bar');
-        $this->assertEquals('bar', \file_get_contents(self::BASE_PATH . '/foo'));
+        $this->assertSame('bar', \file_get_contents(self::BASE_PATH . '/foo'));
     }
 }

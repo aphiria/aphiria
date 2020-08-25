@@ -47,6 +47,6 @@ class NodeTest extends TestCase
     public function testGettingValue(): void
     {
         $node = new AstNode('foo');
-        $this->assertEquals('foo', $node->value);
+        $this->assertSame('foo', $node->value);
     }
 }

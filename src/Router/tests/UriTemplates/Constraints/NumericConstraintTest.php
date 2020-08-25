@@ -28,7 +28,7 @@ class NumericConstraintTest extends TestCase
 
     public function testCorrectSlugIsReturned(): void
     {
-        $this->assertEquals('numeric', NumericConstraint::getSlug());
+        $this->assertSame('numeric', NumericConstraint::getSlug());
     }
 
     public function testNonAlphaCharsFail(): void

@@ -38,7 +38,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
     public function testBestEncodingCanMatchMismatchingCasesInAcceptCharset(): void
     {
         $this->headers->add('Accept-Charset', 'UTF-8');
-        $this->assertEquals('utf-8', $this->matcher->getBestEncodingMatch(['utf-8'], $this->request));
+        $this->assertSame('utf-8', $this->matcher->getBestEncodingMatch(['utf-8'], $this->request));
     }
 
     public function testBestEncodingCanMatchMismatchingCasesInAcceptHeader(): void
@@ -49,7 +49,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
             $this->request,
             $this->headerParser->parseAcceptHeader($this->headers)[0]
         );
-        $this->assertEquals('utf-8', $encoding);
+        $this->assertSame('utf-8', $encoding);
     }
 
     public function testBestEncodingComesFromAcceptCharsetHeaderIfItAndAcceptHeaderHaveSupportedEncodings(): void
@@ -61,14 +61,14 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
             $this->request,
             $this->headerParser->parseAcceptHeader($this->headers)[0]
         );
-        $this->assertEquals('utf-16', $encoding);
+        $this->assertSame('utf-16', $encoding);
     }
 
     public function testBestEncodingComesFromAcceptCharsetHeaderIfNoAcceptHeaderIsPresent(): void
     {
         $this->headers->add('Accept-Charset', 'utf-16');
         $encoding = $this->matcher->getBestEncodingMatch(['utf-16'], $this->request);
-        $this->assertEquals('utf-16', $encoding);
+        $this->assertSame('utf-16', $encoding);
     }
 
     public function testBestEncodingComesFromAcceptHeaderIfAcceptCharsetHeaderIsNotPresent(): void
@@ -79,14 +79,14 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
             $this->request,
             $this->headerParser->parseAcceptHeader($this->headers)[0]
         );
-        $this->assertEquals('utf-16', $encoding);
+        $this->assertSame('utf-16', $encoding);
     }
 
     public function testBestEncodingComesFromWildcardInAcceptCharsetHeader(): void
     {
         $this->headers->add('Accept-Charset', '*');
         $encoding = $this->matcher->getBestEncodingMatch(['utf-8'], $this->request);
-        $this->assertEquals('utf-8', $encoding);
+        $this->assertSame('utf-8', $encoding);
     }
 
     public function testBestEncodingComesFromWildcardInContentTypeHeader(): void
@@ -97,7 +97,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
             $this->request,
             $this->headerParser->parseContentTypeHeader($this->headers)
         );
-        $this->assertEquals('utf-8', $encoding);
+        $this->assertSame('utf-8', $encoding);
     }
 
     public function testBestEncodingIsChosenInOrderOfQualityScore(): void
@@ -106,7 +106,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $this->headers->add('Accept-Charset', 'utf-16; q=0.5', true);
         $this->headers->add('Accept-Charset', 'utf-32; q=0.6', true);
         $encoding = $this->matcher->getBestEncodingMatch(['utf-8', 'utf-16', 'utf-32'], $this->request);
-        $this->assertEquals('utf-32', $encoding);
+        $this->assertSame('utf-32', $encoding);
     }
 
     public function testBestEncodingIsFirstSupportedOneIfBothHaveEqualScoresAndAreNotWildcards(): void
@@ -114,7 +114,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $this->headers->add('Accept-Charset', 'utf-8');
         $this->headers->add('Accept-Charset', 'utf-16', true);
         $encoding = $this->matcher->getBestEncodingMatch(['utf-8', 'utf-16'], $this->request);
-        $this->assertEquals('utf-8', $encoding);
+        $this->assertSame('utf-8', $encoding);
     }
 
     public function testBestEncodingIsFirstSupportedOneIfBothHaveEqualScoresAndAreWildcards(): void
@@ -122,7 +122,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $this->headers->add('Accept-Charset', '*');
         $this->headers->add('Accept-Charset', '*', true);
         $encoding = $this->matcher->getBestEncodingMatch(['utf-8'], $this->request);
-        $this->assertEquals('utf-8', $encoding);
+        $this->assertSame('utf-8', $encoding);
     }
 
     public function testBestEncodingIsNonWildcardIfBothHaveEqualsScoresAndWildcardIsBeforeNon(): void
@@ -130,7 +130,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $this->headers->add('Accept-Charset', '*');
         $this->headers->add('Accept-Charset', 'utf-8', true);
         $encoding = $this->matcher->getBestEncodingMatch(['utf-8'], $this->request);
-        $this->assertEquals('utf-8', $encoding);
+        $this->assertSame('utf-8', $encoding);
     }
 
     public function testBestEncodingIsNonWildcardIfBothHaveEqualsScoresAndWildcardisAfterNon(): void
@@ -138,7 +138,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $this->headers->add('Accept-Charset', 'utf-8');
         $this->headers->add('Accept-Charset', '*', true);
         $encoding = $this->matcher->getBestEncodingMatch(['utf-8'], $this->request);
-        $this->assertEquals('utf-8', $encoding);
+        $this->assertSame('utf-8', $encoding);
     }
 
     public function testBestEncodingIsNullWhenFormatterDoesNotSupportCharsetFromContentTypeHeader(): void

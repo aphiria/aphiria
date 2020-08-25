@@ -21,7 +21,7 @@ class TokenTest extends TestCase
     public function testPropertiesAreSetInConstructor(): void
     {
         $token = new Token(TokenTypes::T_TEXT, 'foo');
-        $this->assertEquals(TokenTypes::T_TEXT, $token->type);
-        $this->assertEquals('foo', $token->value);
+        $this->assertSame(TokenTypes::T_TEXT, $token->type);
+        $this->assertSame('foo', $token->value);
     }
 }

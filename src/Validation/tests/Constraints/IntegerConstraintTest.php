@@ -29,7 +29,7 @@ class IntegerConstraintTest extends TestCase
     public function testGettingErrorMessageId(): void
     {
         $constraint = new IntegerConstraint('foo');
-        $this->assertEquals('foo', $constraint->getErrorMessageId());
+        $this->assertSame('foo', $constraint->getErrorMessageId());
     }
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void

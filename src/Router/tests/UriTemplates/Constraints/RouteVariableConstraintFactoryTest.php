@@ -57,8 +57,8 @@ class RouteVariableConstraintFactoryTest extends TestCase
     {
         $expectedConstraint = $this->createMock(IRouteVariableConstraint::class);
         $factory = function ($foo, $bar) use ($expectedConstraint) {
-            $this->assertEquals(1, $foo);
-            $this->assertEquals(2, $bar);
+            $this->assertSame(1, $foo);
+            $this->assertSame(2, $bar);
 
             return $expectedConstraint;
         };

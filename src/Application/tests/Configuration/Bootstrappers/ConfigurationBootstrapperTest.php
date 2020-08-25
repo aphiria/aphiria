@@ -35,6 +35,6 @@ class ConfigurationBootstrapperTest extends TestCase
         $expectedConfiguration = new HashTableConfiguration(['foo' => 'bar']);
         $this->globalConfigurationBuilder->withConfigurationSource($expectedConfiguration);
         $this->configurationBootstrapper->bootstrap();
-        $this->assertEquals('bar', GlobalConfiguration::getString('foo'));
+        $this->assertSame('bar', GlobalConfiguration::getString('foo'));
     }
 }

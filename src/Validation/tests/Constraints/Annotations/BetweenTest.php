@@ -35,7 +35,7 @@ class BetweenTest extends TestCase
     public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
     {
         $annotation = new Between(['min' => 2, 'max' => 2, 'errorMessageId' => 'foo']);
-        $this->assertEquals('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
+        $this->assertSame('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
     }
 
     public function testMaxIsInclusiveCanBeSetViaConstructor(): void
@@ -53,7 +53,7 @@ class BetweenTest extends TestCase
     public function testMaxIsSetViaConstructor(): void
     {
         $annotation = new Between(['min' => 1, 'max' => 2]);
-        $this->assertEquals(2, $annotation->max);
+        $this->assertSame(2, $annotation->max);
     }
 
     public function testMinIsInclusiveCanBeSetViaConstructor(): void
@@ -71,7 +71,7 @@ class BetweenTest extends TestCase
     public function testMinIsSetViaConstructor(): void
     {
         $annotation = new Between(['min' => 1, 'max' => 2]);
-        $this->assertEquals(1, $annotation->min);
+        $this->assertSame(1, $annotation->min);
     }
 
     public function testNotSettingMaxThrowsException(): void
@@ -105,6 +105,6 @@ class BetweenTest extends TestCase
     public function testSettingErrorMessageId(): void
     {
         $annotation = new Between(['min' => 1, 'max' => 2, 'errorMessageId' => 'foo']);
-        $this->assertEquals('foo', $annotation->errorMessageId);
+        $this->assertSame('foo', $annotation->errorMessageId);
     }
 }

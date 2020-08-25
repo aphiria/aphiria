@@ -20,7 +20,7 @@ class InConstraintTest extends TestCase
     public function testGettingErrorMessageId(): void
     {
         $constraint = new InConstraint([], 'foo');
-        $this->assertEquals('foo', $constraint->getErrorMessageId());
+        $this->assertSame('foo', $constraint->getErrorMessageId());
     }
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void

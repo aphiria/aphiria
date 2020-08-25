@@ -28,13 +28,13 @@ class JsonConfigurationFileReaderTest extends TestCase
     public function testReadingConfigurationCreatesConfigurationFromContentsOfJsonFile(): void
     {
         $configuration = $this->reader->readConfiguration(__DIR__ . '/files/configuration.json');
-        $this->assertEquals('bar', $configuration->getString('foo'));
+        $this->assertSame('bar', $configuration->getString('foo'));
     }
 
     public function testReadingConfigurationWithCustomDelimiterAllowsAccessWithThatDelimiter(): void
     {
         $configuration = $this->reader->readConfiguration(__DIR__ . '/files/configuration-delimiter.json', ':');
-        $this->assertEquals('baz', $configuration->getString('foo:bar'));
+        $this->assertSame('baz', $configuration->getString('foo:bar'));
     }
 
     public function testReadingInvalidJsonThrowsException(): void

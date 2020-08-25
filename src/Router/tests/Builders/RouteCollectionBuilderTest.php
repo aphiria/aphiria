@@ -72,7 +72,7 @@ class RouteCollectionBuilderTest extends TestCase
         });
         $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
-        $this->assertEquals('bar.baz', $routes[0]->uriTemplate->hostTemplate);
+        $this->assertSame('bar.baz', $routes[0]->uriTemplate->hostTemplate);
     }
 
     public function testGroupOptionsDoNotApplyToRoutesAddedOutsideGroup(): void
@@ -86,8 +86,8 @@ class RouteCollectionBuilderTest extends TestCase
             ->mapsToMethod('c2', 'm2');
         $routes = $this->builder->build()->getAll();
         $this->assertCount(2, $routes);
-        $this->assertEquals('/gp/rp1', $routes[0]->uriTemplate->pathTemplate);
-        $this->assertEquals('/rp2', $routes[1]->uriTemplate->pathTemplate);
+        $this->assertSame('/gp/rp1', $routes[0]->uriTemplate->pathTemplate);
+        $this->assertSame('/rp2', $routes[1]->uriTemplate->pathTemplate);
     }
 
     public function testGroupMiddlewareAreMergedWithRouteMiddleware(): void
@@ -117,7 +117,7 @@ class RouteCollectionBuilderTest extends TestCase
         });
         $routes = $registry->build()->getAll();
         $this->assertCount(1, $routes);
-        $this->assertEquals('bar.foo.example.com', $routes[0]->uriTemplate->hostTemplate);
+        $this->assertSame('bar.foo.example.com', $routes[0]->uriTemplate->hostTemplate);
     }
 
     public function testGroupHostWithNoDotAndRouteHostWithTrailingDotHasDotBetweenThem(): void
@@ -129,7 +129,7 @@ class RouteCollectionBuilderTest extends TestCase
         });
         $routes = $registry->build()->getAll();
         $this->assertCount(1, $routes);
-        $this->assertEquals('foo.example.com', $routes[0]->uriTemplate->hostTemplate);
+        $this->assertSame('foo.example.com', $routes[0]->uriTemplate->hostTemplate);
     }
 
     public function testGroupHostWithNoDotAndRouteHostWithNoDosHasDotBetweenThem(): void
@@ -141,7 +141,7 @@ class RouteCollectionBuilderTest extends TestCase
         });
         $routes = $registry->build()->getAll();
         $this->assertCount(1, $routes);
-        $this->assertEquals('foo.example.com', $routes[0]->uriTemplate->hostTemplate);
+        $this->assertSame('foo.example.com', $routes[0]->uriTemplate->hostTemplate);
     }
 
     public function testGroupPathWithNoSlashAndRoutePathWithLeadingSlashHaveSlashBetweenThem(): void
@@ -153,7 +153,7 @@ class RouteCollectionBuilderTest extends TestCase
         });
         $routes = $registry->build()->getAll();
         $this->assertCount(1, $routes);
-        $this->assertEquals('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
+        $this->assertSame('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
     }
 
     public function testGroupPathWithNoSlashAndRoutePathWithNoSlashHaveSlashBetweenThem(): void
@@ -165,7 +165,7 @@ class RouteCollectionBuilderTest extends TestCase
         });
         $routes = $registry->build()->getAll();
         $this->assertCount(1, $routes);
-        $this->assertEquals('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
+        $this->assertSame('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
     }
 
     public function testHttpsOnlyGroupOverridesHttpsSettingInRoutes(): void
@@ -220,7 +220,7 @@ class RouteCollectionBuilderTest extends TestCase
         );
         $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
-        $this->assertEquals('/op/ip/rp', $routes[0]->uriTemplate->pathTemplate);
+        $this->assertSame('/op/ip/rp', $routes[0]->uriTemplate->pathTemplate);
         $this->assertContains($outerConstraints[0], $routes[0]->constraints);
         $this->assertContains($innerConstraints[0], $routes[0]->constraints);
         $expectedMiddlewareBindings = [
@@ -240,7 +240,7 @@ class RouteCollectionBuilderTest extends TestCase
         });
         $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
-        $this->assertEquals('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
+        $this->assertSame('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
     }
 
     public function testRouteAddsLeadingSlashToPath(): void
@@ -249,7 +249,7 @@ class RouteCollectionBuilderTest extends TestCase
             ->mapsToMethod('Foo', 'bar');
         $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
-        $this->assertEquals('/foo', $routes[0]->uriTemplate->pathTemplate);
+        $this->assertSame('/foo', $routes[0]->uriTemplate->pathTemplate);
     }
 
     public function testRouteBuilderIsCreatedWithAttributesToMatchParameter(): void

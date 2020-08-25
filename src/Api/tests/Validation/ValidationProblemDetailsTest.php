@@ -21,10 +21,10 @@ class ValidationProblemDetailsTest extends TestCase
     {
         $problemDetails = new ValidationProblemDetails(['error'], 'type', 'title', 'detail', 1, 'instance');
         $this->assertEquals(['error'], $problemDetails->errors);
-        $this->assertEquals('type', $problemDetails->type);
-        $this->assertEquals('title', $problemDetails->title);
-        $this->assertEquals('detail', $problemDetails->detail);
-        $this->assertEquals(1, $problemDetails->status);
-        $this->assertEquals('instance', $problemDetails->instance);
+        $this->assertSame('type', $problemDetails->type);
+        $this->assertSame('title', $problemDetails->title);
+        $this->assertSame('detail', $problemDetails->detail);
+        $this->assertSame(1, $problemDetails->status);
+        $this->assertSame('instance', $problemDetails->instance);
     }
 }

@@ -20,7 +20,7 @@ class TargetedContextTest extends TestCase
     public function testMethodsIndicateATargetedContext(): void
     {
         $context = new TargetedContext('foo');
-        $this->assertEquals('foo', $context->getTargetClass());
+        $this->assertSame('foo', $context->getTargetClass());
         $this->assertTrue($context->isTargeted());
         $this->assertFalse($context->isUniversal());
     }

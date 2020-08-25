@@ -47,14 +47,14 @@ class CookieTest extends TestCase
     {
         $domainName = 'www.domain.com';
         $this->cookie->setDomain($domainName);
-        $this->assertEquals($domainName, $this->cookie->getDomain());
+        $this->assertSame($domainName, $this->cookie->getDomain());
     }
 
     public function testSetPath(): void
     {
         $path = '/';
         $this->cookie->setPath($path);
-        $this->assertEquals($path, $this->cookie->getPath());
+        $this->assertSame($path, $this->cookie->getPath());
     }
 
     public function setValueProvider(): array
@@ -91,32 +91,32 @@ class CookieTest extends TestCase
 
     public function testGettingDomain(): void
     {
-        $this->assertEquals('foo.com', $this->cookie->getDomain());
+        $this->assertSame('foo.com', $this->cookie->getDomain());
     }
 
     public function testGettingMaxAge(): void
     {
-        $this->assertEquals(1234, $this->cookie->getMaxAge());
+        $this->assertSame(1234, $this->cookie->getMaxAge());
     }
 
     public function testGettingName(): void
     {
-        $this->assertEquals('name', $this->cookie->getName());
+        $this->assertSame('name', $this->cookie->getName());
     }
 
     public function testGettingPath(): void
     {
-        $this->assertEquals('/', $this->cookie->getPath());
+        $this->assertSame('/', $this->cookie->getPath());
     }
 
     public function testGettingSameSite(): void
     {
-        $this->assertEquals(Cookie::SAME_SITE_LAX, $this->cookie->getSameSite());
+        $this->assertSame(Cookie::SAME_SITE_LAX, $this->cookie->getSameSite());
     }
 
     public function testGettingValue(): void
     {
-        $this->assertEquals('value', $this->cookie->getValue());
+        $this->assertSame('value', $this->cookie->getValue());
     }
 
     public function testInvalidNameThrowsException(): void
@@ -129,6 +129,6 @@ class CookieTest extends TestCase
     public function testSettingMaxAge(): void
     {
         $this->cookie->setMaxAge(3600);
-        $this->assertEquals(3600, $this->cookie->getMaxAge());
+        $this->assertSame(3600, $this->cookie->getMaxAge());
     }
 }

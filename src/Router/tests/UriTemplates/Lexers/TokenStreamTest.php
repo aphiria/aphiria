@@ -94,8 +94,8 @@ class TokenStreamTest extends TestCase
 
     public function testLengthReturnsCountOfTokens(): void
     {
-        $this->assertEquals(1, (new TokenStream([new Token('foo', 'bar')]))->length);
-        $this->assertEquals(2, (new TokenStream([new Token('foo', 'bar'), new Token('baz', 'blah')]))->length);
+        $this->assertSame(1, (new TokenStream([new Token('foo', 'bar')]))->length);
+        $this->assertSame(2, (new TokenStream([new Token('foo', 'bar'), new Token('baz', 'blah')]))->length);
     }
 
     public function testPeekingAlwaysReturnsNextToken(): void

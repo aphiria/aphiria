@@ -26,16 +26,16 @@ class QuestionTest extends TestCase
 
     public function testFormattingAnswer(): void
     {
-        $this->assertEquals('foo', $this->question->formatAnswer('foo'));
+        $this->assertSame('foo', $this->question->formatAnswer('foo'));
     }
 
     public function testGettingDefaultAnswer(): void
     {
-        $this->assertEquals('foo', $this->question->defaultAnswer);
+        $this->assertSame('foo', $this->question->defaultAnswer);
     }
 
     public function testGettingQuestion(): void
     {
-        $this->assertEquals('Dummy question', $this->question->text);
+        $this->assertSame('Dummy question', $this->question->text);
     }
 }

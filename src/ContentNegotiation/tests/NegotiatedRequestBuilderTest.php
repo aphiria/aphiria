@@ -107,7 +107,7 @@ class NegotiatedRequestBuilderTest extends TestCase
             ->withBody($rawBody)
             ->build();
         $this->assertSame($expectedStream, $request->getBody()->readAsStream());
-        $this->assertEquals('application/json', $request->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame('application/json', $request->getHeaders()->getFirst('Content-Type'));
     }
 
     public function testWithBodyWithNullBodySetsBodyToNull(): void

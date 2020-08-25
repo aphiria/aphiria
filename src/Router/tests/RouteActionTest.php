@@ -20,7 +20,7 @@ class RouteActionTest extends TestCase
     public function testClassAndMethodNamesAreSetInConstructor(): void
     {
         $action = new RouteAction('Foo', 'bar');
-        $this->assertEquals('Foo', $action->className);
-        $this->assertEquals('bar', $action->methodName);
+        $this->assertSame('Foo', $action->className);
+        $this->assertSame('bar', $action->methodName);
     }
 }

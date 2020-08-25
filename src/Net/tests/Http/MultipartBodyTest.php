@@ -26,7 +26,7 @@ class MultipartBodyTest extends TestCase
     public function testGettingBoundaryReturnsBoundarySpecifiedInConstructor(): void
     {
         $body = new MultipartBody([], 'foo');
-        $this->assertEquals('foo', $body->getBoundary());
+        $this->assertSame('foo', $body->getBoundary());
     }
 
     public function testGettingBoundaryReturnsUuidWhenNoneSpecifiedInConstructor(): void
@@ -106,7 +106,7 @@ class MultipartBodyTest extends TestCase
          * stream 2
          * \r\n--{boundary}--
          */
-        $this->assertEquals(5 + 4+ 1+ 7 + 4 + 2 + 9, $body->getLength());
+        $this->assertSame(5 + 4+ 1+ 7 + 4 + 2 + 9, $body->getLength());
     }
 
     public function testGettingPartsReturnsParts(): void
@@ -122,7 +122,7 @@ class MultipartBodyTest extends TestCase
     public function testNoPartsResultsInOnlyHeaderAndFooter(): void
     {
         $body = new MultipartBody([], '123');
-        $this->assertEquals("--123\r\n--123--", (string)$body);
+        $this->assertSame("--123\r\n--123--", (string)$body);
     }
 
     public function testPartsAreWrittenToStreamWithBoundaries(): void
@@ -132,7 +132,7 @@ class MultipartBodyTest extends TestCase
             $this->createMultipartBodyPart(['Oh' => 'hi'], 'mark')
         ];
         $body = new MultipartBody($parts, '123');
-        $this->assertEquals("--123\r\nFoo: bar\r\n\r\nbaz\r\n--123\r\nOh: hi\r\n\r\nmark\r\n--123--", (string)$body);
+        $this->assertSame("--123\r\nFoo: bar\r\n\r\nbaz\r\n--123\r\nOh: hi\r\n\r\nmark\r\n--123--", (string)$body);
     }
 
     public function testReadingAsStreamReturnsAMultiStream(): void
@@ -151,7 +151,7 @@ class MultipartBodyTest extends TestCase
             $this->createMultipartBodyPart(['Foo' => 'bar'], 'baz')
         ];
         $body = new MultipartBody($parts, '123');
-        $this->assertEquals("--123\r\nFoo: bar\r\n\r\nbaz\r\n--123--", (string)$body);
+        $this->assertSame("--123\r\nFoo: bar\r\n\r\nbaz\r\n--123--", (string)$body);
     }
 
     /**

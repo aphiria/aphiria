@@ -27,7 +27,7 @@ class StreamBodyTest extends TestCase
             ->method('__toString')
             ->willReturn('foo');
         $body = new StreamBody($stream);
-        $this->assertEquals('foo', (string)$body);
+        $this->assertSame('foo', (string)$body);
     }
 
     public function testGettingLengthReturnsUnderlyingStreamLength(): void
@@ -43,7 +43,7 @@ class StreamBodyTest extends TestCase
             ->method('getLength')
             ->willReturn(1);
         $definedLengthBody = new StreamBody($definedLengthStream);
-        $this->assertEquals(1, $definedLengthBody->getLength());
+        $this->assertSame(1, $definedLengthBody->getLength());
     }
 
     public function testReadingAsStreamReturnsUnderlyingStream(): void
@@ -65,7 +65,7 @@ class StreamBodyTest extends TestCase
             ->method('__toString')
             ->willReturn('foo');
         $body = new StreamBody($stream);
-        $this->assertEquals('foo', $body->readAsString());
+        $this->assertSame('foo', $body->readAsString());
     }
 
     /**

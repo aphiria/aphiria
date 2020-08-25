@@ -43,7 +43,7 @@ class AcceptMediaTypeHeaderValueTest extends TestCase
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('q', '.5')]);
         $value = new AcceptMediaTypeHeaderValue('foo/bar', $parameters);
-        $this->assertEquals(.5, $value->getQuality());
+        $this->assertSame(.5, $value->getQuality());
     }
 
     public function testQualityDefaultsToOne(): void
@@ -55,9 +55,9 @@ class AcceptMediaTypeHeaderValueTest extends TestCase
     public function testTypeWithSuffixSetsTypeSubTypeAndSuffixesCorrectly(): void
     {
         $value = new AcceptMediaTypeHeaderValue('application/foo+json', null);
-        $this->assertEquals('application', $value->getType());
-        $this->assertEquals('foo+json', $value->getSubType());
-        $this->assertEquals('foo', $value->getSubTypeWithoutSuffix());
-        $this->assertEquals('json', $value->getSuffix());
+        $this->assertSame('application', $value->getType());
+        $this->assertSame('foo+json', $value->getSubType());
+        $this->assertSame('foo', $value->getSubTypeWithoutSuffix());
+        $this->assertSame('json', $value->getSuffix());
     }
 }

@@ -126,7 +126,7 @@ class SessionTest extends TestCase
             0
         );
         $actualResponse = $middleware->handle($this->request, $this->next);
-        $this->assertEquals(
+        $this->assertSame(
             'session=foo; Max-Age=3600; Path=%2Fpath; Domain=example.com; Secure; HttpOnly; SameSite=lax',
             $actualResponse->getHeaders()->getFirst('Set-Cookie')
         );

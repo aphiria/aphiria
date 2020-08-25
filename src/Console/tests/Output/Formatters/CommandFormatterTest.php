@@ -41,7 +41,7 @@ class CommandFormatterTest extends TestCase
             [],
             ''
         );
-        $this->assertEquals('foo bar [baz] blah1...blahN', $this->formatter->format($command));
+        $this->assertSame('foo bar [baz] blah1...blahN', $this->formatter->format($command));
     }
 
     public function testFormattingCommandWithMultipleArguments(): void
@@ -55,7 +55,7 @@ class CommandFormatterTest extends TestCase
             [],
             ''
         );
-        $this->assertEquals('foo bar baz', $this->formatter->format($command));
+        $this->assertSame('foo bar baz', $this->formatter->format($command));
     }
 
     public function testFormattingCommandWithNoArgumentsOrOptions(): void
@@ -66,7 +66,7 @@ class CommandFormatterTest extends TestCase
             [],
             'Foo command'
         );
-        $this->assertEquals('foo', $this->formatter->format($command));
+        $this->assertSame('foo', $this->formatter->format($command));
     }
 
     public function testFormattingCommandWithOneArgument(): void
@@ -79,7 +79,7 @@ class CommandFormatterTest extends TestCase
             [],
             'Foo command'
         );
-        $this->assertEquals('foo bar', $this->formatter->format($command));
+        $this->assertSame('foo bar', $this->formatter->format($command));
     }
 
     public function testFormattingCommandWithOneOptionWithDefaultValue(): void
@@ -92,7 +92,7 @@ class CommandFormatterTest extends TestCase
             ],
             'Foo command'
         );
-        $this->assertEquals('foo [--bar=yes|-b]', $this->formatter->format($command));
+        $this->assertSame('foo [--bar=yes|-b]', $this->formatter->format($command));
     }
 
     public function testFormattingCommandWithOneOptionWithDefaultValueButNoShortName(): void
@@ -105,7 +105,7 @@ class CommandFormatterTest extends TestCase
             ],
             'Foo command'
         );
-        $this->assertEquals('foo [--bar=yes]', $this->formatter->format($command));
+        $this->assertSame('foo [--bar=yes]', $this->formatter->format($command));
     }
 
     public function testFormattingCommandWithOneOptionWithoutShortName(): void
@@ -118,7 +118,7 @@ class CommandFormatterTest extends TestCase
             ],
             'Foo command'
         );
-        $this->assertEquals('foo [--bar]', $this->formatter->format($command));
+        $this->assertSame('foo [--bar]', $this->formatter->format($command));
     }
 
     public function testFormattingCommandWithOneOptionalArgument(): void
@@ -131,7 +131,7 @@ class CommandFormatterTest extends TestCase
             [],
             'Foo command'
         );
-        $this->assertEquals('foo [bar]', $this->formatter->format($command));
+        $this->assertSame('foo [bar]', $this->formatter->format($command));
     }
 
     public function testFormattingCommandWithOptionalArrayArgument(): void
@@ -144,6 +144,6 @@ class CommandFormatterTest extends TestCase
             [],
             'Foo command'
         );
-        $this->assertEquals('foo [blah1]...[blahN]', $this->formatter->format($command));
+        $this->assertSame('foo [blah1]...[blahN]', $this->formatter->format($command));
     }
 }

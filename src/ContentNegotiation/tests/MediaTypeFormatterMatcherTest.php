@@ -50,7 +50,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter2, $match->getFormatter());
-        $this->assertEquals('text/html', $match->getMediaType());
+        $this->assertSame('text/html', $match->getMediaType());
     }
 
     public function testBestFormatterCanMatchWithWildcardType(): void
@@ -65,7 +65,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter1, $match->getFormatter());
-        $this->assertEquals('application/json', $match->getMediaType());
+        $this->assertSame('application/json', $match->getMediaType());
     }
 
     public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoreAndHaveNoWildcards(): void
@@ -81,7 +81,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $this->headers->add('Accept', 'text/json', true);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter1, $match->getFormatter());
-        $this->assertEquals('application/json', $match->getMediaType());
+        $this->assertSame('application/json', $match->getMediaType());
     }
 
     public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoresAndOneHasWildcardType(): void
@@ -96,7 +96,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $this->headers->add('Accept', 'application/*', true);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter, $match->getFormatter());
-        $this->assertEquals('application/json', $match->getMediaType());
+        $this->assertSame('application/json', $match->getMediaType());
     }
 
     public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoreWildcardSubTypes(): void
@@ -111,7 +111,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $this->headers->add('Accept', 'application/*', true);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter, $match->getFormatter());
-        $this->assertEquals('application/json', $match->getMediaType());
+        $this->assertSame('application/json', $match->getMediaType());
     }
 
     public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoreAndOneHasWilcardSubTypeAndOtherDoesNot(): void
@@ -126,7 +126,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $this->headers->add('Accept', 'application/json', true);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter, $match->getFormatter());
-        $this->assertEquals('application/json', $match->getMediaType());
+        $this->assertSame('application/json', $match->getMediaType());
     }
 
     public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoreWildcardTypes(): void
@@ -141,7 +141,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $this->headers->add('Accept', '*/*', true);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter, $match->getFormatter());
-        $this->assertEquals('application/json', $match->getMediaType());
+        $this->assertSame('application/json', $match->getMediaType());
     }
 
     public function testBestFormatterIsSelectedByMatchingSupportedMediaTypesInContentTypeHeader(): void
@@ -160,7 +160,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $match = $matcher->getBestRequestMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter2, $match->getFormatter());
-        $this->assertEquals('text/html', $match->getMediaType());
+        $this->assertSame('text/html', $match->getMediaType());
     }
 
     public function testBestFormatterMatchesMostSpecificMediaTypeWithEqualQualityMediaTypes(): void
@@ -186,7 +186,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2, $formatter3]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter3, $match->getFormatter());
-        $this->assertEquals('text/html', $match->getMediaType());
+        $this->assertSame('text/html', $match->getMediaType());
     }
 
     public function testBestFormatterMatchesWildcardSubTypeWithHigherQualityScoreThanSpecificMediaType(): void
@@ -201,7 +201,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $matcher = new MediaTypeFormatterMatcher([$formatter]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter, $match->getFormatter());
-        $this->assertEquals('text/plain', $match->getMediaType());
+        $this->assertSame('text/plain', $match->getMediaType());
     }
 
     public function testBestFormatterMatchesHigherQualityScoreWhenBothMediaTypesAreFullyQualified(): void
@@ -217,7 +217,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter2, $match->getFormatter());
-        $this->assertEquals('text/json', $match->getMediaType());
+        $this->assertSame('text/json', $match->getMediaType());
     }
 
     public function tesBestFormatterMatchesWildcardTypeWithHigherQualityScoreThanSpecificMediaType(): void
@@ -232,7 +232,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $matcher = new MediaTypeFormatterMatcher([$formatter]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter, $match->getFormatter());
-        $this->assertEquals('application/json', $match->getMediaType());
+        $this->assertSame('application/json', $match->getMediaType());
     }
 
     public function testBestFormatterThatMatchesZeroQualityMediaTypeReturnsNullMatch(): void
@@ -291,7 +291,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $match = $matcher->getBestRequestMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter2, $match->getFormatter());
-        $this->assertEquals('text/html', $match->getMediaType());
+        $this->assertSame('text/html', $match->getMediaType());
     }
 
     public function testBestResponseFormatterIsSkippedIfItCannotWriteType(): void
@@ -310,7 +310,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertSame($formatter2, $match->getFormatter());
-        $this->assertEquals('text/html', $match->getMediaType());
+        $this->assertSame('text/html', $match->getMediaType());
     }
 
     public function testExceptionIsThrownIfNoMediaTypeFormattersAreSpecified(): void

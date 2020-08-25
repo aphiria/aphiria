@@ -35,8 +35,8 @@ class GlobalConfigurationBuilderTest extends TestCase
         $this->builder->withConfigurationSource($configurationSource1)
             ->withConfigurationSource($configurationSource2)
             ->build();
-        $this->assertEquals('bar', GlobalConfiguration::getString('foo'));
-        $this->assertEquals('blah', GlobalConfiguration::getString('baz'));
+        $this->assertSame('bar', GlobalConfiguration::getString('foo'));
+        $this->assertSame('blah', GlobalConfiguration::getString('baz'));
     }
 
     public function testBuildRemovesExistingSources(): void
@@ -47,7 +47,7 @@ class GlobalConfigurationBuilderTest extends TestCase
             ->build();
         $value = null;
         $this->assertFalse(GlobalConfiguration::tryGetString('foo', $value));
-        $this->assertEquals('blah', GlobalConfiguration::getString('baz'));
+        $this->assertSame('blah', GlobalConfiguration::getString('baz'));
     }
 
     public function testWithEnvironmentVariablesAddsConfigurationSourceWithEnvironmentVariables(): void
@@ -57,7 +57,7 @@ class GlobalConfigurationBuilderTest extends TestCase
         $_ENV[$varName] = 'foo';
         $this->builder->withEnvironmentVariables()
             ->build();
-        $this->assertEquals('foo', GlobalConfiguration::getString($varName));
+        $this->assertSame('foo', GlobalConfiguration::getString($varName));
     }
 
     public function testWithEnvironmentVariablesIncludesVariablesSetAfterSourceIsAdded(): void
@@ -67,7 +67,7 @@ class GlobalConfigurationBuilderTest extends TestCase
         $varName = '__aphiria_test_' . __METHOD__;
         $_ENV[$varName] = 'foo';
         $this->builder->build();
-        $this->assertEquals('foo', GlobalConfiguration::getString($varName));
+        $this->assertSame('foo', GlobalConfiguration::getString($varName));
     }
 
     public function testWithJsonFileAddsConfigurationSourceFromContentsOfJsonFile(): void
@@ -77,7 +77,7 @@ class GlobalConfigurationBuilderTest extends TestCase
             $this->builder->withJsonFileConfigurationSource(__DIR__ . '/files/configuration.json')
         );
         $this->builder->build();
-        $this->assertEquals('bar', GlobalConfiguration::getString('foo'));
+        $this->assertSame('bar', GlobalConfiguration::getString('foo'));
     }
 
     public function testWithJsonFileThatContainsInvalidJsonThrowsException(): void
@@ -104,7 +104,7 @@ class GlobalConfigurationBuilderTest extends TestCase
             $this->builder->withJsonFileConfigurationSource(__DIR__ . '/files/configuration-delimiter.json', ':')
         );
         $this->builder->build();
-        $this->assertEquals('baz', GlobalConfiguration::getString('foo:bar'));
+        $this->assertSame('baz', GlobalConfiguration::getString('foo:bar'));
     }
 
     public function testWithPhpFileAddsConfigurationSourceFromContentsOfPhpFile(): void
@@ -114,7 +114,7 @@ class GlobalConfigurationBuilderTest extends TestCase
             $this->builder->withPhpFileConfigurationSource(__DIR__ . '/files/configuration.php')
         );
         $this->builder->build();
-        $this->assertEquals('bar', GlobalConfiguration::getString('foo'));
+        $this->assertSame('bar', GlobalConfiguration::getString('foo'));
     }
 
     public function testWithPhpFileDefersReadingOfFilesUntilBuild(): void
@@ -127,7 +127,7 @@ class GlobalConfigurationBuilderTest extends TestCase
         $this->builder->withPhpFileConfigurationSource(__DIR__ . '/files/configuration-env-var.php');
         \putenv('__APHIRIA_TEST=bar');
         $this->builder->build();
-        $this->assertEquals('bar', GlobalConfiguration::getString('foo'));
+        $this->assertSame('bar', GlobalConfiguration::getString('foo'));
     }
 
     public function testWithPhpFileThatContainsInvalidPhpThrowsException(): void
@@ -154,6 +154,6 @@ class GlobalConfigurationBuilderTest extends TestCase
             $this->builder->withPhpFileConfigurationSource(__DIR__ . '/files/configuration-delimiter.php', ':')
         );
         $this->builder->build();
-        $this->assertEquals('baz', GlobalConfiguration::getString('foo:bar'));
+        $this->assertSame('baz', GlobalConfiguration::getString('foo:bar'));
     }
 }
