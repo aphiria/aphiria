@@ -87,6 +87,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
      */
     protected function createAndBindApiExceptionRenderer(): IExceptionRenderer
     {
+        // TODO: Should probably switch the config value to be the TYPE of exception response factory to use
         $useProblemDetails = GlobalConfiguration::getBool('aphiria.exceptions.useProblemDetails');
         $exceptionRenderer = new ApiExceptionRenderer($useProblemDetails);
         $exceptionRenderer->registerManyResponseFactories([

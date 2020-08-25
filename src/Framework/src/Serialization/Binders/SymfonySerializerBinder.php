@@ -16,6 +16,7 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\Framework\Serialization\Normalizers\ProblemDetailsNormalizer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
@@ -74,6 +75,9 @@ final class SymfonySerializerBinder extends Binder
                     break;
                 case ArrayDenormalizer::class:
                     $normalizers[] = new ArrayDenormalizer();
+                    break;
+                case ProblemDetailsNormalizer::class:
+                    $normalizers[] = new ProblemDetailsNormalizer();
                     break;
             }
         }

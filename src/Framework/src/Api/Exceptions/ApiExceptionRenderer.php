@@ -34,8 +34,8 @@ use Exception;
  */
 class ApiExceptionRenderer implements IApiExceptionRenderer
 {
-    /** @var bool Whether or not to use problem details */
-    protected bool $useProblemDetails;
+    /** @var IExceptionResponseFactory The exception response factory */
+    protected IExceptionResponseFactory $exceptionResponseFactory;
     /** @var IRequest|null The current request, if there is one */
     protected ?IRequest $request;
     /** @var IResponseFactory|null The optional response factory */
@@ -46,18 +46,18 @@ class ApiExceptionRenderer implements IApiExceptionRenderer
     protected IResponseWriter $responseWriter;
 
     /**
-     * @param bool $useProblemDetails Whether or not to use problem details
+     * @param IExceptionResponseFactory|null $exceptionResponseFactory The exception response factory, or null if using the default
      * @param IRequest|null $request The current request, if there is one
      * @param IResponseFactory|null $responseFactory The optional response factory
      * @param IResponseWriter|null $responseWriter What is used to write the response
      */
     public function __construct(
-        bool $useProblemDetails = true,
+        IExceptionResponseFactory $exceptionResponseFactory = null,
         IRequest $request = null,
         IResponseFactory $responseFactory = null,
         IResponseWriter $responseWriter = null
     ) {
-        $this->useProblemDetails = $useProblemDetails;
+        $this->exceptionResponseFactory = $exceptionResponseFactory ?? new ProblemDetailsExceptionResponseFactory();
         $this->request = $request;
         $this->responseFactory = $responseFactory;
         $this->responseWriter = $responseWriter ?? new StreamResponseWriter();
@@ -72,11 +72,11 @@ class ApiExceptionRenderer implements IApiExceptionRenderer
     public function createResponse(Exception $ex): IResponse
     {
         try {
-            if ($this->request === null) {
-                return $this->createResponseWithoutRequest($ex);
+            if ($this->request === null || $this->responseFactory === null) {
+                return $this->exceptionResponseFactory->createResponseWithoutContext($ex);
             }
 
-            return $this->createResponseWithRequest($ex, $this->request);
+            return $this->exceptionResponseFactory->createResponseWithContext($ex, $this->request, $this->responseFactory);
         } catch (Exception $ex) {
             return $this->createDefaultResponse($ex);
         }
@@ -88,24 +88,6 @@ class ApiExceptionRenderer implements IApiExceptionRenderer
     public function render(Exception $ex): void
     {
         $this->responseWriter->writeResponse($this->createResponse($ex));
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function registerManyResponseFactories(array $exceptionTypesToFactories): void
-    {
-        foreach ($exceptionTypesToFactories as $exceptionType => $factory) {
-            $this->registerResponseFactory($exceptionType, $factory);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function registerResponseFactory(string $exceptionType, Closure $factory): void
-    {
-        $this->responseFactories[$exceptionType] = $factory;
     }
 
     /**
