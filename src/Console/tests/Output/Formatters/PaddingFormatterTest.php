@@ -34,7 +34,7 @@ class PaddingFormatterTest extends TestCase
         ];
         $this->formatter->setPaddingString('+');
         $formattedText = $this->formatter->format($rows, fn ($row) => $row[0] . '-' . $row[1]);
-        $this->assertEquals(
+        $this->assertSame(
             'a++-b++' . PHP_EOL . 'cd+-ee+' . PHP_EOL . 'fg+-hhh' . PHP_EOL . 'ijk-ll+',
             $formattedText
         );
@@ -50,7 +50,7 @@ class PaddingFormatterTest extends TestCase
         ];
         $this->formatter->setPaddingString('+');
         $formattedText = $this->formatter->format($rows, fn ($row) => $row[0]);
-        $this->assertEquals('a++' . PHP_EOL . 'cd+' . PHP_EOL . 'fg+' . PHP_EOL . 'ijk', $formattedText);
+        $this->assertSame('a++' . PHP_EOL . 'cd+' . PHP_EOL . 'fg+' . PHP_EOL . 'ijk', $formattedText);
     }
 
     public function testCustomRowSeparatorWithRowArrays(): void
@@ -63,7 +63,7 @@ class PaddingFormatterTest extends TestCase
         ];
         $this->formatter->setEolChar('<br>');
         $formattedText = $this->formatter->format($rows, fn ($row) => $row[0] . '-' . $row[1]);
-        $this->assertEquals('a  -b  <br>cd -ee <br>fg -hhh<br>ijk-ll ', $formattedText);
+        $this->assertSame('a  -b  <br>cd -ee <br>fg -hhh<br>ijk-ll ', $formattedText);
     }
 
     public function testCustomRowSeparatorWithStringRows(): void
@@ -76,13 +76,13 @@ class PaddingFormatterTest extends TestCase
         ];
         $this->formatter->setEolChar('<br>');
         $formattedText = $this->formatter->format($rows, fn ($row) => $row[0]);
-        $this->assertEquals('a  <br>cd <br>fg <br>ijk', $formattedText);
+        $this->assertSame('a  <br>cd <br>fg <br>ijk', $formattedText);
     }
 
     public function testGettingEOLChar(): void
     {
         $this->formatter->setEolChar('foo');
-        $this->assertEquals('foo', $this->formatter->getEolChar());
+        $this->assertSame('foo', $this->formatter->getEolChar());
     }
 
     public function testNormalizingColumns(): void
@@ -114,14 +114,14 @@ class PaddingFormatterTest extends TestCase
         // Format with the padding after the string
         $this->formatter->setPadAfter(true);
         $formattedRows = $this->formatter->format($rows, fn ($row) => $row[0] . '-' . $row[1]);
-        $this->assertEquals(
+        $this->assertSame(
             'a  -b  ' . PHP_EOL . 'cd -ee ' . PHP_EOL . 'fg -hhh' . PHP_EOL . 'ijk-ll ',
             $formattedRows
         );
         // Format with the padding before the string
         $this->formatter->setPadAfter(false);
         $formattedRows = $this->formatter->format($rows, fn ($row) => $row[0] . '-' . $row[1]);
-        $this->assertEquals(
+        $this->assertSame(
             '  a-  b' . PHP_EOL . ' cd- ee' . PHP_EOL . ' fg-hhh' . PHP_EOL . 'ijk- ll',
             $formattedRows
         );
@@ -129,12 +129,12 @@ class PaddingFormatterTest extends TestCase
 
     public function testPaddingEmptyArray(): void
     {
-        $this->assertEquals('', $this->formatter->format([], fn ($row) => $row[0]));
+        $this->assertSame('', $this->formatter->format([], fn ($row) => $row[0]));
     }
 
     public function testPaddingSingleArray(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             'foo' . PHP_EOL . 'bar',
             $this->formatter->format(['  foo  ', 'bar'], fn ($row) => $row[0])
         );
@@ -142,7 +142,7 @@ class PaddingFormatterTest extends TestCase
 
     public function testPaddingSingleString(): void
     {
-        $this->assertEquals('foo', $this->formatter->format(['  foo  '], fn ($row) => $row[0]));
+        $this->assertSame('foo', $this->formatter->format(['  foo  '], fn ($row) => $row[0]));
     }
 
     public function testPaddingStringRows(): void
@@ -156,10 +156,10 @@ class PaddingFormatterTest extends TestCase
         // Format with the padding after the string
         $this->formatter->setPadAfter(true);
         $formattedRows = $this->formatter->format($rows, fn ($row) => $row[0]);
-        $this->assertEquals('a  ' . PHP_EOL . 'cd ' . PHP_EOL . 'fg ' . PHP_EOL . 'ijk', $formattedRows);
+        $this->assertSame('a  ' . PHP_EOL . 'cd ' . PHP_EOL . 'fg ' . PHP_EOL . 'ijk', $formattedRows);
         // Format with the padding before the string
         $this->formatter->setPadAfter(false);
         $formattedRows = $this->formatter->format($rows, fn ($row) => $row[0]);
-        $this->assertEquals('  a' . PHP_EOL . ' cd' . PHP_EOL . ' fg' . PHP_EOL . 'ijk', $formattedRows);
+        $this->assertSame('  a' . PHP_EOL . ' cd' . PHP_EOL . ' fg' . PHP_EOL . 'ijk', $formattedRows);
     }
 }

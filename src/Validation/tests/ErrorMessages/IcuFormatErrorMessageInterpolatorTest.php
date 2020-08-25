@@ -22,7 +22,7 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
     public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithNoPlaceholders(): void
     {
         $interpolator = new IcuFormatErrorMessageInterpolator();
-        $this->assertEquals(
+        $this->assertSame(
             'foo bar',
             $interpolator->interpolate('foo bar')
         );
@@ -31,7 +31,7 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
     public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithFallbackLocale(): void
     {
         $interpolator = new IcuFormatErrorMessageInterpolator(null, 'de');
-        $this->assertEquals(
+        $this->assertSame(
             'Dave has $1,23',
             $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23])
         );
@@ -40,7 +40,7 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
     public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithInputLocale(): void
     {
         $interpolator = new IcuFormatErrorMessageInterpolator();
-        $this->assertEquals(
+        $this->assertSame(
             'Dave has $1,23',
             $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23], 'de')
         );
@@ -49,7 +49,7 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
     public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithPlaceholders(): void
     {
         $interpolator = new IcuFormatErrorMessageInterpolator();
-        $this->assertEquals(
+        $this->assertSame(
             'Dave has $1.23',
             $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23])
         );
@@ -71,14 +71,14 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
             ->with('foo', 'en-US')
             ->willReturn('bar');
         $interpolator = new IcuFormatErrorMessageInterpolator($errorMessageTemplates);
-        $this->assertEquals('bar', $interpolator->interpolate('foo', [], 'en-US'));
+        $this->assertSame('bar', $interpolator->interpolate('foo', [], 'en-US'));
     }
 
     public function testSettingDefaultLocaleCausesInterpolationToUseItAsFallbackLocale(): void
     {
         $interpolator = new IcuFormatErrorMessageInterpolator();
         $interpolator->setDefaultLocale('de');
-        $this->assertEquals(
+        $this->assertSame(
             'Dave has $1,23',
             $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23])
         );

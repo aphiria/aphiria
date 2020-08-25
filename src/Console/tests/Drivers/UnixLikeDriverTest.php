@@ -74,8 +74,8 @@ class UnixLikeDriverTest extends TestCase
                 return null;
             }
         };
-        $this->assertEquals(80, $driver->getCliWidth());
-        $this->assertEquals(60, $driver->getCliHeight());
+        $this->assertSame(80, $driver->getCliWidth());
+        $this->assertSame(60, $driver->getCliHeight());
     }
 
     public function testCliDimensionsCanBeReadFromOS(): void
@@ -89,8 +89,8 @@ class UnixLikeDriverTest extends TestCase
                 return [10, 15];
             }
         };
-        $this->assertEquals(10, $driver->getCliWidth());
-        $this->assertEquals(15, $driver->getCliHeight());
+        $this->assertSame(10, $driver->getCliWidth());
+        $this->assertSame(15, $driver->getCliHeight());
     }
 
     public function testCliDimensionsCanBeReadFromSttyIfEnabled(): void
@@ -117,16 +117,16 @@ class UnixLikeDriverTest extends TestCase
     public function testCliHeightIsMemoized(): void
     {
         \putenv('LINES=10');
-        $this->assertEquals(10, $this->driver->getCliHeight());
+        $this->assertSame(10, $this->driver->getCliHeight());
         \putenv('LINES=0');
-        $this->assertEquals(10, $this->driver->getCliHeight());
+        $this->assertSame(10, $this->driver->getCliHeight());
     }
 
     public function testCliWidthIsMemoized(): void
     {
         \putenv('COLUMNS=10');
-        $this->assertEquals(10, $this->driver->getCliWidth());
+        $this->assertSame(10, $this->driver->getCliWidth());
         \putenv('COLUMNS=0');
-        $this->assertEquals(10, $this->driver->getCliWidth());
+        $this->assertSame(10, $this->driver->getCliWidth());
     }
 }

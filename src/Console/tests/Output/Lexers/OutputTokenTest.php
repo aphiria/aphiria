@@ -21,8 +21,8 @@ class OutputTokenTest extends TestCase
     public function testPropertiesAreSetInConstructor(): void
     {
         $token = new OutputToken(OutputTokenTypes::T_WORD, 'foo', 24);
-        $this->assertEquals(OutputTokenTypes::T_WORD, $token->type);
-        $this->assertEquals('foo', $token->value);
-        $this->assertEquals(24, $token->position);
+        $this->assertSame(OutputTokenTypes::T_WORD, $token->type);
+        $this->assertSame('foo', $token->value);
+        $this->assertSame(24, $token->position);
     }
 }

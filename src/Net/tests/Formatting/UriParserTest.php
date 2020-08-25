@@ -48,12 +48,12 @@ class UriParserTest extends TestCase
     public function testParsingQueryStringParamWithSingleValueReturnsThatValue(): void
     {
         $uri = new Uri('http://host.com?foo=bar');
-        $this->assertEquals('bar', $this->parser->parseQueryString($uri)->get('foo'));
+        $this->assertSame('bar', $this->parser->parseQueryString($uri)->get('foo'));
     }
 
     public function testUrlEncodedValuesAreDecoded(): void
     {
         $uri = new Uri('http://host.com?foo=a%26w');
-        $this->assertEquals('a&w', $this->parser->parseQueryString($uri)->get('foo'));
+        $this->assertSame('a&w', $this->parser->parseQueryString($uri)->get('foo'));
     }
 }

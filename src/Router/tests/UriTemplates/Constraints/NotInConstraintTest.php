@@ -19,7 +19,7 @@ class NotInConstraintTest extends TestCase
 {
     public function testCorrectSlugIsReturned(): void
     {
-        $this->assertEquals('notIn', NotInConstraint::getSlug());
+        $this->assertSame('notIn', NotInConstraint::getSlug());
     }
 
     public function testValueInArrayFails(): void

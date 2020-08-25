@@ -63,8 +63,8 @@ class AnnotationRouteRegistrantTest extends TestCase
         $routeArr = $routes->getAll();
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
-        $this->assertEquals('/foo', $route->uriTemplate->pathTemplate);
-        $this->assertEquals('example.com', $route->uriTemplate->hostTemplate);
+        $this->assertSame('/foo', $route->uriTemplate->pathTemplate);
+        $this->assertSame('example.com', $route->uriTemplate->hostTemplate);
         $this->assertTrue($route->uriTemplate->isHttpsOnly);
         $this->assertEquals(['foo' => 'bar'], $route->attributes);
         $this->assertCount(2, $route->constraints);
@@ -94,7 +94,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
         $this->assertCount(1, $route->middlewareBindings);
-        $this->assertEquals(DummyMiddleware::class, $route->middlewareBindings[0]->className);
+        $this->assertSame(DummyMiddleware::class, $route->middlewareBindings[0]->className);
         $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->attributes);
     }
 
@@ -123,9 +123,9 @@ class AnnotationRouteRegistrantTest extends TestCase
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
         $this->assertCount(2, $route->middlewareBindings);
-        $this->assertEquals(DummyMiddleware::class, $route->middlewareBindings[0]->className);
+        $this->assertSame(DummyMiddleware::class, $route->middlewareBindings[0]->className);
         $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->attributes);
-        $this->assertEquals(DummyMiddleware::class, $route->middlewareBindings[1]->className);
+        $this->assertSame(DummyMiddleware::class, $route->middlewareBindings[1]->className);
         $this->assertEquals(['baz' => 'blah'], $route->middlewareBindings[1]->attributes);
     }
 
@@ -152,9 +152,9 @@ class AnnotationRouteRegistrantTest extends TestCase
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
         $this->assertCount(2, $route->middlewareBindings);
-        $this->assertEquals(DummyMiddleware::class, $route->middlewareBindings[0]->className);
+        $this->assertSame(DummyMiddleware::class, $route->middlewareBindings[0]->className);
         $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->attributes);
-        $this->assertEquals(DummyMiddleware::class, $route->middlewareBindings[1]->className);
+        $this->assertSame(DummyMiddleware::class, $route->middlewareBindings[1]->className);
         $this->assertEquals(['baz' => 'blah'], $route->middlewareBindings[1]->attributes);
     }
 
@@ -181,7 +181,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $routeArr = $routes->getAll();
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
-        $this->assertEquals('/foo', $route->uriTemplate->pathTemplate);
+        $this->assertSame('/foo', $route->uriTemplate->pathTemplate);
     }
 
     public function testRegisteringRoutesWithRouteGroupWithPathPrependsPathToRoutePaths(): void
@@ -207,7 +207,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $routeArr = $routes->getAll();
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
-        $this->assertEquals('/foo/bar', $route->uriTemplate->pathTemplate);
+        $this->assertSame('/foo/bar', $route->uriTemplate->pathTemplate);
     }
 
     public function testRegisteringRoutesWithRouteGroupWithHostAppendsHostToRouteHost(): void
@@ -233,7 +233,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $routeArr = $routes->getAll();
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
-        $this->assertEquals('api.example.com', $route->uriTemplate->hostTemplate);
+        $this->assertSame('api.example.com', $route->uriTemplate->hostTemplate);
     }
 
     public function testRegisteringRoutesWithRouteGroupThatIsHttpsOnlyMakesChildRoutesHttpsOnly(): void

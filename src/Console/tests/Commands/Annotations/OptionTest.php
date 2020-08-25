@@ -22,9 +22,9 @@ class OptionTest extends TestCase
     public function testDefaultValuesOfOptionPropertiesAreSet(): void
     {
         $option = new Option(['value' => 'foo', 'type' => OptionTypes::REQUIRED_VALUE]);
-        $this->assertEquals('foo', $option->name);
+        $this->assertSame('foo', $option->name);
         $this->assertNull($option->shortName);
-        $this->assertEquals(OptionTypes::REQUIRED_VALUE, $option->type);
+        $this->assertSame(OptionTypes::REQUIRED_VALUE, $option->type);
         $this->assertNull($option->description);
         $this->assertNull($option->defaultValue);
     }
@@ -32,13 +32,13 @@ class OptionTest extends TestCase
     public function testNameCanBeSetViaName(): void
     {
         $option = new Option(['name' => 'foo', 'type' => OptionTypes::REQUIRED_VALUE]);
-        $this->assertEquals('foo', $option->name);
+        $this->assertSame('foo', $option->name);
     }
 
     public function testNameCanBeSetViaValue(): void
     {
         $option = new Option(['value' => 'foo', 'type' => OptionTypes::REQUIRED_VALUE]);
-        $this->assertEquals('foo', $option->name);
+        $this->assertSame('foo', $option->name);
     }
 
     public function testNoNameThrowsException(): void
@@ -64,10 +64,10 @@ class OptionTest extends TestCase
             'description' => 'description',
             'defaultValue' => 'val'
         ]);
-        $this->assertEquals('foo', $option->name);
-        $this->assertEquals('f', $option->shortName);
-        $this->assertEquals(OptionTypes::REQUIRED_VALUE, $option->type);
-        $this->assertEquals('description', $option->description);
-        $this->assertEquals('val', $option->defaultValue);
+        $this->assertSame('foo', $option->name);
+        $this->assertSame('f', $option->shortName);
+        $this->assertSame(OptionTypes::REQUIRED_VALUE, $option->type);
+        $this->assertSame('description', $option->description);
+        $this->assertSame('val', $option->defaultValue);
     }
 }

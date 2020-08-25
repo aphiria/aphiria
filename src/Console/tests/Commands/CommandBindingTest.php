@@ -23,6 +23,6 @@ class CommandBindingTest extends TestCase
         $expectedCommand = new Command('name', [], [], '', '');
         $binding = new CommandBinding($expectedCommand, 'Foo');
         $this->assertSame($expectedCommand, $binding->command);
-        $this->assertEquals('Foo', $binding->commandHandlerClassName);
+        $this->assertSame('Foo', $binding->commandHandlerClassName);
     }
 }

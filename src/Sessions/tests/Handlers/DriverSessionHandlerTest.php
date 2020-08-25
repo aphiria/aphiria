@@ -69,7 +69,7 @@ class DriverSessionHandlerTest extends TestCase
         $encrypter->method('decrypt')
             ->with('bar')
             ->willReturn('baz');
-        $this->assertEquals('baz', $sessionHandlerWithEncrypter->read('foo'));
+        $this->assertSame('baz', $sessionHandlerWithEncrypter->read('foo'));
     }
 
     public function testReadingWithEncrypterThatThrowsExceptionReturnsEmptyString(): void
@@ -84,7 +84,7 @@ class DriverSessionHandlerTest extends TestCase
         $encrypter->method('decrypt')
             ->with('bar')
             ->willThrowException(new SessionEncryptionException());
-        $this->assertEquals('', $sessionHandlerWithEncrypter->read('foo'));
+        $this->assertSame('', $sessionHandlerWithEncrypter->read('foo'));
     }
 
     public function testReadingWithoutEncrypterPassesThroughDriverValue(): void
@@ -93,7 +93,7 @@ class DriverSessionHandlerTest extends TestCase
             ->method('get')
             ->with('foo')
             ->willReturn('bar');
-        $this->assertEquals('bar', $this->sessionHandler->read('foo'));
+        $this->assertSame('bar', $this->sessionHandler->read('foo'));
     }
 
     public function testWritingWithEncrypterEncryptsValueBeforeSettingItInDriver(): void

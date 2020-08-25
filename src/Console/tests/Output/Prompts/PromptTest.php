@@ -45,7 +45,7 @@ class PromptTest extends TestCase
         $this->output->method('write')
             ->with("<question>{$question->text}</question>");
         $answer = $this->prompt->ask($question, $this->output);
-        $this->assertEquals('Dave', $answer);
+        $this->assertSame('Dave', $answer);
     }
 
     public function testAskingIndexedMultipleChoiceQuestion(): void
@@ -66,7 +66,7 @@ class PromptTest extends TestCase
             ->method('write')
             ->with('  > ');
         $answer = $this->prompt->ask($question, $this->output);
-        $this->assertEquals('bar', $answer);
+        $this->assertSame('bar', $answer);
     }
 
     public function testAskingKeyedMultipleChoiceQuestion(): void
@@ -87,7 +87,7 @@ class PromptTest extends TestCase
             ->method('write')
             ->with('  > ');
         $answer = $this->prompt->ask($question, $this->output);
-        $this->assertEquals('d', $answer);
+        $this->assertSame('d', $answer);
     }
 
     public function testAskingMultipleChoiceQuestionWithCustomAnswerLineString(): void
@@ -109,7 +109,7 @@ class PromptTest extends TestCase
             ->method('write')
             ->with('  : ');
         $answer = $this->prompt->ask($question, $this->output);
-        $this->assertEquals('foo', $answer);
+        $this->assertSame('foo', $answer);
     }
 
     public function testAskingQuestion(): void
@@ -120,7 +120,7 @@ class PromptTest extends TestCase
         $this->output->method('write')
             ->with("<question>{$question->text}</question>");
         $answer = $this->prompt->ask($question, $this->output);
-        $this->assertEquals('Dave', $answer);
+        $this->assertSame('Dave', $answer);
     }
 
     public function testAskingHiddenAnswerQuestionWillUseDriver(): void
@@ -134,7 +134,7 @@ class PromptTest extends TestCase
             ->method('getDriver')
             ->willReturn($driver);
         $answer = $this->prompt->ask(new Question('Question', null, true), $this->output);
-        $this->assertEquals('foo', $answer);
+        $this->assertSame('foo', $answer);
     }
 
     public function testEmptyDefaultAnswerToIndexedChoices(): void
@@ -177,6 +177,6 @@ class PromptTest extends TestCase
         $this->output->method('write')
             ->with("<question>{$question->text}</question>");
         $answer = $this->prompt->ask($question, $this->output);
-        $this->assertEquals('unknown', $answer);
+        $this->assertSame('unknown', $answer);
     }
 }

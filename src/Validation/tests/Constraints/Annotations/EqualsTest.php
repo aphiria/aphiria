@@ -35,7 +35,7 @@ class EqualsTest extends TestCase
     public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
     {
         $annotation = new Equals(['value' => 'val', 'errorMessageId' => 'foo']);
-        $this->assertEquals('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
+        $this->assertSame('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
     }
 
     public function testNotSettingValueThrowsException(): void
@@ -48,7 +48,7 @@ class EqualsTest extends TestCase
     public function testSettingErrorMessageId(): void
     {
         $annotation = new Equals(['value' => 'val', 'errorMessageId' => 'foo']);
-        $this->assertEquals('foo', $annotation->errorMessageId);
+        $this->assertSame('foo', $annotation->errorMessageId);
     }
 
     public function testSettingNullValueIsAccepted(): void
@@ -60,6 +60,6 @@ class EqualsTest extends TestCase
     public function testSettingStringValueIsAccepted(): void
     {
         $annotation = new Equals(['value' => 'foo']);
-        $this->assertEquals('foo', $annotation->value);
+        $this->assertSame('foo', $annotation->value);
     }
 }

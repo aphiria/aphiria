@@ -32,7 +32,7 @@ class RequiredConstraintTest extends TestCase
     public function testGettingErrorMessageId(): void
     {
         $constraint = new RequiredConstraint('foo');
-        $this->assertEquals('foo', $constraint->getErrorMessageId());
+        $this->assertSame('foo', $constraint->getErrorMessageId());
     }
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void

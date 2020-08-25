@@ -46,13 +46,13 @@ class ResponseFormatterTest extends TestCase
                 return $body instanceof StringBody && $body->readAsString() === json_encode(['foo' => 'bar']);
             }));
         $this->formatter->writeJson($this->response, ['foo' => 'bar']);
-        $this->assertEquals('application/json', $this->response->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame('application/json', $this->response->getHeaders()->getFirst('Content-Type'));
     }
 
     public function testDeletingCookieSetsCookiesToExpire(): void
     {
         $this->formatter->deleteCookie($this->response, 'name', '/path', 'example.com', true, true, 'lax');
-        $this->assertEquals(
+        $this->assertSame(
             'name=; Max-Age=0; Path=%2Fpath; Domain=example.com; Secure; HttpOnly; SameSite=lax',
             $this->headers->getFirst('Set-Cookie')
         );
@@ -64,7 +64,7 @@ class ResponseFormatterTest extends TestCase
             ->method('setStatusCode')
             ->with(301);
         $this->formatter->redirectToUri($this->response, 'http://foo.com', 301);
-        $this->assertEquals('http://foo.com', $this->headers->getFirst('Location'));
+        $this->assertSame('http://foo.com', $this->headers->getFirst('Location'));
     }
 
     public function testRedirectingToUriConvertsUriInstanceToStringAndSetsLocationHeaderAndStatusCode(): void
@@ -73,7 +73,7 @@ class ResponseFormatterTest extends TestCase
             ->method('setStatusCode')
             ->with(301);
         $this->formatter->redirectToUri($this->response, new Uri('http://foo.com'), 301);
-        $this->assertEquals('http://foo.com', $this->headers->getFirst('Location'));
+        $this->assertSame('http://foo.com', $this->headers->getFirst('Location'));
     }
 
     public function testRedirectingToUriThatIsNotUriNorStringThrowsException(): void
@@ -89,7 +89,7 @@ class ResponseFormatterTest extends TestCase
             $this->response,
             new Cookie('name', 'value', 3600, '/path', 'example.com', true, true, 'lax')
         );
-        $this->assertEquals(
+        $this->assertSame(
             'name=value; Max-Age=3600; Path=%2Fpath; Domain=example.com; Secure; HttpOnly; SameSite=lax',
             $this->headers->getFirst('Set-Cookie')
         );
@@ -103,11 +103,11 @@ class ResponseFormatterTest extends TestCase
         );
         $cookies = $this->headers->get('Set-Cookie');
         $this->assertCount(2, $cookies);
-        $this->assertEquals(
+        $this->assertSame(
             'name1=value1; Max-Age=3600; HttpOnly; SameSite=lax',
             $cookies[0]
         );
-        $this->assertEquals(
+        $this->assertSame(
             'name2=value2; Max-Age=7200; HttpOnly; SameSite=lax',
             $cookies[1]
         );

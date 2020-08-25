@@ -29,25 +29,25 @@ class KeyHasherTest extends TestCase
     public function testArraysAreHashedToCorrectKey(): void
     {
         $array = ['foo'];
-        $this->assertEquals('__aphiria:a:' . md5(serialize($array)), $this->keyHasher->getHashKey($array));
+        $this->assertSame('__aphiria:a:' . md5(serialize($array)), $this->keyHasher->getHashKey($array));
     }
 
     public function testNullCanBeHashed(): void
     {
-        $this->assertEquals('__aphiria:u', $this->keyHasher->getHashKey(null));
+        $this->assertSame('__aphiria:u', $this->keyHasher->getHashKey(null));
     }
 
     public function testScalarsAreHashedToCorrectKey(): void
     {
-        $this->assertEquals('__aphiria:s:1', $this->keyHasher->getHashKey('1'));
-        $this->assertEquals('__aphiria:i:1', $this->keyHasher->getHashKey(1));
-        $this->assertEquals('__aphiria:f:1.1', $this->keyHasher->getHashKey(1.1));
+        $this->assertSame('__aphiria:s:1', $this->keyHasher->getHashKey('1'));
+        $this->assertSame('__aphiria:i:1', $this->keyHasher->getHashKey(1));
+        $this->assertSame('__aphiria:f:1.1', $this->keyHasher->getHashKey(1.1));
     }
 
     public function testResourceIsHashedUsingItsStringValue(): void
     {
         $resource = fopen('php://temp', 'r+b');
-        $this->assertEquals("__aphiria:r:$resource", $this->keyHasher->getHashKey($resource));
+        $this->assertSame("__aphiria:r:$resource", $this->keyHasher->getHashKey($resource));
     }
 
     /**
@@ -56,12 +56,12 @@ class KeyHasherTest extends TestCase
     public function testSerializableObjectIsHashedWithToStringMethod(): void
     {
         $object = new SerializableObject('foo');
-        $this->assertEquals('__aphiria:so:foo', $this->keyHasher->getHashKey($object));
+        $this->assertSame('__aphiria:so:foo', $this->keyHasher->getHashKey($object));
     }
 
     public function testUnserializableObjectIsHashedWithObjectHash(): void
     {
         $object = new UnserializableObject();
-        $this->assertEquals('__aphiria:o:' . spl_object_hash($object), $this->keyHasher->getHashKey($object));
+        $this->assertSame('__aphiria:o:' . spl_object_hash($object), $this->keyHasher->getHashKey($object));
     }
 }

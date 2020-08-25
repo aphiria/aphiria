@@ -20,7 +20,7 @@ class FlushFrameworkCachesCommandTest extends TestCase
     public function testCorrectValuesAreSetInConstructor(): void
     {
         $command = new FlushFrameworkCachesCommand();
-        $this->assertEquals('framework:flushcaches', $command->name);
-        $this->assertEquals('Flushes all of Aphiria\'s caches', $command->description);
+        $this->assertSame('framework:flushcaches', $command->name);
+        $this->assertSame('Flushes all of Aphiria\'s caches', $command->description);
     }
 }

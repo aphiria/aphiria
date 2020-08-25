@@ -122,7 +122,7 @@ class ContainerTest extends TestCase
         $this->container->callMethod($instance, 'setPrimitive', ['foo']);
         $this->assertSame('foo', $instance->getPrimitive());
         $result = $this->container->callClosure(fn ($primitive) => $primitive, ['foo']);
-        $this->assertEquals('foo', $result);
+        $this->assertSame('foo', $result);
     }
 
     public function testCallingMethodWithPrimitiveTypesWithoutSpecifyingValue(): void
@@ -143,7 +143,7 @@ class ContainerTest extends TestCase
             fn (IFoo $interface, $primitive) => \get_class($interface) . ':' . $primitive,
             ['foo']
         );
-        $this->assertEquals(Bar::class . ':foo', $response);
+        $this->assertSame(Bar::class . ':foo', $response);
     }
 
     public function testCallingClosureWithTypeHints(): void
@@ -153,7 +153,7 @@ class ContainerTest extends TestCase
         $this->container->callMethod($instance, 'setInterface');
         $this->assertInstanceOf(Bar::class, $instance->getInterface());
         $response = $this->container->callClosure(fn (IFoo $interface) => \get_class($interface));
-        $this->assertEquals(Bar::class, $response);
+        $this->assertSame(Bar::class, $response);
     }
 
     public function testCallingClosureWithUnresolvableParametersThrowsException(): void
@@ -413,8 +413,8 @@ class ContainerTest extends TestCase
         $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         $this->assertInstanceOf(ConstructorWithMixOfInterfacesAndPrimitives::class, $instance1);
         $this->assertSame($instance1, $instance2);
-        $this->assertEquals(23, $instance1->getId());
-        $this->assertEquals(23, $instance2->getId());
+        $this->assertSame(23, $instance1->getId());
+        $this->assertSame(23, $instance2->getId());
     }
 
     public function testForWithInvalidParameterThrowsException(): void
@@ -462,7 +462,7 @@ class ContainerTest extends TestCase
         /** @var ConstructorWithMixOfConcreteClassesAndPrimitives $instance */
         $instance = $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class);
         $this->assertInstanceOf(ConstructorWithMixOfConcreteClassesAndPrimitives::class, $instance);
-        $this->assertEquals(23, $instance->getId());
+        $this->assertSame(23, $instance->getId());
         $this->assertNotSame($instance, $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class));
     }
 
@@ -478,7 +478,7 @@ class ContainerTest extends TestCase
         $instance = $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class);
         /** @var ConstructorWithMixOfConcreteClassesAndPrimitives $newInstance */
         $this->assertInstanceOf(ConstructorWithMixOfConcreteClassesAndPrimitives::class, $instance);
-        $this->assertEquals(23, $instance->getId());
+        $this->assertSame(23, $instance->getId());
         $this->assertSame($instance, $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class));
     }
 
@@ -629,8 +629,8 @@ class ContainerTest extends TestCase
         $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         $this->assertInstanceOf(ConstructorWithMixOfInterfacesAndPrimitives::class, $instance1);
         $this->assertSame($instance1, $instance2);
-        $this->assertEquals(23, $instance1->getId());
-        $this->assertEquals(23, $instance2->getId());
+        $this->assertSame(23, $instance1->getId());
+        $this->assertSame(23, $instance2->getId());
         $this->assertSame($instance1->getPerson(), $instance2->getPerson());
     }
 

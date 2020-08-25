@@ -42,9 +42,9 @@ class ResponseTest extends TestCase
     public function testGettingAndSettingStatusCode(): void
     {
         $response = new Response(201);
-        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertSame(201, $response->getStatusCode());
         $response->setStatusCode(202);
-        $this->assertEquals(202, $response->getStatusCode());
+        $this->assertSame(202, $response->getStatusCode());
     }
 
     public function testGettingHeaders(): void
@@ -57,7 +57,7 @@ class ResponseTest extends TestCase
     public function testGettingProtocolVersion(): void
     {
         $response = new Response(200, null, null, '2.0');
-        $this->assertEquals('2.0', $response->getProtocolVersion());
+        $this->assertSame('2.0', $response->getProtocolVersion());
     }
 
     public function testMultipleHeaderValuesAreConcatenatedWithCommas(): void
@@ -65,33 +65,33 @@ class ResponseTest extends TestCase
         $response = new Response();
         $response->getHeaders()->add('Foo', 'bar');
         $response->getHeaders()->add('Foo', 'baz', true);
-        $this->assertEquals("HTTP/1.1 200 OK\r\nFoo: bar, baz\r\n\r\n", (string)$response);
+        $this->assertSame("HTTP/1.1 200 OK\r\nFoo: bar, baz\r\n\r\n", (string)$response);
     }
 
     public function testReasonPhraseIsIncludedOnlyIfDefined(): void
     {
         $response = new Response();
         $response->setStatusCode(200, 'OK');
-        $this->assertEquals("HTTP/1.1 200 OK\r\n\r\n", (string)$response);
+        $this->assertSame("HTTP/1.1 200 OK\r\n\r\n", (string)$response);
     }
 
     public function testResponseWithHeadersAndBodyEndsWithBody(): void
     {
         $response = new Response(200, new Headers(), new StringBody('foo'));
         $response->getHeaders()->add('Foo', 'bar');
-        $this->assertEquals("HTTP/1.1 200 OK\r\nFoo: bar\r\n\r\nfoo", (string)$response);
+        $this->assertSame("HTTP/1.1 200 OK\r\nFoo: bar\r\n\r\nfoo", (string)$response);
     }
 
     public function testResponseWithHeadersButNoBodyEndsWithBlankLine(): void
     {
         $response = new Response();
         $response->getHeaders()->add('Foo', 'bar');
-        $this->assertEquals("HTTP/1.1 200 OK\r\nFoo: bar\r\n\r\n", (string)$response);
+        $this->assertSame("HTTP/1.1 200 OK\r\nFoo: bar\r\n\r\n", (string)$response);
     }
 
     public function testResponseWithNoHeadersOrBodyEndsWithBlankLine(): void
     {
         $response = new Response();
-        $this->assertEquals("HTTP/1.1 200 OK\r\n\r\n", (string)$response);
+        $this->assertSame("HTTP/1.1 200 OK\r\n\r\n", (string)$response);
     }
 }

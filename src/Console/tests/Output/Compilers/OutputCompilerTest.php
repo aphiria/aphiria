@@ -35,7 +35,7 @@ class OutputCompilerTest extends TestCase
         $this->elements->registerElement(new Element('foo', new Style('green', 'white')));
         $this->elements->registerElement(new Element('bar', new Style('cyan')));
         $expectedOutput = "\033[32;47mbaz\033[39;49m\033[36mblah\033[39m";
-        $this->assertEquals(
+        $this->assertSame(
             $expectedOutput,
             $this->compiler->compile('<foo>baz</foo><bar>blah</bar>')
         );
@@ -46,7 +46,7 @@ class OutputCompilerTest extends TestCase
         $this->elements->registerElement(new Element('foo', new Style('green', 'white')));
         $this->elements->registerElement(new Element('bar', new Style('cyan')));
         $expectedOutput = '';
-        $this->assertEquals(
+        $this->assertSame(
             $expectedOutput,
             $this->compiler->compile('<foo></foo>')
         );
@@ -56,27 +56,27 @@ class OutputCompilerTest extends TestCase
     {
         $this->elements->registerElement(new Element('foo', new Style('green', 'white')));
         $this->elements->registerElement(new Element('bar', new Style('cyan')));
-        $this->assertEquals('bazblah', $this->compiler->compile('<foo>baz</foo><bar>blah</bar>', false));
+        $this->assertSame('bazblah', $this->compiler->compile('<foo>baz</foo><bar>blah</bar>', false));
     }
 
     public function testCompilingElementWithZeroAsInnerText(): void
     {
         $this->elements->registerElement(new Element('foo', new Style('green')));
-        $this->assertEquals("\033[32m0\033[39m", $this->compiler->compile('<foo>0</foo>'));
+        $this->assertSame("\033[32m0\033[39m", $this->compiler->compile('<foo>0</foo>'));
     }
 
     public function testCompilingEscapedTagAtBeginning(): void
     {
         $this->elements->registerElement(new Element('foo', new Style('green')));
         $expectedOutput = '<bar>';
-        $this->assertEquals($expectedOutput, $this->compiler->compile('\\<bar>'));
+        $this->assertSame($expectedOutput, $this->compiler->compile('\\<bar>'));
     }
 
     public function testCompilingEscapedTagInBetweenTags(): void
     {
         $this->elements->registerElement(new Element('foo', new Style('green')));
         $expectedOutput = "\033[32m<bar>\033[39m";
-        $this->assertEquals($expectedOutput, $this->compiler->compile('<foo>\\<bar></foo>'));
+        $this->assertSame($expectedOutput, $this->compiler->compile('<foo>\\<bar></foo>'));
     }
 
     public function testCompilingNestedElements(): void
@@ -84,7 +84,7 @@ class OutputCompilerTest extends TestCase
         $this->elements->registerElement(new Element('foo', new Style('green', 'white')));
         $this->elements->registerElement(new Element('bar', new Style('cyan')));
         $expectedOutput = "\033[32;47m\033[36mbaz\033[39m\033[39;49m";
-        $this->assertEquals(
+        $this->assertSame(
             $expectedOutput,
             $this->compiler->compile('<foo><bar>baz</bar></foo>')
         );
@@ -95,7 +95,7 @@ class OutputCompilerTest extends TestCase
         $this->elements->registerElement(new Element('foo', new Style('green', 'white')));
         $this->elements->registerElement(new Element('bar', new Style('cyan')));
         $expectedOutput = '';
-        $this->assertEquals(
+        $this->assertSame(
             $expectedOutput,
             $this->compiler->compile('<foo><bar></bar></foo>')
         );
@@ -106,7 +106,7 @@ class OutputCompilerTest extends TestCase
         $this->elements->registerElement(new Element('foo', new Style('green', 'white')));
         $this->elements->registerElement(new Element('bar', new Style('cyan')));
         $expectedOutput = "\033[32;47mbar\033[39;49m\033[32;47m\033[36mblah\033[39m\033[39;49m\033[32;47mbaz\033[39;49m";
-        $this->assertEquals(
+        $this->assertSame(
             $expectedOutput,
             $this->compiler->compile('<foo>bar<bar>blah</bar>baz</foo>')
         );
@@ -115,7 +115,7 @@ class OutputCompilerTest extends TestCase
     public function testCompilingPlainText(): void
     {
         $expectedOutput = 'foobar';
-        $this->assertEquals(
+        $this->assertSame(
             $expectedOutput,
             $this->compiler->compile('foobar')
         );
@@ -125,7 +125,7 @@ class OutputCompilerTest extends TestCase
     {
         $this->elements->registerElement(new Element('foo', new Style('green')));
         $expectedOutput = "\033[32mbar\033[39m";
-        $this->assertEquals($expectedOutput, $this->compiler->compile('<foo>bar</foo>'));
+        $this->assertSame($expectedOutput, $this->compiler->compile('<foo>bar</foo>'));
     }
 
     public function testCompilingUnclosedElement(): void

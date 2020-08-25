@@ -26,7 +26,7 @@ class AlphaConstraintTest extends TestCase
 
     public function testCorrectSlugIsReturned(): void
     {
-        $this->assertEquals('alpha', AlphaConstraint::getSlug());
+        $this->assertSame('alpha', AlphaConstraint::getSlug());
     }
 
     public function testNonAlphaCharsFail(): void

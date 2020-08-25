@@ -98,7 +98,7 @@ class NegotiatedResponseFactoryTest extends TestCase
             ->willReturn(123);
         $request = $this->createRequest('http://foo.com');
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
-        $this->assertEquals(123, $response->getHeaders()->getFirst('Content-Length'));
+        $this->assertSame(123, $response->getHeaders()->getFirst('Content-Length'));
     }
 
     public function testCreatingResponseFromStreamWithUnknownLengthWillNotSetContentLengthHeader(): void
@@ -117,7 +117,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $rawBody = 'foo';
         $request = $this->createRequest('http://foo.com');
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
-        $this->assertEquals(\mb_strlen($rawBody), $response->getHeaders()->getFirst('Content-Length'));
+        $this->assertSame(\mb_strlen($rawBody), $response->getHeaders()->getFirst('Content-Length'));
     }
 
     public function testCreatingResponseFromStringWithAlreadySetContentLengthHeaderDoesNotOverwriteContentLength(): void
@@ -126,7 +126,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $headers = new Headers();
         $headers->add('Content-Length', 123);
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, $headers, $rawBody);
-        $this->assertEquals(123, $response->getHeaders()->getFirst('Content-Length'));
+        $this->assertSame(123, $response->getHeaders()->getFirst('Content-Length'));
     }
 
     public function testCreatingResponseIncludesContentLanguageHeaderIfItIsPresentInContentNegotiationResult(): void
@@ -139,13 +139,13 @@ class NegotiatedResponseFactoryTest extends TestCase
             new ContentNegotiationResult($this->createMock(IMediaTypeFormatter::class), null, 'utf-8', 'en-US')
         );
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
-        $this->assertEquals('en-US', $response->getHeaders()->getFirst('Content-Language'));
+        $this->assertSame('en-US', $response->getHeaders()->getFirst('Content-Language'));
     }
 
     public function testCreatingResponseUsesStatusCode(): void
     {
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 202, null, null);
-        $this->assertEquals(202, $response->getStatusCode());
+        $this->assertSame(202, $response->getStatusCode());
     }
 
     public function testCreatingResponseWillSetContentTypeResponseHeaderFromMediaTypeFormatterMediaType(): void
@@ -163,7 +163,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         );
         $rawBody = new User(123, 'foo@bar.com');
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
-        $this->assertEquals('foo/bar', $response->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame('foo/bar', $response->getHeaders()->getFirst('Content-Type'));
     }
 
     public function testCreatingResponseWithHeadersUsesThoseHeaders(): void
@@ -212,9 +212,9 @@ class NegotiatedResponseFactoryTest extends TestCase
             $this->fail('Expected exception to be thrown');
         } catch (HttpException $ex) {
             $response = $ex->getResponse();
-            $this->assertEquals(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, $response->getStatusCode());
-            $this->assertEquals('application/json', $response->getHeaders()->getFirst('Content-Type'));
-            $this->assertEquals('["foo\/bar"]', (string)$response->getBody());
+            $this->assertSame(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, $response->getStatusCode());
+            $this->assertSame('application/json', $response->getHeaders()->getFirst('Content-Type'));
+            $this->assertSame('["foo\/bar"]', (string)$response->getBody());
         }
     }
 
@@ -237,7 +237,7 @@ class NegotiatedResponseFactoryTest extends TestCase
             $this->factory->createResponse($request, 200, null, $rawBody);
             $this->fail('Expected exception to be thrown');
         } catch (HttpException $ex) {
-            $this->assertEquals(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $ex->getResponse()->getStatusCode());
         }
     }
 
@@ -263,7 +263,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $rawBody = 'foo';
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, null, $rawBody);
         $this->assertInstanceOf(StringBody::class, $response->getBody());
-        $this->assertEquals('foo', (string)$response->getBody());
+        $this->assertSame('foo', (string)$response->getBody());
     }
 
     public function testCreatingResponseWithStreamBodyCreatesBodyFromStream(): void

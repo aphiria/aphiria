@@ -21,7 +21,7 @@ class RouteTest extends TestCase
     public function testDefaultValuesOfRoutePropertiesAreSet(): void
     {
         $route = new Route([]);
-        $this->assertEquals('', $route->path);
+        $this->assertSame('', $route->path);
         $this->assertEquals([], $route->httpMethods);
         $this->assertNull($route->host);
         $this->assertNull($route->name);
@@ -33,13 +33,13 @@ class RouteTest extends TestCase
     public function testPathCanBeSetViaPath(): void
     {
         $route = new Route(['path' => '/foo']);
-        $this->assertEquals('/foo', $route->path);
+        $this->assertSame('/foo', $route->path);
     }
 
     public function testPathCanBeSetViaValue(): void
     {
         $route = new Route(['value' => '/foo']);
-        $this->assertEquals('/foo', $route->path);
+        $this->assertSame('/foo', $route->path);
     }
 
     public function testPropertiesAreSetViaConstructor(): void
@@ -53,14 +53,14 @@ class RouteTest extends TestCase
             'attributes' => ['attr' => 'val'],
             'constraints' => [new RouteConstraint(['className' => 'constraintClass', 'constructorParams' => ['param']])]
         ]);
-        $this->assertEquals('/foo', $route->path);
+        $this->assertSame('/foo', $route->path);
         $this->assertEquals(['GET'], $route->httpMethods);
-        $this->assertEquals('example.com', $route->host);
-        $this->assertEquals('dave', $route->name);
+        $this->assertSame('example.com', $route->host);
+        $this->assertSame('dave', $route->name);
         $this->assertTrue($route->isHttpsOnly);
         $this->assertEquals(['attr' => 'val'], $route->attributes);
         $this->assertCount(1, $route->constraints);
-        $this->assertEquals('constraintClass', $route->constraints[0]->className);
+        $this->assertSame('constraintClass', $route->constraints[0]->className);
         $this->assertEquals(['param'], $route->constraints[0]->constructorParams);
     }
 }

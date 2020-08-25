@@ -213,7 +213,7 @@ class ControllerParameterResolverTest extends TestCase
             $this->createMock(IRequest::class),
             ['foo' => 'bar']
         );
-        $this->assertEquals('bar', $resolvedParameter);
+        $this->assertSame('bar', $resolvedParameter);
     }
 
     public function testResolvingScalarParameterWithUnsupportedTypeThrowsException(): void
@@ -279,7 +279,7 @@ class ControllerParameterResolverTest extends TestCase
             $this->createRequestWithoutBody('http://foo.com'),
             []
         );
-        $this->assertEquals('bar', $resolvedParameter);
+        $this->assertSame('bar', $resolvedParameter);
     }
 
     public function testResolvingStringParameterUsesMatchingQueryStringVariable(): void
@@ -289,7 +289,7 @@ class ControllerParameterResolverTest extends TestCase
             $this->createRequestWithoutBody('http://foo.com/?foo=bar'),
             []
         );
-        $this->assertEquals('bar', $resolvedParameter);
+        $this->assertSame('bar', $resolvedParameter);
     }
 
     public function testResolvingStringParameterUsesMatchingRouteVariableOverQueryStringVariable(): void
@@ -299,7 +299,7 @@ class ControllerParameterResolverTest extends TestCase
             $this->createRequestWithoutBody('http://foo.com/?foo=baz'),
             ['foo' => 'dave']
         );
-        $this->assertEquals('dave', $resolvedParameter);
+        $this->assertSame('dave', $resolvedParameter);
     }
 
     /**

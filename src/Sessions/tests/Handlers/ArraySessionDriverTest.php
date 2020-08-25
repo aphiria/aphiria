@@ -38,7 +38,7 @@ class ArraySessionDriverTest extends TestCase
     {
         $this->driver->set('foo', 'bar');
         $this->driver->gc(0);
-        $this->assertEquals('bar', $this->driver->get('foo'));
+        $this->assertSame('bar', $this->driver->get('foo'));
     }
 
     public function testGettingNonExistentSessionThrowsException(): void
@@ -51,6 +51,6 @@ class ArraySessionDriverTest extends TestCase
     public function testSettingDataMakesItGettable(): void
     {
         $this->driver->set('foo', 'bar');
-        $this->assertEquals('bar', $this->driver->get('foo'));
+        $this->assertSame('bar', $this->driver->get('foo'));
     }
 }

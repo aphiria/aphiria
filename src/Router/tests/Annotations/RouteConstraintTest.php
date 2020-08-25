@@ -31,12 +31,12 @@ class RouteConstraintTest extends TestCase
 
     public function testClassNameCanBeSetFromClassName(): void
     {
-        $this->assertEquals('foo', (new RouteConstraint(['className' => 'foo']))->className);
+        $this->assertSame('foo', (new RouteConstraint(['className' => 'foo']))->className);
     }
 
     public function testClassNameCanBeSetFromValue(): void
     {
-        $this->assertEquals('foo', (new RouteConstraint(['value' => 'foo']))->className);
+        $this->assertSame('foo', (new RouteConstraint(['value' => 'foo']))->className);
     }
 
     public function testEmptyClassNameThrowsException(): void

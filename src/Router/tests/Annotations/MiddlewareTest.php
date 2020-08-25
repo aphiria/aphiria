@@ -31,12 +31,12 @@ class MiddlewareTest extends TestCase
 
     public function testClassNameCanBeSetFromClassName(): void
     {
-        $this->assertEquals('foo', (new Middleware(['className' => 'foo']))->className);
+        $this->assertSame('foo', (new Middleware(['className' => 'foo']))->className);
     }
 
     public function testClassNameCanBeSetFromValue(): void
     {
-        $this->assertEquals('foo', (new Middleware(['value' => 'foo']))->className);
+        $this->assertSame('foo', (new Middleware(['value' => 'foo']))->className);
     }
 
     public function testEmptyClassNameThrowsException(): void

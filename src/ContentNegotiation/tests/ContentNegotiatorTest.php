@@ -146,9 +146,9 @@ class ContentNegotiatorTest extends TestCase
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateRequestContent(User::class, $this->request);
         $this->assertSame($formatter, $result->getFormatter());
-        $this->assertEquals('text/html', $result->getMediaType());
-        $this->assertEquals('utf-16', $result->getEncoding());
-        $this->assertEquals('en-US', $result->getLanguage());
+        $this->assertSame('text/html', $result->getMediaType());
+        $this->assertSame('utf-16', $result->getEncoding());
+        $this->assertSame('en-US', $result->getLanguage());
     }
 
     public function testRequestFormatterIsNullWithNoContentTypeSpecified(): void
@@ -157,7 +157,7 @@ class ContentNegotiatorTest extends TestCase
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateRequestContent(User::class, $this->request);
         $this->assertNull($result->getFormatter());
-        $this->assertEquals('application/octet-stream', $result->getMediaType());
+        $this->assertSame('application/octet-stream', $result->getMediaType());
         $this->assertNull($result->getEncoding());
     }
 
@@ -176,9 +176,9 @@ class ContentNegotiatorTest extends TestCase
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateRequestContent(User::class, $this->request);
         $this->assertSame($formatter, $result->getFormatter());
-        $this->assertEquals('text/html', $result->getMediaType());
-        $this->assertEquals('utf-8', $result->getEncoding());
-        $this->assertEquals('en-US', $result->getLanguage());
+        $this->assertSame('text/html', $result->getMediaType());
+        $this->assertSame('utf-8', $result->getEncoding());
+        $this->assertSame('en-US', $result->getLanguage());
     }
 
     public function testResponseFormatterIsFirstFormatterRegisteredWithNoAcceptSpecified(): void
@@ -196,7 +196,7 @@ class ContentNegotiatorTest extends TestCase
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
         $this->assertSame($formatter1, $result->getFormatter());
         // Verify it's using the default media type
-        $this->assertEquals('application/json', $result->getMediaType());
+        $this->assertSame('application/json', $result->getMediaType());
         $this->assertNull($result->getEncoding());
     }
 
@@ -219,7 +219,7 @@ class ContentNegotiatorTest extends TestCase
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
         $this->assertSame($formatter2, $result->getFormatter());
         // Verify it's using the default media type
-        $this->assertEquals('application/json', $result->getMediaType());
+        $this->assertSame('application/json', $result->getMediaType());
         $this->assertNull($result->getEncoding());
     }
 
@@ -256,8 +256,8 @@ class ContentNegotiatorTest extends TestCase
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
         $this->assertSame($formatter, $result->getFormatter());
-        $this->assertEquals('application/json', $result->getMediaType());
-        $this->assertEquals('utf-16', $result->getEncoding());
+        $this->assertSame('application/json', $result->getMediaType());
+        $this->assertSame('utf-16', $result->getEncoding());
     }
 
     public function testResponseEncodingIsSetFromAcceptCharsetHeaderWhenPresent(): void
@@ -275,7 +275,7 @@ class ContentNegotiatorTest extends TestCase
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
         $this->assertSame($formatter, $result->getFormatter());
-        $this->assertEquals('utf-8', $result->getEncoding());
+        $this->assertSame('utf-8', $result->getEncoding());
     }
 
     public function testResponseLanguageIsNullWhenNoMatchingSupportedLanguage(): void
@@ -322,9 +322,9 @@ class ContentNegotiatorTest extends TestCase
         $negotiator = new ContentNegotiator([$formatter], null, null, $languageMatcher);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
         $this->assertSame($formatter, $result->getFormatter());
-        $this->assertEquals('application/json', $result->getMediaType());
-        $this->assertEquals('utf-8', $result->getEncoding());
-        $this->assertEquals('en-US', $result->getLanguage());
+        $this->assertSame('application/json', $result->getMediaType());
+        $this->assertSame('utf-8', $result->getEncoding());
+        $this->assertSame('en-US', $result->getLanguage());
     }
 
     /**

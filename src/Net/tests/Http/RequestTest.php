@@ -71,7 +71,7 @@ class RequestTest extends TestCase
 
     public function testGettingProtocolVersion(): void
     {
-        $this->assertEquals('2.0', $this->request->getProtocolVersion());
+        $this->assertSame('2.0', $this->request->getProtocolVersion());
     }
 
     public function testGettingUri(): void
@@ -84,7 +84,7 @@ class RequestTest extends TestCase
         $headers = new Headers();
         $headers->add('Host', 'foo.com');
         $request = new Request('GET', new Uri('https://bar.com'), $headers);
-        $this->assertEquals('foo.com', $request->getHeaders()->getFirst('Host'));
+        $this->assertSame('foo.com', $request->getHeaders()->getFirst('Host'));
     }
 
     public function testInvalidRequestTargetTypeThrowsException(): void
@@ -99,7 +99,7 @@ class RequestTest extends TestCase
         $request = new Request('GET', new Uri('https://example.com'));
         $request->getHeaders()->add('Foo', 'bar');
         $request->getHeaders()->add('Foo', 'baz', true);
-        $this->assertEquals("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar, baz\r\n\r\n", (string)$request);
+        $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar, baz\r\n\r\n", (string)$request);
     }
 
     public function testRequestTargetTypeAbsoluteFormIncludesEntireUri(): void
@@ -113,7 +113,7 @@ class RequestTest extends TestCase
             '1.1',
             RequestTargetTypes::ABSOLUTE_FORM
         );
-        $this->assertEquals(
+        $this->assertSame(
             "GET https://example.com:4343/foo?bar HTTP/1.1\r\nHost: example.com:4343\r\n\r\n",
             (string)$request
         );
@@ -130,7 +130,7 @@ class RequestTest extends TestCase
             '1.1',
             RequestTargetTypes::ASTERISK_FORM
         );
-        $this->assertEquals("GET * HTTP/1.1\r\nHost: example.com\r\n\r\n", (string)$request);
+        $this->assertSame("GET * HTTP/1.1\r\nHost: example.com\r\n\r\n", (string)$request);
     }
 
     public function testRequestTargetTypeAuthorityFormIncludeUriAuthorityWithoutUserInfo(): void
@@ -144,7 +144,7 @@ class RequestTest extends TestCase
             '1.1',
             RequestTargetTypes::AUTHORITY_FORM
         );
-        $this->assertEquals("GET www.example.com:4343 HTTP/1.1\r\n\r\n", (string)$request);
+        $this->assertSame("GET www.example.com:4343 HTTP/1.1\r\n\r\n", (string)$request);
     }
 
     public function requestTargetQueryStringProvider(): array
@@ -169,20 +169,20 @@ class RequestTest extends TestCase
     {
         $request = new Request('GET', new Uri('https://example.com'), new Headers(), new StringBody('foo'));
         $request->getHeaders()->add('Foo', 'bar');
-        $this->assertEquals("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar\r\n\r\nfoo", (string)$request);
+        $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar\r\n\r\nfoo", (string)$request);
     }
 
     public function testRequestWithHeadersButNoBodyEndsWithBlankLine(): void
     {
         $request = new Request('GET', new Uri('https://example.com'));
         $request->getHeaders()->add('Foo', 'bar');
-        $this->assertEquals("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar\r\n\r\n", (string)$request);
+        $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar\r\n\r\n", (string)$request);
     }
 
     public function testRequestWithNoHeadersOrBodyEndsWithBlankLine(): void
     {
         $request = new Request('GET', new Uri('https://example.com'));
-        $this->assertEquals("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n", (string)$request);
+        $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n", (string)$request);
     }
 
     public function testSettingBody(): void

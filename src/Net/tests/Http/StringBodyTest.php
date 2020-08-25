@@ -22,13 +22,13 @@ class StringBodyTest extends TestCase
     public function testCastingToStringReturnsContents(): void
     {
         $body = new StringBody('foo');
-        $this->assertEquals('foo', (string)$body);
+        $this->assertSame('foo', (string)$body);
     }
 
     public function testGettingLengthReturnsStringLength(): void
     {
         $body = new StringBody('foo');
-        $this->assertEquals(3, $body->getLength());
+        $this->assertSame(3, $body->getLength());
     }
 
     public function testReadingAsStreamReturnsSameStreamInstanceEveryTime(): void
@@ -42,13 +42,13 @@ class StringBodyTest extends TestCase
     {
         $body = new StringBody('foo');
         $stream = $body->readAsStream();
-        $this->assertEquals('foo', $stream->readToEnd());
+        $this->assertSame('foo', $stream->readToEnd());
     }
 
     public function testReadingAsStringReturnsContents(): void
     {
         $body = new StringBody('foo');
-        $this->assertEquals('foo', $body->readAsString());
+        $this->assertSame('foo', $body->readAsString());
     }
 
     public function testWritingToStreamActuallyWritesContentsToStream(): void

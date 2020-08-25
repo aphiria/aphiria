@@ -49,7 +49,7 @@ class HttpHeadersTest extends TestCase
     public function testGettingFirstValue(): void
     {
         $this->headers->add('foo', ['bar', 'baz']);
-        $this->assertEquals('bar', $this->headers->getFirst('foo'));
+        $this->assertSame('bar', $this->headers->getFirst('foo'));
     }
 
     public function testGettingFirstValueWhenKeyDoesNotExistThrowsException(): void
@@ -64,20 +64,20 @@ class HttpHeadersTest extends TestCase
         // Test lower-case names
         $this->headers->add('foo', 'bar');
         $this->assertEquals(['bar'], $this->headers->get('Foo'));
-        $this->assertEquals('bar', $this->headers->getFirst('foo'));
+        $this->assertSame('bar', $this->headers->getFirst('foo'));
         $this->assertTrue($this->headers->containsKey('foo'));
         $this->headers->removeKey('foo');
         // Test snake-case names
         $this->headers->add('FOO_BAR', 'baz');
         $this->assertEquals(['baz'], $this->headers->get('Foo-Bar'));
-        $this->assertEquals('baz', $this->headers->getFirst('FOO_BAR'));
+        $this->assertSame('baz', $this->headers->getFirst('FOO_BAR'));
         $this->assertTrue($this->headers->containsKey('FOO_BAR'));
         $this->headers->removeKey('FOO_BAR');
         // Test upper-case names
         $this->assertEquals([], $this->headers->toArray());
         $this->headers->add('BAZ', 'blah');
         $this->assertEquals(['blah'], $this->headers->get('Baz'));
-        $this->assertEquals('blah', $this->headers->getFirst('BAZ'));
+        $this->assertSame('blah', $this->headers->getFirst('BAZ'));
         $this->assertTrue($this->headers->containsKey('BAZ'));
         $this->headers->removeKey('BAZ');
         $this->assertEquals([], $this->headers->toArray());
@@ -88,20 +88,20 @@ class HttpHeadersTest extends TestCase
         // Test lower-case names
         $this->headers->addRange([new KeyValuePair('foo', 'bar')]);
         $this->assertEquals(['bar'], $this->headers->get('Foo'));
-        $this->assertEquals('bar', $this->headers->getFirst('foo'));
+        $this->assertSame('bar', $this->headers->getFirst('foo'));
         $this->assertTrue($this->headers->containsKey('foo'));
         $this->headers->removeKey('foo');
         // Test snake-case names
         $this->headers->addRange([new KeyValuePair('FOO_BAR', 'baz')]);
         $this->assertEquals(['baz'], $this->headers->get('Foo-Bar'));
-        $this->assertEquals('baz', $this->headers->getFirst('FOO_BAR'));
+        $this->assertSame('baz', $this->headers->getFirst('FOO_BAR'));
         $this->assertTrue($this->headers->containsKey('FOO_BAR'));
         $this->headers->removeKey('FOO_BAR');
         // Test upper-case names
         $this->assertEquals([], $this->headers->toArray());
         $this->headers->addRange([new KeyValuePair('BAZ', 'blah')]);
         $this->assertEquals(['blah'], $this->headers->get('Baz'));
-        $this->assertEquals('blah', $this->headers->getFirst('BAZ'));
+        $this->assertSame('blah', $this->headers->getFirst('BAZ'));
         $this->assertTrue($this->headers->containsKey('BAZ'));
         $this->headers->removeKey('BAZ');
         $this->assertEquals([], $this->headers->toArray());
@@ -118,14 +118,14 @@ class HttpHeadersTest extends TestCase
     {
         $this->headers->add('Foo', 'bar');
         $this->headers->add('Foo', 'baz', true);
-        $this->assertEquals('Foo: bar, baz', (string)$this->headers);
+        $this->assertSame('Foo: bar, baz', (string)$this->headers);
     }
 
     public function testSerializingSplitsHeadersIntoLines(): void
     {
         $this->headers->add('Foo', 'bar');
         $this->headers->add('Baz', 'blah');
-        $this->assertEquals("Foo: bar\r\nBaz: blah", (string)$this->headers);
+        $this->assertSame("Foo: bar\r\nBaz: blah", (string)$this->headers);
     }
 
     public function testSettingHeaderAndAppendingItAppendsIt(): void
@@ -169,7 +169,7 @@ class HttpHeadersTest extends TestCase
         $this->assertFalse($this->headers->tryGetFirst('foo', $value));
         $this->headers->add('foo', 'bar');
         $this->assertTrue($this->headers->tryGetFirst('foo', $value));
-        $this->assertEquals('bar', $value);
+        $this->assertSame('bar', $value);
     }
 
     public function testAddRangeOnInvalidValue(): void

@@ -28,6 +28,6 @@ class ConsoleOutputTest extends TestCase
             }
         };
         $output->clear();
-        $this->assertEquals(\chr(27) . '[2J' . \chr(27) . '[;H', $output->message);
+        $this->assertSame(\chr(27) . '[2J' . \chr(27) . '[;H', $output->message);
     }
 }

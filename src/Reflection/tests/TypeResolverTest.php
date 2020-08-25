@@ -32,12 +32,12 @@ class TypeResolverTest extends TestCase
 
     public function testResolvingEmptyArrayReturnsArrayType(): void
     {
-        $this->assertEquals('array', TypeResolver::resolveType([]));
+        $this->assertSame('array', TypeResolver::resolveType([]));
     }
 
     public function testResolvingNonEmptyArrayReturnsTypeOfFirstValue(): void
     {
-        $this->assertEquals('string[]', TypeResolver::resolveType(['foo', 'bar']));
+        $this->assertSame('string[]', TypeResolver::resolveType(['foo', 'bar']));
     }
 
     public function testResolvingTypeForObjectUsesObjectsClassName(): void
@@ -47,10 +47,10 @@ class TypeResolverTest extends TestCase
 
     public function testResolvingTypeForScalarUsesScalarType(): void
     {
-        $this->assertEquals('boolean', TypeResolver::resolveType(true));
-        $this->assertEquals('integer', TypeResolver::resolveType(1));
-        $this->assertEquals('double', TypeResolver::resolveType(1.5));
-        $this->assertEquals('string', TypeResolver::resolveType('foo'));
+        $this->assertSame('boolean', TypeResolver::resolveType(true));
+        $this->assertSame('integer', TypeResolver::resolveType(1));
+        $this->assertSame('double', TypeResolver::resolveType(1.5));
+        $this->assertSame('string', TypeResolver::resolveType('foo'));
     }
 
     public function testTypeIsArrayReturnsTrueOnlyForArraysOfTypes(): void

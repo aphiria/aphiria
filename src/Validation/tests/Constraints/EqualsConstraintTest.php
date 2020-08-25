@@ -26,7 +26,7 @@ class EqualsConstraintTest extends TestCase
     public function testGettingErrorMessageId(): void
     {
         $constraint = new EqualsConstraint('foo', 'bar');
-        $this->assertEquals('bar', $constraint->getErrorMessageId());
+        $this->assertSame('bar', $constraint->getErrorMessageId());
     }
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void

@@ -20,7 +20,7 @@ class DefaultErrorMessageTemplateRegistryTest extends TestCase
     public function testGetErrorMessageTemplateReturnsErrorMessageIdRegardlessOfLocale(): void
     {
         $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry();
-        $this->assertEquals('foo', $errorMessageTemplates->getErrorMessageTemplate('foo'));
-        $this->assertEquals('foo', $errorMessageTemplates->getErrorMessageTemplate('foo', 'de'));
+        $this->assertSame('foo', $errorMessageTemplates->getErrorMessageTemplate('foo'));
+        $this->assertSame('foo', $errorMessageTemplates->getErrorMessageTemplate('foo', 'de'));
     }
 }

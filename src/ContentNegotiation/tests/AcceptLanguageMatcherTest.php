@@ -34,7 +34,7 @@ class AcceptLanguageMatcherTest extends TestCase
     {
         $this->headers->add('Accept-Language', '*');
         $this->headers->add('Accept-Language', '*', true);
-        $this->assertEquals('en-US', (new AcceptLanguageMatcher(['en-US', 'en-GB']))->getBestLanguageMatch($this->request));
+        $this->assertSame('en-US', (new AcceptLanguageMatcher(['en-US', 'en-GB']))->getBestLanguageMatch($this->request));
     }
 
     public function testLanguageIsNullWhenNoMatchesAreFound(): void
@@ -48,7 +48,7 @@ class AcceptLanguageMatcherTest extends TestCase
     {
         $this->headers->add('Accept-Language', 'en-US; q=0.1');
         $this->headers->add('Accept-Language', 'en-GB; q=0.5', true);
-        $this->assertEquals('en-GB', (new AcceptLanguageMatcher(['en-US', 'en-GB']))->getBestLanguageMatch($this->request));
+        $this->assertSame('en-GB', (new AcceptLanguageMatcher(['en-US', 'en-GB']))->getBestLanguageMatch($this->request));
     }
 
     public function testLanguageWithWildcardIsRankedAfterLanguagesWithEqualQualityScore(): void
@@ -56,7 +56,7 @@ class AcceptLanguageMatcherTest extends TestCase
         $this->headers->add('Accept-Language', 'en-US; q=1');
         $this->headers->add('Accept-Language', '*; q=1', true);
         $this->headers->add('Accept-Language', 'en-GB; q=1', true);
-        $this->assertEquals('en-US', (new AcceptLanguageMatcher(['en-GB', 'en-US']))->getBestLanguageMatch($this->request));
+        $this->assertSame('en-US', (new AcceptLanguageMatcher(['en-GB', 'en-US']))->getBestLanguageMatch($this->request));
     }
 
     public function testLanguageWithZeroQualityScoreIsExcluded(): void
@@ -69,17 +69,17 @@ class AcceptLanguageMatcherTest extends TestCase
     public function testTruncatedLanguageCanMatchSupportedLanguage(): void
     {
         $this->headers->add('Accept-Language', 'en-US-123; q=1');
-        $this->assertEquals('en-US', (new AcceptLanguageMatcher(['en-US']))->getBestLanguageMatch($this->request));
+        $this->assertSame('en-US', (new AcceptLanguageMatcher(['en-US']))->getBestLanguageMatch($this->request));
 
         // Purposely overwriting the previous Accept-Language header
         $this->headers->add('Accept-Language', 'en-US; q=1');
-        $this->assertEquals('en', (new AcceptLanguageMatcher(['en']))->getBestLanguageMatch($this->request));
+        $this->assertSame('en', (new AcceptLanguageMatcher(['en']))->getBestLanguageMatch($this->request));
     }
 
     public function testWildcardWithHighestScoreMatchesFirstSupportedLanguage(): void
     {
         $this->headers->add('Accept-Language', '*; q=1');
         $this->headers->add('Accept-Language', 'en-GB; q=0.5', true);
-        $this->assertEquals('de-DE', (new AcceptLanguageMatcher(['de-DE']))->getBestLanguageMatch($this->request));
+        $this->assertSame('de-DE', (new AcceptLanguageMatcher(['de-DE']))->getBestLanguageMatch($this->request));
     }
 }

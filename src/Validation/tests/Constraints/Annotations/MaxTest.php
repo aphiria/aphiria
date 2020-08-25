@@ -35,7 +35,7 @@ class MaxTest extends TestCase
     public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
     {
         $annotation = new Max(['value' => 1, 'errorMessageId' => 'foo']);
-        $this->assertEquals('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
+        $this->assertSame('foo', $annotation->createConstraintFromAnnotation()->getErrorMessageId());
     }
 
     public function testIsInclusiveCanBeSetViaConstructor(): void
@@ -53,13 +53,13 @@ class MaxTest extends TestCase
     public function testMaxCanBeSetViaMax(): void
     {
         $annotation = new Max(['max' => 2]);
-        $this->assertEquals(2, $annotation->max);
+        $this->assertSame(2, $annotation->max);
     }
 
     public function testMaxCanBeSetViaValue(): void
     {
         $annotation = new Max(['value' => 2]);
-        $this->assertEquals(2, $annotation->max);
+        $this->assertSame(2, $annotation->max);
     }
 
     public function testNotSettingMaxThrowsException(): void
@@ -79,6 +79,6 @@ class MaxTest extends TestCase
     public function testSettingErrorMessageId(): void
     {
         $annotation = new Max(['value' => 1, 'errorMessageId' => 'foo']);
-        $this->assertEquals('foo', $annotation->errorMessageId);
+        $this->assertSame('foo', $annotation->errorMessageId);
     }
 }

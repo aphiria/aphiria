@@ -19,7 +19,7 @@ class HttpStatusCodesTest extends TestCase
 {
     public function testExistingStatusCodeReturnsDefaultStatusText(): void
     {
-        $this->assertEquals('OK', HttpStatusCodes::getDefaultReasonPhrase(200));
+        $this->assertSame('OK', HttpStatusCodes::getDefaultReasonPhrase(200));
     }
 
     public function testNonExistentStatusCodeReturnsNullStatusText(): void

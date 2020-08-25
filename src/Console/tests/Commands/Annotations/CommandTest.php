@@ -25,7 +25,7 @@ class CommandTest extends TestCase
     public function testDefaultValuesOfCommandPropertiesAreSet(): void
     {
         $command = new Command(['value' => 'foo']);
-        $this->assertEquals('foo', $command->name);
+        $this->assertSame('foo', $command->name);
         $this->assertEmpty($command->arguments);
         $this->assertEmpty($command->options);
         $this->assertNull($command->description);
@@ -35,13 +35,13 @@ class CommandTest extends TestCase
     public function testNameCanBeSetViaName(): void
     {
         $command = new Command(['name' => 'foo']);
-        $this->assertEquals('foo', $command->name);
+        $this->assertSame('foo', $command->name);
     }
 
     public function testNameCanBeSetViaValue(): void
     {
         $command = new Command(['value' => 'foo']);
-        $this->assertEquals('foo', $command->name);
+        $this->assertSame('foo', $command->name);
     }
 
     public function testNoNameThrowsException(): void
@@ -60,14 +60,14 @@ class CommandTest extends TestCase
             'description' => 'command description',
             'helpText' => 'help text'
         ]);
-        $this->assertEquals('foo', $command->name);
+        $this->assertSame('foo', $command->name);
         $this->assertCount(1, $command->arguments);
-        $this->assertEquals('arg1', $command->arguments[0]->name);
-        $this->assertEquals(ArgumentTypes::REQUIRED, $command->arguments[0]->type);
+        $this->assertSame('arg1', $command->arguments[0]->name);
+        $this->assertSame(ArgumentTypes::REQUIRED, $command->arguments[0]->type);
         $this->assertCount(1, $command->options);
-        $this->assertEquals('opt1', $command->options[0]->name);
-        $this->assertEquals(OptionTypes::REQUIRED_VALUE, $command->options[0]->type);
-        $this->assertEquals('command description', $command->description);
-        $this->assertEquals('help text', $command->helpText);
+        $this->assertSame('opt1', $command->options[0]->name);
+        $this->assertSame(OptionTypes::REQUIRED_VALUE, $command->options[0]->type);
+        $this->assertSame('command description', $command->description);
+        $this->assertSame('help text', $command->helpText);
     }
 }

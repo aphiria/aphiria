@@ -23,7 +23,7 @@ class HttpExceptionTest extends TestCase
     public function testCodeIsSameOneSetInConstructor(): void
     {
         $exception = new HttpException(500, '', 4);
-        $this->assertEquals(4, $exception->getCode());
+        $this->assertSame(4, $exception->getCode());
     }
 
     public function testInvalidStatusCodeOrResponseThrowsException(): void
@@ -36,13 +36,13 @@ class HttpExceptionTest extends TestCase
     public function testIntStatusCodeIsSetInResponse(): void
     {
         $exception = new HttpException(500);
-        $this->assertEquals(500, $exception->getResponse()->getStatusCode());
+        $this->assertSame(500, $exception->getResponse()->getStatusCode());
     }
 
     public function testMessageIsSameOneSetInConstructor(): void
     {
         $exception = new HttpException(500, 'foo');
-        $this->assertEquals('foo', $exception->getMessage());
+        $this->assertSame('foo', $exception->getMessage());
     }
 
     public function testPreviousExceptionIsSameOneSetInConstructor(): void

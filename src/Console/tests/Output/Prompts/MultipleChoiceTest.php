@@ -75,19 +75,19 @@ class MultipleChoiceTest extends TestCase
 
     public function testFormattingSingleAnswer(): void
     {
-        $this->assertEquals('foo', $this->indexedChoiceQuestion->formatAnswer(1));
-        $this->assertEquals('bar', $this->indexedChoiceQuestion->formatAnswer(2));
-        $this->assertEquals('baz', $this->indexedChoiceQuestion->formatAnswer(3));
+        $this->assertSame('foo', $this->indexedChoiceQuestion->formatAnswer(1));
+        $this->assertSame('bar', $this->indexedChoiceQuestion->formatAnswer(2));
+        $this->assertSame('baz', $this->indexedChoiceQuestion->formatAnswer(3));
     }
 
     public function testFormattingStringAnswer(): void
     {
-        $this->assertEquals('foo', $this->indexedChoiceQuestion->formatAnswer('1'));
-        $this->assertEquals('bar', $this->indexedChoiceQuestion->formatAnswer('2'));
-        $this->assertEquals('baz', $this->indexedChoiceQuestion->formatAnswer('3'));
-        $this->assertEquals('b', $this->keyedChoiceQuestion->formatAnswer('a'));
-        $this->assertEquals('d', $this->keyedChoiceQuestion->formatAnswer('c'));
-        $this->assertEquals('f', $this->keyedChoiceQuestion->formatAnswer('e'));
+        $this->assertSame('foo', $this->indexedChoiceQuestion->formatAnswer('1'));
+        $this->assertSame('bar', $this->indexedChoiceQuestion->formatAnswer('2'));
+        $this->assertSame('baz', $this->indexedChoiceQuestion->formatAnswer('3'));
+        $this->assertSame('b', $this->keyedChoiceQuestion->formatAnswer('a'));
+        $this->assertSame('d', $this->keyedChoiceQuestion->formatAnswer('c'));
+        $this->assertSame('f', $this->keyedChoiceQuestion->formatAnswer('e'));
     }
 
     public function testGettingAllowsMultipleChoices(): void
@@ -149,7 +149,7 @@ class MultipleChoiceTest extends TestCase
     public function testSettingAnswerLineString(): void
     {
         $this->indexedChoiceQuestion->setAnswerLineString('foo');
-        $this->assertEquals('foo', $this->indexedChoiceQuestion->getAnswerLineString());
+        $this->assertSame('foo', $this->indexedChoiceQuestion->getAnswerLineString());
     }
 
     public function testStringAsAnswerToIndexedChoices(): void

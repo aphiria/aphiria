@@ -29,8 +29,8 @@ class GlobalConfigurationTest extends TestCase
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['baz' => 'blah']));
-        $this->assertEquals('bar', GlobalConfiguration::getValue('foo'));
-        $this->assertEquals('blah', GlobalConfiguration::getValue('baz'));
+        $this->assertSame('bar', GlobalConfiguration::getValue('foo'));
+        $this->assertSame('blah', GlobalConfiguration::getValue('baz'));
     }
 
     public function testGetArrayForNestedValueReturnsArray(): void
@@ -60,50 +60,50 @@ class GlobalConfigurationTest extends TestCase
     public function testGetFloatForNestedValueReturnsFloat(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => ['bar' => 1.2]]));
-        $this->assertEquals(1.2, GlobalConfiguration::getFloat('foo.bar'));
+        $this->assertSame(1.2, GlobalConfiguration::getFloat('foo.bar'));
     }
 
     public function testGetFloatReturnsFloat(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 1.2]));
-        $this->assertEquals(1.2, GlobalConfiguration::getFloat('foo'));
+        $this->assertSame(1.2, GlobalConfiguration::getFloat('foo'));
     }
 
     public function testGetIntForNestedValueReturnsInt(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => ['bar' => 1]]));
-        $this->assertEquals(1, GlobalConfiguration::getInt('foo.bar'));
+        $this->assertSame(1, GlobalConfiguration::getInt('foo.bar'));
     }
 
     public function testGetIntReturnsInt(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 1]));
-        $this->assertEquals(1, GlobalConfiguration::getInt('foo'));
+        $this->assertSame(1, GlobalConfiguration::getInt('foo'));
     }
 
     public function testGetStringForNestedValueReturnsString(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => ['bar' => 'baz']]));
-        $this->assertEquals('baz', GlobalConfiguration::getString('foo.bar'));
+        $this->assertSame('baz', GlobalConfiguration::getString('foo.bar'));
     }
 
     public function testGetStringReturnsString(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
-        $this->assertEquals('bar', GlobalConfiguration::getString('foo'));
+        $this->assertSame('bar', GlobalConfiguration::getString('foo'));
     }
 
     public function testGetValueFallsBackToAnotherSourceIfTheFirstOneDoesNotHaveIt(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['baz' => 'blah']));
-        $this->assertEquals('blah', GlobalConfiguration::getValue('baz'));
+        $this->assertSame('blah', GlobalConfiguration::getValue('baz'));
     }
 
     public function testGetValueForNestedPathReturnsValue(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => ['bar' => ['baz' => 'blah']]]));
-        $this->assertEquals('blah', GlobalConfiguration::getValue('foo.bar.baz'));
+        $this->assertSame('blah', GlobalConfiguration::getValue('foo.bar.baz'));
     }
 
     public function testGetValueForNonExistentNestedPathThrowsException(): void
@@ -169,7 +169,7 @@ class GlobalConfigurationTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 1.2]));
         $value = null;
         $this->assertTrue(GlobalConfiguration::tryGetFloat('foo', $value));
-        $this->assertEquals(1.2, $value);
+        $this->assertSame(1.2, $value);
     }
 
     public function testTryGetFloatForNonExistentValueSetsItToNullAndReturnsFalse(): void
@@ -185,7 +185,7 @@ class GlobalConfigurationTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 1]));
         $value = null;
         $this->assertTrue(GlobalConfiguration::tryGetInt('foo', $value));
-        $this->assertEquals(1, $value);
+        $this->assertSame(1, $value);
     }
 
     public function testTryGetIntForNonExistentValueSetsItToNullAndReturnsFalse(): void
@@ -201,7 +201,7 @@ class GlobalConfigurationTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
         $value = null;
         $this->assertTrue(GlobalConfiguration::tryGetString('foo', $value));
-        $this->assertEquals('bar', $value);
+        $this->assertSame('bar', $value);
     }
 
     public function testTryGetStringForNonExistentValueSetsItToNullAndReturnsFalse(): void
@@ -217,7 +217,7 @@ class GlobalConfigurationTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
         $value = null;
         $this->assertTrue(GlobalConfiguration::tryGetValue('foo', $value));
-        $this->assertEquals('bar', $value);
+        $this->assertSame('bar', $value);
     }
 
     public function testTryGetValueForNonExistentValueSetsItToNullAndReturnsFalse(): void

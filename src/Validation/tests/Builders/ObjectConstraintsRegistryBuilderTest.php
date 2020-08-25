@@ -69,6 +69,6 @@ class ObjectConstraintsRegistryBuilderTest extends TestCase
     public function testClassCreatesBuilderWithCorrectClassName(): void
     {
         $actualConstraintsBuilder = $this->builder->class('foo');
-        $this->assertEquals('foo', $actualConstraintsBuilder->build()->getClassName());
+        $this->assertSame('foo', $actualConstraintsBuilder->build()->getClassName());
     }
 }

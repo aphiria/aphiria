@@ -62,17 +62,17 @@ class ArgumentTest extends TestCase
 
     public function testGettingDefaultValue(): void
     {
-        $this->assertEquals('bar', $this->argument->defaultValue);
+        $this->assertSame('bar', $this->argument->defaultValue);
     }
 
     public function testGettingDescription(): void
     {
-        $this->assertEquals('Foo argument', $this->argument->description);
+        $this->assertSame('Foo argument', $this->argument->description);
     }
 
     public function testGettingName(): void
     {
-        $this->assertEquals('foo', $this->argument->name);
+        $this->assertSame('foo', $this->argument->name);
     }
 
     public function testSettingTypeToOptionalAndRequired(): void
