@@ -85,6 +85,8 @@ final class HttpStatusCodes
     public const HTTP_PRECONDITION_FAILED = 412;
     /** @const The request entity was too large */
     public const HTTP_REQUEST_ENTITY_TOO_LARGE = 413;
+    /** @const The request URI was too long */
+    public const HTTP_URI_TOO_LONG = 414;
     /** @const The request media format wasn't supported */
     public const HTTP_UNSUPPORTED_MEDIA_TYPE = 415;
     /** @const The range header cannot be fulfilled */

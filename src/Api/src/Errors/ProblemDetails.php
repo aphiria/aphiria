@@ -68,7 +68,7 @@ class ProblemDetails
     /**
      * @param string|null $type The optional problem details type
      * @param string|null $title The optional problem details title
-     * @param string|null $detail The optional problem details
+     * @param string|null $detail The optional problem details detail
      * @param int|null $status The optional problem details status
      * @param string|null $instance The optional problem details instance
      * @param array|null $extensions The optional problem details extensions
