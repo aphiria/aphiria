@@ -18,8 +18,8 @@ use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\LogLevelFactory;
-use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Framework\Exceptions\Bootstrappers\GlobalExceptionHandlerBootstrapper;
 use Aphiria\Net\Http\HttpException;
@@ -41,7 +41,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
     private IContainer $container;
     private Logger $logger;
     private GlobalExceptionHandlerBootstrapper $bootstrapper;
-    private ApiExceptionRenderer $apiExceptionRenderer;
+    private ProblemDetailsExceptionRenderer $apiExceptionRenderer;
 
     protected function setUp(): void
     {
@@ -69,7 +69,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->container->expects($this->at(4))
             ->method('bindInstance')
-            ->with(IExceptionRenderer::class, $this->isInstanceOf(ApiExceptionRenderer::class));
+            ->with(IExceptionRenderer::class, $this->isInstanceOf(ProblemDetailsExceptionRenderer::class));
         $this->bootstrapper->setIsRunningInConsole(false);
         $this->bootstrapper->bootstrap();
     }
@@ -224,8 +224,8 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->container->expects($this->at(0))
             ->method('bindInstance')
             ->with(
-                [IApiExceptionRenderer::class, ApiExceptionRenderer::class],
-                $this->callback(function (ApiExceptionRenderer $apiExceptionRenderer) {
+                [IApiExceptionRenderer::class, ProblemDetailsExceptionRenderer::class],
+                $this->callback(function (ProblemDetailsExceptionRenderer $apiExceptionRenderer) {
                     $this->apiExceptionRenderer = $apiExceptionRenderer;
 
                     return true;

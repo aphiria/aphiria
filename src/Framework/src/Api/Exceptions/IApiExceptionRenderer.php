@@ -14,6 +14,7 @@ namespace Aphiria\Framework\Api\Exceptions;
 
 use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Net\Http\IRequest;
+use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use Exception;
 
@@ -22,6 +23,14 @@ use Exception;
  */
 interface IApiExceptionRenderer extends IExceptionRenderer
 {
+    /**
+     * Creates a response from an exception
+     *
+     * @param Exception $ex The exception that was thrown
+     * @return IResponse The response
+     */
+    public function createResponse(Exception $ex): IResponse;
+
     /**
      * Sets the current request in case it wasn't initially available
      *

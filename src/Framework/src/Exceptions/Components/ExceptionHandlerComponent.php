@@ -53,6 +53,8 @@ class ExceptionHandlerComponent implements IComponent
         $apiExceptionRenderer = null;
 
         if ($this->serviceResolver->tryResolve(IApiExceptionRenderer::class, $apiExceptionRenderer)) {
+            // TODO: Need to check if this is a ProblemDetails renderer, and if so, add mappings
+            // TODO: Should make sure this is easily extendable so that custom renderers can be configured here, too
             $apiExceptionRenderer->registerManyResponseFactories($this->httpResponseFactories);
         }
 

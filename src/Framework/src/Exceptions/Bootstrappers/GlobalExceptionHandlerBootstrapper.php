@@ -23,8 +23,8 @@ use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\IGlobalExceptionHandler;
 use Aphiria\Exceptions\LogLevelFactory;
-use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
@@ -89,7 +89,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     {
         // TODO: Should probably switch the config value to be the TYPE of exception response factory to use
         $useProblemDetails = GlobalConfiguration::getBool('aphiria.exceptions.useProblemDetails');
-        $exceptionRenderer = new ApiExceptionRenderer($useProblemDetails);
+        $exceptionRenderer = new ProblemDetailsExceptionRenderer($useProblemDetails);
         $exceptionRenderer->registerManyResponseFactories([
             HttpException::class => function (HttpException $ex, IRequest $request, IResponseFactory $responseFactory) {
                 return $ex->getResponse();
@@ -106,7 +106,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
             }
         ]);
         // We'll bind IExceptionRenderer in the calling method
-        $this->container->bindInstance([IApiExceptionRenderer::class, ApiExceptionRenderer::class], $exceptionRenderer);
+        $this->container->bindInstance([IApiExceptionRenderer::class, ProblemDetailsExceptionRenderer::class], $exceptionRenderer);
 
         return $exceptionRenderer;
     }

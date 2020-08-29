@@ -20,16 +20,17 @@ use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
+use Aphiria\Net\Http\IResponseWriter;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StreamBody;
+use Aphiria\Net\Http\StreamResponseWriter;
 use Closure;
 use Exception;
 
 /**
- * Defines the exception response factory that creates problem details responses
- * @link https://tools.ietf.org/html/rfc7807
+ * Defines the problem details exception renderer for API applications
  */
-class ProblemDetailsExceptionResponseFactory implements IExceptionResponseFactory
+class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
 {
     /** @var string[] The mapping of HTTP status codes to their RFC type URIs */
     protected static array $statusesToRfcTypes = [
@@ -71,52 +72,60 @@ class ProblemDetailsExceptionResponseFactory implements IExceptionResponseFactor
     protected bool $mapStatusesToRfcTypes;
     /** @var Closure[] The mapping of exception types to problem details factories */
     protected array $exceptionTypesToProblemDetailsFactories = [];
+    /** @var IRequest|null The current request, if there is one */
+    protected ?IRequest $request;
+    /** @var IResponseFactory|null The optional response factory */
+    protected ?IResponseFactory $responseFactory;
+    /** @var IResponseWriter What is used to write the response */
+    protected IResponseWriter $responseWriter;
 
     /**
      * @param bool $mapStatusesToRfcTypes Whether or not we want to automatically map status codes to RFC types if no type is specified
+     * @param IRequest|null $request The current request, if there is one
+     * @param IResponseFactory|null $responseFactory The optional response factory
+     * @param IResponseWriter|null $responseWriter What is used to write the response
      */
-    public function __construct(bool $mapStatusesToRfcTypes = true)
-    {
+    public function __construct(
+        bool $mapStatusesToRfcTypes = true,
+        IRequest $request = null,
+        IResponseFactory $responseFactory = null,
+        IResponseWriter $responseWriter = null
+    ) {
         $this->mapStatusesToRfcTypes = $mapStatusesToRfcTypes;
+        $this->request = $request;
+        $this->responseFactory = $responseFactory;
+        $this->responseWriter = $responseWriter ?? new StreamResponseWriter();
     }
 
     /**
      * @inheritdoc
      */
-    public function createResponseWithContext(Exception $ex, IRequest $request, IResponseFactory $responseFactory): IResponse
+    public function createResponse(Exception $ex): IResponse
     {
         try {
             $problemDetails = $this->createProblemDetails($ex);
-            $response = $responseFactory->createResponse(
-                $request,
+
+            if ($this->request === null || $this->responseFactory === null) {
+                // We have to manually create a response
+                $response = new Response($problemDetails->status);
+                $response->getHeaders()->add('Content-Type', 'application/problem+json');
+                $bodyStream = new Stream(fopen('php://temp', 'r+b'));
+                // Intentionally using the parameterless constructor so that the default object encoder gets registered
+                $mediaTypeFormatter = new JsonMediaTypeFormatter();
+                $mediaTypeFormatter->writeToStream($problemDetails, $bodyStream, null);
+                $response->setBody(new StreamBody($bodyStream));
+
+                return $response;
+            }
+
+            $response = $this->responseFactory->createResponse(
+                $this->request,
                 $problemDetails->status,
                 null,
                 $problemDetails
             );
 
             return (new ProblemDetailsResponseMutator())->mutateResponse($response);
-        } catch (Exception $ex) {
-            return $this->createDefaultResponse($ex);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function createResponseWithoutContext(Exception $ex): IResponse
-    {
-        try {
-            $problemDetails = $this->createProblemDetails($ex);
-            // We have to manually create a response
-            $response = new Response($problemDetails->status);
-            $response->getHeaders()->add('Content-Type', 'application/problem+json');
-            $bodyStream = new Stream(fopen('php://temp', 'r+b'));
-            // Intentionally using the parameterless constructor so that the default object encoder gets registered
-            $mediaTypeFormatter = new JsonMediaTypeFormatter();
-            $mediaTypeFormatter->writeToStream($problemDetails, $bodyStream, null);
-            $response->setBody(new StreamBody($bodyStream));
-
-            return $response;
         } catch (Exception $ex) {
             return $this->createDefaultResponse($ex);
         }
@@ -142,6 +151,7 @@ class ProblemDetailsExceptionResponseFactory implements IExceptionResponseFactor
         $instance = null,
         $extensions = null
     ): void {
+        // TODO: Add an Aphiria component for adding these mappings
         $this->exceptionTypesToProblemDetailsFactories[$exceptionType] = function (Exception $ex) use ($type, $title, $detail, $status, $instance, $extensions) {
             if (\is_callable($status)) {
                 $status = $status($ex);
@@ -177,6 +187,30 @@ class ProblemDetailsExceptionResponseFactory implements IExceptionResponseFactor
 
             return new ProblemDetails($type, $title, $detail, $status, $instance, $extensions);
         };
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function render(Exception $ex): void
+    {
+        $this->responseWriter->writeResponse($this->createResponse($ex));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setRequest(IRequest $request): void
+    {
+        $this->request = $request;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setResponseFactory(IResponseFactory $responseFactory): void
+    {
+        $this->responseFactory = $responseFactory;
     }
 
     /**

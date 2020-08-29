@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Api\Exceptions;
 
 use Aphiria\Api\Errors\ProblemDetails;
-use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
@@ -24,7 +24,7 @@ use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class ApiExceptionRendererTest extends TestCase
+class ProblemDetailsExceptionRendererTest extends TestCase
 {
     /** @var IResponseWriter|MockObject */
     private IResponseWriter $responseWriter;
@@ -146,14 +146,14 @@ class ApiExceptionRendererTest extends TestCase
      * @param bool $useProblemDetails Whether or not to use problem details
      * @param bool $setRequest Whether or not to set the request
      * @param bool $setResponseFactory Whether or not to set the response factory
-     * @return ApiExceptionRenderer The exception renderer
+     * @return ProblemDetailsExceptionRenderer The exception renderer
      */
     private function createExceptionRenderer(
         bool $useProblemDetails,
         bool $setRequest,
         bool $setResponseFactory
-    ): ApiExceptionRenderer {
-        return new ApiExceptionRenderer(
+    ): ProblemDetailsExceptionRenderer {
+        return new ProblemDetailsExceptionRenderer(
             $useProblemDetails,
             $setRequest ? $this->request : null,
             $setResponseFactory ? $this->responseFactory : null,
