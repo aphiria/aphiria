@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * Aphiria
+ *
+ * @link      https://www.aphiria.com
+ * @copyright Copyright (C) 2020 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ */
+
+declare(strict_types=1);
+
+namespace Aphiria\Framework\Serialization\Normalizers;
+
+use Aphiria\Api\Errors\ProblemDetails;
+use Symfony\Component\Serializer\Exception\InvalidArgumentException;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+
+/**
+ * Defines the problem details normalizer
+ */
+final class ProblemDetailsNormalizer extends ObjectNormalizer
+{
+    /**
+     * @inheritdoc
+     */
+    public function normalize($object, string $format = null, array $context = [])
+    {
+        if (!$object instanceof ProblemDetails) {
+            throw new InvalidArgumentException('Object must be an instance of ' . ProblemDetails::class);
+        }
+
+        $normalizedProblemDetails = parent::normalize($object);
+
+        if (isset($normalizedProblemDetails['extensions'])) {
+            // Remove the extensions in the off chance that there's an extension named 'extensions'
+            $extensions = $normalizedProblemDetails['extensions'];
+            unset($normalizedProblemDetails['extensions']);
+
+            foreach ($extensions as $name => $value) {
+                $normalizedProblemDetails[$name] = $value;
+            }
+        }
+
+        return $normalizedProblemDetails;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function supportsNormalization($data, string $format = null): bool
+    {
+        return $data instanceof ProblemDetails;
+    }
+}

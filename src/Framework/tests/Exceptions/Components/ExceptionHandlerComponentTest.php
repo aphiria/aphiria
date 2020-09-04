@@ -12,18 +12,18 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Exceptions\Components;
 
+use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\LogLevelFactory;
-use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Net\Http\IRequest;
-use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
-use Aphiria\Net\Http\IResponseWriter;
+use Aphiria\Net\Http\Response;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
@@ -68,23 +68,29 @@ class ExceptionHandlerComponentTest extends TestCase
         $consoleExceptionHandler->render(new Exception());
     }
 
-    public function testBuildWithHttpResponseFactoryRegistersFactory(): void
+    public function testBuildWithExceptionProblemDetailsRegistersProblemDetails(): void
     {
-        $expectedResponse = $this->createMock(IResponse::class);
-        $responseWriter = $this->createMock(IResponseWriter::class);
-        $responseWriter->expects($this->once())
-            ->method('writeResponse')
-            ->with($expectedResponse);
-        $httpExceptionHandler = new ApiExceptionRenderer(true, null, null, $responseWriter);
-        // Need to make sure the content negotiator is set so that the factory is invoked
-        $httpExceptionHandler->setResponseFactory($this->createMock(IResponseFactory::class));
-        $httpExceptionHandler->setRequest($this->createMock(IRequest::class));
-        $this->container->bindInstance(IApiExceptionRenderer::class, $httpExceptionHandler);
-
-        $factory = fn (Exception $ex) => $expectedResponse;
-        $this->exceptionHandlerComponent->withHttpResponseFactory(Exception::class, $factory);
+        $apiExceptionRenderer = new ProblemDetailsExceptionRenderer();
+        $request = $this->createMock(IRequest::class);
+        $responseFactory = $this->createMock(IResponseFactory::class);
+        $responseFactory->expects($this->once())
+            ->method('createResponse')
+            ->with($request, 400, null, new ProblemDetails('type', 'title', 'detail', 400, 'instance', ['foo' => 'bar']))
+            ->willReturn(new Response(400));
+        $apiExceptionRenderer->setResponseFactory($responseFactory);
+        $apiExceptionRenderer->setRequest($request);
+        $this->container->bindInstance(IApiExceptionRenderer::class, $apiExceptionRenderer);
+        $this->exceptionHandlerComponent->withProblemDetails(
+            Exception::class,
+            'type',
+            'title',
+            'detail',
+            400,
+            'instance',
+            ['foo' => 'bar']
+        );
         $this->exceptionHandlerComponent->build();
-        $httpExceptionHandler->render(new Exception());
+        $apiExceptionRenderer->createResponse(new Exception());
     }
 
     public function testBuildWithLogLevelFactoryRegistersFactory(): void

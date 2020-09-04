@@ -16,6 +16,7 @@ use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Application\AphiriaComponents;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Closure;
@@ -29,8 +30,8 @@ class ExceptionHandlerComponent implements IComponent
 
     /** @var IServiceResolver The service resolver */
     private IServiceResolver $serviceResolver;
-    /** @var Closure[] The mapping of exception types to HTTP response factories */
-    private array $httpResponseFactories = [];
+    /** @var Closure[] The mapping of exception types to problem detail settings */
+    private array $exceptionProblemDetailMappings = [];
     /** @var Closure[] The mapping of exception types to console result factories */
     private array $consoleOutputWriters = [];
     /** @var Closure[] The mapping of exception types to log level factories */
@@ -53,7 +54,7 @@ class ExceptionHandlerComponent implements IComponent
         $apiExceptionRenderer = null;
 
         if ($this->serviceResolver->tryResolve(IApiExceptionRenderer::class, $apiExceptionRenderer)) {
-            $apiExceptionRenderer->registerManyResponseFactories($this->httpResponseFactories);
+            $this->configureApiExceptionRenderer($apiExceptionRenderer);
         }
 
         /** @var ConsoleExceptionRenderer|null $consoleExceptionRenderer */
@@ -82,20 +83,6 @@ class ExceptionHandlerComponent implements IComponent
     }
 
     /**
-     * Adds an HTTP exception response factory for a particular exception type
-     *
-     * @param string $exceptionType The type of exception that's thrown
-     * @param Closure $responseFactory The factory that takes in an instance of the exception, the request, and the response factory, and returns a response
-     * @return self For chaining
-     */
-    public function withHttpResponseFactory(string $exceptionType, Closure $responseFactory): self
-    {
-        $this->httpResponseFactories[$exceptionType] = $responseFactory;
-
-        return $this;
-    }
-
-    /**
      * Adds a log level factory for a particular exception type
      *
      * @param string $exceptionType The type of exception that's thrown
@@ -107,5 +94,60 @@ class ExceptionHandlerComponent implements IComponent
         $this->logLevelFactories[$exceptionType] = $logLevelFactory;
 
         return $this;
+    }
+
+    /**
+     * Adds a mapping of an exception type to problem details properties
+     *
+     * @param string $exceptionType The type of exception that's thrown
+     * @param string|Closure|null $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
+     * @param string|Closure|null $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
+     * @param string|Closure|null $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
+     * @param int|Closure|null $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param string|Closure|null $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
+     * @param array|Closure|null $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
+     * @return self For chaining
+     */
+    public function withProblemDetails(
+        string $exceptionType,
+        $type = null,
+        $title = null,
+        $detail = null,
+        $status = null,
+        $instance = null,
+        $extensions = null
+    ): self {
+        $this->exceptionProblemDetailMappings[$exceptionType] = [
+            'type' => $type,
+            'title' => $title,
+            'detail' => $detail,
+            'status' => $status,
+            'instance' => $instance,
+            'extensions' => $extensions
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Configures the API exception renderer
+     *
+     * @param IApiExceptionRenderer $apiExceptionRenderer The API exception renderer to configure
+     */
+    protected function configureApiExceptionRenderer(IApiExceptionRenderer $apiExceptionRenderer): void
+    {
+        if ($apiExceptionRenderer instanceof ProblemDetailsExceptionRenderer) {
+            foreach ($this->exceptionProblemDetailMappings as $exceptionType => $problemDetailProperties) {
+                $apiExceptionRenderer->mapExceptionToProblemDetails(
+                    $exceptionType,
+                    $problemDetailProperties['type'],
+                    $problemDetailProperties['title'],
+                    $problemDetailProperties['detail'],
+                    $problemDetailProperties['status'],
+                    $problemDetailProperties['instance'],
+                    $problemDetailProperties['extensions'],
+                );
+            }
+        }
     }
 }

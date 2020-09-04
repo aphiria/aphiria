@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Exceptions\Binders;
 
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Exceptions\Binders\ExceptionHandlerBinder;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponseFactory;
@@ -42,7 +42,7 @@ class ExceptionHandlerBinderTest extends TestCase
             ->with(IApiExceptionRenderer::class, $this->apiExceptionRenderer)
             ->willReturnCallback(function ($type, &$object) {
                 // Capture the object parameter so we can make assertions on it later
-                $object = $this->apiExceptionRenderer = new class() extends ApiExceptionRenderer {
+                $object = $this->apiExceptionRenderer = new class() extends ProblemDetailsExceptionRenderer {
                     public function getRequest(): ?IRequest
                     {
                         return $this->request;

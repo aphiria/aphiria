@@ -12,25 +12,21 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Exceptions\Bootstrappers;
 
-use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
 use Aphiria\Api\Validation\InvalidRequestBodyException;
-use Aphiria\Api\Validation\ValidationProblemDetails;
 use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\Application\IBootstrapper;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Exceptions\GlobalExceptionHandler;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\IGlobalExceptionHandler;
 use Aphiria\Exceptions\LogLevelFactory;
-use Aphiria\Framework\Api\Exceptions\ApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
+use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
-use Aphiria\Net\Http\IRequest;
-use Aphiria\Net\Http\IResponseFactory;
-use Aphiria\Net\Http\Response;
 use InvalidArgumentException;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler;
@@ -84,28 +80,37 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
      *
      * @return IExceptionRenderer The exception renderer for API applications
      * @throws MissingConfigurationValueException Thrown if configuration values were invalid or missing
+     * @throws ResolutionException Thrown if a custom exception renderer could not be resolved
      */
     protected function createAndBindApiExceptionRenderer(): IExceptionRenderer
     {
-        $useProblemDetails = GlobalConfiguration::getBool('aphiria.exceptions.useProblemDetails');
-        $exceptionRenderer = new ApiExceptionRenderer($useProblemDetails);
-        $exceptionRenderer->registerManyResponseFactories([
-            HttpException::class => function (HttpException $ex, IRequest $request, IResponseFactory $responseFactory) {
-                return $ex->getResponse();
-            },
-            InvalidRequestBodyException::class => function (InvalidRequestBodyException $ex, IRequest $request, IResponseFactory $responseFactory) use ($useProblemDetails) {
-                if ($useProblemDetails) {
-                    $body = new ValidationProblemDetails($ex->getErrors());
-                    $response = $responseFactory->createResponse($request, HttpStatusCodes::HTTP_BAD_REQUEST, null, $body);
+        $exceptionRendererType = GlobalConfiguration::getString('aphiria.exceptions.apiExceptionRenderer');
 
-                    return (new ProblemDetailsResponseMutator())->mutateResponse($response);
-                }
+        switch ($exceptionRendererType) {
+            case ProblemDetailsExceptionRenderer::class:
+                $exceptionRenderer = new ProblemDetailsExceptionRenderer();
+                $exceptionRenderer->mapExceptionToProblemDetails(
+                    HttpException::class,
+                    null,
+                    null,
+                    null,
+                    fn (HttpException $ex) => $ex->getResponse()->getStatusCode()
+                );
+                $exceptionRenderer->mapExceptionToProblemDetails(
+                    InvalidRequestBodyException::class,
+                    null,
+                    null,
+                    null,
+                    HttpStatusCodes::HTTP_BAD_REQUEST
+                );
+                break;
+            default:
+                $exceptionRenderer = $this->container->resolve($exceptionRendererType);
+                break;
+        }
 
-                return new Response(HttpStatusCodes::HTTP_BAD_REQUEST);
-            }
-        ]);
         // We'll bind IExceptionRenderer in the calling method
-        $this->container->bindInstance([IApiExceptionRenderer::class, ApiExceptionRenderer::class], $exceptionRenderer);
+        $this->container->bindInstance([IApiExceptionRenderer::class, $exceptionRendererType], $exceptionRenderer);
 
         return $exceptionRenderer;
     }

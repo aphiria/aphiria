@@ -16,6 +16,7 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Serialization\Binders\SymfonySerializerBinder;
+use Aphiria\Framework\Serialization\Normalizers\ProblemDetailsNormalizer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -81,6 +82,14 @@ class SymfonySerializerBinderTest extends TestCase
     {
         $config = self::getBaseConfig();
         $config['aphiria']['serialization']['normalizers'][] = ObjectNormalizer::class;
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        $this->binder->bind($this->container);
+    }
+
+    public function testProblemDetailsNormalizerIsInstantiated(): void
+    {
+        $config = self::getBaseConfig();
+        $config['aphiria']['serialization']['normalizers'][] = ProblemDetailsNormalizer::class;
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->binder->bind($this->container);
     }
