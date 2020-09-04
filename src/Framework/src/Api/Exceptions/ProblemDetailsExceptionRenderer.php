@@ -146,7 +146,6 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
         $instance = null,
         $extensions = null
     ): void {
-        // TODO: Add an Aphiria component for adding these mappings
         $this->exceptionTypesToProblemDetailsFactories[$exceptionType] = function (Exception $ex) use ($type, $title, $detail, $status, $instance, $extensions) {
             if (\is_callable($status)) {
                 $status = $status($ex);

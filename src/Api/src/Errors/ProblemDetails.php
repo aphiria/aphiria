@@ -87,6 +87,5 @@ class ProblemDetails
         $this->status = $status;
         $this->instance = $instance;
         $this->extensions = $extensions;
-        // Todo: Document how to add extensions
     }
 }

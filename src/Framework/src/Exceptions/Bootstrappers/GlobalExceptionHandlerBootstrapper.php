@@ -84,7 +84,6 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
      */
     protected function createAndBindApiExceptionRenderer(): IExceptionRenderer
     {
-        // TODO: Need to update the app config.php to use this new value
         $exceptionRendererType = GlobalConfiguration::getString('aphiria.exceptions.apiExceptionRenderer');
 
         switch ($exceptionRendererType) {

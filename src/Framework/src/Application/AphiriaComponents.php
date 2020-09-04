@@ -232,7 +232,6 @@ trait AphiriaComponents
         $instance = null,
         $extensions = null
     ): self {
-        // TODO: Need to document this method
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
             $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));

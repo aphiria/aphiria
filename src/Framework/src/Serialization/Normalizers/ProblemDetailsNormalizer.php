@@ -26,7 +26,6 @@ final class ProblemDetailsNormalizer extends ObjectNormalizer
      */
     public function normalize($object, string $format = null, array $context = [])
     {
-        // TODO: Make sure this is added to the app's config.php
         if (!$object instanceof ProblemDetails) {
             throw new InvalidArgumentException('Object must be an instance of ' . ProblemDetails::class);
         }

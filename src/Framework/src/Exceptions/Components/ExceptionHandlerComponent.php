@@ -23,7 +23,6 @@ use Closure;
 
 /**
  * Defines the exception handler component
- * TODO: Should this be a base class with a derived ProblemDetailsExceptionHandlerComponent?  Or perhaps should the that just be a separate component?
  */
 class ExceptionHandlerComponent implements IComponent
 {
