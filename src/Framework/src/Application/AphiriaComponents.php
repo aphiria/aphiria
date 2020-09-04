@@ -210,25 +210,36 @@ trait AphiriaComponents
     }
 
     /**
-     * Adds an HTTP exception response factory to the exception handler component
+     * Adds a mapping of an exception type to problem details properties
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param string $exceptionType The type of exception whose response factory we're registering
-     * @param Closure $responseFactory The factory that takes in an instance of the exception, IRequest, and IResponseFactory and creates a response
+     * @param string|Closure|null $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
+     * @param string|Closure|null $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
+     * @param string|Closure|null $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
+     * @param int|Closure|null $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param string|Closure|null $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
+     * @param array|Closure|null $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
      * @return self For chaining
      */
-    protected function withHttpExceptionResponseFactory(
+    protected function withProblemDetails(
         IApplicationBuilder $appBuilder,
         string $exceptionType,
-        Closure $responseFactory
+        $type = null,
+        $title = null,
+        $detail = null,
+        $status = null,
+        $instance = null,
+        $extensions = null
     ): self {
+        // TODO: Need to document this method
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
             $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));
         }
 
         $appBuilder->getComponent(ExceptionHandlerComponent::class)
-            ->withHttpResponseFactory($exceptionType, $responseFactory);
+            ->withProblemDetails($exceptionType, $type, $title, $detail, $status, $instance, $extensions);
 
         return $this;
     }

@@ -68,8 +68,6 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
         HttpStatusCodes::HTTP_GATEWAY_TIMEOUT => 'https://tools.ietf.org/html/rfc7231#section-6.6.5',
         HttpStatusCodes::HTTP_HTTP_VERSION_NOT_SUPPORTED => 'https://tools.ietf.org/html/rfc7231#section-6.6.6'
     ];
-    /** @var bool Whether or not we want to automatically map status codes to RFC types if no type is specified */
-    protected bool $mapStatusesToRfcTypes;
     /** @var Closure[] The mapping of exception types to problem details factories */
     protected array $exceptionTypesToProblemDetailsFactories = [];
     /** @var IRequest|null The current request, if there is one */
@@ -80,18 +78,15 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
     protected IResponseWriter $responseWriter;
 
     /**
-     * @param bool $mapStatusesToRfcTypes Whether or not we want to automatically map status codes to RFC types if no type is specified
      * @param IRequest|null $request The current request, if there is one
      * @param IResponseFactory|null $responseFactory The optional response factory
      * @param IResponseWriter|null $responseWriter What is used to write the response
      */
     public function __construct(
-        bool $mapStatusesToRfcTypes = true,
         IRequest $request = null,
         IResponseFactory $responseFactory = null,
         IResponseWriter $responseWriter = null
     ) {
-        $this->mapStatusesToRfcTypes = $mapStatusesToRfcTypes;
         $this->request = $request;
         $this->responseFactory = $responseFactory;
         $this->responseWriter = $responseWriter ?? new StreamResponseWriter();
@@ -155,6 +150,8 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
         $this->exceptionTypesToProblemDetailsFactories[$exceptionType] = function (Exception $ex) use ($type, $title, $detail, $status, $instance, $extensions) {
             if (\is_callable($status)) {
                 $status = $status($ex);
+            } elseif ($status === null) {
+                $status = HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR;
             }
 
             if (\is_callable($type)) {
@@ -290,12 +287,6 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
      */
     protected function getTypeFromException(Exception $ex, ?int $statusCode): ?string
     {
-        $type = null;
-
-        if ($this->mapStatusesToRfcTypes) {
-            $type = self::$statusesToRfcTypes[$statusCode ?? HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR] ?? null;
-        }
-
-        return $type;
+        return self::$statusesToRfcTypes[$statusCode ?? HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR] ?? null;
     }
 }

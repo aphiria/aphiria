@@ -32,7 +32,6 @@ use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
-use Aphiria\Net\Http\IResponse;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Closure;
@@ -421,60 +420,6 @@ class AphiriaComponentsTest extends TestCase
         $component->build($this->appBuilder);
     }
 
-    public function testWithHttpResponseFactoryConfiguresComponentToHaveFactory(): void
-    {
-        $responseFactory = fn (Exception $ex) => $this->createMock(IResponse::class);
-        $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
-        $expectedComponent->expects($this->once())
-            ->method('withHttpResponseFactory')
-            ->with(Exception::class, $responseFactory);
-        $this->appBuilder->expects($this->at(0))
-            ->method('hasComponent')
-            ->with(ExceptionHandlerComponent::class)
-            ->willReturn(true);
-        $this->appBuilder->expects($this->at(1))
-            ->method('getComponent')
-            ->with(ExceptionHandlerComponent::class)
-            ->willReturn($expectedComponent);
-        $component = new class() {
-            use AphiriaComponents;
-
-            public function build(
-                IApplicationBuilder $appBuilder,
-                string $exceptionType,
-                Closure $responseFactory
-            ): void {
-                $this->withHttpExceptionResponseFactory($appBuilder, $exceptionType, $responseFactory);
-            }
-        };
-        $component->build($this->appBuilder, Exception::class, $responseFactory);
-    }
-
-    public function testWithHttpExceptionResponseFactoryRegistersComponentIfItIsNotRegisteredYet(): void
-    {
-        $this->appBuilder->expects($this->at(0))
-            ->method('hasComponent')
-            ->with(ExceptionHandlerComponent::class)
-            ->willReturn(false);
-        $this->appBuilder->expects($this->at(1))
-            ->method('withComponent')
-            ->with($this->isInstanceOf(ExceptionHandlerComponent::class));
-        $this->appBuilder->expects($this->at(2))
-            ->method('getComponent')
-            ->with(ExceptionHandlerComponent::class)
-            ->willReturn($this->createMock(ExceptionHandlerComponent::class));
-        $component = new class() {
-            use AphiriaComponents;
-
-            public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $factory): void
-            {
-                $this->withHttpExceptionResponseFactory($appBuilder, $exceptionType, $factory);
-            }
-        };
-        $callback = fn (Exception $ex) => $this->createMock(IResponse::class);
-        $component->build($this->appBuilder, Exception::class, $callback);
-    }
-
     public function testWithGlobalMiddlewareConfiguresComponentToHaveMiddleware(): void
     {
         $middlewareBinding = new MiddlewareBinding('foo');
@@ -693,6 +638,71 @@ class AphiriaComponentsTest extends TestCase
         };
         $factory = fn (ObjectConstraintsRegistry $objectConstraints) => null;
         $component->build($this->appBuilder, $factory);
+    }
+
+    public function testWithProblemDetailsConfiguresComponentToHaveProblemDetails(): void
+    {
+        $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
+        $expectedComponent->expects($this->once())
+            ->method('withProblemDetails')
+            ->with(Exception::class, 'type', 'title', 'detail', 400, 'instance', ['foo' => 'bar']);
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponent')
+            ->with(ExceptionHandlerComponent::class)
+            ->willReturn(true);
+        $this->appBuilder->expects($this->at(1))
+            ->method('getComponent')
+            ->with(ExceptionHandlerComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class() {
+            use AphiriaComponents;
+
+            public function build(
+                IApplicationBuilder $appBuilder,
+                string $exceptionType,
+                $type = null,
+                $title = null,
+                $detail = null,
+                $status = null,
+                $instance = null,
+                $extensions = null
+            ): void {
+                $this->withProblemDetails($appBuilder, $exceptionType, $type, $title, $detail, $status, $instance, $extensions);
+            }
+        };
+        $component->build($this->appBuilder, Exception::class, 'type', 'title', 'detail', 400, 'instance', ['foo' => 'bar']);
+    }
+
+    public function testWithProblemDetailsRegistersComponentIfItIsNotRegisteredYet(): void
+    {
+        $this->appBuilder->expects($this->at(0))
+            ->method('hasComponent')
+            ->with(ExceptionHandlerComponent::class)
+            ->willReturn(false);
+        $this->appBuilder->expects($this->at(1))
+            ->method('withComponent')
+            ->with($this->isInstanceOf(ExceptionHandlerComponent::class));
+        $this->appBuilder->expects($this->at(2))
+            ->method('getComponent')
+            ->with(ExceptionHandlerComponent::class)
+            ->willReturn($this->createMock(ExceptionHandlerComponent::class));
+        $component = new class() {
+            use AphiriaComponents;
+
+            public function build(
+                IApplicationBuilder $appBuilder,
+                string $exceptionType,
+                $type = null,
+                $title = null,
+                $detail = null,
+                $status = null,
+                $instance = null,
+                $extensions = null
+            ): void {
+                $this->withProblemDetails($appBuilder, $exceptionType, $type, $title, $detail, $status, $instance, $extensions);
+            }
+        };
+        $component->build($this->appBuilder, Exception::class, 'type', 'title', 'detail', 400, 'instance', ['foo' => 'bar']);
     }
 
     public function testWithRouteAnnotationsConfiguresComponentToHaveAnnotations(): void
