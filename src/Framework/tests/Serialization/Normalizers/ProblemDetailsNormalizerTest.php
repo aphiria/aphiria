@@ -42,7 +42,7 @@ class ProblemDetailsNormalizerTest extends TestCase
         $this->assertEquals($expectedNormalizedValue, $this->normalizer->normalize($problemDetails));
     }
 
-    public function testNormalizeDoesNotAddAnyExtensionsForProblemDetailsWithNoDetails(): void
+    public function testNormalizeDoesNotAddAnyExtensionsForProblemDetailsWithNoExtensions(): void
     {
         $problemDetails = new ProblemDetails('foo');
         $expectedNormalizedValue = [
@@ -50,8 +50,7 @@ class ProblemDetailsNormalizerTest extends TestCase
             'title' => null,
             'detail' => null,
             'status' => null,
-            'instance' => null,
-            'extensions' => null,
+            'instance' => null
         ];
         $this->assertEquals($expectedNormalizedValue, $this->normalizer->normalize($problemDetails));
     }

@@ -32,13 +32,16 @@ final class ProblemDetailsNormalizer extends ObjectNormalizer
 
         $normalizedProblemDetails = parent::normalize($object);
 
-        if (isset($normalizedProblemDetails['extensions'])) {
+        if (\array_key_exists('extensions', $normalizedProblemDetails)) {
             // Remove the extensions in the off chance that there's an extension named 'extensions'
             $extensions = $normalizedProblemDetails['extensions'];
             unset($normalizedProblemDetails['extensions']);
 
-            foreach ($extensions as $name => $value) {
-                $normalizedProblemDetails[$name] = $value;
+            // Extensions could technically be null
+            if (\is_array($extensions)) {
+                foreach ($extensions as $name => $value) {
+                    $normalizedProblemDetails[$name] = $value;
+                }
             }
         }
 
