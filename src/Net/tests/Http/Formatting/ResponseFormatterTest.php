@@ -53,7 +53,7 @@ class ResponseFormatterTest extends TestCase
     {
         $this->formatter->deleteCookie($this->response, 'name', '/path', 'example.com', true, true, 'lax');
         $this->assertSame(
-            'name=; Max-Age=0; Path=%2Fpath; Domain=example.com; Secure; HttpOnly; SameSite=lax',
+            'name=; Max-Age=0; Path=/path; Domain=example.com; Secure; HttpOnly; SameSite=lax',
             $this->headers->getFirst('Set-Cookie')
         );
     }
@@ -90,7 +90,7 @@ class ResponseFormatterTest extends TestCase
             new Cookie('name', 'value', 3600, '/path', 'example.com', true, true, 'lax')
         );
         $this->assertSame(
-            'name=value; Max-Age=3600; Path=%2Fpath; Domain=example.com; Secure; HttpOnly; SameSite=lax',
+            'name=value; Max-Age=3600; Path=/path; Domain=example.com; Secure; HttpOnly; SameSite=lax',
             $this->headers->getFirst('Set-Cookie')
         );
     }

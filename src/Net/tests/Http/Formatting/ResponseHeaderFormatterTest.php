@@ -28,12 +28,12 @@ class ResponseHeaderFormatterTest extends TestCase
         $this->headers = new Headers();
     }
 
-    public function testCookiePropertiesWithValuesAreUrlEncoded(): void
+    public function testCookiePropertiesWithValuesAreNotUrlEncoded(): void
     {
         $cookie = new Cookie('foo', '+', null, '/', null, false, false, 'strict');
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertSame(
-            'foo=' . urlencode('+') . '; Path=' . urlencode('/') . '; SameSite=' . urldecode('strict'),
+            'foo=' . urlencode('+') . '; Path=/; SameSite=strict',
             $this->headers->getFirst('Set-Cookie')
         );
     }
@@ -74,7 +74,7 @@ class ResponseHeaderFormatterTest extends TestCase
         $cookie = new Cookie('foo', 'bar', null, '/foo', null, false, false, null);
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertSame(
-            'foo=bar; Path=' . urlencode('/foo'),
+            'foo=bar; Path=/foo',
             $this->headers->getFirst('Set-Cookie')
         );
     }
@@ -109,7 +109,7 @@ class ResponseHeaderFormatterTest extends TestCase
     public function testDeletingCookieWithSpecificPath(): void
     {
         $this->formatter->deleteCookie($this->headers, 'foo', '/', null, false, false, null);
-        $this->assertSame('foo=; Max-Age=0; Path=%2F', $this->headers->getFirst('Set-Cookie'));
+        $this->assertSame('foo=; Max-Age=0; Path=/', $this->headers->getFirst('Set-Cookie'));
     }
 
     public function testDeletingCookieWithSecure(): void

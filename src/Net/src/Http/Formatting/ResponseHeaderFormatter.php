@@ -46,11 +46,11 @@ class ResponseHeaderFormatter extends HeaderParser
         $headerValue .= '; Max-Age=0';
 
         if ($path !== null) {
-            $headerValue .= '; Path=' . urlencode($path);
+            $headerValue .= "; Path=$path";
         }
 
         if ($domain !== null) {
-            $headerValue .= '; Domain=' . urlencode($domain);
+            $headerValue .= "; Domain=$domain";
         }
 
         if ($isSecure) {
@@ -62,7 +62,7 @@ class ResponseHeaderFormatter extends HeaderParser
         }
 
         if ($sameSite !== null) {
-            $headerValue .= '; SameSite=' . urlencode($sameSite);
+            $headerValue .= "; SameSite=$sameSite";
         }
 
         $headers->add('Set-Cookie', $headerValue, true);
@@ -109,11 +109,11 @@ class ResponseHeaderFormatter extends HeaderParser
         }
 
         if (($path = $cookie->getPath()) !== null) {
-            $headerValue .= '; Path=' . urlencode($path);
+            $headerValue .= "; Path=$path";
         }
 
         if (($domain = $cookie->getDomain()) !== null) {
-            $headerValue .= '; Domain=' . urlencode($domain);
+            $headerValue .= "; Domain=$domain";
         }
 
         if ($cookie->isSecure()) {
@@ -125,7 +125,7 @@ class ResponseHeaderFormatter extends HeaderParser
         }
 
         if (($sameSite = $cookie->getSameSite()) !== null) {
-            $headerValue .= '; SameSite=' . urlencode($sameSite);
+            $headerValue .= "; SameSite=$sameSite";
         }
 
         return $headerValue;
