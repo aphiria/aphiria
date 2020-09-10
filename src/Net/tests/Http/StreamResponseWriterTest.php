@@ -17,6 +17,7 @@ use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IResponse;
+use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StreamResponseWriter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +28,6 @@ class StreamResponseWriterTest extends TestCase
     private Stream $outputStream;
     /** @var IResponse|MockObject The response to use in tests */
     private IResponse $response;
-    private Headers $headers;
     /** @var IBody|MockObject the response body to use in tests */
     private IBody $body;
 
@@ -35,13 +35,12 @@ class StreamResponseWriterTest extends TestCase
     {
         $this->outputStream = new Stream(fopen('php://temp', 'r+b'));
         $this->writer = new StreamResponseWriter($this->outputStream);
-        $this->headers = new Headers([new KeyValuePair('Foo', 'bar')]);
         $this->body = $this->createMock(IBody::class);
 
         // Set up the response
         $this->response = $this->createMock(IResponse::class);
         $this->response->method('getHeaders')
-            ->willReturn($this->headers);
+            ->willReturn(new Headers([new KeyValuePair('Foo', 'bar')]));
         $this->response->method('getBody')
             ->willReturn($this->body);
         $this->response->method('getProtocolVersion')
@@ -53,6 +52,20 @@ class StreamResponseWriterTest extends TestCase
     }
 
     /**
+     * Gets a list of headers that should be not be concatenated
+     *
+     * @return array The list of parameters to use
+     */
+    public function getHeadersThatShouldNotBeConcatenated(): array
+    {
+        return [
+            ['Set-Cookie', ['foo=bar', 'baz=blah']],
+            ['Www-Authenticate', ['Basic', 'Basic realm="foo"']],
+            ['Proxy-Authenticate', ['Basic', 'Basic realm="foo"']]
+        ];
+    }
+
+    /**
      * @runInSeparateProcess
      */
     public function testBodyIsWrittenToOutputStream(): void
@@ -61,6 +74,38 @@ class StreamResponseWriterTest extends TestCase
             ->method('writeToStream')
             ->with($this->outputStream);
         $this->writer->writeResponse($this->response);
+    }
+
+    /**
+     * @param string $headerName The name of the header
+     * @param array $headerValues The list of header values
+     * @dataProvider getHeadersThatShouldNotBeConcatenated
+     */
+    public function testWritingResponseDoesNotConcatenateSelectHeaders(string $headerName, array $headerValues): void
+    {
+        $expectedHeaders = ['HTTP/1.1 200 OK'];
+        $response = new Response();
+
+        foreach ($headerValues as $headerValue) {
+            $response->getHeaders()->add($headerName, $headerValue, true);
+            $expectedHeaders[] = "$headerName: $headerValue";
+        }
+
+        $responseWriter = new class($this->outputStream) extends StreamResponseWriter {
+            public array $headers = [];
+
+            public function header(string $value, bool $replace = true, int $statusCode = null): void
+            {
+                $this->headers[] = $value;
+            }
+
+            public function headersAreSent(): bool
+            {
+                return false;
+            }
+        };
+        $responseWriter->writeResponse($response);
+        $this->assertSame($expectedHeaders, $responseWriter->headers);
     }
 
     public function testWritingResponseWhenHeadersAreSentDoesNotDoAnything(): void
