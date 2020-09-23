@@ -16,6 +16,7 @@ use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionException;
 
 /**
  * Defines the class that can search through directories for binder classes
@@ -39,11 +40,12 @@ final class FileBinderFinder
      * @param string|array $paths The path or list of paths to search
      * @return string[] The list of all binder class names
      * @throws InvalidArgumentException Thrown if the paths are not a string or array
+     * @throws ReflectionException Thrown if a class could not be reflected
      */
     public function findAll($paths): array
     {
         // Filter out any non-concrete binder classes
-        return array_filter($this->classFinder->findAllTypes($paths, true), function ($className) {
+        return array_filter($this->classFinder->findAllTypes($paths, true), static function ($className) {
             $reflectionClass = new ReflectionClass($className);
 
             return $reflectionClass->isSubclassOf(Binder::class) &&

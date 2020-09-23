@@ -19,9 +19,9 @@ final class ObjectConstraints
 {
     /** @var string The name of the class whose constraints are represented here */
     private string $className;
-    /** @var IConstraint[] The mapping of property names to constraints */
+    /** @var IConstraint[][] The mapping of property names to constraints */
     private array $propertyConstraints = [];
-    /** @var IConstraint[] The mapping of method names to constraints */
+    /** @var IConstraint[][] The mapping of method names to constraints */
     private array $methodConstraints = [];
 
     /**

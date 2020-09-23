@@ -31,7 +31,7 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
     /** @var LoggerInterface The PSR-3 logger */
     protected LoggerInterface $logger;
     /** @var LogLevelFactory The factory for PSR-3 log levels */
-    protected $logLevelFactory;
+    protected LogLevelFactory $logLevelFactory;
 
     /**
      * @param IExceptionRenderer $exceptionRenderer The underlying exception renderer

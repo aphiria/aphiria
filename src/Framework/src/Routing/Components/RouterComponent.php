@@ -16,6 +16,7 @@ use Aphiria\Api\Application;
 use Aphiria\Api\Router;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
@@ -47,6 +48,7 @@ class RouterComponent implements IComponent
 
     /**
      * @inheritdoc
+     * @throws ResolutionException Thrown if any dependencies could not be resolved
      */
     public function build(): void
     {

@@ -16,7 +16,6 @@ use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
-use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
 use Aphiria\Net\Http\IRequest;
 use InvalidArgumentException;
 
@@ -81,7 +80,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      * Gets the best media type formatter match
      *
      * @param string $type The type that will be read/written by the formatter
-     * @param MediaTypeHeaderValue[] $mediaTypeHeaders The media type headers to match against
+     * @param AcceptMediaTypeHeaderValue[] $mediaTypeHeaders The media type headers to match against
      * @param string $ioType Whether this is an input or an output media type formatter
      * @return MediaTypeFormatterMatch|null The media type formatter match if there was one, otherwise null
      */

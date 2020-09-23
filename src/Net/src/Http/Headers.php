@@ -98,7 +98,7 @@ final class Headers extends HashTable
      * @throws OutOfBoundsException Thrown if the header could not be found
      * @throws RuntimeException Thrown if the key could not be calculated
      */
-    public function getFirst($name)
+    public function getFirst(string $name)
     {
         if (!$this->containsKey($name)) {
             throw new OutOfBoundsException("Header \"$name\" does not exist");

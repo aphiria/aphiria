@@ -38,8 +38,7 @@ class ResponseHeaderParser extends HeaderParser
 
         foreach ($setCookieHeaders as $i => $setCookieHeader) {
             $name = $value = $maxAge = $path = $domain = $sameSite = null;
-            $isSecure = false;
-            $isHttpOnly = true;
+            $isSecure = $isHttpOnly = false;
 
             foreach ($this->parseParameters($headers, 'Set-Cookie', $i) as $kvp) {
                 switch ($kvp->getKey()) {

@@ -37,7 +37,7 @@ class NegotiatedRequestBuilder extends RequestBuilder
     private string $defaultContentType;
 
     /**
-     * @param IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher The media type formatter matcher
+     * @param IMediaTypeFormatterMatcher|null $mediaTypeFormatterMatcher The media type formatter matcher, or null if using the default one
      * @param string $defaultContentType The default content type to use for bodies
      * @param string $defaultAccept The default Accept header value
      */

@@ -52,6 +52,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     /**
      * @inheritdoc
      * @throws MissingConfigurationValueException Thrown if the config was missing values
+     * @throws ResolutionException Thrown if any dependencies could not be resolved
      */
     public function bootstrap(): void
     {

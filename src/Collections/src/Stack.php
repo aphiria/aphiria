@@ -41,7 +41,7 @@ class Stack implements Countable, IteratorAggregate
      */
     public function containsValue($value): bool
     {
-        return \in_array($value, $this->values);
+        return \in_array($value, $this->values, false);
     }
 
     /**

@@ -30,7 +30,7 @@ class MultipartBody extends StreamBody
 
     /**
      * @param MultipartBodyPart[] $parts The list of multipart body parts
-     * @param string $boundary The boundary between the parts
+     * @param string|null $boundary The boundary between the parts, or null if a new one should be created
      * @throws RuntimeException Thrown if the boundary could not be generated
      * @throws InvalidArgumentException Thrown if the internal stream could not be generated
      */

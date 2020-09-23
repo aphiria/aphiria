@@ -37,8 +37,8 @@ final class AstRouteUriFactory implements IRouteUriFactory
 
     /**
      * @param RouteCollection $routes The list of routes
-     * @param IUriTemplateParser $uriTemplateParser The URI template parser
-     * @param IUriTemplateLexer $uriTemplateLexer The URI template lexer
+     * @param IUriTemplateParser|null $uriTemplateParser The URI template parser, or null if using the default one
+     * @param IUriTemplateLexer|null $uriTemplateLexer The URI template lexer, or null if using the default one
      */
     public function __construct(
         RouteCollection $routes,

@@ -20,6 +20,7 @@ use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
 use ReflectionClass;
+use ReflectionException;
 
 /**
  * Defines the constraint registrant for annotations
@@ -47,6 +48,7 @@ final class AnnotationObjectConstraintsRegistrant implements IObjectConstraintsR
 
     /**
      * @inheritdoc
+     * @throws ReflectionException Thrown if a class could not be reflected
      */
     public function registerConstraints(ObjectConstraintsRegistry $objectConstraints): void
     {

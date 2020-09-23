@@ -19,7 +19,7 @@ class Response implements IResponse
 {
     /** @var IBody|null The body of the response if there is one, otherwise null */
     protected ?IBody $body;
-    /** @var Headers The list of response headers */
+    /** @var Headers|null The list of response headers if any are set, otherwise null */
     protected ?Headers $headers;
     /** @var string|null The response reason phrase if there is one, otherwise null */
     protected ?string $reasonPhrase;

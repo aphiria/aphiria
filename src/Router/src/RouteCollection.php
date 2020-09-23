@@ -91,10 +91,6 @@ final class RouteCollection
      */
     public function getNamedRoute(string $name): ?Route
     {
-        if (!isset($this->namedRoutes[$name])) {
-            return null;
-        }
-
-        return $this->namedRoutes[$name];
+        return $this->namedRoutes[$name] ?? null;
     }
 }

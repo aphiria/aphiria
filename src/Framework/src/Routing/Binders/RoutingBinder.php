@@ -28,7 +28,6 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\FileTrieCache;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\ITrieCache;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieFactory;
 use Aphiria\Routing\UriTemplates\IRouteUriFactory;
-use Doctrine\Common\Annotations\AnnotationException;
 
 /**
  * Defines the routing binder
@@ -38,7 +37,6 @@ final class RoutingBinder extends Binder
     /**
      * @inheritdoc
      * @throws MissingConfigurationValueException Thrown if the config is missing values
-     * @throws AnnotationException Thrown if PHP is not configured to handle scanning for annotations
      */
     public function bind(IContainer $container): void
     {

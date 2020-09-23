@@ -76,7 +76,7 @@ class ImmutableArrayList implements IImmutableList
      */
     public function indexOf($value): ?int
     {
-        if (($index = array_search($value, $this->values)) === false) {
+        if (($index = array_search($value, $this->values, false)) === false) {
             return null;
         }
 

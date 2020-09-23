@@ -27,9 +27,9 @@ final class ConstraintViolation
     private $invalidValue;
     /** @var mixed|object The root value that was being validated */
     private $rootValue;
-    /** @var string The name of the property that was being validated */
+    /** @var string|null The name of the property that was being validated, or null if it wasn't a property */
     private ?string $propertyName;
-    /** @var string The name of the method that was being validated */
+    /** @var string|null The name of the method that was being validated, or null if it wasn't a method */
     private ?string $methodName;
 
     /**

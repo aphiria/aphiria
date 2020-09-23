@@ -34,9 +34,9 @@ final class OutputCompiler implements IOutputCompiler
     private IOutputParser $parser;
 
     /**
-     * @param ElementRegistry $elements The registry of elements
-     * @param IOutputLexer|null $lexer The lexer to use
-     * @param IOutputParser|null $parser The parser to use
+     * @param ElementRegistry|null $elements The registry of elements, or null if using the default one
+     * @param IOutputLexer|null $lexer The lexer to use, or null if using the default one
+     * @param IOutputParser|null $parser The parser to use, or null if using the default one
      */
     public function __construct(
         ElementRegistry $elements = null,

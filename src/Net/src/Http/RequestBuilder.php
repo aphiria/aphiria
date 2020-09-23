@@ -29,7 +29,7 @@ class RequestBuilder implements IRequestBuilder
     protected ?Uri $uri = null;
     /** @var Headers The request headers */
     protected Headers $headers;
-    /** @var IBody The request body */
+    /** @var IBody|null The request body if one is set, otherwise null */
     protected ?IBody $body = null;
     /** @var IDictionary The request properties */
     protected IDictionary $properties;

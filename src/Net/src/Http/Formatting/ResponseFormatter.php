@@ -17,6 +17,7 @@ use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
+use JsonException;
 use RuntimeException;
 
 /**
@@ -25,7 +26,7 @@ use RuntimeException;
 class ResponseFormatter
 {
     /** @var ResponseHeaderFormatter The response header formatter to use */
-    private ?ResponseHeaderFormatter $headerFormatter;
+    private ResponseHeaderFormatter $headerFormatter;
 
     /**
      * @param ResponseHeaderFormatter|null $headerFormatter The response header formatter to use, or null if using the default one
@@ -121,10 +122,10 @@ class ResponseFormatter
      */
     public function writeJson(IResponse $response, array $content): void
     {
-        $json = json_encode($content);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new InvalidArgumentException('Failed to JSON encode content: ' . json_last_error_msg());
+        try {
+            $json = json_encode($content, JSON_THROW_ON_ERROR);
+        } catch (JsonException $ex) {
+            throw new InvalidArgumentException('Failed to JSON encode content', 0, $ex);
         }
 
         $response->getHeaders()->add('Content-Type', 'application/json');

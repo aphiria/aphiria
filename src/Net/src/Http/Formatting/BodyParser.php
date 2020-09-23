@@ -22,6 +22,7 @@ use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
 use finfo;
 use InvalidArgumentException;
+use JsonException;
 use RuntimeException;
 
 /**
@@ -37,7 +38,7 @@ class BodyParser
     /**
      * Gets the MIME type of the body
      *
-     * @param IBody $body The body whose MIME type we want
+     * @param IBody|null $body The body whose MIME type we want, or null if there is no body
      * @return string|null The mime type if one is set, otherwise null
      * @throws RuntimeException Thrown if the MIME type could not be determined
      */
@@ -114,10 +115,10 @@ class BodyParser
             return [];
         }
 
-        $json = json_decode($body->readAsString(), true);
-
-        if ($json === null) {
-            throw new RuntimeException('Body could not be decoded as JSON');
+        try {
+            $json = json_decode($body->readAsString(), true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $ex) {
+            throw new RuntimeException('Body could not be decoded as JSON', 0, $ex);
         }
 
         return $json;

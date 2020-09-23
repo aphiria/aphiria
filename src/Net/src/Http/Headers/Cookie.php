@@ -30,7 +30,7 @@ final class Cookie
     /** @var mixed The value of the cookie */
     private $value;
     /** @var int|null The max age of the cookie if set, otherwise null */
-    private ?int $maxAge = null;
+    private ?int $maxAge;
     /** @var string|null The path the cookie is valid on if set, otherwise null */
     private ?string $path;
     /** @var string|null The domain the cookie is valid on if set, otherwise null */

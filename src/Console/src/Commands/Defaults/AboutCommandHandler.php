@@ -34,7 +34,7 @@ EOF;
     /** @var CommandRegistry The commands */
     private CommandRegistry $commands;
     /** @var PaddingFormatter The space padding formatter to use */
-    private ?PaddingFormatter $paddingFormatter;
+    private PaddingFormatter $paddingFormatter;
 
     /**
      * @param CommandRegistry $commands The commands
@@ -84,7 +84,7 @@ EOF;
          * @param Command $b
          * @return int The result of the comparison
          */
-        $sort = function ($a, $b) {
+        $sort = static function (Command $a, Command $b) {
             if (strpos($a->name, ':') === false) {
                 if (strpos($b->name, ':') === false) {
                     // They're both uncategorized

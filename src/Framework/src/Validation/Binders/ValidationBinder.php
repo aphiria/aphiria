@@ -27,7 +27,6 @@ use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\Validator;
-use Doctrine\Common\Annotations\AnnotationException;
 use InvalidArgumentException;
 
 /**
@@ -39,7 +38,6 @@ final class ValidationBinder extends Binder
      * @inheritdoc
      * @throws MissingConfigurationValueException Thrown if the config is missing values
      * @throws InvalidArgumentException Thrown if the error message interpolator configuration is invalid
-     * @throws AnnotationException Thrown if PHP is not configured to handle scanning for annotations
      */
     public function bind(IContainer $container): void
     {

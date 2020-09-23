@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\ContentNegotiation\Binders;
 
 use Aphiria\Application\Configuration\GlobalConfiguration;
+use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\ContentNegotiation\AcceptCharsetEncodingMatcher;
 use Aphiria\ContentNegotiation\AcceptLanguageMatcher;
 use Aphiria\ContentNegotiation\ContentNegotiator;
@@ -33,11 +34,12 @@ class ContentNegotiationBinder extends Binder
 {
     /**
      * @inheritdoc
+     * @throws MissingConfigurationValueException Thrown if required config values were not set
      */
     public function bind(IContainer $container): void
     {
         $mediaTypeFormatters = array_map(
-            fn (string $class) => $container->resolve($class),
+            static fn (string $class) => $container->resolve($class),
             GlobalConfiguration::getArray('aphiria.contentNegotiation.mediaTypeFormatters')
         );
         $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher($mediaTypeFormatters);

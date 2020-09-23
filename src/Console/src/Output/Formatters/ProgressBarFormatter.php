@@ -35,7 +35,7 @@ class ProgressBarFormatter implements IProgressBarObserver
     /** @var DateTimeImmutable The start time of the progress bar */
     private DateTimeImmutable $startTime;
     /** @var string The output string format */
-    private ?string $outputFormat;
+    private string $outputFormat;
     /** @var int The frequency in seconds we redraw the progress bar */
     private int $redrawFrequency;
     /** @var bool Whether or not this is the first time we've output the progress bar */

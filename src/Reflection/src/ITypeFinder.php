@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Reflection;
 
 use InvalidArgumentException;
+use ReflectionException;
 
 /**
  * Defines the interface for type finders to implement
@@ -48,6 +49,7 @@ interface ITypeFinder
      * @param bool $recursive Whether or not we want to recurse through all directories
      * @return string[] The list of all types that are sub-types of the input class/interface
      * @throws InvalidArgumentException Thrown if the paths are not a string or array of strings
+     * @throws ReflectionException Thrown if any types could not be reflected in the input directories
      */
     public function findAllSubtypesOfType(string $parentType, $directories, bool $recursive = false): array;
 

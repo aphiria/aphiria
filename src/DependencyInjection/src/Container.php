@@ -368,7 +368,7 @@ class Container implements IContainer
      * @throws ReflectionException Thrown if there was a reflection exception
      */
     protected function resolveParameters(
-        $class,
+        ?string $class,
         array $unresolvedParameters,
         array $primitives
     ): array {

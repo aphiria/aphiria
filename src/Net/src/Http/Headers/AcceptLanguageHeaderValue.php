@@ -30,7 +30,7 @@ final class AcceptLanguageHeaderValue implements IHeaderValueWithQualityScore
 
     /**
      * @param string $language The language value
-     * @param IImmutableDictionary $parameters The dictionary of parameters
+     * @param IImmutableDictionary|null $parameters The dictionary of parameters, or null if there are no parameters
      * @throws InvalidArgumentException Thrown if the quality score is not between 0 and 1
      */
     public function __construct(string $language, IImmutableDictionary $parameters = null)

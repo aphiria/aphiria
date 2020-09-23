@@ -21,7 +21,6 @@ use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
-use Doctrine\Common\Annotations\AnnotationException;
 
 /**
  * Defines the console command binder
@@ -31,7 +30,6 @@ final class CommandBinder extends Binder
     /**
      * @inheritdoc
      * @throws MissingConfigurationValueException Thrown if the the config is missing values
-     * @throws AnnotationException Thrown if PHP is not configured to handle scanning for annotations
      */
     public function bind(IContainer $container): void
     {
@@ -50,8 +48,7 @@ final class CommandBinder extends Binder
 
         // Register some command annotation dependencies
         $commandAnnotationRegistrant = new AnnotationCommandRegistrant(
-            GlobalConfiguration::getArray('aphiria.console.annotationPaths'),
-            $container
+            GlobalConfiguration::getArray('aphiria.console.annotationPaths')
         );
         $container->bindInstance(AnnotationCommandRegistrant::class, $commandAnnotationRegistrant);
     }

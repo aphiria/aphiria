@@ -55,10 +55,30 @@ class ResponseHeaderParserTest extends TestCase
         $this->assertEmpty($this->parser->parseCookies(new Headers()));
     }
 
+    public function testParsingCookiesWithoutHttpOnlyFlagSetsFlagToFalseInCookies(): void
+    {
+        $headers = new Headers();
+        $headers->add('Set-Cookie', 'foo=bar; Max-Age=3600');
+        $expectedCookies = [
+            new Cookie('foo', 'bar', 3600, null, null, false, false, null)
+        ];
+        $this->assertEquals($expectedCookies, $this->parser->parseCookies($headers));
+    }
+
     public function testParsingCookiesWithoutNameDoesNotIncludeThem(): void
     {
         $headers = new Headers();
         $headers->add('Set-Cookie', '');
         $this->assertEmpty($this->parser->parseCookies($headers));
+    }
+
+    public function testParsingCookiesWithoutSecureFlagSetsFlagToFalseInCookies(): void
+    {
+        $headers = new Headers();
+        $headers->add('Set-Cookie', 'foo=bar; Max-Age=3600');
+        $expectedCookies = [
+            new Cookie('foo', 'bar', 3600, null, null, false, false, null)
+        ];
+        $this->assertEquals($expectedCookies, $this->parser->parseCookies($headers));
     }
 }

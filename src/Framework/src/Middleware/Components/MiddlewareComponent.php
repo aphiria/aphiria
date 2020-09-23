@@ -14,6 +14,7 @@ namespace Aphiria\Framework\Middleware\Components;
 
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
+use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Middleware\AttributeMiddleware;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareBinding;
@@ -40,6 +41,7 @@ class MiddlewareComponent implements IComponent
 
     /**
      * @inheritdoc
+     * @throws ResolutionException Thrown if any dependencies could not be resolved
      */
     public function build(): void
     {

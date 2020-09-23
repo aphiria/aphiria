@@ -25,7 +25,7 @@ class Request implements IRequest
 {
     /** @var string The request method */
     protected string $method = '';
-    /** @var Headers The request headers */
+    /** @var Headers|null The request headers if any are set, otherwise null */
     protected ?Headers $headers;
     /** @var IBody|null The request body if there is one, otherwise null */
     protected ?IBody $body;
@@ -69,7 +69,7 @@ class Request implements IRequest
      * @param string $method The request method
      * @param Uri $uri The request URI
      * @param Headers|null $headers The request headers if any are set, otherwise null
-     * @param IBody $body The request body
+     * @param IBody|null $body The request body if one is set, otherwise null
      * @param IDictionary|null $properties The request properties
      * @param string $protocolVersion The HTTP protocol version
      * @param string $requestTargetType The type of request target URI this request uses

@@ -38,6 +38,6 @@ class NotInConstraint extends Constraint
      */
     public function passes($value): bool
     {
-        return !\in_array($value, $this->values);
+        return !\in_array($value, $this->values, false);
     }
 }

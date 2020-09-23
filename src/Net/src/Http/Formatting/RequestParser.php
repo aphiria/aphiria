@@ -33,11 +33,11 @@ class RequestParser
     /** @const The name of the request property that stores the client IP address */
     private const CLIENT_IP_ADDRESS_PROPERTY = 'CLIENT_IP_ADDRESS';
     /** @var RequestHeaderParser The header parser to use */
-    private ?RequestHeaderParser $headerParser;
+    private RequestHeaderParser $headerParser;
     /** @var BodyParser The body parser to use */
-    private ?BodyParser $bodyParser;
+    private BodyParser $bodyParser;
     /** @var UriParser The URI parser to use */
-    private ?UriParser $uriParser;
+    private UriParser $uriParser;
 
     /**
      * @param RequestHeaderParser|null $headerParser The header parser to use, or null if using the default parser

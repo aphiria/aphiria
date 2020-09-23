@@ -14,6 +14,7 @@ namespace Aphiria\Framework\Validation\Components;
 
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
+use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Validation\Builders\ObjectConstraintsBuilderRegistrant;
 use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
@@ -43,6 +44,7 @@ class ValidationComponent implements IComponent
 
     /**
      * @inheritdoc
+     * @throws ResolutionException Thrown if any dependencies could not be resolved
      */
     public function build(): void
     {

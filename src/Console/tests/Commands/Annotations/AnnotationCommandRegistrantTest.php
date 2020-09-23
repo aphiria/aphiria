@@ -44,7 +44,6 @@ class AnnotationCommandRegistrantTest extends TestCase
         $this->typeFinder = $this->createMock(ITypeFinder::class);
         $this->registrant = new AnnotationCommandRegistrant(
             __DIR__,
-            $this->commandHandlerResolver,
             null,
             $this->typeFinder
         );

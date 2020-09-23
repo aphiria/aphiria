@@ -18,6 +18,7 @@ use Aphiria\Console\Commands\ClosureCommandRegistrant;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\IServiceResolver;
+use Aphiria\DependencyInjection\ResolutionException;
 use Closure;
 use RuntimeException;
 
@@ -43,6 +44,7 @@ class CommandComponent implements IComponent
 
     /**
      * @inheritdoc
+     * @throws ResolutionException Thrown if some dependencies could not be resolved
      */
     public function build(): void
     {

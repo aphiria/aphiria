@@ -38,7 +38,7 @@ final class MiddlewareCollection
      */
     public function getAll(): array
     {
-        \usort($this->middlewareWithPriorities, fn ($a, $b) => $a['priority'] <=> $b['priority']);
+        \usort($this->middlewareWithPriorities, static fn ($a, $b) => $a['priority'] <=> $b['priority']);
         $prioritizedMiddleware = [];
 
         foreach ($this->middlewareWithPriorities as $middlewareWithPriority) {

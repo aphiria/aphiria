@@ -45,7 +45,7 @@ class Application implements ICommandBus
     /**
      * @param CommandRegistry $commands The commands
      * @param IServiceResolver $commandHandlerResolver The resolver of command handlers
-     * @param IInputCompiler $inputCompiler The input compiler
+     * @param IInputCompiler|null $inputCompiler The input compiler, or null if using the default one
      */
     public function __construct(
         CommandRegistry $commands,

@@ -75,7 +75,7 @@ abstract class ApplicationBuilder implements IApplicationBuilder
      */
     protected function buildComponents(): void
     {
-        \usort($this->componentTypesAndPriorities, fn ($a, $b) => $a['priority'] <=> $b['priority']);
+        \usort($this->componentTypesAndPriorities, static fn ($a, $b) => $a['priority'] <=> $b['priority']);
 
         foreach ($this->componentTypesAndPriorities as $typeAndPriority) {
             $this->componentsByType[$typeAndPriority['type']]->build();

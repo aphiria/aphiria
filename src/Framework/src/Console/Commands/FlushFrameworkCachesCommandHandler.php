@@ -26,7 +26,7 @@ use Aphiria\Validation\Constraints\Caching\IObjectConstraintsRegistryCache;
  */
 class FlushFrameworkCachesCommandHandler implements ICommandHandler
 {
-    /** @var IBinderMetadataCollectionCache The binder metadata cache if one is set, or  null */
+    /** @var IBinderMetadataCollectionCache|null The binder metadata cache if one is set, or  null */
     private ?IBinderMetadataCollectionCache $binderMetadataCache;
     /** @var ICommandRegistryCache|null The console command cache if one is set, or null */
     private ?ICommandRegistryCache $commandCache;

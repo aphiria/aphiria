@@ -56,7 +56,7 @@ final class RequestHeaderParser
      * @param string $name The name to normalize
      * @return string The normalized name
      */
-    private static function normalizeName($name): string
+    private static function normalizeName(string $name): string
     {
         $dashedName = \str_replace('_', '-', $name);
 

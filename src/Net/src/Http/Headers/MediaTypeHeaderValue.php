@@ -36,7 +36,7 @@ class MediaTypeHeaderValue
      */
     private ?string $suffix = null;
     /** @var string|null The charset if one was set, otherwise null */
-    private ?string $charset;
+    private ?string $charset = null;
 
     /**
      * @param string $mediaType The media type

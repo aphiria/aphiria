@@ -14,6 +14,7 @@ namespace Aphiria\Framework\Exceptions\Components;
 
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
+use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
@@ -47,6 +48,7 @@ class ExceptionHandlerComponent implements IComponent
 
     /**
      * @inheritdoc
+     * @throws ResolutionException Thrown if any dependencies could not be resolved
      */
     public function build(): void
     {

@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Constraints;
 
-use Countable;
-
 /**
  * Defines the required constraint
  */
@@ -43,7 +41,7 @@ class RequiredConstraint extends Constraint
             return false;
         }
 
-        if ((\is_array($value) || $value instanceof Countable) && \count($value) === 0) {
+        if (\is_countable($value) && \count($value) === 0) {
             return false;
         }
 

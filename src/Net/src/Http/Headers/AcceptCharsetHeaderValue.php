@@ -30,7 +30,7 @@ final class AcceptCharsetHeaderValue implements IHeaderValueWithQualityScore
 
     /**
      * @param string $charset The charset value
-     * @param IImmutableDictionary $parameters The dictionary of parameters
+     * @param IImmutableDictionary|null $parameters The dictionary of parameters, or null if there are no parameters
      * @throws InvalidArgumentException Thrown if the quality score is not between 0 and 1
      */
     public function __construct(string $charset, IImmutableDictionary $parameters = null)

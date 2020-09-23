@@ -125,7 +125,6 @@ class LazyBinderDispatcher implements IBinderDispatcher
      *
      * @param Binder $binder The binder to dispatch
      * @param IContainer $container The container to pass in
-     * @throws ResolutionException Thrown if a dependency could not be resolved
      */
     private function dispatchBinder(Binder $binder, IContainer $container): void
     {

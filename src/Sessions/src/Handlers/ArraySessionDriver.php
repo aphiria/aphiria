@@ -35,7 +35,6 @@ final class ArraySessionDriver implements ISessionDriver
      */
     public function gc(int $maxLifetime): void
     {
-        return;
     }
 
     /**
