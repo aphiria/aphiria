@@ -69,14 +69,9 @@ class RouterTest extends TestCase
         $middlewareBinding = new MiddlewareBinding(AttributeMiddleware::class, ['foo' => 'bar']);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $controller = new ControllerMock();
-        $this->serviceResolver->expects($this->at(0))
-            ->method('resolve')
-            ->with(ControllerMock::class)
-            ->willReturn($controller);
-        $this->serviceResolver->expects($this->at(1))
-            ->method('resolve')
-            ->with(AttributeMiddleware::class)
-            ->willReturn($middleware);
+        $this->serviceResolver->method('resolve')
+            ->withConsecutive([ControllerMock::class], [AttributeMiddleware::class])
+            ->willReturnOnConsecutiveCalls($controller, $middleware);
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
@@ -104,14 +99,9 @@ class RouterTest extends TestCase
         $middlewareBinding = new MiddlewareBinding(__CLASS__);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $controller = new ControllerMock();
-        $this->serviceResolver->expects($this->at(0))
-            ->method('resolve')
-            ->with(ControllerMock::class)
-            ->willReturn($controller);
-        $this->serviceResolver->expects($this->at(1))
-            ->method('resolve')
-            ->with(__CLASS__)
-            ->willReturn($middleware);
+        $this->serviceResolver->method('resolve')
+            ->withConsecutive([ControllerMock::class], [__CLASS__])
+            ->willReturnOnConsecutiveCalls($controller, $middleware);
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),

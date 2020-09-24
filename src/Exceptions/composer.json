@@ -32,7 +32,7 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
         "php-coveralls/php-coveralls": "^2.2",
-        "phpunit/phpunit": "~9.1"
+        "phpunit/phpunit": "~9.3"
     },
     "scripts": {
         "lint-check": "php-cs-fixer fix --config=.php_cs.dist -v --diff --dry-run",
