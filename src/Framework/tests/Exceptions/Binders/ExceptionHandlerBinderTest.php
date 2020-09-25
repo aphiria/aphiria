@@ -36,43 +36,41 @@ class ExceptionHandlerBinderTest extends TestCase
         $this->binder = new ExceptionHandlerBinder();
         $this->apiExceptionRenderer = $this->request = $this->responseFactory = null;
 
-        // Set up some universal mocks
-        $this->container->expects($this->at(0))
-            ->method('tryResolve')
-            ->with(IApiExceptionRenderer::class, $this->apiExceptionRenderer)
+        // We need to set up the "out" params based on the type that's set
+        $this->container->method('tryResolve')
             ->willReturnCallback(function ($type, &$object) {
-                // Capture the object parameter so we can make assertions on it later
-                $object = $this->apiExceptionRenderer = new class() extends ProblemDetailsExceptionRenderer {
-                    public function getRequest(): ?IRequest
-                    {
-                        return $this->request;
-                    }
+                if ($type === IApiExceptionRenderer::class) {
+                    // Capture the object parameter so we can make assertions on it later
+                    $object = $this->apiExceptionRenderer = new class() extends ProblemDetailsExceptionRenderer {
+                        public function getRequest(): ?IRequest
+                        {
+                            return $this->request;
+                        }
 
-                    public function getResponseFactory(): ?IResponseFactory
-                    {
-                        return $this->responseFactory;
-                    }
-                };
+                        public function getResponseFactory(): ?IResponseFactory
+                        {
+                            return $this->responseFactory;
+                        }
+                    };
 
-                return true;
-            });
-        $this->container->expects($this->at(1))
-            ->method('tryResolve')
-            ->with(IRequest::class, $this->request)
-            ->willReturnCallback(function ($type, &$object) {
-                // Capture the object parameter so we can make assertions on it later
-                $object = $this->request = $this->createMock(IRequest::class);
+                    return true;
+                }
 
-                return true;
-            });
-        $this->container->expects($this->at(2))
-            ->method('tryResolve')
-            ->with(IResponseFactory::class, $this->responseFactory)
-            ->willReturnCallback(function ($type, &$object) {
-                // Capture the object parameter so we can make assertions on it later
-                $object = $this->responseFactory = $this->createMock(IResponseFactory::class);
+                if ($type === IRequest::class) {
+                    // Capture the object parameter so we can make assertions on it later
+                    $object = $this->request = $this->createMock(IRequest::class);
 
-                return true;
+                    return true;
+                }
+
+                if ($type === IResponseFactory::class) {
+                    // Capture the object parameter so we can make assertions on it later
+                    $object = $this->responseFactory = $this->createMock(IResponseFactory::class);
+
+                    return true;
+                }
+
+                return false;
             });
     }
 

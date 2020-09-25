@@ -53,18 +53,10 @@ class PromptTest extends TestCase
         $question = new MultipleChoice('Pick', ['foo', 'bar']);
         $this->output->method('readLine')
             ->willReturn('2');
-        $this->output->expects($this->at(0))
-            ->method('write')
-            ->with("<question>{$question->text}</question>");
-        $this->output->expects($this->at(1))
-            ->method('writeln')
-            ->with('');
-        $this->output->expects($this->at(2))
-            ->method('writeln')
-            ->with('  1) foo' . PHP_EOL . '  2) bar');
-        $this->output->expects($this->at(3))
-            ->method('write')
-            ->with('  > ');
+        $this->output->method('write')
+            ->withConsecutive(["<question>{$question->text}</question>"], ['  > ']);
+        $this->output->method('writeln')
+            ->withConsecutive([''], ['  1) foo' . PHP_EOL . '  2) bar']);
         $answer = $this->prompt->ask($question, $this->output);
         $this->assertSame('bar', $answer);
     }
@@ -74,18 +66,10 @@ class PromptTest extends TestCase
         $question = new MultipleChoice('Pick', ['a' => 'b', 'c' => 'd']);
         $this->output->method('readLine')
             ->willReturn('c');
-        $this->output->expects($this->at(0))
-            ->method('write')
-            ->with("<question>{$question->text}</question>");
-        $this->output->expects($this->at(1))
-            ->method('writeln')
-            ->with('');
-        $this->output->expects($this->at(2))
-            ->method('writeln')
-            ->with('  a) b' . PHP_EOL . '  c) d');
-        $this->output->expects($this->at(3))
-            ->method('write')
-            ->with('  > ');
+        $this->output->method('write')
+            ->withConsecutive(["<question>{$question->text}</question>"], ['  > ']);
+        $this->output->method('writeln')
+            ->withConsecutive([''], ['  a) b' . PHP_EOL . '  c) d']);
         $answer = $this->prompt->ask($question, $this->output);
         $this->assertSame('d', $answer);
     }
@@ -96,18 +80,10 @@ class PromptTest extends TestCase
         $question->setAnswerLineString('  : ');
         $this->output->method('readLine')
             ->willReturn('1');
-        $this->output->expects($this->at(0))
-            ->method('write')
-            ->with("<question>{$question->text}</question>");
-        $this->output->expects($this->at(1))
-            ->method('writeln')
-            ->with('');
-        $this->output->expects($this->at(2))
-            ->method('writeln')
-            ->with('  1) foo' . PHP_EOL . '  2) bar');
-        $this->output->expects($this->at(3))
-            ->method('write')
-            ->with('  : ');
+        $this->output->method('write')
+            ->withConsecutive(["<question>{$question->text}</question>"], ['  : ']);
+        $this->output->method('writeln')
+            ->withConsecutive([''], ['  1) foo' . PHP_EOL . '  2) bar']);
         $answer = $this->prompt->ask($question, $this->output);
         $this->assertSame('foo', $answer);
     }

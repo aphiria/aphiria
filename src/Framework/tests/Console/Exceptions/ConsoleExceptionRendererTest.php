@@ -45,14 +45,12 @@ class ConsoleExceptionRendererTest extends TestCase
                 return 1;
             }
         ]);
-        $this->output->expects($this->at(0))
-            ->method('writeln')
-            ->with('foo');
-        $this->output->expects($this->at(1))
-            ->method('writeln')
-            ->with('bar');
+        $this->output->method('writeln')
+            ->withConsecutive(['foo'], ['bar']);
         $this->exceptionRenderer->render(new Exception());
         $this->exceptionRenderer->render(new InvalidArgumentException());
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testRenderingExceptionWithNoRegisteredOutputWriterUsesDefaultResultMessage(): void

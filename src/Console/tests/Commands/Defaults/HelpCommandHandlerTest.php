@@ -61,8 +61,7 @@ class HelpCommandHandlerTest extends TestCase
             ),
             'Handler'
         );
-        $this->output->expects($this->at(1))
-            ->method('writeln')
+        $this->output->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'The description', '  No arguments', '  No options', 'The help text'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
@@ -79,8 +78,7 @@ class HelpCommandHandlerTest extends TestCase
             ),
             'Handler'
         );
-        $this->output->expects($this->at(1))
-            ->method('writeln')
+        $this->output->method('writeln')
             ->with(self::compileOutput('foo', 'foo arg1', 'The description', '  <info>arg1</info> - Arg1 description', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
@@ -105,8 +103,7 @@ class HelpCommandHandlerTest extends TestCase
             ),
             'Handler'
         );
-        $this->output->expects($this->at(1))
-            ->method('writeln')
+        $this->output->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'The description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
@@ -123,8 +120,7 @@ class HelpCommandHandlerTest extends TestCase
             ),
             'Handler'
         );
-        $this->output->expects($this->at(1))
-            ->method('writeln')
+        $this->output->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'No description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
@@ -141,8 +137,7 @@ class HelpCommandHandlerTest extends TestCase
             ),
             'Handler'
         );
-        $this->output->expects($this->at(1))
-            ->method('writeln')
+        $this->output->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'No description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
@@ -159,8 +154,7 @@ class HelpCommandHandlerTest extends TestCase
             ),
             'Handler'
         );
-        $this->output->expects($this->at(1))
-            ->method('writeln')
+        $this->output->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'The description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
@@ -177,8 +171,7 @@ class HelpCommandHandlerTest extends TestCase
             ),
             'Handler'
         );
-        $this->output->expects($this->at(1))
-            ->method('writeln')
+        $this->output->method('writeln')
             ->with(self::compileOutput('foo', 'foo [--opt1]', 'The description', '  No arguments', '  <info>--opt1</info> - Opt1 description'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
@@ -195,8 +188,7 @@ class HelpCommandHandlerTest extends TestCase
             ),
             'Handler'
         );
-        $this->output->expects($this->at(1))
-            ->method('writeln')
+        $this->output->method('writeln')
             ->with(self::compileOutput('foo', 'foo [--opt1|-o]', 'The description', '  No arguments', '  <info>--opt1|-o</info> - Opt1 description'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
@@ -259,8 +251,7 @@ EOF;
         $driver->expects($this->once())
             ->method('getCliWidth')
             ->willReturn(3);
-        $this->output->expects($this->at(0))
-            ->method('getDriver')
+        $this->output->method('getDriver')
             ->willReturn($driver);
     }
 }

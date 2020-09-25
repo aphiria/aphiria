@@ -35,115 +35,135 @@ class FlushFrameworkCachesCommandHandlerTest extends TestCase
 
     public function testBinderMetadataCacheIsFlushedIfSet(): void
     {
-        $this->output->expects($this->at(0))
-            ->method('writeln')
-            ->with('<info>Binder metadata cache flushed</info>');
+        $correctOutputWritten = false;
+        $this->setUpMockOutput('<info>Binder metadata cache flushed</info>', $correctOutputWritten);
         $binderMetadataCache = $this->createMock(IBinderMetadataCollectionCache::class);
         $binderMetadataCache->expects($this->once())
             ->method('flush');
         $commandHandler = new FlushFrameworkCachesCommandHandler($binderMetadataCache, null, null, null, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
+        $this->assertTrue($correctOutputWritten);
     }
 
     public function testBinderMetadataCacheIsSkippedIfNotSet(): void
     {
-        $this->output->expects($this->at(0))
-            ->method('writeln')
-            ->with('<info>Binder metadata cache not set - skipping</info>');
+        $correctOutputWritten = false;
+        $this->setUpMockOutput('<info>Binder metadata cache not set - skipping</info>', $correctOutputWritten);
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, null, null, null, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
+        $this->assertTrue($correctOutputWritten);
     }
 
     public function testConsoleCommandCacheIsFlushedIfSet(): void
     {
-        $this->output->expects($this->at(1))
-            ->method('writeln')
-            ->with('<info>Console command cache flushed</info>');
+        $correctOutputWritten = false;
+        $this->setUpMockOutput('<info>Console command cache flushed</info>', $correctOutputWritten);
         $consoleCommandCache = $this->createMock(ICommandRegistryCache::class);
         $consoleCommandCache->expects($this->once())
             ->method('flush');
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, $consoleCommandCache, null, null, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
+        $this->assertTrue($correctOutputWritten);
     }
 
     public function testConsoleCommandCacheIsSkippedIfNotSet(): void
     {
-        $this->output->expects($this->at(1))
-            ->method('writeln')
-            ->with('<info>Console command cache not set - skipping</info>');
+        $correctOutputWritten = false;
+        $this->setUpMockOutput('<info>Console command cache not set - skipping</info>', $correctOutputWritten);
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, null, null, null, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
+        $this->assertTrue($correctOutputWritten);
     }
 
     public function testConstraintsCacheIsFlushedIfSet(): void
     {
-        $this->output->expects($this->at(4))
-            ->method('writeln')
-            ->with('<info>Constraints cache flushed</info>');
+        $correctOutputWritten = false;
+        $this->setUpMockOutput('<info>Constraints cache flushed</info>', $correctOutputWritten);
         $constraintsCache = $this->createMock(IObjectConstraintsRegistryCache::class);
         $constraintsCache->expects($this->once())
             ->method('flush');
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, null, null, null, $constraintsCache);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
+        $this->assertTrue($correctOutputWritten);
     }
 
     public function testConstraintsCacheIsSkippedIfNotSet(): void
     {
-        $this->output->expects($this->at(4))
-            ->method('writeln')
-            ->with('<info>Constraints cache not set - skipping</info>');
+        $correctOutputWritten = false;
+        $this->setUpMockOutput('<info>Constraints cache not set - skipping</info>', $correctOutputWritten);
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, null, null, null, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
+        $this->assertTrue($correctOutputWritten);
     }
 
     public function testRouteCacheIsFlushedIfSet(): void
     {
-        $this->output->expects($this->at(2))
-            ->method('writeln')
-            ->with('<info>Route cache flushed</info>');
+        $correctOutputWritten = false;
+        $this->setUpMockOutput('<info>Route cache flushed</info>', $correctOutputWritten);
         $routeCache = $this->createMock(IRouteCache::class);
         $routeCache->expects($this->once())
             ->method('flush');
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, null, $routeCache, null, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
+        $this->assertTrue($correctOutputWritten);
     }
 
     public function testRouteCacheIsSkippedIfNotSet(): void
     {
-        $this->output->expects($this->at(2))
-            ->method('writeln')
-            ->with('<info>Route cache not set - skipping</info>');
+        $correctOutputWritten = false;
+        $this->setUpMockOutput('<info>Route cache not set - skipping</info>', $correctOutputWritten);
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, null, null, null, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
+        $this->assertTrue($correctOutputWritten);
     }
 
     public function testSuccessMessageIsWrittenAtEnd(): void
     {
-        $this->output->expects($this->at(5))
-            ->method('writeln')
-            ->with('<success>Framework caches flushed</success>');
+        $correctOutputWritten = false;
+        $this->setUpMockOutput('<success>Framework caches flushed</success>', $correctOutputWritten);
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, null, null, null, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
+        $this->assertTrue($correctOutputWritten);
     }
 
     public function testTrieCacheIsFlushedIfSet(): void
     {
-        $this->output->expects($this->at(3))
-            ->method('writeln')
-            ->with('<info>Trie cache flushed</info>');
+        $correctOutputWritten = false;
+        $this->setUpMockOutput('<info>Trie cache flushed</info>', $correctOutputWritten);
         $trieCache = $this->createMock(ITrieCache::class);
         $trieCache->expects($this->once())
             ->method('flush');
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, null, null, $trieCache, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
+        $this->assertTrue($correctOutputWritten);
     }
 
     public function testTrieCacheIsSkippedIfNotSet(): void
     {
-        $this->output->expects($this->at(3))
-            ->method('writeln')
-            ->with('<info>Trie cache not set - skipping</info>');
+        $correctOutputWritten = false;
+        $this->setUpMockOutput('<info>Trie cache not set - skipping</info>', $correctOutputWritten);
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, null, null, null, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
+        $this->assertTrue($correctOutputWritten);
+    }
+
+    /**
+     * Sets up the expected message to be written to output
+     *
+     * @param string $expectedMessage The expected message
+     * @param bool $correctOutputWritten The "out" param for whether or not the correct output was written
+     */
+    private function setUpMockOutput(string $expectedMessage, bool &$correctOutputWritten): void
+    {
+        $correctOutputWritten = false;
+        $this->output->method('writeln')
+            ->with($this->callback(function (string $message) use ($expectedMessage, &$correctOutputWritten) {
+                if ($message === $expectedMessage) {
+                    $correctOutputWritten = true;
+                }
+
+                // We'll always return true, and check if the correct output was written later
+                return true;
+            }));
     }
 }

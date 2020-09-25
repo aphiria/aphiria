@@ -39,42 +39,51 @@ class ContentNegotiationBinderTest extends TestCase
         $this->container = $this->createMock(IContainer::class);
         $this->binder = new ContentNegotiationBinder();
         GlobalConfiguration::resetConfigurationSources();
-
-        // Some universal assertions
-        $this->container->expects($this->at(0))
-            ->method('resolve')
-            ->with(JsonMediaTypeFormatter::class)
-            ->willReturn(new JsonMediaTypeFormatter());
-        $this->container->expects($this->at(1))
-            ->method('bindInstance')
-            ->with(IMediaTypeFormatterMatcher::class, $this->isInstanceOf(MediaTypeFormatterMatcher::class));
     }
 
     public function testAcceptCharsetEncodingMatcherIsCreatedDirectly(): void
     {
+        $this->setUpContainerMockBindInstance([
+            [IMediaTypeFormatterMatcher::class, $this->isInstanceOf(MediaTypeFormatterMatcher::class)],
+            [IEncodingMatcher::class, $this->isInstanceOf(AcceptCharsetEncodingMatcher::class)],
+            [ILanguageMatcher::class, $this->isInstanceOf(AcceptLanguageMatcher::class)],
+            [IContentNegotiator::class, $this->isInstanceOf(ContentNegotiator::class)]
+        ]);
+        $this->setUpContainerMockResolve();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(2))
-            ->method('bindInstance')
-            ->with(IEncodingMatcher::class, $this->isInstanceOf(AcceptCharsetEncodingMatcher::class));
         $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testAcceptLanguageMatcherIsCreatedDirectly(): void
     {
+        $this->setUpContainerMockBindInstance([
+            [IMediaTypeFormatterMatcher::class, $this->isInstanceOf(MediaTypeFormatterMatcher::class)],
+            [IEncodingMatcher::class, $this->isInstanceOf(AcceptCharsetEncodingMatcher::class)],
+            [ILanguageMatcher::class, $this->isInstanceOf(AcceptLanguageMatcher::class)],
+            [IContentNegotiator::class, $this->isInstanceOf(ContentNegotiator::class)]
+        ]);
+        $this->setUpContainerMockResolve();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(3))
-            ->method('bindInstance')
-            ->with(ILanguageMatcher::class, $this->isInstanceOf(AcceptLanguageMatcher::class));
         $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testContentNegotiatorIsBound(): void
     {
+        $this->setUpContainerMockBindInstance([
+            [IMediaTypeFormatterMatcher::class, $this->isInstanceOf(MediaTypeFormatterMatcher::class)],
+            [IEncodingMatcher::class, $this->isInstanceOf(AcceptCharsetEncodingMatcher::class)],
+            [ILanguageMatcher::class, $this->isInstanceOf(AcceptLanguageMatcher::class)],
+            [IContentNegotiator::class, $this->isInstanceOf(ContentNegotiator::class)]
+        ]);
+        $this->setUpContainerMockResolve();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(4))
-            ->method('bindInstance')
-            ->with(IContentNegotiator::class, $this->isInstanceOf(ContentNegotiator::class));
         $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testUnknownEncodingMatchersAreResolved(): void
@@ -83,14 +92,16 @@ class ContentNegotiationBinderTest extends TestCase
         $config = self::getBaseConfig();
         $config['aphiria']['contentNegotiation']['encodingMatcher'] = \get_class($encodingMatcher);
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        $this->container->expects($this->at(2))
-            ->method('resolve')
-            ->with(\get_class($encodingMatcher))
-            ->willReturn($encodingMatcher);
-        $this->container->expects($this->at(3))
-            ->method('bindInstance')
-            ->with(IEncodingMatcher::class, $encodingMatcher);
+        $this->setUpContainerMockBindInstance([
+            [IMediaTypeFormatterMatcher::class, $this->isInstanceOf(MediaTypeFormatterMatcher::class)],
+            [IEncodingMatcher::class, $encodingMatcher],
+            [ILanguageMatcher::class, $this->isInstanceOf(AcceptLanguageMatcher::class)],
+            [IContentNegotiator::class, $this->isInstanceOf(ContentNegotiator::class)]
+        ]);
+        $this->setUpContainerMockResolve([\get_class($encodingMatcher), $encodingMatcher]);
         $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testUnknownLanguageMatchersAreResolved(): void
@@ -99,14 +110,16 @@ class ContentNegotiationBinderTest extends TestCase
         $config = self::getBaseConfig();
         $config['aphiria']['contentNegotiation']['languageMatcher'] = \get_class($languageMatcher);
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        $this->container->expects($this->at(3))
-            ->method('resolve')
-            ->with(\get_class($languageMatcher))
-            ->willReturn($languageMatcher);
-        $this->container->expects($this->at(4))
-            ->method('bindInstance')
-            ->with(ILanguageMatcher::class, $languageMatcher);
+        $this->setUpContainerMockBindInstance([
+            [IMediaTypeFormatterMatcher::class, $this->isInstanceOf(MediaTypeFormatterMatcher::class)],
+            [IEncodingMatcher::class, $this->isInstanceOf(AcceptCharsetEncodingMatcher::class)],
+            [ILanguageMatcher::class, $languageMatcher],
+            [IContentNegotiator::class, $this->isInstanceOf(ContentNegotiator::class)]
+        ]);
+        $this->setUpContainerMockResolve([\get_class($languageMatcher), $languageMatcher]);
         $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     /**
@@ -128,5 +141,35 @@ class ContentNegotiationBinderTest extends TestCase
                 ]
             ]
         ];
+    }
+
+    /**
+     * Sets up tbe bindInstance() calls on the container mock
+     *
+     * @param array[] $parameters The parameters to pass in
+     */
+    private function setUpContainerMockBindInstance(array $parameters): void
+    {
+        $this->container->method('bindInstance')
+            ->withConsecutive(...$parameters);
+    }
+
+    /**
+     * Sets up tbe resolve() calls on the container mock
+     *
+     * @param array|null $additionalParameters The additional parameters to set up in the mock, or null if none
+     */
+    private function setUpContainerMockResolve(array $additionalParameters = null): void
+    {
+        $parameters = [
+            [JsonMediaTypeFormatter::class, new JsonMediaTypeFormatter()]
+        ];
+
+        if ($additionalParameters !== null) {
+            $parameters[] = $additionalParameters;
+        }
+
+        $this->container->method('resolve')
+            ->willReturnMap($parameters);
     }
 }
