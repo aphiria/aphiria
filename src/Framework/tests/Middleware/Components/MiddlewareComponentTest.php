@@ -55,14 +55,11 @@ class MiddlewareComponentTest extends TestCase
         };
         $expectedMiddleware->setAttributes(['bar' => 'baz']);
         $middlewareCollection = new MiddlewareCollection();
-        $this->dependencyResolver->expects($this->at(0))
-            ->method('resolve')
-            ->with(MiddlewareCollection::class)
-            ->willReturn($middlewareCollection);
-        $this->dependencyResolver->expects($this->at(1))
-            ->method('resolve')
-            ->with('foo')
-            ->willReturn($expectedMiddleware);
+        $this->dependencyResolver->method('resolve')
+            ->willReturnMap([
+                [MiddlewareCollection::class, $middlewareCollection],
+                ['foo', $expectedMiddleware]
+            ]);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('foo', ['bar' => 'baz']));
         $this->middlewareComponent->build();
         $this->assertEquals([$expectedMiddleware], $middlewareCollection->getAll());
@@ -73,10 +70,11 @@ class MiddlewareComponentTest extends TestCase
         $invalidMiddleware = $this;
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\get_class($invalidMiddleware) . ' does not implement ' . IMiddleware::class);
-        $this->dependencyResolver->expects($this->at(1))
-            ->method('resolve')
-            ->with('foo')
-            ->willReturn($invalidMiddleware);
+        $this->dependencyResolver->method('resolve')
+            ->willReturnMap([
+                [MiddlewareCollection::class, new MiddlewareCollection()],
+                ['foo', $invalidMiddleware]
+            ]);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('foo'));
         $this->middlewareComponent->build();
     }
@@ -86,18 +84,12 @@ class MiddlewareComponentTest extends TestCase
         $expectedMiddleware1 = $this->createMock(IMiddleware::class);
         $expectedMiddleware2 = $this->createMock(IMiddleware::class);
         $middlewareCollection = new MiddlewareCollection();
-        $this->dependencyResolver->expects($this->at(0))
-            ->method('resolve')
-            ->with(MiddlewareCollection::class)
-            ->willReturn($middlewareCollection);
-        $this->dependencyResolver->expects($this->at(1))
-            ->method('resolve')
-            ->with('foo')
-            ->willReturn($expectedMiddleware1);
-        $this->dependencyResolver->expects($this->at(2))
-            ->method('resolve')
-            ->with('bar')
-            ->willReturn($expectedMiddleware2);
+        $this->dependencyResolver->method('resolve')
+            ->willReturnMap([
+                [MiddlewareCollection::class, $middlewareCollection],
+                ['foo', $expectedMiddleware1],
+                ['bar', $expectedMiddleware2]
+            ]);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('foo'));
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('bar'));
         $this->middlewareComponent->build();
@@ -109,18 +101,12 @@ class MiddlewareComponentTest extends TestCase
         $expectedMiddleware1 = $this->createMock(IMiddleware::class);
         $expectedMiddleware2 = $this->createMock(IMiddleware::class);
         $middlewareCollection = new MiddlewareCollection();
-        $this->dependencyResolver->expects($this->at(0))
-            ->method('resolve')
-            ->with(MiddlewareCollection::class)
-            ->willReturn($middlewareCollection);
-        $this->dependencyResolver->expects($this->at(1))
-            ->method('resolve')
-            ->with('foo')
-            ->willReturn($expectedMiddleware1);
-        $this->dependencyResolver->expects($this->at(2))
-            ->method('resolve')
-            ->with('bar')
-            ->willReturn($expectedMiddleware2);
+        $this->dependencyResolver->method('resolve')
+            ->willReturnMap([
+                [MiddlewareCollection::class, $middlewareCollection],
+                ['foo', $expectedMiddleware1],
+                ['bar', $expectedMiddleware2]
+            ]);
         $this->middlewareComponent->withGlobalMiddleware([new MiddlewareBinding('foo'), new MiddlewareBinding('bar')]);
         $this->middlewareComponent->build();
         $this->assertEquals([$expectedMiddleware1, $expectedMiddleware2], $middlewareCollection->getAll());
@@ -130,14 +116,11 @@ class MiddlewareComponentTest extends TestCase
     {
         $expectedMiddleware = $this->createMock(IMiddleware::class);
         $middlewareCollection = new MiddlewareCollection();
-        $this->dependencyResolver->expects($this->at(0))
-            ->method('resolve')
-            ->with(MiddlewareCollection::class)
-            ->willReturn($middlewareCollection);
-        $this->dependencyResolver->expects($this->at(1))
-            ->method('resolve')
-            ->with('foo')
-            ->willReturn($expectedMiddleware);
+        $this->dependencyResolver->method('resolve')
+            ->willReturnMap([
+                [MiddlewareCollection::class, $middlewareCollection],
+                ['foo', $expectedMiddleware]
+            ]);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('foo'));
         $this->middlewareComponent->build();
         $this->assertEquals([$expectedMiddleware], $middlewareCollection->getAll());
