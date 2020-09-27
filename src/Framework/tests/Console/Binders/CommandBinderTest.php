@@ -37,17 +37,6 @@ class CommandBinderTest extends TestCase
         $this->container = $this->createMock(IContainer::class);
         GlobalConfiguration::resetConfigurationSources();
         $this->currEnvironment = getenv('APP_ENV') ?: null;
-
-        // Some universal assertions
-        $this->container->expects($this->at(0))
-            ->method('bindInstance')
-            ->with(CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class));
-        $this->container->expects($this->at(1))
-            ->method('bindInstance')
-            ->with(ICommandRegistryCache::class, $this->isInstanceOf(FileCommandRegistryCache::class));
-        $this->container->expects($this->at(2))
-            ->method('bindInstance')
-            ->with(CommandRegistrantCollection::class, $this->isInstanceOf(CommandRegistrantCollection::class));
     }
 
     protected function tearDown(): void
@@ -60,19 +49,22 @@ class CommandBinderTest extends TestCase
 
     public function testAnnotationRegistrantIsRegistered(): void
     {
+        $this->setUpContainerMockBindInstance([AnnotationCommandRegistrant::class, $this->isInstanceOf(AnnotationCommandRegistrant::class)]);
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(3))
-            ->method('bindInstance')
-            ->with(AnnotationCommandRegistrant::class, $this->isInstanceOf(AnnotationCommandRegistrant::class));
         $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testCommandCacheIsUsedInProd(): void
     {
+        $this->setUpContainerMockBindInstance();
         // Basically just ensuring we cover the production case in this test
         putenv('APP_ENV=production');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     /**
@@ -90,5 +82,24 @@ class CommandBinderTest extends TestCase
                 ]
             ]
         ];
+    }
+
+    /**
+     * @param array|null $additionalParameters Any additional parameters to set up the mock with
+     */
+    private function setUpContainerMockBindInstance(array $additionalParameters = null): void
+    {
+        $parameters = [
+            [CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class)],
+            [ICommandRegistryCache::class, $this->isInstanceOf(FileCommandRegistryCache::class)],
+            [CommandRegistrantCollection::class, $this->isInstanceOf(CommandRegistrantCollection::class)]
+        ];
+
+        if ($additionalParameters !== null) {
+            $parameters[] = $additionalParameters;
+        }
+
+        $this->container->method('bindInstance')
+            ->withConsecutive(...$parameters);
     }
 }

@@ -59,12 +59,10 @@ class ApplicationClientTest extends TestCase
     {
         $response = $this->createMock(IResponse::class);
         $request = $this->createMock(IRequest::class);
-        $this->container->expects($this->at(0))
-            ->method('resolve')
+        $this->container->method('resolve')
             ->with(IRequest::class)
             ->willReturn($this->createMock(IRequest::class));
-        $this->container->expects($this->at(1))
-            ->method('bindInstance')
+        $this->container->method('bindInstance')
             ->with(IRequest::class, $request);
         $this->app->expects($this->once())
             ->method('handle')

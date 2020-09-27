@@ -54,12 +54,8 @@ class RequestBodyValidatorTest extends TestCase
         $bodyParts = [new class() {
         }, new class() {
         }];
-        $this->validator->expects($this->at(0))
-            ->method('validateObject')
-            ->with($bodyParts[0]);
-        $this->validator->expects($this->at(1))
-            ->method('validateObject')
-            ->with($bodyParts[1]);
+        $this->validator->method('validateObject')
+            ->withConsecutive([$bodyParts[0]], [$bodyParts[1]]);
         $this->requestBodyValidator->validate($this->request, $bodyParts);
         // Dummy assertion
         $this->assertTrue(true);

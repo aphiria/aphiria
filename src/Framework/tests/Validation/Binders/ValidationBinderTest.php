@@ -45,20 +45,6 @@ class ValidationBinderTest extends TestCase
         $this->container = $this->createMock(IContainer::class);
         GlobalConfiguration::resetConfigurationSources();
         $this->currEnvironment = getenv('APP_ENV') ?: null;
-
-        // Some universal assertions
-        $this->container->expects($this->at(0))
-            ->method('bindInstance')
-            ->with(ObjectConstraintsRegistry::class, $this->isInstanceOf(ObjectConstraintsRegistry::class));
-        $this->container->expects($this->at(1))
-            ->method('bindInstance')
-            ->with([IValidator::class, Validator::class], $this->isInstanceOf(Validator::class));
-        $this->container->expects($this->at(2))
-            ->method('bindInstance')
-            ->with(IObjectConstraintsRegistryCache::class, $this->isInstanceOf(FileObjectConstraintsRegistryCache::class));
-        $this->container->expects($this->at(3))
-            ->method('bindInstance')
-            ->with(ObjectConstraintsRegistrantCollection::class, $this->isInstanceOf(ObjectConstraintsRegistrantCollection::class));
     }
 
     protected function tearDown(): void
@@ -72,10 +58,13 @@ class ValidationBinderTest extends TestCase
     public function testAnnotationRegistrantIsRegistered(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(5))
-            ->method('bindInstance')
-            ->with(AnnotationObjectConstraintsRegistrant::class, $this->isInstanceOf(AnnotationObjectConstraintsRegistrant::class));
+        $this->setUpContainerMock([
+            [IErrorMessageInterpolator::class, $this->isInstanceOf(IErrorMessageInterpolator::class)],
+            [AnnotationObjectConstraintsRegistrant::class, $this->isInstanceOf(AnnotationObjectConstraintsRegistrant::class)]
+        ]);
         $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testConstraintCacheIsUsedInProd(): void
@@ -83,7 +72,10 @@ class ValidationBinderTest extends TestCase
         // Basically just ensuring we cover the production case in this test
         putenv('APP_ENV=production');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
+        $this->setUpContainerMock();
         $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testCustomErrorMessageRegistriesAreResolved(): void
@@ -94,11 +86,13 @@ class ValidationBinderTest extends TestCase
             'type' => \get_class($errorMessageTemplates)
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        $this->container->expects($this->at(4))
-            ->method('resolve')
+        $this->setUpContainerMock();
+        $this->container->method('resolve')
             ->with(\get_class($errorMessageTemplates))
             ->willReturn($errorMessageTemplates);
         $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testDefaultErrorMessageRegistryIsSupported(): void
@@ -108,16 +102,21 @@ class ValidationBinderTest extends TestCase
             'type' => DefaultErrorMessageTemplateRegistry::class
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        $this->setUpContainerMock();
         $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testIcuFormatErrorMessageInterpolatorIsSupported(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->container->expects($this->at(4))
-            ->method('bindInstance')
-            ->with(IErrorMessageInterpolator::class, $this->isInstanceOf(StringReplaceErrorMessageInterpolator::class));
+        $this->setUpContainerMock([
+            [IErrorMessageInterpolator::class, $this->isInstanceOf(StringReplaceErrorMessageInterpolator::class)]
+        ]);
         $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testStringReplaceErrorMessageInterpolatorIsSupported(): void
@@ -128,10 +127,12 @@ class ValidationBinderTest extends TestCase
             'defaultLocale' => 'en'
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        $this->container->expects($this->at(4))
-            ->method('bindInstance')
-            ->with(IErrorMessageInterpolator::class, $this->isInstanceOf(IcuFormatErrorMessageInterpolator::class));
+        $this->setUpContainerMock([
+            [IErrorMessageInterpolator::class, $this->isInstanceOf(IcuFormatErrorMessageInterpolator::class)]
+        ]);
         $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testUnknownErrorMessageInterpolatorThrowsException(): void
@@ -164,5 +165,27 @@ class ValidationBinderTest extends TestCase
                 ]
             ]
         ];
+    }
+
+    /**
+     * Sets up the container mock
+     *
+     * @param array[] $additionalParameters The additional parameters to configure
+     */
+    private function setUpContainerMock(array $additionalParameters = []): void
+    {
+        $parameters = [
+            [ObjectConstraintsRegistry::class, $this->isInstanceOf(ObjectConstraintsRegistry::class)],
+            [[IValidator::class, Validator::class], $this->isInstanceOf(Validator::class)],
+            [IObjectConstraintsRegistryCache::class, $this->isInstanceOf(FileObjectConstraintsRegistryCache::class)],
+            [ObjectConstraintsRegistrantCollection::class, $this->isInstanceOf(ObjectConstraintsRegistrantCollection::class)]
+        ];
+
+        foreach ($additionalParameters as $additionalParameter) {
+            $parameters[] = $additionalParameter;
+        }
+
+        $this->container->method('bindInstance')
+            ->withConsecutive(...$parameters);
     }
 }

@@ -77,12 +77,10 @@ class NegotiatedRequestBuilderTest extends TestCase
     public function testWithBodyWithNonHttpBodyUsesContentNegotiationToSetBody(string $expectedType, $rawBody): void
     {
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $mediaTypeFormatter->expects($this->at(0))
-            ->method('getDefaultEncoding')
+        $mediaTypeFormatter->method('getDefaultEncoding')
             ->willReturn('UTF-8');
         $expectedStream = null;
-        $mediaTypeFormatter->expects($this->at(1))
-            ->method('writeToStream')
+        $mediaTypeFormatter->method('writeToStream')
             ->with(
                 $rawBody,
                 $this->callback(function (IStream $stream) use (&$expectedStream) {

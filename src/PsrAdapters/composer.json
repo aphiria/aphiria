@@ -36,7 +36,7 @@
         "friendsofphp/php-cs-fixer": "^3.0",
         "nyholm/psr7": "^1.2",
         "php-coveralls/php-coveralls": "^2.2",
-        "phpunit/phpunit": "~9.1"
+        "phpunit/phpunit": "~9.3"
     },
     "scripts": {
         "lint-check": "php-cs-fixer fix --config=.php_cs.dist -v --diff --dry-run",

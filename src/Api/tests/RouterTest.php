@@ -69,14 +69,8 @@ class RouterTest extends TestCase
         $middlewareBinding = new MiddlewareBinding(AttributeMiddleware::class, ['foo' => 'bar']);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $controller = new ControllerMock();
-        $this->serviceResolver->expects($this->at(0))
-            ->method('resolve')
-            ->with(ControllerMock::class)
-            ->willReturn($controller);
-        $this->serviceResolver->expects($this->at(1))
-            ->method('resolve')
-            ->with(AttributeMiddleware::class)
-            ->willReturn($middleware);
+        $this->serviceResolver->method('resolve')
+            ->willReturnMap([[ControllerMock::class, $controller], [AttributeMiddleware::class, $middleware]]);
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
@@ -104,14 +98,8 @@ class RouterTest extends TestCase
         $middlewareBinding = new MiddlewareBinding(__CLASS__);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $controller = new ControllerMock();
-        $this->serviceResolver->expects($this->at(0))
-            ->method('resolve')
-            ->with(ControllerMock::class)
-            ->willReturn($controller);
-        $this->serviceResolver->expects($this->at(1))
-            ->method('resolve')
-            ->with(__CLASS__)
-            ->willReturn($middleware);
+        $this->serviceResolver->method('resolve')
+            ->willReturnMap([[ControllerMock::class, $controller], [__CLASS__, $middleware]]);
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
@@ -155,29 +143,26 @@ class RouterTest extends TestCase
         $expectedResponse = $this->createMock(IResponse::class);
         $expectedResponse->method('getHeaders')
             ->willReturn($expectedHeaders);
-        $middleware1 = new MiddlewareThatIncrementsHeader();
-        $middleware2 = new MiddlewareThatIncrementsHeader();
+        // We want different middleware class names to be able to test multiple middleware, hence the anon classes
+        $middleware1 = new class() extends MiddlewareThatIncrementsHeader {
+        };
+        $middleware2 = new class() extends MiddlewareThatIncrementsHeader {
+        };
         $controller = new ControllerMock();
-        $this->serviceResolver->expects($this->at(0))
-            ->method('resolve')
-            ->with(ControllerMock::class)
-            ->willReturn($controller);
-        $this->serviceResolver->expects($this->at(1))
-            ->method('resolve')
-            ->with(MiddlewareThatIncrementsHeader::class)
-            ->willReturn($middleware1);
-        $this->serviceResolver->expects($this->at(2))
-            ->method('resolve')
-            ->with(MiddlewareThatIncrementsHeader::class)
-            ->willReturn($middleware2);
+        $this->serviceResolver->method('resolve')
+            ->willReturnMap([
+                [ControllerMock::class, $controller],
+                [\get_class($middleware1), $middleware1],
+                [\get_class($middleware2), $middleware2]
+            ]);
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
                 new RouteAction(ControllerMock::class, 'noParameters'),
                 [],
                 [
-                    new MiddlewareBinding(MiddlewareThatIncrementsHeader::class),
-                    new MiddlewareBinding(MiddlewareThatIncrementsHeader::class)
+                    new MiddlewareBinding(\get_class($middleware1)),
+                    new MiddlewareBinding(\get_class($middleware2))
                 ]
             ),
             [],

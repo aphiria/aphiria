@@ -37,8 +37,7 @@ class AboutCommandHandlerTest extends TestCase
         $driver->expects($this->once())
             ->method('getCliWidth')
             ->willReturn(3);
-        $this->output->expects($this->at(0))
-            ->method('getDriver')
+        $this->output->method('getDriver')
             ->willReturn($driver);
     }
 
@@ -50,8 +49,7 @@ class AboutCommandHandlerTest extends TestCase
             . '  <info>ant:bar</info>' . \PHP_EOL
             . '<comment>cat</comment>' . \PHP_EOL
             . '  <info>cat:foo</info>';
-        $this->output->expects($this->at(1))
-            ->method('writeln')
+        $this->output->method('writeln')
             ->with(self::compileOutput($body));
         $this->handler->handle(new Input('about', [], []), $this->output);
     }
@@ -63,8 +61,7 @@ class AboutCommandHandlerTest extends TestCase
         $body = '<comment>cat</comment>' . \PHP_EOL
             . '  <info>cat:bar</info>' . \PHP_EOL
             . '  <info>cat:foo</info>';
-        $this->output->expects($this->at(1))
-            ->method('writeln')
+        $this->output->method('writeln')
             ->with(self::compileOutput($body));
         $this->handler->handle(new Input('about', [], []), $this->output);
     }
@@ -72,8 +69,7 @@ class AboutCommandHandlerTest extends TestCase
     public function testHavingNoCommandsDisplaysMessageSayingSo(): void
     {
         $body = '  <info>No commands</info>';
-        $this->output->expects($this->at(1))
-            ->method('writeln')
+        $this->output->method('writeln')
             ->with(self::compileOutput($body));
         $this->handler->handle(new Input('about', [], []), $this->output);
     }
@@ -88,8 +84,7 @@ class AboutCommandHandlerTest extends TestCase
             . '  <info>foo    </info>' . \PHP_EOL
             . '<comment>cat</comment>' . \PHP_EOL
             . '  <info>cat:bar</info>';
-        $this->output->expects($this->at(1))
-            ->method('writeln')
+        $this->output->method('writeln')
             ->with(self::compileOutput($body));
         $this->handler->handle(new Input('about', [], []), $this->output);
     }

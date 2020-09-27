@@ -27,7 +27,6 @@ class MiddlewareThatIncrementsHeader implements IMiddleware
      */
     public function handle(IRequest $request, IRequestHandler $next): IResponse
     {
-        /** @var IResponse $response */
         $response = $next->handle($request);
         $currValues = [];
 
