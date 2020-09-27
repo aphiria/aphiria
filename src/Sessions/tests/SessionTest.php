@@ -225,9 +225,11 @@ class SessionTest extends TestCase
     {
         $generatedId = str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
-        $idGenerator->expects($this->at(0))->method('idIsValid')->willReturn(false);
-        $idGenerator->expects($this->at(2))->method('idIsValid')->willReturn(true);
-        $idGenerator->expects($this->at(4))->method('idIsValid')->willReturn(true);
+        $idGenerator->method('idIsValid')
+            ->willReturnMap([
+                [null, false],
+                [$generatedId, true]
+            ]);
         $idGenerator->method('generate')->willReturn($generatedId);
         $session = new Session(null, $idGenerator);
         $session->regenerateId();
@@ -243,12 +245,15 @@ class SessionTest extends TestCase
 
     public function testSettingInvalidIdCausesNewIdToBeGenerated(): void
     {
+        $generatedId = str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
-        $idGenerator->expects($this->at(0))->method('idIsValid')->willReturn(false);
-        $idGenerator->expects($this->at(2))->method('idIsValid')->willReturn(true);
-        $idGenerator->expects($this->at(3))->method('idIsValid')->willReturn(false);
-        $idGenerator->expects($this->at(5))->method('idIsValid')->willReturn(true);
-        $idGenerator->method('generate')->willReturn(str_repeat('1', IIdGenerator::MIN_LENGTH));
+        $idGenerator->method('idIsValid')
+            ->willReturnMap([
+                [1, false],
+                [2, false],
+                [$generatedId, true]
+            ]);
+        $idGenerator->method('generate')->willReturn($generatedId);
         $session = new Session(1, $idGenerator);
         $this->assertNotEquals(1, $session->getId());
         $session->setId(2);

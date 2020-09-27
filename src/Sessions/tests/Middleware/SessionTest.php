@@ -187,30 +187,17 @@ class SessionTest extends TestCase
 
     public function testSessionIsOpenedAndVarsAreSet(): void
     {
-        $this->session->expects($this->at(0))
+        $this->session->expects($this->once())
             ->method('regenerateId');
-        $this->session->expects($this->at(1))
-            ->method('getId')
-            ->willReturn('foo');
-        $this->session->expects($this->at(2))
-            ->method('setMany')
-            ->with(['bar' => 'baz']);
-        $this->session->expects($this->at(3))
+        $this->session->expects($this->once())
             ->method('ageFlashData');
-        $this->session->expects($this->at(4))
-            ->method('getId')
+        $this->session->method('getId')
             ->willReturn('foo');
-        $this->session->expects($this->at(5))
-            ->method('getAll')
+        $this->session->method('setMany')
+            ->with(['bar' => 'baz']);
+        $this->session->method('getAll')
             ->willReturn(['bar' => 'baz']);
-        $this->session->expects($this->at(6))
-            ->method('getId')
-            ->willReturn('foo');
-        $this->sessionHandler->expects($this->at(0))
-            ->method('open')
-            ->with(null, 'session');
-        $this->sessionHandler->expects($this->at(1))
-            ->method('read')
+        $this->sessionHandler->method('read')
             ->with('foo')
             ->willReturn(\serialize(['bar' => 'baz']));
         $middleware = new Session(
