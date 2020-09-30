@@ -118,7 +118,7 @@ class RequestBuilder implements IRequestBuilder
     /**
      * @inheritdoc
      */
-    public function withProperty(string $name, $value): self
+    public function withProperty(string $name, mixed $value): self
     {
         $new = clone $this;
         $new->properties->add($name, $value);

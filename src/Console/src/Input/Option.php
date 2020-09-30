@@ -38,7 +38,7 @@ final class Option
      * @param mixed $defaultValue The default value for the option if it's optional
      * @throws InvalidArgumentException Thrown if the type is invalid
      */
-    public function __construct(string $name, ?string $shortName, int $type, string $description = null, $defaultValue = null)
+    public function __construct(string $name, ?string $shortName, int $type, string $description = null, mixed $defaultValue = null)
     {
         if (($type & 3) === 3) {
             throw new InvalidArgumentException('Option type cannot be both optional and required');

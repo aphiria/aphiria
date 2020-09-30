@@ -27,7 +27,7 @@ abstract class AstNode
     /**
      * @param mixed $value The value of the node
      */
-    public function __construct($value = null)
+    public function __construct(mixed $value = null)
     {
         $this->value = $value;
     }

@@ -41,7 +41,7 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
-    public function add($key, $value): void
+    public function add(mixed $key, mixed $value): void
     {
         $this->hashKeysToKvps[$this->getHashKey($key)] = new KeyValuePair($key, $value);
     }
@@ -71,7 +71,7 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
-    public function containsKey($key): bool
+    public function containsKey(mixed $key): bool
     {
         return \array_key_exists($this->getHashKey($key), $this->hashKeysToKvps);
     }
@@ -79,7 +79,7 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
-    public function containsValue($value): bool
+    public function containsValue(mixed $value): bool
     {
         foreach ($this->hashKeysToKvps as $kvp) {
             if ($kvp->getValue() == $value) {
@@ -101,7 +101,7 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
-    public function get($key)
+    public function get(mixed $key): mixed
     {
         $hashKey = $this->getHashKey($key);
 
@@ -162,7 +162,7 @@ class HashTable implements IDictionary
      * @throws OutOfBoundsException Thrown if the key could not be found
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function offsetGet($key)
+    public function offsetGet(mixed $key): mixed
     {
         return $this->get($key);
     }
@@ -171,7 +171,7 @@ class HashTable implements IDictionary
      * @inheritdoc
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function offsetSet($key, $value): void
+    public function offsetSet(mixed $key, mixed $value): void
     {
         $this->add($key, $value);
     }
@@ -180,7 +180,7 @@ class HashTable implements IDictionary
      * @inheritdoc
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function offsetUnset($key): void
+    public function offsetUnset(mixed $key): void
     {
         $this->removeKey($key);
     }
@@ -188,7 +188,7 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
-    public function removeKey($key): void
+    public function removeKey(mixed $key): void
     {
         unset($this->hashKeysToKvps[$this->getHashKey($key)]);
     }
@@ -204,7 +204,7 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
-    public function tryGet($key, &$value): bool
+    public function tryGet(mixed $key, mixed &$value): bool
     {
         try {
             $value = $this->get($key);

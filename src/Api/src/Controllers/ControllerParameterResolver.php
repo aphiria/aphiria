@@ -46,7 +46,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         ReflectionParameter $reflectionParameter,
         IRequest $request,
         array $routeVariables
-    ) {
+    ): mixed {
         $queryStringVars = $this->uriParser->parseQueryString($request->getUri());
 
         if ($reflectionParameter->getClass() !== null) {
@@ -142,7 +142,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      * @return mixed The raw value converted to the appropriate scalar type
      * @throws FailedScalarParameterConversionException Thrown if the scalar parameter could not be converted
      */
-    private function resolveScalarParameter(ReflectionParameter $reflectionParameter, $rawValue)
+    private function resolveScalarParameter(ReflectionParameter $reflectionParameter, $rawValue): mixed
     {
         $type = $reflectionParameter->getType() === null ? null : $reflectionParameter->getType()->getName();
 

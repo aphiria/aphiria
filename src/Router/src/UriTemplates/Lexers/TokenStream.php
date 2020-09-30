@@ -43,7 +43,7 @@ final class TokenStream
      *      Any '%s' in the message is first populated with the expected type, and then with the expected value
      * @throws UnexpectedTokenException Thrown if the current token didn't match the expected type and value
      */
-    public function expect(string $type, $value = null, string $message = null): void
+    public function expect(string $type, mixed $value = null, string $message = null): void
     {
         if ($this->test($type, $value)) {
             return;
@@ -106,7 +106,7 @@ final class TokenStream
      * @param mixed $value The optional value to match against
      * @return bool True if the current token is of the input type, otherwise false
      */
-    public function nextIfType(string $type, $value = null): bool
+    public function nextIfType(string $type, mixed $value = null): bool
     {
         $currentToken = $this->getCurrent();
         $typeMatches = $currentToken !== null && $currentToken->type === $type;
@@ -142,7 +142,7 @@ final class TokenStream
      * @param mixed $value The optional value to match against
      * @return bool True if the current token is of the input type, otherwise false
      */
-    public function test(string $type, $value = null): bool
+    public function test(string $type, mixed $value = null): bool
     {
         $currentToken = $this->getCurrent();
         $typeMatches = $currentToken !== null && $currentToken->type === $type;

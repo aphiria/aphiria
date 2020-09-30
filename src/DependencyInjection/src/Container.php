@@ -117,7 +117,7 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function callClosure(Closure $closure, array $primitives = [])
+    public function callClosure(Closure $closure, array $primitives = []): mixed
     {
         try {
             $unresolvedParameters = (new ReflectionFunction($closure))->getParameters();
@@ -132,7 +132,7 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function callMethod($instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false)
+    public function callMethod($instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false): mixed
     {
         $className = \is_string($instance) ? $instance : \get_class($instance);
 
@@ -376,36 +376,27 @@ class Container implements IContainer
 
         foreach ($unresolvedParameters as $parameter) {
             $resolvedParameter = null;
+            $parameterClassName = ($parameterType = $parameter->getType()) && !$parameterType->isBuiltin() ? $parameterType->getName() : null;
 
-            if ($parameter->getClass() === null) {
+            if ($parameterClassName === null) {
                 // The parameter is a primitive
                 $resolvedParameter = $this->resolvePrimitive($parameter, $primitives);
+            } elseif ($class !== null && $this->hasTargetedBinding($parameterClassName, $class)) {
+                $resolvedParameter = $this->for(
+                    new TargetedContext($class),
+                    fn (IContainer $container) => $container->resolve($parameter->getClass()->getName())
+                );
             } else {
-                // The parameter is an object
-                $parameterClassName = $parameter->getClass()->getName();
-
-                /**
-                 * We need to first check if the input class is a target for the parameter
-                 * If it is, resolve it using the input class as a target
-                 * Otherwise, attempt to resolve it universally
-                 */
-                if ($class !== null && $this->hasTargetedBinding($parameterClassName, $class)) {
-                    $resolvedParameter = $this->for(
-                        new TargetedContext($class),
-                        fn (IContainer $container) => $container->resolve($parameter->getClass()->getName())
-                    );
-                } else {
-                    try {
-                        $resolvedParameter = $this->resolve($parameterClassName);
-                    } catch (ResolutionException $ex) {
-                        // Check for a default value
-                        if ($parameter->isDefaultValueAvailable()) {
-                            $resolvedParameter = $parameter->getDefaultValue();
-                        } elseif ($parameter->allowsNull()) {
-                            $resolvedParameter = null;
-                        } else {
-                            throw $ex;
-                        }
+                try {
+                    $resolvedParameter = $this->resolve($parameterClassName);
+                } catch (ResolutionException $ex) {
+                    // Check for a default value
+                    if ($parameter->isDefaultValueAvailable()) {
+                        $resolvedParameter = $parameter->getDefaultValue();
+                    } elseif ($parameter->allowsNull()) {
+                        $resolvedParameter = null;
+                    } else {
+                        throw $ex;
                     }
                 }
             }
@@ -424,7 +415,7 @@ class Container implements IContainer
      * @return mixed The resolved primitive
      * @throws ReflectionException Thrown if there was a reflection exception
      */
-    protected function resolvePrimitive(ReflectionParameter $parameter, array &$primitives)
+    protected function resolvePrimitive(ReflectionParameter $parameter, array &$primitives): mixed
     {
         if (\count($primitives) > 0) {
             // Grab the next primitive

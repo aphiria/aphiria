@@ -31,7 +31,7 @@ class Question
      * @param mixed $defaultAnswer The default answer to the question
      * @param bool $isHidden Whether or not the answer should be hidden
      */
-    public function __construct(string $text, $defaultAnswer = null, bool $isHidden = false)
+    public function __construct(string $text, mixed $defaultAnswer = null, bool $isHidden = false)
     {
         $this->text = $text;
         $this->defaultAnswer = $defaultAnswer;
@@ -46,7 +46,7 @@ class Question
      * @return mixed The formatted answer
      * @throws InvalidArgumentException Thrown if the answer is not of the correct type
      */
-    public function formatAnswer($answer)
+    public function formatAnswer(mixed $answer): mixed
     {
         // By default, just return the answer
         return $answer;

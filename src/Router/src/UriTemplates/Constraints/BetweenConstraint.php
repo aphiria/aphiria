@@ -64,7 +64,7 @@ final class BetweenConstraint implements IRouteVariableConstraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         if (!\is_numeric($value)) {
             throw new InvalidArgumentException('Value must be numeric');

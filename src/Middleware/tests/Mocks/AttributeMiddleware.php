@@ -29,7 +29,7 @@ class AttributeMiddleware extends BaseAttributeMiddleware
      * @param mixed $default The default value if there was no attribute
      * @return mixed The attribute value
      */
-    public function getAttribute(string $name, $default = null)
+    public function getAttribute(string $name, mixed $default = null): mixed
     {
         return parent::getAttribute($name, $default);
     }

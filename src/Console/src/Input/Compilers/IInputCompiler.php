@@ -30,5 +30,5 @@ interface IInputCompiler
      * @throws InvalidArgumentException Thrown if the input was not of the type the compiler was expecting
      * @throws RuntimeException Thrown if the input could not be compiled
      */
-    public function compile($rawInput): Input;
+    public function compile(mixed $rawInput): Input;
 }

@@ -31,7 +31,7 @@ class MultipleChoice extends Question
      * @param array $choices The list of choices
      * @param mixed $defaultAnswer The default answer to the question
      */
-    public function __construct(string $text, array $choices, $defaultAnswer = null)
+    public function __construct(string $text, array $choices, mixed $defaultAnswer = null)
     {
         parent::__construct($text, $defaultAnswer);
 
@@ -59,7 +59,7 @@ class MultipleChoice extends Question
     /**
      * @inheritdoc
      */
-    public function formatAnswer($answer)
+    public function formatAnswer($answer): mixed
     {
         $hasMultipleAnswers = false;
         $answer = str_replace(' ', '', (string)$answer);

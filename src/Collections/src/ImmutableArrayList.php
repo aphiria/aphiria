@@ -38,7 +38,7 @@ class ImmutableArrayList implements IImmutableList
     /**
      * @inheritdoc
      */
-    public function containsValue($value): bool
+    public function containsValue(mixed $value): bool
     {
         return $this->indexOf($value) !== null;
     }
@@ -54,7 +54,7 @@ class ImmutableArrayList implements IImmutableList
     /**
      * @inheritdoc
      */
-    public function get(int $index)
+    public function get(int $index): mixed
     {
         if ($index < 0 || $index >= \count($this)) {
             throw new OutOfRangeException("Index $index is out of range");
@@ -74,7 +74,7 @@ class ImmutableArrayList implements IImmutableList
     /**
      * @inheritdoc
      */
-    public function indexOf($value): ?int
+    public function indexOf(mixed $value): ?int
     {
         if (($index = array_search($value, $this->values, false)) === false) {
             return null;
@@ -86,7 +86,7 @@ class ImmutableArrayList implements IImmutableList
     /**
      * @inheritdoc
      */
-    public function offsetExists($index): bool
+    public function offsetExists(mixed $index): bool
     {
         return \array_key_exists($index, $this->values);
     }
@@ -94,7 +94,7 @@ class ImmutableArrayList implements IImmutableList
     /**
      * @inheritdoc
      */
-    public function offsetGet($index)
+    public function offsetGet(mixed $index): mixed
     {
         return $this->get($index);
     }
@@ -102,7 +102,7 @@ class ImmutableArrayList implements IImmutableList
     /**
      * @inheritdoc
      */
-    public function offsetSet($index, $value): void
+    public function offsetSet(mixed $index, mixed $value): void
     {
         throw new RuntimeException('Cannot set values in ' . self::class);
     }
@@ -110,7 +110,7 @@ class ImmutableArrayList implements IImmutableList
     /**
      * @inheritdoc
      */
-    public function offsetUnset($index): void
+    public function offsetUnset(mixed $index): void
     {
         throw new RuntimeException('Cannot unset values in ' . self::class);
     }

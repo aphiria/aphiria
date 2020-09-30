@@ -99,7 +99,7 @@ class ControllerTest extends TestCase
                 return parent::ok($body, $headers);
             }
 
-            public function readRequestBodyAs(string $type)
+            public function readRequestBodyAs(string $type): mixed
             {
                 return parent::readRequestBodyAs($type);
             }

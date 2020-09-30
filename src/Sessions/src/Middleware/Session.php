@@ -106,7 +106,7 @@ final class Session implements IMiddleware
             $this->session->regenerateId();
         }
 
-        $this->sessionHandler->open(null, $this->sessionCookieName);
+        $this->sessionHandler->open('', $this->sessionCookieName);
         $sessionVars = @\unserialize($this->sessionHandler->read($this->session->getId()));
         $this->session->setMany($sessionVars === false ? [] : $sessionVars);
 

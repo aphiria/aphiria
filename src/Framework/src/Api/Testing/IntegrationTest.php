@@ -114,7 +114,7 @@ trait IntegrationTest
      * @throws HttpException Thrown if there was an error sending the request
      * @throws SerializationException Thrown if the body could not be serialized
      */
-    protected function delete($uri, array $headers = [], $body = null): IResponse
+    protected function delete($uri, array $headers = [], mixed $body = null): IResponse
     {
         $request = $this->requestBuilder->withMethod('DELETE')
             ->withUri($this->createUri($uri))
@@ -169,7 +169,7 @@ trait IntegrationTest
      * @throws HttpException Thrown if there was an error sending the request
      * @throws SerializationException Thrown if the body could not be serialized
      */
-    protected function options($uri, array $headers = [], $body = null): IResponse
+    protected function options($uri, array $headers = [], mixed $body = null): IResponse
     {
         $request = $this->requestBuilder->withMethod('OPTIONS')
             ->withUri($this->createUri($uri))
@@ -190,7 +190,7 @@ trait IntegrationTest
      * @throws HttpException Thrown if there was an error sending the request
      * @throws SerializationException Thrown if the body could not be serialized
      */
-    protected function patch($uri, array $headers = [], $body = null): IResponse
+    protected function patch($uri, array $headers = [], mixed $body = null): IResponse
     {
         $request = $this->requestBuilder->withMethod('PATCH')
             ->withUri($this->createUri($uri))
@@ -211,7 +211,7 @@ trait IntegrationTest
      * @throws HttpException Thrown if there was an error sending the request
      * @throws SerializationException Thrown if the body could not be serialized
      */
-    protected function post($uri, array $headers = [], $body = null): IResponse
+    protected function post($uri, array $headers = [], mixed $body = null): IResponse
     {
         $request = $this->requestBuilder->withMethod('POST')
             ->withUri($this->createUri($uri))
@@ -232,7 +232,7 @@ trait IntegrationTest
      * @throws HttpException Thrown if there was an error sending the request
      * @throws SerializationException Thrown if the body could not be serialized
      */
-    protected function put($uri, array $headers = [], $body = null): IResponse
+    protected function put($uri, array $headers = [], mixed $body = null): IResponse
     {
         $request = $this->requestBuilder->withMethod('PUT')
             ->withUri($this->createUri($uri))

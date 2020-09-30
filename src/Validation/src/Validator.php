@@ -105,7 +105,7 @@ final class Validator implements IValidator
      * @inheritdoc
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message
      */
-    public function tryValidateValue($value, array $constraints, array &$violations = []): bool
+    public function tryValidateValue(mixed $value, array $constraints, array &$violations = []): bool
     {
         $context = new ValidationContext($value);
         $successful = $this->tryValidateValueWithContext($value, $constraints, $context);
@@ -154,7 +154,7 @@ final class Validator implements IValidator
      * @inheritdoc
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message
      */
-    public function validateValue($value, array $constraints): void
+    public function validateValue(mixed $value, array $constraints): void
     {
         $this->validateValueWithContext($value, $constraints, new ValidationContext($value));
         // For some reason, this is being picked up as missing coverage
@@ -233,7 +233,7 @@ final class Validator implements IValidator
      * @return bool True if the value was valid, otherwise false
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message
      */
-    private function tryValidateValueWithContext($value, array $constraints, ValidationContext $validationContext): bool
+    private function tryValidateValueWithContext(mixed $value, array $constraints, ValidationContext $validationContext): bool
     {
         try {
             $this->validateValueWithContext($value, $constraints, $validationContext);
@@ -425,7 +425,7 @@ final class Validator implements IValidator
      * @throws ValidationException Thrown if the value was invalid
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message
      */
-    private function validateValueWithContext($value, array $constraints, ValidationContext $validationContext): void
+    private function validateValueWithContext(mixed $value, array $constraints, ValidationContext $validationContext): void
     {
         $allConstraintsPass = true;
 

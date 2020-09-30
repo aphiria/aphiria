@@ -52,7 +52,7 @@ class ConstructorWithSetters
      * @param IFoo $interface The dependency to set
      * @param mixed $primitive The primitive to set
      */
-    public function setBoth(IFoo $interface, $primitive): void
+    public function setBoth(IFoo $interface, mixed $primitive): void
     {
         $this->setInterface($interface);
         $this->setPrimitive($primitive);

@@ -42,7 +42,7 @@ class ImmutableHashSet implements IImmutableSet
     /**
      * @inheritdoc
      */
-    public function containsValue($value): bool
+    public function containsValue(mixed $value): bool
     {
         return isset($this->values[$this->getHashKey($value)]);
     }

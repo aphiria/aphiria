@@ -84,7 +84,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * @inheritdoc
      */
-    public function callClosure(Closure $closure, array $primitives = [])
+    public function callClosure(Closure $closure, array $primitives = []): mixed
     {
         return $this->container->callClosure($closure, $primitives);
     }
@@ -92,7 +92,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * @inheritdoc
      */
-    public function callMethod($instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false)
+    public function callMethod($instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false): mixed
     {
         return $this->container->callMethod($instance, $methodName, $primitives, $ignoreMissingMethod);
     }

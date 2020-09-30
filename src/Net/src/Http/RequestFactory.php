@@ -306,7 +306,7 @@ class RequestFactory
      * @param mixed $value The header value to add
      * @param bool $append Whether or not to append the value
      */
-    private function addHeaderValue(Headers $headers, string $name, $value, bool $append): void
+    private function addHeaderValue(Headers $headers, string $name, mixed $value, bool $append): void
     {
         $decodedValue = trim((string)(isset(self::$headersToUrlDecode[$name]) ? urldecode($value) : $value));
 

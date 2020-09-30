@@ -30,7 +30,7 @@ final class AstNode
      * @param string $type The node type
      * @param mixed $value The value of the node
      */
-    public function __construct(string $type, $value = null)
+    public function __construct(string $type, mixed $value = null)
     {
         $this->type = $type;
         $this->value = $value;

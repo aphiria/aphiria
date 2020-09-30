@@ -35,7 +35,7 @@ final class UuidV4IdGenerator implements IIdGenerator
      * @param mixed $id The Id to validate
      * @return bool True if the Id is valid, otherwise false
      */
-    public function idIsValid($id): bool
+    public function idIsValid(mixed $id): bool
     {
         if (!\is_string($id)) {
             return false;

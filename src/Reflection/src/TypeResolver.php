@@ -39,7 +39,7 @@ final class TypeResolver
      * @param mixed $value The value whose type we want
      * @return string The type of the input value
      */
-    public static function resolveType($value): string
+    public static function resolveType(mixed $value): string
     {
         if (\is_array($value)) {
             if (\count($value) === 0) {
@@ -49,7 +49,8 @@ final class TypeResolver
             return self::resolveType($value[0]) . '[]';
         }
 
-        return \get_debug_type($value);
+        // Not using get_debug_type() so that anonymous class names are unique
+        return \is_object($value) ? \get_class($value) : \gettype($value);
     }
 
     /**

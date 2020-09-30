@@ -76,7 +76,7 @@ interface IConfiguration
      * @return mixed The value at the path
      * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
-    public function getValue(string $path);
+    public function getValue(string $path): mixed;
 
     /**
      * Tries to get an array value at the path
@@ -127,8 +127,8 @@ interface IConfiguration
      * Tries to get a value value at the path
      *
      * @param string $path The period-delimited path to the value in the config to get
-     * @param mixed|null $value The value if one was found, otherwise null
+     * @param mixed $value The value if one was found, otherwise null
      * @return bool True if the value existed, otherwise false
      */
-    public function tryGetValue(string $path, &$value): bool;
+    public function tryGetValue(string $path, mixed &$value): bool;
 }

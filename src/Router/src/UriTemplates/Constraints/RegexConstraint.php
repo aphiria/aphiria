@@ -41,7 +41,7 @@ final class RegexConstraint implements IRouteVariableConstraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         return \preg_match($this->regex, $value) === 1;
     }

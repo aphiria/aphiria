@@ -93,7 +93,7 @@ class RouteBuilder
      * @param mixed $value The value of the attribute
      * @return self For chaining
      */
-    public function withAttribute(string $name, $value): self
+    public function withAttribute(string $name, mixed $value): self
     {
         $this->attributes[$name] = $value;
 

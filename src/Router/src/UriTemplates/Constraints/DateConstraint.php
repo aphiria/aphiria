@@ -50,7 +50,7 @@ final class DateConstraint implements IRouteVariableConstraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         foreach ($this->formats as $format) {
             $dateTime = DateTime::createFromFormat($format, $value);

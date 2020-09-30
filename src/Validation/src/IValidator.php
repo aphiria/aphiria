@@ -61,7 +61,7 @@ interface IValidator
      * @return bool True if the value was valid, otherwise false
      * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
-    public function tryValidateValue($value, array $constraints, array &$violations = []): bool;
+    public function tryValidateValue(mixed $value, array $constraints, array &$violations = []): bool;
 
     /**
      * Validates a method in an object
@@ -102,5 +102,5 @@ interface IValidator
      * @throws ValidationException Thrown if the value was invalid
      * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
-    public function validateValue($value, array $constraints): void;
+    public function validateValue(mixed $value, array $constraints): void;
 }

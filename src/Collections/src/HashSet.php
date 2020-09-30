@@ -38,7 +38,7 @@ class HashSet implements ISet
     /**
      * @inheritdoc
      */
-    public function add($value): void
+    public function add(mixed $value): void
     {
         $this->values[$this->getHashKey($value)] = $value;
     }
@@ -64,7 +64,7 @@ class HashSet implements ISet
     /**
      * @inheritdoc
      */
-    public function containsValue($value): bool
+    public function containsValue(mixed $value): bool
     {
         return isset($this->values[$this->getHashKey($value)]);
     }
@@ -106,7 +106,7 @@ class HashSet implements ISet
     /**
      * @inheritdoc
      */
-    public function removeValue($value): void
+    public function removeValue(mixed $value): void
     {
         unset($this->values[$this->getHashKey($value)]);
     }

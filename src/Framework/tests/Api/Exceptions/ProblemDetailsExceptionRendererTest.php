@@ -136,7 +136,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
     public function testMappingProblemDetailsPropertiesWithCallbacksAndValuesSetsProperties(
         string $propertyName,
         $rawValue,
-        $expectedValue
+        mixed $expectedValue
     ): void {
         $exceptionRenderer = $this->createExceptionRenderer(false, false);
 

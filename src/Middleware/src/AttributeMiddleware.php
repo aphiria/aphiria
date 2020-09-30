@@ -35,9 +35,9 @@ abstract class AttributeMiddleware implements IMiddleware
      *
      * @param string $name The name of the attribute to get
      * @param mixed $default The default value
-     * @return mixed|null The attribute's value if it is set, otherwise null
+     * @return mixed The attribute's value if it is set, otherwise null
      */
-    protected function getAttribute(string $name, $default = null)
+    protected function getAttribute(string $name, mixed $default = null): mixed
     {
         if (!\array_key_exists($name, $this->attributes)) {
             return $default;

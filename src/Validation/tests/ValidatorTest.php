@@ -536,7 +536,7 @@ class ValidatorTest extends TestCase
      * @param mixed $value The value that will be passed
      * @return IConstraint The created constraint
      */
-    private function createMockConstraint(bool $shouldPass, $value): IConstraint
+    private function createMockConstraint(bool $shouldPass, mixed $value): IConstraint
     {
         $constraint = $this->createMock(IConstraint::class);
         $constraint->expects($this->once())

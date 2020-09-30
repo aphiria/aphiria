@@ -35,7 +35,7 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function add($value): void
+    public function add(mixed $value): void
     {
         $this->values[] = $value;
     }
@@ -61,7 +61,7 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function containsValue($value): bool
+    public function containsValue(mixed $value): bool
     {
         return $this->indexOf($value) !== null;
     }
@@ -77,7 +77,7 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function get(int $index)
+    public function get(int $index): mixed
     {
         if ($index < 0 || $index >= \count($this)) {
             throw new OutOfRangeException("Index $index is out of range");
@@ -97,7 +97,7 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function indexOf($value): ?int
+    public function indexOf(mixed $value): ?int
     {
         if (($index = array_search($value, $this->values, false)) === false) {
             return null;
@@ -109,7 +109,7 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function insert(int $index, $value): void
+    public function insert(int $index, mixed $value): void
     {
         array_splice($this->values, $index, 0, $value);
     }
@@ -127,7 +127,7 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function offsetExists($index): bool
+    public function offsetExists(mixed $index): bool
     {
         return \array_key_exists($index, $this->values);
     }
@@ -135,7 +135,7 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function offsetGet($index)
+    public function offsetGet(mixed $index): mixed
     {
         return $this->get($index);
     }
@@ -143,7 +143,7 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function offsetSet($index, $value): void
+    public function offsetSet(mixed $index, mixed $value): void
     {
         $this->insert($index, $value);
     }
@@ -151,7 +151,7 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function offsetUnset($index): void
+    public function offsetUnset(mixed $index): void
     {
         $this->removeIndex($index);
     }
@@ -167,7 +167,7 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function removeValue($value): void
+    public function removeValue(mixed $value): void
     {
         $index = $this->indexOf($value);
 

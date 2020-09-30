@@ -30,7 +30,7 @@ interface IDictionary extends ArrayAccess, Countable, IteratorAggregate
      * @param mixed $value The value to add
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function add($key, $value): void;
+    public function add(mixed $key, mixed $value): void;
 
     /**
      * Adds multiple values
@@ -52,7 +52,7 @@ interface IDictionary extends ArrayAccess, Countable, IteratorAggregate
      * @return bool True if the key exists, otherwise false
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function containsKey($key): bool;
+    public function containsKey(mixed $key): bool;
 
     /**
      * Gets whether or not the value exists in the dictionary
@@ -60,7 +60,7 @@ interface IDictionary extends ArrayAccess, Countable, IteratorAggregate
      * @param mixed $value The value to search for
      * @return bool True if the value exists, otherwise false
      */
-    public function containsValue($value): bool;
+    public function containsValue(mixed $value): bool;
 
     /**
      * Gets the value of the key
@@ -70,7 +70,7 @@ interface IDictionary extends ArrayAccess, Countable, IteratorAggregate
      * @throws OutOfBoundsException Thrown if the key could not be found
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function get($key);
+    public function get(mixed $key): mixed;
 
     /**
      * Gets the list of keys in the dictionary
@@ -92,7 +92,7 @@ interface IDictionary extends ArrayAccess, Countable, IteratorAggregate
      * @param mixed $key The key to remove
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function removeKey($key): void;
+    public function removeKey(mixed $key): void;
 
     /**
      * Gets all of the values as an array of key-value pairs
@@ -108,5 +108,5 @@ interface IDictionary extends ArrayAccess, Countable, IteratorAggregate
      * @param mixed $value The value of the key, if it exists
      * @return bool True if the key existed, otherwise false
      */
-    public function tryGet($key, &$value): bool;
+    public function tryGet(mixed $key, mixed &$value): bool;
 }

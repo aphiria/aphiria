@@ -37,7 +37,7 @@ abstract class IntegrationTestCase extends TestCase
      * @param IResponse $response The response to inspect
      * @param string $cookieName The name of the cookie to inspect
      */
-    public function assertCookieEquals($expectedValue, IResponse $response, string $cookieName): void
+    public function assertCookieEquals(mixed $expectedValue, IResponse $response, string $cookieName): void
     {
         try {
             $this->responseAssertions->assertCookieEquals($expectedValue, $response, $cookieName);
@@ -89,7 +89,7 @@ abstract class IntegrationTestCase extends TestCase
      * @param IResponse $response The response to inspect
      * @param string $headerName The name of the header to inspect
      */
-    public function assertHeaderEquals($expectedValue, IResponse $response, string $headerName): void
+    public function assertHeaderEquals(mixed $expectedValue, IResponse $response, string $headerName): void
     {
         try {
             $this->responseAssertions->assertHeaderEquals($expectedValue, $response, $headerName);
@@ -124,7 +124,7 @@ abstract class IntegrationTestCase extends TestCase
      * @param mixed $expectedValue The expected value
      * @param IResponse $response The response to inspect
      */
-    public function assertParsedBodyEquals($expectedValue, IResponse $response): void
+    public function assertParsedBodyEquals(mixed $expectedValue, IResponse $response): void
     {
         try {
             $this->responseAssertions->assertParsedBodyEquals($expectedValue, $this->lastRequest, $response);

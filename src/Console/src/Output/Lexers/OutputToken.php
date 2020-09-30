@@ -29,7 +29,7 @@ final class OutputToken
      * @param mixed $value The value of the token
      * @param int $position The position of the token in the original text
      */
-    public function __construct(string $type, $value, int $position)
+    public function __construct(string $type, mixed $value, int $position)
     {
         $this->type = $type;
         $this->value = $value;

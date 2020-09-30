@@ -58,7 +58,7 @@ final class InputCompiler implements IInputCompiler
     /**
      * @inheritdoc
      */
-    public function compile($rawInput): Input
+    public function compile(mixed $rawInput): Input
     {
         $tokens = $this->selectTokenizer($rawInput)->tokenize($rawInput);
 
@@ -114,7 +114,7 @@ final class InputCompiler implements IInputCompiler
      * @param string $name The name of the option to add
      * @param mixed $value The value to add
      */
-    private static function addOption(array &$options, string $name, $value): void
+    private static function addOption(array &$options, string $name, mixed $value): void
     {
         if (isset($options[$name])) {
             // We now consider this option to have multiple values

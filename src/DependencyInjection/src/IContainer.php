@@ -59,7 +59,7 @@ interface IContainer extends IServiceResolver
      * @return mixed The result of the call
      * @throws CallException Thrown if there was an error calling the method
      */
-    public function callClosure(Closure $closure, array $primitives = []);
+    public function callClosure(Closure $closure, array $primitives = []): mixed;
 
     /**
      * Resolves a method's parameters and calls it
@@ -76,7 +76,7 @@ interface IContainer extends IServiceResolver
         string $methodName,
         array $primitives = [],
         bool $ignoreMissingMethod = false
-    );
+    ): mixed;
 
     /**
      * Gets whether or not an interface has a binding

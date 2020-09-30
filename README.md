@@ -32,7 +32,7 @@ Full documentation is available at <a href="https://www.aphiria.com" target="_bl
 
 ## Requirements
 
-* PHP 7.4
+* PHP 8.0
 
 ## Contributing
 

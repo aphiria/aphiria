@@ -60,10 +60,10 @@ class NegotiatedRequestBuilder extends RequestBuilder
 
     /**
      * @inheritdoc
-     * @param IBody|object|array|mixed $body The body to set
+     * @param mixed $body The body to set
      * @throws SerializationException Thrown if the body could not be serialized
      */
-    public function withBody($body): NegotiatedRequestBuilder
+    public function withBody(mixed $body): NegotiatedRequestBuilder
     {
         $new = clone $this;
 

@@ -72,7 +72,7 @@ interface IRequestBuilder
      * @param mixed $value The value of the property
      * @return self For chaining
      */
-    public function withProperty(string $name, $value): self;
+    public function withProperty(string $name, mixed $value): self;
 
     /**
      * Sets the protocol version of the request

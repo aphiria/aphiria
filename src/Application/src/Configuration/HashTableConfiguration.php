@@ -75,7 +75,7 @@ class HashTableConfiguration implements IConfiguration
     /**
      * @inheritdoc
      */
-    public function getValue(string $path)
+    public function getValue(string $path): mixed
     {
         $explodedPath = \explode($this->pathDelimiter, $path);
         $value = $this->hashTable;

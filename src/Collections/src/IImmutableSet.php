@@ -28,7 +28,7 @@ interface IImmutableSet extends Countable, IteratorAggregate
      * @return bool True if the value exists, otherwise false
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function containsValue($value): bool;
+    public function containsValue(mixed $value): bool;
 
     /**
      * Gets all of the values as an array

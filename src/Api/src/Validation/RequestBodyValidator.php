@@ -50,7 +50,7 @@ final class RequestBodyValidator implements IRequestBodyValidator
     /**
      * @inheritdoc
      */
-    public function validate(IRequest $request, $body): void
+    public function validate(IRequest $request, mixed $body): void
     {
         // Set up the locale for the error messages, if possible
         if ($this->languageMatcher !== null) {

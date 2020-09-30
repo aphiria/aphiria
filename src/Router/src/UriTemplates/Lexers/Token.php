@@ -26,7 +26,7 @@ final class Token
      * @param string $type The token type
      * @param mixed $value The token value
      */
-    public function __construct(string $type, $value)
+    public function __construct(string $type, mixed $value)
     {
         $this->type = $type;
         $this->value = $value;

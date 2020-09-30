@@ -55,7 +55,7 @@ final class Cookie
      */
     public function __construct(
         string $name,
-        $value,
+        mixed $value,
         int $maxAge = null,
         ?string $path = null,
         ?string $domain = null,
@@ -136,7 +136,7 @@ final class Cookie
      *
      * @return mixed The value
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
@@ -231,7 +231,7 @@ final class Cookie
      *
      * @param mixed $value The value of the cookie
      */
-    public function setValue($value): void
+    public function setValue(mixed $value): void
     {
         $this->value = $value;
     }

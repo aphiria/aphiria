@@ -353,7 +353,7 @@ class Controller
      * @throws HttpException Thrown if there was any error with content negotiation
      * @throws LogicException Thrown if the request is not set
      */
-    protected function readRequestBodyAs(string $type)
+    protected function readRequestBodyAs(string $type): mixed
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');

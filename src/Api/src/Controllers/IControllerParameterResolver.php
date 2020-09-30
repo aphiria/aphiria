@@ -36,5 +36,5 @@ interface IControllerParameterResolver
         ReflectionParameter $reflectionParameter,
         IRequest $request,
         array $routeVariables
-    );
+    ): mixed;
 }

@@ -102,7 +102,7 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function get(string $key, $defaultValue = null)
+    public function get(string $key, mixed $defaultValue = null): mixed
     {
         return $this->vars[$key] ?? $defaultValue;
     }

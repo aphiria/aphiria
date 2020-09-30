@@ -47,7 +47,7 @@ final class Headers extends HashTable
      * @param string|array $values The value or values
      * @param bool $append Whether or not to append the value to to the other header values
      */
-    public function add($name, $values, bool $append = false): void
+    public function add(mixed $name, $values, bool $append = false): void
     {
         $normalizedName = self::normalizeHeaderName($name);
 
@@ -85,7 +85,7 @@ final class Headers extends HashTable
     /**
      * @inheritdoc
      */
-    public function get($name)
+    public function get(mixed $name): mixed
     {
         return parent::get(self::normalizeHeaderName($name));
     }
@@ -98,7 +98,7 @@ final class Headers extends HashTable
      * @throws OutOfBoundsException Thrown if the header could not be found
      * @throws RuntimeException Thrown if the key could not be calculated
      */
-    public function getFirst(string $name)
+    public function getFirst(string $name): mixed
     {
         if (!$this->containsKey($name)) {
             throw new OutOfBoundsException("Header \"$name\" does not exist");
@@ -110,7 +110,7 @@ final class Headers extends HashTable
     /**
      * @inheritdoc
      */
-    public function removeKey($name): void
+    public function removeKey(mixed $name): void
     {
         parent::removeKey(self::normalizeHeaderName($name));
     }
@@ -123,7 +123,7 @@ final class Headers extends HashTable
      * @return bool True if the key exists, otherwise false
      * @throws RuntimeException Thrown if the key could not be calculated
      */
-    public function tryGetFirst($name, &$value): bool
+    public function tryGetFirst(mixed $name, mixed &$value): bool
     {
         try {
             $value = $this->get($name)[0];

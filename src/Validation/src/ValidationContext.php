@@ -38,7 +38,7 @@ final class ValidationContext
      * @throws CircularDependencyException Thrown if a circular dependency was detected
      */
     public function __construct(
-        $value,
+        mixed $value,
         string $propertyName = null,
         string $methodName = null,
         ValidationContext $parentContext = null
@@ -132,7 +132,7 @@ final class ValidationContext
      *
      * @return mixed The root value
      */
-    public function getRootValue()
+    public function getRootValue(): mixed
     {
         if ($this->parentContext === null) {
             return $this->value;
@@ -146,7 +146,7 @@ final class ValidationContext
      *
      * @return mixed The value being validated
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
