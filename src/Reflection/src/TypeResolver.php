@@ -49,7 +49,7 @@ final class TypeResolver
             return self::resolveType($value[0]) . '[]';
         }
 
-        return \is_object($value) ? \get_class($value) : \gettype($value);
+        return \get_debug_type($value);
     }
 
     /**

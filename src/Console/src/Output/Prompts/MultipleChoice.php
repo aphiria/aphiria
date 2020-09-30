@@ -62,7 +62,7 @@ class MultipleChoice extends Question
     public function formatAnswer($answer)
     {
         $hasMultipleAnswers = false;
-        $answer = str_replace(' ', '', $answer);
+        $answer = str_replace(' ', '', (string)$answer);
 
         if (mb_strpos($answer, ',') === false) {
             // The answer is not a list of answers

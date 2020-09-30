@@ -58,14 +58,15 @@
         }
     },
     "require": {
-        "doctrine/annotations": "1.8.*@dev",
+        "doctrine/annotations": "1.10.*@dev",
         "ext-ctype": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",
         "ext-intl": "*",
         "ext-mbstring": "*",
         "monolog/monolog": "~2.0",
-        "php": "^7.4",
+        "php": "^8.0",
+        "psr/container": "^1.0",
         "psr/http-factory": "^1.0",
         "psr/http-message": "^1.0",
         "psr/log": "~1.0",
@@ -74,7 +75,6 @@
         "symfony/serializer": "^5.1"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0",
         "nyholm/psr7": "^1.2",
         "phpunit/phpunit": "~9.3"
     },

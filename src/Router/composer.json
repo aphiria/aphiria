@@ -27,10 +27,10 @@
     },
     "require": {
         "aphiria/reflection": "0.*@dev",
-        "doctrine/annotations": "1.8.*@dev",
+        "doctrine/annotations": "1.10.*@dev",
         "ext-ctype": "*",
         "ext-mbstring": "*",
-        "php": "^7.4"
+        "php": "^8.0"
     },
     "require-dev": {
         "aphiria/api": "0.*@dev",
