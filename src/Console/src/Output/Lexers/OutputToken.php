@@ -20,7 +20,7 @@ final class OutputToken
     /** @var string The token type */
     public string $type;
     /** @var mixed The value of the token */
-    public $value;
+    public mixed $value;
     /** @var int The position of the token in the original text */
     public int $position;
 

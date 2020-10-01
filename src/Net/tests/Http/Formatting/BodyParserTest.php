@@ -22,8 +22,7 @@ use RuntimeException;
 class BodyParserTest extends TestCase
 {
     private BodyParser $parser;
-    /** @var IBody|MockObject The body to use in tests */
-    private IBody $body;
+    private IBody|MockObject $body;
 
     protected function setUp(): void
     {

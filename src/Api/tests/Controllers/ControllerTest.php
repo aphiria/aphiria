@@ -35,51 +35,49 @@ use PHPUnit\Framework\TestCase;
 class ControllerTest extends TestCase
 {
     private Controller $controller;
-    /** @var IRequest|MockObject */
-    private IRequest $request;
-    /** @var IResponseFactory|MockObject */
-    private IResponseFactory $responseFactory;
+    private IRequest|MockObject $request;
+    private IResponseFactory|MockObject $responseFactory;
 
     protected function setUp(): void
     {
         // Allow us to more easily test the convenience methods
         $this->controller = new class() extends Controller {
-            public function accepted($body = null, Headers $headers = null): IResponse
+            public function accepted(object|string|int|float|array $body = null, Headers $headers = null): IResponse
             {
                 return parent::accepted($body, $headers);
             }
 
-            public function badRequest($body = null, Headers $headers = null): IResponse
+            public function badRequest(object|string|int|float|array $body = null, Headers $headers = null): IResponse
             {
                 return parent::badRequest($body, $headers);
             }
 
-            public function conflict($body = null, Headers $headers = null): IResponse
+            public function conflict(object|string|int|float|array $body = null, Headers $headers = null): IResponse
             {
                 return parent::conflict($body, $headers);
             }
 
-            public function created($uri, $body = null, Headers $headers = null): IResponse
+            public function created(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
             {
                 return parent::created($uri, $body, $headers);
             }
 
-            public function forbidden($body = null, Headers $headers = null): IResponse
+            public function forbidden(object|string|int|float|array $body = null, Headers $headers = null): IResponse
             {
                 return parent::forbidden($body, $headers);
             }
 
-            public function found($uri, $body = null, Headers $headers = null): IResponse
+            public function found(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
             {
                 return parent::found($uri, $body, $headers);
             }
 
-            public function internalServerError($body = null, Headers $headers = null): IResponse
+            public function internalServerError(object|string|int|float|array $body = null, Headers $headers = null): IResponse
             {
                 return parent::internalServerError($body, $headers);
             }
 
-            public function movedPermanently($uri, $body = null, Headers $headers = null): IResponse
+            public function movedPermanently(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
             {
                 return parent::movedPermanently($uri, $body, $headers);
             }
@@ -89,12 +87,12 @@ class ControllerTest extends TestCase
                 return parent::noContent($headers);
             }
 
-            public function notFound($body = null, Headers $headers = null): IResponse
+            public function notFound(object|string|int|float|array $body = null, Headers $headers = null): IResponse
             {
                 return parent::notFound($body, $headers);
             }
 
-            public function ok($body = null, Headers $headers = null): IResponse
+            public function ok(object|string|int|float|array $body = null, Headers $headers = null): IResponse
             {
                 return parent::ok($body, $headers);
             }
@@ -104,7 +102,7 @@ class ControllerTest extends TestCase
                 return parent::readRequestBodyAs($type);
             }
 
-            public function unauthorized($body = null, Headers $headers = null): IResponse
+            public function unauthorized(object|string|int|float|array $body = null, Headers $headers = null): IResponse
             {
                 return parent::unauthorized($body, $headers);
             }
@@ -154,16 +152,6 @@ class ControllerTest extends TestCase
         $this->assertSame($expectedHeaders, $response->getHeaders());
     }
 
-    public function testCreatedWithInvalidUriThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('URI must be a string or an instance of ' . Uri::class);
-        $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IBody::class);
-        $expectedHeaders = new Headers();
-        $this->controller->created([], $expectedBody, $expectedHeaders);
-    }
-
     public function testCreatedWithStringUriCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
@@ -186,16 +174,6 @@ class ControllerTest extends TestCase
         $this->assertSame('https://example.com', $response->getHeaders()->getFirst('Location'));
         $this->assertSame($expectedBody, $response->getBody());
         $this->assertSame($expectedHeaders, $response->getHeaders());
-    }
-
-    public function testFoundWithInvalidUriThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('URI must be a string or an instance of ' . Uri::class);
-        $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IBody::class);
-        $expectedHeaders = new Headers();
-        $this->controller->found([], $expectedBody, $expectedHeaders);
     }
 
     public function testFoundWithStringUriCreatesCorrectResponse(): void
@@ -270,16 +248,6 @@ class ControllerTest extends TestCase
         $this->assertSame(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
         $this->assertSame($expectedBody, $response->getBody());
         $this->assertSame($expectedHeaders, $response->getHeaders());
-    }
-
-    public function testMovedPermanentlyWithInvalidUriThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('URI must be a string or an instance of ' . Uri::class);
-        $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IBody::class);
-        $expectedHeaders = new Headers();
-        $this->controller->movedPermanently([], $expectedBody, $expectedHeaders);
     }
 
     public function testMovedPermanentlyWithStringUriCreatesCorrectResponse(): void

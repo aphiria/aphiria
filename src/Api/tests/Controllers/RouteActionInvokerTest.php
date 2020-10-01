@@ -41,15 +41,11 @@ use RuntimeException;
 
 class RouteActionInvokerTest extends TestCase
 {
-    /** @var IRequestBodyValidator|MockObject */
-    private IRequestBodyValidator $requestBodyValidator;
+    private IRequestBodyValidator|MockObject $requestBodyValidator;
     private RouteActionInvoker $invoker;
-    /** @var IControllerParameterResolver|MockObject */
-    private IControllerParameterResolver $parameterResolver;
-    /** @var IContentNegotiator|MockObject */
-    private IContentNegotiator $contentNegotiator;
-    /** @var IResponseFactory|MockObject */
-    private IResponseFactory $responseFactory;
+    private IControllerParameterResolver|MockObject $parameterResolver;
+    private IContentNegotiator|MockObject $contentNegotiator;
+    private IResponseFactory|MockObject $responseFactory;
     private ControllerWithEndpoints $controller;
 
     protected function setUp(): void

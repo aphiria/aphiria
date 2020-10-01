@@ -20,9 +20,9 @@ use InvalidArgumentException;
 final class BetweenConstraint implements IRouteVariableConstraint
 {
     /** @var int|float The min value */
-    private $min;
+    private int|float $min;
     /** @var int|float The max value */
-    private $max;
+    private int|float $max;
     /** @var bool Whether or not the min is inclusive */
     private bool $minIsInclusive;
     /** @var bool Whether or not the max is inclusive */
@@ -33,18 +33,9 @@ final class BetweenConstraint implements IRouteVariableConstraint
      * @param int|float $max The max value
      * @param bool $minIsInclusive Whether or not the min is inclusive
      * @param bool $maxIsInclusive Whether or not the min is inclusive
-     * @throws InvalidArgumentException Thrown if the min or max values are invalid
      */
-    public function __construct($min, $max, bool $minIsInclusive = true, bool $maxIsInclusive = true)
+    public function __construct(int|float $min, int|float $max, bool $minIsInclusive = true, bool $maxIsInclusive = true)
     {
-        if (!\is_numeric($min)) {
-            throw new InvalidArgumentException('Min value must be numeric');
-        }
-
-        if (!\is_numeric($max)) {
-            throw new InvalidArgumentException('Max value must be numeric');
-        }
-
         $this->min = $min;
         $this->max = $max;
         $this->minIsInclusive = $minIsInclusive;

@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Constraints;
 
-use InvalidArgumentException;
-
 /**
  * Defines the maximum constraint
  */
@@ -22,7 +20,7 @@ class MaxConstraint extends Constraint
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field must be less than {max}';
     /** @var int|float The maximum */
-    private $max;
+    private int|float $max;
     /** @var bool Whether or not the maximum is inclusive */
     private bool $isInclusive;
 
@@ -31,13 +29,9 @@ class MaxConstraint extends Constraint
      * @param int|float $max The maximum
      * @param bool $isInclusive Whether or not the maximum is inclusive
      */
-    public function __construct($max, bool $isInclusive, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
+    public function __construct(int|float $max, bool $isInclusive, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
-
-        if (!\is_numeric($max)) {
-            throw new InvalidArgumentException('Max must be numeric');
-        }
 
         $this->max = $max;
         $this->isInclusive = $isInclusive;

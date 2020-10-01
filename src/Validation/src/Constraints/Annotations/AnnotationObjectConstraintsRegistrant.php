@@ -39,7 +39,7 @@ final class AnnotationObjectConstraintsRegistrant implements IObjectConstraintsR
      * @param Reader|null $annotationReader The annotation reader
      * @param ITypeFinder|null $typeFinder The type finder
      */
-    public function __construct($paths, Reader $annotationReader = null, ITypeFinder $typeFinder = null)
+    public function __construct(string|array $paths, Reader $annotationReader = null, ITypeFinder $typeFinder = null)
     {
         $this->paths = \is_array($paths) ? $paths : [$paths];
         $this->annotationReader = $annotationReader ?? new AnnotationReader();

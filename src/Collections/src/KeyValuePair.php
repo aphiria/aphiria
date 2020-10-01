@@ -18,9 +18,9 @@ namespace Aphiria\Collections;
 class KeyValuePair
 {
     /** @var mixed The key */
-    private $key;
+    private mixed $key;
     /** @var mixed The value */
-    private $value;
+    private mixed $value;
 
     /**
      * @param mixed $key The key

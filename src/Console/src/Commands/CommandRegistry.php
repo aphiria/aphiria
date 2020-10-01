@@ -132,14 +132,12 @@ final class CommandRegistry
      * @return bool True if there was a handler for the command, otherwise false
      * @throws InvalidArgumentException Thrown if the command was not a string nor a Command
      */
-    public function tryGetHandlerClassName($command, ?string &$commandHandlerClassName): bool
+    public function tryGetHandlerClassName(Command|string $command, ?string &$commandHandlerClassName): bool
     {
         if (\is_string($command)) {
             $commandName = $command;
-        } elseif ($command instanceof Command) {
-            $commandName = $command->name;
         } else {
-            throw new InvalidArgumentException('Command must be either a string or an instance of ' . Command::class);
+            $commandName = $command->name;
         }
 
         /** @var CommandBinding|null $binding */

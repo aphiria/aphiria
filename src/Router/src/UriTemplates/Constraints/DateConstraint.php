@@ -26,7 +26,7 @@ final class DateConstraint implements IRouteVariableConstraint
     /**
      * @param array|string $formats The format or list of acceptable formats
      */
-    public function __construct($formats)
+    public function __construct(string|array $formats)
     {
         $formatArray = (array)$formats;
 

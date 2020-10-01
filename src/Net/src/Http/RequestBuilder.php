@@ -82,7 +82,7 @@ class RequestBuilder implements IRequestBuilder
     /**
      * @inheritdoc
      */
-    public function withHeader(string $name, $values, bool $append = false): self
+    public function withHeader(string $name, string|array $values, bool $append = false): self
     {
         $new = clone $this;
         $new->headers->add($name, $values, $append);
@@ -151,16 +151,14 @@ class RequestBuilder implements IRequestBuilder
     /**
      * @inheritdoc
      */
-    public function withUri($uri): self
+    public function withUri(string|Uri $uri): self
     {
         $new = clone $this;
 
         if ($uri instanceof Uri) {
             $new->uri = $uri;
-        } elseif (\is_string($uri)) {
-            $new->uri = new Uri($uri);
         } else {
-            throw new InvalidArgumentException('URI must be instance of ' . Uri::class . ' or string');
+            $new->uri = new Uri($uri);
         }
 
         return $new;

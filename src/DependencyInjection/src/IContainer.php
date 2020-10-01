@@ -28,7 +28,7 @@ interface IContainer extends IServiceResolver
      * @param bool $resolveAsSingleton Whether or not to resolve the class as a singleton
      */
     public function bindClass(
-        $interfaces,
+        string|array $interfaces,
         string $concreteClass,
         array $primitives = [],
         bool $resolveAsSingleton = false
@@ -41,7 +41,7 @@ interface IContainer extends IServiceResolver
      * @param callable $factory The factory to bind
      * @param bool $resolveAsSingleton Whether or not to resolve the factory as a singleton
      */
-    public function bindFactory($interfaces, callable $factory, bool $resolveAsSingleton = false): void;
+    public function bindFactory(string|array $interfaces, callable $factory, bool $resolveAsSingleton = false): void;
 
     /**
      * Binds a concrete instance to the interface
@@ -49,7 +49,7 @@ interface IContainer extends IServiceResolver
      * @param string|array $interfaces The interface or interfaces to bind to
      * @param object $instance The instance to bind
      */
-    public function bindInstance($interfaces, object $instance): void;
+    public function bindInstance(string|array $interfaces, object $instance): void;
 
     /**
      * Resolves a closure's parameters and calls it
@@ -72,7 +72,7 @@ interface IContainer extends IServiceResolver
      * @throws CallException Thrown if there was an error calling the method
      */
     public function callMethod(
-        $instance,
+        object|string $instance,
         string $methodName,
         array $primitives = [],
         bool $ignoreMissingMethod = false
@@ -91,5 +91,5 @@ interface IContainer extends IServiceResolver
      *
      * @param string|array $interfaces The interface or interfaces to unbind from
      */
-    public function unbind($interfaces): void;
+    public function unbind(string|array $interfaces): void;
 }

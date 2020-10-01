@@ -28,12 +28,9 @@ use PHPUnit\Framework\TestCase;
 
 class ProblemDetailsExceptionRendererTest extends TestCase
 {
-    /** @var IResponseWriter|MockObject */
-    private IResponseWriter $responseWriter;
-    /** @var IRequest|MockObject */
-    private IRequest $request;
-    /** @var IResponseFactory|MockObject */
-    private IResponseFactory $responseFactory;
+    private IResponseWriter|MockObject $responseWriter;
+    private IRequest|MockObject $request;
+    private IResponseFactory|MockObject $responseFactory;
 
     protected function setUp(): void
     {
@@ -130,12 +127,12 @@ class ProblemDetailsExceptionRendererTest extends TestCase
     /**
      * @dataProvider getMapValues
      * @param string $propertyName The name of the problem details property that is being set
-     * @param string|Closure|array|null $rawValue The raw value passed into the map method
+     * @param mixed $rawValue The raw value passed into the map method
      * @param mixed $expectedValue The expected property value
      */
     public function testMappingProblemDetailsPropertiesWithCallbacksAndValuesSetsProperties(
         string $propertyName,
-        $rawValue,
+        mixed $rawValue,
         mixed $expectedValue
     ): void {
         $exceptionRenderer = $this->createExceptionRenderer(false, false);

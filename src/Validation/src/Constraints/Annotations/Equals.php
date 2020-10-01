@@ -24,7 +24,7 @@ use InvalidArgumentException;
 final class Equals implements IConstraintAnnotation
 {
     /** @var mixed The value to compare against */
-    public $value;
+    public mixed $value;
     /** @var string|null The error message ID */
     public ?string $errorMessageId;
 

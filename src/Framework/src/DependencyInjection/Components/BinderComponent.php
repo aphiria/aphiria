@@ -71,7 +71,7 @@ class BinderComponent implements IComponent
      * @param Binder|Binder[] $binders The binders to add
      * @return self For chaining
      */
-    public function withBinders($binders): self
+    public function withBinders(Binder|array $binders): self
     {
         if ($binders instanceof Binder) {
             $this->binders[] = $binders;

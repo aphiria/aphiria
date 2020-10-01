@@ -18,7 +18,7 @@ namespace Aphiria\Validation;
 final class ValidationContext
 {
     /** @var mixed The value being validated */
-    private $value;
+    private mixed $value;
     /** @var string|null The name of the property being validated, or null if it wasn't a property */
     private ?string $propertyName;
     /** @var string|null The name of the method being validated, or null if it wasn't a method */

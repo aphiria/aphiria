@@ -31,7 +31,7 @@ final class Option
     /** @var string|null A brief description of the option */
     public ?string $description;
     /** @var mixed The default value for the option if it's optional */
-    public $defaultValue;
+    public mixed $defaultValue;
 
     /**
      * @param array $values The mapping of value names to values

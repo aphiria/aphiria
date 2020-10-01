@@ -44,10 +44,10 @@ final class Headers extends HashTable
      * Headers are allowed to have multiple values, so we must add support for that
      *
      * @inheritdoc
-     * @param string|array $values The value or values
+     * @param mixed $values The value or values
      * @param bool $append Whether or not to append the value to to the other header values
      */
-    public function add(mixed $name, $values, bool $append = false): void
+    public function add(mixed $name, mixed $values, bool $append = false): void
     {
         $normalizedName = self::normalizeHeaderName($name);
 

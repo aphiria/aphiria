@@ -58,7 +58,7 @@ abstract class Output implements IOutput
     /**
      * @inheritdoc
      */
-    public function write($messages): void
+    public function write(string|array $messages): void
     {
         foreach ((array)$messages as $message) {
             $this->doWrite($this->outputCompiler->compile($message, $this->includeStyles), false);
@@ -68,7 +68,7 @@ abstract class Output implements IOutput
     /**
      * @inheritdoc
      */
-    public function writeln($messages): void
+    public function writeln(string|array $messages): void
     {
         foreach ((array)$messages as $message) {
             $this->doWrite($this->outputCompiler->compile($message), true);

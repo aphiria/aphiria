@@ -27,8 +27,7 @@ class AnnotationConstraintsRegistrantTest extends TestCase
     private const PATH = __DIR__;
     private AnnotationObjectConstraintsRegistrant $registrant;
     private Reader $reader;
-    /** @var ITypeFinder|MockObject */
-    private ITypeFinder $typeFinder;
+    private ITypeFinder|MockObject $typeFinder;
 
     protected function setUp(): void
     {

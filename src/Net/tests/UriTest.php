@@ -146,19 +146,9 @@ class UriTest extends TestCase
         new Uri('host:65536');
     }
 
-    public function outOfRangePortProvider(): array
+    public function testOutOfRangePortThrowsException(): void
     {
-        return [
-            ['http://foo.com:0'],
-            ['foo.com:65536'],
-        ];
-    }
-
-    /**
-     * @dataProvider outOfRangePortProvider
-     */
-    public function testOutOfRangePortThrowsException($invalidUri): void
-    {
+        $invalidUri = 'foo.com:65536';
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("{$invalidUri} is malformed");
         new Uri($invalidUri);

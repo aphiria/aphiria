@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Constraints;
 
-use InvalidArgumentException;
-
 /**
  * Defines the minimum constraint
  */
@@ -22,7 +20,7 @@ class MinConstraint extends Constraint
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field must be more than {min}';
     /** @var int|float The minimum */
-    private $min;
+    private int|float $min;
     /** @var bool Whether or not the minimum is inclusive */
     private bool $isInclusive;
 
@@ -31,13 +29,9 @@ class MinConstraint extends Constraint
      * @param int|float $min The minimum
      * @param bool $isInclusive Whether or not the minimum is inclusive
      */
-    public function __construct($min, bool $isInclusive, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
+    public function __construct(int|float $min, bool $isInclusive, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
-
-        if (!\is_numeric($min)) {
-            throw new InvalidArgumentException('Min must be numeric');
-        }
 
         $this->min = $min;
         $this->isInclusive = $isInclusive;

@@ -90,7 +90,7 @@ final class InputCompiler implements IInputCompiler
      * @return IInputTokenizer The selected input tokenizer
      * @throws InvalidArgumentException Thrown if the input was neither a string nor an array
      */
-    private function selectTokenizer($rawInput): IInputTokenizer
+    private function selectTokenizer(string|array $rawInput): IInputTokenizer
     {
         if (\is_string($rawInput)) {
             return $this->stringTokenizer;

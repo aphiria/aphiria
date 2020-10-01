@@ -34,8 +34,7 @@ use PHPUnit\Framework\TestCase;
 
 class LazyBinderDispatcherTest extends TestCase
 {
-    /** @var IContainer|MockObject */
-    private IContainer $container;
+    private IContainer|MockObject $container;
 
     protected function setUp(): void
     {

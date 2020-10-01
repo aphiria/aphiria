@@ -61,7 +61,7 @@ class Application implements ICommandBus
     /**
      * @inheritdoc
      */
-    public function handle($rawInput, IOutput $output = null): int
+    public function handle(string|array $rawInput, IOutput $output = null): int
     {
         try {
             $output = $output ?? new ConsoleOutput();
@@ -116,7 +116,7 @@ class Application implements ICommandBus
      * @param Exception|Throwable $ex The exception to format
      * @return string The formatted exception message
      */
-    protected function formatExceptionMessage($ex): string
+    protected function formatExceptionMessage(Exception|Throwable $ex): string
     {
         return $ex->getMessage() . \PHP_EOL . $ex->getTraceAsString();
     }

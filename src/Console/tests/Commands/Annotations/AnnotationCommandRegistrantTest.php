@@ -32,15 +32,11 @@ class AnnotationCommandRegistrantTest extends TestCase
 {
     private AnnotationCommandRegistrant $registrant;
     private CommandRegistry $commands;
-    /** @var IServiceResolver|FakeObject */
-    private IServiceResolver $commandHandlerResolver;
-    /** @var ITypeFinder|FakeObject */
-    private ITypeFinder $typeFinder;
+    private ITypeFinder|FakeObject $typeFinder;
 
     protected function setUp(): void
     {
         $this->commands = new CommandRegistry();
-        $this->commandHandlerResolver = $this->createMock(IServiceResolver::class);
         $this->typeFinder = $this->createMock(ITypeFinder::class);
         $this->registrant = new AnnotationCommandRegistrant(
             __DIR__,

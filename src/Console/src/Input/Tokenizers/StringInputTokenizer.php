@@ -22,7 +22,7 @@ final class StringInputTokenizer implements IInputTokenizer
     /**
      * @inheritdoc
      */
-    public function tokenize($input): array
+    public function tokenize(string|array $input): array
     {
         $inDoubleQuotes = false;
         $inSingleQuotes = false;

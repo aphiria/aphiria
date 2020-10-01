@@ -46,6 +46,8 @@ class Uri
             throw new InvalidArgumentException("URI $uri is malformed");
         }
 
+        echo \var_export($parsedUri, true);
+
         $this->scheme = self::filterScheme($parsedUri['scheme'] ?? null);
         $this->user = $parsedUri['user'] ?? null;
         $this->password = $parsedUri['pass'] ?? null;

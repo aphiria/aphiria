@@ -23,7 +23,7 @@ final class ArrayListInputTokenizer implements IInputTokenizer
     /**
      * @inheritdoc
      */
-    public function tokenize($input): array
+    public function tokenize(string|array $input): array
     {
         if (!\is_array($input)) {
             throw new InvalidArgumentException(self::class . ' only accepts arrays as input');

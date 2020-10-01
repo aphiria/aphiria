@@ -29,7 +29,7 @@ final class Argument
     /** @var string|null A brief description of the argument */
     public ?string $description;
     /** @var mixed The default value for the argument if it's optional */
-    public $defaultValue;
+    public mixed $defaultValue;
 
     /**
      * @param array $values The mapping of value names to values

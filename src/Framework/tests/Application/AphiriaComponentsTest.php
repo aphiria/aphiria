@@ -42,8 +42,7 @@ use Psr\Log\LogLevel;
 
 class AphiriaComponentsTest extends TestCase
 {
-    /** @var IApplicationBuilder|MockObject */
-    private IApplicationBuilder $appBuilder;
+    private IApplicationBuilder|MockObject $appBuilder;
 
     protected function setUp(): void
     {

@@ -33,8 +33,7 @@ class AnnotationRouteRegistrantTest extends TestCase
     private const PATH = __DIR__;
     private AnnotationRouteRegistrant $registrant;
     private Reader $reader;
-    /** @var ITypeFinder|MockObject */
-    private ITypeFinder $typeFinder;
+    private ITypeFinder|MockObject $typeFinder;
 
     protected function setUp(): void
     {

@@ -29,7 +29,7 @@ interface ITypeFinder
      * @return string[] The list of all class names
      * @throws InvalidArgumentException Thrown if the paths are not a string or array of strings
      */
-    public function findAllClasses($directories, bool $recursive = false, bool $includeAbstractClasses = false): array;
+    public function findAllClasses(string|array $directories, bool $recursive = false, bool $includeAbstractClasses = false): array;
 
     /**
      * Recursively finds all interfaces in the paths
@@ -39,7 +39,7 @@ interface ITypeFinder
      * @return string[] The list of all interface names
      * @throws InvalidArgumentException Thrown if the paths are not a string or array of strings
      */
-    public function findAllInterfaces($directories, bool $recursive = false): array;
+    public function findAllInterfaces(string|array $directories, bool $recursive = false): array;
 
     /**
      * Recursively finds all sub-types of a particular type in a path
@@ -51,7 +51,7 @@ interface ITypeFinder
      * @throws InvalidArgumentException Thrown if the paths are not a string or array of strings
      * @throws ReflectionException Thrown if any types could not be reflected in the input directories
      */
-    public function findAllSubtypesOfType(string $parentType, $directories, bool $recursive = false): array;
+    public function findAllSubtypesOfType(string $parentType, string|array $directories, bool $recursive = false): array;
 
     /**
      * Recursively finds all types in the paths
@@ -61,5 +61,5 @@ interface ITypeFinder
      * @return string[] The list of all types
      * @throws InvalidArgumentException Thrown if the paths are not a string or array of strings
      */
-    public function findAllTypes($directories, bool $recursive = false): array;
+    public function findAllTypes(string|array $directories, bool $recursive = false): array;
 }

@@ -22,8 +22,7 @@ use PHPUnit\Framework\TestCase;
 class ConsoleExceptionRendererTest extends TestCase
 {
     private ConsoleExceptionRenderer $exceptionRenderer;
-    /** @var IOutput|MockObject */
-    private IOutput $output;
+    private IOutput|MockObject $output;
 
     protected function setUp(): void
     {

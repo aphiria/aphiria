@@ -65,7 +65,7 @@ trait AphiriaComponents
      * @param Binder|Binder[] $binders The binder or list of binders to add
      * @return self For chaining
      */
-    protected function withBinders(IApplicationBuilder $appBuilder, $binders): self
+    protected function withBinders(IApplicationBuilder $appBuilder, Binder|array $binders): self
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(BinderComponent::class)) {
@@ -225,12 +225,12 @@ trait AphiriaComponents
     protected function withProblemDetails(
         IApplicationBuilder $appBuilder,
         string $exceptionType,
-        $type = null,
-        $title = null,
-        $detail = null,
-        $status = null,
-        $instance = null,
-        $extensions = null
+        string|Closure $type = null,
+        string|Closure $title = null,
+        string|Closure $detail = null,
+        int|Closure $status = null,
+        string|Closure $instance = null,
+        array|Closure $extensions = null
     ): self {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
@@ -254,7 +254,7 @@ trait AphiriaComponents
      */
     protected function withGlobalMiddleware(
         IApplicationBuilder $appBuilder,
-        $middlewareBindings,
+        MiddlewareBinding|array $middlewareBindings,
         int $priority = null
     ): self {
         if (!$appBuilder->hasComponent(MiddlewareComponent::class)) {
@@ -305,7 +305,7 @@ trait AphiriaComponents
      * @param IModule|IModule[] $modules The module or list of modules to add
      * @return self For chaining
      */
-    protected function withModules(IApplicationBuilder $appBuilder, $modules): self
+    protected function withModules(IApplicationBuilder $appBuilder, IModule|array $modules): self
     {
         if ($modules instanceof IModule) {
             $modules = [$modules];

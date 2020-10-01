@@ -35,8 +35,7 @@ class RoutingBinderTest extends TestCase
 {
     private const ROUTE_CACHE_PATH = __DIR__ . '/tmp/routes.txt';
     private const TRIE_CACHE_PATH = __DIR__ . '/tmp/trie.txt';
-    /** @var IContainer|MockObject */
-    private IContainer $container;
+    private IContainer|MockObject $container;
     private RoutingBinder $binder;
     private ?string $currEnvironment;
 

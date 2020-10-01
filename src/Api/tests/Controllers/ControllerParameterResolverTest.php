@@ -34,8 +34,7 @@ use ReflectionParameter;
 class ControllerParameterResolverTest extends TestCase
 {
     private ControllerParameterResolver $resolver;
-    /** @var IContentNegotiator|MockObject The content negotiator */
-    private IContentNegotiator $contentNegotiator;
+    private IContentNegotiator|MockObject $contentNegotiator;
 
     protected function setUp(): void
     {

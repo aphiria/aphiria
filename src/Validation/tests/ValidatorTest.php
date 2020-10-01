@@ -28,8 +28,7 @@ class ValidatorTest extends TestCase
 {
     private Validator $validator;
     private ObjectConstraintsRegistry $objectConstraints;
-    /** @var IErrorMessageInterpolator|FakeObject */
-    private IErrorMessageInterpolator $errorMessageInterpolator;
+    private IErrorMessageInterpolator|FakeObject $errorMessageInterpolator;
 
     protected function setUp(): void
     {

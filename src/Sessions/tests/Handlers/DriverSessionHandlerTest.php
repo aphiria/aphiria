@@ -21,8 +21,7 @@ use PHPUnit\Framework\TestCase;
 
 class DriverSessionHandlerTest extends TestCase
 {
-    /** @var ISessionDriver|MockObject */
-    private ISessionDriver $driver;
+    private ISessionDriver|MockObject $driver;
     private DriverSessionHandler $sessionHandler;
 
     protected function setUp(): void

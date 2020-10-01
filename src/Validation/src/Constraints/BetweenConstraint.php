@@ -22,9 +22,9 @@ final class BetweenConstraint extends Constraint
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field must be between {min} and {max}';
     /** @var int|float The minimum */
-    private $min;
+    private int|float $min;
     /** @var int|float The maximum */
-    private $max;
+    private int|float $max;
     /** @var bool Whether or not the min is inclusive */
     private bool $minIsInclusive;
     /** @var bool Whether or not the max is inclusive */
@@ -36,20 +36,15 @@ final class BetweenConstraint extends Constraint
      * @param int|float $max The maximum
      * @param bool $minIsInclusive Whether or not the min is inclusive
      * @param bool $maxIsInclusive Whether or not the max is inclusive
-     * @throws InvalidArgumentException Thrown if the min or max are not numeric
      */
     public function __construct(
-        $min,
-        $max,
+        int|float $min,
+        int|float $max,
         bool $minIsInclusive,
         bool $maxIsInclusive,
         string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID
     ) {
         parent::__construct($errorMessageId);
-
-        if (!\is_numeric($min) || !\is_numeric($max)) {
-            throw new InvalidArgumentException('Min and max values must be numeric');
-        }
 
         $this->min = $min;
         $this->max = $max;

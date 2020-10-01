@@ -112,12 +112,12 @@ class ExceptionHandlerComponent implements IComponent
      */
     public function withProblemDetails(
         string $exceptionType,
-        $type = null,
-        $title = null,
-        $detail = null,
-        $status = null,
-        $instance = null,
-        $extensions = null
+        string|Closure $type = null,
+        string|Closure $title = null,
+        string|Closure $detail = null,
+        int|Closure $status = null,
+        string|Closure $instance = null,
+        array|Closure $extensions = null
     ): self {
         $this->exceptionProblemDetailMappings[$exceptionType] = [
             'type' => $type,

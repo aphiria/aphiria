@@ -25,8 +25,7 @@ use PHPUnit\Framework\TestCase;
 class ResponseFormatterTest extends TestCase
 {
     private ResponseFormatter $formatter;
-    /** @var IResponse|MockObject The message to use in tests */
-    private IResponse $response;
+    private IResponse|MockObject $response;
     private Headers $headers;
 
     protected function setUp(): void
@@ -74,13 +73,6 @@ class ResponseFormatterTest extends TestCase
             ->with(301);
         $this->formatter->redirectToUri($this->response, new Uri('http://foo.com'), 301);
         $this->assertSame('http://foo.com', $this->headers->getFirst('Location'));
-    }
-
-    public function testRedirectingToUriThatIsNotUriNorStringThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Uri must be instance of %s or string', Uri::class));
-        $this->formatter->redirectToUri($this->response, [], 301);
     }
 
     public function testSettingCookieSetsCookieInResponseHeader(): void

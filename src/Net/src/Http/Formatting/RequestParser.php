@@ -59,17 +59,10 @@ class RequestParser
      *
      * @param IRequest|MultipartBodyPart $request The request or multipart body part to parse
      * @return string|null The mime type if one is set, otherwise null
-     * @throws InvalidArgumentException Thrown if the request is neither a request nor a multipart body part
      * @throws RuntimeException Thrown if the MIME type could not be determined
      */
-    public function getActualMimeType($request): ?string
+    public function getActualMimeType(IRequest|MultipartBodyPart $request): ?string
     {
-        if (!$request instanceof IRequest && !$request instanceof MultipartBodyPart) {
-            throw new InvalidArgumentException(
-                'Request must be of type ' . IRequest::class . ' or ' . MultipartBodyPart::class
-            );
-        }
-
         return $this->bodyParser->getMimeType($request->getBody());
     }
 
@@ -244,17 +237,10 @@ class RequestParser
      *
      * @param IRequest|MultipartBodyPart $request The request or multipart body part to parse
      * @return MultipartBody|null The multipart body if it was set, otherwise null
-     * @throws InvalidArgumentException Thrown if the request is not a multipart request
      * @throws RuntimeException Thrown if the headers' hash keys could not be calculated
      */
-    public function readAsMultipart($request): ?MultipartBody
+    public function readAsMultipart(IRequest|MultipartBodyPart $request): ?MultipartBody
     {
-        if (!$request instanceof IRequest && !$request instanceof MultipartBodyPart) {
-            throw new InvalidArgumentException(
-                'Request must be of type ' . IRequest::class . ' or ' . MultipartBodyPart::class
-            );
-        }
-
         $boundary = '';
 
         if (!$this->headerParser->parseParameters($request->getHeaders(), 'Content-Type')->tryGet(

@@ -28,7 +28,7 @@ final class Cookie
     /** @var string The name of the cookie */
     private string $name = '';
     /** @var mixed The value of the cookie */
-    private $value;
+    private mixed $value;
     /** @var int|null The max age of the cookie if set, otherwise null */
     private ?int $maxAge;
     /** @var string|null The path the cookie is valid on if set, otherwise null */

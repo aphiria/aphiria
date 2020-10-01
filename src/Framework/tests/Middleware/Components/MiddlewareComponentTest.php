@@ -28,8 +28,7 @@ use PHPUnit\Framework\TestCase;
 class MiddlewareComponentTest extends TestCase
 {
     private MiddlewareComponent $middlewareComponent;
-    /** @var IServiceResolver|MockObject  */
-    private IServiceResolver $dependencyResolver;
+    private IServiceResolver|MockObject $dependencyResolver;
 
     protected function setUp(): void
     {

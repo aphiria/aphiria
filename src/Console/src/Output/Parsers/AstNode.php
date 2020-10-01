@@ -17,8 +17,8 @@ namespace Aphiria\Console\Output\Parsers;
  */
 abstract class AstNode
 {
-    /** @var mixed|null The value of the node */
-    public $value;
+    /** @var mixed The value of the node if there is one, otherwise null */
+    public mixed $value;
     /** @var AstNode|null The parent node */
     public ?AstNode $parent = null;
     /** @var AstNode[] The child nodes */

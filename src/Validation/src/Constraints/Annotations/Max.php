@@ -24,7 +24,7 @@ use InvalidArgumentException;
 final class Max implements IConstraintAnnotation
 {
     /** @var int|float The maximum */
-    public $max;
+    public int|float $max;
     /** @var bool Whether or not the maximum is inclusive */
     public bool $isInclusive;
     /** @var string|null The error message ID */

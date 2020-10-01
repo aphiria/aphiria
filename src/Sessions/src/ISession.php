@@ -98,7 +98,7 @@ interface ISession extends ArrayAccess
      *
      * @param int|string $id The session Id
      */
-    public function setId($id): void;
+    public function setId(int|string $id): void;
 
     /**
      * Sets the value of many variables

@@ -28,8 +28,7 @@ use PHPUnit\Framework\TestCase;
 
 class HelpCommandHandlerTest extends TestCase
 {
-    /** @var IOutput|MockObject */
-    private IOutput $output;
+    private IOutput|MockObject $output;
     private HelpCommandHandler $handler;
     private CommandRegistry $commands;
 

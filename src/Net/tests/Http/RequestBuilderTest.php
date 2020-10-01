@@ -161,11 +161,4 @@ class RequestBuilderTest extends TestCase
             ->build();
         $this->assertSame($uri, $request->getUri());
     }
-
-    public function testWithUriWithInvalidUriTypeThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('URI must be instance of ' . Uri::class . ' or string');
-        $this->requestBuilder->withUri([]);
-    }
 }

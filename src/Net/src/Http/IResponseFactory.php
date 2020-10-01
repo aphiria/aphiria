@@ -34,6 +34,6 @@ interface IResponseFactory
         IRequest $request,
         int $statusCode,
         Headers $headers = null,
-        $rawBody = null
+        object|string|int|float|array $rawBody = null
     ): IResponse;
 }

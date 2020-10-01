@@ -37,13 +37,6 @@ class MinConstraintTest extends TestCase
         $this->assertEquals(['value' => 'val', 'min' => 2], $constraint->getErrorMessagePlaceholders('val'));
     }
 
-    public function testNonNumericMinThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Min must be numeric');
-        new MinConstraint('foo', true);
-    }
-
     public function testPassingValue(): void
     {
         $constraint = new MinConstraint(1, true, 'foo');

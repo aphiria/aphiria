@@ -24,9 +24,9 @@ use InvalidArgumentException;
 final class Between implements IConstraintAnnotation
 {
     /** @var int|float The minimum */
-    public $min;
+    public int|float $min;
     /** @var int|float The maximum */
-    public $max;
+    public int|float $max;
     /** @var bool Whether or not the min is inclusive */
     public bool $minIsInclusive;
     /** @var bool Whether or not the max is inclusive */

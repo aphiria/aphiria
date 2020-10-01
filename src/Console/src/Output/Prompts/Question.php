@@ -22,7 +22,7 @@ class Question
     /** @var string The question text */
     public string $text;
     /** @var mixed The default answer to the question */
-    public $defaultAnswer;
+    public mixed $defaultAnswer;
     /** @var bool Whether or not the answer should be hidden */
     public bool $isHidden;
 

@@ -26,10 +26,8 @@ use Throwable;
 
 class GlobalExceptionHandlerTest extends TestCase
 {
-    /** @var IExceptionRenderer|MockObject */
-    private IExceptionRenderer $exceptionRenderer;
-    /** @var LoggerInterface|MockObject */
-    private LoggerInterface $logger;
+    private IExceptionRenderer|MockObject $exceptionRenderer;
+    private LoggerInterface|MockObject $logger;
     private LogLevelFactory $logLevelFactory;
     private GlobalExceptionHandler $globalExceptionHandler;
     private int $prevErrorReporting;

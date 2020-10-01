@@ -20,7 +20,7 @@ final class EqualsConstraint extends Constraint
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field does not match expected value';
     /** @var mixed The value to compare against */
-    private $value;
+    private mixed $value;
 
     /**
      * @inheritdoc

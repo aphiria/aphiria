@@ -145,12 +145,12 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
      */
     public function mapExceptionToProblemDetails(
         string $exceptionType,
-        $type = null,
-        $title = null,
-        $detail = null,
-        $status = null,
-        $instance = null,
-        $extensions = null
+        string|Closure $type = null,
+        string|Closure $title = null,
+        string|Closure $detail = null,
+        int|Closure $status = null,
+        string|Closure $instance = null,
+        array|Closure $extensions = null
     ): void {
         $this->exceptionTypesToProblemDetailsFactories[$exceptionType] = function (Exception $ex) use ($type, $title, $detail, $status, $instance, $extensions) {
             if (\is_callable($status)) {

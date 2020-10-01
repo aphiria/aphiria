@@ -21,12 +21,9 @@ use PHPUnit\Framework\TestCase;
 class UnixLikeDriverTest extends TestCase
 {
     private UnixLikeDriver $driver;
-    /** @var string|bool */
-    private $ansicon;
-    /** @var string|bool */
-    private $columns;
-    /** @var string|bool */
-    private $lines;
+    private string|bool $ansicon;
+    private string|bool $columns;
+    private string|bool $lines;
 
     protected function setUp(): void
     {

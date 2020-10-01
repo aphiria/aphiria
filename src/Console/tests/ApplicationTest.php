@@ -34,8 +34,7 @@ use PHPUnit\Framework\TestCase;
 class ApplicationTest extends TestCase
 {
     private CommandRegistry $commands;
-    /** @var IServiceResolver|MockObject */
-    private IServiceResolver $commandHandlerResolver;
+    private IServiceResolver|MockObject $commandHandlerResolver;
     private Output $output;
     private Application $app;
 
@@ -187,14 +186,6 @@ class ApplicationTest extends TestCase
         $status = $this->app->handle('holiday Easter --yell=no', $this->output);
         $this->assertSame('Happy Easter', ob_get_clean());
         $this->assertSame(StatusCodes::OK, $status);
-    }
-
-    public function testHandlingInvalidInputReturnsError(): void
-    {
-        ob_start();
-        $status = $this->app->handle($this, $this->output);
-        ob_end_clean();
-        $this->assertSame(StatusCodes::ERROR, $status);
     }
 
     public function testHandlingMissingCommandReturnsError(): void

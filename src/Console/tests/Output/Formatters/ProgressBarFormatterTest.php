@@ -20,8 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 class ProgressBarFormatterTest extends TestCase
 {
-    /** @var IOutput|MockObject */
-    private IOutput $output;
+    private IOutput|MockObject $output;
 
     protected function setUp(): void
     {

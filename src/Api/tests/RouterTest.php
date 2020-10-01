@@ -40,14 +40,10 @@ use PHPUnit\Framework\TestCase;
 class RouterTest extends TestCase
 {
     private Router $router;
-    /** @var IRouteMatcher|MockObject */
-    private IRouteMatcher $routeMatcher;
-    /** @var IServiceResolver|MockObject */
-    private IServiceResolver $serviceResolver;
-    /** @var IContentNegotiator|MockObject */
-    private IContentNegotiator $contentNegotiator;
-    /** @var IRouteActionInvoker|MockObject */
-    private IRouteActionInvoker $routeActionInvoker;
+    private IRouteMatcher|MockObject $routeMatcher;
+    private IServiceResolver|MockObject $serviceResolver;
+    private IContentNegotiator|MockObject $contentNegotiator;
+    private IRouteActionInvoker|MockObject $routeActionInvoker;
 
     protected function setUp(): void
     {

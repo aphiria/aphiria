@@ -51,7 +51,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
         IRequest $request,
         int $statusCode,
         Headers $headers = null,
-        $rawBody = null
+        object|string|int|float|array $rawBody = null
     ): IResponse {
         $headers = $headers ?? new Headers();
 
@@ -101,7 +101,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
      */
     private function createBody(
         IRequest $request,
-        $rawBody,
+        object|string|int|float|array $rawBody = null,
         ContentNegotiationResult &$contentNegotiationResult = null
     ): ?IBody {
         if ($rawBody === null || $rawBody instanceof IBody) {

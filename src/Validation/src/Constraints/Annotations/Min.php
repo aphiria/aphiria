@@ -24,7 +24,7 @@ use InvalidArgumentException;
 final class Min implements IConstraintAnnotation
 {
     /** @var int|float The minimum */
-    public $min;
+    public int|float $min;
     /** @var bool Whether or not the minimum is inclusive */
     public bool $isInclusive;
     /** @var string|null The error message ID */

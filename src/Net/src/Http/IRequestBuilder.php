@@ -43,11 +43,11 @@ interface IRequestBuilder
      * Adds a header to the request
      *
      * @param string $name The name of the header to add
-     * @param array|string $values The value(s) to add
+     * @param string|array $values The value(s) to add
      * @param bool $append Whether or not to append the value(s) if the header already exists
      * @return self For chaining
      */
-    public function withHeader(string $name, $values, bool $append = false): self;
+    public function withHeader(string $name, string|array $values, bool $append = false): self;
 
     /**
      * Adds a header to the request
@@ -97,5 +97,5 @@ interface IRequestBuilder
      * @return self For chaining
      * @throws InvalidArgumentException Thrown if the URI was not a string nor URI
      */
-    public function withUri($uri): self;
+    public function withUri(string|Uri $uri): self;
 }

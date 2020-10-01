@@ -28,5 +28,5 @@ interface ICommandBus
      * @return int The status code
      * @throws InvalidArgumentException Thrown if the raw input was invalid in any way
      */
-    public function handle($rawInput, IOutput $output = null): int;
+    public function handle(string|array $rawInput, IOutput $output = null): int;
 }

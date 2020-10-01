@@ -16,7 +16,6 @@ use Aphiria\Api\Controllers\ControllerRequestHandler;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
 use Aphiria\ContentNegotiation\IContentNegotiator;
-use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -24,16 +23,11 @@ use PHPUnit\Framework\TestCase;
 
 class ControllerRequestHandlerTest extends TestCase
 {
-    /** @var IServiceResolver|MockObject */
-    private IServiceResolver $serviceResolver;
-    /** @var IRouteActionInvoker|MockObject */
-    private IRouteActionInvoker $routeActionInvoker;
-    /** @var IContentNegotiator|MockObject */
-    private IContentNegotiator $contentNegotiator;
+    private IRouteActionInvoker|MockObject $routeActionInvoker;
+    private IContentNegotiator|MockObject $contentNegotiator;
 
     protected function setUp(): void
     {
-        $this->serviceResolver = $this->createMock(IServiceResolver::class);
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
         $this->routeActionInvoker = $this->createMock(IRouteActionInvoker::class);
     }

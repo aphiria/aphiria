@@ -52,7 +52,7 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
     /**
      * @inheritdoc
      */
-    public function writeToStream($value, IStream $stream, ?string $encoding): void
+    public function writeToStream(int|float|bool|string|object|array $value, IStream $stream, ?string $encoding): void
     {
         $type = TypeResolver::resolveType($value);
 

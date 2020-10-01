@@ -23,10 +23,10 @@ final class ConstraintViolation
     private string $errorMessage;
     /** @var IConstraint The constraint that was violated */
     private IConstraint $constraint;
-    /** @var mixed The invalid value */
+    /** @var mixed mixed The invalid value */
     private $invalidValue;
     /** @var mixed The root value that was being validated */
-    private $rootValue;
+    private mixed $rootValue;
     /** @var string|null The name of the property that was being validated, or null if it wasn't a property */
     private ?string $propertyName;
     /** @var string|null The name of the method that was being validated, or null if it wasn't a method */

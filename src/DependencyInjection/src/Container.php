@@ -78,7 +78,7 @@ class Container implements IContainer
      * @inheritdoc
      */
     public function bindClass(
-        $interfaces,
+        string|array $interfaces,
         string $concreteClass,
         array $primitives = [],
         bool $resolveAsSingleton = false
@@ -93,7 +93,7 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function bindFactory($interfaces, callable $factory, bool $resolveAsSingleton = false): void
+    public function bindFactory(string|array $interfaces, callable $factory, bool $resolveAsSingleton = false): void
     {
         $binding = new FactoryContainerBinding($factory, $resolveAsSingleton);
 
@@ -105,7 +105,7 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function bindInstance($interfaces, object $instance): void
+    public function bindInstance(string|array $interfaces, object $instance): void
     {
         $binding = new InstanceContainerBinding($instance);
 
@@ -132,7 +132,7 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function callMethod($instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false): mixed
+    public function callMethod(object|string $instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false): mixed
     {
         $className = \is_string($instance) ? $instance : \get_class($instance);
 
@@ -157,14 +157,10 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function for($context, callable $callback)
+    public function for(Context|string $context, callable $callback)
     {
         if (\is_string($context)) {
             $context = new TargetedContext($context);
-        }
-
-        if (!$context instanceof Context) {
-            throw new InvalidArgumentException('Context must be an instance of ' . Context::class . ' or string');
         }
 
         // We're duplicating the tracking of targets here so that we can know if any bindings are targeted or universal
@@ -253,7 +249,7 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function unbind($interfaces): void
+    public function unbind(string|array $interfaces): void
     {
         $target = $this->currentContext->getTargetClass() ?? '';
 

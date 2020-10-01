@@ -20,7 +20,7 @@ final class Token
     /** @var string The token type */
     public string $type;
     /** @var mixed The token value */
-    public $value;
+    public mixed $value;
 
     /**
      * @param string $type The token type

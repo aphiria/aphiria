@@ -25,8 +25,7 @@ use PHPUnit\Framework\TestCase;
 
 class TrieNodeTest extends TestCase
 {
-    /** @var TrieNode|MockObject */
-    private TrieNode $node;
+    private TrieNode|MockObject $node;
 
     protected function setUp(): void
     {

@@ -72,7 +72,7 @@ class MiddlewareComponent implements IComponent
      * @param int|null The optional priority to apply to the middleware (lower number => higher priority)
      * @return self For chaining
      */
-    public function withGlobalMiddleware($middlewareBindings, int $priority = null): self
+    public function withGlobalMiddleware(MiddlewareBinding|array $middlewareBindings, int $priority = null): self
     {
         $middlewareBindings = \is_array($middlewareBindings) ? $middlewareBindings : [$middlewareBindings];
 
