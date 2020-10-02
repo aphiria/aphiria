@@ -123,7 +123,7 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function getId()
+    public function getId(): int|string
     {
         return $this->id;
     }

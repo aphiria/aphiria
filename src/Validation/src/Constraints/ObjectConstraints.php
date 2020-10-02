@@ -48,7 +48,7 @@ final class ObjectConstraints
      * @param string $methodName The name of the method to add constraints to
      * @param IConstraint[]|IConstraint $constraint The constraint or list of constraints to add
      */
-    public function addMethodConstraint(string $methodName, $constraint): void
+    public function addMethodConstraint(string $methodName, IConstraint|array $constraint): void
     {
         $this->methodConstraints[$methodName] = \is_array($constraint) ? $constraint : [$constraint];
     }
@@ -59,7 +59,7 @@ final class ObjectConstraints
      * @param string $propertyName The name of the property to add constraints to
      * @param IConstraint[]|IConstraint $constraint The constraint or list of constraints to add
      */
-    public function addPropertyConstraint(string $propertyName, $constraint): void
+    public function addPropertyConstraint(string $propertyName, IConstraint|array $constraint): void
     {
         $this->propertyConstraints[$propertyName] = \is_array($constraint) ? $constraint : [$constraint];
     }

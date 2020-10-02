@@ -148,8 +148,8 @@ class RouterTest extends TestCase
         $this->serviceResolver->method('resolve')
             ->willReturnMap([
                 [ControllerMock::class, $controller],
-                [\get_class($middleware1), $middleware1],
-                [\get_class($middleware2), $middleware2]
+                [$middleware1::class, $middleware1],
+                [$middleware2::class, $middleware2]
             ]);
         $matchingResult = new RouteMatchingResult(
             new Route(
@@ -157,8 +157,8 @@ class RouterTest extends TestCase
                 new RouteAction(ControllerMock::class, 'noParameters'),
                 [],
                 [
-                    new MiddlewareBinding(\get_class($middleware1)),
-                    new MiddlewareBinding(\get_class($middleware2))
+                    new MiddlewareBinding($middleware1::class),
+                    new MiddlewareBinding($middleware2::class)
                 ]
             ),
             [],
@@ -285,7 +285,7 @@ class RouterTest extends TestCase
      * @param string $uri The URI to use
      * @return IRequest|MockObject The mocked request
      */
-    private function createRequestMock(string $method, string $uri): IRequest
+    private function createRequestMock(string $method, string $uri): IRequest|MockObject
     {
         $request = $this->createMock(IRequest::class);
         $request->method('getMethod')

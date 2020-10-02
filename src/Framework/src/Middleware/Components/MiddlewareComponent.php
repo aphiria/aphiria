@@ -53,7 +53,7 @@ class MiddlewareComponent implements IComponent
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(
-                    sprintf('%s does not implement %s', \get_class($middleware), IMiddleware::class)
+                    sprintf('%s does not implement %s', $middleware::class, IMiddleware::class)
                 );
             }
 

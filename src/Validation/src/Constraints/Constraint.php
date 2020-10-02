@@ -47,7 +47,7 @@ abstract class Constraint implements IConstraint
             if (\method_exists($value, '__toString')) {
                 $serializedValue = (string)$value;
             } else {
-                $serializedValue = \get_class($value) . ' object';
+                $serializedValue = $value::class . ' object';
             }
         } else {
             $serializedValue = 'value';

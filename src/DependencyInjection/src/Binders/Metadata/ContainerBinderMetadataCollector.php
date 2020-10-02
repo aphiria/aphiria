@@ -19,7 +19,6 @@ use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\UniversalContext;
 use Closure;
-use InvalidArgumentException;
 
 /**
  * Defines what a collector of metadata about a binder
@@ -51,7 +50,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
      * @inheritdoc
      */
     public function bindClass(
-        $interfaces,
+        string|array $interfaces,
         string $concreteClass,
         array $primitives = [],
         bool $resolveAsSingleton = false
@@ -66,7 +65,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * @inheritdoc
      */
-    public function bindFactory($interfaces, callable $factory, bool $resolveAsSingleton = false): void
+    public function bindFactory(string|array $interfaces, callable $factory, bool $resolveAsSingleton = false): void
     {
         $this->addBoundInterface($interfaces);
         $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindFactory($interfaces, $factory, $resolveAsSingleton));
@@ -75,7 +74,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * @inheritdoc
      */
-    public function bindInstance($interfaces, object $instance): void
+    public function bindInstance(string|array $interfaces, object $instance): void
     {
         $this->addBoundInterface($interfaces);
         $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindInstance($interfaces, $instance));
@@ -92,7 +91,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * @inheritdoc
      */
-    public function callMethod($instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false): mixed
+    public function callMethod(object|string $instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false): mixed
     {
         return $this->container->callMethod($instance, $methodName, $primitives, $ignoreMissingMethod);
     }
@@ -120,14 +119,10 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * @inheritdoc
      */
-    public function for($context, callable $callback)
+    public function for(Context|string $context, callable $callback)
     {
         if (\is_string($context)) {
             $context = new TargetedContext($context);
-        }
-
-        if (!$context instanceof Context) {
-            throw new InvalidArgumentException('Context must be an instance of ' . Context::class . ' or string');
         }
 
         $this->currentContext = $context;
@@ -175,7 +170,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * @inheritdoc
      */
-    public function unbind($interfaces): void
+    public function unbind(string|array $interfaces): void
     {
         $this->container->for($this->currentContext, fn (IContainer $container) => $container->unbind($interfaces));
     }
@@ -185,7 +180,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
      *
      * @param string[]|string $interfaces The interface or interfaces we're binding
      */
-    private function addBoundInterface($interfaces): void
+    private function addBoundInterface(string|array $interfaces): void
     {
         foreach ((array)$interfaces as $interface) {
             $boundInterface = new BoundInterface($interface, $this->currentContext);

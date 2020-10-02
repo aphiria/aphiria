@@ -126,9 +126,9 @@ final class BinderMetadataCollectionFactory
             foreach ($binders as $i => $binder) {
                 try {
                     // Don't double-retry a binder that has already been fixed
-                    if (!isset($fixedBinderClasses[\get_class($binder)])) {
+                    if (!isset($fixedBinderClasses[$binder::class])) {
                         $binderMetadatas[] = $this->binderMetadataCollector->collect($binder);
-                        $fixedBinderClasses[\get_class($binder)] = true;
+                        $fixedBinderClasses[$binder::class] = true;
                     }
 
                     // The binder must have been able to resolve everything, so make sure we don't retry it again

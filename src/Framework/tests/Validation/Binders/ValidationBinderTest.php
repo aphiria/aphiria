@@ -82,12 +82,12 @@ class ValidationBinderTest extends TestCase
         $errorMessageTemplates = $this->createMock(IErrorMessageTemplateRegistry::class);
         $config = self::getBaseConfig();
         $config['aphiria']['validation']['errorMessageTemplates'] = [
-            'type' => \get_class($errorMessageTemplates)
+            'type' => $errorMessageTemplates::class
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->setUpContainerMock();
         $this->container->method('resolve')
-            ->with(\get_class($errorMessageTemplates))
+            ->with($errorMessageTemplates::class)
             ->willReturn($errorMessageTemplates);
         $this->binder->bind($this->container);
         // Dummy assertion

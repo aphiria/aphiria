@@ -23,7 +23,6 @@ use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\Foo;
 use Aphiria\DependencyInjection\Tests\Mocks\Bar;
 use Aphiria\DependencyInjection\Tests\Mocks\IFoo;
 use Exception;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ContainerBinderMetadataCollectorTest extends TestCase
@@ -171,14 +170,6 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             ->willReturn(true);
         $collector = new ContainerBinderMetadataCollector($container);
         $collector->callMethod($class, 'foo', [1]);
-    }
-
-    public function testForWithInvalidParameterThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Context must be an instance of ' . Context::class . ' or string');
-        $collector = new ContainerBinderMetadataCollector($this->container);
-        $collector->for(1, fn (IContainer $container) => null);
     }
 
     public function testForWithStringContextCreatesTargetedBinding(): void

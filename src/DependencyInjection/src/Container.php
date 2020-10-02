@@ -134,7 +134,7 @@ class Container implements IContainer
      */
     public function callMethod(object|string $instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false): mixed
     {
-        $className = \is_string($instance) ? $instance : \get_class($instance);
+        $className = \is_string($instance) ? $instance : $instance::class;
 
         if (!method_exists($instance, $methodName)) {
             if (!$ignoreMissingMethod) {
@@ -202,7 +202,7 @@ class Container implements IContainer
             return $this->resolveClass($interface);
         }
 
-        switch (\get_class($binding)) {
+        switch ($binding::class) {
             case InstanceContainerBinding::class:
                 /** @var InstanceContainerBinding $binding */
                 return $binding->getInstance();
@@ -219,7 +219,7 @@ class Container implements IContainer
                 $instance = $factory();
                 break;
             default:
-                throw new ResolutionException($interface, $this->currentContext, 'Invalid binding type "' . \get_class($binding) . '"');
+                throw new ResolutionException($interface, $this->currentContext, 'Invalid binding type "' . $binding::class . '"');
         }
 
         if ($binding->resolveAsSingleton()) {
@@ -372,6 +372,15 @@ class Container implements IContainer
 
         foreach ($unresolvedParameters as $parameter) {
             $resolvedParameter = null;
+            $parameterTypes = $parameter->getType() instanceof \ReflectionUnionType ? $parameter->getType()->getTypes() : [$parameter->getType()];
+
+            foreach ($parameterTypes as $parameterType) {
+                // TODO: How do we detect if there was a problem resolving a param as a primitive?
+                // TODO: In other words, how do we cycle through the types until we found one we could resolve as?
+                // TODO: Need to make resolvePrimitive() type-safe by checking the expected type vs the primitive value.  If it isn't the correct type, throw a ResolutionException, which could be caught in this loop.
+                // TODO: Do not throw a ReflectionException when there's no default value for a primitive - throw a ResolutionException instead.
+            }
+
             $parameterClassName = ($parameterType = $parameter->getType()) && !$parameterType->isBuiltin() ? $parameterType->getName() : null;
 
             if ($parameterClassName === null) {

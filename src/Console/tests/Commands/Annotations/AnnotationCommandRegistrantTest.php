@@ -60,7 +60,7 @@ class AnnotationCommandRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllSubTypesOfType')
             ->with(ICommandHandler::class, [__DIR__])
-            ->willReturn([\get_class($commandHandler)]);
+            ->willReturn([$commandHandler::class]);
         $this->registrant->registerCommands($this->commands);
         $this->assertCount(1, $this->commands->getAllCommands());
     }
@@ -85,7 +85,7 @@ class AnnotationCommandRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllSubTypesOfType')
             ->with(ICommandHandler::class, [__DIR__])
-            ->willReturn([\get_class($commandHandler)]);
+            ->willReturn([$commandHandler::class]);
         $this->registrant->registerCommands($this->commands);
         $this->assertCount(1, $this->commands->getAllCommands());
 

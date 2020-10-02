@@ -71,7 +71,7 @@ final class TrieRouteMatcher implements IRouteMatcher
      * @param int $segmentIter The current index of segments
      * @param array $hostSegments The list of URI host segments, which will be traversed if there's a host trie
      * @param array $routeVars The mapping of route variable names to values
-     * @return iterable|MatchedRouteCandidate[] The list of matched route candidates
+     * @return MatchedRouteCandidate[] The list of matched route candidates
      */
     private static function getMatchCandidates(
         TrieNode $node,

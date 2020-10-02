@@ -32,8 +32,8 @@ class LogLevelFactory
      */
     public function createLogLevel(Exception $ex): string
     {
-        if (isset($this->logLevelFactories[\get_class($ex)])) {
-            return $this->logLevelFactories[\get_class($ex)]($ex);
+        if (isset($this->logLevelFactories[$ex::class])) {
+            return $this->logLevelFactories[$ex::class]($ex);
         }
 
         return LogLevel::ERROR;

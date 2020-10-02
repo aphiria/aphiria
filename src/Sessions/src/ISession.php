@@ -73,7 +73,7 @@ interface ISession extends ArrayAccess
      *
      * @return int|string The session Id
      */
-    public function getId();
+    public function getId(): int|string;
 
     /**
      * Reflashes all of the flash data

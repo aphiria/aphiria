@@ -118,7 +118,7 @@ class Router implements IRequestHandler
 
         if (!$controller instanceof Controller) {
             throw new InvalidArgumentException(
-                sprintf('Controller %s does not extend %s', \get_class($controller), Controller::class)
+                sprintf('Controller %s does not extend %s', $controller::class, Controller::class)
             );
         }
     }
@@ -139,7 +139,7 @@ class Router implements IRequestHandler
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(
-                    sprintf('Middleware %s does not implement %s', \get_class($middleware), IMiddleware::class)
+                    sprintf('Middleware %s does not implement %s', $middleware::class, IMiddleware::class)
                 );
             }
 

@@ -113,7 +113,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
                 // Don't do anything
             }
         };
-        $customApiExceptionRendererType = \get_class($customApiExceptionRenderer);
+        $customApiExceptionRendererType = $customApiExceptionRenderer::class;
         $config = self::getBaseConfig();
         $config['aphiria']['exceptions']['apiExceptionRenderer'] = $customApiExceptionRendererType;
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
@@ -267,7 +267,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
                     return true;
                 }
 
-                if (\get_class($actualInstance) === $expectedExceptionRendererType) {
+                if ($actualInstance::class === $expectedExceptionRendererType) {
                     return true;
                 }
 

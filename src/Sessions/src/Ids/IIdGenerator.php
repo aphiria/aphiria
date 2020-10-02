@@ -25,9 +25,9 @@ interface IIdGenerator
     /**
      * Generates an Id
      *
-     * @return string|int The Id
+     * @return int|string The Id
      */
-    public function generate();
+    public function generate(): int|string;
 
     /**
      * Gets whether or not an Id is valid

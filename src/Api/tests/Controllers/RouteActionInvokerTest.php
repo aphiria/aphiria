@@ -227,14 +227,14 @@ class RouteActionInvokerTest extends TestCase
             {
             }
         };
-        $this->expectExceptionMessage('Reflection failed for ' . \get_class($controller) . '::foo');
+        $this->expectExceptionMessage('Reflection failed for ' . $controller::class . '::foo');
         $routeActionInvoker = new class() extends RouteActionInvoker {
             protected function reflectRouteActionDelegate(callable $routeActionDelegate): ReflectionFunctionAbstract
             {
                 throw new ReflectionException();
             }
         };
-        $routeActionInvoker->invokeRouteAction([\get_class($controller), 'foo'], $this->createRequestWithoutBody('http://example.com'), []);
+        $routeActionInvoker->invokeRouteAction([$controller::class, 'foo'], $this->createRequestWithoutBody('http://example.com'), []);
     }
 
     public function testMissingControllerParameterValueExceptionIsRethrownAsHttpException(): void

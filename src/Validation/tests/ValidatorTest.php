@@ -47,7 +47,7 @@ class ValidatorTest extends TestCase
         };
         $constraints = [$this->createMockConstraint(false, 1)];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($object),
+            $object::class,
             [],
             ['method' => $constraints]
         ));
@@ -64,7 +64,7 @@ class ValidatorTest extends TestCase
         };
         $constraints = [$this->createMockConstraint(true, 1)];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($object),
+            $object::class,
             [],
             ['method' => $constraints]
         ));
@@ -90,7 +90,7 @@ class ValidatorTest extends TestCase
             }
         };
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($innerObject),
+            $innerObject::class,
             ['prop' => $this->createMockConstraint(true, 1)],
             []
         ));
@@ -132,7 +132,7 @@ class ValidatorTest extends TestCase
             $this->createMockConstraint(false, 1)
         ];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($object),
+            $object::class,
             [],
             ['method' => $constraints]
         ));
@@ -150,7 +150,7 @@ class ValidatorTest extends TestCase
         /** @var IConstraint[] $constraints */
         $constraints = [$this->createMockConstraint(false, 1, )];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($object),
+            $object::class,
             [],
             ['method' => $constraints]
         ));
@@ -177,7 +177,7 @@ class ValidatorTest extends TestCase
         };
         $constraints = [$this->createMockConstraint(true, 1)];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($object),
+            $object::class,
             [],
             ['method' => $constraints]
         ));
@@ -193,7 +193,7 @@ class ValidatorTest extends TestCase
         };
         $constraints = [$this->createMockConstraint(false, 1)];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($object),
+            $object::class,
             ['prop' => $constraints],
             []
         ));
@@ -207,7 +207,7 @@ class ValidatorTest extends TestCase
         };
         $constraints = [$this->createMockConstraint(true, 1)];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($object),
+            $object::class,
             ['prop' => $constraints],
             []
         ));
@@ -228,7 +228,7 @@ class ValidatorTest extends TestCase
             }
         };
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($innerObject),
+            $innerObject::class,
             ['prop' => $this->createMockConstraint(true, 1)],
             []
         ));
@@ -245,7 +245,7 @@ class ValidatorTest extends TestCase
             $this->createMockConstraint(false, 1)
         ];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($object),
+            $object::class,
             ['prop' => $constraints],
             []
         ));
@@ -260,7 +260,7 @@ class ValidatorTest extends TestCase
         /** @var IConstraint[] $constraints */
         $constraints = [$this->createMockConstraint(false, 1)];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($object),
+            $object::class,
             ['prop' => $constraints],
             []
         ));
@@ -285,7 +285,7 @@ class ValidatorTest extends TestCase
         };
         $constraints = [$this->createMockConstraint(false, 1)];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($object),
+            $object::class,
             ['prop' => $constraints],
             []
         ));
@@ -299,7 +299,7 @@ class ValidatorTest extends TestCase
         };
         $constraints = [$this->createMockConstraint(true, 1)];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($object),
+            $object::class,
             ['prop' => $constraints],
             []
         ));
@@ -332,7 +332,7 @@ class ValidatorTest extends TestCase
             }
         };
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($innerObject),
+            $innerObject::class,
             ['prop' => $this->createMockConstraint(true, 1)],
             []
         ));
@@ -349,7 +349,7 @@ class ValidatorTest extends TestCase
             $this->createMockConstraint(false, 1)
         ];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($object),
+            $object::class,
             ['prop' => $constraints],
             []
         ));
@@ -364,7 +364,7 @@ class ValidatorTest extends TestCase
         /** @var IConstraint[] $constraints */
         $constraints = [$this->createMockConstraint(false, 1)];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($object),
+            $object::class,
             ['prop' => $constraints],
             []
         ));
@@ -423,7 +423,7 @@ class ValidatorTest extends TestCase
         $object1->methodReturnValue = $object2;
         $object2->methodReturnValue = $object1;
         $this->expectException(CircularDependencyException::class);
-        $this->expectExceptionMessage('Circular dependency on ' . \get_class($object2) . ' detected');
+        $this->expectExceptionMessage('Circular dependency on ' . $object2::class . ' detected');
         $this->validator->validateMethod($object1, 'method');
     }
 
@@ -439,7 +439,7 @@ class ValidatorTest extends TestCase
         $object2->prop = $object1;
         $this->expectException(CircularDependencyException::class);
         // Due to the order that objects are recursively validated, object1 will show up as the circular dependency
-        $this->expectExceptionMessage('Circular dependency on ' . \get_class($object1) . ' detected');
+        $this->expectExceptionMessage('Circular dependency on ' . $object1::class . ' detected');
         $this->validator->validateObject($object1);
     }
 
@@ -448,7 +448,7 @@ class ValidatorTest extends TestCase
         $class = new class() {
         };
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(\get_class($class) . '::foo() does not exist');
+        $this->expectExceptionMessage($class::class . '::foo() does not exist');
         $this->validator->validateMethod($class, 'foo');
     }
 
@@ -467,7 +467,7 @@ class ValidatorTest extends TestCase
             ->with('foo')
             ->willReturn(false);
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($class),
+            $class::class,
             [],
             ['foo' => [$constraint]]
         ));
@@ -479,7 +479,7 @@ class ValidatorTest extends TestCase
         $class = new class() {
         };
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(\get_class($class) . '::foo does not exist');
+        $this->expectExceptionMessage($class::class . '::foo does not exist');
         $this->validator->validateProperty($class, 'foo');
     }
 
@@ -495,7 +495,7 @@ class ValidatorTest extends TestCase
             ->with('foo')
             ->willReturn(false);
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            \get_class($class),
+            $class::class,
             ['foo' => [$constraint]],
             []
         ));
@@ -513,7 +513,7 @@ class ValidatorTest extends TestCase
         $object1->prop = $object2;
         $object2->prop = $object1;
         $this->expectException(CircularDependencyException::class);
-        $this->expectExceptionMessage('Circular dependency on ' . \get_class($object2) . ' detected');
+        $this->expectExceptionMessage('Circular dependency on ' . $object2::class . ' detected');
         $this->validator->validateProperty($object1, 'prop');
     }
 

@@ -235,7 +235,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
      */
     protected function createProblemDetails(Exception $ex): ProblemDetails
     {
-        $exceptionType = \get_class($ex);
+        $exceptionType = $ex::class;
 
         if (isset($this->exceptionTypesToProblemDetailsFactories[$exceptionType])) {
             return $this->exceptionTypesToProblemDetailsFactories[$exceptionType]($ex);

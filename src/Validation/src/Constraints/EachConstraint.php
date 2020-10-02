@@ -28,7 +28,7 @@ final class EachConstraint extends Constraint
      * @inheritdoc
      * @param IConstraint[]|IConstraint $constraints The constraint or list of constraints to apply on each value
      */
-    public function __construct($constraints, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
+    public function __construct(IConstraint|array $constraints, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
 

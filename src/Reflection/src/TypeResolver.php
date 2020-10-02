@@ -50,7 +50,7 @@ final class TypeResolver
         }
 
         // Not using get_debug_type() so that anonymous class names are unique
-        return \is_object($value) ? \get_class($value) : \gettype($value);
+        return \is_object($value) ? $value::class : \gettype($value);
     }
 
     /**

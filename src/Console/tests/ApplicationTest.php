@@ -163,7 +163,7 @@ class ApplicationTest extends TestCase
         };
         $this->commandHandlerResolver->expects($this->exactly(2))
             ->method('resolve')
-            ->with(\get_class($commandHandler))
+            ->with($commandHandler::class)
             ->willReturn($commandHandler);
 
         // Test with short option
@@ -174,7 +174,7 @@ class ApplicationTest extends TestCase
                 [new Option('yell', 'y', OptionTypes::OPTIONAL_VALUE, '', 'yes')],
                 ''
             ),
-            \get_class($commandHandler)
+            $commandHandler::class
         );
         ob_start();
         $status = $this->app->handle('holiday birthday -y', $this->output);
@@ -206,9 +206,9 @@ class ApplicationTest extends TestCase
         };
         $this->commandHandlerResolver->expects($this->once())
             ->method('resolve')
-            ->with(\get_class($commandHandler))
+            ->with($commandHandler::class)
             ->willReturn($commandHandler);
-        $this->commands->registerCommand(new Command('foo'), \get_class($commandHandler));
+        $this->commands->registerCommand(new Command('foo'), $commandHandler::class);
         ob_start();
         $status = $this->app->handle('foo', $this->output);
         $this->assertSame('foo', ob_get_clean());
@@ -225,9 +225,9 @@ class ApplicationTest extends TestCase
         };
         $this->commandHandlerResolver->expects($this->once())
             ->method('resolve')
-            ->with(\get_class($commandHandler))
+            ->with($commandHandler::class)
             ->willReturn($commandHandler);
-        $this->commands->registerCommand(new Command('foo'), \get_class($commandHandler));
+        $this->commands->registerCommand(new Command('foo'), $commandHandler::class);
         $statusCode = $this->app->handle('foo', $this->output);
         $this->assertSame(StatusCodes::OK, $statusCode);
     }

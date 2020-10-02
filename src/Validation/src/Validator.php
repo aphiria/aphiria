@@ -257,7 +257,7 @@ final class Validator implements IValidator
      */
     private function validateMethodWithContext(object $object, string $methodName, ValidationContext $validationContext): void
     {
-        $class = \get_class($object);
+        $class = $object::class;
 
         if (!\method_exists($object, $methodName)) {
             throw new InvalidArgumentException("$class::$methodName() does not exist");
@@ -348,7 +348,7 @@ final class Validator implements IValidator
         }
 
         if (!$allConstraintsPassed) {
-            throw new ValidationException($validationContext->getConstraintViolations(), 'Failed to validate ' . \get_class($object));
+            throw new ValidationException($validationContext->getConstraintViolations(), 'Failed to validate ' . $object::class);
         }
     }
 
@@ -365,7 +365,7 @@ final class Validator implements IValidator
      */
     private function validatePropertyWithContext(object $object, string $propertyName, ValidationContext $validationContext): void
     {
-        $class = \get_class($object);
+        $class = $object::class;
 
         if (!\property_exists($object, $propertyName)) {
             throw new InvalidArgumentException("$class::$propertyName does not exist");

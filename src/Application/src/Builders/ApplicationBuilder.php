@@ -53,7 +53,7 @@ abstract class ApplicationBuilder implements IApplicationBuilder
      */
     public function withComponent(IComponent $component, int $priority = null): IApplicationBuilder
     {
-        $type = \get_class($component);
+        $type = $component::class;
         $this->componentTypesAndPriorities[] = ['type' => $type, 'priority' => $priority ?? \PHP_INT_MAX];
         $this->componentsByType[$type] = $component;
 

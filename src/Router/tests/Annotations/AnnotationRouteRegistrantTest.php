@@ -56,7 +56,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
-            ->willReturn([\get_class($controller)]);
+            ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
         $routeArr = $routes->getAll();
@@ -86,7 +86,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
-            ->willReturn([\get_class($controller)]);
+            ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
         $routeArr = $routes->getAll();
@@ -115,7 +115,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
-            ->willReturn([\get_class($controller)]);
+            ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
         $routeArr = $routes->getAll();
@@ -144,7 +144,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
-            ->willReturn([\get_class($controller)]);
+            ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
         $routeArr = $routes->getAll();
@@ -174,7 +174,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
-            ->willReturn([\get_class($controller)]);
+            ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
         $routeArr = $routes->getAll();
@@ -200,7 +200,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
-            ->willReturn([\get_class($controller)]);
+            ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
         $routeArr = $routes->getAll();
@@ -226,7 +226,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
-            ->willReturn([\get_class($controller)]);
+            ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
         $routeArr = $routes->getAll();
@@ -260,7 +260,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
-            ->willReturn([\get_class($controller)]);
+            ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
         $routeArr = $routes->getAll();
@@ -294,7 +294,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
-            ->willReturn([\get_class($controller)]);
+            ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
         $routeArr = $routes->getAll();
@@ -328,7 +328,7 @@ class AnnotationRouteRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
-            ->willReturn([\get_class($controller)]);
+            ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
         $routeArr = $routes->getAll();

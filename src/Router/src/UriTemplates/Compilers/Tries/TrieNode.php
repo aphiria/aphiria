@@ -33,16 +33,13 @@ abstract class TrieNode
      * @param TrieNode[] $children The list of children
      * @param Route[]|Route $routes The list of routes for this segment if there are any
      * @param TrieNode|null $hostTrie The host trie, if there is one
-     * @throws InvalidArgumentException Thrown if the routes are not the expected type
      */
-    protected function __construct(array $children, $routes, ?TrieNode $hostTrie)
+    protected function __construct(array $children, Route|array $routes, ?TrieNode $hostTrie)
     {
         if (\is_array($routes)) {
             $this->routes = $routes;
         } elseif ($routes instanceof Route) {
             $this->routes = [$routes];
-        } else {
-            throw new InvalidArgumentException('Routes must be a route or an array of routes');
         }
 
         foreach ($children as $child) {
@@ -66,7 +63,7 @@ abstract class TrieNode
         } elseif ($childNode instanceof VariableTrieNode) {
             $this->addVariableChildNode($childNode);
         } else {
-            throw new InvalidArgumentException('Unexpected trie node type ' . \get_class($childNode));
+            throw new InvalidArgumentException('Unexpected trie node type ' . $childNode::class);
         }
 
         return $this;

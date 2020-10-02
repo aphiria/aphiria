@@ -25,7 +25,7 @@ class ImpossibleBindingExceptionTest extends TestCase
         $binder2 = $this->createBinder();
         $exception = new ImpossibleBindingException(['foo' => [$binder1, $binder2]]);
         $this->assertSame(
-            'Impossible to resolve following interfaces: foo (attempted to be resolved in ' . \get_class($binder1) . ', ' . \get_class($binder2) . ')',
+            'Impossible to resolve following interfaces: foo (attempted to be resolved in ' . $binder1::class . ', ' . $binder2::class . ')',
             $exception->getMessage()
         );
     }
@@ -36,7 +36,7 @@ class ImpossibleBindingExceptionTest extends TestCase
         $binder2 = $this->createBinder();
         $exception = new ImpossibleBindingException(['foo' => [$binder1], 'bar' => [$binder2]]);
         $this->assertSame(
-            'Impossible to resolve following interfaces: foo (attempted to be resolved in ' . \get_class($binder1) . '), bar (attempted to be resolved in ' . \get_class($binder2) . ')',
+            'Impossible to resolve following interfaces: foo (attempted to be resolved in ' . $binder1::class . '), bar (attempted to be resolved in ' . $binder2::class . ')',
             $exception->getMessage()
         );
     }
@@ -46,7 +46,7 @@ class ImpossibleBindingExceptionTest extends TestCase
         $binder = $this->createBinder();
         $exception = new ImpossibleBindingException(['foo' => [$binder]]);
         $this->assertSame(
-            'Impossible to resolve following interfaces: foo (attempted to be resolved in ' . \get_class($binder) . ')',
+            'Impossible to resolve following interfaces: foo (attempted to be resolved in ' . $binder::class . ')',
             $exception->getMessage()
         );
     }

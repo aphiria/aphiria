@@ -179,7 +179,7 @@ final class ValidationContext
         while ($parentContext !== null) {
             if ($parentContext->validatesObject($this->value)) {
                 throw new CircularDependencyException(
-                    'Circular dependency on ' . \get_class($this->value) . ' detected'
+                    'Circular dependency on ' . $this->value::class . ' detected'
                 );
             }
 

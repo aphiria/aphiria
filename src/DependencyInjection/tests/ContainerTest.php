@@ -14,7 +14,6 @@ namespace Aphiria\DependencyInjection\Tests;
 
 use Aphiria\DependencyInjection\CallException;
 use Aphiria\DependencyInjection\Container;
-use Aphiria\DependencyInjection\Context;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IContainerBinding;
 use Aphiria\DependencyInjection\ResolutionException;
@@ -140,7 +139,7 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Bar::class, $instance->getInterface());
         $this->assertSame('foo', $instance->getPrimitive());
         $response = $this->container->callClosure(
-            fn (IFoo $interface, $primitive) => \get_class($interface) . ':' . $primitive,
+            fn (IFoo $interface, $primitive) => $interface::class . ':' . $primitive,
             ['foo']
         );
         $this->assertSame(Bar::class . ':foo', $response);
@@ -152,7 +151,7 @@ class ContainerTest extends TestCase
         $instance = new ConstructorWithSetters();
         $this->container->callMethod($instance, 'setInterface');
         $this->assertInstanceOf(Bar::class, $instance->getInterface());
-        $response = $this->container->callClosure(fn (IFoo $interface) => \get_class($interface));
+        $response = $this->container->callClosure(fn (IFoo $interface) => $interface::class);
         $this->assertSame(Bar::class, $response);
     }
 
@@ -415,13 +414,6 @@ class ContainerTest extends TestCase
         $this->assertSame($instance1, $instance2);
         $this->assertSame(23, $instance1->getId());
         $this->assertSame(23, $instance2->getId());
-    }
-
-    public function testForWithInvalidParameterThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Context must be an instance of ' . Context::class . ' or string');
-        $this->container->for(1, fn (IContainer $container) => null);
     }
 
     public function testForWithStringContextCreatesTargetedBinding(): void

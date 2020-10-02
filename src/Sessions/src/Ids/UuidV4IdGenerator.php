@@ -20,7 +20,7 @@ final class UuidV4IdGenerator implements IIdGenerator
     /**
      * @inheritdoc
      */
-    public function generate()
+    public function generate(): int|string
     {
         $string = \random_bytes(16);
         $string[6] = \chr(\ord($string[6]) & 0x0f | 0x40);

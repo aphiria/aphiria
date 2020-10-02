@@ -68,7 +68,7 @@ class MiddlewareComponentTest extends TestCase
     {
         $invalidMiddleware = $this;
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(\get_class($invalidMiddleware) . ' does not implement ' . IMiddleware::class);
+        $this->expectExceptionMessage($invalidMiddleware::class . ' does not implement ' . IMiddleware::class);
         $this->dependencyResolver->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, new MiddlewareCollection()],

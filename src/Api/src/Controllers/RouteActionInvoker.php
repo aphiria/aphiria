@@ -175,7 +175,7 @@ class RouteActionInvoker implements IRouteActionInvoker
                 return $routeActionDelegate[0] . '::' . $routeActionDelegate[1];
             }
 
-            return \get_class($routeActionDelegate[0]) . '::' . $routeActionDelegate[1];
+            return $routeActionDelegate[0]::class . '::' . $routeActionDelegate[1];
         }
 
         return Closure::class;

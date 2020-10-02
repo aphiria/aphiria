@@ -130,7 +130,6 @@ final class CommandRegistry
      * @param Command|string $command Either the command name or the instance of the command
      * @param string|null $commandHandlerClassName The command handler class name, if there was one
      * @return bool True if there was a handler for the command, otherwise false
-     * @throws InvalidArgumentException Thrown if the command was not a string nor a Command
      */
     public function tryGetHandlerClassName(Command|string $command, ?string &$commandHandlerClassName): bool
     {

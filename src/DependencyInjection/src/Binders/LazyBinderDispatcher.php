@@ -128,7 +128,7 @@ class LazyBinderDispatcher implements IBinderDispatcher
      */
     private function dispatchBinder(Binder $binder, IContainer $container): void
     {
-        $key = \get_class($binder);
+        $key = $binder::class;
 
         // Make sure we don't double-dispatch this binder
         if (!isset($this->alreadyDispatchedBinderClasses[$key])) {

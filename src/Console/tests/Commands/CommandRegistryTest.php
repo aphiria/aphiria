@@ -135,14 +135,6 @@ class CommandRegistryTest extends TestCase
         $this->assertSame('Handler', $actualCommandHandlerClassName);
     }
 
-    public function testTryGettingHandlerClassNameOfInvalidTypeThrowsInvalidArgumentException(): void
-    {
-        $commandHandlerClassName = null;
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Command must be either a string or an instance of %s', Command::class));
-        $this->commands->tryGetHandlerClassName(100, $commandHandlerClassName);
-    }
-
     public function testTryGettingHandlerClassNameReturnsTrueIfCommandWasFound(): void
     {
         $expectedCommand = new Command('foo', [], [], '');

@@ -17,7 +17,6 @@ use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\LiteralTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
 use Aphiria\Routing\UriTemplates\UriTemplate;
-use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -32,13 +31,6 @@ class LiteralTrieNodeTest extends TestCase
         $this->assertCount(1, $node->routes);
         $this->assertSame($expectedRoute, $node->routes[0]);
         $this->assertSame($expectedHostTrie, $node->hostTrie);
-    }
-
-    public function testInvalidRoutesThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Routes must be a route or an array of routes');
-        new LiteralTrieNode('foo', [], 1);
     }
 
     public function testPropertiesAreSetInConstructor(): void
@@ -56,10 +48,10 @@ class LiteralTrieNodeTest extends TestCase
     /**
      * Creates a mock node for use in tests
      *
-     * @return MockObject|TrieNode The mock node
+     * @return TrieNode|MockObject The mock node
      * @throws ReflectionException
      */
-    private function createMockNode(): MockObject
+    private function createMockNode(): TrieNode|MockObject
     {
         return $this->getMockForAbstractClass(TrieNode::class, [], '', false);
     }
