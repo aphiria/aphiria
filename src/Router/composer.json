@@ -30,7 +30,7 @@
         "doctrine/annotations": "1.8.*@dev",
         "ext-ctype": "*",
         "ext-mbstring": "*",
-        "php": "^7.4"
+        "php": ">=7.4"
     },
     "require-dev": {
         "aphiria/api": "0.*@dev",

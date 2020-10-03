@@ -65,7 +65,7 @@
         "ext-intl": "*",
         "ext-mbstring": "*",
         "monolog/monolog": "~2.0",
-        "php": "^7.4",
+        "php": ">=7.4",
         "psr/http-factory": "^1.0",
         "psr/http-message": "^1.0",
         "psr/log": "~1.0",

@@ -25,7 +25,7 @@
     },
     "require": {
         "aphiria/net": "0.*@dev",
-        "php": "^7.4"
+        "php": ">=7.4"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
