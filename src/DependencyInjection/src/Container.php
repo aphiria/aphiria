@@ -447,7 +447,6 @@ class Container implements IContainer
                 && ($parameterTypeName = $reflectionType instanceof \ReflectionNamedType ? $reflectionType->getName() : (string)$reflectionType) !== 'mixed'
             ) {
                 $primitiveTypeName = \gettype($primitives[0]);
-                echo $primitiveTypeName . '||' . $parameterTypeName;
 
                 if ($primitiveTypeName !== $parameterTypeName) {
                     throw new ResolutionException(
