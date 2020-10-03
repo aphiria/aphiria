@@ -30,6 +30,8 @@ use Aphiria\DependencyInjection\Tests\Mocks\ConstructorWithMixOfInterfacesAndPri
 use Aphiria\DependencyInjection\Tests\Mocks\ConstructorWithNullableObject;
 use Aphiria\DependencyInjection\Tests\Mocks\ConstructorWithPrimitives;
 use Aphiria\DependencyInjection\Tests\Mocks\ConstructorWithSetters;
+use Aphiria\DependencyInjection\Tests\Mocks\ConstructorWithTypedPrimitives;
+use Aphiria\DependencyInjection\Tests\Mocks\ConstructorWithUnionType;
 use Aphiria\DependencyInjection\Tests\Mocks\Dave;
 use Aphiria\DependencyInjection\Tests\Mocks\Foo;
 use Aphiria\DependencyInjection\Tests\Mocks\IFoo;
@@ -506,6 +508,28 @@ class ContainerTest extends TestCase
         $instance = $this->container->resolve(ConstructorWithDefaultValueObject::class);
         $this->assertInstanceOf(ConstructorWithDefaultValueObject::class, $instance);
         $this->assertInstanceOf(DateTime::class, $instance->getFoo());
+    }
+
+    public function testResolvingClassWithPrimitiveInConstructorWhoseTypesDoNotMatchThoseInBindingThrowsException(): void
+    {
+        $this->expectException(ResolutionException::class);
+        $this->expectExceptionMessage('Failed to resolve foo in ' . ConstructorWithTypedPrimitives::class . '::__construct()');
+        $this->container->bindClass(ConstructorWithTypedPrimitives::class, ConstructorWithTypedPrimitives::class, [1]);
+        $this->container->resolve(ConstructorWithTypedPrimitives::class);
+    }
+
+    public function testResolvingClassWithUnionTypeWillASecondTypeIfTheFirstOneFailedToBeResolved(): void
+    {
+        $this->container->bindClass(ConstructorWithUnionType::class, ConstructorWithUnionType::class);
+        $expectedFoo = new Bar();
+        $this->container->bindInstance(IFoo::class, $expectedFoo);
+        $this->assertEquals(new ConstructorWithUnionType($expectedFoo), $this->container->resolve(ConstructorWithUnionType::class));
+    }
+
+    public function testResolvingClassWithUnionTypeWillUsePrimitiveTypeIfItMatchesOneOfTheTypes(): void
+    {
+        $this->container->bindClass(ConstructorWithUnionType::class, ConstructorWithUnionType::class, ['foo']);
+        $this->assertEquals(new ConstructorWithUnionType('foo'), $this->container->resolve(ConstructorWithUnionType::class));
     }
 
     public function testResolvingInstanceBoundInTargetedCallback(): void

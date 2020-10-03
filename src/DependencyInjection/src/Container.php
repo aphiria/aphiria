@@ -19,6 +19,7 @@ use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionParameter;
+use ReflectionType;
 
 /**
  * Defines the dependency injection container
@@ -372,41 +373,57 @@ class Container implements IContainer
 
         foreach ($unresolvedParameters as $parameter) {
             $resolvedParameter = null;
+            $parameterResolved = false;
             $parameterTypes = $parameter->getType() instanceof \ReflectionUnionType ? $parameter->getType()->getTypes() : [$parameter->getType()];
 
             foreach ($parameterTypes as $parameterType) {
-                // TODO: How do we detect if there was a problem resolving a param as a primitive?
-                // TODO: In other words, how do we cycle through the types until we found one we could resolve as?
-                // TODO: Need to make resolvePrimitive() type-safe by checking the expected type vs the primitive value.  If it isn't the correct type, throw a ResolutionException, which could be caught in this loop.
-                // TODO: Do not throw a ReflectionException when there's no default value for a primitive - throw a ResolutionException instead.
-            }
-
-            $parameterClassName = ($parameterType = $parameter->getType()) && !$parameterType->isBuiltin() ? $parameterType->getName() : null;
-
-            if ($parameterClassName === null) {
-                // The parameter is a primitive
-                $resolvedParameter = $this->resolvePrimitive($parameter, $primitives);
-            } elseif ($class !== null && $this->hasTargetedBinding($parameterClassName, $class)) {
-                $resolvedParameter = $this->for(
-                    new TargetedContext($class),
-                    fn (IContainer $container) => $container->resolve($parameter->getClass()->getName())
-                );
-            } else {
                 try {
-                    $resolvedParameter = $this->resolve($parameterClassName);
-                } catch (ResolutionException $ex) {
-                    // Check for a default value
-                    if ($parameter->isDefaultValueAvailable()) {
-                        $resolvedParameter = $parameter->getDefaultValue();
-                    } elseif ($parameter->allowsNull()) {
-                        $resolvedParameter = null;
+                    $parameterClassName = $parameterType !== null && !$parameterType->isBuiltin()
+                        ? $parameterType->getName()
+                        : null;
+
+                    if ($parameterClassName === null) {
+                        // The parameter is a primitive
+                        $resolvedParameter = $this->resolvePrimitive($parameter, $parameterType, $primitives);
+                    } elseif ($class !== null && $this->hasTargetedBinding($parameterClassName, $class)) {
+                        $resolvedParameter = $this->for(
+                            new TargetedContext($class),
+                            fn (IContainer $container) => $container->resolve($parameterClassName)
+                        );
                     } else {
-                        throw $ex;
+                        try {
+                            $resolvedParameter = $this->resolve($parameterClassName);
+                        } catch (ResolutionException $ex) {
+                            // Check for a default value
+                            if ($parameter->isDefaultValueAvailable()) {
+                                $resolvedParameter = $parameter->getDefaultValue();
+                            } elseif ($parameter->allowsNull()) {
+                                $resolvedParameter = null;
+                            } else {
+                                throw $ex;
+                            }
+                        }
                     }
+
+                    $resolvedParameters[] = $resolvedParameter;
+                    $parameterResolved = true;
+                } catch (ResolutionException) {
+                    // Continue
                 }
             }
 
-            $resolvedParameters[] = $resolvedParameter;
+            if (!$parameterResolved) {
+                throw new ResolutionException(
+                    $class ?? '',
+                    $this->currentContext,
+                    sprintf(
+                        'Failed to resolve %s in %s::%s()',
+                        $parameter->getName(),
+                        $parameter->getDeclaringClass()->getName(),
+                        $parameter->getDeclaringFunction()->getName()
+                    )
+                );
+            }
         }
 
         return $resolvedParameters;
@@ -416,23 +433,59 @@ class Container implements IContainer
      * Resolves a primitive parameter
      *
      * @param ReflectionParameter $parameter The primitive parameter to resolve
+     * @param ReflectionType|null $reflectionType The type to resolve the primitive as, or null if there was no type
      * @param array $primitives The list of primitive values
      * @return mixed The resolved primitive
-     * @throws ReflectionException Thrown if there was a reflection exception
+     * @throws ResolutionException Thrown if there was an error resolving the primitive
      */
-    protected function resolvePrimitive(ReflectionParameter $parameter, array &$primitives): mixed
+    protected function resolvePrimitive(ReflectionParameter $parameter, ?ReflectionType $reflectionType, array &$primitives): mixed
     {
         if (\count($primitives) > 0) {
-            // Grab the next primitive
+            // Grab the next primitive, and make sure its type matches the type of the next parameter if it has a type
+            if (
+                $reflectionType !== null
+                && ($parameterTypeName = $reflectionType instanceof \ReflectionNamedType ? $reflectionType->getName() : (string)$reflectionType) !== 'mixed'
+            ) {
+                $primitiveTypeName = \gettype($primitives[0]);
+                echo $primitiveTypeName . '||' . $parameterTypeName;
+
+                if ($primitiveTypeName !== $parameterTypeName) {
+                    throw new ResolutionException(
+                        $parameter->getName(),
+                        $this->currentContext,
+                        sprintf(
+                            'Expected type %s, got %s for %s in %s::%s()',
+                            $parameterTypeName,
+                            $primitiveTypeName,
+                            $parameter->getName(),
+                            $parameter->getDeclaringClass()->getName(),
+                            $parameter->getDeclaringFunction()->getName()
+                        )
+                    );
+                }
+            }
+
             return array_shift($primitives);
         }
 
         if ($parameter->isDefaultValueAvailable()) {
             // No value was found, so use the default value
-            return $parameter->getDefaultValue();
+            try {
+                return $parameter->getDefaultValue();
+            } catch (ReflectionException $ex) {
+                throw new ResolutionException(
+                    $parameter->getName(),
+                    $this->currentContext,
+                    "Failed to get the default value for parameter {$parameter->getName()}",
+                    0,
+                    $ex
+                );
+            }
         }
 
-        throw new ReflectionException(
+        throw new ResolutionException(
+            $parameter->getName(),
+            $this->currentContext,
             sprintf(
                 'No default value available for %s in %s::%s()',
                 $parameter->getName(),
