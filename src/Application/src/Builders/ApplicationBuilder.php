@@ -51,7 +51,7 @@ abstract class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function withComponent(IComponent $component, int $priority = null): IApplicationBuilder
+    public function withComponent(IComponent $component, int $priority = null): static
     {
         $type = $component::class;
         $this->componentTypesAndPriorities[] = ['type' => $type, 'priority' => $priority ?? \PHP_INT_MAX];
@@ -63,7 +63,7 @@ abstract class ApplicationBuilder implements IApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function withModule(IModule $module): IApplicationBuilder
+    public function withModule(IModule $module): static
     {
         $this->modules[] = $module;
 

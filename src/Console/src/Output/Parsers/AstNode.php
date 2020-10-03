@@ -43,9 +43,9 @@ abstract class AstNode
      * Adds a child to this node
      *
      * @param AstNode $node The child to add
-     * @return self Returns this for chaining
+     * @return static For chaining
      */
-    public function addChild(AstNode $node): self
+    public function addChild(AstNode $node): static
     {
         $node->parent = $this;
         $this->children[] = $node;

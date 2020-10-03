@@ -63,7 +63,7 @@ class NegotiatedRequestBuilder extends RequestBuilder
      * @param mixed $body The body to set
      * @throws SerializationException Thrown if the body could not be serialized
      */
-    public function withBody(mixed $body): NegotiatedRequestBuilder
+    public function withBody(mixed $body): static
     {
         $new = clone $this;
 

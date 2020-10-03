@@ -75,9 +75,9 @@ class ExceptionHandlerComponent implements IComponent
      *
      * @param string $exceptionType The type of exception that's thrown
      * @param Closure $callback The factory that takes in the exception and output, and writes messages/returns a status code
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withConsoleOutputWriter(string $exceptionType, Closure $callback): self
+    public function withConsoleOutputWriter(string $exceptionType, Closure $callback): static
     {
         $this->consoleOutputWriters[$exceptionType] = $callback;
 
@@ -89,10 +89,11 @@ class ExceptionHandlerComponent implements IComponent
      *
      * @param string $exceptionType The type of exception that's thrown
      * @param Closure $logLevelFactory The factory that takes in an instance of the exception type and returns a PSR-3 log level
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withLogLevelFactory(string $exceptionType, Closure $logLevelFactory): self
+    public function withLogLevelFactory(string $exceptionType, Closure $logLevelFactory): static
     {
+        // TODO: Does this AND OTHER METHODS conflict with the one in AphiriaComponents?
         $this->logLevelFactories[$exceptionType] = $logLevelFactory;
 
         return $this;
@@ -108,7 +109,7 @@ class ExceptionHandlerComponent implements IComponent
      * @param int|Closure|null $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
      * @param string|Closure|null $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
      * @param array|Closure|null $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
-     * @return self For chaining
+     * @return static For chaining
      */
     public function withProblemDetails(
         string $exceptionType,
@@ -118,7 +119,7 @@ class ExceptionHandlerComponent implements IComponent
         int|Closure $status = null,
         string|Closure $instance = null,
         array|Closure $extensions = null
-    ): self {
+    ): static {
         $this->exceptionProblemDetailMappings[$exceptionType] = [
             'type' => $type,
             'title' => $title,

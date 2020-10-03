@@ -68,9 +68,9 @@ class CommandComponent implements IComponent
     /**
      * Enables route annotations
      *
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withAnnotations(): self
+    public function withAnnotations(): static
     {
         $this->annotationsEnabled = true;
 
@@ -81,9 +81,9 @@ class CommandComponent implements IComponent
      * Adds commands to the registry
      *
      * @param Closure $callback The callback that takes in an instance of CommandRegistry
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withCommands(Closure $callback): self
+    public function withCommands(Closure $callback): static
     {
         $this->callbacks[] = $callback;
 

@@ -75,9 +75,9 @@ class RouterComponent implements IComponent
     /**
      * Enables route annotations
      *
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withAnnotations(): self
+    public function withAnnotations(): static
     {
         $this->annotationsEnabled = true;
 
@@ -88,9 +88,9 @@ class RouterComponent implements IComponent
      * Adds routes to the registry
      *
      * @param Closure $callback The callback that takes in an instance of RouteBuilderRegistry
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withRoutes(Closure $callback): self
+    public function withRoutes(Closure $callback): static
     {
         $this->callbacks[] = $callback;
 

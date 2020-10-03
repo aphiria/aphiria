@@ -52,15 +52,15 @@ interface IApplicationBuilder
      *
      * @param IComponent $component The component to register
      * @param int|null $priority The optional priority of this component (lower number => higher priority)
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withComponent(IComponent $component, int $priority = null): self;
+    public function withComponent(IComponent $component, int $priority = null): static;
 
     /**
      * Adds an entire module to the application
      *
      * @param IModule $module The module to register
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withModule(IModule $module): self;
+    public function withModule(IModule $module): static;
 }

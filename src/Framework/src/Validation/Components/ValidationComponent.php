@@ -67,9 +67,9 @@ class ValidationComponent implements IComponent
     /**
      * Enables support for annotations
      *
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withAnnotations(): self
+    public function withAnnotations(): static
     {
         $this->annotationsEnabled = true;
 
@@ -80,9 +80,9 @@ class ValidationComponent implements IComponent
      * Adds an object constraints builder to the collection
      *
      * @param Closure $callback The callback that takes in an instance of ObjectConstraintsRegistryBuilder
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withObjectConstraints(Closure $callback): self
+    public function withObjectConstraints(Closure $callback): static
     {
         $this->callbacks[] = $callback;
 

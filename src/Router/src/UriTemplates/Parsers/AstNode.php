@@ -40,9 +40,9 @@ final class AstNode
      * Adds a child to this node
      *
      * @param AstNode $node The child to add
-     * @return AstNode Returns this for chaining
+     * @return self Returns this for chaining
      */
-    public function addChild(AstNode $node): AstNode
+    public function addChild(AstNode $node): self
     {
         $node->parent = $this;
         $this->children[] = $node;

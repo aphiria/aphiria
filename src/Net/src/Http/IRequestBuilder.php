@@ -34,10 +34,10 @@ interface IRequestBuilder
      * Sets a body
      *
      * @param IBody|null $body The request body to use, or null if not using a body
-     * @return self For chaining
+     * @return static For chaining
      * @throws InvalidArgumentException Thrown if the body type was not supported
      */
-    public function withBody(?IBody $body): self;
+    public function withBody(?IBody $body): static;
 
     /**
      * Adds a header to the request
@@ -45,57 +45,57 @@ interface IRequestBuilder
      * @param string $name The name of the header to add
      * @param string|array $values The value(s) to add
      * @param bool $append Whether or not to append the value(s) if the header already exists
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withHeader(string $name, string|array $values, bool $append = false): self;
+    public function withHeader(string $name, string|array $values, bool $append = false): static;
 
     /**
      * Adds a header to the request
      *
      * @param array $headers The mapping of header names to values
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withManyHeaders(array $headers): self;
+    public function withManyHeaders(array $headers): static;
 
     /**
      * Sets the HTTP method
      *
      * @param string $method The HTTP method
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withMethod(string $method): self;
+    public function withMethod(string $method): static;
 
     /**
      * Adds a property to the request
      *
      * @param string $name The name of the property to add
      * @param mixed $value The value of the property
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withProperty(string $name, mixed $value): self;
+    public function withProperty(string $name, mixed $value): static;
 
     /**
      * Sets the protocol version of the request
      *
      * @param string $protocolVersion
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withProtocolVersion(string $protocolVersion): self;
+    public function withProtocolVersion(string $protocolVersion): static;
 
     /**
      * Sets the target type of the request
      *
      * @param string $requestTargetType
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withRequestTargetType(string $requestTargetType): self;
+    public function withRequestTargetType(string $requestTargetType): static;
 
     /**
      * Sets the request URI
      *
      * @param string|Uri $uri The request URI
-     * @return self For chaining
+     * @return static For chaining
      * @throws InvalidArgumentException Thrown if the URI was not a string nor URI
      */
-    public function withUri(string|Uri $uri): self;
+    public function withUri(string|Uri $uri): static;
 }

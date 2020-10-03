@@ -53,10 +53,10 @@ abstract class TrieNode
      * Adds a child node and recursively merges all its children, too
      *
      * @param $childNode $node The node to add
-     * @return self For chaining
+     * @return static For chaining
      * @throws InvalidArgumentException Thrown if the node was an invalid type
      */
-    public function addChild(TrieNode $childNode): self
+    public function addChild(TrieNode $childNode): static
     {
         if ($childNode instanceof LiteralTrieNode) {
             $this->addLiteralChildNode($childNode);
