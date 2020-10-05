@@ -47,7 +47,7 @@ class CommandRegistrantCollection implements ICommandRegistrant
      */
     public function registerCommands(CommandRegistry $commands): void
     {
-        if ($this->commandCache !== null && ($cachedCommands = $this->commandCache->get()) !== null) {
+        if (($cachedCommands = $this->commandCache?->get()) !== null) {
             $commands->copy($cachedCommands);
 
             return;

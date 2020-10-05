@@ -47,7 +47,7 @@ class ObjectConstraintsRegistrantCollection implements IObjectConstraintsRegistr
      */
     public function registerConstraints(ObjectConstraintsRegistry $objectConstraints): void
     {
-        if ($this->objectConstraintsCache !== null && ($cachedObjectConstraints = $this->objectConstraintsCache->get()) !== null) {
+        if (($cachedObjectConstraints = $this->objectConstraintsCache?->get()) !== null) {
             $objectConstraints->copy($cachedObjectConstraints);
 
             return;

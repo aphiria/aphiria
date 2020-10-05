@@ -51,7 +51,7 @@ final class TrieFactory
      */
     public function createTrie(): TrieNode
     {
-        if ($this->trieCache !== null && ($trie = $this->trieCache->get()) !== null) {
+        if (($trie = $this->trieCache?->get()) !== null) {
             return $trie;
         }
 

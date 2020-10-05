@@ -47,7 +47,7 @@ class RouteRegistrantCollection implements IRouteRegistrant
      */
     public function registerRoutes(RouteCollection $routes): void
     {
-        if ($this->routeCache !== null && ($cachedRoutes = $this->routeCache->get()) !== null) {
+        if (($cachedRoutes = $this->routeCache?->get()) !== null) {
             $routes->copy($cachedRoutes);
 
             return;

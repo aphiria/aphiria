@@ -144,7 +144,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      */
     private function resolveScalarParameter(ReflectionParameter $reflectionParameter, $rawValue): mixed
     {
-        $type = $reflectionParameter->getType() === null ? null : $reflectionParameter->getType()->getName();
+        $type = $reflectionParameter->getType()?->getName();
 
         switch ($type) {
             case 'int':
