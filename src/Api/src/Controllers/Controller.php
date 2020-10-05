@@ -290,8 +290,7 @@ class Controller
         return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCodes::HTTP_NO_CONTENT,
-            $headers,
-            null
+            $headers
         );
     }
 
@@ -378,7 +377,9 @@ class Controller
         } catch (SerializationException $ex) {
             throw new HttpException(
                 HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY,
-                "Failed to deserialize request body when resolving body as type $type"
+                "Failed to deserialize request body when resolving body as type $type",
+                0,
+                $ex
             );
         }
     }

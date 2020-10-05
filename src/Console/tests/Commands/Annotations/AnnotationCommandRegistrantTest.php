@@ -23,7 +23,6 @@ use Aphiria\Console\Input\ArgumentTypes;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Input\OptionTypes;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Reflection\ITypeFinder;
 use Doctrine\Common\Annotations\Annotation\Required;
 use PHPUnit\Framework\TestCase;
@@ -54,7 +53,7 @@ class AnnotationCommandRegistrantTest extends TestCase
         $commandHandler = new class() implements ICommandHandler {
             public function handle(Input $input, IOutput $output)
             {
-                return;
+                // Don't do anything
             }
         };
         $this->typeFinder->expects($this->once())
@@ -79,7 +78,7 @@ class AnnotationCommandRegistrantTest extends TestCase
         $commandHandler = new class() implements ICommandHandler {
             public function handle(Input $input, IOutput $output)
             {
-                return;
+                // Don't do anything
             }
         };
         $this->typeFinder->expects($this->once())

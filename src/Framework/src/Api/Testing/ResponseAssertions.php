@@ -213,10 +213,10 @@ class ResponseAssertions
      * @param IRequest $request The request that generated the response (used for content negotiation)
      * @param IResponse $response The response whose body we want
      * @param string $type The type to deserialize the body to
-     * @return mixed An instance of type, or null if the body is not set
+     * @return float|object|int|bool|array|string|null An instance of type, or null if the body is not set
      * @throws SerializationException Thrown if the body could not be read
      */
-    private function getParsedBody(IRequest $request, IResponse $response, string $type): mixed
+    private function getParsedBody(IRequest $request, IResponse $response, string $type): float|object|int|bool|array|string|null
     {
         if (($body = $response->getBody()) === null) {
             return null;

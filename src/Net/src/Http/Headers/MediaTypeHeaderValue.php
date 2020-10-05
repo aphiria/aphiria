@@ -56,7 +56,7 @@ class MediaTypeHeaderValue
         $this->type = $mediaTypeParts[0];
         $this->subType = $mediaTypeParts[1];
 
-        if (\strpos($this->mediaType, '+') !== false) {
+        if (str_contains($this->mediaType, '+')) {
             $this->suffix = \substr($this->mediaType, \strpos($this->mediaType, '+') + 1);
         }
 

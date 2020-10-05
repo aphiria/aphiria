@@ -28,6 +28,6 @@ final class CommandHandlerB implements ICommandHandler
      */
     public function handle(Input $input, IOutput $output)
     {
-        return;
+        // Don't do anything
     }
 }

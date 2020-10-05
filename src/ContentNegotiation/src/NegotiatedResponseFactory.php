@@ -158,7 +158,15 @@ final class NegotiatedResponseFactory implements IResponseFactory
     {
         $headers = new Headers();
         $headers->add('Content-Type', 'application/json');
-        $body = new StringBody(json_encode($this->contentNegotiator->getAcceptableResponseMediaTypes($type)));
+
+        try {
+            $body = new StringBody(\json_encode($this->contentNegotiator->getAcceptableResponseMediaTypes($type), JSON_THROW_ON_ERROR));
+            // @codeCoverageIgnoreStart
+        } catch (\JsonException) {
+            $body = null;
+            // @codeCoverageIgnoreEnd
+        }
+
         $response = new Response(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, $headers, $body);
 
         return new HttpException($response);

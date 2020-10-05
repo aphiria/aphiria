@@ -31,7 +31,7 @@ final class DateConstraint implements IRouteVariableConstraint
         $formatArray = (array)$formats;
 
         if (\count($formatArray) === 0) {
-            throw new InvalidArgumentException('No formats specified for ' . static::class);
+            throw new InvalidArgumentException('No formats specified for ' . self::class);
         }
 
         $this->formats = (array)$formats;

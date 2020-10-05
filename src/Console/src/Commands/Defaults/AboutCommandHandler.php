@@ -85,8 +85,8 @@ EOF;
          * @return int The result of the comparison
          */
         $sort = static function (Command $a, Command $b) {
-            if (strpos($a->name, ':') === false) {
-                if (strpos($b->name, ':') === false) {
+            if (!str_contains($a->name, ':')) {
+                if (!str_contains($b->name, ':')) {
                     // They're both uncategorized
                     return $a->name < $b->name ? -1 : 1;
                 }
@@ -95,7 +95,7 @@ EOF;
                 return -1;
             }
 
-            if (strpos($b->name, ':') === false) {
+            if (!str_contains($b->name, ':')) {
                 // A is categorized
                 return 1;
             }

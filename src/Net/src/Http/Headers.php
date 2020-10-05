@@ -47,25 +47,25 @@ final class Headers extends HashTable
      * @param mixed $values The value or values
      * @param bool $append Whether or not to append the value to to the other header values
      */
-    public function add(mixed $name, mixed $values, bool $append = false): void
+    public function add(mixed $key, mixed $value, bool $append = false): void
     {
-        $normalizedName = self::normalizeHeaderName($name);
+        $normalizedName = self::normalizeHeaderName($key);
 
         if (!$append || !$this->containsKey($normalizedName)) {
-            parent::add($normalizedName, (array)$values);
+            parent::add($normalizedName, (array)$value);
         } else {
             $currentValues = [];
             $this->tryGet($normalizedName, $currentValues);
-            parent::add($normalizedName, [...$currentValues, ...(array)$values]);
+            parent::add($normalizedName, [...$currentValues, ...(array)$value]);
         }
     }
 
     /**
      * @inheritdoc
      */
-    public function addRange(array $kvps): void
+    public function addRange(array $values): void
     {
-        foreach ($kvps as $kvp) {
+        foreach ($values as $kvp) {
             if (!$kvp instanceof KeyValuePair) {
                 throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
             }
@@ -77,17 +77,17 @@ final class Headers extends HashTable
     /**
      * @inheritdoc
      */
-    public function containsKey($name): bool
+    public function containsKey(mixed $key): bool
     {
-        return parent::containsKey(self::normalizeHeaderName($name));
+        return parent::containsKey(self::normalizeHeaderName($key));
     }
 
     /**
      * @inheritdoc
      */
-    public function get(mixed $name): mixed
+    public function get(mixed $key): mixed
     {
-        return parent::get(self::normalizeHeaderName($name));
+        return parent::get(self::normalizeHeaderName($key));
     }
 
     /**
@@ -110,9 +110,9 @@ final class Headers extends HashTable
     /**
      * @inheritdoc
      */
-    public function removeKey(mixed $name): void
+    public function removeKey(mixed $key): void
     {
-        parent::removeKey(self::normalizeHeaderName($name));
+        parent::removeKey(self::normalizeHeaderName($key));
     }
 
     /**
@@ -129,7 +129,7 @@ final class Headers extends HashTable
             $value = $this->get($name)[0];
 
             return true;
-        } catch (OutOfBoundsException $ex) {
+        } catch (OutOfBoundsException) {
             return false;
         }
     }

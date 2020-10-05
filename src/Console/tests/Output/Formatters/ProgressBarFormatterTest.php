@@ -158,7 +158,7 @@ class ProgressBarFormatterTest extends TestCase
     private function progressBarMatchesExpectedValue(string $expectedValue, string $actualValue, bool $ignoreTimeRemaining): bool
     {
         if ($ignoreTimeRemaining) {
-            return \strpos($actualValue, $expectedValue) === 0;
+            return \str_starts_with($actualValue, $expectedValue);
         }
 
         return $actualValue === $expectedValue;

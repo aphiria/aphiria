@@ -58,14 +58,10 @@ final class ValidationBinder extends Binder
         $errorMessageTemplateConfiguration = null;
 
         if (GlobalConfiguration::tryGetArray('aphiria.validation.errorMessageTemplates', $errorMessageTemplateConfiguration)) {
-            switch ($errorMessageTemplateConfiguration['type']) {
-                case DefaultErrorMessageTemplateRegistry::class:
-                    $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry();
-                    break;
-                default:
-                    $errorMessageTemplates = $container->resolve($errorMessageTemplateConfiguration['type']);
-                    break;
-            }
+            $errorMessageTemplates = match ($errorMessageTemplateConfiguration['type']) {
+                DefaultErrorMessageTemplateRegistry::class => new DefaultErrorMessageTemplateRegistry(),
+                default => $container->resolve($errorMessageTemplateConfiguration['type']),
+            };
         } else {
             $errorMessageTemplates = null;
         }

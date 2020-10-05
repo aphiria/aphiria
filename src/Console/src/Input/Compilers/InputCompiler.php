@@ -253,7 +253,7 @@ final class InputCompiler implements IInputCompiler
         // Trim the "--"
         $option = mb_substr($token, 2);
 
-        if (mb_strpos($option, '=') === false) {
+        if (!str_contains($option, '=')) {
             /**
              * The option is either of the form "--foo" or "--foo bar" or "--foo -b" or "--foo --bar"
              * So, we need to determine if the option has a value
@@ -261,7 +261,7 @@ final class InputCompiler implements IInputCompiler
             $nextToken = array_shift($remainingTokens);
 
             // Check if the next token is also an option
-            if (empty($nextToken) || mb_strpos($nextToken, '-') === 0) {
+            if (empty($nextToken) || str_starts_with($nextToken, '-')) {
                 // The option must have not had a value, so put the next token back
                 array_unshift($remainingTokens, $nextToken);
 
@@ -296,10 +296,10 @@ final class InputCompiler implements IInputCompiler
         $commandName = array_shift($tokens);
 
         while ($token = array_shift($tokens)) {
-            if (mb_strpos($token, '--') === 0) {
+            if (str_starts_with($token, '--')) {
                 [$optionName, $optionValue] = self::parseLongOption($token, $tokens);
                 self::addOption($options, $optionName, $optionValue);
-            } elseif (mb_strpos($token, '-') === 0) {
+            } elseif (str_starts_with($token, '-')) {
                 foreach (self::parseShortOption($token) as [$optionName, $optionValue]) {
                     self::addOption($options, $optionName, $optionValue);
                 }

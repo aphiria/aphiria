@@ -43,7 +43,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
 
             if ($uriTemplate[$cursor] === ' ') {
                 $cursor++;
-            } elseif (\strpos(self::PUNCTUATION, $uriTemplate[$cursor]) !== false) {
+            } elseif (str_contains(self::PUNCTUATION, $uriTemplate[$cursor])) {
                 self::flushTextBuffer($textBuffer, $tokens);
                 self::lexPunctuation($uriTemplate[$cursor], $tokens, $cursor);
             } elseif (\preg_match(self::VARIABLE_NAME_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {

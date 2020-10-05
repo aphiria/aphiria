@@ -143,7 +143,7 @@ class NegotiatedResponseFactoryTest extends TestCase
 
     public function testCreatingResponseUsesStatusCode(): void
     {
-        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 202, null, null);
+        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 202);
         $this->assertSame(202, $response->getStatusCode());
     }
 
@@ -168,7 +168,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     public function testCreatingResponseWithHeadersUsesThoseHeaders(): void
     {
         $headers = new Headers();
-        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, $headers, null);
+        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, $headers);
         $this->assertSame($headers, $response->getHeaders());
     }
 

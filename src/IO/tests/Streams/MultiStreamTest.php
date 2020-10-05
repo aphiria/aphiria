@@ -268,8 +268,7 @@ class MultiStreamTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $stream = $this->createReadableStream();
-        $stream->expects($this->any())
-            ->method('getLength')
+        $stream->method('getLength')
             ->willReturn(null);
         $this->multiStream->addStream($stream);
         $this->multiStream->seek(-1, SEEK_END);
@@ -330,8 +329,7 @@ class MultiStreamTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $stream = $this->createReadableStream();
-        $stream->expects($this->any())
-            ->method('getLength')
+        $stream->method('getLength')
             ->willReturn(null);
         $this->multiStream->addStream($stream);
         $this->multiStream->seek(1);

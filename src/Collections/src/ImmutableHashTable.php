@@ -130,9 +130,9 @@ class ImmutableHashTable implements IImmutableDictionary
      * @inheritdoc
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function offsetExists(mixed $key): bool
+    public function offsetExists(mixed $offset): bool
     {
-        return $this->containsKey($key);
+        return $this->containsKey($offset);
     }
 
     /**
@@ -140,16 +140,16 @@ class ImmutableHashTable implements IImmutableDictionary
      * @throws OutOfBoundsException Thrown if the key could not be found
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function offsetGet(mixed $key): mixed
+    public function offsetGet(mixed $offset): mixed
     {
-        return $this->get($key);
+        return $this->get($offset);
     }
 
     /**
      * @inheritdoc
      * @throws RuntimeException Thrown because this is immutable
      */
-    public function offsetSet(mixed $key, mixed $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new RuntimeException('Cannot set values in ' . self::class);
     }
@@ -158,7 +158,7 @@ class ImmutableHashTable implements IImmutableDictionary
      * @inheritdoc
      * @throws RuntimeException Thrown because this is immutable
      */
-    public function offsetUnset(mixed $key): void
+    public function offsetUnset(mixed $offset): void
     {
         throw new RuntimeException('Cannot unset values in ' . self::class);
     }
@@ -180,7 +180,7 @@ class ImmutableHashTable implements IImmutableDictionary
             $value = $this->get($key);
 
             return true;
-        } catch (OutOfBoundsException $ex) {
+        } catch (OutOfBoundsException) {
             return false;
         }
     }

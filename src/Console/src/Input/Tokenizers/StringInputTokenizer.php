@@ -54,7 +54,7 @@ final class StringInputTokenizer implements IInputTokenizer
                 default:
                     if ($inDoubleQuotes || $inSingleQuotes || $char !== ' ') {
                         $buffer .= $char;
-                    } elseif ($char === ' ' && $previousChar !== ' ' && $buffer !== '') {
+                    } elseif ($previousChar !== ' ' && $buffer !== '') {
                         // We've hit a space outside a quoted string, so flush the buffer
                         $tokens[] = $buffer;
                         $buffer = '';

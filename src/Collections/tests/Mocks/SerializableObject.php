@@ -29,7 +29,7 @@ class SerializableObject
     }
 
     /**
-     * @inheritdoc
+     * @return string
      */
     public function __toString(): string
     {

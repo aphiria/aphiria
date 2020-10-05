@@ -45,9 +45,9 @@ final class DriverSessionHandler implements SessionHandlerInterface
     /**
      * @inheritdoc
      */
-    public function destroy($sessionId): bool
+    public function destroy($session_id): bool
     {
-        $this->driver->delete($sessionId);
+        $this->driver->delete($session_id);
 
         return true;
     }
@@ -55,9 +55,9 @@ final class DriverSessionHandler implements SessionHandlerInterface
     /**
      * @inheritdoc
      */
-    public function gc($maxLifetime): bool
+    public function gc($maxlifetime): bool
     {
-        $this->driver->gc($maxLifetime);
+        $this->driver->gc($maxlifetime);
 
         return true;
     }
@@ -65,7 +65,7 @@ final class DriverSessionHandler implements SessionHandlerInterface
     /**
      * @inheritdoc
      */
-    public function open($savePath, $sessionName): bool
+    public function open($save_path, $name): bool
     {
         return true;
     }
@@ -73,13 +73,13 @@ final class DriverSessionHandler implements SessionHandlerInterface
     /**
      * @inheritdoc
      */
-    public function read($sessionId): string
+    public function read($session_id): string
     {
         try {
-            $sessionData = $this->driver->get($sessionId);
+            $sessionData = $this->driver->get($session_id);
 
             return $this->encrypter === null ? $sessionData : $this->encrypter->decrypt($sessionData);
-        } catch (SessionEncryptionException $ex) {
+        } catch (SessionEncryptionException) {
             return '';
         }
     }
@@ -87,14 +87,14 @@ final class DriverSessionHandler implements SessionHandlerInterface
     /**
      * @inheritdoc
      */
-    public function write($sessionId, $sessionData): bool
+    public function write($session_id, $session_data): bool
     {
         try {
-            $sessionDataToWrite = $this->encrypter === null ? $sessionData : $this->encrypter->encrypt($sessionData);
-            $this->driver->set($sessionId, $sessionDataToWrite);
+            $sessionDataToWrite = $this->encrypter === null ? $session_data : $this->encrypter->encrypt($session_data);
+            $this->driver->set($session_id, $sessionDataToWrite);
 
             return true;
-        } catch (SessionEncryptionException $ex) {
+        } catch (SessionEncryptionException) {
             return false;
         }
     }

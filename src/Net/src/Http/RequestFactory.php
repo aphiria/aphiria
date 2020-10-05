@@ -312,7 +312,7 @@ class RequestFactory
 
         if (isset(self::$specialCaseHeaders[$name])) {
             $headers->add($name, $decodedValue, $append);
-        } elseif (strpos($name, 'HTTP_') === 0) {
+        } elseif (str_starts_with($name, 'HTTP_')) {
             // Drop the "HTTP_"
             $normalizedName = substr($name, 5);
             $headers->add($normalizedName, $decodedValue, $append);
