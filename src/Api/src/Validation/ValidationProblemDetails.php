@@ -32,7 +32,7 @@ final class ValidationProblemDetails extends ProblemDetails
         string $type = 'https://tools.ietf.org/html/rfc7231#section-6.5.1',
         string $title = 'One or more validation errors occurred',
         string $detail = null,
-        int $status = HttpStatusCodes::HTTP_BAD_REQUEST,
+        int $status = HttpStatusCodes::BAD_REQUEST,
         string $instance = null
     ) {
         parent::__construct($type, $title, $detail, $status, $instance);

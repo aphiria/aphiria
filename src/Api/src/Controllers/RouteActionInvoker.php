@@ -72,7 +72,7 @@ class RouteActionInvoker implements IRouteActionInvoker
             $reflectionFunction = $this->reflectRouteActionDelegate($routeActionDelegate);
         } catch (ReflectionException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+                HttpStatusCodes::INTERNAL_SERVER_ERROR,
                 sprintf(
                     'Reflection failed for %s',
                     self::getRouteActionDisplayName($routeActionDelegate)
@@ -104,21 +104,21 @@ class RouteActionInvoker implements IRouteActionInvoker
             }
         } catch (MissingControllerParameterValueException | FailedScalarParameterConversionException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_BAD_REQUEST,
+                HttpStatusCodes::BAD_REQUEST,
                 'Failed to invoke ' . self::getRouteActionDisplayName($routeActionDelegate),
                 0,
                 $ex
             );
         } catch (FailedRequestContentNegotiationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE,
                 'Failed to invoke ' . self::getRouteActionDisplayName($routeActionDelegate),
                 0,
                 $ex
             );
         } catch (RequestBodyDeserializationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY,
+                HttpStatusCodes::UNPROCESSABLE_ENTITY,
                 'Failed to invoke ' . self::getRouteActionDisplayName($routeActionDelegate),
                 0,
                 $ex
@@ -133,13 +133,13 @@ class RouteActionInvoker implements IRouteActionInvoker
 
         // Handle void return types
         if ($actionResult === null) {
-            return new Response(HttpStatusCodes::HTTP_NO_CONTENT);
+            return new Response(HttpStatusCodes::NO_CONTENT);
         }
 
         // Attempt to create an OK response from the return value
         return $this->responseFactory->createResponse(
             $request,
-            HttpStatusCodes::HTTP_OK,
+            HttpStatusCodes::OK,
             null,
             $actionResult
         );

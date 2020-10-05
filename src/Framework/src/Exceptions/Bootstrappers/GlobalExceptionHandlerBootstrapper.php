@@ -102,7 +102,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                     null,
                     null,
                     null,
-                    HttpStatusCodes::HTTP_BAD_REQUEST
+                    HttpStatusCodes::BAD_REQUEST
                 );
                 break;
             default:

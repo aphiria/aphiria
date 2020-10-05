@@ -114,7 +114,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_ACCEPTED,
+            HttpStatusCodes::ACCEPTED,
             $headers,
             $body
         );
@@ -137,7 +137,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_BAD_REQUEST,
+            HttpStatusCodes::BAD_REQUEST,
             $headers,
             $body
         );
@@ -160,7 +160,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_CONFLICT,
+            HttpStatusCodes::CONFLICT,
             $headers,
             $body
         );
@@ -188,7 +188,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_CREATED,
+            HttpStatusCodes::CREATED,
             $headers,
             $body
         );
@@ -211,7 +211,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_FORBIDDEN,
+            HttpStatusCodes::FORBIDDEN,
             $headers,
             $body
         );
@@ -231,7 +231,7 @@ class Controller
      */
     protected function found(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
-        return $this->redirect(HttpStatusCodes::HTTP_FOUND, $uri, $body, $headers);
+        return $this->redirect(HttpStatusCodes::FOUND, $uri, $body, $headers);
     }
 
     /**
@@ -251,7 +251,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+            HttpStatusCodes::INTERNAL_SERVER_ERROR,
             $headers,
             $body
         );
@@ -270,7 +270,7 @@ class Controller
      */
     protected function movedPermanently(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
-        return $this->redirect(HttpStatusCodes::HTTP_MOVED_PERMANENTLY, $uri, $body, $headers);
+        return $this->redirect(HttpStatusCodes::MOVED_PERMANENTLY, $uri, $body, $headers);
     }
 
     /**
@@ -289,7 +289,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_NO_CONTENT,
+            HttpStatusCodes::NO_CONTENT,
             $headers
         );
     }
@@ -311,7 +311,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_NOT_FOUND,
+            HttpStatusCodes::NOT_FOUND,
             $headers,
             $body
         );
@@ -334,7 +334,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_OK,
+            HttpStatusCodes::OK,
             $headers,
             $body
         );
@@ -367,7 +367,7 @@ class Controller
 
         if ($mediaTypeFormatter === null) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE,
                 "Failed to negotiate request content with type $type"
             );
         }
@@ -376,7 +376,7 @@ class Controller
             return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type);
         } catch (SerializationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY,
+                HttpStatusCodes::UNPROCESSABLE_ENTITY,
                 "Failed to deserialize request body when resolving body as type $type",
                 0,
                 $ex
@@ -401,7 +401,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_UNAUTHORIZED,
+            HttpStatusCodes::UNAUTHORIZED,
             $headers,
             $body
         );

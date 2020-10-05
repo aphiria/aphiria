@@ -24,7 +24,7 @@ class Response implements IResponse
     /** @var string|null The response reason phrase if there is one, otherwise null */
     protected ?string $reasonPhrase;
     /** @var int The response status code */
-    protected int $statusCode = HttpStatusCodes::HTTP_OK;
+    protected int $statusCode = HttpStatusCodes::OK;
     /** @var string The HTTP protocol version */
     protected string $protocolVersion = '';
 
@@ -35,7 +35,7 @@ class Response implements IResponse
      * @param string $protocolVersion The HTTP protocol version
      */
     public function __construct(
-        int $statusCode = HttpStatusCodes::HTTP_OK,
+        int $statusCode = HttpStatusCodes::OK,
         Headers $headers = null,
         ?IBody $body = null,
         string $protocolVersion = '1.1'

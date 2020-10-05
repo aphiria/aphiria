@@ -62,7 +62,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             $body = $this->createBody($request, $rawBody, $contentNegotiationResult);
         } catch (InvalidArgumentException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+                HttpStatusCodes::INTERNAL_SERVER_ERROR,
                 'Failed to create response body',
                 0,
                 $ex
@@ -139,7 +139,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             );
         } catch (SerializationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+                HttpStatusCodes::INTERNAL_SERVER_ERROR,
                 'Failed to serialize response body',
                 0,
                 $ex
@@ -169,7 +169,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             // @codeCoverageIgnoreEnd
         }
 
-        $response = new Response(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, $headers, $body);
+        $response = new Response(HttpStatusCodes::NOT_ACCEPTABLE, $headers, $body);
 
         return new HttpException($response);
     }
