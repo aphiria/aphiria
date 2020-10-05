@@ -27,6 +27,7 @@ use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Reflection\TypeResolver;
 use InvalidArgumentException;
+use JsonException;
 
 /**
  * Defines the factory that generates HTTP responses from negotiated content
@@ -161,8 +162,9 @@ final class NegotiatedResponseFactory implements IResponseFactory
 
         try {
             $body = new StringBody(\json_encode($this->contentNegotiator->getAcceptableResponseMediaTypes($type), JSON_THROW_ON_ERROR));
+            // Realistically, we won't ever have an array of strings that cannot be encoded to JSON
             // @codeCoverageIgnoreStart
-        } catch (\JsonException) {
+        } catch (JsonException) {
             $body = null;
             // @codeCoverageIgnoreEnd
         }
