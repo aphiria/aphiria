@@ -27,12 +27,8 @@ final class HttpMethodRouteConstraint implements IRouteConstraint
      */
     public function __construct(string|array $allowedMethods)
     {
-        if (\is_string($allowedMethods)) {
-            $this->allowedMethods[\strtoupper($allowedMethods)] = true;
-        } else {
-            foreach ($allowedMethods as $allowedMethod) {
-                $this->allowedMethods[\strtoupper($allowedMethod)] = true;
-            }
+        foreach ((array)$allowedMethods as $allowedMethod) {
+            $this->allowedMethods[\strtoupper($allowedMethod)] = true;
         }
 
         /**

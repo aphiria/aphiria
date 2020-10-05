@@ -26,17 +26,14 @@ use InvalidArgumentException;
  */
 class MiddlewareComponent implements IComponent
 {
-    /** @var IServiceResolver The service resolver */
-    private IServiceResolver $serviceResolver;
     /** @var MiddlewareBinding[] The list of middleware bindings */
     private array $middleware = [];
 
     /**
      * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(IServiceResolver $serviceResolver)
+    public function __construct(private IServiceResolver $serviceResolver)
     {
-        $this->serviceResolver = $serviceResolver;
     }
 
     /**

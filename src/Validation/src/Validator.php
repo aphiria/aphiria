@@ -45,8 +45,6 @@ final class Validator implements IValidator
         '__unset' => true,
         '__wakeup' => true
     ];
-    /** @var ObjectConstraintsRegistry The registry of object constraints */
-    private ObjectConstraintsRegistry $objectConstraints;
     /** @var IErrorMessageInterpolator The interpolator for error messages */
     private IErrorMessageInterpolator $errorMessageInterpolator;
 
@@ -55,10 +53,9 @@ final class Validator implements IValidator
      * @param IErrorMessageInterpolator|null $errorMessageInterpolator The error message interpolator to use
      */
     public function __construct(
-        ObjectConstraintsRegistry $objectConstraints,
+        private ObjectConstraintsRegistry $objectConstraints,
         IErrorMessageInterpolator $errorMessageInterpolator = null
     ) {
-        $this->objectConstraints = $objectConstraints;
         $this->errorMessageInterpolator = $errorMessageInterpolator ?? new StringReplaceErrorMessageInterpolator();
     }
 

@@ -33,8 +33,6 @@ class NegotiatedRequestBuilder extends RequestBuilder
 {
     /** @var IMediaTypeFormatterMatcher The media type formatter matcher */
     private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
-    /** @var string The default content type to use for bodies */
-    private string $defaultContentType;
 
     /**
      * @param IMediaTypeFormatterMatcher|null $mediaTypeFormatterMatcher The media type formatter matcher, or null if using the default one
@@ -43,7 +41,7 @@ class NegotiatedRequestBuilder extends RequestBuilder
      */
     public function __construct(
         IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
-        string $defaultContentType = 'application/json',
+        private string $defaultContentType = 'application/json',
         string $defaultAccept = '*/*'
     ) {
         parent::__construct();
@@ -54,7 +52,6 @@ class NegotiatedRequestBuilder extends RequestBuilder
                 new HtmlMediaTypeFormatter(),
                 new PlainTextMediaTypeFormatter()
             ]);
-        $this->defaultContentType = $defaultContentType;
         $this->headers->add('Accept', $defaultAccept);
     }
 

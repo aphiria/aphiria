@@ -19,27 +19,18 @@ use InvalidArgumentException;
  */
 final class BetweenConstraint implements IRouteVariableConstraint
 {
-    /** @var int|float The min value */
-    private int|float $min;
-    /** @var int|float The max value */
-    private int|float $max;
-    /** @var bool Whether or not the min is inclusive */
-    private bool $minIsInclusive;
-    /** @var bool Whether or not the max is inclusive */
-    private bool $maxIsInclusive;
-
     /**
      * @param int|float $min The min value
      * @param int|float $max The max value
      * @param bool $minIsInclusive Whether or not the min is inclusive
      * @param bool $maxIsInclusive Whether or not the min is inclusive
      */
-    public function __construct(int|float $min, int|float $max, bool $minIsInclusive = true, bool $maxIsInclusive = true)
-    {
-        $this->min = $min;
-        $this->max = $max;
-        $this->minIsInclusive = $minIsInclusive;
-        $this->maxIsInclusive = $maxIsInclusive;
+    public function __construct(
+        private int|float $min,
+        private int|float $max,
+        private bool $minIsInclusive = true,
+        private bool $maxIsInclusive = true
+    ) {
     }
 
     /**

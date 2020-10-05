@@ -62,23 +62,18 @@ final class Style
         TextStyles::UNDERLINE => [4, 24],
         TextStyles::BLINK => [5, 25]
     ];
-    /** @var string|null The foreground color */
-    public ?string $foregroundColor;
-    /** @var string|null The background color */
-    public ?string $backgroundColor;
-    /** @var array The list of text styles */
-    public array $textStyles = [];
 
     /**
      * @param string|null $foregroundColor The foreground color
      * @param string|null $backgroundColor The background color
      * @param array $textStyles The list of text styles to apply
      */
-    public function __construct(string $foregroundColor = null, string $backgroundColor = null, array $textStyles = [])
+    public function __construct(
+        public ?string $foregroundColor = null,
+        public ?string $backgroundColor = null,
+        public array $textStyles = [])
     {
-        $this->foregroundColor = $foregroundColor;
-        $this->backgroundColor = $backgroundColor;
-        $this->addTextStyles($textStyles);
+        $this->addTextStyles($this->textStyles);
     }
 
     /**

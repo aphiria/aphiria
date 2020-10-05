@@ -20,21 +20,16 @@ use InvalidArgumentException;
  */
 final class DateConstraint implements IRouteVariableConstraint
 {
-    /** @var array The list of acceptable date formats */
-    private array $formats;
-
     /**
      * @param array|string $formats The format or list of acceptable formats
      */
-    public function __construct(string|array $formats)
+    public function __construct(private string|array $formats)
     {
-        $formatArray = (array)$formats;
+        $this->formats = (array)$formats;
 
-        if (\count($formatArray) === 0) {
+        if (\count($this->formats) === 0) {
             throw new InvalidArgumentException('No formats specified for ' . self::class);
         }
-
-        $this->formats = (array)$formats;
     }
 
     /**

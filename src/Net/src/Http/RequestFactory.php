@@ -74,18 +74,13 @@ class RequestFactory
     ];
     /** @var array The list of header names whose values should be URL-decoded */
     private static array $headersToUrlDecode = ['HTTP_COOKIE' => true];
-    /** @var array The list of trusted proxy IP addresses */
-    protected array $trustedProxyIPAddresses = [];
-    /** @var array The mapping of header names to trusted header names */
-    protected array $trustedHeaderNames = [];
 
     /**
      * @param array $trustedProxyIPAddresses The list of trusted proxy IP addresses
      * @param array $trustedHeaderNames The mapping of additional header names to trusted header names
      */
-    public function __construct(array $trustedProxyIPAddresses = [], array $trustedHeaderNames = [])
+    public function __construct(protected array $trustedProxyIPAddresses = [], protected array $trustedHeaderNames = [])
     {
-        $this->trustedProxyIPAddresses = $trustedProxyIPAddresses;
         $this->trustedHeaderNames = array_merge(self::$defaultTrustedHeaderNames, $trustedHeaderNames);
     }
 

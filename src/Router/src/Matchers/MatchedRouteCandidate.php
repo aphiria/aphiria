@@ -19,18 +19,11 @@ use Aphiria\Routing\Route;
  */
 final class MatchedRouteCandidate
 {
-    /** @var Route The route that was matched */
-    public Route $route;
-    /** @var array The mapping of route variable names to values */
-    public array $routeVariables;
-
     /**
      * @param Route $route The route that was matched
      * @param array $routeVariables The mapping of route variable names to values
      */
-    public function __construct(Route $route, array $routeVariables)
+    public function __construct(public Route $route, public array $routeVariables)
     {
-        $this->route = $route;
-        $this->routeVariables = $routeVariables;
     }
 }

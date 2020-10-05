@@ -23,8 +23,6 @@ use RuntimeException;
  */
 class MultipartBody extends StreamBody
 {
-    /** @var MultipartBody[] The list of body parts */
-    private array $parts;
     /** @var string The boundary string */
     private string $boundary;
 
@@ -34,9 +32,8 @@ class MultipartBody extends StreamBody
      * @throws RuntimeException Thrown if the boundary could not be generated
      * @throws InvalidArgumentException Thrown if the internal stream could not be generated
      */
-    public function __construct(array $parts, string $boundary = null)
+    public function __construct(private array $parts, string $boundary = null)
     {
-        $this->parts = $parts;
         $this->boundary = $boundary ?? self::createDefaultBoundary();
         $stream = new MultiStream();
 

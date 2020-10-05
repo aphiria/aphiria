@@ -29,8 +29,6 @@ class ExceptionHandlerComponent implements IComponent
 {
     use AphiriaComponents;
 
-    /** @var IServiceResolver The service resolver */
-    private IServiceResolver $serviceResolver;
     /** @var Closure[] The mapping of exception types to problem detail settings */
     private array $exceptionProblemDetailMappings = [];
     /** @var Closure[] The mapping of exception types to console result factories */
@@ -41,9 +39,8 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(IServiceResolver $serviceResolver)
+    public function __construct(private IServiceResolver $serviceResolver)
     {
-        $this->serviceResolver = $serviceResolver;
     }
 
     /**

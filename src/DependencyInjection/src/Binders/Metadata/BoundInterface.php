@@ -19,19 +19,12 @@ use Aphiria\DependencyInjection\Context;
  */
 final class BoundInterface
 {
-    /** @var string The interface that was bound */
-    private string $interface;
-    /** @var Context The context that the binding occurred in */
-    private Context $context;
-
     /**
      * @param string $interface The interface that was bound
      * @param Context $context The context that the binding occurred in
      */
-    public function __construct(string $interface, Context $context)
+    public function __construct(private string $interface, private Context $context)
     {
-        $this->interface = $interface;
-        $this->context = $context;
     }
 
     /**

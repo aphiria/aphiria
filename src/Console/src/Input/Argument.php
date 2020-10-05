@@ -19,15 +19,6 @@ use InvalidArgumentException;
  */
 final class Argument
 {
-    /** @var string The name of the argument */
-    public string $name;
-    /** @var int The type of argument this is */
-    public int $type;
-    /** @var string|null A brief description of the argument */
-    public ?string $description;
-    /** @var mixed The default value for the argument if it's optional */
-    public mixed $defaultValue;
-
     /**
      * @param string $name The name of the argument
      * @param int $type The type of argument this is
@@ -35,16 +26,15 @@ final class Argument
      * @param mixed $defaultValue The default value for the argument if it's optional
      * @throws InvalidArgumentException Thrown if the type is invalid
      */
-    public function __construct(string $name, int $type, string $description = null, mixed $defaultValue = null)
-    {
-        if (($type & 3) === 3) {
+    public function __construct(
+        public string $name,
+        public int $type,
+        public ?string $description = null,
+        public mixed $defaultValue = null
+    ) {
+        if (($this->type & 3) === 3) {
             throw new InvalidArgumentException('Argument type cannot be both optional and required');
         }
-
-        $this->name = $name;
-        $this->type = $type;
-        $this->description = $description;
-        $this->defaultValue = $defaultValue;
     }
 
     /**

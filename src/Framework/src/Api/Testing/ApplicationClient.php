@@ -25,19 +25,12 @@ use Aphiria\Net\Http\IResponse;
  */
 class ApplicationClient implements IHttpClient
 {
-    /** @var IRequestHandler The application */
-    private IRequestHandler $app;
-    /** @var IContainer The DI container */
-    protected IContainer $container;
-
     /**
      * @param IRequestHandler$app The application
      * @param IContainer $container The DI container
      */
-    public function __construct(IRequestHandler $app, IContainer $container)
+    public function __construct(protected IRequestHandler $app, private IContainer $container)
     {
-        $this->app = $app;
-        $this->container = $container;
     }
 
     /**

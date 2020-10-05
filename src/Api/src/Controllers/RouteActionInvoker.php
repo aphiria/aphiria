@@ -35,8 +35,6 @@ class RouteActionInvoker implements IRouteActionInvoker
 {
     /** @const The name of the property to store the parsed body in */
     private const PARSED_BODY_PROPERTY_NAME = '__APHIRIA_PARSED_BODY';
-    /** @var IRequestBodyValidator|null The validator for request bodies, or null if we aren't validating them */
-    private ?IRequestBodyValidator $requestBodyValidator;
     /** @var IResponseFactory The response factory */
     private IResponseFactory $responseFactory;
     /** @var IControllerParameterResolver The controller parameter resolver to use */
@@ -50,11 +48,10 @@ class RouteActionInvoker implements IRouteActionInvoker
      */
     public function __construct(
         IContentNegotiator $contentNegotiator = null,
-        IRequestBodyValidator $requestBodyValidator = null,
+        private ?IRequestBodyValidator $requestBodyValidator = null,
         IResponseFactory $responseFactory = null,
         IControllerParameterResolver $controllerParameterResolver = null
     ) {
-        $this->requestBodyValidator = $requestBodyValidator;
         $contentNegotiator ??= new ContentNegotiator();
         $this->responseFactory = $responseFactory ?? new NegotiatedResponseFactory($contentNegotiator);
         $this->controllerParameterResolver = $controllerParameterResolver ?? new ControllerParameterResolver($contentNegotiator);

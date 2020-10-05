@@ -28,22 +28,16 @@ class ProgressBarFormatter implements IProgressBarObserver
     public string $completedProgressChar = '=';
     /** @var string The remaining progress character */
     public string $remainingProgressChar = '-';
-    /** @var IOutput The output to draw to */
-    private IOutput $output;
-    /** @var int The progress bar width (including delimiters) */
-    private int $progressBarWidth;
     /** @var DateTimeImmutable The start time of the progress bar */
     private DateTimeImmutable $startTime;
     /** @var string The output string format */
     private string $outputFormat;
-    /** @var int The frequency in seconds we redraw the progress bar */
-    private int $redrawFrequency;
     /** @var bool Whether or not this is the first time we've output the progress bar */
     private bool $isFirstOutput = true;
 
     /**
      * @param IOutput $output The output to draw to
-     * @param int|null $progressBarWidth The width of the progress bar (including delimiters)
+     * @param int $progressBarWidth The width of the progress bar (including delimiters)
      * @param string|null $outputFormat The output format to use, or null if using the default
      *      Acceptable placeholders are 'progress', 'maxSteps', 'bar', 'percent', and 'timeRemaining'
      * @param int $redrawFrequency The frequency in seconds we redraw the progress bar
@@ -51,15 +45,12 @@ class ProgressBarFormatter implements IProgressBarObserver
      * @throws Exception Thrown if we could not create the start time
      */
     public function __construct(
-        IOutput $output,
-        ?int $progressBarWidth = self::DEFAULT_PROGRESS_BAR_WIDTH,
+        private IOutput $output,
+        private int $progressBarWidth = self::DEFAULT_PROGRESS_BAR_WIDTH,
         string $outputFormat = null,
-        int $redrawFrequency = 1
+        private int $redrawFrequency = 1
     ) {
-        $this->output = $output;
-        $this->progressBarWidth = $progressBarWidth ?? self::DEFAULT_PROGRESS_BAR_WIDTH;
         $this->outputFormat = $outputFormat ?? '%bar% %progress%/%maxSteps%' . PHP_EOL . 'Time remaining: %timeRemaining%';
-        $this->redrawFrequency = $redrawFrequency;
         $this->startTime = new DateTimeImmutable();
     }
 

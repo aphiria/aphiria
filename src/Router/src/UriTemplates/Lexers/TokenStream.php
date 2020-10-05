@@ -19,18 +19,15 @@ final class TokenStream
 {
     /** @var int The length of the stream */
     public int $length;
-    /** @var Token[] The list of tokens */
-    private array $tokens;
     /** @var int The current cursor */
     private int $cursor = 0;
 
     /**
      * @param Token[] $tokens The list of tokens
      */
-    public function __construct(array $tokens)
+    public function __construct(public array $tokens)
     {
-        $this->tokens = $tokens;
-        $this->length = \count($tokens);
+        $this->length = \count($this->tokens);
     }
 
     /**

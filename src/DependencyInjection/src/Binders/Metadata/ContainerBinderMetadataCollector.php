@@ -25,8 +25,6 @@ use Closure;
  */
 final class ContainerBinderMetadataCollector implements IBinderMetadataCollector, IContainer
 {
-    /** @var IContainer The underlying container that can resolve and bind instances */
-    private IContainer $container;
     /** @var Context The current context */
     private Context $currentContext;
     /** @var Context[] The stack of contexts */
@@ -39,9 +37,8 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * @param IContainer $container The underlying container to use to resolve and bind instances
      */
-    public function __construct(IContainer $container)
+    public function __construct(private IContainer $container)
     {
-        $this->container = $container;
         // Default to a universal context
         $this->currentContext = new UniversalContext();
     }

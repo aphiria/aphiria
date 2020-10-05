@@ -21,15 +21,12 @@ class RouteRegistrantCollection implements IRouteRegistrant
 {
     /** @var IRouteRegistrant[] The list of route registrants */
     protected array $routeRegistrants = [];
-    /** @var IRouteCache|null The optional route cache */
-    private ?IRouteCache $routeCache;
 
     /**
      * @param IRouteCache|null $routeCache The optional route cache
      */
-    public function __construct(IRouteCache $routeCache = null)
+    public function __construct(private ?IRouteCache $routeCache = null)
     {
-        $this->routeCache = $routeCache;
     }
 
     /**

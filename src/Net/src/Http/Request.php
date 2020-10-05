@@ -23,20 +23,10 @@ use RuntimeException;
  */
 class Request implements IRequest
 {
-    /** @var string The request method */
-    protected string $method = '';
-    /** @var Headers|null The request headers if any are set, otherwise null */
-    protected ?Headers $headers;
-    /** @var IBody|null The request body if there is one, otherwise null */
-    protected ?IBody $body;
-    /** @var Uri The request URI */
-    protected Uri $uri;
+    /** @var Headers $headers The request headers */
+    protected Headers $headers;
     /** @var IDictionary The request properties */
     protected IDictionary $properties;
-    /** @var string The HTTP protocol version */
-    protected string $protocolVersion = '';
-    /** @var string The type of request target URI this request uses */
-    protected string $requestTargetType = RequestTargetTypes::ORIGIN_FORM;
     /** @var array The list of valid HTTP methods */
     private static array $validMethods = [
         'CONNECT' => true,
@@ -77,21 +67,17 @@ class Request implements IRequest
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
     public function __construct(
-        string $method,
-        Uri $uri,
+        protected string $method,
+        protected Uri $uri,
         Headers $headers = null,
-        ?IBody $body = null,
+        protected ?IBody $body = null,
         IDictionary $properties = null,
-        string $protocolVersion = '1.1',
-        string $requestTargetType = RequestTargetTypes::ORIGIN_FORM
+        protected string $protocolVersion = '1.1',
+        protected string $requestTargetType = RequestTargetTypes::ORIGIN_FORM
     ) {
         $this->method = strtoupper($method);
-        $this->uri = $uri;
         $this->headers = $headers ?? new Headers();
-        $this->body = $body;
         $this->properties = $properties ?? new HashTable();
-        $this->protocolVersion = $protocolVersion;
-        $this->requestTargetType = $requestTargetType;
         $this->validateProperties();
 
         /** @link https://tools.ietf.org/html/rfc7230#section-5.4 */

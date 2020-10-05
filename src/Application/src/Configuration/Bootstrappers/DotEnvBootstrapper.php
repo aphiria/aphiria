@@ -20,15 +20,11 @@ use Symfony\Component\Dotenv\Dotenv;
  */
 final class DotEnvBootstrapper implements IBootstrapper
 {
-    /** @var string The path to the .env file */
-    private string $envPath;
-
     /**
      * @param string $envPath The path to the .env file
      */
-    public function __construct(string $envPath)
+    public function __construct(private string $envPath)
     {
-        $this->envPath = $envPath;
     }
 
     /**

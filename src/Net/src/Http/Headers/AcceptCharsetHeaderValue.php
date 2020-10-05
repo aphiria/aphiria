@@ -21,8 +21,6 @@ use InvalidArgumentException;
  */
 final class AcceptCharsetHeaderValue implements IHeaderValueWithQualityScore
 {
-    /** @var string The value of the header */
-    private string $charset;
     /** @var IImmutableDictionary The dictionary of parameter names to values */
     private IImmutableDictionary $parameters;
     /** @var float The quality score of the header */
@@ -33,9 +31,8 @@ final class AcceptCharsetHeaderValue implements IHeaderValueWithQualityScore
      * @param IImmutableDictionary|null $parameters The dictionary of parameters, or null if there are no parameters
      * @throws InvalidArgumentException Thrown if the quality score is not between 0 and 1
      */
-    public function __construct(string $charset, IImmutableDictionary $parameters = null)
+    public function __construct(private string $charset, IImmutableDictionary $parameters = null)
     {
-        $this->charset = $charset;
         $this->parameters = $parameters ?? new ImmutableHashTable([]);
         $quality = 1.0;
         $this->parameters->tryGet('q', $quality);

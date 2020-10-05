@@ -28,8 +28,6 @@ use RuntimeException;
  */
 final class InputCompiler implements IInputCompiler
 {
-    /** @var CommandRegistry The commands that are registered */
-    private CommandRegistry $commands;
     /** @var IInputTokenizer The argv input tokenizer */
     private IInputTokenizer $argvTokenizer;
     /** @var IInputTokenizer The string input tokenizer */
@@ -44,12 +42,11 @@ final class InputCompiler implements IInputCompiler
      * @param IInputTokenizer|null $arrayListTokenizer The array list input tokenizer
      */
     public function __construct(
-        CommandRegistry $commands,
+        private CommandRegistry $commands,
         IInputTokenizer $argvTokenizer = null,
         IInputTokenizer $stringTokenizer = null,
         IInputTokenizer $arrayListTokenizer = null
     ) {
-        $this->commands = $commands;
         $this->argvTokenizer = $argvTokenizer ?? new ArgvInputTokenizer();
         $this->stringTokenizer = $stringTokenizer ?? new StringInputTokenizer();
         $this->arrayListTokenizer = $arrayListTokenizer ?? new ArrayListInputTokenizer();

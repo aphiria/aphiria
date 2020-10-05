@@ -26,8 +26,6 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
 {
     /** @const The default name to use for the logger */
     private const DEFAULT_LOGGER_NAME = 'app';
-    /** @var IExceptionRenderer The underlying exception renderer */
-    protected IExceptionRenderer $exceptionRenderer;
     /** @var LoggerInterface The PSR-3 logger */
     protected LoggerInterface $logger;
     /** @var LogLevelFactory The factory for PSR-3 log levels */
@@ -39,11 +37,10 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
      * @param LogLevelFactory|null $logLevelFactory The PSR-3 log level factory
      */
     public function __construct(
-        IExceptionRenderer $exceptionRenderer,
+        protected IExceptionRenderer $exceptionRenderer,
         LoggerInterface $logger = null,
         LogLevelFactory $logLevelFactory = null
     ) {
-        $this->exceptionRenderer = $exceptionRenderer;
         $this->logger = $logger  ?? new Logger(self::DEFAULT_LOGGER_NAME, [new ErrorLogHandler()]);
         $this->logLevelFactory = $logLevelFactory ?? new LogLevelFactory();
     }

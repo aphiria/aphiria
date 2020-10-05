@@ -35,8 +35,6 @@ use Throwable;
  */
 class Application implements ICommandBus
 {
-    /** @var CommandRegistry The commands registered to the application */
-    private CommandRegistry $commands;
     /** @var IServiceResolver The resolver of command handlers */
     private IServiceResolver $commandHandlerResolver;
     /** @var IInputCompiler The input compiler to use */
@@ -48,11 +46,10 @@ class Application implements ICommandBus
      * @param IInputCompiler|null $inputCompiler The input compiler, or null if using the default one
      */
     public function __construct(
-        CommandRegistry $commands,
+        private CommandRegistry $commands,
         IServiceResolver $commandHandlerResolver,
         IInputCompiler $inputCompiler = null
     ) {
-        $this->commands = $commands;
         $this->registerDefaultCommands();
         $this->commandHandlerResolver = $commandHandlerResolver;
         $this->inputCompiler = $inputCompiler ?? new InputCompiler($this->commands);

@@ -59,10 +59,6 @@ final class Stream implements IStream
         'x+b',
         'x+t'
     ];
-    /** @var resource|null The underlying stream handle, or null if it has been closed */
-    private $handle;
-    /** @var int|null The length of the stream, if known */
-    private ?int $length;
     /** @var bool Whether or not the stream is readable */
     private bool $isReadable;
     /** @var bool Whether or not the stream is seekable */
@@ -74,14 +70,12 @@ final class Stream implements IStream
      * @param resource $handle The underlying stream handle
      * @param int|null $length The length of the stream, if known
      */
-    public function __construct($handle, ?int $length = null)
+    public function __construct(private $handle, private ?int $length = null)
     {
-        if (!\is_resource($handle)) {
+        if (!\is_resource($this->handle)) {
             throw new InvalidArgumentException('Stream must be a resource');
         }
 
-        $this->handle = $handle;
-        $this->length = $length;
         $streamMetadata = \stream_get_meta_data($this->handle);
         $this->isReadable = \in_array($streamMetadata['mode'], self::$readStreamModes, true);
         $this->isSeekable = $streamMetadata['seekable'];

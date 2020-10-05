@@ -20,15 +20,11 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
  */
 final class TrieRouteMatcher implements IRouteMatcher
 {
-    /** @var TrieNode The root node */
-    private TrieNode $rootNode;
-
     /**
      * @param TrieNode $rootNode The root node
      */
-    public function __construct(TrieNode $rootNode)
+    public function __construct(private TrieNode $rootNode)
     {
-        $this->rootNode = $rootNode;
     }
 
     /**

@@ -22,19 +22,12 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
 {
-    /** @var SerializerInterface The serializer this formatter uses */
-    private SerializerInterface $serializer;
-    /** @var string The format to (de)serialize to */
-    private string $format;
-
     /**
      * @param SerializerInterface $serializer The serializer this formatter uses
      * @param string $format The format to (de)serialize to
      */
-    protected function __construct(SerializerInterface $serializer, string $format)
+    protected function __construct(private SerializerInterface $serializer, private string $format)
     {
-        $this->serializer = $serializer;
-        $this->format = $format;
     }
 
     /**

@@ -20,8 +20,6 @@ use InvalidArgumentException;
  */
 abstract class TrieNode
 {
-    /** @var TrieNode|null The host trie, if there is one */
-    public ?TrieNode $hostTrie;
     /** @var Route[] The list of routes for this node, if there are any */
     public array $routes;
     /** @var VariableTrieNode[] The child variable nodes */
@@ -34,19 +32,17 @@ abstract class TrieNode
      * @param Route[]|Route $routes The list of routes for this segment if there are any
      * @param TrieNode|null $hostTrie The host trie, if there is one
      */
-    protected function __construct(array $children, Route|array $routes, ?TrieNode $hostTrie)
+    protected function __construct(array $children, Route|array $routes, public ?TrieNode $hostTrie)
     {
         if (\is_array($routes)) {
             $this->routes = $routes;
-        } elseif ($routes instanceof Route) {
+        } else {
             $this->routes = [$routes];
         }
 
         foreach ($children as $child) {
             $this->addChild($child);
         }
-
-        $this->hostTrie = $hostTrie;
     }
 
     /**

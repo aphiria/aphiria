@@ -19,15 +19,11 @@ use Aphiria\IO\Streams\IStream;
  */
 class StreamBody implements IBody
 {
-    /** @var IStream The body content */
-    protected IStream $stream;
-
     /**
      * @param IStream $stream The body content
      */
-    public function __construct(IStream $stream)
+    public function __construct(protected IStream $stream)
     {
-        $this->stream = $stream;
     }
 
     /**

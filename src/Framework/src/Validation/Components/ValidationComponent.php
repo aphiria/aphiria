@@ -27,8 +27,6 @@ use RuntimeException;
  */
 class ValidationComponent implements IComponent
 {
-    /** @var IServiceResolver The service resolver */
-    private IServiceResolver $serviceResolver;
     /** @var bool Whether or not annotations are enabled */
     private bool $annotationsEnabled = false;
     /** @var Closure[] The list of callbacks that can register object constraints */
@@ -37,9 +35,8 @@ class ValidationComponent implements IComponent
     /**
      * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(IServiceResolver $serviceResolver)
+    public function __construct(private IServiceResolver $serviceResolver)
     {
-        $this->serviceResolver = $serviceResolver;
     }
 
     /**

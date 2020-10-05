@@ -23,12 +23,8 @@ use Aphiria\Net\Http\IResponse;
 
 final class ControllerRequestHandler implements IRequestHandler
 {
-    /** @var Controller The controller */
-    private Controller $controller;
     /** @var callable The route action delegate */
     private $routeActionDelegate;
-    /** @var array The route variables */
-    private array $routeVariables;
     /** @var IContentNegotiator The content negotiator */
     private IContentNegotiator $contentNegotiator;
     /** @var IRouteActionInvoker The route action invoker */
@@ -42,15 +38,13 @@ final class ControllerRequestHandler implements IRequestHandler
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker to use
      */
     public function __construct(
-        Controller $controller,
+        private Controller $controller,
         callable $routeActionDelegate,
-        array $routeVariables,
+        private array $routeVariables,
         IContentNegotiator $contentNegotiator = null,
         IRouteActionInvoker $routeActionInvoker = null
     ) {
-        $this->controller = $controller;
         $this->routeActionDelegate = $routeActionDelegate;
-        $this->routeVariables = $routeVariables;
         $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }

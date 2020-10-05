@@ -17,19 +17,12 @@ namespace Aphiria\Collections;
  */
 class KeyValuePair
 {
-    /** @var mixed The key */
-    private mixed $key;
-    /** @var mixed The value */
-    private mixed $value;
-
     /**
      * @param mixed $key The key
      * @param mixed $value The value
      */
-    public function __construct(mixed $key, mixed $value)
+    public function __construct(private mixed $key, private mixed $value)
     {
-        $this->key = $key;
-        $this->value = $value;
     }
 
     /**

@@ -20,8 +20,6 @@ use Aphiria\DependencyInjection\IContainer;
  */
 final class BinderMetadataCollectionFactory
 {
-    /** @var IContainer The container to use when creating the collection */
-    private IContainer $container;
     /** @var IBinderMetadataCollector The collector of binder metadata */
     private IBinderMetadataCollector $binderMetadataCollector;
 
@@ -29,9 +27,8 @@ final class BinderMetadataCollectionFactory
      * @param IContainer $container The container to use when creating the collection
      * @param IBinderMetadataCollector|null $binderMetadataCollector The collector of binder metadata
      */
-    public function __construct(IContainer $container, IBinderMetadataCollector $binderMetadataCollector = null)
+    public function __construct(private IContainer $container, IBinderMetadataCollector $binderMetadataCollector = null)
     {
-        $this->container = $container;
         $this->binderMetadataCollector = $binderMetadataCollector ?? new ContainerBinderMetadataCollector($this->container);
     }
 

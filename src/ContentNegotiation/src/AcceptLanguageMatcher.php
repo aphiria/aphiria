@@ -22,8 +22,6 @@ use Aphiria\Net\Http\IRequest;
  */
 final class AcceptLanguageMatcher implements ILanguageMatcher
 {
-    /** @var string[] The list of supported languages */
-    private array $supportedLanguages;
     /** @var RequestHeaderParser The header parser to use to get language headers */
     private RequestHeaderParser $headerParser;
 
@@ -31,9 +29,8 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
      * @param string[] $supportedLanguages The list of supported languages
      * @param RequestHeaderParser|null $headerParser The header parser to use to get language headers
      */
-    public function __construct(array $supportedLanguages, RequestHeaderParser $headerParser = null)
+    public function __construct(private array $supportedLanguages, RequestHeaderParser $headerParser = null)
     {
-        $this->supportedLanguages = $supportedLanguages;
         $this->headerParser = $headerParser ?? new RequestHeaderParser();
     }
 

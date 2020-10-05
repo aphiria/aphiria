@@ -19,19 +19,6 @@ use Aphiria\Validation\Constraints\IConstraint;
  */
 final class ConstraintViolation
 {
-    /** @var string The error message */
-    private string $errorMessage;
-    /** @var IConstraint The constraint that was violated */
-    private IConstraint $constraint;
-    /** @var mixed mixed The invalid value */
-    private $invalidValue;
-    /** @var mixed The root value that was being validated */
-    private mixed $rootValue;
-    /** @var string|null The name of the property that was being validated, or null if it wasn't a property */
-    private ?string $propertyName;
-    /** @var string|null The name of the method that was being validated, or null if it wasn't a method */
-    private ?string $methodName;
-
     /**
      * @param string $errorMessage The error message
      * @param IConstraint $constraint The constraint that was violated
@@ -41,19 +28,13 @@ final class ConstraintViolation
      * @param string|null $methodName The name of the method that was being validated
      */
     public function __construct(
-        string $errorMessage,
-        IConstraint $constraint,
-        mixed $invalidValue,
-        mixed $rootValue,
-        string $propertyName = null,
-        string $methodName = null
+        private string $errorMessage,
+        private IConstraint $constraint,
+        private mixed $invalidValue,
+        private mixed $rootValue,
+        private ?string $propertyName = null,
+        private ?string $methodName = null
     ) {
-        $this->errorMessage = $errorMessage;
-        $this->constraint = $constraint;
-        $this->invalidValue = $invalidValue;
-        $this->rootValue = $rootValue;
-        $this->propertyName = $propertyName;
-        $this->methodName = $methodName;
     }
 
     /**

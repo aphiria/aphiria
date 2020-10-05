@@ -31,8 +31,6 @@ use RuntimeException;
  */
 class RouterComponent implements IComponent
 {
-    /** @var IContainer The DI container */
-    private IContainer $container;
     /** @var Closure[] The list of callbacks that can register route builders */
     private array $callbacks = [];
     /** @var bool Whether or not annotations are enabled */
@@ -41,9 +39,8 @@ class RouterComponent implements IComponent
     /**
      * @param IContainer $container The DI container
      */
-    public function __construct(IContainer $container)
+    public function __construct(private IContainer $container)
     {
-        $this->container = $container;
     }
 
     /**

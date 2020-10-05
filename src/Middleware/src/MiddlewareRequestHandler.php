@@ -21,19 +21,12 @@ use Aphiria\Net\Http\IResponse;
  */
 final class MiddlewareRequestHandler implements IRequestHandler
 {
-    /** @var IMiddleware The middleware that will handle the request */
-    private IMiddleware $middleware;
-    /** @var IRequestHandler The next request handler */
-    private IRequestHandler $next;
-
     /**
      * @param IMiddleware $middleware The middleware that will handle the request
      * @param IRequestHandler $next The next request handler
      */
-    public function __construct(IMiddleware $middleware, IRequestHandler $next)
+    public function __construct(private IMiddleware $middleware, private IRequestHandler $next)
     {
-        $this->middleware = $middleware;
-        $this->next = $next;
     }
 
     /**

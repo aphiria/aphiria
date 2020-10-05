@@ -20,17 +20,14 @@ use Aphiria\IO\Streams\Stream;
  */
 class StringBody implements IBody
 {
-    /** @var string The body content */
-    protected string $content = '';
     /** @var IStream|null The underlying stream */
     private ?IStream $stream = null;
 
     /**
      * @param string $content The body content
      */
-    public function __construct(string $content)
+    public function __construct(protected string $content)
     {
-        $this->content = $content;
     }
 
     /**

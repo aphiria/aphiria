@@ -18,23 +18,16 @@ namespace Aphiria\DependencyInjection;
  */
 class ClassContainerBinding implements IContainerBinding
 {
-    /** @var string The name of the concrete class */
-    private string $concreteClass;
-    /** @var array The list of constructor primitives */
-    private array $constructorPrimitives;
-    /** @var bool Whether or not the class should be resolved as a singleton */
-    private bool $resolveAsSingleton;
-
     /**
      * @param string $concreteClass The name of the concrete class
      * @param array $constructorPrimitives The list of constructor primitives
      * @param bool $resolveAsSingleton Whether or not to resolve as a singleton
      */
-    public function __construct(string $concreteClass, array $constructorPrimitives, bool $resolveAsSingleton)
-    {
-        $this->concreteClass = $concreteClass;
-        $this->constructorPrimitives = $constructorPrimitives;
-        $this->resolveAsSingleton = $resolveAsSingleton;
+    public function __construct(
+        private string $concreteClass,
+        private array $constructorPrimitives,
+        private bool $resolveAsSingleton
+    ) {
     }
 
     /**

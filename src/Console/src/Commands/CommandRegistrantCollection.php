@@ -21,15 +21,12 @@ class CommandRegistrantCollection implements ICommandRegistrant
 {
     /** @var ICommandRegistrant[] The list of registrants that will actually register the commands */
     protected array $commandRegistrants = [];
-    /** @var ICommandRegistryCache|null The optional command registry cache */
-    private ?ICommandRegistryCache $commandCache;
 
     /**
      * @param ICommandRegistryCache|null $commandCache The optional command cache
      */
-    public function __construct(ICommandRegistryCache $commandCache = null)
+    public function __construct(private ?ICommandRegistryCache $commandCache = null)
     {
-        $this->commandCache = $commandCache;
     }
 
     /**

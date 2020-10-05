@@ -19,19 +19,12 @@ use SessionHandlerInterface;
  */
 final class DriverSessionHandler implements SessionHandlerInterface
 {
-    /** @var ISessionDriver The session driver to use */
-    private ISessionDriver $driver;
-    /** @var ISessionEncrypter|null The optional encrypter to use for session data */
-    private ?ISessionEncrypter $encrypter;
-
     /**
      * @param ISessionDriver $driver The session driver to use
      * @param ISessionEncrypter|null $encrypter The optional encrypter to use for session data (null if not encrypting)
      */
-    public function __construct(ISessionDriver $driver, ISessionEncrypter $encrypter = null)
+    public function __construct(private ISessionDriver $driver, private ?ISessionEncrypter $encrypter = null)
     {
-        $this->driver = $driver;
-        $this->encrypter = $encrypter;
     }
 
     /**

@@ -31,8 +31,6 @@ final class AboutCommandHandler implements ICommandHandler
 {{hr}}
 {{commands}}
 EOF;
-    /** @var CommandRegistry The commands */
-    private CommandRegistry $commands;
     /** @var PaddingFormatter The space padding formatter to use */
     private PaddingFormatter $paddingFormatter;
 
@@ -41,10 +39,9 @@ EOF;
      * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use
      */
     public function __construct(
-        CommandRegistry $commands,
+        private CommandRegistry $commands,
         PaddingFormatter $paddingFormatter = null
     ) {
-        $this->commands = $commands;
         $this->paddingFormatter = $paddingFormatter ?? new PaddingFormatter();
     }
 

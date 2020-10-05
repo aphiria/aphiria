@@ -24,8 +24,11 @@ use ReflectionClass;
  */
 final class TypeFinder implements ITypeFinder
 {
+    /** @var int Will find all classes */
     private const TYPE_CLASS = 1;
+    /** @var int Will find all interfaces */
     private const TYPE_INTERFACE = 2;
+    /** @var int Will find all abstract classes */
     private const TYPE_ABSTRACT_CLASS = 4;
 
     /**

@@ -17,22 +17,12 @@ namespace Aphiria\Console\Output\Lexers;
  */
 final class OutputToken
 {
-    /** @var string The token type */
-    public string $type;
-    /** @var mixed The value of the token */
-    public mixed $value;
-    /** @var int The position of the token in the original text */
-    public int $position;
-
     /**
      * @param string $type The token type
      * @param mixed $value The value of the token
      * @param int $position The position of the token in the original text
      */
-    public function __construct(string $type, mixed $value, int $position)
+    public function __construct(public string $type, public mixed $value, public int $position)
     {
-        $this->type = $type;
-        $this->value = $value;
-        $this->position = $position;
     }
 }

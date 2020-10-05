@@ -19,15 +19,11 @@ use OutOfBoundsException;
  */
 final class FileSessionDriver implements ISessionDriver
 {
-    /** @var string The base path to the session storage files */
-    private string $basePath;
-
     /**
      * @param string $basePath The base path to the session storage files
      */
-    public function __construct(string $basePath)
+    public function __construct(private string $basePath)
     {
-        $this->basePath = $basePath;
     }
 
     /**

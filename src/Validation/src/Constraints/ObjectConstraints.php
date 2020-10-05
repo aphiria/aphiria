@@ -17,8 +17,6 @@ namespace Aphiria\Validation\Constraints;
  */
 final class ObjectConstraints
 {
-    /** @var string The name of the class whose constraints are represented here */
-    private string $className;
     /** @var IConstraint[][] The mapping of property names to constraints */
     private array $propertyConstraints = [];
     /** @var IConstraint[][] The mapping of method names to constraints */
@@ -29,7 +27,7 @@ final class ObjectConstraints
      * @param IConstraint[] $propertyConstraints The mapping of property names to constraints
      * @param IConstraint[] $methodConstraints The mapping of method names to constraints
      */
-    public function __construct(string $className, array $propertyConstraints = [], array $methodConstraints = [])
+    public function __construct(private string $className, array $propertyConstraints = [], array $methodConstraints = [])
     {
         $this->className = $className;
 

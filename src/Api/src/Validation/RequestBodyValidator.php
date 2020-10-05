@@ -23,12 +23,6 @@ use Aphiria\Validation\ValidationException;
  */
 final class RequestBodyValidator implements IRequestBodyValidator
 {
-    /** @var IValidator The validator that will actually perform the validation */
-    private IValidator $validator;
-    /** @var IErrorMessageInterpolator|null The interpolator of error messages, or null if not using one */
-    private ?IErrorMessageInterpolator $errorMessageInterpolator;
-    /** @var ILanguageMatcher|null The language matcher to use, or null if not using one */
-    private ?ILanguageMatcher $languageMatcher;
     /** @var string[] The memoized matched languages per request */
     private array $memoizedMatchedLanguagesByRequest = [];
 
@@ -38,13 +32,10 @@ final class RequestBodyValidator implements IRequestBodyValidator
      * @param ILanguageMatcher|null $languageMatcher The language matcher to use, or null if not using one
      */
     public function __construct(
-        IValidator $validator,
-        IErrorMessageInterpolator $errorMessageInterpolator = null,
-        ILanguageMatcher $languageMatcher = null
+        private IValidator $validator,
+        private ?IErrorMessageInterpolator $errorMessageInterpolator = null,
+        private ?ILanguageMatcher $languageMatcher = null
     ) {
-        $this->validator = $validator;
-        $this->errorMessageInterpolator = $errorMessageInterpolator;
-        $this->languageMatcher = $languageMatcher;
     }
 
     /**

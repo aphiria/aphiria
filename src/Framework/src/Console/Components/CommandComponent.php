@@ -27,8 +27,6 @@ use RuntimeException;
  */
 class CommandComponent implements IComponent
 {
-    /** @var IServiceResolver The service resolver */
-    private IServiceResolver $serviceResolver;
     /** @var Closure[] The list of callbacks that can register commands */
     private array $callbacks = [];
     /** @var bool Whether or not annotations are enabled */
@@ -37,9 +35,8 @@ class CommandComponent implements IComponent
     /**
      * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(IServiceResolver $serviceResolver)
+    public function __construct(private IServiceResolver $serviceResolver)
     {
-        $this->serviceResolver = $serviceResolver;
     }
 
     /**

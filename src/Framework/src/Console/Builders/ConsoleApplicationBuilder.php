@@ -25,15 +25,11 @@ use RuntimeException;
  */
 final class ConsoleApplicationBuilder extends ApplicationBuilder
 {
-    /** @var IContainer The DI container */
-    private IContainer $container;
-
     /**
      * @param IContainer $container The DI container
      */
-    public function __construct(IContainer $container)
+    public function __construct(private IContainer $container)
     {
-        $this->container = $container;
     }
 
     /**

@@ -19,23 +19,13 @@ use Aphiria\DependencyInjection\Binders\Binder;
  */
 final class BinderMetadata
 {
-    /** @var Binder The binder whose metadata this is */
-    private Binder $binder;
-    /** @var BoundInterface[] The list of bound interfaces in the binder */
-    private array $boundInterfaces;
-    /** @var ResolvedInterface[] The list of resolved interfaces in the binder */
-    private array $resolvedInterfaces;
-
     /**
      * @param Binder $binder The binder whose metadata this is
      * @param BoundInterface[] $boundInterfaces The list of bound interfaces in the binder
      * @param ResolvedInterface[] $resolvedInterfaces The list of resolved interfaces in the binder
      */
-    public function __construct(Binder $binder, array $boundInterfaces, array $resolvedInterfaces)
+    public function __construct(private Binder $binder, private array $boundInterfaces, private array $resolvedInterfaces)
     {
-        $this->binder = $binder;
-        $this->boundInterfaces = $boundInterfaces;
-        $this->resolvedInterfaces = $resolvedInterfaces;
     }
 
     /**

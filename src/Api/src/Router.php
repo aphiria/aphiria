@@ -40,10 +40,6 @@ use InvalidArgumentException;
  */
 class Router implements IRequestHandler
 {
-    /** @var IRouteMatcher The route matcher */
-    private IRouteMatcher $routeMatcher;
-    /** @var IServiceResolver The service resolver */
-    private IServiceResolver $serviceResolver;
     /** @var IContentNegotiator The content negotiator */
     private IContentNegotiator $contentNegotiator;
     /** @var IRouteActionInvoker The route action invoker */
@@ -56,13 +52,11 @@ class Router implements IRequestHandler
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
      */
     public function __construct(
-        IRouteMatcher $routeMatcher,
-        IServiceResolver $serviceResolver,
+        private IRouteMatcher $routeMatcher,
+        private IServiceResolver $serviceResolver,
         IContentNegotiator $contentNegotiator = null,
         IRouteActionInvoker $routeActionInvoker = null
     ) {
-        $this->routeMatcher = $routeMatcher;
-        $this->serviceResolver = $serviceResolver;
         $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }

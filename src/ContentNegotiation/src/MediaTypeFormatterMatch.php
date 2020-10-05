@@ -20,23 +20,16 @@ use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
  */
 final class MediaTypeFormatterMatch
 {
-    /** @var IMediaTypeFormatter The matched media type formatter */
-    private IMediaTypeFormatter $formatter;
-    /** @var string The matched media type */
-    private string $mediaType;
-    /** @var MediaTypeHeaderValue The matched media type header value */
-    private MediaTypeHeaderValue $mediaTypeHeaderValue;
-
     /**
      * @param IMediaTypeFormatter $formatter The matched media type formatter
      * @param string $mediaType The matched media type, eg 'application/json'
      * @param MediaTypeHeaderValue $mediaTypeHeaderValue The matched media type header value, eg 'Accept: application/json'
      */
-    public function __construct(IMediaTypeFormatter $formatter, string $mediaType, MediaTypeHeaderValue $mediaTypeHeaderValue)
-    {
-        $this->formatter = $formatter;
-        $this->mediaType = $mediaType;
-        $this->mediaTypeHeaderValue = $mediaTypeHeaderValue;
+    public function __construct(
+        private IMediaTypeFormatter $formatter,
+        private string $mediaType,
+        private MediaTypeHeaderValue $mediaTypeHeaderValue
+    ) {
     }
 
     /**

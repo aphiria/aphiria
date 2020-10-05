@@ -28,17 +28,14 @@ use Closure;
  */
 class LazyBinderDispatcher implements IBinderDispatcher
 {
-    /** @var IBinderMetadataCollectionCache|null The cache for the binder metadata collection, or null if not caching */
-    private ?IBinderMetadataCollectionCache $binderMetadataCollectionCache;
     /** @var string[] The list of already-dispatched binder classes */
     private array $alreadyDispatchedBinderClasses = [];
 
     /**
      * @param IBinderMetadataCollectionCache|null $binderMetadataCollectionCache The cache, if using one
      */
-    public function __construct(IBinderMetadataCollectionCache $binderMetadataCollectionCache = null)
+    public function __construct(private ?IBinderMetadataCollectionCache $binderMetadataCollectionCache = null)
     {
-        $this->binderMetadataCollectionCache = $binderMetadataCollectionCache;
     }
 
     /**

@@ -21,15 +21,6 @@ final class BetweenConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field must be between {min} and {max}';
-    /** @var int|float The minimum */
-    private int|float $min;
-    /** @var int|float The maximum */
-    private int|float $max;
-    /** @var bool Whether or not the min is inclusive */
-    private bool $minIsInclusive;
-    /** @var bool Whether or not the max is inclusive */
-    private bool $maxIsInclusive;
-
     /**
      * @inheritdoc
      * @param int|float $min The minimum
@@ -38,18 +29,13 @@ final class BetweenConstraint extends Constraint
      * @param bool $maxIsInclusive Whether or not the max is inclusive
      */
     public function __construct(
-        int|float $min,
-        int|float $max,
-        bool $minIsInclusive,
-        bool $maxIsInclusive,
+        private int|float $min,
+        private int|float $max,
+        private bool $minIsInclusive,
+        private bool $maxIsInclusive,
         string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID
     ) {
         parent::__construct($errorMessageId);
-
-        $this->min = $min;
-        $this->max = $max;
-        $this->minIsInclusive = $minIsInclusive;
-        $this->maxIsInclusive = $maxIsInclusive;
     }
 
     /**

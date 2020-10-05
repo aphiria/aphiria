@@ -20,26 +20,19 @@ use InvalidArgumentException;
  */
 final class ProgressBar
 {
-    /** @var int The maximum number of steps that can be taken */
-    private int $maxSteps;
     /** @var int|null The current progress, or null if no progress has been made yet */
     private ?int $progress = null;
-    /** @var IProgressBarObserver The observer that will draw the progress bar */
-    private IProgressBarObserver $observer;
 
     /**
      * @param int $maxSteps The max number of steps
      * @param IProgressBarObserver $observer The observer that will draw the progress bar
      * @throws InvalidArgumentException Thrown if the max steps are invalid
      */
-    public function __construct(int $maxSteps, IProgressBarObserver $observer)
+    public function __construct(private int $maxSteps, private IProgressBarObserver $observer)
     {
-        if ($maxSteps <= 0) {
+        if ($this->maxSteps <= 0) {
             throw new InvalidArgumentException('Max steps must be greater than 0');
         }
-
-        $this->maxSteps = $maxSteps;
-        $this->observer = $observer;
     }
 
     /**

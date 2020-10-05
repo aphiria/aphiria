@@ -17,8 +17,6 @@ namespace Aphiria\Console\Output\Parsers;
  */
 abstract class AstNode
 {
-    /** @var mixed The value of the node if there is one, otherwise null */
-    public mixed $value;
     /** @var AstNode|null The parent node */
     public ?AstNode $parent = null;
     /** @var AstNode[] The child nodes */
@@ -27,9 +25,8 @@ abstract class AstNode
     /**
      * @param mixed $value The value of the node
      */
-    public function __construct(mixed $value = null)
+    public function __construct(public mixed $value = null)
     {
-        $this->value = $value;
     }
 
     /**

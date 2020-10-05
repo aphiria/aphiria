@@ -31,7 +31,7 @@ final class RouteCollectionBuilderRouteRegistrant implements IRouteRegistrant
     {
         if (\is_array($routeCollectionBuilderClosures)) {
             $this->routeCollectionBuilderClosures = $routeCollectionBuilderClosures;
-        } elseif ($routeCollectionBuilderClosures instanceof Closure) {
+        } else {
             $this->routeCollectionBuilderClosures = [$routeCollectionBuilderClosures];
         }
     }

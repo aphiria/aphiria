@@ -19,8 +19,6 @@ use InvalidArgumentException;
  */
 class MultipleChoice extends Question
 {
-    /** @var array The list of choices */
-    public array $choices;
     /** @var string The string to display before the input */
     private string $answerLineString = '  > ';
     /** @var bool Whether or not to allow multiple choices */
@@ -31,11 +29,9 @@ class MultipleChoice extends Question
      * @param array $choices The list of choices
      * @param mixed $defaultAnswer The default answer to the question
      */
-    public function __construct(string $text, array $choices, mixed $defaultAnswer = null)
+    public function __construct(string $text, public array $choices, mixed $defaultAnswer = null)
     {
         parent::__construct($text, $defaultAnswer);
-
-        $this->choices = $choices;
     }
 
     /**

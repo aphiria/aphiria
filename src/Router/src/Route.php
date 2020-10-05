@@ -21,19 +21,6 @@ use Aphiria\Routing\UriTemplates\UriTemplate;
  */
 final class Route
 {
-    /** @var UriTemplate The raw URI template */
-    public UriTemplate $uriTemplate;
-    /** @var RouteAction The action in the route */
-    public RouteAction $action;
-    /** @var IRouteConstraint[] The list of constraints on this route */
-    public array $constraints;
-    /** @var MiddlewareBinding[] The list of middleware bindings */
-    public array $middlewareBindings;
-    /** @var string|null The name of the route */
-    public ?string $name;
-    /** @var array The mapping of attribute names to values */
-    public array $attributes;
-
     /**
      * @param UriTemplate $uriTemplate The raw URI template
      * @param RouteAction $action The action this route takes
@@ -43,18 +30,12 @@ final class Route
      * @param array $attributes The mapping of custom attribute names => values
      */
     public function __construct(
-        UriTemplate $uriTemplate,
-        RouteAction $action,
-        array $constraints,
-        array $middlewareBindings = [],
-        string $name = null,
-        array $attributes = []
+        public UriTemplate $uriTemplate,
+        public RouteAction $action,
+        public array $constraints,
+        public array $middlewareBindings = [],
+        public ?string $name = null,
+        public array $attributes = []
     ) {
-        $this->uriTemplate = $uriTemplate;
-        $this->action = $action;
-        $this->constraints = $constraints;
-        $this->middlewareBindings = $middlewareBindings;
-        $this->name = $name;
-        $this->attributes = $attributes;
     }
 }

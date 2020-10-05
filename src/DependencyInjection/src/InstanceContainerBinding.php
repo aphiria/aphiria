@@ -18,15 +18,11 @@ namespace Aphiria\DependencyInjection;
  */
 class InstanceContainerBinding implements IContainerBinding
 {
-    /** @var object The instance */
-    private object $instance;
-
     /**
      * @param object $instance The instance
      */
-    public function __construct(object $instance)
+    public function __construct(private object $instance)
     {
-        $this->instance = $instance;
     }
 
     /**

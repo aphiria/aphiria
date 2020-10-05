@@ -25,17 +25,14 @@ class BinderComponent implements IComponent
 {
     /** @var IBinderDispatcher|null The binder dispatcher */
     private ?IBinderDispatcher $binderDispatcher = null;
-    /** @var IContainer The container to dispatch binders with */
-    private IContainer $container;
     /** @var Binder[] The list of binders to dispatch */
     private array $binders = [];
 
     /**
      * @param IContainer $container The container to dispatch binders with
      */
-    public function __construct(IContainer $container)
+    public function __construct(private IContainer $container)
     {
-        $this->container = $container;
     }
 
     /**

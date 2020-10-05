@@ -38,15 +38,11 @@ use Psr\Log\LoggerInterface;
  */
 class GlobalExceptionHandlerBootstrapper implements IBootstrapper
 {
-    /** @var IContainer The DI container */
-    protected IContainer $container;
-
     /**
      * @param IContainer $container The DI container
      */
-    public function __construct(IContainer $container)
+    public function __construct(protected IContainer $container)
     {
-        $this->container = $container;
     }
 
     /**

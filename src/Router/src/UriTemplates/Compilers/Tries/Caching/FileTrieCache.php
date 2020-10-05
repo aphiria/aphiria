@@ -19,15 +19,11 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
  */
 final class FileTrieCache implements ITrieCache
 {
-    /** @var string The path to the cache file */
-    private string $path;
-
     /**
      * @param string $path The path to the cache file
      */
-    public function __construct(string $path)
+    public function __construct(private string $path)
     {
-        $this->path = $path;
     }
 
     /**

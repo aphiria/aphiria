@@ -28,8 +28,6 @@ class RouteBuilder
 {
     /** @var RouteAction|null ?RouteAction The action the route takes */
     private ?RouteAction $action = null;
-    /** @var UriTemplate The URI template */
-    private UriTemplate $uriTemplate;
     /** @var array The mapping of custom route attribute names => values */
     private array $attributes = [];
     /** @var MiddlewareBinding[] The list of middleware bindings on this route */
@@ -43,10 +41,9 @@ class RouteBuilder
      * @param array $httpMethods The list of HTTP methods the route matches on
      * @param UriTemplate $uriTemplate The URI template the route matches on
      */
-    public function __construct(array $httpMethods, UriTemplate $uriTemplate)
+    public function __construct(array $httpMethods, private UriTemplate $uriTemplate)
     {
         $this->constraints[] = new HttpMethodRouteConstraint($httpMethods);
-        $this->uriTemplate = $uriTemplate;
     }
 
     /**

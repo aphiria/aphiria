@@ -19,22 +19,15 @@ class MaxConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field must be less than {max}';
-    /** @var int|float The maximum */
-    private int|float $max;
-    /** @var bool Whether or not the maximum is inclusive */
-    private bool $isInclusive;
 
     /**
      * @inheritdoc
      * @param int|float $max The maximum
      * @param bool $isInclusive Whether or not the maximum is inclusive
      */
-    public function __construct(int|float $max, bool $isInclusive, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
+    public function __construct(private int|float $max, private bool $isInclusive, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
-
-        $this->max = $max;
-        $this->isInclusive = $isInclusive;
     }
 
     /**
