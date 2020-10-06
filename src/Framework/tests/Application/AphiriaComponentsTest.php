@@ -150,7 +150,7 @@ class AphiriaComponentsTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testWithCommandAnnotationsConfiguresComponentToHaveAnnotations(): void
+    public function testWithCommandAttributesConfiguresComponentToHaveAnnotations(): void
     {
         $expectedComponent = $this->createMock(CommandComponent::class);
         $expectedComponent->expects($this->once())
@@ -166,13 +166,13 @@ class AphiriaComponentsTest extends TestCase
 
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withCommandAnnotations($appBuilder);
+                $this->withCommandAttributes($appBuilder);
             }
         };
         $component->build($this->appBuilder);
     }
 
-    public function testWithCommandAnnotationsRegistersComponentIfItIsNotRegisteredYet(): void
+    public function testWithCommandAttributesRegistersComponentIfItIsNotRegisteredYet(): void
     {
         $this->appBuilder->method('hasComponent')
             ->with(CommandComponent::class)
@@ -187,7 +187,7 @@ class AphiriaComponentsTest extends TestCase
 
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withCommandAnnotations($appBuilder);
+                $this->withCommandAttributes($appBuilder);
             }
         };
         $component->build($this->appBuilder);

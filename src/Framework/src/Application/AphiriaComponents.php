@@ -91,12 +91,12 @@ trait AphiriaComponents
     }
 
     /**
-     * Enables console command annotations
+     * Enables console command attributes
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @return static For chaining
      */
-    protected function withCommandAnnotations(IApplicationBuilder $appBuilder): static
+    protected function withCommandAttributes(IApplicationBuilder $appBuilder): static
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(CommandComponent::class)) {
