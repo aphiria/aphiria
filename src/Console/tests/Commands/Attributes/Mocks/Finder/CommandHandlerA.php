@@ -10,18 +10,18 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Console\Tests\Commands\Annotations\Mocks\Finder;
+namespace Aphiria\Console\Tests\Commands\Attributes\Mocks\Finder;
 
-use Aphiria\Console\Commands\Annotations\Command;
+use Aphiria\Console\Commands\Attributes\Command;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 
 /**
  * Defines a mock command handler
- * @Command("b")
  */
-final class CommandHandlerB implements ICommandHandler
+#[Command('a')]
+final class CommandHandlerA implements ICommandHandler
 {
     /**
      * @inheritdoc

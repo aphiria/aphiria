@@ -171,7 +171,7 @@ class ApplicationTest extends TestCase
             new Command(
                 'holiday',
                 [new Argument('holiday', ArgumentTypes::REQUIRED, '')],
-                [new Option('yell', 'y', OptionTypes::OPTIONAL_VALUE, '', 'yes')],
+                [new Option('yell', OptionTypes::OPTIONAL_VALUE, 'y', '', 'yes')],
                 ''
             ),
             $commandHandler::class

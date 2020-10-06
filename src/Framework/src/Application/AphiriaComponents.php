@@ -109,7 +109,7 @@ trait AphiriaComponents
         }
 
         $appBuilder->getComponent(CommandComponent::class)
-            ->withAnnotations();
+            ->withAttributes();
 
         return $this;
     }

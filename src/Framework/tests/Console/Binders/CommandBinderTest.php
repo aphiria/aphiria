@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Tests\Console\Binders;
 
 use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
-use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
+use Aphiria\Console\Commands\Attributes\AttributeCommandRegistrant;
 use Aphiria\Console\Commands\Caching\FileCommandRegistryCache;
 use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
@@ -46,9 +46,9 @@ class CommandBinderTest extends TestCase
         }
     }
 
-    public function testAnnotationRegistrantIsRegistered(): void
+    public function testAttributeRegistrantIsRegistered(): void
     {
-        $this->setUpContainerMockBindInstance([AnnotationCommandRegistrant::class, $this->isInstanceOf(AnnotationCommandRegistrant::class)]);
+        $this->setUpContainerMockBindInstance([AttributeCommandRegistrant::class, $this->isInstanceOf(AttributeCommandRegistrant::class)]);
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -76,7 +76,7 @@ class CommandBinderTest extends TestCase
         return [
             'aphiria' => [
                 'console' => [
-                    'annotationPaths' => ['/src'],
+                    'attributePaths' => ['/src'],
                     'commandCachePath' => '/commandCache.txt'
                 ]
             ]

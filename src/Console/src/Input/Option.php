@@ -21,19 +21,23 @@ final class Option
 {
     /**
      * @param string $name The name of the option
-     * @param string|null $shortName The short name of the option if it has one, otherwise null
      * @param int $type The type of option this is
+     * @param string|null $shortName The short name of the option if it has one, otherwise null
      * @param string|null $description A brief description of the option
      * @param mixed $defaultValue The default value for the option if it's optional
      * @throws InvalidArgumentException Thrown if the type is invalid
      */
     public function __construct(
         public string $name,
-        public ?string $shortName,
         public int $type,
+        public ?string $shortName = null,
         public ?string $description = null,
         public mixed $defaultValue = null)
     {
+        if (empty($this->name)) {
+            throw new InvalidArgumentException('Option name cannot be empty');
+        }
+
         if (($this->type & 3) === 3) {
             throw new InvalidArgumentException('Option type cannot be both optional and required');
         }

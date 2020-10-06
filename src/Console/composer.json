@@ -27,7 +27,6 @@
     "require": {
         "aphiria/dependency-injection": "0.*@dev",
         "aphiria/reflection": "0.*@dev",
-        "doctrine/annotations": "1.10.*@dev",
         "php": "^8.0"
     },
     "require-dev": {

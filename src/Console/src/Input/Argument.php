@@ -32,6 +32,10 @@ final class Argument
         public ?string $description = null,
         public mixed $defaultValue = null
     ) {
+        if (empty($this->name)) {
+            throw new InvalidArgumentException('Argument name cannot be empty');
+        }
+
         if (($this->type & 3) === 3) {
             throw new InvalidArgumentException('Argument type cannot be both optional and required');
         }
