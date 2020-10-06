@@ -27,7 +27,6 @@
     },
     "require": {
         "aphiria/reflection": "0.*@dev",
-        "doctrine/annotations": "1.10.*@dev",
         "ext-ctype": "*",
         "ext-mbstring": "*",
         "php": "^8.0"
