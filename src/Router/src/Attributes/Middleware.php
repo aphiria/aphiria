@@ -16,7 +16,7 @@ use Attribute;
 use InvalidArgumentException;
 
 /**
- * Defines the middleware annotation
+ * Defines the middleware attribute
  */
 #[Attribute(Attribute::TARGET_CLASS|Attribute::TARGET_METHOD|Attribute::IS_REPEATABLE)]
 final class Middleware

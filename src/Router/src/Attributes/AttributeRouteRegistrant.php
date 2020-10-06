@@ -12,21 +12,22 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Attributes;
 
+use Aphiria\Api\Controllers\Controller;
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
-use Aphiria\Routing\Attributes\Middleware;
-use Aphiria\Routing\Attributes\Route;
-use Aphiria\Routing\Attributes\RouteGroup;
+use Aphiria\Routing\Attributes\Controller as ControllerAttribute;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Routing\Builders\RouteGroupOptions;
 use Aphiria\Routing\IRouteRegistrant;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\RouteCollection;
+use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 
 /**
- * Defines the route registrant that registers routes defined via annotations
+ * Defines the route registrant that registers routes defined via attributes
  */
 final class AttributeRouteRegistrant implements IRouteRegistrant
 {
@@ -47,10 +48,38 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
 
     /**
      * @inheritdoc
+     * @throws ReflectionException Thrown if any of the classes could not be reflected
      */
     public function registerRoutes(RouteCollection $routes): void
     {
-        // TODO: Implement registerRoutes() method.
+        $routeBuilders = new RouteCollectionBuilder();
+
+        foreach ($this->typeFinder->findAllClasses($this->paths, true) as $controllerClass) {
+            $reflectionController = new ReflectionClass($controllerClass);
+
+            // Only allow either Aphiria controllers or classes with the controller attribute
+            if (
+                !$reflectionController->isSubclassOf(Controller::class)
+                && empty($reflectionController->getAttributes(ControllerAttribute::class))
+            ) {
+                continue;
+            }
+
+            $routeGroupOptions = $this->createRouteGroupOptions($reflectionController);
+
+            if ($routeGroupOptions === null) {
+                $this->registerRouteBuilders($reflectionController, $routeBuilders);
+            } else {
+                $routeBuilders->group(
+                    $routeGroupOptions,
+                    function (RouteCollectionBuilder $routeBuilders) use ($reflectionController) {
+                        $this->registerRouteBuilders($reflectionController, $routeBuilders);
+                    }
+                );
+            }
+        }
+
+        $routes->addMany($routeBuilders->build()->getAll());
     }
 
     /**
@@ -62,44 +91,39 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
     private function createRouteGroupOptions(ReflectionClass $controller): ?RouteGroupOptions
     {
         $routeGroupOptions = null;
-        $middlewareBindings = [];
+        $middlewareBindings = $routeConstraints = [];
 
-        foreach ($this->annotationReader->getClassAnnotations($controller) as $classAnnotation) {
-            if ($classAnnotation instanceof RouteGroup) {
-                if ($routeGroupOptions === null) {
-                    $routeConstraints = [];
-
-                    foreach ($classAnnotation->constraints as $constraint) {
-                        $routeConstraintClassName = $constraint->className;
-                        $routeConstraints[] = new $routeConstraintClassName(...$constraint->constructorParams);
-                    }
-
-                    $routeGroupOptions = new RouteGroupOptions(
-                        $classAnnotation->path,
-                        $classAnnotation->host,
-                        $classAnnotation->isHttpsOnly,
-                        $routeConstraints,
-                        [],
-                        $classAnnotation->attributes
-                    );
-                }
-            } elseif ($classAnnotation instanceof Middleware) {
-                $middlewareBindings[] = new MiddlewareBinding(
-                    $classAnnotation->className,
-                    $classAnnotation->attributes
-                );
-            }
+        foreach ($controller->getAttributes(Middleware::class) as $middlewareAttribute) {
+            $middlewareAttributeInstance = $middlewareAttribute->newInstance();
+            $middlewareBindings[] = new MiddlewareBinding(
+                $middlewareAttributeInstance->className,
+                $middlewareAttributeInstance->attributes
+            );
         }
 
-        if (!empty($middlewareBindings)) {
-            if ($routeGroupOptions === null) {
-                $routeGroupOptions = new RouteGroupOptions('');
-            }
+        foreach ($controller->getAttributes(RouteConstraint::class) as $routeConstraintAttribute) {
+            $routeConstraintAttributeInstance = $routeConstraintAttribute->newInstance();
+            $routeConstraintClassName = $routeConstraintAttributeInstance->className;
+            $routeConstraints[] = new $routeConstraintClassName(...$routeConstraintAttributeInstance->constructorParams);
+        }
 
-            $routeGroupOptions->middlewareBindings = [
-                ...$routeGroupOptions->middlewareBindings,
-                ...$middlewareBindings
-            ];
+        foreach ($controller->getAttributes(RouteGroup::class) as $routeGroupAttribute) {
+            $routeGroupAttributeInstance = $routeGroupAttribute->newInstance();
+            $routeGroupOptions = new RouteGroupOptions(
+                $routeGroupAttributeInstance->path,
+                $routeGroupAttributeInstance->host,
+                $routeGroupAttributeInstance->isHttpsOnly,
+                $routeConstraints,
+                [], // We'll set the middleware below in the case there was no route group attribute, but there was a middleware attribute
+                $routeGroupAttributeInstance->attributes
+            );
+        }
+
+        // If there was no route group options attributes, but there were constraints or middleware, then create some route group options and add them
+        if ($routeGroupOptions === null && (!empty($routeConstraints) || !empty($middlewareBindings))) {
+            $routeGroupOptions = new RouteGroupOptions('');
+            $routeGroupOptions->constraints = [...$routeGroupOptions->constraints, ...$routeConstraints];
+            $routeGroupOptions->middlewareBindings = [...$routeGroupOptions->middlewareBindings, ...$middlewareBindings];
         }
 
         return $routeGroupOptions;
@@ -115,41 +139,52 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
     {
         foreach ($controller->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $routeBuilder = null;
-            $middlewareBindings = [];
+            $middlewareBindings = $routeConstraints = [];
 
-            foreach ($this->annotationReader->getMethodAnnotations($method) as $methodAnnotation) {
-                if ($methodAnnotation instanceof Route) {
-                    $routeBuilder = $routeBuilders->route(
-                        $methodAnnotation->httpMethods,
-                        $methodAnnotation->path,
-                        $methodAnnotation->host,
-                        $methodAnnotation->isHttpsOnly
-                    );
-                    $routeBuilder->mapsToMethod($controller->getName(), $method->getName());
+            foreach ($method->getAttributes(Middleware::class) as $middlewareAttribute) {
+                $middlewareAttribteInstance = $middlewareAttribute->newInstance();
+                $middlewareBindings[] = new MiddlewareBinding(
+                    $middlewareAttribteInstance->className,
+                    $middlewareAttribteInstance->attributes
+                );
+            }
 
-                    foreach ($methodAnnotation->constraints as $constraint) {
-                        $constraintClassName = $constraint->className;
-                        $routeBuilder->withConstraint(new $constraintClassName(...$constraint->constructorParams));
-                    }
+            foreach ($method->getAttributes(RouteConstraint::class) as $routeConstraintAttribute) {
+                $routeConstraintAttributeInstance = $routeConstraintAttribute->newInstance();
+                $routeConstraintClassName = $routeConstraintAttributeInstance->className;
+                $routeConstraints[] = new $routeConstraintClassName(...$routeConstraintAttributeInstance->constructorParams);
+            }
 
-                    if (!empty($methodAnnotation->name)) {
-                        $routeBuilder->withName($methodAnnotation->name);
-                    }
+            foreach ($method->getAttributes(Route::class, ReflectionAttribute::IS_INSTANCEOF) as $routeAttribute) {
+                $routeAttributeInstance = $routeAttribute->newInstance();
+                $routeBuilder = $routeBuilders->route(
+                    $routeAttributeInstance->httpMethods,
+                    $routeAttributeInstance->path,
+                    $routeAttributeInstance->host,
+                    $routeAttributeInstance->isHttpsOnly,
+                );
+                $routeBuilder->mapsToMethod($controller->getName(), $method->getName());
 
-                    $routeBuilder->withManyAttributes($methodAnnotation->attributes);
-                } elseif ($methodAnnotation instanceof Middleware) {
-                    $middlewareBindings[] = new MiddlewareBinding(
-                        $methodAnnotation->className,
-                        $methodAnnotation->attributes
-                    );
+                if (!empty($middlewareBindings)) {
+                    $routeBuilder->withManyMiddleware($middlewareBindings);
+                }
+
+                if (!empty($routeConstraints)) {
+                    $routeBuilder->withManyConstraints($routeConstraints);
+                }
+
+                if (!empty($routeAttributeInstance->name)) {
+                    $routeBuilder->withName($routeAttributeInstance->name);
+                }
+
+                if (!empty($routeAttributeInstance->attributes)) {
+                    $routeBuilder->withManyAttributes($routeAttributeInstance->attributes);
                 }
             }
 
             if ($routeBuilder === null) {
                 continue;
             }
-
-            $routeBuilder->withManyMiddleware($middlewareBindings);
         }
     }
 }

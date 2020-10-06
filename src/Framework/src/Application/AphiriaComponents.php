@@ -346,12 +346,12 @@ trait AphiriaComponents
     }
 
     /**
-     * Enables routing annotations
+     * Enables routing attributes
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @return static For chaining
      */
-    protected function withRouteAnnotations(IApplicationBuilder $appBuilder): static
+    protected function withRouteAttributes(IApplicationBuilder $appBuilder): static
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(RouterComponent::class)) {
@@ -359,7 +359,7 @@ trait AphiriaComponents
         }
 
         $appBuilder->getComponent(RouterComponent::class)
-            ->withAnnotations();
+            ->withAttributes();
 
         return $this;
     }
@@ -385,12 +385,12 @@ trait AphiriaComponents
     }
 
     /**
-     * Enables Aphiria validation annotations
+     * Enables Aphiria validation attributes
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @return static For chaining
      */
-    protected function withValidatorAnnotations(IApplicationBuilder $appBuilder): static
+    protected function withValidatorAttributes(IApplicationBuilder $appBuilder): static
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ValidationComponent::class)) {
@@ -398,7 +398,7 @@ trait AphiriaComponents
         }
 
         $appBuilder->getComponent(ValidationComponent::class)
-            ->withAnnotations();
+            ->withAttributes();
 
         return $this;
     }

@@ -57,7 +57,7 @@ class ValidationComponentTest extends TestCase
         // We use an empty directory so that we don't actually scan any annotations
         $annotationObjectConstraintsRegistrant = new AnnotationObjectConstraintsRegistrant(__DIR__ . '/files');
         $this->container->bindInstance(AnnotationObjectConstraintsRegistrant::class, $annotationObjectConstraintsRegistrant);
-        $this->validationComponent->withAnnotations();
+        $this->validationComponent->withAttributes();
         $this->validationComponent->build();
         // The first should be the annotation registrant, and the second the manually-registered constraint registrant
         $this->assertCount(2, $this->objectConstraintsRegistrants->getAll());
@@ -69,7 +69,7 @@ class ValidationComponentTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(AnnotationObjectConstraintsRegistrant::class . ' cannot be null if using annotations');
-        $this->validationComponent->withAnnotations();
+        $this->validationComponent->withAttributes();
         $this->validationComponent->build();
     }
 }

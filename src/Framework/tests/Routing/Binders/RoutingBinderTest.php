@@ -16,7 +16,7 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Routing\Binders\RoutingBinder;
-use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
+use Aphiria\Routing\Attributes\AttributeRouteRegistrant;
 use Aphiria\Routing\Caching\FileRouteCache;
 use Aphiria\Routing\Caching\IRouteCache;
 use Aphiria\Routing\Matchers\IRouteMatcher;
@@ -70,11 +70,11 @@ class RoutingBinderTest extends TestCase
         }
     }
 
-    public function testAnnotationRegistrantIsBound(): void
+    public function testAttributeRegistrantIsBound(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock([
-            [AnnotationRouteRegistrant::class, $this->isInstanceOf(AnnotationRouteRegistrant::class)]
+            [AttributeRouteRegistrant::class, $this->isInstanceOf(AttributeRouteRegistrant::class)]
         ]);
         $this->container->method('bindFactory')
             ->with([IRouteMatcher::class, TrieRouteMatcher::class], $this->isInstanceOf(Closure::class));
@@ -136,7 +136,7 @@ class RoutingBinderTest extends TestCase
         return [
             'aphiria' => [
                 'routing' => [
-                    'annotationPaths' => ['/src'],
+                    'attributePaths' => ['/src'],
                     'routeCachePath' => self::ROUTE_CACHE_PATH,
                     'trieCachePath' => self::TRIE_CACHE_PATH
                 ]

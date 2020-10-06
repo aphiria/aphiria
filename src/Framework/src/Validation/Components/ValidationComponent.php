@@ -66,7 +66,7 @@ class ValidationComponent implements IComponent
      *
      * @return static For chaining
      */
-    public function withAnnotations(): static
+    public function withAttributes(): static
     {
         $this->annotationsEnabled = true;
 

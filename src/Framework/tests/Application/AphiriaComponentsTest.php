@@ -685,7 +685,7 @@ class AphiriaComponentsTest extends TestCase
 
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withRouteAnnotations($appBuilder);
+                $this->withRouteAttributes($appBuilder);
             }
         };
         $component->build($this->appBuilder);
@@ -706,7 +706,7 @@ class AphiriaComponentsTest extends TestCase
 
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withRouteAnnotations($appBuilder);
+                $this->withRouteAttributes($appBuilder);
             }
         };
         $component->build($this->appBuilder);
@@ -778,7 +778,7 @@ class AphiriaComponentsTest extends TestCase
 
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withValidatorAnnotations($appBuilder);
+                $this->withValidatorAttributes($appBuilder);
             }
         };
         $component->build($this->appBuilder);
@@ -799,7 +799,7 @@ class AphiriaComponentsTest extends TestCase
 
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withValidatorAnnotations($appBuilder);
+                $this->withValidatorAttributes($appBuilder);
             }
         };
         $component->build($this->appBuilder);

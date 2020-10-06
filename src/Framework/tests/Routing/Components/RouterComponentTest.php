@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Tests\Routing\Components;
 
 use Aphiria\DependencyInjection\Container;
 use Aphiria\Framework\Routing\Components\RouterComponent;
-use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
+use Aphiria\Routing\Attributes\AttributeRouteRegistrant;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteRegistrantCollection;
@@ -51,23 +51,23 @@ class RouterComponentTest extends TestCase
         $this->assertSame('/foo', $this->routes->getAll()[0]->uriTemplate->pathTemplate);
     }
 
-    public function testBuildWithAnnotationsAddsAnnotationRegistrant(): void
+    public function testBuildWithAttributesAddsAttributeRegistrant(): void
     {
-        $annotationRouteRegistrant = new AnnotationRouteRegistrant(__DIR__);
-        $this->container->bindInstance(AnnotationRouteRegistrant::class, $annotationRouteRegistrant);
-        $this->routerComponent->withAnnotations();
+        $attributeRouteRegistrant = new AttributeRouteRegistrant(__DIR__);
+        $this->container->bindInstance(AttributeRouteRegistrant::class, $attributeRouteRegistrant);
+        $this->routerComponent->withAttributes();
         $this->routerComponent->build();
-        // The first should be the annotation registrant, and the second the manually-registered route registrant
+        // The first should be the attribute registrant, and the second the manually-registered route registrant
         $this->assertCount(2, $this->routeRegistrants->getAll());
-        // Make sure that the annotation registrant is registered first
-        $this->assertEquals($annotationRouteRegistrant, $this->routeRegistrants->getAll()[0]);
+        // Make sure that the attribute registrant is registered first
+        $this->assertEquals($attributeRouteRegistrant, $this->routeRegistrants->getAll()[0]);
     }
 
-    public function testBuildWithAnnotationsWithoutAnnotationRegistrantThrowsException(): void
+    public function testBuildWithAttributesWithoutAttributeRegistrantThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(AnnotationRouteRegistrant::class . ' cannot be null if using annotations');
-        $this->routerComponent->withAnnotations();
+        $this->expectExceptionMessage(AttributeRouteRegistrant::class . ' cannot be null if using attributes');
+        $this->routerComponent->withAttributes();
         $this->routerComponent->build();
     }
 }
