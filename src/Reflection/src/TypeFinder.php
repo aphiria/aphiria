@@ -143,11 +143,15 @@ final class TypeFinder implements ITypeFinder
                 case T_NAMESPACE:
                     $namespace = '';
 
+                    // Ignore whitespace between the namespace keyword and the namespace itself
+                    do {
+                        $i++;
+                    } while (isset($tokens[$i][0]) && $tokens[$i][0] === \T_WHITESPACE);
+
                     // Collect the namespace
-                    while (isset($tokens[++$i][1])) {
-                        if ($tokens[$i][0] === \T_NAME_QUALIFIED) {
-                            $namespace = $tokens[$i][1];
-                        }
+                    while (isset($tokens[$i][0]) && \in_array($tokens[$i][0], [\T_NAME_FULLY_QUALIFIED, \T_NAME_QUALIFIED, \T_NS_SEPARATOR, \T_STRING], true)) {
+                        $namespace .= $tokens[$i][1];
+                        $i++;
                     }
 
                     break;
