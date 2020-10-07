@@ -217,40 +217,6 @@ trait AphiriaComponents
     }
 
     /**
-     * Adds a mapping of an exception type to problem details properties
-     *
-     * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param string $exceptionType The type of exception whose response factory we're registering
-     * @param string|Closure|null $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
-     * @param string|Closure|null $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
-     * @param string|Closure|null $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
-     * @param int|Closure|null $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
-     * @param string|Closure|null $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
-     * @param array|Closure|null $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
-     * @return static For chaining
-     */
-    protected function withProblemDetails(
-        IApplicationBuilder $appBuilder,
-        string $exceptionType,
-        string|Closure $type = null,
-        string|Closure $title = null,
-        string|Closure $detail = null,
-        int|Closure $status = null,
-        string|Closure $instance = null,
-        array|Closure $extensions = null
-    ): static {
-        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
-        if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
-            $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));
-        }
-
-        $appBuilder->getComponent(ExceptionHandlerComponent::class)
-            ->withProblemDetails($exceptionType, $type, $title, $detail, $status, $instance, $extensions);
-
-        return $this;
-    }
-
-    /**
      * Adds global middleware bindings to the middleware component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
@@ -341,6 +307,40 @@ trait AphiriaComponents
 
         $appBuilder->getComponent(ValidationComponent::class)
             ->withObjectConstraints($callback);
+
+        return $this;
+    }
+
+    /**
+     * Adds a mapping of an exception type to problem details properties
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param string $exceptionType The type of exception whose response factory we're registering
+     * @param string|Closure|null $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
+     * @param string|Closure|null $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
+     * @param string|Closure|null $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
+     * @param int|Closure|null $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param string|Closure|null $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
+     * @param array|Closure|null $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
+     * @return static For chaining
+     */
+    protected function withProblemDetails(
+        IApplicationBuilder $appBuilder,
+        string $exceptionType,
+        string|Closure $type = null,
+        string|Closure $title = null,
+        string|Closure $detail = null,
+        int|Closure $status = null,
+        string|Closure $instance = null,
+        array|Closure $extensions = null
+    ): static {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
+            $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));
+        }
+
+        $appBuilder->getComponent(ExceptionHandlerComponent::class)
+            ->withProblemDetails($exceptionType, $type, $title, $detail, $status, $instance, $extensions);
 
         return $this;
     }

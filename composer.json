@@ -58,7 +58,6 @@
         }
     },
     "require": {
-        "doctrine/annotations": "1.10.*@dev",
         "ext-ctype": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",

@@ -16,7 +16,7 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Validation\Binders\ValidationBinder;
-use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
+use Aphiria\Validation\Constraints\Attributes\AttributeObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\Caching\FileObjectConstraintsRegistryCache;
 use Aphiria\Validation\Constraints\Caching\IObjectConstraintsRegistryCache;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
@@ -54,12 +54,12 @@ class ValidationBinderTest extends TestCase
         }
     }
 
-    public function testAnnotationRegistrantIsRegistered(): void
+    public function testAttributeRegistrantIsRegistered(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock([
             [IErrorMessageInterpolator::class, $this->isInstanceOf(IErrorMessageInterpolator::class)],
-            [AnnotationObjectConstraintsRegistrant::class, $this->isInstanceOf(AnnotationObjectConstraintsRegistrant::class)]
+            [AttributeObjectConstraintsRegistrant::class, $this->isInstanceOf(AttributeObjectConstraintsRegistrant::class)]
         ]);
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -156,7 +156,7 @@ class ValidationBinderTest extends TestCase
         return [
             'aphiria' => [
                 'validation' => [
-                    'annotationPaths' => ['/src'],
+                    'attributePaths' => ['/src'],
                     'constraintsCachePath' => '/cache',
                     'errorMessageInterpolator' => [
                         'type' => StringReplaceErrorMessageInterpolator::class

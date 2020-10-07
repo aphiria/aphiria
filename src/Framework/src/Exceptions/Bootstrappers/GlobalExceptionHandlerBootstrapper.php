@@ -88,17 +88,11 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                 $exceptionRenderer = new ProblemDetailsExceptionRenderer();
                 $exceptionRenderer->mapExceptionToProblemDetails(
                     HttpException::class,
-                    null,
-                    null,
-                    null,
-                    fn (HttpException $ex) => $ex->getResponse()->getStatusCode()
+                    status: fn (HttpException $ex) => $ex->getResponse()->getStatusCode()
                 );
                 $exceptionRenderer->mapExceptionToProblemDetails(
                     InvalidRequestBodyException::class,
-                    null,
-                    null,
-                    null,
-                    HttpStatusCodes::BAD_REQUEST
+                    status: HttpStatusCodes::BAD_REQUEST
                 );
                 break;
             default:

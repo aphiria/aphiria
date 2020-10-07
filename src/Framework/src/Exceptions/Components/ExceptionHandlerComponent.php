@@ -18,7 +18,6 @@ use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
-use Aphiria\Framework\Application\AphiriaComponents;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Closure;
 
@@ -27,8 +26,6 @@ use Closure;
  */
 class ExceptionHandlerComponent implements IComponent
 {
-    use AphiriaComponents;
-
     /** @var Closure[] The mapping of exception types to problem detail settings */
     private array $exceptionProblemDetailMappings = [];
     /** @var Closure[] The mapping of exception types to console result factories */
@@ -90,7 +87,6 @@ class ExceptionHandlerComponent implements IComponent
      */
     public function withLogLevelFactory(string $exceptionType, Closure $logLevelFactory): static
     {
-        // TODO: Does this AND OTHER METHODS conflict with the one in AphiriaComponents?
         $this->logLevelFactories[$exceptionType] = $logLevelFactory;
 
         return $this;

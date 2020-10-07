@@ -16,7 +16,7 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
+use Aphiria\Validation\Constraints\Attributes\AttributeObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\Caching\FileObjectConstraintsRegistryCache;
 use Aphiria\Validation\Constraints\Caching\IObjectConstraintsRegistryCache;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
@@ -84,10 +84,10 @@ final class ValidationBinder extends Binder
 
         $container->bindInstance(IErrorMessageInterpolator::class, $errorMessageInterpolator);
 
-        // Register some constraint annotation dependencies
-        $constraintAnnotationRegistrant = new AnnotationObjectConstraintsRegistrant(
-            GlobalConfiguration::getArray('aphiria.validation.annotationPaths')
+        // Register some constraint attribute dependencies
+        $constraintAttributeRegistrant = new AttributeObjectConstraintsRegistrant(
+            GlobalConfiguration::getArray('aphiria.validation.attributePaths')
         );
-        $container->bindInstance(AnnotationObjectConstraintsRegistrant::class, $constraintAnnotationRegistrant);
+        $container->bindInstance(AttributeObjectConstraintsRegistrant::class, $constraintAttributeRegistrant);
     }
 }

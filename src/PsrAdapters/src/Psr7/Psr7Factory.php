@@ -76,10 +76,7 @@ class Psr7Factory implements IPsr7Factory
         $aphiriaRequest = new Request(
             $psr7Request->getMethod(),
             $this->createAphiriaUri($psr7Request->getUri()),
-            null,
-            null,
-            null,
-            $psr7Request->getProtocolVersion()
+            protocolVersion: $psr7Request->getProtocolVersion()
         );
 
         foreach ($psr7Request->getHeaders() as $name => $values) {
