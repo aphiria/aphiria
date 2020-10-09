@@ -17,6 +17,7 @@ use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Http\IRequest;
+use ReflectionNamedType;
 use ReflectionParameter;
 
 /**
@@ -50,7 +51,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         $queryStringVars = $this->uriParser->parseQueryString($request->getUri());
         $reflectionParameterType = $reflectionParameter->getType();
 
-        if ($reflectionParameterType instanceof \ReflectionNamedType && !$reflectionParameterType->isBuiltin()) {
+        if ($reflectionParameterType instanceof ReflectionNamedType && !$reflectionParameterType->isBuiltin()) {
             return $this->resolveObjectParameter(
                 $reflectionParameter,
                 $request
