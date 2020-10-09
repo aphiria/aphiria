@@ -48,8 +48,9 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         array $routeVariables
     ): mixed {
         $queryStringVars = $this->uriParser->parseQueryString($request->getUri());
+        $reflectionParameterType = $reflectionParameter->getType();
 
-        if ($reflectionParameter->getClass() !== null) {
+        if ($reflectionParameterType instanceof \ReflectionNamedType && !$reflectionParameterType->isBuiltin()) {
             return $this->resolveObjectParameter(
                 $reflectionParameter,
                 $request
