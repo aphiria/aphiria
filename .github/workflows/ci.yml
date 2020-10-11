@@ -26,8 +26,8 @@ jobs:
       - name: Install Dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
       - name: Run Tests
+        run: vendor/bin/phpunit --coverage-clover ./.coverage/clover.xml --verbose
       # TODO: The linter and code coverage must be re-enabled once PHP 8 is properly supported by those tools
-      #  run: vendor/bin/phpunit --coverage-clover ./.coverage/clover.xml --verbose
       #- name: Run Linter
       #  run: composer run-script lint-check
       #- name: Upload Coverage Results To Coveralls
