@@ -29,13 +29,13 @@
         "aphiria/reflection": "0.*@dev",
         "ext-ctype": "*",
         "ext-mbstring": "*",
-        "php": "^8.0"
+        "php": ">=8.0"
     },
     "require-dev": {
         "aphiria/api": "0.*@dev",
         "nikic/fast-route": "1.2",
         "phpunit/phpunit": "~9.4",
-        "symfony/routing": "4.2.*"
+        "symfony/routing": "5.1.*"
     },
     "scripts": {
         "lint-check": "php-cs-fixer fix --config=.php_cs.dist -v --diff --dry-run",

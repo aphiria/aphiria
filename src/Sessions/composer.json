@@ -26,7 +26,7 @@
     "require": {
         "aphiria/middleware": "0.*@dev",
         "aphiria/net": "0.*@dev",
-        "php": "^8.0"
+        "php": ">=8.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~9.4"

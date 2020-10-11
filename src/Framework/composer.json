@@ -26,7 +26,7 @@
     },
     "require": {
         "aphiria/aphiria": "0.*@dev",
-        "php": "^8.0",
+        "php": ">=8.0",
         "psr/log": "~1.0",
         "symfony/dotenv": "~5.0"
     },

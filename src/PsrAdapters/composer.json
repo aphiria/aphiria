@@ -28,7 +28,7 @@
     "require": {
         "aphiria/dependency-injection": "0.*@dev",
         "aphiria/net": "0.*@dev",
-        "php": "^8.0",
+        "php": ">=8.0",
         "psr/container": "^1.0",
         "psr/http-factory": "^1.0",
         "psr/http-message": "^1.0"

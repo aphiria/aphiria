@@ -31,7 +31,7 @@
         "aphiria/router": "0.*@dev",
         "aphiria/validation": "0.*@dev",
         "monolog/monolog": "~2.0",
-        "php": "^8.0",
+        "php": ">=8.0",
         "psr/log": "~1.0"
     },
     "require-dev": {
