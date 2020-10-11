@@ -49,13 +49,6 @@ class VariableTrieNodeTest extends TestCase
         $this->assertSame($expectedRoute, $node->routes[0]);
     }
 
-    public function testInvalidRoutesThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Routes must be a route or an array of routes');
-        new VariableTrieNode('foo', [], 1);
-    }
-
     public function testIsMatchReturnsFalseIfRegexDoesNotMatch(): void
     {
         $node = new VariableTrieNode(['foo'], []);
@@ -182,9 +175,9 @@ class VariableTrieNodeTest extends TestCase
     /**
      * Creates a mock node for use in tests
      *
-     * @return MockObject|TrieNode The mock node
+     * @return TrieNode|MockObject The mock node
      */
-    private function createMockNode(): MockObject
+    private function createMockNode(): TrieNode|MockObject
     {
         return $this->getMockForAbstractClass(TrieNode::class, [], '', false);
     }

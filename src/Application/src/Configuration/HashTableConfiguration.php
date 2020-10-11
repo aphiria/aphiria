@@ -17,19 +17,12 @@ namespace Aphiria\Application\Configuration;
  */
 class HashTableConfiguration implements IConfiguration
 {
-    /** @var array The hash table that backs the configuration */
-    private array $hashTable;
-    /** @var string The delimiter to use for nested path segments */
-    private string $pathDelimiter;
-
     /**
      * @param array $hashTable The hash table that backs the configuration
      * @param string $pathDelimiter The delimiter to use for nested path segments
      */
-    public function __construct(array $hashTable, string $pathDelimiter = '.')
+    public function __construct(private array $hashTable, private string $pathDelimiter = '.')
     {
-        $this->hashTable = $hashTable;
-        $this->pathDelimiter = $pathDelimiter;
     }
 
     /**
@@ -75,7 +68,7 @@ class HashTableConfiguration implements IConfiguration
     /**
      * @inheritdoc
      */
-    public function getValue(string $path)
+    public function getValue(string $path): mixed
     {
         $explodedPath = \explode($this->pathDelimiter, $path);
         $value = $this->hashTable;

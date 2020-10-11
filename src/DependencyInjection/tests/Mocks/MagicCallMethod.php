@@ -25,6 +25,6 @@ class MagicCallMethod
      */
     public function __call($name, array $arguments)
     {
-        return;
+        // Don't do anything
     }
 }

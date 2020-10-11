@@ -90,7 +90,7 @@ class ValidationContextTest extends TestCase
         $object = new class() {
         };
         $this->expectException(CircularDependencyException::class);
-        $this->expectExceptionMessage('Circular dependency on ' . \get_class($object) . ' detected');
+        $this->expectExceptionMessage('Circular dependency on ' . $object::class . ' detected');
         $parentContext = new ValidationContext($object);
         new ValidationContext($object, null, null, $parentContext);
     }

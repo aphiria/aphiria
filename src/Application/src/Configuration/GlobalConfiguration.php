@@ -155,7 +155,7 @@ class GlobalConfiguration
      * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */
-    public static function getValue(string $path)
+    public static function getValue(string $path): mixed
     {
         self::validateConfigurationSources();
 
@@ -294,10 +294,10 @@ class GlobalConfiguration
      * Tries to get a value value at the path
      *
      * @param string $path The period-delimited path to the value in the config to get
-     * @param mixed|null $value The value if one was found, otherwise null
+     * @param mixed $value The value if one was found, otherwise null
      * @return bool True if the value existed, otherwise false
      */
-    public static function tryGetValue(string $path, &$value): bool
+    public static function tryGetValue(string $path, mixed &$value): bool
     {
         self::validateConfigurationSources();
 

@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Matchers\Constraints;
 
 use Aphiria\Routing\Matchers\MatchedRouteCandidate;
-use InvalidArgumentException;
 
 /**
  * Defines the HTTP method route constraint
@@ -25,18 +24,11 @@ final class HttpMethodRouteConstraint implements IRouteConstraint
 
     /**
      * @param array|string $allowedMethods The list of allowed methods
-     * @throws InvalidArgumentException Thrown if the input methods are not a string or an array of strings
      */
-    public function __construct($allowedMethods)
+    public function __construct(string|array $allowedMethods)
     {
-        if (\is_string($allowedMethods)) {
-            $this->allowedMethods[\strtoupper($allowedMethods)] = true;
-        } elseif (\is_array($allowedMethods)) {
-            foreach ($allowedMethods as $allowedMethod) {
-                $this->allowedMethods[\strtoupper($allowedMethod)] = true;
-            }
-        } else {
-            throw new InvalidArgumentException('Allowed methods must be a string or array of strings');
+        foreach ((array)$allowedMethods as $allowedMethod) {
+            $this->allowedMethods[\strtoupper($allowedMethod)] = true;
         }
 
         /**

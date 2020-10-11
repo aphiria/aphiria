@@ -31,8 +31,6 @@ final class AboutCommandHandler implements ICommandHandler
 {{hr}}
 {{commands}}
 EOF;
-    /** @var CommandRegistry The commands */
-    private CommandRegistry $commands;
     /** @var PaddingFormatter The space padding formatter to use */
     private PaddingFormatter $paddingFormatter;
 
@@ -41,10 +39,9 @@ EOF;
      * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use
      */
     public function __construct(
-        CommandRegistry $commands,
+        private CommandRegistry $commands,
         PaddingFormatter $paddingFormatter = null
     ) {
-        $this->commands = $commands;
         $this->paddingFormatter = $paddingFormatter ?? new PaddingFormatter();
     }
 
@@ -85,8 +82,8 @@ EOF;
          * @return int The result of the comparison
          */
         $sort = static function (Command $a, Command $b) {
-            if (strpos($a->name, ':') === false) {
-                if (strpos($b->name, ':') === false) {
+            if (!str_contains($a->name, ':')) {
+                if (!str_contains($b->name, ':')) {
                     // They're both uncategorized
                     return $a->name < $b->name ? -1 : 1;
                 }
@@ -95,7 +92,7 @@ EOF;
                 return -1;
             }
 
-            if (strpos($b->name, ':') === false) {
+            if (!str_contains($b->name, ':')) {
                 // A is categorized
                 return 1;
             }

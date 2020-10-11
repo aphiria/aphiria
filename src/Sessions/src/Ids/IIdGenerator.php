@@ -25,9 +25,9 @@ interface IIdGenerator
     /**
      * Generates an Id
      *
-     * @return string|int The Id
+     * @return int|string The Id
      */
-    public function generate();
+    public function generate(): int|string;
 
     /**
      * Gets whether or not an Id is valid
@@ -35,5 +35,5 @@ interface IIdGenerator
      * @param mixed $id The Id to validate
      * @return bool True if the Id is valid, otherwise false
      */
-    public function idIsValid($id): bool;
+    public function idIsValid(mixed $id): bool;
 }

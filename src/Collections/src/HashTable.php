@@ -41,7 +41,7 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
-    public function add($key, $value): void
+    public function add(mixed $key, mixed $value): void
     {
         $this->hashKeysToKvps[$this->getHashKey($key)] = new KeyValuePair($key, $value);
     }
@@ -49,9 +49,9 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
-    public function addRange(array $kvps): void
+    public function addRange(array $values): void
     {
-        foreach ($kvps as $kvp) {
+        foreach ($values as $kvp) {
             if (!$kvp instanceof KeyValuePair) {
                 throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
             }
@@ -71,7 +71,7 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
-    public function containsKey($key): bool
+    public function containsKey(mixed $key): bool
     {
         return \array_key_exists($this->getHashKey($key), $this->hashKeysToKvps);
     }
@@ -79,7 +79,7 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
-    public function containsValue($value): bool
+    public function containsValue(mixed $value): bool
     {
         foreach ($this->hashKeysToKvps as $kvp) {
             if ($kvp->getValue() == $value) {
@@ -101,7 +101,7 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
-    public function get($key)
+    public function get(mixed $key): mixed
     {
         $hashKey = $this->getHashKey($key);
 
@@ -152,9 +152,9 @@ class HashTable implements IDictionary
      * @inheritdoc
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function offsetExists($key): bool
+    public function offsetExists($offset): bool
     {
-        return $this->containsKey($key);
+        return $this->containsKey($offset);
     }
 
     /**
@@ -162,33 +162,33 @@ class HashTable implements IDictionary
      * @throws OutOfBoundsException Thrown if the key could not be found
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function offsetGet($key)
+    public function offsetGet(mixed $offset): mixed
     {
-        return $this->get($key);
+        return $this->get($offset);
     }
 
     /**
      * @inheritdoc
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function offsetSet($key, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->add($key, $value);
+        $this->add($offset, $value);
     }
 
     /**
      * @inheritdoc
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function offsetUnset($key): void
+    public function offsetUnset(mixed $offset): void
     {
-        $this->removeKey($key);
+        $this->removeKey($offset);
     }
 
     /**
      * @inheritdoc
      */
-    public function removeKey($key): void
+    public function removeKey(mixed $key): void
     {
         unset($this->hashKeysToKvps[$this->getHashKey($key)]);
     }
@@ -204,13 +204,13 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
-    public function tryGet($key, &$value): bool
+    public function tryGet(mixed $key, mixed &$value): bool
     {
         try {
             $value = $this->get($key);
 
             return true;
-        } catch (OutOfBoundsException $ex) {
+        } catch (OutOfBoundsException) {
             return false;
         }
     }
@@ -219,11 +219,11 @@ class HashTable implements IDictionary
      * Gets the hash key for a value
      * This method allows extending classes to customize how hash keys are calculated
      *
-     * @param string|int|float|array|object|resource $value The value whose hash key we want
+     * @param mixed $value The value whose hash key we want
      * @return string The hash key
      * @throws RuntimeException Thrown if the hash key could not be calculated
      */
-    protected function getHashKey($value): string
+    protected function getHashKey(mixed $value): string
     {
         return $this->keyHasher->getHashKey($value);
     }

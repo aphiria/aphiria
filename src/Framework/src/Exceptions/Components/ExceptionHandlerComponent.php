@@ -18,7 +18,6 @@ use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
-use Aphiria\Framework\Application\AphiriaComponents;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Closure;
 
@@ -27,10 +26,6 @@ use Closure;
  */
 class ExceptionHandlerComponent implements IComponent
 {
-    use AphiriaComponents;
-
-    /** @var IServiceResolver The service resolver */
-    private IServiceResolver $serviceResolver;
     /** @var Closure[] The mapping of exception types to problem detail settings */
     private array $exceptionProblemDetailMappings = [];
     /** @var Closure[] The mapping of exception types to console result factories */
@@ -41,9 +36,8 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(IServiceResolver $serviceResolver)
+    public function __construct(private IServiceResolver $serviceResolver)
     {
-        $this->serviceResolver = $serviceResolver;
     }
 
     /**
@@ -75,9 +69,9 @@ class ExceptionHandlerComponent implements IComponent
      *
      * @param string $exceptionType The type of exception that's thrown
      * @param Closure $callback The factory that takes in the exception and output, and writes messages/returns a status code
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withConsoleOutputWriter(string $exceptionType, Closure $callback): self
+    public function withConsoleOutputWriter(string $exceptionType, Closure $callback): static
     {
         $this->consoleOutputWriters[$exceptionType] = $callback;
 
@@ -89,9 +83,9 @@ class ExceptionHandlerComponent implements IComponent
      *
      * @param string $exceptionType The type of exception that's thrown
      * @param Closure $logLevelFactory The factory that takes in an instance of the exception type and returns a PSR-3 log level
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withLogLevelFactory(string $exceptionType, Closure $logLevelFactory): self
+    public function withLogLevelFactory(string $exceptionType, Closure $logLevelFactory): static
     {
         $this->logLevelFactories[$exceptionType] = $logLevelFactory;
 
@@ -108,17 +102,17 @@ class ExceptionHandlerComponent implements IComponent
      * @param int|Closure|null $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
      * @param string|Closure|null $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
      * @param array|Closure|null $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
-     * @return self For chaining
+     * @return static For chaining
      */
     public function withProblemDetails(
         string $exceptionType,
-        $type = null,
-        $title = null,
-        $detail = null,
-        $status = null,
-        $instance = null,
-        $extensions = null
-    ): self {
+        string|Closure $type = null,
+        string|Closure $title = null,
+        string|Closure $detail = null,
+        int|Closure $status = null,
+        string|Closure $instance = null,
+        array|Closure $extensions = null
+    ): static {
         $this->exceptionProblemDetailMappings[$exceptionType] = [
             'type' => $type,
             'title' => $title,

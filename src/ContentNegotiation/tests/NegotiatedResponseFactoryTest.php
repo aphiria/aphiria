@@ -36,8 +36,7 @@ use PHPUnit\Framework\TestCase;
 class NegotiatedResponseFactoryTest extends TestCase
 {
     private NegotiatedResponseFactory $factory;
-    /** @var IContentNegotiator|MockObject The content negotiator */
-    private IContentNegotiator $contentNegotiator;
+    private IContentNegotiator|MockObject $contentNegotiator;
 
     protected function setUp(): void
     {
@@ -144,7 +143,7 @@ class NegotiatedResponseFactoryTest extends TestCase
 
     public function testCreatingResponseUsesStatusCode(): void
     {
-        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 202, null, null);
+        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 202);
         $this->assertSame(202, $response->getStatusCode());
     }
 
@@ -169,7 +168,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     public function testCreatingResponseWithHeadersUsesThoseHeaders(): void
     {
         $headers = new Headers();
-        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, $headers, null);
+        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, $headers);
         $this->assertSame($headers, $response->getHeaders());
     }
 
@@ -212,7 +211,7 @@ class NegotiatedResponseFactoryTest extends TestCase
             $this->fail('Expected exception to be thrown');
         } catch (HttpException $ex) {
             $response = $ex->getResponse();
-            $this->assertSame(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, $response->getStatusCode());
+            $this->assertSame(HttpStatusCodes::NOT_ACCEPTABLE, $response->getStatusCode());
             $this->assertSame('application/json', $response->getHeaders()->getFirst('Content-Type'));
             $this->assertSame('["foo\/bar"]', (string)$response->getBody());
         }
@@ -237,7 +236,7 @@ class NegotiatedResponseFactoryTest extends TestCase
             $this->factory->createResponse($request, 200, null, $rawBody);
             $this->fail('Expected exception to be thrown');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::INTERNAL_SERVER_ERROR, $ex->getResponse()->getStatusCode());
         }
     }
 

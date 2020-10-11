@@ -19,15 +19,11 @@ use Closure;
  */
 final class ClosureCommandRegistrant implements ICommandRegistrant
 {
-    /** @var Closure[] The list of closures to execute */
-    private array $closures;
-
     /**
      * @param Closure[] $closures The list of closures to execute
      */
-    public function __construct(array $closures)
+    public function __construct(private array $closures)
     {
-        $this->closures = $closures;
     }
 
     /**

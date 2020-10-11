@@ -26,17 +26,14 @@ use InvalidArgumentException;
  */
 class MiddlewareComponent implements IComponent
 {
-    /** @var IServiceResolver The service resolver */
-    private IServiceResolver $serviceResolver;
     /** @var MiddlewareBinding[] The list of middleware bindings */
     private array $middleware = [];
 
     /**
      * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(IServiceResolver $serviceResolver)
+    public function __construct(private IServiceResolver $serviceResolver)
     {
-        $this->serviceResolver = $serviceResolver;
     }
 
     /**
@@ -53,7 +50,7 @@ class MiddlewareComponent implements IComponent
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(
-                    sprintf('%s does not implement %s', \get_class($middleware), IMiddleware::class)
+                    sprintf('%s does not implement %s', $middleware::class, IMiddleware::class)
                 );
             }
 
@@ -70,9 +67,9 @@ class MiddlewareComponent implements IComponent
      *
      * @param MiddlewareBinding|MiddlewareBinding[] $middlewareBindings The middleware binding to add
      * @param int|null The optional priority to apply to the middleware (lower number => higher priority)
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withGlobalMiddleware($middlewareBindings, int $priority = null): self
+    public function withGlobalMiddleware(MiddlewareBinding|array $middlewareBindings, int $priority = null): static
     {
         $middlewareBindings = \is_array($middlewareBindings) ? $middlewareBindings : [$middlewareBindings];
 

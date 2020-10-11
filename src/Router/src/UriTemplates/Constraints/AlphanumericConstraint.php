@@ -30,8 +30,8 @@ final class AlphanumericConstraint implements IRouteVariableConstraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
-        return \ctype_alnum($value) && \strpos($value, ' ') === false;
+        return \ctype_alnum($value) && !\str_contains($value, ' ');
     }
 }

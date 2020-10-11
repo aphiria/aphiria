@@ -19,7 +19,7 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\Net\Http\IRequestHandler;
-use Aphiria\Routing\Annotations\AnnotationRouteRegistrant;
+use Aphiria\Routing\Attributes\AttributeRouteRegistrant;
 use Aphiria\Routing\Builders\RouteCollectionBuilderRouteRegistrant;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteRegistrantCollection;
@@ -31,19 +31,16 @@ use RuntimeException;
  */
 class RouterComponent implements IComponent
 {
-    /** @var IContainer The DI container */
-    private IContainer $container;
     /** @var Closure[] The list of callbacks that can register route builders */
     private array $callbacks = [];
-    /** @var bool Whether or not annotations are enabled */
-    private bool $annotationsEnabled = false;
+    /** @var bool Whether or not attributes are enabled */
+    private bool $attributesEnabled = false;
 
     /**
      * @param IContainer $container The DI container
      */
-    public function __construct(IContainer $container)
+    public function __construct(private IContainer $container)
     {
-        $this->container = $container;
     }
 
     /**
@@ -54,14 +51,14 @@ class RouterComponent implements IComponent
     {
         $routeRegistrants = $this->container->resolve(RouteRegistrantCollection::class);
 
-        if ($this->annotationsEnabled) {
-            $annotationRouteRegistrant = null;
+        if ($this->attributesEnabled) {
+            $attributeRouteRegistrant = null;
 
-            if (!$this->container->tryResolve(AnnotationRouteRegistrant::class, $annotationRouteRegistrant)) {
-                throw new RuntimeException(AnnotationRouteRegistrant::class . ' cannot be null if using annotations');
+            if (!$this->container->tryResolve(AttributeRouteRegistrant::class, $attributeRouteRegistrant)) {
+                throw new RuntimeException(AttributeRouteRegistrant::class . ' cannot be null if using attributes');
             }
 
-            $routeRegistrants->add($annotationRouteRegistrant);
+            $routeRegistrants->add($attributeRouteRegistrant);
         }
 
         $routeRegistrants->add(new RouteCollectionBuilderRouteRegistrant($this->callbacks));
@@ -73,13 +70,13 @@ class RouterComponent implements IComponent
     }
 
     /**
-     * Enables route annotations
+     * Enables route attributes
      *
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withAnnotations(): self
+    public function withAttributes(): static
     {
-        $this->annotationsEnabled = true;
+        $this->attributesEnabled = true;
 
         return $this;
     }
@@ -88,9 +85,9 @@ class RouterComponent implements IComponent
      * Adds routes to the registry
      *
      * @param Closure $callback The callback that takes in an instance of RouteBuilderRegistry
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withRoutes(Closure $callback): self
+    public function withRoutes(Closure $callback): static
     {
         $this->callbacks[] = $callback;
 

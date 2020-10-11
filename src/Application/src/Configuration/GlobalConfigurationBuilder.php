@@ -59,9 +59,9 @@ class GlobalConfigurationBuilder
      * Adds another source to the global configuration
      *
      * @param IConfiguration $configurationSource The source to add
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withConfigurationSource(IConfiguration $configurationSource): self
+    public function withConfigurationSource(IConfiguration $configurationSource): static
     {
         $this->configurationSourceStructs[] = ['type' => 'instance', 'value' => $configurationSource];
 
@@ -71,9 +71,9 @@ class GlobalConfigurationBuilder
     /**
      * Adds environment variables to the global configuration
      *
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withEnvironmentVariables(): self
+    public function withEnvironmentVariables(): static
     {
         /**
          * We delay grabbing the environment variables until we're building the configuration.  This allows us to
@@ -89,9 +89,9 @@ class GlobalConfigurationBuilder
      *
      * @param string $path The path to the PHP file
      * @param string $pathDelimiter The delimiter between nested path segments
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withJsonFileConfigurationSource(string $path, string $pathDelimiter = '.'): self
+    public function withJsonFileConfigurationSource(string $path, string $pathDelimiter = '.'): static
     {
         $this->configurationSourceStructs[] = [
             'type' => 'factory',
@@ -106,9 +106,9 @@ class GlobalConfigurationBuilder
      *
      * @param string $path The path to the PHP file
      * @param string $pathDelimiter The delimiter between nested path segments
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withPhpFileConfigurationSource(string $path, string $pathDelimiter = '.'): self
+    public function withPhpFileConfigurationSource(string $path, string $pathDelimiter = '.'): static
     {
         $this->configurationSourceStructs[] = [
             'type' => 'factory',

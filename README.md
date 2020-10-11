@@ -20,7 +20,7 @@ Aphiria is a suite of small, decoupled PHP libraries that make up a REST API fra
 * <a href="https://www.aphiria.com/docs/0.x/dependency-injection.html" target="_blank">A DI container with binders to simplify configuring your app</a>
 * <a href="https://www.aphiria.com/docs/0.x/validation.html" target="_blank">A model validator for your POPOs</a>
 * <a href="https://www.aphiria.com/docs/0.x/console.html" target="_blank">A console library for running commands from the terminal</a>
-* Optional support for annotations of <a href="https://www.aphiria.com/docs/0.x/routing.html#route-annotations" target="_blank">routes</a> and <a href="https://www.aphiria.com/docs/0.x/console.html#command-annotations" target="_blank">console commands</a>
+* Optional support for attributes of <a href="https://www.aphiria.com/docs/0.x/routing.html#route-attributes" target="_blank">routes</a> and <a href="https://www.aphiria.com/docs/0.x/console.html#command-attributes" target="_blank">console commands</a>
 
 ## Installation
 
@@ -32,7 +32,7 @@ Full documentation is available at <a href="https://www.aphiria.com" target="_bl
 
 ## Requirements
 
-* PHP 7.4
+* PHP 8.0
 
 ## Contributing
 

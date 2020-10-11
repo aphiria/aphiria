@@ -39,7 +39,7 @@ class Queue implements Countable, IteratorAggregate
      * @param mixed $value The value to search for
      * @return bool True if the value exists, otherwise false
      */
-    public function containsValue($value): bool
+    public function containsValue(mixed $value): bool
     {
         return \in_array($value, $this->values, false);
     }
@@ -57,7 +57,7 @@ class Queue implements Countable, IteratorAggregate
      *
      * @return mixed The value of the dequeued value if one exists, otherwise null
      */
-    public function dequeue()
+    public function dequeue(): mixed
     {
         if (\count($this->values) === 0) {
             return null;
@@ -71,7 +71,7 @@ class Queue implements Countable, IteratorAggregate
      *
      * @param mixed $value The value to enqueue
      */
-    public function enqueue($value): void
+    public function enqueue(mixed $value): void
     {
         $this->values[] = $value;
     }
@@ -89,7 +89,7 @@ class Queue implements Countable, IteratorAggregate
      *
      * @return mixed The value at the beginning of the queue if one exists, otherwise null
      */
-    public function peek()
+    public function peek(): mixed
     {
         return $this->values[0] ?? null;
     }

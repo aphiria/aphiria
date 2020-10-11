@@ -64,11 +64,10 @@ final class SymfonySerializerBinder extends Binder
                     $nameConverter = $nameConverterName = null;
 
                     if (GlobalConfiguration::tryGetString('aphiria.serialization.nameConverter', $nameConverterName)) {
-                        switch ($nameConverterName) {
-                            case CamelCaseToSnakeCaseNameConverter::class:
-                                $nameConverter = new CamelCaseToSnakeCaseNameConverter();
-                                break;
-                        }
+                        $nameConverter = match ($nameConverterName) {
+                            CamelCaseToSnakeCaseNameConverter::class => new CamelCaseToSnakeCaseNameConverter(),
+                            default => null,
+                        };
                     }
 
                     $normalizers[] = new ObjectNormalizer(null, $nameConverter);

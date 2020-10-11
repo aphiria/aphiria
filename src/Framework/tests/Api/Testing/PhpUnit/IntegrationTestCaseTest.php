@@ -317,7 +317,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->send($request);
         $this->integrationTests->assertParsedBodyPassesCallback(
             $response,
-            \get_class($expectedParsedBody),
+            $expectedParsedBody::class,
             fn ($parsedBody) => true
         );
     }

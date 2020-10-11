@@ -60,7 +60,7 @@ class ApiApplicationBuilderTest extends TestCase
 
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->builtParts[] = \get_class($this);
+                $this->builtParts[] = $this::class;
             }
         };
         $component = new class($builtParts) implements IComponent {
@@ -73,7 +73,7 @@ class ApiApplicationBuilderTest extends TestCase
 
             public function build(): void
             {
-                $this->builtParts[] = \get_class($this);
+                $this->builtParts[] = $this::class;
             }
         };
         // Purposely registering out of order to ensure that order does not matter
@@ -83,7 +83,7 @@ class ApiApplicationBuilderTest extends TestCase
             $container->bindInstance(IRequestHandler::class, $this->createMock(IRequestHandler::class));
         });
         $this->appBuilder->build();
-        $this->assertEquals([\get_class($module), \get_class($component)], $builtParts);
+        $this->assertEquals([$module::class, $component::class], $builtParts);
     }
 
     public function testBuildWithoutHavingRouterBoundToContainerThrowsException(): void

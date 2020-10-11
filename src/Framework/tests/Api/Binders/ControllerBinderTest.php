@@ -25,8 +25,7 @@ use PHPUnit\Framework\TestCase;
 
 class ControllerBinderTest extends TestCase
 {
-    /** @var IContainer|MockObject */
-    private IContainer $container;
+    private IContainer|MockObject $container;
     private ControllerBinder $binder;
 
     protected function setUp(): void

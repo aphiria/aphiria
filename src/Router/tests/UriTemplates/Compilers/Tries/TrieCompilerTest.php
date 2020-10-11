@@ -38,10 +38,8 @@ class TrieCompilerTest extends TestCase
 {
     private TrieCompiler $compiler;
     private RouteVariableConstraintFactory $constraintFactory;
-    /** @var IUriTemplateParser|MockObject */
-    private IUriTemplateParser $parser;
-    /** @var IUriTemplateLexer|MockObject */
-    private IUriTemplateLexer $lexer;
+    private IUriTemplateParser|MockObject $parser;
+    private IUriTemplateLexer|MockObject $lexer;
     private AstNode $ast;
     private RootTrieNode $expectedTrie;
 

@@ -60,6 +60,13 @@ class ArgumentTest extends TestCase
         $this->assertFalse($optionalArgument->isRequired());
     }
 
+    public function testEmptyArgumentNameThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Argument name cannot be empty');
+        new Argument('', ArgumentTypes::REQUIRED);
+    }
+
     public function testGettingDefaultValue(): void
     {
         $this->assertSame('bar', $this->argument->defaultValue);

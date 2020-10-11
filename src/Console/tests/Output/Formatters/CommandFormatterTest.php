@@ -88,7 +88,7 @@ class CommandFormatterTest extends TestCase
             'foo',
             [],
             [
-                new Option('bar', 'b', OptionTypes::OPTIONAL_VALUE, 'Bar option', 'yes')
+                new Option('bar', OptionTypes::OPTIONAL_VALUE, 'b', 'Bar option', 'yes')
             ],
             'Foo command'
         );
@@ -101,7 +101,7 @@ class CommandFormatterTest extends TestCase
             'foo',
             [],
             [
-                new Option('bar', null, OptionTypes::OPTIONAL_VALUE, 'Bar option', 'yes')
+                new Option('bar', OptionTypes::OPTIONAL_VALUE, null, 'Bar option', 'yes')
             ],
             'Foo command'
         );
@@ -114,7 +114,7 @@ class CommandFormatterTest extends TestCase
             'foo',
             [],
             [
-                new Option('bar', null, OptionTypes::NO_VALUE, 'Bar option')
+                new Option('bar', OptionTypes::NO_VALUE, null, 'Bar option')
             ],
             'Foo command'
         );

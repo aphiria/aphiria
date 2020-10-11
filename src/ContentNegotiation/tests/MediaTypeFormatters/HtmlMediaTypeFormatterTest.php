@@ -142,7 +142,7 @@ class HtmlMediaTypeFormatterTest extends TestCase
      * @param string $body The expected body of the stream
      * @return IStream|MockObject The stream that expects the input body
      */
-    private function createStreamThatExpectsBody(string $body): IStream
+    private function createStreamThatExpectsBody(string $body): IStream|MockObject
     {
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
@@ -158,7 +158,7 @@ class HtmlMediaTypeFormatterTest extends TestCase
      * @param string $body The body of the stream
      * @return IStream|MockObject The stream with the input body as its string body
      */
-    private function createStreamWithStringBody(string $body): IStream
+    private function createStreamWithStringBody(string $body): IStream|MockObject
     {
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())

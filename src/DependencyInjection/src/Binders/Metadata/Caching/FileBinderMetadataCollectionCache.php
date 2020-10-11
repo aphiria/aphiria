@@ -19,15 +19,11 @@ use Aphiria\DependencyInjection\Binders\Metadata\BinderMetadataCollection;
  */
 final class FileBinderMetadataCollectionCache implements IBinderMetadataCollectionCache
 {
-    /** @var string The cache file path */
-    private string $filePath;
-
     /**
      * @param string $filePath The cache file path
      */
-    public function __construct(string $filePath)
+    public function __construct(private string $filePath)
     {
-        $this->filePath = $filePath;
     }
 
     /**

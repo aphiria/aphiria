@@ -330,7 +330,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
     private function createFormatterMock(
         array $supportedMediaTypes,
         int $numTimesSupportedMediaTypesCalled
-    ): IMediaTypeFormatter {
+    ): IMediaTypeFormatter|MockObject {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $formatter->expects($this->exactly($numTimesSupportedMediaTypesCalled))
             ->method('getSupportedMediaTypes')

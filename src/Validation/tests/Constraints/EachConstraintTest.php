@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Api\Tests\Constraints;
+namespace Aphiria\Validation\Tests\Constraints;
 
 use Aphiria\Validation\Constraints\EachConstraint;
 use Aphiria\Validation\Constraints\IConstraint;

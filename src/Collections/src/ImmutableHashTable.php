@@ -49,7 +49,7 @@ class ImmutableHashTable implements IImmutableDictionary
     /**
      * @inheritdoc
      */
-    public function containsKey($key): bool
+    public function containsKey(mixed $key): bool
     {
         return \array_key_exists($this->getHashKey($key), $this->hashKeysToKvps);
     }
@@ -57,7 +57,7 @@ class ImmutableHashTable implements IImmutableDictionary
     /**
      * @inheritdoc
      */
-    public function containsValue($value): bool
+    public function containsValue(mixed $value): bool
     {
         foreach ($this->hashKeysToKvps as $kvp) {
             if ($kvp->getValue() == $value) {
@@ -79,7 +79,7 @@ class ImmutableHashTable implements IImmutableDictionary
     /**
      * @inheritdoc
      */
-    public function get($key)
+    public function get(mixed $key): mixed
     {
         $hashKey = $this->getHashKey($key);
 
@@ -130,9 +130,9 @@ class ImmutableHashTable implements IImmutableDictionary
      * @inheritdoc
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function offsetExists($key): bool
+    public function offsetExists(mixed $offset): bool
     {
-        return $this->containsKey($key);
+        return $this->containsKey($offset);
     }
 
     /**
@@ -140,16 +140,16 @@ class ImmutableHashTable implements IImmutableDictionary
      * @throws OutOfBoundsException Thrown if the key could not be found
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function offsetGet($key)
+    public function offsetGet(mixed $offset): mixed
     {
-        return $this->get($key);
+        return $this->get($offset);
     }
 
     /**
      * @inheritdoc
      * @throws RuntimeException Thrown because this is immutable
      */
-    public function offsetSet($key, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new RuntimeException('Cannot set values in ' . self::class);
     }
@@ -158,7 +158,7 @@ class ImmutableHashTable implements IImmutableDictionary
      * @inheritdoc
      * @throws RuntimeException Thrown because this is immutable
      */
-    public function offsetUnset($key): void
+    public function offsetUnset(mixed $offset): void
     {
         throw new RuntimeException('Cannot unset values in ' . self::class);
     }
@@ -174,13 +174,13 @@ class ImmutableHashTable implements IImmutableDictionary
     /**
      * @inheritdoc
      */
-    public function tryGet($key, &$value): bool
+    public function tryGet(mixed $key, mixed &$value): bool
     {
         try {
             $value = $this->get($key);
 
             return true;
-        } catch (OutOfBoundsException $ex) {
+        } catch (OutOfBoundsException) {
             return false;
         }
     }
@@ -189,11 +189,11 @@ class ImmutableHashTable implements IImmutableDictionary
      * Gets the hash key for a value
      * This method allows extending classes to customize how hash keys are calculated
      *
-     * @param string|int|float|array|object|resource $value The value whose hash key we want
+     * @param mixed $value The value whose hash key we want
      * @return string The hash key
      * @throws RuntimeException Thrown if the hash key could not be calculated
      */
-    protected function getHashKey($value): string
+    protected function getHashKey(mixed $value): string
     {
         return $this->keyHasher->getHashKey($value);
     }

@@ -71,7 +71,7 @@ class RequestBuilder implements IRequestBuilder
     /**
      * @inheritdoc
      */
-    public function withBody(?IBody $body): self
+    public function withBody(?IBody $body): static
     {
         $new = clone $this;
         $new->body = $body;
@@ -82,7 +82,7 @@ class RequestBuilder implements IRequestBuilder
     /**
      * @inheritdoc
      */
-    public function withHeader(string $name, $values, bool $append = false): self
+    public function withHeader(string $name, string|array $values, bool $append = false): static
     {
         $new = clone $this;
         $new->headers->add($name, $values, $append);
@@ -93,7 +93,7 @@ class RequestBuilder implements IRequestBuilder
     /**
      * @inheritdoc
      */
-    public function withManyHeaders(array $headers): self
+    public function withManyHeaders(array $headers): static
     {
         $new = clone $this;
 
@@ -107,7 +107,7 @@ class RequestBuilder implements IRequestBuilder
     /**
      * @inheritdoc
      */
-    public function withMethod(string $method): self
+    public function withMethod(string $method): static
     {
         $new = clone $this;
         $new->method = $method;
@@ -118,7 +118,7 @@ class RequestBuilder implements IRequestBuilder
     /**
      * @inheritdoc
      */
-    public function withProperty(string $name, $value): self
+    public function withProperty(string $name, mixed $value): static
     {
         $new = clone $this;
         $new->properties->add($name, $value);
@@ -129,7 +129,7 @@ class RequestBuilder implements IRequestBuilder
     /**
      * @inheritdoc
      */
-    public function withProtocolVersion(string $protocolVersion): self
+    public function withProtocolVersion(string $protocolVersion): static
     {
         $new = clone $this;
         $new->protocolVersion = $protocolVersion;
@@ -140,7 +140,7 @@ class RequestBuilder implements IRequestBuilder
     /**
      * @inheritdoc
      */
-    public function withRequestTargetType(string $requestTargetType): self
+    public function withRequestTargetType(string $requestTargetType): static
     {
         $new = clone $this;
         $new->requestTargetType = $requestTargetType;
@@ -151,16 +151,14 @@ class RequestBuilder implements IRequestBuilder
     /**
      * @inheritdoc
      */
-    public function withUri($uri): self
+    public function withUri(string|Uri $uri): static
     {
         $new = clone $this;
 
         if ($uri instanceof Uri) {
             $new->uri = $uri;
-        } elseif (\is_string($uri)) {
-            $new->uri = new Uri($uri);
         } else {
-            throw new InvalidArgumentException('URI must be instance of ' . Uri::class . ' or string');
+            $new->uri = new Uri($uri);
         }
 
         return $new;

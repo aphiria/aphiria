@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Console\Components;
 
 use Aphiria\Application\IComponent;
-use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
+use Aphiria\Console\Commands\Attributes\AttributeCommandRegistrant;
 use Aphiria\Console\Commands\ClosureCommandRegistrant;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
@@ -27,19 +27,16 @@ use RuntimeException;
  */
 class CommandComponent implements IComponent
 {
-    /** @var IServiceResolver The service resolver */
-    private IServiceResolver $serviceResolver;
     /** @var Closure[] The list of callbacks that can register commands */
     private array $callbacks = [];
-    /** @var bool Whether or not annotations are enabled */
-    private bool $annotationsEnabled = false;
+    /** @var bool Whether or not attributes are enabled */
+    private bool $attributesEnabled = false;
 
     /**
      * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(IServiceResolver $serviceResolver)
+    public function __construct(private IServiceResolver $serviceResolver)
     {
-        $this->serviceResolver = $serviceResolver;
     }
 
     /**
@@ -51,14 +48,14 @@ class CommandComponent implements IComponent
         $commands = $this->serviceResolver->resolve(CommandRegistry::class);
         $commandRegistrants = $this->serviceResolver->resolve(CommandRegistrantCollection::class);
 
-        if ($this->annotationsEnabled) {
-            $annotationCommandRegistrant = null;
+        if ($this->attributesEnabled) {
+            $attributeCommandRegistrant = null;
 
-            if (!$this->serviceResolver->tryResolve(AnnotationCommandRegistrant::class, $annotationCommandRegistrant)) {
-                throw new RuntimeException(AnnotationCommandRegistrant::class . ' cannot be null if using annotations');
+            if (!$this->serviceResolver->tryResolve(AttributeCommandRegistrant::class, $attributeCommandRegistrant)) {
+                throw new RuntimeException(AttributeCommandRegistrant::class . ' cannot be null if using attributes');
             }
 
-            $commandRegistrants->add($annotationCommandRegistrant);
+            $commandRegistrants->add($attributeCommandRegistrant);
         }
 
         $commandRegistrants->add(new ClosureCommandRegistrant($this->callbacks));
@@ -66,13 +63,13 @@ class CommandComponent implements IComponent
     }
 
     /**
-     * Enables route annotations
+     * Enables console attributes
      *
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withAnnotations(): self
+    public function withAttributes(): static
     {
-        $this->annotationsEnabled = true;
+        $this->attributesEnabled = true;
 
         return $this;
     }
@@ -81,9 +78,9 @@ class CommandComponent implements IComponent
      * Adds commands to the registry
      *
      * @param Closure $callback The callback that takes in an instance of CommandRegistry
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withCommands(Closure $callback): self
+    public function withCommands(Closure $callback): static
     {
         $this->callbacks[] = $callback;
 

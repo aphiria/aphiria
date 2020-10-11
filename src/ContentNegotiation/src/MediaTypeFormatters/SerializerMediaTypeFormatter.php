@@ -22,25 +22,18 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
 {
-    /** @var SerializerInterface The serializer this formatter uses */
-    private SerializerInterface $serializer;
-    /** @var string The format to (de)serialize to */
-    private string $format;
-
     /**
      * @param SerializerInterface $serializer The serializer this formatter uses
      * @param string $format The format to (de)serialize to
      */
-    protected function __construct(SerializerInterface $serializer, string $format)
+    protected function __construct(private SerializerInterface $serializer, private string $format)
     {
-        $this->serializer = $serializer;
-        $this->format = $format;
     }
 
     /**
      * @inheritdoc
      */
-    public function readFromStream(IStream $stream, string $type)
+    public function readFromStream(IStream $stream, string $type): int|float|bool|string|object|array
     {
         if (!$this->canReadType($type)) {
             throw new InvalidArgumentException(static::class . " cannot read type $type");
@@ -52,7 +45,7 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
     /**
      * @inheritdoc
      */
-    public function writeToStream($value, IStream $stream, ?string $encoding): void
+    public function writeToStream(int|float|bool|string|object|array $value, IStream $stream, ?string $encoding): void
     {
         $type = TypeResolver::resolveType($value);
 

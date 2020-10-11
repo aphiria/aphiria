@@ -39,7 +39,7 @@ class Stack implements Countable, IteratorAggregate
      * @param mixed $value The value to search for
      * @return bool True if the value exists, otherwise false
      */
-    public function containsValue($value): bool
+    public function containsValue(mixed $value): bool
     {
         return \in_array($value, $this->values, false);
     }
@@ -65,7 +65,7 @@ class Stack implements Countable, IteratorAggregate
      *
      * @return mixed The value at the top of the stack if one exists, otherwise null
      */
-    public function peek()
+    public function peek(): mixed
     {
         return $this->values[0] ?? null;
     }
@@ -75,7 +75,7 @@ class Stack implements Countable, IteratorAggregate
      *
      * @return mixed The popped value if one exists, otherwise null
      */
-    public function pop()
+    public function pop(): mixed
     {
         if (\count($this->values) === 0) {
             return null;
@@ -89,7 +89,7 @@ class Stack implements Countable, IteratorAggregate
      *
      * @param mixed $value The value to push
      */
-    public function push($value): void
+    public function push(mixed $value): void
     {
         array_unshift($this->values, $value);
     }

@@ -55,7 +55,7 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
             }
         }
 
-        if ($matchedMediaTypeHeaderValue === null || $matchedMediaTypeHeaderValue->getCharset() === null) {
+        if ($matchedMediaTypeHeaderValue?->getCharset() === null) {
             return null;
         }
 

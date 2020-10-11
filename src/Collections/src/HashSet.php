@@ -38,7 +38,7 @@ class HashSet implements ISet
     /**
      * @inheritdoc
      */
-    public function add($value): void
+    public function add(mixed $value): void
     {
         $this->values[$this->getHashKey($value)] = $value;
     }
@@ -64,7 +64,7 @@ class HashSet implements ISet
     /**
      * @inheritdoc
      */
-    public function containsValue($value): bool
+    public function containsValue(mixed $value): bool
     {
         return isset($this->values[$this->getHashKey($value)]);
     }
@@ -106,7 +106,7 @@ class HashSet implements ISet
     /**
      * @inheritdoc
      */
-    public function removeValue($value): void
+    public function removeValue(mixed $value): void
     {
         unset($this->values[$this->getHashKey($value)]);
     }
@@ -141,11 +141,11 @@ class HashSet implements ISet
      * Gets the hash key for a value
      * This method allows extending classes to customize how hash keys are calculated
      *
-     * @param string|int|float|array|object|resource $value The value whose hash key we want
+     * @param mixed $value The value whose hash key we want
      * @return string The hash key
      * @throws RuntimeException Thrown if the hash key could not be calculated
      */
-    protected function getHashKey($value): string
+    protected function getHashKey(mixed $value): string
     {
         return $this->keyHasher->getHashKey($value);
     }

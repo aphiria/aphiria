@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Console\Components;
 
-use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
+use Aphiria\Console\Commands\Attributes\AttributeCommandRegistrant;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
@@ -53,23 +53,23 @@ class CommandComponentTest extends TestCase
         $this->assertSame('Handler', $this->commands->getAllCommandBindings()[0]->commandHandlerClassName);
     }
 
-    public function testBuildWithAnnotationsAddsAnnotationRegistrant(): void
+    public function testBuildWithAttributesAddsAttributeRegistrant(): void
     {
-        $annotationCommandRegistrant = new AnnotationCommandRegistrant(__DIR__);
-        $this->container->bindInstance(AnnotationCommandRegistrant::class, $annotationCommandRegistrant);
-        $this->commandComponent->withAnnotations();
+        $attributeCommandRegistrant = new AttributeCommandRegistrant(__DIR__);
+        $this->container->bindInstance(AttributeCommandRegistrant::class, $attributeCommandRegistrant);
+        $this->commandComponent->withAttributes();
         $this->commandComponent->build();
-        // We should have two - one for annotations and another for manually-registered commands
+        // We should have two - one for attributes and another for manually-registered commands
         $this->assertCount(2, $this->commandRegistrants->getAll());
-        // Make sure that annotations are registered first
-        $this->assertEquals($annotationCommandRegistrant, $this->commandRegistrants->getAll()[0]);
+        // Make sure that attributes are registered first
+        $this->assertEquals($attributeCommandRegistrant, $this->commandRegistrants->getAll()[0]);
     }
 
-    public function testBuildWithAnnotationsWithoutAnnotationRegistrantThrowsException(): void
+    public function testBuildWithAttributesWithoutAttributeRegistrantThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(AnnotationCommandRegistrant::class . ' cannot be null if using annotations');
-        $this->commandComponent->withAnnotations();
+        $this->expectExceptionMessage(AttributeCommandRegistrant::class . ' cannot be null if using attributes');
+        $this->commandComponent->withAttributes();
         $this->commandComponent->build();
     }
 }

@@ -34,8 +34,7 @@ use PHPUnit\Framework\TestCase;
 class ApplicationTest extends TestCase
 {
     private CommandRegistry $commands;
-    /** @var IServiceResolver|MockObject */
-    private IServiceResolver $commandHandlerResolver;
+    private IServiceResolver|MockObject $commandHandlerResolver;
     private Output $output;
     private Application $app;
 
@@ -164,7 +163,7 @@ class ApplicationTest extends TestCase
         };
         $this->commandHandlerResolver->expects($this->exactly(2))
             ->method('resolve')
-            ->with(\get_class($commandHandler))
+            ->with($commandHandler::class)
             ->willReturn($commandHandler);
 
         // Test with short option
@@ -172,10 +171,10 @@ class ApplicationTest extends TestCase
             new Command(
                 'holiday',
                 [new Argument('holiday', ArgumentTypes::REQUIRED, '')],
-                [new Option('yell', 'y', OptionTypes::OPTIONAL_VALUE, '', 'yes')],
+                [new Option('yell', OptionTypes::OPTIONAL_VALUE, 'y', '', 'yes')],
                 ''
             ),
-            \get_class($commandHandler)
+            $commandHandler::class
         );
         ob_start();
         $status = $this->app->handle('holiday birthday -y', $this->output);
@@ -187,14 +186,6 @@ class ApplicationTest extends TestCase
         $status = $this->app->handle('holiday Easter --yell=no', $this->output);
         $this->assertSame('Happy Easter', ob_get_clean());
         $this->assertSame(StatusCodes::OK, $status);
-    }
-
-    public function testHandlingInvalidInputReturnsError(): void
-    {
-        ob_start();
-        $status = $this->app->handle($this, $this->output);
-        ob_end_clean();
-        $this->assertSame(StatusCodes::ERROR, $status);
     }
 
     public function testHandlingMissingCommandReturnsError(): void
@@ -215,9 +206,9 @@ class ApplicationTest extends TestCase
         };
         $this->commandHandlerResolver->expects($this->once())
             ->method('resolve')
-            ->with(\get_class($commandHandler))
+            ->with($commandHandler::class)
             ->willReturn($commandHandler);
-        $this->commands->registerCommand(new Command('foo'), \get_class($commandHandler));
+        $this->commands->registerCommand(new Command('foo'), $commandHandler::class);
         ob_start();
         $status = $this->app->handle('foo', $this->output);
         $this->assertSame('foo', ob_get_clean());
@@ -234,9 +225,9 @@ class ApplicationTest extends TestCase
         };
         $this->commandHandlerResolver->expects($this->once())
             ->method('resolve')
-            ->with(\get_class($commandHandler))
+            ->with($commandHandler::class)
             ->willReturn($commandHandler);
-        $this->commands->registerCommand(new Command('foo'), \get_class($commandHandler));
+        $this->commands->registerCommand(new Command('foo'), $commandHandler::class);
         $statusCode = $this->app->handle('foo', $this->output);
         $this->assertSame(StatusCodes::OK, $statusCode);
     }

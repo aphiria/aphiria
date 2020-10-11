@@ -17,8 +17,6 @@ namespace Aphiria\Validation\Constraints;
  */
 final class ObjectConstraints
 {
-    /** @var string The name of the class whose constraints are represented here */
-    private string $className;
     /** @var IConstraint[][] The mapping of property names to constraints */
     private array $propertyConstraints = [];
     /** @var IConstraint[][] The mapping of method names to constraints */
@@ -29,7 +27,7 @@ final class ObjectConstraints
      * @param IConstraint[] $propertyConstraints The mapping of property names to constraints
      * @param IConstraint[] $methodConstraints The mapping of method names to constraints
      */
-    public function __construct(string $className, array $propertyConstraints = [], array $methodConstraints = [])
+    public function __construct(private string $className, array $propertyConstraints = [], array $methodConstraints = [])
     {
         $this->className = $className;
 
@@ -48,7 +46,7 @@ final class ObjectConstraints
      * @param string $methodName The name of the method to add constraints to
      * @param IConstraint[]|IConstraint $constraint The constraint or list of constraints to add
      */
-    public function addMethodConstraint(string $methodName, $constraint): void
+    public function addMethodConstraint(string $methodName, IConstraint|array $constraint): void
     {
         $this->methodConstraints[$methodName] = \is_array($constraint) ? $constraint : [$constraint];
     }
@@ -59,7 +57,7 @@ final class ObjectConstraints
      * @param string $propertyName The name of the property to add constraints to
      * @param IConstraint[]|IConstraint $constraint The constraint or list of constraints to add
      */
-    public function addPropertyConstraint(string $propertyName, $constraint): void
+    public function addPropertyConstraint(string $propertyName, IConstraint|array $constraint): void
     {
         $this->propertyConstraints[$propertyName] = \is_array($constraint) ? $constraint : [$constraint];
     }

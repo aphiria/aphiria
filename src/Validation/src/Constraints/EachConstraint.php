@@ -28,7 +28,7 @@ final class EachConstraint extends Constraint
      * @inheritdoc
      * @param IConstraint[]|IConstraint $constraints The constraint or list of constraints to apply on each value
      */
-    public function __construct($constraints, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
+    public function __construct(IConstraint|array $constraints, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
 
@@ -39,15 +39,15 @@ final class EachConstraint extends Constraint
      * @inheritdoc
      * @throws InvalidArgumentException Thrown if the value is not an
      */
-    public function passes($values): bool
+    public function passes($value): bool
     {
-        if (!\is_iterable($values)) {
+        if (!\is_iterable($value)) {
             throw new InvalidArgumentException('Value must be iterable');
         }
 
-        foreach ($values as $key => $value) {
+        foreach ($value as $key => $singleValue) {
             foreach ($this->constraints as $constraint) {
-                if (!$constraint->passes($value)) {
+                if (!$constraint->passes($singleValue)) {
                     return false;
                 }
             }

@@ -60,20 +60,6 @@ class BetweenConstraintTest extends TestCase
         $this->assertTrue($bothInclusiveConstraint->passes(2));
     }
 
-    public function testNonNumericMaxThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Min and max values must be numeric');
-        new BetweenConstraint(1, 'foo', true, true);
-    }
-
-    public function testNonNumericMinThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Min and max values must be numeric');
-        new BetweenConstraint('foo', 1, true, true);
-    }
-
     public function testNonNumericValueThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);

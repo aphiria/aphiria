@@ -24,8 +24,7 @@ use PHPUnit\Framework\TestCase;
 
 class ContentNegotiatorTest extends TestCase
 {
-    /** @var IRequest|MockObject The request message to use in tests */
-    private IRequest $request;
+    private IRequest|MockObject $request;
     private Headers $headers;
 
     protected function setUp(): void
@@ -337,7 +336,7 @@ class ContentNegotiatorTest extends TestCase
     private function createFormatterMock(
         array $supportedMediaTypes,
         int $numTimesSupportedMediaTypesCalled
-    ): IMediaTypeFormatter {
+    ): IMediaTypeFormatter|MockObject {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $formatter->expects($this->exactly($numTimesSupportedMediaTypesCalled))
             ->method('getSupportedMediaTypes')

@@ -27,7 +27,7 @@ class Session implements ISession
     public const STALE_FLASH_KEYS_KEY = '__APHIRIA_STALE_FLASH_KEYS';
 
     /** @var int|string The session Id */
-    private $id = '';
+    private int|string $id = '';
     /** @var IIdGenerator The Id generator to use */
     private IIdGenerator $idGenerator;
     /** @var array The mapping of variable names to values */
@@ -37,10 +37,15 @@ class Session implements ISession
      * @param int|string|null $id The Id of the session
      * @param IIdGenerator|null $idGenerator The Id generator to use, or null if using the default one
      */
-    public function __construct($id = null, IIdGenerator $idGenerator = null)
+    public function __construct(int|string $id = null, IIdGenerator $idGenerator = null)
     {
         $this->idGenerator = $idGenerator ?? new UuidV4IdGenerator();
-        $this->setId($id);
+
+        if ($id === null) {
+            $this->regenerateId();
+        } else {
+            $this->setId($id);
+        }
     }
 
     /**
@@ -102,7 +107,7 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function get(string $key, $defaultValue = null)
+    public function get(string $key, mixed $defaultValue = null): mixed
     {
         return $this->vars[$key] ?? $defaultValue;
     }
@@ -118,7 +123,7 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function getId()
+    public function getId(): int|string
     {
         return $this->id;
     }
@@ -126,37 +131,37 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function offsetExists($key): bool
+    public function offsetExists($offset): bool
     {
-        return $this->containsKey($key);
+        return $this->containsKey($offset);
     }
 
     /**
      * @inheritdoc
      */
-    public function offsetGet($key)
+    public function offsetGet($offset)
     {
-        return $this->get($key);
+        return $this->get($offset);
     }
 
     /**
      * @inheritdoc
      */
-    public function offsetSet($key, $value): void
+    public function offsetSet($offset, $value): void
     {
-        if ($key === null) {
+        if ($offset === null) {
             throw new InvalidArgumentException('Key cannot be empty');
         }
 
-        $this->set($key, $value);
+        $this->set($offset, $value);
     }
 
     /**
      * @inheritdoc
      */
-    public function offsetUnset($key): void
+    public function offsetUnset($offset): void
     {
-        unset($this->vars[$key]);
+        unset($this->vars[$offset]);
     }
 
     /**
@@ -189,7 +194,7 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function setId($id): void
+    public function setId(int|string $id): void
     {
         if ($this->idGenerator->idIsValid($id)) {
             $this->id = $id;

@@ -19,18 +19,11 @@ use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
  */
 final class RouteVariable
 {
-    /** @var string The name of the variable */
-    public string $name;
-    /** @var IRouteVariableConstraint[] The list of constraints that applies to this route variable */
-    public array $constraints;
-
     /**
      * @param string $name The name of the variable
      * @param IRouteVariableConstraint[] $constraints The list of constraints that applies to this route variable
      */
-    public function __construct(string $name, array $constraints = [])
+    public function __construct(public string $name, public array $constraints = [])
     {
-        $this->name = $name;
-        $this->constraints = $constraints;
     }
 }

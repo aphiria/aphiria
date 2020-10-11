@@ -37,7 +37,7 @@ final class FailedBinderMetadataCollectionException extends Exception
         Throwable $previous = null
     ) {
         parent::__construct(
-            'Failed to collect metadata for ' . \get_class($incompleteBinderMetadata->getBinder()),
+            'Failed to collect metadata for ' . $incompleteBinderMetadata->getBinder()::class,
             $code,
             $previous
         );

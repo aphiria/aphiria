@@ -22,7 +22,7 @@ interface ISessionDriver
      *
      * @param int|string $sessionId The ID of the session to delete
      */
-    public function delete($sessionId): void;
+    public function delete(int|string $sessionId): void;
 
     /**
      * Performs garbage collection to remove any stale session data
@@ -35,10 +35,10 @@ interface ISessionDriver
      * Gets the serialized session data for a particular session
      *
      * @param int|string $sessionId The ID of the session to retrieve from
-     * @return mixed The value of the serialized session
+     * @return string The value of the serialized session
      * @throw OutOfBoundsException Thrown if the session does not exist
      */
-    public function get($sessionId): string;
+    public function get(int|string $sessionId): string;
 
     /**
      * Persists the session data to storage
@@ -46,5 +46,5 @@ interface ISessionDriver
      * @param int|string $sessionId The ID of the session to set
      * @param string $sessionData The serialized session data
      */
-    public function set($sessionId, string $sessionData): void;
+    public function set(int|string $sessionId, string $sessionData): void;
 }

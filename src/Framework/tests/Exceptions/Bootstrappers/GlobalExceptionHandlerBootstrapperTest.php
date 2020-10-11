@@ -40,8 +40,7 @@ use Psr\Log\LogLevel;
 
 class GlobalExceptionHandlerBootstrapperTest extends TestCase
 {
-    /** @var IContainer|MockObject */
-    private IContainer $container;
+    private IContainer|MockObject $container;
     private Logger $logger;
     private GlobalExceptionHandlerBootstrapper $bootstrapper;
     private IApiExceptionRenderer $apiExceptionRenderer;
@@ -114,7 +113,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
                 // Don't do anything
             }
         };
-        $customApiExceptionRendererType = \get_class($customApiExceptionRenderer);
+        $customApiExceptionRendererType = $customApiExceptionRenderer::class;
         $config = self::getBaseConfig();
         $config['aphiria']['exceptions']['apiExceptionRenderer'] = $customApiExceptionRendererType;
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
@@ -154,12 +153,12 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $responseFactory = $this->createMock(IResponseFactory::class);
         $responseFactory->expects($this->once())
             ->method('createResponse')
-            ->with($request, HttpStatusCodes::HTTP_BAD_REQUEST, null, $this->isInstanceOf(ProblemDetails::class))
-            ->willReturn(new Response(HttpStatusCodes::HTTP_BAD_REQUEST));
+            ->with($request, HttpStatusCodes::BAD_REQUEST, null, $this->isInstanceOf(ProblemDetails::class))
+            ->willReturn(new Response(HttpStatusCodes::BAD_REQUEST));
         $this->apiExceptionRenderer->setResponseFactory($responseFactory);
         $exception = new InvalidRequestBodyException(['foo']);
         $response = $this->apiExceptionRenderer->createResponse($exception);
-        $this->assertSame(HttpStatusCodes::HTTP_BAD_REQUEST, $response->getStatusCode());
+        $this->assertSame(HttpStatusCodes::BAD_REQUEST, $response->getStatusCode());
     }
 
     public function testLogLevelFactoryIsCreatedAndBound(): void
@@ -268,7 +267,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
                     return true;
                 }
 
-                if (\get_class($actualInstance) === $expectedExceptionRendererType) {
+                if ($actualInstance::class === $expectedExceptionRendererType) {
                     return true;
                 }
 

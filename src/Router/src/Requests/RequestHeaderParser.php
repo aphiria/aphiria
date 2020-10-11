@@ -41,7 +41,7 @@ final class RequestHeaderParser
         foreach ($server as $key => $value) {
             $uppercasedKey = \strtoupper($key);
 
-            if (isset(self::$specialCaseHeaders[$uppercasedKey]) || \strpos($uppercasedKey, 'HTTP_') === 0) {
+            if (isset(self::$specialCaseHeaders[$uppercasedKey]) || \str_starts_with($uppercasedKey, 'HTTP_')) {
                 $value = (array)$value;
                 $headers[self::normalizeName($key)] = $value;
             }

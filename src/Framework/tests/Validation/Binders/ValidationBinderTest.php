@@ -16,7 +16,7 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Validation\Binders\ValidationBinder;
-use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
+use Aphiria\Validation\Constraints\Attributes\AttributeObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\Caching\FileObjectConstraintsRegistryCache;
 use Aphiria\Validation\Constraints\Caching\IObjectConstraintsRegistryCache;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
@@ -34,8 +34,7 @@ use PHPUnit\Framework\TestCase;
 
 class ValidationBinderTest extends TestCase
 {
-    /** @var IContainer|MockObject */
-    private IContainer $container;
+    private IContainer|MockObject $container;
     private ValidationBinder $binder;
     private ?string $currEnvironment;
 
@@ -55,12 +54,12 @@ class ValidationBinderTest extends TestCase
         }
     }
 
-    public function testAnnotationRegistrantIsRegistered(): void
+    public function testAttributeRegistrantIsRegistered(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock([
             [IErrorMessageInterpolator::class, $this->isInstanceOf(IErrorMessageInterpolator::class)],
-            [AnnotationObjectConstraintsRegistrant::class, $this->isInstanceOf(AnnotationObjectConstraintsRegistrant::class)]
+            [AttributeObjectConstraintsRegistrant::class, $this->isInstanceOf(AttributeObjectConstraintsRegistrant::class)]
         ]);
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -83,12 +82,12 @@ class ValidationBinderTest extends TestCase
         $errorMessageTemplates = $this->createMock(IErrorMessageTemplateRegistry::class);
         $config = self::getBaseConfig();
         $config['aphiria']['validation']['errorMessageTemplates'] = [
-            'type' => \get_class($errorMessageTemplates)
+            'type' => $errorMessageTemplates::class
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->setUpContainerMock();
         $this->container->method('resolve')
-            ->with(\get_class($errorMessageTemplates))
+            ->with($errorMessageTemplates::class)
             ->willReturn($errorMessageTemplates);
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -157,7 +156,7 @@ class ValidationBinderTest extends TestCase
         return [
             'aphiria' => [
                 'validation' => [
-                    'annotationPaths' => ['/src'],
+                    'attributePaths' => ['/src'],
                     'constraintsCachePath' => '/cache',
                     'errorMessageInterpolator' => [
                         'type' => StringReplaceErrorMessageInterpolator::class

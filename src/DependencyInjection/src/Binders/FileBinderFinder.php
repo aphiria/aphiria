@@ -42,7 +42,7 @@ final class FileBinderFinder
      * @throws InvalidArgumentException Thrown if the paths are not a string or array
      * @throws ReflectionException Thrown if a class could not be reflected
      */
-    public function findAll($paths): array
+    public function findAll(string|array $paths): array
     {
         // Filter out any non-concrete binder classes
         return array_filter($this->classFinder->findAllTypes($paths, true), static function ($className) {

@@ -19,15 +19,11 @@ use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
  */
 final class FileObjectConstraintsRegistryCache implements IObjectConstraintsRegistryCache
 {
-    /** @var string The path to the cache file */
-    private string $path;
-
     /**
      * @param string $path The path to the cache file
      */
-    public function __construct(string $path)
+    public function __construct(private string $path)
     {
-        $this->path = $path;
     }
 
     /**

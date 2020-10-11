@@ -25,17 +25,14 @@ class BinderComponent implements IComponent
 {
     /** @var IBinderDispatcher|null The binder dispatcher */
     private ?IBinderDispatcher $binderDispatcher = null;
-    /** @var IContainer The container to dispatch binders with */
-    private IContainer $container;
     /** @var Binder[] The list of binders to dispatch */
     private array $binders = [];
 
     /**
      * @param IContainer $container The container to dispatch binders with
      */
-    public function __construct(IContainer $container)
+    public function __construct(private IContainer $container)
     {
-        $this->container = $container;
     }
 
     /**
@@ -55,9 +52,9 @@ class BinderComponent implements IComponent
      * Adds a binder dispatcher to use
      *
      * @param IBinderDispatcher $binderDispatcher The binder dispatcher to use
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withBinderDispatcher(IBinderDispatcher $binderDispatcher): self
+    public function withBinderDispatcher(IBinderDispatcher $binderDispatcher): static
     {
         $this->binderDispatcher = $binderDispatcher;
         $this->container->bindInstance(IBinderDispatcher::class, $this->binderDispatcher);
@@ -69,13 +66,13 @@ class BinderComponent implements IComponent
      * Adds binders to dispatch
      *
      * @param Binder|Binder[] $binders The binders to add
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withBinders($binders): self
+    public function withBinders(Binder|array $binders): static
     {
         if ($binders instanceof Binder) {
             $this->binders[] = $binders;
-        } elseif (\is_array($binders)) {
+        } else {
             $this->binders = [...$this->binders, ...$binders];
         }
 

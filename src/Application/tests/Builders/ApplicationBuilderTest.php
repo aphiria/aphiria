@@ -87,16 +87,16 @@ class ApplicationBuilderTest extends TestCase
     public function testHasComponentReturnsWhetherOrNotComponentIsRegistered(): void
     {
         $component = $this->createMock(IComponent::class);
-        $this->assertFalse($this->appBuilder->hasComponent(\get_class($component)));
+        $this->assertFalse($this->appBuilder->hasComponent($component::class));
         $this->appBuilder->withComponent($component);
-        $this->assertTrue($this->appBuilder->hasComponent(\get_class($component)));
+        $this->assertTrue($this->appBuilder->hasComponent($component::class));
     }
 
     public function testGettingComponentReturnsItIfRegistered(): void
     {
         $component = $this->createMock(IComponent::class);
         $this->appBuilder->withComponent($component);
-        $this->assertSame($component, $this->appBuilder->getComponent(\get_class($component)));
+        $this->assertSame($component, $this->appBuilder->getComponent($component::class));
     }
 
     public function testGettingComponentThrowsExceptionForUnregistered(): void

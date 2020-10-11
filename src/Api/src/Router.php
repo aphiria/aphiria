@@ -40,10 +40,6 @@ use InvalidArgumentException;
  */
 class Router implements IRequestHandler
 {
-    /** @var IRouteMatcher The route matcher */
-    private IRouteMatcher $routeMatcher;
-    /** @var IServiceResolver The service resolver */
-    private IServiceResolver $serviceResolver;
     /** @var IContentNegotiator The content negotiator */
     private IContentNegotiator $contentNegotiator;
     /** @var IRouteActionInvoker The route action invoker */
@@ -56,13 +52,11 @@ class Router implements IRequestHandler
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
      */
     public function __construct(
-        IRouteMatcher $routeMatcher,
-        IServiceResolver $serviceResolver,
+        private IRouteMatcher $routeMatcher,
+        private IServiceResolver $serviceResolver,
         IContentNegotiator $contentNegotiator = null,
         IRouteActionInvoker $routeActionInvoker = null
     ) {
-        $this->routeMatcher = $routeMatcher;
-        $this->serviceResolver = $serviceResolver;
         $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }
@@ -118,7 +112,7 @@ class Router implements IRequestHandler
 
         if (!$controller instanceof Controller) {
             throw new InvalidArgumentException(
-                sprintf('Controller %s does not extend %s', \get_class($controller), Controller::class)
+                sprintf('Controller %s does not extend %s', $controller::class, Controller::class)
             );
         }
     }
@@ -139,7 +133,7 @@ class Router implements IRequestHandler
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(
-                    sprintf('Middleware %s does not implement %s', \get_class($middleware), IMiddleware::class)
+                    sprintf('Middleware %s does not implement %s', $middleware::class, IMiddleware::class)
                 );
             }
 
@@ -167,10 +161,10 @@ class Router implements IRequestHandler
 
         if (!$matchingResult->matchFound) {
             if ($matchingResult->methodIsAllowed === null) {
-                throw new HttpException(HttpStatusCodes::HTTP_NOT_FOUND, "No route found for {$request->getUri()}");
+                throw new HttpException(HttpStatusCodes::NOT_FOUND, "No route found for {$request->getUri()}");
             }
 
-            $response = new Response(HttpStatusCodes::HTTP_METHOD_NOT_ALLOWED);
+            $response = new Response(HttpStatusCodes::METHOD_NOT_ALLOWED);
             $response->getHeaders()->add('Allow', $matchingResult->allowedMethods);
 
             throw new HttpException($response, 'Method not allowed');

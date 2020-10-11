@@ -21,17 +21,6 @@ use InvalidArgumentException;
  */
 class Command
 {
-    /** @var string The name of the command */
-    public string $name;
-    /** @var Argument[] The list of arguments */
-    public array $arguments;
-    /** @var Option[] The list of options */
-    public array $options;
-    /** @var string|null The description of the command */
-    public ?string $description;
-    /** @var string|null The extra descriptive help text */
-    public ?string $helpText;
-
     /**
      * @param string $name The name of the command
      * @param Argument[] $arguments The list of arguments
@@ -40,20 +29,14 @@ class Command
      * @param string|null $helpText the help text
      */
     public function __construct(
-        string $name,
-        array $arguments = [],
-        array $options = [],
-        string $description = null,
-        string $helpText = null
+        public string $name,
+        public array $arguments = [],
+        public array $options = [],
+        public ?string $description = null,
+        public ?string $helpText = null
     ) {
-        if (empty($name)) {
+        if (empty($this->name)) {
             throw new InvalidArgumentException('Command name cannot be empty');
         }
-
-        $this->name = $name;
-        $this->arguments = $arguments;
-        $this->options = $options;
-        $this->description = $description;
-        $this->helpText = $helpText;
     }
 }

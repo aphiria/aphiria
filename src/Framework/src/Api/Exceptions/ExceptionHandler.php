@@ -25,10 +25,6 @@ use Psr\Log\LoggerInterface;
  */
 class ExceptionHandler implements IMiddleware
 {
-    /** @var IApiExceptionRenderer The exception response renderer */
-    private IApiExceptionRenderer $exceptionRenderer;
-    /** @var LoggerInterface The application logger */
-    private LoggerInterface $logger;
     /** @var LogLevelFactory The factory that creates PSR-3 log levels from exceptions */
     private LogLevelFactory $logLevelFactory;
 
@@ -38,12 +34,10 @@ class ExceptionHandler implements IMiddleware
      * @param LogLevelFactory|null $logLevelFactory The PSR-3 log level factory
      */
     public function __construct(
-        IApiExceptionRenderer $exceptionRenderer,
-        LoggerInterface $logger,
+        private IApiExceptionRenderer $exceptionRenderer,
+        private LoggerInterface $logger,
         LogLevelFactory $logLevelFactory = null
     ) {
-        $this->exceptionRenderer = $exceptionRenderer;
-        $this->logger = $logger;
         $this->logLevelFactory = $logLevelFactory ?? new LogLevelFactory();
     }
 

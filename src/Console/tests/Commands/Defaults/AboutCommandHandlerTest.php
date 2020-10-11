@@ -23,8 +23,7 @@ use PHPUnit\Framework\TestCase;
 
 class AboutCommandHandlerTest extends TestCase
 {
-    /** @var IOutput|MockObject */
-    private IOutput $output;
+    private IOutput|MockObject $output;
     private AboutCommandHandler $handler;
     private CommandRegistry $commands;
 

@@ -27,13 +27,6 @@ class HttpMethodRouteConstraintTest extends TestCase
         $this->assertEquals(['POST'], (new HttpMethodRouteConstraint('post'))->getAllowedMethods());
     }
 
-    public function testCreatingWithNonStringNorArrayThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Allowed methods must be a string or array of strings');
-        new HttpMethodRouteConstraint(123);
-    }
-
     public function testCreatingWithStringParamConvertsToArrayOfAllowedMethods(): void
     {
         $this->assertEquals(['POST'], (new HttpMethodRouteConstraint('POST'))->getAllowedMethods());

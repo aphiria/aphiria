@@ -26,8 +26,6 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
 {
     /** @var IOutput The output to write to */
     protected IOutput $output;
-    /** @var bool Whether or not to exit after handling the exception */
-    protected bool $shouldExit;
     /** @var Closure[] The mapping of exception types to callbacks that write output and return status codes */
     protected array $outputWriters = [];
 
@@ -35,10 +33,9 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
      * @param IOutput|null $output The output to write to
      * @param bool $shouldExit Whether or not to exit after handling the exception
      */
-    public function __construct(IOutput $output = null, bool $shouldExit = true)
+    public function __construct(IOutput $output = null, protected bool $shouldExit = true)
     {
         $this->output = $output ?? new ConsoleOutput();
-        $this->shouldExit = $shouldExit;
     }
 
     /**
@@ -46,8 +43,8 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
      */
     public function render(Exception $ex): void
     {
-        if (isset($this->outputWriters[\get_class($ex)])) {
-            $statusCode = $this->outputWriters[\get_class($ex)]($ex, $this->output) ?? StatusCodes::FATAL;
+        if (isset($this->outputWriters[$ex::class])) {
+            $statusCode = $this->outputWriters[$ex::class]($ex, $this->output) ?? StatusCodes::FATAL;
         } else {
             $statusCode  = StatusCodes::FATAL;
             $this->output->writeln($this->getDefaultExceptionMessages($ex));

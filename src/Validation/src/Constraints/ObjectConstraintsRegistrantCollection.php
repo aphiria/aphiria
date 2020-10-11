@@ -21,15 +21,12 @@ class ObjectConstraintsRegistrantCollection implements IObjectConstraintsRegistr
 {
     /** @var IObjectConstraintsRegistrant[] The collection of registrants */
     protected array $registrants = [];
-    /** @var IObjectConstraintsRegistryCache|null The optional cache of constraints */
-    private ?IObjectConstraintsRegistryCache $objectConstraintsCache;
 
     /**
      * @param IObjectConstraintsRegistryCache|null $objectConstraintsCache The optional cache of constraints
      */
-    public function __construct(IObjectConstraintsRegistryCache $objectConstraintsCache = null)
+    public function __construct(private ?IObjectConstraintsRegistryCache $objectConstraintsCache = null)
     {
-        $this->objectConstraintsCache = $objectConstraintsCache;
     }
 
     /**
@@ -47,7 +44,7 @@ class ObjectConstraintsRegistrantCollection implements IObjectConstraintsRegistr
      */
     public function registerConstraints(ObjectConstraintsRegistry $objectConstraints): void
     {
-        if ($this->objectConstraintsCache !== null && ($cachedObjectConstraints = $this->objectConstraintsCache->get()) !== null) {
+        if (($cachedObjectConstraints = $this->objectConstraintsCache?->get()) !== null) {
             $objectConstraints->copy($cachedObjectConstraints);
 
             return;

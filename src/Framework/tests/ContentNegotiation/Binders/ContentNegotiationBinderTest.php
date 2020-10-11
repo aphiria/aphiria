@@ -30,8 +30,7 @@ use PHPUnit\Framework\TestCase;
 
 class ContentNegotiationBinderTest extends TestCase
 {
-    /** @var IContainer|MockObject */
-    private IContainer $container;
+    private IContainer|MockObject $container;
     private ContentNegotiationBinder $binder;
 
     protected function setUp(): void
@@ -90,7 +89,7 @@ class ContentNegotiationBinderTest extends TestCase
     {
         $encodingMatcher = $this->createMock(IEncodingMatcher::class);
         $config = self::getBaseConfig();
-        $config['aphiria']['contentNegotiation']['encodingMatcher'] = \get_class($encodingMatcher);
+        $config['aphiria']['contentNegotiation']['encodingMatcher'] = $encodingMatcher::class;
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->setUpContainerMockBindInstance([
             [IMediaTypeFormatterMatcher::class, $this->isInstanceOf(MediaTypeFormatterMatcher::class)],
@@ -98,7 +97,7 @@ class ContentNegotiationBinderTest extends TestCase
             [ILanguageMatcher::class, $this->isInstanceOf(AcceptLanguageMatcher::class)],
             [IContentNegotiator::class, $this->isInstanceOf(ContentNegotiator::class)]
         ]);
-        $this->setUpContainerMockResolve([\get_class($encodingMatcher), $encodingMatcher]);
+        $this->setUpContainerMockResolve([$encodingMatcher::class, $encodingMatcher]);
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
@@ -108,7 +107,7 @@ class ContentNegotiationBinderTest extends TestCase
     {
         $languageMatcher = $this->createMock(ILanguageMatcher::class);
         $config = self::getBaseConfig();
-        $config['aphiria']['contentNegotiation']['languageMatcher'] = \get_class($languageMatcher);
+        $config['aphiria']['contentNegotiation']['languageMatcher'] = $languageMatcher::class;
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->setUpContainerMockBindInstance([
             [IMediaTypeFormatterMatcher::class, $this->isInstanceOf(MediaTypeFormatterMatcher::class)],
@@ -116,7 +115,7 @@ class ContentNegotiationBinderTest extends TestCase
             [ILanguageMatcher::class, $languageMatcher],
             [IContentNegotiator::class, $this->isInstanceOf(ContentNegotiator::class)]
         ]);
-        $this->setUpContainerMockResolve([\get_class($languageMatcher), $languageMatcher]);
+        $this->setUpContainerMockResolve([$languageMatcher::class, $languageMatcher]);
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);

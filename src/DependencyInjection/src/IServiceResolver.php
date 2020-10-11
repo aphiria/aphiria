@@ -24,9 +24,8 @@ interface IServiceResolver
      *
      * @param Context|string $context The context (or name of the target class) to apply to all bindings and resolutions
      * @param callable $callback The callback that takes in an instance of the implementing resolver and performs actions under the context
-     * @throws InvalidArgumentException Thrown if the context was not of the correct type
      */
-    public function for($context, callable $callback);
+    public function for(Context|string $context, callable $callback);
 
     /**
      * Resolve an instance of the interface

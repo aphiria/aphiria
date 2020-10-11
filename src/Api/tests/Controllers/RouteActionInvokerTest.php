@@ -41,15 +41,11 @@ use RuntimeException;
 
 class RouteActionInvokerTest extends TestCase
 {
-    /** @var IRequestBodyValidator|MockObject */
-    private IRequestBodyValidator $requestBodyValidator;
+    private IRequestBodyValidator|MockObject $requestBodyValidator;
     private RouteActionInvoker $invoker;
-    /** @var IControllerParameterResolver|MockObject */
-    private IControllerParameterResolver $parameterResolver;
-    /** @var IContentNegotiator|MockObject */
-    private IContentNegotiator $contentNegotiator;
-    /** @var IResponseFactory|MockObject */
-    private IResponseFactory $responseFactory;
+    private IControllerParameterResolver|MockObject $parameterResolver;
+    private IContentNegotiator|MockObject $contentNegotiator;
+    private IResponseFactory|MockObject $responseFactory;
     private ControllerWithEndpoints $controller;
 
     protected function setUp(): void
@@ -81,7 +77,7 @@ class RouteActionInvokerTest extends TestCase
             );
             $this->fail('Failed to assert that a 415 was thrown');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE, $ex->getResponse()->getStatusCode());
         }
     }
 
@@ -99,7 +95,7 @@ class RouteActionInvokerTest extends TestCase
             );
             $this->fail('Failed to assert that a 400 was thrown');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::HTTP_BAD_REQUEST, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::BAD_REQUEST, $ex->getResponse()->getStatusCode());
         }
     }
 
@@ -127,7 +123,7 @@ class RouteActionInvokerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $expectedResponse = $this->createMock(IResponse::class);
         $this->responseFactory->method('createResponse')
-            ->with($request, HttpStatusCodes::HTTP_OK, null, $this->callback(fn ($actionResult) => $actionResult instanceof User))
+            ->with($request, HttpStatusCodes::OK, null, $this->callback(fn ($actionResult) => $actionResult instanceof User))
             ->willReturn($expectedResponse);
         $actualResponse = $this->invoker->invokeRouteAction(
             [$this->controller, 'popo'],
@@ -207,7 +203,7 @@ class RouteActionInvokerTest extends TestCase
             []
         );
         $this->assertNull($response->getBody());
-        $this->assertSame(HttpStatusCodes::HTTP_NO_CONTENT, $response->getStatusCode());
+        $this->assertSame(HttpStatusCodes::NO_CONTENT, $response->getStatusCode());
     }
 
     public function testInvokingRouteActionWithUnreflectableRouteActionDelegateThrowsException(): void
@@ -231,14 +227,14 @@ class RouteActionInvokerTest extends TestCase
             {
             }
         };
-        $this->expectExceptionMessage('Reflection failed for ' . \get_class($controller) . '::foo');
+        $this->expectExceptionMessage('Reflection failed for ' . $controller::class . '::foo');
         $routeActionInvoker = new class() extends RouteActionInvoker {
             protected function reflectRouteActionDelegate(callable $routeActionDelegate): ReflectionFunctionAbstract
             {
                 throw new ReflectionException();
             }
         };
-        $routeActionInvoker->invokeRouteAction([\get_class($controller), 'foo'], $this->createRequestWithoutBody('http://example.com'), []);
+        $routeActionInvoker->invokeRouteAction([$controller::class, 'foo'], $this->createRequestWithoutBody('http://example.com'), []);
     }
 
     public function testMissingControllerParameterValueExceptionIsRethrownAsHttpException(): void
@@ -255,7 +251,7 @@ class RouteActionInvokerTest extends TestCase
             );
             $this->fail('Failed to assert that a 400 was thrown');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::HTTP_BAD_REQUEST, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::BAD_REQUEST, $ex->getResponse()->getStatusCode());
         }
     }
 
@@ -291,7 +287,7 @@ class RouteActionInvokerTest extends TestCase
             );
             $this->fail('Failed to assert that a 522 was thrown');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::UNPROCESSABLE_ENTITY, $ex->getResponse()->getStatusCode());
         }
     }
 

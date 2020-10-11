@@ -19,18 +19,14 @@ final class EqualsConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field does not match expected value';
-    /** @var mixed The value to compare against */
-    private $value;
 
     /**
      * @inheritdoc
      * @param mixed $value The value to compare against
      */
-    public function __construct($value, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
+    public function __construct(private mixed $value, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
-
-        $this->value = $value;
     }
 
     /**

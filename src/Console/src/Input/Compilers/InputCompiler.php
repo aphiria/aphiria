@@ -28,8 +28,6 @@ use RuntimeException;
  */
 final class InputCompiler implements IInputCompiler
 {
-    /** @var CommandRegistry The commands that are registered */
-    private CommandRegistry $commands;
     /** @var IInputTokenizer The argv input tokenizer */
     private IInputTokenizer $argvTokenizer;
     /** @var IInputTokenizer The string input tokenizer */
@@ -44,12 +42,11 @@ final class InputCompiler implements IInputCompiler
      * @param IInputTokenizer|null $arrayListTokenizer The array list input tokenizer
      */
     public function __construct(
-        CommandRegistry $commands,
+        private CommandRegistry $commands,
         IInputTokenizer $argvTokenizer = null,
         IInputTokenizer $stringTokenizer = null,
         IInputTokenizer $arrayListTokenizer = null
     ) {
-        $this->commands = $commands;
         $this->argvTokenizer = $argvTokenizer ?? new ArgvInputTokenizer();
         $this->stringTokenizer = $stringTokenizer ?? new StringInputTokenizer();
         $this->arrayListTokenizer = $arrayListTokenizer ?? new ArrayListInputTokenizer();
@@ -58,7 +55,7 @@ final class InputCompiler implements IInputCompiler
     /**
      * @inheritdoc
      */
-    public function compile($rawInput): Input
+    public function compile(mixed $rawInput): Input
     {
         $tokens = $this->selectTokenizer($rawInput)->tokenize($rawInput);
 
@@ -90,7 +87,7 @@ final class InputCompiler implements IInputCompiler
      * @return IInputTokenizer The selected input tokenizer
      * @throws InvalidArgumentException Thrown if the input was neither a string nor an array
      */
-    private function selectTokenizer($rawInput): IInputTokenizer
+    private function selectTokenizer(string|array $rawInput): IInputTokenizer
     {
         if (\is_string($rawInput)) {
             return $this->stringTokenizer;
@@ -114,7 +111,7 @@ final class InputCompiler implements IInputCompiler
      * @param string $name The name of the option to add
      * @param mixed $value The value to add
      */
-    private static function addOption(array &$options, string $name, $value): void
+    private static function addOption(array &$options, string $name, mixed $value): void
     {
         if (isset($options[$name])) {
             // We now consider this option to have multiple values
@@ -253,7 +250,7 @@ final class InputCompiler implements IInputCompiler
         // Trim the "--"
         $option = mb_substr($token, 2);
 
-        if (mb_strpos($option, '=') === false) {
+        if (!str_contains($option, '=')) {
             /**
              * The option is either of the form "--foo" or "--foo bar" or "--foo -b" or "--foo --bar"
              * So, we need to determine if the option has a value
@@ -261,7 +258,7 @@ final class InputCompiler implements IInputCompiler
             $nextToken = array_shift($remainingTokens);
 
             // Check if the next token is also an option
-            if (empty($nextToken) || mb_strpos($nextToken, '-') === 0) {
+            if (empty($nextToken) || str_starts_with($nextToken, '-')) {
                 // The option must have not had a value, so put the next token back
                 array_unshift($remainingTokens, $nextToken);
 
@@ -296,10 +293,10 @@ final class InputCompiler implements IInputCompiler
         $commandName = array_shift($tokens);
 
         while ($token = array_shift($tokens)) {
-            if (mb_strpos($token, '--') === 0) {
+            if (str_starts_with($token, '--')) {
                 [$optionName, $optionValue] = self::parseLongOption($token, $tokens);
                 self::addOption($options, $optionName, $optionValue);
-            } elseif (mb_strpos($token, '-') === 0) {
+            } elseif (str_starts_with($token, '-')) {
                 foreach (self::parseShortOption($token) as [$optionName, $optionValue]) {
                     self::addOption($options, $optionName, $optionValue);
                 }

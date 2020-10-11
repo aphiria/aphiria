@@ -41,7 +41,7 @@ final class NotInConstraint implements IRouteVariableConstraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         return !\in_array($value, $this->unacceptableValues, true);
     }

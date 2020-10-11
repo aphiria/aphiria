@@ -42,8 +42,6 @@ Command: <info>{{name}}</info>
 <comment>Options:</comment>
 {{options}}{{helpText}}
 EOF;
-    /** @var CommandRegistry The commands */
-    private CommandRegistry $commands;
     /** @var CommandFormatter The command formatter to use */
     private CommandFormatter $commandFormatter;
     /** @var PaddingFormatter The space padding formatter to use */
@@ -55,11 +53,10 @@ EOF;
      * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use
      */
     public function __construct(
-        CommandRegistry $commands,
+        private CommandRegistry $commands,
         CommandFormatter $commandFormatter = null,
         PaddingFormatter $paddingFormatter = null
     ) {
-        $this->commands = $commands;
         $this->commandFormatter = $commandFormatter ?? new CommandFormatter();
         $this->paddingFormatter = $paddingFormatter ?? new PaddingFormatter();
     }

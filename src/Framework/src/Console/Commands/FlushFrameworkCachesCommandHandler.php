@@ -26,17 +26,6 @@ use Aphiria\Validation\Constraints\Caching\IObjectConstraintsRegistryCache;
  */
 class FlushFrameworkCachesCommandHandler implements ICommandHandler
 {
-    /** @var IBinderMetadataCollectionCache|null The binder metadata cache if one is set, or  null */
-    private ?IBinderMetadataCollectionCache $binderMetadataCache;
-    /** @var ICommandRegistryCache|null The console command cache if one is set, or null */
-    private ?ICommandRegistryCache $commandCache;
-    /** @var IRouteCache|null The route cache if one is set, or null */
-    private ?IRouteCache $routeCache;
-    /** @var ITrieCache|null The trie cache if one is set, or null */
-    private ?ITrieCache $trieCache;
-    /** @var IObjectConstraintsRegistryCache|null The object constraints cache if one is set, or null */
-    private ?IObjectConstraintsRegistryCache $constraintCache;
-
     /**
      * @param IBinderMetadataCollectionCache|null $binderMetadataCache The binder metadata cache if one is set, or null
      * @param ICommandRegistryCache|null $commandCache The console command cache if one is set, or null
@@ -45,17 +34,12 @@ class FlushFrameworkCachesCommandHandler implements ICommandHandler
      * @param IObjectConstraintsRegistryCache|null $constraintCache The object constraints cache if one is set, or null
      */
     public function __construct(
-        ?IBinderMetadataCollectionCache $binderMetadataCache,
-        ?ICommandRegistryCache $commandCache,
-        ?IRouteCache $routeCache,
-        ?ITrieCache $trieCache,
-        ?IObjectConstraintsRegistryCache $constraintCache
+        private ?IBinderMetadataCollectionCache $binderMetadataCache,
+        private ?ICommandRegistryCache $commandCache,
+        private ?IRouteCache $routeCache,
+        private ?ITrieCache $trieCache,
+        private ?IObjectConstraintsRegistryCache $constraintCache
     ) {
-        $this->binderMetadataCache = $binderMetadataCache;
-        $this->commandCache = $commandCache;
-        $this->routeCache = $routeCache;
-        $this->trieCache = $trieCache;
-        $this->constraintCache = $constraintCache;
     }
 
     /**

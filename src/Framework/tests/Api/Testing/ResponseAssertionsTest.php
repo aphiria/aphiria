@@ -241,7 +241,7 @@ class ResponseAssertionsTest extends TestCase
         $expectedParsedBody = new class() {
             public string $foo = 'bar';
         };
-        $this->assertions->assertParsedBodyPassesCallback($request, $response, \get_class($expectedParsedBody), function ($parsedBody) use ($expectedParsedBody) {
+        $this->assertions->assertParsedBodyPassesCallback($request, $response, $expectedParsedBody::class, function ($parsedBody) use ($expectedParsedBody) {
             return $parsedBody == $expectedParsedBody;
         });
         // Dummy assertion
@@ -258,7 +258,7 @@ class ResponseAssertionsTest extends TestCase
         $expectedParsedBody = new class() {
             public string $foo = 'bar';
         };
-        $this->assertions->assertParsedBodyPassesCallback($request, $response, \get_class($expectedParsedBody), function ($parsedBody) {
+        $this->assertions->assertParsedBodyPassesCallback($request, $response, $expectedParsedBody::class, function ($parsedBody) {
             return false;
         });
     }

@@ -21,15 +21,11 @@ use Psr\Container\ContainerInterface;
  */
 class Psr11Container implements ContainerInterface
 {
-    /** @var IContainer The Aphiria container */
-    private IContainer $container;
-
     /**
      * @param IContainer $container The Aphiria container
      */
-    public function __construct(IContainer $container)
+    public function __construct(private IContainer $container)
     {
-        $this->container = $container;
     }
 
     /**

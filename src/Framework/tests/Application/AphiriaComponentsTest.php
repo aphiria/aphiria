@@ -42,8 +42,7 @@ use Psr\Log\LogLevel;
 
 class AphiriaComponentsTest extends TestCase
 {
-    /** @var IApplicationBuilder|MockObject */
-    private IApplicationBuilder $appBuilder;
+    private IApplicationBuilder|MockObject $appBuilder;
 
     protected function setUp(): void
     {
@@ -151,11 +150,11 @@ class AphiriaComponentsTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testWithCommandAnnotationsConfiguresComponentToHaveAnnotations(): void
+    public function testWithCommandAttributesConfiguresComponentToHaveAttributes(): void
     {
         $expectedComponent = $this->createMock(CommandComponent::class);
         $expectedComponent->expects($this->once())
-            ->method('withAnnotations');
+            ->method('withAttributes');
         $this->appBuilder->method('hasComponent')
             ->with(CommandComponent::class)
             ->willReturn(true);
@@ -167,13 +166,13 @@ class AphiriaComponentsTest extends TestCase
 
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withCommandAnnotations($appBuilder);
+                $this->withCommandAttributes($appBuilder);
             }
         };
         $component->build($this->appBuilder);
     }
 
-    public function testWithCommandAnnotationsRegistersComponentIfItIsNotRegisteredYet(): void
+    public function testWithCommandAttributesRegistersComponentIfItIsNotRegisteredYet(): void
     {
         $this->appBuilder->method('hasComponent')
             ->with(CommandComponent::class)
@@ -188,7 +187,7 @@ class AphiriaComponentsTest extends TestCase
 
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withCommandAnnotations($appBuilder);
+                $this->withCommandAttributes($appBuilder);
             }
         };
         $component->build($this->appBuilder);
@@ -670,11 +669,11 @@ class AphiriaComponentsTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testWithRouteAnnotationsConfiguresComponentToHaveAnnotations(): void
+    public function testWithRouteAttributesConfiguresComponentToHaveAttributes(): void
     {
         $expectedComponent = $this->createMock(RouterComponent::class);
         $expectedComponent->expects($this->once())
-            ->method('withAnnotations');
+            ->method('withAttributes');
         $this->appBuilder->method('hasComponent')
             ->with(RouterComponent::class)
             ->willReturn(true);
@@ -686,13 +685,13 @@ class AphiriaComponentsTest extends TestCase
 
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withRouteAnnotations($appBuilder);
+                $this->withRouteAttributes($appBuilder);
             }
         };
         $component->build($this->appBuilder);
     }
 
-    public function testWithRouteAnnotationsRegistersComponentIfItIsNotRegisteredYet(): void
+    public function testWithRouteAttributesRegistersComponentIfItIsNotRegisteredYet(): void
     {
         $this->appBuilder->method('hasComponent')
             ->with(RouterComponent::class)
@@ -707,7 +706,7 @@ class AphiriaComponentsTest extends TestCase
 
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withRouteAnnotations($appBuilder);
+                $this->withRouteAttributes($appBuilder);
             }
         };
         $component->build($this->appBuilder);
@@ -763,11 +762,11 @@ class AphiriaComponentsTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testWithValidatorAnnotationsConfiguresComponentToHaveAnnotations(): void
+    public function testWithValidatorAttributesConfiguresComponentToHaveAttributes(): void
     {
         $expectedComponent = $this->createMock(ValidationComponent::class);
         $expectedComponent->expects($this->once())
-            ->method('withAnnotations');
+            ->method('withAttributes');
         $this->appBuilder->method('hasComponent')
             ->with(ValidationComponent::class)
             ->willReturn(true);
@@ -779,13 +778,13 @@ class AphiriaComponentsTest extends TestCase
 
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withValidatorAnnotations($appBuilder);
+                $this->withValidatorAttributes($appBuilder);
             }
         };
         $component->build($this->appBuilder);
     }
 
-    public function testWithValidatorAnnotationsComponentIfItIsNotRegisteredYet(): void
+    public function testWithValidatorAttributesComponentIfItIsNotRegisteredYet(): void
     {
         $this->appBuilder->method('hasComponent')
             ->with(ValidationComponent::class)
@@ -800,7 +799,7 @@ class AphiriaComponentsTest extends TestCase
 
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withValidatorAnnotations($appBuilder);
+                $this->withValidatorAttributes($appBuilder);
             }
         };
         $component->build($this->appBuilder);

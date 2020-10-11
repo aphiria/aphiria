@@ -16,7 +16,7 @@ use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Validation\Builders\ObjectConstraintsBuilderRegistrant;
-use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
+use Aphiria\Validation\Constraints\Attributes\AttributeObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Closure;
@@ -27,19 +27,16 @@ use RuntimeException;
  */
 class ValidationComponent implements IComponent
 {
-    /** @var IServiceResolver The service resolver */
-    private IServiceResolver $serviceResolver;
-    /** @var bool Whether or not annotations are enabled */
-    private bool $annotationsEnabled = false;
+    /** @var bool Whether or not attributes are enabled */
+    private bool $attributesEnabled = false;
     /** @var Closure[] The list of callbacks that can register object constraints */
     private array $callbacks = [];
 
     /**
      * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(IServiceResolver $serviceResolver)
+    public function __construct(private IServiceResolver $serviceResolver)
     {
-        $this->serviceResolver = $serviceResolver;
     }
 
     /**
@@ -50,14 +47,14 @@ class ValidationComponent implements IComponent
     {
         $objectConstraintsRegistrants = $this->serviceResolver->resolve(ObjectConstraintsRegistrantCollection::class);
 
-        if ($this->annotationsEnabled) {
-            $annotationConstraintsRegistrants = null;
+        if ($this->attributesEnabled) {
+            $attributeConstraintsRegistrants = null;
 
-            if (!$this->serviceResolver->tryResolve(AnnotationObjectConstraintsRegistrant::class, $annotationConstraintsRegistrants)) {
-                throw new RuntimeException(AnnotationObjectConstraintsRegistrant::class . ' cannot be null if using annotations');
+            if (!$this->serviceResolver->tryResolve(AttributeObjectConstraintsRegistrant::class, $attributeConstraintsRegistrants)) {
+                throw new RuntimeException(AttributeObjectConstraintsRegistrant::class . ' cannot be null if using attributes');
             }
 
-            $objectConstraintsRegistrants->add($annotationConstraintsRegistrants);
+            $objectConstraintsRegistrants->add($attributeConstraintsRegistrants);
         }
 
         $objectConstraintsRegistrants->add(new ObjectConstraintsBuilderRegistrant($this->callbacks));
@@ -65,13 +62,13 @@ class ValidationComponent implements IComponent
     }
 
     /**
-     * Enables support for annotations
+     * Enables support for attributes
      *
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withAnnotations(): self
+    public function withAttributes(): static
     {
-        $this->annotationsEnabled = true;
+        $this->attributesEnabled = true;
 
         return $this;
     }
@@ -80,9 +77,9 @@ class ValidationComponent implements IComponent
      * Adds an object constraints builder to the collection
      *
      * @param Closure $callback The callback that takes in an instance of ObjectConstraintsRegistryBuilder
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withObjectConstraints(Closure $callback): self
+    public function withObjectConstraints(Closure $callback): static
     {
         $this->callbacks[] = $callback;
 

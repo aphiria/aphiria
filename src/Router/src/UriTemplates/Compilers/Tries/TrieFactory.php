@@ -21,10 +21,6 @@ use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
  */
 final class TrieFactory
 {
-    /** @var RouteCollection The routes that will be used to create the trie */
-    private RouteCollection $routes;
-    /** @var ITrieCache|null The cache for tries, or null if not using a cache */
-    private ?ITrieCache $trieCache;
     /** @var ITrieCompiler The trie compiler */
     private ITrieCompiler $trieCompiler;
 
@@ -34,12 +30,10 @@ final class TrieFactory
      * @param ITrieCompiler|null $trieCompiler The trie compiler
      */
     public function __construct(
-        RouteCollection $routes,
-        ITrieCache $trieCache = null,
+        private RouteCollection $routes,
+        private ?ITrieCache $trieCache = null,
         ITrieCompiler $trieCompiler = null
     ) {
-        $this->routes = $routes;
-        $this->trieCache = $trieCache;
         $this->trieCompiler = $trieCompiler ?? new TrieCompiler();
     }
 
@@ -51,7 +45,7 @@ final class TrieFactory
      */
     public function createTrie(): TrieNode
     {
-        if ($this->trieCache !== null && ($trie = $this->trieCache->get()) !== null) {
+        if (($trie = $this->trieCache?->get()) !== null) {
             return $trie;
         }
 

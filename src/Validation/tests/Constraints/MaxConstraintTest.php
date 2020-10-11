@@ -37,13 +37,6 @@ class MaxConstraintTest extends TestCase
         $this->assertEquals(['value' => 'val', 'max' => 2], $constraint->getErrorMessagePlaceholders('val'));
     }
 
-    public function testNonNumericMaxThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Max must be numeric');
-        new MaxConstraint('foo', true);
-    }
-
     public function testPassingValue(): void
     {
         $constraint = new MaxConstraint(2, true, 'foo');

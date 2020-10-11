@@ -35,8 +35,6 @@ class RouteActionInvoker implements IRouteActionInvoker
 {
     /** @const The name of the property to store the parsed body in */
     private const PARSED_BODY_PROPERTY_NAME = '__APHIRIA_PARSED_BODY';
-    /** @var IRequestBodyValidator|null The validator for request bodies, or null if we aren't validating them */
-    private ?IRequestBodyValidator $requestBodyValidator;
     /** @var IResponseFactory The response factory */
     private IResponseFactory $responseFactory;
     /** @var IControllerParameterResolver The controller parameter resolver to use */
@@ -50,11 +48,10 @@ class RouteActionInvoker implements IRouteActionInvoker
      */
     public function __construct(
         IContentNegotiator $contentNegotiator = null,
-        IRequestBodyValidator $requestBodyValidator = null,
+        private ?IRequestBodyValidator $requestBodyValidator = null,
         IResponseFactory $responseFactory = null,
         IControllerParameterResolver $controllerParameterResolver = null
     ) {
-        $this->requestBodyValidator = $requestBodyValidator;
         $contentNegotiator ??= new ContentNegotiator();
         $this->responseFactory = $responseFactory ?? new NegotiatedResponseFactory($contentNegotiator);
         $this->controllerParameterResolver = $controllerParameterResolver ?? new ControllerParameterResolver($contentNegotiator);
@@ -72,7 +69,7 @@ class RouteActionInvoker implements IRouteActionInvoker
             $reflectionFunction = $this->reflectRouteActionDelegate($routeActionDelegate);
         } catch (ReflectionException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+                HttpStatusCodes::INTERNAL_SERVER_ERROR,
                 sprintf(
                     'Reflection failed for %s',
                     self::getRouteActionDisplayName($routeActionDelegate)
@@ -104,21 +101,21 @@ class RouteActionInvoker implements IRouteActionInvoker
             }
         } catch (MissingControllerParameterValueException | FailedScalarParameterConversionException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_BAD_REQUEST,
+                HttpStatusCodes::BAD_REQUEST,
                 'Failed to invoke ' . self::getRouteActionDisplayName($routeActionDelegate),
                 0,
                 $ex
             );
         } catch (FailedRequestContentNegotiationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE,
                 'Failed to invoke ' . self::getRouteActionDisplayName($routeActionDelegate),
                 0,
                 $ex
             );
         } catch (RequestBodyDeserializationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY,
+                HttpStatusCodes::UNPROCESSABLE_ENTITY,
                 'Failed to invoke ' . self::getRouteActionDisplayName($routeActionDelegate),
                 0,
                 $ex
@@ -133,13 +130,13 @@ class RouteActionInvoker implements IRouteActionInvoker
 
         // Handle void return types
         if ($actionResult === null) {
-            return new Response(HttpStatusCodes::HTTP_NO_CONTENT);
+            return new Response(HttpStatusCodes::NO_CONTENT);
         }
 
         // Attempt to create an OK response from the return value
         return $this->responseFactory->createResponse(
             $request,
-            HttpStatusCodes::HTTP_OK,
+            HttpStatusCodes::OK,
             null,
             $actionResult
         );
@@ -175,7 +172,7 @@ class RouteActionInvoker implements IRouteActionInvoker
                 return $routeActionDelegate[0] . '::' . $routeActionDelegate[1];
             }
 
-            return \get_class($routeActionDelegate[0]) . '::' . $routeActionDelegate[1];
+            return $routeActionDelegate[0]::class . '::' . $routeActionDelegate[1];
         }
 
         return Closure::class;

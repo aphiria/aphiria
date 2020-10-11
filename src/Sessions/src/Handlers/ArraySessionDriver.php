@@ -25,7 +25,7 @@ final class ArraySessionDriver implements ISessionDriver
     /**
      * @inheritdoc
      */
-    public function delete($sessionId): void
+    public function delete(int|string $sessionId): void
     {
         unset($this->sessionData[$sessionId]);
     }
@@ -40,7 +40,7 @@ final class ArraySessionDriver implements ISessionDriver
     /**
      * @inheritdoc
      */
-    public function get($sessionId): string
+    public function get(int|string $sessionId): string
     {
         if (!isset($this->sessionData[$sessionId])) {
             throw new OutOfBoundsException("Session with ID $sessionId does not exist");
@@ -52,7 +52,7 @@ final class ArraySessionDriver implements ISessionDriver
     /**
      * @inheritdoc
      */
-    public function set($sessionId, string $sessionData): void
+    public function set(int|string $sessionId, string $sessionData): void
     {
         $this->sessionData[$sessionId] = $sessionData;
     }

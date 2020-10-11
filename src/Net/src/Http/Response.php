@@ -17,16 +17,10 @@ namespace Aphiria\Net\Http;
  */
 class Response implements IResponse
 {
-    /** @var IBody|null The body of the response if there is one, otherwise null */
-    protected ?IBody $body;
     /** @var Headers|null The list of response headers if any are set, otherwise null */
     protected ?Headers $headers;
     /** @var string|null The response reason phrase if there is one, otherwise null */
     protected ?string $reasonPhrase;
-    /** @var int The response status code */
-    protected int $statusCode = HttpStatusCodes::HTTP_OK;
-    /** @var string The HTTP protocol version */
-    protected string $protocolVersion = '';
 
     /**
      * @param int $statusCode The response status code
@@ -35,16 +29,13 @@ class Response implements IResponse
      * @param string $protocolVersion The HTTP protocol version
      */
     public function __construct(
-        int $statusCode = HttpStatusCodes::HTTP_OK,
+        protected int $statusCode = HttpStatusCodes::OK,
         Headers $headers = null,
-        ?IBody $body = null,
-        string $protocolVersion = '1.1'
+        protected ?IBody $body = null,
+        protected string $protocolVersion = '1.1'
     ) {
-        $this->statusCode = $statusCode;
         $this->reasonPhrase = HttpStatusCodes::getDefaultReasonPhrase($this->statusCode);
         $this->headers = $headers ?? new Headers();
-        $this->body = $body;
-        $this->protocolVersion = $protocolVersion;
     }
 
     /**

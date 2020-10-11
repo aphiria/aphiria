@@ -26,5 +26,5 @@ interface IInputTokenizer
      * @return array The list of tokens
      * @throws InvalidArgumentException Thrown if the input was invalid
      */
-    public function tokenize($input): array;
+    public function tokenize(string|array $input): array;
 }

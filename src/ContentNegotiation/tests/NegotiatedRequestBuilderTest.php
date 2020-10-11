@@ -74,7 +74,7 @@ class NegotiatedRequestBuilderTest extends TestCase
      * @param string $expectedType The expected type
      * @param mixed $rawBody The raw body
      */
-    public function testWithBodyWithNonHttpBodyUsesContentNegotiationToSetBody(string $expectedType, $rawBody): void
+    public function testWithBodyWithNonHttpBodyUsesContentNegotiationToSetBody(string $expectedType, mixed $rawBody): void
     {
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->method('getDefaultEncoding')

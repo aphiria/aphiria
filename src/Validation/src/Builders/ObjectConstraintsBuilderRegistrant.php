@@ -21,15 +21,11 @@ use Closure;
  */
 final class ObjectConstraintsBuilderRegistrant implements IObjectConstraintsRegistrant
 {
-    /** @var Closure[] The list of closures to execute (must take in an ObjectConstraintsRegistryBuilder parameter) */
-    private array $closures;
-
     /**
      * @param Closure[] $closures The list of closures to execute (must take in an ObjectConstraintsRegistryBuilder parameter)
      */
-    public function __construct(array $closures)
+    public function __construct(private array $closures)
     {
-        $this->closures = $closures;
     }
 
     /**

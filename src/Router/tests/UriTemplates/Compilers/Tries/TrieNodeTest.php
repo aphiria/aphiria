@@ -25,8 +25,7 @@ use PHPUnit\Framework\TestCase;
 
 class TrieNodeTest extends TestCase
 {
-    /** @var TrieNode|MockObject */
-    private TrieNode $node;
+    private TrieNode|MockObject $node;
 
     protected function setUp(): void
     {
@@ -128,7 +127,7 @@ class TrieNodeTest extends TestCase
             }
         };
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Unexpected trie node type ' . \get_class($invalidChildNode));
+        $this->expectExceptionMessage('Unexpected trie node type ' . $invalidChildNode::class);
         $this->node->addChild($invalidChildNode);
     }
 
@@ -327,9 +326,9 @@ class TrieNodeTest extends TestCase
     /**
      * Creates a mock node for use in tests
      *
-     * @return MockObject|TrieNode The mock node
+     * @return TrieNode|MockObject The mock node
      */
-    private function createMockNode(): MockObject
+    private function createMockNode(): TrieNode|MockObject
     {
         return $this->getMockForAbstractClass(TrieNode::class, [], '', false);
     }

@@ -15,18 +15,10 @@ namespace Aphiria\Routing\Tests\Builders;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Routing\Builders\RouteCollectionBuilderRouteRegistrant;
 use Aphiria\Routing\RouteCollection;
-use Closure;
 use PHPUnit\Framework\TestCase;
 
 class RouteCollectionBuilderRouteRegistrantTest extends TestCase
 {
-    public function testConstructingWithInvalidCallbackThrowsException(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Closures must be an instance of ' . Closure::class . ' or an array of Closures');
-        new RouteCollectionBuilderRouteRegistrant(123);
-    }
-
     public function testConstructingWithSingleCallbackInvokesItOnRegistration(): void
     {
         $callback = function (RouteCollectionBuilder $routes) {

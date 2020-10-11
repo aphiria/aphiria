@@ -15,7 +15,6 @@ namespace Aphiria\Routing\Builders;
 use Aphiria\Routing\IRouteRegistrant;
 use Aphiria\Routing\RouteCollection;
 use Closure;
-use InvalidArgumentException;
 
 /**
  * Defines the route collection builder registrant that uses route collection builders to register routes
@@ -27,16 +26,13 @@ final class RouteCollectionBuilderRouteRegistrant implements IRouteRegistrant
 
     /**
      * @param Closure[]|Closure $routeCollectionBuilderClosures The list of closures that take in a RouteCollectionBuilder instance and register routes
-     * @throws InvalidArgumentException Thrown if the parameter was not a Closure nor list of Closures
      */
-    public function __construct($routeCollectionBuilderClosures)
+    public function __construct(Closure|array $routeCollectionBuilderClosures)
     {
         if (\is_array($routeCollectionBuilderClosures)) {
             $this->routeCollectionBuilderClosures = $routeCollectionBuilderClosures;
-        } elseif ($routeCollectionBuilderClosures instanceof Closure) {
-            $this->routeCollectionBuilderClosures = [$routeCollectionBuilderClosures];
         } else {
-            throw new InvalidArgumentException('Closures must be an instance of ' . Closure::class . ' or an array of Closures');
+            $this->routeCollectionBuilderClosures = [$routeCollectionBuilderClosures];
         }
     }
 

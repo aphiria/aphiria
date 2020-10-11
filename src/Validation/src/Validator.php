@@ -45,8 +45,6 @@ final class Validator implements IValidator
         '__unset' => true,
         '__wakeup' => true
     ];
-    /** @var ObjectConstraintsRegistry The registry of object constraints */
-    private ObjectConstraintsRegistry $objectConstraints;
     /** @var IErrorMessageInterpolator The interpolator for error messages */
     private IErrorMessageInterpolator $errorMessageInterpolator;
 
@@ -55,10 +53,9 @@ final class Validator implements IValidator
      * @param IErrorMessageInterpolator|null $errorMessageInterpolator The error message interpolator to use
      */
     public function __construct(
-        ObjectConstraintsRegistry $objectConstraints,
+        private ObjectConstraintsRegistry $objectConstraints,
         IErrorMessageInterpolator $errorMessageInterpolator = null
     ) {
-        $this->objectConstraints = $objectConstraints;
         $this->errorMessageInterpolator = $errorMessageInterpolator ?? new StringReplaceErrorMessageInterpolator();
     }
 
@@ -105,7 +102,7 @@ final class Validator implements IValidator
      * @inheritdoc
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message
      */
-    public function tryValidateValue($value, array $constraints, array &$violations = []): bool
+    public function tryValidateValue(mixed $value, array $constraints, array &$violations = []): bool
     {
         $context = new ValidationContext($value);
         $successful = $this->tryValidateValueWithContext($value, $constraints, $context);
@@ -154,7 +151,7 @@ final class Validator implements IValidator
      * @inheritdoc
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message
      */
-    public function validateValue($value, array $constraints): void
+    public function validateValue(mixed $value, array $constraints): void
     {
         $this->validateValueWithContext($value, $constraints, new ValidationContext($value));
         // For some reason, this is being picked up as missing coverage
@@ -233,7 +230,7 @@ final class Validator implements IValidator
      * @return bool True if the value was valid, otherwise false
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message
      */
-    private function tryValidateValueWithContext($value, array $constraints, ValidationContext $validationContext): bool
+    private function tryValidateValueWithContext(mixed $value, array $constraints, ValidationContext $validationContext): bool
     {
         try {
             $this->validateValueWithContext($value, $constraints, $validationContext);
@@ -257,7 +254,7 @@ final class Validator implements IValidator
      */
     private function validateMethodWithContext(object $object, string $methodName, ValidationContext $validationContext): void
     {
-        $class = \get_class($object);
+        $class = $object::class;
 
         if (!\method_exists($object, $methodName)) {
             throw new InvalidArgumentException("$class::$methodName() does not exist");
@@ -348,7 +345,7 @@ final class Validator implements IValidator
         }
 
         if (!$allConstraintsPassed) {
-            throw new ValidationException($validationContext->getConstraintViolations(), 'Failed to validate ' . \get_class($object));
+            throw new ValidationException($validationContext->getConstraintViolations(), 'Failed to validate ' . $object::class);
         }
     }
 
@@ -365,7 +362,7 @@ final class Validator implements IValidator
      */
     private function validatePropertyWithContext(object $object, string $propertyName, ValidationContext $validationContext): void
     {
-        $class = \get_class($object);
+        $class = $object::class;
 
         if (!\property_exists($object, $propertyName)) {
             throw new InvalidArgumentException("$class::$propertyName does not exist");
@@ -425,7 +422,7 @@ final class Validator implements IValidator
      * @throws ValidationException Thrown if the value was invalid
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message
      */
-    private function validateValueWithContext($value, array $constraints, ValidationContext $validationContext): void
+    private function validateValueWithContext(mixed $value, array $constraints, ValidationContext $validationContext): void
     {
         $allConstraintsPass = true;
 

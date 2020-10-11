@@ -40,7 +40,7 @@ abstract class TextMediaTypeFormatter extends MediaTypeFormatter
     /**
      * @inheritdoc
      */
-    public function readFromStream(IStream $stream, string $type)
+    public function readFromStream(IStream $stream, string $type):  int|float|bool|string|object|array
     {
         if (!$this->canReadType($type)) {
             throw new InvalidArgumentException(static::class . ' can only read strings');
@@ -52,7 +52,7 @@ abstract class TextMediaTypeFormatter extends MediaTypeFormatter
     /**
      * @inheritdoc
      */
-    public function writeToStream($value, IStream $stream, ?string $encoding): void
+    public function writeToStream(int|float|bool|string|object|array $value, IStream $stream, ?string $encoding): void
     {
         if (!$this->canWriteType(TypeResolver::resolveType($value))) {
             throw new InvalidArgumentException(static::class . ' can only write strings');

@@ -17,6 +17,7 @@ use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Http\IRequest;
+use ReflectionNamedType;
 use ReflectionParameter;
 
 /**
@@ -46,10 +47,11 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         ReflectionParameter $reflectionParameter,
         IRequest $request,
         array $routeVariables
-    ) {
+    ): mixed {
         $queryStringVars = $this->uriParser->parseQueryString($request->getUri());
+        $reflectionParameterType = $reflectionParameter->getType();
 
-        if ($reflectionParameter->getClass() !== null) {
+        if ($reflectionParameterType instanceof ReflectionNamedType && !$reflectionParameterType->isBuiltin()) {
             return $this->resolveObjectParameter(
                 $reflectionParameter,
                 $request
@@ -142,9 +144,9 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      * @return mixed The raw value converted to the appropriate scalar type
      * @throws FailedScalarParameterConversionException Thrown if the scalar parameter could not be converted
      */
-    private function resolveScalarParameter(ReflectionParameter $reflectionParameter, $rawValue)
+    private function resolveScalarParameter(ReflectionParameter $reflectionParameter, $rawValue): mixed
     {
-        $type = $reflectionParameter->getType() === null ? null : $reflectionParameter->getType()->getName();
+        $type = $reflectionParameter->getType()?->getName();
 
         switch ($type) {
             case 'int':

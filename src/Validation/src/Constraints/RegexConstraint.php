@@ -19,18 +19,14 @@ class RegexConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field is invalid';
-    /** @var string The regular expression to run */
-    private string $regex;
 
     /**
      * @inheritdoc
      * @param string $regex The regular expression to run
      */
-    public function __construct(string $regex, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
+    public function __construct(private string $regex, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
-
-        $this->regex = $regex;
     }
 
     /**

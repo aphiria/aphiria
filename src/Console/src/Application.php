@@ -35,8 +35,6 @@ use Throwable;
  */
 class Application implements ICommandBus
 {
-    /** @var CommandRegistry The commands registered to the application */
-    private CommandRegistry $commands;
     /** @var IServiceResolver The resolver of command handlers */
     private IServiceResolver $commandHandlerResolver;
     /** @var IInputCompiler The input compiler to use */
@@ -48,11 +46,10 @@ class Application implements ICommandBus
      * @param IInputCompiler|null $inputCompiler The input compiler, or null if using the default one
      */
     public function __construct(
-        CommandRegistry $commands,
+        private CommandRegistry $commands,
         IServiceResolver $commandHandlerResolver,
         IInputCompiler $inputCompiler = null
     ) {
-        $this->commands = $commands;
         $this->registerDefaultCommands();
         $this->commandHandlerResolver = $commandHandlerResolver;
         $this->inputCompiler = $inputCompiler ?? new InputCompiler($this->commands);
@@ -61,7 +58,7 @@ class Application implements ICommandBus
     /**
      * @inheritdoc
      */
-    public function handle($rawInput, IOutput $output = null): int
+    public function handle(string|array $rawInput, IOutput $output = null): int
     {
         try {
             $output = $output ?? new ConsoleOutput();
@@ -116,7 +113,7 @@ class Application implements ICommandBus
      * @param Exception|Throwable $ex The exception to format
      * @return string The formatted exception message
      */
-    protected function formatExceptionMessage($ex): string
+    protected function formatExceptionMessage(Exception|Throwable $ex): string
     {
         return $ex->getMessage() . \PHP_EOL . $ex->getTraceAsString();
     }

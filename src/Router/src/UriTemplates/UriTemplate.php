@@ -17,12 +17,6 @@ namespace Aphiria\Routing\UriTemplates;
  */
 final class UriTemplate
 {
-    /** @var string|null The host template */
-    public ?string $hostTemplate;
-    /** @var string|null The path template */
-    public ?string $pathTemplate;
-    /** @var bool Whether or not this URI template is https-only */
-    public bool $isHttpsOnly;
     /** @var bool Whether or not the URI is absolute */
     public bool $isAbsoluteUri;
 
@@ -31,11 +25,13 @@ final class UriTemplate
      * @param string|null $hostTemplate The host template, or null if there is none
      * @param bool $isHttpsOnly Whether or not this URI template is https-only
      */
-    public function __construct(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = true)
-    {
+    public function __construct(
+        public string $pathTemplate,
+        public ?string $hostTemplate = null,
+        public bool $isHttpsOnly = true
+    ) {
         $this->pathTemplate = '/' . \ltrim($pathTemplate, '/');
         $this->hostTemplate = $hostTemplate === null ? null : \rtrim($hostTemplate, '/');
-        $this->isHttpsOnly = $isHttpsOnly;
         $this->isAbsoluteUri = $this->hostTemplate !== null;
     }
 

@@ -28,8 +28,6 @@ class RouteBuilder
 {
     /** @var RouteAction|null ?RouteAction The action the route takes */
     private ?RouteAction $action = null;
-    /** @var UriTemplate The URI template */
-    private UriTemplate $uriTemplate;
     /** @var array The mapping of custom route attribute names => values */
     private array $attributes = [];
     /** @var MiddlewareBinding[] The list of middleware bindings on this route */
@@ -43,10 +41,9 @@ class RouteBuilder
      * @param array $httpMethods The list of HTTP methods the route matches on
      * @param UriTemplate $uriTemplate The URI template the route matches on
      */
-    public function __construct(array $httpMethods, UriTemplate $uriTemplate)
+    public function __construct(array $httpMethods, private UriTemplate $uriTemplate)
     {
         $this->constraints[] = new HttpMethodRouteConstraint($httpMethods);
-        $this->uriTemplate = $uriTemplate;
     }
 
     /**
@@ -76,9 +73,9 @@ class RouteBuilder
      *
      * @param string $controllerClassName The name of the class the route goes to
      * @param string $controllerMethodName The name of the method the route goes to
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function mapsToMethod(string $controllerClassName, string $controllerMethodName): self
+    public function mapsToMethod(string $controllerClassName, string $controllerMethodName): static
     {
         $this->action = new RouteAction($controllerClassName, $controllerMethodName);
 
@@ -91,9 +88,9 @@ class RouteBuilder
      *
      * @param string $name The name of the attribute
      * @param mixed $value The value of the attribute
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withAttribute(string $name, $value): self
+    public function withAttribute(string $name, mixed $value): static
     {
         $this->attributes[$name] = $value;
 
@@ -104,9 +101,9 @@ class RouteBuilder
      * Binds a constraint to this route
      *
      * @param IRouteConstraint $constraint The constraint to add
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withConstraint(IRouteConstraint $constraint): self
+    public function withConstraint(IRouteConstraint $constraint): static
     {
         $this->constraints[] = $constraint;
 
@@ -118,9 +115,9 @@ class RouteBuilder
      * This is useful for custom route constraint matching
      *
      * @param array $attributes The mapping of custom attribute names => values
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withManyAttributes(array $attributes): self
+    public function withManyAttributes(array $attributes): static
     {
         $this->attributes = \array_merge($this->attributes, $attributes);
 
@@ -131,9 +128,9 @@ class RouteBuilder
      * Binds constraints to this route
      *
      * @param IRouteConstraint[] $constraints The constraints to add
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withManyConstraints(array $constraints): self
+    public function withManyConstraints(array $constraints): static
     {
         $this->constraints = [...$this->constraints, ...$constraints];
 
@@ -145,10 +142,10 @@ class RouteBuilder
      *
      * @param MiddlewareBinding[]|string[] $middlewareBindings The list of middleware bindings to add, or a single
      *      class name without properties
-     * @return self For chaining
+     * @return static For chaining
      * @throws InvalidArgumentException Thrown if the middleware bindings are not the correct type
      */
-    public function withManyMiddleware(array $middlewareBindings): self
+    public function withManyMiddleware(array $middlewareBindings): static
     {
         foreach ($middlewareBindings as $middlewareBinding) {
             if (\is_string($middlewareBinding)) {
@@ -170,9 +167,9 @@ class RouteBuilder
      *
      * @param string $middlewareClassName The name of the middleware class to bind
      * @param array $middlewareProperties Any properties this method relies on
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withMiddleware(string $middlewareClassName, array $middlewareProperties = []): self
+    public function withMiddleware(string $middlewareClassName, array $middlewareProperties = []): static
     {
         $this->middlewareBindings[] = new MiddlewareBinding($middlewareClassName, $middlewareProperties);
 
@@ -183,9 +180,9 @@ class RouteBuilder
      * Binds a name to the route
      *
      * @param string $name The name of the route
-     * @return self For chaining
+     * @return static For chaining
      */
-    public function withName(string $name): self
+    public function withName(string $name): static
     {
         $this->name = $name;
 

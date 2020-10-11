@@ -24,18 +24,13 @@ use SessionHandlerInterface;
 
 class SessionTest extends TestCase
 {
-    /** @var ISession|MockObject */
-    private ISession $session;
-    /** @var \SessionHandlerInterface|MockObject */
-    private \SessionHandlerInterface $sessionHandler;
+    private ISession|MockObject $session;
+    private \SessionHandlerInterface|MockObject $sessionHandler;
     private Headers $requestHeaders;
-    /** @var IRequest|MockObject */
-    private IRequest $request;
+    private IRequest|MockObject $request;
     private Headers $responseHeaders;
-    /** @var IResponse|MockObject */
-    private IResponse $response;
-    /** @var IRequestHandler|MockObject */
-    private IRequestHandler $next;
+    private IResponse|MockObject $response;
+    private IRequestHandler|MockObject $next;
 
     protected function setUp(): void
     {

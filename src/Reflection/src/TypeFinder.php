@@ -24,14 +24,17 @@ use ReflectionClass;
  */
 final class TypeFinder implements ITypeFinder
 {
+    /** @var int Will find all classes */
     private const TYPE_CLASS = 1;
+    /** @var int Will find all interfaces */
     private const TYPE_INTERFACE = 2;
+    /** @var int Will find all abstract classes */
     private const TYPE_ABSTRACT_CLASS = 4;
 
     /**
      * @inheritdoc
      */
-    public function findAllClasses($directories, bool $recursive = false, bool $includeAbstractClasses = false): array
+    public function findAllClasses(string|array $directories, bool $recursive = false, bool $includeAbstractClasses = false): array
     {
         $typeFilter = $includeAbstractClasses ? self::TYPE_CLASS | self::TYPE_ABSTRACT_CLASS : self::TYPE_CLASS;
 
@@ -41,7 +44,7 @@ final class TypeFinder implements ITypeFinder
     /**
      * @inheritdoc
      */
-    public function findAllInterfaces($directories, bool $recursive = false): array
+    public function findAllInterfaces(string|array $directories, bool $recursive = false): array
     {
         return $this->findAllTypesWithFilter($directories, $recursive, self::TYPE_INTERFACE);
     }
@@ -49,7 +52,7 @@ final class TypeFinder implements ITypeFinder
     /**
      * @inheritdoc
      */
-    public function findAllSubtypesOfType(string $parentType, $directories, bool $recursive = false): array
+    public function findAllSubtypesOfType(string $parentType, string|array $directories, bool $recursive = false): array
     {
         $subTypes = [];
 
@@ -67,7 +70,7 @@ final class TypeFinder implements ITypeFinder
     /**
      * @inheritdoc
      */
-    public function findAllTypes($directories, bool $recursive = false): array
+    public function findAllTypes(string|array $directories, bool $recursive = false): array
     {
         $typeFilter = self::TYPE_CLASS | self::TYPE_INTERFACE | self::TYPE_ABSTRACT_CLASS;
 
@@ -82,14 +85,10 @@ final class TypeFinder implements ITypeFinder
      * @param int $typeFilter The filter to apply (bitwise value of types defined in this class)
      * @return string[] The list of types
      */
-    private function findAllTypesWithFilter($directories, bool $recursive, int $typeFilter): array
+    private function findAllTypesWithFilter(string|array $directories, bool $recursive, int $typeFilter): array
     {
         if (\is_string($directories)) {
             $directories = [$directories];
-        }
-
-        if (!\is_array($directories)) {
-            throw new InvalidArgumentException('Directories must be a string or array of strings');
         }
 
         $allTypes = [];
@@ -144,11 +143,15 @@ final class TypeFinder implements ITypeFinder
                 case T_NAMESPACE:
                     $namespace = '';
 
-                    // Collect all the namespace parts and separators
-                    while (isset($tokens[++$i][1])) {
-                        if (\in_array($tokens[$i][0], [T_NS_SEPARATOR, T_STRING], true)) {
-                            $namespace .= $tokens[$i][1];
-                        }
+                    // Ignore whitespace between the namespace keyword and the namespace itself
+                    do {
+                        $i++;
+                    } while (isset($tokens[$i][0]) && $tokens[$i][0] === \T_WHITESPACE);
+
+                    // Collect the namespace
+                    while (isset($tokens[$i][0]) && \in_array($tokens[$i][0], [\T_NAME_FULLY_QUALIFIED, \T_NAME_QUALIFIED, \T_NS_SEPARATOR, \T_STRING], true)) {
+                        $namespace .= $tokens[$i][1];
+                        $i++;
                     }
 
                     break;

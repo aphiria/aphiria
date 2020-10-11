@@ -19,41 +19,22 @@ use Aphiria\Validation\Constraints\IConstraint;
  */
 final class ConstraintViolation
 {
-    /** @var string The error message */
-    private string $errorMessage;
-    /** @var IConstraint The constraint that was violated */
-    private IConstraint $constraint;
-    /** @var mixed The invalid value */
-    private $invalidValue;
-    /** @var mixed|object The root value that was being validated */
-    private $rootValue;
-    /** @var string|null The name of the property that was being validated, or null if it wasn't a property */
-    private ?string $propertyName;
-    /** @var string|null The name of the method that was being validated, or null if it wasn't a method */
-    private ?string $methodName;
-
     /**
      * @param string $errorMessage The error message
      * @param IConstraint $constraint The constraint that was violated
      * @param mixed $invalidValue The invalid value
-     * @param mixed|object $rootValue The root value that was being validated
+     * @param mixed $rootValue The root value that was being validated
      * @param string|null $propertyName The name of the property that was being validated
      * @param string|null $methodName The name of the method that was being validated
      */
     public function __construct(
-        string $errorMessage,
-        IConstraint $constraint,
-        $invalidValue,
-        $rootValue,
-        string $propertyName = null,
-        string $methodName = null
+        private string $errorMessage,
+        private IConstraint $constraint,
+        private mixed $invalidValue,
+        private mixed $rootValue,
+        private ?string $propertyName = null,
+        private ?string $methodName = null
     ) {
-        $this->errorMessage = $errorMessage;
-        $this->constraint = $constraint;
-        $this->invalidValue = $invalidValue;
-        $this->rootValue = $rootValue;
-        $this->propertyName = $propertyName;
-        $this->methodName = $methodName;
     }
 
     /**
@@ -81,7 +62,7 @@ final class ConstraintViolation
      *
      * @return mixed The invalid value
      */
-    public function getInvalidValue()
+    public function getInvalidValue(): mixed
     {
         return $this->invalidValue;
     }
@@ -109,9 +90,9 @@ final class ConstraintViolation
     /**
      * Gets the root value that was being validated
      *
-     * @return mixed|object The root value
+     * @return mixed The root value
      */
-    public function getRootValue()
+    public function getRootValue(): mixed
     {
         return $this->rootValue;
     }

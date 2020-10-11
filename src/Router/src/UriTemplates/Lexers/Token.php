@@ -17,18 +17,11 @@ namespace Aphiria\Routing\UriTemplates\Lexers;
  */
 final class Token
 {
-    /** @var string The token type */
-    public string $type;
-    /** @var mixed The token value */
-    public $value;
-
     /**
      * @param string $type The token type
      * @param mixed $value The token value
      */
-    public function __construct(string $type, $value)
+    public function __construct(public string $type, public mixed $value)
     {
-        $this->type = $type;
-        $this->value = $value;
     }
 }

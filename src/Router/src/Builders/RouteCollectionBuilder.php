@@ -143,7 +143,7 @@ final class RouteCollectionBuilder
      * @return RouteBuilder The configured route builder
      */
     public function route(
-        $httpMethods,
+        string|array $httpMethods,
         string $pathTemplate,
         string $hostTemplate = null,
         bool $isHttpsOnly = false

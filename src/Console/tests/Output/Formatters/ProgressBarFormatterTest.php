@@ -20,8 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 class ProgressBarFormatterTest extends TestCase
 {
-    /** @var IOutput|MockObject */
-    private IOutput $output;
+    private IOutput|MockObject $output;
 
     protected function setUp(): void
     {
@@ -83,7 +82,7 @@ class ProgressBarFormatterTest extends TestCase
 
     public function testOnProgressWithFormatThatIncludesPercentPopulatesPercent(): void
     {
-        $formatter = new ProgressBarFormatter($this->output, null, '%percent%');
+        $formatter = new ProgressBarFormatter($this->output, 10, '%percent%');
         $this->output->method('write')
             ->with('50%');
         $formatter->onProgressChanged(0, 5, 10);
@@ -159,7 +158,7 @@ class ProgressBarFormatterTest extends TestCase
     private function progressBarMatchesExpectedValue(string $expectedValue, string $actualValue, bool $ignoreTimeRemaining): bool
     {
         if ($ignoreTimeRemaining) {
-            return \strpos($actualValue, $expectedValue) === 0;
+            return \str_starts_with($actualValue, $expectedValue);
         }
 
         return $actualValue === $expectedValue;

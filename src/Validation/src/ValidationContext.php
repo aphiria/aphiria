@@ -17,16 +17,8 @@ namespace Aphiria\Validation;
  */
 final class ValidationContext
 {
-    /** @var mixed The value being validated */
-    private $value;
-    /** @var string|null The name of the property being validated, or null if it wasn't a property */
-    private ?string $propertyName;
-    /** @var string|null The name of the method being validated, or null if it wasn't a method */
-    private ?string $methodName;
     /** @var ValidationContext[] The list of child contexts, if there are any */
     private array $childContexts = [];
-    /** @var ValidationContext|null The parent context, if there is one */
-    private ?ValidationContext $parentContext;
     /** @var ConstraintViolation[] The list of constraint violations that occurred in this context */
     private array $constraintViolations = [];
 
@@ -38,16 +30,11 @@ final class ValidationContext
      * @throws CircularDependencyException Thrown if a circular dependency was detected
      */
     public function __construct(
-        $value,
-        string $propertyName = null,
-        string $methodName = null,
-        ValidationContext $parentContext = null
+        private mixed $value,
+        private ?string $propertyName = null,
+        private ?string $methodName = null,
+        private ?ValidationContext $parentContext = null
     ) {
-        $this->value = $value;
-        $this->propertyName = $propertyName;
-        $this->methodName = $methodName;
-        $this->parentContext = $parentContext;
-
         if ($this->parentContext !== null) {
             $this->parentContext->addChildContext($this);
         }
@@ -132,7 +119,7 @@ final class ValidationContext
      *
      * @return mixed The root value
      */
-    public function getRootValue()
+    public function getRootValue(): mixed
     {
         if ($this->parentContext === null) {
             return $this->value;
@@ -146,7 +133,7 @@ final class ValidationContext
      *
      * @return mixed The value being validated
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
@@ -179,7 +166,7 @@ final class ValidationContext
         while ($parentContext !== null) {
             if ($parentContext->validatesObject($this->value)) {
                 throw new CircularDependencyException(
-                    'Circular dependency on ' . \get_class($this->value) . ' detected'
+                    'Circular dependency on ' . $this->value::class . ' detected'
                 );
             }
 

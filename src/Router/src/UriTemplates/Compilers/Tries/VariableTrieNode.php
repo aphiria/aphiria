@@ -34,7 +34,7 @@ final class VariableTrieNode extends TrieNode
      * @param TrieNode|null $hostTrie The host trie, if there is one
      * @throws InvalidArgumentException Thrown if the parts are empty
      */
-    public function __construct($parts, array $children, $routes = [], TrieNode $hostTrie = null)
+    public function __construct(string|RouteVariable|array $parts, array $children, $routes = [], TrieNode $hostTrie = null)
     {
         parent::__construct($children, $routes, $hostTrie);
 

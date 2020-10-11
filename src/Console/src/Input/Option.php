@@ -19,50 +19,42 @@ use InvalidArgumentException;
  */
 final class Option
 {
-    /** @var string The name of the option */
-    public string $name;
-    /** @var string|null The short name of the option if it has one, otherwise null */
-    public ?string $shortName;
-    /** @var int The type of option this is */
-    public int $type;
-    /** @var string|null A brief description of the option */
-    public ?string $description;
-    /** @var mixed The default value for the option if it's optional */
-    public $defaultValue;
-
     /**
      * @param string $name The name of the option
-     * @param string|null $shortName The short name of the option if it has one, otherwise null
      * @param int $type The type of option this is
+     * @param string|null $shortName The short name of the option if it has one, otherwise null
      * @param string|null $description A brief description of the option
      * @param mixed $defaultValue The default value for the option if it's optional
      * @throws InvalidArgumentException Thrown if the type is invalid
      */
-    public function __construct(string $name, ?string $shortName, int $type, string $description = null, $defaultValue = null)
+    public function __construct(
+        public string $name,
+        public int $type,
+        public ?string $shortName = null,
+        public ?string $description = null,
+        public mixed $defaultValue = null)
     {
-        if (($type & 3) === 3) {
+        if (empty($this->name)) {
+            throw new InvalidArgumentException('Option name cannot be empty');
+        }
+
+        if (($this->type & 3) === 3) {
             throw new InvalidArgumentException('Option type cannot be both optional and required');
         }
 
-        if (($type & 5) === 5 || ($type & 6) === 6) {
+        if (($this->type & 5) === 5 || ($this->type & 6) === 6) {
             throw new InvalidArgumentException('Option cannot have a value and not have a value');
         }
 
-        if ($shortName !== null) {
-            if (mb_strlen($shortName) !== 1) {
+        if ($this->shortName !== null) {
+            if (mb_strlen($this->shortName) !== 1) {
                 throw new InvalidArgumentException('Short names must be one character in length');
             }
 
-            if (!ctype_alpha($shortName)) {
+            if (!ctype_alpha($this->shortName)) {
                 throw new InvalidArgumentException('Short names must be an alphabet character');
             }
         }
-
-        $this->name = $name;
-        $this->shortName = $shortName;
-        $this->type = $type;
-        $this->description = $description;
-        $this->defaultValue = $defaultValue;
     }
 
     /**

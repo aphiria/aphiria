@@ -28,7 +28,7 @@ interface IImmutableList extends ArrayAccess, Countable, IteratorAggregate
      * @param mixed $value The value to search for
      * @return bool True if the value exists, otherwise false
      */
-    public function containsValue($value): bool;
+    public function containsValue(mixed $value): bool;
 
     /**
      * Gets the value at an index
@@ -37,7 +37,7 @@ interface IImmutableList extends ArrayAccess, Countable, IteratorAggregate
      * @return mixed The value if it was found, otherwise the default value
      * @throws OutOfRangeException Thrown if the index is < 0 or >= than the length of the list
      */
-    public function get(int $index);
+    public function get(int $index): mixed;
 
     /**
      * Gets the index of a value
@@ -45,7 +45,7 @@ interface IImmutableList extends ArrayAccess, Countable, IteratorAggregate
      * @param mixed $value The value to search for
      * @return int|null The index of the value if it was found, otherwise null
      */
-    public function indexOf($value): ?int;
+    public function indexOf(mixed $value): ?int;
 
     /**
      * Gets all of the values as an array

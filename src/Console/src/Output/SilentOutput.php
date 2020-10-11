@@ -43,7 +43,7 @@ class SilentOutput extends Output
     /**
      * @inheritdoc
      */
-    public function write($messages): void
+    public function write(string|array $messages): void
     {
         // Don't do anything
     }
@@ -51,7 +51,7 @@ class SilentOutput extends Output
     /**
      * @inheritdoc
      */
-    public function writeln($messages): void
+    public function writeln(string|array $messages): void
     {
         // Don't do anything
     }

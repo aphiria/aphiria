@@ -17,10 +17,6 @@ namespace Aphiria\Routing\UriTemplates\Parsers;
  */
 final class AstNode
 {
-    /** @var string The node type */
-    public string $type;
-    /** @var mixed|null The value of the node */
-    public $value;
     /** @var AstNode|null The parent node */
     public ?AstNode $parent = null;
     /** @var AstNode[] The child nodes */
@@ -30,19 +26,17 @@ final class AstNode
      * @param string $type The node type
      * @param mixed $value The value of the node
      */
-    public function __construct(string $type, $value = null)
+    public function __construct(public string $type, public mixed $value = null)
     {
-        $this->type = $type;
-        $this->value = $value;
     }
 
     /**
      * Adds a child to this node
      *
      * @param AstNode $node The child to add
-     * @return AstNode Returns this for chaining
+     * @return self Returns this for chaining
      */
-    public function addChild(AstNode $node): AstNode
+    public function addChild(AstNode $node): self
     {
         $node->parent = $this;
         $this->children[] = $node;

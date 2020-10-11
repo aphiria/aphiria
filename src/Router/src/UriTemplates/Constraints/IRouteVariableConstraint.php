@@ -23,5 +23,5 @@ interface IRouteVariableConstraint
      * @param mixed $value The value to validate
      * @return bool True if the constraint passes, otherwise false
      */
-    public function passes($value): bool;
+    public function passes(mixed $value): bool;
 }

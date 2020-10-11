@@ -31,7 +31,7 @@ interface IConstraint
      * @param mixed $value The value that was being validated
      * @return array The mapping of placeholder names to values
      */
-    public function getErrorMessagePlaceholders($value): array;
+    public function getErrorMessagePlaceholders(mixed $value): array;
 
     /**
      * Gets whether or not the constraint passes
@@ -39,5 +39,5 @@ interface IConstraint
      * @param mixed $value The value to validate
      * @return bool True if the constraint passes, otherwise false
      */
-    public function passes($value): bool;
+    public function passes(mixed $value): bool;
 }

@@ -17,15 +17,11 @@ namespace Aphiria\Validation\Constraints;
  */
 abstract class Constraint implements IConstraint
 {
-    /** @var string The ID of the error message associated with this constraint */
-    protected string $errorMessageId;
-
     /**
      * @param string $errorMessageId The ID of the error message associated with this constraint
      */
-    protected function __construct(string $errorMessageId)
+    protected function __construct(protected string $errorMessageId)
     {
-        $this->errorMessageId = $errorMessageId;
     }
 
     /**
@@ -47,7 +43,7 @@ abstract class Constraint implements IConstraint
             if (\method_exists($value, '__toString')) {
                 $serializedValue = (string)$value;
             } else {
-                $serializedValue = \get_class($value) . ' object';
+                $serializedValue = $value::class . ' object';
             }
         } else {
             $serializedValue = 'value';

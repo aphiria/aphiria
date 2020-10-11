@@ -42,7 +42,7 @@ class Prompt
      * @throws RuntimeException Thrown if we failed to get the user's answer
      * @throws HiddenInputNotSupportedException Thrown if hidden inputs are not supported
      */
-    public function ask(Question $question, IOutput $output)
+    public function ask(Question $question, IOutput $output): mixed
     {
         $output->write("<question>{$question->text}</question>");
 

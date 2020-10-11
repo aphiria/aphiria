@@ -106,7 +106,7 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function accepted($body = null, Headers $headers = null): IResponse
+    protected function accepted(object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');
@@ -114,7 +114,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_ACCEPTED,
+            HttpStatusCodes::ACCEPTED,
             $headers,
             $body
         );
@@ -129,7 +129,7 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function badRequest($body = null, Headers $headers = null): IResponse
+    protected function badRequest(object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');
@@ -137,7 +137,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_BAD_REQUEST,
+            HttpStatusCodes::BAD_REQUEST,
             $headers,
             $body
         );
@@ -152,7 +152,7 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function conflict($body = null, Headers $headers = null): IResponse
+    protected function conflict(object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');
@@ -160,7 +160,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_CONFLICT,
+            HttpStatusCodes::CONFLICT,
             $headers,
             $body
         );
@@ -177,14 +177,10 @@ class Controller
      * @throws LogicException Thrown if the request is not set
      * @throws InvalidArgumentException Thrown if the URI was not the correct type
      */
-    protected function created($uri, $body = null, Headers $headers = null): IResponse
+    protected function created(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');
-        }
-
-        if (!\is_string($uri) && !$uri instanceof Uri) {
-            throw new InvalidArgumentException('URI must be a string or an instance of ' . Uri::class);
         }
 
         $headers = $headers ?? new Headers();
@@ -192,7 +188,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_CREATED,
+            HttpStatusCodes::CREATED,
             $headers,
             $body
         );
@@ -207,7 +203,7 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function forbidden($body = null, Headers $headers = null): IResponse
+    protected function forbidden(object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');
@@ -215,7 +211,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_FORBIDDEN,
+            HttpStatusCodes::FORBIDDEN,
             $headers,
             $body
         );
@@ -233,9 +229,9 @@ class Controller
      * @throws LogicException Thrown if the request is not set
      * @throws InvalidArgumentException Thrown if the URI is not a string nor an instance of Uri
      */
-    protected function found($uri, $body = null, Headers $headers = null): IResponse
+    protected function found(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
-        return $this->redirect(HttpStatusCodes::HTTP_FOUND, $uri, $body, $headers);
+        return $this->redirect(HttpStatusCodes::FOUND, $uri, $body, $headers);
     }
 
     /**
@@ -247,7 +243,7 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function internalServerError($body = null, Headers $headers = null): IResponse
+    protected function internalServerError(object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');
@@ -255,7 +251,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+            HttpStatusCodes::INTERNAL_SERVER_ERROR,
             $headers,
             $body
         );
@@ -272,9 +268,9 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function movedPermanently($uri, $body = null, Headers $headers = null): IResponse
+    protected function movedPermanently(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
-        return $this->redirect(HttpStatusCodes::HTTP_MOVED_PERMANENTLY, $uri, $body, $headers);
+        return $this->redirect(HttpStatusCodes::MOVED_PERMANENTLY, $uri, $body, $headers);
     }
 
     /**
@@ -293,9 +289,8 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_NO_CONTENT,
-            $headers,
-            null
+            HttpStatusCodes::NO_CONTENT,
+            $headers
         );
     }
 
@@ -308,7 +303,7 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function notFound($body = null, Headers $headers = null): IResponse
+    protected function notFound(object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');
@@ -316,7 +311,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_NOT_FOUND,
+            HttpStatusCodes::NOT_FOUND,
             $headers,
             $body
         );
@@ -331,7 +326,7 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function ok($body = null, Headers $headers = null): IResponse
+    protected function ok(object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');
@@ -339,7 +334,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_OK,
+            HttpStatusCodes::OK,
             $headers,
             $body
         );
@@ -353,7 +348,7 @@ class Controller
      * @throws HttpException Thrown if there was any error with content negotiation
      * @throws LogicException Thrown if the request is not set
      */
-    protected function readRequestBodyAs(string $type)
+    protected function readRequestBodyAs(string $type): mixed
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');
@@ -372,7 +367,7 @@ class Controller
 
         if ($mediaTypeFormatter === null) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE,
                 "Failed to negotiate request content with type $type"
             );
         }
@@ -381,8 +376,10 @@ class Controller
             return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type);
         } catch (SerializationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_UNPROCESSABLE_ENTITY,
-                "Failed to deserialize request body when resolving body as type $type"
+                HttpStatusCodes::UNPROCESSABLE_ENTITY,
+                "Failed to deserialize request body when resolving body as type $type",
+                0,
+                $ex
             );
         }
     }
@@ -396,7 +393,7 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function unauthorized($body = null, Headers $headers = null): IResponse
+    protected function unauthorized(object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');
@@ -404,7 +401,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::HTTP_UNAUTHORIZED,
+            HttpStatusCodes::UNAUTHORIZED,
             $headers,
             $body
         );
@@ -422,7 +419,7 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    private function redirect(int $statusCode, $uri, $body = null, Headers $headers = null): IResponse
+    private function redirect(int $statusCode, string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');
@@ -430,10 +427,8 @@ class Controller
 
         if (\is_string($uri)) {
             $uriString = $uri;
-        } elseif ($uri instanceof Uri) {
-            $uriString = (string)$uri;
         } else {
-            throw new InvalidArgumentException('URI must be a string or an instance of ' . Uri::class);
+            $uriString = (string)$uri;
         }
 
         $response = $this->responseFactory->createResponse(

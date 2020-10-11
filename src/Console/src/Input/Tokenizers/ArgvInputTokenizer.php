@@ -22,17 +22,9 @@ final class ArgvInputTokenizer implements IInputTokenizer
     /**
      * @inheritdoc
      */
-    public function tokenize($input): array
+    public function tokenize(string|array $input): array
     {
-        $tokens = $input;
-
-        if ($tokens === null) {
-            $tokens = $_SERVER['argv'];
-        }
-
-        if (!\is_array($tokens)) {
-            throw new InvalidArgumentException(self::class . ' only accepts arrays as input');
-        }
+        $tokens = \is_string($input) ? [$input] : $input;
 
         // Remove the application name
         array_shift($tokens);

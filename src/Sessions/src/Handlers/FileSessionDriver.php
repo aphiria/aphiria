@@ -19,21 +19,17 @@ use OutOfBoundsException;
  */
 final class FileSessionDriver implements ISessionDriver
 {
-    /** @var string The base path to the session storage files */
-    private string $basePath;
-
     /**
      * @param string $basePath The base path to the session storage files
      */
-    public function __construct(string $basePath)
+    public function __construct(private string $basePath)
     {
-        $this->basePath = $basePath;
     }
 
     /**
      * @inheritdoc
      */
-    public function delete($sessionId): void
+    public function delete(int|string $sessionId): void
     {
         @unlink("{$this->basePath}/$sessionId");
     }
@@ -56,7 +52,7 @@ final class FileSessionDriver implements ISessionDriver
     /**
      * @inheritdoc
      */
-    public function get($sessionId): string
+    public function get(int|string $sessionId): string
     {
         if (!\file_exists($sessionPath = "{$this->basePath}/$sessionId")) {
             throw new OutOfBoundsException("Session with ID $sessionId does not exist");
@@ -68,7 +64,7 @@ final class FileSessionDriver implements ISessionDriver
     /**
      * @inheritdoc
      */
-    public function set($sessionId, string $sessionData): void
+    public function set(int|string $sessionId, string $sessionData): void
     {
         \file_put_contents("{$this->basePath}/$sessionId", $sessionData, LOCK_EX);
     }

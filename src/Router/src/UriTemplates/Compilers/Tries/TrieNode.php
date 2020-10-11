@@ -20,8 +20,6 @@ use InvalidArgumentException;
  */
 abstract class TrieNode
 {
-    /** @var TrieNode|null The host trie, if there is one */
-    public ?TrieNode $hostTrie;
     /** @var Route[] The list of routes for this node, if there are any */
     public array $routes;
     /** @var VariableTrieNode[] The child variable nodes */
@@ -33,40 +31,35 @@ abstract class TrieNode
      * @param TrieNode[] $children The list of children
      * @param Route[]|Route $routes The list of routes for this segment if there are any
      * @param TrieNode|null $hostTrie The host trie, if there is one
-     * @throws InvalidArgumentException Thrown if the routes are not the expected type
      */
-    protected function __construct(array $children, $routes, ?TrieNode $hostTrie)
+    protected function __construct(array $children, Route|array $routes, public ?TrieNode $hostTrie)
     {
         if (\is_array($routes)) {
             $this->routes = $routes;
-        } elseif ($routes instanceof Route) {
-            $this->routes = [$routes];
         } else {
-            throw new InvalidArgumentException('Routes must be a route or an array of routes');
+            $this->routes = [$routes];
         }
 
         foreach ($children as $child) {
             $this->addChild($child);
         }
-
-        $this->hostTrie = $hostTrie;
     }
 
     /**
      * Adds a child node and recursively merges all its children, too
      *
      * @param $childNode $node The node to add
-     * @return self For chaining
+     * @return static For chaining
      * @throws InvalidArgumentException Thrown if the node was an invalid type
      */
-    public function addChild(TrieNode $childNode): self
+    public function addChild(TrieNode $childNode): static
     {
         if ($childNode instanceof LiteralTrieNode) {
             $this->addLiteralChildNode($childNode);
         } elseif ($childNode instanceof VariableTrieNode) {
             $this->addVariableChildNode($childNode);
         } else {
-            throw new InvalidArgumentException('Unexpected trie node type ' . \get_class($childNode));
+            throw new InvalidArgumentException('Unexpected trie node type ' . $childNode::class);
         }
 
         return $this;

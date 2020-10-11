@@ -19,6 +19,7 @@ use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionParameter;
+use ReflectionType;
 
 /**
  * Defines the dependency injection container
@@ -78,7 +79,7 @@ class Container implements IContainer
      * @inheritdoc
      */
     public function bindClass(
-        $interfaces,
+        string|array $interfaces,
         string $concreteClass,
         array $primitives = [],
         bool $resolveAsSingleton = false
@@ -93,7 +94,7 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function bindFactory($interfaces, callable $factory, bool $resolveAsSingleton = false): void
+    public function bindFactory(string|array $interfaces, callable $factory, bool $resolveAsSingleton = false): void
     {
         $binding = new FactoryContainerBinding($factory, $resolveAsSingleton);
 
@@ -105,7 +106,7 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function bindInstance($interfaces, object $instance): void
+    public function bindInstance(string|array $interfaces, object $instance): void
     {
         $binding = new InstanceContainerBinding($instance);
 
@@ -117,7 +118,7 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function callClosure(Closure $closure, array $primitives = [])
+    public function callClosure(Closure $closure, array $primitives = []): mixed
     {
         try {
             $unresolvedParameters = (new ReflectionFunction($closure))->getParameters();
@@ -132,9 +133,9 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function callMethod($instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false)
+    public function callMethod(object|string $instance, string $methodName, array $primitives = [], bool $ignoreMissingMethod = false): mixed
     {
-        $className = \is_string($instance) ? $instance : \get_class($instance);
+        $className = \is_string($instance) ? $instance : $instance::class;
 
         if (!method_exists($instance, $methodName)) {
             if (!$ignoreMissingMethod) {
@@ -157,14 +158,10 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function for($context, callable $callback)
+    public function for(Context|string $context, callable $callback)
     {
         if (\is_string($context)) {
             $context = new TargetedContext($context);
-        }
-
-        if (!$context instanceof Context) {
-            throw new InvalidArgumentException('Context must be an instance of ' . Context::class . ' or string');
         }
 
         // We're duplicating the tracking of targets here so that we can know if any bindings are targeted or universal
@@ -206,7 +203,7 @@ class Container implements IContainer
             return $this->resolveClass($interface);
         }
 
-        switch (\get_class($binding)) {
+        switch ($binding::class) {
             case InstanceContainerBinding::class:
                 /** @var InstanceContainerBinding $binding */
                 return $binding->getInstance();
@@ -223,7 +220,7 @@ class Container implements IContainer
                 $instance = $factory();
                 break;
             default:
-                throw new ResolutionException($interface, $this->currentContext, 'Invalid binding type "' . \get_class($binding) . '"');
+                throw new ResolutionException($interface, $this->currentContext, 'Invalid binding type "' . $binding::class . '"');
         }
 
         if ($binding->resolveAsSingleton()) {
@@ -253,7 +250,7 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function unbind($interfaces): void
+    public function unbind(string|array $interfaces): void
     {
         $target = $this->currentContext->getTargetClass() ?? '';
 
@@ -376,41 +373,57 @@ class Container implements IContainer
 
         foreach ($unresolvedParameters as $parameter) {
             $resolvedParameter = null;
+            $parameterResolved = false;
+            $parameterTypes = $parameter->getType() instanceof \ReflectionUnionType ? $parameter->getType()->getTypes() : [$parameter->getType()];
 
-            if ($parameter->getClass() === null) {
-                // The parameter is a primitive
-                $resolvedParameter = $this->resolvePrimitive($parameter, $primitives);
-            } else {
-                // The parameter is an object
-                $parameterClassName = $parameter->getClass()->getName();
+            foreach ($parameterTypes as $parameterType) {
+                try {
+                    $parameterClassName = $parameterType !== null && !$parameterType->isBuiltin()
+                        ? $parameterType->getName()
+                        : null;
 
-                /**
-                 * We need to first check if the input class is a target for the parameter
-                 * If it is, resolve it using the input class as a target
-                 * Otherwise, attempt to resolve it universally
-                 */
-                if ($class !== null && $this->hasTargetedBinding($parameterClassName, $class)) {
-                    $resolvedParameter = $this->for(
-                        new TargetedContext($class),
-                        fn (IContainer $container) => $container->resolve($parameter->getClass()->getName())
-                    );
-                } else {
-                    try {
-                        $resolvedParameter = $this->resolve($parameterClassName);
-                    } catch (ResolutionException $ex) {
-                        // Check for a default value
-                        if ($parameter->isDefaultValueAvailable()) {
-                            $resolvedParameter = $parameter->getDefaultValue();
-                        } elseif ($parameter->allowsNull()) {
-                            $resolvedParameter = null;
-                        } else {
-                            throw $ex;
+                    if ($parameterClassName === null) {
+                        // The parameter is a primitive
+                        $resolvedParameter = $this->resolvePrimitive($parameter, $parameterType, $primitives);
+                    } elseif ($class !== null && $this->hasTargetedBinding($parameterClassName, $class)) {
+                        $resolvedParameter = $this->for(
+                            new TargetedContext($class),
+                            fn (IContainer $container) => $container->resolve($parameterClassName)
+                        );
+                    } else {
+                        try {
+                            $resolvedParameter = $this->resolve($parameterClassName);
+                        } catch (ResolutionException $ex) {
+                            // Check for a default value
+                            if ($parameter->isDefaultValueAvailable()) {
+                                $resolvedParameter = $parameter->getDefaultValue();
+                            } elseif ($parameter->allowsNull()) {
+                                $resolvedParameter = null;
+                            } else {
+                                throw $ex;
+                            }
                         }
                     }
+
+                    $resolvedParameters[] = $resolvedParameter;
+                    $parameterResolved = true;
+                } catch (ResolutionException) {
+                    // Continue
                 }
             }
 
-            $resolvedParameters[] = $resolvedParameter;
+            if (!$parameterResolved) {
+                throw new ResolutionException(
+                    $class ?? '',
+                    $this->currentContext,
+                    sprintf(
+                        'Failed to resolve %s in %s::%s()',
+                        $parameter->getName(),
+                        $parameter->getDeclaringClass()->getName(),
+                        $parameter->getDeclaringFunction()->getName()
+                    )
+                );
+            }
         }
 
         return $resolvedParameters;
@@ -420,23 +433,58 @@ class Container implements IContainer
      * Resolves a primitive parameter
      *
      * @param ReflectionParameter $parameter The primitive parameter to resolve
+     * @param ReflectionType|null $reflectionType The type to resolve the primitive as, or null if there was no type
      * @param array $primitives The list of primitive values
      * @return mixed The resolved primitive
-     * @throws ReflectionException Thrown if there was a reflection exception
+     * @throws ResolutionException Thrown if there was an error resolving the primitive
      */
-    protected function resolvePrimitive(ReflectionParameter $parameter, array &$primitives)
+    protected function resolvePrimitive(ReflectionParameter $parameter, ?ReflectionType $reflectionType, array &$primitives): mixed
     {
         if (\count($primitives) > 0) {
-            // Grab the next primitive
+            // Grab the next primitive, and make sure its type matches the type of the next parameter if it has a type
+            if (
+                $reflectionType !== null
+                && ($parameterTypeName = $reflectionType instanceof \ReflectionNamedType ? $reflectionType->getName() : (string)$reflectionType) !== 'mixed'
+            ) {
+                $primitiveTypeName = \gettype($primitives[0]);
+
+                if ($primitiveTypeName !== $parameterTypeName) {
+                    throw new ResolutionException(
+                        $parameter->getName(),
+                        $this->currentContext,
+                        sprintf(
+                            'Expected type %s, got %s for %s in %s::%s()',
+                            $parameterTypeName,
+                            $primitiveTypeName,
+                            $parameter->getName(),
+                            $parameter->getDeclaringClass()->getName(),
+                            $parameter->getDeclaringFunction()->getName()
+                        )
+                    );
+                }
+            }
+
             return array_shift($primitives);
         }
 
         if ($parameter->isDefaultValueAvailable()) {
             // No value was found, so use the default value
-            return $parameter->getDefaultValue();
+            try {
+                return $parameter->getDefaultValue();
+            } catch (ReflectionException $ex) {
+                throw new ResolutionException(
+                    $parameter->getName(),
+                    $this->currentContext,
+                    "Failed to get the default value for parameter {$parameter->getName()}",
+                    0,
+                    $ex
+                );
+            }
         }
 
-        throw new ReflectionException(
+        throw new ResolutionException(
+            $parameter->getName(),
+            $this->currentContext,
             sprintf(
                 'No default value available for %s in %s::%s()',
                 $parameter->getName(),

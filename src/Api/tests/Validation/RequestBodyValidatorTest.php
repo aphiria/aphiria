@@ -26,14 +26,10 @@ use PHPUnit\Framework\TestCase;
 
 class RequestBodyValidatorTest extends TestCase
 {
-    /** @var IRequest|MockObject */
-    private IRequest $request;
-    /** @var IValidator|MockObject */
-    private IValidator $validator;
-    /** @var IErrorMessageInterpolator|MockObject */
-    private $errorMessageInterpolator;
-    /** @var ILanguageMatcher|MockObject */
-    private ILanguageMatcher $languageMatcher;
+    private IRequest|MockObject $request;
+    private IValidator|MockObject $validator;
+    private IErrorMessageInterpolator|MockObject $errorMessageInterpolator;
+    private ILanguageMatcher|MockObject $languageMatcher;
     private RequestBodyValidator $requestBodyValidator;
 
     protected function setUp(): void

@@ -45,7 +45,7 @@ interface ISession extends ArrayAccess
      * @param string $key The name of the variable to set
      * @param mixed $value The value of the variable
      */
-    public function flash(string $key, $value): void;
+    public function flash(string $key, mixed $value): void;
 
     /**
      * Flushes all the session variables
@@ -56,10 +56,10 @@ interface ISession extends ArrayAccess
      * Gets the value of a variable
      *
      * @param string $key The name of the variable to get
-     * @param mixed|null $defaultValue The default value to use if the variable does not exist
-     * @return mixed|null The value of the variable if it exists, otherwise the default value
+     * @param mixed $defaultValue The default value to use if the variable does not exist
+     * @return mixed The value of the variable if it exists, otherwise the default value
      */
-    public function get(string $key, $defaultValue = null);
+    public function get(string $key, mixed $defaultValue = null): mixed;
 
     /**
      * Gets the mapping of all session variable names to their values
@@ -73,7 +73,7 @@ interface ISession extends ArrayAccess
      *
      * @return int|string The session Id
      */
-    public function getId();
+    public function getId(): int|string;
 
     /**
      * Reflashes all of the flash data
@@ -91,14 +91,14 @@ interface ISession extends ArrayAccess
      * @param string $key The name of the variable to set
      * @param mixed $value The value of the variable
      */
-    public function set(string $key, $value): void;
+    public function set(string $key, mixed $value): void;
 
     /**
      * Sets the session Id
      *
      * @param int|string $id The session Id
      */
-    public function setId($id): void;
+    public function setId(int|string $id): void;
 
     /**
      * Sets the value of many variables

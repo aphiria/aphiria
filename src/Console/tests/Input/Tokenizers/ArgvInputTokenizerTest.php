@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Console\Tests\Input\Tokenizers;
 
 use Aphiria\Console\Input\Tokenizers\ArgvInputTokenizer;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ArgvInputTokenizerTest extends TestCase
@@ -23,18 +22,6 @@ class ArgvInputTokenizerTest extends TestCase
     protected function setUp(): void
     {
         $this->tokenizer = new ArgvInputTokenizer();
-    }
-
-    public function testTokenizingNonArrayThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->tokenizer->tokenize('foo');
-    }
-
-    public function testTokenizingNullStringUsesArgvFromServerSuperglobal(): void
-    {
-        $_SERVER['argv'] = ['aphiria', 'foo'];
-        $this->assertEquals(['foo'], $this->tokenizer->tokenize(null));
     }
 
     public function testTokenizingEscapedDoubleQuote(): void

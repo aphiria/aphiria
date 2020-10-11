@@ -26,13 +26,6 @@ class HttpExceptionTest extends TestCase
         $this->assertSame(4, $exception->getCode());
     }
 
-    public function testInvalidStatusCodeOrResponseThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('First parameter must be either a status code or an HTTP response');
-        new HttpException('foo');
-    }
-
     public function testIntStatusCodeIsSetInResponse(): void
     {
         $exception = new HttpException(500);

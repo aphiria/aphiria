@@ -41,16 +41,6 @@ use Psr\Http\Message\UriInterface;
  */
 class Psr7Factory implements IPsr7Factory
 {
-    /** @var ServerRequestFactoryInterface The PSR-7 request factory */
-    private ServerRequestFactoryInterface $psr7RequestFactory;
-    /** @var ResponseFactoryInterface The PSR-7 response factory */
-    private ResponseFactoryInterface $psr7ResponseFactory;
-    /** @var StreamFactoryInterface The PSR-7 stream factory */
-    private StreamFactoryInterface $psr7StreamFactory;
-    /** @var UploadedFileFactoryInterface The PSR-7 uploaded file factory */
-    private UploadedFileFactoryInterface $psr7UploadedFactoryInterface;
-    /** @var UriFactoryInterface The PSR-7 URI factory */
-    private UriFactoryInterface $psr7UriFactory;
     /** @var RequestHeaderParser The Aphiria request header parser */
     private RequestHeaderParser $aphiriaRequestHeaderParser;
     /** @var RequestParser The Aphiria request parser */
@@ -66,19 +56,14 @@ class Psr7Factory implements IPsr7Factory
      * @param RequestParser|null $aphiriaRequestParser The Aphiria request parser
      */
     public function __construct(
-        ServerRequestFactoryInterface $psr7RequestFactory,
-        ResponseFactoryInterface $psr7ResponseFactory,
-        StreamFactoryInterface $psr7StreamFactory,
-        UploadedFileFactoryInterface $psr7UploadedFactoryInterface,
-        UriFactoryInterface $psr7UriFactory,
+        private ServerRequestFactoryInterface $psr7RequestFactory,
+        private ResponseFactoryInterface $psr7ResponseFactory,
+        private StreamFactoryInterface $psr7StreamFactory,
+        private UploadedFileFactoryInterface $psr7UploadedFactoryInterface,
+        private UriFactoryInterface $psr7UriFactory,
         RequestHeaderParser $aphiriaRequestHeaderParser = null,
         RequestParser $aphiriaRequestParser = null
     ) {
-        $this->psr7RequestFactory = $psr7RequestFactory;
-        $this->psr7ResponseFactory = $psr7ResponseFactory;
-        $this->psr7StreamFactory = $psr7StreamFactory;
-        $this->psr7UploadedFactoryInterface = $psr7UploadedFactoryInterface;
-        $this->psr7UriFactory = $psr7UriFactory;
         $this->aphiriaRequestHeaderParser = $aphiriaRequestHeaderParser ?? new RequestHeaderParser();
         $this->aphiriaRequestParser = $aphiriaRequestParser ?? new RequestParser($this->aphiriaRequestHeaderParser);
     }
@@ -91,10 +76,7 @@ class Psr7Factory implements IPsr7Factory
         $aphiriaRequest = new Request(
             $psr7Request->getMethod(),
             $this->createAphiriaUri($psr7Request->getUri()),
-            null,
-            null,
-            null,
-            $psr7Request->getProtocolVersion()
+            protocolVersion: $psr7Request->getProtocolVersion()
         );
 
         foreach ($psr7Request->getHeaders() as $name => $values) {

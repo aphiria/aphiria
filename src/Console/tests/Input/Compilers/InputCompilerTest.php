@@ -66,8 +66,8 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [new Argument('arg', ArgumentTypes::REQUIRED, '')],
                 [
-                    new Option('opt1', null, OptionTypes::REQUIRED_VALUE, ''),
-                    new Option('opt2', 'r', OptionTypes::NO_VALUE, '')
+                    new Option('opt1', OptionTypes::REQUIRED_VALUE, null, ''),
+                    new Option('opt2', OptionTypes::NO_VALUE, 'r', '')
                 ],
                 ''
             ),
@@ -151,7 +151,7 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt', null, OptionTypes::IS_ARRAY, '')
+                    new Option('opt', OptionTypes::IS_ARRAY, null, '')
                 ],
                 ''
             ),
@@ -170,7 +170,7 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt', null, OptionTypes::IS_ARRAY, '')
+                    new Option('opt', OptionTypes::IS_ARRAY, null, '')
                 ],
                 ''
             ),
@@ -211,7 +211,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', null, OptionTypes::REQUIRED_VALUE, '')],
+                [new Option('opt', OptionTypes::REQUIRED_VALUE, null, '')],
                 ''
             ),
             'Handler'
@@ -228,7 +228,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', null, OptionTypes::REQUIRED_VALUE, '')],
+                [new Option('opt', OptionTypes::REQUIRED_VALUE, null, '')],
                 ''
             ),
             'Handler'
@@ -245,7 +245,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [new Argument('arg', ArgumentTypes::REQUIRED, '')],
-                [new Option('opt', null, OptionTypes::REQUIRED_VALUE, '')],
+                [new Option('opt', OptionTypes::REQUIRED_VALUE, null, '')],
                 ''
             ),
             'Handler'
@@ -263,8 +263,8 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt1', null, OptionTypes::REQUIRED_VALUE, ''),
-                    new Option('opt2', null, OptionTypes::REQUIRED_VALUE, '')
+                    new Option('opt1', OptionTypes::REQUIRED_VALUE, null, ''),
+                    new Option('opt2', OptionTypes::REQUIRED_VALUE, null, '')
                 ],
                 ''
             ),
@@ -308,9 +308,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt1', 'r', OptionTypes::NO_VALUE, ''),
-                    new Option('opt2', 'f', OptionTypes::NO_VALUE, ''),
-                    new Option('opt3', 'd', OptionTypes::NO_VALUE, '')
+                    new Option('opt1', OptionTypes::NO_VALUE, 'r', ''),
+                    new Option('opt2', OptionTypes::NO_VALUE, 'f', ''),
+                    new Option('opt3', OptionTypes::NO_VALUE, 'd', '')
                 ],
                 ''
             ),
@@ -331,9 +331,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt1', 'r', OptionTypes::NO_VALUE, ''),
-                    new Option('opt2', 'f', OptionTypes::NO_VALUE, ''),
-                    new Option('opt3', 'd', OptionTypes::NO_VALUE, '')
+                    new Option('opt1', OptionTypes::NO_VALUE, 'r', ''),
+                    new Option('opt2', OptionTypes::NO_VALUE, 'f', ''),
+                    new Option('opt3', OptionTypes::NO_VALUE, 'd', '')
                 ],
                 ''
             ),
@@ -354,7 +354,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', null, OptionTypes::NO_VALUE, '')],
+                [new Option('opt', OptionTypes::NO_VALUE, null, '')],
                 '',
                 ''
             ),
@@ -402,7 +402,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', null, OptionTypes::REQUIRED_VALUE, '')],
+                [new Option('opt', OptionTypes::REQUIRED_VALUE, null, '')],
                 '',
                 ''
             ),
@@ -434,7 +434,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', 'r', OptionTypes::NO_VALUE, '')],
+                [new Option('opt', OptionTypes::NO_VALUE, 'r', '')],
                 ''
             ),
             'Handler'
@@ -452,8 +452,8 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt1', null, OptionTypes::NO_VALUE, ''),
-                    new Option('opt2', null, OptionTypes::NO_VALUE, '')
+                    new Option('opt1', OptionTypes::NO_VALUE, null, ''),
+                    new Option('opt2', OptionTypes::NO_VALUE, null, '')
                 ],
                 ''
             ),
@@ -486,9 +486,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('foo', 'f', OptionTypes::REQUIRED_VALUE, '', 'foo value'),
-                    new Option('bar', 'b', OptionTypes::OPTIONAL_VALUE, '', 'bar value'),
-                    new Option('baz', 'z', OptionTypes::NO_VALUE, 'Baz command', 'baz value')
+                    new Option('foo', OptionTypes::REQUIRED_VALUE, 'f', '', 'foo value'),
+                    new Option('bar', OptionTypes::OPTIONAL_VALUE, 'b', '', 'bar value'),
+                    new Option('baz', OptionTypes::NO_VALUE, 'z', 'Baz command', 'baz value')
                 ],
                 '',
                 ''

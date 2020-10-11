@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Console\Binders;
 
 use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
-use Aphiria\Console\Commands\Annotations\AnnotationCommandRegistrant;
+use Aphiria\Console\Commands\Attributes\AttributeCommandRegistrant;
 use Aphiria\Console\Commands\Caching\FileCommandRegistryCache;
 use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
@@ -46,10 +46,10 @@ final class CommandBinder extends Binder
 
         $container->bindInstance(CommandRegistrantCollection::class, $commandRegistrants);
 
-        // Register some command annotation dependencies
-        $commandAnnotationRegistrant = new AnnotationCommandRegistrant(
-            GlobalConfiguration::getArray('aphiria.console.annotationPaths')
+        // Register some command attribute dependencies
+        $commandAttributeRegistrant = new AttributeCommandRegistrant(
+            GlobalConfiguration::getArray('aphiria.console.attributePaths')
         );
-        $container->bindInstance(AnnotationCommandRegistrant::class, $commandAnnotationRegistrant);
+        $container->bindInstance(AttributeCommandRegistrant::class, $commandAttributeRegistrant);
     }
 }

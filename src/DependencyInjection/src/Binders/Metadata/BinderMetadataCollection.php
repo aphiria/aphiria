@@ -17,8 +17,6 @@ namespace Aphiria\DependencyInjection\Binders\Metadata;
  */
 final class BinderMetadataCollection
 {
-    /** @var BinderMetadata[] The list of all binder metadata */
-    private array $binderMetadatas;
     /** @var BinderMetadata[][] The mapping of interfaces to binder metadata that universally resolve those interfaces */
     private array $universalResolutions = [];
     /** @var array The mapping of targets to interfaces to binders that resolve the interface for the target */
@@ -27,10 +25,8 @@ final class BinderMetadataCollection
     /**
      * @param BinderMetadata[] $binderMetadatas The list of all binder metadata
      */
-    public function __construct(array $binderMetadatas)
+    public function __construct(private array $binderMetadatas)
     {
-        $this->binderMetadatas = $binderMetadatas;
-
         foreach ($this->binderMetadatas as $binderMetadata) {
             foreach ($binderMetadata->getResolvedInterfaces() as $resolvedInterface) {
                 if ($resolvedInterface->getContext()->isTargeted()) {

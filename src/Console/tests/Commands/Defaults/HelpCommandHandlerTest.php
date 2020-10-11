@@ -28,8 +28,7 @@ use PHPUnit\Framework\TestCase;
 
 class HelpCommandHandlerTest extends TestCase
 {
-    /** @var IOutput|MockObject */
-    private IOutput $output;
+    private IOutput|MockObject $output;
     private HelpCommandHandler $handler;
     private CommandRegistry $commands;
 
@@ -166,7 +165,7 @@ class HelpCommandHandlerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt1', null, OptionTypes::REQUIRED_VALUE, 'Opt1 description')],
+                [new Option('opt1', OptionTypes::REQUIRED_VALUE, null, 'Opt1 description')],
                 'The description'
             ),
             'Handler'
@@ -183,7 +182,7 @@ class HelpCommandHandlerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt1', 'o', OptionTypes::REQUIRED_VALUE, 'Opt1 description')],
+                [new Option('opt1', OptionTypes::REQUIRED_VALUE, 'o', 'Opt1 description')],
                 'The description'
             ),
             'Handler'

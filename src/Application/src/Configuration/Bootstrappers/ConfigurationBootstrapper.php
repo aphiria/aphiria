@@ -20,15 +20,11 @@ use Aphiria\Application\IBootstrapper;
  */
 final class ConfigurationBootstrapper implements IBootstrapper
 {
-    /** @var GlobalConfigurationBuilder The global configuration builder */
-    private GlobalConfigurationBuilder $configurationBuilder;
-
     /**
      * @param GlobalConfigurationBuilder $configurationBuilder The global configuration builder
      */
-    public function __construct(GlobalConfigurationBuilder $configurationBuilder)
+    public function __construct(private GlobalConfigurationBuilder $configurationBuilder)
     {
-        $this->configurationBuilder = $configurationBuilder;
     }
 
     /**

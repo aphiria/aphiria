@@ -26,5 +26,5 @@ interface IRequestBodyValidator
      * @param mixed $body The deserialized body to validate
      * @throws InvalidRequestBodyException Thrown if the body is not valid
      */
-    public function validate(IRequest $request, $body): void;
+    public function validate(IRequest $request, mixed $body): void;
 }

@@ -17,19 +17,12 @@ namespace Aphiria\Net\Http;
  */
 class MultipartBodyPart
 {
-    /** @var Headers The headers of this body part */
-    private Headers $headers;
-    /** @var IBody|null The body of this body part if one is set, otherwise null */
-    private ?IBody $body;
-
     /**
      * @param Headers $headers The headers of this body part
      * @param IBody|null $body The body of this body part if one is set, otherwise null
      */
-    public function __construct(Headers $headers, ?IBody $body)
+    public function __construct(private Headers $headers, private ?IBody $body)
     {
-        $this->headers = $headers;
-        $this->body = $body;
     }
 
     /**

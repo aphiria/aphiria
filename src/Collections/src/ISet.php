@@ -27,7 +27,7 @@ interface ISet extends Countable, IteratorAggregate
      * @param mixed $value The value to add
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function add($value): void;
+    public function add(mixed $value): void;
 
     /**
      * Adds a range of values
@@ -49,7 +49,7 @@ interface ISet extends Countable, IteratorAggregate
      * @return bool True if the value exists, otherwise false
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function containsValue($value): bool;
+    public function containsValue(mixed $value): bool;
 
     /**
      * Intersects the values of the input array with the values already in the set
@@ -65,7 +65,7 @@ interface ISet extends Countable, IteratorAggregate
      * @param mixed $value The value to remove
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
-    public function removeValue($value): void;
+    public function removeValue(mixed $value): void;
 
     /**
      * Sorts the values of the set

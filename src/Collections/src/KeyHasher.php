@@ -21,10 +21,10 @@ class KeyHasher
     /**
      * Gets the hash key for a value
      *
-     * @param string|float|int|object|array|resource $value The value whose hash key we want
+     * @param mixed $value The value whose hash key we want
      * @return string The value's hash key
      */
-    public function getHashKey($value): string
+    public function getHashKey(mixed $value): string
     {
         if (\is_string($value)) {
             return "__aphiria:s:$value";

@@ -32,7 +32,7 @@ class CommandTest extends TestCase
     {
         $expectedName = 'foo';
         $expectedArguments = [new Argument('arg', ArgumentTypes::REQUIRED, 'description')];
-        $expectedOptions = [new Option('opt', 'o', OptionTypes::REQUIRED_VALUE, 'description')];
+        $expectedOptions = [new Option('opt', OptionTypes::REQUIRED_VALUE, 'o', 'description')];
         $expectedDescription = 'description';
         $expectedHelpText = 'help';
         $command = new Command(

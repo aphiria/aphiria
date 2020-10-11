@@ -74,18 +74,13 @@ class RequestFactory
     ];
     /** @var array The list of header names whose values should be URL-decoded */
     private static array $headersToUrlDecode = ['HTTP_COOKIE' => true];
-    /** @var array The list of trusted proxy IP addresses */
-    protected array $trustedProxyIPAddresses = [];
-    /** @var array The mapping of header names to trusted header names */
-    protected array $trustedHeaderNames = [];
 
     /**
      * @param array $trustedProxyIPAddresses The list of trusted proxy IP addresses
      * @param array $trustedHeaderNames The mapping of additional header names to trusted header names
      */
-    public function __construct(array $trustedProxyIPAddresses = [], array $trustedHeaderNames = [])
+    public function __construct(protected array $trustedProxyIPAddresses = [], protected array $trustedHeaderNames = [])
     {
-        $this->trustedProxyIPAddresses = $trustedProxyIPAddresses;
         $this->trustedHeaderNames = array_merge(self::$defaultTrustedHeaderNames, $trustedHeaderNames);
     }
 
@@ -306,13 +301,13 @@ class RequestFactory
      * @param mixed $value The header value to add
      * @param bool $append Whether or not to append the value
      */
-    private function addHeaderValue(Headers $headers, string $name, $value, bool $append): void
+    private function addHeaderValue(Headers $headers, string $name, mixed $value, bool $append): void
     {
         $decodedValue = trim((string)(isset(self::$headersToUrlDecode[$name]) ? urldecode($value) : $value));
 
         if (isset(self::$specialCaseHeaders[$name])) {
             $headers->add($name, $decodedValue, $append);
-        } elseif (strpos($name, 'HTTP_') === 0) {
+        } elseif (str_starts_with($name, 'HTTP_')) {
             // Drop the "HTTP_"
             $normalizedName = substr($name, 5);
             $headers->add($normalizedName, $decodedValue, $append);

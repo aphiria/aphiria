@@ -20,17 +20,14 @@ class FactoryContainerBinding implements IContainerBinding
 {
     /** @var callable The factory */
     private $factory;
-    /** @var bool Whether or not the factory should be resolved as a singleton */
-    private bool $resolveAsSingleton;
 
     /**
      * @param callable $factory The factory
      * @param bool $resolveAsSingleton Whether or not the factory should be resolved as a singleton
      */
-    public function __construct(callable $factory, bool $resolveAsSingleton)
+    public function __construct(callable $factory, private bool $resolveAsSingleton)
     {
         $this->factory = $factory;
-        $this->resolveAsSingleton = $resolveAsSingleton;
     }
 
     /**

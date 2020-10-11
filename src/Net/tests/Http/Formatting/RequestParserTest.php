@@ -29,11 +29,9 @@ use PHPUnit\Framework\TestCase;
 class RequestParserTest extends TestCase
 {
     private RequestParser $parser;
-    /** @var IRequest|MockObject The request message to use in tests */
-    private IRequest $request;
+    private IRequest|MockObject $request;
     private Headers $headers;
-    /** @var IBody|MockObject The body to use in tests */
-    private IBody $body;
+    private IBody|MockObject $body;
     private IDictionary $properties;
 
     protected function setUp(): void
@@ -49,13 +47,6 @@ class RequestParserTest extends TestCase
             ->willReturn($this->body);
         $this->request->method('getProperties')
             ->willReturn($this->properties);
-    }
-
-    public function testGettingActualMimeTypeOfNonRequestNorMultipartBodyPartThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Request must be of type %s or %s', IRequest::class, MultipartBodyPart::class));
-        $this->parser->getActualMimeType([]);
     }
 
     public function testGettingActualMimeTypeReturnsCorrectMimeType(): void
@@ -167,13 +158,6 @@ class RequestParserTest extends TestCase
         $this->expectExceptionMessage('"boundary" is missing in Content-Type header');
         $this->headers->add('Content-Type', 'multipart/mixed');
         $this->parser->readAsMultipart($this->request);
-    }
-
-    public function testParsingNonRequestNorMultipartBodyPartThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Request must be of type %s or %s', IRequest::class, MultipartBodyPart::class));
-        $this->parser->readAsMultipart([]);
     }
 
     public function testParsingParametersReturnsCorrectParameters(): void

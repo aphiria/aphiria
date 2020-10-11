@@ -17,15 +17,11 @@ namespace Aphiria\Routing\UriTemplates\Constraints;
  */
 final class RegexConstraint implements IRouteVariableConstraint
 {
-    /** @var string The regex the input must match */
-    private string $regex;
-
     /**
      * @param string $regex The regex the input must match
      */
-    public function __construct(string $regex)
+    public function __construct(private string $regex)
     {
-        $this->regex = $regex;
     }
 
     /**
@@ -41,7 +37,7 @@ final class RegexConstraint implements IRouteVariableConstraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         return \preg_match($this->regex, $value) === 1;
     }

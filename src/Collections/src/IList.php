@@ -27,7 +27,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
      *
      * @param mixed $value The value to add
      */
-    public function add($value): void;
+    public function add(mixed $value): void;
 
     /**
      * Adds a range of values
@@ -47,7 +47,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
      * @param mixed $value The value to search for
      * @return bool True if the value exists, otherwise false
      */
-    public function containsValue($value): bool;
+    public function containsValue(mixed $value): bool;
 
     /**
      * Gets the value at an index
@@ -56,7 +56,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
      * @return mixed The value if it was found, otherwise the default value
      * @throws OutOfRangeException Thrown if the index is < 0 or >= than the length of the list
      */
-    public function get(int $index);
+    public function get(int $index): mixed;
 
     /**
      * Gets the index of a value
@@ -64,7 +64,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
      * @param mixed $value The value to search for
      * @return int|null The index of the value if it was found, otherwise null
      */
-    public function indexOf($value): ?int;
+    public function indexOf(mixed $value): ?int;
 
     /**
      * Inserts the value at an index
@@ -72,7 +72,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
      * @param int $index The index to insert at
      * @param mixed $value The value to insert
      */
-    public function insert(int $index, $value): void;
+    public function insert(int $index, mixed $value): void;
 
     /**
      * Intersects the values of the input array with the values already in the list
@@ -93,7 +93,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
      *
      * @param mixed $value The value to remove
      */
-    public function removeValue($value): void;
+    public function removeValue(mixed $value): void;
 
     /**
      * Reverses the list

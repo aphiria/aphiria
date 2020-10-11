@@ -33,7 +33,7 @@ final class ImpossibleBindingException extends Exception
             $message .= $failedInterface . ' (attempted to be resolved in ';
 
             foreach ($failedBinders as $failedBinder) {
-                $message .= \get_class($failedBinder) . ', ';
+                $message .= $failedBinder::class . ', ';
             }
 
             // Remove the trailing ', '

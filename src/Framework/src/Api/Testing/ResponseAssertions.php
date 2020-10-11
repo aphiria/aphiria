@@ -62,7 +62,7 @@ class ResponseAssertions
      * @param string $cookieName The name of the cookie to inspect
      * @throws AssertionFailedException Thrown if the assertion failed
      */
-    public function assertCookieEquals($expectedValue, IResponse $response, string $cookieName): void
+    public function assertCookieEquals(mixed $expectedValue, IResponse $response, string $cookieName): void
     {
         foreach ($this->responseHeaderParser->parseCookies($response->getHeaders()) as $cookie) {
             if ($cookie->getName() === $cookieName && $cookie->getValue() === $expectedValue) {
@@ -113,7 +113,7 @@ class ResponseAssertions
      * @param string $headerName The name of the header to inspect
      * @throws AssertionFailedException Thrown if the assertion failed
      */
-    public function assertHeaderEquals($expectedValue, IResponse $response, string $headerName): void
+    public function assertHeaderEquals(mixed $expectedValue, IResponse $response, string $headerName): void
     {
         $actualHeaderValue = null;
 
@@ -155,7 +155,7 @@ class ResponseAssertions
      * @param IResponse $response The response to inspect
      * @throws AssertionFailedException Thrown if the assertion failed
      */
-    public function assertParsedBodyEquals($expectedValue, IRequest $request, IResponse $response): void
+    public function assertParsedBodyEquals(mixed $expectedValue, IRequest $request, IResponse $response): void
     {
         try {
             // Purposely not checking references here
@@ -213,10 +213,10 @@ class ResponseAssertions
      * @param IRequest $request The request that generated the response (used for content negotiation)
      * @param IResponse $response The response whose body we want
      * @param string $type The type to deserialize the body to
-     * @return mixed|null An instance of type, or null if the body is not set
+     * @return float|object|int|bool|array|string|null An instance of type, or null if the body is not set
      * @throws SerializationException Thrown if the body could not be read
      */
-    private function getParsedBody(IRequest $request, IResponse $response, string $type)
+    private function getParsedBody(IRequest $request, IResponse $response, string $type): float|object|int|bool|array|string|null
     {
         if (($body = $response->getBody()) === null) {
             return null;

@@ -27,6 +27,7 @@ use Aphiria\Net\Http\StreamBody;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Reflection\TypeResolver;
 use InvalidArgumentException;
+use JsonException;
 
 /**
  * Defines the factory that generates HTTP responses from negotiated content
@@ -51,7 +52,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
         IRequest $request,
         int $statusCode,
         Headers $headers = null,
-        $rawBody = null
+        object|string|int|float|array $rawBody = null
     ): IResponse {
         $headers = $headers ?? new Headers();
 
@@ -61,7 +62,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             $body = $this->createBody($request, $rawBody, $contentNegotiationResult);
         } catch (InvalidArgumentException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+                HttpStatusCodes::INTERNAL_SERVER_ERROR,
                 'Failed to create response body',
                 0,
                 $ex
@@ -101,7 +102,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
      */
     private function createBody(
         IRequest $request,
-        $rawBody,
+        object|string|int|float|array $rawBody = null,
         ContentNegotiationResult &$contentNegotiationResult = null
     ): ?IBody {
         if ($rawBody === null || $rawBody instanceof IBody) {
@@ -138,7 +139,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             );
         } catch (SerializationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::HTTP_INTERNAL_SERVER_ERROR,
+                HttpStatusCodes::INTERNAL_SERVER_ERROR,
                 'Failed to serialize response body',
                 0,
                 $ex
@@ -158,8 +159,17 @@ final class NegotiatedResponseFactory implements IResponseFactory
     {
         $headers = new Headers();
         $headers->add('Content-Type', 'application/json');
-        $body = new StringBody(json_encode($this->contentNegotiator->getAcceptableResponseMediaTypes($type)));
-        $response = new Response(HttpStatusCodes::HTTP_NOT_ACCEPTABLE, $headers, $body);
+
+        try {
+            $body = new StringBody(\json_encode($this->contentNegotiator->getAcceptableResponseMediaTypes($type), JSON_THROW_ON_ERROR));
+            // Realistically, we won't ever have an array of strings that cannot be encoded to JSON
+            // @codeCoverageIgnoreStart
+        } catch (JsonException) {
+            $body = null;
+            // @codeCoverageIgnoreEnd
+        }
+
+        $response = new Response(HttpStatusCodes::NOT_ACCEPTABLE, $headers, $body);
 
         return new HttpException($response);
     }

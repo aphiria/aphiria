@@ -69,18 +69,18 @@ interface IMediaTypeFormatter
      *
      * @param IStream $stream The stream to read from
      * @param string $type The type to convert to (best to use TypeResolver::resolveType())
-     * @return int|double|bool|string|object|array The converted content
+     * @return int|float|bool|string|object|array The converted content
      * @throws SerializationException Thrown if the content could not be read and converted to the input type
      */
-    public function readFromStream(IStream $stream, string $type);
+    public function readFromStream(IStream $stream, string $type): int|float|bool|string|object|array;
 
     /**
      * Writes the input object to the input stream
      *
-     * @param int|double|bool|string|object|array $value The value to write
+     * @param int|float|bool|string|object|array $value The value to write
      * @param IStream $stream The stream to write to
      * @param string|null $encoding The character encoding to use, or null if using the default one
      * @throws SerializationException Thrown if the content could not be converted to the input type and written
      */
-    public function writeToStream($value, IStream $stream, ?string $encoding): void;
+    public function writeToStream(int|float|bool|string|object|array $value, IStream $stream, ?string $encoding): void;
 }

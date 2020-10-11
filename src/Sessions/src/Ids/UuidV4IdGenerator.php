@@ -20,7 +20,7 @@ final class UuidV4IdGenerator implements IIdGenerator
     /**
      * @inheritdoc
      */
-    public function generate()
+    public function generate(): int|string
     {
         $string = \random_bytes(16);
         $string[6] = \chr(\ord($string[6]) & 0x0f | 0x40);
@@ -35,7 +35,7 @@ final class UuidV4IdGenerator implements IIdGenerator
      * @param mixed $id The Id to validate
      * @return bool True if the Id is valid, otherwise false
      */
-    public function idIsValid($id): bool
+    public function idIsValid(mixed $id): bool
     {
         if (!\is_string($id)) {
             return false;

@@ -15,7 +15,7 @@ namespace Aphiria\Framework\Tests\Validation\Components;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
-use Aphiria\Validation\Constraints\Annotations\AnnotationObjectConstraintsRegistrant;
+use Aphiria\Validation\Constraints\Attributes\AttributeObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\Constraints\RequiredConstraint;
@@ -52,24 +52,24 @@ class ValidationComponentTest extends TestCase
         $this->assertInstanceOf(RequiredConstraint::class, $this->objectConstraints->getConstraintsForClass('foo')->getMethodConstraints('bar')[0]);
     }
 
-    public function testBuildWithAnnotationsAddsAnnotationRegistrant(): void
+    public function testBuildWithAttributesAddsAttributeRegistrant(): void
     {
-        // We use an empty directory so that we don't actually scan any annotations
-        $annotationObjectConstraintsRegistrant = new AnnotationObjectConstraintsRegistrant(__DIR__ . '/files');
-        $this->container->bindInstance(AnnotationObjectConstraintsRegistrant::class, $annotationObjectConstraintsRegistrant);
-        $this->validationComponent->withAnnotations();
+        // We use an empty directory so that we don't actually scan any attributes
+        $attributeObjectConstraintsRegistrant = new AttributeObjectConstraintsRegistrant(__DIR__ . '/files');
+        $this->container->bindInstance(AttributeObjectConstraintsRegistrant::class, $attributeObjectConstraintsRegistrant);
+        $this->validationComponent->withAttributes();
         $this->validationComponent->build();
-        // The first should be the annotation registrant, and the second the manually-registered constraint registrant
+        // The first should be the attribute registrant, and the second the manually-registered constraint registrant
         $this->assertCount(2, $this->objectConstraintsRegistrants->getAll());
-        // Make sure the annotation registrant is first
-        $this->assertEquals($annotationObjectConstraintsRegistrant, $this->objectConstraintsRegistrants->getAll()[0]);
+        // Make sure the attribute registrant is first
+        $this->assertEquals($attributeObjectConstraintsRegistrant, $this->objectConstraintsRegistrants->getAll()[0]);
     }
 
-    public function testBuildWithAnnotationsWithoutAnnotationRegistrantThrowsException(): void
+    public function testBuildWithAttributesWithoutAttributeRegistrantThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(AnnotationObjectConstraintsRegistrant::class . ' cannot be null if using annotations');
-        $this->validationComponent->withAnnotations();
+        $this->expectExceptionMessage(AttributeObjectConstraintsRegistrant::class . ' cannot be null if using attributes');
+        $this->validationComponent->withAttributes();
         $this->validationComponent->build();
     }
 }

@@ -29,7 +29,7 @@ class WindowsDriver extends Driver
     public function readHiddenInput(IOutput $output): ?string
     {
         // Check if we're running from a PHAR
-        if (strpos(__FILE__, 'phar:') === 0) {
+        if (str_starts_with(__FILE__, 'phar:')) {
             $hiddenInputExeTempPath = sys_get_temp_dir() . '/hiddeninput.exe';
             copy(self::HIDDEN_INPUT_EXE_PATH, $hiddenInputExeTempPath);
             $input = shell_exec($hiddenInputExeTempPath);
