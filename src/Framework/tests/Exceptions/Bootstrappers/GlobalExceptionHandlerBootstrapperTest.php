@@ -98,7 +98,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
             }
 
             /**
-             * @inheritDoc
+             * @inheritdoc
              */
             public function setResponseFactory(IResponseFactory $responseFactory): void
             {
@@ -106,7 +106,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
             }
 
             /**
-             * @inheritDoc
+             * @inheritdoc
              */
             public function render(Exception $ex): void
             {

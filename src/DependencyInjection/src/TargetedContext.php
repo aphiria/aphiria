@@ -33,7 +33,7 @@ final class TargetedContext extends Context
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function isTargeted(): bool
     {
