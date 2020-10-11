@@ -53,7 +53,7 @@ final class Cookie
 
         if (
             $this->sameSite !== null
-            && !\in_array($this->sameSite, [self::SAME_SITE_LAX, self::SAME_SITE_STRICT, self::SAME_SITE_STRICT], true)
+            && !\in_array($this->sameSite, [self::SAME_SITE_STRICT, self::SAME_SITE_LAX, self::SAME_SITE_NONE], true)
         ) {
             throw new InvalidArgumentException('Acceptable values for SameSite are "lax", "strict", "none", or null');
         }

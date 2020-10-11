@@ -25,6 +25,16 @@ class CookieTest extends TestCase
         $this->cookie = new Cookie('name', 'value', 1234, '/', 'foo.com', true, true, Cookie::SAME_SITE_LAX);
     }
 
+    public function getSameSiteSettings(): array
+    {
+        return [
+            [Cookie::SAME_SITE_STRICT],
+            [Cookie::SAME_SITE_LAX],
+            [Cookie::SAME_SITE_NONE],
+            [null]
+        ];
+    }
+
     public function testCheckingIfIsHttpOnly(): void
     {
         $this->assertTrue($this->cookie->isHttpOnly());
@@ -130,5 +140,16 @@ class CookieTest extends TestCase
     {
         $this->cookie->setMaxAge(3600);
         $this->assertSame(3600, $this->cookie->getMaxAge());
+    }
+
+    /**
+     * @dataProvider getSameSiteSettings
+     * @param string|null $sameSite The same site setting to test
+     */
+    public function testSettingValidSameSiteSettingsAreAccepted(?string $sameSite): void
+    {
+        new Cookie('foo', 'bar', sameSite: $sameSite);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 }
