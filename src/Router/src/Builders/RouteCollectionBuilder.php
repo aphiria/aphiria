@@ -45,27 +45,27 @@ final class RouteCollectionBuilder
     /**
      * Creates a route builder with the DELETE HTTP method
      *
-     * @param string $pathTemplate The path template
-     * @param string|null $hostTemplate The host template
+     * @param string $path The path template
+     * @param string|null $host The host template
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
-    public function delete(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
+    public function delete(string $path, string $host = null, bool $isHttpsOnly = false): RouteBuilder
     {
-        return $this->route('DELETE', $pathTemplate, $hostTemplate, $isHttpsOnly);
+        return $this->route('DELETE', $path, $host, $isHttpsOnly);
     }
 
     /**
      * Creates a route builder with the GET HTTP method
      *
-     * @param string $pathTemplate The path template
-     * @param string|null $hostTemplate The host template
+     * @param string $path The path template
+     * @param string|null $host The host template
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
-    public function get(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
+    public function get(string $path, string $host = null, bool $isHttpsOnly = false): RouteBuilder
     {
-        return $this->route('GET', $pathTemplate, $hostTemplate, $isHttpsOnly);
+        return $this->route('GET', $path, $host, $isHttpsOnly);
     }
 
     /**
@@ -84,74 +84,74 @@ final class RouteCollectionBuilder
     /**
      * Creates a route builder with the OPTIONS HTTP method
      *
-     * @param string $pathTemplate The path template
-     * @param string|null $hostTemplate The host template
+     * @param string $path The path template
+     * @param string|null $host The host template
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
-    public function options(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
+    public function options(string $path, string $host = null, bool $isHttpsOnly = false): RouteBuilder
     {
-        return $this->route('OPTIONS', $pathTemplate, $hostTemplate, $isHttpsOnly);
+        return $this->route('OPTIONS', $path, $host, $isHttpsOnly);
     }
 
     /**
      * Creates a route builder with the PATCH HTTP method
      *
-     * @param string $pathTemplate The path template
-     * @param string|null $hostTemplate The host template
+     * @param string $path The path template
+     * @param string|null $host The host template
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
-    public function patch(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
+    public function patch(string $path, string $host = null, bool $isHttpsOnly = false): RouteBuilder
     {
-        return $this->route('PATCH', $pathTemplate, $hostTemplate, $isHttpsOnly);
+        return $this->route('PATCH', $path, $host, $isHttpsOnly);
     }
 
     /**
      * Creates a route builder with the POST HTTP method
      *
-     * @param string $pathTemplate The path template
-     * @param string|null $hostTemplate The host template
+     * @param string $path The path template
+     * @param string|null $host The host template
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
-    public function post(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
+    public function post(string $path, string $host = null, bool $isHttpsOnly = false): RouteBuilder
     {
-        return $this->route('POST', $pathTemplate, $hostTemplate, $isHttpsOnly);
+        return $this->route('POST', $path, $host, $isHttpsOnly);
     }
 
     /**
      * Creates a route builder with the PUT HTTP method
      *
-     * @param string $pathTemplate The path template
-     * @param string|null $hostTemplate The host template
+     * @param string $path The path template
+     * @param string|null $host The host template
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
-    public function put(string $pathTemplate, string $hostTemplate = null, bool $isHttpsOnly = false): RouteBuilder
+    public function put(string $path, string $host = null, bool $isHttpsOnly = false): RouteBuilder
     {
-        return $this->route('PUT', $pathTemplate, $hostTemplate, $isHttpsOnly);
+        return $this->route('PUT', $path, $host, $isHttpsOnly);
     }
 
     /**
      * Creates a route builder with some values already set
      *
      * @param array|string $httpMethods The HTTP method or list of methods the route uses
-     * @param string $pathTemplate The path template
-     * @param string|null $hostTemplate The host template
+     * @param string $path The path template
+     * @param string|null $host The host template
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
     public function route(
         string|array $httpMethods,
-        string $pathTemplate,
-        string $hostTemplate = null,
+        string $path,
+        string $host = null,
         bool $isHttpsOnly = false
     ): RouteBuilder {
-        $this->applyGroupRouteTemplates($pathTemplate, $hostTemplate, $isHttpsOnly);
+        $this->applyGroupRouteTemplates($path, $host, $isHttpsOnly);
         $routeBuilder = new RouteBuilder(
             (array)$httpMethods,
-            new UriTemplate($pathTemplate, $hostTemplate, $isHttpsOnly)
+            new UriTemplate($path, $host, $isHttpsOnly)
         );
         $this->applyGroupConstraints($routeBuilder);
         $this->applyGroupMiddleware($routeBuilder);
@@ -212,36 +212,36 @@ final class RouteCollectionBuilder
     /**
      * Applies all the group options to a route
      *
-     * @param string $pathTemplate The path template to apply settings to
-     * @param string|null $hostTemplate The host template to apply settings to
+     * @param string $path The path template to apply settings to
+     * @param string|null $host The host template to apply settings to
      * @param bool $isHttpsOnly Whether or not the group is HTTPS-only
      */
     private function applyGroupRouteTemplates(
-        string &$pathTemplate,
-        string &$hostTemplate = null,
+        string &$path,
+        string &$host = null,
         bool &$isHttpsOnly = false
     ): void {
-        $groupPathTemplate = '';
-        $groupHostTemplate = '';
+        $groupPath = '';
+        $groupHost = '';
         $groupIsHttpsOnly = false;
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupPathTemplate .= empty($groupOptions->path)
+            $groupPath .= empty($groupOptions->path)
                 ? ''
                 : '/' . ltrim($groupOptions->path, '/');
-            $groupHostTemplate = empty($groupOptions->host)
+            $groupHost = empty($groupOptions->host)
                 ? ''
-                : rtrim($groupOptions->host, '.') . (empty($groupHostTemplate) ? '' : '.' . $groupHostTemplate);
+                : rtrim($groupOptions->host, '.') . (empty($groupHost) ? '' : '.' . $groupHost);
             $groupIsHttpsOnly = $groupIsHttpsOnly || $groupOptions->isHttpsOnly;
         }
 
-        $pathTemplate = empty($groupPathTemplate)
-            ? $pathTemplate
-            : $groupPathTemplate . '/' . ltrim($pathTemplate, '/');
-        $hostTemplate = rtrim($hostTemplate ?? '', '.');
+        $path = empty($groupPath)
+            ? $path
+            : $groupPath . '/' . ltrim($path, '/');
+        $host = rtrim($host ?? '', '.');
 
-        if (!empty($groupHostTemplate)) {
-            $hostTemplate .= '.' . $groupHostTemplate;
+        if (!empty($groupHost)) {
+            $host .= '.' . $groupHost;
         }
 
         $isHttpsOnly = $isHttpsOnly || $groupIsHttpsOnly;

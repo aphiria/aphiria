@@ -17,7 +17,8 @@ use Aphiria\Routing\Matchers\TrieRouteMatcher;
 use Aphiria\Routing\RouteCollection as AphiriaRouteCollection;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieFactory;
 use FastRoute\RouteCollector;
-use Symfony\Component\Routing\Matcher\Dumper\PhpMatcherDumper;
+use Symfony\Component\Routing\Matcher\CompiledUrlMatcher;
+use Symfony\Component\Routing\Matcher\Dumper\CompiledUrlMatcherDumper;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route as SymfonyRoute;
 use Symfony\Component\Routing\RouteCollection as SymfonyRouteCollection;
@@ -70,9 +71,8 @@ for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
     $routes->add("f$routeIter", new SymfonyRoute("/abc$routeIter/$routeIter/{foo}/$routeIter"));
 }
 
-$dumper = new PhpMatcherDumper($routes);
-eval('?' . '>' . $dumper->dump());
-$router = new ProjectUrlMatcher(new RequestContext());
+$dumper = new CompiledUrlMatcherDumper($routes);
+$router = new CompiledUrlMatcher(eval('?' . '>' . $dumper->dump()), new RequestContext());
 $startTime = \microtime(true);
 
 for ($testIter = 0;$testIter < $numTests;$testIter++) {
