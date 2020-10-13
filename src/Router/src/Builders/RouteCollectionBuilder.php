@@ -226,12 +226,12 @@ final class RouteCollectionBuilder
         $groupIsHttpsOnly = false;
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupPathTemplate .= empty($groupOptions->pathTemplate)
+            $groupPathTemplate .= empty($groupOptions->path)
                 ? ''
-                : '/' . ltrim($groupOptions->pathTemplate, '/');
-            $groupHostTemplate = empty($groupOptions->hostTemplate)
+                : '/' . ltrim($groupOptions->path, '/');
+            $groupHostTemplate = empty($groupOptions->host)
                 ? ''
-                : rtrim($groupOptions->hostTemplate, '.') . (empty($groupHostTemplate) ? '' : '.' . $groupHostTemplate);
+                : rtrim($groupOptions->host, '.') . (empty($groupHostTemplate) ? '' : '.' . $groupHostTemplate);
             $groupIsHttpsOnly = $groupIsHttpsOnly || $groupOptions->isHttpsOnly;
         }
 

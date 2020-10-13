@@ -110,8 +110,8 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
         foreach ($controller->getAttributes(RouteGroup::class) as $routeGroupAttribute) {
             $routeGroupAttributeInstance = $routeGroupAttribute->newInstance();
             $routeGroupOptions = new RouteGroupOptions(
-                $routeGroupAttributeInstance->pathTemplate,
-                $routeGroupAttributeInstance->hostTemplate,
+                $routeGroupAttributeInstance->path,
+                $routeGroupAttributeInstance->host,
                 $routeGroupAttributeInstance->isHttpsOnly,
                 $routeConstraints,
                 [], // We'll set the middleware below in the case there was no route group attribute, but there was a middleware attribute

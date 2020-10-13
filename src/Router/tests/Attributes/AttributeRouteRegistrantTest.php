@@ -195,7 +195,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupWithHostAppendsHostToRouteHost(): void
     {
-        $controller = new #[RouteGroup(hostTemplate: 'example.com')] class() extends Controller {
+        $controller = new #[RouteGroup(host: 'example.com')] class() extends Controller {
             #[Get('', 'api')]
             public function route(): void
             {

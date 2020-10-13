@@ -21,16 +21,16 @@ use Aphiria\Routing\Middleware\MiddlewareBinding;
 class RouteGroupOptions
 {
     /**
-     * @param string $pathTemplate The path template that applies to the entire group
-     * @param string|null $hostTemplate The host template that applies to the entire group, or null
+     * @param string $path The path template that applies to the entire group
+     * @param string|null $host The host template that applies to the entire group, or null
      * @param bool $isHttpsOnly Whether or not the entire group is HTTPS-only
      * @param IRouteConstraint[] $constraints The list of route constraints that applies to the entire group
      * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings that applies to the entire group
      * @param array $attributes The mapping of custom attribute names => values to match on for the entire group
      */
     public function __construct(
-        public string $pathTemplate,
-        public ?string $hostTemplate = null,
+        public string $path,
+        public ?string $host = null,
         public bool $isHttpsOnly = false,
         public array $constraints = [],
         public array $middlewareBindings = [],

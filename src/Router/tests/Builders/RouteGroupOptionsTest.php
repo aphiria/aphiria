@@ -51,7 +51,7 @@ class RouteGroupOptionsTest extends TestCase
 
     public function testCorrectHostIsReturned(): void
     {
-        $this->assertSame('host', $this->routeGroupOptions->hostTemplate);
+        $this->assertSame('host', $this->routeGroupOptions->host);
     }
 
     public function testCorrectHttpsOnlyIsReturned(): void
@@ -66,6 +66,6 @@ class RouteGroupOptionsTest extends TestCase
 
     public function testCorrectPathIsReturned(): void
     {
-        $this->assertSame('path', $this->routeGroupOptions->pathTemplate);
+        $this->assertSame('path', $this->routeGroupOptions->path);
     }
 }
