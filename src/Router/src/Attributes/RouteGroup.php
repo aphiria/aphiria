@@ -21,14 +21,14 @@ use Attribute;
 final class RouteGroup
 {
     /**
-     * @param string $path The path prefix to apply to all the routes (defaults to an empty path)
-     * @param string|null $host The host to apply to all the routes
+     * @param string $pathTemplate The path prefix to apply to all the routes (defaults to an empty path)
+     * @param string|null $hostTemplate The host to apply to all the routes
      * @param bool $isHttpsOnly Whether or not all the routes are HTTPS only
      * @param array $attributes The mapping of custom attribute names to values for all the routes
      */
     public function __construct(
-        public string $path = '',
-        public ?string $host = null,
+        public string $pathTemplate = '',
+        public ?string $hostTemplate = null,
         public bool $isHttpsOnly = false,
         public array $attributes = []
     ) {

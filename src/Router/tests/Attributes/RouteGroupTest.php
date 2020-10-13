@@ -20,8 +20,8 @@ class RouteGroupTest extends TestCase
     public function testPropertiesAreSetInConstructor(): void
     {
         $routeGroup = new RouteGroup('path', 'example.com', true, ['foo' => 'bar']);
-        $this->assertSame('path', $routeGroup->path);
-        $this->assertSame('example.com', $routeGroup->host);
+        $this->assertSame('path', $routeGroup->pathTemplate);
+        $this->assertSame('example.com', $routeGroup->hostTemplate);
         $this->assertTrue($routeGroup->isHttpsOnly);
         $this->assertSame(['foo' => 'bar'], $routeGroup->attributes);
     }
