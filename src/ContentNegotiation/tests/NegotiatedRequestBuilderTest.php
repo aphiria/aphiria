@@ -57,6 +57,16 @@ class NegotiatedRequestBuilderTest extends TestCase
         $this->requestBuilder->withBody(\fopen('php://temp', 'r+b'));
     }
 
+    public function testWithBodyWithBodyInstanceSetsBodyToThatInstance(): void
+    {
+        $expectedBody = $this->createMock(IBody::class);
+        $request = $this->requestBuilder->withMethod('GET')
+            ->withUri('http://localhost')
+            ->withBody($expectedBody)
+            ->build();
+        $this->assertSame($expectedBody, $request->getBody());
+    }
+
     public function testWithBodyWithNonHttpBodyThatCannotBeNegotiatedThrows(): void
     {
         $this->expectException(InvalidArgumentException::class);

@@ -38,6 +38,18 @@ class AttributeRouteRegistrantTest extends TestCase
         $this->registrant = new AttributeRouteRegistrant(self::PATH, $this->typeFinder);
     }
 
+    public function testRegisteringRouteForNonControllerRegistersNothing(): void
+    {
+        $nonController = new class() {
+        };
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$nonController::class]);$routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $this->assertEmpty($routes->getAll());
+    }
+
     public function testRegisteringRouteWithAllPropertiesSetCreatesRouteWithAllThosePropertiesSet(): void
     {
         $controller = new class() extends Controller {

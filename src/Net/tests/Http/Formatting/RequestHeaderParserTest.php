@@ -92,6 +92,12 @@ class RequestHeaderParserTest extends TestCase
         $this->assertNull($headerValues[1]->getCharset());
     }
 
+    public function testParsingAcceptLanguageHeaderWithNoAcceptLanguageHeaderReturnsEmptyArray(): void
+    {
+        $headers = new Headers();
+        $this->assertEmpty($this->parser->parseAcceptLanguageHeader($headers));
+    }
+
     public function testParsingAcceptLanguageHeaderWithNoScoresReturnsValuesWithDefaultScores(): void
     {
         $headers = new Headers();
