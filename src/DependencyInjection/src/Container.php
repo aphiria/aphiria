@@ -471,6 +471,7 @@ class Container implements IContainer
             // No value was found, so use the default value
             try {
                 return $parameter->getDefaultValue();
+                // @codeCoverageIgnoreStart
             } catch (ReflectionException $ex) {
                 throw new ResolutionException(
                     $parameter->getName(),
@@ -479,6 +480,7 @@ class Container implements IContainer
                     0,
                     $ex
                 );
+                // @codeCoverageIgnoreEnd
             }
         }
 

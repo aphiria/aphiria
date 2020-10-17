@@ -85,10 +85,7 @@ final class AttributeObjectConstraintsRegistrant implements IObjectConstraintsRe
                 $map[$key] = [];
             }
 
-            $map[$key] = [
-                ...$map[$key],
-                $attributeInstance->createConstraintFromAttribute()
-            ];
+            $map[$key][] = $attributeInstance->createConstraintFromAttribute();
         }
     }
 }

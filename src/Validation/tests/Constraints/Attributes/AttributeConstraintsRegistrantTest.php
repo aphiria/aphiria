@@ -14,7 +14,9 @@ namespace Aphiria\Validation\Tests\Constraints\Attributes;
 
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Validation\Constraints\Attributes\AttributeObjectConstraintsRegistrant;
+use Aphiria\Validation\Constraints\Attributes\Email;
 use Aphiria\Validation\Constraints\Attributes\Required;
+use Aphiria\Validation\Constraints\EmailConstraint;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\Constraints\RequiredConstraint;
 use Aphiria\Validation\Tests\Constraints\Attributes\Mocks\NonConstraintAttribute;
@@ -69,6 +71,45 @@ class AttributeConstraintsRegistrantTest extends TestCase
         $objectConstraints = new ObjectConstraintsRegistry();
         $this->registrant->registerConstraints($objectConstraints);
         $this->assertCount(0, $objectConstraints->getConstraintsForClass($object::class)->getMethodConstraints('method'));
+    }
+
+    public function testMultipleMethodConstraintAttributesCanBeRegistered(): void
+    {
+        $object = new class() {
+            #[Required, Email]
+            public function method(): bool
+            {
+                return true;
+            }
+        };
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$object::class]);
+        $objectConstraints = new ObjectConstraintsRegistry();
+        $this->registrant->registerConstraints($objectConstraints);
+        $methodConstraints = $objectConstraints->getConstraintsForClass($object::class)->getMethodConstraints('method');
+        $this->assertCount(2, $methodConstraints);
+        $this->assertInstanceOf(RequiredConstraint::class, $methodConstraints[0]);
+        $this->assertInstanceOf(EmailConstraint::class, $methodConstraints[1]);
+    }
+
+    public function testMultiplePropertyConstraintAttributesCanBeRegistered(): void
+    {
+        $object = new class() {
+            #[Required, Email]
+            public bool $prop = true;
+        };
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$object::class]);
+        $objectConstraints = new ObjectConstraintsRegistry();
+        $this->registrant->registerConstraints($objectConstraints);
+        $propertyConstraints = $objectConstraints->getConstraintsForClass($object::class)->getPropertyConstraints('prop');
+        $this->assertCount(2, $propertyConstraints);
+        $this->assertInstanceOf(RequiredConstraint::class, $propertyConstraints[0]);
+        $this->assertInstanceOf(EmailConstraint::class, $propertyConstraints[1]);
     }
 
     public function testPropertiesWithConstraintsAreRegistered(): void

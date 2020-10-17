@@ -84,6 +84,17 @@ class SymfonySerializerBinderTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testObjectNormalizerIsInstantiatedWithoutNameConverterIfItIsNotSupported(): void
+    {
+        $config = self::getBaseConfig();
+        $config['aphiria']['serialization']['normalizers'][] = ObjectNormalizer::class;
+        $config['aphiria']['serialization']['nameConverter'] = self::class;
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
     public function testObjectNormalizerIsInstantiatedWithoutNameConverterIfNoneExists(): void
     {
         $config = self::getBaseConfig();

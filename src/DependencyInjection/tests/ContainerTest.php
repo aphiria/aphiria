@@ -500,7 +500,7 @@ class ContainerTest extends TestCase
     {
         $instance = $this->container->resolve(ConstructorWithNullableObject::class);
         $this->assertInstanceOf(ConstructorWithNullableObject::class, $instance);
-        $this->assertInstanceOf(DateTime::class, $instance->getFoo());
+        $this->assertNull($instance->getFoo());
     }
 
     public function testResolvingClassWithObjectInConstructorThatCannotBeResolvedUsesDefaultValueIfAvailable(): void
