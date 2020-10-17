@@ -12,21 +12,19 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection\Tests\Mocks;
 
-use DateTime;
-
 /**
  * Mocks a class with a nullable object parameter
  */
 final class ConstructorWithNullableObject
 {
-    private DateTime $foo;
+    private ?IFoo $foo;
 
-    public function __construct(?DateTime $foo)
+    public function __construct(?IFoo $foo)
     {
-        $this->foo = $foo ?? new DateTime();
+        $this->foo = $foo;
     }
 
-    public function getFoo(): DateTime
+    public function getFoo(): ?IFoo
     {
         return $this->foo;
     }

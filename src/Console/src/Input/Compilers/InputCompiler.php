@@ -20,7 +20,6 @@ use Aphiria\Console\Input\Tokenizers\ArgvInputTokenizer;
 use Aphiria\Console\Input\Tokenizers\ArrayListInputTokenizer;
 use Aphiria\Console\Input\Tokenizers\IInputTokenizer;
 use Aphiria\Console\Input\Tokenizers\StringInputTokenizer;
-use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -85,7 +84,6 @@ final class InputCompiler implements IInputCompiler
      *
      * @param string|array $rawInput The input to use when figuring out which input tokenizer to use
      * @return IInputTokenizer The selected input tokenizer
-     * @throws InvalidArgumentException Thrown if the input was neither a string nor an array
      */
     private function selectTokenizer(string|array $rawInput): IInputTokenizer
     {
@@ -93,15 +91,11 @@ final class InputCompiler implements IInputCompiler
             return $this->stringTokenizer;
         }
 
-        if (\is_array($rawInput)) {
-            if (isset($rawInput['name'])) {
-                return $this->arrayListTokenizer;
-            }
-
-            return $this->argvTokenizer;
+        if (isset($rawInput['name'])) {
+            return $this->arrayListTokenizer;
         }
 
-        throw new InvalidArgumentException('Input must be either a string or an array');
+        return $this->argvTokenizer;
     }
 
     /**
