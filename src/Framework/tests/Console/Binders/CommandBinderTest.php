@@ -41,7 +41,9 @@ class CommandBinderTest extends TestCase
     protected function tearDown(): void
     {
         // Restore the environment name
-        if ($this->currEnvironment !== null) {
+        if ($this->currEnvironment === null) {
+            putenv('APP_ENV=');
+        } else {
             putenv("APP_ENV={$this->currEnvironment}");
         }
     }
