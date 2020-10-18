@@ -56,6 +56,7 @@ class ValidationBinderTest extends TestCase
 
     public function testAttributeRegistrantIsRegistered(): void
     {
+        echo 'Start Environment 1: ' . (\getenv('APP_ENV') ?? 'null');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock([
             [IErrorMessageInterpolator::class, $this->isInstanceOf(IErrorMessageInterpolator::class)],
@@ -68,6 +69,7 @@ class ValidationBinderTest extends TestCase
 
     public function testConstraintCacheIsUsedInProd(): void
     {
+        echo 'Start Environment 2: ' . (\getenv('APP_ENV') ?? 'null');
         // Basically just ensuring we cover the production case in this test
         putenv('APP_ENV=production');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
@@ -75,10 +77,12 @@ class ValidationBinderTest extends TestCase
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
+        echo 'End Environment 2: ' . (\getenv('APP_ENV') ?? 'null');
     }
 
     public function testCustomErrorMessageRegistriesAreResolved(): void
     {
+        echo 'Start Environment 3: ' . (\getenv('APP_ENV') ?? 'null');
         $errorMessageTemplates = $this->createMock(IErrorMessageTemplateRegistry::class);
         $config = self::getBaseConfig();
         $config['aphiria']['validation']['errorMessageTemplates'] = [
@@ -92,10 +96,12 @@ class ValidationBinderTest extends TestCase
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
+        echo 'End Environment 3: ' . (\getenv('APP_ENV') ?? 'null');
     }
 
     public function testDefaultErrorMessageRegistryIsSupported(): void
     {
+        echo 'Start Environment 4: ' . (\getenv('APP_ENV') ?? 'null');
         $config = self::getBaseConfig();
         $config['aphiria']['validation']['errorMessageTemplates'] = [
             'type' => DefaultErrorMessageTemplateRegistry::class
@@ -105,10 +111,12 @@ class ValidationBinderTest extends TestCase
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
+        echo 'End Environment 4: ' . (\getenv('APP_ENV') ?? 'null');
     }
 
     public function testIcuFormatErrorMessageInterpolatorIsSupported(): void
     {
+        echo 'Start Environment 5: ' . (\getenv('APP_ENV') ?? 'null');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock([
             [IErrorMessageInterpolator::class, $this->isInstanceOf(StringReplaceErrorMessageInterpolator::class)]
@@ -116,10 +124,12 @@ class ValidationBinderTest extends TestCase
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
+        echo 'End Environment 5: ' . (\getenv('APP_ENV') ?? 'null');
     }
 
     public function testStringReplaceErrorMessageInterpolatorIsSupported(): void
     {
+        echo 'Start Environment 6: ' . (\getenv('APP_ENV') ?? 'null');
         $config = self::getBaseConfig();
         $config['aphiria']['validation']['errorMessageInterpolator'] = [
             'type' => IcuFormatErrorMessageInterpolator::class,
@@ -132,10 +142,12 @@ class ValidationBinderTest extends TestCase
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
+        echo 'End Environment 6: ' . (\getenv('APP_ENV') ?? 'null');
     }
 
     public function testUnknownErrorMessageInterpolatorThrowsException(): void
     {
+        echo 'Start Environment 7: ' . (\getenv('APP_ENV') ?? 'null');
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unsupported error message interpolator type foo');
         $config = self::getBaseConfig();
@@ -144,6 +156,7 @@ class ValidationBinderTest extends TestCase
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->binder->bind($this->container);
+        echo 'End Environment 7: ' . (\getenv('APP_ENV') ?? 'null');
     }
 
     /**
