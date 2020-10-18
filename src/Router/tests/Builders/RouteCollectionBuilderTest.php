@@ -34,20 +34,20 @@ class RouteCollectionBuilderTest extends TestCase
         $this->assertEmpty($this->builder->build()->getAll());
     }
 
-    public function testGroupAttributesToMatchOnAreMergedWithRouteAttributesToMatch(): void
+    public function testGroupParametersToMatchOnAreMergedWithRouteParametersToMatch(): void
     {
         $groupOptions = new RouteGroupOptions('foo', null, false, [], [], ['H1' => 'val1']);
         $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
             $registry->route('GET', '')
                 ->mapsToMethod('foo', 'bar')
-                ->withAttribute('H2', 'val2');
+                ->withParameter('H2', 'val2');
         });
         $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
-        $this->assertEquals(['H1' => 'val1', 'H2' => 'val2'], $routes[0]->attributes);
+        $this->assertEquals(['H1' => 'val1', 'H2' => 'val2'], $routes[0]->parameters);
     }
 
-    public function testGroupConstraintsAreMergedWithRouteAttributes(): void
+    public function testGroupConstraintsAreMergedWithRouteParameters(): void
     {
         $groupConstraints = [$this->createMock(IRouteConstraint::class)];
         $groupOptions = new RouteGroupOptions('foo', null, false, $groupConstraints);
@@ -252,13 +252,13 @@ class RouteCollectionBuilderTest extends TestCase
         $this->assertSame('/foo', $routes[0]->uriTemplate->pathTemplate);
     }
 
-    public function testRouteBuilderIsCreatedWithAttributesToMatchParameter(): void
+    public function testRouteBuilderIsCreatedWithParametersToMatchParameter(): void
     {
         $routeBuilder = $this->builder->route('GET', '')
             ->mapsToMethod('foo', 'bar')
-            ->withAttribute('FOO', 'BAR');
+            ->withParameter('FOO', 'BAR');
         $route = $routeBuilder->build();
-        $this->assertEquals(['FOO' => 'BAR'], $route->attributes);
+        $this->assertEquals(['FOO' => 'BAR'], $route->parameters);
     }
 
     public function testRouteBuilderIsCreatedWithConstraints(): void

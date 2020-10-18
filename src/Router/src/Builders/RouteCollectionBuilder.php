@@ -155,26 +155,10 @@ final class RouteCollectionBuilder
         );
         $this->applyGroupConstraints($routeBuilder);
         $this->applyGroupMiddleware($routeBuilder);
-        $this->applyGroupAttributes($routeBuilder);
+        $this->applyGroupParameters($routeBuilder);
         $this->routeBuilders[] = $routeBuilder;
 
         return $routeBuilder;
-    }
-
-    /**
-     * Applies a group's attributes to the input route builder
-     *
-     * @param RouteBuilder $routeBuilder The route builder to bind attributes to
-     */
-    private function applyGroupAttributes(RouteBuilder $routeBuilder): void
-    {
-        $groupAttributes = [];
-
-        foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupAttributes = \array_merge($groupAttributes, $groupOptions->attributes);
-        }
-
-        $routeBuilder->withManyAttributes($groupAttributes);
     }
 
     /**
@@ -207,6 +191,22 @@ final class RouteCollectionBuilder
         }
 
         $routeBuilder->withManyMiddleware($groupMiddlewareBindings);
+    }
+
+    /**
+     * Applies a group's attributes to the input route builder
+     *
+     * @param RouteBuilder $routeBuilder The route builder to bind attributes to
+     */
+    private function applyGroupParameters(RouteBuilder $routeBuilder): void
+    {
+        $groupParameters = [];
+
+        foreach ($this->groupOptionsStack as $groupOptions) {
+            $groupParameters = \array_merge($groupParameters, $groupOptions->parameters);
+        }
+
+        $routeBuilder->withManyParameters($groupParameters);
     }
 
     /**

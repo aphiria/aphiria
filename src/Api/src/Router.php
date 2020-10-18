@@ -20,7 +20,7 @@ use Aphiria\ContentNegotiation\ContentNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
-use Aphiria\Middleware\AttributeMiddleware;
+use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Net\Http\HttpException;
@@ -137,8 +137,8 @@ class Router implements IRequestHandler
                 );
             }
 
-            if ($middleware instanceof AttributeMiddleware) {
-                $middleware->setAttributes($middlewareBinding->attributes);
+            if ($middleware instanceof ParameterizedMiddleware) {
+                $middleware->setParameters($middlewareBinding->parameters);
             }
 
             $middlewareList[] = $middleware;

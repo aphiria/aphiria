@@ -28,8 +28,8 @@ final class Delete extends Route
         ?string $host = null,
         ?string $name = null,
         bool $isHttpsOnly = false,
-        array $attributes = []
+        array $parameters = []
     ) {
-        parent::__construct(['DELETE'], $path, $host, $name, $isHttpsOnly, $attributes);
+        parent::__construct(['DELETE'], $path, $host, $name, $isHttpsOnly, $parameters);
     }
 }

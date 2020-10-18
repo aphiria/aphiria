@@ -29,6 +29,6 @@ class MiddlewareTest extends TestCase
     {
         $middleware = new Middleware('foo', ['foo' => 'bar']);
         $this->assertSame('foo', $middleware->className);
-        $this->assertSame(['foo' => 'bar'], $middleware->attributes);
+        $this->assertSame(['foo' => 'bar'], $middleware->parameters);
     }
 }

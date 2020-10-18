@@ -23,10 +23,10 @@ final class Middleware
 {
     /**
      * @param string $className The name of the middleware class
-     * @param array $attributes The mapping of attribute names to values
+     * @param array $parameters The mapping of parameter names to values
      * @throws InvalidArgumentException Thrown if any of the parameters are invalid
      */
-    public function __construct(public string $className, public array $attributes = [])
+    public function __construct(public string $className, public array $parameters = [])
     {
         if (empty($this->className)) {
             throw new InvalidArgumentException('Class name must be set');

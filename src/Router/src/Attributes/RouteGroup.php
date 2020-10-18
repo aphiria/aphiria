@@ -24,13 +24,13 @@ final class RouteGroup
      * @param string $path The path prefix to apply to all the routes (defaults to an empty path)
      * @param string|null $host The host to apply to all the routes
      * @param bool $isHttpsOnly Whether or not all the routes are HTTPS only
-     * @param array $attributes The mapping of custom attribute names to values for all the routes
+     * @param array $parameters The mapping of custom parameter names to values for all the routes
      */
     public function __construct(
         public string $path = '',
         public ?string $host = null,
         public bool $isHttpsOnly = false,
-        public array $attributes = []
+        public array $parameters = []
     ) {
     }
 }

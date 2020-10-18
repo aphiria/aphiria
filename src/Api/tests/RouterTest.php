@@ -16,7 +16,7 @@ use Aphiria\Api\Controllers\Controller;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Router;
 use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints as ControllerMock;
-use Aphiria\Api\Tests\Mocks\AttributeMiddleware;
+use Aphiria\Api\Tests\Mocks\ParameterizedMiddleware;
 use Aphiria\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\DependencyInjection\IServiceResolver;
@@ -61,12 +61,12 @@ class RouterTest extends TestCase
 
     public function testAttributeMiddlewareIsResolvedAndAttributesAreSet(): void
     {
-        $middleware = new AttributeMiddleware();
-        $middlewareBinding = new MiddlewareBinding(AttributeMiddleware::class, ['foo' => 'bar']);
+        $middleware = new ParameterizedMiddleware();
+        $middlewareBinding = new MiddlewareBinding(ParameterizedMiddleware::class, ['foo' => 'bar']);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $controller = new ControllerMock();
         $this->serviceResolver->method('resolve')
-            ->willReturnMap([[ControllerMock::class, $controller], [AttributeMiddleware::class, $middleware]]);
+            ->willReturnMap([[ControllerMock::class, $controller], [ParameterizedMiddleware::class, $middleware]]);
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
@@ -83,7 +83,7 @@ class RouterTest extends TestCase
             ->willReturn($matchingResult);
         $this->router->handle($request);
         // Test that the middleware actually set the headers
-        $this->assertSame('bar', $middleware->getAttribute('foo'));
+        $this->assertSame('bar', $middleware->getParameter('foo'));
     }
 
     public function testInvalidMiddlewareThrowsExceptionThatIsCaught(): void

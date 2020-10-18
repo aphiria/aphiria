@@ -19,9 +19,9 @@ class MiddlewareBindingTest extends TestCase
 {
     public function testPropertiesAreSetInConstructor(): void
     {
-        $expectedAttributes = ['bar' => 'baz'];
-        $middlewareBinding = new MiddlewareBinding('foo', $expectedAttributes);
+        $expectedParameters = ['bar' => 'baz'];
+        $middlewareBinding = new MiddlewareBinding('foo', $expectedParameters);
         $this->assertSame('foo', $middlewareBinding->className);
-        $this->assertSame($expectedAttributes, $middlewareBinding->attributes);
+        $this->assertSame($expectedParameters, $middlewareBinding->parameters);
     }
 }

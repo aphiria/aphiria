@@ -15,7 +15,7 @@ namespace Aphiria\Framework\Middleware\Components;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
-use Aphiria\Middleware\AttributeMiddleware;
+use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
@@ -54,8 +54,8 @@ class MiddlewareComponent implements IComponent
                 );
             }
 
-            if ($middleware instanceof AttributeMiddleware) {
-                $middleware->setAttributes($middlewareBinding->attributes);
+            if ($middleware instanceof ParameterizedMiddleware) {
+                $middleware->setParameters($middlewareBinding->attributes);
             }
 
             $middlewareCollection->add($middleware, $middlewareConfig['priority']);

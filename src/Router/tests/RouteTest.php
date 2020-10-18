@@ -28,7 +28,7 @@ class RouteTest extends TestCase
     private array $constraints;
     /** @var MiddlewareBinding[] */
     private array $middlewareBindings;
-    private array $attributes;
+    private array $parameters;
 
     protected function setUp(): void
     {
@@ -36,14 +36,14 @@ class RouteTest extends TestCase
         $this->uriTemplate = new UriTemplate('foo');
         $this->constraints = [$this->createMock(IRouteConstraint::class)];
         $this->middlewareBindings = [new MiddlewareBinding('Foo')];
-        $this->attributes = ['foo' => 'bar'];
+        $this->parameters = ['foo' => 'bar'];
         $this->route = new Route(
             $this->uriTemplate,
             $this->routeAction,
             $this->constraints,
             $this->middlewareBindings,
             'name',
-            $this->attributes
+            $this->parameters
         );
     }
 
@@ -54,6 +54,6 @@ class RouteTest extends TestCase
         $this->assertSame($this->constraints, $this->route->constraints);
         $this->assertSame($this->middlewareBindings, $this->route->middlewareBindings);
         $this->assertSame('name', $this->route->name);
-        $this->assertSame($this->attributes, $this->route->attributes);
+        $this->assertSame($this->parameters, $this->route->parameters);
     }
 }

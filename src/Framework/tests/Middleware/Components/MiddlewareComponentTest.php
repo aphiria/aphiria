@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Tests\Middleware\Components;
 
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
-use Aphiria\Middleware\AttributeMiddleware;
+use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
@@ -39,7 +39,7 @@ class MiddlewareComponentTest extends TestCase
 
     public function testBuildWithAttributeMiddlewareSetsAttributes(): void
     {
-        $expectedMiddleware = new class($this->createMock(IResponse::class)) extends AttributeMiddleware {
+        $expectedMiddleware = new class($this->createMock(IResponse::class)) extends ParameterizedMiddleware {
             private IResponse $expectedResponse;
 
             public function __construct(IResponse $expectedResponse)
@@ -52,7 +52,7 @@ class MiddlewareComponentTest extends TestCase
                 return $this->expectedResponse;
             }
         };
-        $expectedMiddleware->setAttributes(['bar' => 'baz']);
+        $expectedMiddleware->setParameters(['bar' => 'baz']);
         $middlewareCollection = new MiddlewareCollection();
         $this->dependencyResolver->method('resolve')
             ->willReturnMap([

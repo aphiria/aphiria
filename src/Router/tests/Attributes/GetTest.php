@@ -25,6 +25,6 @@ class GetTest extends TestCase
         $this->assertSame('example.com', $route->host);
         $this->assertSame('name', $route->name);
         $this->assertTrue($route->isHttpsOnly);
-        $this->assertSame(['foo' => 'bar'], $route->attributes);
+        $this->assertSame(['foo' => 'bar'], $route->parameters);
     }
 }

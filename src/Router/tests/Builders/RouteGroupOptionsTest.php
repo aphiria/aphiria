@@ -39,11 +39,6 @@ class RouteGroupOptionsTest extends TestCase
         );
     }
 
-    public function testCorrectAttributesAreReturned(): void
-    {
-        $this->assertEquals(['foo' => 'bar'], $this->routeGroupOptions->attributes);
-    }
-
     public function testCorrectConstraintsAreReturned(): void
     {
         $this->assertEquals($this->constraints, $this->routeGroupOptions->constraints);
@@ -62,6 +57,11 @@ class RouteGroupOptionsTest extends TestCase
     public function testCorrectMiddlewareBindingsAreReturned(): void
     {
         $this->assertEquals($this->middlewareBindings, $this->routeGroupOptions->middlewareBindings);
+    }
+
+    public function testCorrectParametersAreReturned(): void
+    {
+        $this->assertEquals(['foo' => 'bar'], $this->routeGroupOptions->parameters);
     }
 
     public function testCorrectPathIsReturned(): void

@@ -28,8 +28,8 @@ class RouteBuilder
 {
     /** @var RouteAction|null ?RouteAction The action the route takes */
     private ?RouteAction $action = null;
-    /** @var array The mapping of custom route attribute names => values */
-    private array $attributes = [];
+    /** @var array The mapping of custom route parameter names => values */
+    private array $parameters = [];
     /** @var MiddlewareBinding[] The list of middleware bindings on this route */
     private array $middlewareBindings = [];
     /** @var string|null The name of this route */
@@ -64,7 +64,7 @@ class RouteBuilder
             $this->constraints,
             $this->middlewareBindings,
             $this->name,
-            $this->attributes
+            $this->parameters
         );
     }
 
@@ -83,21 +83,6 @@ class RouteBuilder
     }
 
     /**
-     * Binds a custom attribute to the route
-     * This is useful for custom route constraint matching
-     *
-     * @param string $name The name of the attribute
-     * @param mixed $value The value of the attribute
-     * @return static For chaining
-     */
-    public function withAttribute(string $name, mixed $value): static
-    {
-        $this->attributes[$name] = $value;
-
-        return $this;
-    }
-
-    /**
      * Binds a constraint to this route
      *
      * @param IRouteConstraint $constraint The constraint to add
@@ -106,20 +91,6 @@ class RouteBuilder
     public function withConstraint(IRouteConstraint $constraint): static
     {
         $this->constraints[] = $constraint;
-
-        return $this;
-    }
-
-    /**
-     * Binds many custom attributes to the route
-     * This is useful for custom route constraint matching
-     *
-     * @param array $attributes The mapping of custom attribute names => values
-     * @return static For chaining
-     */
-    public function withManyAttributes(array $attributes): static
-    {
-        $this->attributes = \array_merge($this->attributes, $attributes);
 
         return $this;
     }
@@ -163,15 +134,29 @@ class RouteBuilder
     }
 
     /**
+     * Binds many custom parameters to the route
+     * This is useful for custom route constraint matching
+     *
+     * @param array $parameters The mapping of custom parameter names => values
+     * @return static For chaining
+     */
+    public function withManyParameters(array $parameters): static
+    {
+        $this->parameters = \array_merge($this->parameters, $parameters);
+
+        return $this;
+    }
+
+    /**
      * Binds a single middleware class to the route
      *
      * @param string $middlewareClassName The name of the middleware class to bind
-     * @param array $middlewareProperties Any properties this method relies on
+     * @param array $middlewareParameters Any parameters this method relies on
      * @return static For chaining
      */
-    public function withMiddleware(string $middlewareClassName, array $middlewareProperties = []): static
+    public function withMiddleware(string $middlewareClassName, array $middlewareParameters = []): static
     {
-        $this->middlewareBindings[] = new MiddlewareBinding($middlewareClassName, $middlewareProperties);
+        $this->middlewareBindings[] = new MiddlewareBinding($middlewareClassName, $middlewareParameters);
 
         return $this;
     }
@@ -185,6 +170,21 @@ class RouteBuilder
     public function withName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Binds a custom parameter to the route
+     * This is useful for custom route constraint matching
+     *
+     * @param string $name The name of the parameter
+     * @param mixed $value The value of the parameter
+     * @return static For chaining
+     */
+    public function withParameter(string $name, mixed $value): static
+    {
+        $this->parameters[$name] = $value;
 
         return $this;
     }

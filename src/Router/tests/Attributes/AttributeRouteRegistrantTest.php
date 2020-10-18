@@ -74,7 +74,7 @@ class AttributeRouteRegistrantTest extends TestCase
         $this->assertSame('/foo', $route->uriTemplate->pathTemplate);
         $this->assertSame('example.com', $route->uriTemplate->hostTemplate);
         $this->assertTrue($route->uriTemplate->isHttpsOnly);
-        $this->assertEquals(['foo' => 'bar'], $route->attributes);
+        $this->assertEquals(['foo' => 'bar'], $route->parameters);
         $this->assertCount(2, $route->constraints);
         $this->assertInstanceOf(HttpMethodRouteConstraint::class, $route->constraints[0]);
         $this->assertInstanceOf(DummyConstraint::class, $route->constraints[1]);
@@ -103,7 +103,7 @@ class AttributeRouteRegistrantTest extends TestCase
         $route = $routeArr[0];
         $this->assertCount(1, $route->middlewareBindings);
         $this->assertSame(DummyMiddleware::class, $route->middlewareBindings[0]->className);
-        $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->attributes);
+        $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->parameters);
     }
 
     public function testRegisteringRouteWithMiddlewareThatIsInRouteGroupWithMiddlewareCreatesRouteWithBothMiddleware(): void
@@ -129,9 +129,9 @@ class AttributeRouteRegistrantTest extends TestCase
         $route = $routeArr[0];
         $this->assertCount(2, $route->middlewareBindings);
         $this->assertSame(DummyMiddleware::class, $route->middlewareBindings[0]->className);
-        $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->attributes);
+        $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->parameters);
         $this->assertSame(DummyMiddleware::class, $route->middlewareBindings[1]->className);
-        $this->assertEquals(['baz' => 'blah'], $route->middlewareBindings[1]->attributes);
+        $this->assertEquals(['baz' => 'blah'], $route->middlewareBindings[1]->parameters);
     }
 
     public function testRegisteringRouteWithMultipleMiddlewareCreatesRouteWithThoseMiddleware(): void
@@ -158,9 +158,9 @@ class AttributeRouteRegistrantTest extends TestCase
         $route = $routeArr[0];
         $this->assertCount(2, $route->middlewareBindings);
         $this->assertSame(DummyMiddleware::class, $route->middlewareBindings[0]->className);
-        $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->attributes);
+        $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->parameters);
         $this->assertSame(DummyMiddleware::class, $route->middlewareBindings[1]->className);
-        $this->assertEquals(['baz' => 'blah'], $route->middlewareBindings[1]->attributes);
+        $this->assertEquals(['baz' => 'blah'], $route->middlewareBindings[1]->parameters);
     }
 
     public function testRegisteringRoutesWithRouteGroupWithEmptyPathPrependsNothingToRoutePaths(): void
@@ -253,17 +253,17 @@ class AttributeRouteRegistrantTest extends TestCase
         $this->assertTrue($routeArr[1]->uriTemplate->isHttpsOnly);
     }
 
-    public function testRegisteringRoutesWithRouteGroupWithAttributesAppliesAttributesToChildRoutes(): void
+    public function testRegisteringRoutesWithRouteGroupWithParametersAppliesParametersToChildRoutes(): void
     {
-        $controller = new #[RouteGroup('', attributes: ['foo' => 'bar'])] class() extends Controller {
+        $controller = new #[RouteGroup('', parameters: ['foo' => 'bar'])] class() extends Controller {
             #[Get('')]
-            public function routeWithNoAttributes(): void
+            public function routeWithNoParameters(): void
             {
                 // Empty
             }
 
-            #[Get('', attributes: ['baz' => 'blah'])]
-            public function routeWithAttributes(): void
+            #[Get('', parameters: ['baz' => 'blah'])]
+            public function routeWithParameters(): void
             {
                 // Empty
             }
@@ -276,8 +276,8 @@ class AttributeRouteRegistrantTest extends TestCase
         $this->registrant->registerRoutes($routes);
         $routeArr = $routes->getAll();
         $this->assertCount(2, $routeArr);
-        $this->assertEquals(['foo' => 'bar'], $routeArr[0]->attributes);
-        $this->assertEquals(['foo' => 'bar', 'baz' => 'blah'], $routeArr[1]->attributes);
+        $this->assertEquals(['foo' => 'bar'], $routeArr[0]->parameters);
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'blah'], $routeArr[1]->parameters);
     }
 
     public function testRegisteringRoutesWithRouteConstraintsAppliesConstraintsToChildRoutes(): void

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Middleware\Tests\Mocks;
 
-use Aphiria\Middleware\AttributeMiddleware as BaseAttributeMiddleware;
+use Aphiria\Middleware\ParameterizedMiddleware as BaseAttributeMiddleware;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
@@ -20,7 +20,7 @@ use Aphiria\Net\Http\IResponse;
 /**
  * Mocks attribute middleware for use in tests
  */
-class AttributeMiddleware extends BaseAttributeMiddleware
+class ParameterizedMiddleware extends BaseAttributeMiddleware
 {
     /**
      * Gets an attribute value for test verification
@@ -29,9 +29,9 @@ class AttributeMiddleware extends BaseAttributeMiddleware
      * @param mixed $default The default value if there was no attribute
      * @return mixed The attribute value
      */
-    public function getAttribute(string $name, mixed $default = null): mixed
+    public function getParameter(string $name, mixed $default = null): mixed
     {
-        return parent::getAttribute($name, $default);
+        return parent::getParameter($name, $default);
     }
 
     /**

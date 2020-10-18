@@ -23,6 +23,6 @@ class RouteGroupTest extends TestCase
         $this->assertSame('path', $routeGroup->path);
         $this->assertSame('example.com', $routeGroup->host);
         $this->assertTrue($routeGroup->isHttpsOnly);
-        $this->assertSame(['foo' => 'bar'], $routeGroup->attributes);
+        $this->assertSame(['foo' => 'bar'], $routeGroup->parameters);
     }
 }

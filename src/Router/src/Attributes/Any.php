@@ -28,8 +28,8 @@ final class Any extends Route
         ?string $host = null,
         ?string $name = null,
         bool $isHttpsOnly = false,
-        array $attributes = []
+        array $parameters = []
     ) {
-        parent::__construct([], $path, $host, $name, $isHttpsOnly, $attributes);
+        parent::__construct([], $path, $host, $name, $isHttpsOnly, $parameters);
     }
 }

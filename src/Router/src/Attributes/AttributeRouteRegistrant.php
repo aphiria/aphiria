@@ -97,7 +97,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
             $middlewareAttributeInstance = $middlewareAttribute->newInstance();
             $middlewareBindings[] = new MiddlewareBinding(
                 $middlewareAttributeInstance->className,
-                $middlewareAttributeInstance->attributes
+                $middlewareAttributeInstance->parameters
             );
         }
 
@@ -115,7 +115,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                 $routeGroupAttributeInstance->isHttpsOnly,
                 $routeConstraints,
                 [], // We'll set the middleware below in the case there was no route group attribute, but there was a middleware attribute
-                $routeGroupAttributeInstance->attributes
+                $routeGroupAttributeInstance->parameters
             );
         }
 
@@ -142,10 +142,10 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
             $middlewareBindings = $routeConstraints = [];
 
             foreach ($method->getAttributes(Middleware::class) as $middlewareAttribute) {
-                $middlewareAttribteInstance = $middlewareAttribute->newInstance();
+                $middlewareAttributeInstance = $middlewareAttribute->newInstance();
                 $middlewareBindings[] = new MiddlewareBinding(
-                    $middlewareAttribteInstance->className,
-                    $middlewareAttribteInstance->attributes
+                    $middlewareAttributeInstance->className,
+                    $middlewareAttributeInstance->parameters
                 );
             }
 
@@ -177,8 +177,8 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                     $routeBuilder->withName($routeAttributeInstance->name);
                 }
 
-                if (!empty($routeAttributeInstance->attributes)) {
-                    $routeBuilder->withManyAttributes($routeAttributeInstance->attributes);
+                if (!empty($routeAttributeInstance->parameters)) {
+                    $routeBuilder->withManyParameters($routeAttributeInstance->parameters);
                 }
             }
 
