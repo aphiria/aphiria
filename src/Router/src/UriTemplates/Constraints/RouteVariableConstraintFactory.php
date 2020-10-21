@@ -28,18 +28,18 @@ final class RouteVariableConstraintFactory
      * Creates a constraint for the given slug
      *
      * @param string $slug The slug for the constraint to create
-     * @param array $params The list of params to pass into the factory
+     * @param array $parameters The list of params to pass into the factory
      * @return IRouteVariableConstraint An instance of the constraint
      * @throws InvalidArgumentException Thrown if there's no factory registered for the slug
      * @throws RuntimeException Thrown if the factory does not return an instance of a constraint
      */
-    public function createConstraint(string $slug, array $params = []): IRouteVariableConstraint
+    public function createConstraint(string $slug, array $parameters = []): IRouteVariableConstraint
     {
         if (!isset($this->factories[$slug])) {
             throw new InvalidArgumentException("No factory registered for constraint \"$slug\"");
         }
 
-        $constraint = $this->factories[$slug](...$params);
+        $constraint = $this->factories[$slug](...$parameters);
 
         if (!$constraint instanceof IRouteVariableConstraint) {
             throw new RuntimeException(
