@@ -23,10 +23,10 @@ final class RouteConstraint
 {
     /**
      * @param string $className The name of the constraint class
-     * @param array $constructorParams The list of constructor parameters for the constraint class
+     * @param array $constructorParameters The list of constructor parameters for the constraint class
      * @throws InvalidArgumentException Thrown if any of the parameters are invalid
      */
-    public function __construct(public string $className, public array $constructorParams = [])
+    public function __construct(public string $className, public array $constructorParameters = [])
     {
         if (empty($this->className)) {
             throw new InvalidArgumentException('Class name must be set');

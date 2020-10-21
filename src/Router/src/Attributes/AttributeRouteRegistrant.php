@@ -104,7 +104,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
         foreach ($controller->getAttributes(RouteConstraint::class) as $routeConstraintAttribute) {
             $routeConstraintAttributeInstance = $routeConstraintAttribute->newInstance();
             $routeConstraintClassName = $routeConstraintAttributeInstance->className;
-            $routeConstraints[] = new $routeConstraintClassName(...$routeConstraintAttributeInstance->constructorParams);
+            $routeConstraints[] = new $routeConstraintClassName(...$routeConstraintAttributeInstance->constructorParameters);
         }
 
         foreach ($controller->getAttributes(RouteGroup::class) as $routeGroupAttribute) {
@@ -152,7 +152,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
             foreach ($method->getAttributes(RouteConstraint::class) as $routeConstraintAttribute) {
                 $routeConstraintAttributeInstance = $routeConstraintAttribute->newInstance();
                 $routeConstraintClassName = $routeConstraintAttributeInstance->className;
-                $routeConstraints[] = new $routeConstraintClassName(...$routeConstraintAttributeInstance->constructorParams);
+                $routeConstraints[] = new $routeConstraintClassName(...$routeConstraintAttributeInstance->constructorParameters);
             }
 
             foreach ($method->getAttributes(Route::class, ReflectionAttribute::IS_INSTANCEOF) as $routeAttribute) {

@@ -29,6 +29,6 @@ class RouteConstraintTest extends TestCase
     {
         $constraint = new RouteConstraint('foo', ['bar']);
         $this->assertSame('foo', $constraint->className);
-        $this->assertSame(['bar'], $constraint->constructorParams);
+        $this->assertSame(['bar'], $constraint->constructorParameters);
     }
 }
