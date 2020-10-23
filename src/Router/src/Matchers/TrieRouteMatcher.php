@@ -32,12 +32,12 @@ final class TrieRouteMatcher implements IRouteMatcher
      */
     public function matchRoute(string $httpMethod, string $host, string $path, array $headers = []): RouteMatchingResult
     {
-        $hostSegments = $host === [] ? '' : \array_reverse(\explode('.', $host));
-        $pathSegments = \explode('/', \trim($path, '/'));
-        $routeVars = [];
-        $allowedMethods = [];
+        $hostSegments = $host === '' ? [] : \array_reverse(\explode('.', $host));
+        $pathSegments =  \explode('/', \trim($path, '/'));
+        $pathSegmentsCount = \count($pathSegments);
+        $routeVars = $allowedMethods = [];
 
-        foreach (self::getMatchCandidates($this->rootNode, $pathSegments, 0, $hostSegments, $routeVars) as $candidate) {
+        foreach (self::getMatchCandidates($this->rootNode, $pathSegments, $pathSegmentsCount, 0, $hostSegments, $routeVars) as $candidate) {
             foreach ($candidate->route->constraints as $constraint) {
                 // If any constraints fail, collect the allowed methods and go on to the next candidate
                 if (!$constraint->passes($candidate, $httpMethod, $host, $path, $headers)) {
@@ -64,6 +64,7 @@ final class TrieRouteMatcher implements IRouteMatcher
      *
      * @param TrieNode $node The current node
      * @param array $segments The list of URI segments to match
+     * @param int $segmentCount The length of the URI segments
      * @param int $segmentIter The current index of segments
      * @param array $hostSegments The list of URI host segments, which will be traversed if there's a host trie
      * @param array $routeVars The mapping of route variable names to values
@@ -72,12 +73,14 @@ final class TrieRouteMatcher implements IRouteMatcher
     private static function getMatchCandidates(
         TrieNode $node,
         array $segments,
+        int $segmentCount,
         int $segmentIter,
         array $hostSegments,
-        array &$routeVars
+        array $routeVars
     ): iterable {
         // Base case.  We iterate to 1 past the past segments because there are n + 1 levels of nodes due to the root node.
-        if ($segmentIter === \count($segments)) {
+        if ($segmentIter === $segmentCount) {
+            // If we're only matching paths
             if ($node->hostTrie === null) {
                 foreach ($node->routes as $route) {
                     yield new MatchedRouteCandidate($route, $routeVars);
@@ -85,7 +88,7 @@ final class TrieRouteMatcher implements IRouteMatcher
             } else {
                 // We have to traverse the host trie now
                 $routeVarsCopy = $routeVars;
-                yield from self::getMatchCandidates($node->hostTrie, $hostSegments, 0, $hostSegments, $routeVarsCopy);
+                yield from self::getMatchCandidates($node->hostTrie, $hostSegments, \count($hostSegments), 0, $hostSegments, $routeVarsCopy);
             }
 
             return;
@@ -96,7 +99,7 @@ final class TrieRouteMatcher implements IRouteMatcher
         // Check for a literal segment match, and recursively check its descendants
         if (($childNode = ($node->literalChildrenByValue[\strtolower($segment)] ?? null)) !== null) {
             $routeVarsCopy = $routeVars;
-            yield from self::getMatchCandidates($childNode, $segments, $segmentIter + 1, $hostSegments, $routeVarsCopy);
+            yield from self::getMatchCandidates($childNode, $segments, $segmentCount, $segmentIter + 1, $hostSegments, $routeVarsCopy);
         }
 
         // If a variable child is a match, check its descendants
@@ -107,6 +110,7 @@ final class TrieRouteMatcher implements IRouteMatcher
                 yield from self::getMatchCandidates(
                     $childNode,
                     $segments,
+                    $segmentCount,
                     $segmentIter + 1,
                     $hostSegments,
                     $routeVarsCopy

@@ -30,6 +30,9 @@ use Symfony\Component\Routing\RouteCollection as SymfonyRouteCollection;
  * the amount of time it takes to match each of 400 unique routes registered.
  * The goal is to negate any performance gains and losses by testing routes
  * registered first or last, and instead focus on matching each route.
+ *
+ * We run these benchmarks with an optimized Composer autoload, and with opcache
+ * enabled.
  */
 
 $numTests = 100;
@@ -68,11 +71,11 @@ $startMemory = \memory_get_usage();
 $routes = new SymfonyRouteCollection();
 
 for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
-    $routes->add("f$routeIter", new SymfonyRoute("/abc$routeIter/$routeIter/{foo}/$routeIter"));
+    $routes->add("f$routeIter", new SymfonyRoute("/abc$routeIter/$routeIter/{foo}/$routeIter", methods: 'GET'));
 }
 
 $dumper = new CompiledUrlMatcherDumper($routes);
-$router = new CompiledUrlMatcher(eval('?' . '>' . $dumper->dump()), new RequestContext());
+$router = new CompiledUrlMatcher($dumper->getCompiledRoutes(), new RequestContext(method: 'GET'));
 $startTime = \microtime(true);
 
 for ($testIter = 0;$testIter < $numTests;$testIter++) {
@@ -102,7 +105,7 @@ $startTime = \microtime(true);
 
 for ($testIter = 0;$testIter < $numTests;$testIter++) {
     for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
-        $routeMatcher->matchRoute('GET', 'example.com', "/abc$routeIter/$routeIter/def/$routeIter");
+        $routeMatcher->matchRoute('GET', '', "/abc$routeIter/$routeIter/def/$routeIter");
     }
 }
 
