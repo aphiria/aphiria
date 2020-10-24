@@ -319,7 +319,7 @@ class TrieRouteMatcherTest extends TestCase
         $this->assertSame($expectedRoute, $matchingResult->route);
     }
 
-    public function testVariableValuesFromRoutesAreWithFailedConstraintsNotIncludedInMatchingRoute(): void
+    public function testVariableValuesFromRoutesWithFailedConstraintsAreNotIncludedInMatchingRoute(): void
     {
         // Note: Purposely registering two separate variable nodes rather than two routes under one node
         $failingConstraint = $this->createMock(IRouteConstraint::class);
