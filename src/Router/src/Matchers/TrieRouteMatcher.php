@@ -78,8 +78,11 @@ final class TrieRouteMatcher implements IRouteMatcher
         array $hostSegments,
         array $routeVars
     ): iterable {
+        $routeVarsStack = [];
+        $noMatchesFound = false;
+
         loop:
-        while ($segmentIter < $segmentCount) {
+        while ($segmentIter < $segmentCount && !$noMatchesFound) {
             $segment = $segments[$segmentIter];
 
             if (($childNode = ($node->literalChildrenByValue[\strtolower($segment)] ?? null)) !== null) {
@@ -87,17 +90,27 @@ final class TrieRouteMatcher implements IRouteMatcher
                 $segmentIter++;
             } else {
                 foreach ($node->variableChildren as $childNode) {
+                    $routeVars = [];
+
                     if ($childNode->isMatch($segment, $routeVars)) {
+                        // Add any previously-matched vars to the stack
+                        foreach ($routeVarsStack[0] ?? [] as $name => $value) {
+                            $routeVars[$name] = $value;
+                        }
+
+                        \array_unshift($routeVarsStack, $routeVars);
                         $node = $childNode;
                         $segmentIter++;
                         goto loop;
                     }
                 }
 
-                // If we've gotten here, then no variable routes were matched
-                return [];
+                $noMatchesFound = true;
+                \array_shift($routeVarsStack);
             }
         }
+
+        $routeVars = $routeVarsStack[0] ?? [];
 
         if ($node->hostTrie === null) {
             foreach ($node->routes as $route) {
@@ -105,8 +118,7 @@ final class TrieRouteMatcher implements IRouteMatcher
             }
         } else {
             // We have to traverse the host trie now
-            $routeVarsCopy = $routeVars;
-            yield from self::getMatchCandidates($node->hostTrie, $hostSegments, \count($hostSegments), 0, $hostSegments, $routeVarsCopy);
+            yield from self::getMatchCandidates($node->hostTrie, $hostSegments, \count($hostSegments), 0, $hostSegments, $routeVars);
         }
     }
 
