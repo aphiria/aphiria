@@ -27,11 +27,76 @@ final class TrieRouteMatcher implements IRouteMatcher
     {
     }
 
+    private function generateCodeForNode(TrieNode $node, int $depth, int $numTabs): string
+    {
+        // Use two new lines to give proper separate for switch statement
+        $code = "\n\n" . str_repeat("\t", $numTabs) . "switch (\$segments[$depth]) {";
+        $code .= $this->generateCodeForLiteralChildren($node, $depth, $numTabs + 1);
+        $code .= $this->generateCodeForVariableChildren($node, $depth, $numTabs + 1);
+        $code .= "\n" . str_repeat("\t", $numTabs) . "}"; // Closes switch
+
+        return $code;
+    }
+
+    private function generateCodeForLiteralChildren(TrieNode $node, int $depth, int $numTabs): string
+    {
+        $code = '';
+
+        foreach ($node->literalChildrenByValue as $childNode) {
+            $code .= "\n" . str_repeat("\t", $numTabs) . "case '" . addslashes($childNode->value) . "':";
+            $code .= "\n" . str_repeat("\t", $numTabs + 1) . "\$node = \$node->literalChildrenByValue['" . addslashes($childNode->value) . "'];";
+            $code .= $this->generateCodeForNode($childNode, $depth + 1, $numTabs + 1);
+            $code .= "\n\n" . str_repeat("\t", $numTabs + 1) . "break;"; // Closes case
+        }
+
+        return $code;
+    }
+
+    private function generateCodeForVariableChildren(TrieNode $node, int $depth, int $numTabs): string
+    {
+        $code = "\n" . str_repeat("\t", $numTabs) . "default:";
+
+        if (empty($node->variableChildren)) {
+            $code .= "\n" . str_repeat("\t", $numTabs + 1) . "return;";
+        } else {
+            foreach ($node->variableChildren as $iter => $childNode) {
+                $code .= "\n" . str_repeat("\t", $numTabs + 1) . "// Auto-generated code for variable {$childNode->parts[0]->name}";
+                $code .= "\n" . str_repeat("\t", $numTabs + 1) . "if (\$node->variableChildren[$iter]->isMatch(\$segments[$depth], \$routeVars)) {";
+                $code .= "\n" . str_repeat("\t", $numTabs + 2) . "\$node = \$node->variableChildren[$iter];";
+                $code .= $this->generateCodeForNode($childNode, $depth + 1, $numTabs + 2);
+                $code .= "\n" . str_repeat("\t", $numTabs + 1) . "}"; // Closes if statement
+            }
+
+            $code .= "\n\n" . str_repeat("\t", $numTabs + 1) . "break;"; // Closes default
+        }
+
+        return $code;
+    }
+
+    public function generateCode(): void
+    {
+        /**
+         * Things to figure out:
+         *
+         * - In the original algorithm, when we get to the end of the user-provided segment, we yield return routes from
+         *   the node we're on.  How do we make sure to never exceed the segment list length, and iterate through the routes?
+         * - How do we keep track of where we're at in the segment list?  We don't want to use a single iterator for that
+         *   because it'll need to be reset whenever we have to go back up the trie.
+         */
+        $code = 'function (\Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode $node, array $segments): iterable {';
+        $code .= "\n\t\$segmentCount = \count(\$segments);";
+        $code .= $this->generateCodeForNode($this->rootNode, 0, 1);
+        $code .= "\n}"; // Closes the function
+
+        error_log($code);
+    }
+
     /**
      * @inheritdoc
      */
     public function matchRoute(string $httpMethod, string $host, string $path, array $headers = []): RouteMatchingResult
     {
+        $this->generateCode();// TODO: Remove this
         $hostSegments = $host === '' ? [] : \array_reverse(\explode('.', $host));
         $pathSegments =  \explode('/', \trim($path, '/'));
         $pathSegmentsCount = \count($pathSegments);
