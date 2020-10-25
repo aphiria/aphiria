@@ -14,6 +14,12 @@
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <directory name="src/**/tests" />
+                <file name="src/Framework/src/Serialization/Normalizers/ProblemDetailsNormalizer.php" />
+            </errorLevel>
+        </PropertyNotSetInConstructor>
         <UndefinedClass>
             <errorLevel type="suppress">
                 <file name="src/**/.phpstorm.meta.php" />

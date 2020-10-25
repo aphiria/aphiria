@@ -25,7 +25,7 @@ final class VariableTrieNode extends TrieNode
     /** @var bool Whether or not this node contains just a single variable part (for performance reasons) */
     private bool $onlyContainsVariable;
     /** @var string The regex to use for matching */
-    private string $regex;
+    private string $regex = '';
 
     /**
      * @param string[]|RouteVariable[]|string|RouteVariable $parts The parts that make up this segment
