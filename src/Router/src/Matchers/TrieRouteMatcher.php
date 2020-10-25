@@ -22,7 +22,7 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
 final class TrieRouteMatcher implements IRouteMatcher
 {
     /** @var string TODO: UPDATE */
-    private const CODE_FILE_PATH = 'C:\PHP_80\tmp\Routes.php';
+    private const CODE_FILE_PATH = 'C:\PHP_80\tmp\RouteMatcher.php';
     /** @var bool TODO REMOVE */
     private bool $isBootstrapped = false;
 
@@ -51,10 +51,9 @@ final class TrieRouteMatcher implements IRouteMatcher
         // TODO: Comment this out when running unit tests: $this->bootstrap();
         $hostSegments = $host === '' ? [] : \array_reverse(\explode('.', $host));
         $pathSegments =  \explode('/', \trim($path, '/'));
-        $pathSegmentsCount = \count($pathSegments);
         $routeVars = $allowedMethods = [];
 
-        foreach (\Aphiria\Routing\Matchers\CodeGenerators\Routes::match($this->rootNode, $pathSegments/* TODO: Do something with these params, $pathSegmentsCount, 0, $hostSegments, $routeVars*/) as $candidate) {
+        foreach (\Aphiria\Routing\Matchers\CodeGeneration\RouteMatcher::matchRoute($this->rootNode, $pathSegments) as $candidate) {
             foreach ($candidate->route->constraints as $constraint) {
                 // If any constraints fail, collect the allowed methods and go on to the next candidate
                 if (!$constraint->passes($candidate, $httpMethod, $host, $path, $headers)) {
@@ -110,7 +109,7 @@ final class TrieRouteMatcher implements IRouteMatcher
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Matchers\CodeGenerators;
+namespace Aphiria\Routing\Matchers\CodeGeneration;
 
 use Aphiria\Routing\Matchers\MatchedRouteCandidate;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
@@ -119,7 +118,7 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
  * Defines the trie route matcher
  * Note: This code was auto-generated on {$generatedDateString}
  */
-final class Routes
+final class RouteMatcher
 {
     /**
      * Gets route matches for URI segments
@@ -128,7 +127,7 @@ final class Routes
      * @param array \$segments The list of URI segments to match
      * @return MatchedRouteCandidate[] The list of matched routes
      */
-    public static function match(TrieNode \$node, array \$segments): iterable
+    public static function matchRoute(TrieNode \$node, array \$segments): iterable
     {
         \$numSegments = \count(\$segments);
         \$routeVars = []; // TODO: Remove
