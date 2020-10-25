@@ -122,7 +122,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         }
 
         try {
-            $value = $mediaTypeFormatter
+            return $mediaTypeFormatter
                 ->readFromStream($request->getBody()->readAsStream(), $type);
         } catch (SerializationException $ex) {
             if (!$reflectionParameter->allowsNull()) {
