@@ -22,9 +22,7 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
 final class TrieRouteMatcher implements IRouteMatcher
 {
     /** @var string TODO: UPDATE */
-    private const CODE_FILE_PATH = 'C:\PHP_80\tmp\routes.php';
-    /** @var \Closure TODO UPDATE */
-    private \Closure $matcher;
+    private const CODE_FILE_PATH = 'C:\PHP_80\tmp\Routes.php';
     /** @var bool TODO REMOVE */
     private bool $isBootstrapped = false;
 
@@ -40,7 +38,7 @@ final class TrieRouteMatcher implements IRouteMatcher
     {
         if (!$this->isBootstrapped) {
             file_put_contents(self::CODE_FILE_PATH, $this->generateCode());
-            $this->matcher = require_once self::CODE_FILE_PATH;
+            require_once self::CODE_FILE_PATH;
             $this->isBootstrapped = true;
         }
     }
@@ -56,7 +54,7 @@ final class TrieRouteMatcher implements IRouteMatcher
         $pathSegmentsCount = \count($pathSegments);
         $routeVars = $allowedMethods = [];
 
-        foreach (($this->matcher)($this->rootNode, $pathSegments/* TODO: Do something with these params, $pathSegmentsCount, 0, $hostSegments, $routeVars*/) as $candidate) {
+        foreach (\Aphiria\Routing\Matchers\CodeGenerators\Routes::match($this->rootNode, $pathSegments/* TODO: Do something with these params, $pathSegmentsCount, 0, $hostSegments, $routeVars*/) as $candidate) {
             foreach ($candidate->route->constraints as $constraint) {
                 // If any constraints fail, collect the allowed methods and go on to the next candidate
                 if (!$constraint->passes($candidate, $httpMethod, $host, $path, $headers)) {
@@ -72,71 +70,6 @@ final class TrieRouteMatcher implements IRouteMatcher
         }
 
         return new RouteMatchingResult(null, [], \array_unique($allowedMethods));
-    }
-
-    /**
-     * Gets the list of matching route candidates for a particular node
-     *
-     * This method uses generators that, given the order of the code, will return literal segments before variables
-     * ones. Callers of this method will only attempt to descend the trie either on the first time or if previous
-     * match candidates didn't meet constraints, hence saving us unnecessary descents down the trie.
-     *
-     * @param TrieNode $node The current node
-     * @param array $segments The list of URI segments to match
-     * @param int $segmentCount The length of the URI segments
-     * @param int $segmentIter The current index of segments
-     * @param array $hostSegments The list of URI host segments, which will be traversed if there's a host trie
-     * @param array $routeVars The mapping of route variable names to values
-     * @return MatchedRouteCandidate[] The list of matched route candidates
-     */
-    private static function getMatchCandidates__OLD(
-        TrieNode $node,
-        array $segments,
-        int $segmentCount,
-        int $segmentIter,
-        array $hostSegments,
-        array $routeVars
-    ): iterable {
-        // TODO: Remove
-        // Base case.  We iterate to 1 past the past segments because there are n + 1 levels of nodes due to the root node.
-        if ($segmentIter === $segmentCount) {
-            // If we're only matching paths
-            if ($node->hostTrie === null) {
-                foreach ($node->routes as $route) {
-                    yield new MatchedRouteCandidate($route, $routeVars);
-                }
-            } else {
-                // We have to traverse the host trie now
-                $routeVarsCopy = $routeVars;
-                yield from self::getMatchCandidates__OLD($node->hostTrie, $hostSegments, \count($hostSegments), 0, $hostSegments, $routeVarsCopy);
-            }
-
-            return;
-        }
-
-        $segment = $segments[$segmentIter];
-
-        // Check for a literal segment match, and recursively check its descendants
-        if (($childNode = ($node->literalChildrenByValue[\strtolower($segment)] ?? null)) !== null) {
-            $routeVarsCopy = $routeVars;
-            yield from self::getMatchCandidates__OLD($childNode, $segments, $segmentCount, $segmentIter + 1, $hostSegments, $routeVarsCopy);
-        }
-
-        // If a variable child is a match, check its descendants
-        foreach ($node->variableChildren as $childNode) {
-            $routeVarsCopy = $routeVars;
-
-            if ($childNode->isMatch($segment, $routeVarsCopy)) {
-                yield from self::getMatchCandidates__OLD(
-                    $childNode,
-                    $segments,
-                    $segmentCount,
-                    $segmentIter + 1,
-                    $hostSegments,
-                    $routeVarsCopy
-                );
-            }
-        }
     }
 
     /**
@@ -160,19 +93,49 @@ final class TrieRouteMatcher implements IRouteMatcher
          *       Can you even fall through to a default path?
          *         - UPDATE 1: It turns out that you can fall back to a default case.  So, no problems.
          */
-        $code = "<?php";
-        $code .= "\n\ndeclare(strict_types=1);";
-        $code .= "\n\n// This code was auto-generated on " . (new \DateTime())->format('Y-m-d H:i:s');
-        $code .= "\nreturn static function (\Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode \$node, array \$segments): iterable {";
-        $code .= "\n    \$numSegments = \count(\$segments);";
-        // TODO: Remove this \|/
-        $code .= "\n    \$routeVars = [];";
-        // Check if there were no segments at all
-        $code .= $this->generateCodeForEndOfSegmentsCheck(0, 1);
-        $code .= $this->generateCodeForNode($this->rootNode, 0, 1);
-        $code .= "\n};"; // Closes the function
+        $copyrightYear = date('Y');
+        $generatedDateString = (new \DateTime())->format('Y-m-d H:i:s');
+        $generatedCode = $this->generateCodeForEndOfSegmentsCheck(0, 2) . $this->generateCodeForNode($this->rootNode, 0, 2);
 
-        return $code;
+        return <<<CODE
+<?php
+
+/**
+ * Aphiria
+ *
+ * @link      https://www.aphiria.com
+ * @copyright Copyright (C) {$copyrightYear} David Young
+ * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ */
+
+declare(strict_types=1);
+
+namespace Aphiria\Routing\Matchers\CodeGenerators;
+
+use Aphiria\Routing\Matchers\MatchedRouteCandidate;
+use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
+
+/**
+ * Defines the trie route matcher
+ * Note: This code was auto-generated on {$generatedDateString}
+ */
+final class Routes
+{
+    /**
+     * Gets route matches for URI segments
+     *
+     * @param TrieNode \$node The trie to match against
+     * @param array \$segments The list of URI segments to match
+     * @return MatchedRouteCandidate[] The list of matched routes
+     */
+    public static function match(TrieNode \$node, array \$segments): iterable
+    {
+        \$numSegments = \count(\$segments);
+        \$routeVars = []; // TODO: Remove
+        {$generatedCode}
+    }
+}
+CODE;
     }
 
     /**
@@ -186,7 +149,7 @@ final class TrieRouteMatcher implements IRouteMatcher
     {
         $code = "\n\n" . \str_repeat("    ", $numTabs) . "if (\$numSegments === $depth) {";
         $code .= "\n" . \str_repeat("    ", $numTabs + 1) . "foreach (\$node->routes as \$route) {";
-        $code .= "\n" . \str_repeat("    ", $numTabs + 2) . "yield new \Aphiria\Routing\Matchers\MatchedRouteCandidate(\$route, \$routeVars);";
+        $code .= "\n" . \str_repeat("    ", $numTabs + 2) . "yield new MatchedRouteCandidate(\$route, \$routeVars);";
         $code .= "\n" . \str_repeat("    ", $numTabs + 1) . "}"; // Closes foreach loop
         $code .= "\n\n" . \str_repeat("    ", $numTabs + 1) . "return;"; // Makes sure we don't go any further
         $code .= "\n" . \str_repeat("    ", $numTabs) . "}"; // Close if statement
@@ -204,6 +167,10 @@ final class TrieRouteMatcher implements IRouteMatcher
      */
     private function generateCodeForLiteralChildren(TrieNode $node, int $depth, int $numTabs): string
     {
+        if (empty($node->literalChildrenByValue)) {
+            return '';
+        }
+
         $code = '';
 
         foreach ($node->literalChildrenByValue as $childNode) {
