@@ -53,7 +53,7 @@ class Psr7FactoryTest extends TestCase
         $psr7Body = Psr7Stream::create('foo');
         $psr7Request = new Psr7Request('GET', 'https://example.com', [], $psr7Body);
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
-        $this->assertSame('foo', $aphiriaRequest->getBody()->readAsString());
+        $this->assertSame('foo', $aphiriaRequest->getBody()?->readAsString());
     }
 
     public function testCreateAphiriaRequestSetsParsedBody(): void
@@ -105,19 +105,19 @@ class Psr7FactoryTest extends TestCase
         $aphiriaMultipartBody = (new RequestParser())->readAsMultipart($aphiriaRequest);
         $aphiriaMultipartBodyParts = $aphiriaMultipartBody->getParts();
         $this->assertCount(3, $aphiriaMultipartBodyParts);
-        $this->assertSame('foo', $aphiriaMultipartBodyParts[0]->getBody()->readAsString());
+        $this->assertSame('foo', $aphiriaMultipartBodyParts[0]->getBody()?->readAsString());
         $this->assertSame('image/png', $aphiriaMultipartBodyParts[0]->getHeaders()->getFirst('Content-Type'));
         $this->assertSame(
             'name=foo; filename=foo.png',
             $aphiriaMultipartBodyParts[0]->getHeaders()->getFirst('Content-Disposition')
         );
-        $this->assertSame('bar', $aphiriaMultipartBodyParts[1]->getBody()->readAsString());
+        $this->assertSame('bar', $aphiriaMultipartBodyParts[1]->getBody()?->readAsString());
         $this->assertFalse($aphiriaMultipartBodyParts[1]->getHeaders()->containsKey('Content-Type'));
         $this->assertSame(
             'name=bar; filename=bar.png',
             $aphiriaMultipartBodyParts[1]->getHeaders()->getFirst('Content-Disposition')
         );
-        $this->assertSame('baz', $aphiriaMultipartBodyParts[2]->getBody()->readAsString());
+        $this->assertSame('baz', $aphiriaMultipartBodyParts[2]->getBody()?->readAsString());
         $this->assertFalse($aphiriaMultipartBodyParts[2]->getHeaders()->containsKey('Content-Type'));
         $this->assertSame(
             'name=baz',
@@ -130,7 +130,7 @@ class Psr7FactoryTest extends TestCase
         $psr7Body = Psr7Stream::create('foo');
         $psr7Response = new Psr7Response(200, [], $psr7Body);
         $aphiriaResponse = $this->psr7Factory->createAphiriaResponse($psr7Response);
-        $this->assertSame('foo', $aphiriaResponse->getBody()->readAsString());
+        $this->assertSame('foo', $aphiriaResponse->getBody()?->readAsString());
     }
 
     public function testCreateAphiriaResponseSetsSameHeaders(): void

@@ -75,7 +75,8 @@
     },
     "require-dev": {
         "nyholm/psr7": "^1.2",
-        "phpunit/phpunit": "~9.4"
+        "phpunit/phpunit": "~9.4",
+        "vimeo/psalm": "^4.0@dev"
     },
     "scripts": {
         "lint-check": "php-cs-fixer fix --config=.php_cs.dist -v --diff --dry-run",

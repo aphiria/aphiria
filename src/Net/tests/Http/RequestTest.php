@@ -157,8 +157,11 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider requestTargetQueryStringProvider
+     * @param string $requestQueryString The request query string
+     * @param string $uri The request URI
+     * @param string $expectedRequestQueryString The expected request query string
      */
-    public function testRequestTargetTypeOriginFormIncludesHostHeader($requestQueryString, $uri, $expectedRequestQueryString): void
+    public function testRequestTargetTypeOriginFormIncludesHostHeader(string $requestQueryString, string $uri, string $expectedRequestQueryString): void
     {
         $requestQueryString = new Request($requestQueryString, new Uri($uri));
         $this->assertEquals($expectedRequestQueryString, (string)$requestQueryString);

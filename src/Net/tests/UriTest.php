@@ -78,8 +78,10 @@ class UriTest extends TestCase
 
     /**
      * @dataProvider authorityWithUserPasswordProvider
+     * @param string $uri The URI
+     * @param string $expectedUri The expcted URI
      */
-    public function testGettingAuthorityWithUserAndPasswordIncludesUserAndPassword($uri, $expectedUri): void
+    public function testGettingAuthorityWithUserAndPasswordIncludesUserAndPassword(string $uri, string $expectedUri): void
     {
         $uriWithUserAndPassword = new Uri($uri);
         $this->assertEquals($expectedUri, $uriWithUserAndPassword->getAuthority());

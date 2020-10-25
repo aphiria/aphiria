@@ -82,7 +82,7 @@ class ControllerParameterResolverTest extends TestCase
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('readFromStream')
-            ->with($request->getBody()->readAsStream(), User::class)
+            ->with($request->getBody()?->readAsStream(), User::class)
             ->willThrowException(new SerializationException());
         $this->contentNegotiator->expects($this->once())
             ->method('negotiateRequestContent')
@@ -120,7 +120,7 @@ class ControllerParameterResolverTest extends TestCase
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('readFromStream')
-            ->with($request->getBody()->readAsStream(), User::class)
+            ->with($request->getBody()?->readAsStream(), User::class)
             ->willThrowException(new SerializationException());
         $this->contentNegotiator->expects($this->once())
             ->method('negotiateRequestContent')
@@ -191,7 +191,7 @@ class ControllerParameterResolverTest extends TestCase
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('readFromStream')
-            ->with($request->getBody()->readAsStream(), User::class)
+            ->with($request->getBody()?->readAsStream(), User::class)
             ->willReturn($expectedUser);
         $this->contentNegotiator->expects($this->once())
             ->method('negotiateRequestContent')
