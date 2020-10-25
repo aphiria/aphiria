@@ -23,7 +23,10 @@ final class TrieRouteMatcher implements IRouteMatcher
 {
     /** @var string TODO: UPDATE */
     private const CODE_FILE_PATH = 'C:\PHP_80\tmp\routes.php';
+    /** @var \Closure TODO UPDATE */
     private \Closure $matcher;
+    /** @var bool TODO REMOVE */
+    private bool $isBootstrapped = false;
 
     /**
      * @param TrieNode $rootNode The root node
@@ -33,10 +36,13 @@ final class TrieRouteMatcher implements IRouteMatcher
     }
 
     // TODO: Remove this once I've gotten it set up so that only the fully-populated trie node is used to generate the code
-    public function prep(): void
+    public function bootstrap(): void
     {
-        file_put_contents(self::CODE_FILE_PATH, $this->generateCode());
-        $this->matcher = require self::CODE_FILE_PATH;
+        if (!$this->isBootstrapped) {
+            file_put_contents(self::CODE_FILE_PATH, $this->generateCode());
+            $this->matcher = require_once self::CODE_FILE_PATH;
+            $this->isBootstrapped = true;
+        }
     }
 
     /**
@@ -44,6 +50,7 @@ final class TrieRouteMatcher implements IRouteMatcher
      */
     public function matchRoute(string $httpMethod, string $host, string $path, array $headers = []): RouteMatchingResult
     {
+        // TODO: Comment this out when running unit tests: $this->bootstrap();
         $hostSegments = $host === '' ? [] : \array_reverse(\explode('.', $host));
         $pathSegments =  \explode('/', \trim($path, '/'));
         $pathSegmentsCount = \count($pathSegments);
@@ -154,7 +161,8 @@ final class TrieRouteMatcher implements IRouteMatcher
          *         - UPDATE 1: It turns out that you can fall back to a default case.  So, no problems.
          */
         $code = "<?php";
-        $code .= "\n// This code was auto-generated on " . (new \DateTime())->format('Y-m-d H:i:s');
+        $code .= "\n\ndeclare(strict_types=1);";
+        $code .= "\n\n// This code was auto-generated on " . (new \DateTime())->format('Y-m-d H:i:s');
         $code .= "\nreturn static function (\Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode \$node, array \$segments): iterable {";
         $code .= "\n    \$numSegments = \count(\$segments);";
         // TODO: Remove this \|/

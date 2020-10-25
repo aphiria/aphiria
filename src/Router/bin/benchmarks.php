@@ -101,7 +101,7 @@ for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
 $routes = new AphiriaRouteCollection();
 $routes->addMany($routesBuilder->build()->getAll());
 $routeMatcher = new TrieRouteMatcher((new TrieFactory($routes))->createTrie());
-$routeMatcher->prep(); // TODO: Remove
+$routeMatcher->bootstrap(); // TODO: Remove
 $startTime = \microtime(true);
 
 for ($testIter = 0;$testIter < $numTests;$testIter++) {
