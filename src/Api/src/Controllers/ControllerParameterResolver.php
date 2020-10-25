@@ -88,6 +88,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
      * @throws RequestBodyDeserializationException Thrown if the request body could not be deserialized
+     * @psalm-suppress InvalidReturnType The media type formatter will resolve to the parameter type, which will be an object
      */
     private function resolveObjectParameter(
         ReflectionParameter $reflectionParameter,
@@ -121,7 +122,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         }
 
         try {
-            return $mediaTypeFormatter
+            $value = $mediaTypeFormatter
                 ->readFromStream($request->getBody()->readAsStream(), $type);
         } catch (SerializationException $ex) {
             if (!$reflectionParameter->allowsNull()) {

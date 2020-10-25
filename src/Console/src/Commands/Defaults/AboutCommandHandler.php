@@ -83,7 +83,7 @@ EOF;
          * @param Command $b
          * @return int The result of the comparison
          */
-        $sort = static function (Command $a, Command $b) {
+        $sort = static function (Command $a, Command $b): int {
             if (!str_contains($a->name, ':')) {
                 if (!str_contains($b->name, ':')) {
                     // They're both uncategorized

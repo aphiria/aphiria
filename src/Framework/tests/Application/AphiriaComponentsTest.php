@@ -262,7 +262,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithConsoleExceptionOutputWriterConfiguresComponentToHaveWriter(): void
     {
-        $outputWriter = function (Exception $ex, IOutput $output) {
+        $outputWriter = function (Exception $ex, IOutput $output): int {
             $output->writeln('foo');
 
             return 1;
@@ -475,7 +475,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithLogLevelFactoryConfiguresComponentToHaveFactory(): void
     {
-        $logLevelFactory = fn (Exception $ex) => LogLevel::ALERT;
+        $logLevelFactory = fn (Exception $ex): string => LogLevel::ALERT;
         $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withLogLevelFactory')
@@ -518,7 +518,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withLogLevelFactory($appBuilder, $exceptionType, $logLevelFactory);
             }
         };
-        $logLevelFactory = fn (Exception $ex) => LogLevel::ALERT;
+        $logLevelFactory = fn (Exception $ex): string => LogLevel::ALERT;
         $component->build($this->appBuilder, Exception::class, $logLevelFactory);
         // Dummy assertion
         $this->assertTrue(true);
