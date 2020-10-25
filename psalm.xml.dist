@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="8"
+    resolveFromConfigFile="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <directory name="src/" />
+        <ignoreFiles>
+            <directory name="vendor" />
+            <file name="src/Router/bin/benchmarks.php" />
+        </ignoreFiles>
+    </projectFiles>
+    <issueHandlers>
+        <UndefinedClass>
+            <errorLevel type="suppress">
+                <file name="src/**/.phpstorm.meta.php" />
+            </errorLevel>
+        </UndefinedClass>
+        <UndefinedFunction>
+            <errorLevel type="suppress">
+                <file name="src/**/.phpstorm.meta.php" />
+            </errorLevel>
+        </UndefinedFunction>
+        <InaccessibleMethod>
+            <errorLevel type="suppress">
+                <file name="src/Api/tests/Controllers/ControllerTest.php" />
+                <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php" />
+            </errorLevel>
+        </InaccessibleMethod>
+    </issueHandlers>
+</psalm>

@@ -172,7 +172,7 @@ class RouteActionInvokerTest extends TestCase
             []
         );
         $this->assertNotNull($response->getBody());
-        $this->assertSame('noParameters', $response->getBody()->readAsString());
+        $this->assertSame('noParameters', $response->getBody()?->readAsString());
     }
 
     public function testInvokingMethodWithValidObjectParameterDoesNotThrowException(): void

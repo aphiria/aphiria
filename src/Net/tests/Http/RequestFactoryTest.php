@@ -77,8 +77,10 @@ class RequestFactoryTest extends TestCase
 
     /**
      * @dataProvider clientIPDataProvider
+     * @param string $ipDatum1 The IP address
+     * @param string $expectedIpDatum The expected IP address
      */
-    public function testClientIPAddressIsSetFromForwardedHeaderWhenUsingTrustedProxy($ipDatum1, $expectedIpDatum): void
+    public function testClientIPAddressIsSetFromForwardedHeaderWhenUsingTrustedProxy(string $ipDatum1, string $expectedIpDatum): void
     {
         $_SERVER['HTTP_FORWARDED'] = $ipDatum1;
         $factory = new RequestFactory([], ['HTTP_FORWARDED' => 'HTTP_FORWARDED']);

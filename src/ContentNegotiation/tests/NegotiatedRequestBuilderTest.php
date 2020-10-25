@@ -114,7 +114,7 @@ class NegotiatedRequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withBody($rawBody)
             ->build();
-        $this->assertSame($expectedStream, $request->getBody()->readAsStream());
+        $this->assertSame($expectedStream, $request->getBody()?->readAsStream());
         $this->assertSame('application/json', $request->getHeaders()->getFirst('Content-Type'));
     }
 

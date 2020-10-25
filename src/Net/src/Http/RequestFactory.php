@@ -123,6 +123,7 @@ class RequestFactory
 
         foreach ($server as $name => $values) {
             // If this header supports multiple values and has unquoted string delimiters...
+            $explodedValues = [];
             $containsMultipleValues = isset(self::$headersThatPermitMultipleValues[$name])
                 && \count($explodedValues = preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', $values)) > 1;
 
