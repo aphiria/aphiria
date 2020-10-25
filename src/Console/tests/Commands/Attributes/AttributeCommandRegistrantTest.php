@@ -41,6 +41,11 @@ class AttributeCommandRegistrantTest extends TestCase
     public function testCommandHandlersWithNoCommandAttributesAreNotRegistered(): void
     {
         $commandHandler = new class() implements ICommandHandler {
+            /**
+             * @inheritdoc
+             *
+             * @return void
+             */
             public function handle(Input $input, IOutput $output)
             {
             }

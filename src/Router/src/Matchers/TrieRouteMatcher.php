@@ -14,6 +14,7 @@ namespace Aphiria\Routing\Matchers;
 
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
+use Generator;
 
 /**
  * Defines the route matcher that uses a trie structure for matching
@@ -68,7 +69,7 @@ final class TrieRouteMatcher implements IRouteMatcher
      * @param int $segmentIter The current index of segments
      * @param array $hostSegments The list of URI host segments, which will be traversed if there's a host trie
      * @param array $routeVars The mapping of route variable names to values
-     * @return MatchedRouteCandidate[] The list of matched route candidates
+     * @return Generator<int, MatchedRouteCandidate> The list of matched route candidates
      */
     private static function getMatchCandidates(
         TrieNode $node,
@@ -77,7 +78,7 @@ final class TrieRouteMatcher implements IRouteMatcher
         int $segmentIter,
         array $hostSegments,
         array $routeVars
-    ): iterable {
+    ): Generator {
         // Base case.  We iterate to 1 past the past segments because there are n + 1 levels of nodes due to the root node.
         if ($segmentIter === $segmentCount) {
             // If we're only matching paths

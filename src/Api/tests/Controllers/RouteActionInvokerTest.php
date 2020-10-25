@@ -102,7 +102,7 @@ class RouteActionInvokerTest extends TestCase
     public function testInvokingClosureReturnsResponseReturnedFromClosure(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $closure = function (int $foo) use ($expectedResponse) {
+        $closure = function (int $foo) use ($expectedResponse): IResponse {
             $this->assertSame(123, $foo);
 
             return $expectedResponse;

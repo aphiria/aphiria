@@ -150,6 +150,11 @@ class ApplicationTest extends TestCase
     public function testHandlingHolidayCommand(): void
     {
         $commandHandler = new class() implements ICommandHandler {
+            /**
+             * @inheritdoc
+             *
+             * @return void
+             */
             public function handle(Input $input, IOutput $output)
             {
                 $message = 'Happy ' . $input->arguments['holiday'];
@@ -199,6 +204,11 @@ class ApplicationTest extends TestCase
     public function testHandlingSimpleCommand(): void
     {
         $commandHandler = new class() implements ICommandHandler {
+            /**
+             * @inheritdoc
+             *
+             * @return void
+             */
             public function handle(Input $input, IOutput $output)
             {
                 $output->write('foo');
@@ -218,6 +228,11 @@ class ApplicationTest extends TestCase
     public function testHandlingWithHandlerThatDoesNotReturnAnythingDefaultsToOk(): void
     {
         $commandHandler = new class() implements ICommandHandler {
+            /**
+             * @inheritdoc
+             *
+             * @return void
+             */
             public function handle(Input $input, IOutput $output)
             {
                 // Don't do anything

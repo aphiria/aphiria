@@ -146,7 +146,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
         string|Closure $instance = null,
         array|Closure $extensions = null
     ): void {
-        $this->exceptionTypesToProblemDetailsFactories[$exceptionType] = function (Exception $ex) use ($type, $title, $detail, $status, $instance, $extensions) {
+        $this->exceptionTypesToProblemDetailsFactories[$exceptionType] = function (Exception $ex) use ($type, $title, $detail, $status, $instance, $extensions): ProblemDetails {
             if (\is_callable($status)) {
                 $status = $status($ex);
             } elseif ($status === null) {

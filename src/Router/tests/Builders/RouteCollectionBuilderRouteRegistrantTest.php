@@ -21,7 +21,7 @@ class RouteCollectionBuilderRouteRegistrantTest extends TestCase
 {
     public function testConstructingWithSingleCallbackInvokesItOnRegistration(): void
     {
-        $callback = function (RouteCollectionBuilder $routes) {
+        $callback = function (RouteCollectionBuilder $routes): void {
             $routes->get('foo')
                 ->mapsToMethod('foo', 'bar');
         };
@@ -34,7 +34,7 @@ class RouteCollectionBuilderRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesInvokesCallbacksWithRouteBuilder(): void
     {
-        $callback = function (RouteCollectionBuilder $routes) {
+        $callback = function (RouteCollectionBuilder $routes): void {
             $routes->get('foo')
                 ->mapsToMethod('foo', 'bar');
         };

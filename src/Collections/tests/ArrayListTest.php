@@ -179,7 +179,7 @@ class ArrayListTest extends TestCase
 
     public function testSorting(): void
     {
-        $comparer = fn ($a, $b) => $a === 'foo' ? 1 : -1;
+        $comparer = fn ($a, $b): int => $a === 'foo' ? 1 : -1;
         $this->arrayList->add('foo');
         $this->arrayList->add('bar');
         $this->arrayList->sort($comparer);

@@ -19,7 +19,7 @@ final class RouteCollection
 {
     /** @var Route[] The list of methods to their various routes */
     private array $routes = [];
-    /** @var Route[] The mapping of route names to routes */
+    /** @var array<string, Route> The mapping of route names to routes */
     private array $namedRoutes = [];
 
     /**
@@ -76,7 +76,7 @@ final class RouteCollection
     /**
      * Gets all the routes
      *
-     * @return Route[][] The list of routes
+     * @return Route[] The list of routes
      */
     public function getAll(): array
     {

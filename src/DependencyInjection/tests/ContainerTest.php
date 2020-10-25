@@ -347,7 +347,7 @@ class ContainerTest extends TestCase
 
     public function testDependencyThatHasDependency(): void
     {
-        $tests = function () {
+        $tests = function (): void {
             $this->assertInstanceOf(
                 Foo::class,
                 $this->container->resolve(IFoo::class)

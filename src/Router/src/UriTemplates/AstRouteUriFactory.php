@@ -64,7 +64,8 @@ final class AstRouteUriFactory implements IRouteUriFactory
             throw new RouteUriCreationException('Failed to parse URI template', 0, $ex);
         }
 
-        $host = $path = null;
+        $host = null;
+        $path = '';
 
         foreach ($ast->children as $childAstNode) {
             switch ($childAstNode->type) {

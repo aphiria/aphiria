@@ -65,7 +65,7 @@ final class ObjectConstraints
     /**
      * Gets all the method constraints
      *
-     * @return IConstraint[] The mapping of method names to constraints
+     * @return array<string, IConstraint[]> The mapping of method names to constraints
      */
     public function getAllMethodConstraints(): array
     {
@@ -75,7 +75,7 @@ final class ObjectConstraints
     /**
      * Gets all the property constraints
      *
-     * @return IConstraint[] The mapping of property names to constraints
+     * @return array<string, IConstraint[]> The mapping of property names to constraints
      */
     public function getAllPropertyConstraints(): array
     {

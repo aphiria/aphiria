@@ -23,7 +23,7 @@ class ClosureCommandRegistrantTest extends TestCase
     public function testRegisteringCommandsRegistersCommandsFromClosures(): void
     {
         $expectedCommand = new Command('foo');
-        $closures = [function (CommandRegistry $commands) use ($expectedCommand) {
+        $closures = [function (CommandRegistry $commands) use ($expectedCommand): void {
             $commands->registerCommand($expectedCommand, 'Handler');
         }];
         $closureCommandRegistrant = new ClosureCommandRegistrant($closures);

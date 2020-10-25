@@ -23,7 +23,7 @@ class ObjectConstraintsBuilderRegistrantTest extends TestCase
     public function testRegisteringConstraintsRegistersConstraintsFromClosures(): void
     {
         $expectedConstraint = $this->createMock(IConstraint::class);
-        $closures = [function (ObjectConstraintsRegistryBuilder $objectConstraintsRegistryBuilder) use ($expectedConstraint) {
+        $closures = [function (ObjectConstraintsRegistryBuilder $objectConstraintsRegistryBuilder) use ($expectedConstraint): void {
             $objectConstraintsRegistryBuilder->class('foo')
                 ->hasPropertyConstraints('prop', $expectedConstraint);
         }];

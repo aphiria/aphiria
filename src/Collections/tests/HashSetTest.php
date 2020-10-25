@@ -140,7 +140,7 @@ class HashSetTest extends TestCase
 
     public function testSorting(): void
     {
-        $comparer = fn ($a, $b) => $a === 'foo' ? 1 : -1;
+        $comparer = fn ($a, $b): int => $a === 'foo' ? 1 : -1;
         $this->set->add('foo');
         $this->set->add('bar');
         $this->set->sort($comparer);

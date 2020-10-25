@@ -58,7 +58,7 @@ class ExceptionHandlerComponentTest extends TestCase
         $consoleExceptionHandler = new ConsoleExceptionRenderer($output, false);
         $this->container->bindInstance(ConsoleExceptionRenderer::class, $consoleExceptionHandler);
 
-        $outputWriter = function (Exception $ex, IOutput $output) {
+        $outputWriter = function (Exception $ex, IOutput $output): int {
             $output->writeln('foo');
 
             return 0;
@@ -96,7 +96,7 @@ class ExceptionHandlerComponentTest extends TestCase
     public function testBuildWithLogLevelFactoryRegistersFactory(): void
     {
         $expectedException = new Exception();
-        $factory = fn (Exception $ex) => LogLevel::ALERT;
+        $factory = fn (Exception $ex): string => LogLevel::ALERT;
         $this->exceptionHandlerComponent->withLogLevelFactory(Exception::class, $factory);
         $this->exceptionHandlerComponent->build();
         $this->assertSame(LogLevel::ALERT, $this->logLevelFactory->createLogLevel($expectedException));

@@ -83,9 +83,9 @@ class ControllerWithEndpoints extends BaseController
     /**
      * Gets the current request (for use in tests)
      *
-     * @return IRequest The current request
+     * @return IRequest|null The current request, or null if it isn't set yet
      */
-    public function getRequest(): IRequest
+    public function getRequest(): ?IRequest
     {
         return $this->request;
     }

@@ -20,7 +20,7 @@ class CallbackConstraintTest extends TestCase
     public function testCallbackIsExecuted(): void
     {
         $correctInputWasPassed = false;
-        $callback = function ($value) use (&$correctInputWasPassed) {
+        $callback = function ($value) use (&$correctInputWasPassed): bool {
             $correctInputWasPassed = $value === 'foo';
 
             return true;
@@ -32,10 +32,10 @@ class CallbackConstraintTest extends TestCase
 
     public function testCallbackReturnValueIsRespected(): void
     {
-        $trueCallback = function () {
+        $trueCallback = function (): bool {
             return true;
         };
-        $falseCallback = function () {
+        $falseCallback = function (): bool {
             return false;
         };
         $passConstraint = new CallbackConstraint($trueCallback, 'foo');

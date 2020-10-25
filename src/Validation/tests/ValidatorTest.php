@@ -407,7 +407,7 @@ class ValidatorTest extends TestCase
         $object1 = new class() {
             public ?object $methodReturnValue = null;
 
-            public function method(): object
+            public function method(): ?object
             {
                 return $this->methodReturnValue;
             }

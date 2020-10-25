@@ -44,7 +44,9 @@ final class Headers extends HashTable
      * Headers are allowed to have multiple values, so we must add support for that
      *
      * @inheritdoc
-     * @param mixed $values The value or values
+     *
+     * @param array-key $key The header name to add
+     * @param (mixed|string)[]|int|string $value The value or values
      * @param bool $append Whether or not to append the value to to the other header values
      */
     public function add(mixed $key, mixed $value, bool $append = false): void
