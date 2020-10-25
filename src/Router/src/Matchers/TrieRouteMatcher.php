@@ -21,11 +21,22 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
  */
 final class TrieRouteMatcher implements IRouteMatcher
 {
+    /** @var string TODO: UPDATE */
+    private const CODE_FILE_PATH = 'C:\PHP_80\tmp\routes.php';
+    private \Closure $matcher;
+
     /**
      * @param TrieNode $rootNode The root node
      */
     public function __construct(private TrieNode $rootNode)
     {
+    }
+
+    // TODO: Remove this once I've gotten it set up so that only the fully-populated trie node is used to generate the code
+    public function prep(): void
+    {
+        file_put_contents(self::CODE_FILE_PATH, $this->generateCode());
+        $this->matcher = require self::CODE_FILE_PATH;
     }
 
     /**
@@ -38,7 +49,7 @@ final class TrieRouteMatcher implements IRouteMatcher
         $pathSegmentsCount = \count($pathSegments);
         $routeVars = $allowedMethods = [];
 
-        foreach ($this->getMatchCandidates($this->rootNode, $pathSegments/* TODO: Do something with these params, $pathSegmentsCount, 0, $hostSegments, $routeVars*/) as $candidate) {
+        foreach (($this->matcher)($this->rootNode, $pathSegments/* TODO: Do something with these params, $pathSegmentsCount, 0, $hostSegments, $routeVars*/) as $candidate) {
             foreach ($candidate->route->constraints as $constraint) {
                 // If any constraints fail, collect the allowed methods and go on to the next candidate
                 if (!$constraint->passes($candidate, $httpMethod, $host, $path, $headers)) {
@@ -54,15 +65,6 @@ final class TrieRouteMatcher implements IRouteMatcher
         }
 
         return new RouteMatchingResult(null, [], \array_unique($allowedMethods));
-    }
-
-    private function getMatchCandidates(TrieNode $node, array $segments): iterable
-    {
-        // TODO: Remove this function all together and move the func up into matchRoute()
-        error_log("\$func = {$this->generateCode()};"); // TODO: Remove
-        eval("\$func = {$this->generateCode()};");
-
-        yield from $func($node, $segments);
     }
 
     /**
@@ -151,15 +153,16 @@ final class TrieRouteMatcher implements IRouteMatcher
          *       Can you even fall through to a default path?
          *         - UPDATE 1: It turns out that you can fall back to a default case.  So, no problems.
          */
-        $code = '// This code was auto-generated on ' . (new \DateTime())->format('Y-m-d H:i:s');
-        $code .= "\nstatic function (\Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode \$node, array \$segments): iterable {";
+        $code = "<?php";
+        $code .= "\n// This code was auto-generated on " . (new \DateTime())->format('Y-m-d H:i:s');
+        $code .= "\nreturn static function (\Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode \$node, array \$segments): iterable {";
         $code .= "\n    \$numSegments = \count(\$segments);";
         // TODO: Remove this \|/
         $code .= "\n    \$routeVars = [];";
         // Check if there were no segments at all
         $code .= $this->generateCodeForEndOfSegmentsCheck(0, 1);
         $code .= $this->generateCodeForNode($this->rootNode, 0, 1);
-        $code .= "\n}"; // Closes the function
+        $code .= "\n};"; // Closes the function
 
         return $code;
     }
