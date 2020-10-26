@@ -41,11 +41,13 @@ class UriTemplateTest extends TestCase
 
     /**
      * @dataProvider leadingSlashUriProvider
+     * @param string $pathTemplate The actual path template
+     * @param string $expectedPathTemplate The expected path template
      */
-    public function testLeadingSlashIsAddedToPath($uri, $expectedUri): void
+    public function testLeadingSlashIsAddedToPath(string $pathTemplate, string $expectedPathTemplate): void
     {
-        $uriTemplate = new UriTemplate($uri);
-        $this->assertEquals($expectedUri, $uriTemplate->pathTemplate);
+        $uriTemplate = new UriTemplate($pathTemplate);
+        $this->assertEquals($expectedPathTemplate, $uriTemplate->pathTemplate);
     }
 
     public function testPropertiesAreSetInConstructor(): void

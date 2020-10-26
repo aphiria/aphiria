@@ -277,10 +277,10 @@ class RouteCollectionBuilderTest extends TestCase
             ->mapsToMethod('foo', 'bar');
         $route = $routeBuilder->build();
         $this->assertCount(1, $route->constraints);
-        /** @var HttpMethodRouteConstraint $httpMethodRouteConstraint */
         $httpMethodRouteConstraint = $route->constraints[0];
         $this->assertInstanceOf(HttpMethodRouteConstraint::class, $httpMethodRouteConstraint);
         // HEAD is automatically inserted for GET routes
+        /** @var HttpMethodRouteConstraint $httpMethodRouteConstraint */
         $this->assertEquals(['GET', 'DELETE', 'HEAD'], $httpMethodRouteConstraint->getAllowedMethods());
     }
 
@@ -292,13 +292,13 @@ class RouteCollectionBuilderTest extends TestCase
             $routeBuilder->mapsToMethod('Foo', 'bar');
             $route = $routeBuilder->build();
             $this->assertCount(1, $route->constraints);
-            /** @var HttpMethodRouteConstraint $methodConstraint */
             $methodConstraint = $route->constraints[0];
             $this->assertInstanceOf(HttpMethodRouteConstraint::class, $methodConstraint);
             /**
              * Specifically checking contains as opposed to equals because some constraints, eg GET, might contain
              * additional methods, eg HEAD
              */
+            /** @var HttpMethodRouteConstraint $methodConstraint */
             $this->assertContains($httpMethod, $methodConstraint->getAllowedMethods());
         }
     }

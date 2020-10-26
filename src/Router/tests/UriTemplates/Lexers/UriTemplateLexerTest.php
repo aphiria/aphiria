@@ -38,14 +38,16 @@ class UriTemplateLexerTest extends TestCase
 
     /**
      * @dataProvider lexingPathWithFloatProvider
+     * @param float $number The number to lex
+     * @param string $uriTemplate The
      */
-    public function testLexingPathWithFloat($number, $expectedValue): void
+    public function testLexingPathWithFloat(float $number, string $uriTemplate): void
     {
         $this->assertEquals(
             new TokenStream([
                 new Token(TokenTypes::T_NUMBER, $number)
             ]),
-            $this->lexer->lex($expectedValue)
+            $this->lexer->lex($uriTemplate)
         );
     }
 

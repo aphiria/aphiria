@@ -30,7 +30,8 @@ class ObjectConstraintsBuilderRegistrantTest extends TestCase
         $closureConstraintRegistrant = new ObjectConstraintsBuilderRegistrant($closures);
         $objectConstraints = new ObjectConstraintsRegistry();
         $closureConstraintRegistrant->registerConstraints($objectConstraints);
-        $propertyConstraints = $objectConstraints->getConstraintsForClass('foo')->getPropertyConstraints('prop');
+        $propertyConstraints = $objectConstraints->getConstraintsForClass('foo')?->getPropertyConstraints('prop');
+        $this->assertNotNull($propertyConstraints);
         $this->assertCount(1, $propertyConstraints);
         $this->assertSame($expectedConstraint, $propertyConstraints[0]);
     }

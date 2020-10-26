@@ -111,10 +111,11 @@ class RouteBuilder
     /**
      * Binds many middleware bindings to the route
      *
-     * @param MiddlewareBinding[]|string[] $middlewareBindings The list of middleware bindings to add, or a single
+     * @param MiddlewareBinding[]|string[]|class-string[] $middlewareBindings The list of middleware bindings to add, or a single
      *      class name without properties
      * @return static For chaining
      * @throws InvalidArgumentException Thrown if the middleware bindings are not the correct type
+     * @psalm-suppress RedundantConditionGivenDocblockType We need to check the type to get code coverage
      */
     public function withManyMiddleware(array $middlewareBindings): static
     {

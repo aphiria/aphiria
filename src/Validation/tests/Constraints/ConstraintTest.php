@@ -27,7 +27,7 @@ class ConstraintTest extends TestCase
                 parent::__construct($errorMessageId);
             }
 
-            public function passes($value): bool
+            public function passes(mixed $value): bool
             {
                 return true;
             }
@@ -50,7 +50,7 @@ class ConstraintTest extends TestCase
     public function testGettingErrorMessagePlaceholderForSerializableObjectsUsesSerializedValue(): void
     {
         $value = new class() {
-            public function __toString()
+            public function __toString(): string
             {
                 return 'foo';
             }

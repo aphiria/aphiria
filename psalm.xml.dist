@@ -14,6 +14,24 @@
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
+        <InaccessibleMethod>
+            <errorLevel type="suppress">
+                <file name="src/Api/tests/Controllers/ControllerTest.php" />
+                <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php" />
+            </errorLevel>
+        </InaccessibleMethod>
+        <!-- Tests use union types with mocks, which trips up Psalm a lot -->
+        <PossiblyInvalidArgument>
+            <errorLevel type="suppress">
+                <directory name="src/**/tests" />
+            </errorLevel>
+        </PossiblyInvalidArgument>
+        <!-- Tests use union types with mocks, which trips up Psalm a lot -->
+        <PossiblyUndefinedMethod>
+            <errorLevel type="suppress">
+                <directory name="src/**/tests" />
+            </errorLevel>
+        </PossiblyUndefinedMethod>
         <PropertyNotSetInConstructor>
             <errorLevel type="suppress">
                 <directory name="src/**/tests" />
@@ -30,11 +48,5 @@
                 <file name="src/**/.phpstorm.meta.php" />
             </errorLevel>
         </UndefinedFunction>
-        <InaccessibleMethod>
-            <errorLevel type="suppress">
-                <file name="src/Api/tests/Controllers/ControllerTest.php" />
-                <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php" />
-            </errorLevel>
-        </InaccessibleMethod>
     </issueHandlers>
 </psalm>

@@ -67,6 +67,7 @@ final class UriTemplateParser implements IUriTemplateParser
      * @param AstNode $currNode The abstract syntax tree to add nodes to
      * @param bool $parsingPath Whether or not we're parsing the path (otherwise we're parsing the host)
      * @throws UnexpectedTokenException Thrown if an unexpected punctuation token was found
+     * @psalm-suppress ReferenceConstraintViolation The current node will never be the root node, which means its parent will never be null
      */
     private function parsePunctuation(Token $currToken, TokenStream $tokens, AstNode &$currNode, bool $parsingPath): void
     {
@@ -202,6 +203,8 @@ final class UriTemplateParser implements IUriTemplateParser
      * @param TokenStream $tokens The stream of tokens to parse
      * @param AstNode $currNode The abstract syntax tree to add nodes to
      * @throws UnexpectedTokenException Thrown if there was an unexpected token
+     * @psalm-suppress PossiblyNullReference The current node will never be null or a root node
+     * @psalm-suppress ReferenceConstraintViolation The current node will never be the root node, which means its parent will never be null
      */
     private function parseVariable(Token $currToken, TokenStream $tokens, AstNode &$currNode): void
     {
@@ -214,6 +217,7 @@ final class UriTemplateParser implements IUriTemplateParser
         if ($tokens->nextIfType(TokenTypes::T_PUNCTUATION, '(')) {
             // Parse all variable constraints
             do {
+                /** @psalm-suppress PossiblyNullArgument Above, we've verified that the current token is punctuation */
                 $this->parseVariableConstraint($tokens->getCurrent(), $tokens, $variableNode);
             } while ($tokens->nextIfType(TokenTypes::T_PUNCTUATION, ','));
 

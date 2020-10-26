@@ -80,13 +80,13 @@ final class Session implements IMiddleware
         }
 
         $this->sessionHandler->open('', $this->sessionCookieName);
-        $sessionVars = @\unserialize($this->sessionHandler->read($this->session->getId()));
+        $sessionVars = @\unserialize($this->sessionHandler->read((string)$this->session->getId()));
         $this->session->setMany($sessionVars === false ? [] : $sessionVars);
 
         $response = $next->handle($request);
 
         $this->session->ageFlashData();
-        $this->sessionHandler->write($this->session->getId(), \serialize($this->session->getAll()));
+        $this->sessionHandler->write((string)$this->session->getId(), \serialize($this->session->getAll()));
         $this->writeSessionToResponse($response);
 
         return $response;

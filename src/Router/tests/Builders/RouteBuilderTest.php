@@ -57,11 +57,14 @@ class RouteBuilderTest extends TestCase
         $this->assertContains($constraint, $route->constraints);
     }
 
+    /**
+     * @psalm-suppress InvalidArgument We are purposely testing passing in an invalid parameter
+     */
     public function testInvalidManyMiddlewareThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('Middleware binding must either be a string or an instance of %s', MiddlewareBinding::class));
-        $this->routeBuilder->withManyMiddleware([1]);
+        $this->routeBuilder->withManyMiddleware([$this]);
     }
 
     public function testManyMiddlewareBindingsAreSetWhenPassingThemInAsObjects(): void
@@ -73,8 +76,6 @@ class RouteBuilderTest extends TestCase
         $this->routeBuilder->mapsToMethod('class', 'method');
         $route = $this->routeBuilder->build();
         $this->assertCount(2, $route->middlewareBindings);
-        $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[0]);
-        $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[1]);
         $this->assertSame('foo', $route->middlewareBindings[0]->className);
         $this->assertSame('dave', $route->middlewareBindings[1]->className);
         $this->assertEquals(['bar' => 'baz'], $route->middlewareBindings[0]->parameters);
@@ -96,8 +97,6 @@ class RouteBuilderTest extends TestCase
         $this->routeBuilder->mapsToMethod('class', 'method');
         $route = $this->routeBuilder->build();
         $this->assertCount(2, $route->middlewareBindings);
-        $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[0]);
-        $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[1]);
         $this->assertSame('foo', $route->middlewareBindings[0]->className);
         $this->assertSame('bar', $route->middlewareBindings[1]->className);
         $this->assertEquals([], $route->middlewareBindings[0]->parameters);
@@ -118,7 +117,6 @@ class RouteBuilderTest extends TestCase
         $this->routeBuilder->mapsToMethod('class', 'method');
         $route = $this->routeBuilder->build();
         $this->assertCount(1, $route->middlewareBindings);
-        $this->assertInstanceOf(MiddlewareBinding::class, $route->middlewareBindings[0]);
         $this->assertSame('foo', $route->middlewareBindings[0]->className);
         $this->assertEquals(['bar' => 'baz'], $route->middlewareBindings[0]->parameters);
     }

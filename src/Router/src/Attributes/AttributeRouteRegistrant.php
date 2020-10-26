@@ -19,6 +19,7 @@ use Aphiria\Routing\Attributes\Controller as ControllerAttribute;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Routing\Builders\RouteGroupOptions;
 use Aphiria\Routing\IRouteRegistrant;
+use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\RouteCollection;
 use ReflectionAttribute;
@@ -54,6 +55,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
     {
         $routeBuilders = new RouteCollectionBuilder();
 
+        /** @var class-string $controllerClass */
         foreach ($this->typeFinder->findAllClasses($this->paths, true) as $controllerClass) {
             $reflectionController = new ReflectionClass($controllerClass);
 
@@ -91,7 +93,10 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
     private function createRouteGroupOptions(ReflectionClass $controller): ?RouteGroupOptions
     {
         $routeGroupOptions = null;
-        $middlewareBindings = $routeConstraints = [];
+        /** @var MiddlewareBinding[] $middlewareBindings */
+        $middlewareBindings = [];
+        /** @var IRouteConstraint[] $routeConstraints */
+        $routeConstraints = [];
 
         foreach ($controller->getAttributes(Middleware::class) as $middlewareAttribute) {
             $middlewareAttributeInstance = $middlewareAttribute->newInstance();
@@ -109,6 +114,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
 
         foreach ($controller->getAttributes(RouteGroup::class) as $routeGroupAttribute) {
             $routeGroupAttributeInstance = $routeGroupAttribute->newInstance();
+            /** @psalm-suppress ArgumentTypeCoercion The route constraints will always be a list of route constraints - bug */
             $routeGroupOptions = new RouteGroupOptions(
                 $routeGroupAttributeInstance->path,
                 $routeGroupAttributeInstance->host,
@@ -122,6 +128,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
         // If there was no route group options attributes, but there were constraints or middleware, then create some route group options and add them
         if ($routeGroupOptions === null && (!empty($routeConstraints) || !empty($middlewareBindings))) {
             $routeGroupOptions = new RouteGroupOptions('');
+            /** @psalm-suppress  PropertyTypeCoercion This will always be a list of route constraints - bug */
             $routeGroupOptions->constraints = [...$routeGroupOptions->constraints, ...$routeConstraints];
             $routeGroupOptions->middlewareBindings = [...$routeGroupOptions->middlewareBindings, ...$middlewareBindings];
         }
@@ -139,7 +146,10 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
     {
         foreach ($controller->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $routeBuilder = null;
-            $middlewareBindings = $routeConstraints = [];
+            /** @var MiddlewareBinding[] $middlewareBindings */
+            $middlewareBindings = [];
+            /** @var IRouteConstraint[] $routeConstraints */
+            $routeConstraints = [];
 
             foreach ($method->getAttributes(Middleware::class) as $middlewareAttribute) {
                 $middlewareAttributeInstance = $middlewareAttribute->newInstance();
@@ -170,6 +180,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                 }
 
                 if (!empty($routeConstraints)) {
+                    /** @psalm-suppress ArgumentTypeCoercion This is always a list of route constraints - bug */
                     $routeBuilder->withManyConstraints($routeConstraints);
                 }
 
