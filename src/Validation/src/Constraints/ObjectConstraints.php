@@ -23,7 +23,7 @@ final class ObjectConstraints
     private array $methodConstraints = [];
 
     /**
-     * @param string $className The name of the class whose constraints are represented here
+     * @param class-string $className The name of the class whose constraints are represented here
      * @param array<string, IConstraint[]|IConstraint> $propertyConstraints The mapping of property names to constraints
      * @param array<string, IConstraint[]|IConstraint> $methodConstraints The mapping of method names to constraints
      */

@@ -36,6 +36,7 @@ class Psr11Container implements ContainerInterface
     public function get($id): object
     {
         try {
+            /** @psalm-suppress ArgumentTypeCoercion ContainerInterface takes in type string, but IServiceResolver takes in type class-string, which we cannot change */
             return $this->container->resolve($id);
         } catch (ResolutionException $ex) {
             if ($this->container->hasBinding($id)) {

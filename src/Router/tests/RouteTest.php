@@ -32,10 +32,17 @@ class RouteTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->routeAction = new RouteAction('Foo', 'bar');
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
+        $this->routeAction = new RouteAction($controller::class, 'bar');
         $this->uriTemplate = new UriTemplate('foo');
         $this->constraints = [$this->createMock(IRouteConstraint::class)];
-        $this->middlewareBindings = [new MiddlewareBinding('Foo')];
+        $middleware = new class() {
+        };
+        $this->middlewareBindings = [new MiddlewareBinding($middleware::class)];
         $this->parameters = ['foo' => 'bar'];
         $this->route = new Route(
             $this->uriTemplate,

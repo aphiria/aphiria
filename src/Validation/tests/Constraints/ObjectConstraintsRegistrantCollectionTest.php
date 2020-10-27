@@ -44,7 +44,7 @@ class ObjectConstraintsRegistrantCollectionTest extends TestCase
     public function testCacheHitCopiesCachedConstraintsIntoParameterConstraints(): void
     {
         $cachedConstraints = new ObjectConstraintsRegistry();
-        $cachedConstraints->registerObjectConstraints(new ObjectConstraints('foo'));
+        $cachedConstraints->registerObjectConstraints(new ObjectConstraints(self::class));
         $cache = $this->createMock(IObjectConstraintsRegistryCache::class);
         $cache->method('get')
             ->willReturn($cachedConstraints);

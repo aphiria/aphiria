@@ -34,7 +34,7 @@ final class ObjectConstraintsRegistry
     /**
      * Gets the list of constraints for a particular class
      *
-     * @param string $className The name of the class whose constraints we want
+     * @param class-string $className The name of the class whose constraints we want
      * @return ObjectConstraints|null The constraints, if there were any, otherwise null
      */
     public function getConstraintsForClass(string $className): ?ObjectConstraints

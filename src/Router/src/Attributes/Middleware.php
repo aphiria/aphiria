@@ -22,7 +22,7 @@ use InvalidArgumentException;
 final class Middleware
 {
     /**
-     * @param string $className The name of the middleware class
+     * @param class-string $className The name of the middleware class
      * @param array $parameters The mapping of parameter names to values
      * @throws InvalidArgumentException Thrown if any of the parameters are invalid
      */

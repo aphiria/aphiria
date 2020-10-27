@@ -52,6 +52,7 @@ class IntegrationTestCaseTest extends TestCase
 
             public function __construct(IRequestHandler $app)
             {
+                /** @psalm-suppress InternalMethod We need to call this internal method */
                 parent::__construct();
 
                 $this->app = $app;
@@ -67,6 +68,7 @@ class IntegrationTestCaseTest extends TestCase
              * Sets the failure message
              *
              * @param string $message The failure message
+             * @psalm-suppress ImplementedReturnTypeMismatch This never returns anything - bug
              */
             public static function fail(string $message = ''): void
             {
@@ -82,7 +84,7 @@ class IntegrationTestCaseTest extends TestCase
             public function send(IRequest $request): IResponse
             {
                 // Make this request accessible by the DI container so the application client doesn't bomb out
-                Container::$globalInstance->bindInstance(IRequest::class, $request);
+                Container::$globalInstance?->bindInstance(IRequest::class, $request);
 
                 return parent::send($request);
             }

@@ -190,6 +190,7 @@ class GlobalConfiguration
      *
      * @param string $path The period-delimited path to the value in the config to get
      * @param array|null $value The value if one was found, otherwise null
+     * @param-out array $value
      * @return bool True if the value existed, otherwise false
      */
     public static function tryGetArray(string $path, ?array &$value): bool
@@ -212,6 +213,7 @@ class GlobalConfiguration
      *
      * @param string $path The period-delimited path to the value in the config to get
      * @param bool|null $value The value if one was found, otherwise null
+     * @param-out bool $value
      * @return bool True if the value existed, otherwise false
      */
     public static function tryGetBool(string $path, ?bool &$value): bool
@@ -234,6 +236,7 @@ class GlobalConfiguration
      *
      * @param string $path The period-delimited path to the value in the config to get
      * @param float|null $value The value if one was found, otherwise null
+     * @param-out float $value
      * @return bool True if the value existed, otherwise false
      */
     public static function tryGetFloat(string $path, ?float &$value): bool
@@ -256,6 +259,7 @@ class GlobalConfiguration
      *
      * @param string $path The period-delimited path to the value in the config to get
      * @param int|null $value The value if one was found, otherwise null
+     * @param-out int $value
      * @return bool True if the value existed, otherwise false
      */
     public static function tryGetInt(string $path, ?int &$value): bool
@@ -278,6 +282,7 @@ class GlobalConfiguration
      *
      * @param string $path The period-delimited path to the value in the config to get
      * @param string|null $value The value if one was found, otherwise null
+     * @param-out string $value
      * @return bool True if the value existed, otherwise false
      */
     public static function tryGetString(string $path, ?string &$value): bool
@@ -300,6 +305,7 @@ class GlobalConfiguration
      *
      * @param string $path The period-delimited path to the value in the config to get
      * @param mixed $value The value if one was found, otherwise null
+     * @param-out mixed $value
      * @return bool True if the value existed, otherwise false
      */
     public static function tryGetValue(string $path, mixed &$value): bool

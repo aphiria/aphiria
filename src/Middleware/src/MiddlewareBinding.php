@@ -18,7 +18,7 @@ namespace Aphiria\Middleware;
 final class MiddlewareBinding
 {
     /**
-     * @param string $className The name of the middleware class
+     * @param class-string $className The name of the middleware class
      * @param array $attributes The name => value mapping of attributes bound to the middleware
      */
     public function __construct(public string $className, public array $attributes = [])

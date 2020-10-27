@@ -49,7 +49,7 @@ final class ObjectConstraintsRegistryBuilder
     /**
      * Starts building constraints for a particular class
      *
-     * @param string $className The name of the class whose constraints we'll build
+     * @param class-string $className The name of the class whose constraints we'll build
      * @return ObjectConstraintsBuilder For chaining
      */
     public function class(string $className): ObjectConstraintsBuilder

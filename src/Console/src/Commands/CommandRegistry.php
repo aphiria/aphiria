@@ -88,6 +88,7 @@ final class CommandRegistry
      *
      * @param string $commandName The command name to search for
      * @param CommandBinding|null $binding The command binding, if there was one
+     * @param-out CommandBinding $binding
      * @return bool True if there was a binding for the command name, otherwise false
      */
     public function tryGetBinding(string $commandName, ?CommandBinding &$binding): bool
@@ -108,6 +109,7 @@ final class CommandRegistry
      *
      * @param string $commandName The command name to search for
      * @param Command|null $command The command, if there was one
+     * @param-out Command $command
      * @return bool True if there was a command with the input name, otherwise false
      */
     public function tryGetCommand(string $commandName, ?Command &$command): bool
@@ -129,6 +131,7 @@ final class CommandRegistry
      *
      * @param Command|string $command Either the command name or the instance of the command
      * @param string|null $commandHandlerClassName The command handler class name, if there was one
+     * @param-out string $commandHandlerClassName
      * @return bool True if there was a handler for the command, otherwise false
      */
     public function tryGetHandlerClassName(Command|string $command, ?string &$commandHandlerClassName): bool

@@ -30,8 +30,9 @@ interface IServiceResolver
     /**
      * Resolve an instance of the interface
      *
-     * @param string $interface The interface to resolve
-     * @return object The resolved instance
+     * @template T
+     * @param class-string<T> $interface The interface to resolve
+     * @return T The resolved instance
      * @throws ResolutionException Thrown if there was an error resolving the interface
      */
     public function resolve(string $interface): object;
@@ -39,8 +40,11 @@ interface IServiceResolver
     /**
      * Tries to resolve an instance of the interface
      *
+     * @template T
      * @param string $interface The interface to resolve
+     * @psalm-param class-string<T> $interface
      * @param object|null $instance The resolved instance if successful
+     * @param-out T $instance
      * @return bool True if the binding was successful, otherwise false
      */
     public function tryResolve(string $interface, ?object &$instance): bool;

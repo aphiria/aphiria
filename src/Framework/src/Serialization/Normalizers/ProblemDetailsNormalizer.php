@@ -30,6 +30,7 @@ final class ProblemDetailsNormalizer extends ObjectNormalizer
             throw new InvalidArgumentException('Object must be an instance of ' . ProblemDetails::class);
         }
 
+        /** @var array<string, mixed> $normalizedProblemDetails */
         $normalizedProblemDetails = parent::normalize($object);
 
         if (\array_key_exists('extensions', $normalizedProblemDetails)) {

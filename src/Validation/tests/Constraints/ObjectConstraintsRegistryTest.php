@@ -29,21 +29,21 @@ class ObjectConstraintsRegistryTest extends TestCase
     {
         $registry1 = new ObjectConstraintsRegistry();
         $registry2 = new ObjectConstraintsRegistry();
-        $expectedObjectConstraints = new ObjectConstraints('foo', [], []);
+        $expectedObjectConstraints = new ObjectConstraints(self::class, [], []);
         $registry1->registerObjectConstraints($expectedObjectConstraints);
         $registry2->copy($registry1);
-        $this->assertSame($expectedObjectConstraints, $registry2->getConstraintsForClass('foo'));
+        $this->assertSame($expectedObjectConstraints, $registry2->getConstraintsForClass(self::class));
     }
 
     public function testGettingConstraintsForClassWithNoneReturnsNull(): void
     {
-        $this->assertNull($this->objectConstraints->getConstraintsForClass('foo'));
+        $this->assertNull($this->objectConstraints->getConstraintsForClass(self::class));
     }
 
     public function testGettingConstraintsForClassWithSomeReturnsThem(): void
     {
-        $expectedObjectConstraints = new ObjectConstraints('foo', [], []);
+        $expectedObjectConstraints = new ObjectConstraints(self::class, [], []);
         $this->objectConstraints->registerObjectConstraints($expectedObjectConstraints);
-        $this->assertSame($expectedObjectConstraints, $this->objectConstraints->getConstraintsForClass('foo'));
+        $this->assertSame($expectedObjectConstraints, $this->objectConstraints->getConstraintsForClass(self::class));
     }
 }

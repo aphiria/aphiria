@@ -311,26 +311,26 @@ class Container implements IContainer
     /**
      * Resolves a class
      *
-     * @param string $class The class name to resolve
+     * @param class-string $className The class name to resolve
      * @param array $primitives The list of constructor primitives
      * @return object The resolved class
      * @throws ResolutionException Thrown if the class could not be resolved
      */
-    protected function resolveClass(string $class, array $primitives = []): object
+    protected function resolveClass(string $className, array $primitives = []): object
     {
         try {
-            if (isset($this->constructorReflectionCache[$class])) {
-                [$constructor, $parameters] = $this->constructorReflectionCache[$class];
+            if (isset($this->constructorReflectionCache[$className])) {
+                [$constructor, $parameters] = $this->constructorReflectionCache[$className];
             } else {
-                $reflectionClass = new ReflectionClass($class);
+                $reflectionClass = new ReflectionClass($className);
 
                 if (!$reflectionClass->isInstantiable()) {
                     throw new ResolutionException(
-                        $class,
+                        $className,
                         $this->currentContext,
                         sprintf(
                             '%s is not instantiable%s',
-                            $class,
+                            $className,
                             $this->currentContext->isTargeted() ? " (dependency of {$this->currentContext->getTargetClass()})" : ''
                         )
                     );
@@ -338,26 +338,26 @@ class Container implements IContainer
 
                 $constructor = $reflectionClass->getConstructor();
                 $parameters = $constructor !== null ? $constructor->getParameters() : null;
-                $this->constructorReflectionCache[$class] = [$constructor, $parameters];
+                $this->constructorReflectionCache[$className] = [$constructor, $parameters];
             }
 
             if ($constructor === null) {
                 // No constructor, so instantiating is easy
-                return new $class();
+                return new $className();
             }
 
-            $constructorParameters = $this->resolveParameters($class, $parameters, $primitives);
+            $constructorParameters = $this->resolveParameters($className, $parameters, $primitives);
 
-            return new $class(...$constructorParameters);
+            return new $className(...$constructorParameters);
         } catch (ReflectionException $ex) {
-            throw new ResolutionException($class, $this->currentContext, "Failed to resolve class $class", 0, $ex);
+            throw new ResolutionException($className, $this->currentContext, "Failed to resolve class $className", 0, $ex);
         }
     }
 
     /**
      * Resolves a list of parameters for a function call
      *
-     * @param string|null $class The name of the class whose parameters we're resolving
+     * @param class-string|null $className The name of the class whose parameters we're resolving
      * @param ReflectionParameter[] $unresolvedParameters The list of unresolved parameters
      * @param array $primitives The list of primitive values
      * @return array The list of parameters with all the dependencies resolved
@@ -365,7 +365,7 @@ class Container implements IContainer
      * @throws ReflectionException Thrown if there was a reflection exception
      */
     protected function resolveParameters(
-        ?string $class,
+        ?string $className,
         array $unresolvedParameters,
         array $primitives
     ): array {
@@ -386,9 +386,9 @@ class Container implements IContainer
                     if ($parameterClassName === null) {
                         // The parameter is a primitive
                         $resolvedParameter = $this->resolvePrimitive($parameter, $parameterType, $primitives);
-                    } elseif ($class !== null && $this->hasTargetedBinding($parameterClassName, $class)) {
+                    } elseif ($className !== null && $this->hasTargetedBinding($parameterClassName, $className)) {
                         $resolvedParameter = $this->for(
-                            new TargetedContext($class),
+                            new TargetedContext($className),
                             fn (IContainer $container) => $container->resolve($parameterClassName)
                         );
                     } else {
@@ -415,7 +415,7 @@ class Container implements IContainer
 
             if (!$parameterResolved) {
                 throw new ResolutionException(
-                    $class ?? '',
+                    $className ?? '',
                     $this->currentContext,
                     sprintf(
                         'Failed to resolve %s in %s::%s()',
