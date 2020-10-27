@@ -197,7 +197,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithCommandsConfiguresComponentToHaveCommands(): void
     {
-        $callback = fn (CommandRegistry $commands) => null;
+        $callback = fn (CommandRegistry $commands): mixed => null;
         $expectedComponent = $this->createMock(CommandComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withCommands')
@@ -237,7 +237,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withCommands($appBuilder, $callback);
             }
         };
-        $callback = fn (CommandRegistry $commands) => null;
+        $callback = fn (CommandRegistry $commands): mixed => null;
         $component->build($this->appBuilder, $callback);
         // Dummy assertion
         $this->assertTrue(true);
@@ -306,7 +306,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withConsoleExceptionOutputWriter($appBuilder, $exceptionType, $callback);
             }
         };
-        $callback = fn (Exception $ex, IOutput $output) => null;
+        $callback = fn (Exception $ex, IOutput $output): mixed => null;
         $component->build($this->appBuilder, Exception::class, $callback);
         // Dummy assertion
         $this->assertTrue(true);
@@ -451,7 +451,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithGlobalMiddlewareRegistersComponentIfItIsNotRegisteredYetAndUsesBoundMiddlewareCollection(): void
     {
-        Container::$globalInstance->bindInstance(MiddlewareCollection::class, new MiddlewareCollection());
+        Container::$globalInstance?->bindInstance(MiddlewareCollection::class, new MiddlewareCollection());
         $this->appBuilder->method('hasComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn(false);
@@ -561,7 +561,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithObjectConstraintsConfiguresComponentToHaveObjectConstraints(): void
     {
-        $callback = fn (ObjectConstraintsRegistry $objectConstraints) => null;
+        $callback = fn (ObjectConstraintsRegistry $objectConstraints): mixed => null;
         $expectedComponent = $this->createMock(ValidationComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withObjectConstraints')
@@ -601,7 +601,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withObjectConstraints($appBuilder, $callback);
             }
         };
-        $factory = fn (ObjectConstraintsRegistry $objectConstraints) => null;
+        $factory = fn (ObjectConstraintsRegistry $objectConstraints): mixed => null;
         $component->build($this->appBuilder, $factory);
         // Dummy assertion
         $this->assertTrue(true);
@@ -654,12 +654,12 @@ class AphiriaComponentsTest extends TestCase
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $exceptionType,
-                $type = null,
-                $title = null,
-                $detail = null,
-                $status = null,
-                $instance = null,
-                $extensions = null
+                string|Closure $type = null,
+                string|Closure $title = null,
+                string|Closure $detail = null,
+                int|Closure $status = null,
+                string|Closure $instance = null,
+                array|Closure $extensions = null
             ): void {
                 $this->withProblemDetails($appBuilder, $exceptionType, $type, $title, $detail, $status, $instance, $extensions);
             }

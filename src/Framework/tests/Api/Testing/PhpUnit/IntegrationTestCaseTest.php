@@ -63,6 +63,11 @@ class IntegrationTestCaseTest extends TestCase
                 ]);
             }
 
+            /**
+             * Sets the failure message
+             *
+             * @param string $message The failure message
+             */
             public static function fail(string $message = ''): void
             {
                 self::$failMessage = $message;
@@ -83,37 +88,37 @@ class IntegrationTestCaseTest extends TestCase
             }
 
             // Make this public for testability
-            public function delete($uri, array $headers = [], $body = null): IResponse
+            public function delete(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
             {
                 return parent::delete($uri, $headers, $body);
             }
 
             // Make this public for testability
-            public function get($uri, array $headers = []): IResponse
+            public function get(string|Uri $uri, array $headers = []): IResponse
             {
                 return parent::get($uri, $headers);
             }
 
             // Make this public for testability
-            public function options($uri, array $headers = [], $body = null): IResponse
+            public function options(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
             {
                 return parent::options($uri, $headers, $body);
             }
 
             // Make this public for testability
-            public function patch($uri, array $headers = [], $body = null): IResponse
+            public function patch(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
             {
                 return parent::patch($uri, $headers, $body);
             }
 
             // Make this public for testability
-            public function post($uri, array $headers = [], $body = null): IResponse
+            public function post(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
             {
                 return parent::post($uri, $headers, $body);
             }
 
             // Make this public for testability
-            public function put($uri, array $headers = [], $body = null): IResponse
+            public function put(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
             {
                 return parent::put($uri, $headers, $body);
             }
@@ -318,7 +323,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertParsedBodyPassesCallback(
             $response,
             $expectedParsedBody::class,
-            fn ($parsedBody) => true
+            fn (mixed $parsedBody): bool => true
         );
     }
 
@@ -334,7 +339,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertParsedBodyPassesCallback(
             $response,
             self::class,
-            fn ($parsedBody) => false
+            fn (mixed $parsedBody): bool => false
         );
         $this->assertSame(
             'Failed to assert that the response body passes the callback',
