@@ -49,7 +49,9 @@ class ValidationComponentTest extends TestCase
             fn (ObjectConstraintsRegistryBuilder $objectConstraintsBuilders) => $objectConstraintsBuilders->class('foo')->hasMethodConstraints('bar', new RequiredConstraint())
         );
         $this->validationComponent->build();
-        $this->assertInstanceOf(RequiredConstraint::class, $this->objectConstraints->getConstraintsForClass('foo')->getMethodConstraints('bar')[0]);
+        $classConstraints = $this->objectConstraints->getConstraintsForClass('foo');
+        $this->assertNotNull($classConstraints);
+        $this->assertInstanceOf(RequiredConstraint::class, $classConstraints->getMethodConstraints('bar')[0]);
     }
 
     public function testBuildWithAttributesAddsAttributeRegistrant(): void

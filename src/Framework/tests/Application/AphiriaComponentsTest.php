@@ -625,12 +625,12 @@ class AphiriaComponentsTest extends TestCase
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $exceptionType,
-                $type = null,
-                $title = null,
-                $detail = null,
-                $status = null,
-                $instance = null,
-                $extensions = null
+                string|Closure $type = null,
+                string|Closure$title = null,
+                string|Closure$detail = null,
+                int|Closure $status = null,
+                string|Closure$instance = null,
+                array|Closure $extensions = null
             ): void {
                 $this->withProblemDetails($appBuilder, $exceptionType, $type, $title, $detail, $status, $instance, $extensions);
             }
@@ -716,7 +716,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithRoutesConfiguresComponentToHaveRoutes(): void
     {
-        $callback = fn (RouteCollectionBuilder $routeBuilders) => null;
+        $callback = fn (RouteCollectionBuilder $routeBuilders): mixed => null;
         $expectedComponent = $this->createMock(RouterComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withRoutes')
@@ -756,7 +756,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withRoutes($appBuilder, $callback);
             }
         };
-        $callback = fn (RouteCollectionBuilder $routeBuilders) => null;
+        $callback = fn (RouteCollectionBuilder $routeBuilders): mixed => null;
         $component->build($this->appBuilder, $callback);
         // Dummy assertion
         $this->assertTrue(true);

@@ -259,7 +259,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
          * difficult in PHPUnit.  As a result, this mock isn't even doing anything with the type  parameter.
          */
         $this->container->method('bindInstance')
-            ->with($this->anything(), $this->callback(function ($actualInstance) use ($expectedExceptionRendererType) {
+            ->with($this->anything(), $this->callback(function (mixed $actualInstance) use ($expectedExceptionRendererType): bool {
                 // The problem details renderer is always bound, even in console contexts.  So, check whether or not the renderer is that or the expected one.
                 if ($actualInstance instanceof ProblemDetailsExceptionRenderer) {
                     $this->apiExceptionRenderer = $actualInstance;

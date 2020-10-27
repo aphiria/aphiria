@@ -17,7 +17,7 @@ namespace Aphiria\Middleware;
  */
 final class MiddlewareCollection
 {
-    /** @var array The list of structs that contain middleware and priorities */
+    /** @var array<int, array{middleware: IMiddleware, priority: int}> The list of structs that contain middleware and priorities */
     private array $middlewareWithPriorities = [];
 
     /**
@@ -38,7 +38,7 @@ final class MiddlewareCollection
      */
     public function getAll(): array
     {
-        \usort($this->middlewareWithPriorities, static fn ($a, $b) => $a['priority'] <=> $b['priority']);
+        \usort($this->middlewareWithPriorities, static fn (array $a, array $b): int => $a['priority'] <=> $b['priority']);
         $prioritizedMiddleware = [];
 
         foreach ($this->middlewareWithPriorities as $middlewareWithPriority) {

@@ -18,7 +18,7 @@ use InvalidArgumentException;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
-class HttpHeadersTest extends TestCase
+class HeadersTest extends TestCase
 {
     private Headers $headers;
 
@@ -150,6 +150,7 @@ class HttpHeadersTest extends TestCase
         /**
          * @var int $key
          * @var KeyValuePair $value
+         * @psalm-suppress RedundantConditionGivenDocblockType We want to explicitly test the values, not the doc block
          */
         foreach ($this->headers->toArray() as $key => $value) {
             // Verify that the key is numeric, not associative

@@ -10,6 +10,7 @@
         <directory name="src/" />
         <ignoreFiles>
             <directory name="vendor" />
+            <directory name="src/**/vendor" />
             <file name="src/Router/bin/benchmarks.php" />
         </ignoreFiles>
     </projectFiles>
@@ -48,5 +49,24 @@
                 <file name="src/**/.phpstorm.meta.php" />
             </errorLevel>
         </UndefinedFunction>
+        <UndefinedInterfaceMethod>
+            <errorLevel type="suppress">
+                <!-- The elevated visibilities in the mocks triggers a false positive -->
+                <file name="src/DependencyInjection/tests/Binders/LazyBinderDispatcherTest.php" />
+                <file name="src/Framework/tests/Exceptions/Binders/ExceptionHandlerBinderTest.php" />
+                <!-- The PhpStorm meta files give us intellisense that Psalm does not pick up on -->
+                <file name="src/Framework/src/Application/AphiriaComponents.php" />
+            </errorLevel>
+        </UndefinedInterfaceMethod>
+        <UndefinedMethod>
+            <errorLevel type="suppress">
+                <!-- The elevated visibilities in the mocks triggers a false positive -->
+                <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php" />
+                <file name="src/Framework/tests/Console/Components/CommandComponentTest.php" />
+                <file name="src/Framework/tests/Exceptions/Bootstrappers/GlobalExceptionHandlerBootstrapperTest.php" />
+                <file name="src/Framework/tests/Routing/Components/RouterComponentTest.php" />
+                <file name="src/Framework/tests/Validation/Components/ValidationComponentTest.php" />
+            </errorLevel>
+        </UndefinedMethod>
     </issueHandlers>
 </psalm>

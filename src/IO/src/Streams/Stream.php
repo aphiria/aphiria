@@ -20,7 +20,7 @@ use RuntimeException;
  */
 final class Stream implements IStream
 {
-    /** @var array The list of readable stream modes */
+    /** @var string[] The list of readable stream modes */
     private static array $readStreamModes = [
         'a+',
         'c+',
@@ -39,7 +39,7 @@ final class Stream implements IStream
         'x+b',
         'x+t'
     ];
-    /** @var array The list of writable stream modes */
+    /** @var string[] The list of writable stream modes */
     private static array $writeStreamModes = [
         'a',
         'a+',
@@ -59,6 +59,8 @@ final class Stream implements IStream
         'x+b',
         'x+t'
     ];
+    /** @var resource|null The underlying stream handle */
+    private $handle;
     /** @var bool Whether or not the stream is readable */
     private bool $isReadable;
     /** @var bool Whether or not the stream is seekable */
@@ -70,12 +72,14 @@ final class Stream implements IStream
      * @param resource $handle The underlying stream handle
      * @param int|null $length The length of the stream, if known
      */
-    public function __construct(private $handle, private ?int $length = null)
+    public function __construct($handle, private ?int $length = null)
     {
-        if (!\is_resource($this->handle)) {
+        /** @psalm-suppress DocblockTypeContradiction We purposely guard ourselves against non-resources */
+        if (!\is_resource($handle)) {
             throw new InvalidArgumentException('Stream must be a resource');
         }
 
+        $this->handle = $handle;
         $streamMetadata = \stream_get_meta_data($this->handle);
         $this->isReadable = \in_array($streamMetadata['mode'], self::$readStreamModes, true);
         $this->isSeekable = $streamMetadata['seekable'];
@@ -110,6 +114,7 @@ final class Stream implements IStream
     public function close(): void
     {
         if (\is_resource($this->handle)) {
+            /** @psalm-suppress InvalidPropertyAssignmentValue We do not care about the "closed-resource" type */
             if (\fclose($this->handle) === false) {
                 // Cannot test failed stream closures
                 // @codeCoverageIgnoreStart
@@ -138,6 +143,7 @@ final class Stream implements IStream
     public function getLength(): ?int
     {
         // Handle a closed stream
+        /** @psalm-suppress DocblockTypeContradiction This may not be a resource anymore if it's closed */
         if ($this->handle === null) {
             throw new RuntimeException('Unable to get size of closed stream');
         }
@@ -156,6 +162,7 @@ final class Stream implements IStream
      */
     public function getPosition(): int
     {
+        /** @psalm-suppress DocblockTypeContradiction This may not be a resource anymore if it's closed */
         if (!\is_resource($this->handle)) {
             throw new RuntimeException('Unable to get position of closed stream');
         }
@@ -175,6 +182,7 @@ final class Stream implements IStream
      */
     public function isEof(): bool
     {
+        /** @psalm-suppress DocblockTypeContradiction This may not be a resource anymore if it's closed */
         if (!\is_resource($this->handle)) {
             throw new RuntimeException('Unable to tell if at EOF on closed stream');
         }
@@ -215,6 +223,7 @@ final class Stream implements IStream
             throw new RuntimeException('Stream is not readable');
         }
 
+        /** @psalm-suppress PossiblyNullArgument This will never be null if it's readable */
         if (($content = \fread($this->handle, $length)) === false) {
             // Cannot test failing to read a stream
             // @codeCoverageIgnoreStart
@@ -234,6 +243,7 @@ final class Stream implements IStream
             throw new RuntimeException('Stream is not readable');
         }
 
+        /** @psalm-suppress PossiblyNullArgument This will never be null if it's readable */
         if (($content = \stream_get_contents($this->handle)) === false) {
             // Cannot test failing to get a stream's contents
             // @codeCoverageIgnoreStart
@@ -257,10 +267,12 @@ final class Stream implements IStream
      */
     public function seek(int $offset, int $whence = SEEK_SET): void
     {
+        /** @psalm-suppress PossiblyNullArgument This will never be null if it's seekable */
         if (!$this->isSeekable || \fseek($this->handle, $offset, $whence)) {
             throw new RuntimeException('Stream is not seekable');
         }
 
+        /** @psalm-suppress PossiblyNullArgument This will never be null if it's seekable */
         if (\fseek($this->handle, $offset, $whence) === -1) {
             // Cannot test failing to seek in a stream
             // @codeCoverageIgnoreStart
@@ -278,6 +290,7 @@ final class Stream implements IStream
             throw new RuntimeException('Stream is not writable');
         }
 
+        /** @psalm-suppress PossiblyNullArgument This will never be null if it's writable */
         if (\fwrite($this->handle, $data) === false) {
             // Cannot test failing to write to a stream
             // @codeCoverageIgnoreStart

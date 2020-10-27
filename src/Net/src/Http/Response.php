@@ -58,7 +58,7 @@ class Response implements IResponse
         $response = $startLine . $headers . "\r\n\r\n";
 
         if ($this->body !== null) {
-            $response .= $this->getBody();
+            $response .= $this->body;
         }
 
         return $response;

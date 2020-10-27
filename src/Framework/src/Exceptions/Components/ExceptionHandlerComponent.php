@@ -26,11 +26,11 @@ use Closure;
  */
 class ExceptionHandlerComponent implements IComponent
 {
-    /** @var Closure[] The mapping of exception types to problem detail settings */
+    /** @var array<string, array<"type": string|Closure, title: string|Closure, detail: string|Closure, status: int|Closure, instance: string|Closure, extensions: array|Closure>> The mapping of exception types to problem detail settings */
     private array $exceptionProblemDetailMappings = [];
-    /** @var Closure[] The mapping of exception types to console result factories */
+    /** @var array<string, Closure> The mapping of exception types to console result factories */
     private array $consoleOutputWriters = [];
-    /** @var Closure[] The mapping of exception types to log level factories */
+    /** @var array<string, Closure> The mapping of exception types to log level factories */
     private array $logLevelFactories = [];
 
     /**

@@ -374,7 +374,8 @@ class Container implements IContainer
         foreach ($unresolvedParameters as $parameter) {
             $resolvedParameter = null;
             $parameterResolved = false;
-            $parameterTypes = $parameter->getType() instanceof \ReflectionUnionType ? $parameter->getType()->getTypes() : [$parameter->getType()];
+            $parameterType = $parameter->getType();
+            $parameterTypes = $parameterType instanceof \ReflectionUnionType ? $parameterType?->getTypes() : [$parameterType];
 
             foreach ($parameterTypes as $parameterType) {
                 try {

@@ -27,7 +27,7 @@ class Request implements IRequest
     protected Headers $headers;
     /** @var IDictionary The request properties */
     protected IDictionary $properties;
-    /** @var array The list of valid HTTP methods */
+    /** @var array<string, bool> The list of valid HTTP methods */
     private static array $validMethods = [
         'CONNECT' => true,
         'DELETE' => true,
@@ -40,14 +40,14 @@ class Request implements IRequest
         'PUT' => true,
         'TRACE' => true
     ];
-    /** @var array The list of request target types that require a Host header */
+    /** @var array<string, bool> The list of request target types that require a Host header */
     private static array $validRequestTargetTypes = [
         RequestTargetTypes::ORIGIN_FORM => true,
         RequestTargetTypes::ABSOLUTE_FORM => true,
         RequestTargetTypes::AUTHORITY_FORM => true,
         RequestTargetTypes::ASTERISK_FORM => true
     ];
-    /** @var array The list of valid request target types */
+    /** @var array<string, bool> The list of valid request target types */
     private static array $requestTargetTypesWithHostHeader = [
         RequestTargetTypes::ORIGIN_FORM => true,
         // Per https://tools.ietf.org/html/rfc7230#section-5.4, this is necessary for old HTTP/1.0 proxies
@@ -75,7 +75,7 @@ class Request implements IRequest
         protected string $protocolVersion = '1.1',
         protected string $requestTargetType = RequestTargetTypes::ORIGIN_FORM
     ) {
-        $this->method = strtoupper($method);
+        $this->method = \strtoupper($method);
         $this->headers = $headers ?? new Headers();
         $this->properties = $properties ?? new HashTable();
         $this->validateProperties();
@@ -85,6 +85,7 @@ class Request implements IRequest
             isset(self::$requestTargetTypesWithHostHeader[$this->requestTargetType]) &&
             !$this->headers->containsKey('Host')
         ) {
+            /** @psalm-suppress PossiblyNullReference Psalm doesn't recognize promoted properties yet - bug */
             $this->headers->add('Host', $this->uri->getAuthority(false) ?? '');
         }
     }
@@ -104,7 +105,7 @@ class Request implements IRequest
         $serializedRequest = $startLine . $headers . "\r\n\r\n";
 
         if ($this->body !== null) {
-            $serializedRequest .= $this->getBody();
+            $serializedRequest .= $this->body;
         }
 
         return $serializedRequest;
