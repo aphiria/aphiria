@@ -18,6 +18,7 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\GlobalExceptionHandler;
+use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
@@ -140,6 +141,21 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->apiExceptionRenderer->render($exception);
         // Dummy assertion
         $this->assertTrue(true);
+    }
+
+    public function testInvalidExceptionRendererThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Exception renderer must implement ' . IExceptionRenderer::class);
+        $config = self::getBaseConfig();
+        $config['aphiria']['exceptions']['apiExceptionRenderer'] = self::class;
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        $this->addBootstrapAssertions(self::class);
+        $this->container->method('resolve')
+            ->with(self::class)
+            ->willReturn($this);$config = self::getBaseConfig();
+        $this->bootstrapper->setIsRunningInConsole(false);
+        $this->bootstrapper->bootstrap();
     }
 
     public function testInvalidRequestBodyExceptionProblemDetailsMappingIsRegisteredAndUsesProblemDetailsIfConfigured(): void

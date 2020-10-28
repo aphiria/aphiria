@@ -22,7 +22,12 @@ class MatchedRouteCandidateTest extends TestCase
 {
     public function testPropertiesSetCorrectlyInConstructor(): void
     {
-        $expectedRoute = new Route(new UriTemplate(''), new RouteAction('Foo', 'bar'), []);
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
+        $expectedRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
         $expectedRouteVariables = ['foo' => 'bar'];
         $matchedRoute = new MatchedRouteCandidate($expectedRoute, $expectedRouteVariables);
         $this->assertSame($expectedRoute, $matchedRoute->route);

@@ -28,6 +28,7 @@ final class Middleware
      */
     public function __construct(public string $className, public array $parameters = [])
     {
+        /** @psalm-suppress DocblockTypeContradiction We want runtime reassurance that this is never empty */
         if (empty($this->className)) {
             throw new InvalidArgumentException('Class name must be set');
         }

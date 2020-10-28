@@ -57,9 +57,9 @@ class MiddlewareComponentTest extends TestCase
         $this->dependencyResolver->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, $middlewareCollection],
-                ['foo', $expectedMiddleware]
+                [$expectedMiddleware::class, $expectedMiddleware]
             ]);
-        $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('foo', ['bar' => 'baz']));
+        $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($expectedMiddleware::class, ['bar' => 'baz']));
         $this->middlewareComponent->build();
         $this->assertEquals([$expectedMiddleware], $middlewareCollection->getAll());
     }
@@ -72,9 +72,9 @@ class MiddlewareComponentTest extends TestCase
         $this->dependencyResolver->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, new MiddlewareCollection()],
-                ['foo', $invalidMiddleware]
+                [$invalidMiddleware::class, $invalidMiddleware]
             ]);
-        $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('foo'));
+        $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($invalidMiddleware::class));
         $this->middlewareComponent->build();
     }
 
@@ -86,11 +86,11 @@ class MiddlewareComponentTest extends TestCase
         $this->dependencyResolver->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, $middlewareCollection],
-                ['foo', $expectedMiddleware1],
-                ['bar', $expectedMiddleware2]
+                [$expectedMiddleware1::class, $expectedMiddleware1],
+                [$expectedMiddleware2::class, $expectedMiddleware2]
             ]);
-        $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('foo'));
-        $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('bar'));
+        $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($expectedMiddleware1::class));
+        $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($expectedMiddleware2::class));
         $this->middlewareComponent->build();
         $this->assertEquals([$expectedMiddleware1, $expectedMiddleware2], $middlewareCollection->getAll());
     }
@@ -103,10 +103,12 @@ class MiddlewareComponentTest extends TestCase
         $this->dependencyResolver->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, $middlewareCollection],
-                ['foo', $expectedMiddleware1],
-                ['bar', $expectedMiddleware2]
+                [$expectedMiddleware1::class, $expectedMiddleware1],
+                [$expectedMiddleware2::class, $expectedMiddleware2]
             ]);
-        $this->middlewareComponent->withGlobalMiddleware([new MiddlewareBinding('foo'), new MiddlewareBinding('bar')]);
+        $this->middlewareComponent->withGlobalMiddleware([
+            new MiddlewareBinding($expectedMiddleware1::class), new MiddlewareBinding($expectedMiddleware2::class)
+        ]);
         $this->middlewareComponent->build();
         $this->assertEquals([$expectedMiddleware1, $expectedMiddleware2], $middlewareCollection->getAll());
     }
@@ -118,9 +120,9 @@ class MiddlewareComponentTest extends TestCase
         $this->dependencyResolver->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, $middlewareCollection],
-                ['foo', $expectedMiddleware]
+                [$expectedMiddleware::class, $expectedMiddleware]
             ]);
-        $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding('foo'));
+        $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($expectedMiddleware::class));
         $this->middlewareComponent->build();
         $this->assertEquals([$expectedMiddleware], $middlewareCollection->getAll());
     }

@@ -22,13 +22,19 @@ class MiddlewareTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Class name must be set');
+        /**
+         * @psalm-suppress UndefinedClass Intentionally testing an empty string
+         * @psalm-suppress ArgumentTypeCoercion Ditto
+         */
         new Middleware('');
     }
 
     public function testPropertiesAreSetInConstructor(): void
     {
-        $middleware = new Middleware('foo', ['foo' => 'bar']);
-        $this->assertSame('foo', $middleware->className);
-        $this->assertSame(['foo' => 'bar'], $middleware->parameters);
+        $middleware = new class() {
+        };
+        $middlewareAttribute = new Middleware($middleware::class, ['foo' => 'bar']);
+        $this->assertSame($middleware::class, $middlewareAttribute->className);
+        $this->assertSame(['foo' => 'bar'], $middlewareAttribute->parameters);
     }
 }

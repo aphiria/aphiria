@@ -26,7 +26,7 @@ use Closure;
  */
 class ExceptionHandlerComponent implements IComponent
 {
-    /** @var array<string, array<"type": string|Closure, title: string|Closure, detail: string|Closure, status: int|Closure, instance: string|Closure, extensions: array|Closure>> The mapping of exception types to problem detail settings */
+    /** @var array<class-string, array{type: string|Closure|null, title: string|Closure|null, detail: string|Closure|null, status: int|Closure|null, instance: string|Closure|null, extensions: array|Closure|null}> The mapping of exception types to problem detail settings */
     private array $exceptionProblemDetailMappings = [];
     /** @var array<string, Closure> The mapping of exception types to console result factories */
     private array $consoleOutputWriters = [];
@@ -95,7 +95,7 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * Adds a mapping of an exception type to problem details properties
      *
-     * @param string $exceptionType The type of exception that's thrown
+     * @param class-string $exceptionType The type of exception that's thrown
      * @param string|Closure|null $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
      * @param string|Closure|null $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
      * @param string|Closure|null $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null

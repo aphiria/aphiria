@@ -34,6 +34,7 @@ use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class IntegrationTestCaseTest extends TestCase
 {
@@ -302,6 +303,13 @@ class IntegrationTestCaseTest extends TestCase
         );
     }
 
+    public function testAssertParsedBodyEqualsWithoutLastRequestSetThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('A request must be sent before calling ' . IntegrationTestCase::class . '::assertParsedBodyEquals');
+        $this->integrationTests->assertParsedBodyEquals($this, new Response());
+    }
+
     public function testAssertParsedBodyPassesCallbackDoesNotThrowOnSuccess(): void
     {
         $request = new Request(
@@ -347,6 +355,13 @@ class IntegrationTestCaseTest extends TestCase
             'Failed to assert that the response body passes the callback',
             $this->integrationTests->getFailMessage()
         );
+    }
+
+    public function testAssertParsedBodyPassesCallbackWithoutLastRequestSetThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('A request must be sent before calling ' . IntegrationTestCase::class . '::assertParsedBodyPassesCallback');
+        $this->integrationTests->assertParsedBodyPassesCallback(new Response(), self::class, fn (mixed $body): bool => false);
     }
 
     public function testAssertStatusCodeEqualsDoesNotThrowOnSuccess(): void
@@ -519,5 +534,13 @@ class IntegrationTestCaseTest extends TestCase
         $this->expectExceptionMessage('Environment variable "APP_URL" must be set to use a relative path');
         \putenv('APP_URL=');
         $this->integrationTests->get('/foo');
+    }
+
+    public function testStringAndUriInstanceAreAllowedForUri(): void
+    {
+        $this->integrationTests->get('http://example.com');
+        $this->integrationTests->get(new Uri('http://example.com'));
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 }

@@ -45,11 +45,13 @@ class ValidationComponentTest extends TestCase
 
     public function testBuildRegistersObjectConstraintsRegisteredInCallbacks(): void
     {
+        $class = new class() {
+        };
         $this->validationComponent->withObjectConstraints(
-            fn (ObjectConstraintsRegistryBuilder $objectConstraintsBuilders) => $objectConstraintsBuilders->class('foo')->hasMethodConstraints('bar', new RequiredConstraint())
+            fn (ObjectConstraintsRegistryBuilder $objectConstraintsBuilders) => $objectConstraintsBuilders->class($class::class)->hasMethodConstraints('bar', new RequiredConstraint())
         );
         $this->validationComponent->build();
-        $classConstraints = $this->objectConstraints->getConstraintsForClass('foo');
+        $classConstraints = $this->objectConstraints->getConstraintsForClass($class::class);
         $this->assertNotNull($classConstraints);
         $this->assertInstanceOf(RequiredConstraint::class, $classConstraints->getMethodConstraints('bar')[0]);
     }
