@@ -32,7 +32,7 @@ use Exception;
  */
 class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
 {
-    /** @var string[] The mapping of HTTP status codes to their RFC type URIs */
+    /** @var array<int, string> The mapping of HTTP status codes to their RFC type URIs */
     protected static array $statusesToRfcTypes = [
         HttpStatusCodes::OK => 'https://tools.ietf.org/html/rfc7231#section-6.3.1',
         HttpStatusCodes::CREATED => 'https://tools.ietf.org/html/rfc7231#section-6.3.2',
@@ -74,7 +74,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
         HttpStatusCodes::GATEWAY_TIMEOUT => 'https://tools.ietf.org/html/rfc7231#section-6.6.5',
         HttpStatusCodes::HTTP_VERSION_NOT_SUPPORTED => 'https://tools.ietf.org/html/rfc7231#section-6.6.6'
     ];
-    /** @var Closure[] The mapping of exception types to problem details factories */
+    /** @var array<class-string, Closure> The mapping of exception types to problem details factories */
     protected array $exceptionTypesToProblemDetailsFactories = [];
     /** @var IResponseWriter What is used to write the response */
     protected IResponseWriter $responseWriter;
@@ -129,11 +129,11 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
     /**
      * Maps an exception type to problem details properties
      *
-     * @param string $exceptionType The type of exception that was thrown
+     * @param class-string $exceptionType The type of exception that was thrown
      * @param string|Closure|null $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
      * @param string|Closure|null $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
      * @param string|Closure|null $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
-     * @param int|Closure|null $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param int|Closure $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
      * @param string|Closure|null $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
      * @param array|Closure|null $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
      */
@@ -142,15 +142,13 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
         string|Closure $type = null,
         string|Closure $title = null,
         string|Closure $detail = null,
-        int|Closure $status = null,
+        int|Closure $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
         string|Closure $instance = null,
         array|Closure $extensions = null
     ): void {
         $this->exceptionTypesToProblemDetailsFactories[$exceptionType] = function (Exception $ex) use ($type, $title, $detail, $status, $instance, $extensions): ProblemDetails {
             if (\is_callable($status)) {
                 $status = $status($ex);
-            } elseif ($status === null) {
-                $status = HttpStatusCodes::INTERNAL_SERVER_ERROR;
             }
 
             if (\is_callable($type)) {

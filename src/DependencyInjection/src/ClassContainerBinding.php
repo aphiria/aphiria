@@ -19,7 +19,7 @@ namespace Aphiria\DependencyInjection;
 class ClassContainerBinding implements IContainerBinding
 {
     /**
-     * @param string $concreteClass The name of the concrete class
+     * @param class-string $concreteClass The name of the concrete class
      * @param array $constructorPrimitives The list of constructor primitives
      * @param bool $resolveAsSingleton Whether or not to resolve as a singleton
      */
@@ -31,7 +31,9 @@ class ClassContainerBinding implements IContainerBinding
     }
 
     /**
-     * @return string
+     * Gets the concrete class
+     *
+     * @return class-string The concrete class
      */
     public function getConcreteClass(): string
     {
@@ -39,7 +41,9 @@ class ClassContainerBinding implements IContainerBinding
     }
 
     /**
-     * @return array
+     * Gets the list of constructor primitives
+     *
+     * @return array The list of constructor primitives
      */
     public function getConstructorPrimitives(): array
     {
@@ -47,7 +51,9 @@ class ClassContainerBinding implements IContainerBinding
     }
 
     /**
-     * @return bool
+     * Gets whether or not to resolve as a singleton
+     *
+     * @return bool Whether or not to resolve as a singleton
      */
     public function resolveAsSingleton(): bool
     {

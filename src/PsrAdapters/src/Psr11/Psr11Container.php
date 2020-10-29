@@ -32,11 +32,11 @@ class Psr11Container implements ContainerInterface
      * @inheritdoc
      * @throws NotFoundException Thrown if there was no binding for the ID
      * @throws ContainerException Thrown if there was an error auto-wiring the ID
+     * @psalm-suppress ArgumentTypeCoercion ContainerInterface takes in type string, but IServiceResolver takes in type class-string, which we cannot change
      */
     public function get($id): object
     {
         try {
-            /** @psalm-suppress ArgumentTypeCoercion ContainerInterface takes in type string, but IServiceResolver takes in type class-string, which we cannot change */
             return $this->container->resolve($id);
         } catch (ResolutionException $ex) {
             if ($this->container->hasBinding($id)) {

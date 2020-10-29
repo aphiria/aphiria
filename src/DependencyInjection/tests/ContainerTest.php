@@ -33,6 +33,7 @@ use Aphiria\DependencyInjection\Tests\Mocks\ConstructorWithSetters;
 use Aphiria\DependencyInjection\Tests\Mocks\ConstructorWithTypedPrimitives;
 use Aphiria\DependencyInjection\Tests\Mocks\ConstructorWithUnionType;
 use Aphiria\DependencyInjection\Tests\Mocks\Dave;
+use Aphiria\DependencyInjection\Tests\Mocks\DerivedClass;
 use Aphiria\DependencyInjection\Tests\Mocks\Foo;
 use Aphiria\DependencyInjection\Tests\Mocks\IFoo;
 use Aphiria\DependencyInjection\Tests\Mocks\IPerson;
@@ -75,6 +76,7 @@ class ContainerTest extends TestCase
         );
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithInterface::class, $instance1);
         $this->assertInstanceOf(Bar::class, $instance1->getFoo());
         $this->assertSame($instance1->getFoo(), $instance2->getFoo());
@@ -85,14 +87,14 @@ class ContainerTest extends TestCase
     public function testBindingToAbstractClass(): void
     {
         $prototypeContainer = new Container();
-        $prototypeContainer->bindClass(BaseClass::class, Bar::class);
+        $prototypeContainer->bindClass(BaseClass::class, DerivedClass::class);
         $prototypeInstance = $prototypeContainer->resolve(BaseClass::class);
-        $this->assertInstanceOf(Bar::class, $prototypeInstance);
+        $this->assertInstanceOf(DerivedClass::class, $prototypeInstance);
         $this->assertNotSame($prototypeInstance, $prototypeContainer->resolve(BaseClass::class));
         $singletonContainer = new Container();
-        $singletonContainer->bindClass(BaseClass::class, Bar::class, [], true);
+        $singletonContainer->bindClass(BaseClass::class, DerivedClass::class, [], true);
         $singletonInstance = $singletonContainer->resolve(BaseClass::class);
-        $this->assertInstanceOf(Bar::class, $singletonInstance);
+        $this->assertInstanceOf(DerivedClass::class, $singletonInstance);
         $this->assertSame($singletonInstance, $singletonContainer->resolve(BaseClass::class));
     }
 
@@ -110,6 +112,7 @@ class ContainerTest extends TestCase
         $this->container->bindFactory(IFoo::class, fn () => new Bar(), true);
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithInterface::class, $instance1);
         $this->assertInstanceOf(Bar::class, $instance1->getFoo());
         $this->assertInstanceOf(Bar::class, $instance2->getFoo());
@@ -122,7 +125,8 @@ class ContainerTest extends TestCase
         $instance = new ConstructorWithSetters();
         $this->container->callMethod($instance, 'setPrimitive', ['foo']);
         $this->assertSame('foo', $instance->getPrimitive());
-        $result = $this->container->callClosure(fn ($primitive) => $primitive, ['foo']);
+        /** @psalm-suppress MissingClosureParamType Purposely testing without a param type */
+        $result = $this->container->callClosure(fn ($primitive): mixed => $primitive, ['foo']);
         $this->assertSame('foo', $result);
     }
 
@@ -141,7 +145,8 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Bar::class, $instance->getInterface());
         $this->assertSame('foo', $instance->getPrimitive());
         $response = $this->container->callClosure(
-            fn (IFoo $interface, $primitive) => $interface::class . ':' . $primitive,
+            /** @psalm-suppress MissingClosureParamType Purposely testing without a param type */
+            fn (IFoo $interface, $primitive): string => $interface::class . ':' . $primitive,
             ['foo']
         );
         $this->assertSame(Bar::class . ':foo', $response);
@@ -277,6 +282,7 @@ class ContainerTest extends TestCase
     public function testCreatingPrototypeInstanceWithConcreteDependency(): void
     {
         $newInstance = $this->container->resolve(ConstructorWithConcreteClass::class);
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithConcreteClass::class, $newInstance);
     }
 
@@ -284,6 +290,7 @@ class ContainerTest extends TestCase
     {
         $this->container->bindClass(ConstructorWithPrimitives::class, ConstructorWithPrimitives::class, ['foo', 'bar']);
         $instance = $this->container->resolve(ConstructorWithPrimitives::class);
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithPrimitives::class, $instance);
         $this->assertNotSame(
             $instance,
@@ -305,6 +312,7 @@ class ContainerTest extends TestCase
             ['foo']
         );
         $instance = $this->container->resolve(ConstructorWithDefaultValuePrimitives::class);
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithDefaultValuePrimitives::class, $instance);
         $this->assertNotSame(
             $instance,
@@ -315,6 +323,7 @@ class ContainerTest extends TestCase
     public function testCreatingSingletonInstanceWithConcreteDependency(): void
     {
         $sharedInstance = $this->container->resolve(ConstructorWithConcreteClass::class);
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithConcreteClass::class, $sharedInstance);
     }
 
@@ -322,6 +331,7 @@ class ContainerTest extends TestCase
     {
         $this->container->bindClass(ConstructorWithPrimitives::class, ConstructorWithPrimitives::class, ['foo', 'bar'], true);
         $instance = $this->container->resolve(ConstructorWithPrimitives::class);
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithPrimitives::class, $instance);
         $this->assertSame(
             $instance,
@@ -338,6 +348,7 @@ class ContainerTest extends TestCase
             true
         );
         $instance = $this->container->resolve(ConstructorWithDefaultValuePrimitives::class);
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithDefaultValuePrimitives::class, $instance);
         $this->assertSame(
             $instance,
@@ -412,6 +423,7 @@ class ContainerTest extends TestCase
         $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance2 */
         $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithMixOfInterfacesAndPrimitives::class, $instance1);
         $this->assertSame($instance1, $instance2);
         $this->assertSame(23, $instance1->getId());
@@ -420,8 +432,10 @@ class ContainerTest extends TestCase
 
     public function testForWithStringContextCreatesTargetedBinding(): void
     {
-        $this->container->for('foo', fn (IContainer $container) => $container->bindInstance(IFoo::class, new Bar()));
-        $this->container->for('foo', function (IContainer $container) {
+        $target = new class() {
+        };
+        $this->container->for($target::class, fn (IContainer $container) => $container->bindInstance(IFoo::class, new Bar()));
+        $this->container->for($target::class, function (IContainer $container) {
             $this->assertInstanceOf(Bar::class, $container->resolve(IFoo::class));
         });
     }
@@ -432,6 +446,7 @@ class ContainerTest extends TestCase
         $instance = $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             return $container->resolve(IFoo::class);
         });
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(IFoo::class, $instance);
     }
 
@@ -455,6 +470,7 @@ class ContainerTest extends TestCase
         );
         /** @var ConstructorWithMixOfConcreteClassesAndPrimitives $instance */
         $instance = $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class);
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithMixOfConcreteClassesAndPrimitives::class, $instance);
         $this->assertSame(23, $instance->getId());
         $this->assertNotSame($instance, $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class));
@@ -470,7 +486,10 @@ class ContainerTest extends TestCase
             true
         );
         $instance = $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class);
-        /** @var ConstructorWithMixOfConcreteClassesAndPrimitives $newInstance */
+        /**
+         * @var ConstructorWithMixOfConcreteClassesAndPrimitives $newInstance
+         * @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime
+         */
         $this->assertInstanceOf(ConstructorWithMixOfConcreteClassesAndPrimitives::class, $instance);
         $this->assertSame(23, $instance->getId());
         $this->assertSame($instance, $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class));
@@ -478,27 +497,30 @@ class ContainerTest extends TestCase
 
     public function testMultipleTargetedBindings(): void
     {
-        $this->container->for(new TargetedContext('baz'), function (IContainer $container) {
-            $container->bindClass(['foo', 'bar'], Bar::class);
+        $target = new class() {
+        };
+        $this->container->for(new TargetedContext($target::class), function (IContainer $container) {
+            $container->bindClass([IFoo::class, Bar::class], Bar::class);
         });
-        $this->assertTrue($this->container->for(new TargetedContext('baz'), function (IContainer $container) {
-            return $container->hasBinding('foo');
+        $this->assertTrue($this->container->for(new TargetedContext($target::class), function (IContainer $container) {
+            return $container->hasBinding(IFoo::class);
         }));
-        $this->assertTrue($this->container->for(new TargetedContext('baz'), function (IContainer $container) {
-            return $container->hasBinding('bar');
+        $this->assertTrue($this->container->for(new TargetedContext($target::class), function (IContainer $container) {
+            return $container->hasBinding(Bar::class);
         }));
     }
 
     public function testMultipleUniversalBindings(): void
     {
-        $this->container->bindClass(['foo', 'bar'], Bar::class);
-        $this->assertTrue($this->container->hasBinding('foo'));
-        $this->assertTrue($this->container->hasBinding('bar'));
+        $this->container->bindClass([IFoo::class, Bar::class], Bar::class);
+        $this->assertTrue($this->container->hasBinding(IFoo::class));
+        $this->assertTrue($this->container->hasBinding(Bar::class));
     }
 
     public function testResolvingClassWithNullableObjectInConstructorThatCannotBeResolvedUsesNull(): void
     {
         $instance = $this->container->resolve(ConstructorWithNullableObject::class);
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithNullableObject::class, $instance);
         $this->assertNull($instance->getFoo());
     }
@@ -506,6 +528,7 @@ class ContainerTest extends TestCase
     public function testResolvingClassWithObjectInConstructorThatCannotBeResolvedUsesDefaultValueIfAvailable(): void
     {
         $instance = $this->container->resolve(ConstructorWithDefaultValueObject::class);
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithDefaultValueObject::class, $instance);
         $this->assertInstanceOf(DateTime::class, $instance->getFoo());
     }
@@ -564,18 +587,24 @@ class ContainerTest extends TestCase
     public function testResolvingPrototypeNonExistentClass(): void
     {
         $this->expectException(ResolutionException::class);
+        /**
+         * @psalm-suppress UndefinedClass Intentionally testing with a non-existent class
+         * @psalm-suppress ArgumentTypeCoercion Ditto
+         */
         $this->container->resolve('DoesNotExist');
     }
 
     public function testResolvingSingletonForTarget(): void
     {
-        $this->container->for(new TargetedContext('foo'), function (IContainer $container) {
+        $target = new class() {
+        };
+        $this->container->for(new TargetedContext($target::class), function (IContainer $container) {
             $container->bindClass(IFoo::class, Bar::class, [], true);
         });
-        $instance1 = $this->container->for(new TargetedContext('foo'), function (IContainer $container) {
+        $instance1 = $this->container->for(new TargetedContext($target::class), function (IContainer $container) {
             return $container->resolve(IFoo::class);
         });
-        $instance2 = $this->container->for(new TargetedContext('foo'), function (IContainer $container) {
+        $instance2 = $this->container->for(new TargetedContext($target::class), function (IContainer $container) {
             return $container->resolve(IFoo::class);
         });
         $this->assertInstanceOf(Bar::class, $instance1);
@@ -643,6 +672,7 @@ class ContainerTest extends TestCase
         $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance2 */
         $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
+        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithMixOfInterfacesAndPrimitives::class, $instance1);
         $this->assertSame($instance1, $instance2);
         $this->assertSame(23, $instance1->getId());
@@ -664,71 +694,87 @@ class ContainerTest extends TestCase
 
     public function testTargetedFactoryBindingsOnlyApplyToNextCall(): void
     {
-        $this->container->for(new TargetedContext('foo'), function (IContainer $container) {
+        $target1 = new class() {
+        };
+        $target2 = new class() {
+        };
+        $this->container->for(new TargetedContext($target1::class), function (IContainer $container) {
             $container->bindFactory(IFoo::class, function () {
                 return new Bar();
             });
         });
-        $this->container->for(new TargetedContext('bar'), function (IContainer $container) {
-            $container->bindFactory('doesNotExist', function () {
-                return new Bar();
+        $this->container->for(new TargetedContext($target2::class), function (IContainer $container) {
+            $container->bindFactory(IPerson::class, function () {
+                return new Dave();
             });
         });
-        $this->assertFalse($this->container->for(new TargetedContext('foo'), function (IContainer $container) {
-            return $container->hasBinding('doesNotExist');
+        $this->assertFalse($this->container->for(new TargetedContext($target1::class), function (IContainer $container) {
+            return $container->hasBinding(IPerson::class);
         }));
-        $this->assertTrue($this->container->for(new TargetedContext('bar'), function (IContainer $container) {
-            return $container->hasBinding('doesNotExist');
+        $this->assertTrue($this->container->for(new TargetedContext($target2::class), function (IContainer $container) {
+            return $container->hasBinding(IPerson::class);
         }));
     }
 
     public function testTargetedInstanceBindingsOnlyApplyToNextCall(): void
     {
-        $instance1 = new Bar();
-        $instance2 = new Bar();
-        $this->container->for(new TargetedContext('foo'), function (IContainer $container) use ($instance1) {
-            $container->bindInstance(IFoo::class, $instance1);
+        $target1 = new class() {
+        };
+        $target2 = new class() {
+        };
+        $fooInstance = new Bar();
+        $personInstance = new Dave();
+        $this->container->for(new TargetedContext($target1::Class), function (IContainer $container) use ($fooInstance) {
+            $container->bindInstance(IFoo::class, $fooInstance);
         });
-        $this->container->for(new TargetedContext('bar'), function (IContainer $container) use ($instance2) {
-            $container->bindInstance('doesNotExist', $instance2);
+        $this->container->for(new TargetedContext($target2::class), function (IContainer $container) use ($personInstance) {
+            $container->bindInstance(IPerson::class, $personInstance);
         });
-        $this->assertFalse($this->container->for(new TargetedContext('foo'), function (IContainer $container) {
-            return $container->hasBinding('doesNotExist');
+        $this->assertFalse($this->container->for(new TargetedContext($target1::Class), function (IContainer $container) {
+            return $container->hasBinding(IPerson::class);
         }));
-        $this->assertTrue($this->container->for(new TargetedContext('bar'), function (IContainer $container) {
-            return $container->hasBinding('doesNotExist');
+        $this->assertTrue($this->container->for(new TargetedContext($target2::class), function (IContainer $container) {
+            return $container->hasBinding(IPerson::class);
         }));
     }
 
     public function testTargetedPrototypeBindingsOnlyApplyToNextCall(): void
     {
-        $this->container->for(new TargetedContext('foo'), function (IContainer $container) {
-            $container->bindClass(IFoo::class, 'bar');
+        $target1 = new class() {
+        };
+        $target2 = new class() {
+        };
+        $this->container->for(new TargetedContext($target1::class), function (IContainer $container) {
+            $container->bindClass(IFoo::class, Foo::class);
         });
-        $this->container->for(new TargetedContext('baz'), function (IContainer $container) {
-            $container->bindClass('doesNotExist', 'bar');
+        $this->container->for(new TargetedContext($target2::class), function (IContainer $container) {
+            $container->bindClass(IPerson::class, Dave::class);
         });
-        $this->assertFalse($this->container->for(new TargetedContext('foo'), function (IContainer $container) {
-            return $container->hasBinding('doesNotExist');
+        $this->assertFalse($this->container->for(new TargetedContext($target1::class), function (IContainer $container) {
+            return $container->hasBinding(IPerson::class);
         }));
-        $this->assertTrue($this->container->for(new TargetedContext('baz'), function (IContainer $container) {
-            return $container->hasBinding('doesNotExist');
+        $this->assertTrue($this->container->for(new TargetedContext($target2::class), function (IContainer $container) {
+            return $container->hasBinding(IPerson::class);
         }));
     }
 
     public function testTargetedSingletonBindingsOnlyApplyToNextCall(): void
     {
-        $this->container->for(new TargetedContext('foo'), function (IContainer $container) {
-            $container->bindClass(IFoo::class, 'bar', [], true);
+        $target1 = new class() {
+        };
+        $target2 = new class() {
+        };
+        $this->container->for(new TargetedContext($target1::class), function (IContainer $container) {
+            $container->bindClass(IFoo::class, Foo::class, [], true);
         });
-        $this->container->for(new TargetedContext('baz'), function (IContainer $container) {
-            $container->bindClass('doesNotExist', 'bar', [], true);
+        $this->container->for(new TargetedContext($target2::class), function (IContainer $container) {
+            $container->bindClass(IPerson::class, Dave::class, [], true);
         });
-        $this->assertFalse($this->container->for(new TargetedContext('foo'), function (IContainer $container) {
-            return $container->hasBinding('doesNotExist');
+        $this->assertFalse($this->container->for(new TargetedContext($target1::class), function (IContainer $container) {
+            return $container->hasBinding(IPerson::class);
         }));
-        $this->assertTrue($this->container->for(new TargetedContext('baz'), function (IContainer $container) {
-            return $container->hasBinding('doesNotExist');
+        $this->assertTrue($this->container->for(new TargetedContext($target2::class), function (IContainer $container) {
+            return $container->hasBinding(IPerson::class);
         }));
     }
 
@@ -766,11 +812,15 @@ class ContainerTest extends TestCase
 
     public function testUnbindingMultipleInterfaces(): void
     {
-        $this->container->bindClass('foo', 'bar');
-        $this->container->bindClass('baz', 'blah');
-        $this->container->unbind(['foo', 'baz']);
-        $this->assertFalse($this->container->hasBinding('foo'));
-        $this->assertFalse($this->container->hasBinding('baz'));
+        $object1 = new class() {
+        };
+        $object2 = new class() {
+        };
+        $this->container->bindClass($object1::class, $object1::class);
+        $this->container->bindClass($object2::class, $object2::class);
+        $this->container->unbind([$object1::class, $object2::class]);
+        $this->assertFalse($this->container->hasBinding($object1::class));
+        $this->assertFalse($this->container->hasBinding($object2::class));
     }
 
     public function testUnbindingTargetedBinding(): void

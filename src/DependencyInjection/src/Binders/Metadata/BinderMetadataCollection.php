@@ -17,9 +17,9 @@ namespace Aphiria\DependencyInjection\Binders\Metadata;
  */
 final class BinderMetadataCollection
 {
-    /** @var BinderMetadata[][] The mapping of interfaces to binder metadata that universally resolve those interfaces */
+    /** @var array<class-string, BinderMetadata[]> The mapping of interfaces to binder metadata that universally resolve those interfaces */
     private array $universalResolutions = [];
-    /** @var array The mapping of targets to interfaces to binders that resolve the interface for the target */
+    /** @var array<class-string, array{class-string, BinderMetadata[]}> The mapping of targets to interfaces to binder metadata that resolve the interface for the target */
     private array $targetedResolutions = [];
 
     /**

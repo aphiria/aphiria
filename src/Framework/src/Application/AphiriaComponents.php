@@ -33,6 +33,7 @@ use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
+use Aphiria\Net\Http\HttpStatusCodes;
 use Closure;
 use RuntimeException;
 
@@ -365,7 +366,7 @@ trait AphiriaComponents
      * @param string|Closure|null $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
      * @param string|Closure|null $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
      * @param string|Closure|null $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
-     * @param int|Closure|null $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param int|Closure $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
      * @param string|Closure|null $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
      * @param array|Closure|null $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
      * @return static For chaining
@@ -377,7 +378,7 @@ trait AphiriaComponents
         string|Closure $type = null,
         string|Closure $title = null,
         string|Closure $detail = null,
-        int|Closure $status = null,
+        int|Closure $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
         string|Closure $instance = null,
         array|Closure $extensions = null
     ): static {

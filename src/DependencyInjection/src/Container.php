@@ -18,8 +18,10 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
+use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionType;
+use ReflectionUnionType;
 
 /**
  * Defines the dependency injection container
@@ -39,9 +41,9 @@ class Container implements IContainer
     protected Context $currentContext;
     /** @var Context[] The stack of contexts */
     protected array $contextStack = [];
-    /** @var IContainerBinding[][] The list of bindings */
+    /** @var array<string|class-string, array<string|class-string, IContainerBinding>> The list of bindings */
     protected array $bindings = [];
-    /** @var array The cache of reflection constructors and their parameters */
+    /** @var array<class-string, array{0: ReflectionMethod|null, 1: ReflectionParameter[]|null}> The cache of reflection constructors and their parameters */
     protected array $constructorReflectionCache = [];
 
     public function __construct()
@@ -105,6 +107,8 @@ class Container implements IContainer
 
     /**
      * @inheritdoc
+     *
+     * @psalm-suppress MoreSpecificImplementedParamType Instance will always be an instance of interface(s) - bug
      */
     public function bindInstance(string|array $interfaces, object $instance): void
     {
@@ -157,6 +161,8 @@ class Container implements IContainer
 
     /**
      * @inheritdoc
+     *
+     * @psalm-suppress MissingReturnType This method returns output value of the callback
      */
     public function for(Context|string $context, callable $callback)
     {
@@ -168,6 +174,7 @@ class Container implements IContainer
         $this->currentContext = $context;
         $this->contextStack[] = $context;
 
+        /** @psalm-suppress ArgumentTypeCoercion The callback should accept $this - bug */
         $result = $callback($this);
 
         array_pop($this->contextStack);
@@ -193,6 +200,9 @@ class Container implements IContainer
 
     /**
      * @inheritdoc
+     *
+     * @psalm-suppress InvalidReturnType This method will always return the correct type
+     * @psalm-suppress InvalidReturnStatement Ditto
      */
     public function resolve(string $interface): object
     {
@@ -262,7 +272,7 @@ class Container implements IContainer
     /**
      * Adds a binding to an interface
      *
-     * @param string $interface The interface to bind to
+     * @param class-string $interface The interface to bind to
      * @param IContainerBinding $binding The binding to add
      */
     protected function addBinding(string $interface, IContainerBinding $binding): void
@@ -279,7 +289,7 @@ class Container implements IContainer
     /**
      * Gets a binding for an interface
      *
-     * @param string $interface The interface whose binding we want
+     * @param class-string $interface The interface whose binding we want
      * @return IContainerBinding|null The binding if one exists, otherwise null
      */
     protected function getBinding(string $interface): ?IContainerBinding
@@ -287,9 +297,10 @@ class Container implements IContainer
         // If there's a targeted binding, use it
         if (
             $this->currentContext->isTargeted()
-            && isset($this->bindings[$this->currentContext->getTargetClass()][$interface])
+            && isset($this->bindings[($targetClass = $this->currentContext->getTargetClass())][$interface])
         ) {
-            return $this->bindings[$this->currentContext->getTargetClass()][$interface];
+            /** @var class-string $targetClass This will not be null because the context is targeted */
+            return $this->bindings[$targetClass][$interface];
         }
 
         // If there's a universal binding, use it
@@ -299,8 +310,8 @@ class Container implements IContainer
     /**
      * Gets whether or not a targeted binding exists
      *
-     * @param string $interface The interface to check
-     * @param string|null $target The target whose bindings we're checking
+     * @param class-string $interface The interface to check
+     * @param class-string|null $target The target whose bindings we're checking
      * @return bool True if the targeted binding exists, otherwise false
      */
     protected function hasTargetedBinding(string $interface, string $target = null): bool
@@ -311,9 +322,10 @@ class Container implements IContainer
     /**
      * Resolves a class
      *
-     * @param class-string $className The class name to resolve
+     * @template T
+     * @param class-string<T> $className The class name to resolve
      * @param array $primitives The list of constructor primitives
-     * @return object The resolved class
+     * @return T The resolved class
      * @throws ResolutionException Thrown if the class could not be resolved
      */
     protected function resolveClass(string $className, array $primitives = []): object
@@ -346,7 +358,7 @@ class Container implements IContainer
                 return new $className();
             }
 
-            $constructorParameters = $this->resolveParameters($className, $parameters, $primitives);
+            $constructorParameters = $this->resolveParameters($className, $parameters ?? [], $primitives);
 
             return new $className(...$constructorParameters);
         } catch (ReflectionException $ex) {
@@ -375,10 +387,12 @@ class Container implements IContainer
             $resolvedParameter = null;
             $parameterResolved = false;
             $parameterType = $parameter->getType();
-            $parameterTypes = $parameterType instanceof \ReflectionUnionType ? $parameterType?->getTypes() : [$parameterType];
+            /** @var list<ReflectionNamedType|null> $parameterTypes */
+            $parameterTypes = $parameterType instanceof ReflectionUnionType ? $parameterType->getTypes() : [$parameterType];
 
             foreach ($parameterTypes as $parameterType) {
                 try {
+                    /** @var class-string|null $parameterClassName */
                     $parameterClassName = $parameterType !== null && !$parameterType->isBuiltin()
                         ? $parameterType->getName()
                         : null;
@@ -420,7 +434,7 @@ class Container implements IContainer
                     sprintf(
                         'Failed to resolve %s in %s::%s()',
                         $parameter->getName(),
-                        $parameter->getDeclaringClass()->getName(),
+                        $parameter->getDeclaringClass()?->getName() ?? 'Unknown',
                         $parameter->getDeclaringFunction()->getName()
                     )
                 );
@@ -458,7 +472,7 @@ class Container implements IContainer
                             $parameterTypeName,
                             $primitiveTypeName,
                             $parameter->getName(),
-                            $parameter->getDeclaringClass()->getName(),
+                            $parameter->getDeclaringClass()?->getName() ?? 'Unknown',
                             $parameter->getDeclaringFunction()->getName()
                         )
                     );
@@ -491,7 +505,7 @@ class Container implements IContainer
             sprintf(
                 'No default value available for %s in %s::%s()',
                 $parameter->getName(),
-                $parameter->getDeclaringClass()->getName(),
+                $parameter->getDeclaringClass()?->getName() ?? 'Unknown',
                 $parameter->getDeclaringFunction()->getName()
             )
         );

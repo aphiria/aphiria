@@ -23,7 +23,7 @@ final class ImpossibleBindingException extends Exception
 {
     /**
      * @inheritdoc
-     * @param Binder[][] $failedInterfacesToBinders The mapping of failed interfaces to binders
+     * @param array<class-string, Binder[]> $failedInterfacesToBinders The mapping of failed interfaces to binders
      */
     public function __construct(array $failedInterfacesToBinders, int $code = 0, Throwable $previous = null)
     {

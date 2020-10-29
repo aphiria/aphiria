@@ -70,10 +70,13 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
 
     /**
      * @inheritdoc
+     *
+     * @psalm-suppress MoreSpecificImplementedParamType Instance will always be an instance of interface(s) - bug
      */
     public function bindInstance(string|array $interfaces, object $instance): void
     {
         $this->addBoundInterface($interfaces);
+        /** @psalm-suppress MoreSpecificImplementedParamType The callback will always return the callback */
         $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindInstance($interfaces, $instance));
     }
 
@@ -115,6 +118,8 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
 
     /**
      * @inheritdoc
+     *
+     * @psalm-suppress MissingReturnType This method returns output value of the callback
      */
     public function for(Context|string $context, callable $callback)
     {
@@ -125,6 +130,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
         $this->currentContext = $context;
         $this->contextStack[] = $context;
 
+        /** @psalm-suppress ArgumentTypeCoercion The callback will accept $this - bug */
         $result = $callback($this);
 
         array_pop($this->contextStack);
@@ -175,7 +181,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * Adds a bound interface to the list of bound interfaces
      *
-     * @param string[]|string $interfaces The interface or interfaces we're binding
+     * @param array<class-string>|class-string $interfaces The interface or interfaces we're binding
      */
     private function addBoundInterface(string|array $interfaces): void
     {
@@ -192,7 +198,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * Adds a resolved interface to the list of resolved interfaces
      *
-     * @param string $interface The interface we're resolving
+     * @param class-string $interface The interface we're resolving
      */
     private function addResolvedInterface(string $interface): void
     {

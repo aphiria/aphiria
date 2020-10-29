@@ -20,7 +20,7 @@ abstract class Context
     /**
      * Gets the targeted class
      *
-     * @return string|null The targeted class, if there was one
+     * @return class-string|null The targeted class, if there was one
      */
     abstract public function getTargetClass(): ?string;
 

@@ -19,6 +19,7 @@ use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
+use Aphiria\Net\Http\HttpStatusCodes;
 use Closure;
 
 /**
@@ -26,11 +27,11 @@ use Closure;
  */
 class ExceptionHandlerComponent implements IComponent
 {
-    /** @var array<class-string, array{type: string|Closure|null, title: string|Closure|null, detail: string|Closure|null, status: int|Closure|null, instance: string|Closure|null, extensions: array|Closure|null}> The mapping of exception types to problem detail settings */
+    /** @var array<class-string, array{type: string|Closure|null, title: string|Closure|null, detail: string|Closure|null, status: int|Closure, instance: string|Closure|null, extensions: array|Closure|null}> The mapping of exception types to problem detail settings */
     private array $exceptionProblemDetailMappings = [];
-    /** @var array<string, Closure> The mapping of exception types to console result factories */
+    /** @var array<class-string, Closure> The mapping of exception types to console result factories */
     private array $consoleOutputWriters = [];
-    /** @var array<string, Closure> The mapping of exception types to log level factories */
+    /** @var array<class-string, Closure> The mapping of exception types to log level factories */
     private array $logLevelFactories = [];
 
     /**
@@ -67,7 +68,7 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * Adds a console exception output writer
      *
-     * @param string $exceptionType The type of exception that's thrown
+     * @param class-string $exceptionType The type of exception that's thrown
      * @param Closure $callback The factory that takes in the exception and output, and writes messages/returns a status code
      * @return static For chaining
      */
@@ -81,7 +82,7 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * Adds a log level factory for a particular exception type
      *
-     * @param string $exceptionType The type of exception that's thrown
+     * @param class-string $exceptionType The type of exception that's thrown
      * @param Closure $logLevelFactory The factory that takes in an instance of the exception type and returns a PSR-3 log level
      * @return static For chaining
      */
@@ -99,7 +100,7 @@ class ExceptionHandlerComponent implements IComponent
      * @param string|Closure|null $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
      * @param string|Closure|null $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
      * @param string|Closure|null $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
-     * @param int|Closure|null $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param int|Closure $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
      * @param string|Closure|null $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
      * @param array|Closure|null $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
      * @return static For chaining
@@ -109,7 +110,7 @@ class ExceptionHandlerComponent implements IComponent
         string|Closure $type = null,
         string|Closure $title = null,
         string|Closure $detail = null,
-        int|Closure $status = null,
+        int|Closure $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
         string|Closure $instance = null,
         array|Closure $extensions = null
     ): static {

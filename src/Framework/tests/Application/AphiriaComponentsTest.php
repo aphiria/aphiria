@@ -32,6 +32,7 @@ use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
+use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Closure;
@@ -345,6 +346,11 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param class-string $exceptionType
+             * @param Closure $callback
+             */
             public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $callback): void
             {
                 $this->withConsoleExceptionOutputWriter($appBuilder, $exceptionType, $callback);
@@ -366,6 +372,11 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param class-string $exceptionType
+             * @param Closure $callback
+             */
             public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $callback): void
             {
                 $this->withConsoleExceptionOutputWriter($appBuilder, $exceptionType, $callback);
@@ -385,6 +396,11 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param class-string $exceptionType
+             * @param Closure $callback
+             */
             public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $callback): void
             {
                 $this->withConsoleExceptionOutputWriter($appBuilder, $exceptionType, $callback);
@@ -610,6 +626,11 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param class-string $exceptionType
+             * @param Closure $logLevelFactory
+             */
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $exceptionType,
@@ -634,6 +655,11 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param class-string $exceptionType
+             * @param Closure $logLevelFactory
+             */
             public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $logLevelFactory): void
             {
                 $this->withLogLevelFactory($appBuilder, $exceptionType, $logLevelFactory);
@@ -653,6 +679,11 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param class-string $exceptionType
+             * @param Closure $logLevelFactory
+             */
             public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $logLevelFactory): void
             {
                 $this->withLogLevelFactory($appBuilder, $exceptionType, $logLevelFactory);
@@ -775,13 +806,23 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param class-string $exceptionType
+             * @param string|Closure|null $type
+             * @param string|Closure|null $title
+             * @param string|Closure|null $detail
+             * @param int|Closure $status
+             * @param string|Closure|null $instance
+             * @param array|Closure|null $extensions
+             */
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $exceptionType,
                 string|Closure $type = null,
                 string|Closure$title = null,
                 string|Closure$detail = null,
-                int|Closure $status = null,
+                int|Closure $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
                 string|Closure$instance = null,
                 array|Closure $extensions = null
             ): void {
@@ -804,13 +845,23 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param class-string $exceptionType
+             * @param string|Closure|null $type
+             * @param string|Closure|null $title
+             * @param string|Closure|null $detail
+             * @param int|Closure $status
+             * @param string|Closure|null $instance
+             * @param array|Closure|null $extensions
+             */
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $exceptionType,
                 string|Closure $type = null,
                 string|Closure $title = null,
                 string|Closure $detail = null,
-                int|Closure $status = null,
+                int|Closure $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
                 string|Closure $instance = null,
                 array|Closure $extensions = null
             ): void {

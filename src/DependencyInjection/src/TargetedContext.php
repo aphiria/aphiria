@@ -18,7 +18,7 @@ namespace Aphiria\DependencyInjection;
 final class TargetedContext extends Context
 {
     /**
-     * @param string|null $targetClass The targeted class, if there was one
+     * @param class-string|null $targetClass The targeted class, if there was one
      */
     public function __construct(private ?string $targetClass = null)
     {

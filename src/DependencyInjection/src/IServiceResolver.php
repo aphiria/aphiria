@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection;
 
-use InvalidArgumentException;
-
 /**
  * Defines the interface for service resolvers to implement
  */
@@ -22,8 +20,10 @@ interface IServiceResolver
     /**
      * Sets a context for all calls in the callback
      *
-     * @param Context|string $context The context (or name of the target class) to apply to all bindings and resolutions
-     * @param callable $callback The callback that takes in an instance of the implementing resolver and performs actions under the context
+     * @template T
+     * @param Context|class-string $context The context (or name of the target class) to apply to all bindings and resolutions
+     * @param callable(static): T $callback The callback that takes in an instance of the implementing resolver and performs actions under the context
+     * @return T The return value of the callback
      */
     public function for(Context|string $context, callable $callback);
 
@@ -41,10 +41,8 @@ interface IServiceResolver
      * Tries to resolve an instance of the interface
      *
      * @template T
-     * @param string $interface The interface to resolve
-     * @psalm-param class-string<T> $interface
-     * @param object|null $instance The resolved instance if successful
-     * @param-out T $instance
+     * @param class-string<T> $interface The interface to resolve
+     * @param-out T $instance The resolved instance if successful
      * @return bool True if the binding was successful, otherwise false
      */
     public function tryResolve(string $interface, ?object &$instance): bool;

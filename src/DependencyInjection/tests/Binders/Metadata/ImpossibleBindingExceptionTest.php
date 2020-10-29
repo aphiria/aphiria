@@ -23,20 +23,24 @@ class ImpossibleBindingExceptionTest extends TestCase
     {
         $binder1 = $this->createBinder();
         $binder2 = $this->createBinder();
-        $exception = new ImpossibleBindingException(['foo' => [$binder1, $binder2]]);
+        $exception = new ImpossibleBindingException([self::class => [$binder1, $binder2]]);
         $this->assertSame(
-            'Impossible to resolve following interfaces: foo (attempted to be resolved in ' . $binder1::class . ', ' . $binder2::class . ')',
+            'Impossible to resolve following interfaces: ' . self::class . ' (attempted to be resolved in ' . $binder1::class . ', ' . $binder2::class . ')',
             $exception->getMessage()
         );
     }
 
     public function testMultipleFailedBindingsAreFormattedCorrectly(): void
     {
+        $interface1 = new class() {
+        };
+        $interface2 = new class() {
+        };
         $binder1 = $this->createBinder();
         $binder2 = $this->createBinder();
-        $exception = new ImpossibleBindingException(['foo' => [$binder1], 'bar' => [$binder2]]);
+        $exception = new ImpossibleBindingException([$interface1::class => [$binder1], $interface2::class => [$binder2]]);
         $this->assertSame(
-            'Impossible to resolve following interfaces: foo (attempted to be resolved in ' . $binder1::class . '), bar (attempted to be resolved in ' . $binder2::class . ')',
+            'Impossible to resolve following interfaces: ' . $interface1::class . ' (attempted to be resolved in ' . $binder1::class . '), ' . $interface2::class . ' (attempted to be resolved in ' . $binder2::class . ')',
             $exception->getMessage()
         );
     }
@@ -44,9 +48,9 @@ class ImpossibleBindingExceptionTest extends TestCase
     public function testSingleFailedBindingIsFormattedCorrectly(): void
     {
         $binder = $this->createBinder();
-        $exception = new ImpossibleBindingException(['foo' => [$binder]]);
+        $exception = new ImpossibleBindingException([self::class => [$binder]]);
         $this->assertSame(
-            'Impossible to resolve following interfaces: foo (attempted to be resolved in ' . $binder::class . ')',
+            'Impossible to resolve following interfaces: ' . self::class . ' (attempted to be resolved in ' . $binder::class . ')',
             $exception->getMessage()
         );
     }
