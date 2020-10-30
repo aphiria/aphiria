@@ -428,6 +428,7 @@ class Container implements IContainer
             }
 
             if (!$parameterResolved) {
+                /** @psalm-suppress ArgumentTypeCoercion We're OK with the slight edge case that the class name was null here */
                 throw new ResolutionException(
                     $className ?? '',
                     $this->currentContext,
@@ -452,20 +453,23 @@ class Container implements IContainer
      * @param array $primitives The list of primitive values
      * @return mixed The resolved primitive
      * @throws ResolutionException Thrown if there was an error resolving the primitive
+     * @psalm-suppress ArgumentTypeCoercion We're suppressing the fact that the parameter type might be a non-class-string to simplify things
      */
     protected function resolvePrimitive(ReflectionParameter $parameter, ?ReflectionType $reflectionType, array &$primitives): mixed
     {
+        $parameterTypeName = $reflectionType instanceof \ReflectionNamedType ? $reflectionType->getName() : (string)$reflectionType;
+
         if (\count($primitives) > 0) {
             // Grab the next primitive, and make sure its type matches the type of the next parameter if it has a type
             if (
                 $reflectionType !== null
-                && ($parameterTypeName = $reflectionType instanceof \ReflectionNamedType ? $reflectionType->getName() : (string)$reflectionType) !== 'mixed'
+                && $parameterTypeName !== 'mixed'
             ) {
                 $primitiveTypeName = \gettype($primitives[0]);
 
                 if ($primitiveTypeName !== $parameterTypeName) {
                     throw new ResolutionException(
-                        $parameter->getName(),
+                        $parameterTypeName,
                         $this->currentContext,
                         sprintf(
                             'Expected type %s, got %s for %s in %s::%s()',
@@ -489,7 +493,7 @@ class Container implements IContainer
                 // @codeCoverageIgnoreStart
             } catch (ReflectionException $ex) {
                 throw new ResolutionException(
-                    $parameter->getName(),
+                    $parameterTypeName,
                     $this->currentContext,
                     "Failed to get the default value for parameter {$parameter->getName()}",
                     0,
@@ -500,7 +504,7 @@ class Container implements IContainer
         }
 
         throw new ResolutionException(
-            $parameter->getName(),
+            $parameterTypeName,
             $this->currentContext,
             sprintf(
                 'No default value available for %s in %s::%s()',

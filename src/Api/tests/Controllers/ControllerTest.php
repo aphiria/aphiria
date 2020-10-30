@@ -111,7 +111,7 @@ class ControllerTest extends TestCase
         $this->responseFactory = $this->createMock(IResponseFactory::class);
         $this->responseFactory->method('createResponse')
             ->with($this->request)
-            ->willReturnCallback(function ($request, $statusCode, $headers, $body) {
+            ->willReturnCallback(function (IRequest $request, int $statusCode, Headers $headers, IBody $body): IResponse {
                 $this->assertSame($this->request, $request);
 
                 return new Response($statusCode, $headers, $body);

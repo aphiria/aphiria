@@ -102,8 +102,13 @@ class ApplicationBuilderTest extends TestCase
     public function testGettingComponentThrowsExceptionForUnregistered(): void
     {
         $this->expectException(OutOfBoundsException::class);
-        $this->expectErrorMessage('No component of type foo found');
-        $this->appBuilder->getComponent('foo');
+        $component = new class() implements IComponent {
+            public function build(): void
+            {
+            }
+        };
+        $this->expectErrorMessage('No component of type ' . $component::class . ' found');
+        $this->appBuilder->getComponent($component::class);
     }
 
     public function testModulesAreBuiltOnBuild(): void

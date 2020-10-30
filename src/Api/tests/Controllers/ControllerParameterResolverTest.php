@@ -228,12 +228,16 @@ class ControllerParameterResolverTest extends TestCase
 
     /**
      * @dataProvider scalarParameterTestDataProvider
+     * @param string $methodName The method name
+     * @param string $parameterName The parameter name
+     * @param string $rawValue The raw value
+     * @param mixed $scalarValue Ths scalar value
      */
     public function testResolvingScalarParameterUsesMatchingQueryStringVariable(
         string $methodName,
         string $parameterName,
         string $rawValue,
-        $scalarValue
+        mixed $scalarValue
     ): void {
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([ControllerWithEndpoints::class, $methodName], $parameterName),
@@ -245,12 +249,16 @@ class ControllerParameterResolverTest extends TestCase
 
     /**
      * @dataProvider scalarParameterTestDataProvider
+     * @param string $methodName The method name
+     * @param string $parameterName The parameter name
+     * @param string $rawValue The raw value
+     * @param mixed $scalarValue Ths scalar value
      */
     public function testResolvingScalarParameterUsesMatchingRouteVariableOverQueryStringVariable(
         string $methodName,
         string $parameterName,
         string $rawValue,
-        $scalarValue
+        mixed $scalarValue
     ): void {
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([ControllerWithEndpoints::class, $methodName], $parameterName),

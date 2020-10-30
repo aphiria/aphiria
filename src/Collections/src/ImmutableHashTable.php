@@ -38,6 +38,7 @@ class ImmutableHashTable implements IImmutableDictionary
         $this->keyHasher = new KeyHasher();
 
         foreach ($kvps as $kvp) {
+            /** @psalm-suppress DocblockTypeContradiction We want to check the types at runtime */
             if (!$kvp instanceof KeyValuePair) {
                 throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
             }

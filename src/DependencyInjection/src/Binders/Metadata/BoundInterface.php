@@ -30,7 +30,7 @@ final class BoundInterface
     /**
      * Gets the interface that was bound
      *
-     * @return string The interface
+     * @return class-string The interface
      */
     public function getInterface(): string
     {

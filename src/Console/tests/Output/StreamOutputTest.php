@@ -47,6 +47,7 @@ class StreamOutputTest extends TestCase
     public function testInvalidStream(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        /** @psalm-suppress InvalidArgument We're purposely testing passing in the wrong type */
         new StreamOutput('foo', $this->compiler);
     }
 

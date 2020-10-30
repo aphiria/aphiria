@@ -20,36 +20,28 @@ use Throwable;
  */
 final class FailedBinderMetadataCollectionException extends Exception
 {
-    /** @var BinderMetadata The incomplete binder metadata */
-    private BinderMetadata $incompleteBinderMetadata;
-    /** @var string The name of the interface that failed to be resolved */
-    private string $failedInterface;
-
     /**
      * @inheritdoc
      * @param BinderMetadata $incompleteBinderMetadata The incomplete binder metadata
-     * @param string $failedInterface The name of the interface that failed to be resolved
+     * @param class-string $failedInterface The name of the interface that failed to be resolved
      */
     public function __construct(
-        BinderMetadata $incompleteBinderMetadata,
-        string $failedInterface,
+        private BinderMetadata $incompleteBinderMetadata,
+        private string $failedInterface,
         int $code = 0,
         Throwable $previous = null
     ) {
         parent::__construct(
-            'Failed to collect metadata for ' . $incompleteBinderMetadata->getBinder()::class,
+            'Failed to collect metadata for ' . $this->incompleteBinderMetadata->getBinder()::class,
             $code,
             $previous
         );
-
-        $this->incompleteBinderMetadata = $incompleteBinderMetadata;
-        $this->failedInterface = $failedInterface;
     }
 
     /**
      * Gets the name of the interface that failed to be resolved
      *
-     * @return string The name of the interface
+     * @return class-string The name of the interface
      */
     public function getFailedInterface(): string
     {

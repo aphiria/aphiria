@@ -52,6 +52,7 @@ class ControllerWithEndpoints extends BaseController
      *
      * @param callable $foo The float
      * @return IResponse The response
+     * @psalm-suppress InvalidCast This cast is actually allowed
      */
     public function callableParameter(callable $foo): IResponse
     {

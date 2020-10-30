@@ -89,12 +89,15 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
      * @throws RequestBodyDeserializationException Thrown if the request body could not be deserialized
      * @psalm-suppress InvalidReturnType The media type formatter will resolve to the parameter type, which will be an object
+     * @psalm-suppress InvalidReturnStatement Ditto
      */
     private function resolveObjectParameter(
         ReflectionParameter $reflectionParameter,
         IRequest $request
     ): ?object {
-        if ($request->getBody() === null) {
+        $body = $request->getBody();
+
+        if ($body === null) {
             if (!$reflectionParameter->allowsNull()) {
                 throw new MissingControllerParameterValueException(
                     "Body is null when resolving parameter {$reflectionParameter->getName()}"
@@ -104,7 +107,8 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             return null;
         }
 
-        $type = $reflectionParameter->getType()->getName();
+        /** @var string $type This will always be guaranteed to be set because just getting to this method implies a param type */
+        $type = $reflectionParameter->getType()?->getName();
         $requestContentNegotiationResult = $this->contentNegotiator->negotiateRequestContent(
             $type,
             $request
@@ -123,7 +127,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
 
         try {
             return $mediaTypeFormatter
-                ->readFromStream($request->getBody()->readAsStream(), $type);
+                ->readFromStream($body->readAsStream(), $type);
         } catch (SerializationException $ex) {
             if (!$reflectionParameter->allowsNull()) {
                 throw new RequestBodyDeserializationException(
@@ -164,7 +168,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             case 'array':
                 throw new FailedScalarParameterConversionException('Cannot automatically resolve array types - you must either read the body or the query string inside the controller method');
             default:
-                throw new FailedScalarParameterConversionException("Failed to convert value to {$reflectionParameter->getType()->getName()}");
+                throw new FailedScalarParameterConversionException("Failed to convert value to {$reflectionParameter->getType()?->getName()}");
         }
     }
 }

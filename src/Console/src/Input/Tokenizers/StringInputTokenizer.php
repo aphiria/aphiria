@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Input\Tokenizers;
 
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -24,6 +25,10 @@ final class StringInputTokenizer implements IInputTokenizer
      */
     public function tokenize(string|array $input): array
     {
+        if (!\is_string($input)) {
+            throw new InvalidArgumentException('Input must be a string');
+        }
+
         $inDoubleQuotes = false;
         $inSingleQuotes = false;
         $charArray = preg_split('//u', trim($input), -1, PREG_SPLIT_NO_EMPTY);

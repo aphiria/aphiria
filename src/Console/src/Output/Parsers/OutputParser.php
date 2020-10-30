@@ -33,17 +33,17 @@ final class OutputParser implements IOutputParser
         foreach ($tokens as $token) {
             switch ($token->type) {
                 case OutputTokenTypes::T_WORD:
-                    $currNode->addChild(new WordAstNode($token->value));
+                    $currNode?->addChild(new WordAstNode($token->value));
 
                     break;
                 case OutputTokenTypes::T_TAG_OPEN:
                     $childNode = new TagAstNode($token->value);
-                    $currNode->addChild($childNode);
+                    $currNode?->addChild($childNode);
                     $currNode = $childNode;
 
                     break;
                 case OutputTokenTypes::T_TAG_CLOSE:
-                    if ($currNode->value !== $token->value) {
+                    if ($currNode?->value !== $token->value) {
                         throw new RuntimeException(
                             sprintf(
                                 'Improperly nested tag "%s" near character #%d',
@@ -54,16 +54,16 @@ final class OutputParser implements IOutputParser
                     }
 
                     // Move up one in the tree
-                    $currNode = $currNode->parent;
+                    $currNode = $currNode?->parent;
 
                     break;
                 case OutputTokenTypes::T_EOF:
-                    if (!$currNode->isRoot()) {
+                    if (!$currNode?->isRoot()) {
                         throw new RuntimeException(
                             sprintf(
                                 'Unclosed %s "%s"',
-                                $currNode->isTag() ? 'tag' : 'node',
-                                $currNode->value
+                                $currNode?->isTag() ? 'tag' : 'node',
+                                $currNode?->value ?? 'null'
                             )
                         );
                     }

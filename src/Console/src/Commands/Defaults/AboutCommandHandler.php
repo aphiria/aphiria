@@ -84,8 +84,8 @@ EOF;
          * @return int The result of the comparison
          */
         $sort = static function (Command $a, Command $b): int {
-            if (!str_contains($a->name, ':')) {
-                if (!str_contains($b->name, ':')) {
+            if (!\str_contains($a->name, ':')) {
+                if (!\str_contains($b->name, ':')) {
                     // They're both uncategorized
                     return $a->name < $b->name ? -1 : 1;
                 }
@@ -103,7 +103,7 @@ EOF;
             return $a->name < $b->name ? -1 : 1;
         };
 
-        usort($commands, $sort);
+        \usort($commands, $sort);
         $categorizedCommandNames = [];
         $commandTexts = [];
         $firstCommandNamesToCategories = [];
@@ -125,13 +125,13 @@ EOF;
 
         return $this->paddingFormatter->format(
             $commandTexts,
-            function ($row) use ($categorizedCommandNames, $firstCommandNamesToCategories) {
+            function (array $row) use ($categorizedCommandNames, $firstCommandNamesToCategories): string {
                 $output = '';
 
                 // If this is the first command of its category, display the category
                 if (
                     isset($firstCommandNamesToCategories[trim($row[0])])
-                    && \in_array(trim($row[0]), $categorizedCommandNames, true)
+                    && \in_array(\trim($row[0]), $categorizedCommandNames, true)
                 ) {
                     $output .= "<comment>{$firstCommandNamesToCategories[trim($row[0])]}</comment>" . PHP_EOL;
                 }

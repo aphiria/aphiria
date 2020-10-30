@@ -23,7 +23,7 @@ use Aphiria\Validation\ValidationException;
  */
 final class RequestBodyValidator implements IRequestBodyValidator
 {
-    /** @var string[] The memoized matched languages per request */
+    /** @var array<string, string|null> The memoized matched languages per request */
     private array $memoizedMatchedLanguagesByRequest = [];
 
     /**
@@ -51,7 +51,7 @@ final class RequestBodyValidator implements IRequestBodyValidator
                 $language = $this->languageMatcher->getBestLanguageMatch($request);
                 $this->memoizedMatchedLanguagesByRequest[$memoizationKey] = $language;
 
-                if ($language !== null) {
+                if ($this->errorMessageInterpolator !== null && $language !== null) {
                     $this->errorMessageInterpolator->setDefaultLocale($language);
                 }
             }

@@ -20,15 +20,21 @@
                 <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php" />
             </errorLevel>
         </InaccessibleMethod>
-        <!-- Tests use union types with mocks, which trips up Psalm a lot -->
         <PossiblyInvalidArgument>
             <errorLevel type="suppress">
+                <!-- Tests use union types with mocks, which trips up Psalm a lot -->
                 <directory name="src/**/tests" />
             </errorLevel>
         </PossiblyInvalidArgument>
-        <!-- Tests use union types with mocks, which trips up Psalm a lot -->
+        <PossiblyNullReference>
+            <errorLevel type="suppress">
+                <!-- Properties such as the current request are guaranteed to be set by the framework in the wild -->
+                <file name="src/Api/src/Controllers/Controller.php" />
+            </errorLevel>
+        </PossiblyNullReference>
         <PossiblyUndefinedMethod>
             <errorLevel type="suppress">
+                <!-- Tests use union types with mocks, which trips up Psalm a lot -->
                 <directory name="src/**/tests" />
             </errorLevel>
         </PossiblyUndefinedMethod>
@@ -38,6 +44,12 @@
                 <file name="src/Framework/src/Serialization/Normalizers/ProblemDetailsNormalizer.php" />
             </errorLevel>
         </PropertyNotSetInConstructor>
+        <TypeDoesNotContainNull>
+            <errorLevel type="suppress">
+                <!-- We get a lot of false positives with the try*() pattern and out parameters -->
+                <file name="src/Application/tests/Configuration/GlobalConfigurationTest.php" />
+            </errorLevel>
+        </TypeDoesNotContainNull>
         <UndefinedClass>
             <errorLevel type="suppress">
                 <file name="src/**/.phpstorm.meta.php" />

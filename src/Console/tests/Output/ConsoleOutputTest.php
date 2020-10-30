@@ -20,9 +20,9 @@ class ConsoleOutputTest extends TestCase
     public function testClearWritesAsciiCodesToClearScreen(): void
     {
         $output = new class() extends ConsoleOutput {
-            public string $message = '';
+            public string|array $message = '';
 
-            public function write($messages): void
+            public function write(string|array $messages): void
             {
                 $this->message = $messages;
             }

@@ -24,12 +24,14 @@ final class BinderMetadataCollection
 
     /**
      * @param BinderMetadata[] $binderMetadatas The list of all binder metadata
+     * @psalm-suppress InvalidPropertyAssignmentValue Psalm is getting confused about assigning arrays with keys - bug
      */
     public function __construct(private array $binderMetadatas)
     {
         foreach ($this->binderMetadatas as $binderMetadata) {
             foreach ($binderMetadata->getResolvedInterfaces() as $resolvedInterface) {
                 if ($resolvedInterface->getContext()->isTargeted()) {
+                    /** @var class-string $targetClass We know that this will be set because it's targeted */
                     $targetClass = $resolvedInterface->getContext()->getTargetClass();
                     $interface = $resolvedInterface->getInterface();
 
@@ -70,6 +72,7 @@ final class BinderMetadataCollection
      *
      * @param BoundInterface $boundInterface The bound interface to check for
      * @return BinderMetadata[] The list of binder metadata that resolve the input interface
+     * @psalm-suppress InvalidArrayOffset Psalm is getting confused about accessing arrays with keys - bug
      */
     public function getBinderMetadataThatResolveInterface(BoundInterface $boundInterface): array
     {

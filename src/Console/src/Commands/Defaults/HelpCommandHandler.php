@@ -149,7 +149,7 @@ EOF;
 
         return $this->paddingFormatter->format(
             $argumentTexts,
-            fn ($row) => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}")
+            fn (array $row): string => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}")
         );
     }
 
@@ -173,7 +173,7 @@ EOF;
 
         return $this->paddingFormatter->format(
             $optionTexts,
-            fn ($row) => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}")
+            fn (array $row): string => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}")
         );
     }
 }

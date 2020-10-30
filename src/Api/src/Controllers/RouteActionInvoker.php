@@ -156,6 +156,7 @@ class RouteActionInvoker implements IRouteActionInvoker
             return new ReflectionMethod($routeActionDelegate[0], $routeActionDelegate[1]);
         }
 
+        /** @psalm-suppress ArgumentTypeCoercion Psalm is being a little strict here with what's allowed */
         return new ReflectionFunction($routeActionDelegate);
     }
 

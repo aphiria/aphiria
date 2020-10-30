@@ -16,6 +16,7 @@ use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use Aphiria\Net\Http\Headers\IHeaderValueWithQualityScore;
+use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
 use Aphiria\Net\Http\IRequest;
 use InvalidArgumentException;
 
@@ -38,6 +39,10 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     public function __construct(private array $mediaTypeFormatters, RequestHeaderParser $headerParser = null)
     {
+        /**
+         * @psalm-suppress PossiblyNullArgument Psalm does not support promoted properties - bug
+         * @psalm-suppress UninitializedProperty Ditto - bug
+         */
         if (\count($this->mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
         }
@@ -52,9 +57,11 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
         string $type,
         IRequest $request
     ): ?MediaTypeFormatterMatch {
+        $contentTypeHeader = $this->headerParser->parseContentTypeHeader($request->getHeaders());
+
         return $this->getBestMediaTypeFormatterMatch(
             $type,
-            [$this->headerParser->parseContentTypeHeader($request->getHeaders())],
+            $contentTypeHeader === null ? [] : [$contentTypeHeader],
             self::FORMATTER_TYPE_INPUT
         );
     }
@@ -77,7 +84,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      * Gets the best media type formatter match
      *
      * @param string $type The type that will be read/written by the formatter
-     * @param AcceptMediaTypeHeaderValue[] $mediaTypeHeaders The media type headers to match against
+     * @param MediaTypeHeaderValue[] $mediaTypeHeaders The media type headers to match against
      * @param string $ioType Whether this is an input or an output media type formatter
      * @return MediaTypeFormatterMatch|null The media type formatter match if there was one, otherwise null
      */
@@ -87,7 +94,12 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
         string $ioType
     ): ?MediaTypeFormatterMatch {
         // Rank the media type headers if they are rankable
-        if (\count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof IHeaderValueWithQualityScore) {
+        if (\count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof AcceptMediaTypeHeaderValue) {
+            /**
+             * @var AcceptMediaTypeHeaderValue[] $mediaTypeHeaders
+             * @psalm-suppress InvalidArgument The headers will be an array of AcceptMediaTypeHeaderValue
+             * @psalm-suppress ArgumentTypeCoercion Ditto
+             */
             $mediaTypeHeaders = $this->rankAcceptMediaTypeHeaders($mediaTypeHeaders);
         }
 

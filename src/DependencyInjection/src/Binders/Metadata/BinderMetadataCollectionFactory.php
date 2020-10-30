@@ -81,7 +81,7 @@ final class BinderMetadataCollectionFactory
         $interface = $ex->getFailedInterface();
 
         if (!isset($failedInterfacesToBinders[$interface])) {
-            $failedInterfaces[$interface] = [];
+            $failedInterfacesToBinders[$interface] = [];
         }
 
         $failedInterfacesToBinders[$interface][] = $ex->getIncompleteBinderMetadata()->getBinder();
