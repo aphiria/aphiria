@@ -263,7 +263,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
     /**
      * Adds assertions for tests that call bootstrap()
      *
-     * @param string $expectedExceptionRendererType The type of exception renderer to mock
+     * @param class-string $expectedExceptionRendererType The type of exception renderer to mock
      */
     private function addBootstrapAssertions(
         string $expectedExceptionRendererType = ProblemDetailsExceptionRenderer::class
