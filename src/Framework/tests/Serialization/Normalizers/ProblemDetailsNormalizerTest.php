@@ -14,6 +14,7 @@ namespace Aphiria\Framework\Tests\Serialization\Normalizers;
 
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Framework\Serialization\Normalizers\ProblemDetailsNormalizer;
+use Aphiria\Net\Http\HttpStatusCodes;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Serializer;
@@ -30,12 +31,12 @@ class ProblemDetailsNormalizerTest extends TestCase
 
     public function testNormalizeAddsExtensionsToTopLevelOfNormalizedArray(): void
     {
-        $problemDetails = new ProblemDetails('foo', null, null, null, null, ['foo' => 'bar']);
+        $problemDetails = new ProblemDetails('foo', extensions: ['foo' => 'bar']);
         $expectedNormalizedValue = [
             'type' => 'foo',
             'title' => null,
             'detail' => null,
-            'status' => null,
+            'status' => HttpStatusCodes::INTERNAL_SERVER_ERROR,
             'instance' => null,
             'foo' => 'bar'
         ];
@@ -49,7 +50,7 @@ class ProblemDetailsNormalizerTest extends TestCase
             'type' => 'foo',
             'title' => null,
             'detail' => null,
-            'status' => null,
+            'status' => HttpStatusCodes::INTERNAL_SERVER_ERROR,
             'instance' => null
         ];
         $this->assertEquals($expectedNormalizedValue, $this->normalizer->normalize($problemDetails));

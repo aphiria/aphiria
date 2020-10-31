@@ -142,19 +142,19 @@ class ProblemDetailsExceptionRendererTest extends TestCase
                 $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, $rawValue);
                 break;
             case 'title':
-                $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, null, $rawValue);
+                $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, title: $rawValue);
                 break;
             case 'detail':
-                $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, null, null, $rawValue);
+                $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, detail: $rawValue);
                 break;
             case 'status':
-                $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, null, null, null, $rawValue);
+                $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, status: $rawValue);
                 break;
             case 'instance':
-                $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, null, null, null, null, $rawValue);
+                $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, instance: $rawValue);
                 break;
             case 'extensions':
-                $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, null, null, null, null, null, $rawValue);
+                $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, extensions: $rawValue);
                 break;
         }
 

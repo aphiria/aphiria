@@ -89,32 +89,4 @@ class StyleTest extends TestCase
         $style->removeTextStyle(TextStyles::BOLD);
         $this->assertEquals([], $style->textStyles);
     }
-
-    public function testSettingBackgroundColor(): void
-    {
-        $style = new Style();
-        $style->backgroundColor = Colors::GREEN;
-        $this->assertSame(Colors::GREEN, $style->backgroundColor);
-    }
-
-    public function testSettingForegroundColor(): void
-    {
-        $style = new Style();
-        $style->foregroundColor = Colors::BLUE;
-        $this->assertSame(Colors::BLUE, $style->foregroundColor);
-    }
-
-    public function testSettingNullBackgroundColor(): void
-    {
-        $style = new Style();
-        $style->backgroundColor = null;
-        $this->assertNull($style->backgroundColor);
-    }
-
-    public function testSettingNullForegroundColor(): void
-    {
-        $style = new Style();
-        $style->foregroundColor = null;
-        $this->assertNull($style->foregroundColor);
-    }
 }

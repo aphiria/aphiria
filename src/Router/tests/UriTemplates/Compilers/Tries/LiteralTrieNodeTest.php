@@ -25,7 +25,12 @@ class LiteralTrieNodeTest extends TestCase
 {
     public function testCreatingWithSingleRouteConvertsItToArrayOfRoutes(): void
     {
-        $expectedRoute = new Route(new UriTemplate(''), new RouteAction('Foo', 'bar'), []);
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
+        $expectedRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
         $expectedHostTrie = $this->createMockNode();
         $node = new LiteralTrieNode('foo', [], $expectedRoute, $expectedHostTrie);
         $this->assertCount(1, $node->routes);
@@ -35,8 +40,13 @@ class LiteralTrieNodeTest extends TestCase
 
     public function testPropertiesAreSetInConstructor(): void
     {
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
         $expectedChildren = [new LiteralTrieNode('bar', [])];
-        $expectedRoutes = [new Route(new UriTemplate(''), new RouteAction('Foo', 'bar'), [])];
+        $expectedRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
         $expectedHostTrie = $this->createMockNode();
         $node = new LiteralTrieNode('foo', $expectedChildren, $expectedRoutes, $expectedHostTrie);
         $this->assertSame('foo', $node->value);
@@ -49,7 +59,6 @@ class LiteralTrieNodeTest extends TestCase
      * Creates a mock node for use in tests
      *
      * @return TrieNode|MockObject The mock node
-     * @throws ReflectionException
      */
     private function createMockNode(): TrieNode|MockObject
     {

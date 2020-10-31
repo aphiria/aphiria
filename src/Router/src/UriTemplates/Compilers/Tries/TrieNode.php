@@ -24,7 +24,7 @@ abstract class TrieNode
     public array $routes;
     /** @var VariableTrieNode[] The child variable nodes */
     public array $variableChildren = [];
-    /** @var LiteralTrieNode[] The mapping of literal child node values to child nodes */
+    /** @var array<string, LiteralTrieNode> The mapping of literal child node values to child nodes */
     public array $literalChildrenByValue = [];
 
     /**
@@ -48,7 +48,7 @@ abstract class TrieNode
     /**
      * Adds a child node and recursively merges all its children, too
      *
-     * @param $childNode $node The node to add
+     * @param TrieNode $childNode The node to add
      * @return static For chaining
      * @throws InvalidArgumentException Thrown if the node was an invalid type
      */
@@ -62,6 +62,7 @@ abstract class TrieNode
             throw new InvalidArgumentException('Unexpected trie node type ' . $childNode::class);
         }
 
+        /** @psalm-suppress LessSpecificReturnStatement Psalm does not support the static keyword - bug */
         return $this;
     }
 

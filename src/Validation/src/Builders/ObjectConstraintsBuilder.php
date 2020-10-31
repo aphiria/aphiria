@@ -24,7 +24,7 @@ final class ObjectConstraintsBuilder
     private ObjectConstraints $objectConstraints;
 
     /**
-     * @param string $className The name of the class this is building constraints for
+     * @param class-string $className The name of the class this is building constraints for
      */
     public function __construct(string $className)
     {

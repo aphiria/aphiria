@@ -16,7 +16,10 @@ use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Commands\ICommandRegistrant;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\IOutput;
 use PHPUnit\Framework\TestCase;
 
 class CommandRegistrantCollectionTest extends TestCase
@@ -44,7 +47,12 @@ class CommandRegistrantCollectionTest extends TestCase
     public function testCacheHitCopiesCachedConstraintsIntoParameterConstraints(): void
     {
         $cachedCommands = new CommandRegistry();
-        $cachedCommands->registerCommand(new Command('foo'), 'Handler');
+        $commandHandler = new class() implements ICommandHandler {
+            public function handle(Input $input, IOutput $output): void
+            {
+            }
+        };
+        $cachedCommands->registerCommand(new Command('foo'), $commandHandler::class);
         $cache = $this->createMock(ICommandRegistryCache::class);
         $cache->method('get')
             ->willReturn($cachedCommands);

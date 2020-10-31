@@ -40,7 +40,7 @@ class CommandFormatter
         $requiredArguments = [];
         /** @var Argument[] $optionalArguments */
         $optionalArguments = [];
-        /** @var Argument $arrayArgument */
+        /** @var Argument|null $arrayArgument */
         $arrayArgument = null;
 
         // Categorize each argument

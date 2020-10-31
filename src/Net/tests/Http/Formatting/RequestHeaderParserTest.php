@@ -129,6 +129,7 @@ class RequestHeaderParserTest extends TestCase
         $headers = new Headers();
         $headers->add('Content-Type', 'application/json; charset=utf-8');
         $headerValue = $this->parser->parseContentTypeHeader($headers);
+        $this->assertNotNull($headerValue);
         $this->assertSame('application/json', $headerValue->getMediaType());
         $this->assertSame('utf-8', $headerValue->getCharset());
     }
@@ -138,6 +139,7 @@ class RequestHeaderParserTest extends TestCase
         $headers = new Headers();
         $headers->add('Content-Type', 'application/json');
         $headerValue = $this->parser->parseContentTypeHeader($headers);
+        $this->assertNotNull($headerValue);
         $this->assertSame('application/json', $headerValue->getMediaType());
         $this->assertNull($headerValue->getCharset());
     }

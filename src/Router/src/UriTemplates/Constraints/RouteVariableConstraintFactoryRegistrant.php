@@ -36,11 +36,11 @@ final class RouteVariableConstraintFactoryRegistrant
         );
         $constraintFactory->registerConstraintFactory(
             BetweenConstraint::getSlug(),
-            fn ($min, $max, bool $isInclusive = true) => new BetweenConstraint($min, $max, $isInclusive)
+            fn (int|float $min, int|float $max, bool $isInclusive = true) => new BetweenConstraint($min, $max, $isInclusive)
         );
         $constraintFactory->registerConstraintFactory(
             DateConstraint::getSlug(),
-            fn ($formats) => new DateConstraint($formats)
+            fn (string|array $formats) => new DateConstraint($formats)
         );
         $constraintFactory->registerConstraintFactory(
             InConstraint::getSlug(),

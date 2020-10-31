@@ -22,7 +22,7 @@ use Closure;
 final class ObjectConstraintsBuilderRegistrant implements IObjectConstraintsRegistrant
 {
     /**
-     * @param Closure[] $closures The list of closures to execute (must take in an ObjectConstraintsRegistryBuilder parameter)
+     * @param array<Closure(ObjectConstraintsRegistryBuilder): void> $closures The list of closures to execute (must take in an ObjectConstraintsRegistryBuilder parameter)
      */
     public function __construct(private array $closures)
     {

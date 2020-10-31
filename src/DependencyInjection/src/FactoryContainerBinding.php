@@ -18,11 +18,11 @@ namespace Aphiria\DependencyInjection;
  */
 class FactoryContainerBinding implements IContainerBinding
 {
-    /** @var callable The factory */
+    /** @var callable(): object The factory */
     private $factory;
 
     /**
-     * @param callable $factory The factory
+     * @param callable(): object $factory The factory
      * @param bool $resolveAsSingleton Whether or not the factory should be resolved as a singleton
      */
     public function __construct(callable $factory, private bool $resolveAsSingleton)
@@ -31,7 +31,9 @@ class FactoryContainerBinding implements IContainerBinding
     }
 
     /**
-     * @return callable
+     * Gets the factory binding
+     *
+     * @return callable(): object The factory
      */
     public function getFactory(): callable
     {
@@ -39,7 +41,9 @@ class FactoryContainerBinding implements IContainerBinding
     }
 
     /**
-     * @return bool
+     * Gets whether or not to resolve as a singleton
+     *
+     * @return bool Whether or not to resolve as a singleton
      */
     public function resolveAsSingleton(): bool
     {

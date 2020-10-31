@@ -63,7 +63,7 @@ class TableFormatter
             $eolChar,
             $this->padding->format(
                 $headersAndRows,
-                fn ($row) => sprintf(
+                fn (array $row): string => sprintf(
                     '%s%s%s%s%s',
                     $this->verticalBorderChar,
                     $this->cellPaddingString,

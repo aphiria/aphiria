@@ -229,9 +229,14 @@ class AstRouteUriFactoryTest extends TestCase
         string $pathTemplate,
         bool $isHttpsOnly = true
     ): void {
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
         $this->routes->add(new Route(
             new UriTemplate($pathTemplate, $hostTemplate, $isHttpsOnly),
-            new RouteAction('foo', 'bar'),
+            new RouteAction($controller::class, 'bar'),
             [],
             [],
             $name

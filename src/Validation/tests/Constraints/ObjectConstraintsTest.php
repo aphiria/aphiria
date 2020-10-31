@@ -21,7 +21,7 @@ class ObjectConstraintsTest extends TestCase
     public function testAddingMultipleMethodConstraintsMakesThemGettable(): void
     {
         $expectedConstraints = [$this->createMock(IConstraint::class)];
-        $objectConstraints = new ObjectConstraints('foo');
+        $objectConstraints = new ObjectConstraints(self::class);
         $objectConstraints->addMethodConstraint('method', $expectedConstraints);
         $actualMethodConstraints = $objectConstraints->getMethodConstraints('method');
         $actualAllMethodConstraints = $objectConstraints->getAllMethodConstraints();
@@ -33,7 +33,7 @@ class ObjectConstraintsTest extends TestCase
     public function testAddingSingleMethodConstraintsMakesItGettable(): void
     {
         $expectedConstraint = $this->createMock(IConstraint::class);
-        $objectConstraints = new ObjectConstraints('foo');
+        $objectConstraints = new ObjectConstraints(self::class);
         $objectConstraints->addMethodConstraint('method', $expectedConstraint);
         $actualMethodConstraints = $objectConstraints->getMethodConstraints('method');
         $actualAllMethodConstraints = $objectConstraints->getAllMethodConstraints();
@@ -46,7 +46,7 @@ class ObjectConstraintsTest extends TestCase
     public function testAddingMultiplePropertyConstraintsMakesThemGettable(): void
     {
         $expectedConstraints = [$this->createMock(IConstraint::class)];
-        $objectConstraints = new ObjectConstraints('foo');
+        $objectConstraints = new ObjectConstraints(self::class);
         $objectConstraints->addPropertyConstraint('prop', $expectedConstraints);
         $actualProperty = $objectConstraints->getPropertyConstraints('prop');
         $actualAllPropertyConstraints = $objectConstraints->getAllPropertyConstraints();
@@ -58,7 +58,7 @@ class ObjectConstraintsTest extends TestCase
     public function testAddingSinglePropertyConstraintsMakesItGettable(): void
     {
         $expectedConstraint = $this->createMock(IConstraint::class);
-        $objectConstraints = new ObjectConstraints('foo');
+        $objectConstraints = new ObjectConstraints(self::class);
         $objectConstraints->addPropertyConstraint('prop', $expectedConstraint);
         $actualPropertyConstraints = $objectConstraints->getPropertyConstraints('prop');
         $actualAllPropertyConstraints = $objectConstraints->getAllPropertyConstraints();
@@ -70,13 +70,13 @@ class ObjectConstraintsTest extends TestCase
 
     public function testGettingClassReturnsOneSetInConstructor(): void
     {
-        $objectConstraints = new ObjectConstraints('foo', [], []);
-        $this->assertSame('foo', $objectConstraints->getClassName());
+        $objectConstraints = new ObjectConstraints(self::class, [], []);
+        $this->assertSame(self::class, $objectConstraints->getClassName());
     }
 
     public function testGettingMethodConstraintsForMethodWithoutAnyReturnsEmptyArray(): void
     {
-        $objectConstraints = new ObjectConstraints('foo', [], []);
+        $objectConstraints = new ObjectConstraints(self::class, [], []);
         $this->assertEquals([], $objectConstraints->getAllMethodConstraints());
         $this->assertEquals([], $objectConstraints->getMethodConstraints('method'));
     }
@@ -84,7 +84,7 @@ class ObjectConstraintsTest extends TestCase
     public function testGettingMethodConstraintsReturnsOnesSetInConstructor(): void
     {
         $expectedConstraint = $this->createMock(IConstraint::class);
-        $objectConstraints = new ObjectConstraints('foo', [], ['method' => [$expectedConstraint]]);
+        $objectConstraints = new ObjectConstraints(self::class, [], ['method' => [$expectedConstraint]]);
         $this->assertEquals(['method' => [$expectedConstraint]], $objectConstraints->getAllMethodConstraints());
         $this->assertEquals([$expectedConstraint], $objectConstraints->getMethodConstraints('method'));
     }
@@ -92,14 +92,14 @@ class ObjectConstraintsTest extends TestCase
     public function testGettingMethodConstraintsReturnsSingleOneSetInConstructor(): void
     {
         $expectedConstraint = $this->createMock(IConstraint::class);
-        $objectConstraints = new ObjectConstraints('foo', [], ['method' => $expectedConstraint]);
+        $objectConstraints = new ObjectConstraints(self::class, [], ['method' => $expectedConstraint]);
         $this->assertEquals(['method' => [$expectedConstraint]], $objectConstraints->getAllMethodConstraints());
         $this->assertEquals([$expectedConstraint], $objectConstraints->getMethodConstraints('method'));
     }
 
     public function testGettingPropertyConstraintsForPropertyWithoutAnyReturnsEmptyArray(): void
     {
-        $objectConstraints = new ObjectConstraints('foo', [], []);
+        $objectConstraints = new ObjectConstraints(self::class, [], []);
         $this->assertEquals([], $objectConstraints->getAllPropertyConstraints());
         $this->assertEquals([], $objectConstraints->getPropertyConstraints('prop'));
     }
@@ -107,7 +107,7 @@ class ObjectConstraintsTest extends TestCase
     public function testGettingPropertyConstraintsReturnsOnesSetInConstructor(): void
     {
         $expectedConstraint = $this->createMock(IConstraint::class);
-        $objectConstraints = new ObjectConstraints('foo', ['prop' => [$expectedConstraint]], []);
+        $objectConstraints = new ObjectConstraints(self::class, ['prop' => [$expectedConstraint]], []);
         $this->assertEquals(['prop' => [$expectedConstraint]], $objectConstraints->getAllPropertyConstraints());
         $this->assertEquals([$expectedConstraint], $objectConstraints->getPropertyConstraints('prop'));
     }
@@ -115,7 +115,7 @@ class ObjectConstraintsTest extends TestCase
     public function testGettingPropertyConstraintsReturnsSingleOneSetInConstructor(): void
     {
         $expectedConstraint = $this->createMock(IConstraint::class);
-        $objectConstraints = new ObjectConstraints('foo', ['prop' => $expectedConstraint], []);
+        $objectConstraints = new ObjectConstraints(self::class, ['prop' => $expectedConstraint], []);
         $this->assertEquals(['prop' => [$expectedConstraint]], $objectConstraints->getAllPropertyConstraints());
         $this->assertEquals([$expectedConstraint], $objectConstraints->getPropertyConstraints('prop'));
     }

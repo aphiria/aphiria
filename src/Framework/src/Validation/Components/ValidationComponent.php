@@ -16,6 +16,7 @@ use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Validation\Builders\ObjectConstraintsBuilderRegistrant;
+use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
 use Aphiria\Validation\Constraints\Attributes\AttributeObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
@@ -29,7 +30,7 @@ class ValidationComponent implements IComponent
 {
     /** @var bool Whether or not attributes are enabled */
     private bool $attributesEnabled = false;
-    /** @var Closure[] The list of callbacks that can register object constraints */
+    /** @var array<Closure(ObjectConstraintsRegistryBuilder): void> The list of callbacks that can register object constraints */
     private array $callbacks = [];
 
     /**
@@ -76,7 +77,7 @@ class ValidationComponent implements IComponent
     /**
      * Adds an object constraints builder to the collection
      *
-     * @param Closure $callback The callback that takes in an instance of ObjectConstraintsRegistryBuilder
+     * @param Closure(ObjectConstraintsRegistryBuilder): void $callback The callback that takes in an instance of ObjectConstraintsRegistryBuilder
      * @return static For chaining
      */
     public function withObjectConstraints(Closure $callback): static

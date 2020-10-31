@@ -66,8 +66,9 @@ class ContentTypeHeaderValueTest extends TestCase
 
     /**
      * @dataProvider incorrectlyFormattedMediaTypeProvider
+     * @param string $incorrectlyFormattedMediaType The incorrectly-formatted media type
      */
-    public function testIncorrectlyFormattedMediaTypeThrowsException($incorrectlyFormattedMediaType): void
+    public function testIncorrectlyFormattedMediaTypeThrowsException(string $incorrectlyFormattedMediaType): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Media type must be in format {type}/{sub-type}, received {$incorrectlyFormattedMediaType}");

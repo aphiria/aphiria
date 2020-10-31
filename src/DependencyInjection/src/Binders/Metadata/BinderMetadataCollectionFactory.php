@@ -29,6 +29,10 @@ final class BinderMetadataCollectionFactory
      */
     public function __construct(private IContainer $container, IBinderMetadataCollector $binderMetadataCollector = null)
     {
+        /**
+         * @psalm-suppress UninitializedProperty Psalm does not support promoted properties yet - bug
+         * @psalm-suppress PossiblyNullArgument Ditto - bug
+         */
         $this->binderMetadataCollector = $binderMetadataCollector ?? new ContainerBinderMetadataCollector($this->container);
     }
 
@@ -67,7 +71,7 @@ final class BinderMetadataCollectionFactory
     /**
      * Adds a failed resolution to a map
      *
-     * @param array $failedInterfacesToBinders The map to add to
+     * @param array<class-string, Binder[]> $failedInterfacesToBinders The map to add to
      * @param FailedBinderMetadataCollectionException $ex The exception that was thrown
      */
     private static function addFailedResolutionToMap(
@@ -77,7 +81,7 @@ final class BinderMetadataCollectionFactory
         $interface = $ex->getFailedInterface();
 
         if (!isset($failedInterfacesToBinders[$interface])) {
-            $failedInterfaces[$interface] = [];
+            $failedInterfacesToBinders[$interface] = [];
         }
 
         $failedInterfacesToBinders[$interface][] = $ex->getIncompleteBinderMetadata()->getBinder();
@@ -86,8 +90,8 @@ final class BinderMetadataCollectionFactory
     /**
      * Removes a failed resolution from the map
      *
-     * @param array $failedInterfacesToBinders The map to remove from
-     * @param string $interface The interface to remove
+     * @param array<class-string, Binder[]> $failedInterfacesToBinders The map to remove from
+     * @param class-string $interface The interface to remove
      * @param int $binderIndex The index of the binder to remove
      */
     private static function removeFailedResolutionFromMap(
@@ -106,7 +110,7 @@ final class BinderMetadataCollectionFactory
     /**
      * Retries any failed resolutions
      *
-     * @param array $failedInterfacesToBinders The map of failed resolutions to retry
+     * @param array<class-string, Binder[]> $failedInterfacesToBinders The map of failed resolutions to retry
      * @return BinderMetadata[] The list of binder metadata that were retrieved from failed binders
      */
     private function retryFailedBinders(array &$failedInterfacesToBinders): array

@@ -22,13 +22,14 @@ use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\ValidationException;
 use Aphiria\Validation\Validator;
 use InvalidArgumentException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ValidatorTest extends TestCase
 {
     private Validator $validator;
     private ObjectConstraintsRegistry $objectConstraints;
-    private IErrorMessageInterpolator|FakeObject $errorMessageInterpolator;
+    private IErrorMessageInterpolator|FakeObject|MockObject $errorMessageInterpolator;
 
     protected function setUp(): void
     {
@@ -100,6 +101,7 @@ class ValidatorTest extends TestCase
     public function testTryValidateMethodWithMagicMethodIsSkipped(): void
     {
         $object = new class() {
+            /** @psalm-suppress InvalidToString This is a test that should never even be reached */
             public function __toString(): string
             {
                 die('Should not get here');
@@ -407,7 +409,7 @@ class ValidatorTest extends TestCase
         $object1 = new class() {
             public ?object $methodReturnValue = null;
 
-            public function method(): object
+            public function method(): ?object
             {
                 return $this->methodReturnValue;
             }
@@ -415,7 +417,7 @@ class ValidatorTest extends TestCase
         $object2 = new class() {
             public ?object $methodReturnValue = null;
 
-            public function method(): object
+            public function method(): ?object
             {
                 return $this->methodReturnValue;
             }

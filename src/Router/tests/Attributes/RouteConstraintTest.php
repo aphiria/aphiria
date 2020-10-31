@@ -22,13 +22,19 @@ class RouteConstraintTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Class name must be set');
+        /**
+         * @psalm-suppress UndefinedClass Intentionally testing an empty string
+         * @psalm-suppress ArgumentTypeCoercion Ditto
+         */
         new RouteConstraint('');
     }
 
     public function testPropertiesAreSetInConstructor(): void
     {
-        $constraint = new RouteConstraint('foo', ['bar']);
-        $this->assertSame('foo', $constraint->className);
-        $this->assertSame(['bar'], $constraint->constructorParameters);
+        $constraint = new class() {
+        };
+        $constraintAttribute = new RouteConstraint($constraint::class, ['bar']);
+        $this->assertSame($constraint::class, $constraintAttribute->className);
+        $this->assertSame(['bar'], $constraintAttribute->constructorParameters);
     }
 }

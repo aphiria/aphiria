@@ -103,7 +103,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Sorts the values of the list
      *
-     * @param callable $comparer The comparer to sort with
+     * @param callable(mixed, mixed): int $comparer The comparer to sort with
      */
     public function sort(callable $comparer): void;
 

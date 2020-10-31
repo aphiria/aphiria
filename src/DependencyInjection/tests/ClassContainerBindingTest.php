@@ -17,28 +17,23 @@ use PHPUnit\Framework\TestCase;
 
 class ClassContainerBindingTest extends TestCase
 {
-    private ClassContainerBinding $binding;
-
-    protected function setUp(): void
-    {
-        $this->binding = new ClassContainerBinding('foo', ['bar'], false);
-    }
-
     public function testCheckingIfShouldResolveAsSingleton(): void
     {
-        $singletonBinding = new ClassContainerBinding('foo', [], true);
-        $prototypeBinding = new ClassContainerBinding('foo', [], false);
+        $singletonBinding = new ClassContainerBinding(self::class, [], true);
+        $prototypeBinding = new ClassContainerBinding(self::class, [], false);
         $this->assertTrue($singletonBinding->resolveAsSingleton());
         $this->assertFalse($prototypeBinding->resolveAsSingleton());
     }
 
     public function testGettingConcreteClass(): void
     {
-        $this->assertSame('foo', $this->binding->getConcreteClass());
+        $binding = new ClassContainerBinding(self::class, [], false);
+        $this->assertSame(self::class, $binding->getConcreteClass());
     }
 
     public function testGettingConstructorPrimitives(): void
     {
-        $this->assertEquals(['bar'], $this->binding->getConstructorPrimitives());
+        $binding = new ClassContainerBinding(self::class, ['bar'], false);
+        $this->assertEquals(['bar'], $binding->getConstructorPrimitives());
     }
 }

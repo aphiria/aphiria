@@ -28,8 +28,10 @@ use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCodes;
 use Aphiria\Console\Tests\Output\Mocks\Output;
 use Aphiria\DependencyInjection\IServiceResolver;
+use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 class ApplicationTest extends TestCase
 {
@@ -55,7 +57,7 @@ class ApplicationTest extends TestCase
             ->willReturnArgument(0);
         // Purposely use new commands that don't have anything registered to them
         $app = new class(new CommandRegistry(), $this->commandHandlerResolver) extends Application {
-            protected function formatExceptionMessage($ex): string
+            protected function formatExceptionMessage(Exception|Throwable $ex): string
             {
                 // Simplify testing
                 return $ex->getMessage();
@@ -85,7 +87,7 @@ class ApplicationTest extends TestCase
             ->with('<error>Command "foo" is not registered</error>')
             ->willReturnArgument(0);
         $app = new class($this->commands, $this->commandHandlerResolver, $inputCompiler) extends Application {
-            protected function formatExceptionMessage($ex): string
+            protected function formatExceptionMessage(Exception|Throwable $ex): string
             {
                 // Simplify testing
                 return $ex->getMessage();
@@ -122,7 +124,12 @@ class ApplicationTest extends TestCase
             ->with(HelpCommandHandler::class)
             ->willReturn(new HelpCommandHandler($this->commands));
         // Try with command name
-        $this->commands->registerCommand(new Command('holiday', [], [], ''), 'Handler');
+        $commandHandler = new class() implements ICommandHandler {
+            public function handle(Input $input, IOutput $output): void
+            {
+            }
+        };
+        $this->commands->registerCommand(new Command('holiday', [], [], ''), $commandHandler::class);
         ob_start();
         $status = $this->app->handle('help holiday', $this->output);
         ob_get_clean();
@@ -150,6 +157,11 @@ class ApplicationTest extends TestCase
     public function testHandlingHolidayCommand(): void
     {
         $commandHandler = new class() implements ICommandHandler {
+            /**
+             * @inheritdoc
+             *
+             * @return void
+             */
             public function handle(Input $input, IOutput $output)
             {
                 $message = 'Happy ' . $input->arguments['holiday'];
@@ -199,6 +211,11 @@ class ApplicationTest extends TestCase
     public function testHandlingSimpleCommand(): void
     {
         $commandHandler = new class() implements ICommandHandler {
+            /**
+             * @inheritdoc
+             *
+             * @return void
+             */
             public function handle(Input $input, IOutput $output)
             {
                 $output->write('foo');
@@ -218,6 +235,11 @@ class ApplicationTest extends TestCase
     public function testHandlingWithHandlerThatDoesNotReturnAnythingDefaultsToOk(): void
     {
         $commandHandler = new class() implements ICommandHandler {
+            /**
+             * @inheritdoc
+             *
+             * @return void
+             */
             public function handle(Input $input, IOutput $output)
             {
                 // Don't do anything

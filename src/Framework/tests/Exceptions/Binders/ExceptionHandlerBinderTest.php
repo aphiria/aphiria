@@ -37,7 +37,7 @@ class ExceptionHandlerBinderTest extends TestCase
 
         // We need to set up the "out" params based on the type that's set
         $this->container->method('tryResolve')
-            ->willReturnCallback(function ($type, &$object) {
+            ->willReturnCallback(function (string $type, ?object &$object) {
                 if ($type === IApiExceptionRenderer::class) {
                     // Capture the object parameter so we can make assertions on it later
                     $object = $this->apiExceptionRenderer = new class() extends ProblemDetailsExceptionRenderer {
@@ -76,12 +76,12 @@ class ExceptionHandlerBinderTest extends TestCase
     public function testRequestIsSetOnApiExceptionRenderer(): void
     {
         $this->binder->bind($this->container);
-        $this->assertSame($this->request, $this->apiExceptionRenderer->getRequest());
+        $this->assertSame($this->request, $this->apiExceptionRenderer?->getRequest());
     }
 
     public function testResponseFactoryIsSetOnApiExceptionRenderer(): void
     {
         $this->binder->bind($this->container);
-        $this->assertSame($this->responseFactory, $this->apiExceptionRenderer->getResponseFactory());
+        $this->assertSame($this->responseFactory, $this->apiExceptionRenderer?->getResponseFactory());
     }
 }

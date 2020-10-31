@@ -22,12 +22,13 @@ use InvalidArgumentException;
 final class RouteConstraint
 {
     /**
-     * @param string $className The name of the constraint class
+     * @param class-string $className The name of the constraint class
      * @param array $constructorParameters The list of constructor parameters for the constraint class
      * @throws InvalidArgumentException Thrown if any of the parameters are invalid
      */
     public function __construct(public string $className, public array $constructorParameters = [])
     {
+        /** @psalm-suppress DocblockTypeContradiction We want runtime reassurance that this is never empty */
         if (empty($this->className)) {
             throw new InvalidArgumentException('Class name must be set');
         }

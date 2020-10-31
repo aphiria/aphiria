@@ -120,6 +120,30 @@ class ValidationBinderTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testInvalidErrorMessageTemplateTypeThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Error message template must be instance of ' . IErrorMessageTemplateRegistry::class);
+        $config = self::getBaseConfig();
+        $config['aphiria']['validation']['errorMessageTemplates'] = [
+            'type' => self::class
+        ];
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        $this->setUpContainerMock();
+        $this->binder->bind($this->container);
+    }
+
+    public function testMissingErrorMessageTemplateTypeThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Missing key "type" from error message template config');
+        $config = self::getBaseConfig();
+        $config['aphiria']['validation']['errorMessageTemplates'] = [];
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        $this->setUpContainerMock();
+        $this->binder->bind($this->container);
+    }
+
     public function testStringReplaceErrorMessageInterpolatorIsSupported(): void
     {
         $config = self::getBaseConfig();

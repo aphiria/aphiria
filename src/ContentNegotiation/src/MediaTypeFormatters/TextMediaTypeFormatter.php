@@ -26,7 +26,7 @@ abstract class TextMediaTypeFormatter extends MediaTypeFormatter
      */
     public function canReadType(string $type): bool
     {
-        return strtolower($type) === 'string';
+        return \strtolower($type) === 'string';
     }
 
     /**
@@ -34,7 +34,7 @@ abstract class TextMediaTypeFormatter extends MediaTypeFormatter
      */
     public function canWriteType(string $type): bool
     {
-        return strtolower($type) === 'string';
+        return \strtolower($type) === 'string';
     }
 
     /**
@@ -58,13 +58,14 @@ abstract class TextMediaTypeFormatter extends MediaTypeFormatter
             throw new InvalidArgumentException(static::class . ' can only write strings');
         }
 
+        /** @var string $value We've verified that the value is a string above */
         $encoding = $encoding ?? $this->getDefaultEncoding();
 
         if (!$this->encodingIsSupported($encoding)) {
             throw new InvalidArgumentException("$encoding is not supported for " . static::class);
         }
 
-        $encodedValue = mb_convert_encoding($value, $encoding);
+        $encodedValue = \mb_convert_encoding($value, $encoding);
         $stream->write($encodedValue);
     }
 }

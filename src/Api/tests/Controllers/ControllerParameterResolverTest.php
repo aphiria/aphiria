@@ -82,7 +82,7 @@ class ControllerParameterResolverTest extends TestCase
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('readFromStream')
-            ->with($request->getBody()->readAsStream(), User::class)
+            ->with($request->getBody()?->readAsStream(), User::class)
             ->willThrowException(new SerializationException());
         $this->contentNegotiator->expects($this->once())
             ->method('negotiateRequestContent')
@@ -120,7 +120,7 @@ class ControllerParameterResolverTest extends TestCase
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('readFromStream')
-            ->with($request->getBody()->readAsStream(), User::class)
+            ->with($request->getBody()?->readAsStream(), User::class)
             ->willThrowException(new SerializationException());
         $this->contentNegotiator->expects($this->once())
             ->method('negotiateRequestContent')
@@ -191,7 +191,7 @@ class ControllerParameterResolverTest extends TestCase
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('readFromStream')
-            ->with($request->getBody()->readAsStream(), User::class)
+            ->with($request->getBody()?->readAsStream(), User::class)
             ->willReturn($expectedUser);
         $this->contentNegotiator->expects($this->once())
             ->method('negotiateRequestContent')
@@ -228,12 +228,16 @@ class ControllerParameterResolverTest extends TestCase
 
     /**
      * @dataProvider scalarParameterTestDataProvider
+     * @param string $methodName The method name
+     * @param string $parameterName The parameter name
+     * @param string $rawValue The raw value
+     * @param mixed $scalarValue Ths scalar value
      */
     public function testResolvingScalarParameterUsesMatchingQueryStringVariable(
         string $methodName,
         string $parameterName,
         string $rawValue,
-        $scalarValue
+        mixed $scalarValue
     ): void {
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([ControllerWithEndpoints::class, $methodName], $parameterName),
@@ -245,12 +249,16 @@ class ControllerParameterResolverTest extends TestCase
 
     /**
      * @dataProvider scalarParameterTestDataProvider
+     * @param string $methodName The method name
+     * @param string $parameterName The parameter name
+     * @param string $rawValue The raw value
+     * @param mixed $scalarValue Ths scalar value
      */
     public function testResolvingScalarParameterUsesMatchingRouteVariableOverQueryStringVariable(
         string $methodName,
         string $parameterName,
         string $rawValue,
-        $scalarValue
+        mixed $scalarValue
     ): void {
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([ControllerWithEndpoints::class, $methodName], $parameterName),

@@ -77,8 +77,10 @@ class RequestFactoryTest extends TestCase
 
     /**
      * @dataProvider clientIPDataProvider
+     * @param string $ipDatum1 The IP address
+     * @param string $expectedIpDatum The expected IP address
      */
-    public function testClientIPAddressIsSetFromForwardedHeaderWhenUsingTrustedProxy($ipDatum1, $expectedIpDatum): void
+    public function testClientIPAddressIsSetFromForwardedHeaderWhenUsingTrustedProxy(string $ipDatum1, string $expectedIpDatum): void
     {
         $_SERVER['HTTP_FORWARDED'] = $ipDatum1;
         $factory = new RequestFactory([], ['HTTP_FORWARDED' => 'HTTP_FORWARDED']);
@@ -122,8 +124,13 @@ class RequestFactoryTest extends TestCase
 
     /**
      * @dataProvider clientProtoProvider
+     * @param string $remoteAddress The remote address
+     * @param string $forwaredProto The forwarded proto
+     * @param string $host the host
+     * @param string $expectedScheme The expected scheme
+     * @param string $message The error message in case the assertion fails
      */
-    public function testClientProtoUsedToSetSchemeWithTrustedProxy($remoteAddress, $forwaredProto, $host, $expectedScheme, $message): void
+    public function testClientProtoUsedToSetSchemeWithTrustedProxy(string $remoteAddress, string $forwaredProto, string $host, string $expectedScheme, string $message): void
     {
         $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO']);
         $request = $factory->createRequestFromSuperglobals([
@@ -215,10 +222,12 @@ class RequestFactoryTest extends TestCase
 
     /**
      * @dataProvider httpServerPropertyProvider
+     * @param array $superglobals The superglobals to create the request from
+     * @param string $expectedScheme The expected scheme
      */
-    public function testHttpsServerPropertyControlsSchemeOfUri($properties, $expectedScheme): void
+    public function testHttpsServerPropertyControlsSchemeOfUri(array $superglobals, string $expectedScheme): void
     {
-        $httpsOnRequest = $this->factory->createRequestFromSuperglobals($properties);
+        $httpsOnRequest = $this->factory->createRequestFromSuperglobals($superglobals);
         $this->assertEquals($expectedScheme, $httpsOnRequest->getUri()->getScheme());
     }
 

@@ -20,7 +20,7 @@ class CallbackConstraintTest extends TestCase
     public function testCallbackIsExecuted(): void
     {
         $correctInputWasPassed = false;
-        $callback = function ($value) use (&$correctInputWasPassed) {
+        $callback = function (mixed $value) use (&$correctInputWasPassed): bool {
             $correctInputWasPassed = $value === 'foo';
 
             return true;
@@ -32,10 +32,10 @@ class CallbackConstraintTest extends TestCase
 
     public function testCallbackReturnValueIsRespected(): void
     {
-        $trueCallback = function () {
+        $trueCallback = function (): bool {
             return true;
         };
-        $falseCallback = function () {
+        $falseCallback = function (): bool {
             return false;
         };
         $passConstraint = new CallbackConstraint($trueCallback, 'foo');
@@ -52,6 +52,6 @@ class CallbackConstraintTest extends TestCase
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void
     {
-        $this->assertEquals(['value' => 'val'], (new CallbackConstraint(fn ($value) => true))->getErrorMessagePlaceholders('val'));
+        $this->assertEquals(['value' => 'val'], (new CallbackConstraint(fn (mixed $value) => true))->getErrorMessagePlaceholders('val'));
     }
 }

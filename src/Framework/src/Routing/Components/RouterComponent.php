@@ -20,6 +20,7 @@ use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Routing\Attributes\AttributeRouteRegistrant;
+use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Routing\Builders\RouteCollectionBuilderRouteRegistrant;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteRegistrantCollection;
@@ -31,7 +32,7 @@ use RuntimeException;
  */
 class RouterComponent implements IComponent
 {
-    /** @var Closure[] The list of callbacks that can register route builders */
+    /** @var array<Closure(RouteCollectionBuilder): void> The list of callbacks that can register route builders */
     private array $callbacks = [];
     /** @var bool Whether or not attributes are enabled */
     private bool $attributesEnabled = false;
@@ -84,7 +85,7 @@ class RouterComponent implements IComponent
     /**
      * Adds routes to the registry
      *
-     * @param Closure $callback The callback that takes in an instance of RouteBuilderRegistry
+     * @param Closure(RouteCollectionBuilder): void $callback The callback that takes in an instance of RouteCollectionBuilder
      * @return static For chaining
      */
     public function withRoutes(Closure $callback): static

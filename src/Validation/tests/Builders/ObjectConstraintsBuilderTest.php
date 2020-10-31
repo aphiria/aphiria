@@ -22,12 +22,12 @@ class ObjectConstraintsBuilderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->builder = new ObjectConstraintsBuilder('foo');
+        $this->builder = new ObjectConstraintsBuilder(self::class);
     }
 
     public function testBuiltConstraintsHasCorrectClassName(): void
     {
-        $this->assertSame('foo', $this->builder->build()->getClassName());
+        $this->assertSame(self::class, $this->builder->build()->getClassName());
     }
 
     public function testHasMethodConstraintsWithMultipleConstraintsAddsThemToRegistry(): void

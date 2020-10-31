@@ -38,6 +38,7 @@ class FatalThrowableError extends ErrorException
             $severity = E_ERROR;
         }
 
+        /** @psalm-suppress PossiblyInvalidArgument getCode() will always return an int - bug */
         parent::__construct($message, $error->getCode(), $severity, $error->getFile(), $error->getLine());
     }
 }

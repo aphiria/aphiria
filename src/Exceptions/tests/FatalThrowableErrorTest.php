@@ -17,6 +17,7 @@ use ErrorException;
 use InvalidArgumentException;
 use ParseError;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 use TypeError;
 
 class FatalThrowableErrorTest extends TestCase
@@ -32,10 +33,12 @@ class FatalThrowableErrorTest extends TestCase
 
     /**
      * @dataProvider throwableProvider
+     * @param Throwable $throwable The throwable error
      */
-    public function testConstructor($throwable): void
+    public function testConstructor(Throwable $throwable): void
     {
         $throwableError = new FatalThrowableError($throwable);
+        /** @psalm-suppress RedundantCondition We need to test this to get full coverage */
         $this->assertInstanceOf(ErrorException::class, $throwableError);
     }
 }

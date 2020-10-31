@@ -17,6 +17,7 @@ use Aphiria\Framework\Api\Testing\IntegrationTest;
 use Aphiria\Net\Http\IResponse;
 use Closure;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * Defines a base integration test case
@@ -123,9 +124,14 @@ abstract class IntegrationTestCase extends TestCase
      *
      * @param mixed $expectedValue The expected value
      * @param IResponse $response The response to inspect
+     * @throws RuntimeException Thrown if the last request is not set
      */
     public function assertParsedBodyEquals(mixed $expectedValue, IResponse $response): void
     {
+        if ($this->lastRequest === null) {
+            throw new RuntimeException('A request must be sent before calling ' . __METHOD__);
+        }
+
         try {
             $this->responseAssertions->assertParsedBodyEquals($expectedValue, $this->lastRequest, $response);
             // Dummy assertion
@@ -140,10 +146,15 @@ abstract class IntegrationTestCase extends TestCase
      *
      * @param IResponse $response The response to inspect
      * @param string $type The type to parse the response body as
-     * @param Closure $callback The callback that takes in the parsed body (mixed type) and returns true if it passes, otherwise false
+     * @param Closure(mixed): bool $callback The callback that takes in the parsed body (mixed type) and returns true if it passes, otherwise false
+     * @throws RuntimeException Thrown if the last request is not set
      */
     public function assertParsedBodyPassesCallback(IResponse $response, string $type, Closure $callback): void
     {
+        if ($this->lastRequest === null) {
+            throw new RuntimeException('A request must be sent before calling ' . __METHOD__);
+        }
+
         try {
             $this->responseAssertions->assertParsedBodyPassesCallback($this->lastRequest, $response, $type, $callback);
             // Dummy assertion

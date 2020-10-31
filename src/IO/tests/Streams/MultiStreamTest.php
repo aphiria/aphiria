@@ -383,6 +383,7 @@ class MultiStreamTest extends TestCase
             ->willReturn(false);
         $unseekableStream->expects($this->never())
             ->method('readToEnd');
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $multiStream = new MultiStream([$unseekableStream]);
         $this->assertEmpty((string)$multiStream);
     }

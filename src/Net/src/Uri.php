@@ -244,7 +244,7 @@ class Uri
         /** @link https://tools.ietf.org/html/rfc3986#section-3.3 */
         return preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
-            static function ($match) {
+            static function (array $match): string {
                 return rawurlencode($match[0]);
             },
             $path
@@ -266,7 +266,7 @@ class Uri
         /** @link https://tools.ietf.org/html/rfc3986#section-3.4 */
         return preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
-            static function ($match) {
+            static function (array $match): string {
                 return rawurlencode($match[0]);
             },
             $queryString

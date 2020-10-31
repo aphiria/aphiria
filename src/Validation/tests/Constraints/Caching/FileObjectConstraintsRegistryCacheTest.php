@@ -47,7 +47,7 @@ class FileObjectConstraintsRegistryCacheTest extends TestCase
     {
         $objectConstraints = new ObjectConstraintsRegistry();
         $objectConstraints->registerObjectConstraints(
-            new ObjectConstraints('foo', ['prop' => $this->createMock(IConstraint::class)])
+            new ObjectConstraints(self::class, ['prop' => $this->createMock(IConstraint::class)])
         );
         $this->cache->set($objectConstraints);
         $this->assertEquals($objectConstraints, $this->cache->get());

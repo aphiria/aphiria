@@ -55,13 +55,14 @@ class Prompt
             foreach ($question->choices as $key => $choice) {
                 if (!$choicesAreAssociative) {
                     // Make the choice 1-indexed
+                    /** @psalm-suppress InvalidOperand The key is numeric, so this is OK */
                     ++$key;
                 }
 
                 $choiceTexts[] = [$key . ')', $choice];
             }
 
-            $output->writeln($this->paddingFormatter->format($choiceTexts, fn ($row) => "  {$row[0]} {$row[1]}"));
+            $output->writeln($this->paddingFormatter->format($choiceTexts, fn (array $row): string => "  {$row[0]} {$row[1]}"));
             $output->write($question->getAnswerLineString());
         }
 

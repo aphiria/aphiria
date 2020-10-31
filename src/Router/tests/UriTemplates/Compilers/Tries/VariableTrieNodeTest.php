@@ -43,7 +43,12 @@ class VariableTrieNodeTest extends TestCase
 
     public function testCreatingWithSingleRouteConvertsItToArrayOfRoutes(): void
     {
-        $expectedRoute = new Route(new UriTemplate(''), new RouteAction('Foo', 'bar'), []);
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
+        $expectedRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
         $node = new VariableTrieNode(new RouteVariable('foo'), [], $expectedRoute);
         $this->assertCount(1, $node->routes);
         $this->assertSame($expectedRoute, $node->routes[0]);
@@ -161,9 +166,14 @@ class VariableTrieNodeTest extends TestCase
 
     public function testPropertiesAreSetInConstructor(): void
     {
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
         $expectedParts = [new RouteVariable('foo')];
         $expectedChildren = [new LiteralTrieNode('bar', [])];
-        $expectedRoutes = [new Route(new UriTemplate(''), new RouteAction('Foo', 'bar'), [])];
+        $expectedRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
         $expectedHostTrie = $this->createMockNode();
         $node = new VariableTrieNode($expectedParts, $expectedChildren, $expectedRoutes, $expectedHostTrie);
         $this->assertSame($expectedParts, $node->parts);

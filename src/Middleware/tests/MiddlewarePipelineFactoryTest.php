@@ -43,7 +43,7 @@ class MiddlewarePipelineFactoryTest extends TestCase
         $middleware1 = $this->createMock(IMiddleware::class);
         $middleware1->expects($this->once())
             ->method('handle')
-            ->with($request, $this->callback(function ($handler) use ($controllerHandler) {
+            ->with($request, $this->callback(function (IRequestHandler $handler) use ($controllerHandler): bool {
                 // Next handler will be the second middleware's handler, although there's no way to test that directly
                 return $handler !== $controllerHandler;
             }))
@@ -51,6 +51,7 @@ class MiddlewarePipelineFactoryTest extends TestCase
         /** @var IMiddleware|MockObject $middleware2 */
         $middleware2 = $this->createMock(IMiddleware::class);
 
+        /** @psalm-suppress InvalidArgument Psalm doesn't handle union types yet - bug */
         $pipeline = $this->pipelineFactory->createPipeline([$middleware1, $middleware2], $controllerHandler);
         $this->assertSame($response, $pipeline->handle($request));
     }
@@ -79,6 +80,7 @@ class MiddlewarePipelineFactoryTest extends TestCase
             ->with($request, $controllerHandler)
             ->willReturn($response);
 
+        /** @psalm-suppress InvalidArgument Psalm doesn't handle union types yet - bug */
         $pipeline = $this->pipelineFactory->createPipeline([$middleware], $controllerHandler);
         $this->assertSame($response, $pipeline->handle($request));
     }

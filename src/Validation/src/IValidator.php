@@ -26,6 +26,7 @@ interface IValidator
      * @param object $object The object whose method we're validating
      * @param string $methodName The name of the method to validate
      * @param array $violations The list of violations if there are any
+     * @param-out array $violations
      * @return bool True if the method was valid, otherwise false
      * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
@@ -36,6 +37,7 @@ interface IValidator
      *
      * @param object $object The object to validate
      * @param array $violations The list of violations if there are any
+     * @param-out array $violations
      * @return bool True if the object was valid, otherwise false
      * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
@@ -47,6 +49,7 @@ interface IValidator
      * @param object $object The object whose property we're validating
      * @param string $propertyName The name of the property to validate
      * @param array $violations The list of violations if there are any
+     * @param-out array $violations
      * @return bool True if the property was valid, otherwise false
      * @throws CircularDependencyException Thrown if a circular dependency is detected
      */
@@ -58,6 +61,7 @@ interface IValidator
      * @param mixed $value The value to validate
      * @param IConstraint[] $constraints The list of constraints to use
      * @param array $violations The list of violations if there are any
+     * @param-out array $violations
      * @return bool True if the value was valid, otherwise false
      * @throws CircularDependencyException Thrown if a circular dependency is detected
      */

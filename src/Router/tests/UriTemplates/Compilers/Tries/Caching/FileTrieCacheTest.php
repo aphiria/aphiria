@@ -49,12 +49,19 @@ class FileTrieCacheTest extends TestCase
 
     public function testGetOnHitReturnsTrieAndIncludesRoutesWithAllPropertiesSet(): void
     {
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
+        $middleware = new class() {
+        };
         // We are purposely testing setting every type of property inside the route to test that they're all unserializable
         $route = new Route(
             new UriTemplate('foo'),
-            new RouteAction('Foo', 'bar'),
+            new RouteAction($controller::class, 'bar'),
             [$this->createMock(IRouteConstraint::class)],
-            [new MiddlewareBinding('foo')]
+            [new MiddlewareBinding($middleware::class)]
         );
         $trie = new RootTrieNode([
             new LiteralTrieNode(

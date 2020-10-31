@@ -46,9 +46,14 @@ class HttpMethodRouteConstraintTest extends TestCase
 
     public function testPassesOnlyReturnsTrueOnAllowedMethods(): void
     {
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
         $constraint = new HttpMethodRouteConstraint(['GET']);
         $matchedRoute = new MatchedRouteCandidate(
-            new Route(new UriTemplate('foo'), new RouteAction('Foo', 'bar'), []),
+            new Route(new UriTemplate('foo'), new RouteAction($controller::class, 'bar'), []),
             []
         );
         $this->assertTrue($constraint->passes($matchedRoute, 'GET', 'example.com', '/foo', []));
@@ -58,9 +63,14 @@ class HttpMethodRouteConstraintTest extends TestCase
 
     public function testPassesWorksOnLowercaseMethods(): void
     {
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
         $constraint = new HttpMethodRouteConstraint(['POST']);
         $matchedRoute = new MatchedRouteCandidate(
-            new Route(new UriTemplate(''), new RouteAction('Foo', 'bar'), []),
+            new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []),
             []
         );
         $this->assertTrue($constraint->passes($matchedRoute, 'post', 'example.com', '/', []));

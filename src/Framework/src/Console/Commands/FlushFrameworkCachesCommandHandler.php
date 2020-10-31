@@ -44,6 +44,8 @@ class FlushFrameworkCachesCommandHandler implements ICommandHandler
 
     /**
      * @inheritdoc
+     *
+     * @return void
      */
     public function handle(Input $input, IOutput $output)
     {

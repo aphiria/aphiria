@@ -17,19 +17,21 @@ namespace Aphiria\DependencyInjection\Binders\Metadata;
  */
 final class BinderMetadataCollection
 {
-    /** @var BinderMetadata[][] The mapping of interfaces to binder metadata that universally resolve those interfaces */
+    /** @var array<class-string, BinderMetadata[]> The mapping of interfaces to binder metadata that universally resolve those interfaces */
     private array $universalResolutions = [];
-    /** @var array The mapping of targets to interfaces to binders that resolve the interface for the target */
+    /** @var array<class-string, array{class-string, BinderMetadata[]}> The mapping of targets to interfaces to binder metadata that resolve the interface for the target */
     private array $targetedResolutions = [];
 
     /**
      * @param BinderMetadata[] $binderMetadatas The list of all binder metadata
+     * @psalm-suppress InvalidPropertyAssignmentValue Psalm is getting confused about assigning arrays with keys - bug
      */
     public function __construct(private array $binderMetadatas)
     {
         foreach ($this->binderMetadatas as $binderMetadata) {
             foreach ($binderMetadata->getResolvedInterfaces() as $resolvedInterface) {
                 if ($resolvedInterface->getContext()->isTargeted()) {
+                    /** @var class-string $targetClass We know that this will be set because it's targeted */
                     $targetClass = $resolvedInterface->getContext()->getTargetClass();
                     $interface = $resolvedInterface->getInterface();
 
@@ -70,6 +72,7 @@ final class BinderMetadataCollection
      *
      * @param BoundInterface $boundInterface The bound interface to check for
      * @return BinderMetadata[] The list of binder metadata that resolve the input interface
+     * @psalm-suppress InvalidArrayOffset Psalm is getting confused about accessing arrays with keys - bug
      */
     public function getBinderMetadataThatResolveInterface(BoundInterface $boundInterface): array
     {

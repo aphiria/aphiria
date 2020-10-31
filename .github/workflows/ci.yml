@@ -36,6 +36,8 @@ jobs:
         run: |
           composer global require php-coveralls/php-coveralls
           php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
+      #- name: Run Psalm Static Analysis
+      #  run: vendor/bin/psalm
       - name: Split Subtrees
         if: github.ref == 'refs/heads/0.x' || startswith(github.ref, 'refs/tags/')
         env:

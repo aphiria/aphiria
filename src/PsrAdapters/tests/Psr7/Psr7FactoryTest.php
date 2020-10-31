@@ -16,6 +16,7 @@ use Aphiria\Collections\KeyValuePair;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\Request;
@@ -53,7 +54,7 @@ class Psr7FactoryTest extends TestCase
         $psr7Body = Psr7Stream::create('foo');
         $psr7Request = new Psr7Request('GET', 'https://example.com', [], $psr7Body);
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
-        $this->assertSame('foo', $aphiriaRequest->getBody()->readAsString());
+        $this->assertSame('foo', $aphiriaRequest->getBody()?->readAsString());
     }
 
     public function testCreateAphiriaRequestSetsParsedBody(): void
@@ -103,21 +104,22 @@ class Psr7FactoryTest extends TestCase
             ]);
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
         $aphiriaMultipartBody = (new RequestParser())->readAsMultipart($aphiriaRequest);
-        $aphiriaMultipartBodyParts = $aphiriaMultipartBody->getParts();
+        $aphiriaMultipartBodyParts = $aphiriaMultipartBody?->getParts();
+        $this->assertNotNull($aphiriaMultipartBodyParts);
         $this->assertCount(3, $aphiriaMultipartBodyParts);
-        $this->assertSame('foo', $aphiriaMultipartBodyParts[0]->getBody()->readAsString());
+        $this->assertSame('foo', $aphiriaMultipartBodyParts[0]->getBody()?->readAsString());
         $this->assertSame('image/png', $aphiriaMultipartBodyParts[0]->getHeaders()->getFirst('Content-Type'));
         $this->assertSame(
             'name=foo; filename=foo.png',
             $aphiriaMultipartBodyParts[0]->getHeaders()->getFirst('Content-Disposition')
         );
-        $this->assertSame('bar', $aphiriaMultipartBodyParts[1]->getBody()->readAsString());
+        $this->assertSame('bar', $aphiriaMultipartBodyParts[1]->getBody()?->readAsString());
         $this->assertFalse($aphiriaMultipartBodyParts[1]->getHeaders()->containsKey('Content-Type'));
         $this->assertSame(
             'name=bar; filename=bar.png',
             $aphiriaMultipartBodyParts[1]->getHeaders()->getFirst('Content-Disposition')
         );
-        $this->assertSame('baz', $aphiriaMultipartBodyParts[2]->getBody()->readAsString());
+        $this->assertSame('baz', $aphiriaMultipartBodyParts[2]->getBody()?->readAsString());
         $this->assertFalse($aphiriaMultipartBodyParts[2]->getHeaders()->containsKey('Content-Type'));
         $this->assertSame(
             'name=baz',
@@ -130,7 +132,7 @@ class Psr7FactoryTest extends TestCase
         $psr7Body = Psr7Stream::create('foo');
         $psr7Response = new Psr7Response(200, [], $psr7Body);
         $aphiriaResponse = $this->psr7Factory->createAphiriaResponse($psr7Response);
-        $this->assertSame('foo', $aphiriaResponse->getBody()->readAsString());
+        $this->assertSame('foo', $aphiriaResponse->getBody()?->readAsString());
     }
 
     public function testCreateAphiriaResponseSetsSameHeaders(): void
@@ -413,7 +415,7 @@ class Psr7FactoryTest extends TestCase
          * allowing null bodies on multipart body parts.
          */
         $aphiriaRequestParser = new class() extends RequestParser {
-            public function readAsMultipart($request): ?MultipartBody
+            public function readAsMultipart(IRequest|MultipartBodyPart $request): ?MultipartBody
             {
                 return new MultipartBody([new MultipartBodyPart(new Headers(), null)]);
             }

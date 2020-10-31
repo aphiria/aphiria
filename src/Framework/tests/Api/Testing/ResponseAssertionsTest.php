@@ -230,7 +230,7 @@ class ResponseAssertionsTest extends TestCase
             ->with(self::class, $request)
             ->willReturn(null);
         $assertions = new ResponseAssertions($mediaTypeFormatterMatcher);
-        $assertions->assertParsedBodyPassesCallback($request, $response, self::class, fn ($parsedBody) => true);
+        $assertions->assertParsedBodyPassesCallback($request, $response, self::class, fn (mixed $parsedBody): bool => true);
     }
 
     public function testAssertParsedBodyPassesCallbackWithNonHttpBodyDoesNotThrowOnMatch(): void
@@ -241,7 +241,7 @@ class ResponseAssertionsTest extends TestCase
         $expectedParsedBody = new class() {
             public string $foo = 'bar';
         };
-        $this->assertions->assertParsedBodyPassesCallback($request, $response, $expectedParsedBody::class, function ($parsedBody) use ($expectedParsedBody) {
+        $this->assertions->assertParsedBodyPassesCallback($request, $response, $expectedParsedBody::class, function (mixed $parsedBody) use ($expectedParsedBody): bool {
             return $parsedBody == $expectedParsedBody;
         });
         // Dummy assertion
@@ -258,7 +258,7 @@ class ResponseAssertionsTest extends TestCase
         $expectedParsedBody = new class() {
             public string $foo = 'bar';
         };
-        $this->assertions->assertParsedBodyPassesCallback($request, $response, $expectedParsedBody::class, function ($parsedBody) {
+        $this->assertions->assertParsedBodyPassesCallback($request, $response, $expectedParsedBody::class, function (mixed $parsedBody): bool {
             return false;
         });
     }

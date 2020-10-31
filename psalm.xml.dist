@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="8"
+    resolveFromConfigFile="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <directory name="src/" />
+        <ignoreFiles>
+            <directory name="vendor" />
+            <file name="src/Router/bin/benchmarks.php" />
+        </ignoreFiles>
+    </projectFiles>
+    <issueHandlers>
+        <InaccessibleMethod>
+            <errorLevel type="suppress">
+                <file name="src/Api/tests/Controllers/ControllerTest.php" />
+                <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php" />
+            </errorLevel>
+        </InaccessibleMethod>
+        <MixedMethodCall>
+            <errorLevel type="suppress">
+                <!-- Psalm gets tripped up on mocked methods -->
+                <directory name="src/**/tests" />
+            </errorLevel>
+        </MixedMethodCall>
+        <PossiblyInvalidArgument>
+            <errorLevel type="suppress">
+                <!-- Tests use union types with mocks, which trips up Psalm a lot -->
+                <directory name="src/**/tests" />
+            </errorLevel>
+        </PossiblyInvalidArgument>
+        <PossiblyNullReference>
+            <errorLevel type="suppress">
+                <!-- Properties such as the current request are guaranteed to be set by the framework in the wild -->
+                <file name="src/Api/src/Controllers/Controller.php" />
+            </errorLevel>
+        </PossiblyNullReference>
+        <PossiblyUndefinedMethod>
+            <errorLevel type="suppress">
+                <!-- Tests use union types with mocks, which trips up Psalm a lot -->
+                <directory name="src/**/tests" />
+            </errorLevel>
+        </PossiblyUndefinedMethod>
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <directory name="src/**/tests" />
+                <file name="src/Framework/src/Serialization/Normalizers/ProblemDetailsNormalizer.php" />
+            </errorLevel>
+        </PropertyNotSetInConstructor>
+        <TypeDoesNotContainNull>
+            <errorLevel type="suppress">
+                <!-- We get a lot of false positives with the try*() pattern and out parameters -->
+                <file name="src/Application/tests/Configuration/GlobalConfigurationTest.php" />
+            </errorLevel>
+        </TypeDoesNotContainNull>
+        <UndefinedClass>
+            <errorLevel type="suppress">
+                <file name="src/**/.phpstorm.meta.php" />
+            </errorLevel>
+        </UndefinedClass>
+        <UndefinedFunction>
+            <errorLevel type="suppress">
+                <file name="src/**/.phpstorm.meta.php" />
+            </errorLevel>
+        </UndefinedFunction>
+        <UndefinedInterfaceMethod>
+            <errorLevel type="suppress">
+                <!-- The elevated visibilities in the mocks triggers a false positive -->
+                <file name="src/DependencyInjection/tests/Binders/LazyBinderDispatcherTest.php" />
+                <file name="src/Framework/tests/Exceptions/Binders/ExceptionHandlerBinderTest.php" />
+                <!-- The PhpStorm meta files give us intellisense that Psalm does not pick up on -->
+                <file name="src/Framework/src/Application/AphiriaComponents.php" />
+            </errorLevel>
+        </UndefinedInterfaceMethod>
+        <UndefinedMethod>
+            <errorLevel type="suppress">
+                <!-- The elevated visibilities in the mocks triggers a false positive -->
+                <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php" />
+                <file name="src/Framework/tests/Console/Components/CommandComponentTest.php" />
+                <file name="src/Framework/tests/Exceptions/Bootstrappers/GlobalExceptionHandlerBootstrapperTest.php" />
+                <file name="src/Framework/tests/Routing/Components/RouterComponentTest.php" />
+                <file name="src/Framework/tests/Validation/Components/ValidationComponentTest.php" />
+            </errorLevel>
+        </UndefinedMethod>
+    </issueHandlers>
+</psalm>

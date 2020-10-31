@@ -120,7 +120,7 @@ final class TrieCompiler implements ITrieCompiler
                     && (
                         $i === $numAstChildren - 1
                         || $childAstNode->type === AstNodeTypes::OPTIONAL_ROUTE_PART
-                        || ($astChildren[$i + 1]->type === AstNodeTypes::OPTIONAL_ROUTE_PART)
+                        || ($astChildren[(int)$i + 1]->type === AstNodeTypes::OPTIONAL_ROUTE_PART)
                     )
                 );
 
@@ -195,7 +195,7 @@ final class TrieCompiler implements ITrieCompiler
             $constraintParams = $childAstNode->hasChildren() ? $childAstNode->children[0]->value : [];
             $constraints[] = $this->constraintFactory->createConstraint(
                 (string)$childAstNode->value,
-                $constraintParams
+                (array)$constraintParams
             );
         }
 
