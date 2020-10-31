@@ -83,7 +83,7 @@ final class ObjectConstraints
     /**
      * Gets the name of the class whose constraints are represented here
      *
-     * @return string The name of the class
+     * @return class-string The name of the class
      */
     public function getClassName(): string
     {
