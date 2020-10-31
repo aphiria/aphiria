@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Exceptions\Components;
 
 use Aphiria\Application\IComponent;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Exceptions\LogLevelFactory;
@@ -21,6 +22,7 @@ use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Closure;
+use Exception;
 
 /**
  * Defines the exception handler component
@@ -31,7 +33,7 @@ class ExceptionHandlerComponent implements IComponent
     private array $exceptionProblemDetailMappings = [];
     /** @var array<class-string, Closure> The mapping of exception types to console result factories */
     private array $consoleOutputWriters = [];
-    /** @var array<class-string, Closure> The mapping of exception types to log level factories */
+    /** @var array<class-string<Exception>, Closure(Exception): string> The mapping of exception types to log level factories */
     private array $logLevelFactories = [];
 
     /**
@@ -68,8 +70,9 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * Adds a console exception output writer
      *
-     * @param class-string $exceptionType The type of exception that's thrown
-     * @param Closure $callback The factory that takes in the exception and output, and writes messages/returns a status code
+     * @template T of Exception
+     * @param class-string<T> $exceptionType The type of exception that's thrown
+     * @param Closure(T, IOutput) $callback The factory that takes in the exception and output, and writes messages/returns a status code
      * @return static For chaining
      */
     public function withConsoleOutputWriter(string $exceptionType, Closure $callback): static
@@ -82,8 +85,9 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * Adds a log level factory for a particular exception type
      *
-     * @param class-string $exceptionType The type of exception that's thrown
-     * @param Closure $logLevelFactory The factory that takes in an instance of the exception type and returns a PSR-3 log level
+     * @template T of Exception
+     * @param class-string<T> $exceptionType The type of exception that's thrown
+     * @param Closure(T): string $logLevelFactory The factory that takes in an instance of the exception type and returns a PSR-3 log level
      * @return static For chaining
      */
     public function withLogLevelFactory(string $exceptionType, Closure $logLevelFactory): static

@@ -82,7 +82,7 @@ class LazyBinderDispatcher implements IBinderDispatcher
      * @param BinderMetadata $binderMetadata The metadata for the binder that bound the interface
      * @param BoundInterface $boundInterface The bound interface
      * @param IContainer $container The DI container to register to
-     * @return Closure The factory that can lazily resolve an interface
+     * @return Closure(): object The factory that can lazily resolve an interface
      */
     private function createLazyFactory(
         BinderMetadataCollection $binderMetadatas,

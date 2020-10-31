@@ -347,9 +347,10 @@ class AphiriaComponentsTest extends TestCase
             use AphiriaComponents;
 
             /**
+             * @template T of Exception
              * @param IApplicationBuilder $appBuilder
-             * @param class-string $exceptionType
-             * @param Closure $callback
+             * @param class-string<T> $exceptionType
+             * @param Closure(T, IOutput) $callback
              */
             public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $callback): void
             {
@@ -374,16 +375,13 @@ class AphiriaComponentsTest extends TestCase
 
             /**
              * @param IApplicationBuilder $appBuilder
-             * @param class-string $exceptionType
-             * @param Closure $callback
              */
-            public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $callback): void
+            public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withConsoleExceptionOutputWriter($appBuilder, $exceptionType, $callback);
+                $this->withConsoleExceptionOutputWriter($appBuilder, Exception::class, fn (Exception $ex, IOutput $output): mixed => null);
             }
         };
-        $callback = fn (Exception $ex, IOutput $output): mixed => null;
-        $component->build($this->appBuilder, Exception::class, $callback);
+        $component->build($this->appBuilder);
         // Dummy assertion
         $this->assertTrue(true);
     }
@@ -398,15 +396,13 @@ class AphiriaComponentsTest extends TestCase
 
             /**
              * @param IApplicationBuilder $appBuilder
-             * @param class-string $exceptionType
-             * @param Closure $callback
              */
-            public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $callback): void
+            public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withConsoleExceptionOutputWriter($appBuilder, $exceptionType, $callback);
+                $this->withConsoleExceptionOutputWriter($appBuilder, Exception::class, fn (Exception $ex, IOutput $output): mixed => null);
             }
         };
-        $component->build($this->appBuilder, Exception::class, fn (Exception $ex, IOutput $output): mixed => null);
+        $component->build($this->appBuilder);
     }
 
     public function testWithFrameworkCommandsConfiguresComponentToHaveCommands(): void
@@ -627,9 +623,10 @@ class AphiriaComponentsTest extends TestCase
             use AphiriaComponents;
 
             /**
+             * @template T of Exception
              * @param IApplicationBuilder $appBuilder
-             * @param class-string $exceptionType
-             * @param Closure $logLevelFactory
+             * @param class-string<T> $exceptionType
+             * @param Closure(T): string $logLevelFactory
              */
             public function build(
                 IApplicationBuilder $appBuilder,
@@ -657,16 +654,13 @@ class AphiriaComponentsTest extends TestCase
 
             /**
              * @param IApplicationBuilder $appBuilder
-             * @param class-string $exceptionType
-             * @param Closure $logLevelFactory
              */
-            public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $logLevelFactory): void
+            public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withLogLevelFactory($appBuilder, $exceptionType, $logLevelFactory);
+                $this->withLogLevelFactory($appBuilder, Exception::class, fn (Exception $ex): string => LogLevel::ALERT);
             }
         };
-        $logLevelFactory = fn (Exception $ex): string => LogLevel::ALERT;
-        $component->build($this->appBuilder, Exception::class, $logLevelFactory);
+        $component->build($this->appBuilder);
         // Dummy assertion
         $this->assertTrue(true);
     }
@@ -681,15 +675,13 @@ class AphiriaComponentsTest extends TestCase
 
             /**
              * @param IApplicationBuilder $appBuilder
-             * @param class-string $exceptionType
-             * @param Closure $logLevelFactory
              */
-            public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $logLevelFactory): void
+            public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withLogLevelFactory($appBuilder, $exceptionType, $logLevelFactory);
+                $this->withLogLevelFactory($appBuilder, Exception::class, fn (Exception $ex): string => LogLevel::ALERT);
             }
         };
-        $component->build($this->appBuilder, Exception::class, fn (Exception $ex): string => LogLevel::ALERT);
+        $component->build($this->appBuilder);
     }
 
     public function testWithModulesAddsMultipleModulesToAppBuilder(): void

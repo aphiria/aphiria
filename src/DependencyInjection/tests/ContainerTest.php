@@ -724,13 +724,13 @@ class ContainerTest extends TestCase
         };
         $fooInstance = new Bar();
         $personInstance = new Dave();
-        $this->container->for(new TargetedContext($target1::Class), function (IContainer $container) use ($fooInstance) {
+        $this->container->for(new TargetedContext($target1::class), function (IContainer $container) use ($fooInstance) {
             $container->bindInstance(IFoo::class, $fooInstance);
         });
         $this->container->for(new TargetedContext($target2::class), function (IContainer $container) use ($personInstance) {
             $container->bindInstance(IPerson::class, $personInstance);
         });
-        $this->assertFalse($this->container->for(new TargetedContext($target1::Class), function (IContainer $container) {
+        $this->assertFalse($this->container->for(new TargetedContext($target1::class), function (IContainer $container) {
             return $container->hasBinding(IPerson::class);
         }));
         $this->assertTrue($this->container->for(new TargetedContext($target2::class), function (IContainer $container) {

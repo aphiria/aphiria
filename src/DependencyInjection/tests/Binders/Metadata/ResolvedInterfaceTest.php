@@ -34,7 +34,7 @@ class ResolvedInterfaceTest extends TestCase
         $resolvedInterface = new class() {
         };
         $expectedContext = new TargetedContext($target::class);
-        $interface = new ResolvedInterface($resolvedInterface::Class, $expectedContext);
+        $interface = new ResolvedInterface($resolvedInterface::class, $expectedContext);
         $this->assertSame($expectedContext, $interface->getContext());
     }
 }

@@ -20,6 +20,12 @@
                 <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php" />
             </errorLevel>
         </InaccessibleMethod>
+        <MixedMethodCall>
+            <errorLevel type="suppress">
+                <!-- Psalm gets tripped up on mocked methods -->
+                <directory name="src/**/tests" />
+            </errorLevel>
+        </MixedMethodCall>
         <PossiblyInvalidArgument>
             <errorLevel type="suppress">
                 <!-- Tests use union types with mocks, which trips up Psalm a lot -->

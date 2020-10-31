@@ -70,7 +70,7 @@ interface ISet extends Countable, IteratorAggregate
     /**
      * Sorts the values of the set
      *
-     * @param callable $comparer The comparer to sort with
+     * @param callable(mixed, mixed): int $comparer The comparer to sort with
      */
     public function sort(callable $comparer): void;
 

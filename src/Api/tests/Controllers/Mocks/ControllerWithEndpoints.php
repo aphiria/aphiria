@@ -50,7 +50,7 @@ class ControllerWithEndpoints extends BaseController
     /**
      * Mocks a method with a callable parameter
      *
-     * @param callable $foo The float
+     * @param callable $foo The callable
      * @return IResponse The response
      * @psalm-suppress InvalidCast This cast is actually allowed
      */

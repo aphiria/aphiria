@@ -17,6 +17,7 @@ use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use Aphiria\Console\Commands\CommandBinding;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\Container;
@@ -34,7 +35,10 @@ use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Routing\Builders\RouteCollectionBuilder;
+use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
 use Closure;
+use Exception;
 use RuntimeException;
 
 /**
@@ -135,7 +139,7 @@ trait AphiriaComponents
      * Adds console commands to the command component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param Closure $callback The callback that takes in an instance of CommandRegistry to register commands to
+     * @param Closure(CommandRegistry): void $callback The callback that takes in an instance of CommandRegistry to register commands to
      * @return static For chaining
      * @throws RuntimeException Thrown if the global instance of the container is not set
      */
@@ -179,9 +183,10 @@ trait AphiriaComponents
     /**
      * Adds a console callback that takes in the exception and the output, and writes messages/returns the status code
      *
+     * @template T of Exception
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param class-string $exceptionType The type of exception whose result factory we're registering
-     * @param Closure $callback The callback that takes in an exception and the output, and writes messages/returns the status code
+     * @param class-string<T> $exceptionType The type of exception whose result factory we're registering
+     * @param Closure(T, IOutput) $callback The callback that takes in an exception and the output, and writes messages/returns the status code
      * @return static For chaining
      * @throws RuntimeException Thrown if the global instance of the container is not set
      */
@@ -287,9 +292,10 @@ trait AphiriaComponents
     /**
      * Adds a log level factory to the exception handler component
      *
+     * @template T of Exception
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param class-string $exceptionType The exception type whose factory we're registering
-     * @param Closure $logLevelFactory The factory that takes in an instance of the exception and returns the PSR-3 log level
+     * @param class-string<T> $exceptionType The exception type whose factory we're registering
+     * @param Closure(T): string $logLevelFactory The factory that takes in an instance of the exception and returns the PSR-3 log level
      * @return static For chaining
      * @throws RuntimeException Thrown if the global instance of the container is not set
      */
@@ -337,7 +343,7 @@ trait AphiriaComponents
      * Adds object constraints to the object constraints component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param Closure $callback The callback that takes in an instance of ObjectConstraintsRegistry to register object constraints to
+     * @param Closure(ObjectConstraintsRegistryBuilder): void $callback The callback that takes in an instance of ObjectConstraintsRegistryBuilder to register object constraints to
      * @return static For chaining
      * @throws RuntimeException Thrown if the global instance of the container is not set
      */
@@ -425,7 +431,7 @@ trait AphiriaComponents
      * Adds routes to the router component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param Closure $callback The callback that takes in an instance of RouteBuilderRegistry to register route builders to
+     * @param Closure(RouteCollectionBuilder ): void $callback The callback that takes in an instance of RouteCollectionBuilder to register route builders to
      * @return static For chaining
      * @throws RuntimeException Thrown if the global instance of the container is not set
      */

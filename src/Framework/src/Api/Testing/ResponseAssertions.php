@@ -177,7 +177,7 @@ class ResponseAssertions
      * @param IRequest $request The request that generated the response (used for content negotiation)
      * @param IResponse $response The response to inspect
      * @param string $type The type to parse the response body as
-     * @param Closure $callback The callback that takes in the parsed body (mixed type) and returns true if it passes, otherwise false
+     * @param Closure(mixed): bool $callback The callback that takes in the parsed body (mixed type) and returns true if it passes, otherwise false
      * @throws AssertionFailedException Thrown if the assertion failed
      */
     public function assertParsedBodyPassesCallback(IRequest $request, IResponse $response, string $type, Closure $callback): void

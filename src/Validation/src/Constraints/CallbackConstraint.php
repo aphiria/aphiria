@@ -19,12 +19,12 @@ class CallbackConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field must pass callback';
-    /** @var callable The callback to run */
+    /** @var callable(mixed): bool The callback to run */
     private $callback;
 
     /**
      * @inheritdoc
-     * @param callable $callback The callback to execute
+     * @param callable(mixed): bool $callback The callback to execute
      */
     public function __construct(callable $callback, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
