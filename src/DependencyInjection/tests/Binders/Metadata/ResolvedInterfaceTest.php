@@ -21,14 +21,20 @@ class ResolvedInterfaceTest extends TestCase
 {
     public function testGetInterfaceReturnsSetInterface(): void
     {
-        $interface = new ResolvedInterface('foo', new UniversalContext());
-        $this->assertSame('foo', $interface->getInterface());
+        $resolvedInterface = new class() {
+        };
+        $interface = new ResolvedInterface($resolvedInterface::class, new UniversalContext());
+        $this->assertSame($resolvedInterface::class, $interface->getInterface());
     }
 
     public function testGetContextReturnsSetContext(): void
     {
-        $expectedContext = new TargetedContext('bar');
-        $interface = new ResolvedInterface('foo', $expectedContext);
+        $target = new class() {
+        };
+        $resolvedInterface = new class() {
+        };
+        $expectedContext = new TargetedContext($target::class);
+        $interface = new ResolvedInterface($resolvedInterface::class, $expectedContext);
         $this->assertSame($expectedContext, $interface->getContext());
     }
 }

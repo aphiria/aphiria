@@ -44,6 +44,8 @@ class Application implements ICommandBus
      * @param CommandRegistry $commands The commands
      * @param IServiceResolver $commandHandlerResolver The resolver of command handlers
      * @param IInputCompiler|null $inputCompiler The input compiler, or null if using the default one
+     * @psalm-suppress UninitializedProperty Psalm does not support property promotion yet - bug
+     * @psalm-suppress PossiblyNullArgument Ditto - bug
      */
     public function __construct(
         private CommandRegistry $commands,
@@ -60,8 +62,9 @@ class Application implements ICommandBus
      */
     public function handle(string|array $rawInput, IOutput $output = null): int
     {
+        $output = $output ?? new ConsoleOutput();
+
         try {
-            $output = $output ?? new ConsoleOutput();
             $compiledInput = $this->inputCompiler->compile($rawInput);
             /** @var CommandBinding|null $binding */
             $binding = null;
@@ -77,7 +80,7 @@ class Application implements ICommandBus
         } catch (CommandNotFoundException $ex) {
             // If there was no entered command, treat it like invoking the about command
             if ($ex->getCommandName() === '') {
-                /** @var string|null $aboutCommandHandlerClassName */
+                /** @var class-string|null $aboutCommandHandlerClassName */
                 $aboutCommandHandlerClassName = null;
 
                 if (!$this->commands->tryGetHandlerClassName('about', $aboutCommandHandlerClassName)) {

@@ -72,7 +72,7 @@ final class RouteCollectionBuilder
      * Creates a group of routes that share similar options
      *
      * @param RouteGroupOptions $groupOptions The list of options shared by all routes in the group
-     * @param Closure $callback The callback that accepts an instance of this class
+     * @param Closure(RouteCollectionBuilder): void $callback The callback that accepts an instance of this class
      */
     public function group(RouteGroupOptions $groupOptions, Closure $callback): void
     {

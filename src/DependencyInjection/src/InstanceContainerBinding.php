@@ -26,7 +26,9 @@ class InstanceContainerBinding implements IContainerBinding
     }
 
     /**
-     * @return object
+     * Gets the instance
+     *
+     * @return object The instance
      */
     public function getInstance(): object
     {
@@ -34,7 +36,9 @@ class InstanceContainerBinding implements IContainerBinding
     }
 
     /**
-     * @return bool
+     * Gets whether or not to resolve as a singleton
+     *
+     * @return bool Whether or not to resolve as a singleton
      */
     public function resolveAsSingleton(): bool
     {

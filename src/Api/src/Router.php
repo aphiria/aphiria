@@ -63,6 +63,9 @@ class Router implements IRequestHandler
 
     /**
      * @inheritdoc
+     *
+     * @psalm-suppress PossiblyNullPropertyFetch The matching result properties will be set because a non-match throws an exception
+     * @psalm-suppress PossiblyNullArgument Ditto
      */
     public function handle(IRequest $request): IResponse
     {
@@ -157,7 +160,7 @@ class Router implements IRequestHandler
     private function matchRoute(IRequest $request): RouteMatchingResult
     {
         $uri = $request->getUri();
-        $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->getHost(), $uri->getPath());
+        $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->getHost() ?? '', $uri->getPath() ?? '');
 
         if (!$matchingResult->matchFound) {
             if ($matchingResult->methodIsAllowed === null) {

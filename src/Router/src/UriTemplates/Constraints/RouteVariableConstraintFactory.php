@@ -21,7 +21,7 @@ use RuntimeException;
  */
 final class RouteVariableConstraintFactory
 {
-    /** @var Closure[] The mapping of constraint slugs to factories */
+    /** @var array<string, Closure(mixed...): IRouteVariableConstraint> The mapping of constraint slugs to factories */
     private array $factories = [];
 
     /**
@@ -54,7 +54,7 @@ final class RouteVariableConstraintFactory
      * Registers a factory for a constraint
      *
      * @param string $slug The slug to register a factory for
-     * @param Closure $factory The factory that accepts an optional list of parameters and returns a constraint instance
+     * @param Closure(mixed...): IRouteVariableConstraint $factory The factory that accepts an optional list of parameters and returns a constraint instance
      */
     public function registerConstraintFactory(string $slug, Closure $factory): void
     {

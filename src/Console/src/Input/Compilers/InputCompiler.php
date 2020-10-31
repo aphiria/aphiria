@@ -164,7 +164,7 @@ final class InputCompiler implements IInputCompiler
      *
      * @param Command $command The command to compile
      * @param array $rawOptions The list of raw options
-     * @return array The mapping of option names to values
+     * @return array<string, string> The mapping of option names to values
      */
     private static function compileOptions(Command $command, array $rawOptions): array
     {
@@ -178,6 +178,7 @@ final class InputCompiler implements IInputCompiler
 
             // All options are optional (duh)
             if ($shortNameIsSet || $longNameIsSet) {
+                /** @psalm-suppress PossiblyNullArrayOffset The short name will be set if the long one wasn't */
                 $value = $longNameIsSet ? $rawOptions[$option->name] : $rawOptions[$option->shortName];
 
                 if ($value !== null && !$option->valueIsPermitted()) {

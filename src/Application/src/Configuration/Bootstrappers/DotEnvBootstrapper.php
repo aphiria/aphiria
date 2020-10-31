@@ -32,7 +32,8 @@ final class DotEnvBootstrapper implements IBootstrapper
      */
     public function bootstrap(): void
     {
-        // We'll also write environment variables using putenv()
-        (new Dotenv(true))->loadEnv($this->envPath);
+        $dotEnv = new Dotenv();
+        $dotEnv->usePutenv()
+            ->loadEnv($this->envPath);
     }
 }

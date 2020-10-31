@@ -106,6 +106,7 @@ interface IDictionary extends ArrayAccess, Countable, IteratorAggregate
      *
      * @param mixed $key The key to get
      * @param mixed $value The value of the key, if it exists
+     * @param-out mixed $value
      * @return bool True if the key existed, otherwise false
      */
     public function tryGet(mixed $key, mixed &$value): bool;

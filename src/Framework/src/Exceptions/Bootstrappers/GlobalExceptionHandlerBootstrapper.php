@@ -81,6 +81,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
      */
     protected function createAndBindApiExceptionRenderer(): IExceptionRenderer
     {
+        /** @var class-string $exceptionRendererType */
         $exceptionRendererType = GlobalConfiguration::getString('aphiria.exceptions.apiExceptionRenderer');
 
         switch ($exceptionRendererType) {
@@ -98,6 +99,10 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
             default:
                 $exceptionRenderer = $this->container->resolve($exceptionRendererType);
                 break;
+        }
+
+        if (!$exceptionRenderer instanceof IExceptionRenderer) {
+            throw new InvalidArgumentException('Exception renderer must implement ' . IExceptionRenderer::class);
         }
 
         // We'll bind IExceptionRenderer in the calling method

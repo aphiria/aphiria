@@ -30,6 +30,8 @@ final class UriTemplateLexer implements IUriTemplateLexer
 
     /**
      * @inheritdoc
+     *
+     * @psalm-suppress InvalidLiteralArgument We are purposely checking to see if we're matching against literals like punctuation
      */
     public function lex(string $uriTemplate): TokenStream
     {

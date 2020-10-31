@@ -25,17 +25,18 @@ class WindowsDriver extends Driver
     /**
      * @inheritdoc
      * @codeCoverageIgnore
+     * @psalm-suppress ForbiddenCode We purposely are running an external executable
      */
     public function readHiddenInput(IOutput $output): ?string
     {
         // Check if we're running from a PHAR
-        if (str_starts_with(__FILE__, 'phar:')) {
-            $hiddenInputExeTempPath = sys_get_temp_dir() . '/hiddeninput.exe';
-            copy(self::HIDDEN_INPUT_EXE_PATH, $hiddenInputExeTempPath);
-            $input = shell_exec($hiddenInputExeTempPath);
-            unlink($hiddenInputExeTempPath);
+        if (\str_starts_with(__FILE__, 'phar:')) {
+            $hiddenInputExeTempPath = \sys_get_temp_dir() . '/hiddeninput.exe';
+            \copy(self::HIDDEN_INPUT_EXE_PATH, $hiddenInputExeTempPath);
+            $input = \shell_exec($hiddenInputExeTempPath);
+            \unlink($hiddenInputExeTempPath);
         } else {
-            $input = shell_exec(self::HIDDEN_INPUT_EXE_PATH);
+            $input = \shell_exec(self::HIDDEN_INPUT_EXE_PATH);
         }
 
         // Break to a new line so we don't continue on the previous line
@@ -56,7 +57,7 @@ class WindowsDriver extends Driver
 
         if (
             $modeOutput === null
-            || !preg_match('/--------+\r?\n.+?(\d+)\r?\n.+?(\d+)\r?\n/', $modeOutput, $matches)
+            || !\preg_match('/--------+\r?\n.+?(\d+)\r?\n.+?(\d+)\r?\n/', $modeOutput, $matches)
         ) {
             return null;
         }
@@ -70,8 +71,8 @@ class WindowsDriver extends Driver
     protected function getCliDimensionsFromOS(): ?array
     {
         if (
-            \is_string($ansicon = getenv('ANSICON'))
-            && preg_match('/^(\d+)x(\d+)(?: \((\d+)x(\d+)\))?$/', trim($ansicon), $matches)
+            \is_string($ansicon = \getenv('ANSICON'))
+            && \preg_match('/^(\d+)x(\d+)(?: \((\d+)x(\d+)\))?$/', \trim($ansicon), $matches)
         ) {
             return [(int)$matches[1], (int)($matches[4] ?? $matches[2])];
         }

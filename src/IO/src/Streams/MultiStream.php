@@ -249,7 +249,7 @@ final class MultiStream implements IStream
                 $this->position += $offset;
                 break;
             case SEEK_END:
-                $this->position = $this->getLength() + $offset ?? 0;
+                $this->position = ($this->getLength() ?? 0) + $offset;
                 break;
             case SEEK_SET:
                 $this->position = $offset;
@@ -263,14 +263,16 @@ final class MultiStream implements IStream
         // We don't use a for loop because it complicates $this->streamIndex on the last iteration
         foreach ($this->streams as $streamIndex => $stream) {
             $this->streamIndex = $streamIndex;
-            $currStreamLength = $stream->getLength();
+            $currStreamLength = $stream->getLength() ?? 0;
 
             // Check if this is the stream that contains the desired offset
             if ($this->position < $currPosition + $currStreamLength) {
                 $stream->seek($this->position - $currPosition);
 
                 // Rewind the remaining streams
+                /** @psalm-suppress InvalidOperand This is perfectly valid code - bug */
                 for ($remainingIndex = $this->streamIndex + 1; $remainingIndex < \count($this->streams); $remainingIndex++) {
+                    /** @psalm-suppress PossiblyInvalidArrayOffset The index will always be an int - bug */
                     $this->streams[$remainingIndex]->rewind();
                 }
 

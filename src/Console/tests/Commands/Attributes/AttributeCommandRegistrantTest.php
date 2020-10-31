@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests\Commands\Attributes;
 
-use Aphiria\Collections\Tests\Mocks\FakeObject;
 use Aphiria\Console\Commands\Attributes\AttributeCommandRegistrant;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
@@ -23,13 +22,14 @@ use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\Tests\Commands\Attributes\Mocks\CommandHandlerWithAllPropertiesSet;
 use Aphiria\Console\Tests\Commands\Attributes\Mocks\CommandHandlerWithNonCommandAttribute;
 use Aphiria\Reflection\ITypeFinder;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class AttributeCommandRegistrantTest extends TestCase
 {
     private AttributeCommandRegistrant $registrant;
     private CommandRegistry $commands;
-    private ITypeFinder|FakeObject $typeFinder;
+    private ITypeFinder|MockObject $typeFinder;
 
     protected function setUp(): void
     {
@@ -41,6 +41,11 @@ class AttributeCommandRegistrantTest extends TestCase
     public function testCommandHandlersWithNoCommandAttributesAreNotRegistered(): void
     {
         $commandHandler = new class() implements ICommandHandler {
+            /**
+             * @inheritdoc
+             *
+             * @return void
+             */
             public function handle(Input $input, IOutput $output)
             {
             }

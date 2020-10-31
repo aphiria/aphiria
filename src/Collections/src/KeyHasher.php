@@ -51,6 +51,7 @@ class KeyHasher
         }
 
         if (\is_resource($value)) {
+            /** @psalm-suppress InvalidOperand This is valid code - bug */
             return '__aphiria:r:' . $value;
         }
 

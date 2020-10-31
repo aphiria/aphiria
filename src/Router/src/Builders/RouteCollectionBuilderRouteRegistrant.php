@@ -21,11 +21,11 @@ use Closure;
  */
 final class RouteCollectionBuilderRouteRegistrant implements IRouteRegistrant
 {
-    /** @var Closure[] The list of closures that take in a RouteCollectionBuilder instance and register routes */
+    /** @var array<Closure(RouteCollectionBuilder): void> The list of closures that take in a RouteCollectionBuilder instance and register routes */
     private array $routeCollectionBuilderClosures;
 
     /**
-     * @param Closure[]|Closure $routeCollectionBuilderClosures The list of closures that take in a RouteCollectionBuilder instance and register routes
+     * @param array<Closure(RouteCollectionBuilder): void>|Closure(RouteCollectionBuilder): void $routeCollectionBuilderClosures The list of closures that take in a RouteCollectionBuilder instance and register routes
      */
     public function __construct(Closure|array $routeCollectionBuilderClosures)
     {

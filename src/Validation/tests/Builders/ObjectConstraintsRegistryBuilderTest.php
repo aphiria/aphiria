@@ -30,10 +30,10 @@ class ObjectConstraintsRegistryBuilderTest extends TestCase
     {
         $injectedObjectConstraints = new ObjectConstraintsRegistry();
         $builder = new ObjectConstraintsRegistryBuilder($injectedObjectConstraints);
-        $expectedObjectConstraints = $builder->class('foo')->build();
+        $expectedObjectConstraints = $builder->class(self::class)->build();
         $actualObjectConstraints = $builder->build();
-        $this->assertSame($expectedObjectConstraints, $injectedObjectConstraints->getConstraintsForClass('foo'));
-        $this->assertSame($expectedObjectConstraints, $actualObjectConstraints->getConstraintsForClass('foo'));
+        $this->assertSame($expectedObjectConstraints, $injectedObjectConstraints->getConstraintsForClass(self::class));
+        $this->assertSame($expectedObjectConstraints, $actualObjectConstraints->getConstraintsForClass(self::class));
     }
 
     public function testBuildWithNoSubBuildersCreatesEmptyRegistry(): void
@@ -46,11 +46,13 @@ class ObjectConstraintsRegistryBuilderTest extends TestCase
 
     public function testBuildWithMultipleSubBuildersCreatesRegistryWithMultipleObjectConstraints(): void
     {
+        $foo = new class() {};
+        $bar = new class() {};
         $expectedObjectConstraints = new ObjectConstraintsRegistry();
-        $expectedObjectConstraints->registerObjectConstraints(new ObjectConstraints('foo'));
-        $expectedObjectConstraints->registerObjectConstraints(new ObjectConstraints('bar'));
-        $this->builder->class('foo');
-        $this->builder->class('bar');
+        $expectedObjectConstraints->registerObjectConstraints(new ObjectConstraints($foo::class));
+        $expectedObjectConstraints->registerObjectConstraints(new ObjectConstraints($bar::class));
+        $this->builder->class($foo::class);
+        $this->builder->class($bar::class);
         $actualObjectConstraints = $this->builder->build();
         // Purposely checking for loose equality, not reference equality since the two would not reference the same object
         $this->assertEquals($expectedObjectConstraints, $actualObjectConstraints);
@@ -59,8 +61,8 @@ class ObjectConstraintsRegistryBuilderTest extends TestCase
     public function testBuildWithSingleSubBuildersCreatesRegistryWithSingleObjectConstraints(): void
     {
         $expectedObjectConstraints = new ObjectConstraintsRegistry();
-        $expectedObjectConstraints->registerObjectConstraints(new ObjectConstraints('foo'));
-        $this->builder->class('foo');
+        $expectedObjectConstraints->registerObjectConstraints(new ObjectConstraints(self::class));
+        $this->builder->class(self::class);
         $actualObjectConstraints = $this->builder->build();
         // Purposely checking for loose equality, not reference equality since the two would not reference the same object
         $this->assertEquals($expectedObjectConstraints, $actualObjectConstraints);
@@ -68,7 +70,7 @@ class ObjectConstraintsRegistryBuilderTest extends TestCase
 
     public function testClassCreatesBuilderWithCorrectClassName(): void
     {
-        $actualConstraintsBuilder = $this->builder->class('foo');
-        $this->assertSame('foo', $actualConstraintsBuilder->build()->getClassName());
+        $actualConstraintsBuilder = $this->builder->class(self::class);
+        $this->assertSame(self::class, $actualConstraintsBuilder->build()->getClassName());
     }
 }

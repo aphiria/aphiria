@@ -168,6 +168,7 @@ class StreamTest extends TestCase
     public function testNonResourceThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        /** @psalm-suppress InvalidArgument Purposely testing this scenario */
         new Stream(123);
     }
 

@@ -79,7 +79,7 @@ class GlobalConfigurationBuilder
          * We delay grabbing the environment variables until we're building the configuration.  This allows us to
          * populate the environment variables (eg in a bootstrapper) prior to adding a configuration with those values.
          */
-        $this->configurationSourceStructs[] = ['type' => 'factory', 'value' => fn () => new HashTableConfiguration($_ENV)];
+        $this->configurationSourceStructs[] = ['type' => 'factory', 'value' => fn (): HashTableConfiguration => new HashTableConfiguration($_ENV)];
 
         return $this;
     }
@@ -95,7 +95,7 @@ class GlobalConfigurationBuilder
     {
         $this->configurationSourceStructs[] = [
             'type' => 'factory',
-            'value' => fn () => $this->jsonConfigurationFileReader->readConfiguration($path, $pathDelimiter)
+            'value' => fn (): IConfiguration => $this->jsonConfigurationFileReader->readConfiguration($path, $pathDelimiter)
         ];
 
         return $this;
@@ -112,7 +112,7 @@ class GlobalConfigurationBuilder
     {
         $this->configurationSourceStructs[] = [
             'type' => 'factory',
-            'value' => fn () => $this->phpConfigurationFileReader->readConfiguration($path, $pathDelimiter)
+            'value' => fn (): IConfiguration => $this->phpConfigurationFileReader->readConfiguration($path, $pathDelimiter)
         ];
 
         return $this;

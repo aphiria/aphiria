@@ -26,7 +26,7 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
 {
     /** @var IOutput The output to write to */
     protected IOutput $output;
-    /** @var Closure[] The mapping of exception types to callbacks that write output and return status codes */
+    /** @var array<class-string, Closure(Exception, IOutput)> The mapping of exception types to callbacks that write output and return status codes */
     protected array $outputWriters = [];
 
     /**
@@ -61,7 +61,8 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     /**
      * Registers many writers that can use exceptions to write output and return status codes
      *
-     * @param Closure[] $exceptionTypesToCallbacks The mapping of exception types to callbacks
+     * @template T of Exception
+     * @param array<class-string<T>, Closure(T, IOutput)> $exceptionTypesToCallbacks The mapping of exception types to callbacks
      */
     public function registerManyOutputWriters(array $exceptionTypesToCallbacks): void
     {
@@ -73,8 +74,9 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     /**
      * Registers a callback that can use an exception to write output and return a status code
      *
-     * @param string $exceptionType The type of exception whose factory we're registering
-     * @param Closure $callback The callback that takes in an exception and output, and writes output/returns a status code
+     * @template T of Exception
+     * @param class-string<T> $exceptionType The type of exception whose factory we're registering
+     * @param Closure(T, IOutput) $callback The callback that takes in an exception and output, and writes output/returns a status code
      */
     public function registerOutputWriter(string $exceptionType, Closure $callback): void
     {

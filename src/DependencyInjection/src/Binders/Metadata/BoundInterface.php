@@ -20,7 +20,7 @@ use Aphiria\DependencyInjection\Context;
 final class BoundInterface
 {
     /**
-     * @param string $interface The interface that was bound
+     * @param class-string $interface The interface that was bound
      * @param Context $context The context that the binding occurred in
      */
     public function __construct(private string $interface, private Context $context)
@@ -30,7 +30,7 @@ final class BoundInterface
     /**
      * Gets the interface that was bound
      *
-     * @return string The interface
+     * @return class-string The interface
      */
     public function getInterface(): string
     {

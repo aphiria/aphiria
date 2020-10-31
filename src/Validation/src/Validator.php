@@ -28,7 +28,7 @@ use ReflectionProperty;
  */
 final class Validator implements IValidator
 {
-    /** @var string[] The list of magic methods to explicitly ignore */
+    /** @var array<string, bool> The list of magic methods to explicitly ignore */
     private static array $magicMethods = [
         '__call' => true,
         '__callStatic' => true,
@@ -285,7 +285,7 @@ final class Validator implements IValidator
         if (\is_object($methodValue)) {
             // Since we're validating a whole new object, null out the method name param
             $methodValueValidationContext = new ValidationContext($methodValue, null, null, $validationContext);
-            $allConstraintsPassed = $allConstraintsPassed && $this->tryValidateObjectWithContext($methodValue, $methodValueValidationContext);
+            $allConstraintsPassed = $this->tryValidateObjectWithContext($methodValue, $methodValueValidationContext);
         }
 
         if (($objectConstraints = $this->objectConstraints->getConstraintsForClass($class)) !== null) {
@@ -385,7 +385,7 @@ final class Validator implements IValidator
         if (\is_object($propertyValue)) {
             // Since we're validating a whole new object, null out the property name param
             $propertyValueValidationContext = new ValidationContext($propertyValue, null, null, $validationContext);
-            $allConstraintsPassed = $allConstraintsPassed && $this->tryValidateObjectWithContext($propertyValue, $propertyValueValidationContext);
+            $allConstraintsPassed = $this->tryValidateObjectWithContext($propertyValue, $propertyValueValidationContext);
         }
 
         if (($objectConstraints = $this->objectConstraints->getConstraintsForClass($class)) !== null) {

@@ -111,7 +111,7 @@ class ControllerTest extends TestCase
         $this->responseFactory = $this->createMock(IResponseFactory::class);
         $this->responseFactory->method('createResponse')
             ->with($this->request)
-            ->willReturnCallback(function ($request, $statusCode, $headers, $body) {
+            ->willReturnCallback(function (IRequest $request, int $statusCode, Headers $headers, ?IBody $body): IResponse {
                 $this->assertSame($this->request, $request);
 
                 return new Response($statusCode, $headers, $body);
@@ -214,19 +214,19 @@ class ControllerTest extends TestCase
     public function testHelperMethodsWithoutSetRequestThrowsException(): void
     {
         $helperCallbacks = [
-            fn () => $this->controller->accepted(),
-            fn () => $this->controller->badRequest(),
-            fn () => $this->controller->conflict(),
-            fn () => $this->controller->created('https://example.com'),
-            fn () => $this->controller->forbidden(),
-            fn () => $this->controller->found('https://example.com'),
-            fn () => $this->controller->internalServerError(),
-            fn () => $this->controller->movedPermanently('https://example.com'),
-            fn () => $this->controller->noContent(),
-            fn () => $this->controller->notFound(),
-            fn () => $this->controller->ok(),
-            fn () => $this->controller->readRequestBodyAs('foo'),
-            fn () => $this->controller->unauthorized()
+            fn (): IResponse => $this->controller->accepted(),
+            fn (): IResponse => $this->controller->badRequest(),
+            fn (): IResponse => $this->controller->conflict(),
+            fn (): IResponse => $this->controller->created('https://example.com'),
+            fn (): IResponse => $this->controller->forbidden(),
+            fn (): IResponse => $this->controller->found('https://example.com'),
+            fn (): IResponse => $this->controller->internalServerError(),
+            fn (): IResponse => $this->controller->movedPermanently('https://example.com'),
+            fn (): IResponse => $this->controller->noContent(),
+            fn (): IResponse => $this->controller->notFound(),
+            fn (): IResponse => $this->controller->ok(),
+            fn (): IResponse => $this->controller->readRequestBodyAs('foo'),
+            fn (): IResponse => $this->controller->unauthorized()
         ];
 
         foreach ($helperCallbacks as $helperCallback) {

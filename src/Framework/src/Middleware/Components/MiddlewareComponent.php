@@ -26,7 +26,7 @@ use InvalidArgumentException;
  */
 class MiddlewareComponent implements IComponent
 {
-    /** @var MiddlewareBinding[] The list of middleware bindings */
+    /** @var array<int, array{middlewareBinding: MiddlewareBinding, priority: int|null}> The list of middleware bindings */
     private array $middleware = [];
 
     /**

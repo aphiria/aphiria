@@ -100,6 +100,7 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
     {
         ini_set('display_errors', 'off');
         error_reporting(-1);
+        /** @psalm-suppress InvalidArgument The handleError() method accepts the correct params */
         set_error_handler([$this, 'handleError']);
         set_exception_handler([$this, 'handleException']);
         register_shutdown_function([$this, 'handleShutdown']);

@@ -30,8 +30,9 @@ class AcceptMediaTypeHeaderValueTest extends TestCase
 
     /**
      * @dataProvider qualityScoreOutsideAcceptedRangeProvider
+     * @param string $invalidScore The invalid score
      */
-    public function testExceptionThrownWithQualityScoreOutsideAcceptedRange($invalidScore): void
+    public function testExceptionThrownWithQualityScoreOutsideAcceptedRange(string $invalidScore): void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('q', $invalidScore)]);
         $this->expectException(InvalidArgumentException::class);

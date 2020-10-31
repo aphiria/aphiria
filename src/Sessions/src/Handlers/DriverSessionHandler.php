@@ -38,7 +38,7 @@ final class DriverSessionHandler implements SessionHandlerInterface
     /**
      * @inheritdoc
      */
-    public function destroy($session_id): bool
+    public function destroy(string $session_id): bool
     {
         $this->driver->delete($session_id);
 
@@ -48,7 +48,7 @@ final class DriverSessionHandler implements SessionHandlerInterface
     /**
      * @inheritdoc
      */
-    public function gc($maxlifetime): bool
+    public function gc(int $maxlifetime): bool
     {
         $this->driver->gc($maxlifetime);
 
@@ -58,7 +58,7 @@ final class DriverSessionHandler implements SessionHandlerInterface
     /**
      * @inheritdoc
      */
-    public function open($save_path, $name): bool
+    public function open(string $save_path, string $name): bool
     {
         return true;
     }
@@ -66,7 +66,7 @@ final class DriverSessionHandler implements SessionHandlerInterface
     /**
      * @inheritdoc
      */
-    public function read($session_id): string
+    public function read(string $session_id): string
     {
         try {
             $sessionData = $this->driver->get($session_id);
@@ -80,7 +80,7 @@ final class DriverSessionHandler implements SessionHandlerInterface
     /**
      * @inheritdoc
      */
-    public function write($session_id, $session_data): bool
+    public function write(string $session_id, string $session_data): bool
     {
         try {
             $sessionDataToWrite = $this->encrypter === null ? $session_data : $this->encrypter->encrypt($session_data);

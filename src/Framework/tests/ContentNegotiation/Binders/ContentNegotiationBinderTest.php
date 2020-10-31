@@ -22,9 +22,11 @@ use Aphiria\ContentNegotiation\IEncodingMatcher;
 use Aphiria\ContentNegotiation\ILanguageMatcher;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\ContentNegotiation\Binders\ContentNegotiationBinder;
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -83,6 +85,41 @@ class ContentNegotiationBinderTest extends TestCase
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
+    }
+
+    public function testInvalidEncodingMatcherThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Encoding matcher must implement ' . IEncodingMatcher::class);
+        $config = self::getBaseConfig();
+        $config['aphiria']['contentNegotiation']['encodingMatcher'] = self::class;
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        $this->setUpContainerMockResolve([self::class, $this]);
+        $this->binder->bind($this->container);
+    }
+
+    public function testInvalidLanguageMatcherThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Language matcher must implement ' . ILanguageMatcher::class);
+        $config = self::getBaseConfig();
+        $config['aphiria']['contentNegotiation']['languageMatcher'] = self::class;
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        $this->setUpContainerMockResolve([self::class, $this]);
+        $this->binder->bind($this->container);
+    }
+
+    public function testMediaTypeFormatterThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Media type formatters must implement ' . IMediaTypeFormatter::class);
+        $config = self::getBaseConfig();
+        $config['aphiria']['contentNegotiation']['mediaTypeFormatters'] = [self::class];
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        $this->container->method('resolve')
+            ->with(self::class)
+            ->willReturn($this);
+        $this->binder->bind($this->container);
     }
 
     public function testUnknownEncodingMatchersAreResolved(): void

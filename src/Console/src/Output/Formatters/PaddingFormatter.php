@@ -28,7 +28,7 @@ class PaddingFormatter
      * Formats rows of text so that each column is the same width
      *
      * @param array $rows The rows to pad
-     * @param callable $callback The callback that returns a formatted row of text
+     * @param callable(array<mixed>): string $callback The callback that returns a formatted row of text
      * @return string A list of formatted rows
      */
     public function format(array $rows, callable $callback): string

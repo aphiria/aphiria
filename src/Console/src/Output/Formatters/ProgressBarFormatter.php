@@ -64,9 +64,9 @@ class ProgressBarFormatter implements IProgressBarObserver
          * redraw frequency since the last progress
          */
         $shouldRedraw = $currProgress === $maxSteps
-            || ($prevProgress === null && $currProgress !== null)
+            || ($prevProgress === null)
             || $this->redrawFrequency === 0
-            || floor($currProgress / $this->redrawFrequency) !== floor(($prevProgress ?? 0) / $this->redrawFrequency);
+            || floor($currProgress / $this->redrawFrequency) !== floor(($prevProgress) / $this->redrawFrequency);
 
         if ($shouldRedraw) {
             $this->output->write($this->compileOutput($currProgress, $maxSteps));
@@ -194,6 +194,7 @@ class ProgressBarFormatter implements IProgressBarObserver
                         return $timeFormat[1];
                     }
 
+                    /** @psalm-suppress PossiblyUndefinedArrayOffset In this case, the array length will be 3, so we're good */
                     return floor($secondsRemaining / $timeFormat[2]) . ' ' . $timeFormat[1];
                 }
             }

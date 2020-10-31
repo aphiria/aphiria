@@ -29,9 +29,14 @@ class RouteCollectionTest extends TestCase
 
     public function testCopyEffectivelyDuplicatesAnotherCollection(): void
     {
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
         $routes1 = new RouteCollection();
         $routes2 = new RouteCollection();
-        $expectedRoute = new Route(new UriTemplate('foo'), new RouteAction('Foo', 'bar'), [], [], 'name');
+        $expectedRoute = new Route(new UriTemplate('foo'), new RouteAction($controller::class, 'bar'), [], [], 'name');
         $routes1->add($expectedRoute);
         $routes2->copy($routes1);
         $this->assertSame([$expectedRoute], $routes2->getAll());
@@ -40,8 +45,13 @@ class RouteCollectionTest extends TestCase
 
     public function testCreatingWithRoutesAddsRoutesToCollection(): void
     {
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
         $expectedRoutes = [
-            new Route(new UriTemplate('abc'), new RouteAction('Foo', 'bar'), [])
+            new Route(new UriTemplate('abc'), new RouteAction($controller::class, 'bar'), [])
         ];
         $collection = new RouteCollection($expectedRoutes);
         $this->assertEquals($expectedRoutes, $collection->getAll());
@@ -49,9 +59,18 @@ class RouteCollectionTest extends TestCase
 
     public function testGettingAllRoutesReturnsAllRegisteredRoutes(): void
     {
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+
+            public function baz(): void
+            {
+            }
+        };
         $expectedRoutes = [
-            new Route(new UriTemplate('abc'), new RouteAction('Foo', 'bar'), []),
-            new Route(new UriTemplate('def'), new RouteAction('Foo', 'baz'), [])
+            new Route(new UriTemplate('abc'), new RouteAction($controller::class, 'bar'), []),
+            new Route(new UriTemplate('def'), new RouteAction($controller::class, 'baz'), [])
         ];
         $this->collection->addMany($expectedRoutes);
         $this->assertEquals($expectedRoutes, $this->collection->getAll());
@@ -64,9 +83,14 @@ class RouteCollectionTest extends TestCase
 
     public function testGettingNamedRouteThatWasAddedInBulk(): void
     {
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
         $expectedRoute = new Route(
             new UriTemplate('abc'),
-            new RouteAction('Foo', 'bar'),
+            new RouteAction($controller::class, 'bar'),
             [],
             [],
             'foo'
@@ -77,9 +101,14 @@ class RouteCollectionTest extends TestCase
 
     public function testGettingNamedRouteThatWasAddedIt(): void
     {
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
         $expectedRoute = new Route(
             new UriTemplate('abc'),
-            new RouteAction('Foo', 'bar'),
+            new RouteAction($controller::class, 'bar'),
             [],
             [],
             'foo'

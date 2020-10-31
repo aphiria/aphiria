@@ -181,7 +181,7 @@ class NegotiatedResponseFactoryTest extends TestCase
 
     public function testCreatingResponseWithNonScalarNorObjectBodyThrowsException(): void
     {
-        $rawBody = function () {
+        $rawBody = function (): void {
             // Don't do anything
         };
 

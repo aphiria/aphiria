@@ -102,7 +102,7 @@ class RouteActionInvokerTest extends TestCase
     public function testInvokingClosureReturnsResponseReturnedFromClosure(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $closure = function (int $foo) use ($expectedResponse) {
+        $closure = function (int $foo) use ($expectedResponse): IResponse {
             $this->assertSame(123, $foo);
 
             return $expectedResponse;
@@ -123,7 +123,7 @@ class RouteActionInvokerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $expectedResponse = $this->createMock(IResponse::class);
         $this->responseFactory->method('createResponse')
-            ->with($request, HttpStatusCodes::OK, null, $this->callback(fn ($actionResult) => $actionResult instanceof User))
+            ->with($request, HttpStatusCodes::OK, null, $this->callback(fn (mixed $actionResult): bool => $actionResult instanceof User))
             ->willReturn($expectedResponse);
         $actualResponse = $this->invoker->invokeRouteAction(
             [$this->controller, 'popo'],

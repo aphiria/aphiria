@@ -28,7 +28,12 @@ class RouteMatchingResultTest extends TestCase
 
     public function testMethodAllowedOnlyIfRouteIsNullAndAllowedMethodsIsPopulated(): void
     {
-        $route = new Route(new UriTemplate(''), new RouteAction('Foo', 'bar'), []);
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
+        $route = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
         $resultWithPopulatedRoute = new RouteMatchingResult($route, []);
         $this->assertTrue($resultWithPopulatedRoute->methodIsAllowed);
         $resultWithUnpopulatedRouteAndNoAllowedMethods = new RouteMatchingResult(null, []);
@@ -39,7 +44,12 @@ class RouteMatchingResultTest extends TestCase
 
     public function testPropertiesSetInConstructor(): void
     {
-        $expectedMatchedRoute = new Route(new UriTemplate(''), new RouteAction('Foo', 'bar'), []);
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
+        $expectedMatchedRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
         $expectedRouteVariables = ['foo' => 'bar'];
         $expectedAllowedMethods = ['GET'];
         $routeMatchingResult = new RouteMatchingResult(

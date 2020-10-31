@@ -47,8 +47,10 @@ class MediaTypeFormatterMatcherTest extends TestCase
             ->with(User::class)
             ->willReturn(true);
         $this->headers->add('Accept', 'text/*');
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter2, $match->getFormatter());
         $this->assertSame('text/html', $match->getMediaType());
     }
@@ -62,8 +64,10 @@ class MediaTypeFormatterMatcherTest extends TestCase
             ->willReturn(true);
         $formatter2 = $this->createFormatterMock(['text/html'], 0);
         $this->headers->add('Accept', '*/*');
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter1, $match->getFormatter());
         $this->assertSame('application/json', $match->getMediaType());
     }
@@ -76,10 +80,12 @@ class MediaTypeFormatterMatcherTest extends TestCase
             ->with(User::class)
             ->willReturn(true);
         $formatter2 = $this->createFormatterMock(['text/json'], 0);
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $this->headers->add('Accept', 'application/json');
         $this->headers->add('Accept', 'text/json', true);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter1, $match->getFormatter());
         $this->assertSame('application/json', $match->getMediaType());
     }
@@ -91,10 +97,12 @@ class MediaTypeFormatterMatcherTest extends TestCase
             ->method('canWriteType')
             ->with(User::class)
             ->willReturn(true);
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter]);
         $this->headers->add('Accept', '*/*');
         $this->headers->add('Accept', 'application/*', true);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter, $match->getFormatter());
         $this->assertSame('application/json', $match->getMediaType());
     }
@@ -106,10 +114,12 @@ class MediaTypeFormatterMatcherTest extends TestCase
             ->method('canWriteType')
             ->with(User::class)
             ->willReturn(true);
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter]);
         $this->headers->add('Accept', 'application/*');
         $this->headers->add('Accept', 'application/*', true);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter, $match->getFormatter());
         $this->assertSame('application/json', $match->getMediaType());
     }
@@ -121,10 +131,12 @@ class MediaTypeFormatterMatcherTest extends TestCase
             ->method('canWriteType')
             ->with(User::class)
             ->willReturn(true);
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter]);
         $this->headers->add('Accept', 'application/*');
         $this->headers->add('Accept', 'application/json', true);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter, $match->getFormatter());
         $this->assertSame('application/json', $match->getMediaType());
     }
@@ -136,10 +148,12 @@ class MediaTypeFormatterMatcherTest extends TestCase
             ->method('canWriteType')
             ->with(User::class)
             ->willReturn(true);
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter]);
         $this->headers->add('Accept', '*/*');
         $this->headers->add('Accept', '*/*', true);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter, $match->getFormatter());
         $this->assertSame('application/json', $match->getMediaType());
     }
@@ -157,8 +171,10 @@ class MediaTypeFormatterMatcherTest extends TestCase
             ->with(User::class)
             ->willReturn(true);
         $this->headers->add('Content-Type', 'text/html');
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $match = $matcher->getBestRequestMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter2, $match->getFormatter());
         $this->assertSame('text/html', $match->getMediaType());
     }
@@ -183,8 +199,10 @@ class MediaTypeFormatterMatcherTest extends TestCase
         $this->headers->add('Accept', '*/*');
         $this->headers->add('Accept', 'text/*', true);
         $this->headers->add('Accept', 'text/html', true);
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2, $formatter3]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter3, $match->getFormatter());
         $this->assertSame('text/html', $match->getMediaType());
     }
@@ -198,8 +216,10 @@ class MediaTypeFormatterMatcherTest extends TestCase
             ->willReturn(true);
         $this->headers->add('Accept', 'text/*; q=0.5');
         $this->headers->add('Accept', 'text/html; q=0.3', true);
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter, $match->getFormatter());
         $this->assertSame('text/plain', $match->getMediaType());
     }
@@ -214,8 +234,10 @@ class MediaTypeFormatterMatcherTest extends TestCase
             ->willReturn(true);
         $this->headers->add('Accept', 'application/json; q=0.3');
         $this->headers->add('Accept', 'text/json; q=0.5', true);
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter2, $match->getFormatter());
         $this->assertSame('text/json', $match->getMediaType());
     }
@@ -229,8 +251,10 @@ class MediaTypeFormatterMatcherTest extends TestCase
             ->willReturn(true);
         $this->headers->add('Accept', '*/*; q=0.5');
         $this->headers->add('Accept', 'text/html; q=0.3', true);
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter, $match->getFormatter());
         $this->assertSame('application/json', $match->getMediaType());
     }
@@ -240,6 +264,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
         // The media type should be filtered out of the list of media types to check against
         $formatter = $this->createFormatterMock(['text/html'], 0);
         $this->headers->add('Accept', 'text/html; q=0.0');
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
         $this->assertNull($match);
@@ -288,8 +313,10 @@ class MediaTypeFormatterMatcherTest extends TestCase
             ->with(User::class)
             ->willReturn(true);
         $this->headers->add('Content-Type', '*/*');
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $match = $matcher->getBestRequestMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter2, $match->getFormatter());
         $this->assertSame('text/html', $match->getMediaType());
     }
@@ -307,8 +334,10 @@ class MediaTypeFormatterMatcherTest extends TestCase
             ->with(User::class)
             ->willReturn(true);
         $this->headers->add('Accept', '*/*');
+        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
+        $this->assertNotNull($match);
         $this->assertSame($formatter2, $match->getFormatter());
         $this->assertSame('text/html', $match->getMediaType());
     }

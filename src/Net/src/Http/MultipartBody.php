@@ -39,6 +39,10 @@ class MultipartBody extends StreamBody
 
         // Create the header boundary
         $stream->addStream($this->createStreamFromString("--{$this->boundary}"));
+        /**
+         * @psalm-suppress UninitializedProperty Psalm doesn't recognize promoted properties yet - bug
+         * @psalm-suppress PossiblyNullArgument Ditto
+         */
         $numParts = \count($this->parts);
 
         for ($i = 0;$i < $numParts;$i++) {
@@ -46,7 +50,16 @@ class MultipartBody extends StreamBody
                 $stream->addStream($this->createStreamFromString("\r\n--{$this->boundary}"));
             }
 
+            /**
+             * @psalm-suppress UninitializedProperty Psalm doesn't recognize promoted properties yet - bug
+             * @psalm-suppress PossiblyNullArrayAccess Ditto
+             * @psalm-suppress PossiblyNullReference Ditto
+             */
             if (\count($this->parts[$i]->getHeaders()) > 0) {
+                /**
+                 * @psalm-suppress UninitializedProperty Psalm doesn't recognize promoted properties yet - bug
+                 * @psalm-suppress PossiblyNullArrayAccess Ditto
+                 */
                 $stream->addStream($this->createStreamFromString("\r\n{$this->parts[$i]->getHeaders()}"));
             }
 

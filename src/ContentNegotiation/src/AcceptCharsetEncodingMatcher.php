@@ -49,7 +49,7 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
             foreach ($supportedEncodings as $supportedEncoding) {
                 $charset = $acceptCharsetHeader->getCharset();
 
-                if ($charset === '*' || strcasecmp($charset, $supportedEncoding) === 0) {
+                if ($charset === '*' || \strcasecmp($charset, $supportedEncoding) === 0) {
                     return $supportedEncoding;
                 }
             }
@@ -61,9 +61,9 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
 
         // Fall back to the charset in the media type header
         foreach ($supportedEncodings as $supportedEncoding) {
-            $charset = $matchedMediaTypeHeaderValue->getCharset();
+            $charset = $matchedMediaTypeHeaderValue?->getCharset();
 
-            if ($charset === '*' || strcasecmp($charset, $supportedEncoding) === 0) {
+            if ($charset === '*' || \strcasecmp($charset ?? '', $supportedEncoding) === 0) {
                 return $supportedEncoding;
             }
         }
@@ -128,10 +128,10 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
      */
     private function rankAcceptCharsetHeaders(array $charsetHeaders): array
     {
-        usort($charsetHeaders, [$this, 'compareAcceptCharsetHeaders']);
-        $rankedCharsetHeaders = array_filter($charsetHeaders, [$this, 'filterZeroScores']);
+        \usort($charsetHeaders, [$this, 'compareAcceptCharsetHeaders']);
+        $rankedCharsetHeaders = \array_filter($charsetHeaders, [$this, 'filterZeroScores']);
 
         // Have to return the values because the keys aren't updated in array_filter()
-        return array_values($rankedCharsetHeaders);
+        return \array_values($rankedCharsetHeaders);
     }
 }

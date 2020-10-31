@@ -80,8 +80,9 @@ class CookieTest extends TestCase
 
     /**
      * @dataProvider setValueProvider
+     * @param string|int|array $value The value to set
      */
-    public function testSetValue($value): void
+    public function testSetValue(string|int|array $value): void
     {
         $this->cookie->setValue($value);
         $this->assertEquals($value, $this->cookie->getValue());

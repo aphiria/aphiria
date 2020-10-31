@@ -19,7 +19,7 @@ final class CommandBinding
 {
     /**
      * @param Command $command The command handler
-     * @param string $commandHandlerClassName The name of the command handler class
+     * @param class-string $commandHandlerClassName The name of the command handler class
      */
     public function __construct(public Command $command, public string $commandHandlerClassName)
     {

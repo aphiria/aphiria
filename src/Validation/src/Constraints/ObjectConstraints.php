@@ -17,20 +17,18 @@ namespace Aphiria\Validation\Constraints;
  */
 final class ObjectConstraints
 {
-    /** @var IConstraint[][] The mapping of property names to constraints */
+    /** @var array<string, IConstraint[]> The mapping of property names to constraints */
     private array $propertyConstraints = [];
-    /** @var IConstraint[][] The mapping of method names to constraints */
+    /** @var array<string, IConstraint[]> The mapping of method names to constraints */
     private array $methodConstraints = [];
 
     /**
-     * @param string $className The name of the class whose constraints are represented here
-     * @param IConstraint[] $propertyConstraints The mapping of property names to constraints
-     * @param IConstraint[] $methodConstraints The mapping of method names to constraints
+     * @param class-string $className The name of the class whose constraints are represented here
+     * @param array<string, IConstraint[]|IConstraint> $propertyConstraints The mapping of property names to constraints
+     * @param array<string, IConstraint[]|IConstraint> $methodConstraints The mapping of method names to constraints
      */
     public function __construct(private string $className, array $propertyConstraints = [], array $methodConstraints = [])
     {
-        $this->className = $className;
-
         foreach ($propertyConstraints as $propertyName => $propertyConstraint) {
             $this->addPropertyConstraint($propertyName, $propertyConstraint);
         }
@@ -65,7 +63,7 @@ final class ObjectConstraints
     /**
      * Gets all the method constraints
      *
-     * @return IConstraint[] The mapping of method names to constraints
+     * @return array<string, IConstraint[]> The mapping of method names to constraints
      */
     public function getAllMethodConstraints(): array
     {
@@ -75,7 +73,7 @@ final class ObjectConstraints
     /**
      * Gets all the property constraints
      *
-     * @return IConstraint[] The mapping of property names to constraints
+     * @return array<string, IConstraint[]> The mapping of property names to constraints
      */
     public function getAllPropertyConstraints(): array
     {

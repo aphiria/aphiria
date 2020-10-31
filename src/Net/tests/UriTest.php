@@ -55,8 +55,10 @@ class UriTest extends TestCase
 
     /**
      * @dataProvider authorityWithNoUserPasswordProvider
+     * @param string $uri The URI
+     * @param string $expectedUri The expected URI
      */
-    public function testGettingAuthorityWithNoUserOrPasswordAndWithNonStandardPort($uri, $expectedUri): void
+    public function testGettingAuthorityWithNoUserOrPasswordAndWithNonStandardPort(string $uri, string $expectedUri): void
     {
         $httpUri = new Uri($uri);
         $this->assertEquals($expectedUri, $httpUri->getAuthority());
@@ -196,8 +198,9 @@ class UriTest extends TestCase
 
     /**
      * @dataProvider httpUriProvider
+     * @param string $uri The URI
      */
-    public function testToStringWithNonStandardPortIncludesPort($uri): void
+    public function testToStringWithNonStandardPortIncludesPort(string $uri): void
     {
         $httpUri = new Uri($uri);
         $this->assertEquals($uri, (string)$httpUri);

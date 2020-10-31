@@ -27,7 +27,7 @@ final class ValidationException extends InvalidArgumentException
      * @inheritdoc
      * @param ConstraintViolation[] $violations The violations that occurred
      */
-    public function __construct(array $violations, $message = '', $code = 0, Throwable $previous = null)
+    public function __construct(array $violations, string $message = '', int $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
 

@@ -22,10 +22,12 @@ use Aphiria\ContentNegotiation\IEncodingMatcher;
 use Aphiria\ContentNegotiation\ILanguageMatcher;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Net\Http\IResponseFactory;
+use InvalidArgumentException;
 
 /**
  * Defines the content negotiation binder
@@ -35,16 +37,27 @@ class ContentNegotiationBinder extends Binder
     /**
      * @inheritdoc
      * @throws MissingConfigurationValueException Thrown if required config values were not set
+     * @throws InvalidArgumentException Thrown if any of the config values are not of the expected type
      */
     public function bind(IContainer $container): void
     {
         $mediaTypeFormatters = array_map(
-            static fn (string $class) => $container->resolve($class),
+            static function (string $class) use ($container): IMediaTypeFormatter {
+                /** @var class-string $class */
+                $mediaTypeFormatter = $container->resolve($class);
+
+                if (!$mediaTypeFormatter instanceof IMediaTypeFormatter) {
+                    throw new InvalidArgumentException('Media type formatters must implement ' . IMediaTypeFormatter::class);
+                }
+
+                return $mediaTypeFormatter;
+            },
             GlobalConfiguration::getArray('aphiria.contentNegotiation.mediaTypeFormatters')
         );
         $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher($mediaTypeFormatters);
         $container->bindInstance(IMediaTypeFormatterMatcher::class, $mediaTypeFormatterMatcher);
 
+        /** @var class-string $encodingMatcherName */
         $encodingMatcherName = GlobalConfiguration::getString('aphiria.contentNegotiation.encodingMatcher');
 
         if ($encodingMatcherName === AcceptCharsetEncodingMatcher::class) {
@@ -53,14 +66,23 @@ class ContentNegotiationBinder extends Binder
             $encodingMatcher = $container->resolve($encodingMatcherName);
         }
 
+        if (!$encodingMatcher instanceof IEncodingMatcher) {
+            throw new InvalidArgumentException('Encoding matcher must implement ' . IEncodingMatcher::class);
+        }
+
         $container->bindInstance(IEncodingMatcher::class, $encodingMatcher);
 
+        /** @var class-string $languageMatcherName */
         $languageMatcherName = GlobalConfiguration::getString('aphiria.contentNegotiation.languageMatcher');
 
         if ($languageMatcherName === AcceptLanguageMatcher::class) {
             $languageMatcher = new AcceptLanguageMatcher(GlobalConfiguration::getArray('aphiria.contentNegotiation.supportedLanguages'));
         } else {
             $languageMatcher = $container->resolve($languageMatcherName);
+        }
+
+        if (!$languageMatcher instanceof ILanguageMatcher) {
+            throw new InvalidArgumentException('Language matcher must implement ' . ILanguageMatcher::class);
         }
 
         $container->bindInstance(ILanguageMatcher::class, $languageMatcher);

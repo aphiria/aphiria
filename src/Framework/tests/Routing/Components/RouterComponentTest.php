@@ -45,7 +45,12 @@ class RouterComponentTest extends TestCase
 
     public function testBuildRegistersRoutesRegisteredInCallbacks(): void
     {
-        $this->routerComponent->withRoutes(fn (RouteCollectionBuilder $routeBuilders) => $routeBuilders->get('/foo')->mapsToMethod('Foo', 'bar'));
+        $controller = new class() {
+            public function bar(): void
+            {
+            }
+        };
+        $this->routerComponent->withRoutes(fn (RouteCollectionBuilder $routeBuilders) => $routeBuilders->get('/foo')->mapsToMethod($controller::class, 'bar'));
         $this->routerComponent->build();
         $this->assertCount(1, $this->routes->getAll());
         $this->assertSame('/foo', $this->routes->getAll()[0]->uriTemplate->pathTemplate);

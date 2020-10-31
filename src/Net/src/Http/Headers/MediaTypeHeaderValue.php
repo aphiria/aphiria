@@ -44,7 +44,7 @@ class MediaTypeHeaderValue
     public function __construct(protected string $mediaType, IImmutableDictionary $parameters = null)
     {
         $this->parameters = $parameters ?? new ImmutableHashTable([]);
-        $mediaTypeParts = explode('/', $mediaType);
+        $mediaTypeParts = \explode('/', $mediaType);
 
         if (\count($mediaTypeParts) !== 2 || empty($mediaTypeParts[0]) || empty($mediaTypeParts[1])) {
             throw new InvalidArgumentException("Media type must be in format {type}/{sub-type}, received $mediaType");
@@ -53,8 +53,12 @@ class MediaTypeHeaderValue
         $this->type = $mediaTypeParts[0];
         $this->subType = $mediaTypeParts[1];
 
-        if (str_contains($this->mediaType, '+')) {
-            $this->suffix = \substr($this->mediaType, \strpos($this->mediaType, '+') + 1);
+        /**
+         * @psalm-suppress PossiblyNullArgument Psalm doesn't recognize promoted properties yet - bug
+         * @psalm-suppress UninitializedProperty Ditto
+         */
+        if (\str_contains($this->mediaType, '+') && ($plusSignPos = \strpos($this->mediaType, '+')) !== false) {
+            $this->suffix = \substr($this->mediaType, $plusSignPos + 1);
         }
 
         $this->parameters->tryGet('charset', $this->charset);

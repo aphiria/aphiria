@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Console\Tests\Input\Tokenizers;
 
 use Aphiria\Console\Input\Tokenizers\StringInputTokenizer;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -54,6 +55,13 @@ class StringInputTokenizerTest extends TestCase
             '--name',
             "'dave young'"
         ], $tokens);
+    }
+
+    public function testTokenizingNonStringThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Input must be a string');
+        $this->tokenizer->tokenize(['foo']);
     }
 
     public function testTokenizingSingleQuoteInsideDoubleQuotes(): void

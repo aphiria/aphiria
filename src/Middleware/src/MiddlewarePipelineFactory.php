@@ -25,6 +25,8 @@ final class MiddlewarePipelineFactory
      * @param IMiddleware[] $middleware The list of middleware to add to the pipeline
      * @param IRequestHandler $terminalRequestHandler The request handler that is last in the pipeline (eg controller)
      * @return IRequestHandler The pipeline
+     * @psalm-suppress NullableReturnStatement The value will always be set, or an exception will be thrown
+     * @psalm-suppress InvalidNullableReturnType The value will always be set, or an exception will be thrown
      */
     public function createPipeline(array $middleware, IRequestHandler $terminalRequestHandler): IRequestHandler
     {

@@ -27,7 +27,7 @@ use RuntimeException;
  */
 class CommandComponent implements IComponent
 {
-    /** @var Closure[] The list of callbacks that can register commands */
+    /** @var array<Closure(CommandRegistry): void> The list of callbacks that can register commands */
     private array $callbacks = [];
     /** @var bool Whether or not attributes are enabled */
     private bool $attributesEnabled = false;
@@ -77,7 +77,7 @@ class CommandComponent implements IComponent
     /**
      * Adds commands to the registry
      *
-     * @param Closure $callback The callback that takes in an instance of CommandRegistry
+     * @param Closure(CommandRegistry): void $callback The callback that takes in an instance of CommandRegistry
      * @return static For chaining
      */
     public function withCommands(Closure $callback): static

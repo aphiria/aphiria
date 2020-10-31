@@ -15,6 +15,9 @@ namespace Aphiria\Console\Tests\Commands\Caching;
 use Aphiria\Console\Commands\Caching\FileCommandRegistryCache;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\IOutput;
 use PHPUnit\Framework\TestCase;
 
 class FileCommandRegistryCacheTest extends TestCase
@@ -45,7 +48,12 @@ class FileCommandRegistryCacheTest extends TestCase
     public function testGetOnHitReturnsCommands(): void
     {
         $commands = new CommandRegistry();
-        $commands->registerCommand(new Command('foo'), 'Foo');
+        $commandHandler = new class() implements ICommandHandler {
+            public function handle(Input $input, IOutput $output): void
+            {
+            }
+        };
+        $commands->registerCommand(new Command('foo'), $commandHandler::class);
         $this->cache->set($commands);
         $this->assertEquals($commands, $this->cache->get());
     }

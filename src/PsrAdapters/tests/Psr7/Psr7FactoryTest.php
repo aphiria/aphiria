@@ -16,6 +16,7 @@ use Aphiria\Collections\KeyValuePair;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\Request;
@@ -103,7 +104,8 @@ class Psr7FactoryTest extends TestCase
             ]);
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
         $aphiriaMultipartBody = (new RequestParser())->readAsMultipart($aphiriaRequest);
-        $aphiriaMultipartBodyParts = $aphiriaMultipartBody->getParts();
+        $aphiriaMultipartBodyParts = $aphiriaMultipartBody?->getParts();
+        $this->assertNotNull($aphiriaMultipartBodyParts);
         $this->assertCount(3, $aphiriaMultipartBodyParts);
         $this->assertSame('foo', $aphiriaMultipartBodyParts[0]->getBody()?->readAsString());
         $this->assertSame('image/png', $aphiriaMultipartBodyParts[0]->getHeaders()->getFirst('Content-Type'));
@@ -413,7 +415,7 @@ class Psr7FactoryTest extends TestCase
          * allowing null bodies on multipart body parts.
          */
         $aphiriaRequestParser = new class() extends RequestParser {
-            public function readAsMultipart($request): ?MultipartBody
+            public function readAsMultipart(IRequest|MultipartBodyPart $request): ?MultipartBody
             {
                 return new MultipartBody([new MultipartBodyPart(new Headers(), null)]);
             }

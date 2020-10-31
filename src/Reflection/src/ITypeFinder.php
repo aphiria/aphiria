@@ -26,7 +26,7 @@ interface ITypeFinder
      * @param string|string[] $directories The path or list of paths of directories to search
      * @param bool $recursive Whether or not we want to recurse through all directories
      * @param bool $includeAbstractClasses Whether or not to include abstract classes
-     * @return string[] The list of all class names
+     * @return array<class-string> The list of all class names
      * @throws InvalidArgumentException Thrown if the paths are not a string or array of strings
      */
     public function findAllClasses(string|array $directories, bool $recursive = false, bool $includeAbstractClasses = false): array;
@@ -36,7 +36,7 @@ interface ITypeFinder
      *
      * @param string|string[] $directories The path or list of paths of directories to search
      * @param bool $recursive Whether or not we want to recurse through all directories
-     * @return string[] The list of all interface names
+     * @return array<class-string> The list of all interface names
      * @throws InvalidArgumentException Thrown if the paths are not a string or array of strings
      */
     public function findAllInterfaces(string|array $directories, bool $recursive = false): array;
@@ -44,10 +44,10 @@ interface ITypeFinder
     /**
      * Recursively finds all sub-types of a particular type in a path
      *
-     * @param string $parentType The type whose sub-types we're searching for
+     * @param class-string $parentType The type whose sub-types we're searching for
      * @param string|string[] $directories The path or list of paths of directories to search
      * @param bool $recursive Whether or not we want to recurse through all directories
-     * @return string[] The list of all types that are sub-types of the input class/interface
+     * @return array<class-string> The list of all types that are sub-types of the input class/interface
      * @throws InvalidArgumentException Thrown if the paths are not a string or array of strings
      * @throws ReflectionException Thrown if any types could not be reflected in the input directories
      */
@@ -58,7 +58,7 @@ interface ITypeFinder
      *
      * @param string|string[] $directories The path or list of paths of directories to search
      * @param bool $recursive Whether or not we want to recurse through all directories
-     * @return string[] The list of all types
+     * @return array<class-string> The list of all types
      * @throws InvalidArgumentException Thrown if the paths are not a string or array of strings
      */
     public function findAllTypes(string|array $directories, bool $recursive = false): array;

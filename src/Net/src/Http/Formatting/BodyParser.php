@@ -48,7 +48,7 @@ class BodyParser
             return null;
         }
 
-        $parsedMimeTypeCacheKey = spl_object_hash($body);
+        $parsedMimeTypeCacheKey = \spl_object_hash($body);
 
         if (isset($this->parsedMimeTypeCache[$parsedMimeTypeCacheKey])) {
             return $this->parsedMimeTypeCache[$parsedMimeTypeCacheKey];
@@ -81,14 +81,14 @@ class BodyParser
             return new HashTable();
         }
 
-        $parsedFormInputCacheKey = spl_object_hash($body);
+        $parsedFormInputCacheKey = \spl_object_hash($body);
 
         if (isset($this->parsedFormInputCache[$parsedFormInputCacheKey])) {
             return $this->parsedFormInputCache[$parsedFormInputCacheKey];
         }
 
         $formInputArray = [];
-        parse_str($body->readAsString(), $formInputArray);
+        \parse_str($body->readAsString(), $formInputArray);
         $kvps = [];
 
         foreach ($formInputArray as $key => $value) {
@@ -116,7 +116,7 @@ class BodyParser
         }
 
         try {
-            $json = json_decode($body->readAsString(), true, 512, JSON_THROW_ON_ERROR);
+            $json = \json_decode($body->readAsString(), true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $ex) {
             throw new RuntimeException('Body could not be decoded as JSON', 0, $ex);
         }
@@ -139,26 +139,26 @@ class BodyParser
             return null;
         }
 
-        $rawBodyParts = explode("--$boundary", $body->readAsString());
+        $rawBodyParts = \explode("--$boundary", $body->readAsString());
         // The first part will be empty, and the last will be "--".  Remove them.
-        array_shift($rawBodyParts);
-        array_pop($rawBodyParts);
+        \array_shift($rawBodyParts);
+        \array_pop($rawBodyParts);
         $parsedBodyParts = [];
 
         foreach ($rawBodyParts as $rawBodyPart) {
             $headerStartIndex = \strlen("\r\n");
-            $headerEndIndex = strpos($rawBodyPart, "\r\n\r\n");
+            $headerEndIndex = \strpos($rawBodyPart, "\r\n\r\n") ?: 0;
             $bodyStartIndex = $headerEndIndex + \strlen("\r\n\r\n");
             $bodyEndIndex = \strlen($rawBodyPart) - \strlen("\r\n");
-            $rawHeaders = explode("\r\n", substr($rawBodyPart, $headerStartIndex, $headerEndIndex - $headerStartIndex));
+            $rawHeaders = \explode("\r\n", \substr($rawBodyPart, $headerStartIndex, $headerEndIndex - $headerStartIndex));
             $parsedHeaders = new Headers();
 
             foreach ($rawHeaders as $headerLine) {
-                [$headerName, $headerValue] = explode(':', $headerLine, 2);
-                $parsedHeaders->add(trim($headerName), trim($headerValue));
+                [$headerName, $headerValue] = \explode(':', $headerLine, 2);
+                $parsedHeaders->add(trim($headerName), \trim($headerValue));
             }
 
-            $body = new StringBody(substr($rawBodyPart, $bodyStartIndex, $bodyEndIndex - $bodyStartIndex));
+            $body = new StringBody(\substr($rawBodyPart, $bodyStartIndex, $bodyEndIndex - $bodyStartIndex));
             $parsedBodyParts[] = new MultipartBodyPart($parsedHeaders, $body);
         }
 

@@ -23,9 +23,9 @@ abstract class ApplicationBuilder implements IApplicationBuilder
 {
     /** @var IModule[] The list of modules */
     private array $modules = [];
-    /** @var IComponent[] The mapping of prioritized component names to components */
+    /** @var array<class-string<IComponent>, IComponent> The mapping of prioritized component names to components */
     private array $componentsByType = [];
-    /** @var array The list of structs that contain component types and priorities */
+    /** @var array<array{type: class-string<IComponent>, priority: int}> The list of structs that contain component types and priorities */
     private array $componentTypesAndPriorities = [];
 
     /**
@@ -75,7 +75,11 @@ abstract class ApplicationBuilder implements IApplicationBuilder
      */
     protected function buildComponents(): void
     {
-        \usort($this->componentTypesAndPriorities, static fn ($a, $b) => $a['priority'] <=> $b['priority']);
+        /**
+         * @psalm-suppress InvalidArgument Psalm is incorrectly flagging this as not having the right parameter type - bug
+         * @psalm-suppress PropertyTypeCoercion Ditto - bug
+         */
+        \usort($this->componentTypesAndPriorities, static fn (array $a, array $b): int => $a['priority'] <=> $b['priority']);
 
         foreach ($this->componentTypesAndPriorities as $typeAndPriority) {
             $this->componentsByType[$typeAndPriority['type']]->build();

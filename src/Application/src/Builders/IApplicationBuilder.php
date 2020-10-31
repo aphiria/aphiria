@@ -33,8 +33,9 @@ interface IApplicationBuilder
     /**
      * Gets a component by its type
      *
-     * @param string $type The type of component to get
-     * @return IComponent The component, if one was found
+     * @template T of IComponent
+     * @param class-string<T> $type The type of component to get
+     * @return T The component, if one was found
      * @throws OutOfBoundsException Thrown if there was no component with that type
      */
     public function getComponent(string $type): IComponent;

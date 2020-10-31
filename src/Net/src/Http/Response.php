@@ -17,8 +17,8 @@ namespace Aphiria\Net\Http;
  */
 class Response implements IResponse
 {
-    /** @var Headers|null The list of response headers if any are set, otherwise null */
-    protected ?Headers $headers;
+    /** @var Headers The list of response headers if any are set, otherwise null */
+    protected Headers $headers;
     /** @var string|null The response reason phrase if there is one, otherwise null */
     protected ?string $reasonPhrase;
 
@@ -58,7 +58,7 @@ class Response implements IResponse
         $response = $startLine . $headers . "\r\n\r\n";
 
         if ($this->body !== null) {
-            $response .= $this->getBody();
+            $response .= $this->body;
         }
 
         return $response;

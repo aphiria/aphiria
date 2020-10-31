@@ -24,6 +24,7 @@ use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\ErrorMessages\DefaultErrorMessageTemplateRegistry;
 use Aphiria\Validation\ErrorMessages\IcuFormatErrorMessageInterpolator;
 use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
+use Aphiria\Validation\ErrorMessages\IErrorMessageTemplateRegistry;
 use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\Validator;
@@ -58,12 +59,20 @@ final class ValidationBinder extends Binder
         $errorMessageTemplateConfiguration = null;
 
         if (GlobalConfiguration::tryGetArray('aphiria.validation.errorMessageTemplates', $errorMessageTemplateConfiguration)) {
+            if (!isset($errorMessageTemplateConfiguration['type'])) {
+                throw new InvalidArgumentException('Missing key "type" from error message template config');
+            }
+
             $errorMessageTemplates = match ($errorMessageTemplateConfiguration['type']) {
                 DefaultErrorMessageTemplateRegistry::class => new DefaultErrorMessageTemplateRegistry(),
                 default => $container->resolve($errorMessageTemplateConfiguration['type']),
             };
         } else {
             $errorMessageTemplates = null;
+        }
+
+        if ($errorMessageTemplates !== null && !$errorMessageTemplates instanceof IErrorMessageTemplateRegistry) {
+            throw new InvalidArgumentException('Error message template must be instance of ' . IErrorMessageTemplateRegistry::class);
         }
 
         $errorMessageInterpolatorConfiguration = GlobalConfiguration::getArray('aphiria.validation.errorMessageInterpolator');

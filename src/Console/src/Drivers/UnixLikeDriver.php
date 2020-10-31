@@ -21,6 +21,8 @@ class UnixLikeDriver extends Driver
 {
     /**
      * @inheritdoc
+     *
+     * @psalm-suppress ForbiddenCode We purposely are running an external executable
      */
     public function readHiddenInput(IOutput $output): ?string
     {
@@ -29,9 +31,10 @@ class UnixLikeDriver extends Driver
         }
 
         // @codeCoverageIgnoreStart
-        shell_exec('stty -echo');
-        $input = fgets(STDIN, 4096);
-        shell_exec('stty ' . shell_exec('stty -g'));
+        \shell_exec('stty -echo');
+        $input = \fgets(STDIN, 4096);
+        /** @psalm-suppress PossiblyNullOperand This should not be null */
+        \shell_exec('stty ' . \shell_exec('stty -g'));
 
         // Break to a new line so we don't continue on the previous line
         $output->writeln('');

@@ -258,12 +258,16 @@ trait IntegrationTest
     /**
      * Creates a fully-qualified URI to be used in requests
      *
-     * @param string $uri The URI or relative path to create a URI from
+     * @param string|Uri $uri The URI or relative path to create a URI from
      * @return Uri The URI
      * @throws InvalidArgumentException Thrown if the URI could not be parsed into a URI
      */
-    private function createUri(string $uri): Uri
+    private function createUri(string|Uri $uri): Uri
     {
+        if ($uri instanceof Uri) {
+            return $uri;
+        }
+
         if (preg_match('/^(about|data|file|ftp|git|http|https|sftp|ssh|svn):\/\//i', $uri) === 1) {
             return new Uri($uri);
         }

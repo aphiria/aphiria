@@ -25,16 +25,16 @@ final class VariableTrieNode extends TrieNode
     /** @var bool Whether or not this node contains just a single variable part (for performance reasons) */
     private bool $onlyContainsVariable;
     /** @var string The regex to use for matching */
-    private string $regex;
+    private string $regex = '';
 
     /**
      * @param string[]|RouteVariable[]|string|RouteVariable $parts The parts that make up this segment
      * @param TrieNode[] $children The list of children
-     * @param Route[] $routes The list of routes contained by this segment
+     * @param Route[]|Route $routes The list of routes contained by this segment
      * @param TrieNode|null $hostTrie The host trie, if there is one
      * @throws InvalidArgumentException Thrown if the parts are empty
      */
-    public function __construct(string|RouteVariable|array $parts, array $children, $routes = [], TrieNode $hostTrie = null)
+    public function __construct(string|RouteVariable|array $parts, array $children, Route|array $routes = [], TrieNode $hostTrie = null)
     {
         parent::__construct($children, $routes, $hostTrie);
 
@@ -70,6 +70,7 @@ final class VariableTrieNode extends TrieNode
      * @param string $segmentValue The segment value to match against
      * @param array $routeVariables The route variables found on a successful match
      * @return bool True if the input segment value matches this node, otherwise false
+     * @psalm-suppress PossiblyInvalidPropertyFetch Constraints is always an array - bug
      */
     public function isMatch(string $segmentValue, array &$routeVariables): bool
     {

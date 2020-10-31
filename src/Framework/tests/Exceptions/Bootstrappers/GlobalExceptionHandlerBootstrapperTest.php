@@ -18,6 +18,7 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\GlobalExceptionHandler;
+use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
@@ -142,6 +143,21 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testInvalidExceptionRendererThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Exception renderer must implement ' . IExceptionRenderer::class);
+        $config = self::getBaseConfig();
+        $config['aphiria']['exceptions']['apiExceptionRenderer'] = self::class;
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        $this->addBootstrapAssertions(self::class);
+        $this->container->method('resolve')
+            ->with(self::class)
+            ->willReturn($this);$config = self::getBaseConfig();
+        $this->bootstrapper->setIsRunningInConsole(false);
+        $this->bootstrapper->bootstrap();
+    }
+
     public function testInvalidRequestBodyExceptionProblemDetailsMappingIsRegisteredAndUsesProblemDetailsIfConfigured(): void
     {
         $this->addBootstrapAssertions();
@@ -259,7 +275,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
          * difficult in PHPUnit.  As a result, this mock isn't even doing anything with the type  parameter.
          */
         $this->container->method('bindInstance')
-            ->with($this->anything(), $this->callback(function ($actualInstance) use ($expectedExceptionRendererType) {
+            ->with($this->anything(), $this->callback(function (mixed $actualInstance) use ($expectedExceptionRendererType): bool {
                 // The problem details renderer is always bound, even in console contexts.  So, check whether or not the renderer is that or the expected one.
                 if ($actualInstance instanceof ProblemDetailsExceptionRenderer) {
                     $this->apiExceptionRenderer = $actualInstance;

@@ -16,6 +16,9 @@ use Aphiria\Console\Commands\Attributes\AttributeCommandRegistrant;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\Framework\Console\Components\CommandComponent;
 use PHPUnit\Framework\TestCase;
@@ -46,11 +49,16 @@ class CommandComponentTest extends TestCase
     public function testBuildRegistersCommandsRegisteredInCallbacks(): void
     {
         $expectedCommand = new Command('foo');
-        $this->commandComponent->withCommands(fn (CommandRegistry $commands) => $commands->registerCommand($expectedCommand, 'Handler'));
+        $commandHandler = new class() implements ICommandHandler {
+            public function handle(Input $input, IOutput $output): void
+            {
+            }
+        };
+        $this->commandComponent->withCommands(fn (CommandRegistry $commands) => $commands->registerCommand($expectedCommand, $commandHandler::class));
         $this->commandComponent->build();
         $this->assertCount(1, $this->commands->getAllCommandBindings());
         $this->assertSame($expectedCommand, $this->commands->getAllCommandBindings()[0]->command);
-        $this->assertSame('Handler', $this->commands->getAllCommandBindings()[0]->commandHandlerClassName);
+        $this->assertSame($commandHandler::class, $this->commands->getAllCommandBindings()[0]->commandHandlerClassName);
     }
 
     public function testBuildWithAttributesAddsAttributeRegistrant(): void

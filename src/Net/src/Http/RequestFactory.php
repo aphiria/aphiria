@@ -26,7 +26,7 @@ class RequestFactory
 {
     /** @const The name of the request property that stores the client IP address */
     private const CLIENT_IP_ADDRESS_PROPERTY_NAME = 'CLIENT_IP_ADDRESS';
-    /** @var array The list of HTTP request headers that don't begin with "HTTP_" */
+    /** @var array<string, bool> The list of HTTP request headers that don't begin with "HTTP_" */
     private static array $specialCaseHeaders = [
         'AUTH_TYPE' => true,
         'CONTENT_LENGTH' => true,
@@ -36,7 +36,7 @@ class RequestFactory
         'PHP_AUTH_TYPE' => true,
         'PHP_AUTH_USER' => true
     ];
-    /** @var array The default mapping of header names to trusted proxy header names */
+    /** @var array<string, string> The default mapping of header names to trusted proxy header names */
     private static array $defaultTrustedHeaderNames = [
         'HTTP_FORWARDED' => 'HTTP_FORWARDED',
         'HTTP_CLIENT_IP' => 'HTTP_X_FORWARDED_FOR',
@@ -44,7 +44,7 @@ class RequestFactory
         'HTTP_CLIENT_PORT' => 'HTTP_X_FORWARDED_PORT',
         'HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO'
     ];
-    /** @var array The list of HTTP request headers that permit multiple values */
+    /** @var array<string, bool> The list of HTTP request headers that permit multiple values */
     private static array $headersThatPermitMultipleValues = [
         'HTTP_ACCEPT' => true,
         'HTTP_ACCEPT_CHARSET' => true,
@@ -72,7 +72,7 @@ class RequestFactory
         'HTTP_WWW_AUTHENTICATE' => true,
         'HTTP_X_FORWARDED_FOR' => true
     ];
-    /** @var array The list of header names whose values should be URL-decoded */
+    /** @var array<string, bool> The list of header names whose values should be URL-decoded */
     private static array $headersToUrlDecode = ['HTTP_COOKIE' => true];
 
     /**
@@ -103,7 +103,7 @@ class RequestFactory
 
         $uri = $this->createUriFromSuperglobals($server);
         $headers = $this->createHeadersFromSuperglobals($server);
-        $body = new StreamBody(new Stream(fopen('php://input', 'rb')));
+        $body = new StreamBody(new Stream(\fopen('php://input', 'rb')));
         $properties = $this->createProperties($server);
 
         return new Request($method, $uri, $headers, $body, $properties);
@@ -125,7 +125,7 @@ class RequestFactory
             // If this header supports multiple values and has unquoted string delimiters...
             $explodedValues = [];
             $containsMultipleValues = isset(self::$headersThatPermitMultipleValues[$name])
-                && \count($explodedValues = preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', $values)) > 1;
+                && \count($explodedValues = \preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', $values)) > 1;
 
             if ($containsMultipleValues) {
                 foreach ($explodedValues as $value) {
@@ -171,14 +171,15 @@ class RequestFactory
 
         if ($isUsingTrustedProxy && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']])) {
             $protoString = $server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']];
-            $protoArray = explode(',', $protoString);
-            $isSecure = \count($protoArray) > 0 && \in_array(strtolower($protoArray[0]), ['https', 'ssl', 'on'], true);
+            $protoArray = \explode(',', $protoString);
+            /** @psalm-suppress RedundantCondition Psalm is incorrectly marking the count as redundant - bug */
+            $isSecure = \count($protoArray) > 0 && \in_array(\strtolower($protoArray[0]), ['https', 'ssl', 'on'], true);
         } else {
             $isSecure = isset($server['HTTPS']) && $server['HTTPS'] !== 'off';
         }
 
-        $rawProtocol = isset($server['SERVER_PROTOCOL']) ? strtolower($server['SERVER_PROTOCOL']) : 'http/1.1';
-        $scheme = substr($rawProtocol, 0, strpos($rawProtocol, '/')) . ($isSecure ? 's' : '');
+        $rawProtocol = isset($server['SERVER_PROTOCOL']) ? \strtolower($server['SERVER_PROTOCOL']) : 'http/1.1';
+        $scheme = \substr($rawProtocol, 0, (\strpos($rawProtocol, '/') ?: 0)) . ($isSecure ? 's' : '');
         $user = $server['PHP_AUTH_USER'] ?? null;
         $password = $server['PHP_AUTH_PW'] ?? null;
         $port = null;
@@ -199,31 +200,31 @@ class RequestFactory
         }
 
         if ($isUsingTrustedProxy && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']])) {
-            $hostWithPort = explode(',', $server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']]);
-            $hostWithPort = trim(end($hostWithPort));
+            $hostWithPort = \explode(',', $server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']]);
+            $hostWithPort = \trim(end($hostWithPort));
         } else {
             $hostWithPort = $server['HTTP_HOST'] ?? $server['SERVER_NAME'] ?? $server['SERVER_ADDR'] ?? '';
         }
 
         // Remove the port from the host
-        $host = strtolower(preg_replace("/:\d+$/", '', trim($hostWithPort)));
+        $host = \strtolower(\preg_replace("/:\d+$/", '', \trim($hostWithPort)));
 
         // Check for forbidden characters
-        if (!empty($host) && !empty(preg_replace("/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/", '', $host))) {
+        if (!empty($host) && !empty(\preg_replace("/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/", '', $host))) {
             throw new InvalidArgumentException("Invalid host \"$host\"");
         }
 
-        $path = parse_url('http://foo.com' . ($server['REQUEST_URI'] ?? ''), PHP_URL_PATH);
+        $path = \parse_url('http://foo.com' . ($server['REQUEST_URI'] ?? ''), PHP_URL_PATH);
         $path = $path === false ? '' : ($path ?? '');
         $queryString = $server['QUERY_STRING'] ?? '';
 
         if ($queryString === '') {
-            $queryString = parse_url('http://foo.com' . ($server['REQUEST_URI'] ?? ''), PHP_URL_QUERY);
+            $queryString = \parse_url('http://foo.com' . ($server['REQUEST_URI'] ?? ''), PHP_URL_QUERY);
             $queryString = $queryString === false || $queryString === null ? '' : $queryString;
         }
 
         // The "?" is simply the separator for the query string, not actually part of the query string
-        $queryString = ltrim($queryString, '?');
+        $queryString = \ltrim($queryString, '?');
         $uriString = "$scheme://";
 
         if ($user !== null) {
@@ -258,11 +259,11 @@ class RequestFactory
         // RFC 7239
         if (isset($server[$this->trustedHeaderNames['HTTP_FORWARDED']])) {
             $header = $server[$this->trustedHeaderNames['HTTP_FORWARDED']];
-            preg_match_all("/for=(?:\"?\[?)([a-z0-9:\.\-\/_]*)/", $header, $matches);
+            \preg_match_all("/for=(?:\"?\[?)([a-z0-9:\.\-\/_]*)/", $header, $matches);
             $ipAddresses = $matches[1];
         } elseif (isset($server[$this->trustedHeaderNames['HTTP_CLIENT_IP']])) {
-            $ipAddresses = explode(',', $server[$this->trustedHeaderNames['HTTP_CLIENT_IP']]);
-            $ipAddresses = array_map('trim', $ipAddresses);
+            $ipAddresses = \explode(',', $server[$this->trustedHeaderNames['HTTP_CLIENT_IP']]);
+            $ipAddresses = \array_map('trim', $ipAddresses);
         }
 
         if ($serverRemoteAddress !== null) {
@@ -273,12 +274,12 @@ class RequestFactory
 
         foreach ($ipAddresses as $index => $ipAddress) {
             // Check for valid IP address
-            if (filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
+            if (\filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
                 unset($ipAddresses[$index]);
             }
         }
 
-        $clientIPAddresses = \count($ipAddresses) === 0 ? $fallbackIPAddresses : array_reverse($ipAddresses);
+        $clientIPAddresses = \count($ipAddresses) === 0 ? $fallbackIPAddresses : \array_reverse($ipAddresses);
 
         return $clientIPAddresses[0] ?? null;
     }
@@ -304,13 +305,13 @@ class RequestFactory
      */
     private function addHeaderValue(Headers $headers, string $name, mixed $value, bool $append): void
     {
-        $decodedValue = trim((string)(isset(self::$headersToUrlDecode[$name]) ? urldecode($value) : $value));
+        $decodedValue = \trim((string)(isset(self::$headersToUrlDecode[$name]) ? \urldecode($value) : $value));
 
         if (isset(self::$specialCaseHeaders[$name])) {
             $headers->add($name, $decodedValue, $append);
-        } elseif (str_starts_with($name, 'HTTP_')) {
+        } elseif (\str_starts_with($name, 'HTTP_')) {
             // Drop the "HTTP_"
-            $normalizedName = substr($name, 5);
+            $normalizedName = \substr($name, 5);
             $headers->add($normalizedName, $decodedValue, $append);
         }
     }

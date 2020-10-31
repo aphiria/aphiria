@@ -71,7 +71,7 @@ class RouteBuilder
     /**
      * Binds the controller the route uses to be a method
      *
-     * @param string $controllerClassName The name of the class the route goes to
+     * @param class-string $controllerClassName The name of the class the route goes to
      * @param string $controllerMethodName The name of the method the route goes to
      * @return static For chaining
      */
@@ -111,15 +111,17 @@ class RouteBuilder
     /**
      * Binds many middleware bindings to the route
      *
-     * @param MiddlewareBinding[]|string[] $middlewareBindings The list of middleware bindings to add, or a single
+     * @param array<MiddlewareBinding|class-string|string> $middlewareBindings The list of middleware bindings to add, or a single
      *      class name without properties
      * @return static For chaining
      * @throws InvalidArgumentException Thrown if the middleware bindings are not the correct type
+     * @psalm-suppress RedundantConditionGivenDocblockType We need to check the type to get code coverage
      */
     public function withManyMiddleware(array $middlewareBindings): static
     {
         foreach ($middlewareBindings as $middlewareBinding) {
             if (\is_string($middlewareBinding)) {
+                /** @psalm-suppress ArgumentTypeCoercion Psalm is being tripped up by the fact this is a string, not a class-string - bug */
                 $this->middlewareBindings[] = new MiddlewareBinding($middlewareBinding);
             } elseif ($middlewareBinding instanceof MiddlewareBinding) {
                 $this->middlewareBindings[] = $middlewareBinding;
@@ -150,7 +152,7 @@ class RouteBuilder
     /**
      * Binds a single middleware class to the route
      *
-     * @param string $middlewareClassName The name of the middleware class to bind
+     * @param class-string $middlewareClassName The name of the middleware class to bind
      * @param array $middlewareParameters Any parameters this method relies on
      * @return static For chaining
      */

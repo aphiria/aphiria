@@ -56,9 +56,11 @@ final class TypeFinder implements ITypeFinder
     {
         $subTypes = [];
 
+        /** @var class-string $type Need this because of a Psalm bug */
         foreach ($this->findAllTypes($directories, $recursive) as $type) {
             $reflectionType = new ReflectionClass($type);
 
+            /** @var class-string $parentType Need this because of a Psalm bug */
             if ($reflectionType->isSubclassOf($parentType)) {
                 $subTypes[] = $type;
             }
@@ -83,7 +85,7 @@ final class TypeFinder implements ITypeFinder
      * @param string|string[] $directories The directory or directories to search through
      * @param bool $recursive Whether or not we should recursively find types
      * @param int $typeFilter The filter to apply (bitwise value of types defined in this class)
-     * @return string[] The list of types
+     * @return array<class-string> The list of types
      */
     private function findAllTypesWithFilter(string|array $directories, bool $recursive, int $typeFilter): array
     {
@@ -121,9 +123,9 @@ final class TypeFinder implements ITypeFinder
      * Gets the class names from a list of tokens
      * This will work even if multiple classes are defined in each file
      *
-     * @param string[] $tokens The array of tokens
+     * @param array<array{0: int, 1: string, 2: int}|string> $tokens The array of tokens
      * @param int $typeFilter The filter to apply (bitwise value of types defined in this class)
-     * @return string[] The names of the classes
+     * @return array<class-string> The names of the classes
      */
     private function getTypeFromTokens(array $tokens, int $typeFilter): array
     {
@@ -208,6 +210,7 @@ final class TypeFinder implements ITypeFinder
             }
         }
 
+        /** @var array<class-string> $types */
         return $types;
     }
 }

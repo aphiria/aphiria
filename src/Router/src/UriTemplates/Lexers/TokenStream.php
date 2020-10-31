@@ -24,6 +24,8 @@ final class TokenStream
 
     /**
      * @param Token[] $tokens The list of tokens
+     * @psalm-suppress PossiblyNullArgument This cannot ever be null - bug
+     * @psalm-suppress UninitializedProperty This is initialized - bug
      */
     public function __construct(public array $tokens)
     {
@@ -106,9 +108,9 @@ final class TokenStream
     public function nextIfType(string $type, mixed $value = null): bool
     {
         $currentToken = $this->getCurrent();
-        $typeMatches = $currentToken !== null && $currentToken->type === $type;
+        $typeMatches = $currentToken?->type === $type;
 
-        if ($typeMatches && ($value === null || $currentToken->value === $value)) {
+        if ($typeMatches && ($value === null || $currentToken?->value === $value)) {
             $this->next();
 
             return true;
@@ -144,6 +146,6 @@ final class TokenStream
         $currentToken = $this->getCurrent();
         $typeMatches = $currentToken !== null && $currentToken->type === $type;
 
-        return $typeMatches && ($value === null || $currentToken->value === $value);
+        return $typeMatches && ($value === null || $currentToken?->value === $value);
     }
 }

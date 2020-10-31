@@ -35,94 +35,140 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $this->container = new Container();
     }
 
-    public function testBindingMethodsCreatesTargetedBoundInterfaces(): void
+    public function getBinders(): array
     {
-        $binder = new class() extends Binder {
+        $binder1 = new class() extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->for(new TargetedContext('bar'), function (IContainer $container) {
-                    $container->bindFactory('foo0', function () {
-                        return new Foo();
-                    });
-                    $container->bindInstance('foo1', new Foo());
-                    $container->bindClass('foo2', Foo::class);
+                $container->bindFactory(IFoo::class, fn () => new Foo());
+            }
+        };
+        $binder2 = new class() extends Binder {
+            public function bind(IContainer $container): void
+            {
+                $container->bindInstance(IFoo::class, new Foo());
+            }
+        };
+        $binder3 = new class() extends Binder {
+            public function bind(IContainer $container): void
+            {
+                $container->bindClass(IFoo::class, Foo::class);
+            }
+        };
+        $target = new class() {
+        };
+        $binder4 = new class() extends Binder {
+            public object $target;
+
+            public function bind(IContainer $container): void
+            {
+                $container->for($this->target::class, function (IContainer $container) {
+                    $container->bindFactory(IFoo::class, fn () => new Foo());
                 });
             }
         };
-        $collector = new ContainerBinderMetadataCollector($this->container);
-        $binderMetadata = $collector->collect($binder);
-        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
-        $this->assertCount(3, $actualBoundInterfaces);
+        $binder4->target = $target;
+        $binder5 = new class() extends Binder {
+            public object $target;
 
-        foreach ($actualBoundInterfaces as $i => $actualBoundInterface) {
-            $this->assertSame('bar', $actualBoundInterface->getContext()->getTargetClass());
-            $this->assertSame("foo$i", $actualBoundInterface->getInterface());
-        }
+            public function bind(IContainer $container): void
+            {
+                $container->for($this->target::class, function (IContainer $container) {
+                    $container->bindInstance(IFoo::class, new Foo());
+                });
+            }
+        };
+        $binder5->target = $target;
+        $binder6 = new class() extends Binder {
+            public object $target;
+
+            public function bind(IContainer $container): void
+            {
+                $container->for($this->target::class, function (IContainer $container) {
+                    $container->bindClass(IFoo::class, Foo::class);
+                });
+            }
+        };
+        $binder6->target = $target;
+
+        return [
+            [$binder1, IFoo::class, false, null],
+            [$binder2, IFoo::class, false, null],
+            [$binder3, IFoo::class, false, null],
+            [$binder4, IFoo::class, true, $target::class],
+            [$binder5, IFoo::class, true, $target::class],
+            [$binder6, IFoo::class, true, $target::class]
+        ];
     }
 
-    public function testBindingMethodsCreatesUniversalBoundInterfaces(): void
+    /**
+     * @dataProvider getBinders
+     * @param Binder $binder The binder to test with
+     * @param string $expectedInterface The expected interface
+     * @param bool $isTargeted Whether or not the binding is targeted
+     * @param class-string|null $targetClass The target class if there is one, otherwise null
+     */
+    public function testBindingMethodsCreatesUniversalBoundInterfaces(Binder $binder, string $expectedInterface, bool $isTargeted, ?string $targetClass): void
     {
-        $binder = new class() extends Binder {
-            public function bind(IContainer $container): void
-            {
-                $container->bindFactory('foo0', function () {
-                    return new Foo();
-                });
-                $container->bindInstance('foo1', new Foo());
-                $container->bindClass('foo2', Foo::class);
-            }
-        };
-        $collector = new ContainerBinderMetadataCollector($this->container);
-        $binderMetadata = $collector->collect($binder);
-        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
-        $this->assertCount(3, $actualBoundInterfaces);
-
-        foreach ($actualBoundInterfaces as $i => $actualBoundInterface) {
-            $this->assertSame("foo$i", $actualBoundInterface->getInterface());
-            $this->assertFalse($actualBoundInterface->getContext()->isTargeted());
-        }
-    }
-
-    public function testBindingSameInterfaceButWithOneTargetedAndOneUniversalBindingReturnsTwoBoundInterfaces(): void
-    {
-        $binder = new class() extends Binder {
-            public function bind(IContainer $container): void
-            {
-                $container->for(new TargetedContext('bar'), function (IContainer $container) {
-                    $container->bindInstance('foo', new Foo());
-                });
-                $container->bindInstance('foo', new Foo());
-            }
-        };
-        $collector = new ContainerBinderMetadataCollector($this->container);
-        $binderMetadata = $collector->collect($binder);
-        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
-        $this->assertCount(2, $actualBoundInterfaces);
-        $this->assertSame('bar', $actualBoundInterfaces[0]->getContext()->getTargetClass());
-        $this->assertSame('foo', $actualBoundInterfaces[0]->getInterface());
-        $this->assertFalse($actualBoundInterfaces[1]->getContext()->isTargeted());
-        $this->assertSame('foo', $actualBoundInterfaces[1]->getInterface());
-    }
-
-    public function testBindingSameTargetedInterfaceTwiceReturnsOneBoundInterface(): void
-    {
-        $binder = new class() extends Binder {
-            public function bind(IContainer $container): void
-            {
-                $container->for(new TargetedContext('bar'), function (IContainer $container) {
-                    $container->bindInstance('foo', new Foo());
-                });
-                $container->for(new TargetedContext('bar'), function (IContainer $container) {
-                    $container->bindInstance('foo', new Foo());
-                });
-            }
-        };
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
         $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
         $this->assertCount(1, $actualBoundInterfaces);
-        $this->assertSame('bar', $actualBoundInterfaces[0]->getContext()->getTargetClass());
-        $this->assertSame('foo', $actualBoundInterfaces[0]->getInterface());
+        $this->assertSame($expectedInterface, $actualBoundInterfaces[0]->getInterface());
+        $this->assertSame($isTargeted, $actualBoundInterfaces[0]->getContext()->isTargeted());
+        $this->assertSame($targetClass, $actualBoundInterfaces[0]->getContext()->getTargetClass());
+    }
+
+    public function testBindingSameInterfaceButWithOneTargetedAndOneUniversalBindingReturnsTwoBoundInterfaces(): void
+    {
+        $target = new class() {
+        };
+        $binder = new class() extends Binder {
+            public object $target;
+
+            public function bind(IContainer $container): void
+            {
+                $container->for(new TargetedContext($this->target::class), function (IContainer $container) {
+                    $container->bindInstance(IFoo::class, new Foo());
+                });
+                $container->bindInstance(IFoo::class, new Foo());
+            }
+        };
+        $binder->target = $target;
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $binderMetadata = $collector->collect($binder);
+        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
+        $this->assertCount(2, $actualBoundInterfaces);
+        $this->assertSame($target::class, $actualBoundInterfaces[0]->getContext()->getTargetClass());
+        $this->assertSame(IFoo::class, $actualBoundInterfaces[0]->getInterface());
+        $this->assertFalse($actualBoundInterfaces[1]->getContext()->isTargeted());
+        $this->assertSame(IFoo::class, $actualBoundInterfaces[1]->getInterface());
+    }
+
+    public function testBindingSameTargetedInterfaceTwiceReturnsOneBoundInterface(): void
+    {
+        $target = new class() {
+        };
+        $binder = new class() extends Binder {
+            public object $target;
+
+            public function bind(IContainer $container): void
+            {
+                $container->for(new TargetedContext($this->target::class), function (IContainer $container) {
+                    $container->bindInstance(IFoo::class, new Foo());
+                });
+                $container->for(new TargetedContext($this->target::class), function (IContainer $container) {
+                    $container->bindInstance(IFoo::class, new Foo());
+                });
+            }
+        };
+        $binder->target = $target;
+        $collector = new ContainerBinderMetadataCollector($this->container);
+        $binderMetadata = $collector->collect($binder);
+        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
+        $this->assertCount(1, $actualBoundInterfaces);
+        $this->assertSame($target::class, $actualBoundInterfaces[0]->getContext()->getTargetClass());
+        $this->assertSame(IFoo::class, $actualBoundInterfaces[0]->getInterface());
     }
 
     public function testBindingSameUniversalInterfaceTwiceReturnsOneBoundInterface(): void
@@ -130,8 +176,8 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindInstance('foo', new Foo());
-                $container->bindInstance('foo', new Foo());
+                $container->bindInstance(IFoo::class, new Foo());
+                $container->bindInstance(IFoo::class, new Foo());
             }
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
@@ -139,12 +185,12 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
         $this->assertCount(1, $actualBoundInterfaces);
         $this->assertFalse($actualBoundInterfaces[0]->getContext()->isTargeted());
-        $this->assertSame('foo', $actualBoundInterfaces[0]->getInterface());
+        $this->assertSame(IFoo::class, $actualBoundInterfaces[0]->getInterface());
     }
 
     public function testCallClosurePassesThroughToComposedContainer(): void
     {
-        $closure = fn (int $foo) => null;
+        $closure = fn (int $foo): mixed => null;
         $primitives = [1];
         $container = $this->createMock(IContainer::class);
         $container->expects($this->once())
@@ -174,9 +220,11 @@ class ContainerBinderMetadataCollectorTest extends TestCase
 
     public function testForWithStringContextCreatesTargetedBinding(): void
     {
-        $this->container->for('foo', fn (IContainer $container) => $container->bindInstance(IFoo::class, new Bar()));
+        $target = new class() {
+        };
+        $this->container->for($target::class, fn (IContainer $container) => $container->bindInstance(IFoo::class, new Bar()));
         $collector = new ContainerBinderMetadataCollector($this->container);
-        $collector->for('foo', function (IContainer $container) {
+        $collector->for($target::class, function (IContainer $container) {
             $this->assertInstanceOf(Bar::class, $container->resolve(IFoo::class));
         });
     }
@@ -185,9 +233,11 @@ class ContainerBinderMetadataCollectorTest extends TestCase
     {
         $collector = new ContainerBinderMetadataCollector($this->container);
         $this->assertFalse($collector->hasBinding(IFoo::class));
-        $this->container->for('foo', fn (IContainer $container) => $container->bindInstance(IFoo::class, new Foo()));
+        $target = new class() {
+        };
+        $this->container->for($target::class, fn (IContainer $container) => $container->bindInstance(IFoo::class, new Foo()));
         $this->assertFalse($collector->hasBinding(IFoo::class));
-        $this->assertTrue($collector->for('foo', fn (IContainer $container) => $container->hasBinding(IFoo::class)));
+        $this->assertTrue($collector->for($target::class, fn (IContainer $container) => $container->hasBinding(IFoo::class)));
     }
 
     public function testResolveAddsResolvedBindingEvenIfResolutionFailed(): void
@@ -195,7 +245,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->resolve('foo');
+                $container->resolve(IFoo::class);
             }
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
@@ -205,7 +255,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             $this->fail('Expected to throw exception');
         } catch (FailedBinderMetadataCollectionException $ex) {
             $this->assertCount(1, $ex->getIncompleteBinderMetadata()->getResolvedInterfaces());
-            $this->assertSame('foo', $ex->getIncompleteBinderMetadata()->getResolvedInterfaces()[0]->getInterface());
+            $this->assertSame(IFoo::class, $ex->getIncompleteBinderMetadata()->getResolvedInterfaces()[0]->getInterface());
         } catch (Exception $ex) {
             $this->fail('Expected ' . FailedBinderMetadataCollectionException::class . ' to be thrown');
         }
@@ -213,105 +263,116 @@ class ContainerBinderMetadataCollectorTest extends TestCase
 
     public function testResolvingMethodsCreatesTargetedResolvedInterfaces(): void
     {
-        $this->container->for(new TargetedContext('bar'), function (IContainer $container) {
-            $container->bindInstance('foo0', new Foo());
-            $container->bindInstance('foo1', new Foo());
+        $target = new class() {
+        };
+        $this->container->for(new TargetedContext($target::class), function (IContainer $container) {
+            $container->bindInstance(IFoo::class, new Foo());
+            $container->bindInstance(Foo::class, new Foo());
         });
         $binder = new class() extends Binder {
+            public object $target;
+
             public function bind(IContainer $container): void
             {
-                $container->for(new TargetedContext('bar'), function (IContainer $container) {
-                    $container->resolve('foo0');
+                $container->for(new TargetedContext($this->target::class), function (IContainer $container) {
+                    $container->resolve(IFoo::class);
                     $foo = null;
-                    $container->tryResolve('foo1', $foo);
+                    $container->tryResolve(Foo::class, $foo);
                 });
             }
         };
+        $binder->target = $target;
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
         $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
         $this->assertCount(2, $actualResolvedInterfaces);
-
-        foreach ($actualResolvedInterfaces as $i => $actualResolvedInterface) {
-            $this->assertSame('bar', $actualResolvedInterface->getContext()->getTargetClass());
-            $this->assertSame("foo$i", $actualResolvedInterface->getInterface());
-        }
+        $this->assertSame($target::class, $actualResolvedInterfaces[0]->getContext()->getTargetClass());
+        $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->getInterface());
+        $this->assertSame($target::class, $actualResolvedInterfaces[1]->getContext()->getTargetClass());
+        $this->assertSame(Foo::class, $actualResolvedInterfaces[1]->getInterface());
     }
 
     public function testResolvingMethodsCreatesUniversalResolvedInterfaces(): void
     {
-        $this->container->bindInstance('foo0', new Foo());
-        $this->container->bindInstance('foo1', new Foo());
+        $this->container->bindInstance(IFoo::class, new Foo());
+        $this->container->bindInstance(Foo::class, new Foo());
         $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->resolve('foo0');
+                $container->resolve(IFoo::class);
                 $foo = null;
-                $container->tryResolve('foo1', $foo);
+                $container->tryResolve(Foo::class, $foo);
             }
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
         $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
         $this->assertCount(2, $actualResolvedInterfaces);
-
-        foreach ($actualResolvedInterfaces as $i => $actualResolvedInterface) {
-            $this->assertSame("foo$i", $actualResolvedInterface->getInterface());
-            $this->assertFalse($actualResolvedInterface->getContext()->isTargeted());
-        }
+        $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->getInterface());
+        $this->assertFalse($actualResolvedInterfaces[0]->getContext()->isTargeted());
+        $this->assertSame(Foo::class, $actualResolvedInterfaces[1]->getInterface());
+        $this->assertFalse($actualResolvedInterfaces[1]->getContext()->isTargeted());
     }
 
     public function testResolvingSameInterfaceButWithOneTargetedAndOneUniversalResolutionReturnsTwoResolvedInterfaces(): void
     {
-        $this->container->for(new TargetedContext('bar'), fn (IContainer $container) => $container->bindInstance('foo', new Foo()));
-        $this->container->bindInstance('foo', new Foo());
+        $target = new class() {
+        };
+        $this->container->for(new TargetedContext($target::class), fn (IContainer $container) => $container->bindInstance(IFoo::class, new Foo()));
+        $this->container->bindInstance(IFoo::class, new Foo());
         $binder = new class() extends Binder {
+            public object $target;
+
             public function bind(IContainer $container): void
             {
-                $container->for(new TargetedContext('bar'), function (IContainer $container) {
-                    $container->resolve('foo');
+                $container->for(new TargetedContext($this->target::class), function (IContainer $container) {
+                    $container->resolve(IFoo::class);
                 });
-                $container->resolve('foo');
+                $container->resolve(IFoo::class);
             }
         };
+        $binder->target = $target;
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
         $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
         $this->assertCount(2, $actualResolvedInterfaces);
-        $this->assertSame('bar', $actualResolvedInterfaces[0]->getContext()->getTargetClass());
-        $this->assertSame('foo', $actualResolvedInterfaces[0]->getInterface());
+        $this->assertSame($target::class, $actualResolvedInterfaces[0]->getContext()->getTargetClass());
+        $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->getInterface());
         $this->assertFalse($actualResolvedInterfaces[1]->getContext()->isTargeted());
-        $this->assertSame('foo', $actualResolvedInterfaces[1]->getInterface());
+        $this->assertSame(IFoo::class, $actualResolvedInterfaces[1]->getInterface());
     }
 
     public function testResolvingSameTargetedInterfaceTwiceReturnsOneResolvedInterface(): void
     {
-        $this->container->for(new TargetedContext('bar'), fn (IContainer $container) => $container->bindInstance('foo', new Foo()));
+        $target = new class() {
+        };
+        $this->container->for(new TargetedContext($target::class), fn (IContainer $container) => $container->bindInstance(IFoo::class, new Foo()));
         $binder = new class() extends Binder {
+            public object $target;
             public function bind(IContainer $container): void
             {
-                $container->for(new TargetedContext('bar'), function (IContainer $container) {
-                    $container->resolve('foo');
-                    $container->resolve('foo');
+                $container->for(new TargetedContext($this->target::class), function (IContainer $container) {
+                    $container->resolve(IFoo::class);
+                    $container->resolve(IFoo::class);
                 });
             }
         };
+        $binder->target = $target;
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
         $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
         $this->assertCount(1, $actualResolvedInterfaces);
-        $this->assertSame('bar', $actualResolvedInterfaces[0]->getContext()->getTargetClass());
-        $this->assertSame('foo', $actualResolvedInterfaces[0]->getInterface());
+        $this->assertSame($target::class, $actualResolvedInterfaces[0]->getContext()->getTargetClass());
+        $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->getInterface());
     }
 
     public function testResolvingSameUniversalInterfaceTwiceReturnsOneResolvedInterface(): void
     {
-        $this->container->bindInstance('foo', new Foo());
         $binder = new class() extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->resolve('foo');
-                $container->resolve('foo');
+                $container->resolve(self::class);
+                $container->resolve(self::class);
             }
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
@@ -319,7 +380,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
         $this->assertCount(1, $actualResolvedInterfaces);
         $this->assertFalse($actualResolvedInterfaces[0]->getContext()->isTargeted());
-        $this->assertSame('foo', $actualResolvedInterfaces[0]->getInterface());
+        $this->assertSame($binder::class, $actualResolvedInterfaces[0]->getInterface());
     }
 
     public function testTryResolveAddsResolvedBindingEventIfResolutionFailed(): void
@@ -328,12 +389,12 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             public function bind(IContainer $container): void
             {
                 $foo = null;
-                $container->tryResolve('foo', $foo);
+                $container->tryResolve(self::class, $foo);
             }
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
         $this->assertCount(1, $collector->collect($binder)->getResolvedInterfaces());
-        $this->assertSame('foo', $collector->collect($binder)->getResolvedInterfaces()[0]->getInterface());
+        $this->assertSame($binder::class, $collector->collect($binder)->getResolvedInterfaces()[0]->getInterface());
     }
 
     public function testTryResolveResolvesInterfaceUsingComposedContainer(): void
@@ -347,10 +408,12 @@ class ContainerBinderMetadataCollectorTest extends TestCase
 
     public function testUnbindPassesThroughToComposedContainerWithCurrentContext(): void
     {
+        $target = new class() {
+        };
         $collector = new ContainerBinderMetadataCollector($this->container);
-        $collector->for('foo', fn (IContainer $container) => $container->bindInstance(IFoo::class, new Foo()));
-        $this->assertTrue($collector->for('foo', fn (IContainer $container) => $container->hasBinding(IFoo::class)));
-        $collector->for('foo', fn (IContainer $container) => $container->unbind(IFoo::class));
-        $this->assertFalse($collector->for('foo', fn (IContainer $container) => $container->hasBinding(IFoo::class)));
+        $collector->for($target::class, fn (IContainer $container) => $container->bindInstance(IFoo::class, new Foo()));
+        $this->assertTrue($collector->for($target::class, fn (IContainer $container) => $container->hasBinding(IFoo::class)));
+        $collector->for($target::class, fn (IContainer $container) => $container->unbind(IFoo::class));
+        $this->assertFalse($collector->for($target::class, fn (IContainer $container) => $container->hasBinding(IFoo::class)));
     }
 }
