@@ -799,12 +799,12 @@ class AphiriaComponentsTest extends TestCase
             /**
              * @param IApplicationBuilder $appBuilder
              * @param class-string $exceptionType
-             * @param string|Closure|null $type
-             * @param string|Closure|null $title
-             * @param string|Closure|null $detail
-             * @param int|Closure $status
-             * @param string|Closure|null $instance
-             * @param array|Closure|null $extensions
+             * @param string|null|Closure(mixed): string $type
+             * @param string|null|Closure(mixed): string $title
+             * @param string|null|Closure(mixed): string $detail
+             * @param int|Closure(mixed): int $status
+             * @param string|null|Closure(mixed): string $instance
+             * @param array|null|Closure(mixed): array $extensions
              */
             public function build(
                 IApplicationBuilder $appBuilder,
@@ -838,12 +838,12 @@ class AphiriaComponentsTest extends TestCase
             /**
              * @param IApplicationBuilder $appBuilder
              * @param class-string $exceptionType
-             * @param string|Closure|null $type
-             * @param string|Closure|null $title
-             * @param string|Closure|null $detail
-             * @param int|Closure $status
-             * @param string|Closure|null $instance
-             * @param array|Closure|null $extensions
+             * @param string|null|Closure(mixed): string $type
+             * @param string|null|Closure(mixed): string $title
+             * @param string|null|Closure(mixed): string $detail
+             * @param int|Closure(mixed): int $status
+             * @param string|null|Closure(mixed): string $instance
+             * @param array|null|Closure(mixed): array $extensions
              */
             public function build(
                 IApplicationBuilder $appBuilder,

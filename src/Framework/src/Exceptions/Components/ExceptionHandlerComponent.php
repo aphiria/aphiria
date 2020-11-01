@@ -99,12 +99,12 @@ class ExceptionHandlerComponent implements IComponent
      * Adds a mapping of an exception type to problem details properties
      *
      * @param class-string $exceptionType The type of exception that's thrown
-     * @param string|Closure|null $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
-     * @param string|Closure|null $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
-     * @param string|Closure|null $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
-     * @param int|Closure $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
-     * @param string|Closure|null $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
-     * @param array|Closure|null $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
+     * @param string|null|Closure(mixed): string $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
+     * @param string|null|Closure(mixed): string $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
+     * @param string|null|Closure(mixed): string $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
+     * @param int|Closure(mixed): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param string|null|Closure(mixed): string $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
+     * @param array|null|Closure(mixed): array $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
      * @return static For chaining
      */
     public function withProblemDetails(
