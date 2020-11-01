@@ -347,10 +347,9 @@ class AphiriaComponentsTest extends TestCase
             use AphiriaComponents;
 
             /**
-             * @template T of Exception
              * @param IApplicationBuilder $appBuilder
-             * @param class-string<T> $exceptionType
-             * @param Closure(T, IOutput) $callback
+             * @param class-string<Exception> $exceptionType
+             * @param Closure(Exception, IOutput): void|Closure(mixed, IOutput): int $callback
              */
             public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $callback): void
             {
@@ -623,10 +622,9 @@ class AphiriaComponentsTest extends TestCase
             use AphiriaComponents;
 
             /**
-             * @template T of Exception
              * @param IApplicationBuilder $appBuilder
-             * @param class-string<T> $exceptionType
-             * @param Closure(T): string $logLevelFactory
+             * @param class-string<Exception> $exceptionType
+             * @param Closure(mixed): string $logLevelFactory
              */
             public function build(
                 IApplicationBuilder $appBuilder,

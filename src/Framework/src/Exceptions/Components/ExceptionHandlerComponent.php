@@ -31,9 +31,9 @@ class ExceptionHandlerComponent implements IComponent
 {
     /** @var array<class-string, array{type: string|Closure|null, title: string|Closure|null, detail: string|Closure|null, status: int|Closure, instance: string|Closure|null, extensions: array|Closure|null}> The mapping of exception types to problem detail settings */
     private array $exceptionProblemDetailMappings = [];
-    /** @var array<class-string, Closure> The mapping of exception types to console result factories */
+    /** @var array<class-string<Exception>, Closure(mixed, IOutput): void|Closure(mixed, IOutput): int> The mapping of exception types to console result factories */
     private array $consoleOutputWriters = [];
-    /** @var array<class-string<Exception>, Closure(Exception): string> The mapping of exception types to log level factories */
+    /** @var array<class-string<Exception>, Closure(mixed): string> The mapping of exception types to log level factories */
     private array $logLevelFactories = [];
 
     /**
@@ -70,9 +70,8 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * Adds a console exception output writer
      *
-     * @template T of Exception
-     * @param class-string<T> $exceptionType The type of exception that's thrown
-     * @param Closure(T, IOutput) $callback The factory that takes in the exception and output, and writes messages/returns a status code
+     * @param class-string<Exception> $exceptionType The type of exception that's thrown
+     * @param Closure(mixed, IOutput): void|Closure(mixed, IOutput): int $callback The factory that takes in the exception and output, and writes messages/returns a status code
      * @return static For chaining
      */
     public function withConsoleOutputWriter(string $exceptionType, Closure $callback): static
@@ -85,9 +84,8 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * Adds a log level factory for a particular exception type
      *
-     * @template T of Exception
-     * @param class-string<T> $exceptionType The type of exception that's thrown
-     * @param Closure(T): string $logLevelFactory The factory that takes in an instance of the exception type and returns a PSR-3 log level
+     * @param class-string<Exception> $exceptionType The type of exception that's thrown
+     * @param Closure(mixed): string $logLevelFactory The factory that takes in an instance of the exception type and returns a PSR-3 log level
      * @return static For chaining
      */
     public function withLogLevelFactory(string $exceptionType, Closure $logLevelFactory): static

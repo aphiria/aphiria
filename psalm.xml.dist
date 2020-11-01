@@ -50,6 +50,14 @@
                 <file name="src/Framework/src/Serialization/Normalizers/ProblemDetailsNormalizer.php" />
             </errorLevel>
         </PropertyNotSetInConstructor>
+        <ReferenceConstraintViolation>
+            <errorLevel type="suppress">
+                <!-- Psalm gets tripped up on try*() patterns with out-params - bug -->
+                <file name="src/Application/src/Configuration/GlobalConfiguration.php" />
+                <file name="src/Application/src/Configuration/IConfiguration.php" />
+                <file name="src/DependencyInjection/src/IServiceResolver.php" />
+            </errorLevel>
+        </ReferenceConstraintViolation>
         <TypeDoesNotContainNull>
             <errorLevel type="suppress">
                 <!-- We get a lot of false positives with the try*() pattern and out parameters -->

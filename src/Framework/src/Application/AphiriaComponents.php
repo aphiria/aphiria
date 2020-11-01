@@ -183,10 +183,9 @@ trait AphiriaComponents
     /**
      * Adds a console callback that takes in the exception and the output, and writes messages/returns the status code
      *
-     * @template T of Exception
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param class-string<T> $exceptionType The type of exception whose result factory we're registering
-     * @param Closure(T, IOutput) $callback The callback that takes in an exception and the output, and writes messages/returns the status code
+     * @param class-string<Exception> $exceptionType The type of exception whose result factory we're registering
+     * @param Closure(mixed, IOutput): void|Closure(mixed, IOutput): int $callback The callback that takes in an exception and the output, and writes messages/returns the status code
      * @return static For chaining
      * @throws RuntimeException Thrown if the global instance of the container is not set
      */
@@ -292,10 +291,9 @@ trait AphiriaComponents
     /**
      * Adds a log level factory to the exception handler component
      *
-     * @template T of Exception
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param class-string<T> $exceptionType The exception type whose factory we're registering
-     * @param Closure(T): string $logLevelFactory The factory that takes in an instance of the exception and returns the PSR-3 log level
+     * @param class-string<Exception> $exceptionType The exception type whose factory we're registering
+     * @param Closure(mixed): string $logLevelFactory The factory that takes in an instance of the exception and returns the PSR-3 log level
      * @return static For chaining
      * @throws RuntimeException Thrown if the global instance of the container is not set
      */
