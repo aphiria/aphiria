@@ -18,7 +18,7 @@ namespace Aphiria\Application\Configuration;
 class HashTableConfiguration implements IConfiguration
 {
     /**
-     * @param array $hashTable The hash table that backs the configuration
+     * @param array<string, mixed> $hashTable The hash table that backs the configuration
      * @param string $pathDelimiter The delimiter to use for nested path segments
      */
     public function __construct(private array $hashTable, private string $pathDelimiter = '.')

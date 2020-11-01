@@ -20,7 +20,7 @@ use InvalidArgumentException;
  */
 final class DateConstraint implements IRouteVariableConstraint
 {
-    /** @var array The list of acceptable formats */
+    /** @var string[] The list of acceptable formats */
     private array $formats;
 
     /**

@@ -101,7 +101,7 @@ final class InputCompiler implements IInputCompiler
     /**
      * Adds an option to the list of options
      *
-     * @param array $options The list of options we're adding to
+     * @param array<string, mixed> $options The list of options we're adding to
      * @param string $name The name of the option to add
      * @param mixed $value The value to add
      */
@@ -123,8 +123,8 @@ final class InputCompiler implements IInputCompiler
      * Compiles arguments in a command
      *
      * @param Command $command The command to compile
-     * @param array $argumentValues The list of argument values
-     * @return array The mapping of argument names to values
+     * @param mixed[] $argumentValues The list of argument values
+     * @return array<string, mixed> The mapping of argument names to values
      * @throws RuntimeException Thrown if there are too many arguments
      */
     private static function compileArguments(Command $command, array $argumentValues): array
@@ -163,7 +163,7 @@ final class InputCompiler implements IInputCompiler
      * Compiles options in a command
      *
      * @param Command $command The command to compile
-     * @param array $rawOptions The list of raw options
+     * @param mixed[] $rawOptions The list of raw options
      * @return array<string, string> The mapping of option names to values
      */
     private static function compileOptions(Command $command, array $rawOptions): array
@@ -206,7 +206,7 @@ final class InputCompiler implements IInputCompiler
     /**
      * Gets whether or not there are too many argument values
      *
-     * @param array $argumentValues The list of argument values
+     * @param mixed[] $argumentValues The list of argument values
      * @param Argument[] $commandArguments The list of command arguments
      * @return bool True if there are too many arguments, otherwise false
      */
@@ -237,8 +237,8 @@ final class InputCompiler implements IInputCompiler
      * Parses a long option token and returns an array of data
      *
      * @param string $token The token to parse
-     * @param array $remainingTokens The list of remaining tokens
-     * @return array The name of the option mapped to its value
+     * @param mixed[] $remainingTokens The list of remaining tokens
+     * @return array{0: string, 1: string|null} The name of the option mapped to its value
      */
     private static function parseLongOption(string $token, array &$remainingTokens): array
     {
@@ -273,10 +273,10 @@ final class InputCompiler implements IInputCompiler
     /**
      * Parses the tokens for the command name, arguments, and options
      *
-     * @param array $tokens The tokens to parse
+     * @param mixed[] $tokens The tokens to parse
      * @param string $commandName The parsed command name
-     * @param array $argumentValues The parsed input arguments
-     * @param array $options The parsed input options
+     * @param mixed[] $argumentValues The parsed input arguments
+     * @param array<string, mixed> $options The parsed input options
      */
     private static function parseTokens(
         array $tokens,
@@ -306,7 +306,7 @@ final class InputCompiler implements IInputCompiler
      * Parses a short option token and returns an array of data
      *
      * @param string $token The token to parse
-     * @return array The name of the option mapped to its value
+     * @return array<array{0: string, 1: null}> The name of the option mapped to its value
      */
     private static function parseShortOption(string $token): array
     {

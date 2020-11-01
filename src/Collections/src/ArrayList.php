@@ -21,11 +21,11 @@ use Traversable;
  */
 class ArrayList implements IList
 {
-    /** @var array The list of values */
+    /** @var mixed[] The list of values */
     protected array $values = [];
 
     /**
-     * @param array $values The list of values
+     * @param mixed[] $values The list of values
      */
     public function __construct(array $values = [])
     {

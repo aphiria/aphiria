@@ -30,9 +30,9 @@ use RuntimeException;
  */
 class BodyParser
 {
-    /** @var array The mapping of body hash IDs to their parsed form input */
+    /** @var array<string, HashTable> The mapping of body hash IDs to their parsed form input */
     private array $parsedFormInputCache = [];
-    /** @var array The mapping of body hash IDs to their parsed MIME types */
+    /** @var array<string, string> The mapping of body hash IDs to their parsed MIME types */
     private array $parsedMimeTypeCache = [];
 
     /**
@@ -106,7 +106,7 @@ class BodyParser
      * Attempts to read the request body as JSON
      *
      * @param IBody|null $body The body to parse
-     * @return array The request body as JSON
+     * @return array<mixed, mixed> The request body as JSON
      * @throws RuntimeException Thrown if the body could not be read as JSON
      */
     public function readAsJson(?IBody $body): array

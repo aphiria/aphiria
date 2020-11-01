@@ -14,6 +14,7 @@ namespace Aphiria\Validation\Constraints\Attributes;
 
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
+use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\IObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraints;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
@@ -74,7 +75,7 @@ final class AttributeObjectConstraintsRegistrant implements IObjectConstraintsRe
      * Adds constraints to a map for a reflected method or property
      *
      * @param ReflectionMethod|ReflectionProperty $reflection The reflected method or property
-     * @param array $map The map to add constraints to
+     * @param array<string, IConstraint[]> $map The map to add constraints to
      */
     private static function addConstraints(ReflectionMethod|ReflectionProperty $reflection, array &$map): void
     {

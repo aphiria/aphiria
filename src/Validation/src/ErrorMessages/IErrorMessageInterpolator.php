@@ -21,7 +21,7 @@ interface IErrorMessageInterpolator
      * Interpolates an error message ID along with placeholders into human-readable error messages
      *
      * @param string $errorMessageId The ID of the error message to interpolate
-     * @param array $errorMessagePlaceholders The optional mapping of placeholder names to values
+     * @param array<string, mixed> $errorMessagePlaceholders The optional mapping of placeholder names to values
      * @param string|null $locale The locale to use when interpolating the message, or null if not considering it
      * @return string The interpolated error message
      * @throws ErrorMessageInterpolationException Thrown if the error message could not be interpolated

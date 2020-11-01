@@ -157,7 +157,7 @@ class MultipartBodyTest extends TestCase
     /**
      * Creates a multipart body part for use in tests
      *
-     * @param array $rawHeaders The headers to use
+     * @param array<string, mixed> $rawHeaders The headers to use
      * @param string $body The body to use
      * @return MultipartBodyPart The multipart body part
      */

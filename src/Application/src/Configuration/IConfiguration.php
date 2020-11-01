@@ -23,7 +23,7 @@ interface IConfiguration
      * Gets the array value at the path
      *
      * @param string $path The period-delimited path to the value in the config to get
-     * @return array The value at the path
+     * @return array<mixed, mixed> The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      */

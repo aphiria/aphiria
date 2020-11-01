@@ -108,7 +108,7 @@ trait IntegrationTest
      * Sends a DELETE request
      *
      * @param string|Uri $uri The URI to request
-     * @param array $headers The mapping of header names to values
+     * @param array<string, mixed> $headers The mapping of header names to values
      * @param mixed $body The body of the request
      * @return IResponse The response
      * @throws HttpException Thrown if there was an error sending the request
@@ -129,7 +129,7 @@ trait IntegrationTest
      * Sends a GET request
      *
      * @param string|Uri $uri The URI to request
-     * @param array $headers The mapping of header names to values
+     * @param array<string, mixed> $headers The mapping of header names to values
      * @return IResponse The response
      * @throws HttpException Thrown if there was an error sending the request
      */
@@ -163,7 +163,7 @@ trait IntegrationTest
      * Sends an OPTIONS request
      *
      * @param string|Uri $uri The URI to request
-     * @param array $headers The mapping of header names to values
+     * @param array<string, mixed> $headers The mapping of header names to values
      * @param mixed $body The body of the request
      * @return IResponse The response
      * @throws HttpException Thrown if there was an error sending the request
@@ -184,7 +184,7 @@ trait IntegrationTest
      * Sends a PATCH request
      *
      * @param string|Uri $uri The URI to request
-     * @param array $headers The mapping of header names to values
+     * @param array<string, mixed> $headers The mapping of header names to values
      * @param mixed $body The body of the request
      * @return IResponse The response
      * @throws HttpException Thrown if there was an error sending the request
@@ -205,7 +205,7 @@ trait IntegrationTest
      * Sends a POST request
      *
      * @param string|Uri $uri The URI to request
-     * @param array $headers The mapping of header names to values
+     * @param array<string, mixed> $headers The mapping of header names to values
      * @param mixed $body The body of the request
      * @return IResponse The response
      * @throws HttpException Thrown if there was an error sending the request
@@ -226,7 +226,7 @@ trait IntegrationTest
      * Sends a PUT request
      *
      * @param string|Uri $uri The URI to request
-     * @param array $headers The mapping of header names to values
+     * @param array<string, mixed> $headers The mapping of header names to values
      * @param mixed $body The body of the request
      * @return IResponse The response
      * @throws HttpException Thrown if there was an error sending the request

@@ -68,7 +68,7 @@ final class VariableTrieNode extends TrieNode
      * Gets whether or not a segment matches this node
      *
      * @param string $segmentValue The segment value to match against
-     * @param array $routeVariables The route variables found on a successful match
+     * @param array<string, mixed> $routeVariables The route variables found on a successful match
      * @return bool True if the input segment value matches this node, otherwise false
      * @psalm-suppress PossiblyInvalidPropertyFetch Constraints is always an array - bug
      */

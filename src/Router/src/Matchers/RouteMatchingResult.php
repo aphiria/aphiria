@@ -26,8 +26,8 @@ final class RouteMatchingResult
 
     /**
      * @param Route|null $route The matched route, if one was found, otherwise null
-     * @param array $routeVariables The matched route variables
-     * @param array $allowedMethods he list of allowed routes if a match was found but did not support the input HTTP method
+     * @param array<string, mixed> $routeVariables The matched route variables
+     * @param string[] $allowedMethods he list of allowed routes if a match was found but did not support the input HTTP method
      *      Only populated on an unsuccessful match
      */
     public function __construct(

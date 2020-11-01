@@ -25,7 +25,7 @@ interface IControllerParameterResolver
      *
      * @param ReflectionParameter $reflectionParameter The reflected parameter
      * @param IRequest $request The current request
-     * @param array $routeVariables The list of route variables
+     * @param array<string, mixed> $routeVariables The list of route variables
      * @return mixed The resolved parameter value
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter

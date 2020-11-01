@@ -324,7 +324,7 @@ class Container implements IContainer
      *
      * @template T
      * @param class-string<T> $className The class name to resolve
-     * @param array $primitives The list of constructor primitives
+     * @param mixed[] $primitives The list of constructor primitives
      * @return T The resolved class
      * @throws ResolutionException Thrown if the class could not be resolved
      */
@@ -371,8 +371,8 @@ class Container implements IContainer
      *
      * @param class-string|null $className The name of the class whose parameters we're resolving
      * @param ReflectionParameter[] $unresolvedParameters The list of unresolved parameters
-     * @param array $primitives The list of primitive values
-     * @return array The list of parameters with all the dependencies resolved
+     * @param mixed[] $primitives The list of primitive values
+     * @return mixed[] The list of parameters with all the dependencies resolved
      * @throws ResolutionException Thrown if there was an error resolving the parameters
      * @throws ReflectionException Thrown if there was a reflection exception
      */
@@ -450,7 +450,7 @@ class Container implements IContainer
      *
      * @param ReflectionParameter $parameter The primitive parameter to resolve
      * @param ReflectionType|null $reflectionType The type to resolve the primitive as, or null if there was no type
-     * @param array $primitives The list of primitive values
+     * @param mixed[] $primitives The list of primitive values
      * @return mixed The resolved primitive
      * @throws ResolutionException Thrown if there was an error resolving the primitive
      * @psalm-suppress ArgumentTypeCoercion We're suppressing the fact that the parameter type might be a non-class-string to simplify things

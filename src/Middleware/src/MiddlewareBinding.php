@@ -13,15 +13,15 @@ declare(strict_types=1);
 namespace Aphiria\Middleware;
 
 /**
- * Defines a middleware binding, which is a wrapper around the name of the middleware + any attributes
+ * Defines a middleware binding, which is a wrapper around the name of the middleware + any parameters
  */
 final class MiddlewareBinding
 {
     /**
      * @param class-string $className The name of the middleware class
-     * @param array $attributes The name => value mapping of attributes bound to the middleware
+     * @param array<string, mixed> $parameters The name => value mapping of parameters bound to the middleware
      */
-    public function __construct(public string $className, public array $attributes = [])
+    public function __construct(public string $className, public array $parameters = [])
     {
     }
 }

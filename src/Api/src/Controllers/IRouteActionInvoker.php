@@ -26,7 +26,7 @@ interface IRouteActionInvoker
      *
      * @param callable $routeActionDelegate The route action delegate to invoke
      * @param IRequest $request The current request
-     * @param array $routeVariables The route variables
+     * @param array<string, mixed> $routeVariables The route variables
      * @return IResponse The response
      * @throws Exception Thrown if there was any error processing the request
      */

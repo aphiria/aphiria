@@ -20,7 +20,7 @@ use Aphiria\IO\Streams\Stream;
  */
 class StreamResponseWriter implements IResponseWriter
 {
-    /** @var array The hash table of headers that should not concatenate multiple values */
+    /** @var array<string, true> The hash table of headers that should not concatenate multiple values */
     protected static array $headersToNotConcatenate = ['Set-Cookie' => true, 'Www-Authenticate' => true, 'Proxy-Authenticate' => true];
     /** @var IStream The output stream to write the body to */
     private IStream $outputStream;

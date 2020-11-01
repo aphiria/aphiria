@@ -96,7 +96,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
      * Compiles the host from the AST
      *
      * @param AstNode $node The host AST node
-     * @param array $routeVars The route variables
+     * @param array<string, mixed> $routeVars The route variables
      * @return string The compiled host portion of the URI
      */
     private function compileHost(AstNode $node, array &$routeVars): string
@@ -158,7 +158,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
      * Compiles the path from the AST
      *
      * @param AstNode $node The path AST node
-     * @param array $routeVars The route variables
+     * @param array<string, mixed> $routeVars The route variables
      * @return string The compiled path portion of the URI
      */
     private function compilePath(AstNode $node, array &$routeVars): string

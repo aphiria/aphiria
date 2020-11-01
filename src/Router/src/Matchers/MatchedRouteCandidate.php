@@ -21,7 +21,7 @@ final class MatchedRouteCandidate
 {
     /**
      * @param Route $route The route that was matched
-     * @param array $routeVariables The mapping of route variable names to values
+     * @param array<string, mixed> $routeVariables The mapping of route variable names to values
      */
     public function __construct(public Route $route, public array $routeVariables)
     {

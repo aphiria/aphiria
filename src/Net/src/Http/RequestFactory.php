@@ -76,8 +76,8 @@ class RequestFactory
     private static array $headersToUrlDecode = ['HTTP_COOKIE' => true];
 
     /**
-     * @param array $trustedProxyIPAddresses The list of trusted proxy IP addresses
-     * @param array $trustedHeaderNames The mapping of additional header names to trusted header names
+     * @param string[] $trustedProxyIPAddresses The list of trusted proxy IP addresses
+     * @param array<string, string> $trustedHeaderNames The mapping of additional header names to trusted header names
      */
     public function __construct(protected array $trustedProxyIPAddresses = [], protected array $trustedHeaderNames = [])
     {
@@ -87,7 +87,7 @@ class RequestFactory
     /**
      * Creates a request message from PHP superglobals
      *
-     * @param array $server The server superglobal
+     * @param array<mixed, mixed> $server The server superglobal
      * @return IRequest The created request message
      * @throws InvalidArgumentException Thrown if any of the headers were in an invalid format
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
@@ -112,7 +112,7 @@ class RequestFactory
     /**
      * Creates headers from PHP globals
      *
-     * @param array $server The global server array
+     * @param array<mixed, mixed> $server The global server array
      * @return Headers The request headers
      * @throws InvalidArgumentException Thrown if any of the headers were in an invalid format
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
@@ -142,7 +142,7 @@ class RequestFactory
     /**
      * Creates properties
      *
-     * @param array $server The global server array
+     * @param array<mixed, mixed> $server The global server array
      * @return IDictionary The list of properties
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
@@ -161,7 +161,7 @@ class RequestFactory
     /**
      * Creates a URI from PHP globals
      *
-     * @param array $server The global server array
+     * @param array<mixed, mixed> $server The global server array
      * @return Uri The URI
      * @throws InvalidArgumentException Thrown if the host is malformed
      */
@@ -243,7 +243,7 @@ class RequestFactory
     /**
      * Gets the client IP address
      *
-     * @param array $server The global server array
+     * @param array<mixed, mixed> $server The global server array
      * @return string|null The client IP address if one was found, otherwise null
      */
     protected function getClientIPAddress(array $server): ?string
@@ -287,7 +287,7 @@ class RequestFactory
     /**
      * Gets whether or not we're using a trusted proxy
      *
-     * @param array $server The global server array
+     * @param array<mixed, mixed> $server The global server array
      * @return bool True if using a trusted proxy, otherwise false
      */
     protected function isUsingTrustedProxy(array $server): bool

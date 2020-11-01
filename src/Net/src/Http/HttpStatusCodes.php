@@ -135,7 +135,7 @@ final class HttpStatusCodes
     public const NOT_EXTENDED = 510;
     /** @const The client needs to authenticate to gain network access */
     public const NETWORK_AUTHENTICATION_REQUIRED = 511;
-    /** @var array Maps HTTP status codes to their default reason phrases */
+    /** @var array<int, string> Maps HTTP status codes to their default reason phrases */
     private static array $defaultReasonPhrases = [
         self::CONTINUE => 'Continue',
         self::SWITCHING_PROTOCOL => 'Switching Protocol',

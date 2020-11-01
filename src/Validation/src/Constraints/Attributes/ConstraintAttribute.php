@@ -17,7 +17,7 @@ use Attribute;
 /**
  * Defines the base class for constraint attributes to implement
  */
-#[Attribute(Attribute::TARGET_METHOD|Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_PROPERTY)]
 abstract class ConstraintAttribute implements IConstraintAttribute
 {
     /**

@@ -23,7 +23,7 @@ abstract class ParameterizedMiddleware implements IMiddleware
     /**
      * Sets the parameters
      *
-     * @param array $parameters The parameters to set
+     * @param array<string, mixed> $parameters The parameters to set
      */
     public function setParameters(array $parameters): void
     {

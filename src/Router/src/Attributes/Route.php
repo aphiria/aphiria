@@ -26,7 +26,7 @@ class Route
      * @param string|null $host The host of the route, or null if matching any host
      * @param string|null $name The optional name of the route
      * @param bool $isHttpsOnly Whether or not this is HTTPS only
-     * @param array $parameters The custom parameters for the route
+     * @param array<string, mixed> $parameters The custom parameters for the route
      */
     public function __construct(
         public array $httpMethods,

@@ -17,7 +17,7 @@ use Attribute;
 /**
  * Defines the attribute for command options
  */
-#[Attribute(Attribute::TARGET_CLASS|Attribute::IS_REPEATABLE)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 final class Option
 {
     /**

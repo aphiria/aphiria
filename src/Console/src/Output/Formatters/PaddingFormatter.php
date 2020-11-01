@@ -27,7 +27,7 @@ class PaddingFormatter
     /**
      * Formats rows of text so that each column is the same width
      *
-     * @param array $rows The rows to pad
+     * @param array<int, mixed> $rows The rows to pad
      * @param callable(array<mixed>): string $callback The callback that returns a formatted row of text
      * @return string A list of formatted rows
      */
@@ -72,8 +72,8 @@ class PaddingFormatter
     /**
      * Normalizes the number of columns in each row
      *
-     * @param array $rows The rows to equalize
-     * @return array The max length of each column
+     * @param array<int, array> $rows The rows to equalize
+     * @return array<int, int> The max length of each column
      */
     public function normalizeColumns(array &$rows): array
     {

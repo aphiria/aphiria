@@ -50,7 +50,7 @@ interface IImmutableList extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Gets all of the values as an array
      *
-     * @return array All of the values
+     * @return mixed[] All of the values
      */
     public function toArray(): array;
 }

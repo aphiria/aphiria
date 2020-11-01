@@ -22,7 +22,7 @@ use Aphiria\Net\Uri;
  */
 class UriParser
 {
-    /** @var array The mapping of raw query strings to their parsed collections */
+    /** @var array<string, IImmutableDictionary> The mapping of raw query strings to their parsed collections */
     private array $parsedQueryStringCache = [];
 
     /**

@@ -30,7 +30,7 @@ class Session implements ISession
     private int|string $id = '';
     /** @var IIdGenerator The Id generator to use */
     private IIdGenerator $idGenerator;
-    /** @var array The mapping of variable names to values */
+    /** @var array<string, mixed> The mapping of variable names to values */
     private array $vars = [];
 
     /**
@@ -214,7 +214,7 @@ class Session implements ISession
     /**
      * Gets the new flash keys array
      *
-     * @return array The list of new flashed keys
+     * @return string[] The list of new flashed keys
      */
     protected function getNewFlashKeys(): array
     {
@@ -224,7 +224,7 @@ class Session implements ISession
     /**
      * Gets the stale flash keys array
      *
-     * @return array The list of stale flashed keys
+     * @return string[] The list of stale flashed keys
      */
     protected function getStaleFlashKeys(): array
     {

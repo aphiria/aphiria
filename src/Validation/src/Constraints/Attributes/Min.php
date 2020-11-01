@@ -18,7 +18,7 @@ use Attribute;
 /**
  * Defines the min constraint attribute
  */
-#[Attribute(Attribute::TARGET_METHOD|Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_PROPERTY)]
 final class Min extends ConstraintAttribute
 {
     /**

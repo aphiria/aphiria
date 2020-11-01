@@ -223,7 +223,7 @@ class RequestParser
      * Attempts to read the request body as JSON
      *
      * @param IRequest $request The request to parse
-     * @return array The request body as JSON
+     * @return array<mixed, mixed> The request body as JSON
      * @throws RuntimeException Thrown if the body could not be read as JSON
      */
     public function readAsJson(IRequest $request): array

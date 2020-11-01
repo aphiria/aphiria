@@ -243,7 +243,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
     /**
      * Gets the base config that will be used for all tests
      *
-     * @return array The base config that will be used for all tests
+     * @return array<string, mixed> The base config that will be used for all tests
      */
     private static function getBaseConfig(): array
     {

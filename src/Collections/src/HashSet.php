@@ -21,13 +21,13 @@ use Traversable;
  */
 class HashSet implements ISet
 {
-    /** @var array The set of values */
+    /** @var array<string, mixed> The set of values */
     protected array $values = [];
     /** @var KeyHasher The key hasher to use */
     private KeyHasher $keyHasher;
 
     /**
-     * @param array $values The set of values
+     * @param mixed[] $values The set of values
      */
     public function __construct(array $values = [])
     {
@@ -116,6 +116,7 @@ class HashSet implements ISet
      */
     public function sort(callable $comparer): void
     {
+        /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
         usort($this->values, $comparer);
     }
 

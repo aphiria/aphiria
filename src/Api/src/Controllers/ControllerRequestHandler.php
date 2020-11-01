@@ -33,7 +33,7 @@ final class ControllerRequestHandler implements IRequestHandler
     /**
      * @param Controller $controller The controller
      * @param callable $routeActionDelegate The route action delegate
-     * @param array $routeVariables The route variables
+     * @param array<string, mixed> $routeVariables The route variables
      * @param IContentNegotiator|null $contentNegotiator The content negotiator, or null if using the default negotiator
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker to use
      */

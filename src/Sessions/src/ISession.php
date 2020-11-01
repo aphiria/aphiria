@@ -64,7 +64,7 @@ interface ISession extends ArrayAccess
     /**
      * Gets the mapping of all session variable names to their values
      *
-     * @return array The list of all session variables
+     * @return array<string, mixed> The mapping of all session variables
      */
     public function getAll(): array;
 
@@ -105,7 +105,7 @@ interface ISession extends ArrayAccess
      * This will merge the variables into the already-existing variables
      * If a variable already exists, its value will be overwritten
      *
-     * @param array $variables The name => value pairings of session variables
+     * @param array<string, mixed> $variables The name => value pairings of session variables
      */
     public function setMany(array $variables): void;
 }

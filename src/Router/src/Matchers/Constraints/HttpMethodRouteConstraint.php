@@ -19,7 +19,7 @@ use Aphiria\Routing\Matchers\MatchedRouteCandidate;
  */
 final class HttpMethodRouteConstraint implements IRouteConstraint
 {
-    /** @var array The hash map of allowed methods */
+    /** @var array<string, true> The hash map of allowed methods */
     private array $allowedMethods = [];
 
     /**
@@ -44,7 +44,7 @@ final class HttpMethodRouteConstraint implements IRouteConstraint
     /**
      * Gets the list of allowed methods
      *
-     * @return array The list of allowed methods
+     * @return string[] The list of allowed methods
      */
     public function getAllowedMethods(): array
     {

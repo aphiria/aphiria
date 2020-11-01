@@ -19,7 +19,7 @@ use OutOfBoundsException;
  */
 final class ArraySessionDriver implements ISessionDriver
 {
-    /** @var array The session data */
+    /** @var array<mixed, mixed> The session data */
     private array $sessionData = [];
 
     /**

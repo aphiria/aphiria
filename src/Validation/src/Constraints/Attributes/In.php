@@ -18,12 +18,12 @@ use Attribute;
 /**
  * Defines the in constraint attribute
  */
-#[Attribute(Attribute::TARGET_METHOD|Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_PROPERTY)]
 final class In extends ConstraintAttribute
 {
     /**
      * @inheritdoc
-     * @param array $values The values to check
+     * @param mixed[] $values The values to check
      */
     public function __construct(public array $values, string $errorMessageId = null)
     {

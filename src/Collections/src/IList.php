@@ -32,7 +32,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Adds a range of values
      *
-     * @param array $values The values to add
+     * @param mixed[] $values The values to add
      */
     public function addRange(array $values): void;
 
@@ -77,7 +77,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Intersects the values of the input array with the values already in the list
      *
-     * @param array $values The values to intersect with
+     * @param mixed[] $values The values to intersect with
      */
     public function intersect(array $values): void;
 
@@ -110,14 +110,14 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Gets all of the values as an array
      *
-     * @return array All of the values
+     * @return mixed[] All of the values
      */
     public function toArray(): array;
 
     /**
      * Unions the values of the input array with the values already in the list
      *
-     * @param array $values The values to union with
+     * @param mixed[] $values The values to union with
      */
     public function union(array $values): void;
 }

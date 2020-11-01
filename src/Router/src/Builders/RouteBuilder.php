@@ -28,7 +28,7 @@ class RouteBuilder
 {
     /** @var RouteAction|null ?RouteAction The action the route takes */
     private ?RouteAction $action = null;
-    /** @var array The mapping of custom route parameter names => values */
+    /** @var array<string, mixed> The mapping of custom route parameter names => values */
     private array $parameters = [];
     /** @var MiddlewareBinding[] The list of middleware bindings on this route */
     private array $middlewareBindings = [];
@@ -38,7 +38,7 @@ class RouteBuilder
     private array $constraints = [];
 
     /**
-     * @param array $httpMethods The list of HTTP methods the route matches on
+     * @param string[] $httpMethods The list of HTTP methods the route matches on
      * @param UriTemplate $uriTemplate The URI template the route matches on
      */
     public function __construct(array $httpMethods, private UriTemplate $uriTemplate)
@@ -139,7 +139,7 @@ class RouteBuilder
      * Binds many custom parameters to the route
      * This is useful for custom route constraint matching
      *
-     * @param array $parameters The mapping of custom parameter names => values
+     * @param array<string, mixed> $parameters The mapping of custom parameter names => values
      * @return static For chaining
      */
     public function withManyParameters(array $parameters): static
@@ -153,7 +153,7 @@ class RouteBuilder
      * Binds a single middleware class to the route
      *
      * @param class-string $middlewareClassName The name of the middleware class to bind
-     * @param array $middlewareParameters Any parameters this method relies on
+     * @param array<string, mixed> $middlewareParameters Any parameters this method relies on
      * @return static For chaining
      */
     public function withMiddleware(string $middlewareClassName, array $middlewareParameters = []): static

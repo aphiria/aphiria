@@ -19,8 +19,8 @@ final class Input
 {
     /**
      * @param string $commandName The name of the command that was invoked
-     * @param array $arguments The mapping of argument names to values
-     * @param array $options The option names to values
+     * @param array<string, mixed> $arguments The mapping of argument names to values
+     * @param array<string, mixed> $options The option names to values
      */
     public function __construct(public string $commandName, public array $arguments, public array $options)
     {

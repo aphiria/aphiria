@@ -24,6 +24,6 @@ class MiddlewareBindingTest extends TestCase
         };
         $middlewareBinding = new MiddlewareBinding($middleware::class, $expectedAttributes);
         $this->assertSame($middleware::class, $middlewareBinding->className);
-        $this->assertSame($expectedAttributes, $middlewareBinding->attributes);
+        $this->assertSame($expectedAttributes, $middlewareBinding->parameters);
     }
 }

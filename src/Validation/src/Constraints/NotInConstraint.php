@@ -22,7 +22,7 @@ class NotInConstraint extends Constraint
 
     /**
      * @inheritdoc
-     * @param array $values The values to check
+     * @param mixed[] $values The values to check
      */
     public function __construct(private array $values, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {

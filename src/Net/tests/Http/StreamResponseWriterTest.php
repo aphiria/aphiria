@@ -52,7 +52,7 @@ class StreamResponseWriterTest extends TestCase
     /**
      * Gets a list of headers that should be not be concatenated
      *
-     * @return array The list of parameters to use
+     * @return array<array<mixed>> The list of parameters to use
      */
     public function getHeadersThatShouldNotBeConcatenated(): array
     {
@@ -76,7 +76,7 @@ class StreamResponseWriterTest extends TestCase
 
     /**
      * @param string $headerName The name of the header
-     * @param array $headerValues The list of header values
+     * @param mixed[] $headerValues The list of header values
      * @dataProvider getHeadersThatShouldNotBeConcatenated
      */
     public function testWritingResponseDoesNotConcatenateSelectHeaders(string $headerName, array $headerValues): void

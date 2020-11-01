@@ -20,7 +20,7 @@ class ClassContainerBinding implements IContainerBinding
 {
     /**
      * @param class-string $concreteClass The name of the concrete class
-     * @param array $constructorPrimitives The list of constructor primitives
+     * @param mixed[] $constructorPrimitives The list of constructor primitives
      * @param bool $resolveAsSingleton Whether or not to resolve as a singleton
      */
     public function __construct(
@@ -43,7 +43,7 @@ class ClassContainerBinding implements IContainerBinding
     /**
      * Gets the list of constructor primitives
      *
-     * @return array The list of constructor primitives
+     * @return mixed[] The list of constructor primitives
      */
     public function getConstructorPrimitives(): array
     {

@@ -64,11 +64,11 @@ final class TrieRouteMatcher implements IRouteMatcher
      * match candidates didn't meet constraints, hence saving us unnecessary descents down the trie.
      *
      * @param TrieNode $node The current node
-     * @param array $segments The list of URI segments to match
+     * @param string[] $segments The list of URI segments to match
      * @param int $segmentCount The length of the URI segments
      * @param int $segmentIter The current index of segments
-     * @param array $hostSegments The list of URI host segments, which will be traversed if there's a host trie
-     * @param array $routeVars The mapping of route variable names to values
+     * @param string[] $hostSegments The list of URI host segments, which will be traversed if there's a host trie
+     * @param array<string, mixed> $routeVars The mapping of route variable names to values
      * @return Generator<int, MatchedRouteCandidate> The list of matched route candidates
      */
     private static function getMatchCandidates(

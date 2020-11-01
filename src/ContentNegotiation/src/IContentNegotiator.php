@@ -24,7 +24,7 @@ interface IContentNegotiator
      * Gets the list of acceptable response media types for a particular type
      *
      * @param string $type The type to check for (best to use TypeResolver::resolveType())
-     * @return array The list of acceptable media types
+     * @return string[] The list of acceptable media types
      */
     public function getAcceptableResponseMediaTypes(string $type): array;
 

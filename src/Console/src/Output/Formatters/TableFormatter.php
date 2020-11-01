@@ -39,8 +39,8 @@ class TableFormatter
     /**
      * Formats the table into a string
      *
-     * @param array $rows The list of rows
-     * @param array $headers The list of headers
+     * @param array<int, mixed> $rows The list of rows
+     * @param mixed[] $headers The list of headers
      * @return string The formatted table
      */
     public function format(array $rows, array $headers = []): string

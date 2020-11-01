@@ -19,7 +19,7 @@ use InvalidArgumentException;
 /**
  * Defines the each constraint attribute
  */
-#[Attribute(Attribute::TARGET_METHOD|Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_PROPERTY)]
 final class Each extends ConstraintAttribute
 {
     /**
