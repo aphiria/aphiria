@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
+use Aphiria\Collections\KeyValuePair;
 use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
 
@@ -70,6 +71,7 @@ class StreamResponseWriter implements IResponseWriter
 
         $this->header($startLine);
 
+        /** @var KeyValuePair $kvp */
         foreach ($response->getHeaders() as $kvp) {
             $headerName = $kvp->getKey();
 

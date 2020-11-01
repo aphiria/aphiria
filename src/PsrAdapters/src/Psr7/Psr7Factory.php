@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\PsrAdapters\Psr7;
 
+use Aphiria\Collections\KeyValuePair;
 use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
@@ -177,6 +178,7 @@ class Psr7Factory implements IPsr7Factory
             (string)$aphiriaRequest->getUri()
         );
 
+        /** @var KeyValuePair $kvp */
         foreach ($aphiriaRequest->getHeaders() as $kvp) {
             $psr7Request = $psr7Request->withHeader($kvp->getKey(), $kvp->getValue());
         }
@@ -188,10 +190,12 @@ class Psr7Factory implements IPsr7Factory
         $psr7Request = $psr7Request->withUploadedFiles($this->createPsr7UploadedFiles($aphiriaRequest));
         $psr7CookieParams = $psr7QueryParams = [];
 
+        /** @var KeyValuePair $kvp */
         foreach ($this->aphiriaRequestParser->parseCookies($aphiriaRequest) as $kvp) {
             $psr7CookieParams[$kvp->getKey()] = $kvp->getValue();
         }
 
+        /** @var KeyValuePair $kvp */
         foreach ($this->aphiriaRequestParser->parseQueryString($aphiriaRequest) as $kvp) {
             $psr7QueryParams[$kvp->getKey()] = $kvp->getValue();
         }
@@ -205,6 +209,7 @@ class Psr7Factory implements IPsr7Factory
             $psr7Request = $psr7Request->withParsedBody($parsedBody);
         }
 
+        /** @var KeyValuePair $kvp */
         foreach ($aphiriaRequest->getProperties() as $kvp) {
             $psr7Request = $psr7Request->withAttribute($kvp->getKey(), $kvp->getValue());
         }
@@ -223,6 +228,7 @@ class Psr7Factory implements IPsr7Factory
         )
             ->withProtocolVersion($aphiriaResponse->getProtocolVersion());
 
+        /** @var KeyValuePair $kvp */
         foreach ($aphiriaResponse->getHeaders() as $kvp) {
             $psr7Response = $psr7Response->withHeader($kvp->getKey(), $kvp->getValue());
         }
