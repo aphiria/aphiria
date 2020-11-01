@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
+use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
 
@@ -40,6 +41,7 @@ class ResponseHeaderParser extends HeaderParser
             $name = $value = $maxAge = $path = $domain = $sameSite = null;
             $isSecure = $isHttpOnly = false;
 
+            /** @var KeyValuePair $kvp */
             foreach ($this->parseParameters($headers, 'Set-Cookie', $i) as $kvp) {
                 switch ($kvp->getKey()) {
                     case 'Max-Age':

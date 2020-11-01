@@ -355,11 +355,13 @@ class Container implements IContainer
 
             if ($constructor === null) {
                 // No constructor, so instantiating is easy
+                /** @psalm-suppress MixedMethodCall We're purposely instantiating this class */
                 return new $className();
             }
 
             $constructorParameters = $this->resolveParameters($className, $parameters ?? [], $primitives);
 
+            /** @psalm-suppress MixedMethodCall We're purposely instantiating this class */
             return new $className(...$constructorParameters);
         } catch (ReflectionException $ex) {
             throw new ResolutionException($className, $this->currentContext, "Failed to resolve class $className", 0, $ex);

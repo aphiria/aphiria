@@ -55,7 +55,6 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
     {
         $routeBuilders = new RouteCollectionBuilder();
 
-        /** @var class-string $controllerClass */
         foreach ($this->typeFinder->findAllClasses($this->paths, true) as $controllerClass) {
             $reflectionController = new ReflectionClass($controllerClass);
 
@@ -109,6 +108,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
         foreach ($controller->getAttributes(RouteConstraint::class) as $routeConstraintAttribute) {
             $routeConstraintAttributeInstance = $routeConstraintAttribute->newInstance();
             $routeConstraintClassName = $routeConstraintAttributeInstance->className;
+            /** @psalm-suppress MixedMethodCall We're purposely instantiating the route constraint class */
             $routeConstraints[] = new $routeConstraintClassName(...$routeConstraintAttributeInstance->constructorParameters);
         }
 
@@ -162,6 +162,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
             foreach ($method->getAttributes(RouteConstraint::class) as $routeConstraintAttribute) {
                 $routeConstraintAttributeInstance = $routeConstraintAttribute->newInstance();
                 $routeConstraintClassName = $routeConstraintAttributeInstance->className;
+                /** @psalm-suppress MixedMethodCall We're purposely instantiating the route constraint class */
                 $routeConstraints[] = new $routeConstraintClassName(...$routeConstraintAttributeInstance->constructorParameters);
             }
 
