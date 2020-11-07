@@ -278,6 +278,7 @@ final class Validator implements IValidator
         }
 
         $reflectionMethod->setAccessible(true);
+        /** @psalm-suppress MixedAssignment We do not know the return type */
         $methodValue = $reflectionMethod->invoke($object);
         $allConstraintsPassed = true;
 
@@ -378,6 +379,7 @@ final class Validator implements IValidator
         }
 
         $reflectionProperty->setAccessible(true);
+        /** @psalm-suppress MixedAssignment We do not know the return type */
         $propertyValue = $reflectionProperty->getValue($object);
         $allConstraintsPassed = true;
 

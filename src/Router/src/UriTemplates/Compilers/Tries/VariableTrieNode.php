@@ -103,7 +103,7 @@ final class VariableTrieNode extends TrieNode
                     }
                 }
 
-                $routeVariablesCopy[$part->name] = $matches[$part->name];
+                $routeVariablesCopy[$part->name] = (string)$matches[$part->name];
             }
         }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="2"
+    errorLevel="1"
     resolveFromConfigFile="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
@@ -20,6 +20,24 @@
                 <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php" />
             </errorLevel>
         </InaccessibleMethod>
+        <MixedArgument>
+            <errorLevel type="suppress">
+                <!-- We don't care about mixed arguments in tests -->
+                <directory name="src/**/tests" />
+            </errorLevel>
+        </MixedArgument>
+        <MixedArrayAssignment>
+            <errorLevel type="suppress">
+                <!-- We don't care about mixed array assignments in tests -->
+                <directory name="src/**/tests" />
+            </errorLevel>
+        </MixedArrayAssignment>
+        <MixedAssignment>
+            <errorLevel type="suppress">
+                <!-- We don't care about mixed assignments in tests -->
+                <directory name="src/**/tests" />
+            </errorLevel>
+        </MixedAssignment>
         <MixedMethodCall>
             <errorLevel type="suppress">
                 <!-- Psalm gets tripped up on mocked methods -->

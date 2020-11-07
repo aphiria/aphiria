@@ -26,7 +26,7 @@ final class AstNode
      * @param string $type The node type
      * @param mixed $value The value of the node
      */
-    public function __construct(public string $type, public mixed $value = null)
+    public function __construct(public string $type, public ?array $value = null)
     {
     }
 
