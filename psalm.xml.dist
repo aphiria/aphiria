@@ -24,6 +24,13 @@
             <errorLevel type="suppress">
                 <!-- We don't care about mixed arguments in tests -->
                 <directory name="src/**/tests" />
+                <!-- Collections are dealing with lots of mixed types -->
+                <file name="src/Collections/src/ArrayList.php" />
+                <file name="src/Collections/src/HashSet.php" />
+                <file name="src/Collections/src/HashTable.php" />
+                <file name="src/Collections/src/ImmutableArrayList.php" />
+                <file name="src/Collections/src/ImmutableHashSet.php" />
+                <file name="src/Collections/src/ImmutableHashTable.php" />
             </errorLevel>
         </MixedArgument>
         <MixedArrayAssignment>
