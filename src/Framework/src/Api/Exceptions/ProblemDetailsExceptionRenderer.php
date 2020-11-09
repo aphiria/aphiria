@@ -74,7 +74,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
         HttpStatusCodes::GATEWAY_TIMEOUT => 'https://tools.ietf.org/html/rfc7231#section-6.6.5',
         HttpStatusCodes::HTTP_VERSION_NOT_SUPPORTED => 'https://tools.ietf.org/html/rfc7231#section-6.6.6'
     ];
-    /** @var array<class-string, Closure> The mapping of exception types to problem details factories */
+    /** @var array<class-string, Closure(Exception): ProblemDetails> The mapping of exception types to problem details factories */
     protected array $exceptionTypesToProblemDetailsFactories = [];
     /** @var IResponseWriter What is used to write the response */
     protected IResponseWriter $responseWriter;

@@ -50,7 +50,7 @@ interface IOutput
     /**
      * Writes to output
      *
-     * @param string|array $messages The message or messages to display
+     * @param string|string[] $messages The message or messages to display
      * @throws RuntimeException Thrown if there was an issue writing the messages
      */
     public function write(string|array $messages): void;
@@ -58,7 +58,7 @@ interface IOutput
     /**
      * Writes to output with a newline character at the end
      *
-     * @param string|array $messages The message or messages to display
+     * @param string|string[] $messages The message or messages to display
      * @throws RuntimeException Thrown if there was an issue writing the messages
      */
     public function writeln(string|array $messages): void;

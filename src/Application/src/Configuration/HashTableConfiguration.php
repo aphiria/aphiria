@@ -80,6 +80,10 @@ class HashTableConfiguration implements IConfiguration
                 throw new MissingConfigurationValueException($fullPathToThisPart);
             }
 
+            /**
+             * @psalm-suppress MixedAssignment We are purposely adding mixed values
+             * @psalm-suppress MixedArrayAccess We are descending into an array until we hit our path
+             */
             $value = $value[$pathPart];
         }
 
@@ -172,6 +176,7 @@ class HashTableConfiguration implements IConfiguration
     public function tryGetValue(string $path, &$value): bool
     {
         try {
+            /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
             $value = $this->getValue($path);
 
             return true;

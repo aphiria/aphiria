@@ -30,6 +30,7 @@ class ImmutableArrayList implements IImmutableList
      */
     public function __construct(array $values)
     {
+        /** @psalm-suppress MixedAssignment Value is intentionally mixed */
         foreach ($values as $value) {
             $this->values[] = $value;
         }

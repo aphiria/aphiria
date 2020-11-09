@@ -96,7 +96,7 @@ class ImmutableHashTable implements IImmutableDictionary
      */
     public function getIterator(): Traversable
     {
-        return new ArrayIterator(array_values($this->hashKeysToKvps));
+        return new ArrayIterator(\array_values($this->hashKeysToKvps));
     }
 
     /**
@@ -107,6 +107,7 @@ class ImmutableHashTable implements IImmutableDictionary
         $keys = [];
 
         foreach ($this->hashKeysToKvps as $kvp) {
+            /** @psalm-suppress MixedAssignment Value is intentionally mixed */
             $keys[] = $kvp->getKey();
         }
 
@@ -121,6 +122,7 @@ class ImmutableHashTable implements IImmutableDictionary
         $values = [];
 
         foreach ($this->hashKeysToKvps as $kvp) {
+            /** @psalm-suppress MixedAssignment Value is intentionally mixed */
             $values[] = $kvp->getValue();
         }
 
@@ -169,7 +171,7 @@ class ImmutableHashTable implements IImmutableDictionary
      */
     public function toArray(): array
     {
-        return array_values($this->hashKeysToKvps);
+        return \array_values($this->hashKeysToKvps);
     }
 
     /**
@@ -178,6 +180,7 @@ class ImmutableHashTable implements IImmutableDictionary
     public function tryGet(mixed $key, mixed &$value): bool
     {
         try {
+            /** @psalm-suppress MixedAssignment Value is intentionally mixed */
             $value = $this->get($key);
 
             return true;

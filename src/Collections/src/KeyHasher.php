@@ -56,6 +56,6 @@ class KeyHasher
         }
 
         // As a last-ditch effort, try to convert the value to a string
-        return '__aphiria:u' . $value;
+        return "__aphiria:u$value";
     }
 }

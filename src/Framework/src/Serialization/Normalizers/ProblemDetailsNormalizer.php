@@ -35,11 +35,13 @@ final class ProblemDetailsNormalizer extends ObjectNormalizer
 
         if (\array_key_exists('extensions', $normalizedProblemDetails)) {
             // Remove the extensions in the off chance that there's an extension named 'extensions'
+            /** @var array<string, mixed> $extensions */
             $extensions = $normalizedProblemDetails['extensions'];
             unset($normalizedProblemDetails['extensions']);
 
             // Extensions could technically be null
             if (\is_array($extensions)) {
+                /** @psalm-suppress MixedAssignment We're purposely setting the value to a mixed type */
                 foreach ($extensions as $name => $value) {
                     $normalizedProblemDetails[$name] = $value;
                 }

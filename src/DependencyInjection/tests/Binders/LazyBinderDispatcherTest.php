@@ -103,12 +103,10 @@ class LazyBinderDispatcherTest extends TestCase
         $this->createDispatcher()->dispatch([$binder], $this->container);
         /** @var FactoryContainerBinding $lazyBinding */
         $lazyBinding = $this->container->for(new TargetedContext($target::class), fn (IContainer $container): mixed => $container->getBinding(IFoo::class));
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to check the type at runtime */
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
         $this->assertInstanceOf(Foo::class, ($lazyBinding->getFactory())());
         /** @var InstanceContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->for(new TargetedContext($target::class), fn (IContainer $container): mixed => $container->getBinding(IFoo::class));
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to check the type at runtime */
         $this->assertInstanceOf(InstanceContainerBinding::class, $bindingFromBinder);
         $this->assertInstanceOf(Foo::class, $bindingFromBinder->getInstance());
     }
@@ -124,12 +122,10 @@ class LazyBinderDispatcherTest extends TestCase
         $this->createDispatcher()->dispatch([$binder], $this->container);
         /** @var FactoryContainerBinding $lazyBinding */
         $lazyBinding = $this->container->getBinding(IFoo::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to check the type at runtime */
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
         $this->assertInstanceOf(Foo::class, ($lazyBinding->getFactory())());
         /** @var InstanceContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->getBinding(IFoo::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to check the type at runtime */
         $this->assertInstanceOf(InstanceContainerBinding::class, $bindingFromBinder);
         $this->assertInstanceOf(Foo::class, $bindingFromBinder->getInstance());
     }
@@ -192,12 +188,10 @@ class LazyBinderDispatcherTest extends TestCase
         $this->createDispatcher()->dispatch([$binder], $this->container);
         /** @var FactoryContainerBinding $lazyBinding */
         $lazyBinding = $this->container->getBinding(IFoo::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to check the type at runtime */
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
         $this->assertInstanceOf(Foo::class, ($lazyBinding->getFactory())());
         /** @var ClassContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->getBinding(IFoo::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to check the type at runtime */
         $this->assertInstanceOf(ClassContainerBinding::class, $bindingFromBinder);
         $this->assertSame(Foo::class, $bindingFromBinder->getConcreteClass());
     }
@@ -213,12 +207,10 @@ class LazyBinderDispatcherTest extends TestCase
         $this->createDispatcher()->dispatch([$binder], $this->container);
         /** @var FactoryContainerBinding $lazyBinding */
         $lazyBinding = $this->container->getBinding(IFoo::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to check the type at runtime */
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
         $this->assertInstanceOf(Foo::class, ($lazyBinding->getFactory())());
         /** @var ClassContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->getBinding(IFoo::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to check the type at runtime */
         $this->assertInstanceOf(ClassContainerBinding::class, $bindingFromBinder);
         $this->assertSame(Foo::class, $bindingFromBinder->getConcreteClass());
     }

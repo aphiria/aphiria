@@ -123,6 +123,10 @@ class MultipleChoice extends Question
     {
         $selectedChoices = [];
 
+        /**
+         * @psalm-suppress MixedAssignment We're purposely looping through mixed values
+         * @psalm-suppress MixedArgument We're purposely checking if the answer is an array key in choices
+         */
         foreach ($answers as $answer) {
             if (\array_key_exists($answer, $this->choices)) {
                 $selectedChoices[] = $this->choices[$answer];
@@ -143,8 +147,11 @@ class MultipleChoice extends Question
     {
         $selectedChoices = [];
 
+        /**
+         * @psalm-suppress MixedAssignment We're purposely looping through mixed values
+         */
         foreach ($answers as $answer) {
-            if (!ctype_digit($answer)) {
+            if (!\ctype_digit((string)$answer)) {
                 throw new InvalidArgumentException('Answer is not an integer');
             }
 

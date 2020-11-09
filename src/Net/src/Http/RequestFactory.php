@@ -26,7 +26,7 @@ class RequestFactory
 {
     /** @const The name of the request property that stores the client IP address */
     private const CLIENT_IP_ADDRESS_PROPERTY_NAME = 'CLIENT_IP_ADDRESS';
-    /** @var array<string, bool> The list of HTTP request headers that don't begin with "HTTP_" */
+    /** @var array<string, true> The list of HTTP request headers that don't begin with "HTTP_" */
     private static array $specialCaseHeaders = [
         'AUTH_TYPE' => true,
         'CONTENT_LENGTH' => true,
@@ -44,7 +44,7 @@ class RequestFactory
         'HTTP_CLIENT_PORT' => 'HTTP_X_FORWARDED_PORT',
         'HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO'
     ];
-    /** @var array<string, bool> The list of HTTP request headers that permit multiple values */
+    /** @var array<string, true> The list of HTTP request headers that permit multiple values */
     private static array $headersThatPermitMultipleValues = [
         'HTTP_ACCEPT' => true,
         'HTTP_ACCEPT_CHARSET' => true,
@@ -72,7 +72,7 @@ class RequestFactory
         'HTTP_WWW_AUTHENTICATE' => true,
         'HTTP_X_FORWARDED_FOR' => true
     ];
-    /** @var array<string, bool> The list of header names whose values should be URL-decoded */
+    /** @var array<string, true> The list of header names whose values should be URL-decoded */
     private static array $headersToUrlDecode = ['HTTP_COOKIE' => true];
 
     /**
@@ -87,18 +87,18 @@ class RequestFactory
     /**
      * Creates a request message from PHP superglobals
      *
-     * @param array<mixed, mixed> $server The server superglobal
+     * @param array<string, mixed> $server The server superglobal
      * @return IRequest The created request message
      * @throws InvalidArgumentException Thrown if any of the headers were in an invalid format
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
     public function createRequestFromSuperglobals(array $server): IRequest
     {
-        $method = $server['REQUEST_METHOD'] ?? 'GET';
+        $method = (string)($server['REQUEST_METHOD'] ?? 'GET');
 
         // Permit the overriding of the request method for POST requests
         if ($method === 'POST' && isset($server['X-HTTP-METHOD-OVERRIDE'])) {
-            $method = $server['X-HTTP-METHOD-OVERRIDE'];
+            $method = (string)$server['X-HTTP-METHOD-OVERRIDE'];
         }
 
         $uri = $this->createUriFromSuperglobals($server);
@@ -112,7 +112,7 @@ class RequestFactory
     /**
      * Creates headers from PHP globals
      *
-     * @param array<mixed, mixed> $server The global server array
+     * @param array<string, mixed> $server The global server array
      * @return Headers The request headers
      * @throws InvalidArgumentException Thrown if any of the headers were in an invalid format
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
@@ -121,11 +121,12 @@ class RequestFactory
     {
         $headers = new Headers();
 
+        /** @psalm-suppress MixedAssignment The values could legitimately be mixed */
         foreach ($server as $name => $values) {
             // If this header supports multiple values and has unquoted string delimiters...
             $explodedValues = [];
             $containsMultipleValues = isset(self::$headersThatPermitMultipleValues[$name])
-                && \count($explodedValues = \preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', $values)) > 1;
+                && \count($explodedValues = \preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', (string)$values)) > 1;
 
             if ($containsMultipleValues) {
                 foreach ($explodedValues as $value) {
@@ -142,7 +143,7 @@ class RequestFactory
     /**
      * Creates properties
      *
-     * @param array<mixed, mixed> $server The global server array
+     * @param array<string, mixed> $server The global server array
      * @return IDictionary The list of properties
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
@@ -161,7 +162,7 @@ class RequestFactory
     /**
      * Creates a URI from PHP globals
      *
-     * @param array<mixed, mixed> $server The global server array
+     * @param array<string, mixed> $server The global server array
      * @return Uri The URI
      * @throws InvalidArgumentException Thrown if the host is malformed
      */
@@ -170,7 +171,7 @@ class RequestFactory
         $isUsingTrustedProxy = $this->isUsingTrustedProxy($server);
 
         if ($isUsingTrustedProxy && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']])) {
-            $protoString = $server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']];
+            $protoString = (string)$server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']];
             $protoArray = \explode(',', $protoString);
             /** @psalm-suppress RedundantCondition Psalm is incorrectly marking the count as redundant - bug */
             $isSecure = \count($protoArray) > 0 && \in_array(\strtolower($protoArray[0]), ['https', 'ssl', 'on'], true);
@@ -178,9 +179,11 @@ class RequestFactory
             $isSecure = isset($server['HTTPS']) && $server['HTTPS'] !== 'off';
         }
 
-        $rawProtocol = isset($server['SERVER_PROTOCOL']) ? \strtolower($server['SERVER_PROTOCOL']) : 'http/1.1';
+        $rawProtocol = isset($server['SERVER_PROTOCOL']) ? \strtolower((string)$server['SERVER_PROTOCOL']) : 'http/1.1';
         $scheme = \substr($rawProtocol, 0, (\strpos($rawProtocol, '/') ?: 0)) . ($isSecure ? 's' : '');
+        /** @var string|null $user */
         $user = $server['PHP_AUTH_USER'] ?? null;
+        /** @var string|null $password */
         $password = $server['PHP_AUTH_PW'] ?? null;
         $port = null;
 
@@ -200,10 +203,10 @@ class RequestFactory
         }
 
         if ($isUsingTrustedProxy && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']])) {
-            $hostWithPort = \explode(',', $server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']]);
+            $hostWithPort = \explode(',', (string)$server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']]);
             $hostWithPort = \trim(end($hostWithPort));
         } else {
-            $hostWithPort = $server['HTTP_HOST'] ?? $server['SERVER_NAME'] ?? $server['SERVER_ADDR'] ?? '';
+            $hostWithPort = (string)($server['HTTP_HOST'] ?? $server['SERVER_NAME'] ?? $server['SERVER_ADDR'] ?? '');
         }
 
         // Remove the port from the host
@@ -214,12 +217,12 @@ class RequestFactory
             throw new InvalidArgumentException("Invalid host \"$host\"");
         }
 
-        $path = \parse_url('http://foo.com' . ($server['REQUEST_URI'] ?? ''), PHP_URL_PATH);
+        $path = \parse_url('http://foo.com' . (string)($server['REQUEST_URI'] ?? ''), PHP_URL_PATH);
         $path = $path === false ? '' : ($path ?? '');
-        $queryString = $server['QUERY_STRING'] ?? '';
+        $queryString = (string)($server['QUERY_STRING'] ?? '');
 
         if ($queryString === '') {
-            $queryString = \parse_url('http://foo.com' . ($server['REQUEST_URI'] ?? ''), PHP_URL_QUERY);
+            $queryString = \parse_url('http://foo.com' . (string)($server['REQUEST_URI'] ?? ''), PHP_URL_QUERY);
             $queryString = $queryString === false || $queryString === null ? '' : $queryString;
         }
 
@@ -243,11 +246,12 @@ class RequestFactory
     /**
      * Gets the client IP address
      *
-     * @param array<mixed, mixed> $server The global server array
+     * @param array<string, mixed> $server The global server array
      * @return string|null The client IP address if one was found, otherwise null
      */
     protected function getClientIPAddress(array $server): ?string
     {
+        /** @var string|null $serverRemoteAddress */
         $serverRemoteAddress = $server['REMOTE_ADDR'] ?? null;
 
         if ($this->isUsingTrustedProxy($server)) {
@@ -258,11 +262,11 @@ class RequestFactory
 
         // RFC 7239
         if (isset($server[$this->trustedHeaderNames['HTTP_FORWARDED']])) {
-            $header = $server[$this->trustedHeaderNames['HTTP_FORWARDED']];
+            $header = (string)$server[$this->trustedHeaderNames['HTTP_FORWARDED']];
             \preg_match_all("/for=(?:\"?\[?)([a-z0-9:\.\-\/_]*)/", $header, $matches);
             $ipAddresses = $matches[1];
         } elseif (isset($server[$this->trustedHeaderNames['HTTP_CLIENT_IP']])) {
-            $ipAddresses = \explode(',', $server[$this->trustedHeaderNames['HTTP_CLIENT_IP']]);
+            $ipAddresses = \explode(',', (string)$server[$this->trustedHeaderNames['HTTP_CLIENT_IP']]);
             $ipAddresses = \array_map('trim', $ipAddresses);
         }
 
@@ -287,7 +291,7 @@ class RequestFactory
     /**
      * Gets whether or not we're using a trusted proxy
      *
-     * @param array<mixed, mixed> $server The global server array
+     * @param array<string, mixed> $server The global server array
      * @return bool True if using a trusted proxy, otherwise false
      */
     protected function isUsingTrustedProxy(array $server): bool
@@ -305,7 +309,7 @@ class RequestFactory
      */
     private function addHeaderValue(Headers $headers, string $name, mixed $value, bool $append): void
     {
-        $decodedValue = \trim((string)(isset(self::$headersToUrlDecode[$name]) ? \urldecode($value) : $value));
+        $decodedValue = \trim((string)(isset(self::$headersToUrlDecode[$name]) ? \urldecode((string)$value) : $value));
 
         if (isset(self::$specialCaseHeaders[$name])) {
             $headers->add($name, $decodedValue, $append);

@@ -313,6 +313,7 @@ class GlobalConfiguration
         self::validateConfigurationSources();
 
         try {
+            /** @psalm-suppress MixedAssignment This is purposely set to a mixed value */
             $value = self::getValue($path);
 
             return true;

@@ -52,6 +52,7 @@ class Prompt
             $choicesAreAssociative = $question->choicesAreAssociative();
             $choiceTexts = [];
 
+            /** @psalm-suppress MixedAssignment The choices could legitimately be a mixed type */
             foreach ($question->choices as $key => $choice) {
                 if (!$choicesAreAssociative) {
                     // Make the choice 1-indexed
@@ -77,6 +78,7 @@ class Prompt
         }
 
         if ($answer === '' || $answer === null) {
+            /** @psalm-suppress MixedAssignment The answer could legitimately be a mixed type */
             $answer = $question->defaultAnswer;
         }
 

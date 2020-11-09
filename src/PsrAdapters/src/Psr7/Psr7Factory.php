@@ -110,6 +110,7 @@ class Psr7Factory implements IPsr7Factory
 
             $boundary = null;
             $this->aphiriaRequestParser->parseParameters($aphiriaRequest, 'Content-Type')->tryGet('boundary', $boundary);
+            /** @var string|null $boundary */
             $aphiriaRequest->setBody(new MultipartBody($bodyParts, $boundary));
         } else {
             $aphiriaRequest->setBody(new StreamBody($this->createAphiriaStream($psr7Request->getBody())));
@@ -119,6 +120,7 @@ class Psr7Factory implements IPsr7Factory
             $aphiriaRequest->getProperties()->add('__APHIRIA_PARSED_BODY', $psr7ParsedBody);
         }
 
+        /** @psalm-suppress MixedAssignment The values could legitimately be mixed */
         foreach ($psr7Request->getAttributes() as $name => $value) {
             $aphiriaRequest->getProperties()->add($name, $value);
         }
@@ -180,7 +182,10 @@ class Psr7Factory implements IPsr7Factory
 
         /** @var KeyValuePair $kvp */
         foreach ($aphiriaRequest->getHeaders() as $kvp) {
-            $psr7Request = $psr7Request->withHeader($kvp->getKey(), $kvp->getValue());
+            /** @var string|string[] $headerValue */
+            foreach ($kvp->getValue() as $headerValue) {
+                $psr7Request = $psr7Request->withHeader((string)$kvp->getKey(), $headerValue);
+            }
         }
 
         if (($aphiriaBody = $aphiriaRequest->getBody()) !== null) {
@@ -192,11 +197,19 @@ class Psr7Factory implements IPsr7Factory
 
         /** @var KeyValuePair $kvp */
         foreach ($this->aphiriaRequestParser->parseCookies($aphiriaRequest) as $kvp) {
+            /**
+             * @psalm-suppress MixedArrayOffset Purposely building a mixed array
+             * @psalm-suppress MixedAssignment Ditto
+             */
             $psr7CookieParams[$kvp->getKey()] = $kvp->getValue();
         }
 
         /** @var KeyValuePair $kvp */
         foreach ($this->aphiriaRequestParser->parseQueryString($aphiriaRequest) as $kvp) {
+            /**
+             * @psalm-suppress MixedArrayOffset Purposely building a mixed array
+             * @psalm-suppress MixedAssignment Ditto
+             */
             $psr7QueryParams[$kvp->getKey()] = $kvp->getValue();
         }
 
@@ -206,12 +219,13 @@ class Psr7Factory implements IPsr7Factory
         $parsedBody = null;
 
         if ($aphiriaRequest->getProperties()->tryGet('__APHIRIA_PARSED_BODY', $parsedBody)) {
+            /** @var array|object|null $parsedBody */
             $psr7Request = $psr7Request->withParsedBody($parsedBody);
         }
 
         /** @var KeyValuePair $kvp */
         foreach ($aphiriaRequest->getProperties() as $kvp) {
-            $psr7Request = $psr7Request->withAttribute($kvp->getKey(), $kvp->getValue());
+            $psr7Request = $psr7Request->withAttribute((string)$kvp->getKey(), $kvp->getValue());
         }
 
         return $psr7Request;
@@ -230,7 +244,10 @@ class Psr7Factory implements IPsr7Factory
 
         /** @var KeyValuePair $kvp */
         foreach ($aphiriaResponse->getHeaders() as $kvp) {
-            $psr7Response = $psr7Response->withHeader($kvp->getKey(), $kvp->getValue());
+            /** @var string|string[] $headerValue */
+            foreach ((array)$kvp->getValue() as $headerValue) {
+                $psr7Response = $psr7Response->withHeader((string)$kvp->getKey(), $headerValue);
+            }
         }
 
         if (($aphiriaBody = $aphiriaResponse->getBody()) !== null) {
@@ -284,7 +301,9 @@ class Psr7Factory implements IPsr7Factory
                 $name = (string)$i;
             }
 
+            /** @var string $name */
             $contentDispositionParameters->tryGet('filename', $filename);
+            /** @var string|null $filename */
             $psr7UploadedFiles[$name] = $this->psr7UploadedFactoryInterface->createUploadedFile(
                 $this->createPsr7Stream($partBody->readAsStream()),
                 $partBody->getLength(),

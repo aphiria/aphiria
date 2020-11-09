@@ -22,8 +22,6 @@ final class Delete extends Route
 {
     /**
      * @inheritdoc
-     *
-     * @psalm-suppress MixedArgumentTypeCoercion Psalm does not pass array types via inheritdoc (#4504) - bug
      */
     public function __construct(
         string $path = '',
@@ -32,6 +30,7 @@ final class Delete extends Route
         bool $isHttpsOnly = false,
         array $parameters = []
     ) {
+        /** @psalm-suppress MixedArgumentTypeCoercion Psalm does not pass array types via inheritdoc (#4504) - bug */
         parent::__construct(['DELETE'], $path, $host, $name, $isHttpsOnly, $parameters);
     }
 }

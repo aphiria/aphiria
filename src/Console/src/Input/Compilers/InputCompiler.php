@@ -54,7 +54,7 @@ final class InputCompiler implements IInputCompiler
     /**
      * @inheritdoc
      */
-    public function compile(mixed $rawInput): Input
+    public function compile(string|array $rawInput): Input
     {
         $tokens = $this->selectTokenizer($rawInput)->tokenize($rawInput);
 
@@ -113,8 +113,10 @@ final class InputCompiler implements IInputCompiler
                 $options[$name] = [$options[$name]];
             }
 
+            /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
             $options[$name][] = $value;
         } else {
+            /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
             $options[$name] = $value;
         }
     }
@@ -141,18 +143,21 @@ final class InputCompiler implements IInputCompiler
                     throw new RuntimeException("Argument \"{$argument->name}\" does not have default value");
                 }
 
+                /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
                 $arguments[$argument->name] = $argument->defaultValue;
             } elseif ($argument->isArray()) {
                 // Add the rest of the values in the input to this argument
                 $restOfArgumentValues = [];
 
                 while (\count($argumentValues) > 0) {
-                    $restOfArgumentValues[] = array_shift($argumentValues);
+                    /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
+                    $restOfArgumentValues[] = \array_shift($argumentValues);
                 }
 
                 $arguments[$argument->name] = $restOfArgumentValues;
             } else {
-                $arguments[$argument->name] = array_shift($argumentValues);
+                /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
+                $arguments[$argument->name] = \array_shift($argumentValues);
             }
         }
 
@@ -163,8 +168,8 @@ final class InputCompiler implements IInputCompiler
      * Compiles options in a command
      *
      * @param Command $command The command to compile
-     * @param mixed[] $rawOptions The list of raw options
-     * @return array<string, string> The mapping of option names to values
+     * @param array<string, mixed> $rawOptions The list of raw options
+     * @return array<string, mixed> The mapping of option names to values
      */
     private static function compileOptions(Command $command, array $rawOptions): array
     {
@@ -178,7 +183,10 @@ final class InputCompiler implements IInputCompiler
 
             // All options are optional (duh)
             if ($shortNameIsSet || $longNameIsSet) {
-                /** @psalm-suppress PossiblyNullArrayOffset The short name will be set if the long one wasn't */
+                /**
+                 * @psalm-suppress PossiblyNullArrayOffset The short name will be set if the long one wasn't
+                 * @psalm-suppress MixedAssignment We're purposely setting the value to a mixed type
+                 */
                 $value = $longNameIsSet ? $rawOptions[$option->name] : $rawOptions[$option->shortName];
 
                 if ($value !== null && !$option->valueIsPermitted()) {
@@ -190,12 +198,15 @@ final class InputCompiler implements IInputCompiler
                 }
 
                 if ($value === null && $option->valueIsOptional()) {
+                    /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
                     $value = $option->defaultValue;
                 }
 
+                /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
                 $options[$option->name] = $value;
             } elseif ($option->valueIsPermitted()) {
                 // Set the value for the option to its default value, if values are permitted
+                /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
                 $options[$option->name] = $option->defaultValue;
             }
         }
@@ -243,28 +254,30 @@ final class InputCompiler implements IInputCompiler
     private static function parseLongOption(string $token, array &$remainingTokens): array
     {
         // Trim the "--"
-        $option = mb_substr($token, 2);
+        $option = \mb_substr($token, 2);
 
-        if (!str_contains($option, '=')) {
+        if (!\str_contains($option, '=')) {
             /**
              * The option is either of the form "--foo" or "--foo bar" or "--foo -b" or "--foo --bar"
              * So, we need to determine if the option has a value
+             *
+             * @psalm-suppress MixedAssignment We're purposely setting the token to a mixed type
              */
-            $nextToken = array_shift($remainingTokens);
+            $nextToken = \array_shift($remainingTokens);
 
             // Check if the next token is also an option
-            if (empty($nextToken) || str_starts_with($nextToken, '-')) {
+            if (empty($nextToken) || \str_starts_with((string)$nextToken, '-')) {
                 // The option must have not had a value, so put the next token back
-                array_unshift($remainingTokens, $nextToken);
+                \array_unshift($remainingTokens, $nextToken);
 
                 return [$option, null];
             }
 
             // Make it "--foo=bar"
-            $option .= '=' . $nextToken;
+            $option .= "=$nextToken";
         }
 
-        [$name, $value] = explode('=', $option);
+        [$name, $value] = \explode('=', $option);
         $value = self::trimQuotes($value);
 
         return [$name, $value];
@@ -285,19 +298,20 @@ final class InputCompiler implements IInputCompiler
         array &$options
     ): void {
         // We're guaranteed that tokens is not empty from an upstream check
-        $commandName = array_shift($tokens);
+        $commandName = (string)\array_shift($tokens);
 
-        while ($token = array_shift($tokens)) {
-            if (str_starts_with($token, '--')) {
-                [$optionName, $optionValue] = self::parseLongOption($token, $tokens);
+        /** @psalm-suppress MixedAssignment We're purposely setting the token to a mixed value */
+        while ($token = \array_shift($tokens)) {
+            if (\str_starts_with((string)$token, '--')) {
+                [$optionName, $optionValue] = self::parseLongOption((string)$token, $tokens);
                 self::addOption($options, $optionName, $optionValue);
-            } elseif (str_starts_with($token, '-')) {
-                foreach (self::parseShortOption($token) as [$optionName, $optionValue]) {
+            } elseif (\str_starts_with((string)$token, '-')) {
+                foreach (self::parseShortOption((string)$token) as [$optionName, $optionValue]) {
                     self::addOption($options, $optionName, $optionValue);
                 }
             } else {
                 // We consider this to be an argument
-                $argumentValues[] = self::parseArgument($token);
+                $argumentValues[] = self::parseArgument((string)$token);
             }
         }
     }
@@ -311,11 +325,11 @@ final class InputCompiler implements IInputCompiler
     private static function parseShortOption(string $token): array
     {
         // Trim the "-"
-        $token = mb_substr($token, 1);
+        $token = \mb_substr($token, 1);
         $options = [];
 
         // Each character in a short option is an option
-        $tokens = preg_split('//u', $token, -1, PREG_SPLIT_NO_EMPTY);
+        $tokens = \preg_split('//u', $token, -1, PREG_SPLIT_NO_EMPTY);
 
         foreach ($tokens as $singleToken) {
             $options[] = [$singleToken, null];
@@ -333,11 +347,11 @@ final class InputCompiler implements IInputCompiler
     private static function trimQuotes(string $token): string
     {
         // Trim any quotes
-        if (($firstValueChar = mb_substr($token, 0, 1)) === mb_substr($token, -1)) {
+        if (($firstValueChar = \mb_substr($token, 0, 1)) === \mb_substr($token, -1)) {
             if ($firstValueChar === "'") {
-                $token = trim($token, "'");
+                $token = \trim($token, "'");
             } elseif ($firstValueChar === '"') {
-                $token = trim($token, '"');
+                $token = \trim($token, '"');
             }
         }
 

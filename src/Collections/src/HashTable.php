@@ -120,6 +120,7 @@ class HashTable implements IDictionary
         $keys = [];
 
         foreach ($this->hashKeysToKvps as $kvp) {
+            /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
             $keys[] = $kvp->getKey();
         }
 
@@ -134,6 +135,7 @@ class HashTable implements IDictionary
         $values = [];
 
         foreach ($this->hashKeysToKvps as $kvp) {
+            /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
             $values[] = $kvp->getValue();
         }
 
@@ -145,7 +147,7 @@ class HashTable implements IDictionary
      */
     public function getIterator(): Traversable
     {
-        return new ArrayIterator(array_values($this->hashKeysToKvps));
+        return new ArrayIterator(\array_values($this->hashKeysToKvps));
     }
 
     /**
@@ -198,7 +200,7 @@ class HashTable implements IDictionary
      */
     public function toArray(): array
     {
-        return array_values($this->hashKeysToKvps);
+        return \array_values($this->hashKeysToKvps);
     }
 
     /**
@@ -207,6 +209,7 @@ class HashTable implements IDictionary
     public function tryGet(mixed $key, mixed &$value): bool
     {
         try {
+            /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
             $value = $this->get($key);
 
             return true;
