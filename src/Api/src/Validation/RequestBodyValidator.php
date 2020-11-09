@@ -59,6 +59,7 @@ final class RequestBodyValidator implements IRequestBodyValidator
 
         try {
             if (\is_array($body)) {
+                /** @var object $bodyPart */
                 foreach ($body as $bodyPart) {
                     $this->validator->validateObject($bodyPart);
                 }

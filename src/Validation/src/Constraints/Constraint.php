@@ -34,6 +34,9 @@ abstract class Constraint implements IConstraint
 
     /**
      * @inheritdoc
+     *
+     * @psalm-suppress InvalidReturnType The return type is correct
+     * @psalm-suppress InvalidReturnStatement Ditto
      */
     public function getErrorMessagePlaceholders($value): array
     {

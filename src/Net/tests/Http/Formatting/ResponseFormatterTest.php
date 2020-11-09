@@ -93,6 +93,7 @@ class ResponseFormatterTest extends TestCase
             $this->response,
             [new Cookie('name1', 'value1', 3600), new Cookie('name2', 'value2', 7200)]
         );
+        /** @var array<int, string> $cookies */
         $cookies = $this->headers->get('Set-Cookie');
         $this->assertCount(2, $cookies);
         $this->assertSame(

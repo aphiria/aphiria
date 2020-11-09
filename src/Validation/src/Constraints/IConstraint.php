@@ -29,7 +29,7 @@ interface IConstraint
      * Gets the values that can be used to compile error messages
      *
      * @param mixed $value The value that was being validated
-     * @return array<string, mixed> The mapping of placeholder names to values
+     * @return array<string, string|int|float> The mapping of placeholder names to values
      */
     public function getErrorMessagePlaceholders(mixed $value): array;
 

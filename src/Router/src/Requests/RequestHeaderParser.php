@@ -31,13 +31,14 @@ final class RequestHeaderParser
     /**
      * Parses headers from the $_SERVER super global
      *
-     * @param array<mixed, mixed> $server The $_SERVER super global
+     * @param array<string, mixed> $server The $_SERVER super global
      * @return array<string, mixed> The mapping of header names => values
      */
     public function parseHeaders(array $server): array
     {
         $headers = [];
 
+        /** @psalm-suppress MixedAssignment The value could legitimately be mixed */
         foreach ($server as $key => $value) {
             $uppercasedKey = \strtoupper($key);
 

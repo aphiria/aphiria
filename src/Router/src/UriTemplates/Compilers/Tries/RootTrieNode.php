@@ -22,6 +22,7 @@ final class RootTrieNode extends TrieNode
      */
     public function __construct(array $children = [])
     {
+        /** @psalm-suppress MixedArgumentTypeCoercion Psalm does not pass array types via inheritdoc (#4504) - bug */
         parent::__construct($children, [], null);
     }
 }

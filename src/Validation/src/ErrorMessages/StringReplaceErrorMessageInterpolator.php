@@ -38,7 +38,7 @@ final class StringReplaceErrorMessageInterpolator implements IErrorMessageInterp
         $interpolatedErrorMessage = $this->errorMessageTemplates->getErrorMessageTemplate($errorMessageId, $locale);
 
         foreach ($errorMessagePlaceholders as $key => $value) {
-            $interpolatedErrorMessage = \str_replace('{' . $key . '}', $value, $interpolatedErrorMessage);
+            $interpolatedErrorMessage = \str_replace('{' . $key . '}', (string)$value, $interpolatedErrorMessage);
         }
 
         // Remove any unused placeholders from the message

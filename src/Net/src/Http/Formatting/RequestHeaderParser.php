@@ -40,12 +40,13 @@ class RequestHeaderParser extends HeaderParser
         }
 
         $parsedHeaderValues = [];
+        /** @var array<string, string|string[]|int|float> $headerValues */
         $numHeaderValues = \count($headerValues);
 
         for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept-Charset', $i);
             // The first value should always be the charset
-            $charset = $parsedHeaderParameters->getKeys()[0];
+            $charset = (string)$parsedHeaderParameters->getKeys()[0];
             $parsedHeaderValues[] = new AcceptCharsetHeaderValue($charset, $parsedHeaderParameters);
         }
 
@@ -68,12 +69,13 @@ class RequestHeaderParser extends HeaderParser
         }
 
         $parsedHeaderValues = [];
+        /** @var array<string, string|string[]|int|float> $headerValues */
         $numHeaderValues = \count($headerValues);
 
         for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept', $i);
             // The first value should always be the media type
-            $mediaType = $parsedHeaderParameters->getKeys()[0];
+            $mediaType = (string)$parsedHeaderParameters->getKeys()[0];
             $parsedHeaderValues[] = new AcceptMediaTypeHeaderValue($mediaType, $parsedHeaderParameters);
         }
 
@@ -96,12 +98,13 @@ class RequestHeaderParser extends HeaderParser
         }
 
         $parsedHeaderValues = [];
+        /** @var array<string, string|string[]|int|float> $headerValues */
         $numHeaderValues = \count($headerValues);
 
         for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept-Language', $i);
             // The first value should always be the language
-            $language = $parsedHeaderParameters->getKeys()[0];
+            $language = (string)$parsedHeaderParameters->getKeys()[0];
             $parsedHeaderValues[] = new AcceptLanguageHeaderValue($language, $parsedHeaderParameters);
         }
 

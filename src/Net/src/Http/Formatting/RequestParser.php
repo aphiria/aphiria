@@ -77,6 +77,7 @@ class RequestParser
         $clientIPAddress = null;
         $request->getProperties()->tryGet(self::CLIENT_IP_ADDRESS_PROPERTY, $clientIPAddress);
 
+        /** @var string|null $clientIPAddress */
         return $clientIPAddress;
     }
 
@@ -92,7 +93,7 @@ class RequestParser
         $clientMimeType = null;
 
         if ($bodyPart->getHeaders()->tryGetFirst('Content-Type', $clientMimeType)) {
-            return $clientMimeType;
+            return (string)$clientMimeType;
         }
 
         return null;
@@ -250,6 +251,7 @@ class RequestParser
             throw new InvalidArgumentException('"boundary" is missing in Content-Type header');
         }
 
+        /** @var string $boundary */
         return $this->bodyParser->readAsMultipart($request->getBody(), $boundary);
     }
 }
