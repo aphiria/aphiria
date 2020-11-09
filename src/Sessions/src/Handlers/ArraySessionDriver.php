@@ -19,7 +19,7 @@ use OutOfBoundsException;
  */
 final class ArraySessionDriver implements ISessionDriver
 {
-    /** @var array<mixed, mixed> The session data */
+    /** @var array<int|string, mixed> The session data */
     private array $sessionData = [];
 
     /**
@@ -46,7 +46,7 @@ final class ArraySessionDriver implements ISessionDriver
             throw new OutOfBoundsException("Session with ID $sessionId does not exist");
         }
 
-        return $this->sessionData[$sessionId];
+        return (string)$this->sessionData[$sessionId];
     }
 
     /**

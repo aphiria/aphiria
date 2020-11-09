@@ -254,6 +254,7 @@ final class UriTemplateParser implements IUriTemplateParser
 
             while ($currentToken !== null && !$tokens->test(TokenTypes::T_PUNCTUATION, ')')) {
                 if (!$tokens->test(TokenTypes::T_PUNCTUATION, ',')) {
+                    /** @psalm-suppress MixedAssignment We're purposely adding a mixed value to the parameter list */
                     $parameters[] = $currentToken->value;
                 }
 

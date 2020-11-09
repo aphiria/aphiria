@@ -31,8 +31,7 @@ class StreamOutput extends Output
      * @param resource $inputStream The stream to read from
      * @param IOutputCompiler|null $compiler The output compiler to use
      * @throws InvalidArgumentException Thrown if the stream is not a resource
-     * @psalm-suppress RedundantConditionGivenDocblockType We want check the types at runtime
-     * @psalm-suppress DocblockTypeContradiction Ditto
+     * @psalm-suppress DocblockTypeContradiction Ditto We want check the types at runtime
      */
     public function __construct($outputStream, $inputStream, IOutputCompiler $compiler = null)
     {

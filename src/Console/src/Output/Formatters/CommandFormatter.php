@@ -102,7 +102,7 @@ class CommandFormatter
         $text = "[--{$option->name}";
 
         if ($option->valueIsOptional()) {
-            $text .= '=' . $option->defaultValue;
+            $text .= "={$option->defaultValue}";
         }
 
         if ($option->shortName !== null) {

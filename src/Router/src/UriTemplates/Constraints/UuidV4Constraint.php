@@ -35,6 +35,6 @@ final class UuidV4Constraint implements IRouteVariableConstraint
      */
     public function passes(mixed $value): bool
     {
-        return \preg_match(self::UUIDV4_REGEX, $value) === 1;
+        return \preg_match(self::UUIDV4_REGEX, (string)$value) === 1;
     }
 }

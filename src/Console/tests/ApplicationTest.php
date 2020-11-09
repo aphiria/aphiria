@@ -164,7 +164,7 @@ class ApplicationTest extends TestCase
              */
             public function handle(Input $input, IOutput $output)
             {
-                $message = 'Happy ' . $input->arguments['holiday'];
+                $message = "Happy {$input->arguments['holiday']}";
 
                 if ($input->options['yell'] === 'yes') {
                     $message .= '!';

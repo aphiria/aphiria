@@ -23,7 +23,7 @@ final class Style
      * The list of possible foreground colors
      *
      * @link http://en.wikipedia.org/wiki/ANSI_escape_code
-     * @var array
+     * @var array<string, array{0: int, 1: int}>
      */
     private static array $supportedForegroundColors = [
         Colors::BLACK => [30, 39],
@@ -39,7 +39,7 @@ final class Style
      * The list of possible background colors
      *
      * @link http://en.wikipedia.org/wiki/ANSI_escape_code
-     * @var array
+     * @var array<string, array{0: int, 1: int}>
      */
     private static array $supportedBackgroundColors = [
         Colors::BLACK => [40, 49],
@@ -55,7 +55,7 @@ final class Style
      * The list of possible text styles
      *
      * @link http://en.wikipedia.org/wiki/ANSI_escape_code
-     * @var array
+     * @var array<string, array{0: int, 1: int}>
      */
     private static array $supportedTextStyles = [
         TextStyles::BOLD => [1, 22],

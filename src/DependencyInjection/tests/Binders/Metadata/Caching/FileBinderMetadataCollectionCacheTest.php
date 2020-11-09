@@ -17,6 +17,7 @@ use Aphiria\DependencyInjection\Binders\Metadata\BinderMetadataCollection;
 use Aphiria\DependencyInjection\Binders\Metadata\Caching\FileBinderMetadataCollectionCache;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Caching\Mocks\MockBinder;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class FileBinderMetadataCollectionCacheTest extends TestCase
 {
@@ -55,5 +56,13 @@ class FileBinderMetadataCollectionCacheTest extends TestCase
     public function testGettingFromCacheWhenFileDoesNotExistReturnsNull(): void
     {
         $this->assertNull($this->cache->get());
+    }
+
+    public function testGettingFromCacheWithInvalidCachedDataThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Binder metadatas must be instance of ' . BinderMetadataCollection::class . ' or null');
+        \file_put_contents(self::FILE_PATH, '');
+        $this->cache->get();
     }
 }

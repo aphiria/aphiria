@@ -225,7 +225,7 @@ class ControllerTest extends TestCase
             fn (): IResponse => $this->controller->noContent(),
             fn (): IResponse => $this->controller->notFound(),
             fn (): IResponse => $this->controller->ok(),
-            fn (): IResponse => $this->controller->readRequestBodyAs('foo'),
+            fn (): mixed => $this->controller->readRequestBodyAs('foo'),
             fn (): IResponse => $this->controller->unauthorized()
         ];
 

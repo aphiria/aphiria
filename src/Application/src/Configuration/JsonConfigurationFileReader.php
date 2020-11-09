@@ -29,6 +29,7 @@ class JsonConfigurationFileReader implements IConfigurationFileReader
         }
 
         try {
+            /** @var array<string, mixed> $decodedJson */
             $decodedJson = \json_decode(\file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $ex) {
             throw new InvalidConfigurationFileException("Invalid JSON in $path", 0, $ex);

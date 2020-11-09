@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Constraints\Caching;
 
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
+use RuntimeException;
 
 /**
  * Defines the interface for constraint registry caches to implement
@@ -28,6 +29,7 @@ interface IObjectConstraintsRegistryCache
      * Gets the constraints from cache
      *
      * @return ObjectConstraintsRegistry|null The constraints if they existed in cache, otherwise null
+     * @throws RuntimeException Thrown if the cached constraints aren't the expected type
      */
     public function get(): ?ObjectConstraintsRegistry;
 

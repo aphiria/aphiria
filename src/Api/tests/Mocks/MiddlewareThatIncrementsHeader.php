@@ -32,6 +32,7 @@ class MiddlewareThatIncrementsHeader implements IMiddleware
 
         // Keep appending an incrementing value to a header
         if ($response->getHeaders()->tryGet('Foo', $currValues)) {
+            /** @var array<int, int> $currValues */
             $response->getHeaders()->add('Foo', $currValues[\count($currValues) - 1] + 1, true);
         } else {
             $response->getHeaders()->add('Foo', 1);

@@ -48,6 +48,7 @@ class HashSet implements ISet
      */
     public function addRange(array $values): void
     {
+        /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
         foreach ($values as $value) {
             $this->add($value);
         }
@@ -93,6 +94,7 @@ class HashSet implements ISet
         $intersectedValues = [];
 
         // We don't use array_intersect because that does string comparisons, which requires __toString()
+        /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
         foreach ($this->values as $value) {
             if (\in_array($value, $values, true)) {
                 $intersectedValues[] = $value;

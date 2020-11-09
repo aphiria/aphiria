@@ -73,14 +73,15 @@ class StreamResponseWriter implements IResponseWriter
 
         /** @var KeyValuePair $kvp */
         foreach ($response->getHeaders() as $kvp) {
-            $headerName = $kvp->getKey();
+            $headerName = (string)$kvp->getKey();
 
             if (isset(self::$headersToNotConcatenate[$headerName])) {
+                /** @var string $headerValue */
                 foreach ($kvp->getValue() as $headerValue) {
                     $this->header("$headerName: $headerValue", false);
                 }
             } else {
-                $this->header("$headerName: " . implode(', ', $kvp->getValue()));
+                $this->header("$headerName: " . implode(', ', (array)$kvp->getValue()));
             }
         }
 

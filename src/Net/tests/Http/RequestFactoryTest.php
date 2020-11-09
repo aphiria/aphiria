@@ -222,7 +222,7 @@ class RequestFactoryTest extends TestCase
 
     /**
      * @dataProvider httpServerPropertyProvider
-     * @param array<mixed, mixed> $superglobals The superglobals to create the request from
+     * @param array<string, mixed> $superglobals The superglobals to create the request from
      * @param string $expectedScheme The expected scheme
      */
     public function testHttpsServerPropertyControlsSchemeOfUri(array $superglobals, string $expectedScheme): void

@@ -38,7 +38,7 @@ interface IContainer extends IServiceResolver
     /**
      * Binds a factory that will return a concrete instance of the interface
      *
-     * @template T
+     * @template T of object
      * @param array<class-string<T>>|class-string<T> $interfaces The interface or interfaces to bind to
      * @param callable(): T $factory The factory to bind
      * @param bool $resolveAsSingleton Whether or not to resolve the factory as a singleton

@@ -131,37 +131,37 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
-        return $this->containsKey($offset);
+        return $this->containsKey((string)$offset);
     }
 
     /**
      * @inheritdoc
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
-        return $this->get($offset);
+        return $this->get((string)$offset);
     }
 
     /**
      * @inheritdoc
      */
-    public function offsetSet($offset, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if ($offset === null) {
             throw new InvalidArgumentException('Key cannot be empty');
         }
 
-        $this->set($offset, $value);
+        $this->set((string)$offset, $value);
     }
 
     /**
      * @inheritdoc
      */
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
-        unset($this->vars[$offset]);
+        unset($this->vars[(string)$offset]);
     }
 
     /**
@@ -215,6 +215,8 @@ class Session implements ISession
      * Gets the new flash keys array
      *
      * @return string[] The list of new flashed keys
+     * @psalm-suppress MixedReturnStatement This will always return an array of strings
+     * @psalm-suppress MixedInferredReturnType Ditto
      */
     protected function getNewFlashKeys(): array
     {
@@ -225,6 +227,8 @@ class Session implements ISession
      * Gets the stale flash keys array
      *
      * @return string[] The list of stale flashed keys
+     * @psalm-suppress MixedReturnStatement This will always return an array of strings
+     * @psalm-suppress MixedInferredReturnType Ditto
      */
     protected function getStaleFlashKeys(): array
     {

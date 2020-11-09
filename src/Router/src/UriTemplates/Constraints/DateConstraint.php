@@ -28,6 +28,7 @@ final class DateConstraint implements IRouteVariableConstraint
      */
     public function __construct(string|array $formats)
     {
+        /** @var string[] formats */
         $this->formats = (array)$formats;
 
         if (\count($this->formats) === 0) {
@@ -51,7 +52,7 @@ final class DateConstraint implements IRouteVariableConstraint
     public function passes(mixed $value): bool
     {
         foreach ($this->formats as $format) {
-            $dateTime = DateTime::createFromFormat($format, $value);
+            $dateTime = DateTime::createFromFormat($format, (string)$value);
 
             if ($dateTime !== false && $value === $dateTime->format($format)) {
                 return true;

@@ -107,6 +107,7 @@ final class TrieCompiler implements ITrieCompiler
         $numAstChildren = \count($astChildren);
         $isEndpoint = false;
         $segmentContainsVariable = false;
+        /** @var array<string|RouteVariable> $segmentBuffer */
         $segmentBuffer = [];
 
         foreach ($isCompilingHostTrie ? \array_reverse($astChildren) : $astChildren as $i => $childAstNode) {
@@ -157,7 +158,7 @@ final class TrieCompiler implements ITrieCompiler
                     $this->compileNode($isCompilingHostTrie, $currTrieNode, $childAstNode, $route, $hostTrie);
                     break;
                 case AstNodeTypes::TEXT:
-                    $segmentBuffer[] = $childAstNode->value;
+                    $segmentBuffer[] = (string)$childAstNode->value;
                     break;
                 case AstNodeTypes::VARIABLE:
                     $segmentContainsVariable = true;
@@ -192,6 +193,7 @@ final class TrieCompiler implements ITrieCompiler
                 throw new InvalidUriTemplateException("Unexpected node type {$childAstNode->type}");
             }
 
+            /** @var mixed[] $constraintParams */
             $constraintParams = $childAstNode->hasChildren() ? $childAstNode->children[0]->value : [];
             $constraints[] = $this->constraintFactory->createConstraint(
                 (string)$childAstNode->value,

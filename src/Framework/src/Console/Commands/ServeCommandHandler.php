@@ -28,7 +28,7 @@ class ServeCommandHandler implements ICommandHandler
      */
     public function handle(Input $input, IOutput $output)
     {
-        $domain = $input->options['domain'];
+        $domain = (string)$input->options['domain'];
         $port = (int)$input->options['port'];
         $output->writeln("<info>Running at http://$domain:$port</info>");
         $command = sprintf(
@@ -36,8 +36,8 @@ class ServeCommandHandler implements ICommandHandler
             PHP_BINARY,
             $domain,
             $port,
-            $input->options['docroot'],
-            $input->options['router']
+            (string)$input->options['docroot'],
+            (string)$input->options['router']
         );
         $this->runPhpCommand($command);
     }

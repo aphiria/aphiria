@@ -76,7 +76,9 @@ class ContentNegotiationBinder extends Binder
         $languageMatcherName = GlobalConfiguration::getString('aphiria.contentNegotiation.languageMatcher');
 
         if ($languageMatcherName === AcceptLanguageMatcher::class) {
-            $languageMatcher = new AcceptLanguageMatcher(GlobalConfiguration::getArray('aphiria.contentNegotiation.supportedLanguages'));
+            /** @var string[] $supportedLanguages */
+            $supportedLanguages = GlobalConfiguration::getArray('aphiria.contentNegotiation.supportedLanguages');
+            $languageMatcher = new AcceptLanguageMatcher($supportedLanguages);
         } else {
             $languageMatcher = $container->resolve($languageMatcherName);
         }

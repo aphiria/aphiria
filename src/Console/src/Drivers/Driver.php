@@ -45,8 +45,8 @@ abstract class Driver implements IDriver
 
         if (($cliDimensions = $this->getCliDimensionsFromOS()) !== null) {
             // @codeCoverageIgnoreStart
-            $this->width = $cliDimensions[0];
-            $this->height = $cliDimensions[1];
+            $this->width = (int)$cliDimensions[0];
+            $this->height = (int)$cliDimensions[1];
 
             return $this->height;
             // @codeCoverageIgnoreEnd
@@ -69,8 +69,8 @@ abstract class Driver implements IDriver
         }
 
         if (($cliDimensions = $this->getCliDimensionsFromOS()) !== null) {
-            $this->width = $cliDimensions[0];
-            $this->height = $cliDimensions[1];
+            $this->width = (int)$cliDimensions[0];
+            $this->height = (int)$cliDimensions[1];
 
             return $this->width;
         }

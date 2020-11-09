@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Caching;
 
 use Aphiria\Routing\RouteCollection;
+use RuntimeException;
 
 /**
  * Defines the route cache that uses a local file
@@ -45,7 +46,13 @@ final class FileRouteCache implements IRouteCache
             return null;
         }
 
-        return \unserialize(\file_get_contents($this->path));
+        $routes = \unserialize(\file_get_contents($this->path));
+
+        if ($routes !== null && !$routes instanceof RouteCollection) {
+            throw new RuntimeException('Routes must be instance of ' . RouteCollection::class . ' or null');
+        }
+
+        return $routes;
     }
 
     /**

@@ -83,6 +83,8 @@ class GlobalConfigurationBuilder
         /**
          * We delay grabbing the environment variables until we're building the configuration.  This allows us to
          * populate the environment variables (eg in a bootstrapper) prior to adding a configuration with those values.
+         *
+         * @var array<string, mixed> $_ENV
          */
         $this->configurationSourceStructs[] = ['type' => 'factory', 'value' => fn (): HashTableConfiguration => new HashTableConfiguration($_ENV)];
 

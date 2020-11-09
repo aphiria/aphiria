@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\UriTemplates\Compilers\Tries\Caching;
 
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
+use RuntimeException;
 
 /**
  * Defines the file trie cache
@@ -45,7 +46,13 @@ final class FileTrieCache implements ITrieCache
             return null;
         }
 
-        return \unserialize(\file_get_contents($this->path));
+        $trie = \unserialize(\file_get_contents($this->path));
+
+        if ($trie !== null && !$trie instanceof TrieNode) {
+            throw new RuntimeException('Trie must be instance of ' . TrieNode::class . ' or null');
+        }
+
+        return $trie;
     }
 
     /**

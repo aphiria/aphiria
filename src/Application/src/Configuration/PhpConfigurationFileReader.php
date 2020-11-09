@@ -32,6 +32,7 @@ class PhpConfigurationFileReader implements IConfigurationFileReader
             throw new InvalidConfigurationFileException("Configuration in $path must be an array");
         }
 
+        /** @var array<string, mixed> $hashTable */
         return new HashTableConfiguration($hashTable, $pathDelimiter);
     }
 }

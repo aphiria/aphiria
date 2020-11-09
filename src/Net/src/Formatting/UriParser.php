@@ -42,6 +42,7 @@ class UriParser
             parse_str($queryString, $parsedQueryString);
             $kvps = [];
 
+            /** @psalm-suppress MixedAssignment The value could legitimately be mixed */
             foreach ($parsedQueryString as $key => $value) {
                 $kvps[] = new KeyValuePair($key, $value);
             }

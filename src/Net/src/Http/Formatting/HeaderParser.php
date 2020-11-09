@@ -44,7 +44,7 @@ class HeaderParser
         $contentType = null;
         $headers->tryGetFirst('Content-Type', $contentType);
 
-        return \is_string($contentType) && preg_match("/application\/json/i", $contentType) === 1;
+        return \is_string($contentType) && \preg_match("/application\/json/i", $contentType) === 1;
     }
 
     /**
@@ -59,7 +59,7 @@ class HeaderParser
         $contentType = null;
         $headers->tryGetFirst('Content-Type', $contentType);
 
-        return \is_string($contentType) && preg_match("/multipart\//i", $contentType) === 1;
+        return \is_string($contentType) && \preg_match("/multipart\//i", $contentType) === 1;
     }
 
     /**
@@ -76,7 +76,7 @@ class HeaderParser
         }
 
         $contentTypeHeaderParameters = $this->parseParameters($headers, 'Content-Type');
-        $contentType = $contentTypeHeaderParameters->getKeys()[0];
+        $contentType = (string)$contentTypeHeaderParameters->getKeys()[0];
 
         return new ContentTypeHeaderValue($contentType, $contentTypeHeaderParameters);
     }
@@ -99,12 +99,13 @@ class HeaderParser
 
         $kvps = [];
 
-        foreach (preg_split(self::PARAMETER_SPLIT_REGEX, $headerValues[$index]) as $kvp) {
+        /** @var string[] $headerValues */
+        foreach (\preg_split(self::PARAMETER_SPLIT_REGEX, (string)$headerValues[$index]) as $kvp) {
             $matches = [];
 
             // Split the parameters into names and values
-            if (preg_match_all(self::PARAMETER_KEY_VALUE_REGEX, $kvp, $matches)) {
-                $key = trim($matches[0][0], self::PARAMETER_TRIMMED_CHARS);
+            if (\preg_match_all(self::PARAMETER_KEY_VALUE_REGEX, $kvp, $matches)) {
+                $key = \trim($matches[0][0], self::PARAMETER_TRIMMED_CHARS);
                 $value = isset($matches[0][1]) ? trim($matches[0][1], self::PARAMETER_TRIMMED_CHARS) : null;
                 $kvps[] = new KeyValuePair($key, $value);
             }

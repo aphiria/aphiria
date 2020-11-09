@@ -64,14 +64,14 @@ final class TokenStream
                 $formattedMessage .= \sprintf(
                     ', got %s with value \"%s\"',
                     $currentToken->type,
-                    $currentToken->value
+                    (string)$currentToken->value
                 );
             }
         } else {
             $formattedMessage = \sprintf(
                 $message,
                 $currentToken === null ? 'T_EOF' : $currentToken->type,
-                $currentToken === null ? 'end of stream' : $currentToken->value
+                (string)($currentToken === null ? 'end of stream' : $currentToken->value)
             );
         }
 

@@ -23,7 +23,7 @@ final class HttpMethodRouteConstraint implements IRouteConstraint
     private array $allowedMethods = [];
 
     /**
-     * @param array|string $allowedMethods The list of allowed methods
+     * @param string[]|string $allowedMethods The list of allowed methods
      */
     public function __construct(string|array $allowedMethods)
     {

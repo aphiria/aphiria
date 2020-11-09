@@ -34,6 +34,7 @@ use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
+use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Closure;
 use Exception;
@@ -261,6 +262,10 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param Closure(CommandRegistry): void $callback
+             */
             public function build(IApplicationBuilder $appBuilder, Closure $callback): void
             {
                 $this->withCommands($appBuilder, $callback);
@@ -282,6 +287,10 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param Closure(CommandRegistry): void $callback
+             */
             public function build(IApplicationBuilder $appBuilder, Closure $callback): void
             {
                 $this->withCommands($appBuilder, $callback);
@@ -301,6 +310,10 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param Closure(CommandRegistry): void $callback
+             */
             public function build(IApplicationBuilder $appBuilder, Closure $callback): void
             {
                 $this->withCommands($appBuilder, $callback);
@@ -690,6 +703,10 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param IModule[] $modules
+             */
             public function build(IApplicationBuilder $appBuilder, array $modules): void
             {
                 $this->withModules($appBuilder, $modules);
@@ -719,7 +736,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithObjectConstraintsConfiguresComponentToHaveObjectConstraints(): void
     {
-        $callback = fn (ObjectConstraintsRegistry $objectConstraints): mixed => null;
+        $callback = fn (ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null;
         $expectedComponent = $this->createMock(ValidationComponent::class);
         $expectedComponent->expects($this->once())
             ->method('withObjectConstraints')
@@ -733,6 +750,10 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param Closure(ObjectConstraintsRegistryBuilder): void $callback
+             */
             public function build(IApplicationBuilder $appBuilder, Closure $callback): void
             {
                 $this->withObjectConstraints($appBuilder, $callback);
@@ -754,12 +775,16 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param Closure(ObjectConstraintsRegistryBuilder): void $callback
+             */
             public function build(IApplicationBuilder $appBuilder, Closure $callback): void
             {
                 $this->withObjectConstraints($appBuilder, $callback);
             }
         };
-        $factory = fn (ObjectConstraintsRegistry $objectConstraints): mixed => null;
+        $factory = fn (ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null;
         $component->build($this->appBuilder, $factory);
         // Dummy assertion
         $this->assertTrue(true);
@@ -773,12 +798,16 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param Closure(ObjectConstraintsRegistryBuilder): void $callback
+             */
             public function build(IApplicationBuilder $appBuilder, Closure $callback): void
             {
                 $this->withObjectConstraints($appBuilder, $callback);
             }
         };
-        $component->build($this->appBuilder, fn (ObjectConstraintsRegistry $objectConstraints): mixed => null);
+        $component->build($this->appBuilder, fn (ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null);
     }
 
     public function testWithProblemDetailsConfiguresComponentToHaveProblemDetails(): void
@@ -956,6 +985,10 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param Closure(RouteCollectionBuilder): void $callback
+             */
             public function build(IApplicationBuilder $appBuilder, Closure $callback): void
             {
                 $this->withRoutes($appBuilder, $callback);
@@ -977,6 +1010,10 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param Closure(RouteCollectionBuilder): void $callback
+             */
             public function build(IApplicationBuilder $appBuilder, Closure $callback): void
             {
                 $this->withRoutes($appBuilder, $callback);
@@ -996,6 +1033,10 @@ class AphiriaComponentsTest extends TestCase
         $component = new class() {
             use AphiriaComponents;
 
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param Closure(RouteCollectionBuilder): void $callback
+             */
             public function build(IApplicationBuilder $appBuilder, Closure $callback): void
             {
                 $this->withRoutes($appBuilder, $callback);

@@ -47,9 +47,9 @@ final class CommandBinder extends Binder
         $container->bindInstance(CommandRegistrantCollection::class, $commandRegistrants);
 
         // Register some command attribute dependencies
-        $commandAttributeRegistrant = new AttributeCommandRegistrant(
-            GlobalConfiguration::getArray('aphiria.console.attributePaths')
-        );
+        /** @var string[] $attributePaths */
+        $attributePaths = GlobalConfiguration::getArray('aphiria.console.attributePaths');
+        $commandAttributeRegistrant = new AttributeCommandRegistrant($attributePaths);
         $container->bindInstance(AttributeCommandRegistrant::class, $commandAttributeRegistrant);
     }
 }

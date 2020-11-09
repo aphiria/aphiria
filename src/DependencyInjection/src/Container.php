@@ -109,6 +109,7 @@ class Container implements IContainer
      * @inheritdoc
      *
      * @psalm-suppress MoreSpecificImplementedParamType Instance will always be an instance of interface(s) - bug
+     * @psalm-suppress MixedArgumentTypeCoercion Template types are not passed through via inheritdoc - bug
      */
     public function bindInstance(string|array $interfaces, object $instance): void
     {
@@ -401,6 +402,7 @@ class Container implements IContainer
 
                     if ($parameterClassName === null) {
                         // The parameter is a primitive
+                        /** @psalm-suppress MixedAssignment The resolved parameter will be a mixed type */
                         $resolvedParameter = $this->resolvePrimitive($parameter, $parameterType, $primitives);
                     } elseif ($className !== null && $this->hasTargetedBinding($parameterClassName, $className)) {
                         $resolvedParameter = $this->for(
@@ -413,6 +415,7 @@ class Container implements IContainer
                         } catch (ResolutionException $ex) {
                             // Check for a default value
                             if ($parameter->isDefaultValueAvailable()) {
+                                /** @psalm-suppress MixedAssignment The resolved parameter will be a mixed type */
                                 $resolvedParameter = $parameter->getDefaultValue();
                             } elseif ($parameter->allowsNull()) {
                                 $resolvedParameter = null;
@@ -422,6 +425,7 @@ class Container implements IContainer
                         }
                     }
 
+                    /** @psalm-suppress MixedAssignment The resolved parameter will be a mixed type */
                     $resolvedParameters[] = $resolvedParameter;
                     $parameterResolved = true;
                 } catch (ResolutionException) {

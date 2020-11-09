@@ -34,6 +34,7 @@ class ImmutableHashSet implements IImmutableSet
     {
         $this->keyHasher = new KeyHasher();
 
+        /** @psalm-suppress MixedAssignment Value is intentionally mixed */
         foreach ($values as $value) {
             $this->values[$this->getHashKey($value)] = $value;
         }

@@ -58,6 +58,7 @@ class RequestBinder extends Binder
             return new Request('GET', new Uri('http://localhost'));
         }
 
+        /** @var array<string, mixed> $_SERVER */
         return (new RequestFactory())->createRequestFromSuperglobals($_SERVER);
     }
 

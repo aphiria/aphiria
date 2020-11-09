@@ -136,7 +136,7 @@ final class RouteCollectionBuilder
     /**
      * Creates a route builder with some values already set
      *
-     * @param array|string $httpMethods The HTTP method or list of methods the route uses
+     * @param string[]|string $httpMethods The HTTP method or list of methods the route uses
      * @param string $path The path template
      * @param string|null $host The host template
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only

@@ -34,7 +34,7 @@ final class Headers extends HashTable
         $headerString = '';
 
         foreach ($this->hashKeysToKvps as $kvp) {
-            $headerString .= "{$kvp->getKey()}: " . implode(', ', $kvp->getValue()) . "\r\n";
+            $headerString .= "{$kvp->getKey()}: " . implode(', ', (array)$kvp->getValue()) . "\r\n";
         }
 
         return rtrim($headerString);
@@ -51,7 +51,7 @@ final class Headers extends HashTable
      */
     public function add(mixed $key, mixed $value, bool $append = false): void
     {
-        $normalizedName = self::normalizeHeaderName($key);
+        $normalizedName = self::normalizeHeaderName((string)$key);
 
         if (!$append || !$this->containsKey($normalizedName)) {
             parent::add($normalizedName, (array)$value);
@@ -81,7 +81,7 @@ final class Headers extends HashTable
      */
     public function containsKey(mixed $key): bool
     {
-        return parent::containsKey(self::normalizeHeaderName($key));
+        return parent::containsKey(self::normalizeHeaderName((string)$key));
     }
 
     /**
@@ -89,7 +89,7 @@ final class Headers extends HashTable
      */
     public function get(mixed $key): mixed
     {
-        return parent::get(self::normalizeHeaderName($key));
+        return parent::get(self::normalizeHeaderName((string)$key));
     }
 
     /**
@@ -106,7 +106,7 @@ final class Headers extends HashTable
             throw new OutOfBoundsException("Header \"$name\" does not exist");
         }
 
-        return $this->get($name)[0];
+        return ((array)$this->get($name))[0];
     }
 
     /**
@@ -114,7 +114,7 @@ final class Headers extends HashTable
      */
     public function removeKey(mixed $key): void
     {
-        parent::removeKey(self::normalizeHeaderName($key));
+        parent::removeKey(self::normalizeHeaderName((string)$key));
     }
 
     /**
@@ -129,7 +129,8 @@ final class Headers extends HashTable
     public function tryGetFirst(mixed $name, mixed &$value): bool
     {
         try {
-            $value = $this->get($name)[0];
+            /** @psalm-suppress MixedAssignment We're purposely setting the value to a mixed type */
+            $value = ((array)$this->get($name))[0];
 
             return true;
         } catch (OutOfBoundsException) {

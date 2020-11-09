@@ -84,6 +84,7 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
      */
     public function handleShutdown(array $error = null): void
     {
+        /** @var array{type: int, message: string, file: string, line: int}|null $error */
         $error = $error ?? error_get_last();
 
         if ($error !== null && \in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
