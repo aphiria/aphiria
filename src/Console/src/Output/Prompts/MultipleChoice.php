@@ -55,7 +55,7 @@ class MultipleChoice extends Question
     /**
      * @inheritdoc
      */
-    public function formatAnswer($answer): mixed
+    public function formatAnswer(mixed $answer): mixed
     {
         $hasMultipleAnswers = false;
         $answer = str_replace(' ', '', (string)$answer);

@@ -22,6 +22,8 @@ final class Delete extends Route
 {
     /**
      * @inheritdoc
+     *
+     * @psalm-suppress MixedArgumentTypeCoercion Psalm does not pass array types via inheritdoc (#4504) - bug
      */
     public function __construct(
         string $path = '',

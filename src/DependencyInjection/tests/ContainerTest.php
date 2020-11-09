@@ -146,7 +146,7 @@ class ContainerTest extends TestCase
         $this->assertSame('foo', $instance->getPrimitive());
         $response = $this->container->callClosure(
             /** @psalm-suppress MissingClosureParamType Purposely testing without a param type */
-            fn (IFoo $interface, $primitive): string => $interface::class . ':' . $primitive,
+            fn (IFoo $interface, $primitive): string => $interface::class . ":$primitive",
             ['foo']
         );
         $this->assertSame(Bar::class . ':foo', $response);

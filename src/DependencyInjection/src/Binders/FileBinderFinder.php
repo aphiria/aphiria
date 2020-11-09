@@ -37,7 +37,7 @@ final class FileBinderFinder
     /**
      * Recursively finds all binder classes in the paths
      *
-     * @param string|array $paths The path or list of paths to search
+     * @param string|string[] $paths The path or list of paths to search
      * @return array<class-string> The list of all binder class names
      * @throws InvalidArgumentException Thrown if the paths are not a string or array
      * @throws ReflectionException Thrown if a class could not be reflected

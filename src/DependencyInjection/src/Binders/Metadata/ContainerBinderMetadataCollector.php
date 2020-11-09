@@ -166,6 +166,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
 
         // Use a long closure so that we can pass the instance in by reference
         return $this->container->for($this->currentContext, function (IContainer $container) use ($interface, &$instance) {
+            /** @psalm-suppress MixedArgument Psalm does not handle by-reference params in lambdas (#4507) - bug */
             return $container->tryResolve($interface, $instance);
         });
     }

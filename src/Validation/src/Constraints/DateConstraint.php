@@ -43,7 +43,7 @@ final class DateConstraint extends Constraint
     public function passes($value): bool
     {
         foreach ($this->acceptableFormats as $format) {
-            $dateTime = DateTime::createFromFormat($format, $value);
+            $dateTime = DateTime::createFromFormat($format, (string)$value);
 
             if ($dateTime !== false && $value === $dateTime->format($format)) {
                 return true;

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\UriTemplates\Compilers\Tries\Caching;
 
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
+use RuntimeException;
 
 /**
  * Defines the interface for trie caches to implement
@@ -28,6 +29,7 @@ interface ITrieCache
      * Gets the trie from cache
      *
      * @return TrieNode|null The trie if it existed in cache, otherwise null
+     * @throws RuntimeException Thrown if the trie isn't the expected type
      */
     public function get(): ?TrieNode;
 

@@ -17,6 +17,7 @@ use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\ObjectConstraints;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class FileObjectConstraintsRegistryCacheTest extends TestCase
 {
@@ -56,6 +57,14 @@ class FileObjectConstraintsRegistryCacheTest extends TestCase
     public function testGetOnMissReturnsNull(): void
     {
         $this->assertNull($this->cache->get());
+    }
+
+    public function testGettingFromCacheWithInvalidCachedDataThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Constraints must be instance of ' . ObjectConstraintsRegistry::class . ' or null');
+        \file_put_contents(self::PATH, '');
+        $this->cache->get();
     }
 
     public function testHasReturnsExistenceOfFile(): void

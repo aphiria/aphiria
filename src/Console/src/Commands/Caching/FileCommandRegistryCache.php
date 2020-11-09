@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Console\Commands\Caching;
 
 use Aphiria\Console\Commands\CommandRegistry;
+use RuntimeException;
 
 /**
  *
@@ -45,7 +46,13 @@ final class FileCommandRegistryCache implements ICommandRegistryCache
             return null;
         }
 
-        return \unserialize(\file_get_contents($this->path));
+        $commands = \unserialize(\file_get_contents($this->path));
+
+        if ($commands !== null && !$commands instanceof CommandRegistry) {
+            throw new RuntimeException('Commands must be instance of ' . CommandRegistry::class . ' or null');
+        }
+
+        return $commands;
     }
 
     /**

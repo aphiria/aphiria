@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Constraints\Caching;
 
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
+use RuntimeException;
 
 /**
  * Defines the constraint registry cache backed by file storage
@@ -45,7 +46,13 @@ final class FileObjectConstraintsRegistryCache implements IObjectConstraintsRegi
             return null;
         }
 
-        return \unserialize(\file_get_contents($this->path));
+        $constraints = \unserialize(\file_get_contents($this->path));
+
+        if ($constraints !== null && !$constraints instanceof ObjectConstraintsRegistry) {
+            throw new RuntimeException('Constraints must be instance of ' . ObjectConstraintsRegistry::class . ' or null');
+        }
+
+        return $constraints;
     }
 
     /**

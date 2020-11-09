@@ -19,8 +19,10 @@ use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\FileTrieCache;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\LiteralTrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\RootTrieNode;
+use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class FileTrieCacheTest extends TestCase
 {
@@ -77,6 +79,14 @@ class FileTrieCacheTest extends TestCase
     public function testGetOnMissReturnsNull(): void
     {
         $this->assertNull($this->cache->get());
+    }
+
+    public function testGettingFromCacheWithInvalidCachedDataThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Trie must be instance of ' . TrieNode::class . ' or null');
+        \file_put_contents(self::PATH, '');
+        $this->cache->get();
     }
 
     public function testHasReturnsExistenceOfFile(): void
