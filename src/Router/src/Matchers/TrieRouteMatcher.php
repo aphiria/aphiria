@@ -68,7 +68,7 @@ final class TrieRouteMatcher implements IRouteMatcher
      * @param int $segmentCount The length of the URI segments
      * @param int $segmentIter The current index of segments
      * @param string[] $hostSegments The list of URI host segments, which will be traversed if there's a host trie
-     * @param array<string, mixed> $routeVars The mapping of route variable names to values
+     * @param array<string, mixed> $routeVariables The mapping of route variable names to values
      * @return Generator<int, MatchedRouteCandidate> The list of matched route candidates
      */
     private static function getMatchCandidates(
@@ -77,19 +77,19 @@ final class TrieRouteMatcher implements IRouteMatcher
         int $segmentCount,
         int $segmentIter,
         array $hostSegments,
-        array $routeVars
+        array $routeVariables
     ): Generator {
         // Base case.  We iterate to 1 past the past segments because there are n + 1 levels of nodes due to the root node.
         if ($segmentIter === $segmentCount) {
             // If we're only matching paths
             if ($node->hostTrie === null) {
                 foreach ($node->routes as $route) {
-                    yield new MatchedRouteCandidate($route, $routeVars);
+                    yield new MatchedRouteCandidate($route, $routeVariables);
                 }
             } else {
                 // We have to traverse the host trie now
-                $routeVarsCopy = $routeVars;
-                yield from self::getMatchCandidates($node->hostTrie, $hostSegments, \count($hostSegments), 0, $hostSegments, $routeVarsCopy);
+                $routeVariablesCopy = $routeVariables;
+                yield from self::getMatchCandidates($node->hostTrie, $hostSegments, \count($hostSegments), 0, $hostSegments, $routeVariablesCopy);
             }
 
             return;
@@ -99,22 +99,22 @@ final class TrieRouteMatcher implements IRouteMatcher
 
         // Check for a literal segment match, and recursively check its descendants
         if (($childNode = ($node->literalChildrenByValue[\strtolower($segment)] ?? null)) !== null) {
-            $routeVarsCopy = $routeVars;
-            yield from self::getMatchCandidates($childNode, $segments, $segmentCount, $segmentIter + 1, $hostSegments, $routeVarsCopy);
+            $routeVariablesCopy = $routeVariables;
+            yield from self::getMatchCandidates($childNode, $segments, $segmentCount, $segmentIter + 1, $hostSegments, $routeVariablesCopy);
         }
 
         // If a variable child is a match, check its descendants
         foreach ($node->variableChildren as $childNode) {
-            $routeVarsCopy = $routeVars;
+            $routeVariablesCopy = $routeVariables;
 
-            if ($childNode->isMatch($segment, $routeVarsCopy)) {
+            if ($childNode->isMatch($segment, $routeVariablesCopy)) {
                 yield from self::getMatchCandidates(
                     $childNode,
                     $segments,
                     $segmentCount,
                     $segmentIter + 1,
                     $hostSegments,
-                    $routeVarsCopy
+                    $routeVariablesCopy
                 );
             }
         }

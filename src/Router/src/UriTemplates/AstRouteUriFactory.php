@@ -50,7 +50,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
     /**
      * @inheritdoc
      */
-    public function createRouteUri(string $routeName, array $routeVars = []): string
+    public function createRouteUri(string $routeName, array $routeVariables = []): string
     {
         if (($route = $this->routes->getNamedRoute($routeName)) === null) {
             throw new OutOfBoundsException("Route \"$routeName\" does not exist");
@@ -70,10 +70,10 @@ final class AstRouteUriFactory implements IRouteUriFactory
         foreach ($ast->children as $childAstNode) {
             switch ($childAstNode->type) {
                 case AstNodeTypes::HOST:
-                    $host = $this->compileHost($childAstNode, $routeVars);
+                    $host = $this->compileHost($childAstNode, $routeVariables);
                     break;
                 case AstNodeTypes::PATH:
-                    $path = $this->compilePath($childAstNode, $routeVars);
+                    $path = $this->compilePath($childAstNode, $routeVariables);
                     break;
             }
         }
@@ -96,10 +96,10 @@ final class AstRouteUriFactory implements IRouteUriFactory
      * Compiles the host from the AST
      *
      * @param AstNode $node The host AST node
-     * @param array<string, mixed> $routeVars The route variables
+     * @param array<string, mixed> $routeVariables The route variables
      * @return string The compiled host portion of the URI
      */
-    private function compileHost(AstNode $node, array &$routeVars): string
+    private function compileHost(AstNode $node, array &$routeVariables): string
     {
         $hostParts = [];
         $inOptionalRoutePart = $node->type === AstNodeTypes::OPTIONAL_ROUTE_PART;
@@ -126,18 +126,18 @@ final class AstRouteUriFactory implements IRouteUriFactory
                     break;
                 case AstNodeTypes::OPTIONAL_ROUTE_PART:
                     $inOptionalRoutePart = true;
-                    $hostParts[] = $this->compileHost($childNode, $routeVars);
+                    $hostParts[] = $this->compileHost($childNode, $routeVariables);
                     break;
                 case AstNodeTypes::VARIABLE:
-                    if (isset($routeVars[(string)$childNode->value])) {
+                    if (isset($routeVariables[(string)$childNode->value])) {
                         if (!empty($optionalSegmentBuffer)) {
                             // We've hit a defined variable, eg "[:foo.]bar.com", flush the buffer, eg "."
                             $hostParts[] = $optionalSegmentBuffer;
                             $optionalSegmentBuffer = '';
                         }
 
-                        $hostParts[] = (string)$routeVars[(string)$childNode->value];
-                        unset($routeVars[(string)$childNode->value]);
+                        $hostParts[] = (string)$routeVariables[(string)$childNode->value];
+                        unset($routeVariables[(string)$childNode->value]);
                         break;
                     }
 
@@ -158,10 +158,10 @@ final class AstRouteUriFactory implements IRouteUriFactory
      * Compiles the path from the AST
      *
      * @param AstNode $node The path AST node
-     * @param array<string, mixed> $routeVars The route variables
+     * @param array<string, mixed> $routeVariables The route variables
      * @return string The compiled path portion of the URI
      */
-    private function compilePath(AstNode $node, array &$routeVars): string
+    private function compilePath(AstNode $node, array &$routeVariables): string
     {
         $path = '';
         $inOptionalRoutePart = $node->type === AstNodeTypes::OPTIONAL_ROUTE_PART;
@@ -187,18 +187,18 @@ final class AstRouteUriFactory implements IRouteUriFactory
                     $path .= (string)$childNode->value;
                     break;
                 case AstNodeTypes::OPTIONAL_ROUTE_PART:
-                    $path .= $this->compilePath($childNode, $routeVars);
+                    $path .= $this->compilePath($childNode, $routeVariables);
                     break;
                 case AstNodeTypes::VARIABLE:
-                    if (isset($routeVars[(string)$childNode->value])) {
+                    if (isset($routeVariables[(string)$childNode->value])) {
                         // We've hit a defined variable, eg "/foo[/:bar]", flush the buffer, eg "/"
                         if (!empty($optionalSegmentBuffer)) {
                             $path .= $optionalSegmentBuffer;
                             $optionalSegmentBuffer = '';
                         }
 
-                        $path .= (string)$routeVars[(string)$childNode->value];
-                        unset($routeVars[(string)$childNode->value]);
+                        $path .= (string)$routeVariables[(string)$childNode->value];
+                        unset($routeVariables[(string)$childNode->value]);
                         break;
                     }
 
