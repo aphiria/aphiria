@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
+use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
 
@@ -36,10 +37,15 @@ class ResponseHeaderParser extends HeaderParser
 
         $cookies = [];
 
+        /**
+         * @var int $i
+         * @var string $setCookieHeader
+         */
         foreach ($setCookieHeaders as $i => $setCookieHeader) {
             $name = $value = $maxAge = $path = $domain = $sameSite = null;
             $isSecure = $isHttpOnly = false;
 
+            /** @var KeyValuePair $kvp */
             foreach ($this->parseParameters($headers, 'Set-Cookie', $i) as $kvp) {
                 switch ($kvp->getKey()) {
                     case 'Max-Age':
@@ -63,6 +69,7 @@ class ResponseHeaderParser extends HeaderParser
                     default:
                         // Treat the default value as the cookie name
                         $name = (string)$kvp->getKey();
+                        /** @psalm-suppress MixedAssignment The value could legitimately be mixed */
                         $value = $kvp->getValue();
                         break;
                 }

@@ -35,7 +35,7 @@ interface IDictionary extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Adds multiple values
      *
-     * @param array $values The values to add
+     * @param array<mixed, mixed> $values The values to add
      * @throws RuntimeException Thrown if the values' keys could not be calculated
      */
     public function addRange(array $values): void;
@@ -75,14 +75,14 @@ interface IDictionary extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Gets the list of keys in the dictionary
      *
-     * @return array The list of keys in the dictionary
+     * @return mixed[] The list of keys in the dictionary
      */
     public function getKeys(): array;
 
     /**
      * Gets the list of values in the dictionary
      *
-     * @return array The list of values in the dictionary
+     * @return mixed[] The list of values in the dictionary
      */
     public function getValues(): array;
 
@@ -97,7 +97,7 @@ interface IDictionary extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Gets all of the values as an array of key-value pairs
      *
-     * @return array All of the values as a list of key-value pairs
+     * @return array<mixed, mixed> All of the values as a list of key-value pairs
      */
     public function toArray(): array;
 

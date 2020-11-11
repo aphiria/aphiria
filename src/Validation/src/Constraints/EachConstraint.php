@@ -45,7 +45,8 @@ final class EachConstraint extends Constraint
             throw new InvalidArgumentException('Value must be iterable');
         }
 
-        foreach ($value as $key => $singleValue) {
+        /** @psalm-suppress MixedAssignment The single value is meant to be mixed */
+        foreach ($value as $singleValue) {
             foreach ($this->constraints as $constraint) {
                 if (!$constraint->passes($singleValue)) {
                     return false;

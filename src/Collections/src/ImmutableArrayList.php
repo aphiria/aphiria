@@ -22,14 +22,15 @@ use Traversable;
  */
 class ImmutableArrayList implements IImmutableList
 {
-    /** @var array The list of values */
+    /** @var mixed[] The list of values */
     protected array $values = [];
 
     /**
-     * @param array $values The list of values
+     * @param mixed[] $values The list of values
      */
     public function __construct(array $values)
     {
+        /** @psalm-suppress MixedAssignment Value is intentionally mixed */
         foreach ($values as $value) {
             $this->values[] = $value;
         }

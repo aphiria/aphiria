@@ -18,12 +18,12 @@ use InvalidArgumentException;
 /**
  * Defines a route constraint attribute
  */
-#[Attribute(Attribute::TARGET_CLASS|Attribute::TARGET_METHOD|Attribute::IS_REPEATABLE)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 final class RouteConstraint
 {
     /**
      * @param class-string $className The name of the constraint class
-     * @param array $constructorParameters The list of constructor parameters for the constraint class
+     * @param mixed[] $constructorParameters The list of constructor parameters for the constraint class
      * @throws InvalidArgumentException Thrown if any of the parameters are invalid
      */
     public function __construct(public string $className, public array $constructorParameters = [])

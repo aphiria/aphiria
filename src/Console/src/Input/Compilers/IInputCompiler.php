@@ -24,11 +24,11 @@ interface IInputCompiler
     /**
      * Compiles raw input
      *
-     * @param mixed $rawInput The raw input to compile
+     * @param string|array $rawInput The raw input to compile
      * @return Input The compiled input
      * @throws CommandNotFoundException Thrown if the input command was not found
      * @throws InvalidArgumentException Thrown if the input was not of the type the compiler was expecting
      * @throws RuntimeException Thrown if the input could not be compiled
      */
-    public function compile(mixed $rawInput): Input;
+    public function compile(string|array $rawInput): Input;
 }

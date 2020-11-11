@@ -76,7 +76,6 @@ class ContainerTest extends TestCase
         );
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithInterface::class, $instance1);
         $this->assertInstanceOf(Bar::class, $instance1->getFoo());
         $this->assertSame($instance1->getFoo(), $instance2->getFoo());
@@ -112,7 +111,6 @@ class ContainerTest extends TestCase
         $this->container->bindFactory(IFoo::class, fn () => new Bar(), true);
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithInterface::class, $instance1);
         $this->assertInstanceOf(Bar::class, $instance1->getFoo());
         $this->assertInstanceOf(Bar::class, $instance2->getFoo());
@@ -146,7 +144,7 @@ class ContainerTest extends TestCase
         $this->assertSame('foo', $instance->getPrimitive());
         $response = $this->container->callClosure(
             /** @psalm-suppress MissingClosureParamType Purposely testing without a param type */
-            fn (IFoo $interface, $primitive): string => $interface::class . ':' . $primitive,
+            fn (IFoo $interface, $primitive): string => $interface::class . ":$primitive",
             ['foo']
         );
         $this->assertSame(Bar::class . ':foo', $response);
@@ -282,7 +280,6 @@ class ContainerTest extends TestCase
     public function testCreatingPrototypeInstanceWithConcreteDependency(): void
     {
         $newInstance = $this->container->resolve(ConstructorWithConcreteClass::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithConcreteClass::class, $newInstance);
     }
 
@@ -290,7 +287,6 @@ class ContainerTest extends TestCase
     {
         $this->container->bindClass(ConstructorWithPrimitives::class, ConstructorWithPrimitives::class, ['foo', 'bar']);
         $instance = $this->container->resolve(ConstructorWithPrimitives::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithPrimitives::class, $instance);
         $this->assertNotSame(
             $instance,
@@ -312,7 +308,6 @@ class ContainerTest extends TestCase
             ['foo']
         );
         $instance = $this->container->resolve(ConstructorWithDefaultValuePrimitives::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithDefaultValuePrimitives::class, $instance);
         $this->assertNotSame(
             $instance,
@@ -323,7 +318,6 @@ class ContainerTest extends TestCase
     public function testCreatingSingletonInstanceWithConcreteDependency(): void
     {
         $sharedInstance = $this->container->resolve(ConstructorWithConcreteClass::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithConcreteClass::class, $sharedInstance);
     }
 
@@ -331,7 +325,6 @@ class ContainerTest extends TestCase
     {
         $this->container->bindClass(ConstructorWithPrimitives::class, ConstructorWithPrimitives::class, ['foo', 'bar'], true);
         $instance = $this->container->resolve(ConstructorWithPrimitives::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithPrimitives::class, $instance);
         $this->assertSame(
             $instance,
@@ -348,7 +341,6 @@ class ContainerTest extends TestCase
             true
         );
         $instance = $this->container->resolve(ConstructorWithDefaultValuePrimitives::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithDefaultValuePrimitives::class, $instance);
         $this->assertSame(
             $instance,
@@ -423,7 +415,6 @@ class ContainerTest extends TestCase
         $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance2 */
         $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithMixOfInterfacesAndPrimitives::class, $instance1);
         $this->assertSame($instance1, $instance2);
         $this->assertSame(23, $instance1->getId());
@@ -446,7 +437,6 @@ class ContainerTest extends TestCase
         $instance = $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
             return $container->resolve(IFoo::class);
         });
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(IFoo::class, $instance);
     }
 
@@ -470,7 +460,6 @@ class ContainerTest extends TestCase
         );
         /** @var ConstructorWithMixOfConcreteClassesAndPrimitives $instance */
         $instance = $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithMixOfConcreteClassesAndPrimitives::class, $instance);
         $this->assertSame(23, $instance->getId());
         $this->assertNotSame($instance, $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class));
@@ -486,10 +475,7 @@ class ContainerTest extends TestCase
             true
         );
         $instance = $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class);
-        /**
-         * @var ConstructorWithMixOfConcreteClassesAndPrimitives $newInstance
-         * @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime
-         */
+        /** @var ConstructorWithMixOfConcreteClassesAndPrimitives $newInstance */
         $this->assertInstanceOf(ConstructorWithMixOfConcreteClassesAndPrimitives::class, $instance);
         $this->assertSame(23, $instance->getId());
         $this->assertSame($instance, $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class));
@@ -520,7 +506,6 @@ class ContainerTest extends TestCase
     public function testResolvingClassWithNullableObjectInConstructorThatCannotBeResolvedUsesNull(): void
     {
         $instance = $this->container->resolve(ConstructorWithNullableObject::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithNullableObject::class, $instance);
         $this->assertNull($instance->getFoo());
     }
@@ -528,7 +513,6 @@ class ContainerTest extends TestCase
     public function testResolvingClassWithObjectInConstructorThatCannotBeResolvedUsesDefaultValueIfAvailable(): void
     {
         $instance = $this->container->resolve(ConstructorWithDefaultValueObject::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithDefaultValueObject::class, $instance);
         $this->assertInstanceOf(DateTime::class, $instance->getFoo());
     }
@@ -672,7 +656,6 @@ class ContainerTest extends TestCase
         $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance2 */
         $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
-        /** @psalm-suppress RedundantConditionGivenDocblockType We want to verify the type at runtime */
         $this->assertInstanceOf(ConstructorWithMixOfInterfacesAndPrimitives::class, $instance1);
         $this->assertSame($instance1, $instance2);
         $this->assertSame(23, $instance1->getId());

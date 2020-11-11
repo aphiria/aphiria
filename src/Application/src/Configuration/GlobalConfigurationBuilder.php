@@ -12,12 +12,14 @@ declare(strict_types=1);
 
 namespace Aphiria\Application\Configuration;
 
+use Closure;
+
 /**
  * Defines the global configuration builder
  */
 class GlobalConfigurationBuilder
 {
-    /** @var array The list of structs that store data about the configuration sources */
+    /** @var array<array-key, array{type: string, value: IConfiguration|Closure(): IConfiguration}> The list of structs that store data about the configuration sources */
     private array $configurationSourceStructs = [];
     /** @var IConfigurationFileReader The PHP configuration file reader */
     private IConfigurationFileReader $phpConfigurationFileReader;
@@ -38,6 +40,9 @@ class GlobalConfigurationBuilder
 
     /**
      * Builds the global configuration
+     *
+     * @psalm-suppress PossiblyInvalidArgument The "value" will always be an instance of IConfiguration
+     * @psalm-suppress PossiblyInvalidFunctionCall The "value" will always resolve an instance of IConfiguration
      */
     public function build(): void
     {
@@ -78,6 +83,8 @@ class GlobalConfigurationBuilder
         /**
          * We delay grabbing the environment variables until we're building the configuration.  This allows us to
          * populate the environment variables (eg in a bootstrapper) prior to adding a configuration with those values.
+         *
+         * @var array<string, mixed> $_ENV
          */
         $this->configurationSourceStructs[] = ['type' => 'factory', 'value' => fn (): HashTableConfiguration => new HashTableConfiguration($_ENV)];
 

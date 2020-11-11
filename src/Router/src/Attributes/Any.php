@@ -30,6 +30,7 @@ final class Any extends Route
         bool $isHttpsOnly = false,
         array $parameters = []
     ) {
+        /** @psalm-suppress MixedArgumentTypeCoercion Psalm is not pulling array types from inheritdoc (#4504) - bug */
         parent::__construct([], $path, $host, $name, $isHttpsOnly, $parameters);
     }
 }

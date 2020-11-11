@@ -23,7 +23,7 @@ final class Style
      * The list of possible foreground colors
      *
      * @link http://en.wikipedia.org/wiki/ANSI_escape_code
-     * @var array
+     * @var array<string, array{0: int, 1: int}>
      */
     private static array $supportedForegroundColors = [
         Colors::BLACK => [30, 39],
@@ -39,7 +39,7 @@ final class Style
      * The list of possible background colors
      *
      * @link http://en.wikipedia.org/wiki/ANSI_escape_code
-     * @var array
+     * @var array<string, array{0: int, 1: int}>
      */
     private static array $supportedBackgroundColors = [
         Colors::BLACK => [40, 49],
@@ -55,7 +55,7 @@ final class Style
      * The list of possible text styles
      *
      * @link http://en.wikipedia.org/wiki/ANSI_escape_code
-     * @var array
+     * @var array<string, array{0: int, 1: int}>
      */
     private static array $supportedTextStyles = [
         TextStyles::BOLD => [1, 22],
@@ -66,7 +66,7 @@ final class Style
     /**
      * @param string|null $foregroundColor The foreground color
      * @param string|null $backgroundColor The background color
-     * @param array $textStyles The list of text styles to apply
+     * @param string[] $textStyles The list of text styles to apply
      */
     public function __construct(
         public ?string $foregroundColor = null,
@@ -97,7 +97,7 @@ final class Style
     /**
      * Adds multiple text styles
      *
-     * @param array $styles The names of the text styles
+     * @param string[] $styles The names of the text styles
      * @throws InvalidArgumentException Thrown if the text styles do not exist
      */
     public function addTextStyles(array $styles): void

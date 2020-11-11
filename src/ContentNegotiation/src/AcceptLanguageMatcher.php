@@ -120,7 +120,7 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
      * Gets the language values from a list of headers
      *
      * @param AcceptLanguageHeaderValue[] $headers The list of language headers
-     * @return array The list of language values from the headers
+     * @return string[] The list of language values from the headers
      */
     private function getLanguageValuesFromHeaders(array $headers): array
     {

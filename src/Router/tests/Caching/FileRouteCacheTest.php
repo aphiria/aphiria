@@ -20,6 +20,7 @@ use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class FileRouteCacheTest extends TestCase
 {
@@ -71,6 +72,14 @@ class FileRouteCacheTest extends TestCase
     public function testGetOnMissReturnsNull(): void
     {
         $this->assertNull($this->cache->get());
+    }
+
+    public function testGettingFromCacheWithInvalidCachedDataThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Routes must be instance of ' . RouteCollection::class . ' or null');
+        \file_put_contents(self::PATH, '');
+        $this->cache->get();
     }
 
     public function testHasReturnsExistenceOfFile(): void

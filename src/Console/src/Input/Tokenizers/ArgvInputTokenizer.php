@@ -27,11 +27,12 @@ final class ArgvInputTokenizer implements IInputTokenizer
         $tokens = \is_string($input) ? [$input] : $input;
 
         // Remove the application name
-        array_shift($tokens);
+        \array_shift($tokens);
 
+        /** @var string $token */
         foreach ($tokens as &$token) {
             // We don't use stripslashes() because we want to backslashes when they're not escaping quotes
-            $token = str_replace(["\\'", '\\"'], ["'", '"'], $token);
+            $token = \str_replace(["\\'", '\\"'], ["'", '"'], $token);
         }
 
         return $tokens;

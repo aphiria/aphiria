@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\DependencyInjection\Binders\Metadata\Caching;
 
 use Aphiria\DependencyInjection\Binders\Metadata\BinderMetadataCollection;
+use RuntimeException;
 
 /**
  * Defines the binder metadata collection cache that's backed by file storage
@@ -47,7 +48,13 @@ final class FileBinderMetadataCollectionCache implements IBinderMetadataCollecti
             return null;
         }
 
-        return \unserialize(\base64_decode($rawContents));
+        $binderMetadatas = \unserialize(\base64_decode($rawContents));
+
+        if ($binderMetadatas !== null && !$binderMetadatas instanceof BinderMetadataCollection) {
+            throw new RuntimeException('Binder metadatas must be instance of ' . BinderMetadataCollection::class . ' or null');
+        }
+
+        return $binderMetadatas;
     }
 
     /**

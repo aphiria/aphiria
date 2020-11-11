@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
+use Aphiria\Collections\KeyValuePair;
 use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
 
@@ -20,7 +21,7 @@ use Aphiria\IO\Streams\Stream;
  */
 class StreamResponseWriter implements IResponseWriter
 {
-    /** @var array The hash table of headers that should not concatenate multiple values */
+    /** @var array<string, true> The hash table of headers that should not concatenate multiple values */
     protected static array $headersToNotConcatenate = ['Set-Cookie' => true, 'Www-Authenticate' => true, 'Proxy-Authenticate' => true];
     /** @var IStream The output stream to write the body to */
     private IStream $outputStream;
@@ -70,15 +71,17 @@ class StreamResponseWriter implements IResponseWriter
 
         $this->header($startLine);
 
+        /** @var KeyValuePair $kvp */
         foreach ($response->getHeaders() as $kvp) {
-            $headerName = $kvp->getKey();
+            $headerName = (string)$kvp->getKey();
 
             if (isset(self::$headersToNotConcatenate[$headerName])) {
+                /** @var string $headerValue */
                 foreach ($kvp->getValue() as $headerValue) {
                     $this->header("$headerName: $headerValue", false);
                 }
             } else {
-                $this->header("$headerName: " . implode(', ', $kvp->getValue()));
+                $this->header("$headerName: " . implode(', ', (array)$kvp->getValue()));
             }
         }
 

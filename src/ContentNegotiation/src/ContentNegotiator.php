@@ -102,6 +102,7 @@ final class ContentNegotiator implements IContentNegotiator
         $contentTypeHeader = $this->headerParser->parseContentTypeHeader($requestHeaders);
         $language = null;
         $requestHeaders->tryGetFirst('Content-Language', $language);
+        /** @var string|null $language */
 
         if ($contentTypeHeader === null) {
             // We cannot negotiate the request content

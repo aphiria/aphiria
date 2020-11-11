@@ -17,11 +17,11 @@ namespace Aphiria\Routing\UriTemplates\Constraints;
  */
 final class NotInConstraint implements IRouteVariableConstraint
 {
-    /** @var array The list of unacceptable values */
+    /** @var mixed[] The list of unacceptable values */
     private array $unacceptableValues;
 
     /**
-     * @param array $unacceptableValues The list of unacceptable values
+     * @param mixed[] $unacceptableValues The list of unacceptable values
      */
     public function __construct(...$unacceptableValues)
     {

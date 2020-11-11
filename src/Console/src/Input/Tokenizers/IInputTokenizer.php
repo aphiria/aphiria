@@ -22,8 +22,8 @@ interface IInputTokenizer
     /**
      * Tokenizes an input string
      *
-     * @param string|array $input The input to tokenize
-     * @return array The list of tokens
+     * @param string|array<array-key, mixed> $input The input to tokenize
+     * @return mixed[] The list of tokens
      * @throws InvalidArgumentException Thrown if the input was invalid
      */
     public function tokenize(string|array $input): array;

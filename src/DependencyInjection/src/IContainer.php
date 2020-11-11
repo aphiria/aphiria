@@ -25,7 +25,7 @@ interface IContainer extends IServiceResolver
      * @template T
      * @param array<class-string<T>>|class-string<T> $interfaces The interface or interfaces to bind to
      * @param class-string<T> $concreteClass The concrete class to bind to the interface
-     * @param array $primitives The list of primitives to inject (must be in same order they appear in constructor),
+     * @param mixed[] $primitives The list of primitives to inject (must be in same order they appear in constructor),
      * @param bool $resolveAsSingleton Whether or not to resolve the class as a singleton
      */
     public function bindClass(
@@ -38,7 +38,7 @@ interface IContainer extends IServiceResolver
     /**
      * Binds a factory that will return a concrete instance of the interface
      *
-     * @template T
+     * @template T of object
      * @param array<class-string<T>>|class-string<T> $interfaces The interface or interfaces to bind to
      * @param callable(): T $factory The factory to bind
      * @param bool $resolveAsSingleton Whether or not to resolve the factory as a singleton
@@ -58,7 +58,7 @@ interface IContainer extends IServiceResolver
      * Resolves a closure's parameters and calls it
      *
      * @param Closure $closure The closure to resolve
-     * @param array $primitives The list of primitives to inject (must be in same order they appear in closure)
+     * @param mixed[] $primitives The list of primitives to inject (must be in same order they appear in closure)
      * @return mixed The result of the call
      * @throws CallException Thrown if there was an error calling the method
      */
@@ -69,7 +69,7 @@ interface IContainer extends IServiceResolver
      *
      * @param object|class-string $instance The instance (or class name if the method is static) whose method we're calling
      * @param string $methodName The name of the method we're calling
-     * @param array $primitives The list of primitives to inject (must be in same order they appear in closure)
+     * @param mixed[] $primitives The list of primitives to inject (must be in same order they appear in closure)
      * @param bool $ignoreMissingMethod Whether or not we ignore if the method does not exist
      * @return mixed The result of the call
      * @throws CallException Thrown if there was an error calling the method

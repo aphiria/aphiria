@@ -52,7 +52,7 @@ interface IMediaTypeFormatter
     /**
      * Gets the list of character encodings this formatter supports
      *
-     * @return array The list of supported character encodings
+     * @return string[] The list of supported character encodings
      */
     public function getSupportedEncodings(): array;
 
@@ -60,7 +60,7 @@ interface IMediaTypeFormatter
      * Gets the list of media types this formatter supports
      * These media types are listed in the order of preference by the formatter
      *
-     * @return array The list of supported media types
+     * @return string[] The list of supported media types
      */
     public function getSupportedMediaTypes(): array;
 

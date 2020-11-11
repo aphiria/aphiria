@@ -83,6 +83,7 @@ class RouteActionInvoker implements IRouteActionInvoker
 
         try {
             foreach ($reflectionFunction->getParameters() as $reflectionParameter) {
+                /** @psalm-suppress MixedAssignment The resolved parameter could legitimately be mixed */
                 $resolvedParameter = $this->controllerParameterResolver->resolveParameter(
                     $reflectionParameter,
                     $request,
@@ -93,6 +94,7 @@ class RouteActionInvoker implements IRouteActionInvoker
                     $this->requestBodyValidator->validate($request, $resolvedParameter);
                 }
 
+                /** @psalm-suppress MixedAssignment The resolved parameter could legitimately be mixed */
                 $resolvedParameters[] = $resolvedParameter;
 
                 if (\is_object($resolvedParameter)) {
@@ -122,6 +124,7 @@ class RouteActionInvoker implements IRouteActionInvoker
             );
         }
 
+        /** @var array|float|int|object|string|null $actionResult */
         $actionResult = $routeActionDelegate(...$resolvedParameters);
 
         if ($actionResult instanceof IResponse) {

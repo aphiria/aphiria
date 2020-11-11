@@ -59,6 +59,7 @@ final class ValidationBinder extends Binder
         $errorMessageTemplateConfiguration = null;
 
         if (GlobalConfiguration::tryGetArray('aphiria.validation.errorMessageTemplates', $errorMessageTemplateConfiguration)) {
+            /** @var array{type: class-string} $errorMessageTemplateConfiguration */
             if (!isset($errorMessageTemplateConfiguration['type'])) {
                 throw new InvalidArgumentException('Missing key "type" from error message template config');
             }
@@ -84,7 +85,7 @@ final class ValidationBinder extends Binder
             case IcuFormatErrorMessageInterpolator::class:
                 $errorMessageInterpolator = new IcuFormatErrorMessageInterpolator(
                     $errorMessageTemplates,
-                    $errorMessageInterpolatorConfiguration['defaultLocale'] ?? 'en'
+                    (string)($errorMessageInterpolatorConfiguration['defaultLocale'] ?? 'en')
                 );
                 break;
             default:
@@ -94,6 +95,7 @@ final class ValidationBinder extends Binder
         $container->bindInstance(IErrorMessageInterpolator::class, $errorMessageInterpolator);
 
         // Register some constraint attribute dependencies
+        /** @psalm-suppress MixedArgumentTypeCoercion We will assume this contains an array of strings */
         $constraintAttributeRegistrant = new AttributeObjectConstraintsRegistrant(
             GlobalConfiguration::getArray('aphiria.validation.attributePaths')
         );

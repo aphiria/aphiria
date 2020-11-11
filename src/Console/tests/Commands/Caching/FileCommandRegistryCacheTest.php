@@ -19,6 +19,7 @@ use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class FileCommandRegistryCacheTest extends TestCase
 {
@@ -61,6 +62,14 @@ class FileCommandRegistryCacheTest extends TestCase
     public function testGetOnMissReturnsNull(): void
     {
         $this->assertNull($this->cache->get());
+    }
+
+    public function testGettingFromCacheWithInvalidCachedDataThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Commands must be instance of ' . CommandRegistry::class . ' or null');
+        \file_put_contents(self::PATH, '');
+        $this->cache->get();
     }
 
     public function testHasReturnsExistenceOfFile(): void

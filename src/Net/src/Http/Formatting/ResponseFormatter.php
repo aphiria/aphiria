@@ -113,7 +113,7 @@ class ResponseFormatter
      * Writes JSON to the response
      *
      * @param IResponse $response The response to write to
-     * @param array $content The JSON to write
+     * @param array<mixed, mixed> $content The JSON to write
      * @throws InvalidArgumentException Thrown if the input JSON is incorrectly formatted
      * @throws RuntimeException Thrown if the content type header's hash key could not be calculated
      */

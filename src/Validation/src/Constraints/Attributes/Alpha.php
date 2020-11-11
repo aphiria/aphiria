@@ -18,7 +18,7 @@ use Attribute;
 /**
  * Defines the alpha constraint attribute
  */
-#[Attribute(Attribute::TARGET_METHOD|Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_PROPERTY)]
 final class Alpha extends ConstraintAttribute
 {
     /**

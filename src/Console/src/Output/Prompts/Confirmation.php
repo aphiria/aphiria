@@ -29,13 +29,21 @@ class Confirmation extends Question
     /**
      * @inheritdoc
      */
-    public function formatAnswer($answer): bool
+    public function formatAnswer(mixed $answer): bool
     {
         if (\is_bool($answer)) {
             return $answer;
         }
 
-        // Accept anything that begins with "y" like "y", "yes", and "YES"
-        return mb_strtolower($answer[0]) === 'y';
+        if (\is_int($answer)) {
+            return $answer === 1;
+        }
+
+        if (\is_string($answer)) {
+            // Accept anything that begins with "y" like "y", "yes", and "YES"
+            return \mb_strtolower($answer[0]) === 'y';
+        }
+
+        return false;
     }
 }

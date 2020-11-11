@@ -55,7 +55,7 @@ class MiddlewareComponent implements IComponent
             }
 
             if ($middleware instanceof ParameterizedMiddleware) {
-                $middleware->setParameters($middlewareBinding->attributes);
+                $middleware->setParameters($middlewareBinding->parameters);
             }
 
             $middlewareCollection->add($middleware, $middlewareConfig['priority']);

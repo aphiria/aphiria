@@ -18,7 +18,7 @@ use Attribute;
 /**
  * Defines the regex constraint attribute
  */
-#[Attribute(Attribute::TARGET_METHOD|Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_PROPERTY)]
 final class Regex extends ConstraintAttribute
 {
     /**

@@ -39,8 +39,8 @@ class TableFormatter
     /**
      * Formats the table into a string
      *
-     * @param array $rows The list of rows
-     * @param array $headers The list of headers
+     * @param array<int, mixed> $rows The list of rows
+     * @param mixed[] $headers The list of headers
      * @return string The formatted table
      */
     public function format(array $rows, array $headers = []): string
@@ -49,13 +49,14 @@ class TableFormatter
             return '';
         }
 
-        foreach ($rows as &$row) {
-            $row = (array)$row;
+        // Normalize all rows to be an array
+        /** @psalm-suppress MixedAssignment Each row could be a mixed value */
+        foreach ($rows as $rowIndex => $row) {
+            $rows[$rowIndex] = (array)$rows[$rowIndex];
         }
 
-        unset($row);
-
         // If there are headers, we want them to be formatted along with the rows
+        /** @var array<int, array> $headersAndRows */
         $headersAndRows = \count($headers) === 0 ? $rows : [...[$headers], ...$rows];
         $maxLengths = $this->padding->normalizeColumns($headersAndRows);
         $eolChar = $this->padding->getEolChar();

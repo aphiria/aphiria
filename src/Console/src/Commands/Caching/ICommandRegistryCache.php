@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Console\Commands\Caching;
 
 use Aphiria\Console\Commands\CommandRegistry;
+use RuntimeException;
 
 /**
  * Defines the interface for command registry caches to implement
@@ -28,6 +29,7 @@ interface ICommandRegistryCache
      * Gets the commands from cache
      *
      * @return CommandRegistry|null The commands if they existed in cache, otherwise null
+     * @throws RuntimeException Thrown if the cached registry isn't the expected type
      */
     public function get(): ?CommandRegistry;
 

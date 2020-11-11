@@ -33,12 +33,12 @@ class ConsoleExceptionRendererTest extends TestCase
     public function testRenderingExceptionWithManyRegisteredOutputWritersWritesMessagesAndReturnsStatusCodes(): void
     {
         $this->exceptionRenderer->registerManyOutputWriters([
-            Exception::class => function (Exception $ex, IOutput $output) {
+            Exception::class => function (Exception $ex, IOutput $output): int {
                 $output->writeln('foo');
 
                 return 0;
             },
-            InvalidArgumentException::class => function (InvalidArgumentException $ex, IOutput $output) {
+            InvalidArgumentException::class => function (InvalidArgumentException $ex, IOutput $output): int {
                 $output->writeln('bar');
 
                 return 1;

@@ -30,6 +30,7 @@ final class Post extends Route
         bool $isHttpsOnly = false,
         array $parameters = []
     ) {
+        /** @psalm-suppress MixedArgumentTypeCoercion Psalm does not pass array types via inheritdoc (#4504) - bug */
         parent::__construct(['POST'], $path, $host, $name, $isHttpsOnly, $parameters);
     }
 }

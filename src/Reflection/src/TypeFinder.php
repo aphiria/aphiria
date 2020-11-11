@@ -18,6 +18,7 @@ use IteratorIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
+use SplFileInfo;
 
 /**
  * Defines the type finder that uses the file system to search for classes
@@ -56,11 +57,9 @@ final class TypeFinder implements ITypeFinder
     {
         $subTypes = [];
 
-        /** @var class-string $type Need this because of a Psalm bug */
         foreach ($this->findAllTypes($directories, $recursive) as $type) {
             $reflectionType = new ReflectionClass($type);
 
-            /** @var class-string $parentType Need this because of a Psalm bug */
             if ($reflectionType->isSubclassOf($parentType)) {
                 $subTypes[] = $type;
             }
@@ -106,6 +105,7 @@ final class TypeFinder implements ITypeFinder
                 $fileIter = new IteratorIterator(new DirectoryIterator($directory));
             }
 
+            /** @var SplFileInfo $file */
             foreach ($fileIter as $file) {
                 if ($file->getExtension() !== 'php') {
                     continue;

@@ -245,7 +245,7 @@ class Uri
         return preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
             static function (array $match): string {
-                return rawurlencode($match[0]);
+                return rawurlencode((string)$match[0]);
             },
             $path
         );
@@ -267,7 +267,7 @@ class Uri
         return preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
             static function (array $match): string {
-                return rawurlencode($match[0]);
+                return rawurlencode((string)$match[0]);
             },
             $queryString
         );

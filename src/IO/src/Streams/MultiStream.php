@@ -214,7 +214,7 @@ final class MultiStream implements IStream
         // We don't use a for loop because it complicates $this->streamIndex on the last iteration
         foreach ($this->streams as $streamIndex => $stream) {
             $buffer .= $stream->readToEnd();
-            $this->streamIndex = $streamIndex;
+            $this->streamIndex = (int)$streamIndex;
         }
 
         $this->position = $this->getLength() ?? 0;
@@ -262,7 +262,7 @@ final class MultiStream implements IStream
 
         // We don't use a for loop because it complicates $this->streamIndex on the last iteration
         foreach ($this->streams as $streamIndex => $stream) {
-            $this->streamIndex = $streamIndex;
+            $this->streamIndex = (int)$streamIndex;
             $currStreamLength = $stream->getLength() ?? 0;
 
             // Check if this is the stream that contains the desired offset

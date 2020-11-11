@@ -76,7 +76,7 @@ EOF;
             /** @var Command $command */
             $command = null;
 
-            if (!$this->commands->tryGetCommand($input->arguments['command'], $command)) {
+            if (!$this->commands->tryGetCommand((string)$input->arguments['command'], $command)) {
                 throw new InvalidArgumentException(
                     "Command \"{$input->arguments['command']}\" is not registered"
                 );

@@ -175,7 +175,7 @@ class ValidationBinderTest extends TestCase
     /**
      * Gets the base config
      *
-     * @return array The base config
+     * @return array<string, mixed> The base config
      */
     private static function getBaseConfig(): array
     {

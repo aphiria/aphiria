@@ -130,10 +130,10 @@ EOF;
 
                 // If this is the first command of its category, display the category
                 if (
-                    isset($firstCommandNamesToCategories[trim($row[0])])
-                    && \in_array(\trim($row[0]), $categorizedCommandNames, true)
+                    isset($firstCommandNamesToCategories[\trim((string)$row[0])])
+                    && \in_array(\trim((string)$row[0]), $categorizedCommandNames, true)
                 ) {
-                    $output .= "<comment>{$firstCommandNamesToCategories[trim($row[0])]}</comment>" . PHP_EOL;
+                    $output .= "<comment>{$firstCommandNamesToCategories[\trim((string)$row[0])]}</comment>" . PHP_EOL;
                 }
 
                 $output .= "  <info>{$row[0]}</info>";

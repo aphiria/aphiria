@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Caching;
 
 use Aphiria\Routing\RouteCollection;
+use RuntimeException;
 
 /**
  * Defines the interface for route caches to implement
@@ -28,6 +29,7 @@ interface IRouteCache
      * Gets the routes from cache
      *
      * @return RouteCollection|null The routes if they existed in cache, otherwise null
+     * @throws RuntimeException Thrown if the cached routes aren't the expected type
      */
     public function get(): ?RouteCollection;
 

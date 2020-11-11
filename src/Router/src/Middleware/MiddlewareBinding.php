@@ -19,7 +19,7 @@ final class MiddlewareBinding
 {
     /**
      * @param class-string $className The name of the middleware class
-     * @param array $parameters The name => value mapping of parameters bound to the middleware
+     * @param array<string, mixed> $parameters The name => value mapping of parameters bound to the middleware
      */
     public function __construct(public string $className, public array $parameters = [])
     {

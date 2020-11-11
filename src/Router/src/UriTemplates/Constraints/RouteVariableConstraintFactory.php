@@ -28,7 +28,7 @@ final class RouteVariableConstraintFactory
      * Creates a constraint for the given slug
      *
      * @param string $slug The slug for the constraint to create
-     * @param array $parameters The list of params to pass into the factory
+     * @param mixed[] $parameters The list of params to pass into the factory
      * @return IRouteVariableConstraint An instance of the constraint
      * @throws InvalidArgumentException Thrown if there's no factory registered for the slug
      * @throws RuntimeException Thrown if the factory does not return an instance of a constraint
@@ -41,6 +41,7 @@ final class RouteVariableConstraintFactory
 
         $constraint = $this->factories[$slug](...$parameters);
 
+        /** @psalm-suppress DocblockTypeContradiction We purposely want to check the type at runtime */
         if (!$constraint instanceof IRouteVariableConstraint) {
             throw new RuntimeException(
                 "Factory for constraint \"$slug\" does not return an instance of " . IRouteVariableConstraint::class

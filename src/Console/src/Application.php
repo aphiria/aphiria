@@ -19,6 +19,7 @@ use Aphiria\Console\Commands\Defaults\AboutCommandHandler;
 use Aphiria\Console\Commands\Defaults\HelpCommand;
 use Aphiria\Console\Commands\Defaults\HelpCommandHandler;
 use Aphiria\Console\Commands\ICommandBus;
+use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Compilers\CommandNotFoundException;
 use Aphiria\Console\Input\Compilers\IInputCompiler;
 use Aphiria\Console\Input\Compilers\InputCompiler;
@@ -73,8 +74,9 @@ class Application implements ICommandBus
                 throw new InvalidArgumentException("Command \"{$compiledInput->commandName}\" is not registered");
             }
 
-            $statusCode = $this->commandHandlerResolver->resolve($binding->commandHandlerClassName)
-                ->handle($compiledInput, $output);
+            /** @var ICommandHandler $commandHandler */
+            $commandHandler = $this->commandHandlerResolver->resolve($binding->commandHandlerClassName);
+            $statusCode = $commandHandler->handle($compiledInput, $output);
 
             return $statusCode ?? StatusCodes::OK;
         } catch (CommandNotFoundException $ex) {
@@ -90,8 +92,9 @@ class Application implements ICommandBus
                 }
 
                 $output = $output ?? new ConsoleOutput();
-                $this->commandHandlerResolver->resolve($aboutCommandHandlerClassName)
-                    ->handle(new Input('about', [], []), $output);
+                /** @var ICommandHandler $commandHandler */
+                $commandHandler = $this->commandHandlerResolver->resolve($aboutCommandHandlerClassName);
+                $commandHandler->handle(new Input('about', [], []), $output);
 
                 return StatusCodes::OK;
             }

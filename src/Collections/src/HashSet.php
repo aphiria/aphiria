@@ -21,13 +21,13 @@ use Traversable;
  */
 class HashSet implements ISet
 {
-    /** @var array The set of values */
+    /** @var array<string, mixed> The set of values */
     protected array $values = [];
     /** @var KeyHasher The key hasher to use */
     private KeyHasher $keyHasher;
 
     /**
-     * @param array $values The set of values
+     * @param mixed[] $values The set of values
      */
     public function __construct(array $values = [])
     {
@@ -48,6 +48,7 @@ class HashSet implements ISet
      */
     public function addRange(array $values): void
     {
+        /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
         foreach ($values as $value) {
             $this->add($value);
         }
@@ -93,6 +94,7 @@ class HashSet implements ISet
         $intersectedValues = [];
 
         // We don't use array_intersect because that does string comparisons, which requires __toString()
+        /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
         foreach ($this->values as $value) {
             if (\in_array($value, $values, true)) {
                 $intersectedValues[] = $value;
@@ -116,6 +118,7 @@ class HashSet implements ISet
      */
     public function sort(callable $comparer): void
     {
+        /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
         usort($this->values, $comparer);
     }
 

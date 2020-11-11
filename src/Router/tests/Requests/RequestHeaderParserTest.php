@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 
 class RequestHeaderParserTest extends TestCase
 {
-    /** @var array The $_SERVER super global to use */
+    /** @var array<string, mixed> The $_SERVER super global to use */
     private static array $serverArray = [
         'NON_HEADER' => 'foo',
         'CONTENT_LENGTH' => 4,
@@ -31,6 +31,7 @@ class RequestHeaderParserTest extends TestCase
         'HTTP_REFERER' => 'referer',
         'HTTP_USER_AGENT' => 'user_agent'
     ];
+    /** @var RequestHeaderParser The header parser */
     private RequestHeaderParser $headerParser;
 
     protected function setUp(): void

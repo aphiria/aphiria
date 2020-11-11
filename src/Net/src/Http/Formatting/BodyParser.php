@@ -30,9 +30,9 @@ use RuntimeException;
  */
 class BodyParser
 {
-    /** @var array The mapping of body hash IDs to their parsed form input */
+    /** @var array<string, HashTable> The mapping of body hash IDs to their parsed form input */
     private array $parsedFormInputCache = [];
-    /** @var array The mapping of body hash IDs to their parsed MIME types */
+    /** @var array<string, string> The mapping of body hash IDs to their parsed MIME types */
     private array $parsedMimeTypeCache = [];
 
     /**
@@ -91,6 +91,7 @@ class BodyParser
         \parse_str($body->readAsString(), $formInputArray);
         $kvps = [];
 
+        /** @psalm-suppress MixedAssignment Value here really could be mixed */
         foreach ($formInputArray as $key => $value) {
             $kvps[] = new KeyValuePair($key, $value);
         }
@@ -106,7 +107,7 @@ class BodyParser
      * Attempts to read the request body as JSON
      *
      * @param IBody|null $body The body to parse
-     * @return array The request body as JSON
+     * @return array<array-key, mixed> The request body as JSON
      * @throws RuntimeException Thrown if the body could not be read as JSON
      */
     public function readAsJson(?IBody $body): array
@@ -116,6 +117,7 @@ class BodyParser
         }
 
         try {
+            /** @var array<array-key, mixed> $json */
             $json = \json_decode($body->readAsString(), true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $ex) {
             throw new RuntimeException('Body could not be decoded as JSON', 0, $ex);

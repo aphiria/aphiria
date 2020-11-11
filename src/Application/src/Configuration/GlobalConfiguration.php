@@ -36,7 +36,7 @@ class GlobalConfiguration
      * Gets the array value at the path
      *
      * @param string $path The period-delimited path to the value in the config to get
-     * @return array The value at the path
+     * @return array<mixed, mixed> The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws MissingConfigurationValueException Thrown if there was no value at the input path
      * @psalm-suppress InvalidNullableReturnType The value will always be set, or an exception will be thrown
@@ -313,6 +313,7 @@ class GlobalConfiguration
         self::validateConfigurationSources();
 
         try {
+            /** @psalm-suppress MixedAssignment This is purposely set to a mixed value */
             $value = self::getValue($path);
 
             return true;

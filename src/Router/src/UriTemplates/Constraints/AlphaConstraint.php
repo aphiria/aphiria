@@ -32,6 +32,6 @@ final class AlphaConstraint implements IRouteVariableConstraint
      */
     public function passes(mixed $value): bool
     {
-        return \ctype_alpha($value) && !\str_contains($value, ' ');
+        return \ctype_alpha((string)$value) && !\str_contains((string)$value, ' ');
     }
 }

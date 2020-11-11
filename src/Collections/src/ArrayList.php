@@ -21,11 +21,11 @@ use Traversable;
  */
 class ArrayList implements IList
 {
-    /** @var array The list of values */
+    /** @var mixed[] The list of values */
     protected array $values = [];
 
     /**
-     * @param array $values The list of values
+     * @param mixed[] $values The list of values
      */
     public function __construct(array $values = [])
     {
@@ -45,6 +45,7 @@ class ArrayList implements IList
      */
     public function addRange(array $values): void
     {
+        /** @psalm-suppress MixedAssignment Psalm is not pulling array types from inheritdoc (#4504) - bug */
         foreach ($values as $value) {
             $this->add($value);
         }
@@ -99,7 +100,7 @@ class ArrayList implements IList
      */
     public function indexOf(mixed $value): ?int
     {
-        if (($index = array_search($value, $this->values, false)) === false) {
+        if (($index = \array_search($value, $this->values, false)) === false) {
             return null;
         }
 
@@ -111,7 +112,7 @@ class ArrayList implements IList
      */
     public function insert(int $index, mixed $value): void
     {
-        array_splice($this->values, $index, 0, $value);
+        \array_splice($this->values, $index, 0, $value);
     }
 
     /**
@@ -119,7 +120,7 @@ class ArrayList implements IList
      */
     public function intersect(array $values): void
     {
-        $intersectedValues = array_intersect($this->values, $values);
+        $intersectedValues = \array_intersect($this->values, $values);
         $this->clear();
         $this->addRange($intersectedValues);
     }
@@ -181,7 +182,7 @@ class ArrayList implements IList
      */
     public function reverse(): void
     {
-        $this->values = array_reverse($this->values);
+        $this->values = \array_reverse($this->values);
     }
 
     /**
@@ -189,7 +190,7 @@ class ArrayList implements IList
      */
     public function sort(callable $comparer): void
     {
-        usort($this->values, $comparer);
+        \usort($this->values, $comparer);
     }
 
     /**
@@ -205,7 +206,7 @@ class ArrayList implements IList
      */
     public function union(array $values): void
     {
-        $unionedValues = array_merge(($this->values), $values);
+        $unionedValues = \array_merge(($this->values), $values);
         $this->clear();
         $this->addRange($unionedValues);
     }

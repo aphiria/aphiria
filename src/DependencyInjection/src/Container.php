@@ -109,6 +109,7 @@ class Container implements IContainer
      * @inheritdoc
      *
      * @psalm-suppress MoreSpecificImplementedParamType Instance will always be an instance of interface(s) - bug
+     * @psalm-suppress MixedArgumentTypeCoercion Template types are not passed through via inheritdoc - bug
      */
     public function bindInstance(string|array $interfaces, object $instance): void
     {
@@ -324,7 +325,7 @@ class Container implements IContainer
      *
      * @template T
      * @param class-string<T> $className The class name to resolve
-     * @param array $primitives The list of constructor primitives
+     * @param mixed[] $primitives The list of constructor primitives
      * @return T The resolved class
      * @throws ResolutionException Thrown if the class could not be resolved
      */
@@ -355,11 +356,13 @@ class Container implements IContainer
 
             if ($constructor === null) {
                 // No constructor, so instantiating is easy
+                /** @psalm-suppress MixedMethodCall We're purposely instantiating this class */
                 return new $className();
             }
 
             $constructorParameters = $this->resolveParameters($className, $parameters ?? [], $primitives);
 
+            /** @psalm-suppress MixedMethodCall We're purposely instantiating this class */
             return new $className(...$constructorParameters);
         } catch (ReflectionException $ex) {
             throw new ResolutionException($className, $this->currentContext, "Failed to resolve class $className", 0, $ex);
@@ -371,8 +374,8 @@ class Container implements IContainer
      *
      * @param class-string|null $className The name of the class whose parameters we're resolving
      * @param ReflectionParameter[] $unresolvedParameters The list of unresolved parameters
-     * @param array $primitives The list of primitive values
-     * @return array The list of parameters with all the dependencies resolved
+     * @param mixed[] $primitives The list of primitive values
+     * @return mixed[] The list of parameters with all the dependencies resolved
      * @throws ResolutionException Thrown if there was an error resolving the parameters
      * @throws ReflectionException Thrown if there was a reflection exception
      */
@@ -399,6 +402,7 @@ class Container implements IContainer
 
                     if ($parameterClassName === null) {
                         // The parameter is a primitive
+                        /** @psalm-suppress MixedAssignment The resolved parameter will be a mixed type */
                         $resolvedParameter = $this->resolvePrimitive($parameter, $parameterType, $primitives);
                     } elseif ($className !== null && $this->hasTargetedBinding($parameterClassName, $className)) {
                         $resolvedParameter = $this->for(
@@ -411,6 +415,7 @@ class Container implements IContainer
                         } catch (ResolutionException $ex) {
                             // Check for a default value
                             if ($parameter->isDefaultValueAvailable()) {
+                                /** @psalm-suppress MixedAssignment The resolved parameter will be a mixed type */
                                 $resolvedParameter = $parameter->getDefaultValue();
                             } elseif ($parameter->allowsNull()) {
                                 $resolvedParameter = null;
@@ -420,6 +425,7 @@ class Container implements IContainer
                         }
                     }
 
+                    /** @psalm-suppress MixedAssignment The resolved parameter will be a mixed type */
                     $resolvedParameters[] = $resolvedParameter;
                     $parameterResolved = true;
                 } catch (ResolutionException) {
@@ -450,7 +456,7 @@ class Container implements IContainer
      *
      * @param ReflectionParameter $parameter The primitive parameter to resolve
      * @param ReflectionType|null $reflectionType The type to resolve the primitive as, or null if there was no type
-     * @param array $primitives The list of primitive values
+     * @param mixed[] $primitives The list of primitive values
      * @return mixed The resolved primitive
      * @throws ResolutionException Thrown if there was an error resolving the primitive
      * @psalm-suppress ArgumentTypeCoercion We're suppressing the fact that the parameter type might be a non-class-string to simplify things

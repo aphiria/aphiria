@@ -26,7 +26,7 @@ class MultipleChoice extends Question
 
     /*
      * @param string $question The question text
-     * @param array $choices The list of choices
+     * @param mixed[] $choices The list of choices
      * @param mixed $defaultAnswer The default answer to the question
      */
     public function __construct(string $text, public array $choices, mixed $defaultAnswer = null)
@@ -55,7 +55,7 @@ class MultipleChoice extends Question
     /**
      * @inheritdoc
      */
-    public function formatAnswer($answer): mixed
+    public function formatAnswer(mixed $answer): mixed
     {
         $hasMultipleAnswers = false;
         $answer = str_replace(' ', '', (string)$answer);
@@ -116,13 +116,17 @@ class MultipleChoice extends Question
     /**
      * Gets the list of selected associative choices from a list of answers
      *
-     * @param array $answers The list of answers
-     * @return array The list of selected choices
+     * @param mixed[] $answers The list of answers
+     * @return mixed[] The list of selected choices
      */
     private function getSelectedAssociativeChoices(array $answers): array
     {
         $selectedChoices = [];
 
+        /**
+         * @psalm-suppress MixedAssignment We're purposely looping through mixed values
+         * @psalm-suppress MixedArgument We're purposely checking if the answer is an array key in choices
+         */
         foreach ($answers as $answer) {
             if (\array_key_exists($answer, $this->choices)) {
                 $selectedChoices[] = $this->choices[$answer];
@@ -135,16 +139,19 @@ class MultipleChoice extends Question
     /**
      * Gets the list of selected indexed choices from a list of answers
      *
-     * @param array $answers The list of answers
-     * @return array The list of selected choices
+     * @param mixed[] $answers The list of answers
+     * @return mixed[] The list of selected choices
      * @throws InvalidArgumentException Thrown if the answers are not of the correct type
      */
     private function getSelectedIndexChoices(array $answers): array
     {
         $selectedChoices = [];
 
+        /**
+         * @psalm-suppress MixedAssignment We're purposely looping through mixed values
+         */
         foreach ($answers as $answer) {
-            if (!ctype_digit($answer)) {
+            if (!\ctype_digit((string)$answer)) {
                 throw new InvalidArgumentException('Answer is not an integer');
             }
 

@@ -47,7 +47,7 @@ final class OutputParser implements IOutputParser
                         throw new RuntimeException(
                             sprintf(
                                 'Improperly nested tag "%s" near character #%d',
-                                $token->value,
+                                (string)$token->value,
                                 $token->position
                             )
                         );
@@ -63,7 +63,7 @@ final class OutputParser implements IOutputParser
                             sprintf(
                                 'Unclosed %s "%s"',
                                 $currNode?->isTag() ? 'tag' : 'node',
-                                $currNode?->value ?? 'null'
+                                (string)($currNode?->value ?? 'null')
                             )
                         );
                     }
@@ -74,7 +74,7 @@ final class OutputParser implements IOutputParser
                         sprintf(
                             'Unknown token type "%s" with value "%s" near character #%d',
                             $token->type,
-                            $token->value,
+                            (string)$token->value,
                             $token->position
                         )
                     );

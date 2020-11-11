@@ -26,7 +26,7 @@ class RouteGroupOptions
      * @param bool $isHttpsOnly Whether or not the entire group is HTTPS-only
      * @param IRouteConstraint[] $constraints The list of route constraints that applies to the entire group
      * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings that applies to the entire group
-     * @param array $parameters The mapping of custom parameter names => values to match on for the entire group
+     * @param array<string, mixed> $parameters The mapping of custom parameter names => values to match on for the entire group
      */
     public function __construct(
         public string $path,

@@ -26,7 +26,7 @@ interface IRouteConstraint
      * @param string $httpMethod The HTTP method
      * @param string $host The host to match
      * @param string $path The path to match
-     * @param array $headers The headers to match
+     * @param array<string, mixed> $headers The headers to match
      * @return bool True if the route is a match, otherwise false
      */
     public function passes(

@@ -27,23 +27,27 @@ class PaddingFormatter
     /**
      * Formats rows of text so that each column is the same width
      *
-     * @param array $rows The rows to pad
+     * @param array<int, mixed> $rows The rows to pad
      * @param callable(array<mixed>): string $callback The callback that returns a formatted row of text
      * @return string A list of formatted rows
      */
     public function format(array $rows, callable $callback): string
     {
+        // Normalize all rows to be an array
+        /** @psalm-suppress MixedAssignment Each row could be a mixed value */
         foreach ($rows as $rowIndex => $row) {
             $rows[$rowIndex] = (array)$rows[$rowIndex];
         }
 
+        /** @var array<int, array> $rows */
         $maxLengths = $this->normalizeColumns($rows);
         $paddingType = $this->padAfter ? STR_PAD_RIGHT : STR_PAD_LEFT;
 
         // Format the rows
         foreach ($rows as $rowIndex => $row) {
+            /** @psalm-suppress MixedAssignment Each item could be a mixed value */
             foreach ($rows[$rowIndex] as $itemIndex => $item) {
-                $rows[$rowIndex][$itemIndex] = str_pad($item, $maxLengths[$itemIndex], $this->paddingString, $paddingType);
+                $rows[$rowIndex][$itemIndex] = \str_pad((string)$item, $maxLengths[(int)$itemIndex], $this->paddingString, $paddingType);
             }
         }
 
@@ -54,7 +58,7 @@ class PaddingFormatter
         }
 
         // Trim the excess separator
-        $formattedText = preg_replace('/' . preg_quote($this->eolChar, '/') . '$/', '', $formattedText);
+        $formattedText = \preg_replace('/' . \preg_quote($this->eolChar, '/') . '$/', '', $formattedText);
 
         return $formattedText;
     }
@@ -72,8 +76,8 @@ class PaddingFormatter
     /**
      * Normalizes the number of columns in each row
      *
-     * @param array $rows The rows to equalize
-     * @return array The max length of each column
+     * @param array<int, array> $rows The rows to equalize
+     * @return array<int, int> The max length of each column
      */
     public function normalizeColumns(array &$rows): array
     {
@@ -81,24 +85,26 @@ class PaddingFormatter
 
         // Find the max number of columns that appear in any given row
         foreach ($rows as $row) {
-            $maxNumColumns = max($maxNumColumns, \count($row));
+            $maxNumColumns = \max($maxNumColumns, \count($row));
         }
 
-        $maxLengths = array_pad([], $maxNumColumns, 0);
+        $maxLengths = \array_pad([], $maxNumColumns, 0);
 
         // Normalize the number of columns in each row
         foreach ($rows as $rowIndex => $row) {
-            $rows[$rowIndex] = array_pad($rows[$rowIndex], $maxNumColumns, '');
+            $rows[$rowIndex] = \array_pad($rows[$rowIndex], $maxNumColumns, '');
         }
 
         // Get the length of the longest value in each column
         foreach ($rows as $rowIndex => $row) {
+            /** @psalm-suppress MixedAssignment The value could be a mixed type */
             foreach ($rows[$rowIndex] as $columnIndex => $value) {
-                $rows[$rowIndex][$columnIndex] = trim($value);
-                $maxLengths[$columnIndex] = max($maxLengths[$columnIndex], mb_strlen($rows[$rowIndex][$columnIndex]));
+                $rows[$rowIndex][$columnIndex] = \trim((string)$value);
+                $maxLengths[$columnIndex] = \max($maxLengths[$columnIndex], \mb_strlen($rows[$rowIndex][$columnIndex]));
             }
         }
 
+        /** @var array<int, int> $maxLengths */
         return $maxLengths;
     }
 

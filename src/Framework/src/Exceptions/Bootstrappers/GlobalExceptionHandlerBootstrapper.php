@@ -136,6 +136,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     {
         $logger = new Logger(GlobalConfiguration::getString('aphiria.logging.name'));
 
+        /** @var array{type: class-string, path: string, level: int|string, ident: string} $handlerConfiguration */
         foreach (GlobalConfiguration::getArray('aphiria.logging.handlers') as $handlerConfiguration) {
             switch ($handlerConfiguration['type']) {
                 case StreamHandler::class:

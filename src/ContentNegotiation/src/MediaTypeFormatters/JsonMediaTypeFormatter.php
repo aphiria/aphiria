@@ -22,9 +22,9 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 final class JsonMediaTypeFormatter extends SerializerMediaTypeFormatter
 {
-    /** @var array The list of supported character encodings */
+    /** @var string[] The list of supported character encodings */
     private static array $supportedEncodings = ['utf-8'];
-    /** @var array The list of supported media types */
+    /** @var string[] The list of supported media types */
     private static array $supportedMediaTypes = ['application/json', 'text/json', 'application/problem+json'];
 
     /**

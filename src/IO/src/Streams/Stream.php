@@ -152,6 +152,7 @@ final class Stream implements IStream
             return $this->length;
         }
 
+        /** @var array{size: int} $fileStats */
         $fileStats = \fstat($this->handle);
 
         return isset($fileStats['size']) ? ($this->length = $fileStats['size']) : null;

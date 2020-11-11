@@ -77,6 +77,7 @@ class RequestParser
         $clientIPAddress = null;
         $request->getProperties()->tryGet(self::CLIENT_IP_ADDRESS_PROPERTY, $clientIPAddress);
 
+        /** @var string|null $clientIPAddress */
         return $clientIPAddress;
     }
 
@@ -92,7 +93,7 @@ class RequestParser
         $clientMimeType = null;
 
         if ($bodyPart->getHeaders()->tryGetFirst('Content-Type', $clientMimeType)) {
-            return $clientMimeType;
+            return (string)$clientMimeType;
         }
 
         return null;
@@ -223,7 +224,7 @@ class RequestParser
      * Attempts to read the request body as JSON
      *
      * @param IRequest $request The request to parse
-     * @return array The request body as JSON
+     * @return array<mixed, mixed> The request body as JSON
      * @throws RuntimeException Thrown if the body could not be read as JSON
      */
     public function readAsJson(IRequest $request): array
@@ -250,6 +251,7 @@ class RequestParser
             throw new InvalidArgumentException('"boundary" is missing in Content-Type header');
         }
 
+        /** @var string $boundary */
         return $this->bodyParser->readAsMultipart($request->getBody(), $boundary);
     }
 }

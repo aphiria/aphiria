@@ -20,12 +20,12 @@ use InvalidArgumentException;
 /**
  * Defines the date constraint attribute
  */
-#[Attribute(Attribute::TARGET_METHOD|Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_PROPERTY)]
 final class Date extends ConstraintAttribute
 {
     /**
      * @inheritdoc
-     * @param array $acceptableFormats The list of acceptable DateTime formats
+     * @param string[] $acceptableFormats The list of acceptable DateTime formats
      * @throws InvalidArgumentException Thrown if there were no acceptable date formats
      */
     public function __construct(public array $acceptableFormats, string $errorMessageId = null)

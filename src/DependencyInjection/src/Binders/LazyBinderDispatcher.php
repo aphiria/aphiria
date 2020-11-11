@@ -54,6 +54,7 @@ class LazyBinderDispatcher implements IBinderDispatcher
         }
 
         // Create a bunch of factories to lazily resolve interfaces only when they're needed
+        /** @var BinderMetadataCollection $binderMetadatas */
         foreach ($binderMetadatas->getAllBinderMetadata() as $binderMetadata) {
             foreach ($binderMetadata->getBoundInterfaces() as $boundInterface) {
                 $resolvingFactory = $this->createLazyFactory(

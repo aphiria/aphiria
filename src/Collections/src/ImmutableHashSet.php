@@ -21,19 +21,20 @@ use Traversable;
  */
 class ImmutableHashSet implements IImmutableSet
 {
-    /** @var array The set of values */
+    /** @var array<string, mixed> The set of values */
     protected array $values = [];
     /** @var KeyHasher The key hasher to use */
     private KeyHasher $keyHasher;
 
     /**
-     * @param array $values The set of values
+     * @param mixed[] $values The set of values
      * @throws RuntimeException Thrown if the values' keys could not be calculated
      */
     public function __construct(array $values)
     {
         $this->keyHasher = new KeyHasher();
 
+        /** @psalm-suppress MixedAssignment Value is intentionally mixed */
         foreach ($values as $value) {
             $this->values[$this->getHashKey($value)] = $value;
         }

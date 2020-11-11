@@ -52,7 +52,7 @@ interface IRequestBuilder
     /**
      * Adds a header to the request
      *
-     * @param array $headers The mapping of header names to values
+     * @param array<string, mixed> $headers The mapping of header names to values
      * @return static For chaining
      */
     public function withManyHeaders(array $headers): static;

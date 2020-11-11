@@ -150,12 +150,15 @@ class HeadersTest extends TestCase
         /**
          * @var int $key
          * @var KeyValuePair $value
-         * @psalm-suppress RedundantConditionGivenDocblockType We want to explicitly test the values, not the doc block
          */
         foreach ($this->headers->toArray() as $key => $value) {
             // Verify that the key is numeric, not associative
             $this->assertIsInt($key);
             $this->assertInstanceOf(KeyValuePair::class, $value);
+            /**
+             * @psalm-suppress MixedArrayOffset We're purposely accessing mixed keys
+             * @psalm-suppress MixedAssignment We're purposely setting a mixed type
+             */
             $actualValues[$value->getKey()] = $value->getValue();
         }
 

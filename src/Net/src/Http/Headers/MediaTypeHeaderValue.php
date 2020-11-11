@@ -61,7 +61,11 @@ class MediaTypeHeaderValue
             $this->suffix = \substr($this->mediaType, $plusSignPos + 1);
         }
 
-        $this->parameters->tryGet('charset', $this->charset);
+        $charset = null;
+
+        if ($this->parameters->tryGet('charset', $charset)) {
+            $this->charset = (string)$charset;
+        }
     }
 
     /**
