@@ -124,7 +124,7 @@ final class RouteMatcher
      * Gets route matches for URI segments
      *
      * @param TrieNode \$node The trie to match against
-     * @param array \$segments The list of URI segments to match
+     * @param string[] \$segments The list of URI segments to match
      * @return MatchedRouteCandidate[] The list of matched routes
      */
     public static function matchRoute(TrieNode \$node, array \$segments): iterable
