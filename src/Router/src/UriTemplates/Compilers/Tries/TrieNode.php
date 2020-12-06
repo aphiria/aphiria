@@ -94,7 +94,7 @@ abstract class TrieNode
     private function addLiteralChildNode(LiteralTrieNode $childNode): void
     {
         // Stringify the value in case it's a number and we don't want PHP getting confused
-        $valueAsString = \strtolower((string)$childNode->value);
+        $valueAsString = \strtolower($childNode->value);
 
         if (isset($this->literalChildrenByValue[$valueAsString])) {
             // A literal child already exists with this value, so merge the routes and add all its children
