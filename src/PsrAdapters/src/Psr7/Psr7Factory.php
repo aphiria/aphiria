@@ -51,7 +51,7 @@ class Psr7Factory implements IPsr7Factory
      * @param ServerRequestFactoryInterface $psr7RequestFactory The PSR-7 request factory
      * @param ResponseFactoryInterface $psr7ResponseFactory The PSR-7 response factory
      * @param StreamFactoryInterface $psr7StreamFactory The PSR-7 stream factory
-     * @param UploadedFileFactoryInterface $psr7UploadedFactoryInterface The PSR-7 uploaded file factory
+     * @param UploadedFileFactoryInterface $psr7UploadedFileFactory The PSR-7 uploaded file factory
      * @param UriFactoryInterface $psr7UriFactory The PSR-7 URI factory
      * @param RequestHeaderParser|null $aphiriaRequestHeaderParser The Aphiria request header parser
      * @param RequestParser|null $aphiriaRequestParser The Aphiria request parser
@@ -60,7 +60,7 @@ class Psr7Factory implements IPsr7Factory
         private ServerRequestFactoryInterface $psr7RequestFactory,
         private ResponseFactoryInterface $psr7ResponseFactory,
         private StreamFactoryInterface $psr7StreamFactory,
-        private UploadedFileFactoryInterface $psr7UploadedFactoryInterface,
+        private UploadedFileFactoryInterface $psr7UploadedFileFactory,
         private UriFactoryInterface $psr7UriFactory,
         RequestHeaderParser $aphiriaRequestHeaderParser = null,
         RequestParser $aphiriaRequestParser = null
@@ -304,7 +304,7 @@ class Psr7Factory implements IPsr7Factory
             /** @var string $name */
             $contentDispositionParameters->tryGet('filename', $filename);
             /** @var string|null $filename */
-            $psr7UploadedFiles[$name] = $this->psr7UploadedFactoryInterface->createUploadedFile(
+            $psr7UploadedFiles[$name] = $this->psr7UploadedFileFactory->createUploadedFile(
                 $this->createPsr7Stream($partBody->readAsStream()),
                 $partBody->getLength(),
                 \UPLOAD_ERR_OK,
