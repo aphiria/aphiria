@@ -1,4 +1,4 @@
-<p align="center"><a href="https://www.aphiria.com" target="_blank" title="Aphiria"><img src="https://www.aphiria.com/images/aphiria-logo.svg"></a></p>
+<p align="center"><a href="https://www.aphiria.com" target="_blank" title="Aphiria"><img src="https://www.aphiria.com/images/aphiria-logo.svg" width="200" height="56"></a></p>
 
 <p align="center">
 <a href="https://github.com/aphiria/io/actions"><img src="https://github.com/aphiria/io/workflows/ci/badge.svg"></a>
