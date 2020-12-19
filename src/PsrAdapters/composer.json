@@ -35,7 +35,7 @@
     },
     "require-dev": {
         "nyholm/psr7": "^1.2",
-        "phpunit/phpunit": "~9.4"
+        "phpunit/phpunit": "~9.5"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",
