@@ -38,6 +38,10 @@ Full documentation is available at <a href="https://www.aphiria.com" target="_bl
 
 We appreciate any and all contributions to Aphiria.  Please read the [documentation](https://www.aphiria.com/docs/0.x/contributing.html) to learn how to contribute.
 
+## Community
+
+If you have general questions or comments about Aphiria, join our [GitHub Discussions](https://github.com/aphiria/aphiria/discussions).
+
 ## Directory Structure
 
 Aphiria is organized as a mono repo.  Each library is contained in _src/{library}_, and contains _src_ and _tests_ directories.
@@ -48,4 +52,4 @@ This software is licensed under the MIT license.  Please read the [LICENSE](LICE
 
 ## Author
 
-Aphiria was written by [David Young](https://github.com/davidbyoung).
+Aphiria was created and primarily written by [David Young](https://github.com/davidbyoung).
