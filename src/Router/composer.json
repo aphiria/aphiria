@@ -34,8 +34,8 @@
     "require-dev": {
         "aphiria/api": "0.*@dev",
         "nikic/fast-route": "1.2",
-        "phpunit/phpunit": "~9.4",
-        "symfony/routing": "5.1.*"
+        "phpunit/phpunit": "~9.5",
+        "symfony/routing": "5.2.*"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",

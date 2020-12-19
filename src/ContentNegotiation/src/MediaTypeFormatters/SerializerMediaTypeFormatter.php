@@ -39,7 +39,10 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
             throw new InvalidArgumentException(static::class . " cannot read type $type");
         }
 
-        return $this->serializer->deserialize((string)$stream, $type, $this->format);
+        /** @var int|float|bool|string|object|array $value */
+        $value = $this->serializer->deserialize((string)$stream, $type, $this->format);
+
+        return $value;
     }
 
     /**
