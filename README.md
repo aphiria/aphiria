@@ -21,6 +21,26 @@ Aphiria is a suite of small, decoupled PHP libraries that make up a REST API fra
 * <a href="https://www.aphiria.com/docs/0.x/validation.html" target="_blank">A model validator for your POPOs</a>
 * Support for <a href="https://www.aphiria.com/docs/0.x/routing.html#route-attributes" target="_blank">route</a> and <a href="https://www.aphiria.com/docs/0.x/validation.html" target="_blank">validation</a> attributes
 
+```php
+// Define a controller endpoint
+class UserController extends Controller
+{
+    public function __construct(private IUserService $users) {}
+
+    #[Get('/users/:id')]
+    public function getById(int $id): User
+    {
+        return $this->users->getById($id);
+    }
+}
+
+// Bind your dependency
+$container->bindInstance(IUserService::class, new UserService());
+
+// Run an integration test
+$this->assertParsedBodyEquals(new User(1, 'Dave'), $this->get('/users/1'));
+```
+
 ## Installation
 
 Create an Aphiria app via Composer:
