@@ -15,7 +15,20 @@
             "role": "Architect"
         }
     ],
+    "homepage": "https://www.aphiria.com",
     "license": "MIT",
+    "support": {
+        "docs": "https://www.aphiria.com/docs/0.x/introduction.html",
+        "forum": "https://github.com/aphiria/aphiria/discussions",
+        "issues": "https://github.com/aphiria/aphiria/issues",
+        "source": "https://github.com/aphiria/aphiria"
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/davidbyoung"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Aphiria\\IO\\": "src"
@@ -45,5 +58,11 @@
             "dev-master": "0.x-dev"
         }
     },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "prefer-stable": true,
     "minimum-stability": "dev"
 }
