@@ -1,5 +1,5 @@
 # Changelog
 
-## v1.0.0 (Date TBD)
+## v1.0.0-alpha1 (2020-12-20)
 
-* TBD
+* Literally everything
