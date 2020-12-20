@@ -17,7 +17,7 @@
     "homepage": "https://www.aphiria.com",
     "license": "MIT",
     "support": {
-        "docs": "https://www.aphiria.com/docs/0.x/introduction.html",
+        "docs": "https://www.aphiria.com/docs/1.x/introduction.html",
         "forum": "https://github.com/aphiria/aphiria/discussions",
         "issues": "https://github.com/aphiria/aphiria/issues",
         "source": "https://github.com/aphiria/aphiria"
@@ -39,13 +39,13 @@
         }
     },
     "require": {
-        "aphiria/reflection": "0.*@dev",
+        "aphiria/reflection": "1.*@dev",
         "ext-ctype": "*",
         "ext-mbstring": "*",
         "php": ">=8.0"
     },
     "require-dev": {
-        "aphiria/api": "0.*@dev",
+        "aphiria/api": "1.*@dev",
         "nikic/fast-route": "1.2",
         "phpunit/phpunit": "~9.5",
         "symfony/routing": "5.2.*"
@@ -60,7 +60,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.x-dev"
+            "dev-master": "1.x-dev"
         }
     },
     "config": {

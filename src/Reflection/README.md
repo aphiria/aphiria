@@ -2,7 +2,7 @@
 
 <p align="center">
 <a href="https://github.com/aphiria/reflection/actions"><img src="https://github.com/aphiria/reflection/workflows/ci/badge.svg"></a>
-<a href='https://coveralls.io/github/aphiria/reflection?branch=0.x'><img src='https://coveralls.io/repos/github/aphiria/reflection/badge.svg?branch=0.x' alt='Coverage Status' /></a>
+<a href='https://coveralls.io/github/aphiria/reflection?branch=1.x'><img src='https://coveralls.io/repos/github/aphiria/reflection/badge.svg?branch=1.x' alt='Coverage Status' /></a>
 <a href="https://packagist.org/packages/aphiria/reflection"><img src="https://poser.pugx.org/aphiria/reflection/v/stable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/reflection"><img src="https://poser.pugx.org/aphiria/reflection/v/unstable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/reflection"><img src="https://poser.pugx.org/aphiria/reflection/license.svg"></a>
@@ -22,4 +22,4 @@ composer require aphiria/reflection:^1.0@dev
 
 ## Documentation
 
-Full documentation is available <a href="https://www.aphiria.com/docs/0.x/reflection.html" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/1.x/reflection.html" target="_blank">here</a>.

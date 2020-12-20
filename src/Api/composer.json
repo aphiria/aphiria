@@ -16,7 +16,7 @@
     "homepage": "https://www.aphiria.com",
     "license": "MIT",
     "support": {
-        "docs": "https://www.aphiria.com/docs/0.x/introduction.html",
+        "docs": "https://www.aphiria.com/docs/1.x/introduction.html",
         "forum": "https://github.com/aphiria/aphiria/discussions",
         "issues": "https://github.com/aphiria/aphiria/issues",
         "source": "https://github.com/aphiria/aphiria"
@@ -38,11 +38,11 @@
         }
     },
     "require": {
-        "aphiria/content-negotiation": "0.*@dev",
-        "aphiria/dependency-injection": "0.*@dev",
-        "aphiria/middleware": "0.*@dev",
-        "aphiria/router": "0.*@dev",
-        "aphiria/validation": "0.*@dev",
+        "aphiria/content-negotiation": "1.*@dev",
+        "aphiria/dependency-injection": "1.*@dev",
+        "aphiria/middleware": "1.*@dev",
+        "aphiria/router": "1.*@dev",
+        "aphiria/validation": "1.*@dev",
         "monolog/monolog": "~2.0",
         "php": ">=8.0",
         "psr/log": "~1.0"
@@ -60,7 +60,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.x-dev"
+            "dev-master": "1.x-dev"
         }
     },
     "config": {

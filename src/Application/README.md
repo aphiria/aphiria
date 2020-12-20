@@ -2,7 +2,7 @@
 
 <p align="center">
 <a href="https://github.com/aphiria/application/actions"><img src="https://github.com/aphiria/application/workflows/ci/badge.svg"></a>
-<a href='https://coveralls.io/github/aphiria/application?branch=0.x'><img src='https://coveralls.io/repos/github/aphiria/application/badge.svg?branch=0.x' alt='Coverage Status' /></a>
+<a href='https://coveralls.io/github/aphiria/application?branch=1.x'><img src='https://coveralls.io/repos/github/aphiria/application/badge.svg?branch=1.x' alt='Coverage Status' /></a>
 <a href="https://packagist.org/packages/aphiria/application"><img src="https://poser.pugx.org/aphiria/application/v/stable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/application"><img src="https://poser.pugx.org/aphiria/application/v/unstable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/application"><img src="https://poser.pugx.org/aphiria/application/license.svg"></a>
@@ -22,4 +22,4 @@ composer require aphiria/application:^1.0@dev
 
 ## Documentation
 
-Full documentation is available <a href="https://www.aphiria.com/docs/0.x/application-builders.html" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/1.x/application-builders.html" target="_blank">here</a>.
