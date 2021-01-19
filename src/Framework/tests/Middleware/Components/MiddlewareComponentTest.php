@@ -14,10 +14,10 @@ namespace Aphiria\Framework\Tests\Middleware\Components;
 
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
-use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
+use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;

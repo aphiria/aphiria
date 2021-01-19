@@ -20,9 +20,9 @@ use Aphiria\ContentNegotiation\ContentNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
-use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
+use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Net\Http\IRequest;
@@ -105,7 +105,7 @@ class Router implements IRequestHandler
 
         if (!\is_callable($routeActionDelegate)) {
             throw new InvalidArgumentException(
-                sprintf(
+                \sprintf(
                     'Controller method %s::%s() does not exist',
                     $routeAction->className,
                     $routeAction->methodName
@@ -115,7 +115,7 @@ class Router implements IRequestHandler
 
         if (!$controller instanceof Controller) {
             throw new InvalidArgumentException(
-                sprintf('Controller %s does not extend %s', $controller::class, Controller::class)
+                \sprintf('Controller %s does not extend %s', $controller::class, Controller::class)
             );
         }
     }
@@ -136,7 +136,7 @@ class Router implements IRequestHandler
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(
-                    sprintf('Middleware %s does not implement %s', $middleware::class, IMiddleware::class)
+                    \sprintf('Middleware %s does not implement %s', $middleware::class, IMiddleware::class)
                 );
             }
 

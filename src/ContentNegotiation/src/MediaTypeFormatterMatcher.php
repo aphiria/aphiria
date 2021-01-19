@@ -104,7 +104,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
         }
 
         foreach ($mediaTypeHeaders as $mediaTypeHeader) {
-            [$mediaType, $mediaSubType] = explode('/', $mediaTypeHeader->getMediaType());
+            [$mediaType, $mediaSubType] = \explode('/', $mediaTypeHeader->getMediaType());
 
             foreach ($this->mediaTypeFormatters as $mediaTypeFormatter) {
                 foreach ($mediaTypeFormatter->getSupportedMediaTypes() as $supportedMediaType) {
@@ -116,7 +116,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
                         continue;
                     }
 
-                    [$supportedType, $supportedSubType] = explode('/', $supportedMediaType);
+                    [$supportedType, $supportedSubType] = \explode('/', $supportedMediaType);
 
                     // Checks if the type is a wildcard or a match and the sub-type is a wildcard or a match
                     if (
@@ -201,10 +201,10 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     private function rankAcceptMediaTypeHeaders(array $mediaTypeHeaders): array
     {
-        usort($mediaTypeHeaders, [$this, 'compareAcceptMediaTypeHeaders']);
-        $rankedMediaTypeHeaders = array_filter($mediaTypeHeaders, [$this, 'filterZeroScores']);
+        \usort($mediaTypeHeaders, [$this, 'compareAcceptMediaTypeHeaders']);
+        $rankedMediaTypeHeaders = \array_filter($mediaTypeHeaders, [$this, 'filterZeroScores']);
 
         // Have to return the values because the keys aren't updated in array_filter()
-        return array_values($rankedMediaTypeHeaders);
+        return \array_values($rankedMediaTypeHeaders);
     }
 }

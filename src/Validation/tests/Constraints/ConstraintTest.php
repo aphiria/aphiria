@@ -36,7 +36,7 @@ class ConstraintTest extends TestCase
 
     public function testGettingErrorMessagePlaceholderForNonScalarNonObjectUsesHardCodedStringAsValue(): void
     {
-        $this->assertEquals(['value' => 'value'], $this->constraint->getErrorMessagePlaceholders(fopen('php://temp', 'rb')));
+        $this->assertEquals(['value' => 'value'], $this->constraint->getErrorMessagePlaceholders(\fopen('php://temp', 'rb')));
     }
 
     public function testGettingErrorMessagePlaceholderForScalarValuesUsesThatValue(): void

@@ -43,7 +43,7 @@ class StringBody implements IBody
      */
     public function getLength(): ?int
     {
-        return mb_strlen($this->content);
+        return \mb_strlen($this->content);
     }
 
     /**
@@ -52,7 +52,7 @@ class StringBody implements IBody
     public function readAsStream(): IStream
     {
         if ($this->stream === null) {
-            $this->stream = new Stream(fopen('php://temp', 'r+b'));
+            $this->stream = new Stream(\fopen('php://temp', 'r+b'));
             $this->stream->write($this->content);
             $this->stream->rewind();
         }

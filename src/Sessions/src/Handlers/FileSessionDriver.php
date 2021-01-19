@@ -31,7 +31,7 @@ final class FileSessionDriver implements ISessionDriver
      */
     public function delete(int|string $sessionId): void
     {
-        @unlink("{$this->basePath}/$sessionId");
+        @\unlink("{$this->basePath}/$sessionId");
     }
 
     /**
@@ -39,12 +39,12 @@ final class FileSessionDriver implements ISessionDriver
      */
     public function gc(int $maxLifetime): void
     {
-        $sessionFiles = glob("{$this->basePath}/*", GLOB_NOSORT);
-        $limit = time() - $maxLifetime;
+        $sessionFiles = \glob("{$this->basePath}/*", GLOB_NOSORT);
+        $limit = \time() - $maxLifetime;
 
         foreach ($sessionFiles as $sessionFile) {
-            if (filemtime($sessionFile) < $limit) {
-                @unlink($sessionFile);
+            if (\filemtime($sessionFile) < $limit) {
+                @\unlink($sessionFile);
             }
         }
     }

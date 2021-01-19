@@ -33,7 +33,7 @@ final class FileBinderMetadataCollectionCache implements IBinderMetadataCollecti
     public function flush(): void
     {
         if (\file_exists($this->filePath)) {
-            @unlink($this->filePath);
+            @\unlink($this->filePath);
         }
     }
 

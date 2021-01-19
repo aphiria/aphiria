@@ -31,7 +31,7 @@ class ServeCommandHandler implements ICommandHandler
         $domain = (string)$input->options['domain'];
         $port = (int)$input->options['port'];
         $output->writeln("<info>Running at http://$domain:$port</info>");
-        $command = sprintf(
+        $command = \sprintf(
             '%s -S %s:%d -t %s %s',
             PHP_BINARY,
             $domain,

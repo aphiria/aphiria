@@ -57,13 +57,13 @@ class SerializerMediaTypeFormatterTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($this->formatter::class . ' cannot read type ' . self::class);
-        $this->formatter->readFromStream(new Stream(fopen('php://temp', 'r+b')), self::class);
+        $this->formatter->readFromStream(new Stream(\fopen('php://temp', 'r+b')), self::class);
     }
 
     public function testWritingToStreamForUnsupportedTypeThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($this->formatter::class . ' cannot write type ' . self::class);
-        $this->formatter->writeToStream($this, new Stream(fopen('php://temp', 'r+b')), null);
+        $this->formatter->writeToStream($this, new Stream(\fopen('php://temp', 'r+b')), null);
     }
 }

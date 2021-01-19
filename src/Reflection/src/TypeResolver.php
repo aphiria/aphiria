@@ -25,11 +25,11 @@ final class TypeResolver
      */
     public static function getArrayType(string $type): ?string
     {
-        if (substr($type, -2) !== '[]' || \strlen($type) === 2) {
+        if (\substr($type, -2) !== '[]' || \strlen($type) === 2) {
             return null;
         }
 
-        return substr($type, 0, -2);
+        return \substr($type, 0, -2);
     }
 
     /**
@@ -61,6 +61,6 @@ final class TypeResolver
      */
     public static function typeIsArray(string $type): bool
     {
-        return $type === 'array' || substr($type, -2) === '[]';
+        return $type === 'array' || \substr($type, -2) === '[]';
     }
 }

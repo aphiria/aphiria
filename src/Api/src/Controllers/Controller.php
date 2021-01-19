@@ -355,7 +355,7 @@ class Controller
         }
 
         if (($body = $this->request->getBody()) === null) {
-            if (substr($type, -2) === '[]') {
+            if (\substr($type, -2) === '[]') {
                 return [];
             }
 

@@ -90,7 +90,7 @@ final class ContentNegotiator implements IContentNegotiator
             }
         }
 
-        return array_unique($acceptableMediaTypes);
+        return \array_unique($acceptableMediaTypes);
     }
 
     /**

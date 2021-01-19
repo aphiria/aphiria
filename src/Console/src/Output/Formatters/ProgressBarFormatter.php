@@ -66,7 +66,7 @@ class ProgressBarFormatter implements IProgressBarObserver
         $shouldRedraw = $currProgress === $maxSteps
             || ($prevProgress === null)
             || $this->redrawFrequency === 0
-            || floor($currProgress / $this->redrawFrequency) !== floor(($prevProgress) / $this->redrawFrequency);
+            || \floor($currProgress / $this->redrawFrequency) !== \floor(($prevProgress) / $this->redrawFrequency);
 
         if ($shouldRedraw) {
             $this->output->write($this->compileOutput($currProgress, $maxSteps));
@@ -89,17 +89,17 @@ class ProgressBarFormatter implements IProgressBarObserver
     {
         if ($progress === $maxSteps) {
             // Don't show the percentage anymore
-            $completedProgressString = str_repeat($this->completedProgressChar, $this->progressBarWidth - 2);
+            $completedProgressString = \str_repeat($this->completedProgressChar, $this->progressBarWidth - 2);
             $progressLeftString = '';
         } else {
             $percentCompleteString = $this->compilePercent($progress, $maxSteps);
-            $completedProgressString = str_repeat(
+            $completedProgressString = \str_repeat(
                 $this->completedProgressChar,
-                (int)max(0, floor($progress / $maxSteps * ($this->progressBarWidth - 2) - \strlen($percentCompleteString)))
+                (int)\max(0, \floor($progress / $maxSteps * ($this->progressBarWidth - 2) - \strlen($percentCompleteString)))
             ) . $percentCompleteString;
-            $progressLeftString = str_repeat(
+            $progressLeftString = \str_repeat(
                 $this->remainingProgressChar,
-                max(0, $this->progressBarWidth - 2 - \strlen($completedProgressString))
+                \max(0, $this->progressBarWidth - 2 - \strlen($completedProgressString))
             );
         }
 
@@ -116,7 +116,7 @@ class ProgressBarFormatter implements IProgressBarObserver
     protected function compileOutput(int $progress, int $maxSteps): string
     {
         // Before sending the output through sprintf(), we have to encode literal '%' by replacing them with '%%'
-        $compiledOutput = str_replace(
+        $compiledOutput = \str_replace(
             ['%progress%', '%maxSteps%', '%bar%', '%timeRemaining%', '%percent%', '%'],
             [
                 $progress,
@@ -133,13 +133,13 @@ class ProgressBarFormatter implements IProgressBarObserver
             $this->isFirstOutput = false;
 
             // Still use sprintf() because there's some formatted strings in the output
-            return sprintf($compiledOutput, '');
+            return \sprintf($compiledOutput, '');
         }
 
         // Clear previous output
-        $newLineCount = substr_count($this->outputFormat, PHP_EOL);
+        $newLineCount = \substr_count($this->outputFormat, PHP_EOL);
 
-        return sprintf("\033[2K\033[0G\033[{$newLineCount}A\033[2K$compiledOutput", '', '');
+        return \sprintf("\033[2K\033[0G\033[{$newLineCount}A\033[2K$compiledOutput", '', '');
     }
 
     /**
@@ -151,7 +151,7 @@ class ProgressBarFormatter implements IProgressBarObserver
      */
     protected function compilePercent(int $progress, int $maxSteps): string
     {
-        return floor(100 * $progress / $maxSteps) . '%';
+        return \floor(100 * $progress / $maxSteps) . '%';
     }
 
     /**
@@ -195,7 +195,7 @@ class ProgressBarFormatter implements IProgressBarObserver
                     }
 
                     /** @psalm-suppress PossiblyUndefinedArrayOffset In this case, the array length will be 3, so we're good */
-                    return floor($secondsRemaining / $timeFormat[2]) . ' ' . $timeFormat[1];
+                    return \floor($secondsRemaining / $timeFormat[2]) . ' ' . $timeFormat[1];
                 }
             }
         }
@@ -212,8 +212,8 @@ class ProgressBarFormatter implements IProgressBarObserver
      */
     protected function getSecondsRemaining(int $progress, int $maxSteps): float
     {
-        $elapsedTime = time() - $this->startTime->getTimestamp();
+        $elapsedTime = \time() - $this->startTime->getTimestamp();
 
-        return round($elapsedTime * $maxSteps / $progress - $elapsedTime);
+        return \round($elapsedTime * $maxSteps / $progress - $elapsedTime);
     }
 }

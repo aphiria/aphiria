@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\DependencyInjection;
 
 use Closure;
-use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;

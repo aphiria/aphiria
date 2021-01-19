@@ -15,10 +15,10 @@ namespace Aphiria\Framework\Middleware\Components;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
-use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
+use Aphiria\Middleware\ParameterizedMiddleware;
 use InvalidArgumentException;
 
 /**
@@ -50,7 +50,7 @@ class MiddlewareComponent implements IComponent
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(
-                    sprintf('%s does not implement %s', $middleware::class, IMiddleware::class)
+                    \sprintf('%s does not implement %s', $middleware::class, IMiddleware::class)
                 );
             }
 

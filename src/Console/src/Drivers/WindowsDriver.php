@@ -80,7 +80,7 @@ class WindowsDriver extends Driver
         // This is too difficult to test with mocks
         // @codeCoverageIgnoreStart
         if (
-            (!\function_exists('sapi_windows_vt100_support') || !\sapi_windows_vt100_support(fopen('php://stdout', 'wb')))
+            (!\function_exists('sapi_windows_vt100_support') || !\sapi_windows_vt100_support(\fopen('php://stdout', 'wb')))
             && $this->supportsStty()
         ) {
             return $this->getCliDimensionsFromStty();

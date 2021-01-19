@@ -94,7 +94,7 @@ EOF;
                 return -1;
             }
 
-            if (!str_contains($b->name, ':')) {
+            if (!\str_contains($b->name, ':')) {
                 // A is categorized
                 return 1;
             }
@@ -109,7 +109,7 @@ EOF;
         $firstCommandNamesToCategories = [];
 
         foreach ($commands as $command) {
-            $commandNameParts = explode(':', $command->name);
+            $commandNameParts = \explode(':', $command->name);
 
             if (\count($commandNameParts) > 1 && !\in_array($commandNameParts[0], $firstCommandNamesToCategories, true)) {
                 $categorizedCommandNames[] = $command->name;

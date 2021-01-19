@@ -31,7 +31,7 @@ class StreamResponseWriterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->outputStream = new Stream(fopen('php://temp', 'r+b'));
+        $this->outputStream = new Stream(\fopen('php://temp', 'r+b'));
         $this->writer = new StreamResponseWriter($this->outputStream);
         $this->body = $this->createMock(IBody::class);
 

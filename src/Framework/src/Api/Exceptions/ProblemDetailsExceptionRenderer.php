@@ -104,7 +104,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
                 // We have to manually create a response
                 $response = new Response($problemDetails->status);
                 $response->getHeaders()->add('Content-Type', 'application/problem+json');
-                $bodyStream = new Stream(fopen('php://temp', 'r+b'));
+                $bodyStream = new Stream(\fopen('php://temp', 'r+b'));
                 // Intentionally using the parameterless constructor so that the default object encoder gets registered
                 $mediaTypeFormatter = new JsonMediaTypeFormatter();
                 $mediaTypeFormatter->writeToStream($problemDetails, $bodyStream, null);

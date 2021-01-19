@@ -41,8 +41,8 @@ abstract class MediaTypeFormatter implements IMediaTypeFormatter
      */
     protected function encodingIsSupported(string $encoding): bool
     {
-        $lowercaseSupportedEncodings = array_map('strtolower', $this->getSupportedEncodings());
-        $lowercaseEncoding = strtolower($encoding);
+        $lowercaseSupportedEncodings = \array_map('strtolower', $this->getSupportedEncodings());
+        $lowercaseEncoding = \strtolower($encoding);
 
         return \in_array($lowercaseEncoding, $lowercaseSupportedEncodings, true);
     }

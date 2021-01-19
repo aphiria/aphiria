@@ -60,15 +60,15 @@ class TableFormatter
         $headersAndRows = \count($headers) === 0 ? $rows : [...[$headers], ...$rows];
         $maxLengths = $this->padding->normalizeColumns($headersAndRows);
         $eolChar = $this->padding->getEolChar();
-        $rowText = explode(
+        $rowText = \explode(
             $eolChar,
             $this->padding->format(
                 $headersAndRows,
-                fn (array $row): string => sprintf(
+                fn (array $row): string => \sprintf(
                     '%s%s%s%s%s',
                     $this->verticalBorderChar,
                     $this->cellPaddingString,
-                    implode($this->cellPaddingString . $this->verticalBorderChar . $this->cellPaddingString, $row),
+                    \implode($this->cellPaddingString . $this->verticalBorderChar . $this->cellPaddingString, $row),
                     $this->cellPaddingString,
                     $this->verticalBorderChar
                 )
@@ -79,13 +79,13 @@ class TableFormatter
         $borders = [];
 
         foreach ($maxLengths as $maxLength) {
-            $borders[] = str_repeat($this->horizontalBorderChar, $maxLength + 2 * mb_strlen($this->cellPaddingString));
+            $borders[] = \str_repeat($this->horizontalBorderChar, $maxLength + 2 * \mb_strlen($this->cellPaddingString));
         }
 
-        $borderText = $this->intersectionChar . implode($this->intersectionChar, $borders) . $this->intersectionChar;
-        $headerText = \count($headers) > 0 ? array_shift($rowText) . $eolChar . $borderText . $eolChar : '';
+        $borderText = $this->intersectionChar . \implode($this->intersectionChar, $borders) . $this->intersectionChar;
+        $headerText = \count($headers) > 0 ? \array_shift($rowText) . $eolChar . $borderText . $eolChar : '';
 
-        return $borderText . $eolChar . $headerText . implode($eolChar, $rowText) . $eolChar . $borderText;
+        return $borderText . $eolChar . $headerText . \implode($eolChar, $rowText) . $eolChar . $borderText;
     }
 
     /**

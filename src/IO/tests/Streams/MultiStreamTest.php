@@ -59,9 +59,9 @@ class MultiStreamTest extends TestCase
 
     public function testClosingStreamUnsetsSubstreamResources(): void
     {
-        $handle1 = fopen('php://temp', 'rb');
+        $handle1 = \fopen('php://temp', 'rb');
         $stream1 = new Stream($handle1);
-        $handle2 = fopen('php://memory', 'rb');
+        $handle2 = \fopen('php://memory', 'rb');
         $stream2 = new Stream($handle2);
         $this->multiStream->addStream($stream1);
         $this->multiStream->addStream($stream2);
@@ -72,9 +72,9 @@ class MultiStreamTest extends TestCase
 
     public function testConstructingAddsStreams(): void
     {
-        $stream1 = new Stream(fopen('php://temp', 'r+b'));
+        $stream1 = new Stream(\fopen('php://temp', 'r+b'));
         $stream1->write('foo');
-        $stream2 = new Stream(fopen('php://temp', 'r+b'));
+        $stream2 = new Stream(\fopen('php://temp', 'r+b'));
         $stream2->write('bar');
         $multistream = new MultiStream([$stream1, $stream2]);
         $this->assertSame('foobar', (string)$multistream);
@@ -83,26 +83,26 @@ class MultiStreamTest extends TestCase
     public function testCopyingToClosedStreamThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $stream = new Stream(fopen('php://temp', 'r+b'));
+        $stream = new Stream(\fopen('php://temp', 'r+b'));
         $stream->write('foo');
         $stream->rewind();
         $this->multiStream->addStream($stream);
-        $destinationStream = new Stream(fopen('php://temp', 'r+b'));
+        $destinationStream = new Stream(\fopen('php://temp', 'r+b'));
         $destinationStream->close();
         $this->multiStream->copyToStream($destinationStream, 1);
     }
 
     public function testCopyingToStreamCopiesAllContentsUsingBufferSize(): void
     {
-        $stream1 = new Stream(fopen('php://temp', 'r+b'));
-        $stream2 = new Stream(fopen('php://temp', 'r+b'));
+        $stream1 = new Stream(\fopen('php://temp', 'r+b'));
+        $stream2 = new Stream(\fopen('php://temp', 'r+b'));
         $stream1->write('foo');
         $stream1->write('bar');
         $stream1->rewind();
         $stream2->rewind();
         $this->multiStream->addStream($stream1);
         $this->multiStream->addStream($stream2);
-        $destinationStream = new Stream(fopen('php://temp', 'r+b'));
+        $destinationStream = new Stream(\fopen('php://temp', 'r+b'));
         $this->multiStream->copyToStream($destinationStream, 1);
         $destinationStream->rewind();
         $this->assertSame('foobar', $destinationStream->readToEnd());
@@ -110,9 +110,9 @@ class MultiStreamTest extends TestCase
 
     public function testDestroyingStreamUnsetsSubstreamResources(): void
     {
-        $handle1 = fopen('php://temp', 'rb');
+        $handle1 = \fopen('php://temp', 'rb');
         $stream1 = new Stream($handle1);
-        $handle2 = fopen('php://memory', 'rb');
+        $handle2 = \fopen('php://memory', 'rb');
         $stream2 = new Stream($handle2);
         $this->multiStream->addStream($stream1);
         $this->multiStream->addStream($stream2);
@@ -123,8 +123,8 @@ class MultiStreamTest extends TestCase
 
     public function testEofOnlyReturnsTrueIfLastStreamIsAtEof(): void
     {
-        $stream1 = new Stream(fopen('php://temp', 'r+b'));
-        $stream2 = new Stream(fopen('php://temp', 'r+b'));
+        $stream1 = new Stream(\fopen('php://temp', 'r+b'));
+        $stream2 = new Stream(\fopen('php://temp', 'r+b'));
         $stream1->write('foo');
         $stream1->rewind();
         $stream2->write('bar');
@@ -235,8 +235,8 @@ class MultiStreamTest extends TestCase
 
     public function testReadingToEndWithMultipleStreamsReadsFromCurrentPositionToEnd(): void
     {
-        $stream1 = new Stream(fopen('php://temp', 'r+b'));
-        $stream2 = new Stream(fopen('php://temp', 'r+b'));
+        $stream1 = new Stream(\fopen('php://temp', 'r+b'));
+        $stream2 = new Stream(\fopen('php://temp', 'r+b'));
         $stream1->write('abc');
         $stream2->write('de');
         $this->multiStream->addStream($stream1);
@@ -256,7 +256,7 @@ class MultiStreamTest extends TestCase
 
     public function testReadingToEndWithSingleStreamReadsItToEnd(): void
     {
-        $stream = new Stream(fopen('php://temp', 'r+b'));
+        $stream = new Stream(\fopen('php://temp', 'r+b'));
         $stream->write('foo');
         $this->multiStream->addStream($stream);
         $this->multiStream->seek(1);
@@ -276,9 +276,9 @@ class MultiStreamTest extends TestCase
 
     public function testSeekingWithMultipleStreamsSeeksToCorrectPosition(): void
     {
-        $stream1 = new Stream(fopen('php://temp', 'r+b'));
-        $stream2 = new Stream(fopen('php://temp', 'r+b'));
-        $stream3 = new Stream(fopen('php://temp', 'r+b'));
+        $stream1 = new Stream(\fopen('php://temp', 'r+b'));
+        $stream2 = new Stream(\fopen('php://temp', 'r+b'));
+        $stream3 = new Stream(\fopen('php://temp', 'r+b'));
         $stream1->write('abc');
         $stream2->write('de');
         $stream3->write('fghij');
@@ -314,7 +314,7 @@ class MultiStreamTest extends TestCase
 
     public function testSeekingWithSingleStreamSeeksToCorrectPosition(): void
     {
-        $stream = new Stream(fopen('php://temp', 'r+b'));
+        $stream = new Stream(\fopen('php://temp', 'r+b'));
         $stream->write('foobar');
         $this->multiStream->addStream($stream);
         $this->multiStream->seek(1);
@@ -350,7 +350,7 @@ class MultiStreamTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Whence -1 is invalid');
-        $stream = new Stream(fopen('php://temp', 'r+b'));
+        $stream = new Stream(\fopen('php://temp', 'r+b'));
         $stream->write('foo');
         $this->multiStream->addStream($stream);
         $this->multiStream->seek(0, -1);
@@ -364,8 +364,8 @@ class MultiStreamTest extends TestCase
 
     public function testToStringRewindsStreamsAndReadsThemToTheEnd(): void
     {
-        $stream1 = new Stream(fopen('php://temp', 'r+b'));
-        $stream2 = new Stream(fopen('php://temp', 'r+b'));
+        $stream1 = new Stream(\fopen('php://temp', 'r+b'));
+        $stream2 = new Stream(\fopen('php://temp', 'r+b'));
         $stream1->write('foo');
         $stream2->write('bar');
         $stream1->seek(1);

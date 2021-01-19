@@ -108,11 +108,11 @@ class MultipartBody extends StreamBody
         // @codeCoverageIgnoreStart
         try {
             // The following creates a UUID v4
-            $string = random_bytes(16);
+            $string = \random_bytes(16);
             $string[6] = \chr(\ord($string[6]) & 0x0f | 0x40);
             $string[8] = \chr(\ord($string[8]) & 0x3f | 0x80);
 
-            return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($string), 4));
+            return \vsprintf('%s%s-%s-%s-%s-%s%s%s', \str_split(\bin2hex($string), 4));
         } catch (Exception $ex) {
             throw new RuntimeException('Failed to generate random bytes', 0, $ex);
         }
@@ -128,7 +128,7 @@ class MultipartBody extends StreamBody
      */
     private function createStreamFromString(string $string): Stream
     {
-        $stream = new Stream(fopen('php://temp', 'r+b'));
+        $stream = new Stream(\fopen('php://temp', 'r+b'));
         $stream->write($string);
         $stream->rewind();
 

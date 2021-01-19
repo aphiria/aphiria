@@ -35,16 +35,16 @@ class CommandBinderTest extends TestCase
         $this->binder = new CommandBinder();
         $this->container = $this->createMock(IContainer::class);
         GlobalConfiguration::resetConfigurationSources();
-        $this->currEnvironment = getenv('APP_ENV') ?: null;
+        $this->currEnvironment = \getenv('APP_ENV') ?: null;
     }
 
     protected function tearDown(): void
     {
         // Restore the environment name
         if ($this->currEnvironment === null) {
-            putenv('APP_ENV=');
+            \putenv('APP_ENV=');
         } else {
-            putenv("APP_ENV={$this->currEnvironment}");
+            \putenv("APP_ENV={$this->currEnvironment}");
         }
     }
 
@@ -61,7 +61,7 @@ class CommandBinderTest extends TestCase
     {
         $this->setUpContainerMockBindInstance();
         // Basically just ensuring we cover the production case in this test
-        putenv('APP_ENV=production');
+        \putenv('APP_ENV=production');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->binder->bind($this->container);
         // Dummy assertion

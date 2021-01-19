@@ -16,8 +16,8 @@ use Aphiria\Api\Controllers\Controller;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Router;
 use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints as ControllerMock;
-use Aphiria\Api\Tests\Mocks\ParameterizedMiddleware;
 use Aphiria\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;
+use Aphiria\Api\Tests\Mocks\ParameterizedMiddleware;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Middleware\IMiddleware;
@@ -89,7 +89,7 @@ class RouterTest extends TestCase
     public function testInvalidMiddlewareThrowsExceptionThatIsCaught(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Middleware %s does not implement %s', RouterTest::class, IMiddleware::class));
+        $this->expectExceptionMessage(\sprintf('Middleware %s does not implement %s', RouterTest::class, IMiddleware::class));
         $middleware = $this;
         $middlewareBinding = new MiddlewareBinding(__CLASS__);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
@@ -195,7 +195,7 @@ class RouterTest extends TestCase
     public function testRouteActionWithNonExistentControllerMethodThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Controller method %s::doesNotExist() does not exist', ControllerMock::class));
+        $this->expectExceptionMessage(\sprintf('Controller method %s::doesNotExist() does not exist', ControllerMock::class));
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $controller = new ControllerMock();
         $this->serviceResolver->expects($this->once())
@@ -254,7 +254,7 @@ class RouterTest extends TestCase
     public function testRouteActionWithInvalidControllerInstanceThrowsExceptionThatIsCaught(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Controller %s does not extend %s', RouterTest::class, Controller::class));
+        $this->expectExceptionMessage(\sprintf('Controller %s does not extend %s', RouterTest::class, Controller::class));
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         // Purposely bind a non-controller class's method to the route action
         $matchingResult = new RouteMatchingResult(

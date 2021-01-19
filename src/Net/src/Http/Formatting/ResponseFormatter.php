@@ -120,7 +120,7 @@ class ResponseFormatter
     public function writeJson(IResponse $response, array $content): void
     {
         try {
-            $json = json_encode($content, JSON_THROW_ON_ERROR);
+            $json = \json_encode($content, JSON_THROW_ON_ERROR);
         } catch (JsonException $ex) {
             throw new InvalidArgumentException('Failed to JSON encode content', 0, $ex);
         }

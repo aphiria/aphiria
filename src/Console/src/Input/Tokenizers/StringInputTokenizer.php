@@ -31,7 +31,7 @@ final class StringInputTokenizer implements IInputTokenizer
 
         $inDoubleQuotes = false;
         $inSingleQuotes = false;
-        $charArray = preg_split('//u', trim($input), -1, PREG_SPLIT_NO_EMPTY);
+        $charArray = \preg_split('//u', \trim($input), -1, PREG_SPLIT_NO_EMPTY);
         $previousChar = '';
         $buffer = '';
         $tokens = [];

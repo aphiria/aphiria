@@ -179,7 +179,7 @@ class HeadersTest extends TestCase
     public function testAddRangeOnInvalidValue(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Value must be instance of %s', KeyValuePair::class));
+        $this->expectExceptionMessage(\sprintf('Value must be instance of %s', KeyValuePair::class));
         $this->headers->addRange(['invalid KeyValuePair']);
     }
 }

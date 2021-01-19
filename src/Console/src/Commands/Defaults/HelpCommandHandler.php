@@ -89,7 +89,7 @@ EOF;
             }
 
             // Compile the template
-            $compiledTemplate = str_replace(
+            $compiledTemplate = \str_replace(
                 ['{{hr}}', '{{command}}', '{{description}}', '{{name}}', '{{arguments}}', '{{options}}', '{{helpText}}'],
                 [
                     \str_repeat('-', $output->getDriver()->getCliWidth()),

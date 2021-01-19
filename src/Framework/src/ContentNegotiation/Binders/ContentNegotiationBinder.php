@@ -41,7 +41,7 @@ class ContentNegotiationBinder extends Binder
      */
     public function bind(IContainer $container): void
     {
-        $mediaTypeFormatters = array_map(
+        $mediaTypeFormatters = \array_map(
             static function (string $class) use ($container): IMediaTypeFormatter {
                 /** @var class-string $class */
                 $mediaTypeFormatter = $container->resolve($class);

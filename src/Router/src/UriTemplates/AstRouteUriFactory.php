@@ -83,7 +83,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
         }
 
         $host = ($route->uriTemplate->isHttpsOnly ? 'https://' : 'http://') . $host;
-        $path = ltrim($path, '/');
+        $path = \ltrim($path, '/');
 
         if (empty($path)) {
             return $host;
@@ -105,7 +105,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
         $inOptionalRoutePart = $node->type === AstNodeTypes::OPTIONAL_ROUTE_PART;
         $optionalSegmentBuffer = '';
 
-        foreach (array_reverse($node->children) as $childNode) {
+        foreach (\array_reverse($node->children) as $childNode) {
             switch ($childNode->type) {
                 case AstNodeTypes::SEGMENT_DELIMITER:
                     // If we're in an optional part, we don't want to include it unless it contains text or a defined variable
@@ -151,7 +151,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
         }
 
         // The delimiters are in the host parts, so just glue it together with an empty string
-        return implode('', \array_reverse($hostParts));
+        return \implode('', \array_reverse($hostParts));
     }
 
     /**

@@ -69,7 +69,7 @@ class CommandFormatter
             $text .= $this->formatArrayArgument($arrayArgument);
         }
 
-        return trim($text);
+        return \trim($text);
     }
 
     /**

@@ -42,7 +42,7 @@ class Uri
      */
     public function __construct(string $uri)
     {
-        if (($parsedUri = parse_url($uri)) === false) {
+        if (($parsedUri = \parse_url($uri)) === false) {
             throw new InvalidArgumentException("URI $uri is malformed");
         }
 
@@ -226,7 +226,7 @@ class Uri
         }
 
         /** @link https://tools.ietf.org/html/rfc3986#section-3.2.2 */
-        return strtolower($host);
+        return \strtolower($host);
     }
 
     /**
@@ -242,10 +242,10 @@ class Uri
         }
 
         /** @link https://tools.ietf.org/html/rfc3986#section-3.3 */
-        return preg_replace_callback(
+        return \preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
             static function (array $match): string {
-                return rawurlencode((string)$match[0]);
+                return \rawurlencode((string)$match[0]);
             },
             $path
         );
@@ -264,10 +264,10 @@ class Uri
         }
 
         /** @link https://tools.ietf.org/html/rfc3986#section-3.4 */
-        return preg_replace_callback(
+        return \preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
             static function (array $match): string {
-                return rawurlencode((string)$match[0]);
+                return \rawurlencode((string)$match[0]);
             },
             $queryString
         );
@@ -286,7 +286,7 @@ class Uri
         }
 
         /** @link https://tools.ietf.org/html/rfc3986#section-3.1 */
-        return strtolower($scheme);
+        return \strtolower($scheme);
     }
 
     /**

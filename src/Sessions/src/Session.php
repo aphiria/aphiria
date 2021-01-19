@@ -89,7 +89,7 @@ class Session implements ISession
         $staleFlashKeys = $this->getStaleFlashKeys();
 
         // Remove the data from the list of stale keys, if it was there
-        if (($staleKey = array_search($key, $staleFlashKeys, true)) !== false) {
+        if (($staleKey = \array_search($key, $staleFlashKeys, true)) !== false) {
             unset($staleFlashKeys[$staleKey]);
         }
 
@@ -172,7 +172,7 @@ class Session implements ISession
     {
         $newFlashKeys = $this->getNewFlashKeys();
         $staleFlashKeys = $this->getStaleFlashKeys();
-        $this->set(self::NEW_FLASH_KEYS_KEY, array_merge($newFlashKeys, $staleFlashKeys));
+        $this->set(self::NEW_FLASH_KEYS_KEY, \array_merge($newFlashKeys, $staleFlashKeys));
         $this->set(self::STALE_FLASH_KEYS_KEY, []);
     }
 
@@ -209,7 +209,7 @@ class Session implements ISession
      */
     public function setMany(array $variables): void
     {
-        $this->vars = array_merge($this->vars, $variables);
+        $this->vars = \array_merge($this->vars, $variables);
     }
 
     /**

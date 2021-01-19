@@ -86,7 +86,7 @@ class BodyParserTest extends TestCase
     {
         $this->body->expects($this->once())
             ->method('readAsString')
-            ->willReturn(json_encode(['foo' => 'bar']));
+            ->willReturn(\json_encode(['foo' => 'bar']));
         $this->assertEquals(['foo' => 'bar'], $this->parser->readAsJson($this->body));
     }
 

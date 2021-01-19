@@ -98,7 +98,7 @@ XML;
     public function testWritingUsingUnsupportedEncodingThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('foo is not supported for %s', XmlMediaTypeFormatter::class));
+        $this->expectExceptionMessage(\sprintf('foo is not supported for %s', XmlMediaTypeFormatter::class));
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
     }

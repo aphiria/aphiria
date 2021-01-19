@@ -83,7 +83,7 @@ class HashSet implements ISet
      */
     public function getIterator(): Traversable
     {
-        return new ArrayIterator(array_values($this->values));
+        return new ArrayIterator(\array_values($this->values));
     }
 
     /**
@@ -119,7 +119,7 @@ class HashSet implements ISet
     public function sort(callable $comparer): void
     {
         /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
-        usort($this->values, $comparer);
+        \usort($this->values, $comparer);
     }
 
     /**
@@ -127,7 +127,7 @@ class HashSet implements ISet
      */
     public function toArray(): array
     {
-        return array_values($this->values);
+        return \array_values($this->values);
     }
 
     /**
@@ -135,7 +135,7 @@ class HashSet implements ISet
      */
     public function union(array $values): void
     {
-        $unionedValues = array_merge(array_values($this->values), $values);
+        $unionedValues = \array_merge(\array_values($this->values), $values);
         $this->clear();
         $this->addRange($unionedValues);
     }

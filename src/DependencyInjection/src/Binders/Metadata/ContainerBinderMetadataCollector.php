@@ -133,8 +133,8 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
         /** @psalm-suppress ArgumentTypeCoercion The callback will accept $this - bug */
         $result = $callback($this);
 
-        array_pop($this->contextStack);
-        $this->currentContext = end($this->contextStack) ?: new UniversalContext();
+        \array_pop($this->contextStack);
+        $this->currentContext = \end($this->contextStack) ?: new UniversalContext();
 
         return $result;
     }

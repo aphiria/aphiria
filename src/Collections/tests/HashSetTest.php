@@ -46,7 +46,7 @@ class HashSetTest extends TestCase
 
     public function testAddingResourceValuesIsAcceptable(): void
     {
-        $resource = fopen('php://temp', 'r+b');
+        $resource = \fopen('php://temp', 'r+b');
         $this->set->add($resource);
         $this->assertTrue($this->set->containsValue($resource));
         $this->assertEquals([$resource], $this->set->toArray());

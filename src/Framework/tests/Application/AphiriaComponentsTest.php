@@ -35,7 +35,6 @@ use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\HttpStatusCodes;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
-use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Closure;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -839,10 +838,10 @@ class AphiriaComponentsTest extends TestCase
                 IApplicationBuilder $appBuilder,
                 string $exceptionType,
                 string|Closure $type = null,
-                string|Closure$title = null,
-                string|Closure$detail = null,
+                string|Closure $title = null,
+                string|Closure $detail = null,
                 int|Closure $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
-                string|Closure$instance = null,
+                string|Closure $instance = null,
                 array|Closure $extensions = null
             ): void {
                 $this->withProblemDetails($appBuilder, $exceptionType, $type, $title, $detail, $status, $instance, $extensions);

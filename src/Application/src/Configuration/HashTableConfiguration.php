@@ -75,7 +75,7 @@ class HashTableConfiguration implements IConfiguration
 
         foreach ($explodedPath as $i => $pathPart) {
             if (!isset($value[$pathPart])) {
-                $fullPathToThisPart = implode($this->pathDelimiter, \array_slice($explodedPath, 0, $i + 1));
+                $fullPathToThisPart = \implode($this->pathDelimiter, \array_slice($explodedPath, 0, $i + 1));
 
                 throw new MissingConfigurationValueException($fullPathToThisPart);
             }

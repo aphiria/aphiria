@@ -63,7 +63,7 @@ class HtmlMediaTypeFormatterTest extends TestCase
     public function testReadingAsArrayOfStringsThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('%s can only read strings', HtmlMediaTypeFormatter::class));
+        $this->expectExceptionMessage(\sprintf('%s can only read strings', HtmlMediaTypeFormatter::class));
         $this->formatter->readFromStream($this->createMock(IStream::class), 'string[]');
     }
 
@@ -77,14 +77,14 @@ class HtmlMediaTypeFormatterTest extends TestCase
     public function testReadingNonStringThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('%s can only read strings', HtmlMediaTypeFormatter::class));
+        $this->expectExceptionMessage(\sprintf('%s can only read strings', HtmlMediaTypeFormatter::class));
         $this->formatter->readFromStream($this->createMock(IStream::class), self::class);
     }
 
     public function testReadingTypeThatCannotBeReadThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('%s can only read strings', HtmlMediaTypeFormatter::class));
+        $this->expectExceptionMessage(\sprintf('%s can only read strings', HtmlMediaTypeFormatter::class));
         $stream = $this->createMock(IStream::class);
         $this->formatter->readFromStream($stream, User::class);
     }
@@ -115,14 +115,14 @@ class HtmlMediaTypeFormatterTest extends TestCase
     public function testWritingTypeThatCannotBeWrittenThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('%s can only write strings', HtmlMediaTypeFormatter::class));
+        $this->expectExceptionMessage(\sprintf('%s can only write strings', HtmlMediaTypeFormatter::class));
         $this->formatter->writeToStream(new User(123, 'foo@bar.com'), $this->createMock(IStream::class), null);
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('bar is not supported for %s', HtmlMediaTypeFormatter::class));
+        $this->expectExceptionMessage(\sprintf('bar is not supported for %s', HtmlMediaTypeFormatter::class));
         $this->formatter->writeToStream('foo', $this->createMock(IStream::class), 'bar');
     }
 

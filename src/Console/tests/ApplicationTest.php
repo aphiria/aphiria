@@ -103,17 +103,17 @@ class ApplicationTest extends TestCase
             ->method('resolve')
             ->with(AboutCommandHandler::class)
             ->willReturn(new AboutCommandHandler($this->commands));
-        ob_start();
+        \ob_start();
         $status = $this->app->handle('', $this->output);
-        ob_get_clean();
+        \ob_get_clean();
         $this->assertSame(StatusCodes::OK, $status);
     }
 
     public function testHandlingException(): void
     {
-        ob_start();
+        \ob_start();
         $status = $this->app->handle("unclosed quote '", $this->output);
-        ob_end_clean();
+        \ob_end_clean();
         $this->assertSame(StatusCodes::FATAL, $status);
     }
 
@@ -130,15 +130,15 @@ class ApplicationTest extends TestCase
             }
         };
         $this->commands->registerCommand(new Command('holiday', [], [], ''), $commandHandler::class);
-        ob_start();
+        \ob_start();
         $status = $this->app->handle('help holiday', $this->output);
-        ob_get_clean();
+        \ob_get_clean();
         $this->assertSame(StatusCodes::OK, $status);
 
         // Try with command name with no argument
-        ob_start();
+        \ob_start();
         $status = $this->app->handle('help', $this->output);
-        ob_get_clean();
+        \ob_get_clean();
         $this->assertSame(StatusCodes::OK, $status);
     }
 
@@ -148,9 +148,9 @@ class ApplicationTest extends TestCase
             ->method('resolve')
             ->with(HelpCommandHandler::class)
             ->willReturn(new HelpCommandHandler($this->commands));
-        ob_start();
+        \ob_start();
         $status = $this->app->handle('help fake', $this->output);
-        ob_end_clean();
+        \ob_end_clean();
         $this->assertSame(StatusCodes::ERROR, $status);
     }
 
@@ -188,23 +188,23 @@ class ApplicationTest extends TestCase
             ),
             $commandHandler::class
         );
-        ob_start();
+        \ob_start();
         $status = $this->app->handle('holiday birthday -y', $this->output);
-        $this->assertSame('Happy birthday!', ob_get_clean());
+        $this->assertSame('Happy birthday!', \ob_get_clean());
         $this->assertSame(StatusCodes::OK, $status);
 
         // Test with long option
-        ob_start();
+        \ob_start();
         $status = $this->app->handle('holiday Easter --yell=no', $this->output);
-        $this->assertSame('Happy Easter', ob_get_clean());
+        $this->assertSame('Happy Easter', \ob_get_clean());
         $this->assertSame(StatusCodes::OK, $status);
     }
 
     public function testHandlingMissingCommandReturnsError(): void
     {
-        ob_start();
+        \ob_start();
         $status = $this->app->handle('fake', $this->output);
-        ob_get_clean();
+        \ob_get_clean();
         $this->assertSame(StatusCodes::ERROR, $status);
     }
 
@@ -226,9 +226,9 @@ class ApplicationTest extends TestCase
             ->with($commandHandler::class)
             ->willReturn($commandHandler);
         $this->commands->registerCommand(new Command('foo'), $commandHandler::class);
-        ob_start();
+        \ob_start();
         $status = $this->app->handle('foo', $this->output);
-        $this->assertSame('foo', ob_get_clean());
+        $this->assertSame('foo', \ob_get_clean());
         $this->assertSame(StatusCodes::OK, $status);
     }
 
