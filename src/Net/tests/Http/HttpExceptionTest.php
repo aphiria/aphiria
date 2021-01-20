@@ -15,7 +15,6 @@ namespace Aphiria\Net\Tests\Http;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\IResponse;
 use Exception;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class HttpExceptionTest extends TestCase

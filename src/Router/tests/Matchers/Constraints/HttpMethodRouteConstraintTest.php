@@ -17,7 +17,6 @@ use Aphiria\Routing\Matchers\MatchedRouteCandidate;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\UriTemplate;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class HttpMethodRouteConstraintTest extends TestCase

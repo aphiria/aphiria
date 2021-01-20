@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Constraints\Attributes;
 
 use Aphiria\Validation\Constraints\DateConstraint;
-use Aphiria\Validation\Constraints\IConstraint;
 use Attribute;
 use InvalidArgumentException;
 

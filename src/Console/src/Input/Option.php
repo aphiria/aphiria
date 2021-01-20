@@ -33,8 +33,7 @@ final class Option
         public ?string $shortName = null,
         public ?string $description = null,
         public mixed $defaultValue = null
-    )
-    {
+    ) {
         if (empty($this->name)) {
             throw new InvalidArgumentException('Option name cannot be empty');
         }

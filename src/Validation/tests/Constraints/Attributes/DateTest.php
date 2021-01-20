@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests\Constraints\Attributes;
 
-use Aphiria\Validation\Constraints\Attributes\Between;
 use Aphiria\Validation\Constraints\Attributes\Date;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;

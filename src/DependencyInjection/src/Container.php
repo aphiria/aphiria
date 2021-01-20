@@ -141,7 +141,7 @@ class Container implements IContainer
     {
         $className = \is_string($instance) ? $instance : $instance::class;
 
-        if (!method_exists($instance, $methodName)) {
+        if (!\method_exists($instance, $methodName)) {
             if (!$ignoreMissingMethod) {
                 throw new CallException("Method $className::$methodName does not exist");
             }
@@ -177,8 +177,8 @@ class Container implements IContainer
         /** @psalm-suppress ArgumentTypeCoercion The callback should accept $this - bug */
         $result = $callback($this);
 
-        array_pop($this->contextStack);
-        $this->currentContext = end($this->contextStack) ?: new UniversalContext();
+        \array_pop($this->contextStack);
+        $this->currentContext = \end($this->contextStack) ?: new UniversalContext();
 
         return $result;
     }
@@ -340,7 +340,7 @@ class Container implements IContainer
                     throw new ResolutionException(
                         $className,
                         $this->currentContext,
-                        sprintf(
+                        \sprintf(
                             '%s is not instantiable%s',
                             $className,
                             $this->currentContext->isTargeted() ? " (dependency of {$this->currentContext->getTargetClass()})" : ''
@@ -437,7 +437,7 @@ class Container implements IContainer
                 throw new ResolutionException(
                     $className ?? '',
                     $this->currentContext,
-                    sprintf(
+                    \sprintf(
                         'Failed to resolve %s in %s::%s()',
                         $parameter->getName(),
                         $parameter->getDeclaringClass()?->getName() ?? 'Unknown',
@@ -476,7 +476,7 @@ class Container implements IContainer
                     throw new ResolutionException(
                         $parameterTypeName,
                         $this->currentContext,
-                        sprintf(
+                        \sprintf(
                             'Expected type %s, got %s for %s in %s::%s()',
                             $parameterTypeName,
                             $primitiveTypeName,
@@ -488,7 +488,7 @@ class Container implements IContainer
                 }
             }
 
-            return array_shift($primitives);
+            return \array_shift($primitives);
         }
 
         if ($parameter->isDefaultValueAvailable()) {
@@ -511,7 +511,7 @@ class Container implements IContainer
         throw new ResolutionException(
             $parameterTypeName,
             $this->currentContext,
-            sprintf(
+            \sprintf(
                 'No default value available for %s in %s::%s()',
                 $parameter->getName(),
                 $parameter->getDeclaringClass()?->getName() ?? 'Unknown',

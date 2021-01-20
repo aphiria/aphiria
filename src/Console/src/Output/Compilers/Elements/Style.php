@@ -72,8 +72,7 @@ final class Style
         public ?string $foregroundColor = null,
         public ?string $backgroundColor = null,
         public array $textStyles = []
-    )
-    {
+    ) {
         $this->addTextStyles($this->textStyles);
     }
 

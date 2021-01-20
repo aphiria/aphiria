@@ -16,7 +16,6 @@ use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\Metadata\ContainerBinderMetadataCollector;
 use Aphiria\DependencyInjection\Binders\Metadata\FailedBinderMetadataCollectionException;
 use Aphiria\DependencyInjection\Container;
-use Aphiria\DependencyInjection\Context;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\Foo;
