@@ -38,7 +38,7 @@ final class CommandBinder extends Binder
         $commandCache = new FileCommandRegistryCache(GlobalConfiguration::getString('aphiria.console.commandCachePath'));
         $container->bindInstance(ICommandRegistryCache::class, $commandCache);
 
-        if (getenv('APP_ENV') === 'production') {
+        if (\getenv('APP_ENV') === 'production') {
             $commandRegistrants = new CommandRegistrantCollection($commandCache);
         } else {
             $commandRegistrants = new CommandRegistrantCollection();

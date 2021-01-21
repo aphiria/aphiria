@@ -70,7 +70,7 @@ class RouteActionInvoker implements IRouteActionInvoker
         } catch (ReflectionException $ex) {
             throw new HttpException(
                 HttpStatusCodes::INTERNAL_SERVER_ERROR,
-                sprintf(
+                \sprintf(
                     'Reflection failed for %s',
                     self::getRouteActionDisplayName($routeActionDelegate)
                 ),

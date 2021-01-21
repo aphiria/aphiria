@@ -74,7 +74,7 @@ class Prompt
         }
 
         if (\is_string($answer)) {
-            $answer = trim($answer);
+            $answer = \trim($answer);
         }
 
         if ($answer === '' || $answer === null) {

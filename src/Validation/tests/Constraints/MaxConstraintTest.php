@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Constraints;
 
 use Aphiria\Validation\Constraints\MaxConstraint;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class MaxConstraintTest extends TestCase

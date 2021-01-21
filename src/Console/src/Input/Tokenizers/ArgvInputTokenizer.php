@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Input\Tokenizers;
 
-use InvalidArgumentException;
-
 /**
  * Defines the argv input tokenizer
  */

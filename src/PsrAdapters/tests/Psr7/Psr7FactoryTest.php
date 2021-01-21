@@ -350,7 +350,7 @@ class Psr7FactoryTest extends TestCase
 
     public function testCreatePsr7StreamCreatesWorkingStream(): void
     {
-        $aphiriaStream = new Stream(fopen('php://temp', 'r+b'));
+        $aphiriaStream = new Stream(\fopen('php://temp', 'r+b'));
         $aphiriaStream->write('foo');
         $psr7Stream = $this->psr7Factory->createPsr7Stream($aphiriaStream);
         $psr7Stream->rewind();

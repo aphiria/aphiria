@@ -40,7 +40,7 @@ final class CommandRegistry
      */
     public function getAllCommandBindings(): array
     {
-        return array_values($this->bindings);
+        return \array_values($this->bindings);
     }
 
     /**
@@ -171,6 +171,6 @@ final class CommandRegistry
      */
     private static function normalizeCommandName(string $commandName): string
     {
-        return strtolower($commandName);
+        return \strtolower($commandName);
     }
 }

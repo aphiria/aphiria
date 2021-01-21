@@ -49,7 +49,7 @@ final class ValidationBinder extends Binder
         $constraintCache = new FileObjectConstraintsRegistryCache(GlobalConfiguration::getString('aphiria.validation.constraintsCachePath'));
         $container->bindInstance(IObjectConstraintsRegistryCache::class, $constraintCache);
 
-        if (getenv('APP_ENV') === 'production') {
+        if (\getenv('APP_ENV') === 'production') {
             $constraintsRegistrants = new ObjectConstraintsRegistrantCollection($constraintCache);
         } else {
             $constraintsRegistrants = new ObjectConstraintsRegistrantCollection(null);

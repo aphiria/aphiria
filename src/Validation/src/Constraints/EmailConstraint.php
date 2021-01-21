@@ -33,6 +33,6 @@ final class EmailConstraint extends Constraint
      */
     public function passes($value): bool
     {
-        return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+        return \filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
     }
 }

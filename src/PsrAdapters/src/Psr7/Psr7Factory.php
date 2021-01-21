@@ -152,7 +152,7 @@ class Psr7Factory implements IPsr7Factory
      */
     public function createAphiriaStream(StreamInterface $psr7Stream): IStream
     {
-        $aphiriaStream = new Stream(fopen('php://temp', 'r+b'));
+        $aphiriaStream = new Stream(\fopen('php://temp', 'r+b'));
         $psr7Stream->rewind();
 
         while (!$psr7Stream->eof()) {

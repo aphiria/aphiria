@@ -42,7 +42,7 @@ class ResponseFormatterTest extends TestCase
         $this->response->expects($this->once())
             ->method('setBody')
             ->with($this->callback(function (mixed $body) {
-                return $body instanceof StringBody && $body->readAsString() === json_encode(['foo' => 'bar']);
+                return $body instanceof StringBody && $body->readAsString() === \json_encode(['foo' => 'bar']);
             }));
         $this->formatter->writeJson($this->response, ['foo' => 'bar']);
         $this->assertSame('application/json', $this->response->getHeaders()->getFirst('Content-Type'));

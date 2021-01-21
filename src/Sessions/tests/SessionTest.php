@@ -151,18 +151,18 @@ class SessionTest extends TestCase
 
     public function testGettingIdReturnsSameOneAsSet(): void
     {
-        $constructorId = str_repeat('1', IIdGenerator::MIN_LENGTH);
+        $constructorId = \str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
         $idGenerator->method('idIsValid')->willReturn(true);
         $session = new Session($constructorId, $idGenerator);
-        $setterId = str_repeat('2', IIdGenerator::MIN_LENGTH);
+        $setterId = \str_repeat('2', IIdGenerator::MIN_LENGTH);
         $session->setId($setterId);
         $this->assertSame($setterId, $session->getId());
     }
 
     public function testGettingIdUsesIdGeneratorValue(): void
     {
-        $id = str_repeat('1', IIdGenerator::MIN_LENGTH);
+        $id = \str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
         $idGenerator->method('idIsValid')->willReturn(true);
         $session = new Session($id, $idGenerator);
@@ -223,7 +223,7 @@ class SessionTest extends TestCase
 
     public function testRegenerateIdUsesIdGeneratorValue(): void
     {
-        $generatedId = str_repeat('1', IIdGenerator::MIN_LENGTH);
+        $generatedId = \str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
         $idGenerator->method('idIsValid')
             ->willReturnMap([
@@ -245,7 +245,7 @@ class SessionTest extends TestCase
 
     public function testSettingInvalidIdCausesNewIdToBeGenerated(): void
     {
-        $generatedId = str_repeat('1', IIdGenerator::MIN_LENGTH);
+        $generatedId = \str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
         $idGenerator->method('idIsValid')
             ->willReturnMap([

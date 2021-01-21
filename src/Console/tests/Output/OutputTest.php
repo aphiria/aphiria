@@ -28,9 +28,9 @@ class OutputTest extends TestCase
 
     public function testClearingOutput(): void
     {
-        ob_start();
+        \ob_start();
         $this->output->clear();
-        $this->assertSame(\chr(27) . '[2J' . \chr(27) . '[;H', ob_get_clean());
+        $this->assertSame(\chr(27) . '[2J' . \chr(27) . '[;H', \ob_get_clean());
     }
 
     public function testGetDriverReturnsOneSetInConstructor(): void
@@ -42,37 +42,37 @@ class OutputTest extends TestCase
 
     public function testWritingMultipleMessagesWithNewLines(): void
     {
-        ob_start();
+        \ob_start();
         $this->output->writeln(['foo', 'bar']);
-        $this->assertSame('foo' . PHP_EOL . 'bar' . PHP_EOL, ob_get_clean());
+        $this->assertSame('foo' . PHP_EOL . 'bar' . PHP_EOL, \ob_get_clean());
     }
 
     public function testWritingMultipleMessagesWithNoNewLines(): void
     {
-        ob_start();
+        \ob_start();
         $this->output->write(['foo', 'bar']);
-        $this->assertSame('foobar', ob_get_clean());
+        $this->assertSame('foobar', \ob_get_clean());
     }
 
     public function testWritingSingleMessageWithNewLine(): void
     {
-        ob_start();
+        \ob_start();
         $this->output->writeln('foo');
-        $this->assertSame('foo' . PHP_EOL, ob_get_clean());
+        $this->assertSame('foo' . PHP_EOL, \ob_get_clean());
     }
 
     public function testWritingSingleMessageWithNoNewLine(): void
     {
-        ob_start();
+        \ob_start();
         $this->output->write('foo');
-        $this->assertSame('foo', ob_get_clean());
+        $this->assertSame('foo', \ob_get_clean());
     }
 
     public function testWritingStyledMessageWithStylingDisabled(): void
     {
-        ob_start();
+        \ob_start();
         $this->output->includeStyles(false);
         $this->output->write('<b>foo</b>');
-        $this->assertSame('foo', ob_get_clean());
+        $this->assertSame('foo', \ob_get_clean());
     }
 }

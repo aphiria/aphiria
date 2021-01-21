@@ -63,7 +63,7 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
         }
 
         $serializedObject = $this->serializer->serialize($value, $this->format);
-        $encodedSerializedObject = mb_convert_encoding($serializedObject, $encoding);
+        $encodedSerializedObject = \mb_convert_encoding($serializedObject, $encoding);
         $stream->write($encodedSerializedObject);
     }
 }

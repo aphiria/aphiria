@@ -34,10 +34,10 @@ final class Headers extends HashTable
         $headerString = '';
 
         foreach ($this->hashKeysToKvps as $kvp) {
-            $headerString .= "{$kvp->getKey()}: " . implode(', ', (array)$kvp->getValue()) . "\r\n";
+            $headerString .= "{$kvp->getKey()}: " . \implode(', ', (array)$kvp->getValue()) . "\r\n";
         }
 
-        return rtrim($headerString);
+        return \rtrim($headerString);
     }
 
     /**
@@ -146,6 +146,6 @@ final class Headers extends HashTable
      */
     private static function normalizeHeaderName(string $name): string
     {
-        return ucwords(str_replace('_', '-', strtolower($name)), '-');
+        return \ucwords(\str_replace('_', '-', \strtolower($name)), '-');
     }
 }

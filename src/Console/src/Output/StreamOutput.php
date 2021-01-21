@@ -66,9 +66,9 @@ class StreamOutput extends Output
      */
     public function readLine(): string
     {
-        $input = fgets($this->inputStream, 4096);
+        $input = \fgets($this->inputStream, 4096);
 
-        if (!feof($this->inputStream)) {
+        if (!\feof($this->inputStream)) {
             throw new RuntimeException('Failed to read line');
         }
 
@@ -80,7 +80,7 @@ class StreamOutput extends Output
      */
     protected function doWrite(string $message, bool $includeNewLine): void
     {
-        fwrite($this->outputStream, $message . ($includeNewLine ? PHP_EOL : ''));
-        fflush($this->outputStream);
+        \fwrite($this->outputStream, $message . ($includeNewLine ? PHP_EOL : ''));
+        \fflush($this->outputStream);
     }
 }

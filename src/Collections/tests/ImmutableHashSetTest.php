@@ -38,7 +38,7 @@ class ImmutableHashSetTest extends TestCase
 
     public function testAddingResourceValuesIsAcceptable(): void
     {
-        $resource = fopen('php://temp', 'r+b');
+        $resource = \fopen('php://temp', 'r+b');
         $set = new ImmutableHashSet([$resource]);
         $this->assertTrue($set->containsValue($resource));
         $this->assertEquals([$resource], $set->toArray());

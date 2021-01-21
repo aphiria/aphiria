@@ -228,17 +228,17 @@ final class RouteCollectionBuilder
         foreach ($this->groupOptionsStack as $groupOptions) {
             $groupPath .= empty($groupOptions->path)
                 ? ''
-                : '/' . ltrim($groupOptions->path, '/');
+                : '/' . \ltrim($groupOptions->path, '/');
             $groupHost = empty($groupOptions->host)
                 ? ''
-                : rtrim($groupOptions->host, '.') . (empty($groupHost) ? '' : '.' . $groupHost);
+                : \rtrim($groupOptions->host, '.') . (empty($groupHost) ? '' : '.' . $groupHost);
             $groupIsHttpsOnly = $groupIsHttpsOnly || $groupOptions->isHttpsOnly;
         }
 
         $path = empty($groupPath)
             ? $path
-            : $groupPath . '/' . ltrim($path, '/');
-        $host = rtrim($host ?? '', '.');
+            : $groupPath . '/' . \ltrim($path, '/');
+        $host = \rtrim($host ?? '', '.');
 
         if (!empty($groupHost)) {
             $host .= '.' . $groupHost;

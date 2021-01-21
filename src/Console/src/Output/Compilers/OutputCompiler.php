@@ -54,7 +54,7 @@ final class OutputCompiler implements IOutputCompiler
     public function compile(string $message, bool $includeStyles = true): string
     {
         if (!$includeStyles) {
-            return strip_tags($message);
+            return \strip_tags($message);
         }
 
         try {

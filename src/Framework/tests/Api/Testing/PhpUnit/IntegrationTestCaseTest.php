@@ -159,7 +159,7 @@ class IntegrationTestCaseTest extends TestCase
     protected function tearDown(): void
     {
         Container::$globalInstance = null;
-        putenv("APP_URL={$this->prevAppUrl}");
+        \putenv("APP_URL={$this->prevAppUrl}");
     }
 
     public function getAppUrlsAndPaths(): array

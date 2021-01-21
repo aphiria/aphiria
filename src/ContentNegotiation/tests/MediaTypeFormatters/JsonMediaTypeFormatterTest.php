@@ -88,7 +88,7 @@ class JsonMediaTypeFormatterTest extends TestCase
     public function testWritingUsingUnsupportedEncodingThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('foo is not supported for %s', JsonMediaTypeFormatter::class));
+        $this->expectExceptionMessage(\sprintf('foo is not supported for %s', JsonMediaTypeFormatter::class));
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
     }

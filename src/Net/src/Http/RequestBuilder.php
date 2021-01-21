@@ -15,7 +15,6 @@ namespace Aphiria\Net\Http;
 use Aphiria\Collections\HashTable;
 use Aphiria\Collections\IDictionary;
 use Aphiria\Net\Uri;
-use InvalidArgumentException;
 use LogicException;
 
 /**

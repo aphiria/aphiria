@@ -33,7 +33,7 @@ class ResponseHeaderFormatterTest extends TestCase
         $cookie = new Cookie('foo', '+', null, '/', null, false, false, 'strict');
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertSame(
-            'foo=' . urlencode('+') . '; Path=/; SameSite=strict',
+            'foo=' . \urlencode('+') . '; Path=/; SameSite=strict',
             $this->headers->getFirst('Set-Cookie')
         );
     }

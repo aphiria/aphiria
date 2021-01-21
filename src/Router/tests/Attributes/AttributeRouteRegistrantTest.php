@@ -45,7 +45,8 @@ class AttributeRouteRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
-            ->willReturn([$nonController::class]);$routes = new RouteCollection();
+            ->willReturn([$nonController::class]);
+        $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
         $this->assertEmpty($routes->getAll());
     }
@@ -108,7 +109,8 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRouteWithMiddlewareThatIsInRouteGroupWithMiddlewareCreatesRouteWithBothMiddleware(): void
     {
-        $controller = new #[Middleware(DummyMiddleware::class, ['foo' => 'bar'])] class() extends Controller {
+        $controller = new #[Middleware(DummyMiddleware::class, ['foo' => 'bar'])] class() extends Controller
+        {
             #[
                 Get('bar'),
                 Middleware(DummyMiddleware::class, ['baz' => 'blah'])
@@ -165,7 +167,8 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupWithEmptyPathPrependsNothingToRoutePaths(): void
     {
-        $controller = new #[RouteGroup('')] class() extends Controller {
+        $controller = new #[RouteGroup('')] class() extends Controller
+        {
             #[Get('foo')]
             public function route(): void
             {
@@ -186,7 +189,8 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupWithPathPrependsPathToRoutePaths(): void
     {
-        $controller = new #[RouteGroup('foo')] class() extends Controller {
+        $controller = new #[RouteGroup('foo')] class() extends Controller
+        {
             #[Get('bar')]
             public function route(): void
             {
@@ -207,7 +211,8 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupWithHostAppendsHostToRouteHost(): void
     {
-        $controller = new #[RouteGroup(host: 'example.com')] class() extends Controller {
+        $controller = new #[RouteGroup(host: 'example.com')] class() extends Controller
+        {
             #[Get('', 'api')]
             public function route(): void
             {
@@ -228,7 +233,8 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupThatIsHttpsOnlyMakesChildRoutesHttpsOnly(): void
     {
-        $controller = new #[RouteGroup(isHttpsOnly: true)] class() extends Controller {
+        $controller = new #[RouteGroup(isHttpsOnly: true)] class() extends Controller
+        {
             #[Get('', isHttpsOnly: true)]
             public function routeThatIsAlreadyHttpsOnly(): void
             {
@@ -255,7 +261,8 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupWithParametersAppliesParametersToChildRoutes(): void
     {
-        $controller = new #[RouteGroup('', parameters: ['foo' => 'bar'])] class() extends Controller {
+        $controller = new #[RouteGroup('', parameters: ['foo' => 'bar'])] class() extends Controller
+        {
             #[Get('')]
             public function routeWithNoParameters(): void
             {
@@ -282,7 +289,8 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteConstraintsAppliesConstraintsToChildRoutes(): void
     {
-        $controller = new #[RouteConstraint(DummyConstraint::class, ['foo'])] class() extends Controller {
+        $controller = new #[RouteConstraint(DummyConstraint::class, ['foo'])] class() extends Controller
+        {
             #[Get('')]
             public function routeWithNoExtraConstraints(): void
             {

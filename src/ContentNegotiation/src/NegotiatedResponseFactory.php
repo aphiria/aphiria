@@ -113,7 +113,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             return new StreamBody($rawBody);
         }
 
-        if (is_scalar($rawBody)) {
+        if (\is_scalar($rawBody)) {
             return new StringBody((string)$rawBody);
         }
 
@@ -133,7 +133,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             throw $this->createNotAcceptableException($type);
         }
 
-        $bodyStream = new Stream(fopen('php://temp', 'r+b'));
+        $bodyStream = new Stream(\fopen('php://temp', 'r+b'));
 
         try {
             $mediaTypeFormatter->writeToStream(

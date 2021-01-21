@@ -157,7 +157,7 @@ class BodyParser
 
             foreach ($rawHeaders as $headerLine) {
                 [$headerName, $headerValue] = \explode(':', $headerLine, 2);
-                $parsedHeaders->add(trim($headerName), \trim($headerValue));
+                $parsedHeaders->add(\trim($headerName), \trim($headerValue));
             }
 
             $body = new StringBody(\substr($rawBodyPart, $bodyStartIndex, $bodyEndIndex - $bodyStartIndex));

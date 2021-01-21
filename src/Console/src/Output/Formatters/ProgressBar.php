@@ -76,7 +76,7 @@ final class ProgressBar
     {
         // Bound the progress between 0 and the max steps
         $prevProgress = $this->progress;
-        $this->progress = max(0, min($this->maxSteps, $progress));
+        $this->progress = \max(0, \min($this->maxSteps, $progress));
 
         // Don't call the observers if no progress was actually made
         if ($prevProgress !== $this->progress) {

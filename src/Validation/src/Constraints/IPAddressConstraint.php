@@ -33,6 +33,6 @@ class IPAddressConstraint extends Constraint
      */
     public function passes($value): bool
     {
-        return filter_var($value, FILTER_VALIDATE_IP) !== false;
+        return \filter_var($value, FILTER_VALIDATE_IP) !== false;
     }
 }

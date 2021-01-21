@@ -47,7 +47,7 @@ final class RoutingBinder extends Binder
         $container->bindInstance(IRouteCache::class, $routeCache);
         $container->bindInstance(ITrieCache::class, $trieCache);
 
-        if (getenv('APP_ENV') === 'production') {
+        if (\getenv('APP_ENV') === 'production') {
             $routeRegistrants = new RouteRegistrantCollection($routeCache);
         } else {
             $routeRegistrants = new RouteRegistrantCollection();

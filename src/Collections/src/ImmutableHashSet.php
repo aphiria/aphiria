@@ -61,7 +61,7 @@ class ImmutableHashSet implements IImmutableSet
      */
     public function getIterator(): Traversable
     {
-        return new ArrayIterator(array_values($this->values));
+        return new ArrayIterator(\array_values($this->values));
     }
 
     /**
@@ -69,7 +69,7 @@ class ImmutableHashSet implements IImmutableSet
      */
     public function toArray(): array
     {
-        return array_values($this->values);
+        return \array_values($this->values);
     }
 
     /**

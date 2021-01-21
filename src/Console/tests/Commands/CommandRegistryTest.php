@@ -18,7 +18,6 @@ use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class CommandRegistryTest extends TestCase

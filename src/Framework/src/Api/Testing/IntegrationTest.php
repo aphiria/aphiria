@@ -273,7 +273,7 @@ trait IntegrationTest
             return $uri;
         }
 
-        if (preg_match('/^(about|data|file|ftp|git|http|https|sftp|ssh|svn):\/\//i', $uri) === 1) {
+        if (\preg_match('/^(about|data|file|ftp|git|http|https|sftp|ssh|svn):\/\//i', $uri) === 1) {
             return new Uri($uri);
         }
 
@@ -281,6 +281,6 @@ trait IntegrationTest
             throw new InvalidArgumentException('Environment variable "APP_URL" must be set to use a relative path');
         }
 
-        return new Uri(rtrim($appUrl, '/') . '/' . ltrim($uri, '/'));
+        return new Uri(\rtrim($appUrl, '/') . '/' . \ltrim($uri, '/'));
     }
 }

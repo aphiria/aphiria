@@ -20,7 +20,6 @@ use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\IResponseWriter;
 use Aphiria\Net\Http\Response;
-use Closure;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;

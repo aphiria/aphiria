@@ -24,7 +24,7 @@ class ConsoleOutput extends StreamOutput
      */
     public function __construct(IOutputCompiler $outputCompiler = null)
     {
-        parent::__construct(fopen('php://stdout', 'wb'), fopen('php://stdin', 'rb'), $outputCompiler);
+        parent::__construct(\fopen('php://stdout', 'wb'), \fopen('php://stdin', 'rb'), $outputCompiler);
     }
 
     /**

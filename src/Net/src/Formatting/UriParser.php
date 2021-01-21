@@ -39,7 +39,7 @@ class UriParser
 
         if (!isset($this->parsedQueryStringCache[$queryString])) {
             $parsedQueryString = [];
-            parse_str($queryString, $parsedQueryString);
+            \parse_str($queryString, $parsedQueryString);
             $kvps = [];
 
             /** @psalm-suppress MixedAssignment The value could legitimately be mixed */

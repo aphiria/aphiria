@@ -81,7 +81,7 @@ class Stack implements Countable, IteratorAggregate
             return null;
         }
 
-        return array_shift($this->values);
+        return \array_shift($this->values);
     }
 
     /**
@@ -91,7 +91,7 @@ class Stack implements Countable, IteratorAggregate
      */
     public function push(mixed $value): void
     {
-        array_unshift($this->values, $value);
+        \array_unshift($this->values, $value);
     }
 
     /**

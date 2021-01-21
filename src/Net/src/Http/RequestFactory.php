@@ -81,7 +81,7 @@ class RequestFactory
      */
     public function __construct(protected array $trustedProxyIPAddresses = [], protected array $trustedHeaderNames = [])
     {
-        $this->trustedHeaderNames = array_merge(self::$defaultTrustedHeaderNames, $trustedHeaderNames);
+        $this->trustedHeaderNames = \array_merge(self::$defaultTrustedHeaderNames, $trustedHeaderNames);
     }
 
     /**
@@ -204,7 +204,7 @@ class RequestFactory
 
         if ($isUsingTrustedProxy && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']])) {
             $hostWithPort = \explode(',', (string)$server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']]);
-            $hostWithPort = \trim(end($hostWithPort));
+            $hostWithPort = \trim(\end($hostWithPort));
         } else {
             $hostWithPort = (string)($server['HTTP_HOST'] ?? $server['SERVER_NAME'] ?? $server['SERVER_ADDR'] ?? '');
         }

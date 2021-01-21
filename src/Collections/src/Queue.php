@@ -63,7 +63,7 @@ class Queue implements Countable, IteratorAggregate
             return null;
         }
 
-        return array_shift($this->values);
+        return \array_shift($this->values);
     }
 
     /**

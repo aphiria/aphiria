@@ -225,7 +225,7 @@ final class InputCompiler implements IInputCompiler
     {
         if (\count($argumentValues) > \count($commandArguments)) {
             // Only when the last argument is an array do we allow more input arguments than command arguments
-            if (\count($commandArguments) === 0 || !end($commandArguments)->isArray()) {
+            if (\count($commandArguments) === 0 || !\end($commandArguments)->isArray()) {
                 return true;
             }
         }
