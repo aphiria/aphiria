@@ -43,6 +43,29 @@ class SymfonySerializerBinderTest extends TestCase
             ->with([SerializerInterface::class, Serializer::class], $this->isInstanceOf(Serializer::class));
     }
 
+    /**
+     * Gets the base config
+     *
+     * @return array<string, mixed> The base config
+     */
+    private static function getBaseConfig(): array
+    {
+        return [
+            'aphiria' => [
+                'serialization' => [
+                    'dateFormat' => 'Ymd',
+                    'encoders' => [],
+                    'nameConverter' => null,
+                    'normalizers' => [],
+                    'xml' => [
+                        'removeEmptyTags' => true,
+                        'rootNodeName' => 'response'
+                    ]
+                ]
+            ]
+        ];
+    }
+
     public function testArrayDenormalizerIsInstantiatedWithCorrectFormat(): void
     {
         $config = self::getBaseConfig();
@@ -123,28 +146,5 @@ class SymfonySerializerBinderTest extends TestCase
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
-    }
-
-    /**
-     * Gets the base config
-     *
-     * @return array<string, mixed> The base config
-     */
-    private static function getBaseConfig(): array
-    {
-        return [
-            'aphiria' => [
-                'serialization' => [
-                    'dateFormat' => 'Ymd',
-                    'encoders' => [],
-                    'nameConverter' => null,
-                    'normalizers' => [],
-                    'xml' => [
-                        'removeEmptyTags' => true,
-                        'rootNodeName' => 'response'
-                    ]
-                ]
-            ]
-        ];
     }
 }

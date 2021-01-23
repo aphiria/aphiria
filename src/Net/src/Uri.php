@@ -90,6 +90,93 @@ class Uri
     }
 
     /**
+     * Filters the URI fragment and percent-encodes reserved characters
+     *
+     * @param string|null $fragment The fragment to filter if one is set, otherwise null
+     * @return string|null The filtered fragment, or null if the fragment was already null
+     */
+    private static function filterFragment(?string $fragment): ?string
+    {
+        return self::filterQueryString($fragment);
+    }
+
+    /**
+     * Filters the URI host
+     *
+     * @param string|null $host The host to filter if one is set, otherwise null
+     * @return string|null The filtered host, or null if the host was already null
+     */
+    private static function filterHost(?string $host): ?string
+    {
+        if ($host === null) {
+            return null;
+        }
+
+        /** @link https://tools.ietf.org/html/rfc3986#section-3.2.2 */
+        return \strtolower($host);
+    }
+
+    /**
+     * Filters the URI path and percent-encodes reserved characters
+     *
+     * @param string|null $path The path to filter if one is set, otherwise null
+     * @return string|null The filtered path, or null if the path was already null
+     */
+    private static function filterPath(?string $path): ?string
+    {
+        if ($path === null) {
+            return null;
+        }
+
+        /** @link https://tools.ietf.org/html/rfc3986#section-3.3 */
+        return \preg_replace_callback(
+            '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
+            static function (array $match): string {
+                return \rawurlencode((string)$match[0]);
+            },
+            $path
+        );
+    }
+
+    /**
+     * Filters the URI query string and percent-encodes reserved characters
+     *
+     * @param string|null $queryString The query string to filter if one is set, otherwise null
+     * @return string|null The filtered query string, or null if the query string was already null
+     */
+    private static function filterQueryString(?string $queryString): ?string
+    {
+        if ($queryString === null) {
+            return null;
+        }
+
+        /** @link https://tools.ietf.org/html/rfc3986#section-3.4 */
+        return \preg_replace_callback(
+            '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
+            static function (array $match): string {
+                return \rawurlencode((string)$match[0]);
+            },
+            $queryString
+        );
+    }
+
+    /**
+     * Filters the URI scheme
+     *
+     * @param string|null $scheme The scheme to filter if one is set, otherwise null
+     * @return string|null The filtered scheme, or null if the scheme was already null
+     */
+    private static function filterScheme(?string $scheme): ?string
+    {
+        if ($scheme === null) {
+            return null;
+        }
+
+        /** @link https://tools.ietf.org/html/rfc3986#section-3.1 */
+        return \strtolower($scheme);
+    }
+
+    /**
      * Gets the authority portion of the URI, eg user:password@host:port
      * Note: The port is only included if it is non-standard for the scheme
      *
@@ -200,93 +287,6 @@ class Uri
     public function getUser(): ?string
     {
         return $this->user;
-    }
-
-    /**
-     * Filters the URI fragment and percent-encodes reserved characters
-     *
-     * @param string|null $fragment The fragment to filter if one is set, otherwise null
-     * @return string|null The filtered fragment, or null if the fragment was already null
-     */
-    private static function filterFragment(?string $fragment): ?string
-    {
-        return self::filterQueryString($fragment);
-    }
-
-    /**
-     * Filters the URI host
-     *
-     * @param string|null $host The host to filter if one is set, otherwise null
-     * @return string|null The filtered host, or null if the host was already null
-     */
-    private static function filterHost(?string $host): ?string
-    {
-        if ($host === null) {
-            return null;
-        }
-
-        /** @link https://tools.ietf.org/html/rfc3986#section-3.2.2 */
-        return \strtolower($host);
-    }
-
-    /**
-     * Filters the URI path and percent-encodes reserved characters
-     *
-     * @param string|null $path The path to filter if one is set, otherwise null
-     * @return string|null The filtered path, or null if the path was already null
-     */
-    private static function filterPath(?string $path): ?string
-    {
-        if ($path === null) {
-            return null;
-        }
-
-        /** @link https://tools.ietf.org/html/rfc3986#section-3.3 */
-        return \preg_replace_callback(
-            '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
-            static function (array $match): string {
-                return \rawurlencode((string)$match[0]);
-            },
-            $path
-        );
-    }
-
-    /**
-     * Filters the URI query string and percent-encodes reserved characters
-     *
-     * @param string|null $queryString The query string to filter if one is set, otherwise null
-     * @return string|null The filtered query string, or null if the query string was already null
-     */
-    private static function filterQueryString(?string $queryString): ?string
-    {
-        if ($queryString === null) {
-            return null;
-        }
-
-        /** @link https://tools.ietf.org/html/rfc3986#section-3.4 */
-        return \preg_replace_callback(
-            '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
-            static function (array $match): string {
-                return \rawurlencode((string)$match[0]);
-            },
-            $queryString
-        );
-    }
-
-    /**
-     * Filters the URI scheme
-     *
-     * @param string|null $scheme The scheme to filter if one is set, otherwise null
-     * @return string|null The filtered scheme, or null if the scheme was already null
-     */
-    private static function filterScheme(?string $scheme): ?string
-    {
-        if ($scheme === null) {
-            return null;
-        }
-
-        /** @link https://tools.ietf.org/html/rfc3986#section-3.1 */
-        return \strtolower($scheme);
     }
 
     /**

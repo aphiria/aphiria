@@ -29,34 +29,6 @@ final class TrieRouteMatcher implements IRouteMatcher
     }
 
     /**
-     * @inheritdoc
-     */
-    public function matchRoute(string $httpMethod, string $host, string $path, array $headers = []): RouteMatchingResult
-    {
-        $hostSegments = $host === '' ? [] : \array_reverse(\explode('.', $host));
-        $pathSegments =  \explode('/', \trim($path, '/'));
-        $pathSegmentsCount = \count($pathSegments);
-        $routeVars = $allowedMethods = [];
-
-        foreach (self::getMatchCandidates($this->rootNode, $pathSegments, $pathSegmentsCount, 0, $hostSegments, $routeVars) as $candidate) {
-            foreach ($candidate->route->constraints as $constraint) {
-                // If any constraints fail, collect the allowed methods and go on to the next candidate
-                if (!$constraint->passes($candidate, $httpMethod, $host, $path, $headers)) {
-                    if ($constraint instanceof HttpMethodRouteConstraint) {
-                        $allowedMethods = [...$allowedMethods, ...$constraint->getAllowedMethods()];
-                    }
-
-                    continue 2;
-                }
-            }
-
-            return new RouteMatchingResult($candidate->route, $candidate->routeVariables, []);
-        }
-
-        return new RouteMatchingResult(null, [], \array_unique($allowedMethods));
-    }
-
-    /**
      * Gets the list of matching route candidates for a particular node
      *
      * This method uses generators that, given the order of the code, will return literal segments before variables
@@ -118,5 +90,33 @@ final class TrieRouteMatcher implements IRouteMatcher
                 );
             }
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function matchRoute(string $httpMethod, string $host, string $path, array $headers = []): RouteMatchingResult
+    {
+        $hostSegments = $host === '' ? [] : \array_reverse(\explode('.', $host));
+        $pathSegments =  \explode('/', \trim($path, '/'));
+        $pathSegmentsCount = \count($pathSegments);
+        $routeVars = $allowedMethods = [];
+
+        foreach (self::getMatchCandidates($this->rootNode, $pathSegments, $pathSegmentsCount, 0, $hostSegments, $routeVars) as $candidate) {
+            foreach ($candidate->route->constraints as $constraint) {
+                // If any constraints fail, collect the allowed methods and go on to the next candidate
+                if (!$constraint->passes($candidate, $httpMethod, $host, $path, $headers)) {
+                    if ($constraint instanceof HttpMethodRouteConstraint) {
+                        $allowedMethods = [...$allowedMethods, ...$constraint->getAllowedMethods()];
+                    }
+
+                    continue 2;
+                }
+            }
+
+            return new RouteMatchingResult($candidate->route, $candidate->routeVariables, []);
+        }
+
+        return new RouteMatchingResult(null, [], \array_unique($allowedMethods));
     }
 }

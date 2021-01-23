@@ -58,6 +58,25 @@ class RouteActionInvoker implements IRouteActionInvoker
     }
 
     /**
+     * Gets the display name for a route action for use in exception messages
+     *
+     * @param callable $routeActionDelegate The route action delegate whose display name we want
+     * @return string The route action display name
+     */
+    private static function getRouteActionDisplayName(callable $routeActionDelegate): string
+    {
+        if (\is_array($routeActionDelegate)) {
+            if (\is_string($routeActionDelegate[0])) {
+                return $routeActionDelegate[0] . '::' . $routeActionDelegate[1];
+            }
+
+            return $routeActionDelegate[0]::class . '::' . $routeActionDelegate[1];
+        }
+
+        return Closure::class;
+    }
+
+    /**
      * @inheritdoc
      */
     public function invokeRouteAction(
@@ -161,24 +180,5 @@ class RouteActionInvoker implements IRouteActionInvoker
 
         /** @psalm-suppress ArgumentTypeCoercion Psalm is being a little strict here with what's allowed */
         return new ReflectionFunction($routeActionDelegate);
-    }
-
-    /**
-     * Gets the display name for a route action for use in exception messages
-     *
-     * @param callable $routeActionDelegate The route action delegate whose display name we want
-     * @return string The route action display name
-     */
-    private static function getRouteActionDisplayName(callable $routeActionDelegate): string
-    {
-        if (\is_array($routeActionDelegate)) {
-            if (\is_string($routeActionDelegate[0])) {
-                return $routeActionDelegate[0] . '::' . $routeActionDelegate[1];
-            }
-
-            return $routeActionDelegate[0]::class . '::' . $routeActionDelegate[1];
-        }
-
-        return Closure::class;
     }
 }

@@ -65,6 +65,26 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         GlobalConfiguration::resetConfigurationSources();
     }
 
+    /**
+     * Gets the base config that will be used for all tests
+     *
+     * @return array<string, mixed> The base config that will be used for all tests
+     */
+    private static function getBaseConfig(): array
+    {
+        return [
+            'aphiria' => [
+                'exceptions' => [
+                    'apiExceptionRenderer' => ProblemDetailsExceptionRenderer::class
+                ],
+                'logging' => [
+                    'handlers' => [],
+                    'name' => 'app'
+                ]
+            ]
+        ];
+    }
+
     public function testApiExceptionRendererIsCreatedAndBoundInHttpContext(): void
     {
         $this->addBootstrapAssertions();
@@ -239,26 +259,6 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
             }
         };
         $this->assertTrue($bootstrapper->isRunningInConsole());
-    }
-
-    /**
-     * Gets the base config that will be used for all tests
-     *
-     * @return array<string, mixed> The base config that will be used for all tests
-     */
-    private static function getBaseConfig(): array
-    {
-        return [
-            'aphiria' => [
-                'exceptions' => [
-                    'apiExceptionRenderer' => ProblemDetailsExceptionRenderer::class
-                ],
-                'logging' => [
-                    'handlers' => [],
-                    'name' => 'app'
-                ]
-            ]
-        ];
     }
 
     /**

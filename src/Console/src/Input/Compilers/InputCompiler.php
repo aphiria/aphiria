@@ -52,53 +52,6 @@ final class InputCompiler implements IInputCompiler
     }
 
     /**
-     * @inheritdoc
-     */
-    public function compile(string|array $rawInput): Input
-    {
-        $tokens = $this->selectTokenizer($rawInput)->tokenize($rawInput);
-
-        if (\count($tokens) === 0) {
-            throw new CommandNotFoundException('');
-        }
-
-        $commandName = '';
-        $argumentValues = [];
-        $options = [];
-        self::parseTokens($tokens, $commandName, $argumentValues, $options);
-
-        /** @var Command $command */
-        if (!$this->commands->tryGetCommand($commandName, $command)) {
-            throw new CommandNotFoundException($commandName);
-        }
-
-        return new Input(
-            $command->name,
-            self::compileArguments($command, $argumentValues),
-            self::compileOptions($command, $options)
-        );
-    }
-
-    /**
-     * Gets the correct tokenizer for the input
-     *
-     * @param string|array $rawInput The input to use when figuring out which input tokenizer to use
-     * @return IInputTokenizer The selected input tokenizer
-     */
-    private function selectTokenizer(string|array $rawInput): IInputTokenizer
-    {
-        if (\is_string($rawInput)) {
-            return $this->stringTokenizer;
-        }
-
-        if (isset($rawInput['name'])) {
-            return $this->arrayListTokenizer;
-        }
-
-        return $this->argvTokenizer;
-    }
-
-    /**
      * Adds an option to the list of options
      *
      * @param array<string, mixed> $options The list of options we're adding to
@@ -356,5 +309,52 @@ final class InputCompiler implements IInputCompiler
         }
 
         return $token;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function compile(string|array $rawInput): Input
+    {
+        $tokens = $this->selectTokenizer($rawInput)->tokenize($rawInput);
+
+        if (\count($tokens) === 0) {
+            throw new CommandNotFoundException('');
+        }
+
+        $commandName = '';
+        $argumentValues = [];
+        $options = [];
+        self::parseTokens($tokens, $commandName, $argumentValues, $options);
+
+        /** @var Command $command */
+        if (!$this->commands->tryGetCommand($commandName, $command)) {
+            throw new CommandNotFoundException($commandName);
+        }
+
+        return new Input(
+            $command->name,
+            self::compileArguments($command, $argumentValues),
+            self::compileOptions($command, $options)
+        );
+    }
+
+    /**
+     * Gets the correct tokenizer for the input
+     *
+     * @param string|array $rawInput The input to use when figuring out which input tokenizer to use
+     * @return IInputTokenizer The selected input tokenizer
+     */
+    private function selectTokenizer(string|array $rawInput): IInputTokenizer
+    {
+        if (\is_string($rawInput)) {
+            return $this->stringTokenizer;
+        }
+
+        if (isset($rawInput['name'])) {
+            return $this->arrayListTokenizer;
+        }
+
+        return $this->argvTokenizer;
     }
 }

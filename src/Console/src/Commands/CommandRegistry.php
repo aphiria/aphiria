@@ -23,6 +23,17 @@ final class CommandRegistry
     private array $bindings = [];
 
     /**
+     * Normalizes a command name for storage
+     *
+     * @param string $commandName The command name to normalize
+     * @return string The normalized command name
+     */
+    private static function normalizeCommandName(string $commandName): string
+    {
+        return \strtolower($commandName);
+    }
+
+    /**
      * Copies a command registry into this one
      *
      * @param CommandRegistry $commands The commands to copy
@@ -161,16 +172,5 @@ final class CommandRegistry
         $commandHandlerClassName = $binding->commandHandlerClassName;
 
         return true;
-    }
-
-    /**
-     * Normalizes a command name for storage
-     *
-     * @param string $commandName The command name to normalize
-     * @return string The normalized command name
-     */
-    private static function normalizeCommandName(string $commandName): string
-    {
-        return \strtolower($commandName);
     }
 }

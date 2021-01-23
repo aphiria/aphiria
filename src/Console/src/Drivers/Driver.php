@@ -31,6 +31,13 @@ abstract class Driver implements IDriver
     protected ?bool $supportsStty = null;
 
     /**
+     * Gets the CLI dimensions as a tuple using OS-specific methods
+     *
+     * @return array|null The CLI dimensions (width x height), if gettable, otherwise null
+     */
+    abstract protected function getCliDimensionsFromOS(): ?array;
+
+    /**
      * @inheritdoc
      */
     public function getCliHeight(): int
@@ -77,13 +84,6 @@ abstract class Driver implements IDriver
 
         return $this->width = self::DEFAULT_WIDTH;
     }
-
-    /**
-     * Gets the CLI dimensions as a tuple using OS-specific methods
-     *
-     * @return array|null The CLI dimensions (width x height), if gettable, otherwise null
-     */
-    abstract protected function getCliDimensionsFromOS(): ?array;
 
     /**
      * Gets the CLI dimensions from STTY as a tuple

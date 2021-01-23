@@ -77,26 +77,6 @@ class MultipartBody extends StreamBody
     }
 
     /**
-     * Gets the boundary string
-     *
-     * @return string The boundary string
-     */
-    public function getBoundary(): string
-    {
-        return $this->boundary;
-    }
-
-    /**
-     * Gets the multipart body parts that make up the body
-     *
-     * @return MultipartBodyPart[] The list of body parts
-     */
-    public function getParts(): array
-    {
-        return $this->parts;
-    }
-
-    /**
      * Creates the default boundary in case one wasn't specified
      *
      * @return string The default boundary
@@ -117,6 +97,26 @@ class MultipartBody extends StreamBody
             throw new RuntimeException('Failed to generate random bytes', 0, $ex);
         }
         // @codeCoverageIgnoreEnd
+    }
+
+    /**
+     * Gets the boundary string
+     *
+     * @return string The boundary string
+     */
+    public function getBoundary(): string
+    {
+        return $this->boundary;
+    }
+
+    /**
+     * Gets the multipart body parts that make up the body
+     *
+     * @return MultipartBodyPart[] The list of body parts
+     */
+    public function getParts(): array
+    {
+        return $this->parts;
     }
 
     /**

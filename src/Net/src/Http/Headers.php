@@ -41,6 +41,17 @@ final class Headers extends HashTable
     }
 
     /**
+     * Normalizes the name of the header so that capitalization and snake-casing doesn't matter
+     *
+     * @param string $name The name of the header to normalize
+     * @return string The normalized header name
+     */
+    private static function normalizeHeaderName(string $name): string
+    {
+        return \ucwords(\str_replace('_', '-', \strtolower($name)), '-');
+    }
+
+    /**
      * Headers are allowed to have multiple values, so we must add support for that
      *
      * @inheritdoc
@@ -136,16 +147,5 @@ final class Headers extends HashTable
         } catch (OutOfBoundsException) {
             return false;
         }
-    }
-
-    /**
-     * Normalizes the name of the header so that capitalization and snake-casing doesn't matter
-     *
-     * @param string $name The name of the header to normalize
-     * @return string The normalized header name
-     */
-    private static function normalizeHeaderName(string $name): string
-    {
-        return \ucwords(\str_replace('_', '-', \strtolower($name)), '-');
     }
 }

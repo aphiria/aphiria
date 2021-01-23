@@ -29,46 +29,6 @@ final class UriTemplateLexer implements IUriTemplateLexer
     private const VARIABLE_NAME_MAX_LENGTH = 32;
 
     /**
-     * @inheritdoc
-     *
-     * @psalm-suppress InvalidLiteralArgument We are purposely checking to see if we're matching against literals like punctuation
-     */
-    public function lex(string $uriTemplate): TokenStream
-    {
-        $cursor = 0;
-        $templateLength = \mb_strlen($uriTemplate);
-        $tokens = [];
-        $textBuffer = '';
-
-        while ($cursor < $templateLength) {
-            $matches = [];
-
-            if ($uriTemplate[$cursor] === ' ') {
-                $cursor++;
-            } elseif (\str_contains(self::PUNCTUATION, $uriTemplate[$cursor])) {
-                self::flushTextBuffer($textBuffer, $tokens);
-                self::lexPunctuation($uriTemplate[$cursor], $tokens, $cursor);
-            } elseif (\preg_match(self::VARIABLE_NAME_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
-                self::flushTextBuffer($textBuffer, $tokens);
-                self::lexVariableName($matches[0], $tokens, $cursor);
-            } elseif (\preg_match(self::NUMBER_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
-                self::flushTextBuffer($textBuffer, $tokens);
-                self::lexNumber($matches[0], $tokens, $cursor);
-            } elseif (\preg_match(self::QUOTED_STRING_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
-                self::flushTextBuffer($textBuffer, $tokens);
-                self::lexQuotedString($matches[0], $tokens, $cursor);
-            } else {
-                self::lexTextChar($uriTemplate[$cursor], $textBuffer, $cursor);
-            }
-        }
-
-        // In case there's anything left in the buffer, flush it
-        self::flushTextBuffer($textBuffer, $tokens);
-
-        return new TokenStream($tokens);
-    }
-
-    /**
      * Flushes any text from the buffer
      *
      * @param string $textBuffer The current text buffer
@@ -163,5 +123,45 @@ final class UriTemplateLexer implements IUriTemplateLexer
         $tokens[] = new Token(TokenTypes::T_VARIABLE, $trimmedVariableName);
         // We have to advance the cursor the length of the untrimmed variable name
         $cursor += \mb_strlen($variableName);
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @psalm-suppress InvalidLiteralArgument We are purposely checking to see if we're matching against literals like punctuation
+     */
+    public function lex(string $uriTemplate): TokenStream
+    {
+        $cursor = 0;
+        $templateLength = \mb_strlen($uriTemplate);
+        $tokens = [];
+        $textBuffer = '';
+
+        while ($cursor < $templateLength) {
+            $matches = [];
+
+            if ($uriTemplate[$cursor] === ' ') {
+                $cursor++;
+            } elseif (\str_contains(self::PUNCTUATION, $uriTemplate[$cursor])) {
+                self::flushTextBuffer($textBuffer, $tokens);
+                self::lexPunctuation($uriTemplate[$cursor], $tokens, $cursor);
+            } elseif (\preg_match(self::VARIABLE_NAME_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
+                self::flushTextBuffer($textBuffer, $tokens);
+                self::lexVariableName($matches[0], $tokens, $cursor);
+            } elseif (\preg_match(self::NUMBER_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
+                self::flushTextBuffer($textBuffer, $tokens);
+                self::lexNumber($matches[0], $tokens, $cursor);
+            } elseif (\preg_match(self::QUOTED_STRING_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {
+                self::flushTextBuffer($textBuffer, $tokens);
+                self::lexQuotedString($matches[0], $tokens, $cursor);
+            } else {
+                self::lexTextChar($uriTemplate[$cursor], $textBuffer, $cursor);
+            }
+        }
+
+        // In case there's anything left in the buffer, flush it
+        self::flushTextBuffer($textBuffer, $tokens);
+
+        return new TokenStream($tokens);
     }
 }

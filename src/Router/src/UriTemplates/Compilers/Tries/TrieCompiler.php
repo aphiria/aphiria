@@ -59,6 +59,38 @@ final class TrieCompiler implements ITrieCompiler
     }
 
     /**
+     * Creates a trie node
+     *
+     * @param string[]|RouteVariable[] $segmentBuffer The current buffer of parts (eg text or RouteVariables)
+     * @param bool $segmentContainsVariable Whether or not the segment contains a variable
+     * @param bool $isEndpoint Whether or not this node is an endpoint
+     * @param Route $route The current route
+     * @param TrieNode|null $hostTrie The host trie
+     * @return TrieNode The created node
+     */
+    private static function createTrieNode(
+        array &$segmentBuffer,
+        bool &$segmentContainsVariable,
+        bool $isEndpoint,
+        Route $route,
+        ?TrieNode $hostTrie
+    ): TrieNode {
+        $routes = $isEndpoint ? $route : [];
+
+        if ($segmentContainsVariable) {
+            $node = new VariableTrieNode($segmentBuffer, [], $routes, $hostTrie);
+        } else {
+            $node = new LiteralTrieNode(\implode('', $segmentBuffer), [], $routes, $hostTrie);
+        }
+
+        // Clear the buffer data
+        $segmentBuffer = [];
+        $segmentContainsVariable = false;
+
+        return $node;
+    }
+
+    /**
      * @inheritdoc
      */
     public function compile(Route $route): TrieNode
@@ -202,37 +234,5 @@ final class TrieCompiler implements ITrieCompiler
         }
 
         return new RouteVariable((string)$astNode->value, $constraints);
-    }
-
-    /**
-     * Creates a trie node
-     *
-     * @param string[]|RouteVariable[] $segmentBuffer The current buffer of parts (eg text or RouteVariables)
-     * @param bool $segmentContainsVariable Whether or not the segment contains a variable
-     * @param bool $isEndpoint Whether or not this node is an endpoint
-     * @param Route $route The current route
-     * @param TrieNode|null $hostTrie The host trie
-     * @return TrieNode The created node
-     */
-    private static function createTrieNode(
-        array &$segmentBuffer,
-        bool &$segmentContainsVariable,
-        bool $isEndpoint,
-        Route $route,
-        ?TrieNode $hostTrie
-    ): TrieNode {
-        $routes = $isEndpoint ? $route : [];
-
-        if ($segmentContainsVariable) {
-            $node = new VariableTrieNode($segmentBuffer, [], $routes, $hostTrie);
-        } else {
-            $node = new LiteralTrieNode(\implode('', $segmentBuffer), [], $routes, $hostTrie);
-        }
-
-        // Clear the buffer data
-        $segmentBuffer = [];
-        $segmentContainsVariable = false;
-
-        return $node;
     }
 }
