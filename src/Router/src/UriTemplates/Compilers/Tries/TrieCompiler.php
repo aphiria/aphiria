@@ -59,6 +59,34 @@ final class TrieCompiler implements ITrieCompiler
     }
 
     /**
+     * @inheritdoc
+     */
+    public function compile(Route $route): TrieNode
+    {
+        try {
+            $ast = $this->uriTemplateParser->parse($this->uriTemplateLexer->lex((string)$route->uriTemplate));
+            $trie = new RootTrieNode();
+            $hostTrie = null;
+
+            foreach ($ast->children as $childAstNode) {
+                switch ($childAstNode->type) {
+                    case AstNodeTypes::HOST:
+                        $hostTrie = new RootTrieNode();
+                        $this->compileNode(true, $hostTrie, $childAstNode, $route, null);
+                        break;
+                    case AstNodeTypes::PATH:
+                        $this->compileNode(false, $trie, $childAstNode, $route, $hostTrie);
+                        break;
+                }
+            }
+
+            return $trie;
+        } catch (UnexpectedTokenException | LexingException $ex) {
+            throw new InvalidUriTemplateException('URI template could not be compiled', 0, $ex);
+        }
+    }
+
+    /**
      * Creates a trie node
      *
      * @param string[]|RouteVariable[] $segmentBuffer The current buffer of parts (eg text or RouteVariables)
@@ -88,34 +116,6 @@ final class TrieCompiler implements ITrieCompiler
         $segmentContainsVariable = false;
 
         return $node;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function compile(Route $route): TrieNode
-    {
-        try {
-            $ast = $this->uriTemplateParser->parse($this->uriTemplateLexer->lex((string)$route->uriTemplate));
-            $trie = new RootTrieNode();
-            $hostTrie = null;
-
-            foreach ($ast->children as $childAstNode) {
-                switch ($childAstNode->type) {
-                    case AstNodeTypes::HOST:
-                        $hostTrie = new RootTrieNode();
-                        $this->compileNode(true, $hostTrie, $childAstNode, $route, null);
-                        break;
-                    case AstNodeTypes::PATH:
-                        $this->compileNode(false, $trie, $childAstNode, $route, $hostTrie);
-                        break;
-                }
-            }
-
-            return $trie;
-        } catch (UnexpectedTokenException | LexingException $ex) {
-            throw new InvalidUriTemplateException('URI template could not be compiled', 0, $ex);
-        }
     }
 
     /**

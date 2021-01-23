@@ -48,23 +48,6 @@ class CommandBinderTest extends TestCase
         }
     }
 
-    /**
-     * Gets the base config
-     *
-     * @return array<string, mixed> The base config
-     */
-    private static function getBaseConfig(): array
-    {
-        return [
-            'aphiria' => [
-                'console' => [
-                    'attributePaths' => ['/src'],
-                    'commandCachePath' => '/commandCache.txt'
-                ]
-            ]
-        ];
-    }
-
     public function testAttributeRegistrantIsRegistered(): void
     {
         $this->setUpContainerMockBindInstance([AttributeCommandRegistrant::class, $this->isInstanceOf(AttributeCommandRegistrant::class)]);
@@ -83,6 +66,23 @@ class CommandBinderTest extends TestCase
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
+    }
+
+    /**
+     * Gets the base config
+     *
+     * @return array<string, mixed> The base config
+     */
+    private static function getBaseConfig(): array
+    {
+        return [
+            'aphiria' => [
+                'console' => [
+                    'attributePaths' => ['/src'],
+                    'commandCachePath' => '/commandCache.txt'
+                ]
+            ]
+        ];
     }
 
     /**

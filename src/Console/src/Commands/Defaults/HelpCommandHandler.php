@@ -62,23 +62,6 @@ EOF;
     }
 
     /**
-     * Gets the option names as a formatted string
-     *
-     * @param Option $option The option to convert to text
-     * @return string The option names as text
-     */
-    private static function getOptionNames(Option $option): string
-    {
-        $optionNames = "--{$option->name}";
-
-        if ($option->shortName !== null) {
-            $optionNames .= "|-{$option->shortName}";
-        }
-
-        return $optionNames;
-    }
-
-    /**
      * @inheritdoc
      */
     public function handle(Input $input, IOutput $output)
@@ -127,6 +110,23 @@ EOF;
         }
 
         return StatusCodes::OK;
+    }
+
+    /**
+     * Gets the option names as a formatted string
+     *
+     * @param Option $option The option to convert to text
+     * @return string The option names as text
+     */
+    private static function getOptionNames(Option $option): string
+    {
+        $optionNames = "--{$option->name}";
+
+        if ($option->shortName !== null) {
+            $optionNames .= "|-{$option->shortName}";
+        }
+
+        return $optionNames;
     }
 
     /**

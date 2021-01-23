@@ -23,6 +23,10 @@ use RuntimeException;
  */
 class Request implements IRequest
 {
+    /** @var Headers $headers The request headers */
+    protected Headers $headers;
+    /** @var IDictionary The request properties */
+    protected IDictionary $properties;
     /** @var array<string, bool> The list of valid HTTP methods */
     private static array $validMethods = [
         'CONNECT' => true,
@@ -50,10 +54,6 @@ class Request implements IRequest
         RequestTargetTypes::ABSOLUTE_FORM => true,
         RequestTargetTypes::ASTERISK_FORM => true
     ];
-    /** @var Headers $headers The request headers */
-    protected Headers $headers;
-    /** @var IDictionary The request properties */
-    protected IDictionary $properties;
 
     /**
      * @param string $method The request method

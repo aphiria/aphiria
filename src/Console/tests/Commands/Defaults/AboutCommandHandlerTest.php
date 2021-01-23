@@ -41,23 +41,6 @@ class AboutCommandHandlerTest extends TestCase
             ->willReturn($driver);
     }
 
-    /**
-     * Compiles the expected output with the header
-     *
-     * @param string $body The body that's expected
-     * @return string The compiled output
-     */
-    private static function compileOutput(string $body): string
-    {
-        $template = <<<EOF
----
-<b>Aphiria</b>
----
-{{body}}
-EOF;
-        return \str_replace('{{body}}', $body, $template);
-    }
-
     public function testCommandsAreAlphabeticallySortedByCategories(): void
     {
         $commandHandler1 = new class() implements ICommandHandler {
@@ -139,5 +122,22 @@ EOF;
         $this->output->method('writeln')
             ->with(self::compileOutput($body));
         $this->handler->handle(new Input('about', [], []), $this->output);
+    }
+
+    /**
+     * Compiles the expected output with the header
+     *
+     * @param string $body The body that's expected
+     * @return string The compiled output
+     */
+    private static function compileOutput(string $body): string
+    {
+        $template = <<<EOF
+---
+<b>Aphiria</b>
+---
+{{body}}
+EOF;
+        return \str_replace('{{body}}', $body, $template);
     }
 }

@@ -56,26 +56,6 @@ class ValidationBinderTest extends TestCase
         }
     }
 
-    /**
-     * Gets the base config
-     *
-     * @return array<string, mixed> The base config
-     */
-    private static function getBaseConfig(): array
-    {
-        return [
-            'aphiria' => [
-                'validation' => [
-                    'attributePaths' => ['/src'],
-                    'constraintsCachePath' => '/cache',
-                    'errorMessageInterpolator' => [
-                        'type' => StringReplaceErrorMessageInterpolator::class
-                    ]
-                ]
-            ]
-        ];
-    }
-
     public function testAttributeRegistrantIsRegistered(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
@@ -190,6 +170,26 @@ class ValidationBinderTest extends TestCase
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->binder->bind($this->container);
+    }
+
+    /**
+     * Gets the base config
+     *
+     * @return array<string, mixed> The base config
+     */
+    private static function getBaseConfig(): array
+    {
+        return [
+            'aphiria' => [
+                'validation' => [
+                    'attributePaths' => ['/src'],
+                    'constraintsCachePath' => '/cache',
+                    'errorMessageInterpolator' => [
+                        'type' => StringReplaceErrorMessageInterpolator::class
+                    ]
+                ]
+            ]
+        ];
     }
 
     /**

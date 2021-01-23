@@ -40,14 +40,6 @@ abstract class Output implements IOutput
     }
 
     /**
-     * Actually performs the writing
-     *
-     * @param string $message The message to write
-     * @param bool $includeNewLine True if we are to include a new line character at the end of the message
-     */
-    abstract protected function doWrite(string $message, bool $includeNewLine): void;
-
-    /**
      * @inheritdoc
      */
     public function getDriver(): IDriver
@@ -82,4 +74,12 @@ abstract class Output implements IOutput
             $this->doWrite($this->outputCompiler->compile((string)$message), true);
         }
     }
+
+    /**
+     * Actually performs the writing
+     *
+     * @param string $message The message to write
+     * @param bool $includeNewLine True if we are to include a new line character at the end of the message
+     */
+    abstract protected function doWrite(string $message, bool $includeNewLine): void;
 }
