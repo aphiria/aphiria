@@ -37,6 +37,38 @@ final class BinderMetadataCollectionFactory
     }
 
     /**
+     * Creates a binder metadata collection
+     *
+     * @param Binder[] $binders The list of binders to create the metadata collection from
+     * @return BinderMetadataCollection The created collection
+     * @throws ImpossibleBindingException Thrown if the bindings are not possible to resolve
+     */
+    public function createBinderMetadataCollection(array $binders): BinderMetadataCollection
+    {
+        $binderMetadatas = [];
+        $failedInterfacesToBinders = [];
+
+        foreach ($binders as $binder) {
+            try {
+                $binderMetadatas[] = $this->binderMetadataCollector->collect($binder);
+            } catch (FailedBinderMetadataCollectionException $ex) {
+                self::addFailedResolutionToMap($failedInterfacesToBinders, $ex);
+            }
+
+            $binderMetadatas = [
+                ...$binderMetadatas,
+                ...$this->retryFailedBinders($failedInterfacesToBinders)
+            ];
+        }
+
+        if (\count($failedInterfacesToBinders) > 0) {
+            throw new ImpossibleBindingException($failedInterfacesToBinders);
+        }
+
+        return new BinderMetadataCollection($binderMetadatas);
+    }
+
+    /**
      * Adds a failed resolution to a map
      *
      * @param array<class-string, array<int, Binder>> $failedInterfacesToBinders The map to add to
@@ -73,38 +105,6 @@ final class BinderMetadataCollectionFactory
         if (\count($failedInterfacesToBinders[$interface]) === 0) {
             unset($failedInterfacesToBinders[$interface]);
         }
-    }
-
-    /**
-     * Creates a binder metadata collection
-     *
-     * @param Binder[] $binders The list of binders to create the metadata collection from
-     * @return BinderMetadataCollection The created collection
-     * @throws ImpossibleBindingException Thrown if the bindings are not possible to resolve
-     */
-    public function createBinderMetadataCollection(array $binders): BinderMetadataCollection
-    {
-        $binderMetadatas = [];
-        $failedInterfacesToBinders = [];
-
-        foreach ($binders as $binder) {
-            try {
-                $binderMetadatas[] = $this->binderMetadataCollector->collect($binder);
-            } catch (FailedBinderMetadataCollectionException $ex) {
-                self::addFailedResolutionToMap($failedInterfacesToBinders, $ex);
-            }
-
-            $binderMetadatas = [
-                ...$binderMetadatas,
-                ...$this->retryFailedBinders($failedInterfacesToBinders)
-            ];
-        }
-
-        if (\count($failedInterfacesToBinders) > 0) {
-            throw new ImpossibleBindingException($failedInterfacesToBinders);
-        }
-
-        return new BinderMetadataCollection($binderMetadatas);
     }
 
     /**

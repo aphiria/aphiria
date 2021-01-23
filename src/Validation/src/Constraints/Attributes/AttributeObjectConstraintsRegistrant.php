@@ -45,26 +45,6 @@ final class AttributeObjectConstraintsRegistrant implements IObjectConstraintsRe
     }
 
     /**
-     * Adds constraints to a map for a reflected method or property
-     *
-     * @param ReflectionMethod|ReflectionProperty $reflection The reflected method or property
-     * @param array<string, IConstraint[]> $map The map to add constraints to
-     */
-    private static function addConstraints(ReflectionMethod|ReflectionProperty $reflection, array &$map): void
-    {
-        foreach ($reflection->getAttributes(IConstraintAttribute::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
-            $attributeInstance = $attribute->newInstance();
-            $key = $reflection->getName();
-
-            if (!isset($map[$key])) {
-                $map[$key] = [];
-            }
-
-            $map[$key][] = $attributeInstance->createConstraintFromAttribute();
-        }
-    }
-
-    /**
      * @inheritdoc
      * @throws ReflectionException Thrown if a class could not be reflected
      */
@@ -88,6 +68,26 @@ final class AttributeObjectConstraintsRegistrant implements IObjectConstraintsRe
                 $propertyConstraints,
                 $methodConstraints
             ));
+        }
+    }
+
+    /**
+     * Adds constraints to a map for a reflected method or property
+     *
+     * @param ReflectionMethod|ReflectionProperty $reflection The reflected method or property
+     * @param array<string, IConstraint[]> $map The map to add constraints to
+     */
+    private static function addConstraints(ReflectionMethod|ReflectionProperty $reflection, array &$map): void
+    {
+        foreach ($reflection->getAttributes(IConstraintAttribute::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+            $attributeInstance = $attribute->newInstance();
+            $key = $reflection->getName();
+
+            if (!isset($map[$key])) {
+                $map[$key] = [];
+            }
+
+            $map[$key][] = $attributeInstance->createConstraintFromAttribute();
         }
     }
 }

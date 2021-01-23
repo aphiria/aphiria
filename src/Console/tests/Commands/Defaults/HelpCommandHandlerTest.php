@@ -40,55 +40,6 @@ class HelpCommandHandlerTest extends TestCase
         $this->output = $this->createMock(IOutput::class);
     }
 
-    /**
-     * Compiles the help text
-     *
-     * @param string $helpText The help text to compile
-     * @return string The compiled help text
-     */
-    private static function compileHelpText(string $helpText): string
-    {
-        if ($helpText === '') {
-            return '';
-        }
-
-        return PHP_EOL . '<comment>Help:</comment>' . PHP_EOL . '  ' . $helpText;
-    }
-
-    /**
-     * Compiles the expected output with the header
-     *
-     * @param string $commandName The name of the command
-     * @param string $parsedCommand The parsed command that is output
-     * @param string $description The description of the command
-     * @param string $arguments The list of arguments
-     * @param string $options The list of options
-     * @param string $helpText The optional help text
-     * @return string The compiled output
-     */
-    private static function compileOutput(string $commandName, string $parsedCommand, string $description, string $arguments, string $options, string $helpText = ''): string
-    {
-        $template = <<<EOF
----
-Command: <info>{{name}}</info>
----
-<b>{{command}}</b>
-
-<comment>Description:</comment>
-  {{description}}
-<comment>Arguments:</comment>
-{{arguments}}
-<comment>Options:</comment>
-{{options}}{{helpText}}
-EOF;
-
-        return \str_replace(
-            ['{{name}}', '{{command}}', '{{description}}', '{{arguments}}', '{{options}}', '{{helpText}}'],
-            [$commandName, $parsedCommand, $description, $arguments, $options, self::compileHelpText($helpText)],
-            $template
-        );
-    }
-
     public function testHandlingCommandNameThatIsNotRegisteredReturnsError(): void
     {
         $this->output->expects($this->once())
@@ -280,6 +231,55 @@ EOF;
         $this->output->method('writeln')
             ->with(self::compileOutput('foo', 'foo [--opt1|-o]', 'The description', '  No arguments', '  <info>--opt1|-o</info> - Opt1 description'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
+    }
+
+    /**
+     * Compiles the help text
+     *
+     * @param string $helpText The help text to compile
+     * @return string The compiled help text
+     */
+    private static function compileHelpText(string $helpText): string
+    {
+        if ($helpText === '') {
+            return '';
+        }
+
+        return PHP_EOL . '<comment>Help:</comment>' . PHP_EOL . '  ' . $helpText;
+    }
+
+    /**
+     * Compiles the expected output with the header
+     *
+     * @param string $commandName The name of the command
+     * @param string $parsedCommand The parsed command that is output
+     * @param string $description The description of the command
+     * @param string $arguments The list of arguments
+     * @param string $options The list of options
+     * @param string $helpText The optional help text
+     * @return string The compiled output
+     */
+    private static function compileOutput(string $commandName, string $parsedCommand, string $description, string $arguments, string $options, string $helpText = ''): string
+    {
+        $template = <<<EOF
+---
+Command: <info>{{name}}</info>
+---
+<b>{{command}}</b>
+
+<comment>Description:</comment>
+  {{description}}
+<comment>Arguments:</comment>
+{{arguments}}
+<comment>Options:</comment>
+{{options}}{{helpText}}
+EOF;
+
+        return \str_replace(
+            ['{{name}}', '{{command}}', '{{description}}', '{{arguments}}', '{{options}}', '{{helpText}}'],
+            [$commandName, $parsedCommand, $description, $arguments, $options, self::compileHelpText($helpText)],
+            $template
+        );
     }
 
     /**

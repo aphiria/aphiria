@@ -52,6 +52,34 @@ final class InputCompiler implements IInputCompiler
     }
 
     /**
+     * @inheritdoc
+     */
+    public function compile(string|array $rawInput): Input
+    {
+        $tokens = $this->selectTokenizer($rawInput)->tokenize($rawInput);
+
+        if (\count($tokens) === 0) {
+            throw new CommandNotFoundException('');
+        }
+
+        $commandName = '';
+        $argumentValues = [];
+        $options = [];
+        self::parseTokens($tokens, $commandName, $argumentValues, $options);
+
+        /** @var Command $command */
+        if (!$this->commands->tryGetCommand($commandName, $command)) {
+            throw new CommandNotFoundException($commandName);
+        }
+
+        return new Input(
+            $command->name,
+            self::compileArguments($command, $argumentValues),
+            self::compileOptions($command, $options)
+        );
+    }
+
+    /**
      * Adds an option to the list of options
      *
      * @param array<string, mixed> $options The list of options we're adding to
@@ -309,34 +337,6 @@ final class InputCompiler implements IInputCompiler
         }
 
         return $token;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function compile(string|array $rawInput): Input
-    {
-        $tokens = $this->selectTokenizer($rawInput)->tokenize($rawInput);
-
-        if (\count($tokens) === 0) {
-            throw new CommandNotFoundException('');
-        }
-
-        $commandName = '';
-        $argumentValues = [];
-        $options = [];
-        self::parseTokens($tokens, $commandName, $argumentValues, $options);
-
-        /** @var Command $command */
-        if (!$this->commands->tryGetCommand($commandName, $command)) {
-            throw new CommandNotFoundException($commandName);
-        }
-
-        return new Input(
-            $command->name,
-            self::compileArguments($command, $argumentValues),
-            self::compileOptions($command, $options)
-        );
     }
 
     /**

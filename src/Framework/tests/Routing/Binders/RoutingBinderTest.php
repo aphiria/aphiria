@@ -72,24 +72,6 @@ class RoutingBinderTest extends TestCase
         }
     }
 
-    /**
-     * Gets the base config
-     *
-     * @return array<string, mixed> The base config
-     */
-    private static function getBaseConfig(): array
-    {
-        return [
-            'aphiria' => [
-                'routing' => [
-                    'attributePaths' => ['/src'],
-                    'routeCachePath' => self::ROUTE_CACHE_PATH,
-                    'trieCachePath' => self::TRIE_CACHE_PATH
-                ]
-            ]
-        ];
-    }
-
     public function testAttributeRegistrantIsBound(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
@@ -144,6 +126,24 @@ class RoutingBinderTest extends TestCase
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
+    }
+
+    /**
+     * Gets the base config
+     *
+     * @return array<string, mixed> The base config
+     */
+    private static function getBaseConfig(): array
+    {
+        return [
+            'aphiria' => [
+                'routing' => [
+                    'attributePaths' => ['/src'],
+                    'routeCachePath' => self::ROUTE_CACHE_PATH,
+                    'trieCachePath' => self::TRIE_CACHE_PATH
+                ]
+            ]
+        ];
     }
 
     /**
