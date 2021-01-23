@@ -42,6 +42,27 @@ class ContentNegotiationBinderTest extends TestCase
         GlobalConfiguration::resetConfigurationSources();
     }
 
+    /**
+     * Gets the base config
+     *
+     * @return array<string, mixed> The base config
+     */
+    private static function getBaseConfig(): array
+    {
+        return [
+            'aphiria' => [
+                'contentNegotiation' => [
+                    'encodingMatcher' => AcceptCharsetEncodingMatcher::class,
+                    'languageMatcher' => AcceptLanguageMatcher::class,
+                    'mediaTypeFormatters' => [
+                        JsonMediaTypeFormatter::class
+                    ],
+                    'supportedLanguages' => ['en']
+                ]
+            ]
+        ];
+    }
+
     public function testAcceptCharsetEncodingMatcherIsCreatedDirectly(): void
     {
         $this->setUpContainerMockBindInstance([
@@ -156,27 +177,6 @@ class ContentNegotiationBinderTest extends TestCase
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
-    }
-
-    /**
-     * Gets the base config
-     *
-     * @return array<string, mixed> The base config
-     */
-    private static function getBaseConfig(): array
-    {
-        return [
-            'aphiria' => [
-                'contentNegotiation' => [
-                    'encodingMatcher' => AcceptCharsetEncodingMatcher::class,
-                    'languageMatcher' => AcceptLanguageMatcher::class,
-                    'mediaTypeFormatters' => [
-                        JsonMediaTypeFormatter::class
-                    ],
-                    'supportedLanguages' => ['en']
-                ]
-            ]
-        ];
     }
 
     /**

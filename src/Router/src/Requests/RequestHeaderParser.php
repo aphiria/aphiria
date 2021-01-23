@@ -29,6 +29,23 @@ final class RequestHeaderParser
     ];
 
     /**
+     * Normalizes a name
+     *
+     * @param string $name The name to normalize
+     * @return string The normalized name
+     */
+    private static function normalizeName(string $name): string
+    {
+        $dashedName = \str_replace('_', '-', $name);
+
+        if (\stripos($dashedName, 'HTTP-') === 0) {
+            $dashedName = \substr($dashedName, 5);
+        }
+
+        return $dashedName;
+    }
+
+    /**
      * Parses headers from the $_SERVER super global
      *
      * @param array<string, mixed> $server The $_SERVER super global
@@ -49,22 +66,5 @@ final class RequestHeaderParser
         }
 
         return $headers;
-    }
-
-    /**
-     * Normalizes a name
-     *
-     * @param string $name The name to normalize
-     * @return string The normalized name
-     */
-    private static function normalizeName(string $name): string
-    {
-        $dashedName = \str_replace('_', '-', $name);
-
-        if (\stripos($dashedName, 'HTTP-') === 0) {
-            $dashedName = \substr($dashedName, 5);
-        }
-
-        return $dashedName;
     }
 }

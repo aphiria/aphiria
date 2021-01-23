@@ -20,6 +20,59 @@ use RuntimeException;
 final class OutputLexer implements IOutputLexer
 {
     /**
+     * Gets text around a certain position for use in exceptions
+     *
+     * @param string[] $charArray The char array
+     * @param int $position The numerical position to grab text around
+     * @return string The surrounding text
+     */
+    private static function getSurroundingText(array $charArray, int $position): string
+    {
+        if (\count($charArray) <= 3) {
+            return \implode('', $charArray);
+        }
+
+        if ($position <= 3) {
+            return \implode('', \array_slice($charArray, 0, 4));
+        }
+
+        return \implode('', \array_slice($charArray, $position - 3, 4));
+    }
+
+    /**
+     * Looks back at the previous character in the string
+     *
+     * @param string[] $charArray The char array
+     * @param int $currPosition The current position
+     * @return string|null The previous character if there is one, otherwise null
+     */
+    private static function lookBehind(array $charArray, int $currPosition): ?string
+    {
+        if ($currPosition === 0 || \count($charArray) === 0) {
+            return null;
+        }
+
+        return $charArray[$currPosition - 1];
+    }
+
+    /**
+     * Peeks at the next character in the string
+     *
+     * @param string[] $charArray The char array
+     * @param int $currPosition The current position
+     * @return string|null The next character if there is one, otherwise null
+     */
+    private static function peek(array $charArray, int $currPosition): ?string
+    {
+        $charArrayLength = \count($charArray);
+
+        if ($charArrayLength === 0 || $currPosition === $charArrayLength - 1) {
+            return null;
+        }
+
+        return $charArray[$currPosition + 1];
+    }
+    /**
      * @inheritdoc
      */
     public function lex(string $text): array
@@ -122,59 +175,5 @@ final class OutputLexer implements IOutputLexer
         $tokens[] = new OutputToken(OutputTokenTypes::T_EOF, null, $textLength);
 
         return $tokens;
-    }
-
-    /**
-     * Gets text around a certain position for use in exceptions
-     *
-     * @param string[] $charArray The char array
-     * @param int $position The numerical position to grab text around
-     * @return string The surrounding text
-     */
-    private static function getSurroundingText(array $charArray, int $position): string
-    {
-        if (\count($charArray) <= 3) {
-            return \implode('', $charArray);
-        }
-
-        if ($position <= 3) {
-            return \implode('', \array_slice($charArray, 0, 4));
-        }
-
-        return \implode('', \array_slice($charArray, $position - 3, 4));
-    }
-
-    /**
-     * Looks back at the previous character in the string
-     *
-     * @param string[] $charArray The char array
-     * @param int $currPosition The current position
-     * @return string|null The previous character if there is one, otherwise null
-     */
-    private static function lookBehind(array $charArray, int $currPosition): ?string
-    {
-        if ($currPosition === 0 || \count($charArray) === 0) {
-            return null;
-        }
-
-        return $charArray[$currPosition - 1];
-    }
-
-    /**
-     * Peeks at the next character in the string
-     *
-     * @param string[] $charArray The char array
-     * @param int $currPosition The current position
-     * @return string|null The next character if there is one, otherwise null
-     */
-    private static function peek(array $charArray, int $currPosition): ?string
-    {
-        $charArrayLength = \count($charArray);
-
-        if ($charArrayLength === 0 || $currPosition === $charArrayLength - 1) {
-            return null;
-        }
-
-        return $charArray[$currPosition + 1];
     }
 }
