@@ -1,8 +1,8 @@
-<p align="center"><a href="https://www.aphiria.com" target="_blank" title="Aphiria"><img src="https://www.aphiria.com/images/aphiria-logo.svg"></a></p>
+<p align="center"><a href="https://www.aphiria.com" target="_blank" title="Aphiria"><img src="https://www.aphiria.com/images/aphiria-logo.svg" width="200" height="56"></a></p>
 
 <p align="center">
 <a href="https://github.com/aphiria/framework/actions"><img src="https://github.com/aphiria/framework/workflows/ci/badge.svg"></a>
-<a href='https://coveralls.io/github/aphiria/framework?branch=0.x'><img src='https://coveralls.io/repos/github/aphiria/framework/badge.svg?branch=0.x' alt='Coverage Status' /></a>
+<a href='https://coveralls.io/github/aphiria/framework?branch=1.x'><img src='https://coveralls.io/repos/github/aphiria/framework/badge.svg?branch=1.x' alt='Coverage Status' /></a>
 <a href="https://packagist.org/packages/aphiria/framework"><img src="https://poser.pugx.org/aphiria/framework/v/stable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/framework"><img src="https://poser.pugx.org/aphiria/framework/v/unstable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/framework"><img src="https://poser.pugx.org/aphiria/framework/license.svg"></a>
@@ -22,4 +22,4 @@ composer require aphiria/framework:^1.0@dev
 
 ## Documentation
 
-Full documentation is available <a href="https://www.aphiria.com/docs/0.x" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/1.x" target="_blank">here</a>.

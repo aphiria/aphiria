@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -40,7 +40,7 @@ abstract class TextMediaTypeFormatter extends MediaTypeFormatter
     /**
      * @inheritdoc
      */
-    public function readFromStream(IStream $stream, string $type):  int|float|bool|string|object|array
+    public function readFromStream(IStream $stream, string $type): int|float|bool|string|object|array
     {
         if (!$this->canReadType($type)) {
             throw new InvalidArgumentException(static::class . ' can only read strings');

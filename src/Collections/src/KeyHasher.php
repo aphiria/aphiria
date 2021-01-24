@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -39,15 +39,15 @@ class KeyHasher
         }
 
         if (\is_object($value)) {
-            if (method_exists($value, '__toString')) {
+            if (\method_exists($value, '__toString')) {
                 return "__aphiria:so:$value";
             }
 
-            return '__aphiria:o:' . spl_object_hash($value);
+            return '__aphiria:o:' . \spl_object_hash($value);
         }
 
         if (\is_array($value)) {
-            return '__aphiria:a:' . md5(serialize($value));
+            return '__aphiria:a:' . \md5(\serialize($value));
         }
 
         if (\is_resource($value)) {

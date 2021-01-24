@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -78,10 +78,6 @@ abstract class ApplicationBuilder implements IApplicationBuilder
      */
     protected function buildComponents(): void
     {
-        /**
-         * @psalm-suppress InvalidArgument Psalm is incorrectly flagging this as not having the right parameter type - bug
-         * @psalm-suppress PropertyTypeCoercion Ditto - bug
-         */
         \usort($this->componentTypesAndPriorities, static fn (array $a, array $b): int => $a['priority'] <=> $b['priority']);
 
         foreach ($this->componentTypesAndPriorities as $typeAndPriority) {

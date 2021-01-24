@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -44,14 +44,14 @@ class RoutingBinderTest extends TestCase
         $this->binder = new RoutingBinder();
         $this->container = $this->createMock(IContainer::class);
         GlobalConfiguration::resetConfigurationSources();
-        $this->currEnvironment = getenv('APP_ENV') ?: null;
+        $this->currEnvironment = \getenv('APP_ENV') ?: null;
 
         if (!\file_exists(\dirname(self::ROUTE_CACHE_PATH))) {
-            mkdir(\dirname(self::ROUTE_CACHE_PATH));
+            \mkdir(\dirname(self::ROUTE_CACHE_PATH));
         }
 
         if (!\file_exists(\dirname(self::TRIE_CACHE_PATH))) {
-            mkdir(\dirname(self::TRIE_CACHE_PATH));
+            \mkdir(\dirname(self::TRIE_CACHE_PATH));
         }
     }
 
@@ -59,9 +59,9 @@ class RoutingBinderTest extends TestCase
     {
         // Restore the environment name
         if ($this->currEnvironment === null) {
-            putenv('APP_ENV=');
+            \putenv('APP_ENV=');
         } else {
-            putenv("APP_ENV={$this->currEnvironment}");
+            \putenv("APP_ENV={$this->currEnvironment}");
         }
 
         // The trie and route cache are in the same directory

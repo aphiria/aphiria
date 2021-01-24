@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -15,7 +15,6 @@ namespace Aphiria\Net\Tests\Http;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\IResponse;
 use Exception;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class HttpExceptionTest extends TestCase

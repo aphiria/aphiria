@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -46,6 +46,20 @@ use RuntimeException;
  */
 trait AphiriaComponents
 {
+    /**
+     * Adds a component to the application builder
+     * Note: This is to simply a syntactic sugar method to make it easier to chain things
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param IComponent $component The component to add
+     * @return static For chaining
+     */
+    public function withComponent(IApplicationBuilder $appBuilder, IComponent $component): static
+    {
+        $appBuilder->withComponent($component);
+
+        return $this;
+    }
     /**
      * Registers the binder dispatcher to use
      *
@@ -161,21 +175,6 @@ trait AphiriaComponents
 
         $appBuilder->getComponent(CommandComponent::class)
             ->withCommands($callback);
-
-        return $this;
-    }
-
-    /**
-     * Adds a component to the application builder
-     * Note: This is to simply a syntactic sugar method to make it easier to chain things
-     *
-     * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param IComponent $component The component to add
-     * @return static For chaining
-     */
-    public function withComponent(IApplicationBuilder $appBuilder, IComponent $component): static
-    {
-        $appBuilder->withComponent($component);
 
         return $this;
     }

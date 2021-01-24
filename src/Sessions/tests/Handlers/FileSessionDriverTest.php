@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -23,20 +23,20 @@ class FileSessionDriverTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        if (!is_dir(self::BASE_PATH)) {
-            mkdir(self::BASE_PATH);
+        if (!\is_dir(self::BASE_PATH)) {
+            \mkdir(self::BASE_PATH);
         }
     }
 
     public static function tearDownAfterClass(): void
     {
-        $files = glob(self::BASE_PATH . '/*');
+        $files = \glob(self::BASE_PATH . '/*');
 
         foreach ($files as $file) {
-            is_dir($file) ? rmdir($file) : unlink($file);
+            \is_dir($file) ? \rmdir($file) : \unlink($file);
         }
 
-        rmdir(self::BASE_PATH);
+        \rmdir(self::BASE_PATH);
     }
 
     protected function setUp(): void
@@ -56,7 +56,7 @@ class FileSessionDriverTest extends TestCase
         $this->driver->set('foo', 'bar');
         $this->driver->set('bar', 'baz');
         $this->driver->gc(-1);
-        $this->assertEquals([], glob(self::BASE_PATH . '/*'));
+        $this->assertEquals([], \glob(self::BASE_PATH . '/*'));
     }
 
     public function testGettingNonExistentSessionThrowsException(): void

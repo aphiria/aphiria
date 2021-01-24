@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -113,14 +113,10 @@ final class NegotiatedResponseFactory implements IResponseFactory
             return new StreamBody($rawBody);
         }
 
-        if (is_scalar($rawBody)) {
+        if (\is_scalar($rawBody)) {
             return new StringBody((string)$rawBody);
         }
 
-        /**
-         * @psalm-suppress RedundantCondition We need to make sure this isn't an array
-         * @psalm-suppress TypeDoesNotContainType Ditto
-         */
         if ((!\is_object($rawBody) && !\is_array($rawBody)) || \is_callable($rawBody)) {
             throw new InvalidArgumentException('Unsupported body type ' . \gettype($rawBody));
         }
@@ -133,7 +129,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             throw $this->createNotAcceptableException($type);
         }
 
-        $bodyStream = new Stream(fopen('php://temp', 'r+b'));
+        $bodyStream = new Stream(\fopen('php://temp', 'r+b'));
 
         try {
             $mediaTypeFormatter->writeToStream(

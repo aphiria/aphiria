@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -116,7 +116,6 @@ trait IntegrationTest
      */
     protected function delete(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
     {
-        /** @psalm-suppress MixedArgument We're guaranteed that withBody() will accept a mixed type */
         $request = $this->requestBuilder->withMethod('DELETE')
             ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
@@ -172,7 +171,6 @@ trait IntegrationTest
      */
     protected function options(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
     {
-        /** @psalm-suppress MixedArgument We're guaranteed that withBody() will accept a mixed type */
         $request = $this->requestBuilder->withMethod('OPTIONS')
             ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
@@ -194,7 +192,6 @@ trait IntegrationTest
      */
     protected function patch(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
     {
-        /** @psalm-suppress MixedArgument We're guaranteed that withBody() will accept a mixed type */
         $request = $this->requestBuilder->withMethod('PATCH')
             ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
@@ -216,7 +213,6 @@ trait IntegrationTest
      */
     protected function post(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
     {
-        /** @psalm-suppress MixedArgument We're guaranteed that withBody() will accept a mixed type */
         $request = $this->requestBuilder->withMethod('POST')
             ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
@@ -238,7 +234,6 @@ trait IntegrationTest
      */
     protected function put(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
     {
-        /** @psalm-suppress MixedArgument We're guaranteed that withBody() will accept a mixed type */
         $request = $this->requestBuilder->withMethod('PUT')
             ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
@@ -273,7 +268,7 @@ trait IntegrationTest
             return $uri;
         }
 
-        if (preg_match('/^(about|data|file|ftp|git|http|https|sftp|ssh|svn):\/\//i', $uri) === 1) {
+        if (\preg_match('/^(about|data|file|ftp|git|http|https|sftp|ssh|svn):\/\//i', $uri) === 1) {
             return new Uri($uri);
         }
 
@@ -281,6 +276,6 @@ trait IntegrationTest
             throw new InvalidArgumentException('Environment variable "APP_URL" must be set to use a relative path');
         }
 
-        return new Uri(rtrim($appUrl, '/') . '/' . ltrim($uri, '/'));
+        return new Uri(\rtrim($appUrl, '/') . '/' . \ltrim($uri, '/'));
     }
 }

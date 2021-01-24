@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -155,10 +155,7 @@ class HeadersTest extends TestCase
             // Verify that the key is numeric, not associative
             $this->assertIsInt($key);
             $this->assertInstanceOf(KeyValuePair::class, $value);
-            /**
-             * @psalm-suppress MixedArrayOffset We're purposely accessing mixed keys
-             * @psalm-suppress MixedAssignment We're purposely setting a mixed type
-             */
+            /** @psalm-suppress MixedArrayOffset We're purposely accessing mixed keys */
             $actualValues[$value->getKey()] = $value->getValue();
         }
 
@@ -179,7 +176,7 @@ class HeadersTest extends TestCase
     public function testAddRangeOnInvalidValue(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Value must be instance of %s', KeyValuePair::class));
+        $this->expectExceptionMessage(\sprintf('Value must be instance of %s', KeyValuePair::class));
         $this->headers->addRange(['invalid KeyValuePair']);
     }
 }

@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -85,7 +85,7 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
     public function handleShutdown(array $error = null): void
     {
         /** @var array{type: int, message: string, file: string, line: int}|null $error */
-        $error = $error ?? error_get_last();
+        $error = $error ?? \error_get_last();
 
         if ($error !== null && \in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
             $this->handleException(
@@ -99,11 +99,11 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
      */
     public function registerWithPhp(): void
     {
-        ini_set('display_errors', 'off');
-        error_reporting(-1);
+        \ini_set('display_errors', 'off');
+        \error_reporting(-1);
         /** @psalm-suppress InvalidArgument The handleError() method accepts the correct params */
-        set_error_handler([$this, 'handleError']);
-        set_exception_handler([$this, 'handleException']);
-        register_shutdown_function([$this, 'handleShutdown']);
+        \set_error_handler([$this, 'handleError']);
+        \set_exception_handler([$this, 'handleException']);
+        \register_shutdown_function([$this, 'handleShutdown']);
     }
 }

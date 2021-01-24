@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -33,7 +33,7 @@ final class FileBinderMetadataCollectionCache implements IBinderMetadataCollecti
     public function flush(): void
     {
         if (\file_exists($this->filePath)) {
-            @unlink($this->filePath);
+            @\unlink($this->filePath);
         }
     }
 

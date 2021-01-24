@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -39,7 +39,7 @@ class UriParser
 
         if (!isset($this->parsedQueryStringCache[$queryString])) {
             $parsedQueryString = [];
-            parse_str($queryString, $parsedQueryString);
+            \parse_str($queryString, $parsedQueryString);
             $kvps = [];
 
             /** @psalm-suppress MixedAssignment The value could legitimately be mixed */

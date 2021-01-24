@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -31,7 +31,7 @@ class StreamResponseWriter implements IResponseWriter
      */
     public function __construct(IStream $outputStream = null)
     {
-        $this->outputStream = $outputStream ?? new Stream(fopen('php://output', 'wb'));
+        $this->outputStream = $outputStream ?? new Stream(\fopen('php://output', 'wb'));
     }
 
     /**
@@ -43,7 +43,7 @@ class StreamResponseWriter implements IResponseWriter
      */
     public function header(string $value, bool $replace = true): void
     {
-        header($value, $replace);
+        \header($value, $replace);
     }
 
     /**
@@ -51,7 +51,7 @@ class StreamResponseWriter implements IResponseWriter
      */
     public function headersAreSent(): bool
     {
-        return headers_sent();
+        return \headers_sent();
     }
 
     /**
@@ -81,7 +81,7 @@ class StreamResponseWriter implements IResponseWriter
                     $this->header("$headerName: $headerValue", false);
                 }
             } else {
-                $this->header("$headerName: " . implode(', ', (array)$kvp->getValue()));
+                $this->header("$headerName: " . \implode(', ', (array)$kvp->getValue()));
             }
         }
 

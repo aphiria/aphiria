@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -98,7 +98,7 @@ XML;
     public function testWritingUsingUnsupportedEncodingThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('foo is not supported for %s', XmlMediaTypeFormatter::class));
+        $this->expectExceptionMessage(\sprintf('foo is not supported for %s', XmlMediaTypeFormatter::class));
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
     }

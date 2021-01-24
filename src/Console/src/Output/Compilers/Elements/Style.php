@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -71,8 +71,8 @@ final class Style
     public function __construct(
         public ?string $foregroundColor = null,
         public ?string $backgroundColor = null,
-        public array $textStyles = [])
-    {
+        public array $textStyles = []
+    ) {
         $this->addTextStyles($this->textStyles);
     }
 
@@ -142,11 +142,11 @@ final class Style
             return $text;
         }
 
-        return sprintf(
+        return \sprintf(
             "\033[%sm%s\033[%sm",
-            implode(';', $startCodes),
+            \implode(';', $startCodes),
             $text,
-            implode(';', $endCodes)
+            \implode(';', $endCodes)
         );
     }
 
@@ -162,7 +162,7 @@ final class Style
             throw new InvalidArgumentException("Invalid text style \"$style\"");
         }
 
-        if (($index = array_search($style, $this->textStyles, true)) !== false) {
+        if (($index = \array_search($style, $this->textStyles, true)) !== false) {
             unset($this->textStyles[$index]);
         }
     }

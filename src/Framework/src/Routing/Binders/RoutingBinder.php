@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -47,7 +47,7 @@ final class RoutingBinder extends Binder
         $container->bindInstance(IRouteCache::class, $routeCache);
         $container->bindInstance(ITrieCache::class, $trieCache);
 
-        if (getenv('APP_ENV') === 'production') {
+        if (\getenv('APP_ENV') === 'production') {
             $routeRegistrants = new RouteRegistrantCollection($routeCache);
         } else {
             $routeRegistrants = new RouteRegistrantCollection();

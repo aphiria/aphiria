@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -106,7 +106,7 @@ class HeaderParser
             // Split the parameters into names and values
             if (\preg_match_all(self::PARAMETER_KEY_VALUE_REGEX, $kvp, $matches)) {
                 $key = \trim($matches[0][0], self::PARAMETER_TRIMMED_CHARS);
-                $value = isset($matches[0][1]) ? trim($matches[0][1], self::PARAMETER_TRIMMED_CHARS) : null;
+                $value = isset($matches[0][1]) ? \trim($matches[0][1], self::PARAMETER_TRIMMED_CHARS) : null;
                 $kvps[] = new KeyValuePair($key, $value);
             }
         }

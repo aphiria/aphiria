@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -16,7 +16,6 @@ use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\Metadata\ContainerBinderMetadataCollector;
 use Aphiria\DependencyInjection\Binders\Metadata\FailedBinderMetadataCollectionException;
 use Aphiria\DependencyInjection\Container;
-use Aphiria\DependencyInjection\Context;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\Foo;

@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -81,7 +81,7 @@ class RequestFactory
      */
     public function __construct(protected array $trustedProxyIPAddresses = [], protected array $trustedHeaderNames = [])
     {
-        $this->trustedHeaderNames = array_merge(self::$defaultTrustedHeaderNames, $trustedHeaderNames);
+        $this->trustedHeaderNames = \array_merge(self::$defaultTrustedHeaderNames, $trustedHeaderNames);
     }
 
     /**
@@ -129,7 +129,7 @@ class RequestFactory
                 && \count($explodedValues = \preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', (string)$values)) > 1;
 
             if ($containsMultipleValues) {
-                foreach ($explodedValues as $value) {
+                foreach ((array)$explodedValues as $value) {
                     $this->addHeaderValue($headers, $name, $value, true);
                 }
             } else {
@@ -204,7 +204,7 @@ class RequestFactory
 
         if ($isUsingTrustedProxy && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']])) {
             $hostWithPort = \explode(',', (string)$server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']]);
-            $hostWithPort = \trim(end($hostWithPort));
+            $hostWithPort = \trim(\end($hostWithPort));
         } else {
             $hostWithPort = (string)($server['HTTP_HOST'] ?? $server['SERVER_NAME'] ?? $server['SERVER_ADDR'] ?? '');
         }

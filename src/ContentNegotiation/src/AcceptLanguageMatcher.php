@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -45,22 +45,22 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
             return null;
         }
 
-        usort($acceptLanguageHeaders, [$this, 'compareAcceptLanguageHeaders']);
-        $rankedAcceptLanguageHeaders = array_filter($acceptLanguageHeaders, [$this, 'filterZeroScores']);
+        \usort($acceptLanguageHeaders, [$this, 'compareAcceptLanguageHeaders']);
+        $rankedAcceptLanguageHeaders = \array_filter($acceptLanguageHeaders, [$this, 'filterZeroScores']);
         $rankedAcceptLanguageHeaderValues = $this->getLanguageValuesFromHeaders($rankedAcceptLanguageHeaders);
 
         foreach ($rankedAcceptLanguageHeaderValues as $language) {
-            $languageParts = explode('-', $language);
+            $languageParts = \explode('-', $language);
 
             // Progressively truncate this language tag and try to match a supported language
             do {
                 foreach ($this->supportedLanguages as $supportedLanguage) {
-                    if ($language === '*' || implode('-', $languageParts) === $supportedLanguage) {
+                    if ($language === '*' || \implode('-', $languageParts) === $supportedLanguage) {
                         return $supportedLanguage;
                     }
                 }
 
-                array_pop($languageParts);
+                \array_pop($languageParts);
             } while (\count($languageParts) > 0);
         }
 

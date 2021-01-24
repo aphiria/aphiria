@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -77,25 +77,6 @@ final class InputCompiler implements IInputCompiler
             self::compileArguments($command, $argumentValues),
             self::compileOptions($command, $options)
         );
-    }
-
-    /**
-     * Gets the correct tokenizer for the input
-     *
-     * @param string|array $rawInput The input to use when figuring out which input tokenizer to use
-     * @return IInputTokenizer The selected input tokenizer
-     */
-    private function selectTokenizer(string|array $rawInput): IInputTokenizer
-    {
-        if (\is_string($rawInput)) {
-            return $this->stringTokenizer;
-        }
-
-        if (isset($rawInput['name'])) {
-            return $this->arrayListTokenizer;
-        }
-
-        return $this->argvTokenizer;
     }
 
     /**
@@ -225,7 +206,7 @@ final class InputCompiler implements IInputCompiler
     {
         if (\count($argumentValues) > \count($commandArguments)) {
             // Only when the last argument is an array do we allow more input arguments than command arguments
-            if (\count($commandArguments) === 0 || !end($commandArguments)->isArray()) {
+            if (\count($commandArguments) === 0 || !\end($commandArguments)->isArray()) {
                 return true;
             }
         }
@@ -356,5 +337,24 @@ final class InputCompiler implements IInputCompiler
         }
 
         return $token;
+    }
+
+    /**
+     * Gets the correct tokenizer for the input
+     *
+     * @param string|array $rawInput The input to use when figuring out which input tokenizer to use
+     * @return IInputTokenizer The selected input tokenizer
+     */
+    private function selectTokenizer(string|array $rawInput): IInputTokenizer
+    {
+        if (\is_string($rawInput)) {
+            return $this->stringTokenizer;
+        }
+
+        if (isset($rawInput['name'])) {
+            return $this->arrayListTokenizer;
+        }
+
+        return $this->argvTokenizer;
     }
 }

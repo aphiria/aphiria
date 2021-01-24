@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -45,7 +45,7 @@ final class OutputParser implements IOutputParser
                 case OutputTokenTypes::T_TAG_CLOSE:
                     if ($currNode?->value !== $token->value) {
                         throw new RuntimeException(
-                            sprintf(
+                            \sprintf(
                                 'Improperly nested tag "%s" near character #%d',
                                 (string)$token->value,
                                 $token->position
@@ -60,7 +60,7 @@ final class OutputParser implements IOutputParser
                 case OutputTokenTypes::T_EOF:
                     if (!$currNode?->isRoot()) {
                         throw new RuntimeException(
-                            sprintf(
+                            \sprintf(
                                 'Unclosed %s "%s"',
                                 $currNode?->isTag() ? 'tag' : 'node',
                                 (string)($currNode?->value ?? 'null')
@@ -71,7 +71,7 @@ final class OutputParser implements IOutputParser
                     break;
                 default:
                     throw new RuntimeException(
-                        sprintf(
+                        \sprintf(
                             'Unknown token type "%s" with value "%s" near character #%d',
                             $token->type,
                             (string)$token->value,

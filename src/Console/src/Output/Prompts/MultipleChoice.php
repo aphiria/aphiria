@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -49,7 +49,7 @@ class MultipleChoice extends Question
      */
     public function choicesAreAssociative(): bool
     {
-        return \count(array_filter(array_keys($this->choices), 'is_string')) > 0;
+        return \count(\array_filter(\array_keys($this->choices), 'is_string')) > 0;
     }
 
     /**
@@ -58,9 +58,9 @@ class MultipleChoice extends Question
     public function formatAnswer(mixed $answer): mixed
     {
         $hasMultipleAnswers = false;
-        $answer = str_replace(' ', '', (string)$answer);
+        $answer = \str_replace(' ', '', (string)$answer);
 
-        if (!str_contains($answer, ',')) {
+        if (!\str_contains($answer, ',')) {
             // The answer is not a list of answers
             $answers = [$answer];
         } else {
@@ -69,7 +69,7 @@ class MultipleChoice extends Question
             }
 
             $hasMultipleAnswers = true;
-            $answers = explode(',', $answer);
+            $answers = \explode(',', $answer);
         }
 
         if ($this->choicesAreAssociative()) {

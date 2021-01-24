@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -40,7 +40,6 @@ use Aphiria\DependencyInjection\Tests\Mocks\IPerson;
 use Aphiria\DependencyInjection\Tests\Mocks\MagicCallMethod;
 use Aphiria\DependencyInjection\Tests\Mocks\StaticSetters;
 use DateTime;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ContainerTest extends TestCase
@@ -842,7 +841,7 @@ class ContainerTest extends TestCase
         $container->bindInstance(IFoo::class, $expectedFoo);
         $this->assertTrue($container->hasBinding(IFoo::class));
         /** @var Container $deserializedContainer */
-        $deserializedContainer = unserialize(serialize($container));
+        $deserializedContainer = \unserialize(\serialize($container));
         $this->assertTrue($deserializedContainer->hasBinding(IFoo::class));
         $this->assertSame($expectedFoo, $deserializedContainer->resolve(IFoo::class));
     }
@@ -853,7 +852,7 @@ class ContainerTest extends TestCase
         $container->bindInstance(IFoo::class, new Bar());
         $this->assertTrue($container->hasBinding(IFoo::class));
         /** @var Container $deserializedContainer */
-        $deserializedContainer = unserialize(serialize($container));
+        $deserializedContainer = \unserialize(\serialize($container));
         $this->assertFalse($deserializedContainer->hasBinding(IFoo::class));
     }
 }

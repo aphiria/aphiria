@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -85,7 +85,6 @@ class Request implements IRequest
             isset(self::$requestTargetTypesWithHostHeader[$this->requestTargetType]) &&
             !$this->headers->containsKey('Host')
         ) {
-            /** @psalm-suppress PossiblyNullReference Psalm doesn't recognize promoted properties yet - bug */
             $this->headers->add('Host', $this->uri->getAuthority(false) ?? '');
         }
     }

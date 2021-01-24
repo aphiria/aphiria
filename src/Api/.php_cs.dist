@@ -5,12 +5,12 @@ Aphiria
 
 @link      https://www.aphiria.com
 @copyright Copyright (C) {$copyrightYear} David Young
-@license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+@license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
 EOT;
 
 return (new PhpCsFixer\Config())
     ->setRules([
-        '@PSR2' => true,
+        '@PSR12' => true,
         'array_syntax' => ['syntax' => 'short'],
         'blank_line_after_opening_tag' => true,
         'braces' => ['allow_single_line_closure' => true],
@@ -35,6 +35,32 @@ return (new PhpCsFixer\Config())
         'no_unneeded_control_parentheses' => true,
         'no_unused_imports' => true,
         'no_whitespace_in_blank_line' => true,
+        'ordered_class_elements' => [
+            'order' => [
+                'use_trait',
+                'constant_public',
+                'constant_protected',
+                'constant_private',
+                'property_public_static',
+                'property_public',
+                'property_protected_static',
+                'property_protected',
+                'property_private_static',
+                'property_private',
+                'construct',
+                'destruct',
+                'magic',
+                'phpunit',
+                'method_public_static',
+                'method_public_abstract',
+                'method_public',
+                'method_protected_static',
+                'method_protected_abstract',
+                'method_protected',
+                'method_private_static',
+                'method_private'
+            ]
+        ],
         'ordered_imports' => true,
         'return_type_declaration' => ['space_before' => 'none'],
         'single_quote' => true,

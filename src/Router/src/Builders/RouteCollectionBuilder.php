@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -228,17 +228,17 @@ final class RouteCollectionBuilder
         foreach ($this->groupOptionsStack as $groupOptions) {
             $groupPath .= empty($groupOptions->path)
                 ? ''
-                : '/' . ltrim($groupOptions->path, '/');
+                : '/' . \ltrim($groupOptions->path, '/');
             $groupHost = empty($groupOptions->host)
                 ? ''
-                : rtrim($groupOptions->host, '.') . (empty($groupHost) ? '' : '.' . $groupHost);
+                : \rtrim($groupOptions->host, '.') . (empty($groupHost) ? '' : '.' . $groupHost);
             $groupIsHttpsOnly = $groupIsHttpsOnly || $groupOptions->isHttpsOnly;
         }
 
         $path = empty($groupPath)
             ? $path
-            : $groupPath . '/' . ltrim($path, '/');
-        $host = rtrim($host ?? '', '.');
+            : $groupPath . '/' . \ltrim($path, '/');
+        $host = \rtrim($host ?? '', '.');
 
         if (!empty($groupHost)) {
             $host .= '.' . $groupHost;

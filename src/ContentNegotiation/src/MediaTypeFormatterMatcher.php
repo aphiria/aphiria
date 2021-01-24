@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -39,10 +39,6 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     public function __construct(private array $mediaTypeFormatters, RequestHeaderParser $headerParser = null)
     {
-        /**
-         * @psalm-suppress PossiblyNullArgument Psalm does not support promoted properties - bug
-         * @psalm-suppress UninitializedProperty Ditto - bug
-         */
         if (\count($this->mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
         }
@@ -97,14 +93,13 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
         if (\count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof AcceptMediaTypeHeaderValue) {
             /**
              * @var AcceptMediaTypeHeaderValue[] $mediaTypeHeaders
-             * @psalm-suppress InvalidArgument The headers will be an array of AcceptMediaTypeHeaderValue
-             * @psalm-suppress ArgumentTypeCoercion Ditto
+             * @psalm-suppress ArgumentTypeCoercion The headers will be an array of AcceptMediaTypeHeaderValue
              */
             $mediaTypeHeaders = $this->rankAcceptMediaTypeHeaders($mediaTypeHeaders);
         }
 
         foreach ($mediaTypeHeaders as $mediaTypeHeader) {
-            [$mediaType, $mediaSubType] = explode('/', $mediaTypeHeader->getMediaType());
+            [$mediaType, $mediaSubType] = \explode('/', $mediaTypeHeader->getMediaType());
 
             foreach ($this->mediaTypeFormatters as $mediaTypeFormatter) {
                 foreach ($mediaTypeFormatter->getSupportedMediaTypes() as $supportedMediaType) {
@@ -116,7 +111,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
                         continue;
                     }
 
-                    [$supportedType, $supportedSubType] = explode('/', $supportedMediaType);
+                    [$supportedType, $supportedSubType] = \explode('/', $supportedMediaType);
 
                     // Checks if the type is a wildcard or a match and the sub-type is a wildcard or a match
                     if (
@@ -201,10 +196,10 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     private function rankAcceptMediaTypeHeaders(array $mediaTypeHeaders): array
     {
-        usort($mediaTypeHeaders, [$this, 'compareAcceptMediaTypeHeaders']);
-        $rankedMediaTypeHeaders = array_filter($mediaTypeHeaders, [$this, 'filterZeroScores']);
+        \usort($mediaTypeHeaders, [$this, 'compareAcceptMediaTypeHeaders']);
+        $rankedMediaTypeHeaders = \array_filter($mediaTypeHeaders, [$this, 'filterZeroScores']);
 
         // Have to return the values because the keys aren't updated in array_filter()
-        return array_values($rankedMediaTypeHeaders);
+        return \array_values($rankedMediaTypeHeaders);
     }
 }

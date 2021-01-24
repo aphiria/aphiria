@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -24,8 +24,6 @@ final class TokenStream
 
     /**
      * @param Token[] $tokens The list of tokens
-     * @psalm-suppress PossiblyNullArgument This cannot ever be null - bug
-     * @psalm-suppress UninitializedProperty This is initialized - bug
      */
     public function __construct(public array $tokens)
     {
@@ -146,6 +144,6 @@ final class TokenStream
         $currentToken = $this->getCurrent();
         $typeMatches = $currentToken !== null && $currentToken->type === $type;
 
-        return $typeMatches && ($value === null || $currentToken?->value === $value);
+        return $typeMatches && ($value === null || $currentToken->value === $value);
     }
 }

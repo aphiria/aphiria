@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -76,7 +76,6 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     public function bindInstance(string|array $interfaces, object $instance): void
     {
         $this->addBoundInterface($interfaces);
-        /** @psalm-suppress MoreSpecificImplementedParamType The callback will always return the callback */
         $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindInstance($interfaces, $instance));
     }
 
@@ -118,8 +117,6 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
 
     /**
      * @inheritdoc
-     *
-     * @psalm-suppress MissingReturnType This method returns output value of the callback
      */
     public function for(Context|string $context, callable $callback)
     {
@@ -133,8 +130,8 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
         /** @psalm-suppress ArgumentTypeCoercion The callback will accept $this - bug */
         $result = $callback($this);
 
-        array_pop($this->contextStack);
-        $this->currentContext = end($this->contextStack) ?: new UniversalContext();
+        \array_pop($this->contextStack);
+        $this->currentContext = \end($this->contextStack) ?: new UniversalContext();
 
         return $result;
     }

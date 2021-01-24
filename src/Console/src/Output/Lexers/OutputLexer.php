@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -29,7 +29,7 @@ final class OutputLexer implements IOutputLexer
         $elementNameBuffer = '';
         $inOpenTag = false;
         $inCloseTag = false;
-        $charArray = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
+        $charArray = \preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
         $textLength = \count($charArray);
 
         foreach ($charArray as $charIter => $char) {
@@ -38,10 +38,10 @@ final class OutputLexer implements IOutputLexer
                     if (self::lookBehind($charArray, $charIter) === '\\') {
                         // This tag was escaped
                         // Don't include the preceding slash
-                        $wordBuffer = mb_substr($wordBuffer, 0, -1) . $char;
+                        $wordBuffer = \mb_substr($wordBuffer, 0, -1) . $char;
                     } elseif ($inOpenTag || $inCloseTag) {
                         throw new RuntimeException(
-                            sprintf(
+                            \sprintf(
                                 'Invalid tags near "%s", character #%d',
                                 self::getSurroundingText($charArray, $charIter),
                                 $charIter
@@ -62,7 +62,7 @@ final class OutputLexer implements IOutputLexer
                             $tokens[] = new OutputToken(
                                 OutputTokenTypes::T_WORD,
                                 $wordBuffer,
-                                $charIter - mb_strlen($wordBuffer)
+                                $charIter - \mb_strlen($wordBuffer)
                             );
                             $wordBuffer = '';
                         }
@@ -76,14 +76,14 @@ final class OutputLexer implements IOutputLexer
                                 OutputTokenTypes::T_TAG_OPEN,
                                 $elementNameBuffer,
                                 // Need to get the position of the beginning of the open tag
-                                $charIter - mb_strlen($elementNameBuffer) - 1
+                                $charIter - \mb_strlen($elementNameBuffer) - 1
                             );
                         } else {
                             $tokens[] = new OutputToken(
                                 OutputTokenTypes::T_TAG_CLOSE,
                                 $elementNameBuffer,
                                 // Need to get the position of the beginning of the close tag
-                                $charIter - mb_strlen($elementNameBuffer) - 2
+                                $charIter - \mb_strlen($elementNameBuffer) - 2
                             );
                         }
 
@@ -115,7 +115,7 @@ final class OutputLexer implements IOutputLexer
             $tokens[] = new OutputToken(
                 OutputTokenTypes::T_WORD,
                 $wordBuffer,
-                $textLength - mb_strlen($wordBuffer)
+                $textLength - \mb_strlen($wordBuffer)
             );
         }
 
@@ -123,7 +123,6 @@ final class OutputLexer implements IOutputLexer
 
         return $tokens;
     }
-
     /**
      * Gets text around a certain position for use in exceptions
      *
@@ -134,14 +133,14 @@ final class OutputLexer implements IOutputLexer
     private static function getSurroundingText(array $charArray, int $position): string
     {
         if (\count($charArray) <= 3) {
-            return implode('', $charArray);
+            return \implode('', $charArray);
         }
 
         if ($position <= 3) {
-            return implode('', \array_slice($charArray, 0, 4));
+            return \implode('', \array_slice($charArray, 0, 4));
         }
 
-        return implode('', \array_slice($charArray, $position - 3, 4));
+        return \implode('', \array_slice($charArray, $position - 3, 4));
     }
 
     /**

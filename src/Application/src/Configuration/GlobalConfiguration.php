@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -39,7 +39,6 @@ class GlobalConfiguration
      * @return array<mixed, mixed> The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws MissingConfigurationValueException Thrown if there was no value at the input path
-     * @psalm-suppress InvalidNullableReturnType The value will always be set, or an exception will be thrown
      */
     public static function getArray(string $path): array
     {
@@ -63,7 +62,6 @@ class GlobalConfiguration
      * @return bool The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws MissingConfigurationValueException Thrown if there was no value at the input path
-     * @psalm-suppress InvalidNullableReturnType The value will always be set, or an exception will be thrown
      */
     public static function getBool(string $path): bool
     {
@@ -87,7 +85,6 @@ class GlobalConfiguration
      * @return float The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws MissingConfigurationValueException Thrown if there was no value at the input path
-     * @psalm-suppress InvalidNullableReturnType The value will always be set, or an exception will be thrown
      */
     public static function getFloat(string $path): float
     {
@@ -111,7 +108,6 @@ class GlobalConfiguration
      * @return int The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws MissingConfigurationValueException Thrown if there was no value at the input path
-     * @psalm-suppress InvalidNullableReturnType The value will always be set, or an exception will be thrown
      */
     public static function getInt(string $path): int
     {
@@ -135,7 +131,6 @@ class GlobalConfiguration
      * @return string The value at the path
      * @throws RuntimeException Thrown if the underlying config was not set first
      * @throws MissingConfigurationValueException Thrown if there was no value at the input path
-     * @psalm-suppress InvalidNullableReturnType The value will always be set, or an exception will be thrown
      */
     public static function getString(string $path): string
     {

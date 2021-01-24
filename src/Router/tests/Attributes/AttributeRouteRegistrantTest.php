@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -45,7 +45,8 @@ class AttributeRouteRegistrantTest extends TestCase
         $this->typeFinder->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
-            ->willReturn([$nonController::class]);$routes = new RouteCollection();
+            ->willReturn([$nonController::class]);
+        $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
         $this->assertEmpty($routes->getAll());
     }
@@ -53,6 +54,7 @@ class AttributeRouteRegistrantTest extends TestCase
     public function testRegisteringRouteWithAllPropertiesSetCreatesRouteWithAllThosePropertiesSet(): void
     {
         $controller = new class() extends Controller {
+            /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
             #[
                 Get('foo', 'example.com', 'routename', true, ['foo' => 'bar']),
                 RouteConstraint(DummyConstraint::class, ['param'])
@@ -83,6 +85,7 @@ class AttributeRouteRegistrantTest extends TestCase
     public function testRegisteringRouteWithMiddlewareCreatesRouteWithThatMiddleware(): void
     {
         $controller = new class() extends Controller {
+            /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
             #[
                 Get('bar'),
                 Middleware(DummyMiddleware::class, ['foo' => 'bar'])
@@ -108,7 +111,9 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRouteWithMiddlewareThatIsInRouteGroupWithMiddlewareCreatesRouteWithBothMiddleware(): void
     {
-        $controller = new #[Middleware(DummyMiddleware::class, ['foo' => 'bar'])] class() extends Controller {
+        /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
+        $controller = new #[Middleware(DummyMiddleware::class, ['foo' => 'bar'])] class() extends Controller
+        {
             #[
                 Get('bar'),
                 Middleware(DummyMiddleware::class, ['baz' => 'blah'])
@@ -137,6 +142,7 @@ class AttributeRouteRegistrantTest extends TestCase
     public function testRegisteringRouteWithMultipleMiddlewareCreatesRouteWithThoseMiddleware(): void
     {
         $controller = new class() extends Controller {
+            /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
             #[
                 Get('bar'),
                 Middleware(DummyMiddleware::class, ['foo' => 'bar']),
@@ -165,7 +171,8 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupWithEmptyPathPrependsNothingToRoutePaths(): void
     {
-        $controller = new #[RouteGroup('')] class() extends Controller {
+        $controller = new #[RouteGroup('')] class() extends Controller
+        {
             #[Get('foo')]
             public function route(): void
             {
@@ -186,7 +193,8 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupWithPathPrependsPathToRoutePaths(): void
     {
-        $controller = new #[RouteGroup('foo')] class() extends Controller {
+        $controller = new #[RouteGroup('foo')] class() extends Controller
+        {
             #[Get('bar')]
             public function route(): void
             {
@@ -207,7 +215,8 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupWithHostAppendsHostToRouteHost(): void
     {
-        $controller = new #[RouteGroup(host: 'example.com')] class() extends Controller {
+        $controller = new #[RouteGroup(host: 'example.com')] class() extends Controller
+        {
             #[Get('', 'api')]
             public function route(): void
             {
@@ -228,7 +237,8 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupThatIsHttpsOnlyMakesChildRoutesHttpsOnly(): void
     {
-        $controller = new #[RouteGroup(isHttpsOnly: true)] class() extends Controller {
+        $controller = new #[RouteGroup(isHttpsOnly: true)] class() extends Controller
+        {
             #[Get('', isHttpsOnly: true)]
             public function routeThatIsAlreadyHttpsOnly(): void
             {
@@ -255,7 +265,8 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupWithParametersAppliesParametersToChildRoutes(): void
     {
-        $controller = new #[RouteGroup('', parameters: ['foo' => 'bar'])] class() extends Controller {
+        $controller = new #[RouteGroup('', parameters: ['foo' => 'bar'])] class() extends Controller
+        {
             #[Get('')]
             public function routeWithNoParameters(): void
             {
@@ -282,7 +293,9 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteConstraintsAppliesConstraintsToChildRoutes(): void
     {
-        $controller = new #[RouteConstraint(DummyConstraint::class, ['foo'])] class() extends Controller {
+        /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
+        $controller = new #[RouteConstraint(DummyConstraint::class, ['foo'])] class() extends Controller
+        {
             #[Get('')]
             public function routeWithNoExtraConstraints(): void
             {
@@ -291,6 +304,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
             #[
                 Get(''),
+                /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
                 RouteConstraint(DummyConstraint::class, ['bar'])
             ]
             public function routeWithExtraConstraints(): void

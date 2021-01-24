@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -16,7 +16,6 @@ use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\RequestBuilder;
 use Aphiria\Net\Http\RequestTargetTypes;
 use Aphiria\Net\Uri;
-use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 
@@ -58,7 +57,7 @@ class RequestBuilderTest extends TestCase
         $request = $this->requestBuilder->withMethod('GET')
             ->withUri('http://localhost/path')
             ->build();
-        $this->assertSame('GET /path HTTP/1.1', explode("\r\n", (string)$request)[0]);
+        $this->assertSame('GET /path HTTP/1.1', \explode("\r\n", (string)$request)[0]);
         $this->assertSame('localhost', $request->getHeaders()->getFirst('Host'));
     }
 
@@ -133,7 +132,7 @@ class RequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withProtocolVersion('2.0')
             ->build();
-        $this->assertSame('GET / HTTP/2.0', explode("\r\n", (string)$request)[0]);
+        $this->assertSame('GET / HTTP/2.0', \explode("\r\n", (string)$request)[0]);
     }
 
     public function testWithRequestTargetTypeSetsRequestTargetType(): void
@@ -142,7 +141,7 @@ class RequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withRequestTargetType(RequestTargetTypes::ABSOLUTE_FORM)
             ->build();
-        $this->assertSame('GET http://localhost HTTP/1.1', explode("\r\n", (string)$request)[0]);
+        $this->assertSame('GET http://localhost HTTP/1.1', \explode("\r\n", (string)$request)[0]);
     }
 
     public function testWithStringUriSetsRequestUri(): void

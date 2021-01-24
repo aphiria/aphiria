@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -43,7 +43,7 @@ class StringBody implements IBody
      */
     public function getLength(): ?int
     {
-        return mb_strlen($this->content);
+        return \mb_strlen($this->content);
     }
 
     /**
@@ -52,7 +52,7 @@ class StringBody implements IBody
     public function readAsStream(): IStream
     {
         if ($this->stream === null) {
-            $this->stream = new Stream(fopen('php://temp', 'r+b'));
+            $this->stream = new Stream(\fopen('php://temp', 'r+b'));
             $this->stream->write($this->content);
             $this->stream->rewind();
         }

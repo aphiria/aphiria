@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -143,7 +143,6 @@ final class Stream implements IStream
     public function getLength(): ?int
     {
         // Handle a closed stream
-        /** @psalm-suppress DocblockTypeContradiction This may not be a resource anymore if it's closed */
         if ($this->handle === null) {
             throw new RuntimeException('Unable to get size of closed stream');
         }
@@ -163,7 +162,6 @@ final class Stream implements IStream
      */
     public function getPosition(): int
     {
-        /** @psalm-suppress DocblockTypeContradiction This may not be a resource anymore if it's closed */
         if (!\is_resource($this->handle)) {
             throw new RuntimeException('Unable to get position of closed stream');
         }
@@ -183,7 +181,6 @@ final class Stream implements IStream
      */
     public function isEof(): bool
     {
-        /** @psalm-suppress DocblockTypeContradiction This may not be a resource anymore if it's closed */
         if (!\is_resource($this->handle)) {
             throw new RuntimeException('Unable to tell if at EOF on closed stream');
         }

@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -54,7 +54,7 @@ final class OutputCompiler implements IOutputCompiler
     public function compile(string $message, bool $includeStyles = true): string
     {
         if (!$includeStyles) {
-            return strip_tags($message);
+            return \strip_tags($message);
         }
 
         try {

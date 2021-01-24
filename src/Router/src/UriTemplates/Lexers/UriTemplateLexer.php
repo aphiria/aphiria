@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -45,7 +45,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
 
             if ($uriTemplate[$cursor] === ' ') {
                 $cursor++;
-            } elseif (str_contains(self::PUNCTUATION, $uriTemplate[$cursor])) {
+            } elseif (\str_contains(self::PUNCTUATION, $uriTemplate[$cursor])) {
                 self::flushTextBuffer($textBuffer, $tokens);
                 self::lexPunctuation($uriTemplate[$cursor], $tokens, $cursor);
             } elseif (\preg_match(self::VARIABLE_NAME_REGEX, $uriTemplate, $matches, 0, $cursor) === 1) {

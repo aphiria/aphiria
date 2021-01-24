@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -95,7 +95,7 @@ final class TypeFinder implements ITypeFinder
         $allTypes = [];
 
         foreach ($directories as $directory) {
-            if (!is_dir($directory)) {
+            if (!\is_dir($directory)) {
                 throw new InvalidArgumentException("$directory is not a directory");
             }
 
@@ -111,7 +111,7 @@ final class TypeFinder implements ITypeFinder
                     continue;
                 }
 
-                $tokens = token_get_all(file_get_contents($file->getRealPath()));
+                $tokens = \token_get_all(\file_get_contents($file->getRealPath()));
                 $allTypes = [...$allTypes, ...$this->getTypeFromTokens($tokens, $typeFilter)];
             }
         }
@@ -190,7 +190,7 @@ final class TypeFinder implements ITypeFinder
                         }
                     }
 
-                    $types[] = ltrim($namespace . '\\' . $className, '\\');
+                    $types[] = \ltrim($namespace . '\\' . $className, '\\');
                     break 2;
                 case T_INTERFACE:
                     if (($typeFilter & self::TYPE_INTERFACE) === 0) {
@@ -205,7 +205,7 @@ final class TypeFinder implements ITypeFinder
                         }
                     }
 
-                    $types[] = ltrim($namespace . '\\' . $interfaceName, '\\');
+                    $types[] = \ltrim($namespace . '\\' . $interfaceName, '\\');
                     break;
             }
         }

@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -32,8 +32,8 @@ final class Option
         public int $type,
         public ?string $shortName = null,
         public ?string $description = null,
-        public mixed $defaultValue = null)
-    {
+        public mixed $defaultValue = null
+    ) {
         if (empty($this->name)) {
             throw new InvalidArgumentException('Option name cannot be empty');
         }
@@ -47,11 +47,11 @@ final class Option
         }
 
         if ($this->shortName !== null) {
-            if (mb_strlen($this->shortName) !== 1) {
+            if (\mb_strlen($this->shortName) !== 1) {
                 throw new InvalidArgumentException('Short names must be one character in length');
             }
 
-            if (!ctype_alpha($this->shortName)) {
+            if (!\ctype_alpha($this->shortName)) {
                 throw new InvalidArgumentException('Short names must be an alphabet character');
             }
         }

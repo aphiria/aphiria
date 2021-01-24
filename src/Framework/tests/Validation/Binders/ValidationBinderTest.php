@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -43,16 +43,16 @@ class ValidationBinderTest extends TestCase
         $this->binder = new ValidationBinder();
         $this->container = $this->createMock(IContainer::class);
         GlobalConfiguration::resetConfigurationSources();
-        $this->currEnvironment = getenv('APP_ENV') ?: null;
+        $this->currEnvironment = \getenv('APP_ENV') ?: null;
     }
 
     protected function tearDown(): void
     {
         // Restore the environment name
         if ($this->currEnvironment === null) {
-            putenv('APP_ENV=');
+            \putenv('APP_ENV=');
         } else {
-            putenv("APP_ENV={$this->currEnvironment}");
+            \putenv("APP_ENV={$this->currEnvironment}");
         }
     }
 
@@ -71,7 +71,7 @@ class ValidationBinderTest extends TestCase
     public function testConstraintCacheIsUsedInProd(): void
     {
         // Basically just ensuring we cover the production case in this test
-        putenv('APP_ENV=production');
+        \putenv('APP_ENV=production');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock();
         $this->binder->bind($this->container);

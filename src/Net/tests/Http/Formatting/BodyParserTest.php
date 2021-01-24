@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -86,7 +86,7 @@ class BodyParserTest extends TestCase
     {
         $this->body->expects($this->once())
             ->method('readAsString')
-            ->willReturn(json_encode(['foo' => 'bar']));
+            ->willReturn(\json_encode(['foo' => 'bar']));
         $this->assertEquals(['foo' => 'bar'], $this->parser->readAsJson($this->body));
     }
 

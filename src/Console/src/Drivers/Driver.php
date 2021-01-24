@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -100,8 +100,8 @@ abstract class Driver implements IDriver
         }
 
         if (
-            preg_match('/rows.(\d+);.columns.(\d+);/i', $sttyOutput, $matches)
-            || preg_match('/;.(\d+).rows;.(\d+).columns/i', $sttyOutput, $matches)
+            \preg_match('/rows.(\d+);.columns.(\d+);/i', $sttyOutput, $matches)
+            || \preg_match('/;.(\d+).rows;.(\d+).columns/i', $sttyOutput, $matches)
         ) {
             return [(int)$matches[2], (int)$matches[1]];
         }
@@ -118,7 +118,7 @@ abstract class Driver implements IDriver
      */
     protected function runProcess(string $command): ?string
     {
-        $process = proc_open(
+        $process = \proc_open(
             $command,
             [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
             $pipes,
@@ -131,10 +131,10 @@ abstract class Driver implements IDriver
             return null;
         }
 
-        $sttyOutput = stream_get_contents($pipes[1]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-        proc_close($process);
+        $sttyOutput = \stream_get_contents($pipes[1]);
+        \fclose($pipes[1]);
+        \fclose($pipes[2]);
+        \proc_close($process);
 
         return $sttyOutput;
     }
@@ -151,7 +151,7 @@ abstract class Driver implements IDriver
             return $this->supportsStty;
         }
 
-        exec('stty 2>&1', $output, $sttyCheckStatusCode);
+        \exec('stty 2>&1', $output, $sttyCheckStatusCode);
 
         return $this->supportsStty = (StatusCodes::OK === $sttyCheckStatusCode);
     }

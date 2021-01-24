@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -89,7 +89,7 @@ class Session implements ISession
         $staleFlashKeys = $this->getStaleFlashKeys();
 
         // Remove the data from the list of stale keys, if it was there
-        if (($staleKey = array_search($key, $staleFlashKeys, true)) !== false) {
+        if (($staleKey = \array_search($key, $staleFlashKeys, true)) !== false) {
             unset($staleFlashKeys[$staleKey]);
         }
 
@@ -138,6 +138,7 @@ class Session implements ISession
 
     /**
      * @inheritdoc
+     * @psalm-suppress MixedReturnStatement This method is correctly returning a mixed type - bug
      */
     public function offsetGet(mixed $offset): mixed
     {
@@ -171,7 +172,7 @@ class Session implements ISession
     {
         $newFlashKeys = $this->getNewFlashKeys();
         $staleFlashKeys = $this->getStaleFlashKeys();
-        $this->set(self::NEW_FLASH_KEYS_KEY, array_merge($newFlashKeys, $staleFlashKeys));
+        $this->set(self::NEW_FLASH_KEYS_KEY, \array_merge($newFlashKeys, $staleFlashKeys));
         $this->set(self::STALE_FLASH_KEYS_KEY, []);
     }
 
@@ -208,7 +209,7 @@ class Session implements ISession
      */
     public function setMany(array $variables): void
     {
-        $this->vars = array_merge($this->vars, $variables);
+        $this->vars = \array_merge($this->vars, $variables);
     }
 
     /**

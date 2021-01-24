@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -26,8 +26,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'foo' => 'bar',
-                $session::NEW_FLASH_KEYS_KEY => ['foo'],
-                $session::STALE_FLASH_KEYS_KEY => []
+                Session::NEW_FLASH_KEYS_KEY => ['foo'],
+                Session::STALE_FLASH_KEYS_KEY => []
             ],
             $session->getAll()
         );
@@ -37,8 +37,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'foo' => 'bar',
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => ['foo']
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => ['foo']
             ],
             $session->getAll()
         );
@@ -50,8 +50,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'baz' => 'blah',
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => ['baz']
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => ['baz']
             ],
             $session->getAll()
         );
@@ -61,8 +61,8 @@ class SessionTest extends TestCase
         $this->assertFalse($session->containsKey('baz'));
         $this->assertEquals(
             [
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => []
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => []
             ],
             $session->getAll()
         );
@@ -80,8 +80,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'foo' => 'baz',
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => ['foo']
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => ['foo']
             ],
             $session->getAll()
         );
@@ -90,8 +90,8 @@ class SessionTest extends TestCase
         $this->assertNull($session->get('foo'));
         $this->assertEquals(
             [
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => []
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => []
             ],
             $session->getAll()
         );
@@ -125,8 +125,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'foo' => 'bar',
-                $session::NEW_FLASH_KEYS_KEY => ['foo'],
-                $session::STALE_FLASH_KEYS_KEY => []
+                Session::NEW_FLASH_KEYS_KEY => ['foo'],
+                Session::STALE_FLASH_KEYS_KEY => []
             ],
             $session->getAll()
         );
@@ -151,18 +151,18 @@ class SessionTest extends TestCase
 
     public function testGettingIdReturnsSameOneAsSet(): void
     {
-        $constructorId = str_repeat('1', IIdGenerator::MIN_LENGTH);
+        $constructorId = \str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
         $idGenerator->method('idIsValid')->willReturn(true);
         $session = new Session($constructorId, $idGenerator);
-        $setterId = str_repeat('2', IIdGenerator::MIN_LENGTH);
+        $setterId = \str_repeat('2', IIdGenerator::MIN_LENGTH);
         $session->setId($setterId);
         $this->assertSame($setterId, $session->getId());
     }
 
     public function testGettingIdUsesIdGeneratorValue(): void
     {
-        $id = str_repeat('1', IIdGenerator::MIN_LENGTH);
+        $id = \str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
         $idGenerator->method('idIsValid')->willReturn(true);
         $session = new Session($id, $idGenerator);
@@ -193,8 +193,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'foo' => 'bar',
-                $session::NEW_FLASH_KEYS_KEY => ['foo'],
-                $session::STALE_FLASH_KEYS_KEY => []
+                Session::NEW_FLASH_KEYS_KEY => ['foo'],
+                Session::STALE_FLASH_KEYS_KEY => []
             ],
             $session->getAll()
         );
@@ -204,8 +204,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'foo' => 'bar',
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => ['foo']
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => ['foo']
             ],
             $session->getAll()
         );
@@ -214,8 +214,8 @@ class SessionTest extends TestCase
         $this->assertNull($session->get('foo'));
         $this->assertEquals(
             [
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => []
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => []
             ],
             $session->getAll()
         );
@@ -223,7 +223,7 @@ class SessionTest extends TestCase
 
     public function testRegenerateIdUsesIdGeneratorValue(): void
     {
-        $generatedId = str_repeat('1', IIdGenerator::MIN_LENGTH);
+        $generatedId = \str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
         $idGenerator->method('idIsValid')
             ->willReturnMap([
@@ -245,7 +245,7 @@ class SessionTest extends TestCase
 
     public function testSettingInvalidIdCausesNewIdToBeGenerated(): void
     {
-        $generatedId = str_repeat('1', IIdGenerator::MIN_LENGTH);
+        $generatedId = \str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
         $idGenerator->method('idIsValid')
             ->willReturnMap([

@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -53,10 +53,6 @@ class MediaTypeHeaderValue
         $this->type = $mediaTypeParts[0];
         $this->subType = $mediaTypeParts[1];
 
-        /**
-         * @psalm-suppress PossiblyNullArgument Psalm doesn't recognize promoted properties yet - bug
-         * @psalm-suppress UninitializedProperty Ditto
-         */
         if (\str_contains($this->mediaType, '+') && ($plusSignPos = \strpos($this->mediaType, '+')) !== false) {
             $this->suffix = \substr($this->mediaType, $plusSignPos + 1);
         }

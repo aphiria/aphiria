@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -46,8 +46,10 @@ class ObjectConstraintsRegistryBuilderTest extends TestCase
 
     public function testBuildWithMultipleSubBuildersCreatesRegistryWithMultipleObjectConstraints(): void
     {
-        $foo = new class() {};
-        $bar = new class() {};
+        $foo = new class() {
+        };
+        $bar = new class() {
+        };
         $expectedObjectConstraints = new ObjectConstraintsRegistry();
         $expectedObjectConstraints->registerObjectConstraints(new ObjectConstraints($foo::class));
         $expectedObjectConstraints->registerObjectConstraints(new ObjectConstraints($bar::class));

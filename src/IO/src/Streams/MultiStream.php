@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -270,9 +270,7 @@ final class MultiStream implements IStream
                 $stream->seek($this->position - $currPosition);
 
                 // Rewind the remaining streams
-                /** @psalm-suppress InvalidOperand This is perfectly valid code - bug */
                 for ($remainingIndex = $this->streamIndex + 1; $remainingIndex < \count($this->streams); $remainingIndex++) {
-                    /** @psalm-suppress PossiblyInvalidArrayOffset The index will always be an int - bug */
                     $this->streams[$remainingIndex]->rewind();
                 }
 

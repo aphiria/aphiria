@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -29,10 +29,6 @@ final class BinderMetadataCollectionFactory
      */
     public function __construct(private IContainer $container, IBinderMetadataCollector $binderMetadataCollector = null)
     {
-        /**
-         * @psalm-suppress UninitializedProperty Psalm does not support promoted properties yet - bug
-         * @psalm-suppress PossiblyNullArgument Ditto - bug
-         */
         $this->binderMetadataCollector = $binderMetadataCollector ?? new ContainerBinderMetadataCollector($this->container);
     }
 

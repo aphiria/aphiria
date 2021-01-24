@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -45,8 +45,6 @@ class Application implements ICommandBus
      * @param CommandRegistry $commands The commands
      * @param IServiceResolver $commandHandlerResolver The resolver of command handlers
      * @param IInputCompiler|null $inputCompiler The input compiler, or null if using the default one
-     * @psalm-suppress UninitializedProperty Psalm does not support property promotion yet - bug
-     * @psalm-suppress PossiblyNullArgument Ditto - bug
      */
     public function __construct(
         private CommandRegistry $commands,

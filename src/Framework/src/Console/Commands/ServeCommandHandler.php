@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -31,7 +31,7 @@ class ServeCommandHandler implements ICommandHandler
         $domain = (string)$input->options['domain'];
         $port = (int)$input->options['port'];
         $output->writeln("<info>Running at http://$domain:$port</info>");
-        $command = sprintf(
+        $command = \sprintf(
             '%s -S %s:%d -t %s %s',
             PHP_BINARY,
             $domain,

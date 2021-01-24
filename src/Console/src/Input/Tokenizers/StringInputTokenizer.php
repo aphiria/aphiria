@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -31,7 +31,7 @@ final class StringInputTokenizer implements IInputTokenizer
 
         $inDoubleQuotes = false;
         $inSingleQuotes = false;
-        $charArray = preg_split('//u', trim($input), -1, PREG_SPLIT_NO_EMPTY);
+        $charArray = \preg_split('//u', \trim($input), -1, PREG_SPLIT_NO_EMPTY);
         $previousChar = '';
         $buffer = '';
         $tokens = [];

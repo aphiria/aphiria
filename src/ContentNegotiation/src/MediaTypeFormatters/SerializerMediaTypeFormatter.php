@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -39,7 +39,10 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
             throw new InvalidArgumentException(static::class . " cannot read type $type");
         }
 
-        return $this->serializer->deserialize((string)$stream, $type, $this->format);
+        /** @var int|float|bool|string|object|array $value */
+        $value = $this->serializer->deserialize((string)$stream, $type, $this->format);
+
+        return $value;
     }
 
     /**
@@ -60,7 +63,7 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
         }
 
         $serializedObject = $this->serializer->serialize($value, $this->format);
-        $encodedSerializedObject = mb_convert_encoding($serializedObject, $encoding);
+        $encodedSerializedObject = \mb_convert_encoding($serializedObject, $encoding);
         $stream->write($encodedSerializedObject);
     }
 }

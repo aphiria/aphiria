@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -76,7 +76,7 @@ final class ProgressBar
     {
         // Bound the progress between 0 and the max steps
         $prevProgress = $this->progress;
-        $this->progress = max(0, min($this->maxSteps, $progress));
+        $this->progress = \max(0, \min($this->maxSteps, $progress));
 
         // Don't call the observers if no progress was actually made
         if ($prevProgress !== $this->progress) {

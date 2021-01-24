@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -75,15 +75,12 @@ class HashTableConfiguration implements IConfiguration
 
         foreach ($explodedPath as $i => $pathPart) {
             if (!isset($value[$pathPart])) {
-                $fullPathToThisPart = implode($this->pathDelimiter, \array_slice($explodedPath, 0, $i + 1));
+                $fullPathToThisPart = \implode($this->pathDelimiter, \array_slice($explodedPath, 0, $i + 1));
 
                 throw new MissingConfigurationValueException($fullPathToThisPart);
             }
 
-            /**
-             * @psalm-suppress MixedAssignment We are purposely adding mixed values
-             * @psalm-suppress MixedArrayAccess We are descending into an array until we hit our path
-             */
+            /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
             $value = $value[$pathPart];
         }
 

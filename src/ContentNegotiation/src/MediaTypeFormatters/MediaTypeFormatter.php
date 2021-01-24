@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -41,8 +41,8 @@ abstract class MediaTypeFormatter implements IMediaTypeFormatter
      */
     protected function encodingIsSupported(string $encoding): bool
     {
-        $lowercaseSupportedEncodings = array_map('strtolower', $this->getSupportedEncodings());
-        $lowercaseEncoding = strtolower($encoding);
+        $lowercaseSupportedEncodings = \array_map('strtolower', $this->getSupportedEncodings());
+        $lowercaseEncoding = \strtolower($encoding);
 
         return \in_array($lowercaseEncoding, $lowercaseSupportedEncodings, true);
     }

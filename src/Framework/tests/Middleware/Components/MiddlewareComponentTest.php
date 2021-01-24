@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -14,10 +14,10 @@ namespace Aphiria\Framework\Tests\Middleware\Components;
 
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
-use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
+use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;

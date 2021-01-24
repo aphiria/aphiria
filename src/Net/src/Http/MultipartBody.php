@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -39,10 +39,6 @@ class MultipartBody extends StreamBody
 
         // Create the header boundary
         $stream->addStream($this->createStreamFromString("--{$this->boundary}"));
-        /**
-         * @psalm-suppress UninitializedProperty Psalm doesn't recognize promoted properties yet - bug
-         * @psalm-suppress PossiblyNullArgument Ditto
-         */
         $numParts = \count($this->parts);
 
         for ($i = 0;$i < $numParts;$i++) {
@@ -50,16 +46,7 @@ class MultipartBody extends StreamBody
                 $stream->addStream($this->createStreamFromString("\r\n--{$this->boundary}"));
             }
 
-            /**
-             * @psalm-suppress UninitializedProperty Psalm doesn't recognize promoted properties yet - bug
-             * @psalm-suppress PossiblyNullArrayAccess Ditto
-             * @psalm-suppress PossiblyNullReference Ditto
-             */
             if (\count($this->parts[$i]->getHeaders()) > 0) {
-                /**
-                 * @psalm-suppress UninitializedProperty Psalm doesn't recognize promoted properties yet - bug
-                 * @psalm-suppress PossiblyNullArrayAccess Ditto
-                 */
                 $stream->addStream($this->createStreamFromString("\r\n{$this->parts[$i]->getHeaders()}"));
             }
 
@@ -108,11 +95,11 @@ class MultipartBody extends StreamBody
         // @codeCoverageIgnoreStart
         try {
             // The following creates a UUID v4
-            $string = random_bytes(16);
+            $string = \random_bytes(16);
             $string[6] = \chr(\ord($string[6]) & 0x0f | 0x40);
             $string[8] = \chr(\ord($string[8]) & 0x3f | 0x80);
 
-            return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($string), 4));
+            return \vsprintf('%s%s-%s-%s-%s-%s%s%s', \str_split(\bin2hex($string), 4));
         } catch (Exception $ex) {
             throw new RuntimeException('Failed to generate random bytes', 0, $ex);
         }
@@ -128,7 +115,7 @@ class MultipartBody extends StreamBody
      */
     private function createStreamFromString(string $string): Stream
     {
-        $stream = new Stream(fopen('php://temp', 'r+b'));
+        $stream = new Stream(\fopen('php://temp', 'r+b'));
         $stream->write($string);
         $stream->rewind();
 

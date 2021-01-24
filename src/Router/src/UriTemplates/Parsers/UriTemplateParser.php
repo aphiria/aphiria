@@ -4,8 +4,8 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2020 David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @copyright Copyright (C) 2021 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
@@ -203,7 +203,6 @@ final class UriTemplateParser implements IUriTemplateParser
      * @param TokenStream $tokens The stream of tokens to parse
      * @param AstNode $currNode The abstract syntax tree to add nodes to
      * @throws UnexpectedTokenException Thrown if there was an unexpected token
-     * @psalm-suppress PossiblyNullReference The current node will never be null or a root node
      * @psalm-suppress ReferenceConstraintViolation The current node will never be the root node, which means its parent will never be null
      */
     private function parseVariable(Token $currToken, TokenStream $tokens, AstNode &$currNode): void
