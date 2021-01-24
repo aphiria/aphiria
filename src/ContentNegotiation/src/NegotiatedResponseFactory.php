@@ -117,10 +117,6 @@ final class NegotiatedResponseFactory implements IResponseFactory
             return new StringBody((string)$rawBody);
         }
 
-        /**
-         * @psalm-suppress RedundantCondition We need to make sure this isn't an array
-         * @psalm-suppress TypeDoesNotContainType Ditto
-         */
         if ((!\is_object($rawBody) && !\is_array($rawBody)) || \is_callable($rawBody)) {
             throw new InvalidArgumentException('Unsupported body type ' . \gettype($rawBody));
         }

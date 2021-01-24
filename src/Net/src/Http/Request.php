@@ -85,7 +85,6 @@ class Request implements IRequest
             isset(self::$requestTargetTypesWithHostHeader[$this->requestTargetType]) &&
             !$this->headers->containsKey('Host')
         ) {
-            /** @psalm-suppress PossiblyNullReference Psalm doesn't recognize promoted properties yet - bug */
             $this->headers->add('Host', $this->uri->getAuthority(false) ?? '');
         }
     }

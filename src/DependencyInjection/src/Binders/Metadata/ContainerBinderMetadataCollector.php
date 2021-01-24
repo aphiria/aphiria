@@ -76,7 +76,6 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     public function bindInstance(string|array $interfaces, object $instance): void
     {
         $this->addBoundInterface($interfaces);
-        /** @psalm-suppress MoreSpecificImplementedParamType The callback will always return the callback */
         $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindInstance($interfaces, $instance));
     }
 
@@ -118,8 +117,6 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
 
     /**
      * @inheritdoc
-     *
-     * @psalm-suppress MissingReturnType This method returns output value of the callback
      */
     public function for(Context|string $context, callable $callback)
     {

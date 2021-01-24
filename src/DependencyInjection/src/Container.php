@@ -161,8 +161,6 @@ class Container implements IContainer
 
     /**
      * @inheritdoc
-     *
-     * @psalm-suppress MissingReturnType This method returns output value of the callback
      */
     public function for(Context|string $context, callable $callback)
     {
@@ -173,8 +171,6 @@ class Container implements IContainer
         // We're duplicating the tracking of targets here so that we can know if any bindings are targeted or universal
         $this->currentContext = $context;
         $this->contextStack[] = $context;
-
-        /** @psalm-suppress ArgumentTypeCoercion The callback should accept $this - bug */
         $result = $callback($this);
 
         \array_pop($this->contextStack);
@@ -433,7 +429,10 @@ class Container implements IContainer
             }
 
             if (!$parameterResolved) {
-                /** @psalm-suppress ArgumentTypeCoercion We're OK with the slight edge case that the class name was null here */
+                /**
+                 * @psalm-suppress ArgumentTypeCoercion We're OK with the slight edge case that the class name was null here
+                 * @psalm-suppress PossiblyNullArgument https://github.com/vimeo/psalm/issues/5097
+                 */
                 throw new ResolutionException(
                     $className ?? '',
                     $this->currentContext,
@@ -473,6 +472,7 @@ class Container implements IContainer
                 $primitiveTypeName = \gettype($primitives[0]);
 
                 if ($primitiveTypeName !== $parameterTypeName) {
+                    /** @psalm-suppress PossiblyNullArgument https://github.com/vimeo/psalm/issues/5097 */
                     throw new ResolutionException(
                         $parameterTypeName,
                         $this->currentContext,
@@ -508,6 +508,7 @@ class Container implements IContainer
             }
         }
 
+        /** @psalm-suppress PossiblyNullArgument https://github.com/vimeo/psalm/issues/5097 */
         throw new ResolutionException(
             $parameterTypeName,
             $this->currentContext,

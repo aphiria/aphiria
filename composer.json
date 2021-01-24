@@ -90,7 +90,7 @@
         "friendsofphp/php-cs-fixer": "^2.18",
         "nyholm/psr7": "^1.3",
         "phpunit/phpunit": "~9.5",
-        "vimeo/psalm": "4.2.1"
+        "vimeo/psalm": "^4.4"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",
@@ -98,7 +98,7 @@
         "phpunit": "php vendor/phpunit/phpunit/phpunit --coverage-clover ./.coverage/clover.xml --verbose",
         "psalm": [
             "Composer\\Config::disableProcessTimeout",
-            "php vendor/vimeo/psalm/psalm"
+            "php vendor/vimeo/psalm/psalm --find-unused-psalm-suppress"
         ],
         "test": [
             "@phpunit",

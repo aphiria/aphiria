@@ -38,7 +38,6 @@ class FatalThrowableErrorTest extends TestCase
     public function testConstructor(Throwable $throwable): void
     {
         $throwableError = new FatalThrowableError($throwable);
-        /** @psalm-suppress RedundantCondition We need to test this to get full coverage */
         $this->assertInstanceOf(ErrorException::class, $throwableError);
     }
 }

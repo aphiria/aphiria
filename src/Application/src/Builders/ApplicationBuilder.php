@@ -78,10 +78,6 @@ abstract class ApplicationBuilder implements IApplicationBuilder
      */
     protected function buildComponents(): void
     {
-        /**
-         * @psalm-suppress InvalidArgument Psalm is incorrectly flagging this as not having the right parameter type - bug
-         * @psalm-suppress PropertyTypeCoercion Ditto - bug
-         */
         \usort($this->componentTypesAndPriorities, static fn (array $a, array $b): int => $a['priority'] <=> $b['priority']);
 
         foreach ($this->componentTypesAndPriorities as $typeAndPriority) {

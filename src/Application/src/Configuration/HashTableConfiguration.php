@@ -80,10 +80,7 @@ class HashTableConfiguration implements IConfiguration
                 throw new MissingConfigurationValueException($fullPathToThisPart);
             }
 
-            /**
-             * @psalm-suppress MixedAssignment We are purposely adding mixed values
-             * @psalm-suppress MixedArrayAccess We are descending into an array until we hit our path
-             */
+            /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
             $value = $value[$pathPart];
         }
 
