@@ -429,7 +429,10 @@ class Container implements IContainer
             }
 
             if (!$parameterResolved) {
-                /** @psalm-suppress ArgumentTypeCoercion We're OK with the slight edge case that the class name was null here */
+                /**
+                 * @psalm-suppress ArgumentTypeCoercion We're OK with the slight edge case that the class name was null here
+                 * @psalm-suppress PossiblyNullArgument https://github.com/vimeo/psalm/issues/5097
+                 */
                 throw new ResolutionException(
                     $className ?? '',
                     $this->currentContext,
@@ -469,6 +472,7 @@ class Container implements IContainer
                 $primitiveTypeName = \gettype($primitives[0]);
 
                 if ($primitiveTypeName !== $parameterTypeName) {
+                    /** @psalm-suppress PossiblyNullArgument https://github.com/vimeo/psalm/issues/5097 */
                     throw new ResolutionException(
                         $parameterTypeName,
                         $this->currentContext,
@@ -504,6 +508,7 @@ class Container implements IContainer
             }
         }
 
+        /** @psalm-suppress PossiblyNullArgument https://github.com/vimeo/psalm/issues/5097 */
         throw new ResolutionException(
             $parameterTypeName,
             $this->currentContext,
