@@ -104,7 +104,7 @@ final class TrieRouteMatcher implements IRouteMatcher
  *
  * @link      https://www.aphiria.com
  * @copyright Copyright (C) {$copyrightYear} David Young
- * @license   https://github.com/aphiria/aphiria/blob/0.x/LICENSE.md
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
 declare(strict_types=1);
