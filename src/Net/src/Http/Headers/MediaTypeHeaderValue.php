@@ -53,10 +53,6 @@ class MediaTypeHeaderValue
         $this->type = $mediaTypeParts[0];
         $this->subType = $mediaTypeParts[1];
 
-        /**
-         * @psalm-suppress PossiblyNullArgument Psalm doesn't recognize promoted properties yet - bug
-         * @psalm-suppress UninitializedProperty Ditto
-         */
         if (\str_contains($this->mediaType, '+') && ($plusSignPos = \strpos($this->mediaType, '+')) !== false) {
             $this->suffix = \substr($this->mediaType, $plusSignPos + 1);
         }

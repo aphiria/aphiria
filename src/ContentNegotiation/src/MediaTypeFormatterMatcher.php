@@ -39,10 +39,6 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     public function __construct(private array $mediaTypeFormatters, RequestHeaderParser $headerParser = null)
     {
-        /**
-         * @psalm-suppress PossiblyNullArgument Psalm does not support promoted properties - bug
-         * @psalm-suppress UninitializedProperty Ditto - bug
-         */
         if (\count($this->mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
         }
@@ -97,8 +93,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
         if (\count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof AcceptMediaTypeHeaderValue) {
             /**
              * @var AcceptMediaTypeHeaderValue[] $mediaTypeHeaders
-             * @psalm-suppress InvalidArgument The headers will be an array of AcceptMediaTypeHeaderValue
-             * @psalm-suppress ArgumentTypeCoercion Ditto
+             * @psalm-suppress ArgumentTypeCoercion The headers will be an array of AcceptMediaTypeHeaderValue
              */
             $mediaTypeHeaders = $this->rankAcceptMediaTypeHeaders($mediaTypeHeaders);
         }

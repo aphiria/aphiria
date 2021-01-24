@@ -155,10 +155,7 @@ class HeadersTest extends TestCase
             // Verify that the key is numeric, not associative
             $this->assertIsInt($key);
             $this->assertInstanceOf(KeyValuePair::class, $value);
-            /**
-             * @psalm-suppress MixedArrayOffset We're purposely accessing mixed keys
-             * @psalm-suppress MixedAssignment We're purposely setting a mixed type
-             */
+            /** @psalm-suppress MixedArrayOffset We're purposely accessing mixed keys */
             $actualValues[$value->getKey()] = $value->getValue();
         }
 

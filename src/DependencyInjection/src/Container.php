@@ -161,8 +161,6 @@ class Container implements IContainer
 
     /**
      * @inheritdoc
-     *
-     * @psalm-suppress MissingReturnType This method returns output value of the callback
      */
     public function for(Context|string $context, callable $callback)
     {
@@ -173,8 +171,6 @@ class Container implements IContainer
         // We're duplicating the tracking of targets here so that we can know if any bindings are targeted or universal
         $this->currentContext = $context;
         $this->contextStack[] = $context;
-
-        /** @psalm-suppress ArgumentTypeCoercion The callback should accept $this - bug */
         $result = $callback($this);
 
         \array_pop($this->contextStack);

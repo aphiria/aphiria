@@ -29,10 +29,6 @@ final class BinderMetadataCollectionFactory
      */
     public function __construct(private IContainer $container, IBinderMetadataCollector $binderMetadataCollector = null)
     {
-        /**
-         * @psalm-suppress UninitializedProperty Psalm does not support promoted properties yet - bug
-         * @psalm-suppress PossiblyNullArgument Ditto - bug
-         */
         $this->binderMetadataCollector = $binderMetadataCollector ?? new ContainerBinderMetadataCollector($this->container);
     }
 

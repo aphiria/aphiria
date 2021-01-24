@@ -45,8 +45,6 @@ class Application implements ICommandBus
      * @param CommandRegistry $commands The commands
      * @param IServiceResolver $commandHandlerResolver The resolver of command handlers
      * @param IInputCompiler|null $inputCompiler The input compiler, or null if using the default one
-     * @psalm-suppress UninitializedProperty Psalm does not support property promotion yet - bug
-     * @psalm-suppress PossiblyNullArgument Ditto - bug
      */
     public function __construct(
         private CommandRegistry $commands,
