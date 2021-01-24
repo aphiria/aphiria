@@ -146,6 +146,6 @@ final class TokenStream
         $currentToken = $this->getCurrent();
         $typeMatches = $currentToken !== null && $currentToken->type === $type;
 
-        return $typeMatches && ($value === null || $currentToken?->value === $value);
+        return $typeMatches && ($value === null || $currentToken->value === $value);
     }
 }

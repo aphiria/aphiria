@@ -129,7 +129,7 @@ class RequestFactory
                 && \count($explodedValues = \preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', (string)$values)) > 1;
 
             if ($containsMultipleValues) {
-                foreach ($explodedValues as $value) {
+                foreach ((array)$explodedValues as $value) {
                     $this->addHeaderValue($headers, $name, $value, true);
                 }
             } else {

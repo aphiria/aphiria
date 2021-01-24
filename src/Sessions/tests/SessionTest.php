@@ -26,8 +26,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'foo' => 'bar',
-                $session::NEW_FLASH_KEYS_KEY => ['foo'],
-                $session::STALE_FLASH_KEYS_KEY => []
+                Session::NEW_FLASH_KEYS_KEY => ['foo'],
+                Session::STALE_FLASH_KEYS_KEY => []
             ],
             $session->getAll()
         );
@@ -37,8 +37,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'foo' => 'bar',
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => ['foo']
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => ['foo']
             ],
             $session->getAll()
         );
@@ -50,8 +50,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'baz' => 'blah',
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => ['baz']
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => ['baz']
             ],
             $session->getAll()
         );
@@ -61,8 +61,8 @@ class SessionTest extends TestCase
         $this->assertFalse($session->containsKey('baz'));
         $this->assertEquals(
             [
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => []
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => []
             ],
             $session->getAll()
         );
@@ -80,8 +80,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'foo' => 'baz',
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => ['foo']
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => ['foo']
             ],
             $session->getAll()
         );
@@ -90,8 +90,8 @@ class SessionTest extends TestCase
         $this->assertNull($session->get('foo'));
         $this->assertEquals(
             [
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => []
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => []
             ],
             $session->getAll()
         );
@@ -125,8 +125,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'foo' => 'bar',
-                $session::NEW_FLASH_KEYS_KEY => ['foo'],
-                $session::STALE_FLASH_KEYS_KEY => []
+                Session::NEW_FLASH_KEYS_KEY => ['foo'],
+                Session::STALE_FLASH_KEYS_KEY => []
             ],
             $session->getAll()
         );
@@ -193,8 +193,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'foo' => 'bar',
-                $session::NEW_FLASH_KEYS_KEY => ['foo'],
-                $session::STALE_FLASH_KEYS_KEY => []
+                Session::NEW_FLASH_KEYS_KEY => ['foo'],
+                Session::STALE_FLASH_KEYS_KEY => []
             ],
             $session->getAll()
         );
@@ -204,8 +204,8 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 'foo' => 'bar',
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => ['foo']
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => ['foo']
             ],
             $session->getAll()
         );
@@ -214,8 +214,8 @@ class SessionTest extends TestCase
         $this->assertNull($session->get('foo'));
         $this->assertEquals(
             [
-                $session::NEW_FLASH_KEYS_KEY => [],
-                $session::STALE_FLASH_KEYS_KEY => []
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => []
             ],
             $session->getAll()
         );
