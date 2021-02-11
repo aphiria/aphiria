@@ -130,10 +130,11 @@ class RequestFactory
 
             if ($containsMultipleValues) {
                 foreach ((array)$explodedValues as $value) {
-                    $this->addHeaderValue($headers, $name, $value, true);
+                    // Exploded values are guaranteed to be strings, so no need to check if the value is scalar
+                    self::addHeaderValue($headers, $name, $value, true);
                 }
-            } else {
-                $this->addHeaderValue($headers, $name, $values, false);
+            } elseif (\is_scalar($values)) {
+                self::addHeaderValue($headers, $name, $values, false);
             }
         }
 
@@ -304,10 +305,10 @@ class RequestFactory
      *
      * @param Headers $headers The headers to add to
      * @param string $name The name of the header
-     * @param mixed $value The header value to add
+     * @param string|int|float|bool $value The header value to add
      * @param bool $append Whether or not to append the value
      */
-    private function addHeaderValue(Headers $headers, string $name, mixed $value, bool $append): void
+    private static function addHeaderValue(Headers $headers, string $name, string|int|float|bool $value, bool $append): void
     {
         $decodedValue = \trim((string)(isset(self::$headersToUrlDecode[$name]) ? \urldecode((string)$value) : $value));
 

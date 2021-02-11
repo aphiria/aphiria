@@ -26,6 +26,14 @@ class RequestFactoryTest extends TestCase
         $this->factory = new RequestFactory();
     }
 
+    public function nonScalarHeaderValueProvider(): array
+    {
+        return [
+            ['foo', ['baz']],
+            ['HTTP_FOO', ['baz']]
+        ];
+    }
+
     public function testAuthorityInServerSetsAuthorityInUri(): void
     {
         $request = $this->factory->createRequestFromSuperglobals([
@@ -264,6 +272,20 @@ class RequestFactoryTest extends TestCase
             'HTTP_HOST' => 'foo.com'
         ]);
         $this->assertEquals(['text/html', 'application/xhtml+xml'], $request->getHeaders()->get('Accept'));
+    }
+
+    /**
+     * @dataProvider nonScalarHeaderValueProvider
+     * @param string $name The name of the header value to add
+     * @param mixed $value The header value that should not appear
+     */
+    public function testNonScalarHeaderValuesAreNotAddedToCollection(string $name, mixed $value): void
+    {
+        $request = $this->factory->createRequestFromSuperglobals([
+            $name => $value,
+            'HTTP_HOST' => 'foo.com'
+        ]);
+        $this->assertFalse($request->getHeaders()->containsKey($name));
     }
 
     public function testPathWithQueryStringStripsTheQueryStringFromUriPath(): void
