@@ -2,6 +2,10 @@
 
 ## v1.0.0-alpha2 (?)
 
+### Fixed
+
+- Fixed a bug that caused non-scalar values in `$_SERVER` to throw an exception when creating a request via `RequestFactory::createRequestFromSuperglobals()` ([#116](https://github.com/aphiria/aphiria/pull/116))
+
 ### Changed
 
 - Changed default port number to 8080 when running `php aphiria app:serve` ([#114](https://github.com/aphiria/aphiria/pull/114))
