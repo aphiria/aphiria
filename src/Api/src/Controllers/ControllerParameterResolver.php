@@ -54,6 +54,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         if ($reflectionParameterType instanceof ReflectionNamedType && !$reflectionParameterType->isBuiltin()) {
             return $this->resolveObjectParameter(
                 $reflectionParameter,
+                $reflectionParameterType,
                 $request
             );
         }
@@ -83,6 +84,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      * Resolves an object parameter using content negotiator
      *
      * @param ReflectionParameter $reflectionParameter The parameter to resolve
+     * @param ReflectionNamedType $type The type to resolve to
      * @param IRequest $request The current request
      * @return object|null The resolved parameter
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
@@ -93,6 +95,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      */
     private function resolveObjectParameter(
         ReflectionParameter $reflectionParameter,
+        ReflectionNamedType $type,
         IRequest $request
     ): ?object {
         $body = $request->getBody();
@@ -107,10 +110,8 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             return null;
         }
 
-        /** @var string $type This will always be guaranteed to be set because just getting to this method implies a param type */
-        $type = $reflectionParameter->getType()?->getName();
         $requestContentNegotiationResult = $this->contentNegotiator->negotiateRequestContent(
-            $type,
+            $type->getName(),
             $request
         );
         $mediaTypeFormatter = $requestContentNegotiationResult->getFormatter();
@@ -127,7 +128,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
 
         try {
             return $mediaTypeFormatter
-                ->readFromStream($body->readAsStream(), $type);
+                ->readFromStream($body->readAsStream(), $type->getName());
         } catch (SerializationException $ex) {
             if (!$reflectionParameter->allowsNull()) {
                 throw new RequestBodyDeserializationException(
@@ -149,11 +150,12 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      * @return mixed The raw value converted to the appropriate scalar type
      * @throws FailedScalarParameterConversionException Thrown if the scalar parameter could not be converted
      */
-    private function resolveScalarParameter(ReflectionParameter $reflectionParameter, $rawValue): mixed
+    private function resolveScalarParameter(ReflectionParameter $reflectionParameter, mixed $rawValue): mixed
     {
-        $type = $reflectionParameter->getType()?->getName();
+        $type = $reflectionParameter->getType();
+        $typeName = $type instanceof ReflectionNamedType ? $type->getName() : null;
 
-        switch ($type) {
+        switch ($typeName) {
             case 'int':
                 return (int)$rawValue;
             case 'float':
@@ -168,7 +170,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             case 'array':
                 throw new FailedScalarParameterConversionException('Cannot automatically resolve array types - you must either read the body or the query string inside the controller method');
             default:
-                throw new FailedScalarParameterConversionException("Failed to convert value to {$reflectionParameter->getType()?->getName()}");
+                throw new FailedScalarParameterConversionException("Failed to convert value to $typeName");
         }
     }
 }

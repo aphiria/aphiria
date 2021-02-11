@@ -429,10 +429,7 @@ class Container implements IContainer
             }
 
             if (!$parameterResolved) {
-                /**
-                 * @psalm-suppress ArgumentTypeCoercion We're OK with the slight edge case that the class name was null here
-                 * @psalm-suppress PossiblyNullArgument https://github.com/vimeo/psalm/issues/5097
-                 */
+                /** @psalm-suppress ArgumentTypeCoercion We're OK with the slight edge case that the class name was null here */
                 throw new ResolutionException(
                     $className ?? '',
                     $this->currentContext,
@@ -454,7 +451,7 @@ class Container implements IContainer
      *
      * @param ReflectionParameter $parameter The primitive parameter to resolve
      * @param ReflectionType|null $reflectionType The type to resolve the primitive as, or null if there was no type
-     * @param mixed[] $primitives The list of primitive values
+     * @param array $primitives The list of primitive values
      * @return mixed The resolved primitive
      * @throws ResolutionException Thrown if there was an error resolving the primitive
      * @psalm-suppress ArgumentTypeCoercion We're suppressing the fact that the parameter type might be a non-class-string to simplify things
@@ -472,7 +469,6 @@ class Container implements IContainer
                 $primitiveTypeName = \gettype($primitives[0]);
 
                 if ($primitiveTypeName !== $parameterTypeName) {
-                    /** @psalm-suppress PossiblyNullArgument https://github.com/vimeo/psalm/issues/5097 */
                     throw new ResolutionException(
                         $parameterTypeName,
                         $this->currentContext,
@@ -508,7 +504,6 @@ class Container implements IContainer
             }
         }
 
-        /** @psalm-suppress PossiblyNullArgument https://github.com/vimeo/psalm/issues/5097 */
         throw new ResolutionException(
             $parameterTypeName,
             $this->currentContext,
