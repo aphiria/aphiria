@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.0.0-alpha2 (?)
+## v1.0.0-alpha2 (2021-2-15)
 
 ### Fixed
 
