@@ -21,8 +21,8 @@ use RuntimeException;
 class StreamOutputTest extends TestCase
 {
     private StreamOutput $output;
-    /** @var resource */
-    private $inputStream;
+    /** @var resource|bool */
+    private mixed $inputStream;
     private OutputCompiler $compiler;
 
     protected function setUp(): void
@@ -58,13 +58,11 @@ class StreamOutputTest extends TestCase
         $this->assertSame('foo', $this->output->readLine());
     }
 
-    public function testReadingLineThatIsNotAtEofThrowsException(): void
+    public function testReadingLineThatFailsThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Failed to read line');
-        $message = \str_repeat('a', 4097);
-        \fwrite($this->inputStream, $message);
-        \rewind($this->inputStream);
+        $this->inputStream = false;
         $this->output->readLine();
     }
 
