@@ -68,7 +68,7 @@ class StreamOutput extends Output
     {
         $input = \fgets($this->inputStream, 4096);
 
-        if (!\feof($this->inputStream)) {
+        if ($input === false) {
             throw new RuntimeException('Failed to read line');
         }
 
