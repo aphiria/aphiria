@@ -15,6 +15,7 @@ namespace Aphiria\Application\Tests\Configuration;
 use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
+use Aphiria\Application\Tests\Configuration\Mocks\ConfigObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -79,6 +80,29 @@ class GlobalConfigurationTest extends TestCase
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 1]));
         $this->assertSame(1, GlobalConfiguration::getInt('foo'));
+    }
+
+    public function testGetObjectForNestedValueReturnsObject(): void
+    {
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => ['bar' => 'baz']]));
+        $object = GlobalConfiguration::getObject('foo.bar', fn (mixed $options): ConfigObject => new ConfigObject($options));
+        $this->assertEquals(new ConfigObject('baz'), $object);
+    }
+
+    public function testGetObjectReturnsObject(): void
+    {
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
+        $object = GlobalConfiguration::getObject('foo', fn (mixed $options): ConfigObject => new ConfigObject($options));
+        $this->assertEquals(new ConfigObject('bar'), $object);
+    }
+
+    public function testGetObjectThrowsExceptionIfFactoryDoesNotReturnObject(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Factory must return an object');
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
+        /** @psalm-suppress InvalidArgument Purposely testing an invalid parameter */
+        GlobalConfiguration::getObject('foo', fn (mixed $options): bool => true);
     }
 
     public function testGetStringForNestedValueReturnsString(): void
@@ -194,6 +218,44 @@ class GlobalConfigurationTest extends TestCase
         $value = null;
         $this->assertFalse(GlobalConfiguration::tryGetInt('doesNotExist', $value));
         $this->assertNull($value);
+    }
+
+    public function testTryGetObjectForExistentValueSetsItAndReturnsTrue(): void
+    {
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
+        $object = null;
+        $this->assertTrue(
+            GlobalConfiguration::tryGetObject(
+                'foo',
+                fn (mixed $options): ConfigObject => new ConfigObject($options),
+                $object
+            )
+        );
+        $this->assertEquals(new ConfigObject('bar'), $object);
+    }
+
+    public function testTryGetObjectForNonExistentValueSetsItToNullAndReturnsFalse(): void
+    {
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
+        $object = null;
+        $this->assertFalse(
+            GlobalConfiguration::tryGetObject(
+                'baz',
+                fn (mixed $options): ConfigObject => new ConfigObject($options),
+                $object
+            )
+        );
+        $this->assertNull($object);
+    }
+
+    public function testTryGetObjectThrowsExceptionIfFactoryDoesNotReturnObject(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Factory must return an object');
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
+        $object = null;
+        /** @psalm-suppress InvalidArgument Purposely testing an invalid parameter */
+        GlobalConfiguration::tryGetObject('foo', fn (mixed $options): bool => true, $object);
     }
 
     public function testTryGetStringForExistentValueSetsItAndReturnsTrue(): void

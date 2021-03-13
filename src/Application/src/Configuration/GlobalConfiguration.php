@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Application\Configuration;
 
+use Closure;
 use RuntimeException;
 
 /**
@@ -125,6 +126,31 @@ class GlobalConfiguration
     }
 
     /**
+     * Gets the object value at the path
+     *
+     * @template T of object
+     * @param string $path The period-delimited path to the value in the config to get
+     * @param Closure(mixed): T $factory The factory that will take in the raw config value and return the object
+     * @return T The object at the path
+     * @throws RuntimeException Thrown if the underlying config was not set first
+     * @throws MissingConfigurationValueException Thrown if there was no value at the input path
+     */
+    public static function getObject(string $path, Closure $factory): object
+    {
+        self::validateConfigurationSources();
+
+        $value = null;
+
+        foreach (self::$configurationSources as $configurationSource) {
+            if ($configurationSource->tryGetObject($path, $factory, $value)) {
+                return $value;
+            }
+        }
+
+        throw new MissingConfigurationValueException($path);
+    }
+
+    /**
      * Gets the string value at the path
      *
      * @param string $path The period-delimited path to the value in the config to get
@@ -196,7 +222,7 @@ class GlobalConfiguration
             $value = self::getArray($path);
 
             return true;
-        } catch (MissingConfigurationValueException $ex) {
+        } catch (MissingConfigurationValueException) {
             $value = null;
 
             return false;
@@ -219,7 +245,7 @@ class GlobalConfiguration
             $value = self::getBool($path);
 
             return true;
-        } catch (MissingConfigurationValueException $ex) {
+        } catch (MissingConfigurationValueException) {
             $value = null;
 
             return false;
@@ -242,7 +268,7 @@ class GlobalConfiguration
             $value = self::getFloat($path);
 
             return true;
-        } catch (MissingConfigurationValueException $ex) {
+        } catch (MissingConfigurationValueException) {
             $value = null;
 
             return false;
@@ -265,7 +291,33 @@ class GlobalConfiguration
             $value = self::getInt($path);
 
             return true;
-        } catch (MissingConfigurationValueException $ex) {
+        } catch (MissingConfigurationValueException) {
+            $value = null;
+
+            return false;
+        }
+    }
+
+    /**
+     * Tries to get the object value at the path
+     *
+     * @template T of object
+     * @param string $path The period-delimited path to the value in the config to get
+     * @param Closure(mixed): T $factory The factory that will take in the raw config value and return the object
+     * @param T|null $value The value if one was found, otherwise null
+     * @param-out T $value
+     * @return bool True if the value existed, otherwise false
+     * @throws RuntimeException Thrown if the underlying config was not set first
+     */
+    public static function tryGetObject(string $path, Closure $factory, ?object &$value): bool
+    {
+        self::validateConfigurationSources();
+
+        try {
+            $value = self::getObject($path, $factory);
+
+            return true;
+        } catch (MissingConfigurationValueException) {
             $value = null;
 
             return false;
@@ -288,7 +340,7 @@ class GlobalConfiguration
             $value = self::getString($path);
 
             return true;
-        } catch (MissingConfigurationValueException $ex) {
+        } catch (MissingConfigurationValueException) {
             $value = null;
 
             return false;
@@ -312,7 +364,7 @@ class GlobalConfiguration
             $value = self::getValue($path);
 
             return true;
-        } catch (MissingConfigurationValueException $ex) {
+        } catch (MissingConfigurationValueException) {
             $value = null;
 
             return false;

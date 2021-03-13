@@ -4,7 +4,11 @@
 
 ### Fixed
 
-- Fixed a bug that caused reading console input to throw an exception on certain setups ([#121](https://github.com/aphiria/aphiria/pull/122))
+- Fixed a bug that caused reading console input to throw an exception on certain setups ([#122](https://github.com/aphiria/aphiria/pull/122))
+
+### Added
+
+- Added the ability to read config values as objects ([#124](https://github.com/aphiria/aphiria/pull/124))
 
 ## [v1.0.0-alpha2](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha1...v1.0.0-alpha2) (2021-2-15)
 
