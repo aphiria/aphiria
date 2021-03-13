@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Application\Configuration;
 
+use Closure;
+use RuntimeException;
+
 /**
  * Defines a wrapper around a hash table configuration
  */
@@ -60,6 +63,21 @@ class HashTableConfiguration implements IConfiguration
     /**
      * @inheritdoc
      */
+    public function getObject(string $path, Closure $factory): object
+    {
+        $object = $factory($this->getValue($path));
+
+        /** @psalm-suppress DocblockTypeContradiction We don't want to solely rely on PHPDoc for types */
+        if (!\is_object($object)) {
+            throw new RuntimeException('Factory must return an object');
+        }
+
+        return $object;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getString(string $path): string
     {
         return (string)$this->getValue($path);
@@ -96,7 +114,7 @@ class HashTableConfiguration implements IConfiguration
             $value = $this->getArray($path);
 
             return true;
-        } catch (MissingConfigurationValueException $ex) {
+        } catch (MissingConfigurationValueException) {
             $value = null;
 
             return false;
@@ -112,7 +130,7 @@ class HashTableConfiguration implements IConfiguration
             $value = $this->getBool($path);
 
             return true;
-        } catch (MissingConfigurationValueException $ex) {
+        } catch (MissingConfigurationValueException) {
             $value = null;
 
             return false;
@@ -128,7 +146,7 @@ class HashTableConfiguration implements IConfiguration
             $value = $this->getFloat($path);
 
             return true;
-        } catch (MissingConfigurationValueException $ex) {
+        } catch (MissingConfigurationValueException) {
             $value = null;
 
             return false;
@@ -144,7 +162,23 @@ class HashTableConfiguration implements IConfiguration
             $value = $this->getInt($path);
 
             return true;
-        } catch (MissingConfigurationValueException $ex) {
+        } catch (MissingConfigurationValueException) {
+            $value = null;
+
+            return false;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function tryGetObject(string $path, Closure $factory, ?object &$value): bool
+    {
+        try {
+            $value = $this->getObject($path, $factory);
+
+            return true;
+        } catch (MissingConfigurationValueException) {
             $value = null;
 
             return false;
@@ -160,7 +194,7 @@ class HashTableConfiguration implements IConfiguration
             $value = $this->getString($path);
 
             return true;
-        } catch (MissingConfigurationValueException $ex) {
+        } catch (MissingConfigurationValueException) {
             $value = null;
 
             return false;
@@ -177,7 +211,7 @@ class HashTableConfiguration implements IConfiguration
             $value = $this->getValue($path);
 
             return true;
-        } catch (MissingConfigurationValueException $ex) {
+        } catch (MissingConfigurationValueException) {
             $value = null;
 
             return false;

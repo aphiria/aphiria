@@ -14,7 +14,9 @@ namespace Aphiria\Application\Tests\Configuration;
 
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
+use Aphiria\Application\Tests\Configuration\Mocks\ConfigObject;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class HashTableConfigurationTest extends TestCase
 {
@@ -64,6 +66,29 @@ class HashTableConfigurationTest extends TestCase
     {
         $configuration = new HashTableConfiguration(['foo' => 1]);
         $this->assertSame(1, $configuration->getInt('foo'));
+    }
+
+    public function testGetObjectForNestedValueReturnsObject(): void
+    {
+        $configuration = new HashTableConfiguration(['foo' => ['bar' => 'baz']]);
+        $object = $configuration->getObject('foo.bar', fn (mixed $options): ConfigObject => new ConfigObject($options));
+        $this->assertEquals(new ConfigObject('baz'), $object);
+    }
+
+    public function testGetObjectReturnsObject(): void
+    {
+        $configuration = new HashTableConfiguration(['foo' => 'bar']);
+        $object = $configuration->getObject('foo', fn (mixed $options): ConfigObject => new ConfigObject($options));
+        $this->assertEquals(new ConfigObject('bar'), $object);
+    }
+
+    public function testGetObjectThrowsExceptionIfFactoryDoesNotReturnObject(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Factory must return an object');
+        $configuration = new HashTableConfiguration(['foo' => 'bar']);
+        /** @psalm-suppress InvalidArgument Purposely testing an invalid parameter */
+        $configuration->getObject('foo', fn (mixed $options): bool => true);
     }
 
     public function testGetStringForNestedValueReturnsString(): void
@@ -169,6 +194,44 @@ class HashTableConfigurationTest extends TestCase
         $value = null;
         $this->assertFalse($configuration->tryGetInt('doesNotExist', $value));
         $this->assertNull($value);
+    }
+
+    public function testTryGetObjectForExistentValueSetsItAndReturnsTrue(): void
+    {
+        $configuration = new HashTableConfiguration(['foo' => 'bar']);
+        $object = null;
+        $this->assertTrue(
+            $configuration->tryGetObject(
+                'foo',
+                fn (mixed $options): ConfigObject => new ConfigObject($options),
+                $object
+            )
+        );
+        $this->assertEquals(new ConfigObject('bar'), $object);
+    }
+
+    public function testTryGetObjectForNonExistentValueSetsItToNullAndReturnsFalse(): void
+    {
+        $configuration = new HashTableConfiguration(['foo' => 'bar']);
+        $object = null;
+        $this->assertFalse(
+            $configuration->tryGetObject(
+                'baz',
+                fn (mixed $options): ConfigObject => new ConfigObject($options),
+                $object
+            )
+        );
+        $this->assertNull($object);
+    }
+
+    public function testTryGetObjectThrowsExceptionIfFactoryDoesNotReturnObject(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Factory must return an object');
+        $configuration = new HashTableConfiguration(['foo' => 'bar']);
+        $object = null;
+        /** @psalm-suppress InvalidArgument Purposely testing an invalid parameter */
+        $configuration->tryGetObject('foo', fn (mixed $options): bool => true, $object);
     }
 
     public function testTryGetStringForExistentValueSetsItAndReturnsTrue(): void
