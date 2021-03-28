@@ -88,9 +88,9 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.18",
-        "nyholm/psr7": "^1.3",
+        "nyholm/psr7": "^1.4",
         "phpunit/phpunit": "~9.5",
-        "vimeo/psalm": "^4.5"
+        "vimeo/psalm": "^4.6"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",
