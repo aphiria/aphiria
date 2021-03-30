@@ -52,7 +52,6 @@ class TableFormatter
         }
 
         // Normalize all rows to be an array
-        /** @psalm-suppress MixedAssignment Each row could be a mixed value */
         for ($rowIndex = 0;$rowIndex < $numRows;$rowIndex++) {
             $rows[$rowIndex] = (array)$rows[$rowIndex];
         }

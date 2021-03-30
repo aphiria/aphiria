@@ -124,7 +124,6 @@ class RequestFactory
         /** @psalm-suppress MixedAssignment The values could legitimately be mixed */
         foreach ($server as $name => $values) {
             // If this header supports multiple values and has unquoted string delimiters...
-            /** @psalm-suppress UnusedVariable $explodedValues will be set if there were multiple values - bug */
             $containsMultipleValues = isset(self::$headersThatPermitMultipleValues[$name])
                 && \count($explodedValues = \preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', (string)$values)) > 1;
 
