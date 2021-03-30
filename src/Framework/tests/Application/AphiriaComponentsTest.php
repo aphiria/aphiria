@@ -704,7 +704,7 @@ class AphiriaComponentsTest extends TestCase
 
             /**
              * @param IApplicationBuilder $appBuilder
-             * @param IModule[] $modules
+             * @param list<IModule> $modules
              */
             public function build(IApplicationBuilder $appBuilder, array $modules): void
             {

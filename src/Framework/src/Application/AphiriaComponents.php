@@ -94,7 +94,7 @@ trait AphiriaComponents
      * Adds binders to the binder component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param Binder|Binder[] $binders The binder or list of binders to add
+     * @param Binder|list<Binder> $binders The binder or list of binders to add
      * @return static For chaining
      * @throws RuntimeException Thrown if the global instance of the container is not set
      */
@@ -212,7 +212,7 @@ trait AphiriaComponents
      * Registers all the built-in framework commands
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param string[] $commandNamesToExclude The names of built-in commands to exclude
+     * @param list<string> $commandNamesToExclude The names of built-in commands to exclude
      * @return static For chaining
      * @throws RuntimeException Thrown if the global instance of the container is not set
      */
@@ -255,7 +255,7 @@ trait AphiriaComponents
      * Adds global middleware bindings to the middleware component
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param MiddlewareBinding|MiddlewareBinding[] $middlewareBindings The middleware binding or list of bindings to add
+     * @param MiddlewareBinding|list<MiddlewareBinding> $middlewareBindings The middleware binding or list of bindings to add
      * @param int|null $priority The optional priority to apply to the middleware (lower number => higher priority)
      * @return static For chaining
      * @throws ResolutionException Thrown if there was a problem resolving dependencies
@@ -317,7 +317,7 @@ trait AphiriaComponents
      * Adds modules to the app builder
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param IModule|IModule[] $modules The module or list of modules to add
+     * @param IModule|list<IModule> $modules The module or list of modules to add
      * @return static For chaining
      */
     protected function withModules(IApplicationBuilder $appBuilder, IModule|array $modules): static

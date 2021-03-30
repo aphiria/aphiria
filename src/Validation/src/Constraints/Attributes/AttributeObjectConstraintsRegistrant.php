@@ -29,13 +29,13 @@ use ReflectionProperty;
  */
 final class AttributeObjectConstraintsRegistrant implements IObjectConstraintsRegistrant
 {
-    /** @var string[] The paths to check for constraints */
+    /** @var list<string> The paths to check for constraints */
     private array $paths;
     /** @var ITypeFinder The type finder */
     private ITypeFinder $typeFinder;
 
     /**
-     * @param string|string[] $paths The path or paths to check for constraints
+     * @param string|list<string> $paths The path or paths to check for constraints
      * @param ITypeFinder|null $typeFinder The type finder
      */
     public function __construct(string|array $paths, ITypeFinder $typeFinder = null)

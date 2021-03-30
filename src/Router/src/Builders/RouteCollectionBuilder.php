@@ -21,9 +21,9 @@ use Closure;
  */
 final class RouteCollectionBuilder
 {
-    /** @var RouteBuilder[] The list of registered route builders */
+    /** @var list<RouteBuilder> The list of registered route builders */
     private array $routeBuilders = [];
-    /** @var RouteGroupOptions[] The stack of route group options */
+    /** @var list<RouteGroupOptions> The stack of route group options */
     private array $groupOptionsStack = [];
 
     /**
@@ -136,7 +136,7 @@ final class RouteCollectionBuilder
     /**
      * Creates a route builder with some values already set
      *
-     * @param string[]|string $httpMethods The HTTP method or list of methods the route uses
+     * @param list<string>|string $httpMethods The HTTP method or list of methods the route uses
      * @param string $path The path template
      * @param string|null $host The host template
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
@@ -149,6 +149,7 @@ final class RouteCollectionBuilder
         bool $isHttpsOnly = false
     ): RouteBuilder {
         $this->applyGroupRouteTemplates($path, $host, $isHttpsOnly);
+        /** @psalm-suppress ArgumentTypeCoercion The HTTP methods will be a list of strings */
         $routeBuilder = new RouteBuilder(
             (array)$httpMethods,
             new UriTemplate($path, $host, $isHttpsOnly)

@@ -31,13 +31,13 @@ use ReflectionException;
  */
 final class AttributeCommandRegistrant implements ICommandRegistrant
 {
-    /** @var string[] The paths to check for commands */
+    /** @var list<string> The paths to check for commands */
     private array $paths;
     /** @var ITypeFinder The type finder */
     private ITypeFinder $typeFinder;
 
     /**
-     * @param string|string[] $paths The path or paths to check for commands
+     * @param string|list<string> $paths The path or paths to check for commands
      * @param ITypeFinder|null $typeFinder The type finder
      */
     public function __construct(string|array $paths, ITypeFinder $typeFinder = null)

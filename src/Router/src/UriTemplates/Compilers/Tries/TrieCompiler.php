@@ -89,7 +89,7 @@ final class TrieCompiler implements ITrieCompiler
     /**
      * Creates a trie node
      *
-     * @param string[]|RouteVariable[] $segmentBuffer The current buffer of parts (eg text or RouteVariables)
+     * @param list<string|RouteVariable> $segmentBuffer The current buffer of parts (eg text or RouteVariables)
      * @param bool $segmentContainsVariable Whether or not the segment contains a variable
      * @param bool $isEndpoint Whether or not this node is an endpoint
      * @param Route $route The current route
@@ -139,7 +139,7 @@ final class TrieCompiler implements ITrieCompiler
         $numAstChildren = \count($astChildren);
         $isEndpoint = false;
         $segmentContainsVariable = false;
-        /** @var array<string|RouteVariable> $segmentBuffer */
+        /** @var list<string|RouteVariable> $segmentBuffer */
         $segmentBuffer = [];
 
         foreach ($isCompilingHostTrie ? \array_reverse($astChildren) : $astChildren as $i => $childAstNode) {

@@ -17,9 +17,9 @@ namespace Aphiria\Validation;
  */
 final class ValidationContext
 {
-    /** @var ValidationContext[] The list of child contexts, if there are any */
+    /** @var list<ValidationContext> The list of child contexts, if there are any */
     private array $childContexts = [];
-    /** @var ConstraintViolation[] The list of constraint violations that occurred in this context */
+    /** @var list<ConstraintViolation> The list of constraint violations that occurred in this context */
     private array $constraintViolations = [];
 
     /**
@@ -45,7 +45,7 @@ final class ValidationContext
     /**
      * Adds many constraint violations to the context
      *
-     * @param ConstraintViolation[] $constraintViolations The violations to add
+     * @param list<ConstraintViolation> $constraintViolations The violations to add
      */
     public function addManyConstraintViolations(array $constraintViolations): void
     {
@@ -65,7 +65,7 @@ final class ValidationContext
     /**
      * Gets the list of constraint violations
      *
-     * @return ConstraintViolation[] The list of constraint violations
+     * @return list<ConstraintViolation> The list of constraint violations
      */
     public function getConstraintViolations(): array
     {
@@ -81,7 +81,7 @@ final class ValidationContext
     /**
      * Gets the error messages for all constraint violations
      *
-     * @return string[] The list of error messages
+     * @return list<string> The list of error messages
      */
     public function getErrorMessages(): array
     {

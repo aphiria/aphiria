@@ -21,7 +21,7 @@ use Attribute;
 class Route
 {
     /**
-     * @param string[] $httpMethods The list of HTTP methods this route handles
+     * @param list<string> $httpMethods The list of HTTP methods this route handles
      * @param string $path The path of the route (defaults to an empty path)
      * @param string|null $host The host of the route, or null if matching any host
      * @param string|null $name The optional name of the route

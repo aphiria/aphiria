@@ -75,7 +75,7 @@ final class RoutingBinder extends Binder
         $container->bindInstance(IRouteUriFactory::class, new AstRouteUriFactory($routes));
 
         // Register some route attribute dependencies
-        /** @var string[] $attributePaths */
+        /** @var list<string> $attributePaths */
         $attributePaths = GlobalConfiguration::getArray('aphiria.routing.attributePaths');
         $routeAttributeRegistrant = new AttributeRouteRegistrant($attributePaths);
         $container->bindInstance(AttributeRouteRegistrant::class, $routeAttributeRegistrant);

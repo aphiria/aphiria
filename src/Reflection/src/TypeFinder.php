@@ -81,10 +81,10 @@ final class TypeFinder implements ITypeFinder
     /**
      * Finds all types that pass a filter
      *
-     * @param string|string[] $directories The directory or directories to search through
+     * @param string|list<string> $directories The directory or directories to search through
      * @param bool $recursive Whether or not we should recursively find types
      * @param int $typeFilter The filter to apply (bitwise value of types defined in this class)
-     * @return array<class-string> The list of types
+     * @return list<class-string> The list of types
      */
     private function findAllTypesWithFilter(string|array $directories, bool $recursive, int $typeFilter): array
     {
@@ -125,7 +125,7 @@ final class TypeFinder implements ITypeFinder
      *
      * @param array<array{0: int, 1: string, 2: int}|string> $tokens The array of tokens
      * @param int $typeFilter The filter to apply (bitwise value of types defined in this class)
-     * @return array<class-string> The names of the classes
+     * @return list<class-string> The names of the classes
      */
     private function getTypeFromTokens(array $tokens, int $typeFilter): array
     {
@@ -210,7 +210,7 @@ final class TypeFinder implements ITypeFinder
             }
         }
 
-        /** @var array<class-string> $types */
+        /** @var list<class-string> $types */
         return $types;
     }
 }
