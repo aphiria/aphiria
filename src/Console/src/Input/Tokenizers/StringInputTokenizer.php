@@ -36,7 +36,7 @@ final class StringInputTokenizer implements IInputTokenizer
         $buffer = '';
         $tokens = [];
 
-        foreach ($charArray as $charIter => $char) {
+        foreach ($charArray as $char) {
             switch ($char) {
                 case '"':
                     // If the double quote is inside single quotes, we treat it as part of a quoted string

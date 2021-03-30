@@ -273,11 +273,8 @@ trait AphiriaComponents
 
             // Bind the middleware collection here so that it can be used in the component
             Container::$globalInstance->hasBinding(MiddlewareCollection::class)
-                ? $middlewareCollection = Container::$globalInstance->resolve(MiddlewareCollection::class)
-                : Container::$globalInstance->bindInstance(
-                    MiddlewareCollection::class,
-                    $middlewareCollection = new MiddlewareCollection()
-                );
+                ? Container::$globalInstance->resolve(MiddlewareCollection::class)
+                : Container::$globalInstance->bindInstance(MiddlewareCollection::class, new MiddlewareCollection());
             $appBuilder->withComponent(new MiddlewareComponent(Container::$globalInstance));
         }
 

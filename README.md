@@ -2,7 +2,8 @@
 
 <p align="center">
 <a href="https://github.com/aphiria/aphiria/actions"><img src="https://github.com/aphiria/aphiria/workflows/ci/badge.svg"></a>
-<a href='https://coveralls.io/github/aphiria/aphiria?branch=1.x'><img src='https://coveralls.io/repos/github/aphiria/aphiria/badge.svg?branch=1.x' alt='Coverage Status' /></a>
+<a href="https://coveralls.io/github/aphiria/aphiria?branch=1.x"><img src="https://coveralls.io/repos/github/aphiria/aphiria/badge.svg?branch=1.x" alt="Coverage Status"></a>
+<a href="https://psalm.dev"><img src="https://shepherd.dev/github/aphiria/aphiria/level.svg"></a>
 <a href="https://packagist.org/packages/aphiria/aphiria"><img src="https://poser.pugx.org/aphiria/aphiria/v/stable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/aphiria"><img src="https://poser.pugx.org/aphiria/aphiria/v/unstable.svg"></a>
 <a href="https://packagist.org/packages/aphiria/aphiria"><img src="https://poser.pugx.org/aphiria/aphiria/license.svg"></a>

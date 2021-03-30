@@ -45,13 +45,14 @@ class TableFormatter
      */
     public function format(array $rows, array $headers = []): string
     {
-        if (\count($rows) === 0) {
+        $numRows = \count($rows);
+
+        if ($numRows === 0) {
             return '';
         }
 
         // Normalize all rows to be an array
-        /** @psalm-suppress MixedAssignment Each row could be a mixed value */
-        foreach ($rows as $rowIndex => $row) {
+        for ($rowIndex = 0;$rowIndex < $numRows;$rowIndex++) {
             $rows[$rowIndex] = (array)$rows[$rowIndex];
         }
 

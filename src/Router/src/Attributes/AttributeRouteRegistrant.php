@@ -128,7 +128,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
         // If there was no route group options attributes, but there were constraints or middleware, then create some route group options and add them
         if ($routeGroupOptions === null && (!empty($routeConstraints) || !empty($middlewareBindings))) {
             $routeGroupOptions = new RouteGroupOptions('');
-            /** @psalm-suppress  PropertyTypeCoercion This will always be a list of route constraints - bug */
+            /** @psalm-suppress PropertyTypeCoercion This will always be a list of route constraints - bug */
             $routeGroupOptions->constraints = [...$routeGroupOptions->constraints, ...$routeConstraints];
             $routeGroupOptions->middlewareBindings = [...$routeGroupOptions->middlewareBindings, ...$middlewareBindings];
         }

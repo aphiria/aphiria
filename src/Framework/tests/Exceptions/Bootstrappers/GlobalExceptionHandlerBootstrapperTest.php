@@ -154,7 +154,6 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->container->method('resolve')
             ->with(self::class)
             ->willReturn($this);
-        $config = self::getBaseConfig();
         $this->bootstrapper->setIsRunningInConsole(false);
         $this->bootstrapper->bootstrap();
     }

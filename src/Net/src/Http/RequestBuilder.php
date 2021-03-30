@@ -96,10 +96,7 @@ class RequestBuilder implements IRequestBuilder
     {
         $new = clone $this;
 
-        /**
-         * @var string $name
-         * @var string|int|float $value
-         */
+        /** @var string|int|float $value */
         foreach ($headers as $name => $value) {
             $new->headers->add($name, $value);
         }

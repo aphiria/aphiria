@@ -50,7 +50,6 @@ final class AttributeObjectConstraintsRegistrant implements IObjectConstraintsRe
      */
     public function registerConstraints(ObjectConstraintsRegistry $objectConstraints): void
     {
-        /** @var class-string $class */
         foreach ($this->typeFinder->findAllClasses($this->paths, true) as $class) {
             $reflectionClass = new ReflectionClass($class);
             $propertyConstraints = $methodConstraints = [];

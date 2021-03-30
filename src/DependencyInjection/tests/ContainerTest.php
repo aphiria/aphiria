@@ -388,9 +388,7 @@ class ContainerTest extends TestCase
         $this->container->bindFactory(IPerson::class, function () {
             return new Dave();
         });
-        /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance1 */
         $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
-        /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance2 */
         $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         $this->assertNotSame($instance1->getFoo(), $instance2->getFoo());
         $this->assertNotSame($instance1->getPerson(), $instance2->getPerson());
@@ -410,9 +408,7 @@ class ContainerTest extends TestCase
         $this->container->bindFactory(IPerson::class, function () {
             return new Dave();
         });
-        /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance1 */
         $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
-        /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance2 */
         $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         $this->assertInstanceOf(ConstructorWithMixOfInterfacesAndPrimitives::class, $instance1);
         $this->assertSame($instance1, $instance2);
@@ -457,7 +453,6 @@ class ContainerTest extends TestCase
             ConstructorWithMixOfConcreteClassesAndPrimitives::class,
             [23]
         );
-        /** @var ConstructorWithMixOfConcreteClassesAndPrimitives $instance */
         $instance = $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class);
         $this->assertInstanceOf(ConstructorWithMixOfConcreteClassesAndPrimitives::class, $instance);
         $this->assertSame(23, $instance->getId());
@@ -632,9 +627,7 @@ class ContainerTest extends TestCase
         );
         $this->container->bindClass(IFoo::class, Bar::class, [], true);
         $this->container->bindClass(IPerson::class, Dave::class, [], true);
-        /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance1 */
         $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
-        /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance2 */
         $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         $this->assertSame($instance1->getFoo(), $instance2->getFoo());
         $this->assertSame($instance1->getPerson(), $instance2->getPerson());
@@ -651,9 +644,7 @@ class ContainerTest extends TestCase
         );
         $this->container->bindClass(IFoo::class, Bar::class, [], true);
         $this->container->bindClass(IPerson::class, Dave::class, [], true);
-        /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance1 */
         $instance1 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
-        /** @var ConstructorWithMixOfInterfacesAndPrimitives $instance2 */
         $instance2 = $this->container->resolve(ConstructorWithMixOfInterfacesAndPrimitives::class);
         $this->assertInstanceOf(ConstructorWithMixOfInterfacesAndPrimitives::class, $instance1);
         $this->assertSame($instance1, $instance2);

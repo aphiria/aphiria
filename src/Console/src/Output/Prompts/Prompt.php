@@ -47,7 +47,6 @@ class Prompt
         $output->write("<question>{$question->text}</question>");
 
         if ($question instanceof MultipleChoice) {
-            /** @var MultipleChoice $question */
             $output->writeln('');
             $choicesAreAssociative = $question->choicesAreAssociative();
             $choiceTexts = [];

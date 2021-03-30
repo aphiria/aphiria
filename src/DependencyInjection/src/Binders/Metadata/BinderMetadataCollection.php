@@ -17,13 +17,13 @@ namespace Aphiria\DependencyInjection\Binders\Metadata;
  */
 final class BinderMetadataCollection
 {
-    /** @var array<class-string, BinderMetadata[]> The mapping of interfaces to binder metadata that universally resolve those interfaces */
+    /** @var array<class-string, list<BinderMetadata>> The mapping of interfaces to binder metadata that universally resolve those interfaces */
     private array $universalResolutions = [];
-    /** @var array<class-string, array{class-string, BinderMetadata[]}> The mapping of targets to interfaces to binder metadata that resolve the interface for the target */
+    /** @var array<class-string, array{class-string, list<BinderMetadata>}> The mapping of targets to interfaces to binder metadata that resolve the interface for the target */
     private array $targetedResolutions = [];
 
     /**
-     * @param BinderMetadata[] $binderMetadatas The list of all binder metadata
+     * @param list<BinderMetadata> $binderMetadatas The list of all binder metadata
      * @psalm-suppress InvalidPropertyAssignmentValue Psalm is getting confused about assigning arrays with keys - bug
      */
     public function __construct(private array $binderMetadatas)
@@ -60,7 +60,7 @@ final class BinderMetadataCollection
     /**
      * Gets a list of all binder metadata in the collection
      *
-     * @return BinderMetadata[] The list of all binder metadata
+     * @return list<BinderMetadata> The list of all binder metadata
      */
     public function getAllBinderMetadata(): array
     {
@@ -71,7 +71,7 @@ final class BinderMetadataCollection
      * Gets a list of binder metadata that resolve an interface
      *
      * @param BoundInterface $boundInterface The bound interface to check for
-     * @return BinderMetadata[] The list of binder metadata that resolve the input interface
+     * @return list<BinderMetadata> The list of binder metadata that resolve the input interface
      * @psalm-suppress InvalidArrayOffset Psalm is getting confused about accessing arrays with keys - bug
      */
     public function getBinderMetadataThatResolveInterface(BoundInterface $boundInterface): array
@@ -94,6 +94,8 @@ final class BinderMetadataCollection
          * Bound: Targeted
          * Resolved: Targeted
          * Return: true if same target
+         *
+         * @var list<BinderMetadata> $binders
          */
         $binders = [];
 
@@ -112,7 +114,7 @@ final class BinderMetadataCollection
                 ];
             }
 
-            foreach ($this->targetedResolutions as $targetClass => $interfacesToBinderMetadatas) {
+            foreach ($this->targetedResolutions as $interfacesToBinderMetadatas) {
                 if (isset($interfacesToBinderMetadatas[$boundInterface->getInterface()])) {
                     $binders = [
                         ...$binders,
