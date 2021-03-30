@@ -16,7 +16,7 @@
     <issueHandlers>
         <DuplicateArrayKey>
             <errorLevel type="suppress">
-                <!-- Due to bug https://github.com/vimeo/psalm/issues/5520 -->
+                <!-- Due to https://github.com/vimeo/psalm/issues/5520, which requires everything being defined as list<Type> -->
                 <directory name="src" />
             </errorLevel>
         </DuplicateArrayKey>

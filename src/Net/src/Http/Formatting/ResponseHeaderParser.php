@@ -31,11 +31,12 @@ class ResponseHeaderParser extends HeaderParser
     {
         $setCookieHeaders = null;
 
-        if (!$headers->tryGet('Set-Cookie', $setCookieHeaders) || !\is_array($setCookieHeaders)) {
+        if (!$headers->tryGet('Set-Cookie', $setCookieHeaders)) {
             return [];
         }
 
         $cookies = [];
+        /** @var string[] $setCookieHeaders */
         $numSetCookieHeaders = \count($setCookieHeaders);
 
         for ($i = 0;$i < $numSetCookieHeaders;$i++) {
