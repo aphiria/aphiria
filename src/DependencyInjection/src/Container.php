@@ -382,7 +382,6 @@ class Container implements IContainer
         $resolvedParameters = [];
 
         foreach ($unresolvedParameters as $parameter) {
-            $resolvedParameter = null;
             $parameterResolved = false;
             $parameterType = $parameter->getType();
             /** @var list<ReflectionNamedType|null> $parameterTypes */

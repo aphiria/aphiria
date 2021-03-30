@@ -112,7 +112,7 @@ final class BinderMetadataCollection
                 ];
             }
 
-            foreach ($this->targetedResolutions as $targetClass => $interfacesToBinderMetadatas) {
+            foreach ($this->targetedResolutions as $interfacesToBinderMetadatas) {
                 if (isset($interfacesToBinderMetadatas[$boundInterface->getInterface()])) {
                     $binders = [
                         ...$binders,

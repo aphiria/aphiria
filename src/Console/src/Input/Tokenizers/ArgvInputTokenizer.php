@@ -28,9 +28,9 @@ final class ArgvInputTokenizer implements IInputTokenizer
         \array_shift($tokens);
 
         /** @var string $token */
-        foreach ($tokens as &$token) {
+        foreach ($tokens as $i => $token) {
             // We don't use stripslashes() because we want to backslashes when they're not escaping quotes
-            $token = \str_replace(["\\'", '\\"'], ["'", '"'], $token);
+            $tokens[$i] = \str_replace(["\\'", '\\"'], ["'", '"'], $token);
         }
 
         return $tokens;

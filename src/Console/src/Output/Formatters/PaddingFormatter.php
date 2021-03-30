@@ -34,17 +34,20 @@ class PaddingFormatter
     public function format(array $rows, callable $callback): string
     {
         // Normalize all rows to be an array
+        $numRows = \count($rows);
+
         /** @psalm-suppress MixedAssignment Each row could be a mixed value */
-        foreach ($rows as $rowIndex => $row) {
+        for ($rowIndex = 0;$rowIndex < $numRows;$rowIndex++) {
             $rows[$rowIndex] = (array)$rows[$rowIndex];
         }
 
         /** @var array<int, array> $rows */
         $maxLengths = $this->normalizeColumns($rows);
         $paddingType = $this->padAfter ? STR_PAD_RIGHT : STR_PAD_LEFT;
+        $numRows = \count($rows);
 
         // Format the rows
-        foreach ($rows as $rowIndex => $row) {
+        for ($rowIndex = 0;$rowIndex < $numRows;$rowIndex++) {
             /** @psalm-suppress MixedAssignment Each item could be a mixed value */
             foreach ($rows[$rowIndex] as $itemIndex => $item) {
                 $rows[$rowIndex][$itemIndex] = \str_pad((string)$item, $maxLengths[(int)$itemIndex], $this->paddingString, $paddingType);
@@ -53,7 +56,7 @@ class PaddingFormatter
 
         $formattedText = '';
 
-        foreach ($rows as $rowIndex => $row) {
+        for ($rowIndex = 0;$rowIndex < $numRows;$rowIndex++) {
             $formattedText .= $callback($rows[$rowIndex]) . $this->eolChar;
         }
 
@@ -91,12 +94,14 @@ class PaddingFormatter
         $maxLengths = \array_pad([], $maxNumColumns, 0);
 
         // Normalize the number of columns in each row
-        foreach ($rows as $rowIndex => $row) {
+        $numRows = \count($rows);
+
+        for ($rowIndex = 0;$rowIndex < $numRows;$rowIndex++) {
             $rows[$rowIndex] = \array_pad($rows[$rowIndex], $maxNumColumns, '');
         }
 
         // Get the length of the longest value in each column
-        foreach ($rows as $rowIndex => $row) {
+        for ($rowIndex = 0;$rowIndex < $numRows;$rowIndex++) {
             /** @psalm-suppress MixedAssignment The value could be a mixed type */
             foreach ($rows[$rowIndex] as $columnIndex => $value) {
                 $rows[$rowIndex][$columnIndex] = \trim((string)$value);

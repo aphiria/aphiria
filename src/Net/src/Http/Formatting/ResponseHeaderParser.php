@@ -31,17 +31,14 @@ class ResponseHeaderParser extends HeaderParser
     {
         $setCookieHeaders = null;
 
-        if (!$headers->tryGet('Set-Cookie', $setCookieHeaders)) {
+        if (!$headers->tryGet('Set-Cookie', $setCookieHeaders) || !\is_array($setCookieHeaders)) {
             return [];
         }
 
         $cookies = [];
+        $numSetCookieHeaders = \count($setCookieHeaders);
 
-        /**
-         * @var int $i
-         * @var string $setCookieHeader
-         */
-        foreach ($setCookieHeaders as $i => $setCookieHeader) {
+        for ($i = 0;$i < $numSetCookieHeaders;$i++) {
             $name = $value = $maxAge = $path = $domain = $sameSite = null;
             $isSecure = $isHttpOnly = false;
 
