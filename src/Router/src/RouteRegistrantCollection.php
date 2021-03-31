@@ -19,7 +19,7 @@ use Aphiria\Routing\Caching\IRouteCache;
  */
 class RouteRegistrantCollection implements IRouteRegistrant
 {
-    /** @var IRouteRegistrant[] The list of route registrants */
+    /** @var list<IRouteRegistrant> The list of route registrants */
     protected array $routeRegistrants = [];
 
     /**

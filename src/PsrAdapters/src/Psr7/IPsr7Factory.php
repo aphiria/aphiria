@@ -87,7 +87,7 @@ interface IPsr7Factory
      * Creates a mapping of PSR-7 uploaded files from an Aphiria request
      *
      * @param IRequest $aphiriaRequest The Aphiria request
-     * @return UploadedFileInterface[] The mapping of file names to file instances
+     * @return array<string, UploadedFileInterface> The mapping of file names to file instances
      */
     public function createPsr7UploadedFiles(IRequest $aphiriaRequest): array;
 

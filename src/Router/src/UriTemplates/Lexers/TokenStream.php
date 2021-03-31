@@ -23,7 +23,7 @@ final class TokenStream
     private int $cursor = 0;
 
     /**
-     * @param Token[] $tokens The list of tokens
+     * @param list<Token> $tokens The list of tokens
      */
     public function __construct(public array $tokens)
     {

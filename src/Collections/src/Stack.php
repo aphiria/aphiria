@@ -22,7 +22,7 @@ use Traversable;
  */
 class Stack implements Countable, IteratorAggregate
 {
-    /** @var array The values of the stack */
+    /** @var list<mixed> The values of the stack */
     protected array $values = [];
 
     /**
@@ -91,13 +91,14 @@ class Stack implements Countable, IteratorAggregate
      */
     public function push(mixed $value): void
     {
+        /** @psalm-suppress PropertyTypeCoercion The is in fact a list of values */
         \array_unshift($this->values, $value);
     }
 
     /**
      * Gets all of the values as an array
      *
-     * @return mixed[] All of the values
+     * @return list<mixed> All of the values
      */
     public function toArray(): array
     {

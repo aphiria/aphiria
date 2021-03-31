@@ -20,7 +20,7 @@ use InvalidArgumentException;
  */
 final class VariableTrieNode extends TrieNode
 {
-    /** @var string[]|RouteVariable[] The parts that make up this node */
+    /** @var list<string>|RouteVariable[] The parts that make up this node */
     public array $parts;
     /** @var bool Whether or not this node contains just a single variable part (for performance reasons) */
     private bool $onlyContainsVariable;
@@ -28,9 +28,9 @@ final class VariableTrieNode extends TrieNode
     private string $regex = '';
 
     /**
-     * @param string[]|RouteVariable[]|string|RouteVariable $parts The parts that make up this segment
-     * @param TrieNode[] $children The list of children
-     * @param Route[]|Route $routes The list of routes contained by this segment
+     * @param list<string>|list<RouteVariable>|string|RouteVariable $parts The parts that make up this segment
+     * @param list<TrieNode> $children The list of children
+     * @param list<Route>|Route $routes The list of routes contained by this segment
      * @param TrieNode|null $hostTrie The host trie, if there is one
      * @throws InvalidArgumentException Thrown if the parts are empty
      */

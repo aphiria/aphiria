@@ -25,7 +25,7 @@ class BinderComponent implements IComponent
 {
     /** @var IBinderDispatcher|null The binder dispatcher */
     private ?IBinderDispatcher $binderDispatcher = null;
-    /** @var Binder[] The list of binders to dispatch */
+    /** @var list<Binder> The list of binders to dispatch */
     private array $binders = [];
 
     /**
@@ -65,7 +65,7 @@ class BinderComponent implements IComponent
     /**
      * Adds binders to dispatch
      *
-     * @param Binder|Binder[] $binders The binders to add
+     * @param Binder|list<Binder> $binders The binders to add
      * @return static For chaining
      */
     public function withBinders(Binder|array $binders): static

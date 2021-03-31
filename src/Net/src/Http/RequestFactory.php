@@ -76,7 +76,7 @@ class RequestFactory
     private static array $headersToUrlDecode = ['HTTP_COOKIE' => true];
 
     /**
-     * @param string[] $trustedProxyIPAddresses The list of trusted proxy IP addresses
+     * @param list<string> $trustedProxyIPAddresses The list of trusted proxy IP addresses
      * @param array<string, string> $trustedHeaderNames The mapping of additional header names to trusted header names
      */
     public function __construct(protected array $trustedProxyIPAddresses = [], protected array $trustedHeaderNames = [])

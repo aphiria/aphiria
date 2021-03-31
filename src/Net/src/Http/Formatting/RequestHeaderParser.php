@@ -28,7 +28,7 @@ class RequestHeaderParser extends HeaderParser
      * Parses the Accept-Charset header
      *
      * @param Headers $headers The request headers to parse
-     * @return AcceptCharsetHeaderValue[] The list of charset header values
+     * @return list<AcceptCharsetHeaderValue> The list of charset header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseAcceptCharsetHeader(Headers $headers): array
@@ -57,7 +57,7 @@ class RequestHeaderParser extends HeaderParser
      * Parses the Accept header
      *
      * @param Headers $headers The request headers to parse
-     * @return AcceptMediaTypeHeaderValue[] The list of media type header values
+     * @return list<AcceptMediaTypeHeaderValue> The list of media type header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseAcceptHeader(Headers $headers): array
@@ -86,7 +86,7 @@ class RequestHeaderParser extends HeaderParser
      * Parses the Accept-Language header
      *
      * @param Headers $headers The request headers to parse
-     * @return AcceptLanguageHeaderValue[] The list of language header values
+     * @return list<AcceptLanguageHeaderValue> The list of language header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseAcceptLanguageHeader(Headers $headers): array

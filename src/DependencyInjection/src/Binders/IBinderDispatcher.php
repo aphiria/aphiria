@@ -22,7 +22,7 @@ interface IBinderDispatcher
     /**
      * Dispatches binders
      *
-     * @param Binder[] $binders The binders to dispatch
+     * @param list<Binder> $binders The binders to dispatch
      * @param IContainer $container The container to dispatch the binders with
      */
     public function dispatch(array $binders, IContainer $container): void;

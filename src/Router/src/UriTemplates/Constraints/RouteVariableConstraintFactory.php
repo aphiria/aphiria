@@ -28,7 +28,7 @@ final class RouteVariableConstraintFactory
      * Creates a constraint for the given slug
      *
      * @param string $slug The slug for the constraint to create
-     * @param mixed[] $parameters The list of params to pass into the factory
+     * @param list<mixed> $parameters The list of params to pass into the factory
      * @return IRouteVariableConstraint An instance of the constraint
      * @throws InvalidArgumentException Thrown if there's no factory registered for the slug
      * @throws RuntimeException Thrown if the factory does not return an instance of a constraint

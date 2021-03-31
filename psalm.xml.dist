@@ -14,12 +14,6 @@
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
-        <DuplicateArrayKey>
-            <errorLevel type="suppress">
-                <!-- Due to https://github.com/vimeo/psalm/issues/5520, which requires everything being defined as list<Type> -->
-                <directory name="src" />
-            </errorLevel>
-        </DuplicateArrayKey>
         <InaccessibleMethod>
             <errorLevel type="suppress">
                 <file name="src/Api/tests/Controllers/ControllerTest.php" />

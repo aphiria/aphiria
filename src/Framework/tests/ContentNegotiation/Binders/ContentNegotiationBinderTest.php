@@ -182,7 +182,7 @@ class ContentNegotiationBinderTest extends TestCase
     /**
      * Sets up tbe bindInstance() calls on the container mock
      *
-     * @param array[] $parameters The parameters to pass in
+     * @param list<array> $parameters The parameters to pass in
      */
     private function setUpContainerMockBindInstance(array $parameters): void
     {

@@ -21,11 +21,11 @@ use Traversable;
  */
 class ArrayList implements IList
 {
-    /** @var mixed[] The list of values */
+    /** @var list<mixed> The list of values */
     protected array $values = [];
 
     /**
-     * @param mixed[] $values The list of values
+     * @param list<mixed> $values The list of values
      */
     public function __construct(array $values = [])
     {
@@ -112,6 +112,7 @@ class ArrayList implements IList
      */
     public function insert(int $index, mixed $value): void
     {
+        /** @psalm-suppress MixedPropertyTypeCoercion The resulting values will be a list */
         \array_splice($this->values, $index, 0, $value);
     }
 
@@ -120,7 +121,7 @@ class ArrayList implements IList
      */
     public function intersect(array $values): void
     {
-        $intersectedValues = \array_intersect($this->values, $values);
+        $intersectedValues = \array_values(\array_intersect($this->values, $values));
         $this->clear();
         $this->addRange($intersectedValues);
     }

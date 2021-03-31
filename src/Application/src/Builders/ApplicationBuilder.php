@@ -21,7 +21,7 @@ use OutOfBoundsException;
  */
 abstract class ApplicationBuilder implements IApplicationBuilder
 {
-    /** @var IModule[] The list of modules */
+    /** @var list<IModule> The list of modules */
     private array $modules = [];
     /** @var array<class-string<IComponent>, IComponent> The mapping of prioritized component names to components */
     private array $componentsByType = [];

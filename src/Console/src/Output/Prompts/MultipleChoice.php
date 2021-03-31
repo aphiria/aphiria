@@ -26,7 +26,7 @@ class MultipleChoice extends Question
 
     /*
      * @param string $question The question text
-     * @param mixed[] $choices The list of choices
+     * @param list<mixed> $choices The list of choices
      * @param mixed $defaultAnswer The default answer to the question
      */
     public function __construct(string $text, public array $choices, mixed $defaultAnswer = null)
@@ -116,8 +116,8 @@ class MultipleChoice extends Question
     /**
      * Gets the list of selected associative choices from a list of answers
      *
-     * @param mixed[] $answers The list of answers
-     * @return mixed[] The list of selected choices
+     * @param list<mixed> $answers The list of answers
+     * @return list<mixed> The list of selected choices
      */
     private function getSelectedAssociativeChoices(array $answers): array
     {
@@ -139,8 +139,8 @@ class MultipleChoice extends Question
     /**
      * Gets the list of selected indexed choices from a list of answers
      *
-     * @param mixed[] $answers The list of answers
-     * @return mixed[] The list of selected choices
+     * @param list<mixed> $answers The list of answers
+     * @return list<mixed> The list of selected choices
      * @throws InvalidArgumentException Thrown if the answers are not of the correct type
      */
     private function getSelectedIndexChoices(array $answers): array

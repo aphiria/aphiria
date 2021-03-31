@@ -38,11 +38,11 @@ class Container implements IContainer
     public static ?Container $globalInstance = null;
     /** @var Context The current context */
     protected Context $currentContext;
-    /** @var Context[] The stack of contexts */
+    /** @var list<Context> The stack of contexts */
     protected array $contextStack = [];
     /** @var array<string|class-string, array<string|class-string, IContainerBinding>> The list of bindings */
     protected array $bindings = [];
-    /** @var array<class-string, array{0: ReflectionMethod|null, 1: ReflectionParameter[]|null}> The cache of reflection constructors and their parameters */
+    /** @var array<class-string, array{0: ReflectionMethod|null, 1: list<ReflectionParameter>|null}> The cache of reflection constructors and their parameters */
     protected array $constructorReflectionCache = [];
 
     public function __construct()
@@ -320,7 +320,7 @@ class Container implements IContainer
      *
      * @template T
      * @param class-string<T> $className The class name to resolve
-     * @param mixed[] $primitives The list of constructor primitives
+     * @param list<mixed> $primitives The list of constructor primitives
      * @return T The resolved class
      * @throws ResolutionException Thrown if the class could not be resolved
      */
@@ -368,9 +368,9 @@ class Container implements IContainer
      * Resolves a list of parameters for a function call
      *
      * @param class-string|null $className The name of the class whose parameters we're resolving
-     * @param ReflectionParameter[] $unresolvedParameters The list of unresolved parameters
-     * @param mixed[] $primitives The list of primitive values
-     * @return mixed[] The list of parameters with all the dependencies resolved
+     * @param list<ReflectionParameter> $unresolvedParameters The list of unresolved parameters
+     * @param list<mixed> $primitives The list of primitive values
+     * @return list<mixed> The list of parameters with all the dependencies resolved
      * @throws ResolutionException Thrown if there was an error resolving the parameters
      * @throws ReflectionException Thrown if there was a reflection exception
      */

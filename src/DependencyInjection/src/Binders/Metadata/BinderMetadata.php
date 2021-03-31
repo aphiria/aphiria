@@ -21,8 +21,8 @@ final class BinderMetadata
 {
     /**
      * @param Binder $binder The binder whose metadata this is
-     * @param BoundInterface[] $boundInterfaces The list of bound interfaces in the binder
-     * @param ResolvedInterface[] $resolvedInterfaces The list of resolved interfaces in the binder
+     * @param list<BoundInterface> $boundInterfaces The list of bound interfaces in the binder
+     * @param list<ResolvedInterface> $resolvedInterfaces The list of resolved interfaces in the binder
      */
     public function __construct(private Binder $binder, private array $boundInterfaces, private array $resolvedInterfaces)
     {
@@ -41,7 +41,7 @@ final class BinderMetadata
     /**
      * Gets the list of bound interfaces
      *
-     * @return BoundInterface[] The list of bound interfaces
+     * @return list<BoundInterface> The list of bound interfaces
      */
     public function getBoundInterfaces(): array
     {
@@ -51,7 +51,7 @@ final class BinderMetadata
     /**
      * Gets the list of resolved interfaces
      *
-     * @return ResolvedInterface[] The list of resolved interfaces
+     * @return list<ResolvedInterface> The list of resolved interfaces
      */
     public function getResolvedInterfaces(): array
     {

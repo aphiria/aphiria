@@ -23,7 +23,7 @@ final class NotIn extends ConstraintAttribute
 {
     /**
      * @inheritdoc
-     * @param mixed[] $values The values to check
+     * @param list<mixed> $values The values to check
      */
     public function __construct(public array $values, string $errorMessageId = null)
     {

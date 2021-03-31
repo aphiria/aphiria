@@ -19,7 +19,7 @@ final class AstNode
 {
     /** @var AstNode|null The parent node */
     public ?AstNode $parent = null;
-    /** @var AstNode[] The child nodes */
+    /** @var list<AstNode> The child nodes */
     public array $children = [];
 
     /**

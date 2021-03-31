@@ -95,7 +95,7 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
      * Creates a default exception message
      *
      * @param Exception $ex The exception that was thrown
-     * @return string[] The default exception messages
+     * @return list<string> The default exception messages
      */
     protected function getDefaultExceptionMessages(Exception $ex): array
     {

@@ -53,6 +53,7 @@ final class TrieRouteMatcher implements IRouteMatcher
             return new RouteMatchingResult($candidate->route, $candidate->routeVariables, []);
         }
 
+        /** @psalm-suppress ArgumentTypeCoercion Purposely ignoring this so we don't incur the performance penalty of reindexing the list */
         return new RouteMatchingResult(null, [], \array_unique($allowedMethods));
     }
 
@@ -64,10 +65,10 @@ final class TrieRouteMatcher implements IRouteMatcher
      * match candidates didn't meet constraints, hence saving us unnecessary descents down the trie.
      *
      * @param TrieNode $node The current node
-     * @param string[] $segments The list of URI segments to match
+     * @param list<string> $segments The list of URI segments to match
      * @param int $segmentCount The length of the URI segments
      * @param int $segmentIter The current index of segments
-     * @param string[] $hostSegments The list of URI host segments, which will be traversed if there's a host trie
+     * @param list<string> $hostSegments The list of URI host segments, which will be traversed if there's a host trie
      * @param array<string, mixed> $routeVariables The mapping of route variable names to values
      * @return Generator<int, MatchedRouteCandidate> The list of matched route candidates
      */

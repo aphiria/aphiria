@@ -21,8 +21,8 @@ final class LiteralTrieNode extends TrieNode
 {
     /**
      * @param string $value The value of this node
-     * @param TrieNode[] $children The list of children
-     * @param Route[]|Route $routes The list of routes contained in this segment
+     * @param list<TrieNode> $children The list of children
+     * @param list<Route>|Route $routes The list of routes contained in this segment
      * @param TrieNode|null $hostTrie The host trie, if there is one
      */
     public function __construct(public string $value, array $children, Route|array $routes = [], TrieNode $hostTrie = null)

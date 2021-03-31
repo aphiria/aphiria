@@ -35,12 +35,13 @@ final class BinderMetadataCollectionFactory
     /**
      * Creates a binder metadata collection
      *
-     * @param Binder[] $binders The list of binders to create the metadata collection from
+     * @param list<Binder> $binders The list of binders to create the metadata collection from
      * @return BinderMetadataCollection The created collection
      * @throws ImpossibleBindingException Thrown if the bindings are not possible to resolve
      */
     public function createBinderMetadataCollection(array $binders): BinderMetadataCollection
     {
+        /** @var list<BinderMetadata> $binderMetadatas */
         $binderMetadatas = [];
         $failedInterfacesToBinders = [];
 
@@ -67,7 +68,7 @@ final class BinderMetadataCollectionFactory
     /**
      * Adds a failed resolution to a map
      *
-     * @param array<class-string, array<int, Binder>> $failedInterfacesToBinders The map to add to
+     * @param array<class-string, list<Binder>> $failedInterfacesToBinders The map to add to
      * @param FailedBinderMetadataCollectionException $ex The exception that was thrown
      */
     private static function addFailedResolutionToMap(
@@ -86,7 +87,7 @@ final class BinderMetadataCollectionFactory
     /**
      * Removes a failed resolution from the map
      *
-     * @param array<class-string, array<int, Binder>> $failedInterfacesToBinders The map to remove from
+     * @param array<class-string, list<Binder>> $failedInterfacesToBinders The map to remove from
      * @param class-string $interface The interface to remove
      * @param int $binderIndex The index of the binder to remove
      */
@@ -106,8 +107,8 @@ final class BinderMetadataCollectionFactory
     /**
      * Retries any failed resolutions
      *
-     * @param array<class-string, array<int, Binder>> $failedInterfacesToBinders The map of failed resolutions to retry
-     * @return BinderMetadata[] The list of binder metadata that were retrieved from failed binders
+     * @param array<class-string, list<Binder>> $failedInterfacesToBinders The map of failed resolutions to retry
+     * @return list<BinderMetadata> The list of binder metadata that were retrieved from failed binders
      */
     private function retryFailedBinders(array &$failedInterfacesToBinders): array
     {

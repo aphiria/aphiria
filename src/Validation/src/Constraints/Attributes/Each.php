@@ -24,7 +24,7 @@ final class Each extends ConstraintAttribute
 {
     /**
      * @inheritdoc
-     * @param IConstraintAttribute[] $constraints The list of constraint attributes that mucst be passed
+     * @param list<IConstraintAttribute> $constraints The list of constraint attributes that mucst be passed
      * @throws InvalidArgumentException Thrown if the list of constraints is empty
      */
     public function __construct(public array $constraints, string $errorMessageId = null)

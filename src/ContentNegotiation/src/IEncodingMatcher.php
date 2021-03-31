@@ -23,7 +23,7 @@ interface IEncodingMatcher
     /**
      * Gets the best character encoding match for the input media type formatter
      *
-     * @param string[] $supportedEncodings The list of supported encodings
+     * @param list<string> $supportedEncodings The list of supported encodings
      * @param IRequest $request The current request
      * @param MediaTypeHeaderValue|null $matchedMediaTypeHeaderValue The matched media type header value to try to extract an encoding from
      * @return string|null The best charset if one was found, otherwise null

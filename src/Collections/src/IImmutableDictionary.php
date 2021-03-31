@@ -53,21 +53,21 @@ interface IImmutableDictionary extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Gets the list of keys in the dictionary
      *
-     * @return mixed[] The list of keys in the dictionary
+     * @return list<mixed> The list of keys in the dictionary
      */
     public function getKeys(): array;
 
     /**
      * Gets the list of values in the dictionary
      *
-     * @return mixed[] The list of values in the dictionary
+     * @return list<mixed> The list of values in the dictionary
      */
     public function getValues(): array;
 
     /**
      * Gets all of the values as an array of key-value pairs
      *
-     * @return KeyValuePair[] All of the values as a list of key-value pairs
+     * @return list<KeyValuePair> All of the values as a list of key-value pairs
      */
     public function toArray(): array;
 

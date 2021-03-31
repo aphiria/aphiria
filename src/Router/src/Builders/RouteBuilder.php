@@ -30,15 +30,15 @@ class RouteBuilder
     private ?RouteAction $action = null;
     /** @var array<string, mixed> The mapping of custom route parameter names => values */
     private array $parameters = [];
-    /** @var MiddlewareBinding[] The list of middleware bindings on this route */
+    /** @var list<MiddlewareBinding> The list of middleware bindings on this route */
     private array $middlewareBindings = [];
     /** @var string|null The name of this route */
     private ?string $name = null;
-    /** @var IRouteConstraint[] The list of constraints */
+    /** @var list<IRouteConstraint> The list of constraints */
     private array $constraints = [];
 
     /**
-     * @param string[] $httpMethods The list of HTTP methods the route matches on
+     * @param list<string> $httpMethods The list of HTTP methods the route matches on
      * @param UriTemplate $uriTemplate The URI template the route matches on
      */
     public function __construct(array $httpMethods, private UriTemplate $uriTemplate)
@@ -98,7 +98,7 @@ class RouteBuilder
     /**
      * Binds constraints to this route
      *
-     * @param IRouteConstraint[] $constraints The constraints to add
+     * @param list<IRouteConstraint> $constraints The constraints to add
      * @return static For chaining
      */
     public function withManyConstraints(array $constraints): static
@@ -111,7 +111,7 @@ class RouteBuilder
     /**
      * Binds many middleware bindings to the route
      *
-     * @param array<MiddlewareBinding|class-string|string> $middlewareBindings The list of middleware bindings to add, or a single
+     * @param list<MiddlewareBinding|class-string|string> $middlewareBindings The list of middleware bindings to add, or a single
      *      class name without properties
      * @return static For chaining
      * @throws InvalidArgumentException Thrown if the middleware bindings are not the correct type

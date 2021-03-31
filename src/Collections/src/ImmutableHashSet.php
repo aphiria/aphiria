@@ -27,7 +27,7 @@ class ImmutableHashSet implements IImmutableSet
     private KeyHasher $keyHasher;
 
     /**
-     * @param mixed[] $values The set of values
+     * @param list<mixed> $values The set of values
      * @throws RuntimeException Thrown if the values' keys could not be calculated
      */
     public function __construct(array $values)

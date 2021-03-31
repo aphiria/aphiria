@@ -66,7 +66,7 @@ final class Style
     /**
      * @param string|null $foregroundColor The foreground color
      * @param string|null $backgroundColor The background color
-     * @param string[] $textStyles The list of text styles to apply
+     * @param list<string> $textStyles The list of text styles to apply
      */
     public function __construct(
         public ?string $foregroundColor = null,
@@ -97,7 +97,7 @@ final class Style
     /**
      * Adds multiple text styles
      *
-     * @param string[] $styles The names of the text styles
+     * @param list<string> $styles The names of the text styles
      * @throws InvalidArgumentException Thrown if the text styles do not exist
      */
     public function addTextStyles(array $styles): void

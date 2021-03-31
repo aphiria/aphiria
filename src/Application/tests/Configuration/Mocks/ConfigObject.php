@@ -17,7 +17,7 @@ namespace Aphiria\Application\Tests\Configuration\Mocks;
  */
 final class ConfigObject
 {
-    /** @var mixed[] The list of constructor params */
+    /** @var list<mixed> The list of constructor params */
     public array $params;
 
     /**
@@ -25,6 +25,7 @@ final class ConfigObject
      */
     public function __construct(...$params)
     {
+        /** @var list<mixed> params */
         $this->params = $params;
     }
 }

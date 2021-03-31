@@ -46,7 +46,7 @@ final class Headers extends HashTable
      * @inheritdoc
      *
      * @param array-key|mixed $key The header name to add
-     * @param mixed|string[]|int|string $value The value or values
+     * @param mixed|list<string>|int|string $value The value or values
      * @param bool $append Whether or not to append the value to to the other header values
      */
     public function add(mixed $key, mixed $value, bool $append = false): void
@@ -58,6 +58,7 @@ final class Headers extends HashTable
         } else {
             $currentValues = [];
             $this->tryGet($normalizedName, $currentValues);
+            /** @psalm-suppress DuplicateArrayKey The value will be a list */
             parent::add($normalizedName, [...$currentValues, ...(array)$value]);
         }
     }

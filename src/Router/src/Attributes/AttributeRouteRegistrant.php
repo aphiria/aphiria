@@ -32,13 +32,13 @@ use ReflectionMethod;
  */
 final class AttributeRouteRegistrant implements IRouteRegistrant
 {
-    /** @var string[] The paths to check for controllers */
+    /** @var list<string> The paths to check for controllers */
     private array $paths;
     /** @var ITypeFinder The type finder */
     private ITypeFinder $typeFinder;
 
     /**
-     * @param string|string[] $paths The path or paths to check for controllers
+     * @param string|list<string> $paths The path or paths to check for controllers
      * @param ITypeFinder|null $typeFinder The type finder
      */
     public function __construct(string|array $paths, ITypeFinder $typeFinder = null)
@@ -92,9 +92,9 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
     private function createRouteGroupOptions(ReflectionClass $controller): ?RouteGroupOptions
     {
         $routeGroupOptions = null;
-        /** @var MiddlewareBinding[] $middlewareBindings */
+        /** @var list<MiddlewareBinding> $middlewareBindings */
         $middlewareBindings = [];
-        /** @var IRouteConstraint[] $routeConstraints */
+        /** @var list<IRouteConstraint> $routeConstraints */
         $routeConstraints = [];
 
         foreach ($controller->getAttributes(Middleware::class) as $middlewareAttribute) {
@@ -146,9 +146,9 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
     {
         foreach ($controller->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $routeBuilder = null;
-            /** @var MiddlewareBinding[] $middlewareBindings */
+            /** @var list<MiddlewareBinding> $middlewareBindings */
             $middlewareBindings = [];
-            /** @var IRouteConstraint[] $routeConstraints */
+            /** @var list<IRouteConstraint> $routeConstraints */
             $routeConstraints = [];
 
             foreach ($method->getAttributes(Middleware::class) as $middlewareAttribute) {

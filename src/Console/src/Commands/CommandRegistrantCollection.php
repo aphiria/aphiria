@@ -19,7 +19,7 @@ use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
  */
 class CommandRegistrantCollection implements ICommandRegistrant
 {
-    /** @var ICommandRegistrant[] The list of registrants that will actually register the commands */
+    /** @var list<ICommandRegistrant> The list of registrants that will actually register the commands */
     protected array $commandRegistrants = [];
 
     /**

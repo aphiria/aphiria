@@ -26,7 +26,7 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
     private RequestHeaderParser $headerParser;
 
     /**
-     * @param string[] $supportedLanguages The list of supported languages
+     * @param list<string> $supportedLanguages The list of supported languages
      * @param RequestHeaderParser|null $headerParser The header parser to use to get language headers
      */
     public function __construct(private array $supportedLanguages, RequestHeaderParser $headerParser = null)
@@ -46,7 +46,7 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
         }
 
         \usort($acceptLanguageHeaders, [$this, 'compareAcceptLanguageHeaders']);
-        $rankedAcceptLanguageHeaders = \array_filter($acceptLanguageHeaders, [$this, 'filterZeroScores']);
+        $rankedAcceptLanguageHeaders = \array_values(\array_filter($acceptLanguageHeaders, [$this, 'filterZeroScores']));
         $rankedAcceptLanguageHeaderValues = $this->getLanguageValuesFromHeaders($rankedAcceptLanguageHeaders);
 
         foreach ($rankedAcceptLanguageHeaderValues as $language) {
@@ -119,8 +119,8 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
     /**
      * Gets the language values from a list of headers
      *
-     * @param AcceptLanguageHeaderValue[] $headers The list of language headers
-     * @return string[] The list of language values from the headers
+     * @param list<AcceptLanguageHeaderValue> $headers The list of language headers
+     * @return list<string> The list of language values from the headers
      */
     private function getLanguageValuesFromHeaders(array $headers): array
     {

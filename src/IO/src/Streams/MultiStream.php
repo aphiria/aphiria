@@ -20,7 +20,7 @@ use RuntimeException;
  */
 final class MultiStream implements IStream
 {
-    /** @var IStream[] The list of sub-streams */
+    /** @var list<IStream> The list of sub-streams */
     private array $streams = [];
     /** @var bool Whether or not this stream is seekable */
     private bool $isSeekable = true;
@@ -30,7 +30,7 @@ final class MultiStream implements IStream
     private int $position = 0;
 
     /**
-     * @param IStream[] $streams The list of streams to add
+     * @param list<IStream> $streams The list of streams to add
      */
     public function __construct(array $streams = [])
     {
@@ -214,6 +214,7 @@ final class MultiStream implements IStream
         // We don't use a for loop because it complicates $this->streamIndex on the last iteration
         foreach ($this->streams as $streamIndex => $stream) {
             $buffer .= $stream->readToEnd();
+            /** @psalm-suppress RedundantCast We do not want to rely on PHPDoc alone */
             $this->streamIndex = (int)$streamIndex;
         }
 
@@ -262,6 +263,7 @@ final class MultiStream implements IStream
 
         // We don't use a for loop because it complicates $this->streamIndex on the last iteration
         foreach ($this->streams as $streamIndex => $stream) {
+            /** @psalm-suppress RedundantCast We do not want to rely on PHPDoc alone */
             $this->streamIndex = (int)$streamIndex;
             $currStreamLength = $stream->getLength() ?? 0;
 

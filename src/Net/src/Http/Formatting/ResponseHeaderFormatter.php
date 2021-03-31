@@ -84,7 +84,7 @@ class ResponseHeaderFormatter extends HeaderParser
      * Sets cookies in the headers
      *
      * @param Headers $headers The headers to set the cookies in
-     * @param Cookie[] $cookies The cookies to set
+     * @param list<Cookie> $cookies The cookies to set
      * @throws RuntimeException Thrown if the set cookie header's hash key could not be calculated
      */
     public function setCookies(Headers $headers, array $cookies): void

@@ -20,12 +20,12 @@ use Throwable;
  */
 final class InvalidRequestBodyException extends InvalidArgumentException
 {
-    /** @var string[] The list of error messages that describe why the body is invalid */
+    /** @var list<string> The list of error messages that describe why the body is invalid */
     private array $errors;
 
     /**
      * @inheritdoc
-     * @param string[] $errors The list of error messages that describe why the body is invalid
+     * @param list<string> $errors The list of error messages that describe why the body is invalid
      */
     public function __construct(array $errors, string $message = '', int $code = 0, Throwable $previous = null)
     {
@@ -37,7 +37,7 @@ final class InvalidRequestBodyException extends InvalidArgumentException
     /**
      * Gets the list of errors that describe why the body is invalid
      *
-     * @return string[] The list of errors
+     * @return list<string> The list of errors
      */
     public function getErrors(): array
     {

@@ -40,7 +40,7 @@ class TableFormatter
      * Formats the table into a string
      *
      * @param array<int, mixed> $rows The list of rows
-     * @param mixed[] $headers The list of headers
+     * @param list<mixed> $headers The list of headers
      * @return string The formatted table
      */
     public function format(array $rows, array $headers = []): string

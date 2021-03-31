@@ -37,20 +37,20 @@ final class FileBinderFinder
     /**
      * Recursively finds all binder classes in the paths
      *
-     * @param string|string[] $paths The path or list of paths to search
-     * @return array<class-string> The list of all binder class names
+     * @param string|list<string> $paths The path or list of paths to search
+     * @return list<class-string> The list of all binder class names
      * @throws InvalidArgumentException Thrown if the paths are not a string or array
      * @throws ReflectionException Thrown if a class could not be reflected
      */
     public function findAll(string|array $paths): array
     {
         // Filter out any non-concrete binder classes
-        return \array_filter($this->classFinder->findAllTypes($paths, true), static function ($className) {
+        return \array_values(\array_filter($this->classFinder->findAllTypes($paths, true), static function ($className) {
             $reflectionClass = new ReflectionClass($className);
 
             return $reflectionClass->isSubclassOf(Binder::class) &&
                 !$reflectionClass->isInterface() &&
                 !$reflectionClass->isAbstract();
-        });
+        }));
     }
 }

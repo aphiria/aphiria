@@ -72,7 +72,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      * Flushes any text from the buffer
      *
      * @param string $textBuffer The current text buffer
-     * @param Token[] $tokens The list of tokens to add to
+     * @param list<Token> $tokens The list of tokens to add to
      */
     private static function flushTextBuffer(string &$textBuffer, array &$tokens): void
     {
@@ -86,7 +86,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      * Lexes a number lexeme
      *
      * @param string $number The lexeme to add
-     * @param Token[] $tokens The list of tokens to add to
+     * @param list<Token> $tokens The list of tokens to add to
      * @param int $cursor The current cursor
      */
     private static function lexNumber(string $number, array &$tokens, int &$cursor): void
@@ -108,7 +108,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      * Lexes a punctuation lexeme
      *
      * @param string $punctuation The lexeme to add
-     * @param Token[] $tokens The list of tokens to add to
+     * @param list<Token> $tokens The list of tokens to add to
      * @param int $cursor The current cursor
      */
     private static function lexPunctuation(string $punctuation, array &$tokens, int &$cursor): void
@@ -121,7 +121,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      * Lexes a quoted string lexeme
      *
      * @param string $quotedString The lexeme to add
-     * @param Token[] $tokens The list of tokens to add to
+     * @param list<Token> $tokens The list of tokens to add to
      * @param int $cursor The current cursor
      */
     private static function lexQuotedString(string $quotedString, array &$tokens, int &$cursor): void
@@ -147,7 +147,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      * Lexes a variable name lexeme
      *
      * @param string $variableName The lexeme to add
-     * @param Token[] $tokens The list of tokens to add to
+     * @param list<Token> $tokens The list of tokens to add to
      * @param int $cursor The current cursor
      * @throws LexingException Thrown if the variable name exceeded the max length
      */

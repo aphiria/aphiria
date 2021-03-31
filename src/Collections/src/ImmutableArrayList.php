@@ -22,11 +22,11 @@ use Traversable;
  */
 class ImmutableArrayList implements IImmutableList
 {
-    /** @var mixed[] The list of values */
+    /** @var list<mixed> The list of values */
     protected array $values = [];
 
     /**
-     * @param mixed[] $values The list of values
+     * @param list<mixed> $values The list of values
      */
     public function __construct(array $values)
     {

@@ -20,7 +20,7 @@ use InvalidArgumentException;
  */
 final class DateConstraint implements IRouteVariableConstraint
 {
-    /** @var string[] The list of acceptable formats */
+    /** @var list<string> The list of acceptable formats */
     private array $formats;
 
     /**
@@ -28,7 +28,7 @@ final class DateConstraint implements IRouteVariableConstraint
      */
     public function __construct(string|array $formats)
     {
-        /** @var string[] formats */
+        /** @var list<string> formats */
         $this->formats = (array)$formats;
 
         if (\count($this->formats) === 0) {

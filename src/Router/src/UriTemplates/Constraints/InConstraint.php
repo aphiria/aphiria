@@ -17,14 +17,15 @@ namespace Aphiria\Routing\UriTemplates\Constraints;
  */
 final class InConstraint implements IRouteVariableConstraint
 {
-    /** @var mixed[] The list of acceptable values */
+    /** @var list<mixed> The list of acceptable values */
     private array $acceptableValues;
 
     /**
-     * @param mixed[] $acceptableValues The list of acceptable values
+     * @param list<mixed> $acceptableValues The list of acceptable values
      */
     public function __construct(...$acceptableValues)
     {
+        /** @var list<mixed> acceptableValues */
         $this->acceptableValues = $acceptableValues;
     }
 

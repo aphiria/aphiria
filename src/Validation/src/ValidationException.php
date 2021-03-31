@@ -20,12 +20,12 @@ use Throwable;
  */
 final class ValidationException extends InvalidArgumentException
 {
-    /** @var ConstraintViolation[] The violations that occurred */
+    /** @var list<ConstraintViolation> The violations that occurred */
     private array $violations;
 
     /**
      * @inheritdoc
-     * @param ConstraintViolation[] $violations The violations that occurred
+     * @param list<ConstraintViolation> $violations The violations that occurred
      */
     public function __construct(array $violations, string $message = '', int $code = 0, Throwable $previous = null)
     {
@@ -37,7 +37,7 @@ final class ValidationException extends InvalidArgumentException
     /**
      * Gets the violations that occurred
      *
-     * @return ConstraintViolation[] The list of violations
+     * @return list<ConstraintViolation> The list of violations
      */
     public function getViolations(): array
     {

@@ -33,7 +33,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
     private RequestHeaderParser $headerParser;
 
     /**
-     * @param IMediaTypeFormatter[] $mediaTypeFormatters The list of supported media type formatters
+     * @param list<IMediaTypeFormatter> $mediaTypeFormatters The list of supported media type formatters
      * @param RequestHeaderParser|null $headerParser The header parser to use to get request header values
      * @throws InvalidArgumentException Thrown if there are no media type formatters specified
      */
@@ -80,7 +80,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      * Gets the best media type formatter match
      *
      * @param string $type The type that will be read/written by the formatter
-     * @param MediaTypeHeaderValue[] $mediaTypeHeaders The media type headers to match against
+     * @param list<MediaTypeHeaderValue> $mediaTypeHeaders The media type headers to match against
      * @param string $ioType Whether this is an input or an output media type formatter
      * @return MediaTypeFormatterMatch|null The media type formatter match if there was one, otherwise null
      */
@@ -188,8 +188,8 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
     /**
      * Ranks the media type headers by quality, and then by specificity
      *
-     * @param AcceptMediaTypeHeaderValue[] $mediaTypeHeaders The list of media type headers to rank
-     * @return AcceptMediaTypeHeaderValue[] The ranked list of media type headers
+     * @param list<AcceptMediaTypeHeaderValue> $mediaTypeHeaders The list of media type headers to rank
+     * @return list<AcceptMediaTypeHeaderValue> The ranked list of media type headers
      */
     private function rankAcceptMediaTypeHeaders(array $mediaTypeHeaders): array
     {

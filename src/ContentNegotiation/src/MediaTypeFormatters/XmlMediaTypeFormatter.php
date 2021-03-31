@@ -22,9 +22,9 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 final class XmlMediaTypeFormatter extends SerializerMediaTypeFormatter
 {
-    /** @var string[] The list of supported character encodings */
+    /** @var list<string> The list of supported character encodings */
     private static array $supportedEncodings = ['utf-8', 'utf-16', 'iso-8859'];
-    /** @var string[] The list of supported media types */
+    /** @var list<string> The list of supported media types */
     private static array $supportedMediaTypes = ['text/xml', 'application/problem+xml'];
 
     /**

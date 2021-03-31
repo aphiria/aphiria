@@ -22,7 +22,7 @@ final class MiddlewarePipelineFactory
     /**
      * Creates a pipeline that will execute middleware, ending with the execution of a controller action
      *
-     * @param IMiddleware[] $middleware The list of middleware to add to the pipeline
+     * @param list<IMiddleware> $middleware The list of middleware to add to the pipeline
      * @param IRequestHandler $terminalRequestHandler The request handler that is last in the pipeline (eg controller)
      * @return IRequestHandler The pipeline
      * @psalm-suppress NullableReturnStatement The value will always be set, or an exception will be thrown

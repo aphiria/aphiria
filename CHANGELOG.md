@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.0.0-alpha4](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha3...v1.0.0-alpha4) (?)
+
+### Fixed
+
+- Fixed a lot of PHPDoc to use `list<{type}>` instead of `{type}[]` where applicable ([#128](https://github.com/aphiria/aphiria/pull/128))
+
 ## [v1.0.0-alpha3](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha2...v1.0.0-alpha3) (2021-03-13)
 
 ### Fixed

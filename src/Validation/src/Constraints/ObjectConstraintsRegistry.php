@@ -17,7 +17,7 @@ namespace Aphiria\Validation\Constraints;
  */
 final class ObjectConstraintsRegistry
 {
-    /** @var ObjectConstraints[] The mapping of class names to object constraints */
+    /** @var array<class-string, ObjectConstraints> The mapping of class names to object constraints */
     private array $objectConstraints = [];
 
     /**

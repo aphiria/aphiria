@@ -17,7 +17,7 @@ namespace Aphiria\Application;
  */
 final class BootstrapperCollection
 {
-    /** @var IBootstrapper[] The list of bootstrappers */
+    /** @var list<IBootstrapper> The list of bootstrappers */
     private array $bootstrappers = [];
 
     /**
@@ -36,7 +36,7 @@ final class BootstrapperCollection
     /**
      * Adds multiple bootstrappers to the collection
      *
-     * @param IBootstrapper[] $bootstrappers The bootstrappers to add
+     * @param list<IBootstrapper> $bootstrappers The bootstrappers to add
      * @return self For chaining
      */
     public function addMany(array $bootstrappers): self

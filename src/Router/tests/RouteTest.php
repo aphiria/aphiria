@@ -24,9 +24,9 @@ class RouteTest extends TestCase
     private Route $route;
     private UriTemplate $uriTemplate;
     private RouteAction $routeAction;
-    /** @var IRouteConstraint[] */
+    /** @var list<IRouteConstraint> */
     private array $constraints;
-    /** @var MiddlewareBinding[] */
+    /** @var list<MiddlewareBinding> */
     private array $middlewareBindings;
     private array $parameters;
 

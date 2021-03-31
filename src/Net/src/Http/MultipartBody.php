@@ -27,7 +27,7 @@ class MultipartBody extends StreamBody
     private string $boundary;
 
     /**
-     * @param MultipartBodyPart[] $parts The list of multipart body parts
+     * @param list<MultipartBodyPart> $parts The list of multipart body parts
      * @param string|null $boundary The boundary between the parts, or null if a new one should be created
      * @throws RuntimeException Thrown if the boundary could not be generated
      * @throws InvalidArgumentException Thrown if the internal stream could not be generated
@@ -76,7 +76,7 @@ class MultipartBody extends StreamBody
     /**
      * Gets the multipart body parts that make up the body
      *
-     * @return MultipartBodyPart[] The list of body parts
+     * @return list<MultipartBodyPart> The list of body parts
      */
     public function getParts(): array
     {

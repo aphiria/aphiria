@@ -22,7 +22,7 @@ final class InConstraint extends Constraint
 
     /**
      * @inheritdoc
-     * @param mixed[] $values The values to check
+     * @param list<mixed> $values The values to check
      */
     public function __construct(private array $values, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {

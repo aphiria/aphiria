@@ -41,6 +41,7 @@ class ContentNegotiationBinder extends Binder
      */
     public function bind(IContainer $container): void
     {
+        /** @var list<IMediaTypeFormatter> $mediaTypeFormatters */
         $mediaTypeFormatters = \array_map(
             static function (string $class) use ($container): IMediaTypeFormatter {
                 /** @var class-string $class */
@@ -76,7 +77,7 @@ class ContentNegotiationBinder extends Binder
         $languageMatcherName = GlobalConfiguration::getString('aphiria.contentNegotiation.languageMatcher');
 
         if ($languageMatcherName === AcceptLanguageMatcher::class) {
-            /** @var string[] $supportedLanguages */
+            /** @var list<string> $supportedLanguages */
             $supportedLanguages = GlobalConfiguration::getArray('aphiria.contentNegotiation.supportedLanguages');
             $languageMatcher = new AcceptLanguageMatcher($supportedLanguages);
         } else {

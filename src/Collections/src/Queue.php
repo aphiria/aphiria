@@ -22,7 +22,7 @@ use Traversable;
  */
 class Queue implements Countable, IteratorAggregate
 {
-    /** @var array The values in the queue */
+    /** @var list<mixed> The values in the queue */
     protected array $values = [];
 
     /**
@@ -97,7 +97,7 @@ class Queue implements Countable, IteratorAggregate
     /**
      * Gets all of the values as an array
      *
-     * @return mixed[] All of the values
+     * @return list<mixed> All of the values
      */
     public function toArray(): array
     {

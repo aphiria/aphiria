@@ -20,7 +20,7 @@ use RuntimeException;
  */
 class GlobalConfiguration
 {
-    /** @var IConfiguration[] The underlying static configuration sources */
+    /** @var list<IConfiguration> The underlying static configuration sources */
     private static array $configurationSources = [];
 
     /**

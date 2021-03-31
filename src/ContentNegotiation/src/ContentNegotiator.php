@@ -28,7 +28,7 @@ final class ContentNegotiator implements IContentNegotiator
 {
     /** @const The default media type if none is found (RFC 7231) */
     private const DEFAULT_REQUEST_MEDIA_TYPE = 'application/octet-stream';
-    /** @var IMediaTypeFormatter[] The list of media type formatters */
+    /** @var list<IMediaTypeFormatter> The list of media type formatters */
     private array $mediaTypeFormatters;
     /** @var IMediaTypeFormatterMatcher The media type formatter matcher */
     private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
@@ -40,7 +40,7 @@ final class ContentNegotiator implements IContentNegotiator
     private RequestHeaderParser $headerParser;
 
     /**
-     * @param IMediaTypeFormatter[]|null $mediaTypeFormatters The list of media type formatters to use, or null if using the default formatters
+     * @param list<IMediaTypeFormatter>|null $mediaTypeFormatters The list of media type formatters to use, or null if using the default formatters
      * @param IMediaTypeFormatterMatcher|null $mediaTypeFormatterMatcher The media type formatter matcher, or null if using the default one
      * @param IEncodingMatcher|null $encodingMatcher The encoding matcher, or null if using the default one
      * @param ILanguageMatcher|null $languageMatcher The language matcher, or null if using the default one
@@ -90,7 +90,7 @@ final class ContentNegotiator implements IContentNegotiator
             }
         }
 
-        return \array_unique($acceptableMediaTypes);
+        return \array_values(\array_unique($acceptableMediaTypes));
     }
 
     /**

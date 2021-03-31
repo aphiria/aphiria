@@ -149,7 +149,7 @@ class RoutingBinderTest extends TestCase
     /**
      * Sets up the container mock
      *
-     * @param array[] $additionalParameters The additional parameters to configure
+     * @param list<array> $additionalParameters The additional parameters to configure
      */
     private function setUpContainerMock(array $additionalParameters = []): void
     {

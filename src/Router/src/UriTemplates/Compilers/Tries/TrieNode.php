@@ -20,16 +20,16 @@ use InvalidArgumentException;
  */
 abstract class TrieNode
 {
-    /** @var Route[] The list of routes for this node, if there are any */
+    /** @var list<Route> The list of routes for this node, if there are any */
     public array $routes;
-    /** @var VariableTrieNode[] The child variable nodes */
+    /** @var list<VariableTrieNode> The child variable nodes */
     public array $variableChildren = [];
     /** @var array<string, LiteralTrieNode> The mapping of literal child node values to child nodes */
     public array $literalChildrenByValue = [];
 
     /**
-     * @param TrieNode[] $children The list of children
-     * @param Route[]|Route $routes The list of routes for this segment if there are any
+     * @param list<TrieNode> $children The list of children
+     * @param list<Route>|Route $routes The list of routes for this segment if there are any
      * @param TrieNode|null $hostTrie The host trie, if there is one
      */
     protected function __construct(array $children, Route|array $routes, public ?TrieNode $hostTrie)
@@ -69,7 +69,7 @@ abstract class TrieNode
     /**
      * Gets all the child nodes
      *
-     * @return TrieNode[] The child nodes
+     * @return list<TrieNode> The child nodes
      */
     public function getAllChildren(): array
     {

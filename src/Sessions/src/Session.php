@@ -215,7 +215,7 @@ class Session implements ISession
     /**
      * Gets the new flash keys array
      *
-     * @return string[] The list of new flashed keys
+     * @return list<string> The list of new flashed keys
      * @psalm-suppress MixedReturnStatement This will always return an array of strings
      * @psalm-suppress MixedInferredReturnType Ditto
      */
@@ -227,7 +227,7 @@ class Session implements ISession
     /**
      * Gets the stale flash keys array
      *
-     * @return string[] The list of stale flashed keys
+     * @return list<string> The list of stale flashed keys
      * @psalm-suppress MixedReturnStatement This will always return an array of strings
      * @psalm-suppress MixedInferredReturnType Ditto
      */

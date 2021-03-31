@@ -20,7 +20,7 @@ use RuntimeException;
  */
 final class Stream implements IStream
 {
-    /** @var string[] The list of readable stream modes */
+    /** @var list<string> The list of readable stream modes */
     private static array $readStreamModes = [
         'a+',
         'c+',
@@ -39,7 +39,7 @@ final class Stream implements IStream
         'x+b',
         'x+t'
     ];
-    /** @var string[] The list of writable stream modes */
+    /** @var list<string> The list of writable stream modes */
     private static array $writeStreamModes = [
         'a',
         'a+',
