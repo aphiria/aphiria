@@ -25,7 +25,7 @@ class ResponseHeaderParser extends HeaderParser
      * Parses the response headers for all set cookie
      *
      * @param Headers $headers The headers to parse
-     * @return Cookie[] The list of set cookies
+     * @return list<Cookie> The list of set cookies
      */
     public function parseCookies(Headers $headers): array
     {
@@ -36,7 +36,7 @@ class ResponseHeaderParser extends HeaderParser
         }
 
         $cookies = [];
-        /** @var string[] $setCookieHeaders */
+        /** @var list<string> $setCookieHeaders */
         $numSetCookieHeaders = \count($setCookieHeaders);
 
         for ($i = 0;$i < $numSetCookieHeaders;$i++) {

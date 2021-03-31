@@ -27,7 +27,7 @@ class HashSet implements ISet
     private KeyHasher $keyHasher;
 
     /**
-     * @param mixed[] $values The set of values
+     * @param list<mixed> $values The set of values
      */
     public function __construct(array $values = [])
     {

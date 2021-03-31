@@ -24,7 +24,7 @@ final class Date extends ConstraintAttribute
 {
     /**
      * @inheritdoc
-     * @param string[] $acceptableFormats The list of acceptable DateTime formats
+     * @param list<string> $acceptableFormats The list of acceptable DateTime formats
      * @throws InvalidArgumentException Thrown if there were no acceptable date formats
      */
     public function __construct(public array $acceptableFormats, string $errorMessageId = null)

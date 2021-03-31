@@ -82,7 +82,7 @@ class ResponseFormatter
      * Sets cookies in the headers
      *
      * @param IResponse $response The response to set the cookies in
-     * @param Cookie[] $cookies The cookies to set
+     * @param list<Cookie> $cookies The cookies to set
      */
     public function setCookies(IResponse $response, array $cookies): void
     {

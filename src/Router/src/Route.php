@@ -24,8 +24,8 @@ final class Route
     /**
      * @param UriTemplate $uriTemplate The raw URI template
      * @param RouteAction $action The action this route takes
-     * @param IRouteConstraint[] $constraints The list of constraints
-     * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings
+     * @param list<IRouteConstraint> $constraints The list of constraints
+     * @param list<MiddlewareBinding> $middlewareBindings The list of middleware bindings
      * @param string|null $name The name of this route
      * @param array<string, mixed> $parameters The mapping of custom parameter names => values
      */

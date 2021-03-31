@@ -33,7 +33,7 @@ interface IImmutableSet extends Countable, IteratorAggregate
     /**
      * Gets all of the values as an array
      *
-     * @return mixed[] All of the values
+     * @return list<mixed> All of the values
      */
     public function toArray(): array;
 }

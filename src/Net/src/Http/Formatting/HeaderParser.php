@@ -99,7 +99,7 @@ class HeaderParser
 
         $kvps = [];
 
-        /** @var string[] $headerValues */
+        /** @var list<string> $headerValues */
         foreach (\preg_split(self::PARAMETER_SPLIT_REGEX, (string)$headerValues[$index]) as $kvp) {
             $matches = [];
 

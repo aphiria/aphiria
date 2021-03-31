@@ -21,12 +21,12 @@ final class EachConstraint extends Constraint
 {
     /** @var string The default error message ID */
     private const DEFAULT_ERROR_MESSAGE_ID = 'Field is invalid';
-    /** @var IConstraint[] The list of constraints to apply on each value */
+    /** @var list<IConstraint> The list of constraints to apply on each value */
     private array $constraints;
 
     /**
      * @inheritdoc
-     * @param IConstraint[]|IConstraint $constraints The constraint or list of constraints to apply on each value
+     * @param list<IConstraint>|IConstraint $constraints The constraint or list of constraints to apply on each value
      */
     public function __construct(IConstraint|array $constraints, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {

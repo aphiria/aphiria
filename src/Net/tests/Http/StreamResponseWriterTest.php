@@ -76,7 +76,7 @@ class StreamResponseWriterTest extends TestCase
 
     /**
      * @param string $headerName The name of the header
-     * @param mixed[] $headerValues The list of header values
+     * @param list<mixed> $headerValues The list of header values
      * @dataProvider getHeadersThatShouldNotBeConcatenated
      */
     public function testWritingResponseDoesNotConcatenateSelectHeaders(string $headerName, array $headerValues): void

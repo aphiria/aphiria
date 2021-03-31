@@ -19,7 +19,7 @@ use InvalidArgumentException;
  */
 final class CommandRegistry
 {
-    /** @var CommandBinding[] The mapping o command names to their bindings */
+    /** @var array<string, CommandBinding> The mapping o command names to their bindings */
     private array $bindings = [];
 
     /**
@@ -36,7 +36,7 @@ final class CommandRegistry
     /**
      * Gets the list of all command bindings
      *
-     * @return CommandBinding[] The list of command bindings
+     * @return list<CommandBinding> The list of command bindings
      */
     public function getAllCommandBindings(): array
     {
@@ -46,7 +46,7 @@ final class CommandRegistry
     /**
      * Gets a list of all commands
      *
-     * @return Command[] The list of commands
+     * @return list<Command> The list of commands
      */
     public function getAllCommands(): array
     {
@@ -74,7 +74,7 @@ final class CommandRegistry
     /**
      * Registers many commands
      *
-     * @param CommandBinding[] $bindings The command bindings to register
+     * @param list<CommandBinding> $bindings The command bindings to register
      */
     public function registerManyCommands(array $bindings): void
     {

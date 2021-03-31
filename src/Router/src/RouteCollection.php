@@ -17,13 +17,13 @@ namespace Aphiria\Routing;
  */
 final class RouteCollection
 {
-    /** @var Route[] The list of methods to their various routes */
+    /** @var list<Route> The list of methods to their various routes */
     private array $routes = [];
     /** @var array<string, Route> The mapping of route names to routes */
     private array $namedRoutes = [];
 
     /**
-     * @param Route[] $routes The initial list of routes
+     * @param list<Route> $routes The initial list of routes
      */
     public function __construct(array $routes = [])
     {
@@ -47,7 +47,7 @@ final class RouteCollection
     /**
      * Adds a list of routes to the collection
      *
-     * @param Route[] $routes The routes to add
+     * @param list<Route> $routes The routes to add
      */
     public function addMany(array $routes): void
     {
@@ -76,7 +76,7 @@ final class RouteCollection
     /**
      * Gets all the routes
      *
-     * @return Route[] The list of routes
+     * @return list<Route> The list of routes
      */
     public function getAll(): array
     {

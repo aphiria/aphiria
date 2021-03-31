@@ -23,7 +23,7 @@ final class OutputParser implements IOutputParser
 {
     /**
      * @inheritdoc
-     * @param OutputToken[] $tokens The list of tokens to parse
+     * @param list<OutputToken> $tokens The list of tokens to parse
      */
     public function parse(array $tokens): AstNode
     {

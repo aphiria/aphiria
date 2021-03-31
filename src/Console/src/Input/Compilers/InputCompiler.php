@@ -106,7 +106,7 @@ final class InputCompiler implements IInputCompiler
      * Compiles arguments in a command
      *
      * @param Command $command The command to compile
-     * @param mixed[] $argumentValues The list of argument values
+     * @param list<mixed> $argumentValues The list of argument values
      * @return array<string, mixed> The mapping of argument names to values
      * @throws RuntimeException Thrown if there are too many arguments
      */
@@ -198,8 +198,8 @@ final class InputCompiler implements IInputCompiler
     /**
      * Gets whether or not there are too many argument values
      *
-     * @param mixed[] $argumentValues The list of argument values
-     * @param Argument[] $commandArguments The list of command arguments
+     * @param list<mixed> $argumentValues The list of argument values
+     * @param list<Argument> $commandArguments The list of command arguments
      * @return bool True if there are too many arguments, otherwise false
      */
     private static function hasTooManyArguments(array $argumentValues, array $commandArguments): bool
@@ -229,7 +229,7 @@ final class InputCompiler implements IInputCompiler
      * Parses a long option token and returns an array of data
      *
      * @param string $token The token to parse
-     * @param mixed[] $remainingTokens The list of remaining tokens
+     * @param list<mixed> $remainingTokens The list of remaining tokens
      * @return array{0: string, 1: string|null} The name of the option mapped to its value
      */
     private static function parseLongOption(string $token, array &$remainingTokens): array
@@ -251,6 +251,7 @@ final class InputCompiler implements IInputCompiler
                 // The option must have not had a value, so put the next token back
                 \array_unshift($remainingTokens, $nextToken);
 
+                /** @psalm-suppress ReferenceConstraintViolation The remaining tokens will continue to be a list */
                 return [$option, null];
             }
 
@@ -267,9 +268,9 @@ final class InputCompiler implements IInputCompiler
     /**
      * Parses the tokens for the command name, arguments, and options
      *
-     * @param mixed[] $tokens The tokens to parse
+     * @param list<mixed> $tokens The tokens to parse
      * @param string $commandName The parsed command name
-     * @param mixed[] $argumentValues The parsed input arguments
+     * @param list<mixed> $argumentValues The parsed input arguments
      * @param array<string, mixed> $options The parsed input options
      */
     private static function parseTokens(

@@ -21,7 +21,7 @@ final class ObjectConstraintsRegistryBuilder
 {
     /** @var ObjectConstraintsRegistry The registry we're going to build */
     private ObjectConstraintsRegistry $objectConstraints;
-    /** @var ObjectConstraintsBuilder[] The constraints builders we've created */
+    /** @var list<ObjectConstraintsBuilder> The constraints builders we've created */
     private array $objectConstraintsBuilders = [];
 
     /**

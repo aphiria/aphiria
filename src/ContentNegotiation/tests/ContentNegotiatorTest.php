@@ -334,7 +334,7 @@ class ContentNegotiatorTest extends TestCase
     /**
      * Creates a mock media type formatter with a list of supported media types
      *
-     * @param string[] $supportedMediaTypes The list of supported media types
+     * @param list<string> $supportedMediaTypes The list of supported media types
      * @param int $numTimesSupportedMediaTypesCalled The number of times the formatter's supported media types will be checked
      * @return IMediaTypeFormatter|MockObject The mocked formatter
      */

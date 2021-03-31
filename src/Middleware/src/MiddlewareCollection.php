@@ -34,7 +34,7 @@ final class MiddlewareCollection
     /**
      * Gets all the middleware in the collection
      *
-     * @return IMiddleware[] The list of middleware
+     * @return list<IMiddleware> The list of middleware
      */
     public function getAll(): array
     {

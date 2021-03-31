@@ -23,8 +23,8 @@ class Command
 {
     /**
      * @param string $name The name of the command
-     * @param Argument[] $arguments The list of arguments
-     * @param Option[] $options The list of options
+     * @param list<Argument> $arguments The list of arguments
+     * @param list<Option> $options The list of options
      * @param string|null $description The description of the command
      * @param string|null $helpText the help text
      */

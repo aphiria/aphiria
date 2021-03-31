@@ -21,7 +21,7 @@ class MagicCallMethod
      * Handles non-existent methods
      *
      * @param string $name The name of the method called
-     * @param mixed[] $arguments The arguments
+     * @param list<mixed> $arguments The arguments
      */
     public function __call($name, array $arguments)
     {

@@ -22,7 +22,7 @@ final class ValidationProblemDetails extends ProblemDetails
 {
     /**
      * @inheritdoc
-     * @param string[] $errors The list of errors that describe what was invalid
+     * @param list<string> $errors The list of errors that describe what was invalid
      */
     public function __construct(
         public array $errors,

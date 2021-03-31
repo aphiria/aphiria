@@ -127,7 +127,7 @@ class RequestParser
      * Parses the Accept-Charset header
      *
      * @param IRequest $request The request to parse
-     * @return AcceptCharsetHeaderValue[] The list of charset header values
+     * @return list<AcceptCharsetHeaderValue> The list of charset header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseAcceptCharsetHeader(IRequest $request): array
@@ -139,7 +139,7 @@ class RequestParser
      * Parses the Accept header
      *
      * @param IRequest $request The request to parse
-     * @return AcceptMediaTypeHeaderValue[] The list of media type header values
+     * @return list<AcceptMediaTypeHeaderValue> The list of media type header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseAcceptHeader(IRequest $request): array
@@ -151,7 +151,7 @@ class RequestParser
      * Parses the Accept-Language header
      *
      * @param IRequest $request The request to parse
-     * @return AcceptLanguageHeaderValue[] The list of language header values
+     * @return list<AcceptLanguageHeaderValue> The list of language header values
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */
     public function parseAcceptLanguageHeader(IRequest $request): array

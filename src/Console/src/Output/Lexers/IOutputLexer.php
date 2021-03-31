@@ -23,7 +23,7 @@ interface IOutputLexer
      * Lexes output text and returns a list of tokens
      *
      * @param string $text The text to lex
-     * @return OutputToken[] The list of tokens
+     * @return list<OutputToken> The list of tokens
      * @throws RuntimeException Thrown if there was an error lexing the text
      */
     public function lex(string $text): array;

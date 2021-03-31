@@ -22,6 +22,7 @@ final class ArgvInputTokenizer implements IInputTokenizer
      */
     public function tokenize(string|array $input): array
     {
+        /** @var list<mixed> $tokens */
         $tokens = \is_string($input) ? [$input] : $input;
 
         // Remove the application name

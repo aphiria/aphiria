@@ -225,7 +225,7 @@ final class Validator implements IValidator
      * Tries to validate a single value in a context
      *
      * @param mixed $value The value to validate
-     * @param IConstraint[] $constraints The list of constraints to use
+     * @param list<IConstraint> $constraints The list of constraints to use
      * @param ValidationContext $validationContext The context to perform validation in
      * @return bool True if the value was valid, otherwise false
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message
@@ -419,7 +419,7 @@ final class Validator implements IValidator
      * Validates a single value against a list of constraints in a context
      *
      * @param mixed $value The value to validate
-     * @param IConstraint[] $constraints The list of constraints to use
+     * @param list<IConstraint> $constraints The list of constraints to use
      * @param ValidationContext $validationContext The context to validate in
      * @throws ValidationException Thrown if the value was invalid
      * @throws ErrorMessageInterpolationException Thrown if there was an error interpolating the error message

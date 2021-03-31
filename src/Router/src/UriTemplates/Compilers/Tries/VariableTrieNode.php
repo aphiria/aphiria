@@ -20,7 +20,7 @@ use InvalidArgumentException;
  */
 final class VariableTrieNode extends TrieNode
 {
-    /** @var string[]|RouteVariable[] The parts that make up this node */
+    /** @var list<string>|RouteVariable[] The parts that make up this node */
     public array $parts;
     /** @var bool Whether or not this node contains just a single variable part (for performance reasons) */
     private bool $onlyContainsVariable;

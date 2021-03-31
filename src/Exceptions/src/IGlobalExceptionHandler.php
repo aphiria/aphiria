@@ -27,7 +27,7 @@ interface IGlobalExceptionHandler
      * @param string $message The message
      * @param string $file The file the error occurred in
      * @param int $line The line number the error occurred at
-     * @param mixed[] $context The symbol table
+     * @param list<mixed> $context The symbol table
      * @throws ErrorException Thrown if the error was reportable based on its level
      */
     public function handleError(int $level, string $message, string $file = '', int $line = 0, array $context = []): void;

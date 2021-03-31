@@ -126,7 +126,7 @@ final class OutputLexer implements IOutputLexer
     /**
      * Gets text around a certain position for use in exceptions
      *
-     * @param string[] $charArray The char array
+     * @param list<string> $charArray The char array
      * @param int $position The numerical position to grab text around
      * @return string The surrounding text
      */
@@ -146,7 +146,7 @@ final class OutputLexer implements IOutputLexer
     /**
      * Looks back at the previous character in the string
      *
-     * @param string[] $charArray The char array
+     * @param list<string> $charArray The char array
      * @param int $currPosition The current position
      * @return string|null The previous character if there is one, otherwise null
      */
@@ -162,7 +162,7 @@ final class OutputLexer implements IOutputLexer
     /**
      * Peeks at the next character in the string
      *
-     * @param string[] $charArray The char array
+     * @param list<string> $charArray The char array
      * @param int $currPosition The current position
      * @return string|null The next character if there is one, otherwise null
      */

@@ -177,7 +177,6 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                 $routeBuilder->mapsToMethod($controller->getName(), $method->getName());
 
                 if (!empty($middlewareBindings)) {
-                    /** @psalm-suppress MixedArgumentTypeCoercion This is always a list of route constraints - bug */
                     $routeBuilder->withManyMiddleware($middlewareBindings);
                 }
 

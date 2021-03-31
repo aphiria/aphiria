@@ -23,7 +23,7 @@ interface IOutputParser
     /**
      * Parses tokens into an abstract syntax tree
      *
-     * @param OutputToken[] $tokens The list of tokens to parse
+     * @param list<OutputToken> $tokens The list of tokens to parse
      * @return AstNode The abstract syntax tree made from the tokens
      * @throws RuntimeException Thrown if there was an error in the tokens
      */

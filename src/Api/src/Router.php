@@ -123,8 +123,8 @@ class Router implements IRequestHandler
     /**
      * Creates middleware instances from middleware bindings
      *
-     * @param MiddlewareBinding[] $middlewareBindings The list of middleware bindings to create instances from
-     * @return IMiddleware[] The middleware instances
+     * @param list<MiddlewareBinding> $middlewareBindings The list of middleware bindings to create instances from
+     * @return list<IMiddleware> The middleware instances
      * @throws ResolutionException Thrown if the middleware could not be resolved
      */
     private function createMiddlewareFromBindings(array $middlewareBindings): array

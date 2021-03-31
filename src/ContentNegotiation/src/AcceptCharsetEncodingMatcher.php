@@ -123,8 +123,8 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
     /**
      * Ranks the charset headers by quality, and then by specificity
      *
-     * @param AcceptCharsetHeaderValue[] $charsetHeaders The list of charset headers to rank
-     * @return AcceptCharsetHeaderValue[] The ranked list of charset headers
+     * @param list<AcceptCharsetHeaderValue> $charsetHeaders The list of charset headers to rank
+     * @return list<AcceptCharsetHeaderValue> The ranked list of charset headers
      */
     private function rankAcceptCharsetHeaders(array $charsetHeaders): array
     {

@@ -19,7 +19,7 @@ use Aphiria\Validation\Constraints\Caching\IObjectConstraintsRegistryCache;
  */
 class ObjectConstraintsRegistrantCollection implements IObjectConstraintsRegistrant
 {
-    /** @var IObjectConstraintsRegistrant[] The collection of registrants */
+    /** @var list<IObjectConstraintsRegistrant> The collection of registrants */
     protected array $registrants = [];
 
     /**

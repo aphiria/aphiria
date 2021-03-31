@@ -27,11 +27,11 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
 {
     /** @var Context The current context */
     private Context $currentContext;
-    /** @var Context[] The stack of contexts */
+    /** @var list<Context> The stack of contexts */
     private array $contextStack = [];
-    /** @var BoundInterface[] The list of bound interfaces that were found */
+    /** @var list<BoundInterface> The list of bound interfaces that were found */
     private array $boundInterfaces = [];
-    /** @var ResolvedInterface[] The list of resolved interfaces that were found */
+    /** @var list<ResolvedInterface> The list of resolved interfaces that were found */
     private array $resolvedInterfaces = [];
 
     /**

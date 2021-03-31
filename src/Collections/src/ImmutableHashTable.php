@@ -23,13 +23,13 @@ use Traversable;
  */
 class ImmutableHashTable implements IImmutableDictionary
 {
-    /** @var KeyValuePair[] The list of values */
+    /** @var array<string, KeyValuePair> The mapping of hash keys to key-value pairs */
     protected array $hashKeysToKvps = [];
     /** @var KeyHasher The key hasher to use */
     private KeyHasher $keyHasher;
 
     /**
-     * @param KeyValuePair[] $kvps The list of values to add
+     * @param list<KeyValuePair> $kvps The list of values to add
      * @throws InvalidArgumentException Thrown if the array contains a non-key-value pair
      * @throws RuntimeException Thrown if a hash key could not be calculated
      */

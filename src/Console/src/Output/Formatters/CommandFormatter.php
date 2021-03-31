@@ -36,9 +36,9 @@ class CommandFormatter
             $text .= $this->formatOption($option) . ' ';
         }
 
-        /** @var Argument[] $requiredArguments */
+        /** @var list<Argument> $requiredArguments */
         $requiredArguments = [];
-        /** @var Argument[] $optionalArguments */
+        /** @var list<Argument> $optionalArguments */
         $optionalArguments = [];
         /** @var Argument|null $arrayArgument */
         $arrayArgument = null;

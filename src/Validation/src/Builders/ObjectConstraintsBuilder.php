@@ -45,7 +45,7 @@ final class ObjectConstraintsBuilder
      * Adds constraints for a method
      *
      * @param string $methodName The name of the method we're adding constraints to
-     * @param IConstraint[]|IConstraint $constraints The constraint or list of constraints for the method
+     * @param list<IConstraint>|IConstraint $constraints The constraint or list of constraints for the method
      * @return self For chaining
      */
     public function hasMethodConstraints(string $methodName, IConstraint|array $constraints): self
@@ -59,7 +59,7 @@ final class ObjectConstraintsBuilder
      * Adds constraints for a property
      *
      * @param string $propertyName The name of the property we're adding constraints to
-     * @param IConstraint[]|IConstraint $constraints The constraint or list of constraints for the property
+     * @param list<IConstraint>|IConstraint $constraints The constraint or list of constraints for the property
      * @return self For chaining
      */
     public function hasPropertyConstraints(string $propertyName, IConstraint|array $constraints): self

@@ -17,9 +17,9 @@ namespace Aphiria\ContentNegotiation\MediaTypeFormatters;
  */
 final class PlainTextMediaTypeFormatter extends TextMediaTypeFormatter
 {
-    /** @var string[] The list of supported character encodings */
+    /** @var list<string> The list of supported character encodings */
     private static array $supportedEncodings = ['utf-8'];
-    /** @var string[] The list of supported media types */
+    /** @var list<string> The list of supported media types */
     private static array $supportedMediaTypes = ['text/plain'];
 
     /**
