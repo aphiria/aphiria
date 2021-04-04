@@ -32,7 +32,7 @@ class HashTable implements IDictionary
      * @param list<KeyValuePair> $kvps The list of key-value pairs to add
      * @throws InvalidArgumentException Thrown if the array contains a non-key-value pair
      */
-    public function __construct(array $kvps = [])
+    final public function __construct(array $kvps = [])
     {
         $this->keyHasher = new KeyHasher();
         $this->addRange($kvps);

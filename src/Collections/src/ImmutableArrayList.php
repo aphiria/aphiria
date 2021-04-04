@@ -28,7 +28,7 @@ class ImmutableArrayList implements IImmutableList
     /**
      * @param list<mixed> $values The list of values
      */
-    public function __construct(array $values)
+    final public function __construct(array $values)
     {
         /** @psalm-suppress MixedAssignment Value is intentionally mixed */
         foreach ($values as $value) {

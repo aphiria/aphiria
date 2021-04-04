@@ -29,7 +29,7 @@ class HashSet implements ISet
     /**
      * @param list<mixed> $values The set of values
      */
-    public function __construct(array $values = [])
+    final public function __construct(array $values = [])
     {
         $this->keyHasher = new KeyHasher();
         $this->addRange($values);
@@ -119,7 +119,6 @@ class HashSet implements ISet
     {
         // Get a copy of the values
         $values = $this->values;
-        /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
         \usort($values, $comparer);
 
         return new static($values);

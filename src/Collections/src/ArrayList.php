@@ -27,7 +27,7 @@ class ArrayList implements IList
     /**
      * @param list<mixed> $values The list of values
      */
-    public function __construct(array $values = [])
+    final public function __construct(array $values = [])
     {
         $this->addRange($values);
     }
