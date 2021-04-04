@@ -89,7 +89,7 @@ class HashSet implements ISet
     /**
      * @inheritdoc
      */
-    public function intersect(array $values): void
+    public function intersect(array $values): static
     {
         $intersectedValues = [];
 
@@ -101,8 +101,7 @@ class HashSet implements ISet
             }
         }
 
-        $this->clear();
-        $this->addRange($intersectedValues);
+        return new static($intersectedValues);
     }
 
     /**
@@ -116,10 +115,14 @@ class HashSet implements ISet
     /**
      * @inheritdoc
      */
-    public function sort(callable $comparer): void
+    public function sort(callable $comparer): static
     {
+        // Get a copy of the values
+        $values = $this->values;
         /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
-        \usort($this->values, $comparer);
+        \usort($values, $comparer);
+
+        return new static($values);
     }
 
     /**
@@ -133,11 +136,9 @@ class HashSet implements ISet
     /**
      * @inheritdoc
      */
-    public function union(array $values): void
+    public function union(array $values): static
     {
-        $unionedValues = \array_merge(\array_values($this->values), $values);
-        $this->clear();
-        $this->addRange($unionedValues);
+        return new static(\array_merge(\array_values($this->values), $values));
     }
 
     /**

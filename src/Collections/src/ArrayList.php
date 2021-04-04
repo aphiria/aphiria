@@ -119,11 +119,9 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function intersect(array $values): void
+    public function intersect(array $values): static
     {
-        $intersectedValues = \array_values(\array_intersect($this->values, $values));
-        $this->clear();
-        $this->addRange($intersectedValues);
+        return new static(\array_values(\array_intersect($this->values, $values)));
     }
 
     /**
@@ -182,17 +180,21 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function reverse(): void
+    public function reverse(): static
     {
-        $this->values = \array_reverse($this->values);
+        return new static(\array_reverse($this->values));
     }
 
     /**
      * @inheritdoc
      */
-    public function sort(callable $comparer): void
+    public function sort(callable $comparer): static
     {
-        \usort($this->values, $comparer);
+        // Get a copy of the values
+        $values = $this->values;
+        \usort($values, $comparer);
+
+        return new static($values);
     }
 
     /**
@@ -206,10 +208,10 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function union(array $values): void
+    public function union(array $values): static
     {
         $unionedValues = \array_merge(($this->values), $values);
-        $this->clear();
-        $this->addRange($unionedValues);
+
+        return new static($unionedValues);
     }
 }

@@ -55,9 +55,10 @@ interface ISet extends Countable, IteratorAggregate
      * Intersects the values of the input array with the values already in the set
      *
      * @param list<mixed> $values The values to intersect with
+     * @return static The intersected set
      * @throws RuntimeException Thrown if the values' keys could not be calculated
      */
-    public function intersect(array $values): void;
+    public function intersect(array $values): static;
 
     /**
      * Removes a value from the set
@@ -71,8 +72,9 @@ interface ISet extends Countable, IteratorAggregate
      * Sorts the values of the set
      *
      * @param callable(mixed, mixed): int $comparer The comparer to sort with
+     * @return static The sorted set
      */
-    public function sort(callable $comparer): void;
+    public function sort(callable $comparer): static;
 
     /**
      * Gets all of the values as an array
@@ -85,7 +87,8 @@ interface ISet extends Countable, IteratorAggregate
      * Unions the values of the input array with the values already in the set
      *
      * @param list<mixed> $values The values to union with
+     * @return static The unioned set
      * @throws RuntimeException Thrown if the values' keys could not be calculated
      */
-    public function union(array $values): void;
+    public function union(array $values): static;
 }

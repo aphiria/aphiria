@@ -78,8 +78,9 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
      * Intersects the values of the input array with the values already in the list
      *
      * @param list<mixed> $values The values to intersect with
+     * @return static The intersected list
      */
-    public function intersect(array $values): void;
+    public function intersect(array $values): static;
 
     /**
      * Removes the value at an index
@@ -97,15 +98,18 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
 
     /**
      * Reverses the list
+     *
+     * @return static The reversed list
      */
-    public function reverse(): void;
+    public function reverse(): static;
 
     /**
      * Sorts the values of the list
      *
      * @param callable(mixed, mixed): int $comparer The comparer to sort with
+     * @return static The sorted list
      */
-    public function sort(callable $comparer): void;
+    public function sort(callable $comparer): static;
 
     /**
      * Gets all of the values as an array
@@ -118,6 +122,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
      * Unions the values of the input array with the values already in the list
      *
      * @param list<mixed> $values The values to union with
+     * @return static The unioned list
      */
-    public function union(array $values): void;
+    public function union(array $values): static;
 }
