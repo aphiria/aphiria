@@ -95,8 +95,8 @@ class HashSetTest extends TestCase
         $object1 = new FakeObject();
         $object2 = clone $object1;
         $this->set->add($object1);
-        $this->set->intersect([$object2]);
-        $this->assertEquals([], $this->set->toArray());
+        $newSet = $this->set->intersect([$object2]);
+        $this->assertEquals([], $newSet->toArray());
     }
 
     public function testIntersectingIntersectsValuesOfSetAndArray(): void
@@ -105,13 +105,17 @@ class HashSetTest extends TestCase
         $object2 = new FakeObject();
         $this->set->add($object1);
         $this->set->add($object2);
-        $this->set->intersect([$object2]);
-        $this->assertEquals([$object2], $this->set->toArray());
+        $newSet = $this->set->intersect([$object2]);
+        $this->assertEquals([$object2], $newSet->toArray());
     }
 
-    /**
-     * Tests iterating over the values returns the values - not the hash keys
-     */
+    public function testIntersectingDoesNotChangeOriginalSet(): void
+    {
+        $this->set->addRange(['foo', 'bar']);
+        $this->set->intersect(['bar']);
+        $this->assertEquals(['foo', 'bar'], $this->set->toArray());
+    }
+
     public function testIteratingOverValuesReturnsValuesNotHashKeys(): void
     {
         $expectedValues = [
@@ -143,15 +147,30 @@ class HashSetTest extends TestCase
         $comparer = fn (string $a, string $b): int => $a === 'foo' ? 1 : -1;
         $this->set->add('foo');
         $this->set->add('bar');
+        $newSet = $this->set->sort($comparer);
+        $this->assertEquals(['bar', 'foo'], $newSet->toArray());
+    }
+
+    public function testSortingDoesNotChangeOriginalSet(): void
+    {
+        $comparer = fn (string $a, string $b): int => $a === 'foo' ? 1 : -1;
+        $this->set->addRange(['foo', 'bar']);
         $this->set->sort($comparer);
-        $this->assertEquals(['bar', 'foo'], $this->set->toArray());
+        $this->assertEquals(['foo', 'bar'], $this->set->toArray());
     }
 
     public function testUnionUnionsValuesOfSetAndArray(): void
     {
         $object = new FakeObject();
         $this->set->add($object);
-        $this->set->union(['bar', 'baz']);
-        $this->assertEquals([$object, 'bar', 'baz'], $this->set->toArray());
+        $newSet = $this->set->union(['bar', 'baz']);
+        $this->assertEquals([$object, 'bar', 'baz'], $newSet->toArray());
+    }
+
+    public function testUnioningDoesNotChangeOriginalSet(): void
+    {
+        $this->set->add('foo');
+        $this->set->union(['bar']);
+        $this->assertEquals(['foo'], $this->set->toArray());
     }
 }

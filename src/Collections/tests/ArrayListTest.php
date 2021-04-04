@@ -118,8 +118,15 @@ class ArrayListTest extends TestCase
     public function testIntersectingIntersectsValuesOfSetAndArray(): void
     {
         $this->arrayList->addRange(['foo', 'bar']);
+        $newList = $this->arrayList->intersect(['bar', 'baz']);
+        $this->assertEquals(['bar'], $newList->toArray());
+    }
+
+    public function testIntersectingDoesNotChangeOriginalList(): void
+    {
+        $this->arrayList->addRange(['foo', 'bar']);
         $this->arrayList->intersect(['bar', 'baz']);
-        $this->assertEquals(['bar'], $this->arrayList->toArray());
+        $this->assertEquals(['foo', 'bar'], $this->arrayList->toArray());
     }
 
     public function testIteratingOverValues(): void
@@ -164,8 +171,15 @@ class ArrayListTest extends TestCase
     {
         $this->arrayList->add('foo');
         $this->arrayList->add('bar');
+        $newList = $this->arrayList->reverse();
+        $this->assertEquals(['bar', 'foo'], $newList->toArray());
+    }
+
+    public function testReversingDoesNotChangeOriginalList(): void
+    {
+        $this->arrayList->addRange(['foo', 'bar']);
         $this->arrayList->reverse();
-        $this->assertEquals(['bar', 'foo'], $this->arrayList->toArray());
+        $this->assertEquals(['foo', 'bar'], $this->arrayList->toArray());
     }
 
     public function testSettingItem(): void
@@ -182,15 +196,30 @@ class ArrayListTest extends TestCase
         $comparer = fn (string $a, string $b): int => $a === 'foo' ? 1 : -1;
         $this->arrayList->add('foo');
         $this->arrayList->add('bar');
+        $newList = $this->arrayList->sort($comparer);
+        $this->assertEquals(['bar', 'foo'], $newList->toArray());
+    }
+
+    public function testSortingDoesNotChangeOriginalList(): void
+    {
+        $comparer = fn (string $a, string $b): int => $a === 'foo' ? 1 : -1;
+        $this->arrayList->addRange(['foo', 'bar']);
         $this->arrayList->sort($comparer);
-        $this->assertEquals(['bar', 'foo'], $this->arrayList->toArray());
+        $this->assertEquals(['foo', 'bar'], $this->arrayList->toArray());
     }
 
     public function testUnionUnionsValuesOfSetAndArray(): void
     {
         $this->arrayList->add('foo');
-        $this->arrayList->union(['bar', 'baz']);
-        $this->assertEquals(['foo', 'bar', 'baz'], $this->arrayList->toArray());
+        $newList = $this->arrayList->union(['bar', 'baz']);
+        $this->assertEquals(['foo', 'bar', 'baz'], $newList->toArray());
+    }
+
+    public function testUnioningDoesNotChangeOriginalList(): void
+    {
+        $this->arrayList->add('foo');
+        $this->arrayList->union(['bar']);
+        $this->assertEquals(['foo'], $this->arrayList->toArray());
     }
 
     public function testUnsetting(): void

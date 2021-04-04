@@ -50,7 +50,7 @@ class ImmutableHashTable implements IImmutableDictionary
     /**
      * @inheritdoc
      */
-    public function containsKey(mixed $key): bool
+    final public function containsKey(mixed $key): bool
     {
         return \array_key_exists($this->getHashKey($key), $this->hashKeysToKvps);
     }

@@ -30,7 +30,7 @@ class ImmutableHashSet implements IImmutableSet
      * @param list<mixed> $values The set of values
      * @throws RuntimeException Thrown if the values' keys could not be calculated
      */
-    public function __construct(array $values)
+    final public function __construct(array $values)
     {
         $this->keyHasher = new KeyHasher();
 
