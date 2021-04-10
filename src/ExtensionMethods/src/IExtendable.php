@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Extensions;
+namespace Aphiria\ExtensionMethods;
 
 /**
  * Defines the interface for extendable classes to implement

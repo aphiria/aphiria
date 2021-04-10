@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Extensions\Tests;
+namespace Aphiria\ExtensionMethods\Tests;
 
-use Aphiria\Extensions\ExtensionMethods;
-use Aphiria\Extensions\Extensions;
+use Aphiria\ExtensionMethods\ExtensionMethods;
+use Aphiria\ExtensionMethods\ExtensionMethodRegistry;
 use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
 
@@ -34,7 +34,7 @@ class ExtensionMethodsTest extends TestCase
         $foo = new class() {
             use ExtensionMethods;
         };
-        Extensions::register($foo::class, 'foo', fn () => 'bar');
+        ExtensionMethodRegistry::registerExtensionMethod($foo::class, 'foo', fn () => 'bar');
         $this->assertSame('bar', $foo->foo());
     }
 
@@ -43,7 +43,7 @@ class ExtensionMethodsTest extends TestCase
         $foo = new class() {
             use ExtensionMethods;
         };
-        Extensions::register($foo::class, 'foo', fn (string $bar, string $baz) => $bar . $baz);
+        ExtensionMethodRegistry::registerExtensionMethod($foo::class, 'foo', fn (string $bar, string $baz) => $bar . $baz);
         $this->assertSame('barbaz', $foo->foo('bar', 'baz'));
     }
 }

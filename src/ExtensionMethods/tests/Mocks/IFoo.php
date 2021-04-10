@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Extensions\Tests\Mocks;
+namespace Aphiria\ExtensionMethods\Tests\Mocks;
 
 /**
  * Defines a dummy interface
  */
-interface IBar extends IFoo
+interface IFoo
 {
 }

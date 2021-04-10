@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Extensions;
+namespace Aphiria\ExtensionMethods;
 
 use BadMethodCallException;
 use Closure;
@@ -21,7 +21,7 @@ use ReflectionObject;
  *
  * @internal
  */
-class Extensions
+class ExtensionMethodRegistry
 {
     /** @var array<class-string, array<string, Closure>> The mapping of interfaces to extension methods */
     private static array $extensionsByInterface = [];
@@ -56,7 +56,7 @@ class Extensions
      * @param string $method The name of the extension method
      * @param Closure $closure The closure that will be invoked whenever the extension method will be called
      */
-    public static function register(string|array $interfaces, string $method, Closure $closure): void
+    public static function registerExtensionMethod(string|array $interfaces, string $method, Closure $closure): void
     {
         foreach ((array)$interfaces as $interface) {
             if (!isset(self::$extensionsByInterface[$interface])) {

@@ -1,9 +1,8 @@
 {
-    "name": "aphiria/extensions",
-    "description": "The Aphiria extension library",
+    "name": "aphiria/extension-methods",
+    "description": "The Aphiria extension method library",
     "keywords": [
         "PHP",
-        "extension",
         "extension methods"
     ],
     "authors": [
@@ -29,12 +28,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "Aphiria\\Extensions\\": "src"
+            "Aphiria\\ExtensionMethods\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Aphiria\\Extensions\\Tests\\": "tests"
+            "Aphiria\\ExtensionMethods\\Tests\\": "tests"
         }
     },
     "require": {

@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Extensions;
+namespace Aphiria\ExtensionMethods;
 
 use BadMethodCallException;
 
@@ -30,6 +30,6 @@ trait ExtensionMethods
     public function __call(string $method, array $args): mixed
     {
         /** @psalm-suppress InternalClass We're intentionally calling the internal class */
-        return Extensions::call($this, $method, $args);
+        return ExtensionMethodRegistry::call($this, $method, $args);
     }
 }

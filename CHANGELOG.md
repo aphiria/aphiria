@@ -11,6 +11,10 @@
 - Changed `IList::intersect()`, `IList::reverse()`, `IList::sort()`, `IList::union()`, `ISet::intersect()`, `ISet::sort()`, and `ISet::union()` to return a new instance rather than change the original value ([#131](https://github.com/aphiria/aphiria/pull/131))
 - Changed all collection constructors to be final ([#131](https://github.com/aphiria/aphiria/pull/131))
 
+### Added
+
+- Added the entire `Aphiria\ExtensionMethods` library
+
 ## [v1.0.0-alpha3](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha2...v1.0.0-alpha3) (2021-03-13)
 
 ### Fixed

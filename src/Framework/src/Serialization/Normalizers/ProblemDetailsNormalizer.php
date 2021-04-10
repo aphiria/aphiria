@@ -39,7 +39,7 @@ final class ProblemDetailsNormalizer extends ObjectNormalizer
             $extensions = $normalizedProblemDetails['extensions'];
             unset($normalizedProblemDetails['extensions']);
 
-            // Extensions could technically be null
+            // ExtensionMethodRegistry could technically be null
             if (\is_array($extensions)) {
                 /** @psalm-suppress MixedAssignment We're purposely setting the value to a mixed type */
                 foreach ($extensions as $name => $value) {
