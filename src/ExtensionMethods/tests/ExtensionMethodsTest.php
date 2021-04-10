@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\ExtensionMethods\Tests;
 
-use Aphiria\ExtensionMethods\ExtensionMethods;
 use Aphiria\ExtensionMethods\ExtensionMethodRegistry;
+use Aphiria\ExtensionMethods\ExtensionMethods;
 use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
 
