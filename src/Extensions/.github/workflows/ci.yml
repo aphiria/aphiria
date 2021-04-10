@@ -1,0 +1,38 @@
+name: ci
+on:
+  push:
+  pull_request:
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        php: ['8.0']
+        stability: [prefer-stable]
+    name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set Up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, dom, libxml, mbstring, pcntl, xdebug-beta, zip
+          tools: composer:v2
+          coverage: xdebug
+      - name: Install Dependencies
+        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
+      - name: Run Tests
+        run: composer phpunit
+      # TODO: The linter and code coverage must be re-enabled once PHP 8 is properly supported by those tools
+      #- name: Run Linter
+      #  run: composer phpcs-test
+      - name: Upload Coverage Results To Coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer global require php-coveralls/php-coveralls
+          php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
