@@ -13,12 +13,12 @@ declare(strict_types=1);
 namespace Aphiria\ExtensionMethods;
 
 /**
- * Defines the interface for extendable classes to implement
+ * Defines the interface for classes with extension methods to implement
  */
 interface IExtendable
 {
     /**
-     * Calls a method on an extendable object
+     * Calls an extension method on an object
      *
      * @param string $method The name of the method to call
      * @param list<mixed> $args The list of arguments to pass in

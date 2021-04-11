@@ -36,22 +36,12 @@ class ExtensionMethodsTest extends TestCase
         $this->assertSame('foo', $foo->foobar());
     }
 
-    public function testCallingNonExistentMethodThrowsException(): void
-    {
-        $this->expectException(BadMethodCallException::class);
-        $foo = new class() {
-            use ExtensionMethods;
-        };
-        $this->expectExceptionMessage($foo::class . '::bar() does not exist');
-        $foo->bar();
-    }
-
     public function testCallingExtensionMethodWithoutParameters(): void
     {
         $foo = new class() {
             use ExtensionMethods;
         };
-        ExtensionMethodRegistry::registerExtensionMethod($foo::class, 'foo', fn () => 'bar');
+        ExtensionMethodRegistry::registerExtensionMethod($foo::class, 'foo', fn (): string => 'bar');
         $this->assertSame('bar', $foo->foo());
     }
 
@@ -60,7 +50,17 @@ class ExtensionMethodsTest extends TestCase
         $foo = new class() {
             use ExtensionMethods;
         };
-        ExtensionMethodRegistry::registerExtensionMethod($foo::class, 'foo', fn (string $bar, string $baz) => $bar . $baz);
+        ExtensionMethodRegistry::registerExtensionMethod($foo::class, 'foo', fn (string $bar, string $baz): string => $bar . $baz);
         $this->assertSame('barbaz', $foo->foo('bar', 'baz'));
+    }
+
+    public function testCallingNonExistentMethodThrowsException(): void
+    {
+        $this->expectException(BadMethodCallException::class);
+        $foo = new class() {
+            use ExtensionMethods;
+        };
+        $this->expectExceptionMessage($foo::class . '::bar() does not exist');
+        $foo->bar();
     }
 }
