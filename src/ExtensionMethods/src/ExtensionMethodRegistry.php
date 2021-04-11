@@ -12,14 +12,11 @@ declare(strict_types=1);
 
 namespace Aphiria\ExtensionMethods;
 
-use BadMethodCallException;
 use Closure;
 use ReflectionObject;
 
 /**
  * Defines the class to register extensions to
- *
- * @internal
  */
 final class ExtensionMethodRegistry
 {
@@ -29,24 +26,38 @@ final class ExtensionMethodRegistry
     private static array $memoizedExtensionsByClass = [];
 
     /**
-     * Calls the method on an object
+     * Gets the extension method as a closure
      *
      * @param object $object The object we're calling an extension method on
      * @param string $method The name of the method we're calling
      * @param list<mixed> $args The list of arguments to pass in
-     * @return mixed The return value of the closure, if there was one
-     * @throws BadMethodCallException Thrown if no extension method was registered
-     * @internal
+     * @return Closure|null The closure if there was one, otherwise null
      */
-    public static function call(object $object, string $method, array $args = []): mixed
+    public static function getExtensionMethod(object $object, string $method, array $args = []): ?Closure
     {
-        $closure = self::findClosureForMethodMethod($object, $method);
+        $closure = null;
 
-        if ($closure === null) {
-            throw new BadMethodCallException($object::class . "::$method() does not exist");
+        // Check to see if a closure (or null, if none was found on a previous call) was already stored
+        if (
+            isset(self::$memoizedExtensionsByClass[$object::class])
+            && \array_key_exists($method, self::$memoizedExtensionsByClass[$object::class])
+        ) {
+            $closure = self::$memoizedExtensionsByClass[$object::class][$method];
+        } else {
+            self::$memoizedExtensionsByClass[$object::class] = [];
+            $interfaces = [$object::class, ...(new ReflectionObject($object))->getInterfaceNames()];
+
+            foreach ($interfaces as $interface) {
+                if (isset(self::$extensionsByInterface[$interface][$method])) {
+                    $closure = self::$memoizedExtensionsByClass[$object::class][$method] = self::$extensionsByInterface[$interface][$method];
+                    break;
+                }
+            }
+
+            self::$memoizedExtensionsByClass[$object::class][$method] = $closure;
         }
 
-        return $closure(...$args);
+        return $closure;
     }
 
     /**
@@ -65,40 +76,5 @@ final class ExtensionMethodRegistry
 
             self::$extensionsByInterface[$interface][$method] = $closure;
         }
-    }
-
-    /**
-     * Tries to find the appropriate closure to call for an object's extension method and binds it
-     *
-     * @param object $object The object being invoked
-     * @param string $method The method we're looking for
-     * @return Closure|null The closure if one was found, otherwise null
-     */
-    private static function findClosureForMethodMethod(object $object, string $method): ?Closure
-    {
-        $closure = null;
-
-        // Check to see if a closure (or null, if none was found on a previous call) was already stored
-        if (
-            isset(self::$memoizedExtensionsByClass[$object::class])
-            && \array_key_exists($method, self::$memoizedExtensionsByClass[$object::class])
-        ) {
-            $closure = self::$memoizedExtensionsByClass[$object::class][$method];
-        } else {
-            self::$memoizedExtensionsByClass[$object::class] = [];
-            $interfaces = [$object::class, ...(new ReflectionObject($object))->getInterfaceNames()];
-
-            foreach ($interfaces as $interface) {
-                if (isset(self::$extensionsByInterface[$interface][$method])) {
-                    $closure = self::$memoizedExtensionsByClass[$object::class][$method] = self::$extensionsByInterface[$interface][$method];
-                    $closure = $closure->bindTo($object, $interface);
-                    break;
-                }
-            }
-
-            self::$memoizedExtensionsByClass[$object::class][$method] = $closure;
-        }
-
-        return $closure;
     }
 }

@@ -29,7 +29,12 @@ trait ExtensionMethods
      */
     public function __call(string $method, array $args): mixed
     {
-        /** @psalm-suppress InternalClass We're intentionally calling the internal class */
-        return ExtensionMethodRegistry::call($this, $method, $args);
+        $closure = ExtensionMethodRegistry::getExtensionMethod($this, $method);
+
+        if ($closure === null || ($closure = $closure->bindTo($this, $this)) === false) {
+            throw new BadMethodCallException($this::class . "::$method() does not exist");
+        }
+
+        return $closure(...$args);
     }
 }

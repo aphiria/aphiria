@@ -19,6 +19,23 @@ use PHPUnit\Framework\TestCase;
 
 class ExtensionMethodsTest extends TestCase
 {
+    public function testCallingExtensionMethodBindsObjectToClosureScope(): void
+    {
+        $foo = new class() {
+            use ExtensionMethods;
+
+            // This method will only be accessible if the object got bound to the closure scope
+            private function getFoo(): string
+            {
+                return 'foo';
+            }
+        };
+        /** @psalm-suppress UndefinedMethod Intentionally calling a private method here */
+        $expectedExtensionMethod = fn (): string => (string)$this->getFoo();
+        ExtensionMethodRegistry::registerExtensionMethod($foo::class, 'foobar', $expectedExtensionMethod);
+        $this->assertSame('foo', $foo->foobar());
+    }
+
     public function testCallingNonExistentMethodThrowsException(): void
     {
         $this->expectException(BadMethodCallException::class);
