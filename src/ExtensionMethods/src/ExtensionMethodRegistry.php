@@ -21,7 +21,7 @@ use ReflectionObject;
  *
  * @internal
  */
-class ExtensionMethodRegistry
+final class ExtensionMethodRegistry
 {
     /** @var array<class-string, array<string, Closure>> The mapping of interfaces to extension methods */
     private static array $extensionsByInterface = [];
