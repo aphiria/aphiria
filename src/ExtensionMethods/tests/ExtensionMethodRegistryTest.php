@@ -21,6 +21,11 @@ use PHPUnit\Framework\TestCase;
 
 class ExtensionMethodRegistryTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        ExtensionMethodRegistry::reset();
+    }
+
     public function testGettingExtensionMethodMultipleTimesUsesMemoizedClosure(): void
     {
         // Note: This is mainly done for code coverage purposes
@@ -29,6 +34,39 @@ class ExtensionMethodRegistryTest extends TestCase
         $expectedExtensionMethod = fn (): string => 'foo';
         ExtensionMethodRegistry::registerExtensionMethod($foo::class, 'foo', $expectedExtensionMethod);
         $this->assertSame($expectedExtensionMethod, ExtensionMethodRegistry::getExtensionMethod($foo, 'foo'));
+        $this->assertSame($expectedExtensionMethod, ExtensionMethodRegistry::getExtensionMethod($foo, 'foo'));
+    }
+
+    public function testGettingExtensionMethodPrefersExtensionMethodsFromInterfacesInReverseHierarchicalOrder(): void
+    {
+        $foo = new class() implements IBar {
+        };
+        $expectedExtensionMethod = fn (): string => 'foo';
+        // Purposely register this before the base class just to make sure registration order doesn't affect anything
+        ExtensionMethodRegistry::registerExtensionMethod(IFoo::class, 'foo', fn (): string => 'bar');
+        ExtensionMethodRegistry::registerExtensionMethod(IBar::class, 'foo', $expectedExtensionMethod);
+        $this->assertSame($expectedExtensionMethod, ExtensionMethodRegistry::getExtensionMethod($foo, 'foo'));
+    }
+
+    public function testGettingExtensionMethodPrefersExtensionMethodsFromParentClassesInReverseHierarchicalOrder(): void
+    {
+        $foo = new class() extends BaseBar {
+        };
+        $expectedExtensionMethod = fn (): string => 'foo';
+        // Purposely register this before the base class just to make sure registration order doesn't affect anything
+        ExtensionMethodRegistry::registerExtensionMethod(BaseFoo::class, 'foo', fn (): string => 'bar');
+        ExtensionMethodRegistry::registerExtensionMethod(BaseBar::class, 'foo', $expectedExtensionMethod);
+        $this->assertSame($expectedExtensionMethod, ExtensionMethodRegistry::getExtensionMethod($foo, 'foo'));
+    }
+
+    public function testGettingExtensionMethodPrefersExtensionMethodsFromParentClassesOverInterfaces(): void
+    {
+        $foo = new class() extends BaseFoo implements IFoo {
+        };
+        $expectedExtensionMethod = fn (): string => 'foo';
+        // Purposely register this before the base class just to make sure registration order doesn't affect anything
+        ExtensionMethodRegistry::registerExtensionMethod(IFoo::class, 'foo', fn (): string => 'bar');
+        ExtensionMethodRegistry::registerExtensionMethod(BaseFoo::class, 'foo', $expectedExtensionMethod);
         $this->assertSame($expectedExtensionMethod, ExtensionMethodRegistry::getExtensionMethod($foo, 'foo'));
     }
 

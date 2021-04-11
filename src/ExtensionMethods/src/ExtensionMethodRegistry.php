@@ -54,7 +54,7 @@ final class ExtensionMethodRegistry
                 foreach ($interfaceCallback() as $interface) {
                     if (isset(self::$extensionMethodsByInterface[$interface][$methodName])) {
                         $closure = self::$memoizedExtensionMethodsByClass[$object::class][$methodName] = self::$extensionMethodsByInterface[$interface][$methodName];
-                        break;
+                        break 2;
                     }
                 }
             }
@@ -81,5 +81,15 @@ final class ExtensionMethodRegistry
 
             self::$extensionMethodsByInterface[$interface][$methodName] = $closure;
         }
+    }
+
+    /**
+     * Resets the registry, which is useful for tests
+     *
+     * @internal
+     */
+    public static function reset(): void
+    {
+        self::$extensionMethodsByInterface = self::$memoizedExtensionMethodsByClass = [];
     }
 }

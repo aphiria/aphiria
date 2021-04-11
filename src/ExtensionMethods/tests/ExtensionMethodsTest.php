@@ -19,6 +19,11 @@ use PHPUnit\Framework\TestCase;
 
 class ExtensionMethodsTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        ExtensionMethodRegistry::reset();
+    }
+
     public function testCallingExtensionMethodBindsObjectToClosureScope(): void
     {
         $foo = new class() {
