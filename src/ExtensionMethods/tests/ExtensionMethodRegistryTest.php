@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\ExtensionMethods\Tests;
 
 use Aphiria\ExtensionMethods\ExtensionMethodRegistry;
+use Aphiria\ExtensionMethods\Tests\Mocks\BaseBar;
+use Aphiria\ExtensionMethods\Tests\Mocks\BaseFoo;
 use Aphiria\ExtensionMethods\Tests\Mocks\IBar;
 use Aphiria\ExtensionMethods\Tests\Mocks\IFoo;
 use PHPUnit\Framework\TestCase;
@@ -30,6 +32,15 @@ class ExtensionMethodRegistryTest extends TestCase
         $this->assertSame($expectedExtensionMethod, ExtensionMethodRegistry::getExtensionMethod($foo, 'foo'));
     }
 
+    public function testGettingExtensionMethodOnChildClassOfRegisteredBaseClassStillWorks(): void
+    {
+        $foo = new class() extends BaseFoo {
+        };
+        $expectedExtensionMethod = fn (): string => 'foo';
+        ExtensionMethodRegistry::registerExtensionMethod(BaseFoo::class, 'foo', $expectedExtensionMethod);
+        $this->assertSame($expectedExtensionMethod, ExtensionMethodRegistry::getExtensionMethod($foo, 'foo'));
+    }
+
     public function testGettingExtensionMethodOnChildClassOfRegisteredInterfaceStillWorks(): void
     {
         $foo = new class() implements IFoo {
@@ -37,6 +48,18 @@ class ExtensionMethodRegistryTest extends TestCase
         $expectedExtensionMethod = fn (): string => 'foo';
         ExtensionMethodRegistry::registerExtensionMethod(IFoo::class, 'foo', $expectedExtensionMethod);
         $this->assertSame($expectedExtensionMethod, ExtensionMethodRegistry::getExtensionMethod($foo, 'foo'));
+    }
+
+    public function testGettingExtensionMethodOnNestedChildClassOfRegisteredBaseClassesStillWorks(): void
+    {
+        $foo = new class() extends BaseBar {
+        };
+        $expectedExtensionMethod1 = fn (): string => 'foo';
+        $expectedExtensionMethod2 = fn (): string => 'bar';
+        ExtensionMethodRegistry::registerExtensionMethod(BaseFoo::class, 'foo', $expectedExtensionMethod1);
+        ExtensionMethodRegistry::registerExtensionMethod(BaseBar::class, 'bar', $expectedExtensionMethod2);
+        $this->assertSame($expectedExtensionMethod1, ExtensionMethodRegistry::getExtensionMethod($foo, 'foo'));
+        $this->assertSame($expectedExtensionMethod2, ExtensionMethodRegistry::getExtensionMethod($foo, 'bar'));
     }
 
     public function testGettingExtensionMethodOnNestedChildClassOfRegisteredInterfaceStillWorks(): void
@@ -58,7 +81,7 @@ class ExtensionMethodRegistryTest extends TestCase
         $this->assertNull(ExtensionMethodRegistry::getExtensionMethod($foo, 'bar'));
     }
 
-    public function testRegisteringMultipleInterfaceMakesExtensionMethodCallable(): void
+    public function testRegisteringMultipleInterfacesMakesExtensionMethodsGettable(): void
     {
         $foo = new class() {
         };

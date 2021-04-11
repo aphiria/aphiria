@@ -13,10 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\ExtensionMethods;
 
 use Closure;
-use ReflectionObject;
 
 /**
- * Defines the class to register extensions to
+ * Defines the class to register extension methods to
  */
 final class ExtensionMethodRegistry
 {
@@ -29,31 +28,38 @@ final class ExtensionMethodRegistry
      * Gets the extension method as a closure
      *
      * @param object $object The object we're calling an extension method on
-     * @param string $method The name of the method we're calling
+     * @param string $methodName The name of the extension method we want
      * @return Closure|null The extension method as a closure if there was one, otherwise null
      */
-    public static function getExtensionMethod(object $object, string $method): ?Closure
+    public static function getExtensionMethod(object $object, string $methodName): ?Closure
     {
         $closure = null;
 
         // Check to see if a closure (or null, if none was found on a previous call) was already stored
         if (
             isset(self::$memoizedExtensionMethodsByClass[$object::class])
-            && \array_key_exists($method, self::$memoizedExtensionMethodsByClass[$object::class])
+            && \array_key_exists($methodName, self::$memoizedExtensionMethodsByClass[$object::class])
         ) {
-            $closure = self::$memoizedExtensionMethodsByClass[$object::class][$method];
+            $closure = self::$memoizedExtensionMethodsByClass[$object::class][$methodName];
         } else {
             self::$memoizedExtensionMethodsByClass[$object::class] = [];
-            $interfaces = [$object::class, ...(new ReflectionObject($object))->getInterfaceNames()];
+            // To avoid unnecessary calls to get interfaces/parent classes, wrap their evaluation in closures
+            $interfaceCallbacks = [
+                fn (): array => [$object::class],
+                fn (): array => \array_values(\class_parents($object)),
+                fn (): array => \array_values(\class_implements($object))
+            ];
 
-            foreach ($interfaces as $interface) {
-                if (isset(self::$extensionMethodsByInterface[$interface][$method])) {
-                    $closure = self::$memoizedExtensionMethodsByClass[$object::class][$method] = self::$extensionMethodsByInterface[$interface][$method];
-                    break;
+            foreach ($interfaceCallbacks as $interfaceCallback) {
+                foreach ($interfaceCallback() as $interface) {
+                    if (isset(self::$extensionMethodsByInterface[$interface][$methodName])) {
+                        $closure = self::$memoizedExtensionMethodsByClass[$object::class][$methodName] = self::$extensionMethodsByInterface[$interface][$methodName];
+                        break;
+                    }
                 }
             }
 
-            self::$memoizedExtensionMethodsByClass[$object::class][$method] = $closure;
+            self::$memoizedExtensionMethodsByClass[$object::class][$methodName] = $closure;
         }
 
         return $closure;
@@ -63,17 +69,17 @@ final class ExtensionMethodRegistry
      * Registers an extension method
      *
      * @param class-string|list<class-string> $interfaces The interface or list of interfaces to register an extension method for
-     * @param string $method The name of the extension method
+     * @param string $methodName The name of the extension method
      * @param Closure $closure The closure that will be invoked whenever the extension method will be called
      */
-    public static function registerExtensionMethod(string|array $interfaces, string $method, Closure $closure): void
+    public static function registerExtensionMethod(string|array $interfaces, string $methodName, Closure $closure): void
     {
         foreach ((array)$interfaces as $interface) {
             if (!isset(self::$extensionMethodsByInterface[$interface])) {
                 self::$extensionMethodsByInterface[$interface] = [];
             }
 
-            self::$extensionMethodsByInterface[$interface][$method] = $closure;
+            self::$extensionMethodsByInterface[$interface][$methodName] = $closure;
         }
     }
 }

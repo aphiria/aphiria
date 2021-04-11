@@ -20,19 +20,19 @@ use BadMethodCallException;
 trait ExtensionMethods
 {
     /**
-     * Calls a method on an extendable object
+     * Calls an extension method
      *
-     * @param string $method The name of the method to call
+     * @param string $methodName The name of the extension method to call
      * @param list<mixed> $args The list of arguments to pass in
      * @return mixed The return value, if there was one
      * @throws BadMethodCallException Thrown if the input method did not exist
      */
-    public function __call(string $method, array $args): mixed
+    public function __call(string $methodName, array $args): mixed
     {
-        $closure = ExtensionMethodRegistry::getExtensionMethod($this, $method);
+        $closure = ExtensionMethodRegistry::getExtensionMethod($this, $methodName);
 
         if ($closure === null || ($closure = $closure->bindTo($this, $this)) === false) {
-            throw new BadMethodCallException($this::class . "::$method() does not exist");
+            throw new BadMethodCallException($this::class . "::$methodName() does not exist");
         }
 
         return $closure(...$args);
