@@ -96,8 +96,7 @@ class ExtensionMethodRegistry
                 }
             }
 
-            // We didn't find any closure, so store null for next time
-            self::$memoizedExtensionsByClass[$object::class][$method] = null;
+            self::$memoizedExtensionsByClass[$object::class][$method] = $closure;
         }
 
         return $closure;

@@ -34,6 +34,16 @@ class ExtensionMethodRegistryTest extends TestCase
         $this->assertSame('foobar', ExtensionMethodRegistry::call($foo, 'foobar'));
     }
 
+    public function testCallingExtensionMethodMultipleTimesUsesMemoizedClosure(): void
+    {
+        // Note: This is mainly done for code coverage purposes
+        $foo = new class() {
+        };
+        ExtensionMethodRegistry::registerExtensionMethod($foo::class, 'foo', fn () => 'foo');
+        $this->assertSame('foo', ExtensionMethodRegistry::call($foo, 'foo'));
+        $this->assertSame('foo', ExtensionMethodRegistry::call($foo, 'foo'));
+    }
+
     public function testCallingExtensionMethodOnChildClassOfRegisteredInterfaceStillWorks(): void
     {
         $foo = new class() implements IFoo {
