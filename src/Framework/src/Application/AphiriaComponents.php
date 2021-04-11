@@ -29,6 +29,7 @@ use Aphiria\Framework\Console\Commands\ServeCommandHandler;
 use Aphiria\Framework\Console\Components\CommandComponent;
 use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
+use Aphiria\Framework\ExtensionMethods\Components\ExtensionMethodComponent;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
 use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
@@ -209,6 +210,27 @@ trait AphiriaComponents
     }
 
     /**
+     * Registers an extension method
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param class-string|list<class-string> $interfaces The interface or list of interfaces to register an extension method for
+     * @param string $methodName The name of the extension method
+     * @param Closure $closure The closure that will be invoked whenever the extension method will be called
+     * @return $this For chaining
+     */
+    protected function withExtensionMethod(IApplicationBuilder $appBuilder, string|array $interfaces, string $methodName, Closure $closure): static
+    {
+        if (!$appBuilder->hasComponent(ExtensionMethodComponent::class)) {
+            $appBuilder->withComponent(new ExtensionMethodComponent());
+        }
+
+        $appBuilder->getComponent(ExtensionMethodComponent::class)
+            ->withExtensionMethod($interfaces, $methodName, $closure);
+
+        return $this;
+    }
+
+    /**
      * Registers all the built-in framework commands
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
@@ -298,7 +320,7 @@ trait AphiriaComponents
         string $exceptionType,
         Closure $logLevelFactory
     ): static {
-        //Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
             if (Container::$globalInstance === null) {
                 throw new RuntimeException('Global container instance not set');

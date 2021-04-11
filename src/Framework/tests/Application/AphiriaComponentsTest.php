@@ -27,6 +27,7 @@ use Aphiria\Framework\Application\AphiriaComponents;
 use Aphiria\Framework\Console\Components\CommandComponent;
 use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
+use Aphiria\Framework\ExtensionMethods\Components\ExtensionMethodComponent;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
 use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
@@ -414,6 +415,51 @@ class AphiriaComponentsTest extends TestCase
             }
         };
         $component->build($this->appBuilder);
+    }
+
+    public function testWithExtensionMethodConfiguresComponentToHaveAttributes(): void
+    {
+        $expectedComponent = $this->createMock(ExtensionMethodComponent::class);
+        $expectedComponent->expects($this->once())
+            ->method('withExtensionMethod');
+        $this->appBuilder->method('hasComponent')
+            ->with(ExtensionMethodComponent::class)
+            ->willReturn(true);
+        $this->appBuilder->method('getComponent')
+            ->with(ExtensionMethodComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class() {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder): void
+            {
+                $this->withExtensionMethod($appBuilder, self::class, 'foo', fn (): string => 'foo');
+            }
+        };
+        $component->build($this->appBuilder);
+    }
+
+    public function testWithExtensionMethodRegistersComponentIfItIsNotRegisteredYet(): void
+    {
+        $this->appBuilder->method('hasComponent')
+            ->with(ExtensionMethodComponent::class)
+            ->willReturn(false);
+        $this->appBuilder->method('withComponent')
+            ->with($this->isInstanceOf(ExtensionMethodComponent::class));
+        $this->appBuilder->method('getComponent')
+            ->with(ExtensionMethodComponent::class)
+            ->willReturn($this->createMock(ExtensionMethodComponent::class));
+        $component = new class() {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder): void
+            {
+                $this->withExtensionMethod($appBuilder, self::class, 'foo', fn (): string => 'foo');
+            }
+        };
+        $component->build($this->appBuilder);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testWithFrameworkCommandsConfiguresComponentToHaveCommands(): void
@@ -891,7 +937,7 @@ class AphiriaComponentsTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testWithProblemDetailssWithoutGlobalContainerInstanceSetThrowsException(): void
+    public function testWithProblemDetailsWithoutGlobalContainerInstanceSetThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
