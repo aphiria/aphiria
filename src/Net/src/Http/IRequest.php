@@ -13,12 +13,13 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http;
 
 use Aphiria\Collections\IDictionary;
+use Aphiria\ExtensionMethods\IExtendable;
 use Aphiria\Net\Uri;
 
 /**
  * Defines the interface for HTTP request messages to implement
  */
-interface IRequest extends IHttpMessage
+interface IRequest extends IHttpMessage, IExtendable
 {
     /**
      * Gets the HTTP method for the request

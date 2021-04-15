@@ -12,11 +12,15 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
+use Aphiria\ExtensionMethods\ExtensionMethods;
+
 /**
  * Defines an HTTP response message
  */
 class Response implements IResponse
 {
+    use ExtensionMethods;
+
     /** @var Headers The list of response headers if any are set, otherwise null */
     protected Headers $headers;
     /** @var string|null The response reason phrase if there is one, otherwise null */

@@ -14,6 +14,8 @@ namespace Aphiria\Net\Http;
 
 use Aphiria\Collections\HashTable;
 use Aphiria\Collections\KeyValuePair;
+use Aphiria\ExtensionMethods\ExtensionMethods;
+use Aphiria\ExtensionMethods\IExtendable;
 use InvalidArgumentException;
 use OutOfBoundsException;
 use RuntimeException;
@@ -21,8 +23,10 @@ use RuntimeException;
 /**
  * Defines HTTP headers
  */
-final class Headers extends HashTable
+final class Headers extends HashTable implements IExtendable
 {
+    use ExtensionMethods;
+
     /**
      * Gets the headers as a string
      * Note: This can be used for the headers of a raw HTTP message

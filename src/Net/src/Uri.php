@@ -12,13 +12,17 @@ declare(strict_types=1);
 
 namespace Aphiria\Net;
 
+use Aphiria\ExtensionMethods\ExtensionMethods;
+use Aphiria\ExtensionMethods\IExtendable;
 use InvalidArgumentException;
 
 /**
  * Defines a URI
  */
-class Uri
+class Uri implements IExtendable
 {
+    use ExtensionMethods;
+
     /** @var string|null The URI scheme if set, otherwise null */
     private ?string $scheme;
     /** @var string|null The URI user if set, otherwise null */

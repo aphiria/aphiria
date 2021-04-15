@@ -29,6 +29,7 @@ use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Framework\ExtensionMethods\Components\ExtensionMethodComponent;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
+use Aphiria\Framework\Net\Components\NetComponent;
 use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
@@ -777,6 +778,67 @@ class AphiriaComponentsTest extends TestCase
             }
         };
         $component->build($this->appBuilder, $module);
+    }
+
+    public function testWithNetExtensionMethodsConfiguresComponentToUseExtensionMethods(): void
+    {
+        $expectedComponent = $this->createMock(NetComponent::class);
+        $expectedComponent->expects($this->once())
+            ->method('withExtensionMethods');
+        $this->appBuilder->method('hasComponent')
+            ->with(NetComponent::class)
+            ->willReturn(true);
+        $this->appBuilder->method('getComponent')
+            ->with(NetComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class() {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder): void
+            {
+                $this->withNetExtensionMethods($appBuilder);
+            }
+        };
+        $component->build($this->appBuilder);
+    }
+
+    public function testWithNetExtensionMethodsRegistersComponentIfItIsNotRegisteredYet(): void
+    {
+        $this->appBuilder->method('hasComponent')
+            ->with(NetComponent::class)
+            ->willReturn(false);
+        $this->appBuilder->method('withComponent')
+            ->with($this->isInstanceOf(NetComponent::class));
+        $this->appBuilder->method('getComponent')
+            ->with(NetComponent::class)
+            ->willReturn($this->createMock(NetComponent::class));
+        $component = new class() {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder): void
+            {
+                $this->withNetExtensionMethods($appBuilder);
+            }
+        };
+        $component->build($this->appBuilder);
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
+    public function testWithNetExtensionMethodsWithoutGlobalContainerInstanceSetThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Global container instance not set');
+        Container::$globalInstance = null;
+        $component = new class() {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder): void
+            {
+                $this->withNetExtensionMethods($appBuilder);
+            }
+        };
+        $component->build($this->appBuilder);
     }
 
     public function testWithObjectConstraintsConfiguresComponentToHaveObjectConstraints(): void

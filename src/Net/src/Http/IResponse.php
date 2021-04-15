@@ -12,10 +12,12 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
+use Aphiria\ExtensionMethods\IExtendable;
+
 /**
  * Defines the interface for HTTP response messages to implement
  */
-interface IResponse extends IHttpMessage
+interface IResponse extends IHttpMessage, IExtendable
 {
     /**
      * Gets the reason phrase of the response

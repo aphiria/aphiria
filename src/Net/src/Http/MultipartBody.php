@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
+use Aphiria\ExtensionMethods\ExtensionMethods;
 use Aphiria\IO\Streams\MultiStream;
 use Aphiria\IO\Streams\Stream;
 use Exception;
@@ -23,6 +24,8 @@ use RuntimeException;
  */
 class MultipartBody extends StreamBody
 {
+    use ExtensionMethods;
+
     /** @var string The boundary string */
     private string $boundary;
 

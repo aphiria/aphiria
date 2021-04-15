@@ -31,6 +31,7 @@ use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Framework\ExtensionMethods\Components\ExtensionMethodComponent;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
+use Aphiria\Framework\Net\Components\NetComponent;
 use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
@@ -351,6 +352,30 @@ trait AphiriaComponents
         foreach ($modules as $module) {
             $appBuilder->withModule($module);
         }
+
+        return $this;
+    }
+
+    /**
+     * Enables Net library extension methods
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @return static For chaining
+     * @throws RuntimeException Thrown if the global instance of the container is not set
+     */
+    protected function withNetExtensionMethods(IApplicationBuilder $appBuilder): static
+    {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        if (!$appBuilder->hasComponent(NetComponent::class)) {
+            if (Container::$globalInstance === null) {
+                throw new RuntimeException('Global container instance not set');
+            }
+
+            $appBuilder->withComponent(new NetComponent(Container::$globalInstance));
+        }
+
+        $appBuilder->getComponent(NetComponent::class)
+            ->withExtensionMethods();
 
         return $this;
     }

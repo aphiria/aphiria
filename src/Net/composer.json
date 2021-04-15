@@ -42,6 +42,7 @@
     },
     "require": {
         "aphiria/collections": "1.*@dev",
+        "aphiria/extension-methods": "1.*@dev",
         "aphiria/io": "1.*@dev",
         "aphiria/reflection": "1.*@dev",
         "ext-fileinfo": "*",

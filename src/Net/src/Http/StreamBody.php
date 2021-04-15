@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
+use Aphiria\ExtensionMethods\ExtensionMethods;
 use Aphiria\IO\Streams\IStream;
 
 /**
@@ -19,6 +20,8 @@ use Aphiria\IO\Streams\IStream;
  */
 class StreamBody implements IBody
 {
+    use ExtensionMethods;
+
     /**
      * @param IStream $stream The body content
      */

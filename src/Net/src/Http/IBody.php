@@ -12,13 +12,14 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
+use Aphiria\ExtensionMethods\IExtendable;
 use Aphiria\IO\Streams\IStream;
 use RuntimeException;
 
 /**
  * Defines the interface for all HTTP message bodies to implement
  */
-interface IBody
+interface IBody extends IExtendable
 {
     /**
      * Reads the HTTP body as a string

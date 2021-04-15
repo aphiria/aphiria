@@ -14,6 +14,7 @@ namespace Aphiria\Net\Http;
 
 use Aphiria\Collections\HashTable;
 use Aphiria\Collections\IDictionary;
+use Aphiria\ExtensionMethods\ExtensionMethods;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use RuntimeException;
@@ -23,6 +24,8 @@ use RuntimeException;
  */
 class Request implements IRequest
 {
+    use ExtensionMethods;
+
     /** @var Headers $headers The request headers */
     protected Headers $headers;
     /** @var IDictionary The request properties */

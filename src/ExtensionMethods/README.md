@@ -8,7 +8,7 @@
 <a href="https://packagist.org/packages/aphiria/extension-methods"><img src="https://poser.pugx.org/aphiria/extension-methods/license.svg"></a>
 </p>
 
-# Exceptions
+# Extension Methods
 
 > **Note:** This library is not stable yet.
 
