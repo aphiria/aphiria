@@ -12,12 +12,15 @@ declare(strict_types=1);
 
 namespace Aphiria\Net;
 
+use Aphiria\Collections\IImmutableDictionary;
 use Aphiria\ExtensionMethods\ExtensionMethods;
 use Aphiria\ExtensionMethods\IExtendable;
 use InvalidArgumentException;
 
 /**
  * Defines a URI
+ *
+ * @method IImmutableDictionary parseQueryString() Parses a URI's query string into a collection
  */
 class Uri implements IExtendable
 {

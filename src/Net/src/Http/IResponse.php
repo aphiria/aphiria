@@ -13,9 +13,17 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http;
 
 use Aphiria\ExtensionMethods\IExtendable;
+use Aphiria\Net\Http\Headers\Cookie;
+use Aphiria\Net\Uri;
 
 /**
  * Defines the interface for HTTP response messages to implement
+ *
+ * @method void deleteCookie(string $name, ?string $path = null, ?string $domain = null, bool $isSecure = false, bool $isHttpOnly = true, ?string $sameSite = null) Deletes a cookie from headers
+ * @method void setCookie(Cookie $cookie) Sets a cookie in the headers
+ * @method void setCookies(Cookie[] $cookie) Sets cookies in the headers
+ * @method void redirectToUri(string|Uri $uri, int $statusCode = 302) Sets up the response to redirect to a particular URI
+ * @method void writeJson(array $content) Writes JSON to the response
  */
 interface IResponse extends IHttpMessage, IExtendable
 {

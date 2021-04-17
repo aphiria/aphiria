@@ -12,12 +12,18 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
+use Aphiria\Collections\IDictionary;
 use Aphiria\ExtensionMethods\IExtendable;
 use Aphiria\IO\Streams\IStream;
 use RuntimeException;
 
 /**
  * Defines the interface for all HTTP message bodies to implement
+ *
+ * @method string|string getMimeType() Gets the MIME type of the body
+ * @method IDictionary readAsFormInput() Parses a request body as form input
+ * @method array readAsJson() Attempts to read the request body as JSON
+ * @method MultipartBody|null readAsMultipart() Reads the body as a multipart body
  */
 interface IBody extends IExtendable
 {

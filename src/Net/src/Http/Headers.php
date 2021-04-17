@@ -13,15 +13,22 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http;
 
 use Aphiria\Collections\HashTable;
+use Aphiria\Collections\IImmutableDictionary;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\ExtensionMethods\ExtensionMethods;
 use Aphiria\ExtensionMethods\IExtendable;
+use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use InvalidArgumentException;
 use OutOfBoundsException;
 use RuntimeException;
 
 /**
  * Defines HTTP headers
+ *
+ * @method bool isJson() Gets whether or not the headers have a JSON content type
+ * @method bool isMultipart() Gets whether or not the message is a multipart message
+ * @method ContentTypeHeaderValue|null parseContentTypeHeader() Parses the Content-Type header
+ * @method IImmutableDictionary parseParameters(string $headerName, int $index = 0) Parses the parameters (semi-colon delimited values for a header) for the first value of a header
  */
 final class Headers extends HashTable implements IExtendable
 {
