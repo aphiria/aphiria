@@ -120,6 +120,12 @@
                 <file name="src/Framework/src/Application/AphiriaComponents.php" />
             </errorLevel>
         </UndefinedInterfaceMethod>
+        <UndefinedMagicMethod>
+            <errorLevel type="suppress">
+                <!-- Psalm gets confused when we use @method PHPDoc on interfaces along with union types -->
+                <directory name="src/**/tests" />
+            </errorLevel>
+        </UndefinedMagicMethod>
         <UndefinedMethod>
             <errorLevel type="suppress">
                 <!-- The elevated visibilities in the mocks triggers a false positive -->
