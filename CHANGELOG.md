@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Fixed bug that prevented error messages from being displayed when the application runs out of memory ([#142](https://github.com/aphiria/aphiria/pull/142))
 - Fixed a lot of PHPDoc to use `list<{type}>` instead of `{type}[]` where applicable ([#128](https://github.com/aphiria/aphiria/pull/128))
 - Switched to using stable version of Xdebug during CI ([#138](https://github.com/aphiria/aphiria/pull/138))
 - Re-enabled linter in libraries' CI ([#139](https://github.com/aphiria/aphiria/pull/139))
