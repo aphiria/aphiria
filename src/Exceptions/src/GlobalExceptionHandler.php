@@ -26,10 +26,14 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
 {
     /** @const The default name to use for the logger */
     private const DEFAULT_LOGGER_NAME = 'app';
+    /** @const The amount of reserved memory in bytes to keep */
+    private const RESERVED_MEMORY_BYTES = 10240;
     /** @var LoggerInterface The PSR-3 logger */
     protected LoggerInterface $logger;
     /** @var LogLevelFactory The factory for PSR-3 log levels */
     protected LogLevelFactory $logLevelFactory;
+    /** @var string|null Reserved memory that we'll use in case we run out of memory so that we can still display error messages */
+    private static ?string $reservedMemory = null;
 
     /**
      * @param IExceptionRenderer $exceptionRenderer The underlying exception renderer
@@ -41,6 +45,8 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
         LoggerInterface $logger = null,
         LogLevelFactory $logLevelFactory = null
     ) {
+        // Storing a long string will make sure we've reserved enough memory to be able to display error messages
+        self::$reservedMemory = \str_repeat('x', self::RESERVED_MEMORY_BYTES);
         $this->logger = $logger  ?? new Logger(self::DEFAULT_LOGGER_NAME, [new ErrorLogHandler()]);
         $this->logLevelFactory = $logLevelFactory ?? new LogLevelFactory();
     }
@@ -65,6 +71,9 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
      */
     public function handleException(Throwable $ex): void
     {
+        // Free up our reserved memory so we can display error messages
+        self::$reservedMemory = null;
+
         // It's Throwable, but not an Exception
         if (!$ex instanceof Exception) {
             // We cannot mock Throwable.  So, this is untestable.
