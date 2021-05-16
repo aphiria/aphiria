@@ -28,12 +28,12 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
     private const DEFAULT_LOGGER_NAME = 'app';
     /** @const The amount of reserved memory in bytes to keep */
     private const RESERVED_MEMORY_BYTES = 10240;
-    /** @var string|null Reserved memory that we'll use in case we run out of memory so that we can still display error messages */
-    private static ?string $reservedMemory = null;
     /** @var LoggerInterface The PSR-3 logger */
     protected LoggerInterface $logger;
     /** @var LogLevelFactory The factory for PSR-3 log levels */
     protected LogLevelFactory $logLevelFactory;
+    /** @var string|null Reserved memory that we'll use in case we run out of memory so that we can still display error messages */
+    private static ?string $reservedMemory = null;
 
     /**
      * @param IExceptionRenderer $exceptionRenderer The underlying exception renderer
