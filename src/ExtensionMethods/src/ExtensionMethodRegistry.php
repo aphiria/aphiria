@@ -44,6 +44,7 @@ final class ExtensionMethodRegistry
         } else {
             self::$memoizedExtensionMethodsByClass[$object::class] = [];
             // To avoid unnecessary calls to get interfaces/parent classes, wrap their evaluation in closures
+            /** @var list<Closure(): list<class-string>> $interfaceCallbacks */
             $interfaceCallbacks = [
                 fn (): array => [$object::class],
                 fn (): array => \array_values(\class_parents($object)),
