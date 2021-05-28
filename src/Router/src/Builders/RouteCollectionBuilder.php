@@ -149,7 +149,6 @@ final class RouteCollectionBuilder
         bool $isHttpsOnly = false
     ): RouteBuilder {
         $this->applyGroupRouteTemplates($path, $host, $isHttpsOnly);
-        /** @psalm-suppress ArgumentTypeCoercion The HTTP methods will be a list of strings */
         $routeBuilder = new RouteBuilder(
             (array)$httpMethods,
             new UriTemplate($path, $host, $isHttpsOnly)
