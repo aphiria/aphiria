@@ -59,7 +59,7 @@ class Prompt
                     ++$key;
                 }
 
-                $choiceTexts[] = [$key . ')', $choice];
+                $choiceTexts[] = ["$key)", $choice];
             }
 
             $output->writeln($this->paddingFormatter->format($choiceTexts, fn (array $row): string => "  {$row[0]} {$row[1]}"));
