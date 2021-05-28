@@ -101,7 +101,6 @@ class ValidatorTest extends TestCase
     public function testTryValidateMethodWithMagicMethodIsSkipped(): void
     {
         $object = new class() {
-            /** @psalm-suppress InvalidToString This is a test that should never even be reached */
             public function __toString(): string
             {
                 die('Should not get here');

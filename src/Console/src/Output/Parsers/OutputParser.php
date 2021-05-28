@@ -58,7 +58,7 @@ final class OutputParser implements IOutputParser
 
                     break;
                 case OutputTokenTypes::T_EOF:
-                    if (!$currNode?->isRoot()) {
+                    if ($currNode === null || !$currNode->isRoot()) {
                         throw new RuntimeException(
                             \sprintf(
                                 'Unclosed %s "%s"',
