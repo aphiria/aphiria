@@ -43,12 +43,13 @@ class DriverSessionHandlerTest extends TestCase
         $this->sessionHandler->destroy('foo');
     }
 
-    public function testGcCallsGcOnDriver(): void
+    public function testGcCallsGcOnDriverAndReturnsNumberOfDeletedSessions(): void
     {
         $this->driver->expects($this->once())
             ->method('gc')
-            ->with(123);
-        $this->assertTrue($this->sessionHandler->gc(123));
+            ->with(123)
+            ->willReturn(1);
+        $this->assertEquals(1, $this->sessionHandler->gc(123));
     }
 
     public function testOpenAlwaysReturnsTrue(): void
