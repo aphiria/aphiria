@@ -33,8 +33,9 @@ final class ArraySessionDriver implements ISessionDriver
     /**
      * @inheritdoc
      */
-    public function gc(int $maxLifetime): void
+    public function gc(int $maxLifetime): int
     {
+        return 0;
     }
 
     /**

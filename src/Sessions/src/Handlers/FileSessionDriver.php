@@ -37,16 +37,20 @@ final class FileSessionDriver implements ISessionDriver
     /**
      * @inheritdoc
      */
-    public function gc(int $maxLifetime): void
+    public function gc(int $maxLifetime): int
     {
         $sessionFiles = \glob("{$this->basePath}/*", GLOB_NOSORT);
         $limit = \time() - $maxLifetime;
+        $numDeletedSessions = 0;
 
         foreach ($sessionFiles as $sessionFile) {
             if (\filemtime($sessionFile) < $limit) {
                 @\unlink($sessionFile);
+                $numDeletedSessions++;
             }
         }
+
+        return $numDeletedSessions;
     }
 
     /**

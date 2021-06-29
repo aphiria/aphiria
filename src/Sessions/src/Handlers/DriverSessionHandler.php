@@ -48,11 +48,9 @@ final class DriverSessionHandler implements SessionHandlerInterface
     /**
      * @inheritdoc
      */
-    public function gc(int $maxlifetime): bool
+    public function gc(int $max_lifetime): int|false
     {
-        $this->driver->gc($maxlifetime);
-
-        return true;
+        return $this->driver->gc($max_lifetime);
     }
 
     /**

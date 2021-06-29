@@ -37,7 +37,7 @@ class ArraySessionDriverTest extends TestCase
     public function testGcDoesNothing(): void
     {
         $this->driver->set('foo', 'bar');
-        $this->driver->gc(0);
+        $this->assertEquals(0, $this->driver->gc(0));
         $this->assertSame('bar', $this->driver->get('foo'));
     }
 
