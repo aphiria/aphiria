@@ -84,7 +84,7 @@ for ($testIter = 0;$testIter < $numTests;$testIter++) {
     }
 }
 
-echo formatResults('Symfony', \memory_get_usage() - $startMemory, \microtime(true) - $startTime);
+echo \formatResults('Symfony', \memory_get_usage() - $startMemory, \microtime(true) - $startTime);
 
 /**
  * Aphiria benchmark
@@ -109,7 +109,7 @@ for ($testIter = 0;$testIter < $numTests;$testIter++) {
     }
 }
 
-echo formatResults('Aphiria', \memory_get_usage() - $startMemory, \microtime(true) - $startTime);
+echo \formatResults('Aphiria', \memory_get_usage() - $startMemory, \microtime(true) - $startTime);
 
 /**
  * FastRoute benchmark
@@ -129,4 +129,4 @@ for ($testIter = 0;$testIter < $numTests;$testIter++) {
     }
 }
 
-echo formatResults('FastRoute', \memory_get_usage() - $startMemory, \microtime(true) - $startTime);
+echo \formatResults('FastRoute', \memory_get_usage() - $startMemory, \microtime(true) - $startTime);

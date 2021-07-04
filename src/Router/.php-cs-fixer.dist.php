@@ -26,13 +26,24 @@ return (new PhpCsFixer\Config())
         ],
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
         // A very tiny micro-optimization to reduce the number of opcodes for native function calls
-        'native_function_invocation' => true,
+        'native_function_invocation' => ['include' => ['@all']],
         'new_with_braces' => true,
         'no_empty_comment' => true,
         'no_empty_statement' => true,
         'no_leading_import_slash' => true,
         'no_leading_namespace_whitespace' => true,
-        'no_unneeded_control_parentheses' => true,
+        'no_unneeded_control_parentheses' => [
+            'statements' => [
+                'break',
+                'clone',
+                'continue',
+                'echo_print',
+                'return',
+                'switch_case',
+                'yield',
+                'yield_from'
+            ]
+        ],
         'no_unused_imports' => true,
         'no_whitespace_in_blank_line' => true,
         'ordered_class_elements' => [
