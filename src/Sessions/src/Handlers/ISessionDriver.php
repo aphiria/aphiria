@@ -28,8 +28,9 @@ interface ISessionDriver
      * Performs garbage collection to remove any stale session data
      *
      * @param int $maxLifetime The max lifetime of data allowed in storage
+     * @return int The number of deleted sessions
      */
-    public function gc(int $maxLifetime): void;
+    public function gc(int $maxLifetime): int;
 
     /**
      * Gets the serialized session data for a particular session
