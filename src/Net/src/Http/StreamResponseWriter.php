@@ -81,7 +81,7 @@ class StreamResponseWriter implements IResponseWriter
                     $this->header("$headerName: $headerValue", false);
                 }
             } else {
-                $this->header("$headerName: " . \implode(', ', (array)$kvp->getValue()));
+                $this->header("$headerName: " . \implode(', ', \array_map(static fn (mixed $value) => (string)$value, (array)$kvp->getValue())));
             }
         }
 

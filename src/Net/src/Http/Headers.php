@@ -34,7 +34,7 @@ final class Headers extends HashTable
         $headerString = '';
 
         foreach ($this->hashKeysToKvps as $kvp) {
-            $headerString .= "{$kvp->getKey()}: " . \implode(', ', (array)$kvp->getValue()) . "\r\n";
+            $headerString .= "{$kvp->getKey()}: " . \implode(', ', \array_map(static fn (mixed $value) => (string)$value, (array)$kvp->getValue())) . "\r\n";
         }
 
         return \rtrim($headerString);
