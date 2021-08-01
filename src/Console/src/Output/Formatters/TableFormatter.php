@@ -69,7 +69,7 @@ class TableFormatter
                     '%s%s%s%s%s',
                     $this->verticalBorderChar,
                     $this->cellPaddingString,
-                    \implode($this->cellPaddingString . $this->verticalBorderChar . $this->cellPaddingString, $row),
+                    \implode($this->cellPaddingString . $this->verticalBorderChar . $this->cellPaddingString, \array_map(static fn (mixed $value) => (string)$value, $row)),
                     $this->cellPaddingString,
                     $this->verticalBorderChar
                 )

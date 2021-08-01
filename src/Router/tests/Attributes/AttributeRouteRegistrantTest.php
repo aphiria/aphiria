@@ -54,7 +54,6 @@ class AttributeRouteRegistrantTest extends TestCase
     public function testRegisteringRouteWithAllPropertiesSetCreatesRouteWithAllThosePropertiesSet(): void
     {
         $controller = new class() extends Controller {
-            /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
             #[
                 Get('foo', 'example.com', 'routename', true, ['foo' => 'bar']),
                 RouteConstraint(DummyConstraint::class, ['param'])
@@ -85,7 +84,6 @@ class AttributeRouteRegistrantTest extends TestCase
     public function testRegisteringRouteWithMiddlewareCreatesRouteWithThatMiddleware(): void
     {
         $controller = new class() extends Controller {
-            /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
             #[
                 Get('bar'),
                 Middleware(DummyMiddleware::class, ['foo' => 'bar'])
@@ -111,7 +109,6 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRouteWithMiddlewareThatIsInRouteGroupWithMiddlewareCreatesRouteWithBothMiddleware(): void
     {
-        /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
         $controller = new #[Middleware(DummyMiddleware::class, ['foo' => 'bar'])] class() extends Controller
         {
             #[
@@ -142,7 +139,6 @@ class AttributeRouteRegistrantTest extends TestCase
     public function testRegisteringRouteWithMultipleMiddlewareCreatesRouteWithThoseMiddleware(): void
     {
         $controller = new class() extends Controller {
-            /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
             #[
                 Get('bar'),
                 Middleware(DummyMiddleware::class, ['foo' => 'bar']),
@@ -293,7 +289,6 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteConstraintsAppliesConstraintsToChildRoutes(): void
     {
-        /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
         $controller = new #[RouteConstraint(DummyConstraint::class, ['foo'])] class() extends Controller
         {
             #[Get('')]
