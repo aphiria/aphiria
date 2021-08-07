@@ -144,6 +144,7 @@ class HashTableTest extends TestCase
     public function testNonKeyValuePairInAddRangeThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        /** @psalm-suppress InvalidArgument We are explicitly making sure that an incorrect argument throws */
         $this->hashTable->addRange(['foo' => 'bar']);
     }
 

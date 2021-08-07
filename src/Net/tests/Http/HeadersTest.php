@@ -147,12 +147,10 @@ class HeadersTest extends TestCase
         $this->headers->add('foo', 'bar');
         $actualValues = [];
 
-        /**
-         * @var int $key
-         * @var KeyValuePair $value
-         */
+        /** @var KeyValuePair $value */
         foreach ($this->headers->toArray() as $key => $value) {
             // Verify that the key is numeric, not associative
+            /** @psalm-suppress RedundantCondition We do not want to rely only on Psalm's type checking */
             $this->assertIsInt($key);
             $this->assertInstanceOf(KeyValuePair::class, $value);
             /** @psalm-suppress MixedArrayOffset We're purposely accessing mixed keys */
@@ -177,6 +175,7 @@ class HeadersTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('Value must be instance of %s', KeyValuePair::class));
+        /** @psalm-suppress InvalidArgument Purposely checking an invalid argument */
         $this->headers->addRange(['invalid KeyValuePair']);
     }
 }
