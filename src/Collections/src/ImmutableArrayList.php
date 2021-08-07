@@ -19,18 +19,20 @@ use Traversable;
 
 /**
  * Defines an immutable array list
+ *
+ * @template T
+ * @implements IImmutableList<T>
  */
 class ImmutableArrayList implements IImmutableList
 {
-    /** @var list<mixed> The list of values */
+    /** @var list<T> The list of values */
     protected array $values = [];
 
     /**
-     * @param list<mixed> $values The list of values
+     * @param list<T> $values The list of values
      */
     final public function __construct(array $values)
     {
-        /** @psalm-suppress MixedAssignment Value is intentionally mixed */
         foreach ($values as $value) {
             $this->values[] = $value;
         }
@@ -94,7 +96,6 @@ class ImmutableArrayList implements IImmutableList
 
     /**
      * @inheritdoc
-     * @psalm-suppress MixedReturnStatement This method is correctly returning a mixed type - bug
      */
     public function offsetGet(mixed $offset): mixed
     {
