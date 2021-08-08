@@ -27,6 +27,35 @@ class HeadersTest extends TestCase
         $this->headers = new Headers();
     }
 
+    public function getInvalidHeaderValues(): array
+    {
+        return [
+            ['foo', $this],
+            ['foo', [$this]],
+            ['foo', ['bar', $this]]
+        ];
+    }
+
+    /**
+     * @dataProvider getInvalidHeaderValues
+     * @param string $name The name of the header value to test
+     * @param mixed $value The header value to test
+     */
+    public function testAddingInvalidValueThrowsException(string $name, mixed $value): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Header values can only be strings, numbers, or lists of strings or numbers');
+        $this->headers->add($name, $value);
+    }
+
+    public function testAddingRangeOfInvalidValueThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Header values can only be strings, numbers, or lists of strings or numbers');
+        /** @psalm-suppress InvalidArgument Purposely testing invalid values */
+        $this->headers->addRange([new KeyValuePair('foo', $this)]);
+    }
+
     public function testAddingStringValue(): void
     {
         $this->headers->add('foo', 'bar');

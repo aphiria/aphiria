@@ -199,6 +199,7 @@ class HashTableTest extends TestCase
         $this->assertNull($value);
         $this->hashTable->add('foo', 'bar');
         $this->assertTrue($this->hashTable->tryGet('foo', $value));
+        /** @psalm-suppress DocblockTypeContradiction The hash table is of type <string, string>, not <string, null> - bug */
         $this->assertSame('bar', $value);
     }
 

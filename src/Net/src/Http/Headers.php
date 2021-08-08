@@ -46,13 +46,13 @@ final class Headers extends HashTable
      * Headers are allowed to have multiple values, so we must add support for that
      *
      * @inheritdoc
-     *
-     * @param string $key The header name to add
-     * @param string|int|float|list<string|int|float> $value The value or values
-     * @param bool $append Whether or not to append the value to to the other header values
+     * @param bool $append Whether or not to append the value to the other header values
+     * @throws InvalidArgumentException Thrown if the header value is not a valid type
      */
     public function add(mixed $key, mixed $value, bool $append = false): void
     {
+        self::validateHeaderValue($value);
+        /** @var string|int|float|list<string|int|float> $value At this point, we know the value is one of these types */
         $normalizedName = self::normalizeHeaderName((string)$key);
 
         if (!$append || !$this->containsKey($normalizedName)) {
@@ -66,6 +66,7 @@ final class Headers extends HashTable
 
     /**
      * @inheritdoc
+     * @throws InvalidArgumentException Thrown if the header value is not a valid type
      */
     public function addRange(array $values): void
     {
@@ -149,5 +150,32 @@ final class Headers extends HashTable
     private static function normalizeHeaderName(string $name): string
     {
         return \ucwords(\str_replace('_', '-', \strtolower($name)), '-');
+    }
+
+    /**
+     * Validates the header value type
+     *
+     * @param mixed $value The header value to validate
+     * @throws InvalidArgumentException Thrown if the header value is invalid
+     */
+    private static function validateHeaderValue(mixed $value): void
+    {
+        $exceptionMessage = 'Header values can only be strings, numbers, or lists of strings or numbers';
+
+        if (\is_string($value) || \is_int($value) || \is_float($value)) {
+            return;
+        }
+
+        if (\is_array($value)) {
+            foreach ($value as $singleValue) {
+                if (!\is_string($singleValue) && !\is_int($singleValue) && !\is_float($singleValue)) {
+                    throw new InvalidArgumentException($exceptionMessage);
+                }
+            }
+
+            return;
+        }
+
+        throw new InvalidArgumentException($exceptionMessage);
     }
 }
