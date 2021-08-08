@@ -53,6 +53,7 @@ class ImmutableHashSetTest extends TestCase
 
     public function testCheckingExistenceOfValueReturnsWhetherOrNotThatValueExists(): void
     {
+        /** @var ImmutableHashSet<string> $setWithNoValues */
         $setWithNoValues = new ImmutableHashSet([]);
         $this->assertFalse($setWithNoValues->containsValue('foo'));
         $setWithStringValue = new ImmutableHashSet(['foo']);
