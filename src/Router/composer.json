@@ -46,7 +46,7 @@
     },
     "require-dev": {
         "aphiria/api": "1.*@dev",
-        "friendsofphp/php-cs-fixer": "2.18",
+        "friendsofphp/php-cs-fixer": "^2.19",
         "nikic/fast-route": "1.2",
         "phpunit/phpunit": "~9.5",
         "symfony/routing": "5.2.*"
