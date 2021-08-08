@@ -18,16 +18,20 @@ use Traversable;
 
 /**
  * Defines a hash set
+ *
+ * @template T
+ * @implements ISet<T>
+ * @psalm-consistent-templates Needed for safely creating new instances of this class
  */
 class HashSet implements ISet
 {
-    /** @var array<string, mixed> The set of values */
+    /** @var array<string, T> The set of values */
     protected array $values = [];
     /** @var KeyHasher The key hasher to use */
     private KeyHasher $keyHasher;
 
     /**
-     * @param list<mixed> $values The set of values
+     * @param list<T> $values The set of values
      */
     final public function __construct(array $values = [])
     {
@@ -48,7 +52,6 @@ class HashSet implements ISet
      */
     public function addRange(array $values): void
     {
-        /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
         foreach ($values as $value) {
             $this->add($value);
         }
@@ -94,7 +97,6 @@ class HashSet implements ISet
         $intersectedValues = [];
 
         // We don't use array_intersect because that does string comparisons, which requires __toString()
-        /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
         foreach ($this->values as $value) {
             if (\in_array($value, $values, true)) {
                 $intersectedValues[] = $value;
@@ -144,7 +146,7 @@ class HashSet implements ISet
      * Gets the hash key for a value
      * This method allows extending classes to customize how hash keys are calculated
      *
-     * @param mixed $value The value whose hash key we want
+     * @param T $value The value whose hash key we want
      * @return string The hash key
      * @throws RuntimeException Thrown if the hash key could not be calculated
      */

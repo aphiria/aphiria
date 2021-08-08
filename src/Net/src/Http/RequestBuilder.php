@@ -81,7 +81,7 @@ class RequestBuilder implements IRequestBuilder
     /**
      * @inheritdoc
      */
-    public function withHeader(string $name, string|array $values, bool $append = false): static
+    public function withHeader(string $name, string|int|float|array $values, bool $append = false): static
     {
         $new = clone $this;
         $new->headers->add($name, $values, $append);

@@ -19,20 +19,22 @@ use OutOfRangeException;
 
 /**
  * Defines the interface for lists to implement
+ *
+ * @template T
  */
 interface IList extends ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * Adds a value
      *
-     * @param mixed $value The value to add
+     * @param T $value The value to add
      */
     public function add(mixed $value): void;
 
     /**
      * Adds a range of values
      *
-     * @param list<mixed> $values The values to add
+     * @param list<T> $values The values to add
      */
     public function addRange(array $values): void;
 
@@ -44,7 +46,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Gets whether or not the value exists
      *
-     * @param mixed $value The value to search for
+     * @param T $value The value to search for
      * @return bool True if the value exists, otherwise false
      */
     public function containsValue(mixed $value): bool;
@@ -53,7 +55,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
      * Gets the value at an index
      *
      * @param int $index The index to get
-     * @return mixed The value if it was found, otherwise the default value
+     * @return T The value if it was found, otherwise the default value
      * @throws OutOfRangeException Thrown if the index is < 0 or >= than the length of the list
      */
     public function get(int $index): mixed;
@@ -61,7 +63,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Gets the index of a value
      *
-     * @param mixed $value The value to search for
+     * @param T $value The value to search for
      * @return int|null The index of the value if it was found, otherwise null
      */
     public function indexOf(mixed $value): ?int;
@@ -70,14 +72,14 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
      * Inserts the value at an index
      *
      * @param int $index The index to insert at
-     * @param mixed $value The value to insert
+     * @param T $value The value to insert
      */
     public function insert(int $index, mixed $value): void;
 
     /**
      * Intersects the values of the input array with the values already in the list
      *
-     * @param list<mixed> $values The values to intersect with
+     * @param list<T> $values The values to intersect with
      * @return static The intersected list
      */
     public function intersect(array $values): static;
@@ -92,7 +94,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Removes the value from the list
      *
-     * @param mixed $value The value to remove
+     * @param T $value The value to remove
      */
     public function removeValue(mixed $value): void;
 
@@ -106,7 +108,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Sorts the values of the list
      *
-     * @param callable(mixed, mixed): int $comparer The comparer to sort with
+     * @param callable(T, T): int $comparer The comparer to sort with
      * @return static The sorted list
      */
     public function sort(callable $comparer): static;
@@ -114,14 +116,14 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Gets all of the values as an array
      *
-     * @return list<mixed> All of the values
+     * @return list<T> All of the values
      */
     public function toArray(): array;
 
     /**
      * Unions the values of the input array with the values already in the list
      *
-     * @param list<mixed> $values The values to union with
+     * @param list<T> $values The values to union with
      * @return static The unioned list
      */
     public function union(array $values): static;

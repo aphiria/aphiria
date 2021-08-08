@@ -20,6 +20,8 @@ use RuntimeException;
 
 /**
  * Defines HTTP headers
+ *
+ * @extends HashTable<string, string|int|float|list<string|int|float>>
  */
 final class Headers extends HashTable
 {
@@ -44,13 +46,13 @@ final class Headers extends HashTable
      * Headers are allowed to have multiple values, so we must add support for that
      *
      * @inheritdoc
-     *
-     * @param array-key|mixed $key The header name to add
-     * @param mixed|list<string>|int|string $value The value or values
-     * @param bool $append Whether or not to append the value to to the other header values
+     * @param bool $append Whether or not to append the value to the other header values
+     * @throws InvalidArgumentException Thrown if the header value is not a valid type
      */
     public function add(mixed $key, mixed $value, bool $append = false): void
     {
+        self::validateHeaderValue($value);
+        /** @var string|int|float|list<string|int|float> $value At this point, we know the value is one of these types */
         $normalizedName = self::normalizeHeaderName((string)$key);
 
         if (!$append || !$this->containsKey($normalizedName)) {
@@ -58,17 +60,18 @@ final class Headers extends HashTable
         } else {
             $currentValues = [];
             $this->tryGet($normalizedName, $currentValues);
-            /** @psalm-suppress DuplicateArrayKey The value will be a list */
             parent::add($normalizedName, [...$currentValues, ...(array)$value]);
         }
     }
 
     /**
      * @inheritdoc
+     * @throws InvalidArgumentException Thrown if the header value is not a valid type
      */
     public function addRange(array $values): void
     {
         foreach ($values as $kvp) {
+            /** @psalm-suppress DocblockTypeContradiction We do not want to rely solely on Psalm's type checks */
             if (!$kvp instanceof KeyValuePair) {
                 throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
             }
@@ -97,11 +100,11 @@ final class Headers extends HashTable
      * Gets the first value of a header
      *
      * @param string $name The name of the header whose value we want
-     * @return mixed The first value of the header
+     * @return string|int|float The first value of the header
      * @throws OutOfBoundsException Thrown if the header could not be found
      * @throws RuntimeException Thrown if the key could not be calculated
      */
-    public function getFirst(string $name): mixed
+    public function getFirst(string $name): string|int|float
     {
         if (!$this->containsKey($name)) {
             throw new OutOfBoundsException("Header \"$name\" does not exist");
@@ -121,16 +124,15 @@ final class Headers extends HashTable
     /**
      * Tries to get the first value of a header
      *
-     * @param mixed $name The name of the header whose value we want
-     * @param mixed $value The value, if it is found
-     * @param-out mixed $value
+     * @param string $name The name of the header whose value we want
+     * @param string|int|float|null $value The value, if it is found
+     * @param-out string|int|float|null $value
      * @return bool True if the key exists, otherwise false
      * @throws RuntimeException Thrown if the key could not be calculated
      */
     public function tryGetFirst(mixed $name, mixed &$value): bool
     {
         try {
-            /** @psalm-suppress MixedAssignment We're purposely setting the value to a mixed type */
             $value = ((array)$this->get($name))[0];
 
             return true;
@@ -148,5 +150,32 @@ final class Headers extends HashTable
     private static function normalizeHeaderName(string $name): string
     {
         return \ucwords(\str_replace('_', '-', \strtolower($name)), '-');
+    }
+
+    /**
+     * Validates the header value type
+     *
+     * @param mixed $value The header value to validate
+     * @throws InvalidArgumentException Thrown if the header value is invalid
+     */
+    private static function validateHeaderValue(mixed $value): void
+    {
+        $exceptionMessage = 'Header values can only be strings, numbers, or lists of strings or numbers';
+
+        if (\is_string($value) || \is_int($value) || \is_float($value)) {
+            return;
+        }
+
+        if (\is_array($value)) {
+            foreach ($value as $singleValue) {
+                if (!\is_string($singleValue) && !\is_int($singleValue) && !\is_float($singleValue)) {
+                    throw new InvalidArgumentException($exceptionMessage);
+                }
+            }
+
+            return;
+        }
+
+        throw new InvalidArgumentException($exceptionMessage);
     }
 }

@@ -43,16 +43,16 @@ interface IRequestBuilder
      * Adds a header to the request
      *
      * @param string $name The name of the header to add
-     * @param string|array $values The value(s) to add
+     * @param string|int|float|list<string|int|float> $values The value(s) to add
      * @param bool $append Whether or not to append the value(s) if the header already exists
      * @return static For chaining
      */
-    public function withHeader(string $name, string|array $values, bool $append = false): static;
+    public function withHeader(string $name, string|int|float|array $values, bool $append = false): static;
 
     /**
      * Adds a header to the request
      *
-     * @param array<string, mixed> $headers The mapping of header names to values
+     * @param array<string, string|int|float|list<string|int|float>> $headers The mapping of header names to values
      * @return static For chaining
      */
     public function withManyHeaders(array $headers): static;

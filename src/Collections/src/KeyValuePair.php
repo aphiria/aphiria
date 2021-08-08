@@ -14,12 +14,15 @@ namespace Aphiria\Collections;
 
 /**
  * Defines a key-value pair
+ *
+ * @template TKey
+ * @template TValue
  */
 class KeyValuePair
 {
     /**
-     * @param mixed $key The key
-     * @param mixed $value The value
+     * @param TKey $key The key
+     * @param TValue $value The value
      */
     public function __construct(private mixed $key, private mixed $value)
     {
@@ -28,7 +31,7 @@ class KeyValuePair
     /**
      * Gets the key
      *
-     * @return mixed The key
+     * @return TKey The key
      */
     public function getKey(): mixed
     {
@@ -38,7 +41,7 @@ class KeyValuePair
     /**
      * Gets the value
      *
-     * @return mixed The value
+     * @return TValue The value
      */
     public function getValue(): mixed
     {

@@ -18,14 +18,18 @@ use Traversable;
 
 /**
  * Defines an array list
+ *
+ * @template T
+ * @implements IList<T>
+ * @psalm-consistent-templates Needed for safely creating new instances of this class
  */
 class ArrayList implements IList
 {
-    /** @var list<mixed> The list of values */
+    /** @var list<T> The list of values */
     protected array $values = [];
 
     /**
-     * @param list<mixed> $values The list of values
+     * @param list<T> $values The list of values
      */
     final public function __construct(array $values = [])
     {
@@ -45,7 +49,6 @@ class ArrayList implements IList
      */
     public function addRange(array $values): void
     {
-        /** @psalm-suppress MixedAssignment Psalm is not pulling array types from inheritdoc (#4504) - bug */
         foreach ($values as $value) {
             $this->add($value);
         }
@@ -112,8 +115,7 @@ class ArrayList implements IList
      */
     public function insert(int $index, mixed $value): void
     {
-        /** @psalm-suppress MixedPropertyTypeCoercion The resulting values will be a list */
-        \array_splice($this->values, $index, 0, $value);
+        \array_splice($this->values, $index, 0, [$value]);
     }
 
     /**
@@ -134,7 +136,6 @@ class ArrayList implements IList
 
     /**
      * @inheritdoc
-     * @psalm-suppress MixedReturnStatement This method is correctly returning a mixed type - bug
      */
     public function offsetGet(mixed $offset): mixed
     {
