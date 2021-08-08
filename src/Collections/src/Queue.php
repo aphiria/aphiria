@@ -19,10 +19,12 @@ use Traversable;
 
 /**
  * Defines a stack
+ *
+ * @template T
  */
 class Queue implements Countable, IteratorAggregate
 {
-    /** @var list<mixed> The values in the queue */
+    /** @var list<T> The values in the queue */
     protected array $values = [];
 
     /**
@@ -36,7 +38,7 @@ class Queue implements Countable, IteratorAggregate
     /**
      * Gets whether or not the value exists
      *
-     * @param mixed $value The value to search for
+     * @param T $value The value to search for
      * @return bool True if the value exists, otherwise false
      */
     public function containsValue(mixed $value): bool
@@ -55,7 +57,7 @@ class Queue implements Countable, IteratorAggregate
     /**
      * Dequeues a value from the queue
      *
-     * @return mixed The value of the dequeued value if one exists, otherwise null
+     * @return T|null The value of the dequeued value if one exists, otherwise null
      */
     public function dequeue(): mixed
     {
@@ -69,7 +71,7 @@ class Queue implements Countable, IteratorAggregate
     /**
      * Enqueues a values to the queue
      *
-     * @param mixed $value The value to enqueue
+     * @param T $value The value to enqueue
      */
     public function enqueue(mixed $value): void
     {
@@ -87,7 +89,7 @@ class Queue implements Countable, IteratorAggregate
     /**
      * Peeks at the value at the beginning of the queue
      *
-     * @return mixed The value at the beginning of the queue if one exists, otherwise null
+     * @return T|null The value at the beginning of the queue if one exists, otherwise null
      */
     public function peek(): mixed
     {
@@ -97,7 +99,7 @@ class Queue implements Countable, IteratorAggregate
     /**
      * Gets all of the values as an array
      *
-     * @return list<mixed> All of the values
+     * @return list<T> All of the values
      */
     public function toArray(): array
     {
