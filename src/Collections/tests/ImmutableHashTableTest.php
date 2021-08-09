@@ -30,8 +30,8 @@ class ImmutableHashTableTest extends TestCase
 
     public function testContainsKey(): void
     {
+        /** @var ImmutableHashTable<string, string> $hashTable */
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
-        /** @psalm-suppress InvalidArgument https://github.com/vimeo/psalm/issues/6262 - bug */
         $this->assertFalse($hashTable->containsKey('baz'));
         $this->assertTrue($hashTable->containsKey('foo'));
     }
@@ -44,8 +44,8 @@ class ImmutableHashTableTest extends TestCase
 
     public function testContainsValue(): void
     {
+        /** @var ImmutableHashTable<string, string> $hashTable */
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
-        /** @psalm-suppress InvalidArgument https://github.com/vimeo/psalm/issues/6262 - bug */
         $this->assertFalse($hashTable->containsValue('baz'));
         $this->assertTrue($hashTable->containsValue('bar'));
     }
@@ -136,9 +136,9 @@ class ImmutableHashTableTest extends TestCase
 
     public function testTryGetReturnsTrueIfKeyExistsAndFalseIfValueDoesNotExist(): void
     {
+        /** @var ImmutableHashTable<string, string> $hashTable */
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
         $value = null;
-        /** @psalm-suppress InvalidArgument https://github.com/vimeo/psalm/issues/6262 - bug */
         $this->assertFalse($hashTable->tryGet('baz', $value));
         $this->assertNull($value);
         $this->assertTrue($hashTable->tryGet('foo', $value));
