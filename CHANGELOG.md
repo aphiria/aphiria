@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.0.0-alpha4](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha3...v1.0.0-alpha4) (?)
+## [v1.0.0-alpha4](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha3...v1.0.0-alpha4) (2021-08-08)
 
 ### Fixed
 
@@ -14,6 +14,10 @@
 - Changed `IList::intersect()`, `IList::reverse()`, `IList::sort()`, `IList::union()`, `ISet::intersect()`, `ISet::sort()`, and `ISet::union()` to return a new instance rather than change the original value ([#131](https://github.com/aphiria/aphiria/pull/131))
 - Changed all collection constructors to be final ([#131](https://github.com/aphiria/aphiria/pull/131))
 - Updated to use PHP-CS-Fixer 3.0 ([#140](https://github.com/aphiria/aphiria/pull/140))
+
+### Added
+
+- Added support for generics to all collections to provide better typing ([#147](https://github.com/aphiria/aphiria/pull/147))
 
 ## [v1.0.0-alpha3](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha2...v1.0.0-alpha3) (2021-03-13)
 

@@ -29,6 +29,7 @@ class ImmutableArrayListTest extends TestCase
     {
         $arrayList = new ImmutableArrayList(['foo']);
         $this->assertTrue($arrayList->containsValue('foo'));
+        /** @psalm-suppress InvalidArgument We are explicitly checking a value that does not exist */
         $this->assertFalse($arrayList->containsValue('bar'));
     }
 

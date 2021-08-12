@@ -30,6 +30,7 @@ class ImmutableHashTableTest extends TestCase
 
     public function testContainsKey(): void
     {
+        /** @var ImmutableHashTable<string, string> $hashTable */
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
         $this->assertFalse($hashTable->containsKey('baz'));
         $this->assertTrue($hashTable->containsKey('foo'));
@@ -43,6 +44,7 @@ class ImmutableHashTableTest extends TestCase
 
     public function testContainsValue(): void
     {
+        /** @var ImmutableHashTable<string, string> $hashTable */
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
         $this->assertFalse($hashTable->containsValue('baz'));
         $this->assertTrue($hashTable->containsValue('bar'));
@@ -134,6 +136,7 @@ class ImmutableHashTableTest extends TestCase
 
     public function testTryGetReturnsTrueIfKeyExistsAndFalseIfValueDoesNotExist(): void
     {
+        /** @var ImmutableHashTable<string, string> $hashTable */
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
         $value = null;
         $this->assertFalse($hashTable->tryGet('baz', $value));

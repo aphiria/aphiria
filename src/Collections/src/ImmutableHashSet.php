@@ -18,23 +18,25 @@ use Traversable;
 
 /**
  * Defines an immutable hash set
+ *
+ * @template T
+ * @implements IImmutableSet<T>
  */
 class ImmutableHashSet implements IImmutableSet
 {
-    /** @var array<string, mixed> The set of values */
+    /** @var array<string, T> The set of values */
     protected array $values = [];
     /** @var KeyHasher The key hasher to use */
     private KeyHasher $keyHasher;
 
     /**
-     * @param list<mixed> $values The set of values
+     * @param list<T> $values The set of values
      * @throws RuntimeException Thrown if the values' keys could not be calculated
      */
     final public function __construct(array $values)
     {
         $this->keyHasher = new KeyHasher();
 
-        /** @psalm-suppress MixedAssignment Value is intentionally mixed */
         foreach ($values as $value) {
             $this->values[$this->getHashKey($value)] = $value;
         }
@@ -76,7 +78,7 @@ class ImmutableHashSet implements IImmutableSet
      * Gets the hash key for a value
      * This method allows extending classes to customize how hash keys are calculated
      *
-     * @param mixed $value The value whose hash key we want
+     * @param T $value The value whose hash key we want
      * @return string The hash key
      * @throws RuntimeException Thrown if the hash key could not be calculated
      */
