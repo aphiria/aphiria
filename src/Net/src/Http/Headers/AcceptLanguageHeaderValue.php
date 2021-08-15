@@ -15,7 +15,6 @@ namespace Aphiria\Net\Http\Headers;
 use Aphiria\Collections\IImmutableDictionary;
 use Aphiria\Collections\ImmutableHashTable;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\Immutable;
 
 /**
  * Defines the Accept-Language header value
@@ -34,12 +33,12 @@ final class AcceptLanguageHeaderValue implements IHeaderValueWithQualityScore
      */
     public function __construct(private string $language, IImmutableDictionary $parameters = null)
     {
-        /** @var IImmutableDictionary<string, string|null>|Immutable<string, string|null> parameters */
+        /** @var IImmutableDictionary<string, string|null>|ImmutableHashTable<string, string|null> parameters */
         $this->parameters = $parameters ?? new ImmutableHashTable([]);
-        $quality = 1.0;
+        $quality = null;
         $this->parameters->tryGet('q', $quality);
         // Specifically cast to float for type safety
-        $this->quality = (float)$quality;
+        $this->quality = $quality === null ? 1.0 : (float)$quality;
 
         if ($this->quality < 0 || $this->quality > 1) {
             throw new InvalidArgumentException('Quality score must be between 0 and 1, inclusive');
