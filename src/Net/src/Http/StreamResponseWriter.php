@@ -71,7 +71,7 @@ class StreamResponseWriter implements IResponseWriter
 
         $this->header($startLine);
 
-        /** @var KeyValuePair $kvp */
+        /** @var KeyValuePair<string, list<string|int|float>> $kvp */
         foreach ($response->getHeaders() as $kvp) {
             $headerName = (string)$kvp->getKey();
 

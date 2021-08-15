@@ -21,7 +21,7 @@ use InvalidArgumentException;
  */
 class MediaTypeHeaderValue
 {
-    /** @var IImmutableDictionary The dictionary of parameter names to values */
+    /** @var IImmutableDictionary<string, string|null> The dictionary of parameter names to values */
     protected IImmutableDictionary $parameters;
     /** @var string The type, eg "text" in "text/html" */
     private string $type;
@@ -38,11 +38,12 @@ class MediaTypeHeaderValue
 
     /**
      * @param string $mediaType The media type
-     * @param IImmutableDictionary|null $parameters The dictionary of parameter names to values, or null if no parameters
+     * @param IImmutableDictionary<string, string|null>|null $parameters The dictionary of parameter names to values, or null if no parameters
      * @throws InvalidArgumentException Thrown if the media type is not in the correct format
      */
     public function __construct(protected string $mediaType, IImmutableDictionary $parameters = null)
     {
+        /** @var IImmutableDictionary<string, string|null>|ImmutableHashTable<string, string|null> parameters */
         $this->parameters = $parameters ?? new ImmutableHashTable([]);
         $mediaTypeParts = \explode('/', $mediaType);
 
@@ -87,7 +88,7 @@ class MediaTypeHeaderValue
     /**
      * Gets the dictionary of parameter names to values
      *
-     * @return IImmutableDictionary The properties
+     * @return IImmutableDictionary<string, string|null> The properties
      */
     public function getParameters(): IImmutableDictionary
     {

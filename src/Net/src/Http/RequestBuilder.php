@@ -30,7 +30,7 @@ class RequestBuilder implements IRequestBuilder
     protected Headers $headers;
     /** @var IBody|null The request body if one is set, otherwise null */
     protected ?IBody $body = null;
-    /** @var IDictionary The request properties */
+    /** @var IDictionary<string, mixed> The request properties */
     protected IDictionary $properties;
     /** @var string The protocol version */
     protected string $protocolVersion = '1.1';
@@ -40,6 +40,7 @@ class RequestBuilder implements IRequestBuilder
     public function __construct()
     {
         $this->headers = new Headers();
+        /** @var HashTable<string, mixed> properties */
         $this->properties = new HashTable();
     }
 

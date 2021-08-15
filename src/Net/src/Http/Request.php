@@ -25,7 +25,7 @@ class Request implements IRequest
 {
     /** @var Headers $headers The request headers */
     protected Headers $headers;
-    /** @var IDictionary The request properties */
+    /** @var IDictionary<string, mixed> The request properties */
     protected IDictionary $properties;
     /** @var array<string, bool> The list of valid HTTP methods */
     private static array $validMethods = [
@@ -60,7 +60,7 @@ class Request implements IRequest
      * @param Uri $uri The request URI
      * @param Headers|null $headers The request headers if any are set, otherwise null
      * @param IBody|null $body The request body if one is set, otherwise null
-     * @param IDictionary|null $properties The request properties
+     * @param IDictionary<string, mixed>|null $properties The request properties
      * @param string $protocolVersion The HTTP protocol version
      * @param string $requestTargetType The type of request target URI this request uses
      * @throws InvalidArgumentException Thrown if the any of the properties are not valid
@@ -77,6 +77,7 @@ class Request implements IRequest
     ) {
         $this->method = \strtoupper($method);
         $this->headers = $headers ?? new Headers();
+        /** @var IDictionary<string, mixed>|HashTable<string, mixed> properties */
         $this->properties = $properties ?? new HashTable();
         $this->validateProperties();
 

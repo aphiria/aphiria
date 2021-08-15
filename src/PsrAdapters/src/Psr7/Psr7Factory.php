@@ -110,7 +110,6 @@ class Psr7Factory implements IPsr7Factory
 
             $boundary = null;
             $this->aphiriaRequestParser->parseParameters($aphiriaRequest, 'Content-Type')->tryGet('boundary', $boundary);
-            /** @var string|null $boundary */
             $aphiriaRequest->setBody(new MultipartBody($bodyParts, $boundary));
         } else {
             $aphiriaRequest->setBody(new StreamBody($this->createAphiriaStream($psr7Request->getBody())));
@@ -122,7 +121,7 @@ class Psr7Factory implements IPsr7Factory
 
         /** @psalm-suppress MixedAssignment The values could legitimately be mixed */
         foreach ($psr7Request->getAttributes() as $name => $value) {
-            $aphiriaRequest->getProperties()->add($name, $value);
+            $aphiriaRequest->getProperties()->add((string)$name, $value);
         }
 
         return $aphiriaRequest;
@@ -180,11 +179,10 @@ class Psr7Factory implements IPsr7Factory
             (string)$aphiriaRequest->getUri()
         );
 
-        /** @var KeyValuePair $kvp */
+        /** @var KeyValuePair<string, list<string|int|float>> $kvp */
         foreach ($aphiriaRequest->getHeaders() as $kvp) {
-            /** @var string|string[] $headerValue */
             foreach ($kvp->getValue() as $headerValue) {
-                $psr7Request = $psr7Request->withHeader((string)$kvp->getKey(), $headerValue);
+                $psr7Request = $psr7Request->withHeader((string)$kvp->getKey(), (string)$headerValue);
             }
         }
 
@@ -195,21 +193,13 @@ class Psr7Factory implements IPsr7Factory
         $psr7Request = $psr7Request->withUploadedFiles($this->createPsr7UploadedFiles($aphiriaRequest));
         $psr7CookieParams = $psr7QueryParams = [];
 
-        /** @var KeyValuePair $kvp */
+        /** @var KeyValuePair<string, string> $kvp */
         foreach ($this->aphiriaRequestParser->parseCookies($aphiriaRequest) as $kvp) {
-            /**
-             * @psalm-suppress MixedArrayOffset Purposely building a mixed array
-             * @psalm-suppress MixedAssignment Ditto
-             */
             $psr7CookieParams[$kvp->getKey()] = $kvp->getValue();
         }
 
-        /** @var KeyValuePair $kvp */
+        /** @var KeyValuePair<string, string> $kvp */
         foreach ($this->aphiriaRequestParser->parseQueryString($aphiriaRequest) as $kvp) {
-            /**
-             * @psalm-suppress MixedArrayOffset Purposely building a mixed array
-             * @psalm-suppress MixedAssignment Ditto
-             */
             $psr7QueryParams[$kvp->getKey()] = $kvp->getValue();
         }
 
@@ -223,7 +213,7 @@ class Psr7Factory implements IPsr7Factory
             $psr7Request = $psr7Request->withParsedBody($parsedBody);
         }
 
-        /** @var KeyValuePair $kvp */
+        /** @var KeyValuePair<string, mixed> $kvp */
         foreach ($aphiriaRequest->getProperties() as $kvp) {
             $psr7Request = $psr7Request->withAttribute((string)$kvp->getKey(), $kvp->getValue());
         }
@@ -242,11 +232,10 @@ class Psr7Factory implements IPsr7Factory
         )
             ->withProtocolVersion($aphiriaResponse->getProtocolVersion());
 
-        /** @var KeyValuePair $kvp */
+        /** @var KeyValuePair<string, list<string|int|float>> $kvp */
         foreach ($aphiriaResponse->getHeaders() as $kvp) {
-            /** @var string|string[] $headerValue */
             foreach ((array)$kvp->getValue() as $headerValue) {
-                $psr7Response = $psr7Response->withHeader((string)$kvp->getKey(), $headerValue);
+                $psr7Response = $psr7Response->withHeader((string)$kvp->getKey(), (string)$headerValue);
             }
         }
 
@@ -303,7 +292,6 @@ class Psr7Factory implements IPsr7Factory
 
             /** @var string $name */
             $contentDispositionParameters->tryGet('filename', $filename);
-            /** @var string|null $filename */
             $psr7UploadedFiles[$name] = $this->psr7UploadedFileFactory->createUploadedFile(
                 $this->createPsr7Stream($partBody->readAsStream()),
                 $partBody->getLength(),

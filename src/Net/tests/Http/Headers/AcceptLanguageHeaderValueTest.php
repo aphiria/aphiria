@@ -43,6 +43,7 @@ class AcceptLanguageHeaderValueTest extends TestCase
 
     public function testGettingLanguageReturnsSameOneSetInConstructor(): void
     {
+        /** @var IImmutableDictionary<string, string|null> $parameters */
         $parameters = $this->createMock(IImmutableDictionary::class);
         $value = new AcceptLanguageHeaderValue('en-US', $parameters);
         $this->assertSame('en-US', $value->getLanguage());
@@ -50,6 +51,7 @@ class AcceptLanguageHeaderValueTest extends TestCase
 
     public function testGettingParametersReturnsSameOneSetInConstructor(): void
     {
+        /** @var ImmutableHashTable<string, string|null> $parameters */
         $parameters = new ImmutableHashTable([]);
         $value = new AcceptLanguageHeaderValue('en-US', $parameters);
         $this->assertSame($parameters, $value->getParameters());

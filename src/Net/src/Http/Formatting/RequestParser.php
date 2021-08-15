@@ -175,7 +175,7 @@ class RequestParser
      * Parses the request headers for all cookie values
      *
      * @param IRequest $request The request to parse
-     * @return IImmutableDictionary The mapping of cookie names to values
+     * @return IImmutableDictionary<string, string|null> The mapping of cookie names to values
      */
     public function parseCookies(IRequest $request): IImmutableDictionary
     {
@@ -188,7 +188,7 @@ class RequestParser
      * @param IRequest $request The request to parse
      * @param string $headerName The name of the header whose parameters we're parsing
      * @param int $index The
-     * @return IImmutableDictionary The dictionary of parameters for the first value
+     * @return IImmutableDictionary<string, string|null> The dictionary of parameters for the first value
      */
     public function parseParameters(
         IRequest $request,
@@ -202,7 +202,7 @@ class RequestParser
      * Parses a request's URI's query string into a collection
      *
      * @param IRequest $request The request whose URI we're parsing
-     * @return IImmutableDictionary The parsed query string
+     * @return IImmutableDictionary<string, string> The parsed query string
      */
     public function parseQueryString(IRequest $request): IImmutableDictionary
     {
@@ -213,7 +213,7 @@ class RequestParser
      * Parses a request body as form input
      *
      * @param IRequest $request The request to parse
-     * @return IDictionary The body form input as a collection
+     * @return IDictionary<string, mixed> The body form input as a collection
      */
     public function readAsFormInput(IRequest $request): IDictionary
     {
