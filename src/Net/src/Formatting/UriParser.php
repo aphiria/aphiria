@@ -22,19 +22,22 @@ use Aphiria\Net\Uri;
  */
 class UriParser
 {
-    /** @var array<string, IImmutableDictionary> The mapping of raw query strings to their parsed collections */
+    /** @var array<string, IImmutableDictionary<string, string>> The mapping of raw query strings to their parsed collections */
     private array $parsedQueryStringCache = [];
 
     /**
      * Parses a URI's query string into a collection
      *
      * @param Uri $uri The URI to parse
-     * @return IImmutableDictionary The parsed query string
+     * @return IImmutableDictionary<string, string> The parsed query string
      */
     public function parseQueryString(Uri $uri): IImmutableDictionary
     {
         if (($queryString = $uri->getQueryString()) === null) {
-            return new ImmutableHashTable([]);
+            /** @var ImmutableHashTable<string, string> $queryString */
+            $queryString = new ImmutableHashTable([]);
+
+            return $queryString;
         }
 
         if (!isset($this->parsedQueryStringCache[$queryString])) {

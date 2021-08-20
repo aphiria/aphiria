@@ -30,7 +30,7 @@ use RuntimeException;
  */
 class BodyParser
 {
-    /** @var array<string, HashTable> The mapping of body hash IDs to their parsed form input */
+    /** @var array<string, HashTable<string, mixed>> The mapping of body hash IDs to their parsed form input */
     private array $parsedFormInputCache = [];
     /** @var array<string, string> The mapping of body hash IDs to their parsed MIME types */
     private array $parsedMimeTypeCache = [];
@@ -73,12 +73,15 @@ class BodyParser
      * Parses a request body as form input
      *
      * @param IBody|null $body The body to parse
-     * @return IDictionary The body form input as a collection
+     * @return IDictionary<string, mixed> The body form input as a collection
      */
     public function readAsFormInput(?IBody $body): IDictionary
     {
         if ($body === null) {
-            return new HashTable();
+            /** @var HashTable<string, mixed> $input */
+            $input = new HashTable();
+
+            return $input;
         }
 
         $parsedFormInputCacheKey = \spl_object_hash($body);
@@ -93,7 +96,7 @@ class BodyParser
 
         /** @psalm-suppress MixedAssignment Value here really could be mixed */
         foreach ($formInputArray as $key => $value) {
-            $kvps[] = new KeyValuePair($key, $value);
+            $kvps[] = new KeyValuePair((string)$key, $value);
         }
 
         // Cache this for next time

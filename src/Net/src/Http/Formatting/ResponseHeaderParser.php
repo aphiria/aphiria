@@ -43,7 +43,7 @@ class ResponseHeaderParser extends HeaderParser
             $name = $value = $maxAge = $path = $domain = $sameSite = null;
             $isSecure = $isHttpOnly = false;
 
-            /** @var KeyValuePair $kvp */
+            /** @var KeyValuePair<string, string> $kvp */
             foreach ($this->parseParameters($headers, 'Set-Cookie', $i) as $kvp) {
                 switch ($kvp->getKey()) {
                     case 'Max-Age':
@@ -67,7 +67,6 @@ class ResponseHeaderParser extends HeaderParser
                     default:
                         // Treat the default value as the cookie name
                         $name = (string)$kvp->getKey();
-                        /** @psalm-suppress MixedAssignment The value could legitimately be mixed */
                         $value = $kvp->getValue();
                         break;
                 }

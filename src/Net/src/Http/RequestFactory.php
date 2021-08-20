@@ -145,11 +145,12 @@ class RequestFactory
      * Creates properties
      *
      * @param array<string, mixed> $server The global server array
-     * @return IDictionary The list of properties
+     * @return IDictionary<string, mixed> The list of properties
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
     protected function createProperties(array $server): IDictionary
     {
+        /** @var HashTable<string, mixed> $properties */
         $properties = new HashTable();
 
         // Set the client IP address as a property
