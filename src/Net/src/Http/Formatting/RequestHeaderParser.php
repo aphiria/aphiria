@@ -115,7 +115,7 @@ class RequestHeaderParser extends HeaderParser
      * Parses the request headers for all cookie values
      *
      * @param Headers $headers The headers to parse
-     * @return IImmutableDictionary The mapping of cookie names to values
+     * @return IImmutableDictionary<string, string|null> The mapping of cookie names to values
      */
     public function parseCookies(Headers $headers): IImmutableDictionary
     {

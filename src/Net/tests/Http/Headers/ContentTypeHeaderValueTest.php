@@ -37,19 +37,25 @@ class ContentTypeHeaderValueTest extends TestCase
 
     public function testGettingSubTypeReturnsCorrectSubtType(): void
     {
-        $value = new ContentTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new ContentTypeHeaderValue('foo/bar', $parameters);
         $this->assertSame('bar', $value->getSubType());
     }
 
     public function testGettingTypeReturnsCorrectType(): void
     {
-        $value = new ContentTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new ContentTypeHeaderValue('foo/bar', $parameters);
         $this->assertSame('foo', $value->getType());
     }
 
     public function testTypeWithSuffixSetsTypeSubTypeAndSuffixesCorrectly(): void
     {
-        $value = new ContentTypeHeaderValue('application/foo+json', $this->createMock(IImmutableDictionary::class));
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new ContentTypeHeaderValue('application/foo+json', $parameters);
         $this->assertSame('application', $value->getType());
         $this->assertSame('foo+json', $value->getSubType());
         $this->assertSame('foo', $value->getSubTypeWithoutSuffix());
@@ -72,6 +78,8 @@ class ContentTypeHeaderValueTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Media type must be in format {type}/{sub-type}, received {$incorrectlyFormattedMediaType}");
-        new ContentTypeHeaderValue($incorrectlyFormattedMediaType, $this->createMock(IImmutableDictionary::class));
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        new ContentTypeHeaderValue($incorrectlyFormattedMediaType, $parameters);
     }
 }

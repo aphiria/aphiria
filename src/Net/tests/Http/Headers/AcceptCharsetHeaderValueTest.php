@@ -35,6 +35,7 @@ class AcceptCharsetHeaderValueTest extends TestCase
      */
     public function testExceptionThrownWithQualityScoreOutsideAcceptedRange(string $invalidScore): void
     {
+        /** @var ImmutableHashTable<string, string|null> $parameters */
         $parameters = new ImmutableHashTable([new KeyValuePair('q', $invalidScore)]);
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Quality score must be between 0 and 1, inclusive');
@@ -43,6 +44,7 @@ class AcceptCharsetHeaderValueTest extends TestCase
 
     public function testGettingCharsetReturnsSameOneSetInConstructor(): void
     {
+        /** @var IImmutableDictionary<string, string|null> $parameters */
         $parameters = $this->createMock(IImmutableDictionary::class);
         $value = new AcceptCharsetHeaderValue('utf-8', $parameters);
         $this->assertSame('utf-8', $value->getCharset());
@@ -50,6 +52,7 @@ class AcceptCharsetHeaderValueTest extends TestCase
 
     public function testGettingParametersReturnsSameOneSetInConstructor(): void
     {
+        /** @var ImmutableHashTable<string, string|null> $parameters */
         $parameters = new ImmutableHashTable([]);
         $value = new AcceptCharsetHeaderValue('utf-8', $parameters);
         $this->assertSame($parameters, $value->getParameters());

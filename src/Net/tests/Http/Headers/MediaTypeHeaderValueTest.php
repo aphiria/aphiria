@@ -43,25 +43,33 @@ class MediaTypeHeaderValueTest extends TestCase
 
     public function testGettingSubTypeReturnsCorrectSubType(): void
     {
-        $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new MediaTypeHeaderValue('foo/bar', $parameters);
         $this->assertSame('bar', $value->getSubType());
     }
 
     public function testGettingSubTypeWithoutSuffixForSubTypeWithoutSuffixReturnsCorrectSubType(): void
     {
-        $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new MediaTypeHeaderValue('foo/bar', $parameters);
         $this->assertSame('bar', $value->getSubTypeWithoutSuffix());
     }
 
     public function testGettingTypeReturnsCorrectType(): void
     {
-        $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new MediaTypeHeaderValue('foo/bar', $parameters);
         $this->assertSame('foo', $value->getType());
     }
 
     public function testTypeWithSuffixSetsTypeSubTypeAndSuffixesCorrectly(): void
     {
-        $value = new MediaTypeHeaderValue('application/foo+json', $this->createMock(IImmutableDictionary::class));
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new MediaTypeHeaderValue('application/foo+json', $parameters);
         $this->assertSame('application', $value->getType());
         $this->assertSame('foo+json', $value->getSubType());
         $this->assertSame('foo', $value->getSubTypeWithoutSuffix());
@@ -85,6 +93,8 @@ class MediaTypeHeaderValueTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Media type must be in format {type}/{sub-type}, received {$incorrectlyFormattedMediaType}");
-        new MediaTypeHeaderValue($incorrectlyFormattedMediaType, $this->createMock(IImmutableDictionary::class));
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        new MediaTypeHeaderValue($incorrectlyFormattedMediaType, $parameters);
     }
 }
