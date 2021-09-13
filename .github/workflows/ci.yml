@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: ['8.0']
+        php: ['8.0', '8.1']
         stability: [prefer-stable]
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
     steps:
@@ -31,6 +31,7 @@ jobs:
         run: composer phpunit
       - name: Run Linter
         run: composer phpcs-test
+        if: matrix.php != '8.1'
       - name: Run Psalm Static Analysis
         run: composer psalm -- --shepherd
       - name: Upload Coverage Results To Coveralls
@@ -40,7 +41,7 @@ jobs:
           composer global require php-coveralls/php-coveralls
           php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
       - name: Split Subtrees
-        if: github.ref == 'refs/heads/1.x' || startswith(github.ref, 'refs/tags/')
+        if: matrix.php == '8.0' && (github.ref == 'refs/heads/1.x' || startswith(github.ref, 'refs/tags/'))
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
