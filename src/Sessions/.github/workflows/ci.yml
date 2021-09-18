@@ -8,10 +8,15 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: ['8.0']
+        php: ['8.0', '8.1']
         stability: [prefer-stable]
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
     steps:
+      - name: Set Environment Variables
+        if: matrix.php > 8
+        env:
+          # If this is a future version of PHP, we'll still try to run PHP-CS-Fixer
+          PHP_CS_FIXER_IGNORE_ENV: 1
       - name: Check Out Code
         uses: actions/checkout@v2
         with:
