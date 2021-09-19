@@ -16,6 +16,7 @@ jobs:
             stability: prefer-stable
             php-cs-fixer-ignore-php-version: 1
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
+    continue-on-error: ${{ matrix.experimental }}
     steps:
       - name: Check Out Code
         uses: actions/checkout@v2
