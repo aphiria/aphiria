@@ -34,15 +34,11 @@ use JsonException;
  */
 final class NegotiatedResponseFactory implements IResponseFactory
 {
-    /** @var IContentNegotiator The content negotiator to use */
-    private IContentNegotiator $contentNegotiator;
-
     /**
-     * @param IContentNegotiator|null $contentNegotiator The content negotiator to use, or null if using the default
+     * @param IContentNegotiator $contentNegotiator The content negotiator to use
      */
-    public function __construct(IContentNegotiator $contentNegotiator = null)
+    public function __construct(private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator())
     {
-        $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
     }
 
     /**

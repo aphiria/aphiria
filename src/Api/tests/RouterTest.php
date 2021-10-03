@@ -33,6 +33,7 @@ use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\UriTemplate;
+use Closure;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -170,7 +171,7 @@ class RouterTest extends TestCase
             ->willReturn($matchingResult);
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')
-            ->with([$controller, 'noParameters'])
+            ->with(Closure::fromCallable([$controller, 'noParameters']))
             ->willReturn($expectedResponse);
         $this->assertSame($expectedResponse, $this->router->handle($request));
         // Test that the middleware actually set the headers
@@ -190,33 +191,6 @@ class RouterTest extends TestCase
         } catch (HttpException $ex) {
             $this->assertSame(HttpStatusCodes::NOT_FOUND, $ex->response->getStatusCode());
         }
-    }
-
-    public function testRouteActionWithNonExistentControllerMethodThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(\sprintf('Controller method %s::doesNotExist() does not exist', ControllerMock::class));
-        $request = $this->createRequestMock('GET', 'http://foo.com/bar');
-        $controller = new ControllerMock();
-        $this->serviceResolver->expects($this->once())
-            ->method('resolve')
-            ->with(ControllerMock::class)
-            ->willReturn($controller);
-        $matchingResult = new RouteMatchingResult(
-            new Route(
-                new UriTemplate('foo'),
-                new RouteAction(ControllerMock::class, 'doesNotExist'),
-                [],
-                []
-            ),
-            [],
-            []
-        );
-        $this->routeMatcher->expects($this->once())
-            ->method('matchRoute')
-            ->with('GET', 'foo.com', '/bar')
-            ->willReturn($matchingResult);
-        $this->router->handle($request);
     }
 
     public function testRouteActionWithControllerClassNameResolvesItAndInvokesIt(): void
@@ -244,7 +218,7 @@ class RouterTest extends TestCase
             ->willReturn($matchingResult);
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')
-            ->with([$controller, 'noParameters'])
+            ->with(Closure::fromCallable([$controller, 'noParameters']))
             ->willReturn($expectedResponse);
         $this->assertSame($expectedResponse, $this->router->handle($request));
         // Verify the request was set

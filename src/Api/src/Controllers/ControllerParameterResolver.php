@@ -25,19 +25,14 @@ use ReflectionParameter;
  */
 final class ControllerParameterResolver implements IControllerParameterResolver
 {
-    /** @var IContentNegotiator The content negotiator */
-    private IContentNegotiator $contentNegotiator;
-    /** @var UriParser The URI parser to use */
-    private UriParser $uriParser;
-
     /**
-     * @param IContentNegotiator|null $contentNegotiator The content negotiator, or null if using the default negotiator
-     * @param UriParser|null $uriParser The URI parser to use, or null if using the default parser
+     * @param IContentNegotiator $contentNegotiator The content negotiator
+     * @param UriParser $uriParser The URI parser to use
      */
-    public function __construct(IContentNegotiator $contentNegotiator = null, UriParser $uriParser = null)
-    {
-        $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
-        $this->uriParser = $uriParser ?? new UriParser();
+    public function __construct(
+        private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
+        private readonly UriParser $uriParser = new UriParser()
+    ) {
     }
 
     /**

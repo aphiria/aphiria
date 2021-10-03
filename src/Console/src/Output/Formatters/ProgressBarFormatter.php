@@ -30,27 +30,24 @@ class ProgressBarFormatter implements IProgressBarObserver
     public string $remainingProgressChar = '-';
     /** @var DateTimeImmutable The start time of the progress bar */
     private DateTimeImmutable $startTime;
-    /** @var string The output string format */
-    private string $outputFormat;
     /** @var bool Whether or not this is the first time we've output the progress bar */
     private bool $isFirstOutput = true;
 
     /**
      * @param IOutput $output The output to draw to
      * @param int $progressBarWidth The width of the progress bar (including delimiters)
-     * @param string|null $outputFormat The output format to use, or null if using the default
+     * @param string $outputFormat The output format to use
      *      Acceptable placeholders are 'progress', 'maxSteps', 'bar', 'percent', and 'timeRemaining'
      * @param int $redrawFrequency The frequency in seconds we redraw the progress bar
      * @throws InvalidArgumentException Thrown if the max steps are invalid
      * @throws Exception Thrown if we could not create the start time
      */
     public function __construct(
-        private IOutput $output,
+        private readonly IOutput $output,
         private int $progressBarWidth = self::DEFAULT_PROGRESS_BAR_WIDTH,
-        string $outputFormat = null,
+        private readonly string $outputFormat = '%bar% %progress%/%maxSteps%' . PHP_EOL . 'Time remaining: %timeRemaining%',
         private int $redrawFrequency = 1
     ) {
-        $this->outputFormat = $outputFormat ?? '%bar% %progress%/%maxSteps%' . PHP_EOL . 'Time remaining: %timeRemaining%';
         $this->startTime = new DateTimeImmutable();
     }
 

@@ -26,26 +26,16 @@ use RuntimeException;
  */
 final class OutputCompiler implements IOutputCompiler
 {
-    /** @var ElementRegistry The registry of elements */
-    private ElementRegistry $elements;
-    /** @var IOutputLexer The lexer to use */
-    private IOutputLexer $lexer;
-    /** @var IOutputParser The parser to use */
-    private IOutputParser $parser;
-
     /**
-     * @param ElementRegistry|null $elements The registry of elements, or null if using the default one
-     * @param IOutputLexer|null $lexer The lexer to use, or null if using the default one
-     * @param IOutputParser|null $parser The parser to use, or null if using the default one
+     * @param ElementRegistry $elements The registry of elements
+     * @param IOutputLexer $lexer The lexer to use
+     * @param IOutputParser $parser The parser to use
      */
     public function __construct(
-        ElementRegistry $elements = null,
-        IOutputLexer $lexer = null,
-        IOutputParser $parser = null
+        private readonly ElementRegistry $elements = new ElementRegistry(),
+        private readonly IOutputLexer $lexer = new OutputLexer(),
+        private readonly IOutputParser $parser = new OutputParser()
     ) {
-        $this->elements = $elements ?? new ElementRegistry();
-        $this->lexer = $lexer ?? new OutputLexer();
-        $this->parser = $parser ?? new OutputParser();
     }
 
     /**

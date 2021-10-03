@@ -17,8 +17,6 @@ namespace Aphiria\Console\Output\Formatters;
  */
 class TableFormatter
 {
-    /** @var PaddingFormatter The padding formatter */
-    private PaddingFormatter $padding;
     /** @var string The padding string */
     private string $cellPaddingString = ' ';
     /** @var string The character to use for vertical borders */
@@ -29,11 +27,10 @@ class TableFormatter
     private string $intersectionChar = '+';
 
     /**
-     * @param PaddingFormatter|null $padding The padding formatter
+     * @param PaddingFormatter $padding The padding formatter
      */
-    public function __construct(PaddingFormatter $padding = null)
+    public function __construct(private readonly PaddingFormatter $padding = new PaddingFormatter())
     {
-        $this->padding = $padding ?? new PaddingFormatter();
     }
 
     /**

@@ -22,15 +22,11 @@ use RuntimeException;
  */
 class Prompt
 {
-    /** @var PaddingFormatter The space padding formatter to use */
-    private PaddingFormatter $paddingFormatter;
-
     /***
-     * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use
+     * @param PaddingFormatter $paddingFormatter The space padding formatter to use
      */
-    public function __construct(PaddingFormatter $paddingFormatter = null)
+    public function __construct(private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter())
     {
-        $this->paddingFormatter = $paddingFormatter ?? new PaddingFormatter();
     }
 
     /**

@@ -29,21 +29,19 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
     private const FORMATTER_TYPE_INPUT = 'input';
     /** @const The type of formatter to match on for responses */
     private const FORMATTER_TYPE_OUTPUT = 'output';
-    /** @var RequestHeaderParser The header parser to use to get request header values */
-    private RequestHeaderParser $headerParser;
 
     /**
      * @param list<IMediaTypeFormatter> $mediaTypeFormatters The list of supported media type formatters
-     * @param RequestHeaderParser|null $headerParser The header parser to use to get request header values
+     * @param RequestHeaderParser $headerParser The header parser to use to get request header values
      * @throws InvalidArgumentException Thrown if there are no media type formatters specified
      */
-    public function __construct(private array $mediaTypeFormatters, RequestHeaderParser $headerParser = null)
-    {
+    public function __construct(
+        private readonly array $mediaTypeFormatters,
+        private readonly RequestHeaderParser $headerParser = new RequestHeaderParser()
+    ) {
         if (\count($this->mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
         }
-
-        $this->headerParser = $headerParser ?? new RequestHeaderParser();
     }
 
     /**

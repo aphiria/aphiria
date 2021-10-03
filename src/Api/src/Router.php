@@ -33,6 +33,7 @@ use Aphiria\Routing\Matchers\IRouteMatcher;
 use Aphiria\Routing\Matchers\RouteMatchingResult;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\RouteAction;
+use Closure;
 use InvalidArgumentException;
 
 /**
@@ -40,24 +41,21 @@ use InvalidArgumentException;
  */
 class Router implements IRequestHandler
 {
-    /** @var IContentNegotiator The content negotiator */
-    private IContentNegotiator $contentNegotiator;
     /** @var IRouteActionInvoker The route action invoker */
     private IRouteActionInvoker $routeActionInvoker;
 
     /**
      * @param IRouteMatcher $routeMatcher The route matcher
      * @param IServiceResolver $serviceResolver The service resolver
-     * @param IContentNegotiator|null $contentNegotiator The content negotiator, or null if using the default negotiator
+     * @param IContentNegotiator $contentNegotiator The content negotiator
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
      */
     public function __construct(
         private IRouteMatcher $routeMatcher,
         private IServiceResolver $serviceResolver,
-        IContentNegotiator $contentNegotiator = null,
+        private IContentNegotiator $contentNegotiator = new ContentNegotiator(),
         IRouteActionInvoker $routeActionInvoker = null
     ) {
-        $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }
 
@@ -92,26 +90,16 @@ class Router implements IRequestHandler
      *
      * @param RouteAction $routeAction The route action to create the controller from
      * @param Controller|null $controller The "out" parameter that will contain the controller
-     * @param callable|null $routeActionDelegate The "out" parameter that will contain the route action delegate
+     * @param Closure|null $routeActionDelegate The "out" parameter that will contain the route action delegate
      * @throws ResolutionException Thrown if the controller could not be resolved
      */
     private function createController(
         RouteAction $routeAction,
         ?Controller &$controller,
-        ?callable &$routeActionDelegate
+        ?Closure &$routeActionDelegate
     ): void {
         $controller = $this->serviceResolver->resolve($routeAction->className);
-        $routeActionDelegate = [$controller, $routeAction->methodName];
-
-        if (!\is_callable($routeActionDelegate)) {
-            throw new InvalidArgumentException(
-                \sprintf(
-                    'Controller method %s::%s() does not exist',
-                    $routeAction->className,
-                    $routeAction->methodName
-                )
-            );
-        }
+        $routeActionDelegate = Closure::fromCallable([$controller, $routeAction->methodName]);
 
         if (!$controller instanceof Controller) {
             throw new InvalidArgumentException(

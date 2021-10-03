@@ -23,15 +23,11 @@ use Aphiria\Net\Http\IRequest;
  */
 final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
 {
-    /** @var RequestHeaderParser The header parser to use to get charset headers */
-    private RequestHeaderParser $headerParser;
-
     /**
-     * @param RequestHeaderParser|null $headerParser The header parser to use to get charset headers
+     * @param RequestHeaderParser $headerParser The header parser to use to get charset headers
      */
-    public function __construct(RequestHeaderParser $headerParser = null)
+    public function __construct(private readonly RequestHeaderParser $headerParser = new RequestHeaderParser())
     {
-        $this->headerParser = $headerParser ?? new RequestHeaderParser();
     }
 
     /**

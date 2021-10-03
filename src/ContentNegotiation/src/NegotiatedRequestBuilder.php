@@ -31,27 +31,23 @@ use InvalidArgumentException;
  */
 class NegotiatedRequestBuilder extends RequestBuilder
 {
-    /** @var IMediaTypeFormatterMatcher The media type formatter matcher */
-    private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
-
     /**
-     * @param IMediaTypeFormatterMatcher|null $mediaTypeFormatterMatcher The media type formatter matcher, or null if using the default one
+     * @param IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher The media type formatter matcher
      * @param string $defaultContentType The default content type to use for bodies
      * @param string $defaultAccept The default Accept header value
      */
     public function __construct(
-        IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
+        private readonly IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher([
+            new JsonMediaTypeFormatter(),
+            new XmlMediaTypeFormatter(),
+            new HtmlMediaTypeFormatter(),
+            new PlainTextMediaTypeFormatter()
+        ]),
         private string $defaultContentType = 'application/json',
         string $defaultAccept = '*/*'
     ) {
         parent::__construct();
 
-        $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher([
-                new JsonMediaTypeFormatter(),
-                new XmlMediaTypeFormatter(),
-                new HtmlMediaTypeFormatter(),
-                new PlainTextMediaTypeFormatter()
-            ]);
         $this->headers->add('Accept', $defaultAccept);
     }
 

@@ -56,7 +56,7 @@ class ProgressBarFormatterTest extends TestCase
     public function testOnProgressClearsPreviousOutputUsingAnsiCodes(): void
     {
         // Use a redraw frequency of 0 so that it redraws every time
-        $formatter = new ProgressBarFormatter($this->output, 12, null, 0);
+        $formatter = new ProgressBarFormatter($this->output, 12, redrawFrequency: 0);
         $this->output->method('write')
             ->withConsecutive(
                 [$this->anything()],

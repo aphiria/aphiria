@@ -297,7 +297,7 @@ class ContentNegotiatorTest extends TestCase
             ->method('getBestLanguageMatch')
             ->with($this->request)
             ->willReturn(null);
-        $negotiator = new ContentNegotiator([$formatter], null, null, $languageMatcher);
+        $negotiator = new ContentNegotiator([$formatter], languageMatcher: $languageMatcher);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
         $this->assertSame($formatter, $result->formatter);
         $this->assertNull($result->language);
@@ -323,7 +323,7 @@ class ContentNegotiatorTest extends TestCase
             ->willReturn('en-US');
         $this->headers->add('Accept-Charset', 'utf-8');
         $this->headers->add('Accept-Language', 'en-US');
-        $negotiator = new ContentNegotiator([$formatter], null, null, $languageMatcher);
+        $negotiator = new ContentNegotiator([$formatter], languageMatcher: $languageMatcher);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
         $this->assertSame($formatter, $result->formatter);
         $this->assertSame('application/json', $result->mediaType);
