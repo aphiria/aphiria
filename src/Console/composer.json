@@ -40,7 +40,7 @@
     "require": {
         "aphiria/dependency-injection": "1.*@dev",
         "aphiria/reflection": "1.*@dev",
-        "php": ">=8.0"
+        "php": ">=8.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "dev-master#eb717fe86c222c7d1be2be900f059510d700dafb",
