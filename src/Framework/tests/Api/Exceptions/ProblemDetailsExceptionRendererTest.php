@@ -27,9 +27,9 @@ use PHPUnit\Framework\TestCase;
 
 class ProblemDetailsExceptionRendererTest extends TestCase
 {
-    private IResponseWriter|MockObject $responseWriter;
-    private IRequest|MockObject $request;
-    private IResponseFactory|MockObject $responseFactory;
+    private IResponseWriter&MockObject $responseWriter;
+    private IRequest&MockObject $request;
+    private IResponseFactory&MockObject $responseFactory;
 
     protected function setUp(): void
     {

@@ -30,7 +30,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class SymfonySerializerBinderTest extends TestCase
 {
-    private IContainer|MockObject $container;
+    private IContainer&MockObject $container;
     private SymfonySerializerBinder $binder;
 
     protected function setUp(): void

@@ -22,7 +22,7 @@ class ProblemDetailsResponseMutatorTest extends TestCase
 {
     private ProblemDetailsResponseMutator $mutator;
     private Headers $headers;
-    private IResponse|MockObject $response;
+    private IResponse&MockObject $response;
 
     protected function setUp(): void
     {

@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 class ResponseFormatterTest extends TestCase
 {
     private ResponseFormatter $formatter;
-    private IResponse|MockObject $response;
+    private IResponse&MockObject $response;
     private Headers $headers;
 
     protected function setUp(): void

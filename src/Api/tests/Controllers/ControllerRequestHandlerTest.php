@@ -24,8 +24,8 @@ use PHPUnit\Framework\TestCase;
 
 class ControllerRequestHandlerTest extends TestCase
 {
-    private IRouteActionInvoker|MockObject $routeActionInvoker;
-    private IContentNegotiator|MockObject $contentNegotiator;
+    private IRouteActionInvoker&MockObject $routeActionInvoker;
+    private IContentNegotiator&MockObject $contentNegotiator;
 
     protected function setUp(): void
     {
@@ -35,7 +35,7 @@ class ControllerRequestHandlerTest extends TestCase
 
     public function testHandlingRequestSetsControllerProperties(): void
     {
-        /** @var IRequest|MockObject $request */
+        /** @var IRequest&MockObject $request */
         $request = $this->createMock(IRequest::class);
         /** @var ControllerWithEndpoints&MockObject $controller */
         $controller = $this->createMock(ControllerWithEndpoints::class);

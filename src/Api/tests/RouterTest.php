@@ -41,10 +41,10 @@ use PHPUnit\Framework\TestCase;
 class RouterTest extends TestCase
 {
     private Router $router;
-    private IRouteMatcher|MockObject $routeMatcher;
-    private IServiceResolver|MockObject $serviceResolver;
-    private IContentNegotiator|MockObject $contentNegotiator;
-    private IRouteActionInvoker|MockObject $routeActionInvoker;
+    private IRouteMatcher&MockObject $routeMatcher;
+    private IServiceResolver&MockObject $serviceResolver;
+    private IContentNegotiator&MockObject $contentNegotiator;
+    private IRouteActionInvoker&MockObject $routeActionInvoker;
 
     protected function setUp(): void
     {
@@ -257,9 +257,9 @@ class RouterTest extends TestCase
      *
      * @param string $method The HTTP method to use
      * @param string $uri The URI to use
-     * @return IRequest|MockObject The mocked request
+     * @return IRequest&MockObject The mocked request
      */
-    private function createRequestMock(string $method, string $uri): IRequest|MockObject
+    private function createRequestMock(string $method, string $uri): IRequest&MockObject
     {
         $request = $this->createMock(IRequest::class);
         $request->method('getMethod')

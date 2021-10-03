@@ -29,7 +29,7 @@ class AttributeCommandRegistrantTest extends TestCase
 {
     private AttributeCommandRegistrant $registrant;
     private CommandRegistry $commands;
-    private ITypeFinder|MockObject $typeFinder;
+    private ITypeFinder&MockObject $typeFinder;
 
     protected function setUp(): void
     {

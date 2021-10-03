@@ -41,11 +41,11 @@ use RuntimeException;
 
 class RouteActionInvokerTest extends TestCase
 {
-    private IRequestBodyValidator|MockObject $requestBodyValidator;
+    private IRequestBodyValidator&MockObject $requestBodyValidator;
     private RouteActionInvoker $invoker;
-    private IControllerParameterResolver|MockObject $parameterResolver;
-    private IContentNegotiator|MockObject $contentNegotiator;
-    private IResponseFactory|MockObject $responseFactory;
+    private IControllerParameterResolver&MockObject $parameterResolver;
+    private IContentNegotiator&MockObject $contentNegotiator;
+    private IResponseFactory&MockObject $responseFactory;
     private ControllerWithEndpoints $controller;
 
     protected function setUp(): void
@@ -107,7 +107,7 @@ class RouteActionInvokerTest extends TestCase
 
             return $expectedResponse;
         };
-        /** @var IRequest|MockObject $request */
+        /** @var IRequest&MockObject $request */
         $request = $this->createMock(IRequest::class);
         $this->parameterResolver->expects($this->once())
             ->method('resolveParameter')
@@ -119,7 +119,7 @@ class RouteActionInvokerTest extends TestCase
 
     public function testInvokingMethodThatReturnsPopoCreatesOkResponseFromReturnValue(): void
     {
-        /** @var IRequest|MockObject $request */
+        /** @var IRequest&MockObject $request */
         $request = $this->createMock(IRequest::class);
         $expectedResponse = $this->createMock(IResponse::class);
         $this->responseFactory->method('createResponse')

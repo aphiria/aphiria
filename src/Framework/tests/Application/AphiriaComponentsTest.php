@@ -44,7 +44,7 @@ use RuntimeException;
 
 class AphiriaComponentsTest extends TestCase
 {
-    private IApplicationBuilder|MockObject $appBuilder;
+    private IApplicationBuilder&MockObject $appBuilder;
 
     protected function setUp(): void
     {

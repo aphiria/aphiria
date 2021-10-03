@@ -22,7 +22,7 @@ class MultipartBodyPartTest extends TestCase
 {
     private MultipartBodyPart $bodyPart;
     private Headers $headers;
-    private IBody|MockObject $body;
+    private IBody&MockObject $body;
 
     protected function setUp(): void
     {

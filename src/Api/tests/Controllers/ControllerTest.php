@@ -34,8 +34,8 @@ use PHPUnit\Framework\TestCase;
 class ControllerTest extends TestCase
 {
     private Controller $controller;
-    private IRequest|MockObject $request;
-    private IResponseFactory|MockObject $responseFactory;
+    private IRequest&MockObject $request;
+    private IResponseFactory&MockObject $responseFactory;
 
     protected function setUp(): void
     {

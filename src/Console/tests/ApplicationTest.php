@@ -36,7 +36,7 @@ use Throwable;
 class ApplicationTest extends TestCase
 {
     private CommandRegistry $commands;
-    private IServiceResolver|MockObject $commandHandlerResolver;
+    private IServiceResolver&MockObject $commandHandlerResolver;
     private Output $output;
     private Application $app;
 

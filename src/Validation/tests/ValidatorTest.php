@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests;
 
-use Aphiria\Collections\Tests\Mocks\FakeObject;
 use Aphiria\Validation\CircularDependencyException;
 use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\ObjectConstraints;
@@ -29,7 +28,7 @@ class ValidatorTest extends TestCase
 {
     private Validator $validator;
     private ObjectConstraintsRegistry $objectConstraints;
-    private IErrorMessageInterpolator|FakeObject|MockObject $errorMessageInterpolator;
+    private IErrorMessageInterpolator&MockObject $errorMessageInterpolator;
 
     protected function setUp(): void
     {

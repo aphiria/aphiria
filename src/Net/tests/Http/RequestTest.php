@@ -28,7 +28,7 @@ class RequestTest extends TestCase
 {
     private Request $request;
     private Headers $headers;
-    private IBody|MockObject $body;
+    private IBody&MockObject $body;
     private Uri $uri;
     private HashTable $properties;
 

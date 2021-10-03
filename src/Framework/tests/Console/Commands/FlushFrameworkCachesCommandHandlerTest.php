@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 
 class FlushFrameworkCachesCommandHandlerTest extends TestCase
 {
-    private IOutput|MockObject $output;
+    private IOutput&MockObject $output;
 
     protected function setUp(): void
     {

@@ -38,8 +38,8 @@ class TrieCompilerTest extends TestCase
 {
     private TrieCompiler $compiler;
     private RouteVariableConstraintFactory $constraintFactory;
-    private IUriTemplateParser|MockObject $parser;
-    private IUriTemplateLexer|MockObject $lexer;
+    private IUriTemplateParser&MockObject $parser;
+    private IUriTemplateLexer&MockObject $lexer;
     private AstNode $ast;
     private RootTrieNode $expectedTrie;
 
@@ -232,9 +232,9 @@ class TrieCompilerTest extends TestCase
         $this->ast->addChild($pathAst);
 
         // Set up constraint factory
-        /** @var IRouteVariableConstraint|MockObject $constraint1 */
+        /** @var IRouteVariableConstraint&MockObject $constraint1 */
         $constraint1 = $this->createMock(IRouteVariableConstraint::class);
-        /** @var IRouteVariableConstraint|MockObject $constraint2 */
+        /** @var IRouteVariableConstraint&MockObject $constraint2 */
         $constraint2 = $this->createMock(IRouteVariableConstraint::class);
         /** @psalm-suppress InvalidArgument Psalm does not handle union types well - bug */
         $this->constraintFactory->registerConstraintFactory('r1', fn (string $p1, string $p2) => $constraint1);
@@ -285,7 +285,7 @@ class TrieCompilerTest extends TestCase
         $this->ast->addChild($pathAst);
 
         // Set up constraint factory
-        /** @var IRouteVariableConstraint|MockObject $constraint */
+        /** @var IRouteVariableConstraint&MockObject $constraint */
         $constraint = $this->createMock(IRouteVariableConstraint::class);
         /** @psalm-suppress InvalidArgument Psalm does not handle union types well - bug */
         $this->constraintFactory->registerConstraintFactory('r1', fn () => $constraint);

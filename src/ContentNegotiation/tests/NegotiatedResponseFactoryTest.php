@@ -36,7 +36,7 @@ use PHPUnit\Framework\TestCase;
 class NegotiatedResponseFactoryTest extends TestCase
 {
     private NegotiatedResponseFactory $factory;
-    private IContentNegotiator|MockObject $contentNegotiator;
+    private IContentNegotiator&MockObject $contentNegotiator;
 
     protected function setUp(): void
     {
@@ -48,7 +48,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     {
         $request = $this->createRequest('http://foo.com');
         $rawBody = [new User(123, 'foo@bar.com'), new User(456, 'bar@baz.com')];
-        /** @var IMediaTypeFormatter|MockObject $mediaTypeFormatter */
+        /** @var IMediaTypeFormatter&MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
@@ -70,7 +70,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     public function testCreatingResponseFromEmptyArrayWillSetStillNegotiateContent(): void
     {
         $request = $this->createRequest('http://foo.com');
-        /** @var IMediaTypeFormatter|MockObject $mediaTypeFormatter */
+        /** @var IMediaTypeFormatter&MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('writeToStream')

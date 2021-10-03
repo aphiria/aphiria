@@ -397,9 +397,9 @@ class MultiStreamTest extends TestCase
     /**
      * Creates a readable stream
      *
-     * @return IStream|MockObject The readable stream
+     * @return IStream&MockObject The readable stream
      */
-    private function createReadableStream(): IStream|MockObject
+    private function createReadableStream(): IStream&MockObject
     {
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())

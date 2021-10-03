@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 
 class CommandBinderTest extends TestCase
 {
-    private IContainer|MockObject $container;
+    private IContainer&MockObject $container;
     private CommandBinder $binder;
     private ?string $currEnvironment;
 

@@ -24,13 +24,13 @@ class MiddlewareRequestHandlerTest extends TestCase
 {
     public function testHandlingRequestInvokesMiddlewareWithNextRequestHandler(): void
     {
-        /** @var IMiddleware|MockObject $middleware */
+        /** @var IMiddleware&MockObject $middleware */
         $middleware = $this->createMock(IMiddleware::class);
-        /** @var IRequestHandler|MockObject $next */
+        /** @var IRequestHandler&MockObject $next */
         $next = $this->createMock(IRequestHandler::class);
-        /** @var IRequest|MockObject $request */
+        /** @var IRequest&MockObject $request */
         $request = $this->createMock(IRequest::class);
-        /** @var IResponse|MockObject $response */
+        /** @var IResponse&MockObject $response */
         $response = $this->createMock(IResponse::class);
         $middleware->expects($this->once())
             ->method('handle')

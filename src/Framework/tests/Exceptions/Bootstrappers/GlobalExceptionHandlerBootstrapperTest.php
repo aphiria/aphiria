@@ -41,7 +41,7 @@ use Psr\Log\LogLevel;
 
 class GlobalExceptionHandlerBootstrapperTest extends TestCase
 {
-    private IContainer|MockObject $container;
+    private IContainer&MockObject $container;
     private Logger $logger;
     private GlobalExceptionHandlerBootstrapper $bootstrapper;
     private IApiExceptionRenderer $apiExceptionRenderer;

@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 
 class DriverSessionHandlerTest extends TestCase
 {
-    private ISessionDriver|MockObject $driver;
+    private ISessionDriver&MockObject $driver;
     private DriverSessionHandler $sessionHandler;
 
     protected function setUp(): void
@@ -59,7 +59,7 @@ class DriverSessionHandlerTest extends TestCase
 
     public function testReadingWithEncrypterDecryptsValueReturnedByDriver(): void
     {
-        /** @var ISessionEncrypter|MockObject $encrypter */
+        /** @var ISessionEncrypter&MockObject $encrypter */
         $encrypter = $this->createMock(ISessionEncrypter::class);
         $sessionHandlerWithEncrypter = new DriverSessionHandler($this->driver, $encrypter);
         $this->driver->expects($this->once())
@@ -74,7 +74,7 @@ class DriverSessionHandlerTest extends TestCase
 
     public function testReadingWithEncrypterThatThrowsExceptionReturnsEmptyString(): void
     {
-        /** @var ISessionEncrypter|MockObject $encrypter */
+        /** @var ISessionEncrypter&MockObject $encrypter */
         $encrypter = $this->createMock(ISessionEncrypter::class);
         $sessionHandlerWithEncrypter = new DriverSessionHandler($this->driver, $encrypter);
         $this->driver->expects($this->once())
@@ -98,7 +98,7 @@ class DriverSessionHandlerTest extends TestCase
 
     public function testWritingWithEncrypterEncryptsValueBeforeSettingItInDriver(): void
     {
-        /** @var ISessionEncrypter|MockObject $encrypter */
+        /** @var ISessionEncrypter&MockObject $encrypter */
         $encrypter = $this->createMock(ISessionEncrypter::class);
         $sessionHandlerWithEncrypter = new DriverSessionHandler($this->driver, $encrypter);
         $this->driver->expects($this->once())
@@ -112,7 +112,7 @@ class DriverSessionHandlerTest extends TestCase
 
     public function testWritingWithEncrypterThatThrowsExceptionReturnsFalse(): void
     {
-        /** @var ISessionEncrypter|MockObject $encrypter */
+        /** @var ISessionEncrypter&MockObject $encrypter */
         $encrypter = $this->createMock(ISessionEncrypter::class);
         $sessionHandlerWithEncrypter = new DriverSessionHandler($this->driver, $encrypter);
         $this->driver->expects($this->never())

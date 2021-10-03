@@ -34,7 +34,7 @@ use ReflectionParameter;
 class ControllerParameterResolverTest extends TestCase
 {
     private ControllerParameterResolver $resolver;
-    private IContentNegotiator|MockObject $contentNegotiator;
+    private IContentNegotiator&MockObject $contentNegotiator;
 
     protected function setUp(): void
     {
@@ -78,7 +78,7 @@ class ControllerParameterResolverTest extends TestCase
         $this->expectExceptionMessage('Failed to deserialize request body when resolving parameter user');
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
-        /** @var IMediaTypeFormatter|MockObject $mediaTypeFormatter */
+        /** @var IMediaTypeFormatter&MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('readFromStream')
@@ -116,7 +116,7 @@ class ControllerParameterResolverTest extends TestCase
     {
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
-        /** @var IMediaTypeFormatter|MockObject $mediaTypeFormatter */
+        /** @var IMediaTypeFormatter&MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('readFromStream')
@@ -187,7 +187,7 @@ class ControllerParameterResolverTest extends TestCase
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
         $expectedUser = new User(123, 'foo@bar.com');
-        /** @var IMediaTypeFormatter|MockObject $mediaTypeFormatter */
+        /** @var IMediaTypeFormatter&MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('readFromStream')

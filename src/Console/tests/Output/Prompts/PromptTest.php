@@ -24,13 +24,13 @@ use PHPUnit\Framework\TestCase;
 
 class PromptTest extends TestCase
 {
-    private IOutput|MockObject $output;
+    private IOutput&MockObject $output;
     private PaddingFormatter $paddingFormatter;
     private Prompt $prompt;
 
     protected function setUp(): void
     {
-        /** @var IOutput|MockObject output */
+        /** @var IOutput&MockObject output */
         $this->output = $this->createMock(IOutput::class);
         $this->paddingFormatter = new PaddingFormatter();
         $this->prompt = new Prompt($this->paddingFormatter);

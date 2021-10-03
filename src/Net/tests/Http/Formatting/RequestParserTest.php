@@ -29,9 +29,9 @@ use PHPUnit\Framework\TestCase;
 class RequestParserTest extends TestCase
 {
     private RequestParser $parser;
-    private IRequest|MockObject $request;
+    private IRequest&MockObject $request;
     private Headers $headers;
-    private IBody|MockObject $body;
+    private IBody&MockObject $body;
     private IDictionary $properties;
 
     protected function setUp(): void

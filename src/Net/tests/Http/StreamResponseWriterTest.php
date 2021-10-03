@@ -26,8 +26,8 @@ class StreamResponseWriterTest extends TestCase
 {
     private StreamResponseWriter $writer;
     private Stream $outputStream;
-    private IResponse|MockObject $response;
-    private IBody|MockObject $body;
+    private IResponse&MockObject $response;
+    private IBody&MockObject $body;
 
     protected function setUp(): void
     {

@@ -21,7 +21,7 @@ use ReflectionProperty;
 
 class RequestBinderTest extends TestCase
 {
-    private IContainer|MockObject $container;
+    private IContainer&MockObject $container;
 
     protected function setUp(): void
     {
