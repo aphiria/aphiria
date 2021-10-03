@@ -11,9 +11,11 @@ jobs:
         include:
           - php: '8.0'
             stability: prefer-stable
+            experimental: false
             php-cs-fixer-ignore-php-version: 0
           - php: '8.1'
             stability: prefer-stable
+            experimental: true
             php-cs-fixer-ignore-php-version: 1
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
     continue-on-error: ${{ matrix.experimental }}
