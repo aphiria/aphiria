@@ -13,6 +13,7 @@
 
 - Changed `IList::intersect()`, `IList::reverse()`, `IList::sort()`, `IList::union()`, `ISet::intersect()`, `ISet::sort()`, and `ISet::union()` to return a new instance rather than change the original value ([#131](https://github.com/aphiria/aphiria/pull/131))
 - Changed all collection constructors to be final ([#131](https://github.com/aphiria/aphiria/pull/131))
+- Updated to use PHP-CS-Fixer 3.0 ([#140](https://github.com/aphiria/aphiria/pull/140))
 
 ### Added
 

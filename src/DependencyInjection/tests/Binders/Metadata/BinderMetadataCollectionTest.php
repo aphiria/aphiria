@@ -26,11 +26,11 @@ class BinderMetadataCollectionTest extends TestCase
 {
     public function testBinderThatResolvesTargetedInterfaceIsNotReturnedForTargetedBoundInterfaceWithSameInterfaceButDifferentTarget(): void
     {
-        $resolvedInterface = new class() {
+        $resolvedInterface = new class () {
         };
-        $boundInterface = new class() {
+        $boundInterface = new class () {
         };
-        $target = new class() {
+        $target = new class () {
         };
         $binderMetadatas = [
             new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new TargetedContext($target::class))])
@@ -41,9 +41,9 @@ class BinderMetadataCollectionTest extends TestCase
 
     public function testBinderThatResolvesTargetedInterfaceIsReturnedForUniversalBoundInterfaceWithSameInterface(): void
     {
-        $resolvedInterface = new class() {
+        $resolvedInterface = new class () {
         };
-        $target = new class() {
+        $target = new class () {
         };
         $binderMetadatas = [
             new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new TargetedContext($target::class))])
@@ -56,9 +56,9 @@ class BinderMetadataCollectionTest extends TestCase
 
     public function testBinderThatResolvesTargetedInterfaceIsReturnedForTargetedBoundInterfaceWithSameInterfaceAndTarget(): void
     {
-        $resolvedInterface = new class() {
+        $resolvedInterface = new class () {
         };
-        $target = new class() {
+        $target = new class () {
         };
         $binderMetadatas = [
             new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new TargetedContext($target::class))])
@@ -73,9 +73,9 @@ class BinderMetadataCollectionTest extends TestCase
 
     public function testBinderThatUniversallyResolvesInterfaceIsNotReturnedForUniversalBoundInterfaceWithDifferentInterface(): void
     {
-        $resolvedInterface = new class() {
+        $resolvedInterface = new class () {
         };
-        $boundInterface = new class() {
+        $boundInterface = new class () {
         };
         $binderMetadatas = [
             new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new UniversalContext())])
@@ -89,7 +89,7 @@ class BinderMetadataCollectionTest extends TestCase
 
     public function testBinderThatUniversallyResolvesInterfaceIsReturnedForUniversalBoundInterfaceWithSameInterface(): void
     {
-        $resolvedInterface = new class() {
+        $resolvedInterface = new class () {
         };
         $binderMetadatas = [
             new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new UniversalContext())])
@@ -104,9 +104,9 @@ class BinderMetadataCollectionTest extends TestCase
 
     public function testBinderThatUniversallyResolvesInterfaceIsNotReturnedForTargetedBoundInterfaceWithSameInterface(): void
     {
-        $resolvedInterface = new class() {
+        $resolvedInterface = new class () {
         };
-        $target = new class() {
+        $target = new class () {
         };
         $binderMetadatas = [
             new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new UniversalContext())])
@@ -135,7 +135,7 @@ class BinderMetadataCollectionTest extends TestCase
      */
     private function createMockBinder(): Binder
     {
-        return new class() extends Binder {
+        return new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything

@@ -19,7 +19,7 @@ class ConsoleOutputTest extends TestCase
 {
     public function testClearWritesAsciiCodesToClearScreen(): void
     {
-        $output = new class() extends ConsoleOutput {
+        $output = new class () extends ConsoleOutput {
             public string|array $message = '';
 
             public function write(string|array $messages): void

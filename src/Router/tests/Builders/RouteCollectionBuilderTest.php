@@ -38,7 +38,7 @@ class RouteCollectionBuilderTest extends TestCase
     {
         $groupOptions = new RouteGroupOptions('foo', null, false, [], [], ['H1' => 'val1']);
         $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }
@@ -58,7 +58,7 @@ class RouteCollectionBuilderTest extends TestCase
         $groupOptions = new RouteGroupOptions('foo', null, false, $groupConstraints);
         $routeConstraints = [$this->createMock(IRouteConstraint::class)];
         $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) use ($routeConstraints) {
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }
@@ -77,7 +77,7 @@ class RouteCollectionBuilderTest extends TestCase
     {
         $groupOptions = new RouteGroupOptions('foo', 'baz', false);
         $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }
@@ -94,7 +94,7 @@ class RouteCollectionBuilderTest extends TestCase
     {
         $groupOptions = new RouteGroupOptions('gp');
         $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }
@@ -102,7 +102,7 @@ class RouteCollectionBuilderTest extends TestCase
             $registry->route('GET', 'rp1')
                 ->mapsToMethod($controller::class, 'bar');
         });
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -117,15 +117,15 @@ class RouteCollectionBuilderTest extends TestCase
 
     public function testGroupMiddlewareAreMergedWithRouteMiddleware(): void
     {
-        $middleware1 = new class() {
+        $middleware1 = new class () {
         };
-        $middleware2 = new class() {
+        $middleware2 = new class () {
         };
         $groupMiddlewareBinding = new MiddlewareBinding($middleware1::class);
         $routeMiddlewareBinding = new MiddlewareBinding($middleware2::class);
         $groupOptions = new RouteGroupOptions('', null, false, [], [$groupMiddlewareBinding], []);
         $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) use ($routeMiddlewareBinding) {
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }
@@ -145,7 +145,7 @@ class RouteCollectionBuilderTest extends TestCase
         $registry = new RouteCollectionBuilder();
         $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteCollectionBuilder $registry) {
             $registry->group(new RouteGroupOptions('', 'foo'), function (RouteCollectionBuilder $registry) {
-                $controller = new class() {
+                $controller = new class () {
                     public function bar(): void
                     {
                     }
@@ -163,7 +163,7 @@ class RouteCollectionBuilderTest extends TestCase
     {
         $registry = new RouteCollectionBuilder();
         $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteCollectionBuilder $registry) {
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }
@@ -180,7 +180,7 @@ class RouteCollectionBuilderTest extends TestCase
     {
         $registry = new RouteCollectionBuilder();
         $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteCollectionBuilder $registry) {
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }
@@ -197,7 +197,7 @@ class RouteCollectionBuilderTest extends TestCase
     {
         $registry = new RouteCollectionBuilder();
         $registry->group(new RouteGroupOptions('foo'), function (RouteCollectionBuilder $registry) {
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }
@@ -214,7 +214,7 @@ class RouteCollectionBuilderTest extends TestCase
     {
         $registry = new RouteCollectionBuilder();
         $registry->group(new RouteGroupOptions('foo'), function (RouteCollectionBuilder $registry) {
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }
@@ -230,7 +230,7 @@ class RouteCollectionBuilderTest extends TestCase
     public function testHttpsOnlyGroupOverridesHttpsSettingInRoutes(): void
     {
         $this->builder->group(new RouteGroupOptions('', null, true), function (RouteCollectionBuilder $registry) {
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }
@@ -245,11 +245,11 @@ class RouteCollectionBuilderTest extends TestCase
 
     public function testNestedGroupOptionsAreAddedCorrectlyToRoute(): void
     {
-        $middleware1 = new class() {
+        $middleware1 = new class () {
         };
-        $middleware2 = new class() {
+        $middleware2 = new class () {
         };
-        $middleware3 = new class() {
+        $middleware3 = new class () {
         };
         $outerConstraints = [$this->createMock(IRouteConstraint::class)];
         $outerGroupMiddlewareBinding = new MiddlewareBinding($middleware1::class);
@@ -280,7 +280,7 @@ class RouteCollectionBuilderTest extends TestCase
                 $registry->group(
                     $innerGroupOptions,
                     function (RouteCollectionBuilder $registry) use ($routeMiddlewareBinding) {
-                        $controller = new class() {
+                        $controller = new class () {
                             public function bar(): void
                             {
                             }
@@ -310,7 +310,7 @@ class RouteCollectionBuilderTest extends TestCase
     {
         $groupOptions = new RouteGroupOptions('foo');
         $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }
@@ -325,7 +325,7 @@ class RouteCollectionBuilderTest extends TestCase
 
     public function testRouteAddsLeadingSlashToPath(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -339,7 +339,7 @@ class RouteCollectionBuilderTest extends TestCase
 
     public function testRouteBuilderIsCreatedWithParametersToMatchParameter(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -353,7 +353,7 @@ class RouteCollectionBuilderTest extends TestCase
 
     public function testRouteBuilderIsCreatedWithConstraints(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -368,7 +368,7 @@ class RouteCollectionBuilderTest extends TestCase
 
     public function testRouteBuilderIsCreatedWithHttpMethodParameterSet(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -388,7 +388,7 @@ class RouteCollectionBuilderTest extends TestCase
         foreach (['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT'] as $httpMethod) {
             /** @var RouteBuilder $routeBuilder */
             $routeBuilder = $this->builder->{\strtolower($httpMethod)}('foo');
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }

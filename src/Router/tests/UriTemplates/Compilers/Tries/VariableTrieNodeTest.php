@@ -43,7 +43,7 @@ class VariableTrieNodeTest extends TestCase
 
     public function testCreatingWithSingleRouteConvertsItToArrayOfRoutes(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -166,7 +166,7 @@ class VariableTrieNodeTest extends TestCase
 
     public function testPropertiesAreSetInConstructor(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }

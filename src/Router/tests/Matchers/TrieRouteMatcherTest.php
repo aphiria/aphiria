@@ -37,7 +37,7 @@ class TrieRouteMatcherTest extends TestCase
 
     public function testFailedHttpMethodConstraintsSetAllowedMethodsInResult(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar1(): void
             {
             }
@@ -71,7 +71,7 @@ class TrieRouteMatcherTest extends TestCase
 
     public function testLiteralMatchWithDifferingCaseThanWhatIsRegisteredStillMatches(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -93,7 +93,7 @@ class TrieRouteMatcherTest extends TestCase
 
     public function testLiteralSegmentIsMatchedEvenIfRegisteredAfterMatchingRouteWithVariableSegment(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -125,7 +125,7 @@ class TrieRouteMatcherTest extends TestCase
 
     public function testMatchingEmptyPathWithEmptyPathRouteReturnsMatch(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -147,7 +147,7 @@ class TrieRouteMatcherTest extends TestCase
 
     public function testMatchingHostWithLiteralMatchReturnsExpectedResult(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -181,7 +181,7 @@ class TrieRouteMatcherTest extends TestCase
 
     public function testMatchingHostWithVariableAddsVariableToResult(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -216,7 +216,7 @@ class TrieRouteMatcherTest extends TestCase
 
     public function testMatchingRouteChecksConstraints(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -239,7 +239,7 @@ class TrieRouteMatcherTest extends TestCase
 
     public function testMatchingRouteWithFailingConstraintReturnsUnsuccessfulResult(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -261,7 +261,7 @@ class TrieRouteMatcherTest extends TestCase
 
     public function testMatchingWithLeadingAndTrailingSlashesDoesNotMatter(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -295,7 +295,7 @@ class TrieRouteMatcherTest extends TestCase
 
     public function testNoMatchingRouteReturnsNull(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -316,7 +316,7 @@ class TrieRouteMatcherTest extends TestCase
 
     public function testRouteVariableIsSetFromMatchingVariableNodes(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -342,7 +342,7 @@ class TrieRouteMatcherTest extends TestCase
 
     public function testVariableValuesFromNodesWhoseChildNodesDidNotMatchAreNotIncludedInMatchingRoute(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -385,7 +385,7 @@ class TrieRouteMatcherTest extends TestCase
 
     public function testVariableValuesFromRoutesAreWithFailedConstraintsNotIncludedInMatchingRoute(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }

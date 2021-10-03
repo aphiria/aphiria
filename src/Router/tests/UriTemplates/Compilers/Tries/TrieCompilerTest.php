@@ -433,7 +433,7 @@ class TrieCompilerTest extends TestCase
      */
     private function createRoute(string $pathTemplate, string $hostTemplate = null): Route
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }

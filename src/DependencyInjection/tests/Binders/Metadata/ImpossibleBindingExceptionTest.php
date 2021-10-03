@@ -32,9 +32,9 @@ class ImpossibleBindingExceptionTest extends TestCase
 
     public function testMultipleFailedBindingsAreFormattedCorrectly(): void
     {
-        $interface1 = new class() {
+        $interface1 = new class () {
         };
-        $interface2 = new class() {
+        $interface2 = new class () {
         };
         $binder1 = $this->createBinder();
         $binder2 = $this->createBinder();
@@ -62,7 +62,7 @@ class ImpossibleBindingExceptionTest extends TestCase
      */
     private function createBinder(): Binder
     {
-        return new class() extends Binder {
+        return new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything

@@ -51,7 +51,7 @@ class WindowsDriverTest extends TestCase
         \putenv('COLUMNS');
         \putenv('LINES');
         \putenv('ANSICON');
-        $driver = new class() extends WindowsDriver {
+        $driver = new class () extends WindowsDriver {
             protected function getCliDimensionsFromOS(): ?array
             {
                 return null;
@@ -75,7 +75,7 @@ class WindowsDriverTest extends TestCase
         \putenv('COLUMNS');
         \putenv('LINES');
         \putenv('ANSICON');
-        $driver = new class() extends WindowsDriver {
+        $driver = new class () extends WindowsDriver {
             protected function getCliDimensionsFromOS(): ?array
             {
                 return [10, 15];

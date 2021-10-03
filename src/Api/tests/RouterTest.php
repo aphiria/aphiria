@@ -140,9 +140,9 @@ class RouterTest extends TestCase
         $expectedResponse->method('getHeaders')
             ->willReturn($expectedHeaders);
         // We want different middleware class names to be able to test multiple middleware, hence the anon classes
-        $middleware1 = new class() extends MiddlewareThatIncrementsHeader {
+        $middleware1 = new class () extends MiddlewareThatIncrementsHeader {
         };
-        $middleware2 = new class() extends MiddlewareThatIncrementsHeader {
+        $middleware2 = new class () extends MiddlewareThatIncrementsHeader {
         };
         $controller = new ControllerMock();
         $this->serviceResolver->method('resolve')

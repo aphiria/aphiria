@@ -50,7 +50,7 @@ class TrieFactoryTest extends TestCase
 
     public function testCreatingTrieWithCacheMissSetsItInCache(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -72,7 +72,7 @@ class TrieFactoryTest extends TestCase
 
     public function testCreatingTrieWithNoCacheSetCreatesTrieFromCompiler(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }

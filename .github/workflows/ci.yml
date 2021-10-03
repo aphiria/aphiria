@@ -10,9 +10,17 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: ['8.0', '8.1']
-        stability: [prefer-stable]
+        include:
+          - php: '8.0'
+            stability: prefer-stable
+            experimental: false
+            php-cs-fixer-ignore-php-version: 0
+          - php: '8.1'
+            stability: prefer-stable
+            experimental: true
+            php-cs-fixer-ignore-php-version: 1
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
+    continue-on-error: ${{ matrix.experimental }}
     steps:
       - name: Check Out Code
         uses: actions/checkout@v2
@@ -31,7 +39,8 @@ jobs:
         run: composer phpunit
       - name: Run Linter
         run: composer phpcs-test
-        if: matrix.php != '8.1'
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: ${{ matrix.php-cs-fixer-ignore-php-version }}
       - name: Run Psalm Static Analysis
         run: composer psalm -- --shepherd
       - name: Upload Coverage Results To Coveralls

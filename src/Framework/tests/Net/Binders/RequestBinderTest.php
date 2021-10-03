@@ -63,7 +63,7 @@ class RequestBinderTest extends TestCase
             ->with(IRequest::class, $this->callback(function (IRequest $request) {
                 return (string)$request->getUri() === 'http://localhost';
             }));
-        $binder = new class() extends RequestBinder {
+        $binder = new class () extends RequestBinder {
             protected function isRunningInConsole(): bool
             {
                 return true;
@@ -82,7 +82,7 @@ class RequestBinderTest extends TestCase
             ->with(IRequest::class, $this->callback(function (IRequest $request) {
                 return (string)$request->getUri() === 'http://example.com';
             }));
-        $binder = new class() extends RequestBinder {
+        $binder = new class () extends RequestBinder {
             protected function isRunningInConsole(): bool
             {
                 return false;

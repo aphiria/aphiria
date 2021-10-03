@@ -187,7 +187,7 @@ class ResponseAssertionsTest extends TestCase
         $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
         $body = new StringBody('{"foo":"bar"}');
         $response = new Response(200, null, $body);
-        $expectedParsedBody = new class() {
+        $expectedParsedBody = new class () {
             public string $foo = 'bar';
         };
         $this->assertions->assertParsedBodyEquals($expectedParsedBody, $request, $response);
@@ -202,7 +202,7 @@ class ResponseAssertionsTest extends TestCase
         $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
         $body = new StringBody('{"foo":"bar"}');
         $response = new Response(200, null, $body);
-        $expectedParsedBody = new class() {
+        $expectedParsedBody = new class () {
             public string $foo = 'baz';
         };
         $this->assertions->assertParsedBodyEquals($expectedParsedBody, $request, $response);
@@ -238,7 +238,7 @@ class ResponseAssertionsTest extends TestCase
         $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
         $body = new StringBody('{"foo":"bar"}');
         $response = new Response(200, null, $body);
-        $expectedParsedBody = new class() {
+        $expectedParsedBody = new class () {
             public string $foo = 'bar';
         };
         $this->assertions->assertParsedBodyPassesCallback($request, $response, $expectedParsedBody::class, function (mixed $parsedBody) use ($expectedParsedBody): bool {
@@ -255,7 +255,7 @@ class ResponseAssertionsTest extends TestCase
         $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
         $body = new StringBody('{"foo":"bar"}');
         $response = new Response(200, null, $body);
-        $expectedParsedBody = new class() {
+        $expectedParsedBody = new class () {
             public string $foo = 'bar';
         };
         $this->assertions->assertParsedBodyPassesCallback($request, $response, $expectedParsedBody::class, function (mixed $parsedBody): bool {

@@ -28,7 +28,7 @@ class RouteMatchingResultTest extends TestCase
 
     public function testMethodAllowedOnlyIfRouteIsNullAndAllowedMethodsIsPopulated(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -44,7 +44,7 @@ class RouteMatchingResultTest extends TestCase
 
     public function testPropertiesSetInConstructor(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }

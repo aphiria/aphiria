@@ -37,7 +37,7 @@ class AttributeConstraintsRegistrantTest extends TestCase
 
     public function testMethodsWithConstraintsAreRegistered(): void
     {
-        $object = new class() {
+        $object = new class () {
             #[Required]
             public function method(): bool
             {
@@ -58,7 +58,7 @@ class AttributeConstraintsRegistrantTest extends TestCase
 
     public function testMethodsWithNonValidationConstraintAttributesAreNotRegistered(): void
     {
-        $object = new class() {
+        $object = new class () {
             #[NonConstraintAttribute]
             public function method(): bool
             {
@@ -78,7 +78,7 @@ class AttributeConstraintsRegistrantTest extends TestCase
 
     public function testMultipleMethodConstraintAttributesCanBeRegistered(): void
     {
-        $object = new class() {
+        $object = new class () {
             #[Required, Email]
             public function method(): bool
             {
@@ -100,7 +100,7 @@ class AttributeConstraintsRegistrantTest extends TestCase
 
     public function testMultiplePropertyConstraintAttributesCanBeRegistered(): void
     {
-        $object = new class() {
+        $object = new class () {
             #[Required, Email]
             public bool $prop = true;
         };
@@ -119,7 +119,7 @@ class AttributeConstraintsRegistrantTest extends TestCase
 
     public function testPropertiesWithConstraintsAreRegistered(): void
     {
-        $object = new class() {
+        $object = new class () {
             #[Required]
             public bool $prop = true;
         };
@@ -137,7 +137,7 @@ class AttributeConstraintsRegistrantTest extends TestCase
 
     public function testPropertiesWithNonValidationConstraintAttributesAreNotRegistered(): void
     {
-        $object = new class() {
+        $object = new class () {
             #[NonConstraintAttribute]
             public bool $prop = true;
         };

@@ -47,8 +47,8 @@ class RequestBodyValidatorTest extends TestCase
 
     public function testValidatingArrayOfObjectsValidatesEachOne(): void
     {
-        $bodyParts = [new class() {
-        }, new class() {
+        $bodyParts = [new class () {
+        }, new class () {
         }];
         $this->validator->method('validateObject')
             ->withConsecutive([$bodyParts[0]], [$bodyParts[1]]);

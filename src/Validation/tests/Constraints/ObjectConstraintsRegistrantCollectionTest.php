@@ -24,7 +24,7 @@ class ObjectConstraintsRegistrantCollectionTest extends TestCase
     public function testAddingRegistrantCausesItToBeInvokedWhenRegisteringRoutes(): void
     {
         $constraintsRegistrants = new ObjectConstraintsRegistrantCollection();
-        $singleRegistrant = new class() implements IObjectConstraintsRegistrant {
+        $singleRegistrant = new class () implements IObjectConstraintsRegistrant {
             public bool $wasInvoked = false;
 
             /**

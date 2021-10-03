@@ -31,7 +31,7 @@ class RouteConstraintTest extends TestCase
 
     public function testPropertiesAreSetInConstructor(): void
     {
-        $constraint = new class() {
+        $constraint = new class () {
         };
         $constraintAttribute = new RouteConstraint($constraint::class, ['bar']);
         $this->assertSame($constraint::class, $constraintAttribute->className);

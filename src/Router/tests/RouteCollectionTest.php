@@ -29,7 +29,7 @@ class RouteCollectionTest extends TestCase
 
     public function testCopyEffectivelyDuplicatesAnotherCollection(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -45,7 +45,7 @@ class RouteCollectionTest extends TestCase
 
     public function testCreatingWithRoutesAddsRoutesToCollection(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -59,7 +59,7 @@ class RouteCollectionTest extends TestCase
 
     public function testGettingAllRoutesReturnsAllRegisteredRoutes(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -83,7 +83,7 @@ class RouteCollectionTest extends TestCase
 
     public function testGettingNamedRouteThatWasAddedInBulk(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -101,7 +101,7 @@ class RouteCollectionTest extends TestCase
 
     public function testGettingNamedRouteThatWasAddedIt(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }

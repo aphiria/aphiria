@@ -52,7 +52,7 @@ class UnixLikeDriverTest extends TestCase
     {
         $this->expectException(HiddenInputNotSupportedException::class);
         $this->expectExceptionMessage('STTY must be supported to hide input');
-        $driver = new class() extends UnixLikeDriver {
+        $driver = new class () extends UnixLikeDriver {
             protected function supportsStty(): bool
             {
                 return false;
@@ -65,7 +65,7 @@ class UnixLikeDriverTest extends TestCase
     {
         \putenv('COLUMNS');
         \putenv('LINES');
-        $driver = new class() extends UnixLikeDriver {
+        $driver = new class () extends UnixLikeDriver {
             protected function getCliDimensionsFromOS(): ?array
             {
                 return null;
@@ -80,7 +80,7 @@ class UnixLikeDriverTest extends TestCase
         \putenv('COLUMNS');
         \putenv('LINES');
         \putenv('ANSICON');
-        $driver = new class() extends UnixLikeDriver {
+        $driver = new class () extends UnixLikeDriver {
             protected function getCliDimensionsFromOS(): ?array
             {
                 return [10, 15];

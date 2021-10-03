@@ -210,7 +210,7 @@ class RouteActionInvokerTest extends TestCase
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('Reflection failed for ' . Closure::class);
-        $routeActionInvoker = new class() extends RouteActionInvoker {
+        $routeActionInvoker = new class () extends RouteActionInvoker {
             protected function reflectRouteActionDelegate(callable $routeActionDelegate): ReflectionFunctionAbstract
             {
                 throw new ReflectionException();
@@ -222,13 +222,13 @@ class RouteActionInvokerTest extends TestCase
     public function testInvokingRouteActionWithUnreflectableStaticRouteActionDelegateThrowsException(): void
     {
         $this->expectException(HttpException::class);
-        $controller = new class() extends Controller {
+        $controller = new class () extends Controller {
             public static function foo(): void
             {
             }
         };
         $this->expectExceptionMessage('Reflection failed for ' . $controller::class . '::foo');
-        $routeActionInvoker = new class() extends RouteActionInvoker {
+        $routeActionInvoker = new class () extends RouteActionInvoker {
             protected function reflectRouteActionDelegate(callable $routeActionDelegate): ReflectionFunctionAbstract
             {
                 throw new ReflectionException();

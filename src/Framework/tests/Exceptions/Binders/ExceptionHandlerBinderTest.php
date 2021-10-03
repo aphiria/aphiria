@@ -40,7 +40,7 @@ class ExceptionHandlerBinderTest extends TestCase
             ->willReturnCallback(function (string $type, ?object &$object) {
                 if ($type === IApiExceptionRenderer::class) {
                     // Capture the object parameter so we can make assertions on it later
-                    $object = $this->apiExceptionRenderer = new class() extends ProblemDetailsExceptionRenderer {
+                    $object = $this->apiExceptionRenderer = new class () extends ProblemDetailsExceptionRenderer {
                         public function getRequest(): ?IRequest
                         {
                             return $this->request;

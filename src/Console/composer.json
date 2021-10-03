@@ -43,12 +43,12 @@
         "php": ">=8.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.19",
+        "friendsofphp/php-cs-fixer": "dev-master#eb717fe86c222c7d1be2be900f059510d700dafb",
         "phpunit/phpunit": "~9.5"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",
-        "phpcs-fix": "php-cs-fixer fix --config=.php_cs.dist -v --diff",
+        "phpcs-fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --diff",
         "phpunit": "php vendor/phpunit/phpunit/phpunit --coverage-clover ./.coverage/clover.xml --verbose",
         "test": [
             "@phpunit"

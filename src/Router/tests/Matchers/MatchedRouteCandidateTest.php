@@ -22,7 +22,7 @@ class MatchedRouteCandidateTest extends TestCase
 {
     public function testPropertiesSetCorrectlyInConstructor(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }

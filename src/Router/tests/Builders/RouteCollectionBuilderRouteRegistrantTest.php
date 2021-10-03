@@ -22,7 +22,7 @@ class RouteCollectionBuilderRouteRegistrantTest extends TestCase
     public function testConstructingWithSingleCallbackInvokesItOnRegistration(): void
     {
         $callback = function (RouteCollectionBuilder $routes): void {
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }
@@ -40,7 +40,7 @@ class RouteCollectionBuilderRouteRegistrantTest extends TestCase
     public function testRegisteringRoutesInvokesCallbacksWithRouteBuilder(): void
     {
         $callback = function (RouteCollectionBuilder $routes): void {
-            $controller = new class() {
+            $controller = new class () {
                 public function bar(): void
                 {
                 }
