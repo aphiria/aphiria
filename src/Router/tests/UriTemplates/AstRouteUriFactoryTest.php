@@ -229,7 +229,7 @@ class AstRouteUriFactoryTest extends TestCase
         string $pathTemplate,
         bool $isHttpsOnly = true
     ): void {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }

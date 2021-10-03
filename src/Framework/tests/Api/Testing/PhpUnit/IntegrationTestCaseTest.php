@@ -46,7 +46,7 @@ class IntegrationTestCaseTest extends TestCase
     {
         $this->prevAppUrl = \getenv('APP_URL') ?: '';
         $this->app = $this->createMock(IRequestHandler::class);
-        $this->integrationTests = new class($this->app) extends IntegrationTestCase {
+        $this->integrationTests = new class ($this->app) extends IntegrationTestCase {
             private static ?string $failMessage = null;
             private IRequestHandler $app;
             private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
@@ -281,7 +281,7 @@ class IntegrationTestCaseTest extends TestCase
             ->with($request)
             ->willReturn($response);
         $this->integrationTests->send($request);
-        $expectedParsedBody = new class() {
+        $expectedParsedBody = new class () {
             public string $foo = 'bar';
         };
         $this->integrationTests->assertParsedBodyEquals($expectedParsedBody, $response);
@@ -322,7 +322,7 @@ class IntegrationTestCaseTest extends TestCase
             new Headers([new KeyValuePair('Foo', 'bar')]),
             new StringBody('{"foo":"bar"}')
         );
-        $expectedParsedBody = new class() {
+        $expectedParsedBody = new class () {
             public string $foo = 'bar';
         };
         $this->app->expects($this->once())

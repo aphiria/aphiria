@@ -43,12 +43,12 @@ class AboutCommandHandlerTest extends TestCase
 
     public function testCommandsAreAlphabeticallySortedByCategories(): void
     {
-        $commandHandler1 = new class() implements ICommandHandler {
+        $commandHandler1 = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
         };
-        $commandHandler2 = new class() implements ICommandHandler {
+        $commandHandler2 = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -66,12 +66,12 @@ class AboutCommandHandlerTest extends TestCase
 
     public function testCommandsAreAlphabeticallySortedWithinCategories(): void
     {
-        $commandHandler1 = new class() implements ICommandHandler {
+        $commandHandler1 = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
         };
-        $commandHandler2 = new class() implements ICommandHandler {
+        $commandHandler2 = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -96,17 +96,17 @@ class AboutCommandHandlerTest extends TestCase
 
     public function testUncategorizedCommandsAreListedBeforeCategorizedCommands(): void
     {
-        $commandHandler1 = new class() implements ICommandHandler {
+        $commandHandler1 = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
         };
-        $commandHandler2 = new class() implements ICommandHandler {
+        $commandHandler2 = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
         };
-        $commandHandler3 = new class() implements ICommandHandler {
+        $commandHandler3 = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }

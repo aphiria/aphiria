@@ -24,7 +24,7 @@ class BinderMetadataTest extends TestCase
 {
     public function testGetBinderReturnsSetBinder(): void
     {
-        $expectedBinder = new class() extends Binder {
+        $expectedBinder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
@@ -36,15 +36,15 @@ class BinderMetadataTest extends TestCase
 
     public function testGetBoundInterfacesReturnsSetBoundInterfaces(): void
     {
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
             }
         };
-        $boundInterface1 = new class() {
+        $boundInterface1 = new class () {
         };
-        $boundInterface2 = new class() {
+        $boundInterface2 = new class () {
         };
         $expectedBoundInterfaces = [
             new BoundInterface($boundInterface1::class, new UniversalContext()),
@@ -56,15 +56,15 @@ class BinderMetadataTest extends TestCase
 
     public function testGetBoundInterfacesReturnsSetResolvedInterfaces(): void
     {
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
             }
         };
-        $resolvedInterface1 = new class() {
+        $resolvedInterface1 = new class () {
         };
-        $resolvedInterface2 = new class() {
+        $resolvedInterface2 = new class () {
         };
         $expectedResolvedInterfaces = [
             new ResolvedInterface($resolvedInterface1::class, new UniversalContext()),

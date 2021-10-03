@@ -27,7 +27,7 @@ class CommandRegistrantCollectionTest extends TestCase
     public function testAddingRegistrantCausesItToBeInvokedWhenRegisteringRoutes(): void
     {
         $commandRegistrants = new CommandRegistrantCollection();
-        $singleRegistrant = new class() implements ICommandRegistrant {
+        $singleRegistrant = new class () implements ICommandRegistrant {
             public bool $wasInvoked = false;
 
             /**
@@ -47,7 +47,7 @@ class CommandRegistrantCollectionTest extends TestCase
     public function testCacheHitCopiesCachedConstraintsIntoParameterConstraints(): void
     {
         $cachedCommands = new CommandRegistry();
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }

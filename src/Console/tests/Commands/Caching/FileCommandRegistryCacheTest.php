@@ -49,7 +49,7 @@ class FileCommandRegistryCacheTest extends TestCase
     public function testGetOnHitReturnsCommands(): void
     {
         $commands = new CommandRegistry();
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }

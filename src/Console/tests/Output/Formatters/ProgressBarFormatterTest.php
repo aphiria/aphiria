@@ -92,7 +92,7 @@ class ProgressBarFormatterTest extends TestCase
 
     public function testOnProgressWithImpossiblyLowTimeLeftShowsCorrectTime(): void
     {
-        $formatter = new class($this->output, 12) extends ProgressBarFormatter {
+        $formatter = new class ($this->output, 12) extends ProgressBarFormatter {
             protected function getSecondsRemaining(int $progress, int $maxSteps): float
             {
                 return -1;
@@ -107,7 +107,7 @@ class ProgressBarFormatterTest extends TestCase
 
     public function testOnProgressWithVeryLongTimeLeftShowsCorrectTime(): void
     {
-        $formatter = new class($this->output, 12) extends ProgressBarFormatter {
+        $formatter = new class ($this->output, 12) extends ProgressBarFormatter {
             protected function getSecondsRemaining(int $progress, int $maxSteps): float
             {
                 return 172800;

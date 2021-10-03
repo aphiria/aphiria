@@ -33,7 +33,7 @@ class CommandRegistryTest extends TestCase
     {
         $registry1 = new CommandRegistry();
         $registry2 = new CommandRegistry();
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -46,12 +46,12 @@ class CommandRegistryTest extends TestCase
 
     public function testGettingAllCommandBindingsReturnsExpectedBindings(): void
     {
-        $commandHandler1 = new class() implements ICommandHandler {
+        $commandHandler1 = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
         };
-        $commandHandler2 = new class() implements ICommandHandler {
+        $commandHandler2 = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -71,12 +71,12 @@ class CommandRegistryTest extends TestCase
     {
         $expectedCommand1 = new Command('command1', [], [], '');
         $expectedCommand2 = new Command('command2', [], [], '');
-        $commandHandler1 = new class() implements ICommandHandler {
+        $commandHandler1 = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
         };
-        $commandHandler2 = new class() implements ICommandHandler {
+        $commandHandler2 = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -94,7 +94,7 @@ class CommandRegistryTest extends TestCase
     public function testRegisteringCommandNormalizesName(): void
     {
         $command = new Command('foo', [], [], '');
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -108,7 +108,7 @@ class CommandRegistryTest extends TestCase
     public function testRegisteringManyCommandsNormalizesNames(): void
     {
         $command = new Command('foo', [], [], '');
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -132,7 +132,7 @@ class CommandRegistryTest extends TestCase
     public function testTryGettingBindingReturnsTrueIfCommandWasFound(): void
     {
         $expectedCommand = new Command('foo', [], [], '');
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -158,7 +158,7 @@ class CommandRegistryTest extends TestCase
     public function testTryGettingCommandReturnsTrueIfCommandWasFound(): void
     {
         $expectedCommand = new Command('foo', [], [], '');
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -180,7 +180,7 @@ class CommandRegistryTest extends TestCase
     public function testTryGettingHandlerClassNameUsingCommandUsesTheCommandNameToLookItUp(): void
     {
         $command = new Command('foo');
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -194,7 +194,7 @@ class CommandRegistryTest extends TestCase
     public function testTryGettingHandlerClassNameReturnsTrueIfCommandWasFound(): void
     {
         $expectedCommand = new Command('foo', [], [], '');
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }

@@ -26,7 +26,7 @@ class RouteRegistrantCollectionTest extends TestCase
     public function testAddingRegistrantCausesItToBeInvokedWhenRegisteringRoutes(): void
     {
         $registrants = new RouteRegistrantCollection();
-        $singleRegistrant = new class() implements IRouteRegistrant {
+        $singleRegistrant = new class () implements IRouteRegistrant {
             public bool $wasInvoked = false;
 
             /**
@@ -45,7 +45,7 @@ class RouteRegistrantCollectionTest extends TestCase
 
     public function testCacheHitCopiesCachedConstraintsIntoParameterConstraints(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }

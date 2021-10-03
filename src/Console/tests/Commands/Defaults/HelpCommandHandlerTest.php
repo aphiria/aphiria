@@ -51,7 +51,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingCommandWithHelpTextIncludesIt(): void
     {
         $this->assertCliWidthIsCalled();
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -74,7 +74,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithArgumentIncludesItInArgumentDescriptionAndParsedCommand(): void
     {
         $this->assertCliWidthIsCalled();
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -104,7 +104,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithNoArgumentsStillHasDefaultArgumentDescription(): void
     {
         $this->assertCliWidthIsCalled();
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -126,7 +126,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingCommandWithNoDescriptionStillHasDefaultDescription(): void
     {
         $this->assertCliWidthIsCalled();
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -148,7 +148,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingCommandWithNoHelpTextDoesNotIncludeHelpText(): void
     {
         $this->assertCliWidthIsCalled();
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -170,7 +170,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithNoOptionsStillHasDefaultArgumentDescription(): void
     {
         $this->assertCliWidthIsCalled();
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -192,7 +192,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithOptionsIncludesOptionDescriptionsAndOptionsInParsedCommand(): void
     {
         $this->assertCliWidthIsCalled();
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -214,7 +214,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithOptionWithShortNameIncludesOptionShortNameInDescriptionsAndParsedCommand(): void
     {
         $this->assertCliWidthIsCalled();
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }

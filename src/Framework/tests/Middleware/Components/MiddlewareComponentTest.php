@@ -39,7 +39,7 @@ class MiddlewareComponentTest extends TestCase
 
     public function testBuildWithAttributeMiddlewareSetsAttributes(): void
     {
-        $expectedMiddleware = new class($this->createMock(IResponse::class)) extends ParameterizedMiddleware {
+        $expectedMiddleware = new class ($this->createMock(IResponse::class)) extends ParameterizedMiddleware {
             private IResponse $expectedResponse;
 
             public function __construct(IResponse $expectedResponse)

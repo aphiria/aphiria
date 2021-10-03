@@ -89,7 +89,7 @@ class StreamResponseWriterTest extends TestCase
             $expectedHeaders[] = "$headerName: $headerValue";
         }
 
-        $responseWriter = new class($this->outputStream) extends StreamResponseWriter {
+        $responseWriter = new class ($this->outputStream) extends StreamResponseWriter {
             public array $headers = [];
 
             public function header(string $value, bool $replace = true, int $statusCode = null): void
@@ -108,7 +108,7 @@ class StreamResponseWriterTest extends TestCase
 
     public function testWritingResponseWhenHeadersAreSentDoesNotDoAnything(): void
     {
-        $writer = new class($this->outputStream) extends StreamResponseWriter {
+        $writer = new class ($this->outputStream) extends StreamResponseWriter {
             public function headersAreSent(): bool
             {
                 return true;

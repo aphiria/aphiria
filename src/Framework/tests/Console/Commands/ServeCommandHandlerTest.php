@@ -35,7 +35,7 @@ class ServeCommandHandlerTest extends TestCase
                 'docroot' => 'public'
             ]
         );
-        $handler = new class() extends ServeCommandHandler {
+        $handler = new class () extends ServeCommandHandler {
             public ?string $ranCommand = null;
 
             protected function runPhpCommand(string $command): void

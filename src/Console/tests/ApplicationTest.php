@@ -56,7 +56,7 @@ class ApplicationTest extends TestCase
             ->with('<fatal>About command not registered</fatal>')
             ->willReturnArgument(0);
         // Purposely use new commands that don't have anything registered to them
-        $app = new class(new CommandRegistry(), $this->commandHandlerResolver) extends Application {
+        $app = new class (new CommandRegistry(), $this->commandHandlerResolver) extends Application {
             protected function formatExceptionMessage(Exception|Throwable $ex): string
             {
                 // Simplify testing
@@ -86,7 +86,7 @@ class ApplicationTest extends TestCase
             ->method('writeln')
             ->with('<error>Command "foo" is not registered</error>')
             ->willReturnArgument(0);
-        $app = new class($this->commands, $this->commandHandlerResolver, $inputCompiler) extends Application {
+        $app = new class ($this->commands, $this->commandHandlerResolver, $inputCompiler) extends Application {
             protected function formatExceptionMessage(Exception|Throwable $ex): string
             {
                 // Simplify testing
@@ -124,7 +124,7 @@ class ApplicationTest extends TestCase
             ->with(HelpCommandHandler::class)
             ->willReturn(new HelpCommandHandler($this->commands));
         // Try with command name
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -156,7 +156,7 @@ class ApplicationTest extends TestCase
 
     public function testHandlingHolidayCommand(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             /**
              * @inheritdoc
              *
@@ -210,7 +210,7 @@ class ApplicationTest extends TestCase
 
     public function testHandlingSimpleCommand(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             /**
              * @inheritdoc
              *
@@ -234,7 +234,7 @@ class ApplicationTest extends TestCase
 
     public function testHandlingWithHandlerThatDoesNotReturnAnythingDefaultsToOk(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             /**
              * @inheritdoc
              *

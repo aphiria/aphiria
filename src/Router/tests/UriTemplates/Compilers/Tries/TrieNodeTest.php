@@ -34,7 +34,7 @@ class TrieNodeTest extends TestCase
 
     public function testAddingChildWithMoreLevelsAddsThemAll(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -83,7 +83,7 @@ class TrieNodeTest extends TestCase
 
     public function testAddingChildThatHasLessLevelsStillItsChildren(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -130,7 +130,7 @@ class TrieNodeTest extends TestCase
 
     public function testAddingInvalidChildNodeThrowsException(): void
     {
-        $invalidChildNode = new class() extends TrieNode {
+        $invalidChildNode = new class () extends TrieNode {
             public function __construct()
             {
                 parent::__construct([], [], null);
@@ -151,7 +151,7 @@ class TrieNodeTest extends TestCase
 
     public function testAddingLiteralChildWithDifferentValueAddsItAsSeparateChild(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -185,7 +185,7 @@ class TrieNodeTest extends TestCase
 
     public function testAddingVariableChildDifferingVariablePartsAddsItAsSeparateChild(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -219,7 +219,7 @@ class TrieNodeTest extends TestCase
 
     public function testAddingChildrenWithSameTwoLevelsOfChildrenMergesRoutesOnThirdLevel(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -288,7 +288,7 @@ class TrieNodeTest extends TestCase
 
     public function testAddingChildWithSameLiteralValueMergesRoutes(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -317,7 +317,7 @@ class TrieNodeTest extends TestCase
 
     public function testAddingChildWithSameVariablePartsMergesRoutes(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function foo(): void
             {
             }

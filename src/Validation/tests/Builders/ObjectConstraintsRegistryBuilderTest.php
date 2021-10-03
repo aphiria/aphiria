@@ -46,9 +46,9 @@ class ObjectConstraintsRegistryBuilderTest extends TestCase
 
     public function testBuildWithMultipleSubBuildersCreatesRegistryWithMultipleObjectConstraints(): void
     {
-        $foo = new class() {
+        $foo = new class () {
         };
-        $bar = new class() {
+        $bar = new class () {
         };
         $expectedObjectConstraints = new ObjectConstraintsRegistry();
         $expectedObjectConstraints->registerObjectConstraints(new ObjectConstraints($foo::class));

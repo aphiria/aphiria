@@ -39,7 +39,7 @@ class InputCompilerTest extends TestCase
 
     public function testBackslashesAreRespected(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -59,7 +59,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArgvInputIsCompiledCorrectly(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -74,7 +74,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArgumentShortOptionLongOption(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -100,7 +100,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArrayArgumentWithOptionalArgumentAfterIsAcceptable(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -125,7 +125,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArrayArgumentCreatesListOfValues(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -149,7 +149,7 @@ class InputCompilerTest extends TestCase
     public function testCompilingArrayArgumentWithRequiredArgumentAfterThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -172,7 +172,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArrayListInputIsCompiledCorrectly(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -184,7 +184,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArrayLongOptionWithEqualsSign(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -208,7 +208,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArrayLongOptionWithoutEqualsSign(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -232,7 +232,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingCommandName(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -260,7 +260,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingLongOptionWithEqualsSign(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -282,7 +282,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingLongOptionWithoutEqualsSign(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -304,7 +304,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingLongOptionWithoutEqualsSignWithArgumentAfter(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -326,7 +326,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingLongOptionWithoutEqualsSignWithQuotedValue(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -353,7 +353,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingMultipleArgument(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -381,7 +381,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingMultipleSeparateShortOptions(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -409,7 +409,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingMultipleShortOptions(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -438,7 +438,7 @@ class InputCompilerTest extends TestCase
     public function testCompilingNoValueOptionWithValueThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -458,7 +458,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingOptionalArgumentWithDefaultValueUsesDefaultValueWhenNoValueIsPassedIn(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -480,7 +480,7 @@ class InputCompilerTest extends TestCase
     public function testCompilingRequiredArgumentsWithoutSpecifyingAllValuesThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -501,7 +501,7 @@ class InputCompilerTest extends TestCase
     public function testCompilingRequiredValueOptionWithoutValueThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -521,7 +521,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingSingleArgument(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -543,7 +543,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingSingleShortOption(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -565,7 +565,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingTwoConsecutiveLongOptions(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -591,7 +591,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingStringInputIsCompiledCorrectly(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -609,7 +609,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingUsesDefaultValuesForOptionsThatAreNotSet(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -637,7 +637,7 @@ class InputCompilerTest extends TestCase
     public function testCompilingWithTooManyArgumentsThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }

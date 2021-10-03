@@ -27,7 +27,7 @@ class BoundInterfaceTest extends TestCase
 
     public function testGetContextReturnsSetContext(): void
     {
-        $target = new class() {
+        $target = new class () {
         };
         $expectedContext = new TargetedContext($target::class);
         $interface = new BoundInterface(self::class, $expectedContext);

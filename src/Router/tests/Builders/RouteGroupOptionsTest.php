@@ -28,7 +28,7 @@ class RouteGroupOptionsTest extends TestCase
     protected function setUp(): void
     {
         $this->constraints = [$this->createMock(IRouteConstraint::class)];
-        $middleware = new class() {
+        $middleware = new class () {
         };
         $this->middlewareBindings = [new MiddlewareBinding($middleware::class)];
         $this->routeGroupOptions = new RouteGroupOptions(

@@ -87,7 +87,7 @@
         "symfony/serializer": "^5.2"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.1",
+        "friendsofphp/php-cs-fixer": "dev-master#eb717fe86c222c7d1be2be900f059510d700dafb",
         "nyholm/psr7": "^1.4",
         "phpunit/phpunit": "~9.5",
         "vimeo/psalm": "^4.10"

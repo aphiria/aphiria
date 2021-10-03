@@ -50,7 +50,7 @@ class ApiApplicationBuilderTest extends TestCase
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void
     {
         $builtParts = [];
-        $module = new class($builtParts) implements IModule {
+        $module = new class ($builtParts) implements IModule {
             private array $builtParts;
 
             public function __construct(array &$builtParts)
@@ -63,7 +63,7 @@ class ApiApplicationBuilderTest extends TestCase
                 $this->builtParts[] = $this::class;
             }
         };
-        $component = new class($builtParts) implements IComponent {
+        $component = new class ($builtParts) implements IComponent {
             private array $builtParts;
 
             public function __construct(array &$builtParts)

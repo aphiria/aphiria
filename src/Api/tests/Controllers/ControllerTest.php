@@ -40,7 +40,7 @@ class ControllerTest extends TestCase
     protected function setUp(): void
     {
         // Allow us to more easily test the convenience methods
-        $this->controller = new class() extends Controller {
+        $this->controller = new class () extends Controller {
             public function accepted(object|string|int|float|array $body = null, Headers $headers = null): IResponse
             {
                 return parent::accepted($body, $headers);

@@ -49,7 +49,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
     protected function setUp(): void
     {
         $this->container = $this->createMock(IContainer::class);
-        $this->bootstrapper = new class($this->container) extends GlobalExceptionHandlerBootstrapper {
+        $this->bootstrapper = new class ($this->container) extends GlobalExceptionHandlerBootstrapper {
             private bool $isRunningInConsole = false;
 
             public function setIsRunningInConsole(bool $isRunningInConsole): void
@@ -87,7 +87,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
 
     public function testCustomApiExceptionRendererIsCreatedAndBoundInHttpContext(): void
     {
-        $customApiExceptionRenderer = new class() implements IApiExceptionRenderer {
+        $customApiExceptionRenderer = new class () implements IApiExceptionRenderer {
             public function createResponse(Exception $ex): IResponse
             {
                 return new Response(200);
@@ -231,7 +231,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
 
     public function testIsRunningInConsoleDefaultsToTrue(): void
     {
-        $bootstrapper = new class($this->container) extends GlobalExceptionHandlerBootstrapper {
+        $bootstrapper = new class ($this->container) extends GlobalExceptionHandlerBootstrapper {
             public function isRunningInConsole(): bool
             {
                 return parent::isRunningInConsole();

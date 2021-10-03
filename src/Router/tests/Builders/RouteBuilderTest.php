@@ -39,12 +39,12 @@ class RouteBuilderTest extends TestCase
 
     public function testChainingOnFluentMethodsReturnsCorrectInstance(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
         };
-        $middleware = new class() {
+        $middleware = new class () {
         };
         $this->assertSame($this->routeBuilder, $this->routeBuilder->mapsToMethod($controller::class, 'bar'));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withParameter('foo', 'bar'));
@@ -59,7 +59,7 @@ class RouteBuilderTest extends TestCase
         /** @var IRouteConstraint|MockObject $constraint */
         $constraint = $this->createMock(IRouteConstraint::class);
         $this->routeBuilder->withConstraint($constraint);
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -81,15 +81,15 @@ class RouteBuilderTest extends TestCase
 
     public function testManyMiddlewareBindingsAreSetWhenPassingThemInAsObjects(): void
     {
-        $middleware1 = new class() {
+        $middleware1 = new class () {
         };
-        $middleware2 = new class() {
+        $middleware2 = new class () {
         };
         $this->routeBuilder->withManyMiddleware([
             new MiddlewareBinding($middleware1::class, ['bar' => 'baz']),
             new MiddlewareBinding($middleware2::class, ['young' => 'cool']),
         ]);
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -107,7 +107,7 @@ class RouteBuilderTest extends TestCase
     {
         $constraints = [$this->createMock(IRouteConstraint::class)];
         $this->routeBuilder->withManyConstraints($constraints);
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -120,7 +120,7 @@ class RouteBuilderTest extends TestCase
     public function testManyMiddlewareBindingsAreSetWhenPassingThemInAsStrings(): void
     {
         $this->routeBuilder->withManyMiddleware(['foo', 'bar']);
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -136,7 +136,7 @@ class RouteBuilderTest extends TestCase
 
     public function testMethodIsSetWhenUsingMethodAction(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -149,10 +149,10 @@ class RouteBuilderTest extends TestCase
 
     public function testMiddlewareBindingIsSet(): void
     {
-        $middleware = new class() {
+        $middleware = new class () {
         };
         $this->routeBuilder->withMiddleware($middleware::class, ['bar' => 'baz']);
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -166,7 +166,7 @@ class RouteBuilderTest extends TestCase
 
     public function testNameIsSet(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -180,7 +180,7 @@ class RouteBuilderTest extends TestCase
     public function testParametersAreSetWhenPassingIndividualParameters(): void
     {
         $this->routeBuilder->withParameter('foo', 'bar');
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -193,7 +193,7 @@ class RouteBuilderTest extends TestCase
     public function testParametersAreSetWhenPassingMultipleParameters(): void
     {
         $this->routeBuilder->withManyParameters(['foo' => 'bar']);
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -206,7 +206,7 @@ class RouteBuilderTest extends TestCase
     public function testUriTemplateIsSet(): void
     {
         $expectedUriTemplate = new UriTemplate('foo', 'example.com', true);
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }

@@ -414,7 +414,7 @@ class Psr7FactoryTest extends TestCase
          * safe guard, let's double check if the body is null before doing anything.  So, let's fake the request parser
          * allowing null bodies on multipart body parts.
          */
-        $aphiriaRequestParser = new class() extends RequestParser {
+        $aphiriaRequestParser = new class () extends RequestParser {
             public function readAsMultipart(IRequest|MultipartBodyPart $request): ?MultipartBody
             {
                 return new MultipartBody([new MultipartBodyPart(new Headers(), null)]);

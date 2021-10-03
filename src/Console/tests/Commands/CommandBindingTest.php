@@ -24,7 +24,7 @@ class CommandBindingTest extends TestCase
     public function testPropertiesAreSetInConstructorWhenUsingCommandHandlerInterface(): void
     {
         $expectedCommand = new Command('name', [], [], '', '');
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
