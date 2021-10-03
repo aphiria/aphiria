@@ -23,27 +23,7 @@ final class BoundInterface
      * @param class-string $interface The interface that was bound
      * @param Context $context The context that the binding occurred in
      */
-    public function __construct(private string $interface, private Context $context)
+    public function __construct(public readonly string $interface, public readonly Context $context)
     {
-    }
-
-    /**
-     * Gets the interface that was bound
-     *
-     * @return class-string The interface
-     */
-    public function getInterface(): string
-    {
-        return $this->interface;
-    }
-
-    /**
-     * Gets the context that the binding occurred in
-     *
-     * @return Context The context that the binding occurred in
-     */
-    public function getContext(): Context
-    {
-        return $this->context;
     }
 }

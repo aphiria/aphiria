@@ -17,22 +17,10 @@ namespace Aphiria\DependencyInjection\Tests\Mocks;
  */
 class ConstructorWithInterface
 {
-    /** @var IFoo The object passed into the constructor */
-    private IFoo $foo;
-
     /**
      * @param IFoo $foo The object to use
      */
-    public function __construct(IFoo $foo)
+    public function __construct(public readonly IFoo $foo)
     {
-        $this->foo = $foo;
-    }
-
-    /**
-     * @return IFoo
-     */
-    public function getFoo(): IFoo
-    {
-        return $this->foo;
     }
 }

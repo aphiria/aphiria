@@ -30,6 +30,6 @@ class FactoryContainerBindingTest extends TestCase
     {
         $factory = fn (): object => $this;
         $binding = new FactoryContainerBinding($factory, true);
-        $this->assertSame($factory, $binding->getFactory());
+        $this->assertSame($factory, $binding->factory);
     }
 }

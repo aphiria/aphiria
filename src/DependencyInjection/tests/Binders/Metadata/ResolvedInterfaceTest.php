@@ -24,7 +24,7 @@ class ResolvedInterfaceTest extends TestCase
         $resolvedInterface = new class () {
         };
         $interface = new ResolvedInterface($resolvedInterface::class, new UniversalContext());
-        $this->assertSame($resolvedInterface::class, $interface->getInterface());
+        $this->assertSame($resolvedInterface::class, $interface->interface);
     }
 
     public function testGetContextReturnsSetContext(): void
@@ -35,6 +35,6 @@ class ResolvedInterfaceTest extends TestCase
         };
         $expectedContext = new TargetedContext($target::class);
         $interface = new ResolvedInterface($resolvedInterface::class, $expectedContext);
-        $this->assertSame($expectedContext, $interface->getContext());
+        $this->assertSame($expectedContext, $interface->context);
     }
 }

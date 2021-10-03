@@ -23,12 +23,12 @@ class ResolutionExceptionTest extends TestCase
     {
         $expectedContext = new TargetedContext(self::class);
         $exception = new ResolutionException(self::class, $expectedContext);
-        $this->assertSame($expectedContext, $exception->getContext());
+        $this->assertSame($expectedContext, $exception->context);
     }
 
     public function testGetInterfaceReturnsInterfaceInjectedInConstructor(): void
     {
         $exception = new ResolutionException(self::class, new UniversalContext());
-        $this->assertSame(self::class, $exception->getInterface());
+        $this->assertSame(self::class, $exception->interface);
     }
 }

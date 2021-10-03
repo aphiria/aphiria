@@ -22,7 +22,7 @@ class BoundInterfaceTest extends TestCase
     public function testGetInterfaceReturnsSetInterface(): void
     {
         $interface = new BoundInterface(self::class, new UniversalContext());
-        $this->assertSame(self::class, $interface->getInterface());
+        $this->assertSame(self::class, $interface->interface);
     }
 
     public function testGetContextReturnsSetContext(): void
@@ -31,6 +31,6 @@ class BoundInterfaceTest extends TestCase
         };
         $expectedContext = new TargetedContext($target::class);
         $interface = new BoundInterface(self::class, $expectedContext);
-        $this->assertSame($expectedContext, $interface->getContext());
+        $this->assertSame($expectedContext, $interface->context);
     }
 }

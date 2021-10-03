@@ -185,8 +185,8 @@ class Container implements IContainer
     public function hasBinding(string $interface): bool
     {
         if (
-            $this->currentContext->isTargeted()
-            && $this->hasTargetedBinding($interface, $this->currentContext->getTargetClass())
+            $this->currentContext->isTargeted
+            && $this->hasTargetedBinding($interface, $this->currentContext->targetClass)
         ) {
             return true;
         }
@@ -212,7 +212,7 @@ class Container implements IContainer
         switch ($binding::class) {
             case InstanceContainerBinding::class:
                 /** @var InstanceContainerBinding $binding */
-                return $binding->getInstance();
+                return $binding->instance;
             case ClassContainerBinding::class:
                 /** @var ClassContainerBinding $binding */
                 $instance = $this->resolveClass(
@@ -222,7 +222,7 @@ class Container implements IContainer
                 break;
             case FactoryContainerBinding::class:
                 /** @var FactoryContainerBinding $binding */
-                $factory = $binding->getFactory();
+                $factory = $binding->factory;
                 $instance = $factory();
                 break;
             default:
@@ -258,7 +258,7 @@ class Container implements IContainer
      */
     public function unbind(string|array $interfaces): void
     {
-        $target = $this->currentContext->getTargetClass() ?? '';
+        $target = $this->currentContext->targetClass ?? '';
 
         foreach ((array)$interfaces as $interface) {
             unset($this->bindings[$target][$interface]);
@@ -273,7 +273,7 @@ class Container implements IContainer
      */
     protected function addBinding(string $interface, IContainerBinding $binding): void
     {
-        $target = $this->currentContext->getTargetClass() ?? '';
+        $target = $this->currentContext->targetClass ?? '';
 
         if (!isset($this->bindings[$target])) {
             $this->bindings[$target] = [];
@@ -292,8 +292,8 @@ class Container implements IContainer
     {
         // If there's a targeted binding, use it
         if (
-            $this->currentContext->isTargeted()
-            && isset($this->bindings[($targetClass = $this->currentContext->getTargetClass())][$interface])
+            $this->currentContext->isTargeted
+            && isset($this->bindings[($targetClass = $this->currentContext->targetClass)][$interface])
         ) {
             /** @var class-string $targetClass This will not be null because the context is targeted */
             return $this->bindings[$targetClass][$interface];
@@ -339,7 +339,7 @@ class Container implements IContainer
                         \sprintf(
                             '%s is not instantiable%s',
                             $className,
-                            $this->currentContext->isTargeted() ? " (dependency of {$this->currentContext->getTargetClass()})" : ''
+                            $this->currentContext->isTargeted ? " (dependency of {$this->currentContext->targetClass})" : ''
                         )
                     );
                 }

@@ -19,15 +19,10 @@ use DateTime;
  */
 final class ConstructorWithDefaultValueObject
 {
-    private DateTime $foo;
+    public readonly DateTime $foo;
 
     public function __construct(DateTime $foo = null)
     {
         $this->foo = $foo ?? new DateTime();
-    }
-
-    public function getFoo(): DateTime
-    {
-        return $this->foo;
     }
 }

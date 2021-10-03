@@ -17,27 +17,8 @@ namespace Aphiria\DependencyInjection;
  */
 final class UniversalContext extends Context
 {
-    /**
-     * @inheritdoc
-     */
-    public function getTargetClass(): ?string
+    public function __construct()
     {
-        return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isTargeted(): bool
-    {
-        return false;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isUniversal(): bool
-    {
-        return true;
+        parent::__construct(null, false, true);
     }
 }

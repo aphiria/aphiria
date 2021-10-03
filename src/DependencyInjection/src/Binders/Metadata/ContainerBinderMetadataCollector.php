@@ -107,7 +107,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
         } catch (ResolutionException $ex) {
             $incompleteBinderMetadata = new BinderMetadata($binder, $this->boundInterfaces, $this->resolvedInterfaces);
 
-            throw new FailedBinderMetadataCollectionException($incompleteBinderMetadata, $ex->getInterface(), 0, $ex);
+            throw new FailedBinderMetadataCollectionException($incompleteBinderMetadata, $ex->interface, 0, $ex);
         } finally {
             // Reset for next time
             $this->boundInterfaces = $this->resolvedInterfaces = $this->contextStack = [];

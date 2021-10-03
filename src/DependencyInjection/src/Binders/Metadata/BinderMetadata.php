@@ -24,37 +24,10 @@ final class BinderMetadata
      * @param list<BoundInterface> $boundInterfaces The list of bound interfaces in the binder
      * @param list<ResolvedInterface> $resolvedInterfaces The list of resolved interfaces in the binder
      */
-    public function __construct(private Binder $binder, private array $boundInterfaces, private array $resolvedInterfaces)
-    {
-    }
-
-    /**
-     * Gets the binder whose metadata this is for
-     *
-     * @return Binder The binder
-     */
-    public function getBinder(): Binder
-    {
-        return $this->binder;
-    }
-
-    /**
-     * Gets the list of bound interfaces
-     *
-     * @return list<BoundInterface> The list of bound interfaces
-     */
-    public function getBoundInterfaces(): array
-    {
-        return $this->boundInterfaces;
-    }
-
-    /**
-     * Gets the list of resolved interfaces
-     *
-     * @return list<ResolvedInterface> The list of resolved interfaces
-     */
-    public function getResolvedInterfaces(): array
-    {
-        return $this->resolvedInterfaces;
+    public function __construct(
+        public readonly Binder $binder,
+        public readonly array $boundInterfaces,
+        public readonly array $resolvedInterfaces
+    ) {
     }
 }

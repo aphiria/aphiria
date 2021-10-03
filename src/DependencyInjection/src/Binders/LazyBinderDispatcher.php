@@ -55,8 +55,8 @@ class LazyBinderDispatcher implements IBinderDispatcher
 
         // Create a bunch of factories to lazily resolve interfaces only when they're needed
         /** @var BinderMetadataCollection $binderMetadatas */
-        foreach ($binderMetadatas->getAllBinderMetadata() as $binderMetadata) {
-            foreach ($binderMetadata->getBoundInterfaces() as $boundInterface) {
+        foreach ($binderMetadatas->binderMetadatas as $binderMetadata) {
+            foreach ($binderMetadata->boundInterfaces as $boundInterface) {
                 $resolvingFactory = $this->createLazyFactory(
                     $binderMetadatas,
                     $binderMetadata,
@@ -64,13 +64,13 @@ class LazyBinderDispatcher implements IBinderDispatcher
                     $container
                 );
 
-                if ($boundInterface->getContext()->isTargeted()) {
+                if ($boundInterface->context->isTargeted) {
                     $container->for(
-                        $boundInterface->getContext(),
-                        fn (IContainer $container) => $container->bindFactory($boundInterface->getInterface(), $resolvingFactory)
+                        $boundInterface->context,
+                        fn (IContainer $container) => $container->bindFactory($boundInterface->interface, $resolvingFactory)
                     );
                 } else {
-                    $container->bindFactory($boundInterface->getInterface(), $resolvingFactory);
+                    $container->bindFactory($boundInterface->interface, $resolvingFactory);
                 }
             }
         }
@@ -97,21 +97,21 @@ class LazyBinderDispatcher implements IBinderDispatcher
              * binding defined in the binder.  Otherwise, we'd get into an infinite loop every time we tried
              * to resolve it.
              */
-            if ($boundInterface->getContext()->isTargeted()) {
+            if ($boundInterface->context->isTargeted) {
                 $container->for(
-                    $boundInterface->getContext(),
-                    fn (IContainer $container) => $container->unbind($boundInterface->getInterface())
+                    $boundInterface->context,
+                    fn (IContainer $container) => $container->unbind($boundInterface->interface)
                 );
             } else {
-                $container->unbind($boundInterface->getInterface());
+                $container->unbind($boundInterface->interface);
             }
 
-            $this->dispatchBinder($binderMetadata->getBinder(), $container);
+            $this->dispatchBinder($binderMetadata->binder, $container);
             $resolvedInterface = $this->resolveBoundInterface($boundInterface, $container);
 
             // Run any binders that need the resolved interface
             foreach ($binderMetadatas->getBinderMetadataThatResolveInterface($boundInterface) as $binderMetadata) {
-                $this->dispatchBinder($binderMetadata->getBinder(), $container);
+                $this->dispatchBinder($binderMetadata->binder, $container);
             }
 
             return $resolvedInterface;
@@ -149,13 +149,13 @@ class LazyBinderDispatcher implements IBinderDispatcher
      */
     private function resolveBoundInterface(BoundInterface $boundInterface, IContainer $container): object
     {
-        if ($boundInterface->getContext()->isTargeted()) {
+        if ($boundInterface->context->isTargeted) {
             return $container->for(
-                $boundInterface->getContext(),
-                fn (IContainer $container) => $container->resolve($boundInterface->getInterface())
+                $boundInterface->context,
+                fn (IContainer $container) => $container->resolve($boundInterface->interface)
             );
         }
 
-        return $container->resolve($boundInterface->getInterface());
+        return $container->resolve($boundInterface->interface);
     }
 }

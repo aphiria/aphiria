@@ -111,11 +111,11 @@ class ContainerBinderMetadataCollectorTest extends TestCase
     {
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
-        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
+        $actualBoundInterfaces = $binderMetadata->boundInterfaces;
         $this->assertCount(1, $actualBoundInterfaces);
-        $this->assertSame($expectedInterface, $actualBoundInterfaces[0]->getInterface());
-        $this->assertSame($isTargeted, $actualBoundInterfaces[0]->getContext()->isTargeted());
-        $this->assertSame($targetClass, $actualBoundInterfaces[0]->getContext()->getTargetClass());
+        $this->assertSame($expectedInterface, $actualBoundInterfaces[0]->interface);
+        $this->assertSame($isTargeted, $actualBoundInterfaces[0]->context->isTargeted);
+        $this->assertSame($targetClass, $actualBoundInterfaces[0]->context->targetClass);
     }
 
     public function testBindingSameInterfaceButWithOneTargetedAndOneUniversalBindingReturnsTwoBoundInterfaces(): void
@@ -136,12 +136,12 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $binder->target = $target;
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
-        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
+        $actualBoundInterfaces = $binderMetadata->boundInterfaces;
         $this->assertCount(2, $actualBoundInterfaces);
-        $this->assertSame($target::class, $actualBoundInterfaces[0]->getContext()->getTargetClass());
-        $this->assertSame(IFoo::class, $actualBoundInterfaces[0]->getInterface());
-        $this->assertFalse($actualBoundInterfaces[1]->getContext()->isTargeted());
-        $this->assertSame(IFoo::class, $actualBoundInterfaces[1]->getInterface());
+        $this->assertSame($target::class, $actualBoundInterfaces[0]->context->targetClass);
+        $this->assertSame(IFoo::class, $actualBoundInterfaces[0]->interface);
+        $this->assertFalse($actualBoundInterfaces[1]->context->isTargeted);
+        $this->assertSame(IFoo::class, $actualBoundInterfaces[1]->interface);
     }
 
     public function testBindingSameTargetedInterfaceTwiceReturnsOneBoundInterface(): void
@@ -164,10 +164,10 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $binder->target = $target;
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
-        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
+        $actualBoundInterfaces = $binderMetadata->boundInterfaces;
         $this->assertCount(1, $actualBoundInterfaces);
-        $this->assertSame($target::class, $actualBoundInterfaces[0]->getContext()->getTargetClass());
-        $this->assertSame(IFoo::class, $actualBoundInterfaces[0]->getInterface());
+        $this->assertSame($target::class, $actualBoundInterfaces[0]->context->targetClass);
+        $this->assertSame(IFoo::class, $actualBoundInterfaces[0]->interface);
     }
 
     public function testBindingSameUniversalInterfaceTwiceReturnsOneBoundInterface(): void
@@ -181,10 +181,10 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
-        $actualBoundInterfaces = $binderMetadata->getBoundInterfaces();
+        $actualBoundInterfaces = $binderMetadata->boundInterfaces;
         $this->assertCount(1, $actualBoundInterfaces);
-        $this->assertFalse($actualBoundInterfaces[0]->getContext()->isTargeted());
-        $this->assertSame(IFoo::class, $actualBoundInterfaces[0]->getInterface());
+        $this->assertFalse($actualBoundInterfaces[0]->context->isTargeted);
+        $this->assertSame(IFoo::class, $actualBoundInterfaces[0]->interface);
     }
 
     public function testCallClosurePassesThroughToComposedContainer(): void
@@ -253,8 +253,8 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             $collector->collect($binder);
             $this->fail('Expected to throw exception');
         } catch (FailedBinderMetadataCollectionException $ex) {
-            $this->assertCount(1, $ex->getIncompleteBinderMetadata()->getResolvedInterfaces());
-            $this->assertSame(IFoo::class, $ex->getIncompleteBinderMetadata()->getResolvedInterfaces()[0]->getInterface());
+            $this->assertCount(1, $ex->incompleteBinderMetadata->resolvedInterfaces);
+            $this->assertSame(IFoo::class, $ex->incompleteBinderMetadata->resolvedInterfaces[0]->interface);
         } catch (Exception $ex) {
             $this->fail('Expected ' . FailedBinderMetadataCollectionException::class . ' to be thrown');
         }
@@ -283,12 +283,12 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $binder->target = $target;
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
-        $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
+        $actualResolvedInterfaces = $binderMetadata->resolvedInterfaces;
         $this->assertCount(2, $actualResolvedInterfaces);
-        $this->assertSame($target::class, $actualResolvedInterfaces[0]->getContext()->getTargetClass());
-        $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->getInterface());
-        $this->assertSame($target::class, $actualResolvedInterfaces[1]->getContext()->getTargetClass());
-        $this->assertSame(Foo::class, $actualResolvedInterfaces[1]->getInterface());
+        $this->assertSame($target::class, $actualResolvedInterfaces[0]->context->targetClass);
+        $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->interface);
+        $this->assertSame($target::class, $actualResolvedInterfaces[1]->context->targetClass);
+        $this->assertSame(Foo::class, $actualResolvedInterfaces[1]->interface);
     }
 
     public function testResolvingMethodsCreatesUniversalResolvedInterfaces(): void
@@ -305,12 +305,12 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
-        $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
+        $actualResolvedInterfaces = $binderMetadata->resolvedInterfaces;
         $this->assertCount(2, $actualResolvedInterfaces);
-        $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->getInterface());
-        $this->assertFalse($actualResolvedInterfaces[0]->getContext()->isTargeted());
-        $this->assertSame(Foo::class, $actualResolvedInterfaces[1]->getInterface());
-        $this->assertFalse($actualResolvedInterfaces[1]->getContext()->isTargeted());
+        $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->interface);
+        $this->assertFalse($actualResolvedInterfaces[0]->context->isTargeted);
+        $this->assertSame(Foo::class, $actualResolvedInterfaces[1]->interface);
+        $this->assertFalse($actualResolvedInterfaces[1]->context->isTargeted);
     }
 
     public function testResolvingSameInterfaceButWithOneTargetedAndOneUniversalResolutionReturnsTwoResolvedInterfaces(): void
@@ -333,12 +333,12 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $binder->target = $target;
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
-        $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
+        $actualResolvedInterfaces = $binderMetadata->resolvedInterfaces;
         $this->assertCount(2, $actualResolvedInterfaces);
-        $this->assertSame($target::class, $actualResolvedInterfaces[0]->getContext()->getTargetClass());
-        $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->getInterface());
-        $this->assertFalse($actualResolvedInterfaces[1]->getContext()->isTargeted());
-        $this->assertSame(IFoo::class, $actualResolvedInterfaces[1]->getInterface());
+        $this->assertSame($target::class, $actualResolvedInterfaces[0]->context->targetClass);
+        $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->interface);
+        $this->assertFalse($actualResolvedInterfaces[1]->context->isTargeted);
+        $this->assertSame(IFoo::class, $actualResolvedInterfaces[1]->interface);
     }
 
     public function testResolvingSameTargetedInterfaceTwiceReturnsOneResolvedInterface(): void
@@ -359,10 +359,10 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $binder->target = $target;
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
-        $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
+        $actualResolvedInterfaces = $binderMetadata->resolvedInterfaces;
         $this->assertCount(1, $actualResolvedInterfaces);
-        $this->assertSame($target::class, $actualResolvedInterfaces[0]->getContext()->getTargetClass());
-        $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->getInterface());
+        $this->assertSame($target::class, $actualResolvedInterfaces[0]->context->targetClass);
+        $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->interface);
     }
 
     public function testResolvingSameUniversalInterfaceTwiceReturnsOneResolvedInterface(): void
@@ -376,10 +376,10 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
         $binderMetadata = $collector->collect($binder);
-        $actualResolvedInterfaces = $binderMetadata->getResolvedInterfaces();
+        $actualResolvedInterfaces = $binderMetadata->resolvedInterfaces;
         $this->assertCount(1, $actualResolvedInterfaces);
-        $this->assertFalse($actualResolvedInterfaces[0]->getContext()->isTargeted());
-        $this->assertSame($binder::class, $actualResolvedInterfaces[0]->getInterface());
+        $this->assertFalse($actualResolvedInterfaces[0]->context->isTargeted);
+        $this->assertSame($binder::class, $actualResolvedInterfaces[0]->interface);
     }
 
     public function testTryResolveAddsResolvedBindingEventIfResolutionFailed(): void
@@ -392,8 +392,8 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             }
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
-        $this->assertCount(1, $collector->collect($binder)->getResolvedInterfaces());
-        $this->assertSame($binder::class, $collector->collect($binder)->getResolvedInterfaces()[0]->getInterface());
+        $this->assertCount(1, $collector->collect($binder)->resolvedInterfaces);
+        $this->assertSame($binder::class, $collector->collect($binder)->resolvedInterfaces[0]->interface);
     }
 
     public function testTryResolveResolvesInterfaceUsingComposedContainer(): void
