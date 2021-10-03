@@ -63,7 +63,7 @@ class RequestParser
      */
     public function getActualMimeType(IRequest|MultipartBodyPart $request): ?string
     {
-        return $this->bodyParser->getMimeType($request->getBody());
+        return $this->bodyParser->getMimeType($request instanceof IRequest ? $request->getBody() : $request->body);
     }
 
     /**
@@ -92,7 +92,7 @@ class RequestParser
     {
         $clientMimeType = null;
 
-        if ($bodyPart->getHeaders()->tryGetFirst('Content-Type', $clientMimeType)) {
+        if ($bodyPart->headers->tryGetFirst('Content-Type', $clientMimeType)) {
             return (string)$clientMimeType;
         }
 
@@ -244,7 +244,15 @@ class RequestParser
     {
         $boundary = '';
 
-        if (!$this->headerParser->parseParameters($request->getHeaders(), 'Content-Type')->tryGet(
+        if ($request instanceof IRequest) {
+            $headers = $request->getHeaders();
+            $body = $request->getBody();
+        } else {
+            $headers = $request->headers;
+            $body = $request->body;
+        }
+
+        if (!$this->headerParser->parseParameters($headers, 'Content-Type')->tryGet(
             'boundary',
             $boundary
         )) {
@@ -252,6 +260,6 @@ class RequestParser
         }
 
         /** @var string $boundary */
-        return $this->bodyParser->readAsMultipart($request->getBody(), $boundary);
+        return $this->bodyParser->readAsMultipart($body, $boundary);
     }
 }

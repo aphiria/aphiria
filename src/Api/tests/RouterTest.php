@@ -126,7 +126,7 @@ class RouterTest extends TestCase
             $this->router->handle($request);
         } catch (HttpException $ex) {
             $exceptionThrown = true;
-            $this->assertSame('GET', $ex->getResponse()->getHeaders()->getFirst('Allow'));
+            $this->assertSame('GET', $ex->response->getHeaders()->getFirst('Allow'));
         }
 
         $this->assertTrue($exceptionThrown, 'Failed to throw exception');
@@ -188,7 +188,7 @@ class RouterTest extends TestCase
             $this->router->handle($request);
             $this->fail('Failed to throw exception');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::NOT_FOUND, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::NOT_FOUND, $ex->response->getStatusCode());
         }
     }
 

@@ -140,18 +140,6 @@ class MultipleChoiceTest extends TestCase
         $this->keyedChoiceQuestion->formatAnswer(null);
     }
 
-    public function testSettingAllowsMultipleChoices(): void
-    {
-        $this->indexedChoiceQuestion->allowsMultipleChoices = true;
-        $this->assertTrue($this->indexedChoiceQuestion->allowsMultipleChoices);
-    }
-
-    public function testSettingAnswerLineString(): void
-    {
-        $this->indexedChoiceQuestion->answerLineString = 'foo';
-        $this->assertSame('foo', $this->indexedChoiceQuestion->answerLineString);
-    }
-
     public function testStringAsAnswerToIndexedChoices(): void
     {
         $this->expectException(InvalidArgumentException::class);

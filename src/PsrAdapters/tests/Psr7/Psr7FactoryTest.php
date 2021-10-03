@@ -104,26 +104,26 @@ class Psr7FactoryTest extends TestCase
             ]);
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
         $aphiriaMultipartBody = (new RequestParser())->readAsMultipart($aphiriaRequest);
-        $aphiriaMultipartBodyParts = $aphiriaMultipartBody?->getParts();
+        $aphiriaMultipartBodyParts = $aphiriaMultipartBody?->parts;
         $this->assertNotNull($aphiriaMultipartBodyParts);
         $this->assertCount(3, $aphiriaMultipartBodyParts);
-        $this->assertSame('foo', $aphiriaMultipartBodyParts[0]->getBody()?->readAsString());
-        $this->assertSame('image/png', $aphiriaMultipartBodyParts[0]->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame('foo', $aphiriaMultipartBodyParts[0]->body?->readAsString());
+        $this->assertSame('image/png', $aphiriaMultipartBodyParts[0]->headers->getFirst('Content-Type'));
         $this->assertSame(
             'name=foo; filename=foo.png',
-            $aphiriaMultipartBodyParts[0]->getHeaders()->getFirst('Content-Disposition')
+            $aphiriaMultipartBodyParts[0]->headers->getFirst('Content-Disposition')
         );
-        $this->assertSame('bar', $aphiriaMultipartBodyParts[1]->getBody()?->readAsString());
-        $this->assertFalse($aphiriaMultipartBodyParts[1]->getHeaders()->containsKey('Content-Type'));
+        $this->assertSame('bar', $aphiriaMultipartBodyParts[1]->body?->readAsString());
+        $this->assertFalse($aphiriaMultipartBodyParts[1]->headers->containsKey('Content-Type'));
         $this->assertSame(
             'name=bar; filename=bar.png',
-            $aphiriaMultipartBodyParts[1]->getHeaders()->getFirst('Content-Disposition')
+            $aphiriaMultipartBodyParts[1]->headers->getFirst('Content-Disposition')
         );
-        $this->assertSame('baz', $aphiriaMultipartBodyParts[2]->getBody()?->readAsString());
-        $this->assertFalse($aphiriaMultipartBodyParts[2]->getHeaders()->containsKey('Content-Type'));
+        $this->assertSame('baz', $aphiriaMultipartBodyParts[2]->body?->readAsString());
+        $this->assertFalse($aphiriaMultipartBodyParts[2]->headers->containsKey('Content-Type'));
         $this->assertSame(
             'name=baz',
-            $aphiriaMultipartBodyParts[2]->getHeaders()->getFirst('Content-Disposition')
+            $aphiriaMultipartBodyParts[2]->headers->getFirst('Content-Disposition')
         );
     }
 

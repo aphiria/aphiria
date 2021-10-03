@@ -99,10 +99,10 @@ class Psr7Factory implements IPsr7Factory
                     $contentDisposition .= "; filename=$psr7ClientFilename";
                 }
 
-                $bodyPart->getHeaders()->add('Content-Disposition', $contentDisposition);
+                $bodyPart->headers->add('Content-Disposition', $contentDisposition);
 
                 if (($psr7ClientMimeType = $uploadedFile->getClientMediaType()) !== null) {
-                    $bodyPart->getHeaders()->add('Content-Type', $psr7ClientMimeType);
+                    $bodyPart->headers->add('Content-Type', $psr7ClientMimeType);
                 }
 
                 $bodyParts[] = $bodyPart;
@@ -275,13 +275,13 @@ class Psr7Factory implements IPsr7Factory
 
         $psr7UploadedFiles = [];
 
-        foreach ($multipartBody->getParts() as $i => $part) {
-            if (($partBody = $part->getBody()) === null) {
+        foreach ($multipartBody->parts as $i => $part) {
+            if (($partBody = $part->body) === null) {
                 continue;
             }
 
             $contentDispositionParameters = $this->aphiriaRequestHeaderParser->parseParameters(
-                $part->getHeaders(),
+                $part->headers,
                 'Content-Disposition'
             );
             $name = $filename = null;

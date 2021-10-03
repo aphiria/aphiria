@@ -160,7 +160,7 @@ class Router implements IRequestHandler
     private function matchRoute(IRequest $request): RouteMatchingResult
     {
         $uri = $request->getUri();
-        $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->getHost() ?? '', $uri->getPath() ?? '');
+        $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->host ?? '', $uri->path ?? '');
 
         if (!$matchingResult->matchFound) {
             if ($matchingResult->methodIsAllowed === null) {

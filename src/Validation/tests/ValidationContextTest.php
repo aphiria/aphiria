@@ -125,13 +125,13 @@ class ValidationContextTest extends TestCase
     public function testGettingMethodNameReturnsOneSetInConstructor(): void
     {
         $context = new ValidationContext($this, null, 'method');
-        $this->assertSame('method', $context->getMethodName());
+        $this->assertSame('method', $context->methodName);
     }
 
     public function testGettingPropertyNameReturnsOneSetInConstructor(): void
     {
         $context = new ValidationContext($this, 'prop');
-        $this->assertSame('prop', $context->getPropertyName());
+        $this->assertSame('prop', $context->propertyName);
     }
 
     public function testGettingRootValueReturnsParentValueIfParentContextExists(): void
@@ -203,6 +203,6 @@ class ValidationContextTest extends TestCase
     public function testGettingValueReturnsOneSetInConstructor(): void
     {
         $context = new ValidationContext(1);
-        $this->assertSame(1, $context->getValue());
+        $this->assertSame(1, $context->value);
     }
 }

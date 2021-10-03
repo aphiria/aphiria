@@ -79,12 +79,6 @@ class PaddingFormatterTest extends TestCase
         $this->assertSame('a  <br>cd <br>fg <br>ijk', $formattedText);
     }
 
-    public function testGettingEOLChar(): void
-    {
-        $this->formatter->eolChar = 'foo';
-        $this->assertSame('foo', $this->formatter->eolChar);
-    }
-
     public function testNormalizingColumns(): void
     {
         $rows = [

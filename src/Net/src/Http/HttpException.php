@@ -20,7 +20,7 @@ use Exception;
 class HttpException extends Exception
 {
     /** @var IResponse The response */
-    private IResponse $response;
+    public readonly IResponse $response;
 
     /**
      * @inheritdoc
@@ -39,15 +39,5 @@ class HttpException extends Exception
         } else {
             $this->response = $statusCodeOrResponse;
         }
-    }
-
-    /**
-     * Gets the response
-     *
-     * @return IResponse The response
-     */
-    public function getResponse(): IResponse
-    {
-        return $this->response;
     }
 }

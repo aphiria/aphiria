@@ -302,7 +302,7 @@ final class Validator implements IValidator
                         ),
                         $constraint,
                         $methodValue,
-                        $validationContext->getValue(),
+                        $validationContext->value,
                         null,
                         $methodName
                     ));
@@ -403,7 +403,7 @@ final class Validator implements IValidator
                         ),
                         $constraint,
                         $propertyValue,
-                        $validationContext->getValue(),
+                        $validationContext->value,
                         $propertyName
                     ));
                 }

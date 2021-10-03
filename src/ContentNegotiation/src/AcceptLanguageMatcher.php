@@ -87,8 +87,8 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
             return -1;
         }
 
-        $aValue = $a->getLanguage();
-        $bValue = $b->getLanguage();
+        $aValue = $a->language;
+        $bValue = $b->language;
 
         if ($aValue === '*') {
             if ($bValue === '*') {
@@ -127,7 +127,7 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
         $languages = [];
 
         foreach ($headers as $header) {
-            $languages[] = $header->getLanguage();
+            $languages[] = $header->language;
         }
 
         return $languages;

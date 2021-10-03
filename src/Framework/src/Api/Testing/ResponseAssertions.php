@@ -65,7 +65,7 @@ class ResponseAssertions
     public function assertCookieEquals(mixed $expectedValue, IResponse $response, string $cookieName): void
     {
         foreach ($this->responseHeaderParser->parseCookies($response->getHeaders()) as $cookie) {
-            if ($cookie->getName() === $cookieName && $cookie->getValue() === $expectedValue) {
+            if ($cookie->getName() === $cookieName && $cookie->value === $expectedValue) {
                 return;
             }
         }

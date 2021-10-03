@@ -33,12 +33,12 @@ class MultipartBodyPartTest extends TestCase
 
     public function testGettingBody(): void
     {
-        $this->assertSame($this->body, $this->bodyPart->getBody());
+        $this->assertSame($this->body, $this->bodyPart->body);
     }
 
     public function testGettingHeaders(): void
     {
-        $this->assertSame($this->headers, $this->bodyPart->getHeaders());
+        $this->assertSame($this->headers, $this->bodyPart->headers);
     }
 
     public function testSerializingSeparatesHeadersAndBodyWithTwoEmptyLines(): void

@@ -176,14 +176,14 @@ class Request implements IRequest
     {
         switch ($this->requestTargetType) {
             case RequestTargetTypes::ORIGIN_FORM:
-                $requestTarget = $this->uri->getPath();
+                $requestTarget = $this->uri->path;
 
                 /** @link https://tools.ietf.org/html/rfc7230#section-5.3.1 */
                 if ($requestTarget === null || $requestTarget === '') {
                     $requestTarget = '/';
                 }
 
-                if (($queryString = $this->uri->getQueryString()) !== null && $queryString !== '') {
+                if (($queryString = $this->uri->queryString) !== null && $queryString !== '') {
                     $requestTarget .= "?$queryString";
                 }
 

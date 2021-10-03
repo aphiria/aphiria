@@ -97,7 +97,7 @@ class Container implements IContainer
      */
     public function bindFactory(string|array $interfaces, callable $factory, bool $resolveAsSingleton = false): void
     {
-        $binding = new FactoryContainerBinding($factory, $resolveAsSingleton);
+        $binding = new FactoryContainerBinding(Closure::fromCallable($factory), $resolveAsSingleton);
 
         foreach ((array)$interfaces as $interface) {
             $this->addBinding($interface, $binding);

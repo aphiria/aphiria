@@ -77,7 +77,7 @@ class RouteActionInvokerTest extends TestCase
             );
             $this->fail('Failed to assert that a 415 was thrown');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE, $ex->response->getStatusCode());
         }
     }
 
@@ -95,7 +95,7 @@ class RouteActionInvokerTest extends TestCase
             );
             $this->fail('Failed to assert that a 400 was thrown');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::BAD_REQUEST, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::BAD_REQUEST, $ex->response->getStatusCode());
         }
     }
 
@@ -251,7 +251,7 @@ class RouteActionInvokerTest extends TestCase
             );
             $this->fail('Failed to assert that a 400 was thrown');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::BAD_REQUEST, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::BAD_REQUEST, $ex->response->getStatusCode());
         }
     }
 
@@ -287,7 +287,7 @@ class RouteActionInvokerTest extends TestCase
             );
             $this->fail('Failed to assert that a 522 was thrown');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::UNPROCESSABLE_ENTITY, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::UNPROCESSABLE_ENTITY, $ex->response->getStatusCode());
         }
     }
 

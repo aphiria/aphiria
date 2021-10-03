@@ -35,11 +35,6 @@ class CookieTest extends TestCase
         ];
     }
 
-    public function testCheckingIfIsHttpOnly(): void
-    {
-        $this->assertTrue($this->cookie->isHttpOnly());
-    }
-
     public function testInvalidSameSiteThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -47,87 +42,14 @@ class CookieTest extends TestCase
         new Cookie('foo', 'bar', null, null, null, false, false, 'foo');
     }
 
-    public function testSetHttpOnly(): void
-    {
-        $this->cookie->setHttpOnly(false);
-        $this->assertFalse($this->cookie->isHttpOnly());
-    }
-
-    public function testSetDomain(): void
-    {
-        $domainName = 'www.domain.com';
-        $this->cookie->setDomain($domainName);
-        $this->assertSame($domainName, $this->cookie->getDomain());
-    }
-
-    public function testSetPath(): void
-    {
-        $path = '/';
-        $this->cookie->setPath($path);
-        $this->assertSame($path, $this->cookie->getPath());
-    }
-
-    public function setValueProvider(): array
-    {
-        return [
-            ['123'],
-            [12345],
-            [
-                [12345],
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider setValueProvider
-     * @param string|int|array $value The value to set
-     */
-    public function testSetValue(string|int|array $value): void
-    {
-        $this->cookie->setValue($value);
-        $this->assertEquals($value, $this->cookie->getValue());
-    }
-
-    public function testSetSecure(): void
-    {
-        $isSecure = false;
-        $this->cookie->setSecure($isSecure);
-        $this->assertFalse($this->cookie->isSecure());
-    }
-
-    public function testCheckingIfIsSecure(): void
-    {
-        $this->assertTrue($this->cookie->isSecure());
-    }
-
-    public function testGettingDomain(): void
-    {
-        $this->assertSame('foo.com', $this->cookie->getDomain());
-    }
-
-    public function testGettingMaxAge(): void
-    {
-        $this->assertSame(1234, $this->cookie->getMaxAge());
-    }
-
     public function testGettingName(): void
     {
         $this->assertSame('name', $this->cookie->getName());
     }
 
-    public function testGettingPath(): void
-    {
-        $this->assertSame('/', $this->cookie->getPath());
-    }
-
     public function testGettingSameSite(): void
     {
         $this->assertSame(Cookie::SAME_SITE_LAX, $this->cookie->getSameSite());
-    }
-
-    public function testGettingValue(): void
-    {
-        $this->assertSame('value', $this->cookie->getValue());
     }
 
     public function testInvalidNameThrowsException(): void
@@ -137,10 +59,12 @@ class CookieTest extends TestCase
         $this->cookie->setName('=');
     }
 
-    public function testSettingMaxAge(): void
+    public function testSettingSameSite(): void
     {
-        $this->cookie->setMaxAge(3600);
-        $this->assertSame(3600, $this->cookie->getMaxAge());
+        $cookie = new Cookie('foo', 'bar', sameSite: null);
+        $this->assertNull($cookie->getSameSite());
+        $cookie->setSameSite(Cookie::SAME_SITE_LAX);
+        $this->assertSame(Cookie::SAME_SITE_LAX, $cookie->getSameSite());
     }
 
     /**
@@ -149,7 +73,9 @@ class CookieTest extends TestCase
      */
     public function testSettingValidSameSiteSettingsAreAccepted(?string $sameSite): void
     {
-        new Cookie('foo', 'bar', sameSite: $sameSite);
+        $cookie = new Cookie('foo', 'bar', sameSite: $sameSite);
+        // Also try setting the value manually
+        $cookie->setSameSite($sameSite);
         // Dummy assertion
         $this->assertTrue(true);
     }

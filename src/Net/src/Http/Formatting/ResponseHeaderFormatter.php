@@ -102,25 +102,25 @@ class ResponseHeaderFormatter extends HeaderParser
      */
     private function getSetCookieHeaderValue(Cookie $cookie): string
     {
-        $headerValue = "{$cookie->getName()}=" . \urlencode((string)$cookie->getValue());
+        $headerValue = "{$cookie->getName()}=" . \urlencode((string)$cookie->value);
 
-        if (($maxAge = $cookie->getMaxAge()) !== null) {
+        if (($maxAge = $cookie->maxAge) !== null) {
             $headerValue .= "; Max-Age=$maxAge";
         }
 
-        if (($path = $cookie->getPath()) !== null) {
+        if (($path = $cookie->path) !== null) {
             $headerValue .= "; Path=$path";
         }
 
-        if (($domain = $cookie->getDomain()) !== null) {
+        if (($domain = $cookie->domain) !== null) {
             $headerValue .= "; Domain=$domain";
         }
 
-        if ($cookie->isSecure()) {
+        if ($cookie->isSecure) {
             $headerValue .= '; Secure';
         }
 
-        if ($cookie->isHttpOnly()) {
+        if ($cookie->isHttpOnly) {
             $headerValue .= '; HttpOnly';
         }
 

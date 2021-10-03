@@ -33,7 +33,7 @@ class UriParser
      */
     public function parseQueryString(Uri $uri): IImmutableDictionary
     {
-        if (($queryString = $uri->getQueryString()) === null) {
+        if (($queryString = $uri->queryString) === null) {
             /** @var ImmutableHashTable<string, string> $queryString */
             $queryString = new ImmutableHashTable([]);
 

@@ -69,8 +69,8 @@ final class RequestBodyValidator implements IRequestBodyValidator
         } catch (ValidationException $ex) {
             $errors = [];
 
-            foreach ($ex->getViolations() as $violation) {
-                $errors[] = $violation->getErrorMessage();
+            foreach ($ex->violations as $violation) {
+                $errors[] = $violation->errorMessage;
             }
 
             throw new InvalidRequestBodyException($errors, 'Invalid request body', 0, $ex);

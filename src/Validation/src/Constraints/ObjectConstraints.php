@@ -27,8 +27,11 @@ final class ObjectConstraints
      * @param array<string, list<IConstraint>|IConstraint> $propertyConstraints The mapping of property names to constraints
      * @param array<string, list<IConstraint>|IConstraint> $methodConstraints The mapping of method names to constraints
      */
-    public function __construct(private string $className, array $propertyConstraints = [], array $methodConstraints = [])
-    {
+    public function __construct(
+        public readonly string $className,
+        array $propertyConstraints = [],
+        array $methodConstraints = []
+    ) {
         foreach ($propertyConstraints as $propertyName => $propertyConstraint) {
             $this->addPropertyConstraint($propertyName, $propertyConstraint);
         }
@@ -78,16 +81,6 @@ final class ObjectConstraints
     public function getAllPropertyConstraints(): array
     {
         return $this->propertyConstraints;
-    }
-
-    /**
-     * Gets the name of the class whose constraints are represented here
-     *
-     * @return class-string The name of the class
-     */
-    public function getClassName(): string
-    {
-        return $this->className;
     }
 
     /**

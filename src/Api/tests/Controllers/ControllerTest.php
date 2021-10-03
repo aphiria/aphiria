@@ -338,7 +338,7 @@ class ControllerTest extends TestCase
             $this->controller->readRequestBodyAs('foo');
             $this->fail('Failed to throw exception');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE, $ex->response->getStatusCode());
             $this->assertSame('Failed to negotiate request content with type foo', $ex->getMessage());
         }
     }
@@ -368,7 +368,7 @@ class ControllerTest extends TestCase
             $this->controller->readRequestBodyAs('foo');
             $this->fail('Failed to throw exception');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::UNPROCESSABLE_ENTITY, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCodes::UNPROCESSABLE_ENTITY, $ex->response->getStatusCode());
             $this->assertSame('Failed to deserialize request body when resolving body as type foo', $ex->getMessage());
         }
     }

@@ -96,7 +96,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
         }
 
         foreach ($mediaTypeHeaders as $mediaTypeHeader) {
-            [$mediaType, $mediaSubType] = \explode('/', $mediaTypeHeader->getMediaType());
+            [$mediaType, $mediaSubType] = \explode('/', $mediaTypeHeader->mediaType);
 
             foreach ($this->mediaTypeFormatters as $mediaTypeFormatter) {
                 foreach ($mediaTypeFormatter->getSupportedMediaTypes() as $supportedMediaType) {
@@ -145,10 +145,10 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
             return -1;
         }
 
-        $aType = $a->getType();
-        $bType = $b->getType();
-        $aSubType = $a->getSubType();
-        $bSubType = $b->getSubType();
+        $aType = $a->type;
+        $bType = $b->type;
+        $aSubType = $a->subType;
+        $bSubType = $b->subType;
 
         if ($aType === '*') {
             if ($bType === '*') {

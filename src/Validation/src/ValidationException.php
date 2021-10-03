@@ -20,27 +20,12 @@ use Throwable;
  */
 final class ValidationException extends InvalidArgumentException
 {
-    /** @var list<ConstraintViolation> The violations that occurred */
-    private array $violations;
-
     /**
      * @inheritdoc
      * @param list<ConstraintViolation> $violations The violations that occurred
      */
-    public function __construct(array $violations, string $message = '', int $code = 0, Throwable $previous = null)
+    public function __construct(public readonly array $violations, string $message = '', int $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
-
-        $this->violations = $violations;
-    }
-
-    /**
-     * Gets the violations that occurred
-     *
-     * @return list<ConstraintViolation> The list of violations
-     */
-    public function getViolations(): array
-    {
-        return $this->violations;
     }
 }

@@ -112,10 +112,10 @@ class BodyParserTest extends TestCase
             ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
         $multipartBody = $this->parser->readAsMultipart($this->body, 'boundary');
         $this->assertNotNull($multipartBody);
-        $bodyParts = $multipartBody->getParts();
+        $bodyParts = $multipartBody->parts;
         $this->assertCount(1, $bodyParts);
-        $this->assertSame('bar', $bodyParts[0]->getHeaders()->getFirst('Foo'));
-        $this->assertSame('blah', $bodyParts[0]->getHeaders()->getFirst('Baz'));
+        $this->assertSame('bar', $bodyParts[0]->headers->getFirst('Foo'));
+        $this->assertSame('blah', $bodyParts[0]->headers->getFirst('Baz'));
     }
 
     public function testParsingMultipartRequestWithHeadersExtractsBody(): void
@@ -125,9 +125,9 @@ class BodyParserTest extends TestCase
             ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
         $multipartBody = $this->parser->readAsMultipart($this->body, 'boundary');
         $this->assertNotNull($multipartBody);
-        $bodyParts = $multipartBody->getParts();
+        $bodyParts = $multipartBody->parts;
         $this->assertCount(1, $bodyParts);
-        $body = $bodyParts[0]->getBody();
+        $body = $bodyParts[0]->body;
         $this->assertNotNull($body);
         $this->assertSame('body', $body->readAsString());
     }
@@ -164,11 +164,11 @@ class BodyParserTest extends TestCase
             ->willReturn($bodyString);
         $multipartBody = $this->parser->readAsMultipart($this->body, 'boundary1');
         $this->assertNotNull($multipartBody);
-        $bodyParts = $multipartBody->getParts();
+        $bodyParts = $multipartBody->parts;
         $this->assertCount(1, $bodyParts);
         $this->assertSame(
             'multipart/mixed; boundary="boundary2"',
-            $bodyParts[0]->getHeaders()->getFirst('Content-Type')
+            $bodyParts[0]->headers->getFirst('Content-Type')
         );
         $expectedBodyString = 'body1' .
             "\r\n" .
@@ -182,7 +182,7 @@ class BodyParserTest extends TestCase
             '--boundary3--' .
             "\r\n" .
             '--boundary2--';
-        $body = $bodyParts[0]->getBody();
+        $body = $bodyParts[0]->body;
         $this->assertNotNull($body);
         $this->assertSame($expectedBodyString, $body->readAsString());
     }

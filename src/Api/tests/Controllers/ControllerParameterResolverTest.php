@@ -209,7 +209,7 @@ class ControllerParameterResolverTest extends TestCase
     {
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([ControllerWithEndpoints::class, 'noTypeHintParameter'], 'foo'),
-            $this->createMock(IRequest::class),
+            $this->createRequestWithoutBody('http://foo.com'),
             ['foo' => 'bar']
         );
         $this->assertSame('bar', $resolvedParameter);

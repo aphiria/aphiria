@@ -47,7 +47,7 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
 
         foreach ($rankedAcceptCharsetHeaders as $acceptCharsetHeader) {
             foreach ($supportedEncodings as $supportedEncoding) {
-                $charset = $acceptCharsetHeader->getCharset();
+                $charset = $acceptCharsetHeader->charset;
 
                 if ($charset === '*' || \strcasecmp($charset, $supportedEncoding) === 0) {
                     return $supportedEncoding;
@@ -55,13 +55,13 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
             }
         }
 
-        if ($matchedMediaTypeHeaderValue?->getCharset() === null) {
+        if ($matchedMediaTypeHeaderValue?->charset === null) {
             return null;
         }
 
         // Fall back to the charset in the media type header
         foreach ($supportedEncodings as $supportedEncoding) {
-            $charset = $matchedMediaTypeHeaderValue?->getCharset();
+            $charset = $matchedMediaTypeHeaderValue?->charset;
 
             if ($charset === '*' || \strcasecmp($charset ?? '', $supportedEncoding) === 0) {
                 return $supportedEncoding;
@@ -91,8 +91,8 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
             return -1;
         }
 
-        $aValue = $a->getCharset();
-        $bValue = $b->getCharset();
+        $aValue = $a->charset;
+        $bValue = $b->charset;
 
         if ($aValue === '*') {
             if ($bValue === '*') {

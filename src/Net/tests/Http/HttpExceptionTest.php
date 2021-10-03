@@ -28,7 +28,7 @@ class HttpExceptionTest extends TestCase
     public function testIntStatusCodeIsSetInResponse(): void
     {
         $exception = new HttpException(500);
-        $this->assertSame(500, $exception->getResponse()->getStatusCode());
+        $this->assertSame(500, $exception->response->getStatusCode());
     }
 
     public function testMessageIsSameOneSetInConstructor(): void
@@ -48,6 +48,6 @@ class HttpExceptionTest extends TestCase
     {
         $response = $this->createMock(IResponse::class);
         $exception = new HttpException($response);
-        $this->assertSame($response, $exception->getResponse());
+        $this->assertSame($response, $exception->response);
     }
 }
