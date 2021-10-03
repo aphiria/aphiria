@@ -24,30 +24,10 @@ class ClassContainerBinding implements IContainerBinding
      * @param bool $resolveAsSingleton Whether or not to resolve as a singleton
      */
     public function __construct(
-        private string $concreteClass,
-        private array $constructorPrimitives,
+        public readonly string $concreteClass,
+        public readonly array $constructorPrimitives,
         private bool $resolveAsSingleton
     ) {
-    }
-
-    /**
-     * Gets the concrete class
-     *
-     * @return class-string The concrete class
-     */
-    public function getConcreteClass(): string
-    {
-        return $this->concreteClass;
-    }
-
-    /**
-     * Gets the list of constructor primitives
-     *
-     * @return list<mixed> The list of constructor primitives
-     */
-    public function getConstructorPrimitives(): array
-    {
-        return $this->constructorPrimitives;
     }
 
     /**

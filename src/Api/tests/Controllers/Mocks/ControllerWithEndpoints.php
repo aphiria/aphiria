@@ -153,7 +153,7 @@ class ControllerWithEndpoints extends BaseController
      */
     public function objectParameter(User $user): IResponse
     {
-        return $this->createResponseWithBody("id:{$user->getId()}, email:{$user->getEmail()}");
+        return $this->createResponseWithBody("id:{$user->id}, email:{$user->email}");
     }
 
     /**

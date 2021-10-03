@@ -231,6 +231,6 @@ class ResponseAssertions
             throw new InvalidArgumentException("No media type formatter available for $type");
         }
 
-        return $mediaTypeFormatterMatch->getFormatter()->readFromStream($body->readAsStream(), $type);
+        return $mediaTypeFormatterMatch->formatter->readFromStream($body->readAsStream(), $type);
     }
 }

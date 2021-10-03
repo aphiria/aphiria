@@ -96,7 +96,7 @@ class RequestBodyValidatorTest extends TestCase
             $this->requestBodyValidator->validate($this->request, $this);
             $this->fail('Failed to assert that ' . InvalidRequestBodyException::class . ' is thrown');
         } catch (InvalidRequestBodyException $ex) {
-            $this->assertEquals(['error1', 'error2'], $ex->getErrors());
+            $this->assertEquals(['error1', 'error2'], $ex->errors);
             $this->assertSame('Invalid request body', $ex->getMessage());
             // Dummy assertion
             $this->assertTrue(true);

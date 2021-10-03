@@ -22,7 +22,7 @@ use RuntimeException;
 class StreamOutput extends Output
 {
     /** @var resource The output stream */
-    protected $outputStream;
+    public readonly mixed $outputStream;
     /** @var resource The input stream */
     protected $inputStream;
 
@@ -51,14 +51,6 @@ class StreamOutput extends Output
     public function clear(): void
     {
         // Don't do anything
-    }
-
-    /**
-     * @return resource
-     */
-    public function getOutputStream()
-    {
-        return $this->outputStream;
     }
 
     /**

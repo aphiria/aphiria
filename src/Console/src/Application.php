@@ -79,7 +79,7 @@ class Application implements ICommandBus
             return $statusCode ?? StatusCodes::OK;
         } catch (CommandNotFoundException $ex) {
             // If there was no entered command, treat it like invoking the about command
-            if ($ex->getCommandName() === '') {
+            if ($ex->commandName === '') {
                 /** @var class-string|null $aboutCommandHandlerClassName */
                 $aboutCommandHandlerClassName = null;
 

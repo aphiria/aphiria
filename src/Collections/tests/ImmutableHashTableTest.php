@@ -74,7 +74,7 @@ class ImmutableHashTableTest extends TestCase
         $kvp1 = new KeyValuePair(new FakeObject(), 'foo');
         $kvp2 = new KeyValuePair(new FakeObject(), 'bar');
         $hashTable = new ImmutableHashTable([$kvp1, $kvp2]);
-        $this->assertEquals([$kvp1->getKey(), $kvp2->getKey()], $hashTable->getKeys());
+        $this->assertEquals([$kvp1->key, $kvp2->key], $hashTable->getKeys());
     }
 
     public function testGettingValuesReturnsListOfValues(): void
@@ -82,7 +82,7 @@ class ImmutableHashTableTest extends TestCase
         $kvp1 = new KeyValuePair('foo', 'bar');
         $kvp2 = new KeyValuePair('baz', 'blah');
         $hashTable = new ImmutableHashTable([$kvp1, $kvp2]);
-        $this->assertEquals([$kvp1->getValue(), $kvp2->getValue()], $hashTable->getValues());
+        $this->assertEquals([$kvp1->value, $kvp2->value], $hashTable->getValues());
     }
 
     public function testIssetReturnsWhetherOrNotKeyIsSet(): void

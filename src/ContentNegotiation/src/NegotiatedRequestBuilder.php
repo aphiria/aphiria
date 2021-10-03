@@ -85,11 +85,11 @@ class NegotiatedRequestBuilder extends RequestBuilder
                 throw new InvalidArgumentException("No media type formatter available for $type");
             }
 
-            $encoding = $mediaTypeFormatterMatch->getFormatter()->getDefaultEncoding();
+            $encoding = $mediaTypeFormatterMatch->formatter->getDefaultEncoding();
             $bodyStream = new Stream(\fopen('php://temp', 'w+b'));
-            $mediaTypeFormatterMatch->getFormatter()->writeToStream($body, $bodyStream, $encoding);
+            $mediaTypeFormatterMatch->formatter->writeToStream($body, $bodyStream, $encoding);
             $new->body = new StreamBody($bodyStream);
-            $new->headers->add('Content-Type', $mediaTypeFormatterMatch->getMediaType());
+            $new->headers->add('Content-Type', $mediaTypeFormatterMatch->mediaType);
         } else {
             throw new InvalidArgumentException('Body must either implement ' . IBody::class . ' or be an array, object, or scalar');
         }

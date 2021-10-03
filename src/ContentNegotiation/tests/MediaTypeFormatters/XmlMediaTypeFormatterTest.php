@@ -75,7 +75,7 @@ class XmlMediaTypeFormatterTest extends TestCase
     {
         $xml = <<<XML
 <?xml version="1.0"?>
-<response><item key="0"><email>foo@bar.com</email><id>123</id></item></response>
+<response><item key="0"><id>123</id><email>foo@bar.com</email></item></response>
 
 XML;
         $stream = $this->createStreamThatExpectsBody($xml);
@@ -87,7 +87,7 @@ XML;
     {
         $xml = <<<XML
 <?xml version="1.0"?>
-<response><email>foo@bar.com</email><id>123</id></response>
+<response><id>123</id><email>foo@bar.com</email></response>
 
 XML;
         $stream = $this->createStreamThatExpectsBody($xml);
@@ -109,7 +109,7 @@ XML;
         $user = new User(123, 'foo@bar.com');
         $xml = <<<XML
 <?xml version="1.0"?>
-<response><email>foo@bar.com</email><id>123</id></response>
+<response><id>123</id><email>foo@bar.com</email></response>
 
 XML;
         $expectedEncodedValue = \mb_convert_encoding($xml, 'utf-8');

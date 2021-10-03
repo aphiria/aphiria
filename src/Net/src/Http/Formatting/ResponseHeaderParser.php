@@ -45,15 +45,15 @@ class ResponseHeaderParser extends HeaderParser
 
             /** @var KeyValuePair<string, string> $kvp */
             foreach ($this->parseParameters($headers, 'Set-Cookie', $i) as $kvp) {
-                switch ($kvp->getKey()) {
+                switch ($kvp->key) {
                     case 'Max-Age':
-                        $maxAge = (int)$kvp->getValue();
+                        $maxAge = (int)$kvp->value;
                         break;
                     case 'Path':
-                        $path = (string)$kvp->getValue();
+                        $path = (string)$kvp->value;
                         break;
                     case 'Domain':
-                        $domain = (string)$kvp->getValue();
+                        $domain = (string)$kvp->value;
                         break;
                     case 'Secure':
                         $isSecure = true;
@@ -62,12 +62,12 @@ class ResponseHeaderParser extends HeaderParser
                         $isHttpOnly = true;
                         break;
                     case 'SameSite':
-                        $sameSite = (string)$kvp->getValue();
+                        $sameSite = (string)$kvp->value;
                         break;
                     default:
                         // Treat the default value as the cookie name
-                        $name = (string)$kvp->getKey();
-                        $value = $kvp->getValue();
+                        $name = (string)$kvp->key;
+                        $value = $kvp->value;
                         break;
                 }
             }

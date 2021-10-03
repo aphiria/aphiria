@@ -114,7 +114,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             $type->getName(),
             $request
         );
-        $mediaTypeFormatter = $requestContentNegotiationResult->getFormatter();
+        $mediaTypeFormatter = $requestContentNegotiationResult->formatter;
 
         if ($mediaTypeFormatter === null) {
             if (!$reflectionParameter->allowsNull()) {

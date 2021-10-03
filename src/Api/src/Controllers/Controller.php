@@ -363,7 +363,7 @@ class Controller
         }
 
         $contentNegotiationResult = $this->contentNegotiator->negotiateRequestContent($type, $this->request);
-        $mediaTypeFormatter = $contentNegotiationResult->getFormatter();
+        $mediaTypeFormatter = $contentNegotiationResult->formatter;
 
         if ($mediaTypeFormatter === null) {
             throw new HttpException(

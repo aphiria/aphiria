@@ -73,14 +73,14 @@ class JsonMediaTypeFormatterTest extends TestCase
 
     public function testWritingArrayOfObjectsIsSuccessful(): void
     {
-        $stream = $this->createStreamThatExpectsBody('[{"email":"foo@bar.com","id":123}]');
+        $stream = $this->createStreamThatExpectsBody('[{"id":123,"email":"foo@bar.com"}]');
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream([$user], $stream, 'utf-8');
     }
 
     public function testWritingToStreamSetsStreamContentsFromSerializedValue(): void
     {
-        $stream = $this->createStreamThatExpectsBody('{"email":"foo@bar.com","id":123}');
+        $stream = $this->createStreamThatExpectsBody('{"id":123,"email":"foo@bar.com"}');
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $stream, 'utf-8');
     }
@@ -97,7 +97,7 @@ class JsonMediaTypeFormatterTest extends TestCase
     {
         $stream = $this->createMock(IStream::class);
         $user = new User(123, 'foo@bar.com');
-        $expectedEncodedValue = \mb_convert_encoding('{"email":"foo@bar.com","id":123}', 'utf-8');
+        $expectedEncodedValue = \mb_convert_encoding('{"id":123,"email":"foo@bar.com"}', 'utf-8');
         $stream->expects($this->once())
             ->method('write')
             ->with($expectedEncodedValue);

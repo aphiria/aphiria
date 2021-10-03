@@ -41,7 +41,7 @@ class StreamOutputTest extends TestCase
 
     public function testGettingStream(): void
     {
-        $this->assertIsResource($this->output->getOutputStream());
+        $this->assertIsResource($this->output->outputStream);
     }
 
     public function testInvalidStream(): void
@@ -69,28 +69,28 @@ class StreamOutputTest extends TestCase
     public function testWriteOnArray(): void
     {
         $this->output->write(['foo', 'bar']);
-        \rewind($this->output->getOutputStream());
-        $this->assertSame('foobar', \stream_get_contents($this->output->getOutputStream()));
+        \rewind($this->output->outputStream);
+        $this->assertSame('foobar', \stream_get_contents($this->output->outputStream));
     }
 
     public function testWriteOnString(): void
     {
         $this->output->write('foo');
-        \rewind($this->output->getOutputStream());
-        $this->assertSame('foo', \stream_get_contents($this->output->getOutputStream()));
+        \rewind($this->output->outputStream);
+        $this->assertSame('foo', \stream_get_contents($this->output->outputStream));
     }
 
     public function testWritelnOnArray(): void
     {
         $this->output->writeln(['foo', 'bar']);
-        \rewind($this->output->getOutputStream());
-        $this->assertSame('foo' . PHP_EOL . 'bar' . PHP_EOL, \stream_get_contents($this->output->getOutputStream()));
+        \rewind($this->output->outputStream);
+        $this->assertSame('foo' . PHP_EOL . 'bar' . PHP_EOL, \stream_get_contents($this->output->outputStream));
     }
 
     public function testWritelnOnString(): void
     {
         $this->output->writeln('foo');
-        \rewind($this->output->getOutputStream());
-        $this->assertSame('foo' . PHP_EOL, \stream_get_contents($this->output->getOutputStream()));
+        \rewind($this->output->outputStream);
+        $this->assertSame('foo' . PHP_EOL, \stream_get_contents($this->output->outputStream));
     }
 }

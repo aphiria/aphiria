@@ -183,7 +183,7 @@ class HeadersTest extends TestCase
             $this->assertIsInt($key);
             $this->assertInstanceOf(KeyValuePair::class, $value);
             /** @psalm-suppress MixedArrayOffset We're purposely accessing mixed keys */
-            $actualValues[$value->getKey()] = $value->getValue();
+            $actualValues[$value->key] = $value->value;
         }
 
         $this->assertCount(1, $actualValues);

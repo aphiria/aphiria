@@ -61,7 +61,7 @@ class PaddingFormatterTest extends TestCase
             [' fg ', 'hhh'],
             ['ijk', ' ll']
         ];
-        $this->formatter->setEolChar('<br>');
+        $this->formatter->eolChar = '<br>';
         $formattedText = $this->formatter->format($rows, fn (array $row): string => "{$row[0]}-{$row[1]}");
         $this->assertSame('a  -b  <br>cd -ee <br>fg -hhh<br>ijk-ll ', $formattedText);
     }
@@ -74,15 +74,15 @@ class PaddingFormatterTest extends TestCase
             ' fg ',
             'ijk'
         ];
-        $this->formatter->setEolChar('<br>');
+        $this->formatter->eolChar = '<br>';
         $formattedText = $this->formatter->format($rows, fn (array $row): string => (string)$row[0]);
         $this->assertSame('a  <br>cd <br>fg <br>ijk', $formattedText);
     }
 
     public function testGettingEOLChar(): void
     {
-        $this->formatter->setEolChar('foo');
-        $this->assertSame('foo', $this->formatter->getEolChar());
+        $this->formatter->eolChar = 'foo';
+        $this->assertSame('foo', $this->formatter->eolChar);
     }
 
     public function testNormalizingColumns(): void

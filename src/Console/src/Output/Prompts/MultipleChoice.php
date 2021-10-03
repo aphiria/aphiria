@@ -20,9 +20,9 @@ use InvalidArgumentException;
 class MultipleChoice extends Question
 {
     /** @var string The string to display before the input */
-    private string $answerLineString = '  > ';
+    public string $answerLineString = '  > ';
     /** @var bool Whether or not to allow multiple choices */
-    private bool $allowsMultipleChoices = false;
+    public bool $allowsMultipleChoices = false;
 
     /*
      * @param string $question The question text
@@ -32,14 +32,6 @@ class MultipleChoice extends Question
     public function __construct(string $text, public array $choices, mixed $defaultAnswer = null)
     {
         parent::__construct($text, $defaultAnswer);
-    }
-
-    /**
-     * @return bool
-     */
-    public function allowsMultipleChoices(): bool
-    {
-        return $this->allowsMultipleChoices;
     }
 
     /**
@@ -87,30 +79,6 @@ class MultipleChoice extends Question
         }
 
         return $selectedChoices[0];
-    }
-
-    /**
-     * @return string
-     */
-    public function getAnswerLineString(): string
-    {
-        return $this->answerLineString;
-    }
-
-    /**
-     * @param bool $allowsMultipleChoices
-     */
-    public function setAllowsMultipleChoices(bool $allowsMultipleChoices): void
-    {
-        $this->allowsMultipleChoices = $allowsMultipleChoices;
-    }
-
-    /**
-     * @param string $answerLineString
-     */
-    public function setAnswerLineString(string $answerLineString): void
-    {
-        $this->answerLineString = $answerLineString;
     }
 
     /**

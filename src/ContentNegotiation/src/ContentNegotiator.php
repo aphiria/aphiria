@@ -119,14 +119,14 @@ final class ContentNegotiator implements IContentNegotiator
         }
 
         $encoding = $this->encodingMatcher->getBestEncodingMatch(
-            $mediaTypeFormatterMatch->getFormatter()->getSupportedEncodings(),
+            $mediaTypeFormatterMatch->formatter->getSupportedEncodings(),
             $request,
-            $mediaTypeFormatterMatch->getMediaTypeHeaderValue()
+            $mediaTypeFormatterMatch->mediaTypeHeaderValue
         );
 
         return new ContentNegotiationResult(
-            $mediaTypeFormatterMatch->getFormatter(),
-            $mediaTypeFormatterMatch->getMediaType(),
+            $mediaTypeFormatterMatch->formatter,
+            $mediaTypeFormatterMatch->mediaType,
             $encoding,
             $language
         );
@@ -153,14 +153,14 @@ final class ContentNegotiator implements IContentNegotiator
         }
 
         $encoding = $this->encodingMatcher->getBestEncodingMatch(
-            $mediaTypeFormatterMatch->getFormatter()->getSupportedEncodings(),
+            $mediaTypeFormatterMatch->formatter->getSupportedEncodings(),
             $request,
-            $mediaTypeFormatterMatch->getMediaTypeHeaderValue()
+            $mediaTypeFormatterMatch->mediaTypeHeaderValue
         );
 
         return new ContentNegotiationResult(
-            $mediaTypeFormatterMatch->getFormatter(),
-            $mediaTypeFormatterMatch->getMediaType(),
+            $mediaTypeFormatterMatch->formatter,
+            $mediaTypeFormatterMatch->mediaType,
             $encoding,
             $language
         );

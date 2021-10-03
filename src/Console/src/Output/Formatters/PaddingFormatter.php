@@ -17,12 +17,12 @@ namespace Aphiria\Console\Output\Formatters;
  */
 class PaddingFormatter
 {
+    /** @var string The end-of-line character */
+    public string $eolChar = PHP_EOL;
     /** @var bool Whether or not to pad after the string */
     private bool $padAfter = true;
     /** @var string The padding string */
     private string $paddingString = ' ';
-    /** @var string The end-of-line character */
-    private string $eolChar = PHP_EOL;
 
     /**
      * Formats rows of text so that each column is the same width
@@ -66,16 +66,6 @@ class PaddingFormatter
     }
 
     /**
-     * Gets the EOL character
-     *
-     * @return string The end-of-line character
-     */
-    public function getEolChar(): string
-    {
-        return $this->eolChar;
-    }
-
-    /**
      * Normalizes the number of columns in each row
      *
      * @param array<int, array> $rows The rows to equalize
@@ -110,16 +100,6 @@ class PaddingFormatter
 
         /** @var array<int, int> $maxLengths */
         return $maxLengths;
-    }
-
-    /**
-     * Sets the EOL character
-     *
-     * @param string $eolChar The new end-of-line character
-     */
-    public function setEolChar(string $eolChar): void
-    {
-        $this->eolChar = $eolChar;
     }
 
     /**

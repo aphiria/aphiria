@@ -181,8 +181,8 @@ class Psr7Factory implements IPsr7Factory
 
         /** @var KeyValuePair<string, list<string|int|float>> $kvp */
         foreach ($aphiriaRequest->getHeaders() as $kvp) {
-            foreach ($kvp->getValue() as $headerValue) {
-                $psr7Request = $psr7Request->withHeader((string)$kvp->getKey(), (string)$headerValue);
+            foreach ($kvp->value as $headerValue) {
+                $psr7Request = $psr7Request->withHeader((string)$kvp->key, (string)$headerValue);
             }
         }
 
@@ -195,12 +195,12 @@ class Psr7Factory implements IPsr7Factory
 
         /** @var KeyValuePair<string, string> $kvp */
         foreach ($this->aphiriaRequestParser->parseCookies($aphiriaRequest) as $kvp) {
-            $psr7CookieParams[$kvp->getKey()] = $kvp->getValue();
+            $psr7CookieParams[$kvp->key] = $kvp->value;
         }
 
         /** @var KeyValuePair<string, string> $kvp */
         foreach ($this->aphiriaRequestParser->parseQueryString($aphiriaRequest) as $kvp) {
-            $psr7QueryParams[$kvp->getKey()] = $kvp->getValue();
+            $psr7QueryParams[$kvp->key] = $kvp->value;
         }
 
         $psr7Request = $psr7Request->withCookieParams($psr7CookieParams)
@@ -215,7 +215,7 @@ class Psr7Factory implements IPsr7Factory
 
         /** @var KeyValuePair<string, mixed> $kvp */
         foreach ($aphiriaRequest->getProperties() as $kvp) {
-            $psr7Request = $psr7Request->withAttribute((string)$kvp->getKey(), $kvp->getValue());
+            $psr7Request = $psr7Request->withAttribute((string)$kvp->key, $kvp->value);
         }
 
         return $psr7Request;
@@ -234,8 +234,8 @@ class Psr7Factory implements IPsr7Factory
 
         /** @var KeyValuePair<string, list<string|int|float>> $kvp */
         foreach ($aphiriaResponse->getHeaders() as $kvp) {
-            foreach ((array)$kvp->getValue() as $headerValue) {
-                $psr7Response = $psr7Response->withHeader((string)$kvp->getKey(), (string)$headerValue);
+            foreach ((array)$kvp->value as $headerValue) {
+                $psr7Response = $psr7Response->withHeader((string)$kvp->key, (string)$headerValue);
             }
         }
 

@@ -36,7 +36,7 @@ final class Headers extends HashTable
         $headerString = '';
 
         foreach ($this->hashKeysToKvps as $kvp) {
-            $headerString .= "{$kvp->getKey()}: " . \implode(', ', \array_map(static fn (mixed $value) => (string)$value, (array)$kvp->getValue())) . "\r\n";
+            $headerString .= "{$kvp->key}: " . \implode(', ', \array_map(static fn (mixed $value) => (string)$value, (array)$kvp->value)) . "\r\n";
         }
 
         return \rtrim($headerString);
@@ -76,7 +76,7 @@ final class Headers extends HashTable
                 throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
             }
 
-            $this->add($kvp->getKey(), $kvp->getValue());
+            $this->add($kvp->key, $kvp->value);
         }
     }
 

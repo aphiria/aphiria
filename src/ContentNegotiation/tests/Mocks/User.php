@@ -17,24 +17,11 @@ namespace Aphiria\ContentNegotiation\Tests\Mocks;
  */
 class User
 {
-    /** @var int The user's ID */
-    private int $id;
-    /** @var string The user's email */
-    private string $email;
-
-    public function __construct(int $id, string $email)
+    /**
+     * @param int $id The user's ID
+     * @param string $email The user's email
+     */
+    public function __construct(public readonly int $id, public readonly string $email)
     {
-        $this->id = $id;
-        $this->email = $email;
-    }
-
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
     }
 }

@@ -60,7 +60,7 @@ class TableFormatter
         /** @var array<int, array> $headersAndRows */
         $headersAndRows = \count($headers) === 0 ? $rows : [...[$headers], ...$rows];
         $maxLengths = $this->padding->normalizeColumns($headersAndRows);
-        $eolChar = $this->padding->getEolChar();
+        $eolChar = $this->padding->eolChar;
         $rowText = \explode(
             $eolChar,
             $this->padding->format(
@@ -102,7 +102,7 @@ class TableFormatter
      */
     public function setEolChar(string $eolChar): void
     {
-        $this->padding->setEolChar($eolChar);
+        $this->padding->eolChar = $eolChar;
     }
 
     /**

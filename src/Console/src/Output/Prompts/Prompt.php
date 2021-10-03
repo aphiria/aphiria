@@ -63,7 +63,7 @@ class Prompt
             }
 
             $output->writeln($this->paddingFormatter->format($choiceTexts, fn (array $row): string => "  {$row[0]} {$row[1]}"));
-            $output->write($question->getAnswerLineString());
+            $output->write($question->answerLineString);
         }
 
         if ($question->isHidden) {

@@ -76,7 +76,7 @@ class PromptTest extends TestCase
     public function testAskingMultipleChoiceQuestionWithCustomAnswerLineString(): void
     {
         $question = new MultipleChoice('Pick', ['foo', 'bar']);
-        $question->setAnswerLineString('  : ');
+        $question->answerLineString = '  : ';
         $this->output->method('readLine')
             ->willReturn('1');
         $this->output->method('write')

@@ -216,8 +216,8 @@ class Container implements IContainer
             case ClassContainerBinding::class:
                 /** @var ClassContainerBinding $binding */
                 $instance = $this->resolveClass(
-                    $binding->getConcreteClass(),
-                    $binding->getConstructorPrimitives()
+                    $binding->concreteClass,
+                    $binding->constructorPrimitives
                 );
                 break;
             case FactoryContainerBinding::class:

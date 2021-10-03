@@ -70,11 +70,11 @@ final class NegotiatedResponseFactory implements IResponseFactory
         }
 
         if ($contentNegotiationResult !== null) {
-            if (($mediaType = $contentNegotiationResult->getMediaType()) !== null) {
+            if (($mediaType = $contentNegotiationResult->mediaType) !== null) {
                 $headers->add('Content-Type', $mediaType);
             }
 
-            if (($language = $contentNegotiationResult->getLanguage()) !== null) {
+            if (($language = $contentNegotiationResult->language) !== null) {
                 $headers->add('Content-Language', $language);
             }
         }
@@ -123,7 +123,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
 
         $type = TypeResolver::resolveType($rawBody);
         $contentNegotiationResult = $this->contentNegotiator->negotiateResponseContent($type, $request);
-        $mediaTypeFormatter = $contentNegotiationResult->getFormatter();
+        $mediaTypeFormatter = $contentNegotiationResult->formatter;
 
         if ($mediaTypeFormatter === null) {
             throw $this->createNotAcceptableException($type);
@@ -135,7 +135,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             $mediaTypeFormatter->writeToStream(
                 $rawBody,
                 $bodyStream,
-                $contentNegotiationResult->getEncoding()
+                $contentNegotiationResult->encoding
             );
         } catch (SerializationException $ex) {
             throw new HttpException(
