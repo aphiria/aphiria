@@ -170,7 +170,7 @@ class Session implements ISession
     {
         $newFlashKeys = $this->getNewFlashKeys();
         $staleFlashKeys = $this->getStaleFlashKeys();
-        $this->set(self::NEW_FLASH_KEYS_KEY, \array_merge($newFlashKeys, $staleFlashKeys));
+        $this->set(self::NEW_FLASH_KEYS_KEY, [...$newFlashKeys, ...$staleFlashKeys]);
         $this->set(self::STALE_FLASH_KEYS_KEY, []);
     }
 
@@ -207,7 +207,7 @@ class Session implements ISession
      */
     public function setMany(array $variables): void
     {
-        $this->vars = \array_merge($this->vars, $variables);
+        $this->vars = [...$this->vars, ...$variables];
     }
 
     /**

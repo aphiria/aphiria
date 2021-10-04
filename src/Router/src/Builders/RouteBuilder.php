@@ -143,7 +143,7 @@ class RouteBuilder
      */
     public function withManyParameters(array $parameters): static
     {
-        $this->parameters = \array_merge($this->parameters, $parameters);
+        $this->parameters = [...$this->parameters, ...$parameters];
 
         return $this;
     }

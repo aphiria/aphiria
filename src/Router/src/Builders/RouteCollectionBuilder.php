@@ -203,7 +203,7 @@ final class RouteCollectionBuilder
         $groupParameters = [];
 
         foreach ($this->groupOptionsStack as $groupOptions) {
-            $groupParameters = \array_merge($groupParameters, $groupOptions->parameters);
+            $groupParameters = [...$groupParameters, ...$groupOptions->parameters];
         }
 
         $routeBuilder->withManyParameters($groupParameters);

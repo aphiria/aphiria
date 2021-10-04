@@ -35,7 +35,7 @@ class MaxConstraint extends Constraint
      */
     public function getErrorMessagePlaceholders($value): array
     {
-        return \array_merge(parent::getErrorMessagePlaceholders($value), ['max' => $this->max]);
+        return [...parent::getErrorMessagePlaceholders($value), ...['max' => $this->max]];
     }
 
     /**

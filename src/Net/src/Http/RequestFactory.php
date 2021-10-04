@@ -81,7 +81,7 @@ class RequestFactory
      */
     public function __construct(protected array $trustedProxyIPAddresses = [], protected array $trustedHeaderNames = [])
     {
-        $this->trustedHeaderNames = \array_merge(self::$defaultTrustedHeaderNames, $trustedHeaderNames);
+        $this->trustedHeaderNames = [...self::$defaultTrustedHeaderNames, ...$trustedHeaderNames];
     }
 
     /**

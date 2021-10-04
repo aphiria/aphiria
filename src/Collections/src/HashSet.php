@@ -139,7 +139,7 @@ class HashSet implements ISet
      */
     public function union(array $values): static
     {
-        return new static(\array_merge(\array_values($this->values), $values));
+        return new static([...\array_values($this->values), ...$values]);
     }
 
     /**

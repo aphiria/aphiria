@@ -211,7 +211,7 @@ class ArrayList implements IList
      */
     public function union(array $values): static
     {
-        $unionedValues = \array_merge(($this->values), $values);
+        $unionedValues = [...$this->values, ...$values];
 
         return new static($unionedValues);
     }
