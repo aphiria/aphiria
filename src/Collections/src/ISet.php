@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Collections;
 
+use Closure;
 use Countable;
 use IteratorAggregate;
 use RuntimeException;
@@ -73,10 +74,10 @@ interface ISet extends Countable, IteratorAggregate
     /**
      * Sorts the values of the set
      *
-     * @param callable(T, T): int $comparer The comparer to sort with
+     * @param Closure(T, T): int $comparer The comparer to sort with
      * @return static The sorted set
      */
-    public function sort(callable $comparer): static;
+    public function sort(Closure $comparer): static;
 
     /**
      * Gets all of the values as an array

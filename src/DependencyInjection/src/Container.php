@@ -95,9 +95,9 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function bindFactory(string|array $interfaces, callable $factory, bool $resolveAsSingleton = false): void
+    public function bindFactory(string|array $interfaces, Closure $factory, bool $resolveAsSingleton = false): void
     {
-        $binding = new FactoryContainerBinding(Closure::fromCallable($factory), $resolveAsSingleton);
+        $binding = new FactoryContainerBinding($factory, $resolveAsSingleton);
 
         foreach ((array)$interfaces as $interface) {
             $this->addBinding($interface, $binding);
@@ -162,7 +162,7 @@ class Container implements IContainer
     /**
      * @inheritdoc
      */
-    public function for(Context|string $context, callable $callback)
+    public function for(Context|string $context, Closure $callback)
     {
         if (\is_string($context)) {
             $context = new TargetedContext($context);

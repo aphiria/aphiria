@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Collections;
 
 use ArrayAccess;
+use Closure;
 use Countable;
 use IteratorAggregate;
 use OutOfRangeException;
@@ -108,10 +109,10 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Sorts the values of the list
      *
-     * @param callable(T, T): int $comparer The comparer to sort with
+     * @param Closure(T, T): int $comparer The comparer to sort with
      * @return static The sorted list
      */
-    public function sort(callable $comparer): static;
+    public function sort(Closure $comparer): static;
 
     /**
      * Gets all of the values as an array

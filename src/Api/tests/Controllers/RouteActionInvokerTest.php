@@ -71,7 +71,7 @@ class RouteActionInvokerTest extends TestCase
                 ->with($this->anything(), $this->anything())
                 ->willThrowException(new FailedRequestContentNegotiationException());
             $this->invoker->invokeRouteAction(
-                [$this->controller, 'stringParameter'],
+                Closure::fromCallable([$this->controller, 'stringParameter']),
                 $this->createMock(IRequest::class),
                 []
             );
@@ -89,7 +89,7 @@ class RouteActionInvokerTest extends TestCase
                 ->with($this->anything(), $this->anything())
                 ->willThrowException(new FailedScalarParameterConversionException());
             $this->invoker->invokeRouteAction(
-                [$this->controller, 'stringParameter'],
+                Closure::fromCallable([$this->controller, 'stringParameter']),
                 $this->createMock(IRequest::class),
                 []
             );
@@ -126,7 +126,7 @@ class RouteActionInvokerTest extends TestCase
             ->with($request, HttpStatusCodes::OK, null, $this->callback(fn (mixed $actionResult): bool => $actionResult instanceof User))
             ->willReturn($expectedResponse);
         $actualResponse = $this->invoker->invokeRouteAction(
-            [$this->controller, 'popo'],
+            Closure::fromCallable([$this->controller, 'popo']),
             $request,
             []
         );
@@ -138,7 +138,7 @@ class RouteActionInvokerTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Testing controller method that throws exception');
         $this->invoker->invokeRouteAction(
-            [$this->controller, 'throwsException'],
+            Closure::fromCallable([$this->controller, 'throwsException']),
             $this->createRequestWithoutBody('http://foo.com'),
             []
         );
@@ -158,7 +158,7 @@ class RouteActionInvokerTest extends TestCase
             ->with($request, $expectedUser)
             ->willThrowException(new InvalidRequestBodyException(['error']));
         $this->invoker->invokeRouteAction(
-            [$this->controller, 'objectParameter'],
+            Closure::fromCallable([$this->controller, 'objectParameter']),
             $request,
             []
         );
@@ -167,7 +167,7 @@ class RouteActionInvokerTest extends TestCase
     public function testInvokingMethodWithNoParametersIsSuccessful(): void
     {
         $response = $this->invoker->invokeRouteAction(
-            [$this->controller, 'noParameters'],
+            Closure::fromCallable([$this->controller, 'noParameters']),
             $this->createRequestWithoutBody('http://foo.com'),
             []
         );
@@ -187,7 +187,7 @@ class RouteActionInvokerTest extends TestCase
             ->method('validate')
             ->with($request, $expectedUser);
         $this->invoker->invokeRouteAction(
-            [$this->controller, 'objectParameter'],
+            Closure::fromCallable([$this->controller, 'objectParameter']),
             $request,
             []
         );
@@ -198,7 +198,7 @@ class RouteActionInvokerTest extends TestCase
     public function testInvokingMethodWithVoidReturnTypeReturnsNoContentResponse(): void
     {
         $response = $this->invoker->invokeRouteAction(
-            [$this->controller, 'voidReturnType'],
+            Closure::fromCallable([$this->controller, 'voidReturnType']),
             $this->createRequestWithoutBody('http://foo.com'),
             []
         );
@@ -209,9 +209,9 @@ class RouteActionInvokerTest extends TestCase
     public function testInvokingRouteActionWithUnreflectableRouteActionDelegateThrowsException(): void
     {
         $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Reflection failed for ' . Closure::class);
+        $this->expectExceptionMessage('Failed to reflect controller');
         $routeActionInvoker = new class () extends RouteActionInvoker {
-            protected function reflectRouteActionDelegate(callable $routeActionDelegate): ReflectionFunctionAbstract
+            protected function reflectRouteActionDelegate(Closure $routeActionDelegate): ReflectionFunctionAbstract
             {
                 throw new ReflectionException();
             }
@@ -227,14 +227,18 @@ class RouteActionInvokerTest extends TestCase
             {
             }
         };
-        $this->expectExceptionMessage('Reflection failed for ' . $controller::class . '::foo');
+        $this->expectExceptionMessage('Failed to reflect controller');
         $routeActionInvoker = new class () extends RouteActionInvoker {
-            protected function reflectRouteActionDelegate(callable $routeActionDelegate): ReflectionFunctionAbstract
+            protected function reflectRouteActionDelegate(Closure $routeActionDelegate): ReflectionFunctionAbstract
             {
                 throw new ReflectionException();
             }
         };
-        $routeActionInvoker->invokeRouteAction([$controller::class, 'foo'], $this->createRequestWithoutBody('http://example.com'), []);
+        $routeActionInvoker->invokeRouteAction(
+            Closure::fromCallable([$controller::class, 'foo']),
+            $this->createRequestWithoutBody('http://example.com'),
+            []
+        );
     }
 
     public function testMissingControllerParameterValueExceptionIsRethrownAsHttpException(): void
@@ -245,7 +249,7 @@ class RouteActionInvokerTest extends TestCase
                 ->with($this->anything(), $this->anything())
                 ->willThrowException(new MissingControllerParameterValueException());
             $this->invoker->invokeRouteAction(
-                [$this->controller, 'stringParameter'],
+                Closure::fromCallable([$this->controller, 'stringParameter']),
                 $this->createMock(IRequest::class),
                 []
             );
@@ -264,7 +268,7 @@ class RouteActionInvokerTest extends TestCase
             ->with($this->anything(), $this->anything())
             ->willReturn($expectedUser);
         $this->invoker->invokeRouteAction(
-            [$this->controller, 'objectParameter'],
+            Closure::fromCallable([$this->controller, 'objectParameter']),
             $request,
             []
         );
@@ -281,7 +285,7 @@ class RouteActionInvokerTest extends TestCase
                 ->with($this->anything(), $this->anything())
                 ->willThrowException(new RequestBodyDeserializationException());
             $this->invoker->invokeRouteAction(
-                [$this->controller, 'stringParameter'],
+                Closure::fromCallable([$this->controller, 'stringParameter']),
                 $this->createMock(IRequest::class),
                 []
             );

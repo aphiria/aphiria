@@ -62,7 +62,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * @inheritdoc
      */
-    public function bindFactory(string|array $interfaces, callable $factory, bool $resolveAsSingleton = false): void
+    public function bindFactory(string|array $interfaces, Closure $factory, bool $resolveAsSingleton = false): void
     {
         $this->addBoundInterface($interfaces);
         $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindFactory($interfaces, $factory, $resolveAsSingleton));
@@ -118,7 +118,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * @inheritdoc
      */
-    public function for(Context|string $context, callable $callback)
+    public function for(Context|string $context, Closure $callback)
     {
         if (\is_string($context)) {
             $context = new TargetedContext($context);

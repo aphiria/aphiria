@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Output\Formatters;
 
+use Closure;
+
 /**
  * Defines the padding formatter
  */
@@ -28,10 +30,10 @@ class PaddingFormatter
      * Formats rows of text so that each column is the same width
      *
      * @param array<int, mixed> $rows The rows to pad
-     * @param callable(array<mixed>): string $callback The callback that returns a formatted row of text
+     * @param Closure(array<mixed>): string $callback The callback that returns a formatted row of text
      * @return string A list of formatted rows
      */
-    public function format(array $rows, callable $callback): string
+    public function format(array $rows, Closure $callback): string
     {
         // Normalize all rows to be an array
         $numRows = \count($rows);
