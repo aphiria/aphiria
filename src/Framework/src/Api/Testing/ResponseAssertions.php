@@ -32,26 +32,19 @@ use InvalidArgumentException;
  */
 class ResponseAssertions
 {
-    /** @var IMediaTypeFormatterMatcher The media type formatter matcher */
-    private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
-    /** @var ResponseHeaderParser The response header parser */
-    private ResponseHeaderParser $responseHeaderParser;
-
     /**
-     * @param IMediaTypeFormatterMatcher|null $mediaTypeFormatterMatcher The media type formatter matcher
+     * @param IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher The media type formatter matcher
      * @param ResponseHeaderParser|null $responseHeaderParser The response header parser
      */
     public function __construct(
-        IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
-        ResponseHeaderParser $responseHeaderParser = null
-    ) {
-        $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher([
+        private readonly IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher([
             new JsonMediaTypeFormatter(),
             new XmlMediaTypeFormatter(),
             new HtmlMediaTypeFormatter(),
             new PlainTextMediaTypeFormatter()
-        ]);
-        $this->responseHeaderParser = $responseHeaderParser ?? new ResponseHeaderParser();
+        ]),
+        private readonly ResponseHeaderParser $responseHeaderParser = new ResponseHeaderParser()
+    ) {
     }
 
     /**

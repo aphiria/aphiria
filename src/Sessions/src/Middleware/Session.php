@@ -27,11 +27,6 @@ use SessionHandlerInterface;
  */
 final class Session implements IMiddleware
 {
-    /** @var RequestParser The request parser for reading cookies with */
-    private RequestParser $requestParser;
-    /** @var ResponseFormatter The response formatter for writing cookies with */
-    private ResponseFormatter $responseFormatter;
-
     /**
      * @param ISession $session The session to store data in
      * @param SessionHandlerInterface $sessionHandler The session handler
@@ -42,24 +37,22 @@ final class Session implements IMiddleware
      * @param bool $sessionCookieIsSecure Whether or not the cookie is only sent over HTTPS
      * @param bool $sessionCookieIsHttpOnly Whether or not the cookie is HTTP-only (eg not readable by JavaScript)
      * @param float $gcChance The chance (0-1) of GC happening on this request
-     * @param RequestParser|null $requestParser The request parser to use, or null if using the default
-     * @param ResponseFormatter|null $responseFormatter The response formatter to use, or null if using the default
+     * @param RequestParser $requestParser The request parser to use
+     * @param ResponseFormatter $responseFormatter The response formatter to use
      */
     public function __construct(
-        private ISession $session,
-        private SessionHandlerInterface $sessionHandler,
-        private int $sessionTtl,
-        private string $sessionCookieName,
-        private ?string $sessionCookiePath = null,
-        private ?string $sessionCookieDomain = null,
-        private bool $sessionCookieIsSecure = false,
-        private bool $sessionCookieIsHttpOnly = true,
-        private float $gcChance = 0.01,
-        RequestParser $requestParser = null,
-        ResponseFormatter $responseFormatter = null
+        private readonly ISession $session,
+        private readonly SessionHandlerInterface $sessionHandler,
+        private readonly int $sessionTtl,
+        private readonly string $sessionCookieName,
+        private readonly ?string $sessionCookiePath = null,
+        private readonly ?string $sessionCookieDomain = null,
+        private readonly bool $sessionCookieIsSecure = false,
+        private readonly bool $sessionCookieIsHttpOnly = true,
+        private readonly float $gcChance = 0.01,
+        private readonly RequestParser $requestParser = new RequestParser(),
+        private readonly ResponseFormatter $responseFormatter = new ResponseFormatter()
     ) {
-        $this->requestParser = $requestParser ?? new RequestParser();
-        $this->responseFormatter = $responseFormatter ?? new ResponseFormatter();
     }
 
     /**

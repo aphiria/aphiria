@@ -32,26 +32,17 @@ class RequestParser
 {
     /** @const The name of the request property that stores the client IP address */
     private const CLIENT_IP_ADDRESS_PROPERTY = 'CLIENT_IP_ADDRESS';
-    /** @var RequestHeaderParser The header parser to use */
-    private RequestHeaderParser $headerParser;
-    /** @var BodyParser The body parser to use */
-    private BodyParser $bodyParser;
-    /** @var UriParser The URI parser to use */
-    private UriParser $uriParser;
 
     /**
-     * @param RequestHeaderParser|null $headerParser The header parser to use, or null if using the default parser
-     * @param BodyParser|null $bodyParser The body parser to use, or null if using the default parser
-     * @param UriParser|null $uriParser The URI parser to use, or null if using the default parser
+     * @param RequestHeaderParser $headerParser The header parser to use, or null if using the default parser
+     * @param BodyParser $bodyParser The body parser to use, or null if using the default parser
+     * @param UriParser $uriParser The URI parser to use, or null if using the default parser
      */
     public function __construct(
-        RequestHeaderParser $headerParser = null,
-        BodyParser $bodyParser = null,
-        UriParser $uriParser = null
+        private readonly RequestHeaderParser $headerParser = new RequestHeaderParser(),
+        private readonly BodyParser $bodyParser = new BodyParser(),
+        private readonly UriParser $uriParser = new UriParser()
     ) {
-        $this->headerParser = $headerParser ?? new RequestHeaderParser();
-        $this->bodyParser = $bodyParser ?? new BodyParser();
-        $this->uriParser = $uriParser ?? new UriParser();
     }
 
     /**

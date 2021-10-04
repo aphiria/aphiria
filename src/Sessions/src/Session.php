@@ -28,19 +28,17 @@ class Session implements ISession
 
     /** @var int|string The session Id */
     private int|string $id = '';
-    /** @var IIdGenerator The Id generator to use */
-    private IIdGenerator $idGenerator;
     /** @var array<string, mixed> The mapping of variable names to values */
     private array $vars = [];
 
     /**
      * @param int|string|null $id The Id of the session
-     * @param IIdGenerator|null $idGenerator The Id generator to use, or null if using the default one
+     * @param IIdGenerator $idGenerator The Id generator to use, or null if using the default one
      */
-    public function __construct(int|string $id = null, IIdGenerator $idGenerator = null)
-    {
-        $this->idGenerator = $idGenerator ?? new UuidV4IdGenerator();
-
+    public function __construct(
+        int|string $id = null,
+        private readonly IIdGenerator $idGenerator = new UuidV4IdGenerator()
+    ) {
         if ($id === null) {
             $this->regenerateId();
         } else {

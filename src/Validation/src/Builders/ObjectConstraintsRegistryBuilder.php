@@ -19,17 +19,15 @@ use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
  */
 final class ObjectConstraintsRegistryBuilder
 {
-    /** @var ObjectConstraintsRegistry The registry we're going to build */
-    private ObjectConstraintsRegistry $objectConstraints;
     /** @var list<ObjectConstraintsBuilder> The constraints builders we've created */
     private array $objectConstraintsBuilders = [];
 
     /**
-     * @param ObjectConstraintsRegistry|null $objectConstraints The constraints to add to, or null if building a new registry
+     * @param ObjectConstraintsRegistry $objectConstraints The constraints to add to, or null if building a new registry
      */
-    public function __construct(ObjectConstraintsRegistry $objectConstraints = null)
-    {
-        $this->objectConstraints = $objectConstraints ?? new ObjectConstraintsRegistry();
+    public function __construct(
+        private readonly ObjectConstraintsRegistry $objectConstraints = new ObjectConstraintsRegistry()
+    ) {
     }
 
     /**

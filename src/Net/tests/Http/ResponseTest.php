@@ -31,7 +31,7 @@ class ResponseTest extends TestCase
     {
         /** @var IBody $body1 */
         $body1 = $this->createMock(IBody::class);
-        $response = new Response(200, null, $body1);
+        $response = new Response(200, body: $body1);
         $this->assertSame($body1, $response->getBody());
         /** @var IBody $body2 */
         $body2 = $this->createMock(IBody::class);
@@ -56,7 +56,7 @@ class ResponseTest extends TestCase
 
     public function testGettingProtocolVersion(): void
     {
-        $response = new Response(200, null, null, '2.0');
+        $response = new Response(200, protocolVersion: '2.0');
         $this->assertSame('2.0', $response->getProtocolVersion());
     }
 

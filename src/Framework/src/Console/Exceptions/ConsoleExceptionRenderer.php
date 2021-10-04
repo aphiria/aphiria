@@ -24,18 +24,17 @@ use Exception;
  */
 class ConsoleExceptionRenderer implements IExceptionRenderer
 {
-    /** @var IOutput The output to write to */
-    protected IOutput $output;
     /** @var array<class-string<Exception>, Closure(mixed, IOutput): void|Closure(mixed, IOutput): int> The mapping of exception types to callbacks that write output and return status codes */
     protected array $outputWriters = [];
 
     /**
-     * @param IOutput|null $output The output to write to
+     * @param IOutput $output The output to write to
      * @param bool $shouldExit Whether or not to exit after handling the exception
      */
-    public function __construct(IOutput $output = null, protected bool $shouldExit = true)
-    {
-        $this->output = $output ?? new ConsoleOutput();
+    public function __construct(
+        protected IOutput $output = new ConsoleOutput(),
+        protected readonly bool $shouldExit = true
+    ) {
     }
 
     /**

@@ -69,10 +69,10 @@ final class ValidationBinder extends Binder
                 default => $container->resolve($errorMessageTemplateConfiguration['type']),
             };
         } else {
-            $errorMessageTemplates = null;
+            $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry();
         }
 
-        if ($errorMessageTemplates !== null && !$errorMessageTemplates instanceof IErrorMessageTemplateRegistry) {
+        if (!$errorMessageTemplates instanceof IErrorMessageTemplateRegistry) {
             throw new InvalidArgumentException('Error message template must be instance of ' . IErrorMessageTemplateRegistry::class);
         }
 

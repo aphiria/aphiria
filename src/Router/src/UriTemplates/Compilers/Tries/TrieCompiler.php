@@ -31,21 +31,17 @@ use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
 final class TrieCompiler implements ITrieCompiler
 {
     /** @var RouteVariableConstraintFactory The factory that will create constraints */
-    private RouteVariableConstraintFactory $constraintFactory;
-    /** @var IUriTemplateParser The URI template parser */
-    private IUriTemplateParser $uriTemplateParser;
-    /** @var IUriTemplateLexer The URI template lexer */
-    private IUriTemplateLexer $uriTemplateLexer;
+    private readonly RouteVariableConstraintFactory $constraintFactory;
 
     /**
      * @param RouteVariableConstraintFactory|null $constraintFactory The factory that will create constraints
-     * @param IUriTemplateParser|null $uriTemplateParser The URI template parser
-     * @param IUriTemplateLexer|null $uriTemplateLexer The URI template lexer
+     * @param IUriTemplateParser $uriTemplateParser The URI template parser
+     * @param IUriTemplateLexer $uriTemplateLexer The URI template lexer
      */
     public function __construct(
         RouteVariableConstraintFactory $constraintFactory = null,
-        IUriTemplateParser $uriTemplateParser = null,
-        IUriTemplateLexer $uriTemplateLexer = null
+        private readonly IUriTemplateParser $uriTemplateParser = new UriTemplateParser(),
+        private readonly IUriTemplateLexer $uriTemplateLexer = new UriTemplateLexer()
     ) {
         if ($constraintFactory === null) {
             $this->constraintFactory = new RouteVariableConstraintFactory();
@@ -53,9 +49,6 @@ final class TrieCompiler implements ITrieCompiler
         } else {
             $this->constraintFactory = $constraintFactory;
         }
-
-        $this->uriTemplateParser = $uriTemplateParser ?? new UriTemplateParser();
-        $this->uriTemplateLexer = $uriTemplateLexer ?? new UriTemplateLexer();
     }
 
     /**

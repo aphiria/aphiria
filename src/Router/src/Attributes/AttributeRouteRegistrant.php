@@ -34,17 +34,14 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
 {
     /** @var list<string> The paths to check for controllers */
     private array $paths;
-    /** @var ITypeFinder The type finder */
-    private ITypeFinder $typeFinder;
 
     /**
      * @param string|list<string> $paths The path or paths to check for controllers
-     * @param ITypeFinder|null $typeFinder The type finder
+     * @param ITypeFinder $typeFinder The type finder
      */
-    public function __construct(string|array $paths, ITypeFinder $typeFinder = null)
+    public function __construct(string|array $paths, private readonly ITypeFinder $typeFinder = new TypeFinder())
     {
         $this->paths = \is_array($paths) ? $paths : [$paths];
-        $this->typeFinder = $typeFinder ?? new TypeFinder();
     }
 
     /**

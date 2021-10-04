@@ -252,7 +252,7 @@ class Psr7FactoryTest extends TestCase
     public function testCreatePsr7RequestSetsSameBody(): void
     {
         $aphiriaBody = new StringBody('foo');
-        $aphiriaRequest = new Request('GET', new Uri('https://example.com'), null, $aphiriaBody);
+        $aphiriaRequest = new Request('GET', new Uri('https://example.com'), body: $aphiriaBody);
         $psr7Request = $this->psr7Factory->createPsr7Request($aphiriaRequest);
         $this->assertSame('foo', (string)$psr7Request->getBody());
     }
@@ -311,7 +311,7 @@ class Psr7FactoryTest extends TestCase
     public function testCreatePsr7ResponseSetsSameBody(): void
     {
         $aphiriaBody = new StringBody('foo');
-        $aphiriaResponse = new Response(200, null, $aphiriaBody);
+        $aphiriaResponse = new Response(200, body: $aphiriaBody);
         $psr7Response = $this->psr7Factory->createPsr7Response($aphiriaResponse);
         $this->assertSame('foo', (string)$psr7Response->getBody());
     }
@@ -427,8 +427,7 @@ class Psr7FactoryTest extends TestCase
             $psr17Factory,
             $psr17Factory,
             $psr17Factory,
-            null,
-            $aphiriaRequestParser
+            aphiriaRequestParser: $aphiriaRequestParser
         );
         $this->assertCount(0, $psr7Factory->createPsr7UploadedFiles($aphiriaRequest));
     }

@@ -23,10 +23,8 @@ use RuntimeException;
  */
 class Request implements IRequest
 {
-    /** @var Headers $headers The request headers */
-    protected Headers $headers;
-    /** @var IDictionary<string, mixed> The request properties */
-    protected IDictionary $properties;
+    /** @var string The request method */
+    protected readonly string $method;
     /** @var array<string, bool> The list of valid HTTP methods */
     private static array $validMethods = [
         'CONNECT' => true,
@@ -58,27 +56,24 @@ class Request implements IRequest
     /**
      * @param string $method The request method
      * @param Uri $uri The request URI
-     * @param Headers|null $headers The request headers if any are set, otherwise null
+     * @param Headers $headers The request headers if any are set, otherwise null
      * @param IBody|null $body The request body if one is set, otherwise null
-     * @param IDictionary<string, mixed>|null $properties The request properties
+     * @param IDictionary<string, mixed> $properties The request properties
      * @param string $protocolVersion The HTTP protocol version
      * @param string $requestTargetType The type of request target URI this request uses
      * @throws InvalidArgumentException Thrown if the any of the properties are not valid
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
     public function __construct(
-        protected string $method,
-        protected Uri $uri,
-        Headers $headers = null,
+        string $method,
+        protected readonly Uri $uri,
+        protected readonly Headers $headers = new Headers(),
         protected ?IBody $body = null,
-        IDictionary $properties = null,
-        protected string $protocolVersion = '1.1',
-        protected string $requestTargetType = RequestTargetTypes::ORIGIN_FORM
+        protected readonly IDictionary $properties = new HashTable(),
+        protected readonly string $protocolVersion = '1.1',
+        protected readonly string $requestTargetType = RequestTargetTypes::ORIGIN_FORM
     ) {
         $this->method = \strtoupper($method);
-        $this->headers = $headers ?? new Headers();
-        /** @var IDictionary<string, mixed>|HashTable<string, mixed> properties */
-        $this->properties = $properties ?? new HashTable();
         $this->validateProperties();
 
         /** @link https://tools.ietf.org/html/rfc7230#section-5.4 */

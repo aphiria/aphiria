@@ -42,10 +42,8 @@ use Psr\Http\Message\UriInterface;
  */
 class Psr7Factory implements IPsr7Factory
 {
-    /** @var RequestHeaderParser The Aphiria request header parser */
-    private RequestHeaderParser $aphiriaRequestHeaderParser;
     /** @var RequestParser The Aphiria request parser */
-    private RequestParser $aphiriaRequestParser;
+    private readonly RequestParser $aphiriaRequestParser;
 
     /**
      * @param ServerRequestFactoryInterface $psr7RequestFactory The PSR-7 request factory
@@ -53,19 +51,18 @@ class Psr7Factory implements IPsr7Factory
      * @param StreamFactoryInterface $psr7StreamFactory The PSR-7 stream factory
      * @param UploadedFileFactoryInterface $psr7UploadedFileFactory The PSR-7 uploaded file factory
      * @param UriFactoryInterface $psr7UriFactory The PSR-7 URI factory
-     * @param RequestHeaderParser|null $aphiriaRequestHeaderParser The Aphiria request header parser
+     * @param RequestHeaderParser $aphiriaRequestHeaderParser The Aphiria request header parser
      * @param RequestParser|null $aphiriaRequestParser The Aphiria request parser
      */
     public function __construct(
-        private ServerRequestFactoryInterface $psr7RequestFactory,
-        private ResponseFactoryInterface $psr7ResponseFactory,
-        private StreamFactoryInterface $psr7StreamFactory,
-        private UploadedFileFactoryInterface $psr7UploadedFileFactory,
-        private UriFactoryInterface $psr7UriFactory,
-        RequestHeaderParser $aphiriaRequestHeaderParser = null,
+        private readonly ServerRequestFactoryInterface $psr7RequestFactory,
+        private readonly ResponseFactoryInterface $psr7ResponseFactory,
+        private readonly StreamFactoryInterface $psr7StreamFactory,
+        private readonly UploadedFileFactoryInterface $psr7UploadedFileFactory,
+        private readonly UriFactoryInterface $psr7UriFactory,
+        private readonly RequestHeaderParser $aphiriaRequestHeaderParser = new RequestHeaderParser(),
         RequestParser $aphiriaRequestParser = null
     ) {
-        $this->aphiriaRequestHeaderParser = $aphiriaRequestHeaderParser ?? new RequestHeaderParser();
         $this->aphiriaRequestParser = $aphiriaRequestParser ?? new RequestParser($this->aphiriaRequestHeaderParser);
     }
 
@@ -134,7 +131,7 @@ class Psr7Factory implements IPsr7Factory
     {
         $aphiriaResponse = new Response(
             $psr7Response->getStatusCode(),
-            null,
+            new Headers(),
             new StreamBody($this->createAphiriaStream($psr7Response->getBody())),
             $psr7Response->getProtocolVersion()
         );

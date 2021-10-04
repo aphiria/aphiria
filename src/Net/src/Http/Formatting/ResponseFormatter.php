@@ -25,15 +25,11 @@ use RuntimeException;
  */
 class ResponseFormatter
 {
-    /** @var ResponseHeaderFormatter The response header formatter to use */
-    private ResponseHeaderFormatter $headerFormatter;
-
     /**
-     * @param ResponseHeaderFormatter|null $headerFormatter The response header formatter to use, or null if using the default one
+     * @param ResponseHeaderFormatter $headerFormatter The response header formatter to use, or null if using the default one
      */
-    public function __construct(ResponseHeaderFormatter $headerFormatter = null)
+    public function __construct(private readonly ResponseHeaderFormatter $headerFormatter = new ResponseHeaderFormatter())
     {
-        $this->headerFormatter = $headerFormatter ?? new ResponseHeaderFormatter();
     }
 
     /**

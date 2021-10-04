@@ -28,23 +28,16 @@ use OutOfBoundsException;
  */
 final class AstRouteUriFactory implements IRouteUriFactory
 {
-    /** @var IUriTemplateLexer The URI template lexer */
-    private IUriTemplateLexer $uriTemplateLexer;
-    /** @var IUriTemplateParser The URI template parser */
-    private IUriTemplateParser $uriTemplateParser;
-
     /**
      * @param RouteCollection $routes The list of routes
-     * @param IUriTemplateParser|null $uriTemplateParser The URI template parser, or null if using the default one
-     * @param IUriTemplateLexer|null $uriTemplateLexer The URI template lexer, or null if using the default one
+     * @param IUriTemplateParser $uriTemplateParser The URI template parser, or null if using the default one
+     * @param IUriTemplateLexer $uriTemplateLexer The URI template lexer, or null if using the default one
      */
     public function __construct(
-        private RouteCollection $routes,
-        IUriTemplateParser $uriTemplateParser = null,
-        IUriTemplateLexer $uriTemplateLexer = null
+        private readonly RouteCollection $routes,
+        private readonly IUriTemplateParser $uriTemplateParser = new UriTemplateParser(),
+        private readonly IUriTemplateLexer $uriTemplateLexer = new UriTemplateLexer()
     ) {
-        $this->uriTemplateParser = $uriTemplateParser ?? new UriTemplateParser();
-        $this->uriTemplateLexer = $uriTemplateLexer ?? new UriTemplateLexer();
     }
 
     /**

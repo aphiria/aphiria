@@ -76,20 +76,17 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
     ];
     /** @var array<class-string, Closure(Exception): ProblemDetails> The mapping of exception types to problem details factories */
     protected array $exceptionTypesToProblemDetailsFactories = [];
-    /** @var IResponseWriter What is used to write the response */
-    protected IResponseWriter $responseWriter;
 
     /**
      * @param IRequest|null $request The current request, if there is one
      * @param IResponseFactory|null $responseFactory The optional response factory
-     * @param IResponseWriter|null $responseWriter What is used to write the response
+     * @param IResponseWriter $responseWriter What is used to write the response
      */
     public function __construct(
         protected ?IRequest $request = null,
         protected ?IResponseFactory $responseFactory = null,
-        IResponseWriter $responseWriter = null
+        protected readonly IResponseWriter $responseWriter = new StreamResponseWriter()
     ) {
-        $this->responseWriter = $responseWriter ?? new StreamResponseWriter();
     }
 
     /**

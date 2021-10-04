@@ -19,18 +19,17 @@ use MessageFormatter;
  */
 final class IcuFormatErrorMessageInterpolator implements IErrorMessageInterpolator
 {
-    /** @var IErrorMessageTemplateRegistry The registry of error message templates */
-    private IErrorMessageTemplateRegistry $errorMessageTemplates;
     /** @var string The default locale, if none is specified */
     private string $defaultLocale;
 
     /**
-     * @param IErrorMessageTemplateRegistry|null $errorMessageTemplates The error message template registry to use
+     * @param IErrorMessageTemplateRegistry $errorMessageTemplates The error message template registry to use
      * @param string $defaultLocale The default locale
      */
-    public function __construct(IErrorMessageTemplateRegistry $errorMessageTemplates = null, string $defaultLocale = 'en')
-    {
-        $this->errorMessageTemplates = $errorMessageTemplates ?? new DefaultErrorMessageTemplateRegistry();
+    public function __construct(
+        private readonly IErrorMessageTemplateRegistry $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry(),
+        string $defaultLocale = 'en'
+    ) {
         $this->setDefaultLocale($defaultLocale);
     }
 
