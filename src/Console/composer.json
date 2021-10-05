@@ -43,7 +43,7 @@
         "php": ">=8.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "dev-master#eb717fe86c222c7d1be2be900f059510d700dafb",
+        "friendsofphp/php-cs-fixer": "^3.2",
         "phpunit/phpunit": "~9.5"
     },
     "scripts": {
