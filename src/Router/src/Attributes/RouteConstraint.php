@@ -26,7 +26,7 @@ final class RouteConstraint
      * @param list<mixed> $constructorParameters The list of constructor parameters for the constraint class
      * @throws InvalidArgumentException Thrown if any of the parameters are invalid
      */
-    public function __construct(public string $className, public array $constructorParameters = [])
+    public function __construct(public readonly string $className, public readonly array $constructorParameters = [])
     {
         /** @psalm-suppress DocblockTypeContradiction We want runtime reassurance that this is never empty */
         if (empty($this->className)) {

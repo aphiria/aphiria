@@ -32,9 +32,9 @@ final class RequestBodyValidator implements IRequestBodyValidator
      * @param ILanguageMatcher|null $languageMatcher The language matcher to use, or null if not using one
      */
     public function __construct(
-        private IValidator $validator,
-        private ?IErrorMessageInterpolator $errorMessageInterpolator = null,
-        private ?ILanguageMatcher $languageMatcher = null
+        private readonly IValidator $validator,
+        private readonly ?IErrorMessageInterpolator $errorMessageInterpolator = null,
+        private readonly ?ILanguageMatcher $languageMatcher = null
     ) {
     }
 

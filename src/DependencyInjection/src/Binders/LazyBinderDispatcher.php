@@ -34,7 +34,7 @@ class LazyBinderDispatcher implements IBinderDispatcher
     /**
      * @param IBinderMetadataCollectionCache|null $binderMetadataCollectionCache The cache, if using one
      */
-    public function __construct(private ?IBinderMetadataCollectionCache $binderMetadataCollectionCache = null)
+    public function __construct(private readonly ?IBinderMetadataCollectionCache $binderMetadataCollectionCache = null)
     {
     }
 

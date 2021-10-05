@@ -21,9 +21,9 @@ use InvalidArgumentException;
 final class VariableTrieNode extends TrieNode
 {
     /** @var list<string>|RouteVariable[] The parts that make up this node */
-    public array $parts;
+    public readonly array $parts;
     /** @var bool Whether or not this node contains just a single variable part (for performance reasons) */
-    private bool $onlyContainsVariable;
+    private readonly bool $onlyContainsVariable;
     /** @var string The regex to use for matching */
     private string $regex = '';
 

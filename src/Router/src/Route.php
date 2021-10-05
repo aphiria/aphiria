@@ -30,12 +30,12 @@ final class Route
      * @param array<string, mixed> $parameters The mapping of custom parameter names => values
      */
     public function __construct(
-        public UriTemplate $uriTemplate,
-        public RouteAction $action,
-        public array $constraints,
-        public array $middlewareBindings = [],
-        public ?string $name = null,
-        public array $parameters = []
+        public readonly UriTemplate $uriTemplate,
+        public readonly RouteAction $action,
+        public readonly array $constraints,
+        public readonly array $middlewareBindings = [],
+        public readonly ?string $name = null,
+        public readonly array $parameters = []
     ) {
     }
 }

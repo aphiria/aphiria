@@ -24,7 +24,7 @@ class Psr11Container implements ContainerInterface
     /**
      * @param IContainer $container The Aphiria container
      */
-    public function __construct(private IContainer $container)
+    public function __construct(private readonly IContainer $container)
     {
     }
 

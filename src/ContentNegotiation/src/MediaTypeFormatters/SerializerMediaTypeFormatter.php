@@ -26,7 +26,7 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
      * @param SerializerInterface $serializer The serializer this formatter uses
      * @param string $format The format to (de)serialize to
      */
-    protected function __construct(private SerializerInterface $serializer, private string $format)
+    protected function __construct(private readonly SerializerInterface $serializer, private readonly string $format)
     {
     }
 

@@ -26,10 +26,10 @@ use Traversable;
  */
 class HashSet implements ISet
 {
+    /** @var KeyHasher The key hasher to use */
+    private readonly KeyHasher $keyHasher;
     /** @var array<string, T> The set of values */
     protected array $values = [];
-    /** @var KeyHasher The key hasher to use */
-    private KeyHasher $keyHasher;
 
     /**
      * @param list<T> $values The set of values

@@ -29,12 +29,12 @@ class RouteGroupOptions
      * @param array<string, mixed> $parameters The mapping of custom parameter names => values to match on for the entire group
      */
     public function __construct(
-        public string $path,
-        public ?string $host = null,
-        public bool $isHttpsOnly = false,
+        public readonly string $path,
+        public readonly ?string $host = null,
+        public readonly bool $isHttpsOnly = false,
         public array $constraints = [],
         public array $middlewareBindings = [],
-        public array $parameters = []
+        public readonly array $parameters = []
     ) {
     }
 }

@@ -33,7 +33,7 @@ use ReflectionMethod;
 final class AttributeRouteRegistrant implements IRouteRegistrant
 {
     /** @var list<string> The paths to check for controllers */
-    private array $paths;
+    private readonly array $paths;
 
     /**
      * @param string|list<string> $paths The path or paths to check for controllers

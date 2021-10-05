@@ -25,8 +25,11 @@ class MinConstraint extends Constraint
      * @param int|float $min The minimum
      * @param bool $isInclusive Whether or not the minimum is inclusive
      */
-    public function __construct(private int|float $min, private bool $isInclusive, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
-    {
+    public function __construct(
+        private readonly int|float $min,
+        private readonly bool $isInclusive,
+        string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID
+    ) {
         parent::__construct($errorMessageId);
     }
 

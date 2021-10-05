@@ -37,9 +37,9 @@ use Throwable;
 class Application implements ICommandBus
 {
     /** @var IServiceResolver The resolver of command handlers */
-    private IServiceResolver $commandHandlerResolver;
+    private readonly IServiceResolver $commandHandlerResolver;
     /** @var IInputCompiler The input compiler to use */
-    private IInputCompiler $inputCompiler;
+    private readonly IInputCompiler $inputCompiler;
 
     /**
      * @param CommandRegistry $commands The commands
@@ -47,7 +47,7 @@ class Application implements ICommandBus
      * @param IInputCompiler|null $inputCompiler The input compiler, or null if using the default one
      */
     public function __construct(
-        private CommandRegistry $commands,
+        private readonly CommandRegistry $commands,
         IServiceResolver $commandHandlerResolver,
         IInputCompiler $inputCompiler = null
     ) {

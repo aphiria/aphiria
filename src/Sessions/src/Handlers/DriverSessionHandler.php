@@ -23,8 +23,10 @@ final class DriverSessionHandler implements SessionHandlerInterface
      * @param ISessionDriver $driver The session driver to use
      * @param ISessionEncrypter|null $encrypter The optional encrypter to use for session data (null if not encrypting)
      */
-    public function __construct(private ISessionDriver $driver, private ?ISessionEncrypter $encrypter = null)
-    {
+    public function __construct(
+        private readonly ISessionDriver $driver,
+        private readonly ?ISessionEncrypter $encrypter = null
+    ) {
     }
 
     /**

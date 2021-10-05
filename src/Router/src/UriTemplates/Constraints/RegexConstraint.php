@@ -20,7 +20,7 @@ final class RegexConstraint implements IRouteVariableConstraint
     /**
      * @param string $regex The regex the input must match
      */
-    public function __construct(private string $regex)
+    public function __construct(private readonly string $regex)
     {
     }
 

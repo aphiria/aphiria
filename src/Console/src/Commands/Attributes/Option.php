@@ -28,11 +28,11 @@ final class Option
      * @param mixed|null $defaultValue The default value for the argument if it's optional
      */
     public function __construct(
-        public string $name,
-        public int $type,
-        public ?string $shortName = null,
-        public ?string $description = null,
-        public mixed $defaultValue = null
+        public readonly string $name,
+        public readonly int $type,
+        public readonly ?string $shortName = null,
+        public readonly ?string $description = null,
+        public readonly mixed $defaultValue = null
     ) {
     }
 }

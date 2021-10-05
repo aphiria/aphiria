@@ -21,14 +21,16 @@ use Aphiria\DependencyInjection\IContainer;
 final class BinderMetadataCollectionFactory
 {
     /** @var IBinderMetadataCollector The collector of binder metadata */
-    private IBinderMetadataCollector $binderMetadataCollector;
+    private readonly IBinderMetadataCollector $binderMetadataCollector;
 
     /**
      * @param IContainer $container The container to use when creating the collection
      * @param IBinderMetadataCollector|null $binderMetadataCollector The collector of binder metadata
      */
-    public function __construct(private IContainer $container, IBinderMetadataCollector $binderMetadataCollector = null)
-    {
+    public function __construct(
+        private readonly IContainer $container,
+        IBinderMetadataCollector $binderMetadataCollector = null
+    ) {
         $this->binderMetadataCollector = $binderMetadataCollector ?? new ContainerBinderMetadataCollector($this->container);
     }
 

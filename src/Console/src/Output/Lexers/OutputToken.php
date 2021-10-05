@@ -22,7 +22,10 @@ final class OutputToken
      * @param mixed $value The value of the token
      * @param int $position The position of the token in the original text
      */
-    public function __construct(public string $type, public mixed $value, public int $position)
-    {
+    public function __construct(
+        public readonly string $type,
+        public readonly mixed $value,
+        public readonly int $position
+    ) {
     }
 }

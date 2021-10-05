@@ -37,7 +37,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * @param IContainer $container The underlying container to use to resolve and bind instances
      */
-    public function __construct(private IContainer $container)
+    public function __construct(private readonly IContainer $container)
     {
         // Default to a universal context
         $this->currentContext = new UniversalContext();

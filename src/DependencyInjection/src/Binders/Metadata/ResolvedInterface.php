@@ -23,7 +23,7 @@ final class ResolvedInterface
      * @param class-string $interface The interface that was resolved
      * @param Context $context The context that the resolution occurred in
      */
-    public function __construct(public string $interface, public Context $context)
+    public function __construct(public readonly string $interface, public readonly Context $context)
     {
     }
 }

@@ -18,14 +18,14 @@ namespace Aphiria\Routing\UriTemplates\Lexers;
 final class TokenStream
 {
     /** @var int The length of the stream */
-    public int $length;
+    public readonly int $length;
     /** @var int The current cursor */
     private int $cursor = 0;
 
     /**
      * @param list<Token> $tokens The list of tokens
      */
-    public function __construct(public array $tokens)
+    public function __construct(public readonly array $tokens)
     {
         $this->length = \count($this->tokens);
     }

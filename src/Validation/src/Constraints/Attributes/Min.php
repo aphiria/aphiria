@@ -26,8 +26,11 @@ final class Min extends ConstraintAttribute
      * @param int|float $min The minimum
      * @param bool $isInclusive Whether or not the minimum is inclusive
      */
-    public function __construct(public int|float $min, public bool $isInclusive = true, string $errorMessageId = null)
-    {
+    public function __construct(
+        public readonly int|float $min,
+        public readonly bool $isInclusive = true,
+        string $errorMessageId = null
+    ) {
         parent::__construct($errorMessageId);
     }
 

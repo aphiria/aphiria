@@ -25,8 +25,11 @@ class MaxConstraint extends Constraint
      * @param int|float $max The maximum
      * @param bool $isInclusive Whether or not the maximum is inclusive
      */
-    public function __construct(private int|float $max, private bool $isInclusive, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
-    {
+    public function __construct(
+        private readonly int|float $max,
+        private readonly bool $isInclusive,
+        string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID
+    ) {
         parent::__construct($errorMessageId);
     }
 

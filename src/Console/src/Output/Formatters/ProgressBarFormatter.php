@@ -24,12 +24,12 @@ class ProgressBarFormatter implements IProgressBarObserver
 {
     /** @const The default width of the progress bar (including delimiters) */
     private const DEFAULT_PROGRESS_BAR_WIDTH = 80;
+    /** @var DateTimeImmutable The start time of the progress bar */
+    private readonly DateTimeImmutable $startTime;
     /** @var string The completed progress character */
     public string $completedProgressChar = '=';
     /** @var string The remaining progress character */
     public string $remainingProgressChar = '-';
-    /** @var DateTimeImmutable The start time of the progress bar */
-    private DateTimeImmutable $startTime;
     /** @var bool Whether or not this is the first time we've output the progress bar */
     private bool $isFirstOutput = true;
 
@@ -44,9 +44,9 @@ class ProgressBarFormatter implements IProgressBarObserver
      */
     public function __construct(
         private readonly IOutput $output,
-        private int $progressBarWidth = self::DEFAULT_PROGRESS_BAR_WIDTH,
+        private readonly int $progressBarWidth = self::DEFAULT_PROGRESS_BAR_WIDTH,
         private readonly string $outputFormat = '%bar% %progress%/%maxSteps%' . PHP_EOL . 'Time remaining: %timeRemaining%',
-        private int $redrawFrequency = 1
+        private readonly int $redrawFrequency = 1
     ) {
         $this->startTime = new DateTimeImmutable();
     }

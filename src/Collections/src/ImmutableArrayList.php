@@ -25,17 +25,11 @@ use Traversable;
  */
 class ImmutableArrayList implements IImmutableList
 {
-    /** @var list<T> The list of values */
-    protected array $values = [];
-
     /**
      * @param list<T> $values The list of values
      */
-    final public function __construct(array $values)
+    final public function __construct(protected readonly array $values)
     {
-        foreach ($values as $value) {
-            $this->values[] = $value;
-        }
     }
 
     /**

@@ -26,10 +26,10 @@ final class BetweenConstraint implements IRouteVariableConstraint
      * @param bool $maxIsInclusive Whether or not the min is inclusive
      */
     public function __construct(
-        private int|float $min,
-        private int|float $max,
-        private bool $minIsInclusive = true,
-        private bool $maxIsInclusive = true
+        private readonly int|float $min,
+        private readonly int|float $max,
+        private readonly bool $minIsInclusive = true,
+        private readonly bool $maxIsInclusive = true
     ) {
     }
 

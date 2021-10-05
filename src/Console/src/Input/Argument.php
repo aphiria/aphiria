@@ -27,10 +27,10 @@ final class Argument
      * @throws InvalidArgumentException Thrown if the type is invalid
      */
     public function __construct(
-        public string $name,
-        public int $type,
-        public ?string $description = null,
-        public mixed $defaultValue = null
+        public readonly string $name,
+        public readonly int $type,
+        public readonly ?string $description = null,
+        public readonly mixed $defaultValue = null
     ) {
         if (empty($this->name)) {
             throw new InvalidArgumentException('Argument name cannot be empty');

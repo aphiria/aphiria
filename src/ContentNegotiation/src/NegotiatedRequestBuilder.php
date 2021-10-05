@@ -43,7 +43,7 @@ class NegotiatedRequestBuilder extends RequestBuilder
             new HtmlMediaTypeFormatter(),
             new PlainTextMediaTypeFormatter()
         ]),
-        private string $defaultContentType = 'application/json',
+        private readonly string $defaultContentType = 'application/json',
         string $defaultAccept = '*/*'
     ) {
         parent::__construct();
