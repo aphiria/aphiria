@@ -15,7 +15,7 @@ namespace Aphiria\Console;
 /**
  * Defines different console status codes
  */
-final class StatusCodes
+final class StatusCode
 {
     /** Everything executed successfully */
     public const OK = 0;

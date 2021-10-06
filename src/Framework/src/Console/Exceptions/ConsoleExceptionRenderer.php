@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Console\Exceptions;
 
 use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\StatusCodes;
+use Aphiria\Console\StatusCode;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Closure;
 use Exception;
@@ -43,9 +43,9 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     public function render(Exception $ex): void
     {
         if (isset($this->outputWriters[$ex::class])) {
-            $statusCode = $this->outputWriters[$ex::class]($ex, $this->output) ?? StatusCodes::FATAL;
+            $statusCode = $this->outputWriters[$ex::class]($ex, $this->output) ?? StatusCode::FATAL;
         } else {
-            $statusCode  = StatusCodes::FATAL;
+            $statusCode  = StatusCode::FATAL;
             $this->output->writeln($this->getDefaultExceptionMessages($ex));
         }
 

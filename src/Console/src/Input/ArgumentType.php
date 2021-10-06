@@ -15,7 +15,7 @@ namespace Aphiria\Console\Input;
 /**
  * Defines the different types of arguments
  */
-final class ArgumentTypes
+final class ArgumentType
 {
     /** The argument is required */
     public const REQUIRED = 1;

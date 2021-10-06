@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Console\Tests\Input;
 
 use Aphiria\Console\Input\Argument;
-use Aphiria\Console\Input\ArgumentTypes;
+use Aphiria\Console\Input\ArgumentType;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -23,28 +23,28 @@ class ArgumentTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->argument = new Argument('foo', ArgumentTypes::OPTIONAL, 'Foo argument', 'bar');
+        $this->argument = new Argument('foo', ArgumentType::OPTIONAL, 'Foo argument', 'bar');
     }
 
     public function testCheckingIsArray(): void
     {
-        $requiredArgument = new Argument('foo', ArgumentTypes::REQUIRED, 'Foo argument', 'bar');
-        $optionalArgument = new Argument('foo', ArgumentTypes::OPTIONAL, 'Foo argument', 'bar');
-        $arrayArgument = new Argument('foo', ArgumentTypes::IS_ARRAY, 'Foo argument');
+        $requiredArgument = new Argument('foo', ArgumentType::REQUIRED, 'Foo argument', 'bar');
+        $optionalArgument = new Argument('foo', ArgumentType::OPTIONAL, 'Foo argument', 'bar');
+        $arrayArgument = new Argument('foo', ArgumentType::IS_ARRAY, 'Foo argument');
         $this->assertTrue($arrayArgument->isArray());
         $this->assertFalse($requiredArgument->isArray());
         $this->assertFalse($optionalArgument->isArray());
-        $arrayArgument = new Argument('foo', ArgumentTypes::IS_ARRAY | ArgumentTypes::OPTIONAL, 'Foo argument');
+        $arrayArgument = new Argument('foo', ArgumentType::IS_ARRAY | ArgumentType::OPTIONAL, 'Foo argument');
         $this->assertTrue($arrayArgument->isArray());
-        $arrayArgument = new Argument('foo', ArgumentTypes::IS_ARRAY | ArgumentTypes::REQUIRED, 'Foo argument');
+        $arrayArgument = new Argument('foo', ArgumentType::IS_ARRAY | ArgumentType::REQUIRED, 'Foo argument');
         $this->assertTrue($arrayArgument->isArray());
     }
 
     public function testCheckingIsOptional(): void
     {
-        $requiredArgument = new Argument('foo', ArgumentTypes::REQUIRED, 'Foo argument', 'bar');
-        $optionalArgument = new Argument('foo', ArgumentTypes::OPTIONAL, 'Foo argument', 'bar');
-        $optionalArrayArgument = new Argument('foo', ArgumentTypes::OPTIONAL | ArgumentTypes::IS_ARRAY, 'Foo argument');
+        $requiredArgument = new Argument('foo', ArgumentType::REQUIRED, 'Foo argument', 'bar');
+        $optionalArgument = new Argument('foo', ArgumentType::OPTIONAL, 'Foo argument', 'bar');
+        $optionalArrayArgument = new Argument('foo', ArgumentType::OPTIONAL | ArgumentType::IS_ARRAY, 'Foo argument');
         $this->assertFalse($requiredArgument->isOptional());
         $this->assertTrue($optionalArgument->isOptional());
         $this->assertTrue($optionalArrayArgument->isOptional());
@@ -52,9 +52,9 @@ class ArgumentTest extends TestCase
 
     public function testCheckingIsRequired(): void
     {
-        $requiredArgument = new Argument('foo', ArgumentTypes::REQUIRED, 'Foo argument', 'bar');
-        $requiredArrayArgument = new Argument('foo', ArgumentTypes::REQUIRED | ArgumentTypes::IS_ARRAY, 'Foo argument');
-        $optionalArgument = new Argument('foo', ArgumentTypes::OPTIONAL, 'Foo argument', 'bar');
+        $requiredArgument = new Argument('foo', ArgumentType::REQUIRED, 'Foo argument', 'bar');
+        $requiredArrayArgument = new Argument('foo', ArgumentType::REQUIRED | ArgumentType::IS_ARRAY, 'Foo argument');
+        $optionalArgument = new Argument('foo', ArgumentType::OPTIONAL, 'Foo argument', 'bar');
         $this->assertTrue($requiredArgument->isRequired());
         $this->assertTrue($requiredArrayArgument->isRequired());
         $this->assertFalse($optionalArgument->isRequired());
@@ -64,7 +64,7 @@ class ArgumentTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Argument name cannot be empty');
-        new Argument('', ArgumentTypes::REQUIRED);
+        new Argument('', ArgumentType::REQUIRED);
     }
 
     public function testGettingDefaultValue(): void
@@ -85,6 +85,6 @@ class ArgumentTest extends TestCase
     public function testSettingTypeToOptionalAndRequired(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new Argument('foo', ArgumentTypes::OPTIONAL | ArgumentTypes::REQUIRED, 'Foo argument');
+        new Argument('foo', ArgumentType::OPTIONAL | ArgumentType::REQUIRED, 'Foo argument');
     }
 }

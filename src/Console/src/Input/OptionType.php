@@ -15,7 +15,7 @@ namespace Aphiria\Console\Input;
 /**
  * Defines the different types of options
  */
-final class OptionTypes
+final class OptionType
 {
     /** The argument is required */
     public const REQUIRED_VALUE = 1;

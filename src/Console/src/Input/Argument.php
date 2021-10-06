@@ -48,7 +48,7 @@ final class Argument
      */
     public function isArray(): bool
     {
-        return ($this->type & ArgumentTypes::IS_ARRAY) === ArgumentTypes::IS_ARRAY;
+        return ($this->type & ArgumentType::IS_ARRAY) === ArgumentType::IS_ARRAY;
     }
 
     /**
@@ -58,7 +58,7 @@ final class Argument
      */
     public function isOptional(): bool
     {
-        return ($this->type & ArgumentTypes::OPTIONAL) === ArgumentTypes::OPTIONAL;
+        return ($this->type & ArgumentType::OPTIONAL) === ArgumentType::OPTIONAL;
     }
 
     /**
@@ -68,6 +68,6 @@ final class Argument
      */
     public function isRequired(): bool
     {
-        return ($this->type & ArgumentTypes::REQUIRED) === ArgumentTypes::REQUIRED;
+        return ($this->type & ArgumentType::REQUIRED) === ArgumentType::REQUIRED;
     }
 }

@@ -76,7 +76,7 @@ class Application implements ICommandBus
             $commandHandler = $this->commandHandlerResolver->resolve($binding->commandHandlerClassName);
             $statusCode = $commandHandler->handle($compiledInput, $output);
 
-            return $statusCode ?? StatusCodes::OK;
+            return $statusCode ?? StatusCode::OK;
         } catch (CommandNotFoundException $ex) {
             // If there was no entered command, treat it like invoking the about command
             if ($ex->commandName === '') {
@@ -86,7 +86,7 @@ class Application implements ICommandBus
                 if (!$this->commands->tryGetHandlerClassName('about', $aboutCommandHandlerClassName)) {
                     $output->writeln('<fatal>About command not registered</fatal>');
 
-                    return StatusCodes::FATAL;
+                    return StatusCode::FATAL;
                 }
 
                 $output = $output ?? new ConsoleOutput();
@@ -94,20 +94,20 @@ class Application implements ICommandBus
                 $commandHandler = $this->commandHandlerResolver->resolve($aboutCommandHandlerClassName);
                 $commandHandler->handle(new Input('about', [], []), $output);
 
-                return StatusCodes::OK;
+                return StatusCode::OK;
             }
 
             $output->writeln("<error>{$this->formatExceptionMessage($ex)}</error>");
 
-            return StatusCodes::ERROR;
+            return StatusCode::ERROR;
         } catch (InvalidArgumentException $ex) {
             $output->writeln("<error>{$this->formatExceptionMessage($ex)}</error>");
 
-            return StatusCodes::ERROR;
+            return StatusCode::ERROR;
         } catch (Exception | Throwable $ex) {
             $output->writeln("<fatal>{$this->formatExceptionMessage($ex)}</fatal>");
 
-            return StatusCodes::FATAL;
+            return StatusCode::FATAL;
         }
     }
 

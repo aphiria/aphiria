@@ -16,7 +16,7 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Input\Option;
-use Aphiria\Console\Input\OptionTypes;
+use Aphiria\Console\Input\OptionType;
 
 /**
  * Defines the command to serve up the app locally
@@ -35,10 +35,10 @@ class ServeCommand extends Command
             'app:serve',
             [],
             [
-                new Option('domain', OptionTypes::REQUIRED_VALUE, null, 'The domain to run your app at', 'localhost'),
-                new Option('port', OptionTypes::REQUIRED_VALUE, null, 'The port to run your app at', 8080),
-                new Option('docroot', OptionTypes::REQUIRED_VALUE, null, 'The document root of your app', 'public'),
-                new Option('router', OptionTypes::REQUIRED_VALUE, null, 'The router file for your app', $routerPath)
+                new Option('domain', OptionType::REQUIRED_VALUE, null, 'The domain to run your app at', 'localhost'),
+                new Option('port', OptionType::REQUIRED_VALUE, null, 'The port to run your app at', 8080),
+                new Option('docroot', OptionType::REQUIRED_VALUE, null, 'The document root of your app', 'public'),
+                new Option('router', OptionType::REQUIRED_VALUE, null, 'The router file for your app', $routerPath)
             ],
             'Runs your app locally'
         );

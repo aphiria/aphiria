@@ -20,7 +20,7 @@ use Aphiria\Console\Input\Option;
 use Aphiria\Console\Output\Formatters\CommandFormatter;
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\StatusCodes;
+use Aphiria\Console\StatusCode;
 use InvalidArgumentException;
 
 /**
@@ -64,7 +64,7 @@ EOF;
             if (!isset($input->arguments['command'])) {
                 $output->writeln("<comment>Pass in the name of the command you'd like help with</comment>");
 
-                return StatusCodes::OK;
+                return StatusCode::OK;
             }
 
             /** @var Command $command */
@@ -100,10 +100,10 @@ EOF;
         } catch (InvalidArgumentException $ex) {
             $output->writeln("<error>Command {$input->arguments['command']} does not exist</error>");
 
-            return StatusCodes::ERROR;
+            return StatusCode::ERROR;
         }
 
-        return StatusCodes::OK;
+        return StatusCode::OK;
     }
 
     /**

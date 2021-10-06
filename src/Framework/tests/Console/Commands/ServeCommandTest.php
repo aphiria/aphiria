@@ -15,7 +15,7 @@ namespace Aphiria\Framework\Tests\Console\Commands;
 use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\Console\Input\Option;
-use Aphiria\Console\Input\OptionTypes;
+use Aphiria\Console\Input\OptionType;
 use Aphiria\Framework\Console\Commands\ServeCommand;
 use PHPUnit\Framework\TestCase;
 
@@ -32,10 +32,10 @@ class ServeCommandTest extends TestCase
         $this->assertSame('app:serve', $command->name);
         $this->assertSame('Runs your app locally', $command->description);
         $expectedOptions = [
-            new Option('domain', OptionTypes::REQUIRED_VALUE, null, 'The domain to run your app at', 'localhost'),
-            new Option('port', OptionTypes::REQUIRED_VALUE, null, 'The port to run your app at', 8080),
-            new Option('docroot', OptionTypes::REQUIRED_VALUE, null, 'The document root of your app', 'public'),
-            new Option('router', OptionTypes::REQUIRED_VALUE, null, 'The router file for your app', 'router')
+            new Option('domain', OptionType::REQUIRED_VALUE, null, 'The domain to run your app at', 'localhost'),
+            new Option('port', OptionType::REQUIRED_VALUE, null, 'The port to run your app at', 8080),
+            new Option('docroot', OptionType::REQUIRED_VALUE, null, 'The document root of your app', 'public'),
+            new Option('router', OptionType::REQUIRED_VALUE, null, 'The router file for your app', 'router')
         ];
         $this->assertEquals($expectedOptions, $command->options);
     }

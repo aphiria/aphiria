@@ -64,7 +64,7 @@ final class Option
      */
     public function valueIsArray(): bool
     {
-        return ($this->type & OptionTypes::IS_ARRAY) === OptionTypes::IS_ARRAY;
+        return ($this->type & OptionType::IS_ARRAY) === OptionType::IS_ARRAY;
     }
 
     /**
@@ -74,7 +74,7 @@ final class Option
      */
     public function valueIsOptional(): bool
     {
-        return ($this->type & OptionTypes::OPTIONAL_VALUE) === OptionTypes::OPTIONAL_VALUE;
+        return ($this->type & OptionType::OPTIONAL_VALUE) === OptionType::OPTIONAL_VALUE;
     }
 
     /**
@@ -84,7 +84,7 @@ final class Option
      */
     public function valueIsPermitted(): bool
     {
-        return ($this->type & OptionTypes::NO_VALUE) !== OptionTypes::NO_VALUE;
+        return ($this->type & OptionType::NO_VALUE) !== OptionType::NO_VALUE;
     }
 
     /**
@@ -94,6 +94,6 @@ final class Option
      */
     public function valueIsRequired(): bool
     {
-        return ($this->type & OptionTypes::REQUIRED_VALUE) === OptionTypes::REQUIRED_VALUE;
+        return ($this->type & OptionType::REQUIRED_VALUE) === OptionType::REQUIRED_VALUE;
     }
 }
