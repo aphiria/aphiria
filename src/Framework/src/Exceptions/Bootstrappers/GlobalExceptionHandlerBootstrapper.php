@@ -93,7 +93,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                 );
                 $exceptionRenderer->mapExceptionToProblemDetails(
                     InvalidRequestBodyException::class,
-                    status: HttpStatusCode::BAD_REQUEST
+                    status: HttpStatusCode::BadRequest
                 );
                 break;
             default:

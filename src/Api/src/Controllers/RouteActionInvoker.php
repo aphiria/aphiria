@@ -67,7 +67,7 @@ class RouteActionInvoker implements IRouteActionInvoker
             $reflectionFunction = $this->reflectRouteActionDelegate($routeActionDelegate);
         } catch (ReflectionException $ex) {
             throw new HttpException(
-                HttpStatusCode::INTERNAL_SERVER_ERROR,
+                HttpStatusCode::InternalServerError,
                 'Failed to reflect controller',
                 0,
                 $ex
@@ -98,21 +98,21 @@ class RouteActionInvoker implements IRouteActionInvoker
             }
         } catch (MissingControllerParameterValueException | FailedScalarParameterConversionException $ex) {
             throw new HttpException(
-                HttpStatusCode::BAD_REQUEST,
+                HttpStatusCode::BadRequest,
                 'Failed to invoke controller',
                 0,
                 $ex
             );
         } catch (FailedRequestContentNegotiationException $ex) {
             throw new HttpException(
-                HttpStatusCode::UNSUPPORTED_MEDIA_TYPE,
+                HttpStatusCode::UnsupportedMediaType,
                 'Failed to invoke controller',
                 0,
                 $ex
             );
         } catch (RequestBodyDeserializationException $ex) {
             throw new HttpException(
-                HttpStatusCode::UNPROCESSABLE_ENTITY,
+                HttpStatusCode::UnprocessableEntity,
                 'Failed to invoke controller',
                 0,
                 $ex
@@ -128,13 +128,13 @@ class RouteActionInvoker implements IRouteActionInvoker
 
         // Handle void return types
         if ($actionResult === null) {
-            return new Response(HttpStatusCode::NO_CONTENT);
+            return new Response(HttpStatusCode::NoContent);
         }
 
         // Attempt to create an OK response from the return value
         return $this->responseFactory->createResponse(
             $request,
-            HttpStatusCode::OK,
+            HttpStatusCode::Ok,
             null,
             $actionResult
         );

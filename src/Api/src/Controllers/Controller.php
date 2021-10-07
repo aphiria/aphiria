@@ -114,7 +114,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCode::ACCEPTED,
+            HttpStatusCode::Accepted,
             $headers,
             $body
         );
@@ -137,7 +137,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCode::BAD_REQUEST,
+            HttpStatusCode::BadRequest,
             $headers,
             $body
         );
@@ -160,7 +160,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCode::CONFLICT,
+            HttpStatusCode::Conflict,
             $headers,
             $body
         );
@@ -188,7 +188,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCode::CREATED,
+            HttpStatusCode::Created,
             $headers,
             $body
         );
@@ -211,7 +211,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCode::FORBIDDEN,
+            HttpStatusCode::Forbidden,
             $headers,
             $body
         );
@@ -231,7 +231,7 @@ class Controller
      */
     protected function found(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
-        return $this->redirect(HttpStatusCode::FOUND, $uri, $body, $headers);
+        return $this->redirect(HttpStatusCode::Found, $uri, $body, $headers);
     }
 
     /**
@@ -251,7 +251,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCode::INTERNAL_SERVER_ERROR,
+            HttpStatusCode::InternalServerError,
             $headers,
             $body
         );
@@ -270,7 +270,7 @@ class Controller
      */
     protected function movedPermanently(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
-        return $this->redirect(HttpStatusCode::MOVED_PERMANENTLY, $uri, $body, $headers);
+        return $this->redirect(HttpStatusCode::MovedPermanently, $uri, $body, $headers);
     }
 
     /**
@@ -289,7 +289,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCode::NO_CONTENT,
+            HttpStatusCode::NoContent,
             $headers
         );
     }
@@ -311,7 +311,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCode::NOT_FOUND,
+            HttpStatusCode::NotFound,
             $headers,
             $body
         );
@@ -334,7 +334,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCode::OK,
+            HttpStatusCode::Ok,
             $headers,
             $body
         );
@@ -367,7 +367,7 @@ class Controller
 
         if ($mediaTypeFormatter === null) {
             throw new HttpException(
-                HttpStatusCode::UNSUPPORTED_MEDIA_TYPE,
+                HttpStatusCode::UnsupportedMediaType,
                 "Failed to negotiate request content with type $type"
             );
         }
@@ -376,7 +376,7 @@ class Controller
             return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type);
         } catch (SerializationException $ex) {
             throw new HttpException(
-                HttpStatusCode::UNPROCESSABLE_ENTITY,
+                HttpStatusCode::UnprocessableEntity,
                 "Failed to deserialize request body when resolving body as type $type",
                 0,
                 $ex
@@ -401,7 +401,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCode::UNAUTHORIZED,
+            HttpStatusCode::Unauthorized,
             $headers,
             $body
         );

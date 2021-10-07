@@ -27,7 +27,7 @@ class Response implements IResponse
      * @param string $protocolVersion The HTTP protocol version
      */
     public function __construct(
-        protected int $statusCode = HttpStatusCode::OK,
+        protected int $statusCode = HttpStatusCode::Ok,
         protected readonly Headers $headers = new Headers(),
         protected ?IBody $body = null,
         protected readonly string $protocolVersion = '1.1'

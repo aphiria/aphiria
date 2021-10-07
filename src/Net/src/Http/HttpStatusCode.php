@@ -18,165 +18,165 @@ namespace Aphiria\Net\Http;
 final class HttpStatusCode
 {
     /** @const Continue */
-    public const CONTINUE = 100;
+    public const Continue = 100;
     /** @const Switching protocol */
-    public const SWITCHING_PROTOCOL = 101;
+    public const SwitchingProtocol = 101;
     /** @const Successful response */
-    public const OK = 200;
+    public const Ok = 200;
     /** @const Request has been fulfilled and a new resource has been created */
-    public const CREATED = 201;
+    public const Created = 201;
     /** @const The request has been accepted for processing, but processing hasn't completed */
-    public const ACCEPTED = 202;
+    public const Accepted = 202;
     /** @const The response was collected from a copy */
-    public const NON_AUTHORITATIVE_INFORMATION = 203;
+    public const NonAuthoritativeInformation = 203;
     /** @const No content */
-    public const NO_CONTENT = 204;
+    public const NoContent = 204;
     /** @const After accomplishing request to tell user agent reset document view which sent the request */
-    public const RESET_CONTENT = 205;
+    public const ResetContent = 205;
     /** @const The request contains partial content */
-    public const PARTIAL_CONTENT = 206;
+    public const PartialContent = 206;
     /** @const The request contains multiple status codes */
-    public const MULTI_STATUS = 207;
+    public const MultiStatus = 207;
     /** @const The members of a DAV binding have been enumerated in a preceding part of the multi-status response */
-    public const ALREADY_REPORTED = 208;
+    public const AlreadyReported = 208;
     /** @const The server has fulfilled a request for the resource, and the response represents one or more instance-manipulations */
-    public const IM_USED = 226;
+    public const ImUsed = 226;
     /** @const Multiple choice redirect */
-    public const MULTIPLE_CHOICE = 300;
+    public const MultipleChoice = 300;
     /** @const Moved permanently */
-    public const MOVED_PERMANENTLY = 301;
+    public const MovedPermanently = 301;
     /** @const The URI has been changed temporarily */
-    public const FOUND = 302;
+    public const Found = 302;
     /** @const See other */
-    public const SEE_OTHER = 303;
+    public const SeeOther = 303;
     /** @const The response has not been modified */
-    public const NOT_MODIFIED = 304;
+    public const NotModified = 304;
     /** @const The response must be accept by a proxy */
-    public const USE_PROXY = 305;
+    public const UseProxy = 305;
     /** @const A temporary redirect */
-    public const TEMPORARY_REDIRECT = 307;
+    public const TemporaryRedirect = 307;
     /** @const The request URI is now permanently at another URI */
-    public const PERMANENT_REDIRECT = 308;
+    public const PermanentRedirect = 308;
     /** @const The request was bad */
-    public const BAD_REQUEST = 400;
+    public const BadRequest = 400;
     /** @const The request requires authentication */
-    public const UNAUTHORIZED = 401;
+    public const Unauthorized = 401;
     /** @const Payment is required */
-    public const PAYMENT_REQUIRED = 402;
+    public const PaymentRequired = 402;
     /** @const The server understood the request, but is refusing to fulfill it */
-    public const FORBIDDEN = 403;
+    public const Forbidden = 403;
     /** @const The server didn't find anything matching the request URI */
-    public const NOT_FOUND = 404;
+    public const NotFound = 404;
     /** @const The method is not allowed */
-    public const METHOD_NOT_ALLOWED = 405;
+    public const MethodNotAllowed = 405;
     /** @const Cannot find content with the criteria from the user agent */
-    public const NOT_ACCEPTABLE = 406;
+    public const NotAcceptable = 406;
     /** @const Authentication needs to be done via a proxy */
-    public const PROXY_AUTHENTICATION_REQUIRED = 407;
+    public const ProxyAuthenticationRequired = 407;
     /** @const The request timed out */
-    public const REQUEST_TIMEOUT = 408;
+    public const RequestTimeout = 408;
     /** @const There's a conflict with the state of the server */
-    public const CONFLICT = 409;
+    public const Conflict = 409;
     /** @const The content has been deleted from the server */
-    public const GONE = 410;
+    public const Gone = 410;
     /** @const The The content-length header was required wasn't defined */
-    public const LENGTH_REQUIRED = 411;
+    public const LengthRequired = 411;
     /** @const Preconditions in the headers were not met */
-    public const PRECONDITION_FAILED = 412;
+    public const PreconditionFailed = 412;
     /** @const The request entity was too large */
-    public const REQUEST_ENTITY_TOO_LARGE = 413;
+    public const RequestEntityTooLarge = 413;
     /** @const The request URI was too long */
-    public const URI_TOO_LONG = 414;
+    public const UriTooLong = 414;
     /** @const The request media format wasn't supported */
-    public const UNSUPPORTED_MEDIA_TYPE = 415;
+    public const UnsupportedMediaType = 415;
     /** @const The range header cannot be fulfilled */
-    public const REQUESTED_RANGE_NOT_SATISFIABLE = 416;
+    public const RequestedRangeNotSatisfiable = 416;
     /** @const The expected header cannot be met */
-    public const EXPECTATION_FAILED = 417;
+    public const ExpectationFailed = 417;
     /** @const The request is a teapot, and totally legit */
-    public const TEAPOT = 418;
+    public const Teapot = 418;
     /** @const The request was directed at a server that is not able to produce a response */
-    public const MISDIRECTED_REQUEST = 421;
+    public const MisdirectedRequest = 421;
     /** @const The request was well-formed, but was unable to be followed due to semantic errors */
-    public const UNPROCESSABLE_ENTITY = 422;
+    public const UnprocessableEntity = 422;
     /** @const The resource that is being accessed is locked */
-    public const LOCKED = 423;
+    public const Locked = 423;
     /** @const The request failed because it depended on another request that failed */
-    public const FAILED_DEPENDENCY = 424;
+    public const FailedDependency = 424;
     /** @const The client should switch to a different protocol */
-    public const UPGRADE_REQUIRED = 426;
+    public const UpgradeRequired = 426;
     /** @const The origin server requires the request to be conditional */
-    public const PRECONDITION_REQUIRED = 428;
+    public const PreconditionRequired = 428;
     /** @const The user has sent too many requests in a given amount of time */
-    public const TOO_MANY_REQUESTS = 429;
+    public const TooManyRequests = 429;
     /** @const The server is unwilling to process the request the header fields are too large */
-    public const REQUEST_HEADER_FIELDS_TOO_LARGE = 431;
+    public const RequestHeaderFieldsTooLarge = 431;
     /** @const The server has received a legal demand to deny access to a resource */
-    public const UNAVAILABLE_FOR_LEGAL_REASONS = 451;
+    public const UnavailableForLegalReasons = 451;
     /** @const The server encountered an unexpected condition which prevented it from fulfilling the request */
-    public const INTERNAL_SERVER_ERROR = 500;
+    public const InternalServerError = 500;
     /** @const The server does not support the functionality required to fulfill the request */
-    public const NOT_IMPLEMENTED = 501;
+    public const NotImplemented = 501;
     /** @const The server acted as a gateway and got an invalid response */
-    public const BAD_GATEWAY = 502;
+    public const BadGateway = 502;
     /** @const The server is currently unable to handle the request due to a temporary overloading/maintenance */
-    public const SERVICE_UNAVAILABLE = 503;
+    public const ServiceUnavailable = 503;
     /** @const The server acted as a gateway and timed out */
-    public const GATEWAY_TIMEOUT = 504;
+    public const GatewayTimeout = 504;
     /** @const The HTTP version in the request isn't supported */
-    public const HTTP_VERSION_NOT_SUPPORTED = 505;
+    public const HttpVersionNotSupported = 505;
     /** @const Transparent content negotiation for the request results in a circular reference */
-    public const VARIANT_ALSO_NEGOTIATES = 506;
+    public const VariantAlsoNegotiates = 506;
     /** @const The server is unable to store the representation needed to complete the request */
-    public const INSUFFICIENT_STORAGE = 507;
+    public const InsufficientStorage = 507;
     /** @const The server detected an infinite loop while processing the request */
-    public const LOOP_DETECTED = 508;
+    public const LoopDetected = 508;
     /** @const Further extensions to the request are required for the server to fulfil it */
-    public const NOT_EXTENDED = 510;
+    public const NotExtended = 510;
     /** @const The client needs to authenticate to gain network access */
-    public const NETWORK_AUTHENTICATION_REQUIRED = 511;
+    public const NetworkAuthenticationRequired = 511;
     /** @var array<int, string> Maps HTTP status codes to their default reason phrases */
     private static array $defaultReasonPhrases = [
-        self::CONTINUE => 'Continue',
-        self::SWITCHING_PROTOCOL => 'Switching Protocol',
-        self::OK => 'OK',
-        self::CREATED => 'Created',
-        self::ACCEPTED => 'Accepted',
-        self::NON_AUTHORITATIVE_INFORMATION => 'Non-Authoritative Information',
-        self::NO_CONTENT => 'No Content',
-        self::RESET_CONTENT => 'Reset Content',
-        self::PARTIAL_CONTENT => 'Partial Content',
-        self::MULTIPLE_CHOICE => 'Multiple Choice',
-        self::MOVED_PERMANENTLY => 'Moved Permanently',
-        self::FOUND => 'Found',
-        self::SEE_OTHER => 'See Other',
-        self::NOT_MODIFIED => 'Not Modified',
-        self::USE_PROXY => 'Use Proxy',
-        self::TEMPORARY_REDIRECT => 'Temporary Redirect',
-        self::PERMANENT_REDIRECT => 'Permanent Redirect',
-        self::BAD_REQUEST => 'Bad Request',
-        self::UNAUTHORIZED => 'Unauthorized',
-        self::PAYMENT_REQUIRED => 'Payment Required',
-        self::FORBIDDEN => 'Forbidden',
-        self::NOT_FOUND => 'Not Found',
-        self::METHOD_NOT_ALLOWED => 'Method Not Allowed',
-        self::NOT_ACCEPTABLE => 'Not Acceptable',
-        self::PROXY_AUTHENTICATION_REQUIRED => 'Proxy Authentication Required',
-        self::REQUEST_TIMEOUT => 'Request Timeout',
-        self::CONFLICT => 'Conflict',
-        self::GONE => 'Gone',
-        self::LENGTH_REQUIRED => 'Length Required',
-        self::PRECONDITION_FAILED => 'Precondition Failed',
-        self::REQUEST_ENTITY_TOO_LARGE => 'Request Entity Too Large',
-        self::UNSUPPORTED_MEDIA_TYPE => 'Unsupported Media Type',
-        self::REQUESTED_RANGE_NOT_SATISFIABLE => 'Requested Range Not Satisfiable',
-        self::EXPECTATION_FAILED => 'Expectation Failed',
-        self::INTERNAL_SERVER_ERROR => 'Internal Server Error',
-        self::NOT_IMPLEMENTED => 'Not Implemented',
-        self::BAD_GATEWAY => 'Bad Gateway',
-        self::SERVICE_UNAVAILABLE => 'Service Unavailable',
-        self::GATEWAY_TIMEOUT => 'Gateway Timeout',
-        self::HTTP_VERSION_NOT_SUPPORTED => 'HTTP Version Not Supported'
+        self::Continue => 'Continue',
+        self::SwitchingProtocol => 'Switching Protocol',
+        self::Ok => 'OK',
+        self::Created => 'Created',
+        self::Accepted => 'Accepted',
+        self::NonAuthoritativeInformation => 'Non-Authoritative Information',
+        self::NoContent => 'No Content',
+        self::ResetContent => 'Reset Content',
+        self::PartialContent => 'Partial Content',
+        self::MultipleChoice => 'Multiple Choice',
+        self::MovedPermanently => 'Moved Permanently',
+        self::Found => 'Found',
+        self::SeeOther => 'See Other',
+        self::NotModified => 'Not Modified',
+        self::UseProxy => 'Use Proxy',
+        self::TemporaryRedirect => 'Temporary Redirect',
+        self::PermanentRedirect => 'Permanent Redirect',
+        self::BadRequest => 'Bad Request',
+        self::Unauthorized => 'Unauthorized',
+        self::PaymentRequired => 'Payment Required',
+        self::Forbidden => 'Forbidden',
+        self::NotFound => 'Not Found',
+        self::MethodNotAllowed => 'Method Not Allowed',
+        self::NotAcceptable => 'Not Acceptable',
+        self::ProxyAuthenticationRequired => 'Proxy Authentication Required',
+        self::RequestTimeout => 'Request Timeout',
+        self::Conflict => 'Conflict',
+        self::Gone => 'Gone',
+        self::LengthRequired => 'Length Required',
+        self::PreconditionFailed => 'Precondition Failed',
+        self::RequestEntityTooLarge => 'Request Entity Too Large',
+        self::UnsupportedMediaType => 'Unsupported Media Type',
+        self::RequestedRangeNotSatisfiable => 'Requested Range Not Satisfiable',
+        self::ExpectationFailed => 'Expectation Failed',
+        self::InternalServerError => 'Internal Server Error',
+        self::NotImplemented => 'Not Implemented',
+        self::BadGateway => 'Bad Gateway',
+        self::ServiceUnavailable => 'Service Unavailable',
+        self::GatewayTimeout => 'Gateway Timeout',
+        self::HttpVersionNotSupported => 'HTTP Version Not Supported'
     ];
 
     /**

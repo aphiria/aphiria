@@ -211,7 +211,7 @@ class NegotiatedResponseFactoryTest extends TestCase
             $this->fail('Expected exception to be thrown');
         } catch (HttpException $ex) {
             $response = $ex->response;
-            $this->assertSame(HttpStatusCode::NOT_ACCEPTABLE, $response->getStatusCode());
+            $this->assertSame(HttpStatusCode::NotAcceptable, $response->getStatusCode());
             $this->assertSame('application/json', $response->getHeaders()->getFirst('Content-Type'));
             $this->assertSame('["foo\/bar"]', (string)$response->getBody());
         }
@@ -236,7 +236,7 @@ class NegotiatedResponseFactoryTest extends TestCase
             $this->factory->createResponse($request, 200, null, $rawBody);
             $this->fail('Expected exception to be thrown');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCode::INTERNAL_SERVER_ERROR, $ex->response->getStatusCode());
+            $this->assertSame(HttpStatusCode::InternalServerError, $ex->response->getStatusCode());
         }
     }
 

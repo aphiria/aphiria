@@ -152,10 +152,10 @@ class Router implements IRequestHandler
 
         if (!$matchingResult->matchFound) {
             if ($matchingResult->methodIsAllowed === null) {
-                throw new HttpException(HttpStatusCode::NOT_FOUND, "No route found for {$request->getUri()}");
+                throw new HttpException(HttpStatusCode::NotFound, "No route found for {$request->getUri()}");
             }
 
-            $response = new Response(HttpStatusCode::METHOD_NOT_ALLOWED);
+            $response = new Response(HttpStatusCode::MethodNotAllowed);
             $response->getHeaders()->add('Allow', $matchingResult->allowedMethods);
 
             throw new HttpException($response, 'Method not allowed');

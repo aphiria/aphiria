@@ -65,8 +65,8 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
         /** @var array{status: int} $problemDetailsJson */
         $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $this->assertSame(HttpStatusCode::INTERNAL_SERVER_ERROR, $problemDetailsJson['status']);
-        $this->assertSame(HttpStatusCode::INTERNAL_SERVER_ERROR, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::InternalServerError, $problemDetailsJson['status']);
+        $this->assertSame(HttpStatusCode::InternalServerError, $response->getStatusCode());
     }
 
     public function testHavingRequestSetButAnExceptionGetsThrownCausesGenericResponse(): void
@@ -81,7 +81,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($this->callback(function (IResponse $response) {
-                return $response->getStatusCode() === HttpStatusCode::INTERNAL_SERVER_ERROR
+                return $response->getStatusCode() === HttpStatusCode::InternalServerError
                     && $response->getBody() === null
                     && $response->getHeaders()->count() === 0;
             }));
@@ -91,10 +91,10 @@ class ProblemDetailsExceptionRendererTest extends TestCase
     public function testHavingRequestSetButNoCustomMappingCreatesProblemDetailsResponse(): void
     {
         $exceptionRenderer = $this->createExceptionRenderer(true, true);
-        $expectedResponse = new Response(HttpStatusCode::INTERNAL_SERVER_ERROR);
+        $expectedResponse = new Response(HttpStatusCode::InternalServerError);
         $this->responseFactory->expects($this->once())
             ->method('createResponse')
-            ->with($this->request, HttpStatusCode::INTERNAL_SERVER_ERROR, null, new ProblemDetails('https://tools.ietf.org/html/rfc7231#section-6.6.1', null, null, HttpStatusCode::INTERNAL_SERVER_ERROR))
+            ->with($this->request, HttpStatusCode::InternalServerError, null, new ProblemDetails('https://tools.ietf.org/html/rfc7231#section-6.6.1', null, null, HttpStatusCode::InternalServerError))
             ->willReturn($expectedResponse);
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
@@ -231,15 +231,15 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
         /** @var array{status: int} $problemDetailsJson */
         $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $this->assertSame(HttpStatusCode::INTERNAL_SERVER_ERROR, $response->getStatusCode());
-        $this->assertSame(HttpStatusCode::INTERNAL_SERVER_ERROR, $problemDetailsJson['status']);
+        $this->assertSame(HttpStatusCode::InternalServerError, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::InternalServerError, $problemDetailsJson['status']);
     }
 
     public function testNotHavingRequestSetCreatesProblemDetailsResponse(): void
     {
         $exceptionRenderer = $this->createExceptionRenderer(false, false);
         $actualResponse = $exceptionRenderer->createResponse(new Exception('foo'));
-        $this->assertSame(HttpStatusCode::INTERNAL_SERVER_ERROR, $actualResponse->getStatusCode());
+        $this->assertSame(HttpStatusCode::InternalServerError, $actualResponse->getStatusCode());
         $this->assertSame('application/problem+json', $actualResponse->getHeaders()->getFirst('Content-Type'));
         // In this test, we're not using the custom problem details Symfony normalizer, which means "extensions" will appear as a property in the JSON
         $this->assertSame('{"type":"https:\/\/tools.ietf.org\/html\/rfc7231#section-6.6.1","title":"foo","detail":null,"status":500,"instance":null,"extensions":null}', (string)$actualResponse->getBody());

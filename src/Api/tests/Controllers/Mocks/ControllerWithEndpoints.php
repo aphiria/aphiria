@@ -221,7 +221,7 @@ class ControllerWithEndpoints extends BaseController
      */
     private function createResponseWithBody(string $body): Response
     {
-        return new Response(HttpStatusCode::OK, body: new StringBody($body));
+        return new Response(HttpStatusCode::Ok, body: new StringBody($body));
     }
 
     /**

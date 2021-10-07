@@ -34,7 +34,7 @@ class ProblemDetails
         public ?string $type = null,
         public ?string $title = null,
         public ?string $detail = null,
-        public int $status = HttpStatusCode::INTERNAL_SERVER_ERROR,
+        public int $status = HttpStatusCode::InternalServerError,
         public ?string $instance = null,
         public ?array $extensions = null
     ) {

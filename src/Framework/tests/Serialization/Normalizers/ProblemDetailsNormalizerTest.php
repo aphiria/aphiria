@@ -36,7 +36,7 @@ class ProblemDetailsNormalizerTest extends TestCase
             'type' => 'foo',
             'title' => null,
             'detail' => null,
-            'status' => HttpStatusCode::INTERNAL_SERVER_ERROR,
+            'status' => HttpStatusCode::InternalServerError,
             'instance' => null,
             'foo' => 'bar'
         ];
@@ -50,7 +50,7 @@ class ProblemDetailsNormalizerTest extends TestCase
             'type' => 'foo',
             'title' => null,
             'detail' => null,
-            'status' => HttpStatusCode::INTERNAL_SERVER_ERROR,
+            'status' => HttpStatusCode::InternalServerError,
             'instance' => null
         ];
         $this->assertEquals($expectedNormalizedValue, $this->normalizer->normalize($problemDetails));

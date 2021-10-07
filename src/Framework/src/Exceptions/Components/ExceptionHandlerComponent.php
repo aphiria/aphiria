@@ -112,7 +112,7 @@ class ExceptionHandlerComponent implements IComponent
         string|Closure $type = null,
         string|Closure $title = null,
         string|Closure $detail = null,
-        int|Closure $status = HttpStatusCode::INTERNAL_SERVER_ERROR,
+        int|Closure $status = HttpStatusCode::InternalServerError,
         string|Closure $instance = null,
         array|Closure $extensions = null
     ): static {
